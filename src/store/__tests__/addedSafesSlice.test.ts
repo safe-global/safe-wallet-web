@@ -131,7 +131,7 @@ describe('addedSafesSlice', () => {
     })
   })
 
-  describe('fixLegacyOwners', () => {
+  describe('migrateLegacyOwners', () => {
     const ADDRESS_1 = hexZeroPad('0x1', 20)
     const ADDRESS_2 = hexZeroPad('0x2', 20)
 
@@ -166,7 +166,7 @@ describe('addedSafesSlice', () => {
             } as unknown as SafeInfo,
           },
         },
-        addedSafesSlice.actions.fixLegacyOwners(),
+        addedSafesSlice.actions.migrateLegacyOwners(),
       )
       expect(state).toEqual({
         '1': {
@@ -232,7 +232,7 @@ describe('addedSafesSlice', () => {
             } as unknown as SafeInfo,
           },
         },
-        addedSafesSlice.actions.fixLegacyOwners(),
+        addedSafesSlice.actions.migrateLegacyOwners(),
       )
       expect(state).toEqual({
         '1': {
@@ -294,7 +294,7 @@ describe('addedSafesSlice', () => {
             } as unknown as SafeInfo,
           },
         },
-        addedSafesSlice.actions.fixLegacyOwners(),
+        addedSafesSlice.actions.migrateLegacyOwners(),
       )
       expect(state).toEqual({
         '1': {
@@ -353,7 +353,7 @@ describe('addedSafesSlice', () => {
             } as unknown as SafeInfo,
           },
         },
-        addedSafesSlice.actions.fixLegacyOwners(),
+        addedSafesSlice.actions.migrateLegacyOwners(),
       )
 
       expect(state).toEqual({})

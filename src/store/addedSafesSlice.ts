@@ -37,7 +37,7 @@ export const addedSafesSlice = createSlice({
       // Otherwise, migrate
       return action.payload
     },
-    fixLegacyOwners: (state) => {
+    migrateLegacyOwners: (state) => {
       for (const [chainId, addedSafesOnChain] of Object.entries(state)) {
         for (const [safeAddress, safe] of Object.entries(addedSafesOnChain)) {
           // Previously migrated corrupt owners
