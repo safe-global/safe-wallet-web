@@ -9,7 +9,7 @@ import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
 
-const WalletInfo = ({ wallet, chain }: { wallet: ConnectedWallet; chain: ChainInfo }): ReactElement => {
+const WalletInfo = ({ wallet, chain }: { wallet: ConnectedWallet; chain?: ChainInfo }): ReactElement => {
   return (
     <Box className={css.container}>
       <Box className={css.imageContainer}>
@@ -19,17 +19,18 @@ const WalletInfo = ({ wallet, chain }: { wallet: ConnectedWallet; chain: ChainIn
       </Box>
       <Box>
         <Typography variant="caption" component="div" className={css.walletDetails}>
-          {wallet.label} @ {chain.chainName}
+          {wallet.label} @ {chain?.chainName || 'Unknown'}
         </Typography>
         <Typography variant="caption" fontWeight="bold" component="div">
           {wallet.ens ? (
             <div>{wallet.ens}</div>
           ) : (
             <EthHashInfo
-              prefix={chain.shortName}
+              prefix={chain?.shortName || ''}
               address={wallet.address}
               showName={false}
               showAvatar
+              showPrefix={!chain}
               avatarSize={12}
             />
           )}

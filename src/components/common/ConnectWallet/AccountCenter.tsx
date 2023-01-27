@@ -53,7 +53,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
     <>
       <ButtonBase onClick={handleClick} aria-describedby={id} disableRipple sx={{ alignSelf: 'stretch' }}>
         <Box className={css.buttonContainer}>
-          {chainInfo && <WalletInfo wallet={wallet} chain={chainInfo} />}
+          <WalletInfo wallet={wallet} chain={chainInfo} />
 
           <Box display="flex" alignItems="center" justifyContent="flex-end" marginLeft="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
