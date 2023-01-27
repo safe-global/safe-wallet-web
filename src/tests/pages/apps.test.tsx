@@ -77,6 +77,63 @@ describe('AppsPage', () => {
         expect(getByText(safeAppPreviewDrawer, 'Open App'))
       })
     })
+
+    it('switches from Grid view mode to List view mode', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          pathname: '/apps',
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => {
+        // in the default grid view mode titles & descriptions are present
+        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+
+        expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
+      })
+
+      // switch list view mode
+      fireEvent.click(screen.getByLabelText('List view mode'))
+
+      await waitFor(() => {
+        // only titles are present
+        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+
+        // no description is present
+        expect(screen.queryByText(transactionBuilderSafeAppMock.description)).not.toBeInTheDocument()
+        expect(screen.queryByText(compopundSafeAppMock.description)).not.toBeInTheDocument()
+        expect(screen.queryByText(ensSafeAppMock.description)).not.toBeInTheDocument()
+        expect(screen.queryByText(synthetixSafeAppMock.description)).not.toBeInTheDocument()
+      })
+
+      // switch back to grid view mode
+      fireEvent.click(screen.getByLabelText('Grid view mode'))
+
+      await waitFor(() => {
+        // in the default grid view mode titles & descriptions are present
+        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+
+        expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
+      })
+    })
   })
 
   describe('Bookmarked Safe apps Page', () => {
@@ -743,65 +800,6 @@ describe('AppsPage', () => {
           expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
           expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
           expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-        })
-      })
-    })
-
-    describe('safe apps view mode', () => {
-      it('switches from Grid view to list view', async () => {
-        render(<AppsPage />, {
-          routerProps: {
-            pathname: '/apps',
-            query: {
-              safe: 'matic:0x0000000000000000000000000000000000000000',
-            },
-          },
-        })
-
-        await waitFor(() => {
-          // in the default grid view mode titles & descriptions are present
-          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
-          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-
-          expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
-          expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
-          expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
-          expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
-        })
-
-        // switch list view mode
-        fireEvent.click(screen.getByLabelText('List view mode'))
-
-        await waitFor(() => {
-          // only titles are present
-          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
-          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-
-          // no description is present
-          expect(screen.queryByText(transactionBuilderSafeAppMock.description)).not.toBeInTheDocument()
-          expect(screen.queryByText(compopundSafeAppMock.description)).not.toBeInTheDocument()
-          expect(screen.queryByText(ensSafeAppMock.description)).not.toBeInTheDocument()
-          expect(screen.queryByText(synthetixSafeAppMock.description)).not.toBeInTheDocument()
-        })
-
-        // switch back to grid view mode
-        fireEvent.click(screen.getByLabelText('Grid view mode'))
-
-        await waitFor(() => {
-          // in the default grid view mode titles & descriptions are present
-          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
-          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-
-          expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
-          expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
-          expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
-          expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
         })
       })
     })
