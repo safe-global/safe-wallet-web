@@ -83,8 +83,18 @@ const trackWalletType = (wallet: ConnectedWallet) => {
 // Detect mobile devices
 const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
+// `connectWallet` is called when connecting/switching wallets and on pairing `connect` event (when prev. session connects)
+// This re-entrant lock prevents multiple `connectWallet`/tracking calls that would otherwise occur for pairing module
+let isConnecting = false
+
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = async (onboard: OnboardAPI, options?: Parameters<OnboardAPI['connectWallet']>[0]) => {
+  if (isConnecting) {
+    return
+  }
+
+  isConnecting = true
+
   // On mobile, automatically choose WalletConnect
   if (!options && isMobile()) {
     options = {
@@ -96,6 +106,8 @@ export const connectWallet = async (onboard: OnboardAPI, options?: Parameters<On
     await onboard.connectWallet(options)
   } catch (e) {
     logError(Errors._302, (e as Error).message)
+
+    isConnecting = false
     return
   }
 
@@ -109,6 +121,8 @@ export const connectWallet = async (onboard: OnboardAPI, options?: Parameters<On
     // Track
     trackWalletType(newWallet)
   }
+
+  isConnecting = false
 }
 
 // A workaround for an onboard "feature" that shows a defunct account select popup
