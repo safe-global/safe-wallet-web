@@ -13,7 +13,7 @@ import css from './styles.module.css'
 export const UNKNOWN_CHAIN_NAME = 'Unknown'
 
 const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
-  const walletChain = useAppSelector((state) => selectChainById(state, wallet?.chainId || ''))
+  const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
   return (
     <Box className={css.container}>
       <Box className={css.imageContainer}>
@@ -34,7 +34,6 @@ const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
               address={wallet.address}
               showName={false}
               showAvatar
-              showPrefix={!walletChain}
               avatarSize={12}
             />
           )}
