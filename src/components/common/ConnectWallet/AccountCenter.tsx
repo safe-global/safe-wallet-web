@@ -12,7 +12,7 @@ import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import WalletInfo from '../WalletInfo'
+import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -53,7 +53,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
     <>
       <ButtonBase onClick={handleClick} aria-describedby={id} disableRipple sx={{ alignSelf: 'stretch' }}>
         <Box className={css.buttonContainer}>
-          <WalletInfo wallet={wallet} chain={chainInfo} />
+          <WalletInfo wallet={wallet} />
 
           <Box display="flex" alignItems="center" justifyContent="flex-end" marginLeft="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
@@ -94,7 +94,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
             </Box>
             <Box className={css.row}>
               <Typography variant="caption">Connected network</Typography>
-              <Typography variant="body2">{chainInfo?.chainName}</Typography>
+              <Typography variant="body2">{chainInfo?.chainName || UNKNOWN_CHAIN_NAME}</Typography>
             </Box>
           </Box>
 
