@@ -13,7 +13,7 @@ import css from './styles.module.css'
 const SafeAppsSDKLink = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
 
-  const safeAppsSDKUrl = 'https://github.com/safe-global/safe-apps-sdk'
+  const safeAppsSDKUrl = 'https://docs.gnosis-safe.io/learn/safe-tools/sdks/safe-apps'
 
   return (
     <Box className={css.position} onMouseEnter={() => setOpenModal(true)} onMouseLeave={() => setOpenModal(false)}>
