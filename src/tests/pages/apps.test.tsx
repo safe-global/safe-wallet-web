@@ -543,13 +543,14 @@ describe('AppsPage', () => {
 
         const categoriesDropdown = within(screen.getByRole('listbox'))
 
-        // show some options in the categories dropdown
-        await waitFor(() => expect(categoriesDropdown.getByText('NFT')).toBeInTheDocument())
-        await waitFor(() => expect(categoriesDropdown.getByText('Transaction Builder')).toBeInTheDocument())
-        await waitFor(() => expect(categoriesDropdown.getByText('Dashboard')).toBeInTheDocument())
+        // show only visible options in the categories dropdown
+        await waitFor(() => expect(categoriesDropdown.getByText('Infrastructure')).toBeInTheDocument())
 
-        // filter by Transaction Builder category
-        await act(() => fireEvent.click(categoriesDropdown.getByText('Transaction Builder')))
+        // internal categories are not displayed
+        await waitFor(() => expect(categoriesDropdown.queryByText('transaction-builder')).not.toBeInTheDocument())
+
+        // filter by Infrastructure category
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
 
         // close the dropdown
         await act(() =>
@@ -595,8 +596,8 @@ describe('AppsPage', () => {
 
         const categoriesDropdown = within(screen.getByRole('listbox'))
 
-        // filter by category
-        await act(() => fireEvent.click(categoriesDropdown.getByText('Transaction Builder')))
+        // filter byInfrastructure category
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
 
         await waitFor(() => {
           expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
@@ -605,8 +606,8 @@ describe('AppsPage', () => {
           expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
         })
 
-        // clear Transaction Builder filter
-        await act(() => fireEvent.click(categoriesDropdown.getByText('Transaction Builder')))
+        // clear active Infrastructure filter
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
 
         // close the dropdown
         await act(() =>
@@ -650,8 +651,8 @@ describe('AppsPage', () => {
 
         const categoriesDropdown = within(screen.getByRole('listbox'))
 
-        // filter by category
-        await act(() => fireEvent.click(categoriesDropdown.getByText('Transaction Builder')))
+        // filter by Infrastructure category
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
 
         await waitFor(() => {
           expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
@@ -819,7 +820,10 @@ const transactionBuilderSafeAppMock: SafeAppData = {
     type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.DomainAllowlist,
     value: ['https://gnosis-safe.io'],
   },
-  tags: ['transaction-builder'],
+  tags: [
+    'transaction-builder', // internal category are not displayed in the UI
+    'Infrastructure',
+  ],
   features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
   socialProfiles: [],
   developerWebsite: '',

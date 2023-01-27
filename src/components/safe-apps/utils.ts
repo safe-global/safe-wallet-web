@@ -91,3 +91,16 @@ export const getOrigin = (url?: string): string => {
 
 export const isOptimizedForBatchTransactions = (safeApp: SafeAppData) =>
   safeApp.features?.includes(SafeAppFeatures.BATCHED_TRANSACTIONS)
+
+// some categories are used internally and we dont want to display them in the UI
+export const filterInternalCategories = (categories: string[]): string[] => {
+  return categories.filter((tag) => !internalCategories.some((internalCategory) => tag === internalCategory))
+}
+
+export const internalCategories = [
+  'dashboard-widgets',
+  'nft',
+  'safe-claiming-app',
+  'transaction-builder',
+  'wallet-connect',
+]

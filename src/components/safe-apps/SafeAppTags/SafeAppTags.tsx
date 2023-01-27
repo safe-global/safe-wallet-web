@@ -1,6 +1,7 @@
 import Stack from '@mui/material/Stack'
 import Chip from '@mui/material/Chip'
 
+import { filterInternalCategories } from '@/components/safe-apps/utils'
 import css from './styles.module.css'
 
 type SafeAppTagsProps = {
@@ -8,9 +9,11 @@ type SafeAppTagsProps = {
 }
 
 const SafeAppTags = ({ tags = [] }: SafeAppTagsProps) => {
+  const displayedTags = filterInternalCategories(tags)
+
   return (
     <Stack className={css.safeAppTagContainer} flexDirection="row" gap={1} flexWrap="wrap">
-      {tags.map((tag) => (
+      {displayedTags.map((tag) => (
         <Chip className={css.safeAppTagLabel} key={tag} label={tag} />
       ))}
     </Stack>

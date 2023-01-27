@@ -16,7 +16,9 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Tooltip from '@mui/material/Tooltip'
 import CloseIcon from '@mui/icons-material/Close'
 import type { SelectChangeEvent } from '@mui/material/Select'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
+import { filterInternalCategories } from '@/components/safe-apps/utils'
 import SearchIcon from '@/public/images/common/search.svg'
 import BatchIcon from '@/public/images/apps/batch-icon.svg'
 import css from './styles.module.css'
@@ -31,6 +33,7 @@ type SafeAppsFiltersProps = {
   onChangeFilterCategory: (category: string[]) => void
   onChangeOptimizedWithBatch: (optimizedWithBatch: boolean) => void
   selectedCategories: string[]
+  safeAppsList: SafeAppData[]
 }
 
 const SafeAppsFilters = ({
@@ -38,7 +41,10 @@ const SafeAppsFilters = ({
   onChangeFilterCategory,
   onChangeOptimizedWithBatch,
   selectedCategories,
+  safeAppsList,
 }: SafeAppsFiltersProps) => {
+  const categoryOptions = getCategoryOptions(safeAppsList)
+
   return (
     <Grid container spacing={2} className={css.filterContainer}>
       <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -90,21 +96,33 @@ const SafeAppsFilters = ({
             fullWidth
             MenuProps={categoryMenuProps}
           >
-            {safeAppsCategories.map((category) => (
-              <MenuItem
-                sx={{ padding: '0 6px 2px 6px', height: CATEGORY_OPTION_HEIGHT }}
-                key={category.value}
-                value={category.value}
-                disableGutters
-              >
-                <Checkbox
-                  disableRipple
-                  sx={{ '& .MuiSvgIcon-root': { fontSize: 24 }, padding: '3px' }}
-                  checked={selectedCategories.includes(category.value)}
+            {categoryOptions.length > 0 ? (
+              categoryOptions.map((category) => (
+                <MenuItem
+                  sx={{ padding: '0 6px 2px 6px', height: CATEGORY_OPTION_HEIGHT }}
+                  key={category.value}
+                  value={category.value}
+                  disableGutters
+                >
+                  <Checkbox
+                    disableRipple
+                    sx={{ '& .MuiSvgIcon-root': { fontSize: 24 }, padding: '3px' }}
+                    checked={selectedCategories.includes(category.value)}
+                  />
+                  <ListItemText
+                    primary={category.label}
+                    primaryTypographyProps={{ fontSize: 14, paddingLeft: '5px' }}
+                  />
+                </MenuItem>
+              ))
+            ) : (
+              <MenuItem disabled sx={{ padding: '0 6px 2px 6px', height: CATEGORY_OPTION_HEIGHT }} disableGutters>
+                <ListItemText
+                  primary={'No categories defined'}
+                  primaryTypographyProps={{ fontSize: 14, paddingLeft: '5px' }}
                 />
-                <ListItemText primary={category.label} primaryTypographyProps={{ fontSize: 14, paddingLeft: '5px' }} />
               </MenuItem>
-            ))}
+            )}
           </Select>
 
           {/* clear selected categories button */}
@@ -172,119 +190,22 @@ const categoryMenuProps = {
   },
 }
 
-export const safeAppsCategories = [
-  {
-    label: 'NFT',
-    value: 'nft',
-  },
-  {
-    label: 'Dashboard',
-    value: 'dashboard-widgets',
-  },
-  {
-    label: 'Transaction Builder',
-    value: 'transaction-builder',
-  },
-  {
-    label: 'Wallet Connect',
-    value: 'wallet-connect',
-  },
-  {
-    label: 'Safe Claiming App',
-    value: 'safe-claiming-app',
-  },
+const getCategoryOptions = (safeAppList: SafeAppData[]): safeAppCatogoryOptionType[] => {
+  return safeAppList.reduce<safeAppCatogoryOptionType[]>((categoryOptions, safeApp) => {
+    // we filter internal categories
+    const categories = filterInternalCategories(safeApp.tags)
 
-  // defined in the designs
-  {
-    label: 'Accounting',
-    value: 'accounting',
-  },
-  {
-    label: 'Agregator',
-    value: 'agregator',
-  },
-  {
-    label: 'Automation',
-    value: 'automation',
-  },
-  {
-    label: 'Derivatives',
-    value: 'derivatives',
-  },
-  {
-    label: 'Bridge',
-    value: 'bridge',
-  },
-  {
-    label: 'CeFI',
-    value: 'cefi',
-  },
-  {
-    label: 'DEX',
-    value: 'dex',
-  },
-  {
-    label: 'DeFI',
-    value: 'defi',
-  },
-  {
-    label: 'Donation',
-    value: 'donation',
-  },
-  {
-    label: 'Fundraising',
-    value: 'fundraising',
-  },
-  {
-    label: 'Governance',
-    value: 'governance',
-  },
-  {
-    label: 'Infrastructure',
-    value: 'infrastructure',
-  },
-  {
-    label: 'Insurance',
-    value: 'insurance',
-  },
-  {
-    label: 'Tokenlaunchpad',
-    value: 'tokenlaunchpad',
-  },
-  {
-    label: 'Lending/Borrowing',
-    value: 'lending-borrowing',
-  },
-  {
-    label: 'Marketplace',
-    value: 'marketplace',
-  },
-  {
-    label: 'Payments',
-    value: 'payments',
-  },
-  {
-    label: 'Safe',
-    value: 'safe',
-  },
-  {
-    label: 'DAO Tooling',
-    value: 'dao-tooling',
-  },
-  {
-    label: 'Stablecoin',
-    value: 'stablecoin',
-  },
-  {
-    label: 'Staking',
-    value: 'staking',
-  },
-  {
-    label: 'Tooling',
-    value: 'tooling',
-  },
-  {
-    label: 'Yield',
-    value: 'yield',
-  },
-]
+    // avoid repeated categories
+    const removeRepeatedCategories = categories.filter(
+      (category) => !categoryOptions.some((option) => option.value === category),
+    )
+
+    // from string[] to Object[] (label & value)
+    const newCategoryOptions = removeRepeatedCategories.map((category) => ({
+      label: category,
+      value: category,
+    }))
+
+    return [...categoryOptions, ...newCategoryOptions]
+  }, [])
+}

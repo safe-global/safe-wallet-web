@@ -58,6 +58,7 @@ const SafeAppList = ({
           onChangeFilterCategory={setSelectedCategories}
           onChangeOptimizedWithBatch={setOptimizedWithBatchFilter}
           selectedCategories={selectedCategories}
+          safeAppsList={safeAppsList}
         />
       )}
 
