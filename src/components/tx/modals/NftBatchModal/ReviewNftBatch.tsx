@@ -48,19 +48,17 @@ const ReviewNftBatch = ({ params, onSubmit }: ReviewNftBatchProps): ReactElement
       </Typography>
 
       {safeTx && tokens.length > 1 && (
-        <Box overflow="auto" maxHeight="140px" mb={3}>
-          <Box display="flex" flexDirection="column" gap={1}>
-            <Multisend
-              txData={{
-                dataDecoded: decodedData,
-                to: { value: safeTx.data.to },
-                value: safeTx.data.value,
-                operation: Operation.CALL,
-                trustedDelegateCallTarget: false,
-              }}
-              variant="outlined"
-            />
-          </Box>
+        <Box display="flex" flexDirection="column" gap={1} mb={3}>
+          <Multisend
+            txData={{
+              dataDecoded: decodedData,
+              to: { value: safeTx.data.to },
+              value: safeTx.data.value,
+              operation: Operation.CALL,
+              trustedDelegateCallTarget: false,
+            }}
+            variant="outlined"
+          />
         </Box>
       )}
     </SignOrExecuteForm>
