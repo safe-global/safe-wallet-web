@@ -1,4 +1,5 @@
 import type { ReactNode, SyntheticEvent } from 'react'
+import { useMemo, useState } from 'react'
 import { memo } from 'react'
 import { useCallback } from 'react'
 import { type ReactElement } from 'react'
@@ -33,10 +34,9 @@ interface NftsTableProps {
   isLoading: boolean
   children?: ReactNode
   onSelect: (item: SafeCollectibleResponse) => void
-  onFilter: (value: string) => void
 }
 
-const minRows = 10
+const PAGE_SIZE = 10
 
 const headCells = [
   {
@@ -81,16 +81,27 @@ const NftLogo = memo(function NftLogo({ src, title }: { src: string; title: stri
   )
 })
 
-const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onFilter }: NftsTableProps): ReactElement => {
+const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect }: NftsTableProps): ReactElement => {
   const chainId = useChainId()
   const linkTemplates = nftPlatforms[chainId]
+  // Filter string
+  const [filter, setFilter] = useState<string>('')
 
   const onFilterChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      onFilter(e.target.value.toLowerCase())
+      setFilter(e.target.value.toLowerCase())
     },
-    [onFilter],
+    [setFilter],
   )
+
+  // Filter by collection name or token address
+  const filteredNfts = useMemo(() => {
+    return filter
+      ? nfts.filter((nft) => nft.tokenName.toLowerCase().includes(filter) || nft.address.toLowerCase().includes(filter))
+      : nfts
+  }, [nfts, filter])
+
+  const minRows = Math.min(nfts.length, PAGE_SIZE)
 
   return (
     <>
@@ -151,7 +162,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onFilter }
           </TableHead>
 
           <TableBody>
-            {nfts.map((item, index) => (
+            {filteredNfts.map((item, index) => (
               <TableRow tabIndex={-1} key={`${item.address}-${item.id}`} onClick={() => onSelect(item)}>
                 {/* Collection name */}
                 <TableCell>
@@ -187,28 +198,29 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onFilter }
                   <Checkbox checked={selectedNfts.includes(item)} />
 
                   {/* Insert the children at the end of the table */}
-                  {index === nfts.length - 1 && children}
+                  {index === filteredNfts.length - 1 && children}
                 </TableCell>
               </TableRow>
             ))}
 
-            {/* Fill up the table up to min rows */}
-            {Array.from({ length: minRows - nfts.length }).map((_, index) => (
-              <TableRow tabIndex={-1} key={index} sx={{ pointerEvents: 'none' }}>
-                {headCells.map((headCell) => (
-                  <TableCell
-                    key={headCell.id}
-                    sx={headCell.xsHidden ? { display: { xs: 'none', md: 'table-cell' } } : undefined}
-                  >
-                    <Box height="42px" width="42px" />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            {/* Fill up the table up to min rows when filtering */}
+            {filter &&
+              Array.from({ length: minRows - filteredNfts.length }).map((_, index) => (
+                <TableRow tabIndex={-1} key={index} sx={{ pointerEvents: 'none' }}>
+                  {headCells.map((headCell) => (
+                    <TableCell
+                      key={headCell.id}
+                      sx={headCell.xsHidden ? { display: { xs: 'none', md: 'table-cell' } } : undefined}
+                    >
+                      <Box height="42px" width="42px" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
 
             {/* Show placeholders when loading */}
             {isLoading &&
-              Array.from({ length: minRows }).map((_, index) => (
+              Array.from({ length: PAGE_SIZE }).map((_, index) => (
                 <TableRow tabIndex={-1} key={index} sx={{ pointerEvents: 'none' }}>
                   {headCells.map((headCell) => (
                     <TableCell

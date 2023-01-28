@@ -1,5 +1,5 @@
 import type { SyntheticEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -22,20 +22,11 @@ const NftCollections = () => {
   const [selectedNfts, setSelectedNfts] = useState<SafeCollectibleResponse[]>([])
   // Modal open state
   const [showSendModal, setShowSendModal] = useState<boolean>(false)
-  // Filter string
-  const [filter, setFilter] = useState<string>('')
 
   // Add or remove NFT from the selected list on row click
   const onSelect = (token: SafeCollectibleResponse) => {
     setSelectedNfts((prev) => (prev.includes(token) ? prev.filter((t) => t !== token) : prev.concat(token)))
   }
-
-  // Filter by collection name or token address
-  const filteredNfts = useMemo(() => {
-    return allNfts.filter(
-      (nft) => nft.tokenName.toLowerCase().includes(filter) || nft.address.toLowerCase().includes(filter),
-    )
-  }, [allNfts, filter])
 
   // Add new NFTs to the accumulated list
   useEffect(() => {
@@ -77,10 +68,9 @@ const NftCollections = () => {
 
           {/* NFTs table */}
           <NftGrid
-            nfts={filteredNfts}
+            nfts={allNfts}
             selectedNfts={selectedNfts}
             onSelect={onSelect}
-            onFilter={setFilter}
             isLoading={(loading || !!nftPage?.next) && !error}
           >
             {/* Infinite scroll at the bottom of the table */}
