@@ -83,7 +83,7 @@ const Overview = (): ReactElement => {
   const router = useRouter()
   const safeAddress = useSafeAddress()
   const { safe, safeLoading, safeLoaded } = useSafeInfo()
-  const { balances } = useVisibleBalances()
+  const { balances, loading: balancesLoading } = useVisibleBalances()
   const [nfts] = useCollectibles()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
@@ -139,7 +139,7 @@ const Overview = (): ReactElement => {
                     <Typography color="border.main" variant="body2">
                       Tokens
                     </Typography>
-                    <StyledText fontSize="lg">{tokenCount || <ValueSkeleton />}</StyledText>
+                    <StyledText fontSize="lg">{balancesLoading ? <ValueSkeleton /> : tokenCount}</StyledText>
                   </a>
                 </Link>
               </Grid>
