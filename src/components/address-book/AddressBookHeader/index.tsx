@@ -1,4 +1,4 @@
-import { Button, SvgIcon, Grid, IconButton } from '@mui/material'
+import { Button, SvgIcon, Grid } from '@mui/material'
 import type { ReactElement, ElementType } from 'react'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@/public/images/common/search.svg'
@@ -14,8 +14,6 @@ import ImportIcon from '@/public/images/address-book/import.svg'
 import ExportIcon from '@/public/images/address-book/export.svg'
 import AddCircleIcon from '@/public/images/common/add-outlined.svg'
 
-import css from './styles.module.css'
-
 const HeaderButton = ({
   icon,
   onClick,
@@ -27,26 +25,12 @@ const HeaderButton = ({
   disabled?: boolean
   children: string
 }): ReactElement => {
-  const svg = <SvgIcon component={icon} inheritViewBox />
+  const svg = <SvgIcon component={icon} inheritViewBox fontSize="small" />
 
   return (
-    <>
-      <IconButton color="primary" onClick={onClick} disabled={disabled} className={css.iconButton}>
-        {svg}
-      </IconButton>
-
-      <Button
-        onClick={onClick}
-        disabled={disabled}
-        variant="text"
-        color="primary"
-        size="small"
-        startIcon={svg}
-        className={css.button}
-      >
-        {children}
-      </Button>
-    </>
+    <Button onClick={onClick} disabled={disabled} variant="text" color="primary" size="small" startIcon={svg}>
+      {children}
+    </Button>
   )
 }
 
@@ -65,8 +49,8 @@ const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }
       title="Address book"
       noBorder
       action={
-        <Grid container pb={1}>
-          <Grid item xs={8} md={5} xl={4.5}>
+        <Grid container pb={1} spacing={1}>
+          <Grid item xs={12} md={5} xl={4.5}>
             <TextField
               placeholder="Search"
               variant="filled"
@@ -87,7 +71,7 @@ const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }
               size="small"
             />
           </Grid>
-          <Grid item xs={4} md={7} display="flex" justifyContent="flex-end" alignItems="center">
+          <Grid item xs={12} md={7} display="flex" justifyContent={['space-between', , 'flex-end']} alignItems="center">
             <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
               <HeaderButton onClick={handleOpenModal(ModalType.IMPORT)} icon={ImportIcon}>
                 Import

@@ -28,6 +28,7 @@ describe('useVisibleBalances', () => {
           },
           hiddenTokens: { ['4']: [hiddenTokenAddress] },
         },
+        chains: { data: [], error: undefined, loading: false },
       } as unknown as store.RootState),
     )
 
@@ -85,6 +86,7 @@ describe('useVisibleBalances', () => {
           },
           hiddenTokens: { ['4']: [hiddenTokenAddress] },
         },
+        chains: { data: [], error: undefined, loading: false },
       } as unknown as store.RootState),
     )
 
@@ -155,6 +157,7 @@ describe('useVisibleBalances', () => {
           },
           hiddenTokens: { ['4']: [hiddenTokenAddress] },
         },
+        chains: { data: [], error: undefined, loading: false },
       } as unknown as store.RootState),
     )
 
@@ -213,6 +216,7 @@ describe('useVisibleBalances', () => {
           },
           hiddenTokens: { ['4']: [hiddenTokenAddress] },
         },
+        chains: { data: [], error: undefined, loading: false },
       } as unknown as store.RootState),
     )
 

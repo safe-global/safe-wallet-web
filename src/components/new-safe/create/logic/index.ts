@@ -1,5 +1,5 @@
 import type { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   getFallbackHandlerContractInstance,
   getGnosisSafeContractInstance,
@@ -26,7 +26,6 @@ import type Safe from '@safe-global/safe-core-sdk'
 import type { DeploySafeProps } from '@safe-global/safe-core-sdk'
 import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import type { PredictSafeProps } from '@safe-global/safe-core-sdk/dist/src/safeFactory'
-import { getSafeInfo, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
@@ -184,7 +183,11 @@ export const handleSafeCreationError = (error: EthersError) => {
     return SafeCreationStatus.REVERTED
   }
 
-  return SafeCreationStatus.TIMEOUT
+  if (error.code === ErrorCode.TIMEOUT) {
+    return SafeCreationStatus.TIMEOUT
+  }
+
+  return SafeCreationStatus.ERROR
 }
 
 export const SAFE_CREATION_ERROR_KEY = 'create-safe-error'

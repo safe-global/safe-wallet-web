@@ -17,11 +17,9 @@ export type EnvState = {
 export type SettingsState = {
   currency: string
 
-  hiddenTokens:
-    | {
-        [chainId: string]: string[]
-      }
-    | undefined /* This was added to the slice later, so hydration will set it to undefined initially */
+  hiddenTokens: {
+    [chainId: string]: string[]
+  }
 
   shortName: {
     show: boolean
@@ -75,7 +73,6 @@ export const settingsSlice = createSlice({
     },
     setHiddenTokensForChain: (state, { payload }: PayloadAction<{ chainId: string; assets: string[] }>) => {
       const { chainId, assets } = payload
-      state.hiddenTokens ??= {}
       state.hiddenTokens[chainId] = assets
     },
     setEnv: (state, { payload }: PayloadAction<EnvState>) => {

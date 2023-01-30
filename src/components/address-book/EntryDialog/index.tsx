@@ -59,7 +59,7 @@ const EntryDialog = ({
             <Box>
               <AddressInput
                 name="address"
-                label="Address"
+                label="Contact"
                 variant="outlined"
                 fullWidth
                 required

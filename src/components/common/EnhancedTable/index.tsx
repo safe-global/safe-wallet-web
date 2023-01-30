@@ -12,7 +12,6 @@ import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Paper from '@mui/material/Paper'
 import { visuallyHidden } from '@mui/utils'
-import type { PaperTypeMap } from '@mui/material/Paper/Paper'
 import classNames from 'classnames'
 
 import css from './styles.module.css'
@@ -107,12 +106,12 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
 type EnhancedTableProps = {
   rows: EnhancedRow[]
   headCells: EnhancedHeadCell[]
-  variant?: PaperTypeMap['props']['variant']
+  mobileVariant?: boolean
 }
 
 const pageSizes = [10, 25, 100]
 
-function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
+function EnhancedTable({ rows, headCells, mobileVariant }: EnhancedTableProps) {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
   const [orderBy, setOrderBy] = useState<string>('')
   const [page, setPage] = useState<number>(0)
@@ -138,8 +137,8 @@ function EnhancedTable({ rows, headCells, variant }: EnhancedTableProps) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <TableContainer component={Paper} sx={{ width: '100%', mb: 2 }} variant={variant}>
-        <Table aria-labelledby="tableTitle">
+      <TableContainer component={Paper} sx={{ width: '100%', mb: 2 }}>
+        <Table aria-labelledby="tableTitle" className={mobileVariant ? css.mobileColumn : undefined}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
             {pagedRows.length > 0 ? (
