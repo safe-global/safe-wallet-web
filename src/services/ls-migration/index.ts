@@ -15,7 +15,7 @@ const useStorageMigration = (): void => {
   const [isMigrationFinished = false, setIsMigrationFinished] = useLocalStorage<boolean>(MIGRATION_KEY)
 
   useEffect(() => {
-    if (isMigrationFinished || !IS_PRODUCTION) {
+    if (isMigrationFinished) {
       dispatch(addedSafesSlice.actions.migrateLegacyOwners())
       return
     }
@@ -39,4 +39,4 @@ const useStorageMigration = (): void => {
   }, [isMigrationFinished, setIsMigrationFinished, dispatch])
 }
 
-export default useStorageMigration
+export default IS_PRODUCTION ? useStorageMigration : () => void null
