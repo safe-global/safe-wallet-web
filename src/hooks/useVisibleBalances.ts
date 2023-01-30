@@ -1,9 +1,10 @@
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
-import type { SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeBalanceResponse, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import useBalances from './useBalances'
 import useHiddenTokens from './useHiddenTokens'
+import { isNativeToken } from '@/utils/assets'
 
 const PRECISION = 18
 
@@ -21,14 +22,18 @@ const truncateNumber = (balance: string): string => {
   return currentPrecision < PRECISION ? balance : balance.slice(0, floatingPointPosition + PRECISION + 1)
 }
 
+const isVisible = (tokenInfo: TokenInfo, hiddenAssets: string[]) => {
+  return !hiddenAssets.includes(tokenInfo.address) || isNativeToken(tokenInfo)
+}
+
 const filterHiddenTokens = (items: SafeBalanceResponse['items'], hiddenAssets: string[]) =>
-  items.filter((balanceItem) => !hiddenAssets.includes(balanceItem.tokenInfo.address))
+  items.filter((balanceItem) => isVisible(balanceItem.tokenInfo, hiddenAssets))
 
 const getVisibleFiatTotal = (balances: SafeBalanceResponse, hiddenAssets: string[]): string => {
   return safeFormatUnits(
     balances.items
       .reduce((acc, balanceItem) => {
-        if (hiddenAssets.includes(balanceItem.tokenInfo.address)) {
+        if (!isVisible(balanceItem.tokenInfo, hiddenAssets)) {
           return acc.sub(safeParseUnits(truncateNumber(balanceItem.fiatBalance), PRECISION) || 0)
         }
         return acc

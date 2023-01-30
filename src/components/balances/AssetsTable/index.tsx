@@ -1,7 +1,6 @@
 import { useState, type ReactElement, useMemo } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox } from '@mui/material'
-import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import { isNativeToken } from '@/utils/assets'
 import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount from '@/components/common/TokenAmount'
@@ -18,10 +17,6 @@ import TokenMenu from '../TokenMenu'
 import useBalances from '@/hooks/useBalances'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { useHideAssets } from './useHideAssets'
-
-const isNativeToken = (tokenInfo: TokenInfo) => {
-  return tokenInfo.type === TokenType.NATIVE_TOKEN
-}
 
 const headCells = [
   {

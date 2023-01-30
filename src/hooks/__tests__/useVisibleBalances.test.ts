@@ -39,9 +39,24 @@ describe('useVisibleBalances', () => {
   })
 
   test('return only visible balance', () => {
+    const nativeTokenAddress = hexZeroPad('0x0', 20)
+
     const balance: SafeBalanceResponse = {
       fiatTotal: '100',
       items: [
+        {
+          balance: '40',
+          fiatBalance: '40',
+          fiatConversion: '1',
+          tokenInfo: {
+            address: nativeTokenAddress,
+            decimals: 18,
+            logoUri: '',
+            name: 'Native Token',
+            symbol: 'ETH',
+            type: TokenType.NATIVE_TOKEN,
+          },
+        },
         {
           balance: '40',
           fiatBalance: '40',
@@ -84,7 +99,8 @@ describe('useVisibleBalances', () => {
           theme: {
             darkMode: false,
           },
-          hiddenTokens: { ['4']: [hiddenTokenAddress] },
+          // It _was_ possible to hide native tokens when feature was initially released
+          hiddenTokens: { ['4']: [hiddenTokenAddress, nativeTokenAddress] },
         },
         chains: { data: [], error: undefined, loading: false },
       } as unknown as store.RootState),
@@ -93,7 +109,7 @@ describe('useVisibleBalances', () => {
     const { result } = renderHook(() => useVisibleBalances())
 
     expect(result.current.balances.fiatTotal).toEqual('60')
-    expect(result.current.balances.items).toHaveLength(1)
+    expect(result.current.balances.items).toHaveLength(2)
   })
 
   test('computation works for high precision numbers', () => {
