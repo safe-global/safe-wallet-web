@@ -25,32 +25,11 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
           prod: ${{ true }}
 
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v5
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_tag_gpgsign: true
-
       - name: Create archive
         run: tar -czf "$ARCHIVE_NAME".tar.gz out
 
       - name: Create checksum
         run: sha256sum "$ARCHIVE_NAME".tar.gz > ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-
-      - name: Sign archive
-        run: gpg --armor --detach-sign "$ARCHIVE_NAME".tar.gz
-
-      - name: Upload signature
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ARCHIVE_NAME }}.tar.gz.asc
-          asset_name: ${{ env.ARCHIVE_NAME }}.tar.gz.asc
-          asset_content_type: text/plain
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload archive
         uses: actions/upload-release-asset@v1
