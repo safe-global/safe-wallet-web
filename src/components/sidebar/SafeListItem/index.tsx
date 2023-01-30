@@ -78,34 +78,32 @@ const SafeListItem = ({
         )
       }
     >
-      <Box display="flex" flexDirection="row" flexGrow={1}>
-        <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
-          <ListItemButton
-            key={address}
-            onClick={closeDrawer}
-            selected={isCurrentSafe}
-            className={classnames(css.safe, { [css.open]: isCurrentSafe })}
-            ref={safeRef}
-          >
-            <ListItemIcon>
-              <SafeIcon address={address} {...rest} />
-            </ListItemIcon>
-            <ListItemText
-              sx={noActions ? undefined : { pr: 10 }}
-              primaryTypographyProps={{
-                variant: 'body2',
-                component: 'div',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-              }}
-              secondaryTypographyProps={{ component: 'div', color: 'primary' }}
-              primary={name || ''}
-              secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
-            />
-          </ListItemButton>
-        </Link>
-      </Box>
+      <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
+        <ListItemButton
+          key={address}
+          onClick={closeDrawer}
+          selected={isCurrentSafe}
+          className={classnames(css.safe, { [css.open]: isCurrentSafe })}
+          ref={safeRef}
+        >
+          <ListItemIcon>
+            <SafeIcon address={address} {...rest} />
+          </ListItemIcon>
+          <ListItemText
+            sx={noActions ? undefined : { pr: 10 }}
+            primaryTypographyProps={{
+              variant: 'body2',
+              component: 'div',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+            }}
+            secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+            primary={name || ''}
+            secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
+          />
+        </ListItemButton>
+      </Link>
 
       <PendingActionButtons
         safeAddress={address}
