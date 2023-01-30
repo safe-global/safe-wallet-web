@@ -145,17 +145,19 @@ const AssetsTable = ({
                 {showHiddenAssets && !isNative ? (
                   <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
                 ) : (
-                  <Track {...ASSETS_EVENTS.HIDE_TOKEN}>
-                    <Tooltip title="Hide asset" arrow disableInteractive>
-                      <IconButton
-                        disabled={hidingAsset !== undefined}
-                        size="medium"
-                        onClick={() => hideAsset(item.tokenInfo.address)}
-                      >
-                        <VisibilityOutlined fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Track>
+                  !isNative && (
+                    <Track {...ASSETS_EVENTS.HIDE_TOKEN}>
+                      <Tooltip title="Hide asset" arrow disableInteractive>
+                        <IconButton
+                          disabled={hidingAsset !== undefined}
+                          size="medium"
+                          onClick={() => hideAsset(item.tokenInfo.address)}
+                        >
+                          <VisibilityOutlined fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Track>
+                  )
                 )}
               </>
             </Box>

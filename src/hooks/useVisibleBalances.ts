@@ -4,7 +4,6 @@ import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import useBalances from './useBalances'
 import useHiddenTokens from './useHiddenTokens'
-import { isNativeToken } from '@/utils/assets'
 
 const PRECISION = 18
 
@@ -23,7 +22,7 @@ const truncateNumber = (balance: string): string => {
 }
 
 const isVisible = (tokenInfo: TokenInfo, hiddenAssets: string[]) => {
-  return !hiddenAssets.includes(tokenInfo.address) || isNativeToken(tokenInfo)
+  return !hiddenAssets.includes(tokenInfo.address)
 }
 
 const filterHiddenTokens = (items: SafeBalanceResponse['items'], hiddenAssets: string[]) =>

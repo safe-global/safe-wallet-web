@@ -100,6 +100,8 @@ const Overview = (): ReactElement => {
   // Native token is always returned even when its balance is 0
   const tokenCount = useMemo(() => balances.items.filter((token) => token.balance !== '0').length, [balances])
   const nftsCount = useMemo(() => (nfts ? `${nfts.next ? '>' : ''}${nfts.results.length}` : ''), [nfts])
+  // Only initially the items are completely empty because our gateway always returns the native token balance
+  const isTokenCountLoading = balances.items.length === 0
 
   const isInitialState = !safeLoaded && !safeLoading
 
@@ -139,7 +141,7 @@ const Overview = (): ReactElement => {
                     <Typography color="border.main" variant="body2">
                       Tokens
                     </Typography>
-                    <StyledText fontSize="lg">{tokenCount || <ValueSkeleton />}</StyledText>
+                    <StyledText fontSize="lg">{isTokenCountLoading ? <ValueSkeleton /> : tokenCount}</StyledText>
                   </a>
                 </Link>
               </Grid>
