@@ -15,6 +15,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import useCollectibles from '@/hooks/useCollectibles'
 import type { UrlObject } from 'url'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
+import useHasHiddenAllTokens from '@/hooks/useHasHiddenAllTokens'
 
 const IdenticonContainer = styled.div`
   position: relative;
@@ -87,6 +88,7 @@ const Overview = (): ReactElement => {
   const [nfts] = useCollectibles()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
+  const hasHiddenAllTokens = useHasHiddenAllTokens()
 
   const assetsLink: UrlObject = {
     pathname: AppRoutes.balances.index,
@@ -139,7 +141,9 @@ const Overview = (): ReactElement => {
                     <Typography color="border.main" variant="body2">
                       Tokens
                     </Typography>
-                    <StyledText fontSize="lg">{tokenCount || <ValueSkeleton />}</StyledText>
+                    <StyledText fontSize="lg">
+                      {tokenCount || hasHiddenAllTokens ? tokenCount : <ValueSkeleton />}
+                    </StyledText>
                   </a>
                 </Link>
               </Grid>
