@@ -8,21 +8,7 @@ import { EthHashInfo } from '@safe-global/safe-react-components'
 import { getBlockExplorerLink } from '../../../utils/chains'
 import { useCurrentChain } from '../../../hooks/useChains'
 
-type EthHashInfoProps = {
-  address: string
-  chainId?: string
-  name?: string | null
-  showAvatar?: boolean
-  showCopyButton?: boolean
-  prefix?: string
-  showPrefix?: boolean
-  copyPrefix?: boolean
-  shortAddress?: boolean
-  customAvatar?: string
-  hasExplorer?: boolean
-  avatarSize?: number
-  children?: React.ReactNode
-}
+import type { EthHashInfoProps } from '@safe-global/safe-react-components'
 
 const PrefixedEthHashInfo = ({
   showName = true,
