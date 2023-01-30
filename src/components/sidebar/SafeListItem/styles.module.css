@@ -21,15 +21,15 @@
 }
 
 .container :global .MuiListItemSecondaryAction-root {
-  right: 16px;
+  right: 24px;
 }
 
 .withPendingButtons :global .MuiListItemSecondaryAction-root {
-  right: 70px;
+  right: 74px;
 }
 
 @media (max-width: 400px) {
   .withPendingButtons :global .MuiListItemSecondaryAction-root {
-    right: 40px;
+    right: 48px;
   }
 }
