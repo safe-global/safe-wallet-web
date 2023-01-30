@@ -147,7 +147,7 @@ const AssetsTable = ({
                     </Button>
                   </Track>
                 )}
-                {showHiddenAssets ? (
+                {showHiddenAssets && !isNative ? (
                   <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
                 ) : (
                   <Track {...ASSETS_EVENTS.HIDE_TOKEN}>
