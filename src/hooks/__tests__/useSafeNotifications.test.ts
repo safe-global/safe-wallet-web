@@ -75,7 +75,7 @@ describe('useSafeNotifications', () => {
         safe: {
           implementation: { value: '0x123' },
           implementationVersionState: 'OUTDATED',
-          version: '1.0.0',
+          version: '0.0.1',
         },
         safeAddress: '0x123',
       })
@@ -90,11 +90,11 @@ describe('useSafeNotifications', () => {
       expect(result.current).toBeUndefined()
       expect(showNotification).toHaveBeenCalledWith({
         variant: 'warning',
-        message: `Safe version 1.0.0 is not supported by this web app anymore. You can update your Safe via the old web app here.`,
+        message: `Safe version 0.0.1 is not supported by this web app anymore. You can update your Safe via the CLI.`,
         groupKey: 'safe-outdated-version',
         link: {
-          href: 'https://gnosis-safe.io/app/eth:0x123/settings/details',
-          title: 'Update Safe',
+          href: 'https://github.com/5afe/safe-cli',
+          title: 'Get CLI',
         },
       })
     })

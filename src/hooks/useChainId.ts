@@ -6,6 +6,8 @@ import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import { prefixedAddressRe } from '@/utils/url'
+import useWallet from './wallets/useWallet'
+import useChains from './useChains'
 
 const defaultChainId = IS_PRODUCTION ? chains.eth : chains.gor
 
@@ -44,7 +46,13 @@ export const useUrlChainId = (): string | undefined => {
 export const useChainId = (): string => {
   const session = useAppSelector(selectSession)
   const urlChainId = useUrlChainId()
-  return urlChainId || session.lastChainId || defaultChainId
+  const wallet = useWallet()
+  const chains = useChains()
+
+  const walletChainId =
+    wallet?.chainId && chains?.configs.some(({ chainId }) => chainId === wallet.chainId) ? wallet.chainId : undefined
+
+  return urlChainId || walletChainId || session.lastChainId || defaultChainId
 }
 
 export default useChainId

@@ -1,5 +1,4 @@
-import { Typography, Link as MuiLink } from '@mui/material'
-import Link from 'next/link'
+import { Typography, Link } from '@mui/material'
 import type { FallbackRender } from '@sentry/react'
 
 import { IS_PRODUCTION } from '@/config/constants'
@@ -25,9 +24,7 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
         {IS_PRODUCTION ? (
           <Typography color="text.primary">
             In case the problem persists, please reach out to us via our{' '}
-            <Link href="https://help.safe.global" passHref target="_blank" rel="noopener noreferrer">
-              <ExternalLink>Help Center</ExternalLink>
-            </Link>
+            <ExternalLink href="https://help.safe.global">Help Center</ExternalLink>
           </Typography>
         ) : (
           <>
@@ -36,11 +33,9 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
             <Typography color="error">{componentStack}</Typography>
           </>
         )}
-        <Typography mt={2}>
-          <Link href={AppRoutes.welcome} passHref target="_blank" rel="noopener noreferrer" color="primary">
-            <MuiLink>Go Home</MuiLink>
-          </Link>
-        </Typography>
+        <Link href={AppRoutes.welcome} color="primary" mt={2}>
+          Go home
+        </Link>
       </div>
     </div>
   )

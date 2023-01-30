@@ -1,4 +1,4 @@
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
 import type { Web3Provider } from '@ethersproject/providers'
 import type { EthersError } from '@/utils/ethers-utils'
@@ -10,7 +10,7 @@ import type { ContractTransaction } from 'ethers'
 import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
-import { getAndValidateSafeSDK, getUncheckedSafeSDK } from './sdk'
+import { getAndValidateSafeSDK, getUncheckedSafeSDK, tryOffChainSigning } from './sdk'
 
 /**
  * Propose a transaction
@@ -59,15 +59,12 @@ export const dispatchTxProposal = async ({
  */
 export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
-  shouldEthSign: boolean,
+  safeVersion: SafeInfo['version'],
   txId?: string,
-): Promise<SafeTransaction> => {
-  const sdk = getAndValidateSafeSDK()
-  const signingMethod = shouldEthSign ? 'eth_sign' : 'eth_signTypedData'
-
+): Promise<SafeTransaction | undefined> => {
   let signedTx: SafeTransaction | undefined
   try {
-    signedTx = await sdk.signTransaction(safeTx, signingMethod)
+    signedTx = await tryOffChainSigning(safeTx, safeVersion)
   } catch (error) {
     txDispatch(TxEvent.SIGN_FAILED, { txId, error: error as Error })
     throw error
@@ -109,10 +106,10 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   provider: Web3Provider,
   txOptions: TransactionOptions,
-  txId?: string,
+  txId: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
-  const eventParams = txId ? { txId } : { groupKey: await sdkUnchecked.getTransactionHash(safeTx) }
+  const eventParams = { txId }
 
   // Execute the tx
   let result: TransactionResult | undefined

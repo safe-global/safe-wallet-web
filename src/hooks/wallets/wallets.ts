@@ -10,7 +10,7 @@ import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 import tallyhoModule from '@web3-onboard/tallyho'
 
-import pairingModule, { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
+import pairingModule from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
@@ -67,19 +67,19 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   if (window.Cypress && CYPRESS_MNEMONIC) {
     return [e2eWalletModule(chain.rpcUri)]
   }
-  return Object.entries(WALLET_MODULES)
-    .filter(([key]) => isWalletSupported(chain.disabledWallets, key))
-    .map(([, module]) => module())
+  const enabledWallets = Object.entries(WALLET_MODULES).filter(([key]) => isWalletSupported(chain.disabledWallets, key))
+
+  if (enabledWallets.length === 0) {
+    return [WALLET_MODULES.INJECTED()]
+  }
+
+  return enabledWallets.map(([, module]) => module())
 }
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE].includes(
     wallet.label.toUpperCase() as WALLET_KEYS,
   )
-}
-
-export const isSafeMobileWallet = (wallet: ConnectedWallet): boolean => {
-  return wallet.label === PAIRING_MODULE_LABEL
 }
 
 export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
@@ -92,8 +92,4 @@ export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
   const code = await provider.getCode(wallet.address)
 
   return code !== EMPTY_DATA
-}
-
-export const shouldUseEthSignMethod = (wallet: ConnectedWallet): boolean => {
-  return isHardwareWallet(wallet) || isSafeMobileWallet(wallet)
 }
