@@ -16,7 +16,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import RocketIcon from '@/public/images/transactions/rocket.svg'
 import CheckIcon from '@mui/icons-material/Check'
 import DeleteIcon from '@/public/images/common/delete.svg'
-import { SendTokensButton, SendNFTsButton } from './TxButton'
+import { SendTokensButton } from './TxButton'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
 
@@ -55,14 +55,12 @@ const ReplacementModal = ({
   txNonce,
   onClose,
   onTokenModalOpen,
-  onNFTModalOpen,
   onRejectModalOpen,
 }: {
   open: boolean
   txNonce: number
   onClose: () => void
   onTokenModalOpen: () => void
-  onNFTModalOpen: () => void
   onRejectModalOpen: () => void
 }) => {
   const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
@@ -100,7 +98,6 @@ const ReplacementModal = ({
           </Grid>
           <Grid item container justifyContent="center" alignItems="center" gap={1} xs={12} sm flexDirection="row">
             <SendTokensButton onClick={onTokenModalOpen} sx={btnWidth} />
-            <SendNFTsButton onClick={onNFTModalOpen} sx={btnWidth} />
           </Grid>
           <Grid item>
             <Typography variant="body2" className={css.or}>

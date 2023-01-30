@@ -25,7 +25,7 @@ const TokenMenu = ({
     <Box className={css.stickyBox}>
       <Box className={css.hideTokensHeader}>
         <VisibilityOffOutlined />
-        <Typography>
+        <Typography variant="body2" lineHeight="inherit">
           {selectedAssetCount} {selectedAssetCount === 1 ? 'token' : 'tokens'} selected
         </Typography>
       </Box>

@@ -5,13 +5,13 @@ import css from './styles.module.css'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
-const SendFromBlock = (): ReactElement => {
+const SendFromBlock = ({ title }: { title?: string }): ReactElement => {
   const address = useSafeAddress()
 
   return (
     <Box className={css.container} pb={2} mb={2}>
-      <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-        Sending from
+      <Typography color="text.secondary" pb={1}>
+        {title || 'Sending from'}
       </Typography>
 
       <Typography variant="body2" component="div">
