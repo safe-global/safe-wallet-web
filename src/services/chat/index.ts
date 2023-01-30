@@ -3,7 +3,7 @@ import { CometChat } from '@cometchat-pro/chat'
 const CONSTANTS = {
   APP_ID: '2305753c92f334da',
   REGION: 'US',
-  Auth_Key: '5f9d917c6a21f386ea12e8a3b76561d094fee732',
+  Auth_Key: '09034805f1b3f569305b5cb221f32f270977444b',
 }
 
 const initCometChat = async () => {

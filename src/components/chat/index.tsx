@@ -11,6 +11,7 @@ import {
   createNewGroup,
   getGroup,
 } from '../../services/chat'
+import useTxQueue from '@/hooks/useTxQueue'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
 //@ts-ignore
@@ -22,6 +23,7 @@ const Chat = ({ user }) => {
   const [group, setGroup] = useState<any>()
   const wallet = useWallet()
   const txHistory = useTxHistory()
+  const txQueue = useTxQueue()
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -83,6 +85,17 @@ const Chat = ({ user }) => {
         type: 'tx',
       })
     })
+    txQueue.page?.results.forEach((tx: any) => {
+      if (tx.type === 'DATE_LABEL') {
+        return
+      }
+      allData.push({
+        data: tx,
+        timestamp: tx.transaction.timestamp,
+        type: 'tx',
+      })
+    })
+    console.log(txQueue, txHistory, 'tx')
     allData.sort(function (a, b) {
       if (a['timestamp'] > b['timestamp']) {
         return 1
@@ -92,7 +105,6 @@ const Chat = ({ user }) => {
         return 0
       }
     })
-    console.log(allData)
     setChatData(allData)
   }, [messages])
 
