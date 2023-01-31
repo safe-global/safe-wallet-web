@@ -45,8 +45,7 @@ const TokenListSelect = () => {
               arrow
               title={
                 <Typography>
-                  Curated list of known tokens. Learn more about{' '}
-                  <ExternalLink href="#">default tokenlists</ExternalLink>
+                  Learn more about <ExternalLink href="#">default tokens</ExternalLink>
                 </Typography>
               }
             >
