@@ -34,7 +34,7 @@ describe('usePendingActions hook', () => {
       results: [],
     })
 
-    const { result } = renderHook(() => usePendingActions(chainId, true, safeAddress))
+    const { result } = renderHook(() => usePendingActions(chainId, safeAddress))
     expect(result.current).toEqual({ totalQueued: '', totalToSign: '' })
   })
 
@@ -64,7 +64,7 @@ describe('usePendingActions hook', () => {
     }
     jest.spyOn(useTxQueue, 'default').mockReturnValue(mockPage)
 
-    const { result } = renderHook(() => usePendingActions(chainId, true, safeAddress))
+    const { result } = renderHook(() => usePendingActions(chainId, safeAddress))
     expect(result.current).toEqual({ totalQueued: '', totalToSign: '' })
   })
 
@@ -131,7 +131,7 @@ describe('usePendingActions hook', () => {
     const chainId = '5'
     const safeAddress = hexZeroPad('0x1', 20)
 
-    const { result } = renderHook(() => usePendingActions(chainId, true, safeAddress))
+    const { result } = renderHook(() => usePendingActions(chainId, safeAddress))
 
     await waitFor(() => {
       expect(result.current).toEqual({ totalQueued: '2', totalToSign: '1' })
@@ -194,7 +194,7 @@ describe('usePendingActions hook', () => {
 
     const chainId = '5'
 
-    const { result } = renderHook(() => usePendingActions(chainId, true, safeAddress))
+    const { result } = renderHook(() => usePendingActions(chainId, safeAddress))
 
     await waitFor(() => {
       expect(result.current).toEqual({ totalQueued: '1', totalToSign: '1' })

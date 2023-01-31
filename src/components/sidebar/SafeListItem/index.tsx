@@ -50,7 +50,7 @@ const SafeListItem = ({
   const name = allAddressBooks[chainId]?.[address]
   const shortName = chain?.shortName || ''
   const isVisible = useIntersectionObserver(safeRef)
-  const { totalQueued, totalToSign } = usePendingActions(chainId, isVisible, isAdded ? address : undefined)
+  const { totalQueued, totalToSign } = usePendingActions(chainId, isAdded && isVisible ? address : undefined)
 
   // Scroll to the current Safe
   useEffect(() => {

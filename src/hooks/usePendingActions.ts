@@ -17,16 +17,16 @@ const getSignableCount = (queue: TransactionListPage, walletAddress: string): nu
   return queue.results.filter((tx) => isTransactionListItem(tx) && isSignableBy(tx.transaction, walletAddress)).length
 }
 
-const usePendingActions = (chainId: string, isVisible: boolean, safeAddress?: string): PendingActions => {
+const usePendingActions = (chainId: string, safeAddress?: string): PendingActions => {
   const wallet = useWallet()
   const { safeAddress: currentSafeAddress } = useSafeInfo()
   const { page: currentSafeQueue } = useTxQueue()
   const isCurrentSafe = currentSafeAddress === safeAddress
 
   const [loadedQueue] = useAsync<TransactionListPage>(() => {
-    if (isCurrentSafe || !safeAddress || !isVisible) return
+    if (isCurrentSafe || !safeAddress) return
     return getTransactionQueue(chainId, safeAddress)
-  }, [chainId, safeAddress, isCurrentSafe, isVisible])
+  }, [chainId, safeAddress, isCurrentSafe])
 
   const queue = isCurrentSafe ? currentSafeQueue : loadedQueue
 
