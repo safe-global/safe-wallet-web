@@ -2,7 +2,7 @@ import { isTransactionListItem } from '@/utils/transaction-guards'
 import { isSignableBy } from '@/utils/transaction-guards'
 import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionQueue } from '@safe-global/safe-gateway-typescript-sdk'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import useTxQueue from './useTxQueue'
@@ -22,10 +22,19 @@ const usePendingActions = (chainId: string, safeAddress?: string): PendingAction
   const { safeAddress: currentSafeAddress } = useSafeInfo()
   const { page: currentSafeQueue } = useTxQueue()
   const isCurrentSafe = currentSafeAddress === safeAddress
+  const cachedQueue = useRef<TransactionListPage>()
 
-  const [loadedQueue] = useAsync<TransactionListPage>(() => {
+  const [loadedQueue] = useAsync<TransactionListPage | undefined>(async () => {
     if (isCurrentSafe || !safeAddress) return
-    return getTransactionQueue(chainId, safeAddress)
+
+    if (cachedQueue.current) {
+      return cachedQueue.current
+    }
+
+    const fetchedQueue = await getTransactionQueue(chainId, safeAddress)
+    cachedQueue.current = fetchedQueue
+
+    return fetchedQueue
   }, [chainId, safeAddress, isCurrentSafe])
 
   const queue = isCurrentSafe ? currentSafeQueue : loadedQueue
