@@ -1,11 +1,12 @@
 import { type ReactElement } from 'react'
+import { EthHashInfo } from '@safe-global/safe-react-components'
 import useAddressBook from '@/hooks/useAddressBook'
+import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { selectChainById } from '@/store/chainsSlice'
-import { EthHashInfo } from '@safe-global/safe-react-components'
+
 import { getBlockExplorerLink } from '../../../utils/chains'
-import { useCurrentChain } from '../../../hooks/useChains'
 
 import type { EthHashInfoProps } from '@safe-global/safe-react-components'
 
@@ -14,10 +15,10 @@ const PrefixedEthHashInfo = ({
   ...props
 }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
-  const currentChain = useCurrentChain()
-  const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChain?.chainId || ''))
+  const currentChainId = useChainId()
+  const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChainId))
   const addressBook = useAddressBook()
-  const link = currentChain ? getBlockExplorerLink(currentChain, props.address) : undefined
+  const link = chain ? getBlockExplorerLink(chain, props.address) : undefined
 
   const name = showName ? props.name || addressBook[props.address] : undefined
 
