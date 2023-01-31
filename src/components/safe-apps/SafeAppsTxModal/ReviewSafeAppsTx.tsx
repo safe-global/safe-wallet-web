@@ -27,7 +27,7 @@ type ReviewSafeAppsTxProps = {
 const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
 }: ReviewSafeAppsTxProps): ReactElement => {
-  const { createMultiSendCallOnlyTx, dispatchSafeAppsTx } = useTxSender()
+  const { createMultiSendCallOnlyTx, dispatchSafeAppsTx, createTx } = useTxSender()
   const chainId = useChainId()
   const chain = useCurrentChain()
   const [submitError, setSubmitError] = useState<Error>()
@@ -35,7 +35,7 @@ const ReviewSafeAppsTx = ({
   const isMultiSend = txs.length > 1
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    const tx = await createMultiSendCallOnlyTx(txs)
+    const tx = isMultiSend ? await createMultiSendCallOnlyTx(txs) : await createTx(txs[0])
 
     if (params?.safeTxGas) {
       // FIXME: do it properly via the Core SDK
