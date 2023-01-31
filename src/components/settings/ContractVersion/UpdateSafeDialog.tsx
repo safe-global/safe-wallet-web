@@ -41,7 +41,7 @@ const UpdateSafeDialog = () => {
   )
 }
 
-const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: (txId?: string) => void }) => {
+const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: () => void }) => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
   const { createMultiSendCallOnlyTx } = useTxSender()

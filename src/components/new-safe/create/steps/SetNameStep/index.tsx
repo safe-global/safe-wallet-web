@@ -86,7 +86,7 @@ function SetNameStep({
               />
             </Grid>
             <Grid item>
-              <Box className={css.select}>
+              <Box className={css.select} data-cy="create-safe-select-network">
                 <NetworkSelector />
               </Box>
             </Grid>

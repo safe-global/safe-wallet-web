@@ -11,12 +11,10 @@ import useIsSafeOwner from './useIsSafeOwner'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
 import useSafeAddress from '@/hooks/useSafeAddress'
 
-const OLD_APP_URL = 'https://gnosis-safe.io/app'
-
-// const CLI_LINK = {
-//   href: 'https://github.com/5afe/safe-cli',
-//   title: 'Get CLI',
-// }
+const CLI_LINK = {
+  href: 'https://github.com/5afe/safe-cli',
+  title: 'Get CLI',
+}
 
 /**
  * General-purpose notifications relating to the entire Safe
@@ -38,26 +36,26 @@ const useSafeNotifications = (): void => {
     if (!isOwner) return
     if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
-    const isOldSafe = !isValidSafeVersion(version)
+    const isUnsupported = !isValidSafeVersion(version)
 
     const id = dispatch(
       showNotification({
         variant: 'warning',
         groupKey: 'safe-outdated-version',
 
-        message: isOldSafe
-          ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the old web app here.`
+        message: isUnsupported
+          ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the CLI.`
           : `Your Safe version ${version} is out of date. Please update it.`,
 
-        link: {
-          href: isOldSafe
-            ? `${OLD_APP_URL}/${query.safe}/settings/details`
-            : {
+        link: isUnsupported
+          ? CLI_LINK
+          : {
+              href: {
                 pathname: AppRoutes.settings.setup,
                 query: { safe: query.safe },
               },
-          title: 'Update Safe',
-        },
+              title: 'Update Safe',
+            },
       }),
     )
 

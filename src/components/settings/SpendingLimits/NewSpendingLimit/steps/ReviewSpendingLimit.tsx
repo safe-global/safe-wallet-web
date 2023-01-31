@@ -21,7 +21,7 @@ import type { NewSpendingLimitData } from '@/services/tx/tx-sender'
 
 type Props = {
   data: NewSpendingLimitData
-  onSubmit: (txId?: string) => void
+  onSubmit: () => void
 }
 
 export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
@@ -52,13 +52,13 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
   }, [data, spendingLimits, chainId, decimals, existingSpendingLimit, createNewSpendingLimitTx])
 
-  const onFormSubmit = (txId?: string) => {
+  const onFormSubmit = () => {
     trackEvent({
       ...SETTINGS_EVENTS.SPENDING_LIMIT.RESET_PERIOD,
       label: resetTime,
     })
 
-    onSubmit(txId)
+    onSubmit()
   }
 
   return (

@@ -5,7 +5,7 @@ import { merge } from 'lodash'
 
 export type StepRenderProps = {
   data: unknown
-  onSubmit: (data: unknown) => void
+  onSubmit: (data?: unknown) => void
   onBack: (data?: unknown) => void
   setStep: (step: number) => void
 }
