@@ -2,12 +2,11 @@ import { Box, Typography } from '@mui/material'
 import { Suspense, useMemo } from 'react'
 import type { ReactElement } from 'react'
 
-import EthHashInfo from '@/components/common/EthHashInfo'
+import EthHashInfo, { getEthHashInfoPrefix } from '@/components/common/EthHashInfo'
 import WalletIcon from '@/components/common/WalletIcon'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
-import { getEthHashInfoPrefix } from '@/utils/wallets'
 
 import css from './styles.module.css'
 

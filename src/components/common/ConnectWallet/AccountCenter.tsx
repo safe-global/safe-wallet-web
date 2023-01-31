@@ -3,7 +3,7 @@ import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import EthHashInfo, { getEthHashInfoPrefix } from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useOnboard, { forgetLastWallet, switchWallet } from '@/hooks/wallets/useOnboard'
@@ -14,7 +14,6 @@ import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
-import { getEthHashInfoPrefix } from '@/utils/wallets'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
