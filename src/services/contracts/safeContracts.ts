@@ -9,15 +9,13 @@ import {
   type SingletonDeployment,
 } from '@gnosis.pm/safe-deployments'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { Contract } from 'ethers'
-import { Interface } from '@ethersproject/abi'
 import semverSatisfies from 'semver/functions/satisfies'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getMasterCopies, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { type Sign_message_lib } from '@/types/contracts/v1.3.0/Sign_message_lib'
 import { assertValidSafeVersion, createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { sameAddress } from '@/utils/addresses'
+import type SignMessageLibEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/SignMessageLib/SignMessageLibEthersContract'
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 
 export const isValidMasterCopy = async (chainId: string, address: string): Promise<boolean> => {
@@ -185,14 +183,24 @@ export const getFallbackHandlerContractInstance = (
 }
 
 // Sign messages deployment
-// TODO: Should this be implemented in Core SDK?
-export const getSignMessageLibDeploymentContractInstance = (chainId: string): Sign_message_lib => {
-  const signMessageLibDeployment = getSignMessageLibDeployment({ network: chainId }) || getSignMessageLibDeployment()
-  const contractAddress = signMessageLibDeployment?.networkAddresses[chainId]
+const getSignMessageLibContractDeployment = (chainId: string) => {
+  return getSignMessageLibDeployment({ network: chainId }) || getSignMessageLibDeployment()
+}
 
-  if (!contractAddress) {
-    throw new Error(`SignMessageLib contract not found for chainId: ${chainId}`)
-  }
+export const getSignMessageLibContractAddress = (chainId: string): string | undefined => {
+  const deployment = getSignMessageLibContractDeployment(chainId)
 
-  return new Contract(contractAddress, new Interface(signMessageLibDeployment?.abi)) as Sign_message_lib
+  return deployment?.networkAddresses[chainId]
+}
+
+export const getSignMessageLibDeploymentContractInstance = (
+  chainId: string,
+  safeVersion: string = LATEST_SAFE_VERSION,
+): SignMessageLibEthersContract => {
+  const ethAdapter = createEthersAdapter()
+
+  return ethAdapter.getSignMessageLibContract({
+    singletonDeployment: getSignMessageLibContractDeployment(chainId),
+    ..._getValidatedGetContractProps(chainId, safeVersion),
+  })
 }

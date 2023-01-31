@@ -14,7 +14,7 @@ const SendFromBlock = (): ReactElement => {
         Sending from
       </Typography>
 
-      <Typography variant="body2">
+      <Typography variant="body2" component="div">
         <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
       </Typography>
 

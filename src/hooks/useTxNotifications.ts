@@ -13,6 +13,7 @@ import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import useIsGranted from './useIsGranted'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
+import { getExplorerLink } from '@/utils/gateway'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
@@ -60,6 +61,14 @@ const getTxLink = (txId: string, chain: ChainInfo, safeAddress: string): { href:
   }
 }
 
+const getTxExplorerLink = (txHash: string, chain: ChainInfo): { href: LinkProps['href']; title: string } => {
+  const { href } = getExplorerLink(txHash, chain.blockExplorerUriTemplate)
+  return {
+    href,
+    title: 'View on explorer',
+  }
+}
+
 const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
@@ -70,6 +79,8 @@ const useTxNotifications = (): void => {
    */
 
   useEffect(() => {
+    if (!chain) return
+
     const entries = Object.entries(TxNotifications) as [keyof typeof TxNotifications, string][]
 
     const unsubFns = entries.map(([event, baseMessage]) =>
@@ -78,6 +89,7 @@ const useTxNotifications = (): void => {
         const isSuccess = successEvents.includes(event)
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
         const txId = 'txId' in detail ? detail.txId : undefined
+        const txHash = 'txHash' in detail ? detail.txHash : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
 
         dispatch(
@@ -86,7 +98,7 @@ const useTxNotifications = (): void => {
             detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
-            link: txId && chain ? getTxLink(txId, chain, safeAddress) : undefined,
+            link: txId ? getTxLink(txId, chain, safeAddress) : txHash ? getTxExplorerLink(txHash, chain) : undefined,
           }),
         )
       }),

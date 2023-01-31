@@ -76,7 +76,7 @@ const NetworkSelector = (): ReactElement => {
       })}
     </Select>
   ) : (
-    <Skeleton width={94} height={31} />
+    <Skeleton width={94} height={31} sx={{ mx: 2 }} />
   )
 }
 

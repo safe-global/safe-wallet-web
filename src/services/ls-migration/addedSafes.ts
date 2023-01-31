@@ -1,6 +1,9 @@
 import { type AddedSafesState, type AddedSafesOnChain } from '@/store/addedSafesSlice'
 import type { LOCAL_STORAGE_DATA } from './common'
 import { parseLsValue } from './common'
+import { isChecksummedAddress } from '@/utils/addresses'
+import { isObject } from 'lodash'
+import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 
 const IMMORTAL_PREFIX = '_immortal|v2_'
 
@@ -25,10 +28,32 @@ type OldAddedSafes = Record<
     address: string
     chainId: string
     ethBalance: string
-    owners: string[]
+    owners: Array<string | { name?: string; address: string }>
     threshold: number
   }
 >
+
+export const migrateAddedSafesOwners = (
+  owners: OldAddedSafes[string]['owners'],
+): AddedSafesState[string][string]['owners'] | undefined => {
+  const migratedOwners = owners
+    .map((value) => {
+      if (typeof value === 'string' && isChecksummedAddress(value)) {
+        return { value }
+      }
+
+      if (isObject(value) && typeof value.address === 'string' && isChecksummedAddress(value.address)) {
+        const owner: AddressEx = {
+          value: value.address,
+          ...(typeof value.name === 'string' && { name: value.name }),
+        }
+        return owner
+      }
+    })
+    .filter((owner): owner is AddressEx => !!owner)
+
+  return migratedOwners.length > 0 ? migratedOwners : undefined
+}
 
 export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): AddedSafesState | void => {
   const newAddedSafes: AddedSafesState = {}
@@ -41,11 +66,16 @@ export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): AddedSafesState |
       console.log('Migrating added safes on chain', chainId)
 
       const safesPerChain = Object.values(legacyAddedSafes).reduce<AddedSafesOnChain>((acc, oldItem) => {
-        acc[oldItem.address] = {
-          ethBalance: oldItem.ethBalance,
-          owners: oldItem.owners.map((value) => ({ value })),
-          threshold: oldItem.threshold,
+        const migratedOwners = migrateAddedSafesOwners(oldItem.owners)
+
+        if (migratedOwners) {
+          acc[oldItem.address] = {
+            ethBalance: oldItem.ethBalance,
+            owners: migratedOwners,
+            threshold: oldItem.threshold,
+          }
         }
+
         return acc
       }, {})
 

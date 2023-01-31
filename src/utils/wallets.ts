@@ -13,8 +13,8 @@ const isEthersRejection = (err: EthersError): boolean => {
   return err.code === ErrorCode.ACTION_REJECTED
 }
 
-export const isWalletRejection = (err: EthersError): boolean => {
-  return isEthersRejection(err) || isWCRejection(err)
+export const isWalletRejection = (err: EthersError | Error): boolean => {
+  return isEthersRejection(err as EthersError) || isWCRejection(err)
 }
 
 export const WalletNames = {

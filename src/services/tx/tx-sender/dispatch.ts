@@ -1,4 +1,4 @@
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
 import type { Web3Provider } from '@ethersproject/providers'
 import type { EthersError } from '@/utils/ethers-utils'
@@ -10,7 +10,7 @@ import type { ContractTransaction } from 'ethers'
 import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
-import { getAndValidateSafeSDK, getUncheckedSafeSDK } from './sdk'
+import { getAndValidateSafeSDK, getUncheckedSafeSDK, tryOffChainSigning } from './sdk'
 
 /**
  * Propose a transaction
@@ -59,15 +59,12 @@ export const dispatchTxProposal = async ({
  */
 export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
-  shouldEthSign: boolean,
+  safeVersion: SafeInfo['version'],
   txId?: string,
-): Promise<SafeTransaction> => {
-  const sdk = getAndValidateSafeSDK()
-  const signingMethod = shouldEthSign ? 'eth_sign' : 'eth_signTypedData'
-
+): Promise<SafeTransaction | undefined> => {
   let signedTx: SafeTransaction | undefined
   try {
-    signedTx = await sdk.signTransaction(safeTx, signingMethod)
+    signedTx = await tryOffChainSigning(safeTx, safeVersion)
   } catch (error) {
     txDispatch(TxEvent.SIGN_FAILED, { txId, error: error as Error })
     throw error
@@ -86,12 +83,11 @@ export const dispatchOnChainSigning = async (safeTx: SafeTransaction, provider: 
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
   const eventParams = { txId }
 
-  txDispatch(TxEvent.ONCHAIN_SIGNATURE_REQUESTED, eventParams)
-
   try {
     // With the unchecked signer, the contract call resolves once the tx
     // has been submitted in the wallet not when it has been executed
     await sdkUnchecked.approveTransactionHash(safeTxHash)
+    txDispatch(TxEvent.ONCHAIN_SIGNATURE_REQUESTED, eventParams)
   } catch (err) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: err as Error })
     throw err
@@ -110,17 +106,16 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   provider: Web3Provider,
   txOptions: TransactionOptions,
-  txId?: string,
+  txId: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
-  const eventParams = txId ? { txId } : { groupKey: await sdkUnchecked.getTransactionHash(safeTx) }
-
-  txDispatch(TxEvent.EXECUTING, eventParams)
+  const eventParams = { txId }
 
   // Execute the tx
   let result: TransactionResult | undefined
   try {
     result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
+    txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
     throw error
@@ -159,14 +154,13 @@ export const dispatchBatchExecution = async (
 ) => {
   const groupKey = multiSendTxData
 
-  txs.forEach(({ txId }) => {
-    txDispatch(TxEvent.EXECUTING, { txId, groupKey })
-  })
-
   let result: TransactionResult | undefined
 
   try {
     result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData)
+    txs.forEach(({ txId }) => {
+      txDispatch(TxEvent.EXECUTING, { txId, groupKey })
+    })
   } catch (err) {
     txs.forEach(({ txId }) => {
       txDispatch(TxEvent.FAILED, { txId, error: err as Error, groupKey })
@@ -229,8 +223,6 @@ export const dispatchSpendingLimitTxExecution = async (
 
   const id = JSON.stringify(txParams)
 
-  txDispatch(TxEvent.EXECUTING, { groupKey: id })
-
   let result: ContractTransaction | undefined
   try {
     result = await contract.executeAllowanceTransfer(
@@ -244,6 +236,7 @@ export const dispatchSpendingLimitTxExecution = async (
       txParams.signature,
       txOptions,
     )
+    txDispatch(TxEvent.EXECUTING, { groupKey: id })
   } catch (error) {
     txDispatch(TxEvent.FAILED, { groupKey: id, error: error as Error })
     throw error
