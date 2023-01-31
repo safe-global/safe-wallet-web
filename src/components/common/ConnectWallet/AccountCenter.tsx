@@ -3,7 +3,7 @@ import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
-import EthHashInfo, { getEthHashInfoPrefix } from '@/components/common/EthHashInfo'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useOnboard, { forgetLastWallet, switchWallet } from '@/hooks/wallets/useOnboard'
@@ -14,6 +14,7 @@ import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
+import chains from '@/config/chains'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -22,7 +23,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const addressBook = useAddressBook()
 
   const prefix = useMemo(() => {
-    return getEthHashInfoPrefix(chainInfo?.shortName, wallet?.chainId)
+    return chainInfo?.shortName || Object.entries(chains).find(([, chainId]) => chainId === wallet.chainId)?.[0]
   }, [chainInfo?.shortName, wallet?.chainId])
 
   const handleSwitchWallet = () => {

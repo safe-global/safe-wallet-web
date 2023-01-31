@@ -2,11 +2,12 @@ import { Box, Typography } from '@mui/material'
 import { Suspense, useMemo } from 'react'
 import type { ReactElement } from 'react'
 
-import EthHashInfo, { getEthHashInfoPrefix } from '@/components/common/EthHashInfo'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import WalletIcon from '@/components/common/WalletIcon'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
+import chains from '@/config/chains'
 
 import css from './styles.module.css'
 
@@ -16,7 +17,7 @@ const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
 
   const prefix = useMemo(() => {
-    return getEthHashInfoPrefix(walletChain?.shortName, wallet?.chainId)
+    return walletChain?.shortName || Object.entries(chains).find(([, chainId]) => chainId === wallet.chainId)?.[0]
   }, [walletChain?.shortName, wallet.chainId])
 
   return (

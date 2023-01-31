@@ -12,9 +12,6 @@ import { selectSettings } from '@/store/settingsSlice'
 import { selectChainById } from '@/store/chainsSlice'
 import useChainId from '@/hooks/useChainId'
 import { ethers } from 'ethers'
-import chains from '@/config/chains'
-import type { ConnectedWallet } from '@/services/onboard'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 type EthHashInfoProps = {
   address: string
@@ -30,13 +27,6 @@ type EthHashInfoProps = {
   hasExplorer?: boolean
   avatarSize?: number
   children?: React.ReactNode
-}
-
-export const getEthHashInfoPrefix = (
-  shortName?: ChainInfo['shortName'],
-  chainId?: ConnectedWallet['chainId'],
-): EthHashInfoProps['prefix'] => {
-  return shortName || (chainId ? Object.entries(chains).find((chain) => chain[1] === chainId)?.[0] : undefined)
 }
 
 const EthHashInfo = ({
