@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
@@ -13,12 +14,17 @@ import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
+import { getEthHashInfoPrefix } from '@/utils/wallets'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const onboard = useOnboard()
   const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const addressBook = useAddressBook()
+
+  const prefix = useMemo(() => {
+    return getEthHashInfoPrefix(chainInfo?.shortName, wallet?.chainId)
+  }, [chainInfo?.shortName, wallet?.chainId])
 
   const handleSwitchWallet = () => {
     if (onboard) {
@@ -84,7 +90,14 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           </Typography>
 
           <Box bgcolor="border.background" px={2} py={1} fontSize={14}>
-            <EthHashInfo address={wallet.address} showAvatar={false} showName={false} hasExplorer showCopyButton />
+            <EthHashInfo
+              address={wallet.address}
+              showAvatar={false}
+              showName={false}
+              hasExplorer
+              showCopyButton
+              prefix={prefix}
+            />
           </Box>
 
           <Box className={css.rowContainer}>

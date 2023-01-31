@@ -7,7 +7,7 @@ import WalletIcon from '@/components/common/WalletIcon'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
-import chains from '@/config/chains'
+import { getEthHashInfoPrefix } from '@/utils/wallets'
 
 import css from './styles.module.css'
 
@@ -17,8 +17,8 @@ const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
 
   const prefix = useMemo(() => {
-    return walletChain?.shortName || Object.entries(chains).find(([, chainId]) => chainId === wallet.chainId)?.[0]
-  }, [walletChain, wallet.chainId])
+    return getEthHashInfoPrefix(walletChain?.shortName, wallet?.chainId)
+  }, [walletChain?.shortName, wallet.chainId])
 
   return (
     <Box className={css.container}>
