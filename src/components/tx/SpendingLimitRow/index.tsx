@@ -4,6 +4,7 @@ import type { BigNumber } from '@ethersproject/bignumber'
 import { safeFormatUnits } from '@/utils/formatters'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { SendAssetsField, SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 
 const SpendingLimitRow = ({
   availableAmount,
@@ -13,6 +14,7 @@ const SpendingLimitRow = ({
   selectedToken: TokenInfo | undefined
 }) => {
   const { control } = useFormContext()
+  const isOnlySpendLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
 
   const formattedAmount = safeFormatUnits(availableAmount, selectedToken?.decimals)
 
@@ -26,12 +28,14 @@ const SpendingLimitRow = ({
           name={SendAssetsField.type}
           render={({ field }) => (
             <RadioGroup {...field} defaultValue={SendTxType.multiSig}>
-              <FormControlLabel
-                value={SendTxType.multiSig}
-                label="Multisig Transaction"
-                control={<Radio />}
-                componentsProps={{ typography: { variant: 'body2' } }}
-              />
+              {!isOnlySpendLimitBeneficiary && (
+                <FormControlLabel
+                  value={SendTxType.multiSig}
+                  label="Multisig Transaction"
+                  control={<Radio />}
+                  componentsProps={{ typography: { variant: 'body2' } }}
+                />
+              )}
               <FormControlLabel
                 value={SendTxType.spendingLimit}
                 label={`Spending Limit Transaction (${formattedAmount} ${selectedToken?.symbol})`}
