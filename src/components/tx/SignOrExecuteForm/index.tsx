@@ -8,7 +8,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isSmartContractWallet, shouldUseEthSignMethod } from '@/hooks/wallets/wallets'
+import { isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -26,7 +26,7 @@ import useIsValidExecution from '@/hooks/useIsValidExecution'
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
   txId?: string
-  onSubmit: (txId?: string) => void
+  onSubmit: () => void
   children?: ReactNode
   error?: Error
   isExecutable?: boolean
@@ -142,8 +142,7 @@ const SignOrExecuteForm = ({
     }
 
     // Otherwise, sign off-chain
-    const shouldEthSign = shouldUseEthSignMethod(connectedWallet)
-    const signedTx = await dispatchTxSigning(createdTx, shouldEthSign, txId)
+    const signedTx = await dispatchTxSigning(createdTx, safe.version, txId)
 
     /**
      * We need to handle this case because of the way useTxSender is designed,
@@ -162,11 +161,11 @@ const SignOrExecuteForm = ({
     const [, createdTx, provider] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
+    const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
+    await dispatchTxExecution(createdTx, provider, txOptions, id)
 
-    await dispatchTxExecution(createdTx, provider, txOptions, txId)
-
-    return txId
+    return id
   }
 
   // On modal submit
@@ -175,9 +174,8 @@ const SignOrExecuteForm = ({
     setIsSubmittable(false)
     setSubmitError(undefined)
 
-    let id: string | undefined
     try {
-      id = await (willExecute ? onExecute() : onSign())
+      await (willExecute ? onExecute() : onSign())
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
@@ -185,7 +183,7 @@ const SignOrExecuteForm = ({
       return
     }
 
-    onSubmit(id)
+    onSubmit()
   }
 
   // On advanced params submit (nonce, gas limit, price, etc)

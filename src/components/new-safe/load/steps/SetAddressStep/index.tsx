@@ -133,7 +133,7 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
             </Grid>
           </Grid>
 
-          <AddressInput label="Safe address" validate={validateSafeAddress} name={Field.address} />
+          <AddressInput label="Safe" validate={validateSafeAddress} name={Field.address} />
 
           <Typography mt={4}>
             By continuing you consent to the <ExternalLink href="https://safe.global/terms">terms of use</ExternalLink>{' '}

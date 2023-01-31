@@ -241,15 +241,20 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, false, '345')
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
+
       expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
+      expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
+
       expect(signedTx).not.toBe(tx)
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '345' })
+
+      expect(txEvents.txDispatch).not.toHaveBeenCalledWith('SIGN_FAILED', { txId: '0x345', error: new Error('error') })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
     })
 
-    it('should sign a tx with eth_sign if a hardware wallet/pairing is connected', async () => {
+    it('should only sign with `eth_signTypedData` on older Safes', async () => {
       const tx = await createTx({
         to: '0x123',
         value: '1',
@@ -257,11 +262,121 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, true, '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.0.0', '0x345')
 
-      expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
-      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
+
+      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
+      expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
+
       expect(signedTx).not.toBe(tx)
+
+      expect(txEvents.txDispatch).not.toHaveBeenCalledWith('SIGN_FAILED', { txId: '0x345', error: new Error('error') })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
+    })
+
+    it("should only sign with `eth_signTypedData` for unsupported contracts (backend returns `SafeInfo['version']` as `null`)", async () => {
+      const tx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 1,
+      })
+
+      const signedTx = await dispatchTxSigning(tx, null, '0x345')
+
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
+
+      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
+      expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
+
+      expect(signedTx).not.toBe(tx)
+
+      expect(txEvents.txDispatch).not.toHaveBeenCalledWith('SIGN_FAILED', { txId: '0x345', error: new Error('error') })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
+    })
+
+    it('should iterate over each signing method on newer Safes', async () => {
+      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData` fails
+
+      const tx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 1,
+      })
+
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
+
+      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
+      expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
+
+      expect(signedTx).not.toBe(tx)
+
+      expect(txEvents.txDispatch).not.toHaveBeenCalledWith('SIGN_FAILED', { txId: '0x345', error: new Error('error') })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
+    })
+
+    it('should not iterate over the sequential signing method if the previous threw a rejection error', async () => {
+      ;(mockSafeSDK.signTransaction as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error('rejected'))) // `eth_signTypedData` fails
+
+      const tx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 1,
+      })
+
+      let signedTx
+
+      try {
+        signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+      } catch (error) {
+        expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
+
+        expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
+        expect(mockSafeSDK.signTransaction).not.toHaveBeenCalledWith(expect.anything(), 'eth_sign')
+
+        expect(signedTx).not.toBe(tx)
+
+        expect((error as Error).message).toBe('rejected')
+
+        expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGN_FAILED', { txId: '0x345', error })
+        expect(txEvents.txDispatch).not.toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
+      }
+    })
+
+    it('should throw the non-rejection error if it is the final signing method', async () => {
+      ;(mockSafeSDK.signTransaction as jest.Mock)
+        .mockImplementationOnce(() => Promise.reject(new Error('error'))) // `eth_signTypedData` fails
+        .mockImplementationOnce(() => Promise.reject(new Error('failure-specific error'))) // `eth_sign` fails
+
+      const tx = await createTx({
+        to: '0x123',
+        value: '1',
+        data: '0x0',
+        nonce: 1,
+      })
+
+      let signedTx
+
+      try {
+        signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+      } catch (error) {
+        expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
+
+        expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_signTypedData')
+        expect(mockSafeSDK.signTransaction).toHaveBeenCalledWith(expect.anything(), 'eth_sign')
+
+        expect(signedTx).not.toBe(tx)
+
+        expect((error as Error).message).toBe('failure-specific error')
+
+        expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGN_FAILED', { txId: '0x345', error })
+        expect(txEvents.txDispatch).not.toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
+      }
     })
   })
 
@@ -284,22 +399,6 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { txId })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { txId })
-    })
-
-    it('should execute a tx without a txId', async () => {
-      const safeTx = await createTx({
-        to: '0x123',
-        value: '1',
-        data: '0x0',
-        nonce: 1,
-      })
-
-      await dispatchTxExecution(safeTx, mockProvider, {})
-
-      expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { groupKey: '0x1234567890' })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { groupKey: '0x1234567890' })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { groupKey: '0x1234567890' })
     })
 
     it('should fail executing a tx', async () => {

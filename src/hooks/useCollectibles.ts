@@ -19,7 +19,7 @@ export const useCollectibles = (pageUrl?: string): AsyncResult<SafeCollectiblesP
     }
   }, [error])
 
-  return [data, error, loading || !data]
+  return [data, error, loading || !safeAddress]
 }
 
 export default useCollectibles

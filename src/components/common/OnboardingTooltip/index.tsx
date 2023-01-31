@@ -1,7 +1,8 @@
+import type { ReactElement } from 'react'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import type { TooltipProps } from '@mui/material'
 import { Box, Button, SvgIcon, Tooltip } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import React from 'react'
 import { useDarkMode } from '@/hooks/useDarkMode'
 
 /**
@@ -14,13 +15,15 @@ export const OnboardingTooltip = ({
   text,
   initiallyShown = true,
   className,
+  placement,
 }: {
-  children: React.ReactElement
+  children: ReactElement // NB: this has to be an actual HTML element, otherwise the Tooltip will not work
   widgetLocalStorageId: string
   text: string
   initiallyShown?: boolean
   className?: string
-}): React.ReactElement => {
+  placement?: TooltipProps['placement']
+}): ReactElement => {
   const [widgetHidden = !initiallyShown, setWidgetHidden] = useLocalStorage<boolean>(widgetLocalStorageId)
   const isDarkMode = useDarkMode()
 
@@ -32,6 +35,7 @@ export const OnboardingTooltip = ({
         className,
       }}
       open
+      placement={placement}
       arrow
       title={
         <Box display="flex" alignItems="center" gap={1} padding={1}>
