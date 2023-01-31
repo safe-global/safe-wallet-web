@@ -3,7 +3,9 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setTokenList, TOKEN_LISTS } from '@/store/settingsSlice'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import type { SelectChangeEvent } from '@mui/material'
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import { Box, SvgIcon, Tooltip, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const TokenListSelect = () => {
   const dispatch = useAppDispatch()
@@ -22,15 +24,38 @@ const TokenListSelect = () => {
 
   return (
     <FormControl size="small">
-      <InputLabel id="tokenlist-select-label">Tokenlist</InputLabel>
+      <InputLabel id="tokenlist-select-label">Filter by</InputLabel>
       <Select
         labelId="tokenlist-select-label"
         id="tokenlist-select"
         value={settings.tokenList}
         label="Tokenlist"
         onChange={handleSelectTokenList}
+        renderValue={(value) => {
+          if (value === TOKEN_LISTS.ALL) {
+            return 'All tokens'
+          }
+          return 'Default tokens'
+        }}
       >
-        <MenuItem value={TOKEN_LISTS.TRUSTED}>Default tokens</MenuItem>
+        <MenuItem value={TOKEN_LISTS.TRUSTED}>
+          <Box display="flex" flexDirection="row" gap="4px" alignItems="center">
+            Default tokens
+            <Tooltip
+              arrow
+              title={
+                <Typography>
+                  Curated list of known tokens. Learn more about{' '}
+                  <ExternalLink href="#">default tokenlists</ExternalLink>
+                </Typography>
+              }
+            >
+              <span>
+                <SvgIcon sx={{ display: 'block' }} color="border" fontSize="small" component={InfoIcon}></SvgIcon>
+              </span>
+            </Tooltip>
+          </Box>
+        </MenuItem>
         <MenuItem value={TOKEN_LISTS.ALL}>All tokens</MenuItem>
       </Select>
     </FormControl>

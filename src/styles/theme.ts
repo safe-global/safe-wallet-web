@@ -475,6 +475,13 @@ const initTheme = (darkMode: boolean) => {
             ...theme.typography.body2,
             color: theme.palette.background.main,
             backgroundColor: theme.palette.text.primary,
+            '& .MuiLink-root': {
+              color: darkMode ? theme.palette.background.main : theme.palette.secondary.main,
+              textDecorationColor: darkMode ? theme.palette.background.main : theme.palette.secondary.main,
+            },
+            '& .MuiLink-root:hover': {
+              color: darkMode ? theme.palette.text.secondary : theme.palette.secondary.light,
+            },
           }),
           arrow: ({ theme }) => ({
             color: theme.palette.text.primary,
