@@ -7,6 +7,11 @@ import { Box, SvgIcon, Tooltip, Typography, FormControl, InputLabel, Select, Men
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 
+const TokenListLabel = {
+  [TOKEN_LISTS.TRUSTED]: 'Default tokens',
+  [TOKEN_LISTS.ALL]: 'All tokens',
+}
+
 const TokenListSelect = () => {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
@@ -31,16 +36,11 @@ const TokenListSelect = () => {
         value={settings.tokenList}
         label="Tokenlist"
         onChange={handleSelectTokenList}
-        renderValue={(value) => {
-          if (value === TOKEN_LISTS.ALL) {
-            return 'All tokens'
-          }
-          return 'Default tokens'
-        }}
+        renderValue={(value) => TokenListLabel[value]}
       >
         <MenuItem value={TOKEN_LISTS.TRUSTED}>
           <Box display="flex" flexDirection="row" gap="4px" alignItems="center">
-            Default tokens
+            {TokenListLabel.TRUSTED}
             <Tooltip
               arrow
               title={
@@ -56,7 +56,7 @@ const TokenListSelect = () => {
             </Tooltip>
           </Box>
         </MenuItem>
-        <MenuItem value={TOKEN_LISTS.ALL}>All tokens</MenuItem>
+        <MenuItem value={TOKEN_LISTS.ALL}>{TokenListLabel.ALL}</MenuItem>
       </Select>
     </FormControl>
   )
