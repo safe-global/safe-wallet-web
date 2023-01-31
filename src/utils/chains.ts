@@ -16,9 +16,9 @@ export const getBlockExplorerLink = (
 }
 
 export const getShortName = (chainId: string): string | undefined => {
-  return Object.entries(chains).find(([, _chainId]) => _chainId === chainId)?.[0]
+  return Object.keys(chains).find((prefix) => chains[prefix] === chainId)
 }
 
 export const getChainId = (shortName: string): string | undefined => {
-  return Object.entries(chains).find(([_shortName]) => _shortName === shortName)?.[1]
+  return chains[shortName]
 }
