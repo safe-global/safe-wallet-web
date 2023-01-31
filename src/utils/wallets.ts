@@ -4,9 +4,6 @@ import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 import type { EthersError } from '@/utils/ethers-utils'
 import { ErrorCode } from '@ethersproject/logger'
-import chains from '@/config/chains'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { ConnectedWallet } from '@/services/onboard'
 
 const isWCRejection = (err: Error): boolean => {
   return /rejected/.test(err?.message)
@@ -50,11 +47,4 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean> => 
   }
 
   return false
-}
-
-export const getEthHashInfoPrefix = (
-  shortName?: ChainInfo['shortName'],
-  chainId?: ConnectedWallet['chainId'],
-): string | undefined => {
-  return shortName || (chainId ? Object.entries(chains).find((chain) => chain[1] === chainId)?.[0] : undefined)
 }
