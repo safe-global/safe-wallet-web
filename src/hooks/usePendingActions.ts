@@ -22,19 +22,16 @@ const usePendingActions = (chainId: string, safeAddress?: string): PendingAction
   const { safeAddress: currentSafeAddress } = useSafeInfo()
   const { page: currentSafeQueue } = useTxQueue()
   const isCurrentSafe = currentSafeAddress === safeAddress
-  const cachedQueue = useRef<TransactionListPage>()
+  const cachedQueue = useRef<Promise<TransactionListPage>>()
 
-  const [loadedQueue] = useAsync<TransactionListPage | undefined>(async () => {
+  const [loadedQueue] = useAsync<TransactionListPage | undefined>(() => {
     if (isCurrentSafe || !safeAddress) return
 
-    if (cachedQueue.current) {
-      return cachedQueue.current
+    if (!cachedQueue.current) {
+      cachedQueue.current = getTransactionQueue(chainId, safeAddress)
     }
 
-    const fetchedQueue = await getTransactionQueue(chainId, safeAddress)
-    cachedQueue.current = fetchedQueue
-
-    return fetchedQueue
+    return cachedQueue.current
   }, [chainId, safeAddress, isCurrentSafe])
 
   const queue = isCurrentSafe ? currentSafeQueue : loadedQueue
