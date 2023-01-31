@@ -55,12 +55,12 @@ export const addressIsNotCurrentSafe =
 
 export const FLOAT_REGEX = /^[0-9]+([,.][0-9]+)?$/
 
-export const validateAmount = (amount?: string) => {
+export const validateAmount = (amount?: string, includingZero: boolean = false) => {
   if (!amount || isNaN(Number(amount))) {
     return 'The value must be a number'
   }
 
-  if (parseFloat(amount) <= 0) {
+  if (includingZero ? parseFloat(amount) < 0 : parseFloat(amount) <= 0) {
     return 'The value must be greater than 0'
   }
 }

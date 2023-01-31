@@ -154,15 +154,21 @@ export const ApprovalEditor = ({
       <AccordionDetails>
         <Grid container direction="column">
           {approvalInfos.map((tx, idx) => (
-            <Grid container key={tx.tokenAddress + tx.spender} gap="4px" justifyContent="space-between">
-              <Grid item display="flex" flexDirection="column">
+            <Grid
+              container
+              key={tx.tokenAddress + tx.spender}
+              className={css.approval}
+              gap="4px"
+              justifyContent="space-between"
+            >
+              <Grid item display="flex" xs={12} md={3} flexDirection="column">
                 <Typography variant="overline">Token</Typography>
                 <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
                   <TokenIcon logoUri={tx.tokenInfo?.logoUri} tokenSymbol={tx.tokenInfo?.symbol} />
                   <Typography>{tx.tokenInfo?.symbol || shortenAddress(tx.tokenAddress)}</Typography>
                 </Box>
               </Grid>
-              <Grid item display="flex" flexDirection="column">
+              <Grid item display="flex" xs flexDirection="column">
                 <NumberField
                   label={errors.approvals?.[idx]?.message || 'Amount'}
                   error={!!errors.approvals?.[idx]}
@@ -185,13 +191,13 @@ export const ApprovalEditor = ({
                     required: true,
                     validate: (val) => {
                       const decimals = tx.tokenInfo?.decimals
-                      return validateAmount(val) || validateDecimalLength(val, decimals)
+                      return validateAmount(val, true) || validateDecimalLength(val, decimals)
                     },
                   })}
                 />
               </Grid>
 
-              <Grid item display="flex" flexDirection="column">
+              <Grid item display="flex" xs={4} flexDirection="column">
                 <Typography variant="overline">Spender</Typography>
 
                 <Typography>

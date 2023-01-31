@@ -10,3 +10,7 @@
 .warningAccordion :global .MuiAccordionSummary-root:hover {
   background-color: var(--color-warning-light);
 }
+
+.approval {
+  padding: 8px;
+}
