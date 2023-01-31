@@ -1,7 +1,7 @@
 const HW_WALLET = '0xff6E053fBf4E5895eDec09146Bc10f705E8c4b3D'
-const SPENDING_LIMIT_SAFE = 'gor:0x28F95E682D1dd632b54Dc61740575f49DB39Eb7F'
+const SPENDING_LIMIT_SAFE = 'gor:0xBE3C5aFF7f66c23fe71c3047911f9Aa0026b281B'
 
-describe('Check spending limit modal', () => {
+describe('Check non-owner spending limit beneficiary modal', () => {
   before(() => {
     cy.connectE2EWallet()
 
@@ -34,7 +34,7 @@ describe('Check spending limit modal', () => {
     cy.get('ul[role="listbox"]').contains('Görli Ether').click()
 
     // Insert max amount
-    cy.contains('Spending Limit Transaction (0.1 GOR)').click()
+    cy.contains('Spending Limit Transaction (100 GOR)').click()
 
     // Insert max amount
     cy.contains('Max').click()
