@@ -18,7 +18,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 const Chat = ({ user }) => {
   const { safe, safeAddress } = useSafeInfo()
   const [message, setMessage] = useState('')
-  const [messages, setMessages] = useState([])
+  const [messages, setMessages] = useState<any[]>([])
   const [chatData, setChatData] = useState<any[]>([])
   const [group, setGroup] = useState<any>()
   const wallet = useWallet()
@@ -45,16 +45,14 @@ const Chat = ({ user }) => {
     initCometChat()
     async function getM() {
       await getMessages(`pid_${safeAddress!}`)
-        .then((msgs) => {
-          //@ts-ignore
+        .then((msgs: any) => {
           setMessages(msgs)
           scrollToEnd()
         })
         .catch((error) => console.log(error))
 
       await listenForMessage(`pid_${safeAddress!}`)
-        .then((msg) => {
-          //@ts-ignore
+        .then((msg: any) => {
           setMessages((prevState) => [...prevState, msg])
           scrollToEnd()
         })
@@ -86,7 +84,7 @@ const Chat = ({ user }) => {
       })
     })
     txQueue.page?.results.forEach((tx: any) => {
-      if (tx.type === 'DATE_LABEL') {
+      if (tx.type === 'LABEL') {
         return
       }
       allData.push({
