@@ -1,6 +1,4 @@
-import type { SyntheticEvent } from 'react'
-import { useCallback } from 'react'
-import { useEffect, useState } from 'react'
+import { type SyntheticEvent, type ReactElement, useCallback, useEffect, useState } from 'react'
 import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -14,7 +12,7 @@ import { trackEvent } from '@/services/analytics'
 import NftGrid from '../NftGrid'
 import NftSendForm from '../NftSendForm'
 
-const NftCollections = () => {
+const NftCollections = (): ReactElement => {
   // Track the current NFT page url
   const [pageUrl, setPageUrl] = useState<string>()
   // Load NFTs from the backend
