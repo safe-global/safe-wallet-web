@@ -18,13 +18,13 @@ const NftApps = memo(function NftApps(): ReactElement | null {
 
   return (
     <>
-      <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2} mt={0.3}>
+      <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2} mt={0.6}>
         NFT Safe Apps
       </Typography>
 
       <Grid container spacing={3}>
         {nftApps.map((nftApp) => (
-          <Grid item xs={12} lg={12} md={4} key={nftApp.id}>
+          <Grid item lg={12} md={4} xs={6} key={nftApp.id}>
             <AppCard safeApp={nftApp} />
           </Grid>
         ))}
@@ -44,11 +44,11 @@ const NFTs: NextPage = () => {
 
       <main>
         <Grid container spacing={3}>
-          <Grid item md={12} lg={3} order={{ lg: 1 }}>
+          <Grid item sm={12} lg={3} order={{ lg: 1 }}>
             <NftApps />
           </Grid>
 
-          <Grid item md={12} lg={9}>
+          <Grid item sm={12} lg={9}>
             <NftCollections />
           </Grid>
         </Grid>
