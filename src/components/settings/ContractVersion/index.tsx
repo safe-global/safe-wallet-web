@@ -9,6 +9,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 
 import UpdateSafeDialog from './UpdateSafeDialog'
 import ExternalLink from '@/components/common/ExternalLink'
+import { Link } from '@mui/material'
+import Tooltip from '@mui/material/Tooltip'
 
 export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
   const [masterCopies] = useMasterCopies()
@@ -22,6 +24,7 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
   const needsUpdate = safe.implementationVersionState === ImplementationVersionState.OUTDATED
   const latestMasterContractVersion = LATEST_SAFE_VERSION
   const showUpdateDialog = safeMasterCopy?.deployer === MasterCopyDeployer.GNOSIS && needsUpdate
+  const isUpdated = safe.implementationVersionState === ImplementationVersionState.UP_TO_DATE
 
   const getSafeVersionUpdate = () => {
     return showUpdateDialog ? ` (there's a newer version: ${latestMasterContractVersion})` : ''
@@ -42,6 +45,27 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
           Unsupported contract
         </Typography>
       )}
+      <>
+        <br></br>
+        <br></br>
+        {isUpdated! ? (
+          <Typography variant="body1" fontWeight={400}>
+            <Typography variant="body1" fontWeight={400}>
+              ✅ Latest version
+            </Typography>
+          </Typography>
+        ) : (
+          <Tooltip
+            title="Update now to take advantage of new features and the highest security standards available.
+You will need to confirm this update just like any other transaction."
+            placement="right-end"
+          >
+            <Link sx={{ fontSize: '14px' }} href="">
+              ℹ️ Why should I upgrade?
+            </Link>
+          </Tooltip>
+        )}
+      </>
 
       {showUpdateDialog && isGranted && <UpdateSafeDialog />}
     </div>
