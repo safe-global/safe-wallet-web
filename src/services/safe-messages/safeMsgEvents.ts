@@ -22,7 +22,7 @@ export enum SafeMsgEvent {
 type SafeMessageHash = { messageHash: string }
 
 interface SignedMessageEvents {
-  [SafeMsgEvent.PROPOSE]: SafeMessageHash & { requestId: RequestId }
+  [SafeMsgEvent.PROPOSE]: SafeMessageHash & { requestId: RequestId; signature?: string }
   [SafeMsgEvent.PROPOSE_FAILED]: SafeMessageHash & { error: Error }
   [SafeMsgEvent.CONFIRM_PROPOSE]: SafeMessageHash & { requestId?: RequestId }
   [SafeMsgEvent.CONFIRM_PROPOSE_FAILED]: SafeMessageHash & { error: Error }

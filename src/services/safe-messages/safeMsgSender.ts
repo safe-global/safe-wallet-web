@@ -23,14 +23,10 @@ export const dispatchSafeMsgProposal = async ({
   safeAppId?: number
 }): Promise<void> => {
   const messageHash = generateSafeMessageHash(safe, message)
-
+  let signature = undefined
   try {
     const typedData = generateSafeMessageTypedData(safe, message)
-    const signature = await signer._signTypedData(
-      typedData.domain as TypedDataDomain,
-      typedData.types,
-      typedData.message,
-    )
+    signature = await signer._signTypedData(typedData.domain as TypedDataDomain, typedData.types, typedData.message)
 
     let normalizedMessage = message
     if (isObjectEIP712TypedData(message)) {
@@ -54,6 +50,7 @@ export const dispatchSafeMsgProposal = async ({
   safeMsgDispatch(SafeMsgEvent.PROPOSE, {
     messageHash,
     requestId,
+    signature: safe.threshold === 1 ? signature : undefined,
   })
 }
 

@@ -204,8 +204,9 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     const unsubFns = [SafeMsgEvent.PROPOSE, SafeMsgEvent.CONFIRM_PROPOSE].map((event) => {
       return safeMsgSubscribe(event, (details) => {
         const requestId = 'requestId' in details ? details.requestId : undefined
+        const signature = 'signature' in details ? details.signature : undefined
         if (signMessageModalState.requestId === requestId) {
-          communicator?.send({ messageHash: details.messageHash }, requestId)
+          communicator?.send({ messageHash: details.messageHash, signature }, requestId)
         }
       })
     })
