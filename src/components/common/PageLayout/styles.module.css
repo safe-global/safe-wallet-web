@@ -73,6 +73,10 @@
   .main {
     padding-left: 0;
   }
+
+  .smDrawerHidden {
+    display: none;
+  }
 }
 
 @media (max-width: 600px) {

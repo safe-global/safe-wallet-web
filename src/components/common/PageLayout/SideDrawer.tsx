@@ -10,6 +10,7 @@ import classnames from 'classnames'
 import Sidebar from '@/components/sidebar/Sidebar'
 import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
+import useDebounce from '@/hooks/useDebounce'
 
 type SideDrawerProps = {
   isOpen: boolean
@@ -35,6 +36,9 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const { breakpoints } = useTheme()
   const isSmallScreen = useMediaQuery(breakpoints.down('md'))
   const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
+  // Keep the sidebar hidden on small screens via CSS until we collapse it via JS.
+  // With a small delay to avoid flickering.
+  const smDrawerHidden = useDebounce(!isSmallScreen, 300)
 
   useEffect(() => {
     const hideSidebar = isNoSidebarRoute(pathname)
@@ -49,6 +53,7 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
         anchor="left"
         open={isOpen}
         onClose={() => onToggle(false)}
+        className={smDrawerHidden ? css.smDrawerHidden : undefined}
       >
         <aside>
           <Sidebar />
