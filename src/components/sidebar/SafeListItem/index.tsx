@@ -21,6 +21,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
 import PendingActionButtons from '@/components/sidebar/PendingActions'
 import usePendingActions from '@/hooks/usePendingActions'
+import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 
 const SafeListItem = ({
   address,
@@ -48,7 +49,8 @@ const SafeListItem = ({
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
   const shortName = chain?.shortName || ''
-  const { totalQueued, totalToSign } = usePendingActions(chainId, isAdded ? address : undefined)
+  const isVisible = useIntersectionObserver(safeRef)
+  const { totalQueued, totalToSign } = usePendingActions(chainId, isAdded && isVisible ? address : undefined)
 
   // Scroll to the current Safe
   useEffect(() => {
