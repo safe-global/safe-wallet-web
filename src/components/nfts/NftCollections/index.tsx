@@ -1,5 +1,4 @@
-import type { SyntheticEvent } from 'react'
-import { useEffect, useState } from 'react'
+import { type SyntheticEvent, type ReactElement, useCallback, useEffect, useState } from 'react'
 import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -8,10 +7,12 @@ import NftIcon from '@/public/images/common/nft.svg'
 import NftBatchModal from '@/components/tx/modals/NftBatchModal'
 import useCollectibles from '@/hooks/useCollectibles'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
+import { NFT_EVENTS } from '@/services/analytics/events/nfts'
+import { trackEvent } from '@/services/analytics'
 import NftGrid from '../NftGrid'
 import NftSendForm from '../NftSendForm'
 
-const NftCollections = () => {
+const NftCollections = (): ReactElement => {
   // Track the current NFT page url
   const [pageUrl, setPageUrl] = useState<string>()
   // Load NFTs from the backend
@@ -24,9 +25,24 @@ const NftCollections = () => {
   const [showSendModal, setShowSendModal] = useState<boolean>(false)
 
   // Add or remove NFT from the selected list on row click
-  const onSelect = (token: SafeCollectibleResponse) => {
+  const onSelect = useCallback((token: SafeCollectibleResponse) => {
     setSelectedNfts((prev) => (prev.includes(token) ? prev.filter((t) => t !== token) : prev.concat(token)))
-  }
+  }, [])
+
+  const onSendSubmit = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault()
+
+      if (selectedNfts.length) {
+        // Show the NFT transfer modal
+        setShowSendModal(true)
+
+        // Track how many NFTs are being sent
+        trackEvent({ ...NFT_EVENTS.SEND, label: selectedNfts.length })
+      }
+    },
+    [selectedNfts.length],
+  )
 
   // Add new NFTs to the accumulated list
   useEffect(() => {
@@ -47,11 +63,6 @@ const NftCollections = () => {
   // No NFTs to display
   if (nftPage && !nftPage.results.length) {
     return <PagePlaceholder img={<NftIcon />} text="No NFTs available or none detected" />
-  }
-
-  const onSendSubmit = (e: SyntheticEvent) => {
-    e.preventDefault()
-    setShowSendModal(true)
   }
 
   return (

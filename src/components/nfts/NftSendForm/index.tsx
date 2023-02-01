@@ -2,8 +2,6 @@ import type { ReactElement } from 'react'
 import { Box, Button, Grid, SvgIcon, Typography } from '@mui/material'
 import ArrowIcon from '@/public/images/common/arrow-nw.svg'
 import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import Track from '@/components/common/Track'
-import { NFT_EVENTS } from '@/services/analytics/events/nfts'
 import useIsGranted from '@/hooks/useIsGranted'
 
 type NftSendFormProps = {
@@ -54,19 +52,17 @@ const NftSendForm = ({ selectedNfts, onSelectAll }: NftSendFormProps): ReactElem
         </Grid>
 
         <Grid item>
-          <Track {...NFT_EVENTS.SEND} label={selectedNfts.length}>
-            <Button
-              type="submit"
-              variant="contained"
-              size="small"
-              disabled={!isGranted || noSelected}
-              sx={{
-                minWidth: '10em',
-              }}
-            >
-              {noSelected ? 'Send' : `Send ${selectedNfts.length} ${nftsText}`}
-            </Button>
-          </Track>
+          <Button
+            type="submit"
+            variant="contained"
+            size="small"
+            disabled={!isGranted || noSelected}
+            sx={{
+              minWidth: '10em',
+            }}
+          >
+            {noSelected ? 'Send' : `Send ${selectedNfts.length} ${nftsText}`}
+          </Button>
         </Grid>
       </Grid>
     </Sticky>
