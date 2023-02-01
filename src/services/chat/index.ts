@@ -7,6 +7,7 @@ const CONSTANTS = {
 }
 
 const initCometChat = async () => {
+  console.log('init')
   const appID = CONSTANTS.APP_ID
   const region = CONSTANTS.REGION
 
