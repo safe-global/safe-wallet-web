@@ -17,7 +17,7 @@ const NftApps = memo(function NftApps(): ReactElement | null {
   }
 
   return (
-    <>
+    <Grid item sm={12} lg={3} order={{ lg: 1 }}>
       <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2} mt={0.6}>
         NFT Safe Apps
       </Typography>
@@ -29,7 +29,7 @@ const NftApps = memo(function NftApps(): ReactElement | null {
           </Grid>
         ))}
       </Grid>
-    </>
+    </Grid>
   )
 })
 
@@ -44,11 +44,9 @@ const NFTs: NextPage = () => {
 
       <main>
         <Grid container spacing={3}>
-          <Grid item sm={12} lg={3} order={{ lg: 1 }}>
-            <NftApps />
-          </Grid>
+          <NftApps />
 
-          <Grid item sm={12} lg={9}>
+          <Grid item xs>
             <NftCollections />
           </Grid>
         </Grid>
