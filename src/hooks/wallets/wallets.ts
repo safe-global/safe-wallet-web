@@ -67,9 +67,13 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   if (window.Cypress && CYPRESS_MNEMONIC) {
     return [e2eWalletModule(chain.rpcUri)]
   }
-  return Object.entries(WALLET_MODULES)
-    .filter(([key]) => isWalletSupported(chain.disabledWallets, key))
-    .map(([, module]) => module())
+  const enabledWallets = Object.entries(WALLET_MODULES).filter(([key]) => isWalletSupported(chain.disabledWallets, key))
+
+  if (enabledWallets.length === 0) {
+    return [WALLET_MODULES.INJECTED()]
+  }
+
+  return enabledWallets.map(([, module]) => module())
 }
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {

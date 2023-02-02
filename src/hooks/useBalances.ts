@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import isEqual from 'lodash/isEqual'
 import { type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
-import { selectBalances } from '@/store/balancesSlice'
+import { initialBalancesState, selectBalances } from '@/store/balancesSlice'
 
 const useBalances = (): {
   balances: SafeBalanceResponse
@@ -16,7 +16,7 @@ const useBalances = (): {
     () => ({
       balances: data,
       error,
-      loading,
+      loading: loading || initialBalancesState === data,
     }),
     [data, error, loading],
   )

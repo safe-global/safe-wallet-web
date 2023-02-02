@@ -96,6 +96,10 @@ export const settingsNavItems = [
     label: 'Data',
     href: AppRoutes.settings.data,
   },
+  {
+    label: 'Environment variables',
+    href: AppRoutes.settings.environmentVariables,
+  },
 ]
 
 export const safeAppsNavItems = [

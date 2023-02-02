@@ -3,6 +3,8 @@ import { useCallback, useMemo, useState } from 'react'
 import { getSimulation, getSimulationLink } from '@/components/tx/TxSimulation/utils'
 import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/TxSimulation/types'
 import { getSimulationPayload, type SimulationTxParams } from '@/components/tx/TxSimulation/utils'
+import { useAppSelector } from '@/store'
+import { selectTenderly } from '@/store/settingsSlice'
 
 type UseSimulationReturn =
   | {
@@ -26,6 +28,7 @@ export const useSimulation = (): UseSimulationReturn => {
   const [simulation, setSimulation] = useState<TenderlySimulation | undefined>()
   const [simulationRequestStatus, setSimulationRequestStatus] = useState<FETCH_STATUS>(FETCH_STATUS.NOT_ASKED)
   const [requestError, setRequestError] = useState<string | undefined>(undefined)
+  const tenderly = useAppSelector(selectTenderly)
 
   const simulationLink = useMemo(() => getSimulationLink(simulation?.simulation.id || ''), [simulation])
 
@@ -35,24 +38,27 @@ export const useSimulation = (): UseSimulationReturn => {
     setSimulation(undefined)
   }, [])
 
-  const simulateTransaction = useCallback(async (params: SimulationTxParams) => {
-    setSimulationRequestStatus(FETCH_STATUS.LOADING)
-    setRequestError(undefined)
+  const simulateTransaction = useCallback(
+    async (params: SimulationTxParams) => {
+      setSimulationRequestStatus(FETCH_STATUS.LOADING)
+      setRequestError(undefined)
 
-    try {
-      const simulationPayload = await getSimulationPayload(params)
+      try {
+        const simulationPayload = await getSimulationPayload(params)
 
-      const data = await getSimulation(simulationPayload)
+        const data = await getSimulation(simulationPayload, tenderly)
 
-      setSimulation(data)
-      setSimulationRequestStatus(FETCH_STATUS.SUCCESS)
-    } catch (error) {
-      console.error(error)
+        setSimulation(data)
+        setSimulationRequestStatus(FETCH_STATUS.SUCCESS)
+      } catch (error) {
+        console.error(error)
 
-      setRequestError((error as Error).message)
-      setSimulationRequestStatus(FETCH_STATUS.ERROR)
-    }
-  }, [])
+        setRequestError((error as Error).message)
+        setSimulationRequestStatus(FETCH_STATUS.ERROR)
+      }
+    },
+    [tenderly],
+  )
 
   return {
     simulateTransaction,
