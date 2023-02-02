@@ -1,7 +1,18 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/store'
+import isEqual from 'lodash/isEqual'
+
+export type EnvState = {
+  tenderly: {
+    url: string
+    accessToken: string
+  }
+  rpc: {
+    [chainId: string]: string
+  }
+}
 
 export type SettingsState = {
   currency: string
@@ -18,6 +29,7 @@ export type SettingsState = {
   theme: {
     darkMode?: boolean
   }
+  env: EnvState
 }
 
 const initialState: SettingsState = {
@@ -31,6 +43,13 @@ const initialState: SettingsState = {
     qr: true,
   },
   theme: {},
+  env: {
+    rpc: {},
+    tenderly: {
+      url: '',
+      accessToken: '',
+    },
+  },
 }
 
 export const settingsSlice = createSlice({
@@ -56,11 +75,21 @@ export const settingsSlice = createSlice({
       const { chainId, assets } = payload
       state.hiddenTokens[chainId] = assets
     },
+    setEnv: (state, { payload }: PayloadAction<EnvState>) => {
+      state.env = payload
+    },
   },
 })
 
-export const { setCurrency, setShowShortName, setCopyShortName, setQrShortName, setDarkMode, setHiddenTokensForChain } =
-  settingsSlice.actions
+export const {
+  setCurrency,
+  setShowShortName,
+  setCopyShortName,
+  setQrShortName,
+  setDarkMode,
+  setHiddenTokensForChain,
+  setEnv,
+} = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
 
@@ -71,3 +100,9 @@ export const selectCurrency = (state: RootState): SettingsState['currency'] => {
 export const selectHiddenTokensPerChain = (state: RootState, chainId: string): string[] => {
   return state[settingsSlice.name].hiddenTokens?.[chainId] || []
 }
+
+export const selectRpc = createSelector(selectSettings, (settings) => settings.env.rpc)
+
+export const selectTenderly = createSelector(selectSettings, (settings) => settings.env.tenderly)
+
+export const isEnvInitialState = createSelector(selectSettings, (settings) => isEqual(settings.env, initialState.env))
