@@ -26,7 +26,7 @@ export const useInitSafeCoreSDK = () => {
       .catch((e) => {
         dispatch(
           showNotification({
-            message: `The Safe SDK could not be initialized. Please try connecting the wallet again.`,
+            message: `Please try connecting your wallet again.`,
             groupKey: 'core-sdk-init-error',
             variant: 'error',
           }),
