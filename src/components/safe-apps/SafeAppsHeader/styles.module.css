@@ -26,3 +26,9 @@
   top: var(--header-height);
   border-bottom: 1px solid var(--color-border-light);
 }
+
+@media (max-width: 600px) {
+  .tabs {
+    padding: 0 24px;
+  }
+}

@@ -24,7 +24,6 @@ const SafeApps: NextPage = () => {
 
   const [appUrl, routerReady] = useSafeAppUrl()
 
-  // TODO: create a custom hook instead of use useSafeApps
   const {
     remoteSafeApps,
     remoteSafeAppsLoading,
@@ -51,7 +50,6 @@ const SafeApps: NextPage = () => {
     remoteSafeAppsLoading,
   })
 
-  // TODO: add a loading state
   if (!routerReady || isLoading) {
     return null
   }

@@ -7,7 +7,6 @@ import SafeAppList from '@/components/safe-apps/SafeAppList/SafeAppList'
 import SafeAppsSDKLink from '@/components/safe-apps/SafeAppsSDKLink/SafeAppsSDKLink'
 
 const BookmarkedSafeApps: NextPage = () => {
-  // TODO: create a custom hook instead of use useSafeApps
   const {
     pinnedSafeApps: bookmarkedSafeApps,
     pinnedSafeAppIds: bookmarkedSafeAppsId,
