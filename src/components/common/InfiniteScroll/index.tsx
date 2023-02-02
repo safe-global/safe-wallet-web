@@ -1,9 +1,9 @@
 import { useEffect, useRef, type ReactElement } from 'react'
-import useIntersectionObserver from '@/hooks/useIntersectionObserver'
+import useOnceVisible from '@/hooks/useWasVisible'
 
 const InfiniteScroll = ({ onLoadMore }: { onLoadMore: () => void }): ReactElement => {
   const elementRef = useRef<HTMLDivElement | null>(null)
-  const isIntersecting = useIntersectionObserver(elementRef)
+  const isIntersecting = useOnceVisible(elementRef)
 
   useEffect(() => {
     if (isIntersecting) {
