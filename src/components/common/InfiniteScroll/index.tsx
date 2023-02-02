@@ -3,13 +3,13 @@ import useOnceVisible from '@/hooks/useOnceVisible'
 
 const InfiniteScroll = ({ onLoadMore }: { onLoadMore: () => void }): ReactElement => {
   const elementRef = useRef<HTMLDivElement | null>(null)
-  const isIntersecting = useOnceVisible(elementRef)
+  const isVisible = useOnceVisible(elementRef)
 
   useEffect(() => {
-    if (isIntersecting) {
+    if (isVisible) {
       onLoadMore()
     }
-  }, [isIntersecting, onLoadMore])
+  }, [isVisible, onLoadMore])
 
   return <div ref={elementRef} />
 }
