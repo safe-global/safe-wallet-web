@@ -25,7 +25,7 @@ const AddCustomSafeAppCard = ({ onSave, safeAppList }: Props) => {
             size="small"
             onClick={() => setAddCustomAppModalOpen(true)}
             sx={{
-              mt: '24px',
+              mt: 3,
             }}
           >
             Add custom app
