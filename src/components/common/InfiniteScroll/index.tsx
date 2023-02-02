@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactElement } from 'react'
-import useOnceVisible from '@/hooks/useWasVisible'
+import useOnceVisible from '@/hooks/useOnceVisible'
 
 const InfiniteScroll = ({ onLoadMore }: { onLoadMore: () => void }): ReactElement => {
   const elementRef = useRef<HTMLDivElement | null>(null)

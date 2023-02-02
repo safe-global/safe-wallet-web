@@ -21,7 +21,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
 import PendingActionButtons from '@/components/sidebar/PendingActions'
 import usePendingActions from '@/hooks/usePendingActions'
-import useOnceVisible from '@/hooks/useWasVisible'
+import useOnceVisible from '@/hooks/useOnceVisible'
 
 const SafeListItem = ({
   address,
