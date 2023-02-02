@@ -13,7 +13,7 @@
     "lint:fix": "next lint --fix",
     "prettier": "prettier -w \"{src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}\"",
     "fix": "yarn lint:fix && ts-prune && yarn prettier",
-    "test": "cross-env TZ=CET DEBUG_PRINT_LIMIT=30000 jest --watchAll",
+    "test": "cross-env TZ=CET DEBUG_PRINT_LIMIT=30000 jest",
     "test:ci": "yarn test --ci --coverage --json --watchAll=false --testLocationInResults --outputFile=jest.results.json",
     "test:coverage": "yarn test --coverage --watchAll=false",
     "cmp": "./scripts/cmp.sh",
