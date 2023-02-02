@@ -29,6 +29,7 @@ export const useInitSafeCoreSDK = () => {
             message: `Please try connecting your wallet again.`,
             groupKey: 'core-sdk-init-error',
             variant: 'error',
+            detailedMessage: (e as Error).message,
           }),
         )
         trackError(ErrorCodes._105, (e as Error).message)
