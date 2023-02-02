@@ -178,7 +178,7 @@ describe('SignOrExecuteForm', () => {
       ).not.toBeInTheDocument()
     })
 
-    it('hides the executiuon validation error', () => {
+    it('hides the execution validation error', () => {
       jest.spyOn(useIsValidExecutionHook, 'default').mockReturnValue({
         isValidExecution: undefined,
         executionValidationError: new Error('Error validating execution'),
