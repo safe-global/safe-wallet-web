@@ -8,12 +8,11 @@ import Fab from '@mui/material/Fab'
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
 
 import CodeIcon from '@/public/images/apps/code-icon.svg'
+import { SAFE_APPS_SDK_DOCS_URL } from '@/config/constants'
 import css from './styles.module.css'
 
 const SafeAppsSDKLink = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
-
-  const safeAppsSDKUrl = 'https://docs.gnosis-safe.io/learn/safe-tools/sdks/safe-apps'
 
   return (
     <Box className={css.position} onMouseEnter={() => setOpenModal(true)} onMouseLeave={() => setOpenModal(false)}>
@@ -26,8 +25,8 @@ const SafeAppsSDKLink = () => {
               How to build on Safe?
             </Typography>
 
-            <Link href={safeAppsSDKUrl} passHref>
-              <MUILink rel="noreferrer noopener" target="_blank" href={safeAppsSDKUrl} className={css.link}>
+            <Link href={SAFE_APPS_SDK_DOCS_URL} passHref>
+              <MUILink rel="noreferrer noopener" target="_blank" href={SAFE_APPS_SDK_DOCS_URL} className={css.link}>
                 Learn more about Safe Apps SDK
               </MUILink>
             </Link>
