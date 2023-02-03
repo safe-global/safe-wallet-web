@@ -6,7 +6,7 @@ import { sameAddress } from '@/utils/addresses'
 import type { MasterCopy } from '@/hooks/useMasterCopies'
 import { MasterCopyDeployer, useMasterCopies } from '@/hooks/useMasterCopies'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
 import UpdateSafeDialog from './UpdateSafeDialog'
@@ -46,28 +46,30 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
       )}
       <div style={{ marginTop: 15 }}>
         {needsUpdate ? (
-          <Tooltip
-            title="Update now to take advantage of new features and the highest security standards available.
+          <Typography display="flex" alignItems="center">
+            Why should I upgrade?
+            <Tooltip
+              title="Update now to take advantage of new features and the highest security standards available.
 You will need to confirm this update just like any other transaction."
-            placement="right-start"
-          >
-            <Typography display="flex" alignItems="center">
-              <SvgIcon
-                component={InfoIcon}
-                inheritViewBox
-                fontSize="small"
-                color="border"
-                sx={{
-                  verticalAlign: 'middle',
-                  mr: 0.5,
-                }}
-              />
-              Why should I upgrade?
-            </Typography>
-          </Tooltip>
+              placement="right-start"
+            >
+              <span>
+                <SvgIcon
+                  component={InfoIcon}
+                  inheritViewBox
+                  fontSize="small"
+                  color="border"
+                  sx={{
+                    verticalAlign: 'middle',
+                    ml: 0.5,
+                  }}
+                />
+              </span>
+            </Tooltip>
+          </Typography>
         ) : (
           <Typography display="flex" alignItems="center">
-            <CheckBoxIcon color="primary" sx={{ mr: 0.5 }} /> Latest version
+            <CheckCircleIcon color="primary" sx={{ mr: 0.5 }} /> Latest version
           </Typography>
         )}
       </div>
