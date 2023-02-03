@@ -51,7 +51,7 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
 You will need to confirm this update just like any other transaction."
             placement="right-start"
           >
-            <Typography variant="body2" style={{ display: 'flex', alignItems: 'center' }}>
+            <Typography display="flex" alignItems="center">
               <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" color="border" style={{ marginRight: 4 }} />
               Why should I upgrade?
             </Typography>
