@@ -54,6 +54,6 @@ export enum SafeAppsTag {
   NFT = 'nft',
   TX_BUILDER = 'transaction-builder',
   DASHBOARD_FEATURED = 'dashboard-widgets',
-  SAFE_CLAIMING_APP = 'safe-claiming-app',
+  SAFE_GOVERNANCE_APP = 'safe-governance-app',
   WALLET_CONNECT = 'wallet-connect',
 }

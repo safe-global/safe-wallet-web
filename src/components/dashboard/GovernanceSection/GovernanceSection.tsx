@@ -69,7 +69,7 @@ const MiniAppFrame = ({ app, title }: { app: SafeAppData; title: string }) => {
   ) : (
     <SafeAppIframe
       key={theme}
-      appUrl={`${app.url}#widget+${theme}`}
+      appUrl={`${app.url}/widgets?theme=${theme}`}
       allowedFeaturesList={getAllowedFeaturesList(getOrigin(app.url))}
       title={title}
       iframeRef={iframeRef}
@@ -79,9 +79,9 @@ const MiniAppFrame = ({ app, title }: { app: SafeAppData; title: string }) => {
 
 // Entire section for the governance widgets
 const GovernanceSection = () => {
-  const [matchingApps, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
-  const claimingApp = matchingApps?.[0]
-  const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
+  const [matchingApps, errorFetchingGovernanceSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_GOVERNANCE_APP)
+  const governanceApp = matchingApps?.[0]
+  const fetchingSafeGovernanceApp = !governanceApp && !errorFetchingGovernanceSafeApp
   const { safeLoading } = useSafeInfo()
 
   return (
@@ -104,11 +104,11 @@ const GovernanceSection = () => {
       </AccordionSummary>
 
       <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
-        {claimingApp || fetchingSafeClaimingApp ? (
+        {governanceApp || fetchingSafeGovernanceApp ? (
           <WidgetBody>
             <Card className={css.widgetWrapper}>
-              {claimingApp && !safeLoading ? (
-                <MiniAppFrame app={claimingApp} title="Safe Governance" />
+              {governanceApp && !safeLoading ? (
+                <MiniAppFrame app={governanceApp} title="Safe Governance" />
               ) : (
                 <Box
                   className={css.widgetWrapper}
