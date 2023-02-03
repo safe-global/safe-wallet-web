@@ -1,15 +1,16 @@
 import { useMemo } from 'react'
-import { Typography } from '@mui/material'
+import { SvgIcon, Typography } from '@mui/material'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { sameAddress } from '@/utils/addresses'
 import type { MasterCopy } from '@/hooks/useMasterCopies'
 import { MasterCopyDeployer, useMasterCopies } from '@/hooks/useMasterCopies'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import InfoIcon from '@/public/images/notifications/info.svg'
 
 import UpdateSafeDialog from './UpdateSafeDialog'
 import ExternalLink from '@/components/common/ExternalLink'
-import { Link } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 
 export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
@@ -24,8 +25,6 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
   const needsUpdate = safe.implementationVersionState === ImplementationVersionState.OUTDATED
   const latestMasterContractVersion = LATEST_SAFE_VERSION
   const showUpdateDialog = safeMasterCopy?.deployer === MasterCopyDeployer.GNOSIS && needsUpdate
-  const isUpdated = safe.implementationVersionState === ImplementationVersionState.UP_TO_DATE
-
   const getSafeVersionUpdate = () => {
     return showUpdateDialog ? ` (there's a newer version: ${latestMasterContractVersion})` : ''
   }
@@ -45,27 +44,24 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
           Unsupported contract
         </Typography>
       )}
-      <>
-        <br></br>
-        <br></br>
-        {isUpdated! ? (
-          <Typography variant="body1" fontWeight={400}>
-            <Typography variant="body1" fontWeight={400}>
-              ✅ Latest version
-            </Typography>
-          </Typography>
-        ) : (
+      <div style={{ marginTop: 15 }}>
+        {needsUpdate ? (
           <Tooltip
             title="Update now to take advantage of new features and the highest security standards available.
 You will need to confirm this update just like any other transaction."
-            placement="right-end"
+            placement="right-start"
           >
-            <Link sx={{ fontSize: '14px' }} href="">
-              ℹ️ Why should I upgrade?
-            </Link>
+            <Typography variant="body2" style={{ display: 'flex', alignItems: 'center' }}>
+              <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" color="border" style={{ marginRight: 4 }} />
+              Why should I upgrade?
+            </Typography>
           </Tooltip>
+        ) : (
+          <Typography style={{ display: 'flex', alignItems: 'center' }}>
+            <CheckBoxIcon style={{ color: 'secondary', marginRight: 4 }} /> Latest version
+          </Typography>
         )}
-      </>
+      </div>
 
       {showUpdateDialog && isGranted && <UpdateSafeDialog />}
     </div>
