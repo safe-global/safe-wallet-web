@@ -26,6 +26,7 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { SvgIcon } from '@mui/material'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
+import EnvHintButton from '@/components/settings/EnvironmentVariables/EnvHintButton'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
@@ -100,6 +101,7 @@ const SafeHeader = (): ReactElement => {
               </IconButton>
             </Tooltip>
           </Track>
+          <EnvHintButton />
         </div>
       </div>
 

@@ -115,7 +115,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect }: NftsTabl
                   align="left"
                   padding="normal"
                   sx={{
-                    display: headCell.xsHidden ? { xs: 'none', md: 'table-cell' } : undefined,
+                    display: headCell.xsHidden ? { xs: 'none', sm: 'table-cell' } : undefined,
                     width: headCell.width,
                   }}
                 >
@@ -183,7 +183,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect }: NftsTabl
                 </TableCell>
 
                 {/* Links */}
-                <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                   <Box display="flex" alignItems="center" alignContent="center" gap={2.5}>
                     {linkTemplates?.map(({ title, logo, getUrl }) => (
                       <ExternalLink href={getUrl(item)} key={title} onClick={stopPropagation} noIcon>
@@ -210,7 +210,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect }: NftsTabl
                   {headCells.map((headCell) => (
                     <TableCell
                       key={headCell.id}
-                      sx={headCell.xsHidden ? { display: { xs: 'none', md: 'table-cell' } } : undefined}
+                      sx={headCell.xsHidden ? { display: { xs: 'none', sm: 'table-cell' } } : undefined}
                     >
                       <Box height="42px" width="42px" />
                     </TableCell>
@@ -225,7 +225,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect }: NftsTabl
                   {headCells.map((headCell) => (
                     <TableCell
                       key={headCell.id}
-                      sx={headCell.xsHidden ? { display: { xs: 'none', md: 'table-cell' } } : undefined}
+                      sx={headCell.xsHidden ? { display: { xs: 'none', sm: 'table-cell' } } : undefined}
                     >
                       <Skeleton variant="rounded" height="30px" sx={{ my: '6px' }} width="100%" />
                     </TableCell>

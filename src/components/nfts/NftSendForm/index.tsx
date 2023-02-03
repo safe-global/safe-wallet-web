@@ -1,9 +1,7 @@
 import type { ReactElement } from 'react'
-import { Box, Button, SvgIcon, Typography } from '@mui/material'
+import { Box, Button, Grid, SvgIcon, Typography } from '@mui/material'
 import ArrowIcon from '@/public/images/common/arrow-nw.svg'
 import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import Track from '@/components/common/Track'
-import { NFT_EVENTS } from '@/services/analytics/events/nfts'
 import useIsGranted from '@/hooks/useIsGranted'
 
 type NftSendFormProps = {
@@ -13,7 +11,7 @@ type NftSendFormProps = {
 
 const stickyTop = { xs: '103px', md: '111px' }
 const Sticky = ({ children }: { children: ReactElement }): ReactElement => (
-  <Box position="sticky" zIndex="1" top={stickyTop} py={1} bgcolor="background.main">
+  <Box position="sticky" zIndex="1" top={stickyTop} py={1} bgcolor="background.main" mt={-1} mb={1}>
     {children}
   </Box>
 )
@@ -25,31 +23,35 @@ const NftSendForm = ({ selectedNfts, onSelectAll }: NftSendFormProps): ReactElem
 
   return (
     <Sticky>
-      <Box display="flex" alignItems="center" gap={1}>
-        <Box bgcolor="secondary.background" py={0.75} px={2} flex={1} borderRadius={1} mr={2}>
-          <Box display="flex" alignItems="center" gap={1.5}>
-            <SvgIcon component={ArrowIcon} inheritViewBox color="border" sx={{ width: 12, height: 12 }} />
+      <Grid container spacing={1} justifyContent="flex-end" alignItems="center">
+        <Grid item display={['none', 'block']} flex="1">
+          <Box bgcolor="secondary.background" py={0.75} px={2} flex={1} borderRadius={1} mr={1}>
+            <Box display="flex" alignItems="center" gap={1.5}>
+              <SvgIcon component={ArrowIcon} inheritViewBox color="border" sx={{ width: 12, height: 12 }} />
 
-            <Typography variant="body2" lineHeight="inherit">
-              {`${selectedNfts.length} ${nftsText} selected`}
-            </Typography>
+              <Typography variant="body2" lineHeight="inherit">
+                {`${selectedNfts.length} ${nftsText} selected`}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        </Grid>
 
-        <Button
-          onClick={onSelectAll}
-          variant="outlined"
-          size="small"
-          sx={{
-            // The custom padding is needed to align the outlined button with the adjacent filled button
-            py: '6px',
-            minWidth: '10em',
-          }}
-        >
-          {noSelected ? 'Select all' : 'Deselect all'}
-        </Button>
+        <Grid item>
+          <Button
+            onClick={onSelectAll}
+            variant="outlined"
+            size="small"
+            sx={{
+              // The custom padding is needed to align the outlined button with the adjacent filled button
+              py: '6px',
+              minWidth: '10em',
+            }}
+          >
+            {noSelected ? 'Select all' : 'Deselect all'}
+          </Button>
+        </Grid>
 
-        <Track {...NFT_EVENTS.SEND} label={selectedNfts.length}>
+        <Grid item>
           <Button
             type="submit"
             variant="contained"
@@ -59,10 +61,10 @@ const NftSendForm = ({ selectedNfts, onSelectAll }: NftSendFormProps): ReactElem
               minWidth: '10em',
             }}
           >
-            {!isGranted ? 'Read only' : selectedNfts.length ? `Send ${selectedNfts.length} ${nftsText}` : 'Send'}
+            {noSelected ? 'Send' : `Send ${selectedNfts.length} ${nftsText}`}
           </Button>
-        </Track>
-      </Box>
+        </Grid>
+      </Grid>
     </Sticky>
   )
 }
