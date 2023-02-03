@@ -52,7 +52,16 @@ You will need to confirm this update just like any other transaction."
             placement="right-start"
           >
             <Typography display="flex" alignItems="center">
-              <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" color="border" style={{ marginRight: 4 }} />
+              <SvgIcon
+                component={InfoIcon}
+                inheritViewBox
+                fontSize="small"
+                color="border"
+                sx={{
+                  verticalAlign: 'middle',
+                  mr: 0.5,
+                }}
+              />
               Why should I upgrade?
             </Typography>
           </Tooltip>
