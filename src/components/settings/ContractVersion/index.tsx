@@ -58,7 +58,7 @@ You will need to confirm this update just like any other transaction."
           </Tooltip>
         ) : (
           <Typography display="flex" alignItems="center">
-            <CheckBoxIcon style={{ color: 'secondary', marginRight: 4 }} /> Latest version
+            <CheckBoxIcon color="primary" sx={{ mr: 0.5 }} /> Latest version
           </Typography>
         )}
       </div>
