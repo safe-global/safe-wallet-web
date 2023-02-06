@@ -9,7 +9,7 @@ import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import { SafeAppSocialPlatforms } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeAppData, SafeAppSocialProfile } from '@safe-global/safe-gateway-typescript-sdk'
 
 import DiscordIcon from '@/public/images/common/discord-icon.svg'
 import css from './styles.module.css'
@@ -27,9 +27,9 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
     return null
   }
 
-  const discordSocialLink = socialProfiles.find(({ platform }) => platform === SafeAppSocialPlatforms.DISCORD)
-  const twitterSocialLink = socialProfiles.find(({ platform }) => platform === SafeAppSocialPlatforms.TWITTER)
-  const githubSocialLink = socialProfiles.find(({ platform }) => platform === SafeAppSocialPlatforms.GITHUB)
+  const discordSocialLink = getSocialProfile(socialProfiles, SafeAppSocialPlatforms.DISCORD)
+  const twitterSocialLink = getSocialProfile(socialProfiles, SafeAppSocialPlatforms.TWITTER)
+  const githubSocialLink = getSocialProfile(socialProfiles, SafeAppSocialPlatforms.GITHUB)
 
   return (
     <Card className={css.container}>
@@ -108,3 +108,9 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
 }
 
 export default SafeAppSocialLinksCard
+
+const getSocialProfile = (socialProfiles: SafeAppSocialProfile[], platform: SafeAppSocialPlatforms) => {
+  const socialLink = socialProfiles.find((socialProfile) => socialProfile.platform === platform)
+
+  return socialLink
+}
