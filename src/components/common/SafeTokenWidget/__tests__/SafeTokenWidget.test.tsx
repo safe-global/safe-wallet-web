@@ -8,7 +8,7 @@ import { hexZeroPad } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
 import useSafeTokenAllocation from '@/hooks/useSafeTokenAllocation'
 
-const MOCK_GOVERNANCE_APP_URL = 'https://fake.governance.safe.global'
+const MOCK_GOVERNANCE_APP_URL = 'https://mock.governance.safe.global'
 
 jest.mock('@/hooks/useChainId', () => jest.fn(() => '1'))
 
