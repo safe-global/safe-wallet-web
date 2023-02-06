@@ -7,7 +7,7 @@ import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import CopyButton from '@/components/common/CopyButton'
 import ShareIcon from '@/public/images/common/share.svg'
 import css from './styles.module.css'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard/SafeAppIconCard'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 type CustomAppProps = {
   safeApp: SafeAppData

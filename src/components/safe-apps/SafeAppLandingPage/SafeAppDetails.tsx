@@ -5,7 +5,7 @@ import Divider from '@mui/material/Divider'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import SvgIcon from '@mui/material/SvgIcon'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard/SafeAppIconCard'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 type DetailsProps = {
   app: SafeAppData

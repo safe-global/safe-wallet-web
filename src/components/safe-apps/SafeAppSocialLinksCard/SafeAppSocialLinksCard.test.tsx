@@ -2,7 +2,7 @@ import { SafeAppFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeAppSocialPlatforms, SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
-import SafeAppSocialLinksCard from './SafeAppSocialLinksCard'
+import SafeAppSocialLinksCard from '@/components/safe-apps/SafeAppSocialLinksCard'
 import { render, screen, waitFor } from '@/tests/test-utils'
 
 const transactionBuilderSafeAppMock: SafeAppData = {

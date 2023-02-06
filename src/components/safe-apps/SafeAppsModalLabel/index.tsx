@@ -1,6 +1,6 @@
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { Typography, Box } from '@mui/material'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard/SafeAppIconCard'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 

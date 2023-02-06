@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { Grid, Typography } from '@mui/material'
 import AssetsHeader from '@/components/balances/AssetsHeader'
 import NftCollections from '@/components/nfts/NftCollections'
-import SafeAppCard from '@/components/safe-apps/SafeAppCard/SafeAppCard'
+import SafeAppCard from '@/components/safe-apps/SafeAppCard'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 

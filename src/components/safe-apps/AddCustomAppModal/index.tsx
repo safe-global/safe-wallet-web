@@ -26,7 +26,7 @@ import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { isSameUrl, trimTrailingSlash } from '@/utils/url'
 import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
-import { getShareSafeAppUrl } from '@/components/safe-apps/SafeAppActionButtons/SafeAppActionButtons'
+import { getShareSafeAppUrl } from '@/components/safe-apps/SafeAppActionButtons'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'

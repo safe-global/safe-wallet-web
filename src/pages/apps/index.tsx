@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
-import SafeAppsSDKLink from '@/components/safe-apps/SafeAppsSDKLink/SafeAppsSDKLink'
+import SafeAppsSDKLink from '@/components/safe-apps/SafeAppsSDKLink'
 import SafeAppsHeader from '@/components/safe-apps/SafeAppsHeader/SafeAppsHeader'
 import SafeAppList from '@/components/safe-apps/SafeAppList/SafeAppList'
 import SafeAppsInfoModal from '@/components/safe-apps/SafeAppsInfoModal'

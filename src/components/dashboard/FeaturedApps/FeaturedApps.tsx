@@ -7,7 +7,7 @@ import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard/SafeAppIconCard'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 const StyledGrid = styled(Grid)`
   gap: 24px;

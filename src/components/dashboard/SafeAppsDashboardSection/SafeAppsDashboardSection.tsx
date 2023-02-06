@@ -8,7 +8,7 @@ import { WidgetContainer } from '../styled'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import SafeAppPreviewDrawer from '@/components/safe-apps/SafeAppPreviewDrawer/SafeAppPreviewDrawer'
-import SafeAppCard, { SafeAppCardContainer } from '@/components/safe-apps/SafeAppCard/SafeAppCard'
+import SafeAppCard, { SafeAppCardContainer } from '@/components/safe-apps/SafeAppCard'
 import { AppRoutes } from '@/config/routes'
 import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
 
