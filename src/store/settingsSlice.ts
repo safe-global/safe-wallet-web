@@ -87,6 +87,10 @@ export const selectCurrency = (state: RootState): SettingsState['currency'] => {
   return state[settingsSlice.name].currency || initialState.currency
 }
 
+export const selectTokenList = (state: RootState): SettingsState['tokenList'] => {
+  return state[settingsSlice.name].tokenList || initialState.tokenList
+}
+
 export const selectHiddenTokensPerChain = (state: RootState, chainId: string): string[] => {
   return state[settingsSlice.name].hiddenTokens?.[chainId] || []
 }
