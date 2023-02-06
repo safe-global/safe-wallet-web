@@ -5,11 +5,10 @@ import Radio from '@mui/material/Radio'
 import FormControl from '@mui/material/FormControl'
 
 import GridViewIcon from '@/public/images/apps/grid-view-icon.svg'
-import GridViewIconChecked from '@/public/images/apps/grid-view-icon-checked.svg'
 import ListViewIcon from '@/public/images/apps/list-view-icon.svg'
-import ListViewIconChecked from '@/public/images/apps/list-view-icon-checked.svg'
 import { GRID_VIEW_MODE, LIST_VIEW_MODE } from '@/components/safe-apps/SafeAppCard'
 import type { SafeAppsViewMode } from '@/components/safe-apps/SafeAppCard'
+import css from './styles.module.css'
 
 type SafeAppsListHeaderProps = {
   amount?: number
@@ -41,8 +40,8 @@ const SafeAppsListHeader = ({ amount, safeAppsViewMode, setSafeAppsViewMode }: S
             value={GRID_VIEW_MODE}
             disableRipple
             color="default"
-            checkedIcon={<GridViewIconChecked />}
-            icon={<GridViewIcon />}
+            checkedIcon={<GridViewIcon />}
+            icon={<GridViewIcon className={css.gridView} />}
             sx={{ padding: '4px' }}
             inputProps={{
               'aria-label': 'Grid view mode',
@@ -53,8 +52,8 @@ const SafeAppsListHeader = ({ amount, safeAppsViewMode, setSafeAppsViewMode }: S
             value={LIST_VIEW_MODE}
             disableRipple
             color="default"
-            checkedIcon={<ListViewIconChecked />}
-            icon={<ListViewIcon />}
+            checkedIcon={<ListViewIcon />}
+            icon={<ListViewIcon className={css.listView} />}
             sx={{ padding: '4px' }}
             inputProps={{
               'aria-label': 'List view mode',
