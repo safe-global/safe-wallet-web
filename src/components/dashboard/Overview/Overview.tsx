@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import styled from '@emotion/styled'
@@ -10,15 +9,20 @@ import { useCurrentChain } from '@/hooks/useChains'
 import SafeIcon from '@/components/common/SafeIcon'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { AppRoutes } from '@/config/routes'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import useCollectibles from '@/hooks/useCollectibles'
-import type { UrlObject } from 'url'
-import { useVisibleBalances } from '@/hooks/useVisibleBalances'
+
+import { AppRoutes } from '@/config/routes'
+
+import { navItems } from '@/components/sidebar/SidebarNavigation/config'
+import MainNavTabs from '@/components/common/MainNavTabs'
 
 const IdenticonContainer = styled.div`
   position: relative;
   margin-bottom: var(--space-2);
+`
+
+const StyledCard = styled(Card)`
+  padding-bottom: 0;
 `
 
 const StyledText = styled(Typography)`
@@ -36,7 +40,7 @@ const NetworkLabelContainer = styled.div`
     bottom: auto;
   }
 `
-
+  
 const ValueSkeleton = () => <Skeleton variant="text" width={30} />
 
 const SkeletonOverview = (
@@ -78,93 +82,43 @@ const SkeletonOverview = (
     </Grid>
   </Card>
 )
+const footerPages = [AppRoutes.home, AppRoutes.balances.index, AppRoutes.addressBook, AppRoutes.apps, AppRoutes.settings.index, AppRoutes.transactions.index]
 
-const Overview = (): ReactElement => {
+const StickyNav = (): ReactElement | null => {
   const router = useRouter()
   const safeAddress = useSafeAddress()
   const { safe, safeLoading } = useSafeInfo()
-  const { balances } = useVisibleBalances()
-  const [nfts] = useCollectibles()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
 
-  const assetsLink: UrlObject = {
-    pathname: AppRoutes.balances.index,
-    query: { safe: router.query.safe },
+  if (!footerPages.some((path) => router.pathname.startsWith(path))) {
+    return null
   }
-  const nftsLink: UrlObject = {
-    pathname: AppRoutes.balances.nfts,
-    query: { safe: router.query.safe },
-  }
-
-  // Native token is always returned even when its balance is 0
-  const tokenCount = useMemo(() => balances.items.filter((token) => token.balance !== '0').length, [balances])
-  const nftsCount = useMemo(() => (nfts ? `${nfts.next ? '>' : ''}${nfts.results.length}` : ''), [nfts])
 
   return (
     <WidgetContainer>
-      <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
-        Overview
-      </Typography>
-
       <WidgetBody>
         {safeLoading ? (
           SkeletonOverview
         ) : (
-          <Card>
+          <StyledCard>
             <Grid container pb={2}>
               <SafeIcon address={safeAddress} threshold={safe.threshold} owners={safe.owners.length} size={48} />
-
-              <Grid item xs />
-
-              <Grid item>
-                <ChainIndicator chainId={chainId} inline />
-              </Grid>
-            </Grid>
 
             <Box mt={2} mb={4}>
               <EthHashInfo showAvatar={false} address={safeAddress} shortAddress={false} showCopyButton hasExplorer />
             </Box>
-
-            <Grid container>
-              <Grid item xs={3}>
-                <Link href={assetsLink} passHref>
-                  <a>
-                    <Typography color="border.main" variant="body2">
-                      Tokens
-                    </Typography>
-                    <StyledText fontSize="lg">{tokenCount}</StyledText>
-                  </a>
-                </Link>
-              </Grid>
-
-              <Grid item xs={3}>
-                <Link href={nftsLink} passHref>
-                  <a>
-                    <Typography color="border.main" variant="body2">
-                      NFTs
-                    </Typography>
-                    <StyledText fontSize="lg">{nftsCount || <ValueSkeleton />}</StyledText>
-                  </a>
-                </Link>
-              </Grid>
-              <Grid item xs />
-
+              
               <Grid item>
-                <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">
-                  <Link href={assetsLink} passHref>
-                    <Button size="medium" variant="contained" color="primary">
-                      View assets
-                    </Button>
-                  </Link>
-                </Box>
+                <ChainIndicator chainId={chainId} inline />
               </Grid>
             </Grid>
-          </Card>
+                        <MainNavTabs tabs={navItems} />
+          </StyledCard>
         )}
       </WidgetBody>
     </WidgetContainer>
   )
 }
 
-export default Overview
+export default StickyNav

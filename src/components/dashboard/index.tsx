@@ -1,12 +1,17 @@
 import type { ReactElement } from 'react'
 import { Grid } from '@mui/material'
-import PendingTxsList from '@/components/dashboard/PendingTxs/PendingTxsList'
-import Overview from '@/components/dashboard/Overview/Overview'
+import styled from '@emotion/styled'
 import { FeaturedApps } from '@/components/dashboard/FeaturedApps/FeaturedApps'
-import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
-import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
+import Owner from '@/components/dashboard/HomeSidebar/ownerlist'
+import Home from '@/pages/chat/chat'
+
+const StyledGrid = styled(Grid)`
+    display: flex;
+    flex-flow: column;
+    gap: 24px;
+`
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
@@ -15,25 +20,14 @@ const Dashboard = (): ReactElement => {
   return (
     <>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={12} lg={6}>
-          <Overview />
+        <Grid item xs={12} md={12} lg={8}>
+          <Home />
         </Grid>
 
-        <Grid item xs={12} md={12} lg={6}>
-          <PendingTxsList size={4} />
-        </Grid>
-
-        <Grid item xs={12}>
+        <StyledGrid item xs={4}>
+          <Owner />
           <FeaturedApps />
-        </Grid>
-
-        <Grid item xs={12}>
-          <GovernanceSection />
-        </Grid>
-
-        <Grid item xs={12}>
-          <SafeAppsDashboardSection />
-        </Grid>
+        </StyledGrid>
       </Grid>
       {showCreationModal ? <CreationDialog /> : null}
     </>

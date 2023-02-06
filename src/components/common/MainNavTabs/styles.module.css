@@ -1,0 +1,33 @@
+.tabs {
+  overflow: initial;
+  width: 100%;
+}
+
+.tabs :global .MuiTabs-scroller {
+  margin: auto;
+  width: 100%
+}
+
+.tabs :global .MuiTabs-scroller .MuiTabs-indicator {
+  background-color: #bbb;
+}
+
+.tab {
+  opacity: 1;
+  padding: 0;
+  min-width: 0;
+  margin-right: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.label {
+  text-transform: none;
+  padding-bottom: 20px;
+  font-size: 16px;
+  color: #999;
+}
+
+.tabs:active .label {
+  color: #bbb;
+}

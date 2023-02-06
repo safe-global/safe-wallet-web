@@ -70,7 +70,7 @@ const NetworkSelector = (): ReactElement => {
       {configs.map((chain) => {
         return (
           <MenuItem key={chain.chainId} value={chain.chainId}>
-            <ChainIndicator chainId={chain.chainId} inline />
+            <ChainIndicator className={css.ChainIndicator} chainId={chain.chainId} inline />
           </MenuItem>
         )
       })}

@@ -27,6 +27,7 @@ export const isNoSidebarRoute = (pathname: string): boolean => {
     AppRoutes.newSafe.load,
     AppRoutes.welcome,
     AppRoutes.index,
+    
   ].includes(pathname)
 }
 
@@ -46,6 +47,7 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
     <>
       <Drawer
         variant={isSmallScreen ? 'temporary' : 'persistent'}
+        className={css.drawermo}
         anchor="left"
         open={isOpen}
         onClose={() => onToggle(false)}

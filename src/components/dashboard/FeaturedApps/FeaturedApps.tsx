@@ -26,9 +26,6 @@ export const FeaturedApps = (): ReactElement | null => {
   return (
     <Grid item xs={12} md>
       <WidgetContainer id="featured-safe-apps">
-        <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
-          Connect &amp; transact
-        </Typography>
         <WidgetBody>
           <StyledGrid container>
             {featuredApps?.map((app) => (

@@ -1,6 +1,5 @@
-.circle {
-  width: 0.8em;
-  height: 0.8em;
-  border-radius: 50%;
-  margin-left: 0.2em;
+.chainswitchbutton {
+    background-color: rgb(47, 37, 39);
+    color: rgb(255, 95, 114);
+    border-color: transparent;
 }

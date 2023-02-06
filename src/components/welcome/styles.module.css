@@ -24,10 +24,20 @@
   overflow: auto;
 }
 
+.welcomepage {
+  padding-top: 0;
+  padding-bottom: 24px;
+}
+
+.welcomewindowelement {
+  background: #888f883d;
+  backdrop-filter: blur(5px);
+  color: #fff;
+}
+
 .content {
-  background: linear-gradient(-90deg, #10ff84, #5fddff);
-  background-size: 200% 200%;
-  animation: gradient 15s ease infinite;
+  background-image: url(https://substance3d.adobe.com/magazine/wp-content/uploads/2020/12/us-cyberpunk-2077-magazine-post-feature-image-1920x1080-1.jpg);
+  animation: gradient 180s ease infinite;
   border-radius: 6px;
   padding: var(--space-8);
   display: flex;
@@ -37,9 +47,17 @@
   height: 100%;
 }
 
+.sidebar {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .sidebar :global .MuiPaper-root {
     height: 100%;
+  }
+  
+  .sidebar {
+    display: block!important;
   }
 
   .accordion {

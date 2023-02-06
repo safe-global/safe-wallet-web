@@ -1,0 +1,5 @@
+.mainchatwindow {
+    background: var(--color-background-paper);
+    border-radius: 6px;
+    height: calc(100vh - 292px);
+}

@@ -11,7 +11,7 @@ const palette = {
   },
   secondary: {
     dark: '#0FDA6D',
-    main: '#12FF80',
+    main: '#aba463',
     light: '#B0FFC9',
     background: '#EFFFF4',
   },
@@ -49,6 +49,7 @@ const palette = {
     main: '#F4F4F4',
     paper: '#FFFFFF',
     light: '#EFFFF4',
+    header: '#FFFFFF',
   },
   backdrop: {
     main: '#636669',

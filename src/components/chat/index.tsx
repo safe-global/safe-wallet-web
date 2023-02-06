@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+
+import css from './styles.module.css'
+
 import useTxHistory from '@/hooks/useTxHistory'
 import useWallet from '@/hooks/wallets/useWallet'
 import TxListItem from '../transactions/TxListItem'
@@ -168,9 +171,7 @@ const Chat = ({ user }) => {
   }, [user])
 
   return (
-    <div>
-      <h2>Safe Chat</h2>
-      <h4>Join the Live Chat</h4>
+    <div className={css.chatfullheight}>
       <div>
         <div id="messages-container">
           {chatData.map((item: any, i) =>
@@ -188,8 +189,8 @@ const Chat = ({ user }) => {
             ),
           )}
         </div>
-
-        <form onSubmit={handleSubmit}>
+        <div className={css.chatsendbuttons}>
+         <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="Leave a Message"
@@ -200,8 +201,9 @@ const Chat = ({ user }) => {
             required
           />
           <button type="submit">Send</button>
-        </form>
-
+         </form>
+        </div>
+        
         {!group ? (
           <>
             <button
@@ -230,8 +232,8 @@ const Message = ({ msg, owner, isOwner, data, timeStamp }) => (
       }}
     >
       <div>
-        <span>{timeStamp}: </span>
-        <span>{isOwner ? '@You' : owner}: </span>
+        <span>{timeStamp}</span>
+        <span>{isOwner ? 'You' : owner}: </span>
         <span> {msg}</span>
       </div>
     </div>

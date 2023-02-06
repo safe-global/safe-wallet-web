@@ -1,8 +1,10 @@
 .addButton {
   border-radius: 8px;
   padding: 8px 10px;
+  background: #615d3e;
+  color: #aba463;
 }
 
 .addButton:hover {
-  background-color: var(--color-secondary-background);
+  background-color: #615d3e75;
 }

@@ -14,10 +14,19 @@
 
 .select :global .MuiSelect-select {
   padding-right: 40px !important;
-  padding-left: 16px;
   height: 100%;
   display: flex;
   align-items: center;
+}
+
+.ChainIndicator {
+  height: 38px;
+  font-size: 14px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  padding: 8px 16px;
+  border-radius: 6px;
 }
 
 .select :global .MuiSvgIcon-root {

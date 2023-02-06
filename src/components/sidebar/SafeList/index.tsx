@@ -41,7 +41,7 @@ export const _shouldExpandSafeList = ({
   ownedSafesOnChain: string[]
   addedSafesOnChain: AddedSafesOnChain
 }): boolean => {
-  let shouldExpand = false
+    let shouldExpand = false
 
   const addedAddressesOnChain = Object.keys(addedSafesOnChain)
 
@@ -56,7 +56,7 @@ export const _shouldExpandSafeList = ({
   return shouldExpand
 }
 
-const MAX_EXPANDED_SAFES = 3
+const MAX_EXPANDED_SAFES = 99
 const NO_SAFE_MESSAGE = 'Create a new safe or add'
 
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
@@ -78,14 +78,15 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   return (
     <div className={css.container}>
       <div className={css.header}>
-        <Typography variant="h4" display="inline" fontWeight={700}>
+        <h3>
           My Safes
-        </Typography>
+        </h3>
         {!isWelcomePage && (
           <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
             <Link href={{ pathname: AppRoutes.welcome }} passHref>
               <Button
                 disableElevation
+                className={css.addbutton}
                 size="small"
                 variant="outlined"
                 onClick={closeDrawer}
@@ -137,9 +138,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
           return (
             <Fragment key={chain.chainName}>
-              {/* Chain indicator */}
-              <ChainIndicator chainId={chain.chainId} className={css.chainDivider} />
-
               {/* No Safes yet */}
               {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
                 <Typography variant="body2" color="primary.light" p={2} textAlign="center">
@@ -154,43 +152,14 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                 </Typography>
               )}
 
-              {/* Added Safes */}
-              <List className={css.list}>
-                {addedSafeEntriesOnChain.map(([address, { threshold, owners }]) => (
-                  <SafeListItem
-                    key={address}
-                    address={address}
-                    threshold={threshold}
-                    owners={owners.length}
-                    chainId={chain.chainId}
-                    closeDrawer={closeDrawer}
-                    shouldScrollToSafe
-                  />
-                ))}
-
-                {isCurrentChain &&
-                  safeAddress &&
-                  !addedSafesOnChain[safeAddress] &&
-                  !ownedSafesOnChain.includes(safeAddress) && (
-                    <SafeListItem
-                      address={safeAddress}
-                      threshold={safe.threshold}
-                      owners={safe.owners.length}
-                      chainId={safe.chainId}
-                      closeDrawer={closeDrawer}
-                      shouldScrollToSafe
-                    />
-                  )}
-              </List>
-
               {/* Owned Safes */}
               {ownedSafesOnChain.length > 0 && (
                 <>
                   <div onClick={() => toggleOpen(chain.chainId, !isOpen)} className={css.ownedLabelWrapper}>
                     <Typography variant="body2" display="inline" className={css.ownedLabel}>
-                      Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
-                      <IconButton disableRipple>{isOpen ? <ExpandLess /> : <ExpandMore />}</IconButton>
+                      {chain.chainName}
                     </Typography>
+                    <IconButton disableRipple className={css.iconExpandButton}>{isOpen ? <ExpandLess /> : <ExpandMore />}</IconButton>
                   </div>
 
                   <Collapse key={chainId} in={isOpen}>

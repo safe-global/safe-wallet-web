@@ -8,6 +8,10 @@
   align-items: center;
   text-align: left;
   gap: var(--space-1);
+  padding: 4px 11px;
+  height: 38px;
+  background: var(--color-background-paper);
+  border-radius: 6px;
 }
 
 .popoverContainer {

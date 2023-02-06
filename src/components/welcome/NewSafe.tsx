@@ -36,7 +36,7 @@ const NewSafe = () => {
   }
 
   return (
-    <Grid container spacing={3} p={3} pb={0} flex={1}>
+    <Grid container spacing={3} p={3} pb={0} flex={1} className={css.welcomepage}>
       <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 400 }} className={css.sidebar}>
         <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -58,19 +58,19 @@ const NewSafe = () => {
             fontSize={[44, null, 52]}
             lineHeight={1}
             letterSpacing={-1.5}
-            color="static.main"
+            color="#fff"
             mb={1}
           >
-            Welcome to the Safe
+            Welcome to Decentra
           </Typography>
 
-          <Typography mb={5} color="static.main">
+          <Typography mb={5} color="#fff">
             The most trusted decentralized custody protocol and collective asset management platform.
           </Typography>
 
           <Grid container spacing={3} sx={{ maxWidth: '800px' }}>
             <Grid item xs={12} lg={6}>
-              <Paper sx={{ padding: 4, height: 1 }}>
+              <Paper sx={{ padding: 4, height: 1 }} className={css.welcomewindowelement}>
                 <SvgIcon component={NewSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
                   Create Safe
@@ -89,14 +89,14 @@ const NewSafe = () => {
             </Grid>
 
             <Grid item xs={12} lg={6}>
-              <Paper sx={{ padding: 4, height: 1 }}>
+              <Paper sx={{ padding: 4, height: 1 }} className={css.welcomewindowelement}>
                 <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
                   Add existing Safe
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  Already have a Safe? Add your Safe using your Safe address.
+                  Already have a Safe? Connect with your wallet, switch to the right network and go to "My Safes"
                 </Typography>
 
                 <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
