@@ -7,7 +7,7 @@ import WalletIcon from '@/components/common/WalletIcon'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
-import chains from '@/config/chains'
+import { getShortName } from '@/utils/chains'
 
 import css from './styles.module.css'
 
@@ -17,7 +17,7 @@ const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
 
   const prefix = useMemo(() => {
-    return walletChain?.shortName || Object.entries(chains).find(([, chainId]) => chainId === wallet.chainId)?.[0]
+    return walletChain?.shortName || getShortName(wallet.chainId)
   }, [walletChain?.shortName, wallet.chainId])
 
   return (
