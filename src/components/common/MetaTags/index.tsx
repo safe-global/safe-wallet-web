@@ -1,7 +1,6 @@
 import { IS_PRODUCTION } from '@/config/constants'
 import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
-import palette from '@/styles/colors'
-import darkPalette from '@/styles/colors-dark'
+import { lightPalette, darkPalette } from '@safe-global/safe-react-components'
 
 const descriptionText =
   'Safe (prev. Gnosis Safe) is the most trusted platform to manage digital assets on Ethereum and multiple EVMs. Over $40B secured.'
@@ -34,7 +33,7 @@ const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     {/* PWA primary color and manifest */}
-    <meta name="theme-color" content={palette.background.main} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={lightPalette.background.main} media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content={darkPalette.background.main} media="(prefers-color-scheme: dark)" />
     <link rel="manifest" href="/safe.webmanifest" />
 
