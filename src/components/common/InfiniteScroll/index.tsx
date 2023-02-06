@@ -1,38 +1,15 @@
-import { type MutableRefObject, useEffect, useRef, useState, type ReactElement, useCallback } from 'react'
-
-const useIntersectionObserver = (element: MutableRefObject<HTMLElement | null>): boolean => {
-  const [isIntersecting, setIsIntersecting] = useState<boolean>(false)
-  const observer = useRef<IntersectionObserver | undefined>()
-
-  const callback = useCallback(([entry]: IntersectionObserverEntry[]) => {
-    setIsIntersecting(entry.isIntersecting)
-  }, [])
-
-  useEffect(() => {
-    if (element.current) {
-      observer.current = new IntersectionObserver(callback)
-
-      observer.current.observe(element.current)
-    }
-
-    return () => {
-      observer.current?.disconnect()
-      observer.current = undefined
-    }
-  }, [callback, element])
-
-  return isIntersecting
-}
+import { useEffect, useRef, type ReactElement } from 'react'
+import useOnceVisible from '@/hooks/useOnceVisible'
 
 const InfiniteScroll = ({ onLoadMore }: { onLoadMore: () => void }): ReactElement => {
   const elementRef = useRef<HTMLDivElement | null>(null)
-  const isIntersecting = useIntersectionObserver(elementRef)
+  const isVisible = useOnceVisible(elementRef)
 
   useEffect(() => {
-    if (isIntersecting) {
+    if (isVisible) {
       onLoadMore()
     }
-  }, [isIntersecting, onLoadMore])
+  }, [isVisible, onLoadMore])
 
   return <div ref={elementRef} />
 }

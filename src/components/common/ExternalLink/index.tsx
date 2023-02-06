@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { OpenInNewRounded } from '@mui/icons-material'
 import { Box, Link, type LinkProps } from '@mui/material'
 
@@ -9,7 +10,9 @@ const ExternalLink = ({
   noIcon = false,
   children,
   ...props
-}: Omit<LinkProps, 'target' | 'rel'> & { noIcon?: boolean }) => {
+}: Omit<LinkProps, 'target' | 'rel'> & { noIcon?: boolean }): ReactElement => {
+  if (!props.href) return <>{children}</>
+
   return (
     <Link rel="noreferrer noopener" target="_blank" {...props}>
       <Box display="inline-flex" alignItems="center" gap={0.2} component="span">

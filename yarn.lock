@@ -3019,6 +3019,14 @@
   dependencies:
     cross-fetch "^3.1.5"
 
+"@safe-global/safe-react-components@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.1.tgz#c4964b1abda805ab681d9450fcfa1a70700ab77b"
+  integrity sha512-hglcWyT99Mkgez94TOtWb0UOBBVi9r0MwmmHklyDLJoGfX3dNatN/03og6QyCevKXbdk6loteEsrz6lZzPVNGQ==
+  dependencies:
+    "@ethersproject/address" "^5.7.0"
+    ethereum-blockies-base64 "^1.0.2"
+
 "@scure/base@~1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.1.tgz#ebb651ee52ff84f420097055f4bf46cfba403938"
@@ -7995,9 +8003,9 @@ html-tokenize@^2.0.0:
     through2 "~0.4.1"
 
 http-cache-semantics@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.0.tgz#49e91c5cbf36c9b94bcfcd71c23d5249ec74e390"
-  integrity sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.1.tgz#abe02fcb2985460bf0323be664436ec3476a6d5a"
+  integrity sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ==
 
 http-errors@2.0.0:
   version "2.0.0"

@@ -74,6 +74,13 @@ describe('HiddenTokenToggle', () => {
           theme: {
             darkMode: true,
           },
+          env: {
+            tenderly: {
+              url: '',
+              accessToken: '',
+            },
+            rpc: {},
+          },
         },
       },
     })
