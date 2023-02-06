@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Button, Grid, Typography, Divider, Box } from '@mui/material'
+import { lightPalette } from '@safe-global/safe-react-components'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -20,7 +21,6 @@ import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCre
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import palette from '@/styles/colors'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
@@ -121,7 +121,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
                   <Box
                     p={1}
                     sx={{
-                      backgroundColor: palette.secondary.background,
+                      backgroundColor: lightPalette.secondary.background,
                       color: 'static.main',
                       width: 'fit-content',
                       borderRadius: '6px',
