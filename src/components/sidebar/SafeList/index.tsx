@@ -81,6 +81,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
         <Typography variant="h4" display="inline" fontWeight={700}>
           My Safes
         </Typography>
+
         {!isWelcomePage && (
           <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
             <Link href={{ pathname: AppRoutes.welcome }} passHref>
@@ -165,6 +166,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                     chainId={chain.chainId}
                     closeDrawer={closeDrawer}
                     shouldScrollToSafe
+                    isAdded
                   />
                 ))}
 
