@@ -30,7 +30,7 @@ const PageLayout = ({ pathname, children }: { pathname: string; children: ReactE
     <>
       <header className={css.header}>
         <PsaBanner />
-        <Header onMenuToggle={setSidebarOpen} />
+        <Header onMenuToggle={noSidebar ? undefined : setSidebarOpen} />
       </header>
 
       {!noSidebar && <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />}
