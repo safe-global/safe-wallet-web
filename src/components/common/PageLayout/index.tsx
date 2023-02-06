@@ -6,7 +6,6 @@ import css from './styles.module.css'
 import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'
 import SideDrawer from './SideDrawer'
-import PsaBanner from '../PsaBanner'
 import { AppRoutes } from '@/config/routes'
 import useDebounce from '@/hooks/useDebounce'
 
@@ -29,7 +28,6 @@ const PageLayout = ({ pathname, children }: { pathname: string; children: ReactE
   return (
     <>
       <header className={css.header}>
-        <PsaBanner />
         <Header onMenuToggle={noSidebar ? undefined : setSidebarOpen} />
       </header>
 
