@@ -16,7 +16,7 @@ type SideDrawerProps = {
   onToggle: (isOpen: boolean) => void
 }
 
-const isSafeAppRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
+const isSafeAppFrameRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
   return pathname === AppRoutes.apps.index && !!query.appUrl
 }
 
@@ -34,11 +34,11 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const { pathname, query } = useRouter()
   const { breakpoints } = useTheme()
   const isSmallScreen = useMediaQuery(breakpoints.down('md'))
-  const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
+  const showSidebarToggle = isSafeAppFrameRoute(pathname, query) && !isSmallScreen
 
   useEffect(() => {
     const hideSidebar = isNoSidebarRoute(pathname)
-    const closeSidebar = hideSidebar || isSmallScreen || isSafeAppRoute(pathname, query)
+    const closeSidebar = hideSidebar || isSmallScreen || isSafeAppFrameRoute(pathname, query)
     onToggle(!closeSidebar)
   }, [isSmallScreen, onToggle, pathname, query])
 
