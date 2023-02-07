@@ -3,8 +3,13 @@ export const AppRoutes = {
   welcome: '/welcome',
   index: '/',
   import: '/import',
+  environmentVariables: '/environment-variables',
   home: '/home',
-  apps: '/apps',
+  apps: {
+    index: '/apps',
+    bookmarked: '/apps/bookmarked',
+    custom: '/apps/custom',
+  },
   addressBook: '/address-book',
   balances: {
     nfts: '/balances/nfts',
@@ -21,6 +26,7 @@ export const AppRoutes = {
     index: '/settings',
     data: '/settings/data',
     appearance: '/settings/appearance',
+    environmentVariables: '/settings/environment-variables',
     safeApps: {
       index: '/settings/safe-apps',
     },

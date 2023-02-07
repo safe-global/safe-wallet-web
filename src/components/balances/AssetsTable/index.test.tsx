@@ -98,6 +98,13 @@ describe('AssetsTable', () => {
           theme: {
             darkMode: true,
           },
+          env: {
+            tenderly: {
+              url: '',
+              accessToken: '',
+            },
+            rpc: {},
+          },
         },
       },
     })
@@ -193,6 +200,13 @@ describe('AssetsTable', () => {
           theme: {
             darkMode: true,
           },
+          env: {
+            tenderly: {
+              url: '',
+              accessToken: '',
+            },
+            rpc: {},
+          },
         },
       },
     })
@@ -284,6 +298,13 @@ describe('AssetsTable', () => {
           theme: {
             darkMode: true,
           },
+          env: {
+            tenderly: {
+              url: '',
+              accessToken: '',
+            },
+            rpc: {},
+          },
         },
       },
     })
@@ -371,6 +392,13 @@ describe('AssetsTable', () => {
           },
           theme: {
             darkMode: true,
+          },
+          env: {
+            tenderly: {
+              url: '',
+              accessToken: '',
+            },
+            rpc: {},
           },
         },
       },

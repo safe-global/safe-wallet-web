@@ -1,0 +1,34 @@
+.container {
+  padding: var(--space-12) var(--space-3) 0;
+  margin-bottom: var(--space-5);
+  background-color: var(--color-background-main);
+}
+
+.title {
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 150%;
+}
+
+.subtitle {
+  max-width: 650px;
+  letter-spacing: 0.15px;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--color-background-main);
+  z-index: 2;
+  width: 100%;
+  position: sticky !important;
+  top: var(--header-height);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+@media (max-width: 600px) {
+  .tabs {
+    padding: 0 24px;
+  }
+}

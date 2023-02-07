@@ -1,9 +1,6 @@
 const HW_WALLET = '0xff6E053fBf4E5895eDec09146Bc10f705E8c4b3D'
 const SPENDING_LIMIT_SAFE = 'gor:0x28F95E682D1dd632b54Dc61740575f49DB39Eb7F'
 
-// TODO: Extend with non-owner spending limit beneficiaries when
-// https://github.com/safe-global/web-core/pull/1572 is merged
-
 describe('Check spending limit modal', () => {
   before(() => {
     cy.connectE2EWallet()

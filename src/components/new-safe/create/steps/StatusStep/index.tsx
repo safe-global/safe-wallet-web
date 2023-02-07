@@ -19,7 +19,7 @@ import useChainId from '@/hooks/useChainId'
 import { getRedirect } from '@/components/new-safe/create/logic'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { AppRoutes } from '@/config/routes'
-import palette from '@/styles/colors'
+import { lightPalette } from '@safe-global/safe-react-components'
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
@@ -74,9 +74,9 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
     if (!setProgressColor) return
 
     if (isError) {
-      setProgressColor(palette.error.main)
+      setProgressColor(lightPalette.error.main)
     } else {
-      setProgressColor(palette.secondary.main)
+      setProgressColor(lightPalette.secondary.main)
     }
   }, [isError, setProgressColor])
 

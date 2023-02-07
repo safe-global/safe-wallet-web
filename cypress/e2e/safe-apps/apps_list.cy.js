@@ -31,7 +31,8 @@ describe('The Safe Apps list', () => {
       cy.findByRole('textbox').clear()
       cy.findByLabelText(/pin walletconnect/i).click()
       cy.findByLabelText(/pin transaction builder/i).click()
-      cy.findByText('Pinned apps (2)').should('exist')
+      cy.findByText(/bookmarked apps/i).click()
+      cy.findByText('ALL (2)').should('exist')
     })
 
     it('should allow to unpin apps', () => {
@@ -41,7 +42,7 @@ describe('The Safe Apps list', () => {
       cy.findAllByLabelText(/unpin transaction builder/i)
         .first()
         .click()
-      cy.findByText(/pinned apps.*0/i).should('exist')
+      cy.findByText('ALL (0)').should('exist')
     })
   })
 
@@ -50,7 +51,7 @@ describe('The Safe Apps list', () => {
       cy.intercept('GET', 'https://my-invalid-custom-app.com/manifest.json', {
         name: 'My Custom App',
       })
-
+      cy.findByText(/my custom apps/i).click()
       cy.findByText(/add custom app/i).click({ force: true })
       cy.findByLabelText(/app url/i)
         .clear()
@@ -71,7 +72,8 @@ describe('The Safe Apps list', () => {
       cy.findByRole('heading', { name: /my custom app/i }).should('exist')
       cy.findByRole('checkbox').click()
       cy.findByRole('button', { name: /add/i }).click()
-      cy.findByText(/pinned apps \(0\)/i).should('exist')
+      cy.findByText('ALL (1)').should('exist')
+      cy.findByText(/my custom app description/i).should('exist')
     })
   })
 })

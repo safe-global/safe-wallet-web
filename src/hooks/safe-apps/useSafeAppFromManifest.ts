@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { Errors, logError } from '@/services/exceptions'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
-import useAsync from '../useAsync'
+import useAsync from '@/hooks/useAsync'
+import { getEmptySafeApp } from '@/components/safe-apps/utils'
 import type { SafeAppDataWithPermissions } from '@/components/safe-apps/types'
-import { getEmptySafeApp } from '../../components/safe-apps/utils'
 
 type UseSafeAppFromManifestReturnType = {
   safeApp?: SafeAppDataWithPermissions

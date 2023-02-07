@@ -1,7 +1,7 @@
 import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
 import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
-import { FEATURES, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import {
@@ -9,11 +9,12 @@ import {
   getSpecificGnosisSafeContractInstance,
 } from '@/services/contracts/safeContracts'
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
-import { hasFeature } from '@/utils/chains'
+import { FEATURES, hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/TxSimulation/types'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { BigNumber } from 'ethers'
+import type { EnvState } from '@/store/settingsSlice'
 
 export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
   if (!chain) {
@@ -26,11 +27,26 @@ export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
   return isSimulationEnvSet && hasFeature(chain, FEATURES.TX_SIMULATION)
 }
 
-export const getSimulation = async (tx: TenderlySimulatePayload): Promise<TenderlySimulation> => {
-  const data = await fetch(TENDERLY_SIMULATE_ENDPOINT_URL, {
+export const getSimulation = async (
+  tx: TenderlySimulatePayload,
+  customTenderly: EnvState['tenderly'] | undefined,
+): Promise<TenderlySimulation> => {
+  const requestObject: RequestInit = {
     method: 'POST',
     body: JSON.stringify(tx),
-  }).then((res) => {
+  }
+
+  if (customTenderly?.accessToken) {
+    requestObject.headers = {
+      'content-type': 'application/JSON',
+      'X-Access-Key': customTenderly.accessToken,
+    }
+  }
+
+  const data = await fetch(
+    customTenderly?.url ? customTenderly.url : TENDERLY_SIMULATE_ENDPOINT_URL,
+    requestObject,
+  ).then((res) => {
     if (res.ok) {
       return res.json()
     }

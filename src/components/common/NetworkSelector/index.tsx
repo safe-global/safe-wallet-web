@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import ChainIndicator from '../ChainIndicator'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
-import chains from '@/config/chains'
+import { getShortName } from '@/utils/chains'
 import type { ReactElement } from 'react'
 import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
@@ -18,7 +18,7 @@ const NetworkSelector = (): ReactElement => {
 
   const handleNetworkSwitch = (event: SelectChangeEvent) => {
     const selectedChainId = event.target.value
-    const newShortName = Object.entries(chains).find(([, val]) => val === selectedChainId)?.[0]
+    const newShortName = getShortName(selectedChainId)
 
     if (!newShortName) return
 

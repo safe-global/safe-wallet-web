@@ -14,8 +14,8 @@ const OverviewWidget = ({ safeName }: { safeName: string }): ReactElement | null
   const wallet = useWallet()
   const chain = useCurrentChain()
   const rows = [
-    ...(wallet && chain ? [{ title: 'Wallet', component: <WalletInfo wallet={wallet} chain={chain} /> }] : []),
-    ...(chain ? [{ title: 'Network', component: <ChainIndicator chainId={chain?.chainId} inline /> }] : []),
+    ...(wallet ? [{ title: 'Wallet', component: <WalletInfo wallet={wallet} /> }] : []),
+    ...(chain ? [{ title: 'Network', component: <ChainIndicator chainId={chain.chainId} inline /> }] : []),
     ...(safeName !== '' ? [{ title: 'Name', component: <Typography>{safeName}</Typography> }] : []),
   ]
 

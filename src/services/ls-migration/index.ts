@@ -15,7 +15,10 @@ const useStorageMigration = (): void => {
   const [isMigrationFinished = false, setIsMigrationFinished] = useLocalStorage<boolean>(MIGRATION_KEY)
 
   useEffect(() => {
-    if (isMigrationFinished) return
+    if (isMigrationFinished) {
+      dispatch(addedSafesSlice.actions.migrateLegacyOwners())
+      return
+    }
 
     const unmount = createMigrationBus((lsData: LOCAL_STORAGE_DATA) => {
       const abData = migrateAddressBook(lsData)
