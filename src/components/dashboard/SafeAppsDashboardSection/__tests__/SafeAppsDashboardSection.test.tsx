@@ -1,11 +1,12 @@
 import * as safeAppsGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { render, screen, waitFor } from '@/tests/test-utils'
 import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
 import { LS_NAMESPACE } from '@/config/constants'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
-  getSafeApps: (chainId: string) =>
+  getSafeApps: (chainId: string): Promise<SafeAppData[]> =>
     Promise.resolve([
       {
         id: 13,
@@ -19,6 +20,9 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
           type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
         },
         tags: [],
+        features: [],
+        socialProfiles: [],
+        developerWebsite: '',
       },
       {
         id: 3,
@@ -33,6 +37,9 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
           value: ['https://gnosis-safe.io'],
         },
         tags: [],
+        features: [],
+        socialProfiles: [],
+        developerWebsite: '',
       },
       {
         id: 14,
@@ -46,6 +53,9 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
           type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
         },
         tags: [],
+        features: [],
+        socialProfiles: [],
+        developerWebsite: '',
       },
       {
         id: 24,
@@ -60,6 +70,9 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
           value: ['https://gnosis-safe.io'],
         },
         tags: [],
+        features: [],
+        socialProfiles: [],
+        developerWebsite: '',
       },
     ]),
 }))

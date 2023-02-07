@@ -1,49 +1,33 @@
-import Grid from '@mui/material/Grid'
-import InputAdornment from '@mui/material/InputAdornment'
-import SearchIcon from '@/public/images/common/search.svg'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
-import TextField from '@mui/material/TextField'
-import SvgIcon from '@mui/material/SvgIcon'
 
-import PageHeader from '@/components/common/PageHeader'
+import NavTabs from '@/components/common/NavTabs'
+import { safeAppsNavItems } from '@/components/sidebar/SidebarNavigation/config'
+import css from './styles.module.css'
 
-type Props = {
-  searchQuery: string
-  onSearchQueryChange: (searchQuery: string) => void
-}
-
-const SafeAppsHeader = ({ searchQuery, onSearchQueryChange }: Props): ReactElement => {
+const SafeAppsHeader = (): ReactElement => {
   return (
-    <PageHeader
-      title="Safe Apps"
-      noBorder
-      action={
-        <Grid container pb={1}>
-          <Grid item xs={9} md={5} xl={4.5}>
-            <TextField
-              placeholder="Search"
-              variant="filled"
-              hiddenLabel
-              value={searchQuery}
-              onChange={(e) => {
-                onSearchQueryChange(e.target.value)
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SvgIcon component={SearchIcon} inheritViewBox color="border" />
-                  </InputAdornment>
-                ),
-                disableUnderline: true,
-              }}
-              fullWidth
-              size="small"
-            />
-          </Grid>
-        </Grid>
-      }
-    />
+    <>
+      <Box className={css.container}>
+        {/* Safe Apps Title */}
+        <Typography className={css.title} variant="h3">
+          Explore the Safe Ecosystem
+        </Typography>
+
+        {/* Safe Apps Subtitle */}
+        <Typography className={css.subtitle}>
+          Connect to your favorite web3 applications with your Safe smart contract account. Safer and more efficient,
+          right from the interface.
+        </Typography>
+      </Box>
+
+      {/* Safe Apps Tabs */}
+      <Box className={css.tabs}>
+        <NavTabs tabs={safeAppsNavItems} />
+      </Box>
+    </>
   )
 }
 
-export { SafeAppsHeader }
+export default SafeAppsHeader
