@@ -16,11 +16,11 @@ const getIframeContent = (url: string, width: number, height: number): string =>
   `
 }
 
-const SafeAppIcon = ({
+const SafeAppIconCard = ({
   src,
   alt,
-  width = 40,
-  height = 40,
+  width = 48,
+  height = 48,
 }: {
   src: string
   alt: string
@@ -41,4 +41,4 @@ const SafeAppIcon = ({
   )
 }
 
-export default memo(SafeAppIcon)
+export default memo(SafeAppIconCard)

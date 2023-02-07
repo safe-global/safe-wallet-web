@@ -17,21 +17,21 @@ type SideDrawerProps = {
   onToggle: (isOpen: boolean) => void
 }
 
-const isSafeAppRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
-  return pathname === AppRoutes.apps && !!query.appUrl
+const isSafeAppFrameRoute = (pathname: string, query: ParsedUrlQuery): boolean => {
+  return pathname === AppRoutes.apps.index && !!query.appUrl
 }
 
 const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   const { pathname, query } = useRouter()
   const { breakpoints } = useTheme()
   const isSmallScreen = useMediaQuery(breakpoints.down('md'))
-  const showSidebarToggle = isSafeAppRoute(pathname, query) && !isSmallScreen
+  const showSidebarToggle = isSafeAppFrameRoute(pathname, query) && !isSmallScreen
   // Keep the sidebar hidden on small screens via CSS until we collapse it via JS.
   // With a small delay to avoid flickering.
   const smDrawerHidden = useDebounce(!isSmallScreen, 300)
 
   useEffect(() => {
-    const closeSidebar = isSmallScreen || isSafeAppRoute(pathname, query)
+    const closeSidebar = isSmallScreen || isSafeAppFrameRoute(pathname, query)
     onToggle(!closeSidebar)
   }, [isSmallScreen, onToggle, pathname, query])
 
