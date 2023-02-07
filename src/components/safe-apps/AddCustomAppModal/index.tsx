@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useRouter } from 'next/router'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import {
@@ -23,9 +24,9 @@ import useDebounce from '@/hooks/useDebounce'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { isSameUrl, trimTrailingSlash } from '@/utils/url'
-import { AppRoutes } from '@/config/routes'
 import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
+import { getShareSafeAppUrl } from '@/components/safe-apps/SafeAppActionButtons'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -51,6 +52,8 @@ const INVALID_URL_ERROR = 'The url is invalid'
 
 export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const currentChain = useCurrentChain()
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
@@ -87,9 +90,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
     [safeAppsList],
   )
 
-  const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${encodeURIComponent(
-    safeApp?.url || '',
-  )}&chain=${currentChain?.shortName}`
+  const shareSafeAppUrl = getShareSafeAppUrl(router, safeApp?.url || '', currentChain)
   const isSafeAppValid = isValid && safeApp
   const isCustomAppInTheDefaultList = errors?.appUrl?.type === 'alreadyExists'
 
@@ -116,7 +117,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
             <Box mt={2}>
               {safeApp ? (
                 <>
-                  <CustomApp safeApp={safeApp} shareUrl={isCustomAppInTheDefaultList ? shareUrl : ''} />
+                  <CustomApp safeApp={safeApp} shareUrl={isCustomAppInTheDefaultList ? shareSafeAppUrl : ''} />
                   {isCustomAppInTheDefaultList ? (
                     <Box display="flex" mt={2} alignItems="center">
                       <CheckIcon color="success" />

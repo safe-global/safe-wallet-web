@@ -87,7 +87,7 @@ describe('SafeTokenWidget', () => {
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
       expect(result.baseElement).toContainHTML(
-        `href="${AppRoutes.apps}?safe=${fakeSafeAddress}&appUrl=${encodeURIComponent(MOCK_CLAIMING_APP_URL)}"`,
+        `href="${AppRoutes.apps.index}?safe=${fakeSafeAddress}&appUrl=${encodeURIComponent(MOCK_CLAIMING_APP_URL)}"`,
       )
     })
   })

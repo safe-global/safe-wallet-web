@@ -3013,12 +3013,20 @@
     "@safe-global/safe-core-sdk-utils" "^1.7.1"
     ethers "5.7.2"
 
-"@safe-global/safe-gateway-typescript-sdk@^3.5.5":
-  version "3.5.5"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.5.5.tgz#a41b4c8b4cbe7ecb9fdf454008f970de9fa02576"
-  integrity sha512-Nde7GivRTKYSn4h5H2ixW7MxcSFUhg9Bd5BgdJDjFlOYnCU85vZ5Pwu+tRpWYzXTAhVVvCG8fvMXoT9uQcG4ZA==
+"@safe-global/safe-gateway-typescript-sdk@^3.7.0":
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.7.0.tgz#2af52f1bc73759b1b6a549fed598781c8c5fce72"
+  integrity sha512-3BvlUgp0oZ1Zkn7nG3wY1jvCEE4t530BjKcaa3r0qsf0whf/ez/0gmQwk7DTOGmVmvOfjj6HHikxnrUCCX+/3Q==
   dependencies:
     cross-fetch "^3.1.5"
+
+"@safe-global/safe-react-components@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.1.tgz#c4964b1abda805ab681d9450fcfa1a70700ab77b"
+  integrity sha512-hglcWyT99Mkgez94TOtWb0UOBBVi9r0MwmmHklyDLJoGfX3dNatN/03og6QyCevKXbdk6loteEsrz6lZzPVNGQ==
+  dependencies:
+    "@ethersproject/address" "^5.7.0"
+    ethereum-blockies-base64 "^1.0.2"
 
 "@scure/base@~1.1.0":
   version "1.1.1"
@@ -7996,9 +8004,9 @@ html-tokenize@^2.0.0:
     through2 "~0.4.1"
 
 http-cache-semantics@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.0.tgz#49e91c5cbf36c9b94bcfcd71c23d5249ec74e390"
-  integrity sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.1.tgz#abe02fcb2985460bf0323be664436ec3476a6d5a"
+  integrity sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ==
 
 http-errors@2.0.0:
   version "2.0.0"

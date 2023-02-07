@@ -1,0 +1,13 @@
+.filterContainer {
+  background-color: var(--color-background-main);
+  z-index: 2;
+  position: sticky !important;
+  top: calc(var(--header-height) + 49px);
+
+  padding: var(--space-1) 0 var(--space-1) 0;
+}
+
+.optimizedWithBatchLabel {
+  font-size: 12px;
+  color: var(--color-text-primary);
+}

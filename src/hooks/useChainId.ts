@@ -8,6 +8,7 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 import { prefixedAddressRe } from '@/utils/url'
 import useWallet from './wallets/useWallet'
 import useChains from './useChains'
+import { getChainId } from '@/utils/chains'
 
 const defaultChainId = IS_PRODUCTION ? chains.eth : chains.gor
 
@@ -40,7 +41,7 @@ export const useUrlChainId = (): string | undefined => {
   const { prefix } = parsePrefixedAddress(safe)
   const shortName = prefix || chain
 
-  return Object.entries(chains).find(([key]) => key === shortName)?.[1]
+  return getChainId(shortName)
 }
 
 export const useChainId = (): string => {
