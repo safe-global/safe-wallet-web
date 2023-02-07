@@ -1,11 +1,10 @@
-import { useState, type ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import classnames from 'classnames'
 
 import Header from '@/components/common//Header'
 import css from './styles.module.css'
 import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'
-import SideDrawer from './SideDrawer'
 import PsaBanner from '../PsaBanner'
 import { AppRoutes } from '@/config/routes'
 import useDebounce from '@/hooks/useDebounce'
@@ -22,7 +21,6 @@ const isNoSidebarRoute = (pathname: string): boolean => {
 
 const PageLayout = ({ pathname, children }: { pathname: string; children: ReactElement }): ReactElement => {
   const noSidebar = isNoSidebarRoute(pathname)
-  const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
   let isAnimated = useDebounce(!noSidebar, 300)
   if (noSidebar) isAnimated = false
 
@@ -30,7 +28,7 @@ const PageLayout = ({ pathname, children }: { pathname: string; children: ReactE
     <>
       <header className={css.header}>
         <PsaBanner />
-        <Header onMenuToggle={noSidebar ? undefined : setSidebarOpen} />
+        <Header />
       </header>
 
       <div className={classnames(css.main, css.mainNoSidebar)}>

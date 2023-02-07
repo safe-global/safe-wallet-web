@@ -65,7 +65,7 @@ const SignPage: React.FunctionComponent<ISignPageProps> = (props) => {
       console.log(siweMsg)
       setSiweMessage(siweMsg)
     }
-  }, [chainId, wallet, provider])
+  }, [chainId, wallet, provider, message])
 
   return (
     <Stack alignItems={'center'} pt={5}>

@@ -86,7 +86,7 @@ const LinkPage: React.FunctionComponent<ILinkPageProps> = (props) => {
       console.log(siweMsg)
       setSiweMessage(siweMsg)
     }
-  }, [chainId, wallet, provider])
+  }, [chainId, wallet, provider, message])
 
   return step == 1 ? (
     <Stack alignItems={'center'} pt={5}>
