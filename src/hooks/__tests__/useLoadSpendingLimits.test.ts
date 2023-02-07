@@ -11,6 +11,7 @@ import {
 import { BigNumber } from '@ethersproject/bignumber'
 import * as web3 from '../wallets/web3'
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
+import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 
 const mockProvider = new JsonRpcProvider()
 const mockModule = {
@@ -26,7 +27,7 @@ describe('getSpendingLimits', () => {
   it('should return undefined if no spending limit module address was found', async () => {
     jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue(undefined)
 
-    const result = await getSpendingLimits(mockProvider, [], ZERO_ADDRESS, '4', {})
+    const result = await getSpendingLimits(mockProvider, [], ZERO_ADDRESS, '4', [])
 
     expect(result).toBeUndefined()
   })
@@ -34,7 +35,7 @@ describe('getSpendingLimits', () => {
   it('should return undefined if the safe has no spending limit module', async () => {
     jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue('0x1')
 
-    const result = await getSpendingLimits(mockProvider, [], ZERO_ADDRESS, '4', {})
+    const result = await getSpendingLimits(mockProvider, [], ZERO_ADDRESS, '4', [])
 
     expect(result).toBeUndefined()
   })
@@ -54,7 +55,7 @@ describe('getSpendingLimits', () => {
       value: '0x1',
     }
 
-    await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4', {})
+    await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4', [])
 
     expect(getDelegatesMock).toHaveBeenCalledWith(ZERO_ADDRESS, 0, 100)
   })
@@ -81,7 +82,7 @@ describe('getSpendingLimits', () => {
       }),
     )
 
-    const result = await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4', {})
+    const result = await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4', [])
 
     expect(result?.length).toBe(4)
   })
@@ -108,7 +109,7 @@ describe('getSpendingLimits', () => {
       }),
     )
 
-    const result = await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4', {})
+    const result = await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4', [])
 
     expect(result?.length).toBe(0)
   })
@@ -119,7 +120,7 @@ describe('getTokensForDelegate', () => {
     const getTokensMock = jest.fn(() => [])
     const mockContract = { getTokens: getTokensMock } as unknown as AllowanceModule
 
-    await getTokensForDelegate(mockContract, ZERO_ADDRESS, '0x1', {})
+    await getTokensForDelegate(mockContract, ZERO_ADDRESS, '0x1', [])
 
     expect(getTokensMock).toHaveBeenCalledWith(ZERO_ADDRESS, '0x1')
   })
@@ -136,7 +137,7 @@ describe('getTokenAllowanceForDelegate', () => {
     ])
     const mockContract = { getTokenAllowance: getTokenAllowanceMock } as unknown as AllowanceModule
 
-    const result = await getTokenAllowanceForDelegate(mockContract, ZERO_ADDRESS, '0x1', '0x10', {})
+    const result = await getTokenAllowanceForDelegate(mockContract, ZERO_ADDRESS, '0x1', '0x10', [])
 
     expect(result.beneficiary).toBe('0x1')
     expect(result.nonce).toBe('0')
@@ -156,13 +157,16 @@ describe('getTokenAllowanceForDelegate', () => {
     ])
     const mockContract = { getTokenAllowance: getTokenAllowanceMock } as unknown as AllowanceModule
 
-    const mockTokenInfoFromBalances = {
-      ['0x10']: {
+    const mockTokenInfoFromBalances = [
+      {
+        address: '0x10',
+        name: 'Test',
+        type: TokenType.ERC20,
         symbol: 'TST',
         decimals: 10,
         logoUri: 'https://mock.images/0x10.png',
       },
-    }
+    ]
 
     const result = await getTokenAllowanceForDelegate(
       mockContract,
@@ -210,7 +214,7 @@ describe('getTokenAllowanceForDelegate', () => {
 
     const mockContract = { getTokenAllowance: getTokenAllowanceMock } as unknown as AllowanceModule
 
-    const result = await getTokenAllowanceForDelegate(mockContract, ZERO_ADDRESS, '0x1', '0x10', {})
+    const result = await getTokenAllowanceForDelegate(mockContract, ZERO_ADDRESS, '0x1', '0x10', [])
 
     expect(result.token.address).toBe('0x10')
     expect(result.token.decimals).toBe(10)

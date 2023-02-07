@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import useAsync, { type AsyncResult } from '../useAsync'
 import useSafeInfo from '../useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
@@ -7,15 +7,19 @@ import useChainId from '@/hooks/useChainId'
 import { getWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { getSpendingLimitContract, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
-import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
+import type { AddressEx, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { sameAddress } from '@/utils/addresses'
 import { ERC20__factory } from '@/types/contracts'
 import type { AllowanceModule } from '@/types/contracts'
 
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
-import useBalances from '../useBalances'
+import { useAppSelector } from '@/store'
+import { selectTokens } from '@/store/balancesSlice'
 
-type TokenInfoFromBalances = { [address: string]: { symbol: string; decimals: number; logoUri?: string } }
+const defaultTokenInfo = {
+  decimals: 18,
+  symbol: '',
+}
 
 const isModuleEnabled = (modules: string[], moduleAddress: string): boolean => {
   return modules?.some((module) => sameAddress(module, moduleAddress)) ?? false
@@ -24,16 +28,8 @@ const isModuleEnabled = (modules: string[], moduleAddress: string): boolean => {
 const discardZeroAllowance = (spendingLimit: SpendingLimitState): boolean =>
   !(sameString(spendingLimit.amount, '0') && sameString(spendingLimit.resetTimeMin, '0'))
 
-const getTokenInfoFromBalances = (tokenInfoFromBalances: TokenInfoFromBalances, address: string) => {
-  const tokenInfo = tokenInfoFromBalances[address]
-  if (!tokenInfo) {
-    return undefined
-  }
-  return {
-    ...tokenInfo,
-    address,
-  }
-}
+const getTokenInfoFromBalances = (tokenInfoFromBalances: TokenInfo[], address: string) =>
+  tokenInfoFromBalances.find((token) => token.address === address)
 
 const getTokenInfoOnChain = async (address: string) => {
   const web3 = getWeb3()
@@ -54,18 +50,14 @@ export const getTokenAllowanceForDelegate = async (
   safeAddress: string,
   delegate: string,
   token: string,
-  tokenInfoFromBalances: TokenInfoFromBalances,
+  tokenInfoFromBalances: TokenInfo[],
 ): Promise<SpendingLimitState> => {
   const tokenAllowance = await contract.getTokenAllowance(safeAddress, delegate, token)
   const [amount, spent, resetTimeMin, lastResetMin, nonce] = tokenAllowance
   return {
     beneficiary: delegate,
     token: getTokenInfoFromBalances(tokenInfoFromBalances, token) ||
-      (await getTokenInfoOnChain(token)) || {
-        address: token,
-        decimals: 18,
-        symbol: '',
-      },
+      (await getTokenInfoOnChain(token)) || { ...defaultTokenInfo, address: token },
     amount: amount.toString(),
     spent: spent.toString(),
     resetTimeMin: resetTimeMin.toString(),
@@ -78,7 +70,7 @@ export const getTokensForDelegate = async (
   contract: AllowanceModule,
   safeAddress: string,
   delegate: string,
-  tokenInfoFromBalances: TokenInfoFromBalances,
+  tokenInfoFromBalances: TokenInfo[],
 ) => {
   const tokens = await contract.getTokens(safeAddress, delegate)
 
@@ -94,7 +86,7 @@ export const getSpendingLimits = async (
   safeModules: AddressEx[],
   safeAddress: string,
   chainId: string,
-  tokenInfoFromBalances: TokenInfoFromBalances,
+  tokenInfoFromBalances: TokenInfo[],
 ): Promise<SpendingLimitState[] | undefined> => {
   const spendingLimitModuleAddress = getSpendingLimitModuleAddress(chainId)
   if (!spendingLimitModuleAddress) return
@@ -120,21 +112,7 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
   const { safeAddress, safe, safeLoaded } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
-  const { balances } = useBalances()
-
-  const tokenInfoFromBalances = useMemo(() => {
-    if (balances.items.length === 0) {
-      return undefined
-    }
-    return balances.items.reduce((dictionary, item) => {
-      dictionary[item.tokenInfo.address] = {
-        symbol: item.tokenInfo.symbol,
-        decimals: item.tokenInfo.decimals,
-        logoUri: item.tokenInfo.logoUri,
-      }
-      return dictionary
-    }, {} as TokenInfoFromBalances)
-  }, [balances.items])
+  const tokenInfoFromBalances = useAppSelector(selectTokens)
 
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(() => {
     if (!provider || !safeLoaded || !safe.modules || !tokenInfoFromBalances) return
