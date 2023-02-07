@@ -16,7 +16,7 @@ import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import { useAppSelector } from '@/store'
 import { selectTokens } from '@/store/balancesSlice'
 
-const defaultTokenInfo = {
+const DEFAULT_TOKEN_INFO = {
   decimals: 18,
   symbol: '',
 }
@@ -57,7 +57,7 @@ export const getTokenAllowanceForDelegate = async (
   return {
     beneficiary: delegate,
     token: getTokenInfoFromBalances(tokenInfoFromBalances, token) ||
-      (await getTokenInfoOnChain(token)) || { ...defaultTokenInfo, address: token },
+      (await getTokenInfoOnChain(token)) || { ...DEFAULT_TOKEN_INFO, address: token },
     amount: amount.toString(),
     spent: spent.toString(),
     resetTimeMin: resetTimeMin.toString(),
