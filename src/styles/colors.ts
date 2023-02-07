@@ -6,12 +6,12 @@ const palette = {
   },
   primary: {
     dark: '#3c3c3c',
-    main: '#121312',
+    main: '#FF811D',
     light: '#636669',
   },
   secondary: {
     dark: '#0FDA6D',
-    main: '#12FF80',
+    main: '#FF811D',
     light: '#B0FFC9',
     background: '#EFFFF4',
   },

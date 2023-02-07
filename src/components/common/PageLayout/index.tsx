@@ -33,14 +33,7 @@ const PageLayout = ({ pathname, children }: { pathname: string; children: ReactE
         <Header onMenuToggle={noSidebar ? undefined : setSidebarOpen} />
       </header>
 
-      {!noSidebar && <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />}
-
-      <div
-        className={classnames(css.main, {
-          [css.mainNoSidebar]: noSidebar || !isSidebarOpen,
-          [css.mainAnimated]: isAnimated,
-        })}
-      >
+      <div className={classnames(css.main, css.mainNoSidebar)}>
         <div className={css.content}>
           <SafeLoadingError>{children}</SafeLoadingError>
         </div>

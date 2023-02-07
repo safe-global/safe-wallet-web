@@ -1,10 +1,10 @@
 import { Box, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
-import { useChainFromQueryParams } from '@/hooks/safe-apps/useChainFromQueryParams'
 import { SafeAppLanding } from '@/components/safe-apps/SafeAppLandingPage'
 import { AppRoutes } from '@/config/routes'
 import Head from 'next/head'
+import { useChainFromQueryParams } from '@/hooks/safe-apps/useChainFromQueryParams'
 
 const ShareSafeApp = () => {
   const router = useRouter()
