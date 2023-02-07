@@ -1,20 +1,19 @@
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import semverSatisfies from 'semver/functions/satisfies'
 import type GnosisSafeContractEthers from '@safe-global/safe-ethers-lib/dist/src/contracts/GnosisSafe/GnosisSafeContractEthers'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getFallbackHandlerContractInstance, getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
+import { hasSafeFeature } from '@/utils/safe-versions'
 
 const getChangeFallbackHandlerCallData = (
   safe: SafeInfo,
   chain: ChainInfo,
   safeContractInstance: GnosisSafeContractEthers,
 ): string => {
-  const SUPPORTS_FALLBACK_HANDLER = '>=1.1.0'
-
-  if (!safe.version || !semverSatisfies(safe.version, SUPPORTS_FALLBACK_HANDLER)) {
+  if (!hasSafeFeature(SAFE_FEATURES.SAFE_FALLBACK_HANDLER, safe.version)) {
     return '0x'
   }
 
