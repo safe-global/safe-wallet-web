@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react'
-import { Button, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 import type { LinkProps } from 'next/link'
 
-import PagePlaceholder from '../common/PagePlaceholder'
+import PagePlaceholder from '@/components/common/PagePlaceholder'
 import AddCustomAppIcon from '@/public/images/apps/add-custom-app.svg'
 import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
@@ -17,14 +18,14 @@ const useWCAppLink = (): LinkProps['href'] => {
 
   return useMemo(
     () => ({
-      pathname: AppRoutes.apps,
+      pathname: AppRoutes.apps.index,
       query: { safe: router.query.safe, appUrl: app?.url },
     }),
     [app?.url, router.query.safe],
   )
 }
 
-const SafeAppsSearchPlaceholder = ({ searchQuery }: { searchQuery: string }) => {
+const SafeAppsZeroResultsPlaceholder = ({ searchQuery }: { searchQuery: string }) => {
   const wcLink = useWCAppLink()
   return (
     <PagePlaceholder
@@ -45,4 +46,4 @@ const SafeAppsSearchPlaceholder = ({ searchQuery }: { searchQuery: string }) => 
   )
 }
 
-export default SafeAppsSearchPlaceholder
+export default SafeAppsZeroResultsPlaceholder

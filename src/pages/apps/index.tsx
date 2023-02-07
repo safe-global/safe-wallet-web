@@ -1,29 +1,39 @@
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { SafeAppList } from '@/components/safe-apps/SafeAppList'
+import { useRouter } from 'next/router'
+
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
+import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
+import SafeAppsSDKLink from '@/components/safe-apps/SafeAppsSDKLink'
+import SafeAppsHeader from '@/components/safe-apps/SafeAppsHeader'
+import SafeAppList from '@/components/safe-apps/SafeAppList'
 import SafeAppsInfoModal from '@/components/safe-apps/SafeAppsInfoModal'
-import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
-import useChainId from '@/hooks/useChainId'
 import useSafeAppsInfoModal from '@/components/safe-apps/SafeAppsInfoModal/useSafeAppsInfoModal'
 import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
-import AppFrame from '@/components/safe-apps/AppFrame'
 import SafeAppsLoadError from '@/components/safe-apps/SafeAppsErrorBoundary/SafeAppsLoadError'
+import AppFrame from '@/components/safe-apps/AppFrame'
+import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
+import useChainId from '@/hooks/useChainId'
 import { AppRoutes } from '@/config/routes'
 import { getOrigin } from '@/components/safe-apps/utils'
 
-const Apps: NextPage = () => {
-  const router = useRouter()
+const SafeApps: NextPage = () => {
   const chainId = useChainId()
+  const router = useRouter()
+
   const [appUrl, routerReady] = useSafeAppUrl()
-  const { remoteSafeApps, remoteSafeAppsLoading } = useSafeApps()
+
+  const {
+    remoteSafeApps,
+    remoteSafeAppsLoading,
+    pinnedSafeAppIds: bookmarkedSafeAppsId,
+    togglePin: onBookmarkSafeApp,
+  } = useSafeApps()
+
   const { isLoading, safeApp } = useSafeAppFromManifest(appUrl || '', chainId)
   const { addPermissions, getPermissions, getAllowedFeaturesList } = useBrowserPermissions()
   const origin = getOrigin(appUrl)
-
   const {
     isModalVisible,
     isSafeAppInDefaultList,
@@ -50,7 +60,7 @@ const Apps: NextPage = () => {
         <SafeAppsInfoModal
           onCancel={() =>
             router.push({
-              pathname: AppRoutes.apps,
+              pathname: AppRoutes.apps.index,
               query: { safe: router.query.safe },
             })
           }
@@ -75,12 +85,23 @@ const Apps: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe Apps</title>
+        <title>Safe – Safe Apps List</title>
       </Head>
 
-      <SafeAppList />
+      <SafeAppsSDKLink />
+
+      <SafeAppsHeader />
+
+      <main>
+        <SafeAppList
+          safeAppsList={remoteSafeApps}
+          bookmarkedSafeAppsId={bookmarkedSafeAppsId}
+          onBookmarkSafeApp={onBookmarkSafeApp}
+          showFilters
+        />
+      </main>
     </>
   )
 }
 
-export default Apps
+export default SafeApps

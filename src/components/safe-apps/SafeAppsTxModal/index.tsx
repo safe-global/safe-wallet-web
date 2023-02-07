@@ -5,8 +5,8 @@ import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
 import ReviewSafeAppsTx from './ReviewSafeAppsTx'
 import InvalidTransaction from './InvalidTransaction'
-import SafeAppsTxModalLabel from '../SafeAppsModalLabel'
-import { isTxValid } from '../utils'
+import SafeAppsTxModalLabel from '@/components/safe-apps/SafeAppsModalLabel'
+import { isTxValid } from '@/components/safe-apps/utils'
 
 export type SafeAppsTxParams = {
   appId?: string
