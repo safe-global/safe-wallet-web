@@ -41,7 +41,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
     <Paper className={css.container}>
       <div className={classnames(css.element, css.menuButton)}>
         <IconButton onClick={handleMenuToggle} size="large" edge="start" color="default" aria-label="menu">
-          <MenuIcon />
+          <SafeLogo />
         </IconButton>
       </div>
 
