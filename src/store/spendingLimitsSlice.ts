@@ -3,7 +3,12 @@ import { makeLoadableSlice } from './common'
 
 export type SpendingLimitState = {
   beneficiary: string
-  token: string
+  token: {
+    address: string
+    symbol: string
+    decimals: number
+    logoUri?: string
+  }
   amount: string
   nonce: string
   resetTimeMin: string

@@ -1,5 +1,4 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
-import useBalances from '@/hooks/useBalances'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { safeFormatUnits } from '@/utils/formatters'
 import { Box, IconButton, SvgIcon } from '@mui/material'
@@ -27,7 +26,6 @@ const RemoveSpendingLimitSteps: TxStepperProps['steps'] = [
 export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: SpendingLimitState[] }) => {
   const [open, setOpen] = useState<boolean>(false)
   const [initialData, setInitialData] = useState<SpendingLimitState>()
-  const { balances } = useBalances()
   const isGranted = useIsGranted()
 
   const shouldHideactions = !isGranted
@@ -50,12 +48,11 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
   const rows = useMemo(
     () =>
       spendingLimits.map((spendingLimit) => {
-        const token = balances.items.find((item) => item.tokenInfo.address === spendingLimit.token)
         const amount = BigNumber.from(spendingLimit.amount)
-        const formattedAmount = safeFormatUnits(amount, token?.tokenInfo.decimals)
+        const formattedAmount = safeFormatUnits(amount, spendingLimit.token.decimals)
 
         const spent = BigNumber.from(spendingLimit.spent)
-        const formattedSpent = safeFormatUnits(spent, token?.tokenInfo.decimals)
+        const formattedSpent = safeFormatUnits(spent, spendingLimit.token.decimals)
 
         return {
           cells: {
@@ -69,8 +66,8 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
               rawValue: spendingLimit.spent,
               content: (
                 <Box display="flex" alignItems="center" gap={1}>
-                  <TokenIcon logoUri={token?.tokenInfo.logoUri} tokenSymbol={token?.tokenInfo.symbol} />
-                  {`${formattedSpent} of ${formattedAmount} ${token?.tokenInfo.symbol}`}
+                  <TokenIcon logoUri={spendingLimit.token.logoUri} tokenSymbol={spendingLimit.token.symbol} />
+                  {`${formattedSpent} of ${formattedAmount} ${spendingLimit.token.symbol}`}
                 </Box>
               ),
             },
@@ -98,7 +95,7 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
           },
         }
       }),
-    [balances.items, shouldHideactions, spendingLimits],
+    [shouldHideactions, spendingLimits],
   )
 
   return (

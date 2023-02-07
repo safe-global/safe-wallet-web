@@ -21,7 +21,8 @@
     "css-vars": "ts-node-esm ./scripts/css-vars.ts > ./src/styles/vars.css && prettier -w src/styles/vars.css",
     "generate-types:safeDeployments": "typechain --target ethers-v5 --out-dir src/types/contracts ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json",
     "generate-types:spendingLimit": "typechain --target ethers-v5 --out-dir src/types/contracts ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json",
-    "generate-types": "yarn generate-types:safeDeployments && yarn generate-types:spendingLimit",
+    "generate-types:erc20": "typechain --target ethers-v5 --out-dir src/types/contracts ./node_modules/@openzeppelin/contracts/build/contracts/ERC20.json",
+    "generate-types": "typechain --target ethers-v5 --out-dir src/types/contracts ./node_modules/@gnosis.pm/safe-deployments/dist/assets/**/*.json ./node_modules/@gnosis.pm/safe-modules-deployments/dist/assets/**/*.json ./node_modules/@openzeppelin/contracts/build/contracts/ERC20.json",
     "postinstall": "yarn generate-types && yarn css-vars",
     "analyze": "cross-env ANALYZE=true yarn build",
     "cypress:open": "cross-env TZ=UTC cypress open",
@@ -85,6 +86,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^13.1.1",
+    "@openzeppelin/contracts": "^4.8.1",
     "@safe-global/safe-core-sdk-types": "^1.9.0",
     "@sentry/types": "^7.28.1",
     "@svgr/webpack": "^6.3.1",
