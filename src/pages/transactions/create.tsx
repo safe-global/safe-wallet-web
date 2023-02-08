@@ -1,11 +1,14 @@
 import NewTxModal from '@/components/tx/modals/NewTxModal'
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Box, Button, Grid, Typography } from '@mui/material'
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
+import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
+import { notifyTransaction } from '@/api'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 interface ICreateTxPageProps {
   amount?: string
@@ -19,6 +22,21 @@ const CreateTxPage: React.FunctionComponent<ICreateTxPageProps> = ({ amount, to,
   const handleConnect = useConnectWallet()
   const wallet = useWallet()
   const router = useRouter()
+  const { safe } = router.query
+  const { prefix } = parsePrefixedAddress(safe as string)
+
+  useEffect(() => {
+    const unsubPropose = txSubscribe(TxEvent.PROPOSED, async (detail) => {
+      const txId = detail.txId
+      console.log('TxEvent.PROPOSED', txId, prefix!, chatId!)
+
+      await notifyTransaction(txId, prefix!, chatId!)
+    })
+
+    return () => {
+      unsubPropose()
+    }
+  }, [])
 
   return (
     <Suspense>
