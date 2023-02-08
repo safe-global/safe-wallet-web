@@ -1,14 +1,11 @@
 import NewTxModal from '@/components/tx/modals/NewTxModal'
 import { Suspense, useEffect } from 'react'
-import { Box, Button, Grid, Typography } from '@mui/material'
-import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
-import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { notifyTransaction } from '@/api'
 import { parsePrefixedAddress } from '@/utils/addresses'
+import WalletConnectFence from '@/components/common/WalletConntectFence'
 
 interface ICreateTxPageProps {
   amount?: string
@@ -19,8 +16,6 @@ interface ICreateTxPageProps {
 }
 
 const CreateTxPage: React.FunctionComponent<ICreateTxPageProps> = ({ amount, to, currency, type, chatId }) => {
-  const handleConnect = useConnectWallet()
-  const wallet = useWallet()
   const router = useRouter()
   const { safe } = router.query
   const { prefix } = parsePrefixedAddress(safe as string)
@@ -40,7 +35,7 @@ const CreateTxPage: React.FunctionComponent<ICreateTxPageProps> = ({ amount, to,
 
   return (
     <Suspense>
-      {wallet ? (
+      <WalletConnectFence>
         <NewTxModal
           recipient={to}
           amount={amount}
@@ -53,18 +48,7 @@ const CreateTxPage: React.FunctionComponent<ICreateTxPageProps> = ({ amount, to,
             })
           }
         />
-      ) : (
-        <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center" gap={2}>
-          <Box width={100} height={100} display="flex" alignItems="center" justifyContent="center">
-            <KeyholeIcon />
-          </Box>
-          <Typography>Connect your wallet</Typography>
-
-          <Button onClick={handleConnect} variant="contained" size="stretched" disableElevation>
-            Connect
-          </Button>
-        </Grid>
-      )}
+      </WalletConnectFence>
     </Suspense>
   )
 }

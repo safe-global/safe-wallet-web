@@ -10,6 +10,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 import useWallet from '../../hooks/wallets/useWallet'
 import { useCurrentChain } from '../../hooks/useChains'
 import { submitUserVerify } from '@/api'
+import WalletConnectFence from '@/components/common/WalletConntectFence'
 
 interface ISignPageProps {}
 
@@ -75,7 +76,9 @@ const SignPage: React.FunctionComponent<ISignPageProps> = (props) => {
         </Typography>
         <Typography>Message</Typography>
         <Paper variant="outlined" sx={{ width: 350, padding: 2 }}>
-          <Typography sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{siweMessage}</Typography>
+          <WalletConnectFence>
+            <Typography sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{siweMessage}</Typography>
+          </WalletConnectFence>
         </Paper>
         <Grid container>
           <Grid xs={6} sx={{ pr: 1 }}>
