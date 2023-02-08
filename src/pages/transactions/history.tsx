@@ -12,14 +12,23 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TxFilterForm from '@/components/transactions/TxFilterForm'
 import { useTxFilter } from '@/utils/tx-history-filter'
+import Link from 'next/link'
+import type { UrlObject } from 'url'
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
 
 const History: NextPage = () => {
   const [filter] = useTxFilter()
-
+  const router = useRouter()
   const [showFilter, setShowFilter] = useState(false)
 
   const toggleFilter = () => {
     setShowFilter((prev) => !prev)
+  }
+
+  const txCreateLink: UrlObject = {
+    pathname: AppRoutes.transactions.create,
+    query: { safe: router.query.safe },
   }
 
   const ExpandIcon = showFilter ? ExpandLessIcon : ExpandMoreIcon
@@ -31,9 +40,20 @@ const History: NextPage = () => {
 
       <TxHeader
         action={
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box display="flex" justifyContent="flex-start" alignItems="center">
             <NavTabs tabs={transactionNavItems} />
-            <Button variant="outlined" onClick={toggleFilter} size="small" endIcon={<ExpandIcon />}>
+            <Link href={txCreateLink} passHref>
+              <Button size="small" variant="contained" color="primary" style={{ marginLeft: 'auto' }}>
+                New transaction
+              </Button>
+            </Link>
+            <Button
+              variant="outlined"
+              onClick={toggleFilter}
+              size="small"
+              endIcon={<ExpandIcon />}
+              style={{ marginLeft: '5px' }}
+            >
               {filter?.type ?? 'Filter'}
             </Button>
           </Box>

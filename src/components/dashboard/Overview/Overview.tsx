@@ -92,6 +92,10 @@ const Overview = (): ReactElement => {
     pathname: AppRoutes.balances.index,
     query: { safe: router.query.safe },
   }
+  const txCreateLink: UrlObject = {
+    pathname: AppRoutes.transactions.create,
+    query: { safe: router.query.safe },
+  }
   const nftsLink: UrlObject = {
     pathname: AppRoutes.balances.nfts,
     query: { safe: router.query.safe },
@@ -154,13 +158,12 @@ const Overview = (): ReactElement => {
                   </a>
                 </Link>
               </Grid>
-              <Grid item xs />
-
+              <Grid item xs></Grid>
               <Grid item>
                 <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">
-                  <Link href={assetsLink} passHref>
+                  <Link href={txCreateLink} passHref>
                     <Button size="medium" variant="contained" color="primary">
-                      View assets
+                      New transaction
                     </Button>
                   </Link>
                 </Box>

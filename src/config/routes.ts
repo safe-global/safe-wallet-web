@@ -32,6 +32,7 @@ export const AppRoutes = {
   },
   transactions: {
     tx: '/transactions/tx',
+    create: '/transactions/create',
     queue: '/transactions/queue',
     index: '/transactions',
     history: '/transactions/history',
