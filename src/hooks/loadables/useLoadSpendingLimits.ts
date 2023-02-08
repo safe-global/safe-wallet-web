@@ -28,20 +28,21 @@ const isModuleEnabled = (modules: string[], moduleAddress: string): boolean => {
 const discardZeroAllowance = (spendingLimit: SpendingLimitState): boolean =>
   !(sameString(spendingLimit.amount, '0') && sameString(spendingLimit.resetTimeMin, '0'))
 
-const getTokenInfoFromBalances = (tokenInfoFromBalances: TokenInfo[], address: string) =>
+const getTokenInfoFromBalances = (tokenInfoFromBalances: TokenInfo[], address: string): TokenInfo | undefined =>
   tokenInfoFromBalances.find((token) => token.address === address)
 
-const getTokenInfoOnChain = async (address: string) => {
+const getTokenInfoOnChain = async (
+  address: string,
+): Promise<Omit<TokenInfo, 'name' | 'type' | 'logoUri'> | undefined> => {
   const web3 = getWeb3()
-  if (!web3) {
-    return undefined
-  }
+  if (!web3) return
 
   const erc20 = ERC20__factory.connect(address, web3)
+  const [symbol, decimals] = await Promise.all([erc20.symbol(), erc20.decimals()])
   return {
     address,
-    symbol: await erc20.symbol(),
-    decimals: await erc20.decimals(),
+    symbol,
+    decimals,
   }
 }
 
