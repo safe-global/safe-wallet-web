@@ -100,6 +100,7 @@ const EnvironmentVariables = () => {
               <TextField
                 {...register(EnvVariablesField.rpc)}
                 variant="outlined"
+                type="url"
                 placeholder={chain?.rpcUri.value}
                 InputProps={{
                   endAdornment: rpc ? (
@@ -148,6 +149,7 @@ const EnvironmentVariables = () => {
                 <Grid item xs={12} md={6}>
                   <TextField
                     {...register(EnvVariablesField.tenderlyURL)}
+                    type="url"
                     variant="outlined"
                     label="Tenderly API URL"
                     placeholder={TENDERLY_SIMULATE_ENDPOINT_URL}
