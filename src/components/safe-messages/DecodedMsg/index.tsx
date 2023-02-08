@@ -6,7 +6,6 @@ import { Box, Typography } from '@mui/material'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import classNames from 'classnames'
 import { isAddress } from 'ethers/lib/utils'
-import { isObject } from 'lodash'
 import type { ReactElement } from 'react'
 import Msg from '../Msg'
 import css from './styles.module.css'
@@ -32,14 +31,12 @@ const DecodedTypedObject = ({ displayedType, eip712Msg }: { displayedType: strin
         const type = findType(paramName) || 'string'
 
         const isArrayValueParam = Array.isArray(paramValue)
-        const isNested = isObject(paramValue)
+        const isNested = Object.keys(types).some((typeName) => typeName === type || `${typeName}[]` === type)
         const inlineType = isAddress(paramValue as string) ? 'address' : isByte(type) ? 'bytes' : undefined
         const paramValueAsString = typeof paramValue === 'string' ? paramValue : JSON.stringify(paramValue, null, 2)
         return (
           <TxDataRow key={`${displayedType}_param-${index}`} title={`${param[0]}(${type}):`}>
-            {isArrayValueParam ? (
-              <Value method={displayedType} type={type} value={paramValueAsString} />
-            ) : isNested ? (
+            {isNested ? (
               <Box
                 className={css.nestedMsg}
                 sx={{
@@ -48,6 +45,8 @@ const DecodedTypedObject = ({ displayedType, eip712Msg }: { displayedType: strin
               >
                 {paramValueAsString}
               </Box>
+            ) : isArrayValueParam ? (
+              <Value method={displayedType} type={type} value={paramValueAsString} />
             ) : (
               generateDataRowValue(paramValueAsString, inlineType, true)
             )}
