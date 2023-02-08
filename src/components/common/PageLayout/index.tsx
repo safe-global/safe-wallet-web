@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import Header from '@/components/common//Header'
 import css from './styles.module.css'
 import SafeLoadingError from '../SafeLoadingError'
-import Footer from '../Footer'
 import { AppRoutes } from '@/config/routes'
 import useDebounce from '@/hooks/useDebounce'
 
@@ -34,7 +33,7 @@ const PageLayout = ({ pathname, children }: { pathname: string; children: ReactE
           <SafeLoadingError>{children}</SafeLoadingError>
         </div>
 
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </>
   )
