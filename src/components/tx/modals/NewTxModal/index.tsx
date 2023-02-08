@@ -13,14 +13,20 @@ import { AppRoutes } from '@/config/routes'
 const NewTxModal = ({
   onClose,
   recipient = '',
+  amount = '',
+  currency = '',
   txNonce,
+  type = '',
 }: {
   onClose: () => void
   recipient?: string
+  amount?: string
   txNonce?: number
+  currency?: string
+  type?: string
 }): ReactElement => {
   const router = useRouter()
-  const [tokenModalOpen, setTokenModalOpen] = useState<boolean>(false)
+  const [tokenModalOpen, setTokenModalOpen] = useState<boolean>(type == 'token')
   const [rejectModalOpen, setRejectModalOpen] = useState<boolean>(false)
   const isReplacement = txNonce !== undefined
   const showNftButton = router.pathname !== AppRoutes.balances.nfts
@@ -63,7 +69,7 @@ const NewTxModal = ({
       ) : (
         <CreationModal
           shouldShowTxBuilder={!recipient}
-          onNFTModalOpen={showNftButton ? onNFTModalOpen : undefined}
+          onNFTModalOpen={onNFTModalOpen}
           onContractInteraction={onContractInteraction}
           {...sharedProps}
         />
@@ -72,7 +78,15 @@ const NewTxModal = ({
       {tokenModalOpen && (
         <TokenTransferModal
           onClose={onClose}
-          initialData={[{ [SendAssetsField.recipient]: recipient, disableSpendingLimit: isReplacement }, { txNonce }]}
+          initialData={[
+            {
+              [SendAssetsField.recipient]: recipient,
+              [SendAssetsField.amount]: amount,
+              [SendAssetsField.tokenSymbol]: currency,
+              disableSpendingLimit: isReplacement,
+            },
+            { txNonce },
+          ]}
         />
       )}
 

@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
 import {
   Button,
@@ -36,6 +35,8 @@ import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBen
 import { useAppSelector } from '@/store'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import useWallet from '@/hooks/wallets/useWallet'
+import type { ReactElement } from 'react'
+import { useEffect } from 'react'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -59,6 +60,7 @@ export enum SendTxType {
 export enum SendAssetsField {
   recipient = 'recipient',
   tokenAddress = 'tokenAddress',
+  tokenSymbol = 'tokenSymbol',
   amount = 'amount',
   type = 'type',
 }
@@ -66,6 +68,7 @@ export enum SendAssetsField {
 export type SendAssetsFormData = {
   [SendAssetsField.recipient]: string
   [SendAssetsField.tokenAddress]: string
+  [SendAssetsField.tokenSymbol]: string
   [SendAssetsField.amount]: string
   [SendAssetsField.type]: SendTxType
 }
@@ -95,6 +98,7 @@ const SendAssetsForm = ({
     defaultValues: {
       [SendAssetsField.recipient]: formData?.[SendAssetsField.recipient] || '',
       [SendAssetsField.tokenAddress]: formData?.[SendAssetsField.tokenAddress] || '',
+      [SendAssetsField.tokenSymbol]: formData?.[SendAssetsField.tokenSymbol] || '',
       [SendAssetsField.amount]: formData?.[SendAssetsField.amount] || '',
       [SendAssetsField.type]: disableSpendingLimit
         ? SendTxType.multiSig
@@ -119,8 +123,9 @@ const SendAssetsForm = ({
 
   // Selected token
   const tokenAddress = watch(SendAssetsField.tokenAddress)
-  const selectedToken = tokenAddress
-    ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
+  const tokenSymbol = watch(SendAssetsField.tokenSymbol)
+  const selectedToken = tokenSymbol
+    ? balances.items.find((item) => item.tokenInfo.symbol.toLowerCase() === tokenSymbol.toLowerCase())
     : undefined
 
   const type = watch(SendAssetsField.type)
@@ -151,6 +156,14 @@ const SendAssetsForm = ({
       shouldValidate: true,
     })
   }
+
+  useEffect(() => {
+    console.log('balances', balances)
+    if (selectedToken)
+      setValue(SendAssetsField.tokenAddress, selectedToken.tokenInfo.address, {
+        shouldValidate: true,
+      })
+  }, [selectedToken])
 
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
 
