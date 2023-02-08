@@ -51,6 +51,10 @@ yarn
 Run the development server:
 
 ```bash
+nvm use 16.10.0
+```
+
+```bash
 yarn start
 ```
 
