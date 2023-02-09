@@ -9,6 +9,7 @@ import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
 import WalletConnectFence from '@/components/common/WalletConntectFence'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
+import { ethers } from 'ethers'
 
 interface IMultiSendPageProps {
   txs: BaseTransaction[]
@@ -61,7 +62,7 @@ export async function getServerSideProps(context: any) {
   const txs = []
   for (let i = 0; i < Math.max(to.length, data.length); i++) {
     txs.push({
-      to: to[i] || null,
+      to: ethers.utils.getAddress(to[i]) || null,
       value: '0',
       data: data[i] || null,
     })
