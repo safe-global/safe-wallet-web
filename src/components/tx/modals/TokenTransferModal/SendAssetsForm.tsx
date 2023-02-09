@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
 import {
   Button,
@@ -126,20 +127,19 @@ const SendAssetsForm = ({
   const type = watch(SendAssetsField.type)
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
   const isSpendingLimitType = type === SendTxType.spendingLimit
-
-  const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
-
   const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
 
-  const items = isOnlySpendingLimitBeneficiary
-    ? balances.items.filter(({ tokenInfo }) => {
-        return spendingLimits?.some(({ beneficiary, token }) => {
-          return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token)
+  const balancesItems = useMemo(() => {
+    return isOnlySpendingLimitBeneficiary
+      ? balances.items.filter(({ tokenInfo }) => {
+          return spendingLimits?.some(({ beneficiary, token }) => {
+            return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token)
+          })
         })
-      })
-    : balances.items
+      : balances.items
+  }, [balances.items, isOnlySpendingLimitBeneficiary, spendingLimits, wallet?.address])
 
-  const onMaxAmountClick = () => {
+  const onMaxAmountClick = useCallback(() => {
     if (!selectedToken) return
 
     const amount =
@@ -150,8 +150,9 @@ const SendAssetsForm = ({
     setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
       shouldValidate: true,
     })
-  }
+  }, [isSpendingLimitType, selectedToken, setValue, spendingLimitAmount])
 
+  const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
 
   return (
@@ -189,7 +190,7 @@ const SendAssetsForm = ({
                     resetField(SendAssetsField.amount)
                   }}
                 >
-                  {balances.items.map((item) => (
+                  {balancesItems.map((item) => (
                     <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
                       <AutocompleteItem {...item} />
                     </MenuItem>
