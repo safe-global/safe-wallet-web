@@ -43,7 +43,7 @@ const CreateTxPage: React.FunctionComponent<ICreateTxPageProps> = ({ amount, to,
           type={type}
           onClose={() =>
             router.push({
-              pathname: AppRoutes.home,
+              pathname: AppRoutes.transactions.queue,
               query: { safe: router.query.safe },
             })
           }

@@ -6,6 +6,9 @@ import { isTxValid } from '../../components/safe-apps/utils'
 import { Typography } from '@mui/material'
 import type { SafeAppsTxParams } from '@/components/safe-apps/SafeAppsTxModal'
 import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
+import WalletConnectFence from '@/components/common/WalletConntectFence'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 
 interface IMultiSendPageProps {
   txs: BaseTransaction[]
@@ -27,17 +30,25 @@ const SafeAppsTxSteps: TxStepperProps['steps'] = [
 ]
 
 const MultiSendPage: React.FunctionComponent<IMultiSendPageProps> = (props) => {
+  const router = useRouter()
   return (
-    <TxModal
-      onClose={() => undefined}
-      initialData={[
-        {
-          requestId: 'random',
-          txs: props.txs,
-        },
-      ]}
-      steps={SafeAppsTxSteps}
-    />
+    <WalletConnectFence>
+      <TxModal
+        onClose={() =>
+          router.push({
+            pathname: AppRoutes.transactions.queue,
+            query: { safe: router.query.safe },
+          })
+        }
+        initialData={[
+          {
+            requestId: 'random',
+            txs: props.txs,
+          },
+        ]}
+        steps={SafeAppsTxSteps}
+      />
+    </WalletConnectFence>
   )
 }
 
