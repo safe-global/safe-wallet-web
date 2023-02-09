@@ -128,6 +128,12 @@ const SendAssetsForm = ({
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
   const isSpendingLimitType = type === SendTxType.spendingLimit
   const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
+  const totalAmount = BigNumber.from(selectedToken?.balance || 0)
+  const maxAmount = spendingLimitAmount
+    ? totalAmount.gt(spendingLimitAmount)
+      ? spendingLimitAmount
+      : totalAmount
+    : totalAmount
 
   const balancesItems = useMemo(() => {
     return isOnlySpendingLimitBeneficiary
@@ -235,8 +241,9 @@ const SendAssetsForm = ({
                 required: true,
                 validate: (val) => {
                   const decimals = selectedToken?.tokenInfo.decimals
-                  const max = isSpendingLimitType ? spendingLimitAmount?.toString() : selectedToken?.balance
-                  return validateLimitedAmount(val, decimals, max) || validateDecimalLength(val, decimals)
+                  return (
+                    validateLimitedAmount(val, decimals, maxAmount.toString()) || validateDecimalLength(val, decimals)
+                  )
                 },
               })}
             />
