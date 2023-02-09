@@ -20,6 +20,7 @@ const SafeAppsTxSteps: TxStepperProps['steps'] = [
   {
     label: (data) => {
       const { app } = data as SafeAppsTxParams
+      console.log('app', app)
 
       return <SafeAppsTxModalLabel app={app} />
     },

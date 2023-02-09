@@ -10,9 +10,14 @@ import WalletConnectFence from '@/components/common/WalletConntectFence'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { ethers } from 'ethers'
+import { useEffect } from 'react'
+import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
+import { notifyTransaction } from '@/api'
+import { parsePrefixedAddress } from '@/utils/addresses'
 
 interface IMultiSendPageProps {
   txs: BaseTransaction[]
+  chatId: string
 }
 
 const SafeAppsTxSteps: TxStepperProps['steps'] = [
@@ -32,6 +37,22 @@ const SafeAppsTxSteps: TxStepperProps['steps'] = [
 
 const MultiSendPage: React.FunctionComponent<IMultiSendPageProps> = (props) => {
   const router = useRouter()
+  const { safe } = router.query
+  const { prefix } = parsePrefixedAddress(safe as string)
+
+  useEffect(() => {
+    const unsubPropose = txSubscribe(TxEvent.PROPOSED, async (detail) => {
+      const txId = detail.txId
+      console.log('TxEvent.PROPOSED', txId, prefix!, props.chatId)
+
+      await notifyTransaction(txId, prefix!, props.chatId)
+    })
+
+    return () => {
+      unsubPropose()
+    }
+  }, [])
+
   return (
     <WalletConnectFence>
       <TxModal
@@ -54,7 +75,7 @@ const MultiSendPage: React.FunctionComponent<IMultiSendPageProps> = (props) => {
 }
 
 export async function getServerSideProps(context: any) {
-  let { to, data } = context.query
+  let { to, data, chatId } = context.query
 
   to = Array.isArray(to) ? to : [to]
   data = Array.isArray(data) ? data : [data]
@@ -88,7 +109,8 @@ export async function getServerSideProps(context: any) {
 
   return {
     props: {
-      txs: txs,
+      txs,
+      chatId: chatId || '',
     },
   }
 }
