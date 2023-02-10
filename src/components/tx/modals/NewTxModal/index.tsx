@@ -43,7 +43,6 @@ const NewTxModal = ({
       pathname: AppRoutes.balances.nfts,
       query: { safe: router.query.safe },
     })
-    onClose()
   }
 
   const onRejectModalOpen = () => {
@@ -53,7 +52,6 @@ const NewTxModal = ({
 
   const onContractInteraction = () => {
     trackEvent(MODALS_EVENTS.CONTRACT_INTERACTION)
-    onClose()
   }
 
   const sharedProps = {
