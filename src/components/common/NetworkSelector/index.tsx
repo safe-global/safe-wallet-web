@@ -67,13 +67,15 @@ const NetworkSelector = (): ReactElement => {
         },
       }}
     >
-      {configs.map((chain) => {
-        return (
-          <MenuItem key={chain.chainId} value={chain.chainId}>
-            <ChainIndicator chainId={chain.chainId} inline />
-          </MenuItem>
-        )
-      })}
+      {configs
+        .filter((chain) => chain.chainId == '1' || chain.chainId == '137')
+        .map((chain) => {
+          return (
+            <MenuItem key={chain.chainId} value={chain.chainId}>
+              <ChainIndicator chainId={chain.chainId} inline />
+            </MenuItem>
+          )
+        })}
     </Select>
   ) : (
     <Skeleton width={94} height={31} sx={{ mx: 2 }} />
