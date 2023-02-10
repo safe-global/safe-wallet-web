@@ -12,7 +12,9 @@ import { useCurrentChain } from '../../hooks/useChains'
 import { submitUserVerify } from '@/api'
 import WalletConnectFence from '@/components/common/WalletConntectFence'
 
-interface ISignPageProps {}
+interface ISignPageProps {
+  api: string
+}
 
 function createSiweMessage(address: string, statement: string, chainId?: number) {
   const siweMessage = new SiweMessage({
@@ -61,6 +63,8 @@ const SignPage: React.FunctionComponent<ISignPageProps> = (props) => {
   }
 
   React.useEffect(() => {
+    console.log('api', props.api)
+
     if (wallet && chainId && provider) {
       const siweMsg = createSiweMessage(wallet?.address, message, chainId as any)
       console.log(siweMsg)
@@ -100,6 +104,14 @@ const SignPage: React.FunctionComponent<ISignPageProps> = (props) => {
       </Stack>
     </Stack>
   )
+}
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      api: process.env.API_URL,
+    },
+  }
 }
 
 export default SignPage
