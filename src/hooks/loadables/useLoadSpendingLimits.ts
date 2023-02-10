@@ -15,6 +15,7 @@ import type { AllowanceModule } from '@/types/contracts'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import { useAppSelector } from '@/store'
 import { selectTokens } from '@/store/balancesSlice'
+import { isEqual } from 'lodash'
 
 const DEFAULT_TOKEN_INFO = {
   decimals: 18,
@@ -113,7 +114,7 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
   const { safeAddress, safe, safeLoaded } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
-  const tokenInfoFromBalances = useAppSelector(selectTokens)
+  const tokenInfoFromBalances = useAppSelector(selectTokens, isEqual)
 
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(() => {
     if (!provider || !safeLoaded || !safe.modules || !tokenInfoFromBalances) return

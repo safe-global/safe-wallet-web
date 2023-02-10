@@ -11,7 +11,14 @@ const ImageFallback = ({ src, fallbackSrc, fallbackComponent, ...props }: ImageF
 
   if (isError && fallbackComponent) return fallbackComponent
 
-  return <img {...props} alt={props.alt} src={isError ? fallbackSrc : src} onError={() => setIsError(true)} />
+  return (
+    <img
+      {...props}
+      alt={props.alt}
+      src={isError || src === undefined ? fallbackSrc : src}
+      onError={() => setIsError(true)}
+    />
+  )
 }
 
 export default ImageFallback

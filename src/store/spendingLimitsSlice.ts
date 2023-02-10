@@ -22,6 +22,5 @@ const { slice, selector } = makeLoadableSlice('spendingLimits', initialState)
 
 export const spendingLimitSlice = slice
 
-export const selectSpendingLimits = createSelector(selector, (spendingLimits) => {
-  return spendingLimits.data
-})
+export const selectSpendingLimits = createSelector(selector, (spendingLimits) => spendingLimits.data)
+export const selectSpendingLimitsLoading = createSelector(selector, (spendingLimits) => spendingLimits.loading)
