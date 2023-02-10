@@ -46,6 +46,10 @@ const MultiSendPage: React.FunctionComponent<IMultiSendPageProps> = (props) => {
       console.log('TxEvent.PROPOSED', txId, prefix!, props.chatId)
 
       await notifyTransaction(txId, prefix!, props.chatId)
+      router.push({
+        pathname: AppRoutes.transactions.queue,
+        query: { safe: router.query.safe },
+      })
     })
 
     return () => {
