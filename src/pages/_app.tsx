@@ -22,7 +22,6 @@ import useTxPendingStatuses from '@/hooks/useTxPendingStatuses'
 import { useInitSession } from '@/hooks/useInitSession'
 import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
-import CookieBanner from '@/components/common/CookieBanner'
 import { useLightDarkTheme } from '@/hooks/useDarkMode'
 // import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
@@ -95,8 +94,6 @@ const WebCoreApp = ({
           <PageLayout pathname={router.pathname}>
             <Component {...pageProps} />
           </PageLayout>
-
-          <CookieBanner />
 
           <Notifications />
         </AppProviders>

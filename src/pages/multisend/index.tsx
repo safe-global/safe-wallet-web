@@ -75,7 +75,7 @@ const MultiSendPage: React.FunctionComponent<IMultiSendPageProps> = (props) => {
 }
 
 export async function getServerSideProps(context: any) {
-  let { to, data, chatId } = context.query
+  let { to, data, chat_id } = context.query
 
   to = Array.isArray(to) ? to : [to]
   data = Array.isArray(data) ? data : [data]
@@ -110,7 +110,7 @@ export async function getServerSideProps(context: any) {
   return {
     props: {
       txs,
-      chatId: chatId || '',
+      chatId: chat_id || '',
     },
   }
 }
