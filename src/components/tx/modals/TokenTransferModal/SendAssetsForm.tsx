@@ -37,6 +37,8 @@ import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { ReactElement } from 'react'
 import { useEffect } from 'react'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import ChainSwitcher from '@/components/common/ChainSwitcher'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -128,6 +130,8 @@ const SendAssetsForm = ({
     ? balances.items.find((item) => item.tokenInfo.symbol.toLowerCase() === tokenSymbol.toLowerCase())
     : undefined
 
+  const isWrongChain = useIsWrongChain()
+
   const type = watch(SendAssetsField.type)
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
   const isSpendingLimitType = type === SendTxType.spendingLimit
@@ -171,88 +175,94 @@ const SendAssetsForm = ({
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
-          <SendFromBlock />
+          {isWrongChain ? (
+            <ChainSwitcher />
+          ) : (
+            <>
+              <SendFromBlock />
 
-          <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
-            {addressBook[recipient] ? (
-              <Box onClick={() => setValue(SendAssetsField.recipient, '')}>
-                <SendToBlock address={recipient} />
-              </Box>
-            ) : (
-              <AddressBookInput name={SendAssetsField.recipient} label="Recipient" />
-            )}
-          </FormControl>
-
-          <Controller
-            name={SendAssetsField.tokenAddress}
-            control={control}
-            rules={{ required: true }}
-            render={({ fieldState, field }) => (
-              <FormControl fullWidth>
-                <InputLabel id="asset-label" required>
-                  Select an asset
-                </InputLabel>
-                <Select
-                  labelId="asset-label"
-                  label={fieldState.error?.message || 'Select an asset'}
-                  error={!!fieldState.error}
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e)
-                    resetField(SendAssetsField.amount)
-                  }}
-                >
-                  {balances.items.map((item) => (
-                    <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
-                      <AutocompleteItem {...item} />
-                    </MenuItem>
-                  ))}
-                </Select>
+              <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
+                {addressBook[recipient] ? (
+                  <Box onClick={() => setValue(SendAssetsField.recipient, '')}>
+                    <SendToBlock address={recipient} />
+                  </Box>
+                ) : (
+                  <AddressBookInput name={SendAssetsField.recipient} label="Recipient" />
+                )}
               </FormControl>
-            )}
-          />
 
-          {isDisabled && (
-            <Box mt={1} display="flex" alignItems="center">
-              <SvgIcon component={InfoIcon} color="error" fontSize="small" />
-              <Typography variant="body2" color="error" ml={0.5}>
-                $SAFE is currently non-transferable.
-              </Typography>
-            </Box>
+              <Controller
+                name={SendAssetsField.tokenAddress}
+                control={control}
+                rules={{ required: true }}
+                render={({ fieldState, field }) => (
+                  <FormControl fullWidth>
+                    <InputLabel id="asset-label" required>
+                      Select an asset
+                    </InputLabel>
+                    <Select
+                      labelId="asset-label"
+                      label={fieldState.error?.message || 'Select an asset'}
+                      error={!!fieldState.error}
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e)
+                        resetField(SendAssetsField.amount)
+                      }}
+                    >
+                      {balances.items.map((item) => (
+                        <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
+                          <AutocompleteItem {...item} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
+              />
+
+              {isDisabled && (
+                <Box mt={1} display="flex" alignItems="center">
+                  <SvgIcon component={InfoIcon} color="error" fontSize="small" />
+                  <Typography variant="body2" color="error" ml={0.5}>
+                    $SAFE is currently non-transferable.
+                  </Typography>
+                </Box>
+              )}
+
+              {!disableSpendingLimit && !!spendingLimitAmount && (
+                <FormControl fullWidth sx={{ mt: 2 }}>
+                  <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
+                </FormControl>
+              )}
+
+              <FormControl fullWidth sx={{ mt: 2 }}>
+                <NumberField
+                  label={errors.amount?.message || 'Amount'}
+                  error={!!errors.amount}
+                  InputProps={{
+                    endAdornment: (
+                      <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
+                        Max
+                      </InputValueHelper>
+                    ),
+                  }}
+                  // @see https://github.com/react-hook-form/react-hook-form/issues/220
+                  InputLabelProps={{
+                    shrink: !!watch(SendAssetsField.amount),
+                  }}
+                  required
+                  {...register(SendAssetsField.amount, {
+                    required: true,
+                    validate: (val) => {
+                      const decimals = selectedToken?.tokenInfo.decimals
+                      const max = isSpendingLimitType ? spendingLimitAmount?.toString() : selectedToken?.balance
+                      return validateLimitedAmount(val, decimals, max) || validateDecimalLength(val, decimals)
+                    },
+                  })}
+                />
+              </FormControl>
+            </>
           )}
-
-          {!disableSpendingLimit && !!spendingLimitAmount && (
-            <FormControl fullWidth sx={{ mt: 2 }}>
-              <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
-            </FormControl>
-          )}
-
-          <FormControl fullWidth sx={{ mt: 2 }}>
-            <NumberField
-              label={errors.amount?.message || 'Amount'}
-              error={!!errors.amount}
-              InputProps={{
-                endAdornment: (
-                  <InputValueHelper onClick={onMaxAmountClick} disabled={!selectedToken}>
-                    Max
-                  </InputValueHelper>
-                ),
-              }}
-              // @see https://github.com/react-hook-form/react-hook-form/issues/220
-              InputLabelProps={{
-                shrink: !!watch(SendAssetsField.amount),
-              }}
-              required
-              {...register(SendAssetsField.amount, {
-                required: true,
-                validate: (val) => {
-                  const decimals = selectedToken?.tokenInfo.decimals
-                  const max = isSpendingLimitType ? spendingLimitAmount?.toString() : selectedToken?.balance
-                  return validateLimitedAmount(val, decimals, max) || validateDecimalLength(val, decimals)
-                },
-              })}
-            />
-          </FormControl>
         </DialogContent>
 
         <Button variant="contained" type="submit" disabled={isDisabled}>

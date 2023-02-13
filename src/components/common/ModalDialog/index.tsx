@@ -2,10 +2,10 @@ import type { ModalProps } from '@mui/material'
 import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
-import ChainIndicator from '@/components/common/ChainIndicator'
 import * as React from 'react'
 
 import css from './styles.module.css'
+import NetworkChanger from '../NetworkChanger'
 
 interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode
@@ -23,7 +23,7 @@ export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false
     <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }} {...other}>
       {children}
       <span style={{ flex: 1 }} />
-      {!hideChainIndicator && <ChainIndicator inline />}
+      {!hideChainIndicator && <NetworkChanger />}
       {onClose ? (
         <IconButton
           aria-label="close"
