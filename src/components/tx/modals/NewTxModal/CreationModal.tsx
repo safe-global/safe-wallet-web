@@ -10,6 +10,8 @@ import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
 import TxButton, { SendNFTsButton, SendTokensButton } from './TxButton'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
+import ChainSwitcher from '@/components/common/ChainSwitcher'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
   const [matchingApps] = useRemoteSafeApps(SafeAppsTag.TX_BUILDER)
@@ -42,29 +44,37 @@ const CreationModal = ({
 }) => {
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const txBuilder = useTxBuilderApp()
-
+  const isWrongChain = useIsWrongChain()
   return (
     <ModalDialog open={open} dialogTitle="New transaction" onClose={onClose}>
       <DialogContent>
         <Box display="flex" flexDirection="column" alignItems="center" gap={2} pt={7} pb={4} width={240} m="auto">
-          <SendTokensButton onClick={onTokenModalOpen} />
-
-          {!isOnlySpendingLimitBeneficiary && (
+          {isWrongChain ? (
+            <ChainSwitcher />
+          ) : (
             <>
-              {onNFTModalOpen && <SendNFTsButton onClick={onNFTModalOpen} />}
+              <SendTokensButton onClick={onTokenModalOpen} />
 
-              {txBuilder.app && shouldShowTxBuilder && (
-                <Link href={txBuilder.link} passHref>
-                  <a style={{ width: '100%' }}>
-                    <TxButton
-                      startIcon={<img src={txBuilder.app.iconUrl} height={20} width="auto" alt={txBuilder.app.name} />}
-                      variant="outlined"
-                      onClick={onContractInteraction}
-                    >
-                      Contract interaction
-                    </TxButton>
-                  </a>
-                </Link>
+              {!isOnlySpendingLimitBeneficiary && (
+                <>
+                  {onNFTModalOpen && <SendNFTsButton onClick={onNFTModalOpen} />}
+
+                  {txBuilder.app && shouldShowTxBuilder && (
+                    <Link href={txBuilder.link} passHref>
+                      <a style={{ width: '100%' }}>
+                        <TxButton
+                          startIcon={
+                            <img src={txBuilder.app.iconUrl} height={20} width="auto" alt={txBuilder.app.name} />
+                          }
+                          variant="outlined"
+                          onClick={onContractInteraction}
+                        >
+                          Contract interaction
+                        </TxButton>
+                      </a>
+                    </Link>
+                  )}
+                </>
               )}
             </>
           )}

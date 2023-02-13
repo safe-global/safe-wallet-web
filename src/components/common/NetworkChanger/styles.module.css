@@ -1,0 +1,25 @@
+.select {
+  height: 100%;
+}
+
+.select:after,
+.select:before {
+  display: none;
+}
+
+.select *:focus-visible {
+  outline: 5px auto Highlight;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
+.select :global .MuiSelect-select {
+  padding-right: 40px !important;
+  padding-left: 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.select :global .MuiSvgIcon-root {
+  margin-right: var(--space-2);
+}
