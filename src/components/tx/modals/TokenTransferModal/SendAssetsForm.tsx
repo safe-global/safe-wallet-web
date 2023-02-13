@@ -139,7 +139,7 @@ const SendAssetsForm = ({
     return isOnlySpendingLimitBeneficiary
       ? balances.items.filter(({ tokenInfo }) => {
           return spendingLimits?.some(({ beneficiary, token }) => {
-            return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token)
+            return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token.address)
           })
         })
       : balances.items

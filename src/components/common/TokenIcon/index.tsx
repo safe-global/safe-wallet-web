@@ -2,6 +2,8 @@ import { type ReactElement } from 'react'
 import ImageFallback from '../ImageFallback'
 import css from './styles.module.css'
 
+const FALLBACK_ICON = '/images/common/token-placeholder.svg'
+
 const TokenIcon = ({
   logoUri,
   tokenSymbol,
@@ -12,10 +14,8 @@ const TokenIcon = ({
   tokenSymbol?: string
   size?: number
   fallbackSrc?: string
-}): ReactElement | null => {
-  const FALLBACK_ICON = '/images/common/token-placeholder.svg'
-
-  return !logoUri ? null : (
+}): ReactElement => {
+  return (
     <ImageFallback
       src={logoUri}
       alt={tokenSymbol}
