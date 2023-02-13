@@ -20,14 +20,14 @@ export const RemoveSpendingLimit = ({ data, onSubmit }: { data: SpendingLimitSta
   const chainId = useChainId()
   const provider = useWeb3()
   const { balances } = useBalances()
-  const token = balances.items.find((item) => item.tokenInfo.address === data.token)
+  const token = balances.items.find((item) => item.tokenInfo.address === data.token.address)
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     const spendingLimitAddress = getSpendingLimitModuleAddress(chainId)
     if (!provider || !spendingLimitAddress) return
 
     const spendingLimitInterface = getSpendingLimitInterface()
-    const txData = spendingLimitInterface.encodeFunctionData('deleteAllowance', [data.beneficiary, data.token])
+    const txData = spendingLimitInterface.encodeFunctionData('deleteAllowance', [data.beneficiary, data.token.address])
 
     const txParams = {
       to: spendingLimitAddress,
