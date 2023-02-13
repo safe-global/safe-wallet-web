@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react'
 import type { PermissionRequest } from '@gnosis.pm/safe-apps-sdk/dist/src/types/permissions'
 import { Button, Dialog, DialogActions, DialogContent, Divider, Typography } from '@mui/material'
-import { ModalDialogTitle } from '../common/ModalDialog'
+
+import { ModalDialogTitle } from '@/components/common/ModalDialog'
 import { getSafePermissionDisplayValues } from '@/hooks/safe-apps/permissions'
 
 interface PermissionsPromptProps {

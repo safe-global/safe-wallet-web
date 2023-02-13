@@ -3,10 +3,11 @@ import type Safe from '@safe-global/safe-core-sdk'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
 import { ethers } from 'ethers'
 import type { Web3Provider } from '@ethersproject/providers'
-import semverSatisfies from 'semver/functions/satisfies'
 import { isWalletRejection } from '@/utils/wallets'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
+import { hasSafeFeature } from '@/utils/safe-versions'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -37,12 +38,10 @@ export const getUncheckedSafeSDK = (provider: Web3Provider): Promise<Safe> => {
 type SigningMethods = Parameters<Safe['signTransaction']>[1]
 
 export const _getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethods[] => {
-  const SAFE_VERSION_SUPPORTS_ETH_SIGN = '>=1.1.0'
-
   const ETH_SIGN_TYPED_DATA: SigningMethods = 'eth_signTypedData'
   const ETH_SIGN: SigningMethods = 'eth_sign'
 
-  if (!safeVersion || !semverSatisfies(safeVersion, SAFE_VERSION_SUPPORTS_ETH_SIGN)) {
+  if (!hasSafeFeature(SAFE_FEATURES.ETH_SIGN, safeVersion)) {
     return [ETH_SIGN_TYPED_DATA]
   }
 

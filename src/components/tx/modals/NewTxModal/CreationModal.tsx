@@ -9,6 +9,7 @@ import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
 import TxButton, { SendNFTsButton, SendTokensButton } from './TxButton'
+import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 
 const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
   const [matchingApps] = useRemoteSafeApps(SafeAppsTag.TX_BUILDER)
@@ -18,7 +19,7 @@ const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
   return {
     app,
     link: {
-      pathname: AppRoutes.apps,
+      pathname: AppRoutes.apps.index,
       query: { safe: router.query.safe, appUrl: app?.url },
     },
   }
@@ -35,10 +36,11 @@ const CreationModal = ({
   open: boolean
   onClose: () => void
   onTokenModalOpen: () => void
-  onNFTModalOpen: () => void
+  onNFTModalOpen?: () => void
   onContractInteraction: () => void
   shouldShowTxBuilder: boolean
 }) => {
+  const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const txBuilder = useTxBuilderApp()
 
   return (
@@ -46,20 +48,25 @@ const CreationModal = ({
       <DialogContent>
         <Box display="flex" flexDirection="column" alignItems="center" gap={2} pt={7} pb={4} width={240} m="auto">
           <SendTokensButton onClick={onTokenModalOpen} />
-          <SendNFTsButton onClick={onNFTModalOpen} />
 
-          {txBuilder.app && shouldShowTxBuilder && (
-            <Link href={txBuilder.link} passHref>
-              <a style={{ width: '100%' }}>
-                <TxButton
-                  startIcon={<img src={txBuilder.app.iconUrl} height={20} width="auto" alt={txBuilder.app.name} />}
-                  variant="outlined"
-                  onClick={onContractInteraction}
-                >
-                  Contract interaction
-                </TxButton>
-              </a>
-            </Link>
+          {!isOnlySpendingLimitBeneficiary && (
+            <>
+              {onNFTModalOpen && <SendNFTsButton onClick={onNFTModalOpen} />}
+
+              {txBuilder.app && shouldShowTxBuilder && (
+                <Link href={txBuilder.link} passHref>
+                  <a style={{ width: '100%' }}>
+                    <TxButton
+                      startIcon={<img src={txBuilder.app.iconUrl} height={20} width="auto" alt={txBuilder.app.name} />}
+                      variant="outlined"
+                      onClick={onContractInteraction}
+                    >
+                      Contract interaction
+                    </TxButton>
+                  </a>
+                </Link>
+              )}
+            </>
           )}
         </Box>
       </DialogContent>

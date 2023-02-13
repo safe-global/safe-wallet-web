@@ -1,0 +1,8 @@
+.safeAppTagContainer {
+  padding-top: var(--space-2);
+}
+
+.safeAppTagLabel {
+  border-radius: 4px;
+  height: 24px;
+}

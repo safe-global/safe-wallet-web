@@ -1,19 +1,6 @@
 @import url(./vars.css);
 @import url(./onboard.css);
-
-@font-face {
-  font-family: 'DM Sans';
-  font-display: swap;
-  font-weight: 400;
-  src: url('/fonts/dm-sans-v11-latin-ext-regular.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'DM Sans';
-  font-display: swap;
-  font-weight: bold;
-  src: url('/fonts/dm-sans-v11-latin-ext-700.woff2') format('woff2');
-}
+@import url(../../node_modules/@safe-global/safe-react-components/dist/fonts.css);
 
 html,
 body {
@@ -46,23 +33,8 @@ button {
 }
 
 :root {
-  --header-inner-height: 52px;
-}
-
-:root {
-  --header-height: var(--header-inner-height);
+  --header-height: 52px;
   --footer-height: 67px;
-}
-
-.psaBanner:root {
-  --header-height: calc(var(--header-inner-height) * 2);
-}
-
-/* On mobile, the banner text is two lines + padding */
-@media (max-width: 600px) {
-  .psaBanner:root {
-    --header-height: calc(var(--header-inner-height) * 2 + 16px);
-  }
 }
 
 input::-webkit-outer-spin-button,

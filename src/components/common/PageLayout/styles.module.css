@@ -13,6 +13,9 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.mainAnimated {
   transition: padding 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
 }
 
@@ -72,6 +75,10 @@
 @media (max-width: 900px) {
   .main {
     padding-left: 0;
+  }
+
+  .smDrawerHidden {
+    display: none;
   }
 }
 

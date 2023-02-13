@@ -2,12 +2,12 @@ import { type TokenInfo, type SafeBalanceResponse } from '@safe-global/safe-gate
 import { createSelector } from '@reduxjs/toolkit'
 import { makeLoadableSlice } from './common'
 
-const initialState: SafeBalanceResponse = {
+export const initialBalancesState: SafeBalanceResponse = {
   items: [],
   fiatTotal: '',
 }
 
-const { slice, selector } = makeLoadableSlice('balances', initialState)
+const { slice, selector } = makeLoadableSlice('balances', initialBalancesState)
 
 export const balancesSlice = slice
 export const selectBalances = selector

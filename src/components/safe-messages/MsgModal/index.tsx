@@ -6,7 +6,7 @@ import type { SafeMessage } from '@gnosis.pm/safe-react-gateway-sdk'
 import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 
 import ModalDialog, { ModalDialogTitle } from '@/components/common/ModalDialog'
-import SafeAppIcon from '@/components/safe-apps/SafeAppIcon'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import RequiredIcon from '@/public/images/messages/required.svg'
 import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
@@ -124,7 +124,7 @@ const MsgModal = ({
           <Grid container px={1} alignItems="center" gap={2}>
             <Grid item>
               <Box display="flex" alignItems="center">
-                <SafeAppIcon
+                <SafeAppIconCard
                   src={logoUri || APP_LOGO_FALLBACK_IMAGE}
                   alt={name || 'An icon of an application'}
                   width={24}

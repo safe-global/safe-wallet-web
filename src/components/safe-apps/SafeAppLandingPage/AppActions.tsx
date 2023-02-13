@@ -56,7 +56,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
     case hasWallet && hasSafes && !!safeToUse:
       const safe = `${safeToUse?.shortName}:${safeToUse?.address}`
       const href: UrlObject = {
-        pathname: AppRoutes.apps,
+        pathname: AppRoutes.apps.index,
         query: { safe, appUrl },
       }
 
@@ -69,7 +69,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
       )
       break
     case shouldCreateSafe:
-      const redirect = `${AppRoutes.apps}?appUrl=${appUrl}`
+      const redirect = `${AppRoutes.apps.index}?appUrl=${appUrl}`
       const createSafeHrefWithRedirect: UrlObject = {
         pathname: AppRoutes.newSafe.create,
         query: { safeViewRedirectURL: redirect, chain: chain.shortName },
