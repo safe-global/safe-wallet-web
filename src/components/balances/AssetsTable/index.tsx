@@ -148,12 +148,7 @@ const AssetsTable = ({
                   </Track>
                 )}
                 {showHiddenAssets ? (
-                  <Checkbox
-                    size="small"
-                    checked={isSelected}
-                    onClick={() => toggleAsset(item.tokenInfo.address)}
-                    sx={{ zIndex: 0 }}
-                  />
+                  <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
                 ) : (
                   <Track {...ASSETS_EVENTS.HIDE_TOKEN}>
                     <Tooltip title="Hide asset" arrow disableInteractive>
