@@ -27,6 +27,7 @@ import ExternalLink from '@/components/common/ExternalLink'
 import useChainId from '@/hooks/useChainId'
 import { nftPlatforms } from '../config'
 import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 interface NftsTableProps {
   nfts: SafeCollectibleResponse[]
@@ -65,7 +66,7 @@ const headCells = [
 const stopPropagation = (e: SyntheticEvent) => e.stopPropagation()
 
 const NftIndicator = ({ color }: { color: SvgIconProps['color'] }) => (
-  <SvgIcon component={NftIcon} inheritViewBox width={20} height={20} color={color} />
+  <SvgIcon component={NftIcon} inheritViewBox width={20} height={20} color={color} sx={{ ml: 0.25 }} />
 )
 
 const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview }: NftsTableProps): ReactElement => {
@@ -175,10 +176,23 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
                 <TableRow tabIndex={-1} key={`${item.address}-${item.id}`}>
                   {/* Collection name */}
                   <TableCell onClick={onClick} sx={sx}>
-                    <Box display="flex" alignItems="center" alignContent="center" gap={1}>
+                    <Box display="flex" alignItems="center" gap={2}>
                       {item.imageUri ? activeIcon : inactiveIcon}
 
-                      <Typography>{item.tokenName || item.tokenSymbol}</Typography>
+                      <div>
+                        <Typography>{item.tokenName || item.tokenSymbol}</Typography>
+
+                        <Typography fontSize="small" color="text.secondary" component="div">
+                          <EthHashInfo
+                            address={item.address}
+                            showAvatar={false}
+                            showCopyButton
+                            hasExplorer
+                            showPrefix={false}
+                            showName={false}
+                          />
+                        </Typography>
+                      </div>
                     </Box>
                   </TableCell>
 

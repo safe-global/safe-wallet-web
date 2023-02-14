@@ -51,4 +51,12 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
       getUrl: (item) => `https://gnosisscan.io/nft/${item.address}/${item.id}`,
     },
   ],
+
+  [chains.gor]: [
+    {
+      title: 'OpenSea',
+      logo: '/images/common/nft-opensea.svg',
+      getUrl: (item) => `https://testnets.opensea.io/assets/${item.address}/${item.id}`,
+    },
+  ],
 }
