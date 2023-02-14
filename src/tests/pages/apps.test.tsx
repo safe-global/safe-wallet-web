@@ -1,68 +1,28 @@
 import React from 'react'
 import * as safeAppsGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
-import { render, screen, waitFor, fireEvent, act } from '../test-utils'
+import { SafeAppFeatures } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  act,
+  getByRole,
+  getByText,
+  waitForElementToBeRemoved,
+  within,
+} from '../test-utils'
 import AppsPage from '@/pages/apps'
+import BookmarkedSafeAppsPage from '@/pages/apps/bookmarked'
+import CustomSafeAppsPage from '@/pages/apps/custom'
 import * as safeAppsService from '@/services/safe-apps/manifest'
+import { LS_NAMESPACE } from '@/config/constants'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
-  getSafeApps: (chainId: string) =>
-    Promise.resolve([
-      {
-        id: 13,
-        url: 'https://cloudflare-ipfs.com/ipfs/QmX31xCdhFDmJzoVG33Y6kJtJ5Ujw8r5EJJBrsp8Fbjm7k',
-        name: 'Compound',
-        iconUrl: 'https://cloudflare-ipfs.com/ipfs/QmX31xCdhFDmJzoVG33Y6kJtJ5Ujw8r5EJJBrsp8Fbjm7k/Compound.png',
-        description: 'Money markets on the Ethereum blockchain',
-        chainIds: ['1', '4'],
-        provider: undefined,
-        accessControl: {
-          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
-        },
-        tags: [],
-      },
-      {
-        id: 3,
-        url: 'https://app.ens.domains',
-        name: 'ENS App',
-        iconUrl: 'https://app.ens.domains/android-chrome-144x144.png',
-        description: 'Decentralised naming for wallets, websites, & more.',
-        chainIds: ['1', '4'],
-        provider: undefined,
-        accessControl: {
-          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.DomainAllowlist,
-          value: ['https://gnosis-safe.io'],
-        },
-        tags: [],
-      },
-      {
-        id: 14,
-        url: 'https://cloudflare-ipfs.com/ipfs/QmXLxxczMH4MBEYDeeN9zoiHDzVkeBmB5rBjA3UniPEFcA',
-        name: 'Synthetix',
-        iconUrl: 'https://cloudflare-ipfs.com/ipfs/QmXLxxczMH4MBEYDeeN9zoiHDzVkeBmB5rBjA3UniPEFcA/Synthetix.png',
-        description: 'Trade synthetic assets on Ethereum',
-        chainIds: ['1', '4'],
-        provider: undefined,
-        accessControl: {
-          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
-        },
-        tags: [],
-      },
-      {
-        id: 24,
-        url: 'https://cloudflare-ipfs.com/ipfs/QmdVaZxDov4bVARScTLErQSRQoxgqtBad8anWuw3YPQHCs',
-        name: 'Transaction Builder',
-        iconUrl: 'https://cloudflare-ipfs.com/ipfs/QmdVaZxDov4bVARScTLErQSRQoxgqtBad8anWuw3YPQHCs/tx-builder.png',
-        description: 'A Safe app to compose custom transactions',
-        chainIds: ['1', '4', '56', '100', '137', '246', '73799'],
-        provider: undefined,
-        accessControl: {
-          type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.DomainAllowlist,
-          value: ['https://gnosis-safe.io'],
-        },
-        tags: [],
-      },
-    ]),
+  getSafeApps: (chainId: string) => Promise.resolve(mockedSafeApps),
 }))
 
 describe('AppsPage', () => {
@@ -71,10 +31,11 @@ describe('AppsPage', () => {
     window.localStorage.clear()
   })
 
-  describe('Remote Safe Apps', () => {
-    it('shows apps from remote app list', async () => {
+  describe('Safe Apps List Page', () => {
+    it('shows safe apps list section', async () => {
       render(<AppsPage />, {
         routerProps: {
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
@@ -82,16 +43,200 @@ describe('AppsPage', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText('Compound')).toBeInTheDocument()
-        expect(screen.getByText('ENS App')).toBeInTheDocument()
+        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+      })
+    })
+
+    it('shows Safe app details when you click on the Safe app card', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          pathname: '/apps',
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      // drawer is not present
+      expect(screen.queryByRole('presentation')).not.toBeInTheDocument()
+
+      // clicks on Transaction Builder Safe App
+      await waitFor(() => {
+        fireEvent.click(screen.getByRole('heading', { level: 5, name: 'Transaction Builder' }))
+      })
+
+      await waitFor(() => {
+        const safeAppPreviewDrawer = screen.getByRole('presentation')
+        expect(safeAppPreviewDrawer).toBeInTheDocument()
+        // Transaction Builder Safe App title
+        expect(getByRole(safeAppPreviewDrawer, 'heading', { level: 4, name: 'Transaction Builder' }))
+        // open app button should be present
+        expect(getByText(safeAppPreviewDrawer, 'Open App'))
+      })
+    })
+
+    it('switches from Grid view mode to List view mode', async () => {
+      render(<AppsPage />, {
+        routerProps: {
+          pathname: '/apps',
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      await waitFor(() => {
+        // in the default grid view mode titles & descriptions are present
+        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+
+        expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
+      })
+
+      // switch list view mode
+      fireEvent.click(screen.getByLabelText('List view mode'))
+
+      await waitFor(() => {
+        // only titles are present
+        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+
+        // no description is present
+        expect(screen.queryByText(transactionBuilderSafeAppMock.description)).not.toBeInTheDocument()
+        expect(screen.queryByText(compopundSafeAppMock.description)).not.toBeInTheDocument()
+        expect(screen.queryByText(ensSafeAppMock.description)).not.toBeInTheDocument()
+        expect(screen.queryByText(synthetixSafeAppMock.description)).not.toBeInTheDocument()
+      })
+
+      // switch back to grid view mode
+      fireEvent.click(screen.getByLabelText('Grid view mode'))
+
+      await waitFor(() => {
+        // in the default grid view mode titles & descriptions are present
+        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+
+        expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
+        expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
       })
     })
   })
 
-  describe('Custom Safe apps', () => {
-    it('shows apps add custom app card', async () => {
-      render(<AppsPage />, {
+  describe('Bookmarked Safe apps Page', () => {
+    it('shows Bookmarked safe apps section', async () => {
+      // mock 2 Bookmarked Safe Apps
+      const mockedBookmarkedSafeApps = {
+        137: { pinned: [compopundSafeAppMock.id, transactionBuilderSafeAppMock.id] },
+      }
+
+      window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
+
+      render(<BookmarkedSafeAppsPage />, {
         routerProps: {
+          pathname: '/apps/bookmarked',
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      // show Bookmarked Safe Apps only
+      await waitFor(() => {
+        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+        expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+      })
+    })
+
+    it('unpin a Safe app', async () => {
+      // mock 2 Bookmarked Safe Apps
+      const mockedBookmarkedSafeApps = {
+        137: { pinned: [compopundSafeAppMock.id, transactionBuilderSafeAppMock.id] },
+      }
+
+      window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
+
+      render(<BookmarkedSafeAppsPage />, {
+        routerProps: {
+          pathname: '/apps/bookmarked',
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      // show Bookmarked Safe Apps only
+      await waitFor(() => {
+        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+      })
+
+      // unpin Transaction Builder Safe App
+      fireEvent.click(screen.getByLabelText('Unpin Transaction Builder'))
+
+      // show Bookmarked Safe Apps only
+      await waitFor(() => {
+        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).not.toBeInTheDocument()
+      })
+    })
+
+    it('shows Safe app details when you click on the Safe app card', async () => {
+      // mock 2 Bookmarked Safe Apps
+      const mockedBookmarkedSafeApps = {
+        137: { pinned: [compopundSafeAppMock.id, transactionBuilderSafeAppMock.id] },
+      }
+
+      window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
+
+      render(<BookmarkedSafeAppsPage />, {
+        routerProps: {
+          pathname: '/apps/bookmarked',
+          query: {
+            safe: 'matic:0x0000000000000000000000000000000000000000',
+          },
+        },
+      })
+
+      // drawer is not present
+      expect(screen.queryByRole('presentation')).not.toBeInTheDocument()
+
+      // clicks on Transaction Builder Safe App
+      await waitFor(() => {
+        fireEvent.click(screen.getByRole('heading', { level: 5, name: 'Transaction Builder' }))
+      })
+
+      await waitFor(() => {
+        const safeAppPreviewDrawer = screen.getByRole('presentation')
+        expect(safeAppPreviewDrawer).toBeInTheDocument()
+        // Transaction Builder Safe App title
+        expect(getByRole(safeAppPreviewDrawer, 'heading', { level: 4, name: 'Transaction Builder' }))
+        // open app button should be present
+        expect(getByText(safeAppPreviewDrawer, 'Open App'))
+      })
+    })
+  })
+
+  describe('Custom Safe apps Page', () => {
+    it('shows Custom safe apps section', async () => {
+      render(<CustomSafeAppsPage />, {
+        routerProps: {
+          pathname: '/apps/custom',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
@@ -99,130 +244,155 @@ describe('AppsPage', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText('Add custom app')).toBeInTheDocument()
+        // show add custom app card
+        expect(screen.getByRole('button', { name: 'Add custom app' }))
+      })
+
+      // Add custom app modal is not present
+      expect(screen.queryByRole('presentation')).not.toBeInTheDocument()
+
+      await act(() => {
+        fireEvent.click(screen.getByRole('button', { name: 'Add custom app' }))
+      })
+
+      // shows Add custom app modal
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { level: 2, name: 'Add custom app' })).toBeInTheDocument()
+
+        // shows custom safe App App Url input
+        const customSafeAppURLInput = screen.getByLabelText(/App URL/)
+        expect(customSafeAppURLInput).toBeInTheDocument()
       })
     })
 
-    it('allows adding custom apps', async () => {
-      const APP_URL = 'https://apps.gnosis-safe.io/compound'
+    it('adds a Custom Safe App', async () => {
+      const APP_URL = 'https://apps.safe.global/test-custom-app'
+
       jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
-        id: Math.random(),
+        id: 12345,
         url: APP_URL,
-        name: 'Custom Compound',
-        description: 'Custom markets on the Ethereum blockchain',
+        name: 'Custom test Safe app',
+        description: 'Custom Safe app description',
         accessControl: {
           type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
         },
         tags: [],
-        chainIds: ['1', '4'],
+        features: [],
+        socialProfiles: [],
+        developerWebsite: '',
+        chainIds: ['1', '4', '137'],
         iconUrl: '',
         safeAppsPermissions: [],
       })
 
-      render(<AppsPage />, {
+      render(<CustomSafeAppsPage />, {
         routerProps: {
+          pathname: '/apps/custom',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
         },
       })
 
-      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
-
-      const addCustomAppButton = screen.getByText('Add custom app')
-      await act(() => {
-        fireEvent.click(addCustomAppButton)
-      })
+      fireEvent.click(screen.getByRole('button', { name: 'Add custom app' }))
 
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument())
-
       const appURLInput = screen.getByLabelText(/App URL/)
-
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
-
       const riskCheckbox = await screen.findByRole('checkbox')
-
       fireEvent.click(riskCheckbox)
-
       await waitFor(() =>
         expect(
           screen.getByRole('heading', {
-            name: /custom compound/i,
+            name: /Custom test Safe app/i,
           }),
         ).toBeInTheDocument(),
       )
-
       await act(() => {
         fireEvent.click(screen.getByText('Add'))
       })
 
-      await waitFor(() => expect(screen.getAllByText(/Custom markets on the Ethereum blockchain/).length).toBe(2))
+      // modal is closed
+      await waitForElementToBeRemoved(() => screen.queryByLabelText(/App URL/))
+
+      // custom safe app is present in the list
+      expect(screen.queryByText('Custom test Safe app')).toBeInTheDocument()
+
+      // shows safe app description drawer is not present
+      expect(screen.queryByRole('presentation')).not.toBeInTheDocument()
+
+      // clicks on Custom test Safe app Safe App
+      await waitFor(() => {
+        fireEvent.click(screen.getByRole('heading', { level: 5, name: 'Custom test Safe app' }))
+      })
+
+      await waitFor(() => {
+        const safeAppPreviewDrawer = screen.getByRole('presentation')
+        expect(safeAppPreviewDrawer).toBeInTheDocument()
+        // Custom test Safe app Safe App title
+        expect(getByRole(safeAppPreviewDrawer, 'heading', { level: 4, name: 'Custom test Safe app' }))
+        // open app button should be present
+        expect(getByText(safeAppPreviewDrawer, 'Open App'))
+      })
     })
 
-    it('Shows an error message if the app doesnt support Safe App functionality', async () => {
-      const APP_URL = 'https://google.com'
-
-      render(<AppsPage />, {
+    it('Shows an error label if the app doesnt support Safe App functionality', async () => {
+      const INVALID_SAFE_APP_URL = 'https://google.com'
+      render(<CustomSafeAppsPage />, {
         routerProps: {
+          pathname: '/apps/custom',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
         },
       })
-
       await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
-
       const addCustomAppButton = screen.getByText('Add custom app')
       await act(() => {
         fireEvent.click(addCustomAppButton)
       })
-
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
-
       const appURLInput = screen.getByLabelText(/App URL/)
-
-      fireEvent.change(appURLInput, { target: { value: APP_URL } })
-
+      fireEvent.change(appURLInput, { target: { value: INVALID_SAFE_APP_URL } })
       await screen.findByText(/the app doesn't support safe app functionality/i)
     })
 
     it('Requires risk acknowledgment checkbox to add the app', async () => {
-      const APP_URL = 'https://apps.gnosis-safe.io/compound'
+      const APP_URL = 'https://apps.safe.global/test-custom-app'
+
       jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
-        id: Math.random(),
+        id: 12345,
         url: APP_URL,
-        name: 'Compound',
-        description: 'Money markets on the Ethereum blockchain',
+        name: 'Custom test Safe app',
+        description: 'Custom Safe app description',
         accessControl: {
           type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
         },
         tags: [],
-        chainIds: ['1', '4'],
+        features: [],
+        socialProfiles: [],
+        developerWebsite: '',
+        chainIds: ['1', '4', '137'],
         iconUrl: '',
         safeAppsPermissions: [],
       })
 
-      render(<AppsPage />, {
+      render(<CustomSafeAppsPage />, {
         routerProps: {
+          pathname: '/apps/custom',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
         },
       })
-
       await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
-
       const addCustomAppButton = screen.getByText('Add custom app')
       await act(() => {
         fireEvent.click(addCustomAppButton)
       })
-
       await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
-
       const appURLInput = screen.getByLabelText(/App URL/)
-
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
-
       const riskCheckbox = await screen.findByText(
         /This app is not part of Safe and I agree to use it at my own risk\./,
       )
@@ -233,136 +403,480 @@ describe('AppsPage', () => {
         fireEvent.click(riskCheckbox)
       })
       fireEvent.click(screen.getByText('Add'))
-
       await waitFor(() => expect(screen.getByText('Accepting the disclaimer is mandatory')).toBeInTheDocument())
     })
 
     it('allows removing custom apps', async () => {
-      const APP_URL = 'https://apps.gnosis-safe.io/compound'
+      const APP_URL = 'https://apps.safe.global/test-custom-app'
+
       jest.spyOn(safeAppsService, 'fetchSafeAppFromManifest').mockResolvedValueOnce({
-        id: Math.random(),
+        id: 12345,
         url: APP_URL,
-        name: 'Custom Compound',
-        description: 'Custom markets on the Ethereum blockchain',
+        name: 'Custom test Safe app',
+        description: 'Custom Safe app description',
         accessControl: {
           type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
         },
         tags: [],
-        chainIds: ['1', '4'],
+        features: [],
+        socialProfiles: [],
+        developerWebsite: '',
+        chainIds: ['1', '4', '137'],
         iconUrl: '',
         safeAppsPermissions: [],
       })
 
-      render(<AppsPage />, {
+      render(<CustomSafeAppsPage />, {
         routerProps: {
+          pathname: '/apps/custom',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
         },
       })
 
-      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
+      fireEvent.click(screen.getByRole('button', { name: 'Add custom app' }))
 
-      const addCustomAppButton = screen.getByText('Add custom app')
-      await act(() => {
-        fireEvent.click(addCustomAppButton)
-      })
-
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
-
+      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument())
       const appURLInput = screen.getByLabelText(/App URL/)
-
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
-
-      const riskCheckbox = await screen.findByText(/This app is not part of Safe and I agree to use it at my own risk./)
-
+      const riskCheckbox = await screen.findByRole('checkbox')
       fireEvent.click(riskCheckbox)
-
-      await waitFor(() => expect(screen.getByRole('heading', { name: 'Custom Compound' })).toBeInTheDocument())
-
+      await waitFor(() =>
+        expect(
+          screen.getByRole('heading', {
+            name: /Custom test Safe app/i,
+          }),
+        ).toBeInTheDocument(),
+      )
       await act(() => {
         fireEvent.click(screen.getByText('Add'))
       })
-      await waitFor(() => expect(screen.getAllByText(/Custom markets on the Ethereum blockchain/).length).toBe(2))
 
-      const removeButton = screen.getByLabelText('Delete Custom Compound')
+      // modal is closed
+      await waitForElementToBeRemoved(() => screen.queryByLabelText(/App URL/))
+
+      const removeCustomSafeAppButton = screen.getByLabelText('Delete Custom test Safe app')
+
       await act(() => {
-        fireEvent.click(removeButton)
+        fireEvent.click(removeCustomSafeAppButton)
       })
-      await waitFor(() => expect(screen.getByText('Remove')).toBeInTheDocument())
-      const confirmRemovalButton = screen.getByText('Remove')
-      fireEvent.click(confirmRemovalButton)
+
+      await waitFor(() => expect(screen.getByText('Confirm app removal')).toBeInTheDocument())
+
+      const confirmRemovalButton = screen.getByRole('button', { name: 'Remove' })
+      await act(() => {
+        fireEvent.click(confirmRemovalButton)
+      })
+
+      await waitForElementToBeRemoved(() => screen.getByRole('button', { name: 'Remove' }))
 
       await waitFor(() =>
-        expect(screen.queryByText('Custom markets on the Ethereum blockchain')).not.toBeInTheDocument(),
+        // custom safe app is not present in the list
+        expect(screen.queryByText('Custom test Safe app')).not.toBeInTheDocument(),
       )
     })
   })
 
-  describe('Search', () => {
-    it('shows no results found text, when no results are found', async () => {
-      render(<AppsPage />, {
-        routerProps: {
-          query: {
-            safe: 'matic:0x0000000000000000000000000000000000000000',
+  describe('Safe Apps Filters', () => {
+    describe('search by Safe App name and description', () => {
+      it('search by Safe App name', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
           },
-        },
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        const query = 'Transaction'
+
+        const searchInput = screen.getByPlaceholderText('Search by name or category')
+        fireEvent.change(searchInput, { target: { value: query } })
+
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
       })
 
-      await waitFor(() => expect(screen.getByPlaceholderText('Search')).toBeInTheDocument())
+      it('search by Safe App description', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
 
-      const input = screen.getByPlaceholderText('Search')
-      act(() => {
-        fireEvent.change(input, { target: { value: 'gibberish gibberish' } })
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        const query = transactionBuilderSafeAppMock.description
+
+        const searchInput = screen.getByPlaceholderText('Search by name or category')
+        fireEvent.change(searchInput, { target: { value: query } })
+
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
       })
 
-      await waitFor(() => expect(screen.getByText('No apps found', { exact: false })).toBeInTheDocument())
+      it('show zero results component', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        const query = 'zero results'
+
+        const searchInput = screen.getByPlaceholderText('Search by name or category')
+
+        await act(() => fireEvent.change(searchInput, { target: { value: query } }))
+
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+
+          // zero results component
+          expect(screen.getByText('No apps found', { exact: false })).toBeInTheDocument()
+          expect(screen.queryByText('Use WalletConnect')).toBeInTheDocument()
+        })
+      })
     })
 
-    it('shows apps matching the query', async () => {
-      render(<AppsPage />, {
-        routerProps: {
-          query: {
-            safe: 'matic:0x0000000000000000000000000000000000000000',
+    describe('filter by category', () => {
+      it('filters by Safe App category', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
           },
-        },
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+
+        await act(() => fireEvent.mouseDown(categorySelector))
+
+        const categoriesDropdown = within(screen.getByRole('listbox'))
+
+        // show only visible options in the categories dropdown
+        await waitFor(() => expect(categoriesDropdown.getByText('Infrastructure')).toBeInTheDocument())
+
+        // internal categories are not displayed
+        await waitFor(() => expect(categoriesDropdown.queryByText('transaction-builder')).not.toBeInTheDocument())
+
+        // filter by Infrastructure category
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
+
+        // close the dropdown
+        await act(() =>
+          fireEvent.keyDown(screen.getByRole('listbox'), {
+            key: 'Escape',
+            code: 'Escape',
+            keyCode: 27,
+            charCode: 27,
+          }),
+        )
+
+        // 1 categories selected label
+        expect(screen.queryByText('1 categories selected')).toBeInTheDocument()
+
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
       })
 
-      await waitFor(() => expect(screen.getByPlaceholderText('Search')).toBeInTheDocument())
+      it('clear a selected category', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
 
-      const input = screen.getByPlaceholderText('Search')
-      act(() => {
-        fireEvent.change(input, { target: { value: 'Compound' } })
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+
+        await act(() => fireEvent.mouseDown(categorySelector))
+
+        const categoriesDropdown = within(screen.getByRole('listbox'))
+
+        // filter by Infrastructure category
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
+
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
+
+        // clear active Infrastructure filter
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
+
+        // close the dropdown
+        await act(() =>
+          fireEvent.keyDown(screen.getByRole('listbox'), {
+            key: 'Escape',
+            code: 'Escape',
+            keyCode: 27,
+            charCode: 27,
+          }),
+        )
+
+        // show all safe apps again
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
       })
 
-      await waitFor(() => expect(screen.getByText('Compound')).toBeInTheDocument())
-      await waitFor(() => expect(screen.queryByText('ENS App')).toBeNull())
+      it('clear all selected categories', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+
+        await act(() => fireEvent.mouseDown(categorySelector))
+
+        const categoriesDropdown = within(screen.getByRole('listbox'))
+
+        // filter by Infrastructure category
+        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
+
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
+
+        // close the dropdown
+        await act(() =>
+          fireEvent.keyDown(screen.getByRole('listbox'), {
+            key: 'Escape',
+            code: 'Escape',
+            keyCode: 27,
+            charCode: 27,
+          }),
+        )
+
+        // clear all selected filters
+        await act(() => fireEvent.click(screen.getByLabelText('clear selected categories')))
+
+        // show all safe apps again
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+      })
     })
-  })
 
-  describe('Pinning', () => {
-    it('allows pinning and unpinning apps', async () => {
-      render(<AppsPage />, {
-        routerProps: {
-          query: {
-            safe: 'matic:0x0000000000000000000000000000000000000000',
+    describe('filter by optimized for batch transactions', () => {
+      it('filters by optimized for batch transactions', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
           },
-        },
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        // filter by optimized for batch transactions
+        await act(() => fireEvent.click(screen.getByRole('checkbox', { checked: false })))
+
+        // show only transaction builder safe app
+        await waitFor(() => {
+          expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
+          expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        })
       })
 
-      await waitFor(() => expect(screen.getByText('ENS App')).toBeInTheDocument())
+      it('clears optimized for batch transactions checkbox', async () => {
+        render(<AppsPage />, {
+          routerProps: {
+            pathname: '/apps',
+            query: {
+              safe: 'matic:0x0000000000000000000000000000000000000000',
+            },
+          },
+        })
 
-      const button = screen.getByTitle('Pin ENS App')
-      await act(() => {
-        fireEvent.click(button)
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
+
+        // filter by optimized for batch transactions
+        await act(() => fireEvent.click(screen.getByRole('checkbox', { checked: false })))
+
+        // clears the optimized for batch transactions filter
+        await act(() => fireEvent.click(screen.getByRole('checkbox', { checked: true })))
+
+        // show all safe apps
+        await waitFor(() => {
+          expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+          expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
+        })
       })
-
-      await waitFor(() => expect(screen.getAllByTitle(/ENS App logo/i).length).toBe(2))
-
-      await act(() => {
-        fireEvent.click(button)
-      })
-      await waitFor(() => expect(screen.getAllByTitle(/ENS App logo/i).length).toBe(1))
     })
   })
 })
+
+const transactionBuilderSafeAppMock: SafeAppData = {
+  id: 24,
+  url: 'https://cloudflare-ipfs.com/ipfs/QmdVaZxDov4bVARScTLErQSRQoxgqtBad8anWuw3YPQHCs',
+  name: 'Transaction Builder',
+  iconUrl: 'https://cloudflare-ipfs.com/ipfs/QmdVaZxDov4bVARScTLErQSRQoxgqtBad8anWuw3YPQHCs/tx-builder.png',
+  description: 'A Safe app to compose custom transactions',
+  chainIds: ['1', '4', '56', '100', '137', '246', '73799'],
+  provider: undefined,
+  accessControl: {
+    type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.DomainAllowlist,
+    value: ['https://gnosis-safe.io'],
+  },
+  tags: [
+    'transaction-builder', // this internal category is not displayed in the UI
+    'Infrastructure',
+  ],
+  features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
+  socialProfiles: [],
+  developerWebsite: '',
+}
+
+const compopundSafeAppMock: SafeAppData = {
+  id: 13,
+  url: 'https://cloudflare-ipfs.com/ipfs/QmX31xCdhFDmJzoVG33Y6kJtJ5Ujw8r5EJJBrsp8Fbjm7k',
+  name: 'Compound',
+  iconUrl: 'https://cloudflare-ipfs.com/ipfs/QmX31xCdhFDmJzoVG33Y6kJtJ5Ujw8r5EJJBrsp8Fbjm7k/Compound.png',
+  description: 'Money markets on the Ethereum blockchain',
+  chainIds: ['1', '4', '137'],
+  provider: undefined,
+  accessControl: {
+    type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
+  },
+  tags: [],
+  features: [],
+  socialProfiles: [],
+  developerWebsite: '',
+}
+
+const ensSafeAppMock: SafeAppData = {
+  id: 3,
+  url: 'https://app.ens.domains',
+  name: 'ENS App',
+  iconUrl: 'https://app.ens.domains/android-chrome-144x144.png',
+  description: 'Decentralised naming for wallets, websites, & more.',
+  chainIds: ['1', '4', '137'],
+  provider: undefined,
+  accessControl: {
+    type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.DomainAllowlist,
+    value: ['https://gnosis-safe.io'],
+  },
+  tags: [],
+  features: [],
+  socialProfiles: [],
+  developerWebsite: '',
+}
+
+const synthetixSafeAppMock: SafeAppData = {
+  id: 14,
+  url: 'https://cloudflare-ipfs.com/ipfs/QmXLxxczMH4MBEYDeeN9zoiHDzVkeBmB5rBjA3UniPEFcA',
+  name: 'Synthetix',
+  iconUrl: 'https://cloudflare-ipfs.com/ipfs/QmXLxxczMH4MBEYDeeN9zoiHDzVkeBmB5rBjA3UniPEFcA/Synthetix.png',
+  description: 'Trade synthetic assets on Ethereum',
+  chainIds: ['1', '4', '137'],
+  provider: undefined,
+  accessControl: {
+    type: safeAppsGatewaySDK.SafeAppAccessPolicyTypes.NoRestrictions,
+  },
+  tags: [],
+  features: [],
+  socialProfiles: [],
+  developerWebsite: '',
+}
+
+const mockedSafeApps = [compopundSafeAppMock, ensSafeAppMock, synthetixSafeAppMock, transactionBuilderSafeAppMock]

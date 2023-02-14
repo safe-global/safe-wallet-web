@@ -14,7 +14,7 @@ import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
-import chains from '@/config/chains'
+import { getShortName } from '@/utils/chains'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -23,7 +23,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const addressBook = useAddressBook()
 
   const prefix = useMemo(() => {
-    return chainInfo?.shortName || Object.entries(chains).find(([, chainId]) => chainId === wallet.chainId)?.[0]
+    return chainInfo?.shortName || (wallet?.chainId && getShortName(wallet?.chainId))
   }, [chainInfo?.shortName, wallet?.chainId])
 
   const handleSwitchWallet = () => {
@@ -113,7 +113,13 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
 
           <ChainSwitcher fullWidth />
 
-          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={handleSwitchWallet}
+            fullWidth
+            sx={{ display: ['none', 'block'] }}
+          >
             Switch wallet
           </Button>
 

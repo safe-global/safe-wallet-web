@@ -7,7 +7,7 @@ import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import SafeAppIcon from '@/components/safe-apps/SafeAppIcon'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 const StyledGrid = styled(Grid)`
   gap: 24px;
@@ -33,12 +33,15 @@ export const FeaturedApps = (): ReactElement | null => {
           <StyledGrid container>
             {featuredApps?.map((app) => (
               <StyledGridItem item xs md key={app.id}>
-                <NextLink passHref href={{ pathname: AppRoutes.apps, query: { ...router.query, appUrl: app.url } }}>
+                <NextLink
+                  passHref
+                  href={{ pathname: AppRoutes.apps.index, query: { ...router.query, appUrl: app.url } }}
+                >
                   <a>
                     <Card>
                       <Grid container alignItems="center" spacing={3}>
                         <Grid item xs={12} md={3}>
-                          <SafeAppIcon src={app.iconUrl} alt={app.name} width={64} height={64} />
+                          <SafeAppIconCard src={app.iconUrl} alt={app.name} width={64} height={64} />
                         </Grid>
 
                         <Grid item xs={12} md={9}>

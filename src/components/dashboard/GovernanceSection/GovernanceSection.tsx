@@ -19,7 +19,7 @@ import type { UseAppCommunicatorHandlers } from '@/components/safe-apps/AppFrame
 import useAppCommunicator from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGetSafeInfo from '@/components/safe-apps/AppFrame/useGetSafeInfo'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useAsync from '@/hooks/useAsync'

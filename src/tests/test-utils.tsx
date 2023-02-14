@@ -2,8 +2,9 @@ import type { RenderHookOptions } from '@testing-library/react'
 import { render, renderHook } from '@testing-library/react'
 import type { NextRouter } from 'next/router'
 import { RouterContext } from 'next/dist/shared/lib/router-context'
+import type { Theme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material/styles'
-import initTheme from '@/styles/theme'
+import { SafeThemeProvider } from '@safe-global/safe-react-components'
 import type { RootState } from '@/store'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
@@ -42,7 +43,9 @@ const getProviders: (options: {
     return (
       <StoreHydrator initialState={initialReduxState}>
         <RouterContext.Provider value={mockRouter(routerProps)}>
-          <ThemeProvider theme={initTheme(false)}>{children}</ThemeProvider>
+          <SafeThemeProvider mode="light">
+            {(safeTheme: Theme) => <ThemeProvider theme={safeTheme}>{children}</ThemeProvider>}
+          </SafeThemeProvider>
         </RouterContext.Provider>
       </StoreHydrator>
     )

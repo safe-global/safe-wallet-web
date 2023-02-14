@@ -36,3 +36,9 @@
   overflow-y: hidden;
   padding: 0 0;
 }
+
+@media (max-width: 600px) {
+  .list {
+    overflow-x: auto;
+  }
+}

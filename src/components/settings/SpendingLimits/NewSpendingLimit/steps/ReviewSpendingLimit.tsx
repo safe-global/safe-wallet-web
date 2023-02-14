@@ -33,7 +33,8 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
 
   useEffect(() => {
     const existingSpendingLimit = spendingLimits.find(
-      (spendingLimit) => spendingLimit.beneficiary === data.beneficiary && spendingLimit.token === data.tokenAddress,
+      (spendingLimit) =>
+        spendingLimit.beneficiary === data.beneficiary && spendingLimit.token.address === data.tokenAddress,
     )
     setExistingSpendingLimit(existingSpendingLimit)
   }, [spendingLimits, data])

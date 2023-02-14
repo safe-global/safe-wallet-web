@@ -1,0 +1,7 @@
+.gridView > rect {
+  fill: currentColor;
+}
+
+.listView > path {
+  fill: currentColor;
+}
