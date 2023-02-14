@@ -26,7 +26,7 @@ export const useInitSafeCoreSDK = () => {
       .catch((e) => {
         dispatch(
           showNotification({
-            message: 'Problem connecting to the RPC provider. Please try connecting your wallet again.',
+            message: 'Please try connecting your wallet again.',
             groupKey: 'core-sdk-init-error',
             variant: 'error',
             detailedMessage: (e as Error).message,

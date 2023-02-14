@@ -11,7 +11,7 @@ const useSpendingLimit = (selectedToken?: TokenInfo): SpendingLimitState | undef
 
   return spendingLimits.find(
     (spendingLimit) =>
-      sameAddress(spendingLimit.token, selectedToken?.address) &&
+      sameAddress(spendingLimit.token.address, selectedToken?.address) &&
       sameAddress(spendingLimit.beneficiary, wallet?.address),
   )
 }

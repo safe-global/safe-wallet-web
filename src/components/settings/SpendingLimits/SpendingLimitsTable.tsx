@@ -1,8 +1,7 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
-import useBalances from '@/hooks/useBalances'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { safeFormatUnits } from '@/utils/formatters'
-import { Box, IconButton, SvgIcon } from '@mui/material'
+import { Box, IconButton, Skeleton, SvgIcon, Typography } from '@mui/material'
 import { relativeTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useMemo, useState } from 'react'
@@ -24,10 +23,57 @@ const RemoveSpendingLimitSteps: TxStepperProps['steps'] = [
   },
 ]
 
-export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: SpendingLimitState[] }) => {
+const SKELETON_ROWS = new Array(3).fill('').map(() => {
+  return {
+    cells: {
+      beneficiary: {
+        rawValue: '0x',
+        content: (
+          <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+            <Skeleton variant="circular" width={26} height={26} />
+            <div>
+              <Typography>
+                <Skeleton width={75} />
+              </Typography>
+              <Typography>
+                <Skeleton width={300} />
+              </Typography>
+            </div>
+          </Box>
+        ),
+      },
+      spent: {
+        rawValue: '0',
+        content: (
+          <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+            <Skeleton variant="circular" width={26} height={26} />
+            <Typography>
+              <Skeleton width={100} />
+            </Typography>
+          </Box>
+        ),
+      },
+      resetTime: {
+        rawValue: '0',
+        content: (
+          <Typography>
+            <Skeleton />
+          </Typography>
+        ),
+      },
+    },
+  }
+})
+
+export const SpendingLimitsTable = ({
+  spendingLimits,
+  isLoading,
+}: {
+  spendingLimits: SpendingLimitState[]
+  isLoading: boolean
+}) => {
   const [open, setOpen] = useState<boolean>(false)
   const [initialData, setInitialData] = useState<SpendingLimitState>()
-  const { balances } = useBalances()
   const isGranted = useIsGranted()
 
   const shouldHideactions = !isGranted
@@ -49,58 +95,58 @@ export const SpendingLimitsTable = ({ spendingLimits }: { spendingLimits: Spendi
 
   const rows = useMemo(
     () =>
-      spendingLimits.map((spendingLimit) => {
-        const token = balances.items.find((item) => item.tokenInfo.address === spendingLimit.token)
-        const amount = BigNumber.from(spendingLimit.amount)
-        const formattedAmount = safeFormatUnits(amount, token?.tokenInfo.decimals)
+      isLoading
+        ? SKELETON_ROWS
+        : spendingLimits.map((spendingLimit) => {
+            const amount = BigNumber.from(spendingLimit.amount)
+            const formattedAmount = safeFormatUnits(amount, spendingLimit.token.decimals)
 
-        const spent = BigNumber.from(spendingLimit.spent)
-        const formattedSpent = safeFormatUnits(spent, token?.tokenInfo.decimals)
+            const spent = BigNumber.from(spendingLimit.spent)
+            const formattedSpent = safeFormatUnits(spent, spendingLimit.token.decimals)
 
-        return {
-          cells: {
-            beneficiary: {
-              rawValue: spendingLimit.beneficiary,
-              content: (
-                <EthHashInfo address={spendingLimit.beneficiary} shortAddress={false} hasExplorer showCopyButton />
-              ),
-            },
-            spent: {
-              rawValue: spendingLimit.spent,
-              content: (
-                <Box display="flex" alignItems="center" gap={1}>
-                  <TokenIcon logoUri={token?.tokenInfo.logoUri} tokenSymbol={token?.tokenInfo.symbol} />
-                  {`${formattedSpent} of ${formattedAmount} ${token?.tokenInfo.symbol}`}
-                </Box>
-              ),
-            },
-            resetTime: {
-              rawValue: spendingLimit.resetTimeMin,
-              content: (
-                <SpendingLimitLabel
-                  label={relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}
-                  isOneTime={spendingLimit.resetTimeMin === '0'}
-                />
-              ),
-            },
-            actions: {
-              rawValue: '',
-              sticky: true,
-              hide: shouldHideactions,
-              content: (
-                <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
-                  <IconButton onClick={() => onRemove(spendingLimit)} color="error" size="small">
-                    <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                  </IconButton>
-                </Track>
-              ),
-            },
-          },
-        }
-      }),
-    [balances.items, shouldHideactions, spendingLimits],
+            return {
+              cells: {
+                beneficiary: {
+                  rawValue: spendingLimit.beneficiary,
+                  content: (
+                    <EthHashInfo address={spendingLimit.beneficiary} shortAddress={false} hasExplorer showCopyButton />
+                  ),
+                },
+                spent: {
+                  rawValue: spendingLimit.spent,
+                  content: (
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <TokenIcon logoUri={spendingLimit.token.logoUri} tokenSymbol={spendingLimit.token.symbol} />
+                      {`${formattedSpent} of ${formattedAmount} ${spendingLimit.token.symbol}`}
+                    </Box>
+                  ),
+                },
+                resetTime: {
+                  rawValue: spendingLimit.resetTimeMin,
+                  content: (
+                    <SpendingLimitLabel
+                      label={relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}
+                      isOneTime={spendingLimit.resetTimeMin === '0'}
+                    />
+                  ),
+                },
+                actions: {
+                  rawValue: '',
+                  sticky: true,
+                  hide: shouldHideactions,
+                  content: (
+                    <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
+                      <IconButton onClick={() => onRemove(spendingLimit)} color="error" size="small">
+                        <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                      </IconButton>
+                    </Track>
+                  ),
+                },
+              },
+            }
+          }),
+    [isLoading, shouldHideactions, spendingLimits],
   )
-
   return (
     <>
       <EnhancedTable rows={rows} headCells={headCells} />

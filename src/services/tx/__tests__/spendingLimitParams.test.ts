@@ -72,7 +72,7 @@ describe('createNewSpendingLimitTx', () => {
     const mockSpendingLimits: SpendingLimitState[] = [
       {
         beneficiary: ZERO_ADDRESS,
-        token: '0x10',
+        token: { address: '0x10', decimals: 18, symbol: 'TST' },
         amount: '1',
         resetTimeMin: '0',
         lastResetMin: '0',
@@ -90,7 +90,7 @@ describe('createNewSpendingLimitTx', () => {
   it('creates a tx to reset an existing allowance if some of the allowance was already spent', async () => {
     const existingSpendingLimitMock = {
       beneficiary: ZERO_ADDRESS,
-      token: '0x10',
+      token: { address: '0x10', decimals: 18, symbol: 'TST' },
       amount: '1',
       resetTimeMin: '0',
       lastResetMin: '0',
@@ -107,7 +107,7 @@ describe('createNewSpendingLimitTx', () => {
   it('does not create a tx to reset an existing allowance if none was spent', async () => {
     const existingSpendingLimitMock = {
       beneficiary: ZERO_ADDRESS,
-      token: '0x10',
+      token: { address: '0x10', decimals: 18, symbol: 'TST' },
       amount: '1',
       resetTimeMin: '0',
       lastResetMin: '0',
