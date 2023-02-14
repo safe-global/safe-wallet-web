@@ -43,7 +43,7 @@ const TokenMenu = ({
             </Button>
           </Track>
           <Track {...ASSETS_EVENTS.SAVE_HIDE_DIALOG}>
-            <Button onClick={saveChanges} className={css.applyButton} size="small" variant="outlined">
+            <Button onClick={saveChanges} className={css.applyButton} size="small" variant="contained">
               Save
             </Button>
           </Track>
