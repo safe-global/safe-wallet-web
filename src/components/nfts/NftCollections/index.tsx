@@ -11,6 +11,7 @@ import { NFT_EVENTS } from '@/services/analytics/events/nfts'
 import { trackEvent } from '@/services/analytics'
 import NftGrid from '../NftGrid'
 import NftSendForm from '../NftSendForm'
+import NftPreviewModal from '../NftPreviewModal'
 
 const NftCollections = (): ReactElement => {
   // Track the current NFT page url
@@ -23,6 +24,8 @@ const NftCollections = (): ReactElement => {
   const [selectedNfts, setSelectedNfts] = useState<SafeCollectibleResponse[]>([])
   // Modal open state
   const [showSendModal, setShowSendModal] = useState<boolean>(false)
+  // Preview
+  const [previewNft, setPreviewNft] = useState<SafeCollectibleResponse>()
 
   // Add or remove NFT from the selected list on row click
   const onSelect = useCallback((token: SafeCollectibleResponse) => {
@@ -82,6 +85,7 @@ const NftCollections = (): ReactElement => {
             nfts={allNfts}
             selectedNfts={selectedNfts}
             onSelect={onSelect}
+            onPreview={setPreviewNft}
             isLoading={(loading || !!nftPage?.next) && !error}
           >
             {/* Infinite scroll at the bottom of the table */}
@@ -105,6 +109,9 @@ const NftCollections = (): ReactElement => {
           ]}
         />
       )}
+
+      {/* NFT preview */}
+      {<NftPreviewModal onClose={() => setPreviewNft(undefined)} nft={previewNft} />}
     </>
   )
 }
