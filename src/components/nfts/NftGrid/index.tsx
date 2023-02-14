@@ -69,6 +69,26 @@ const NftIndicator = ({ color }: { color: SvgIconProps['color'] }) => (
   <SvgIcon component={NftIcon} inheritViewBox width={20} height={20} color={color} sx={{ ml: 0.25 }} />
 )
 
+const activeNftIcon = <NftIndicator color="primary" />
+
+const inactiveNftIcon = (
+  <Tooltip title="There's no preview for this NFT" placement="top" arrow>
+    <span>
+      <NftIndicator color="border" />
+    </span>
+  </Tooltip>
+)
+
+const linksHeader = (
+  <OnboardingTooltip
+    text="Please note that the links to OpenSea and Blur are provided only for viewing NFTs. Both these apps do not support the Safe Wallet right now."
+    widgetLocalStorageId="tooltip_nft_links"
+    placement="top"
+  >
+    <span>Links</span>
+  </OnboardingTooltip>
+)
+
 const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview }: NftsTableProps): ReactElement => {
   const chainId = useChainId()
   const linkTemplates = nftPlatforms[chainId]
@@ -95,19 +115,6 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
   }, [nfts, filter])
 
   const minRows = Math.min(nfts.length, PAGE_SIZE)
-
-  const activeIcon = useMemo(() => <NftIndicator color="primary" />, [])
-
-  const inactiveIcon = useMemo(
-    () => (
-      <Tooltip title="There's no preview for this NFT" placement="top" arrow>
-        <span>
-          <NftIndicator color="border" />
-        </span>
-      </Tooltip>
-    ),
-    [],
-  )
 
   return (
     <>
@@ -151,13 +158,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
                     </Box>
                   ) : headCell.id === 'links' ? (
                     linkTemplates ? (
-                      <OnboardingTooltip
-                        text="Please note that the links to OpenSea and Blur are provided only for viewing NFTs. Both these apps do not support the Safe Wallet right now."
-                        widgetLocalStorageId="tooltip_nft_links"
-                        placement="top"
-                      >
-                        <span>{headCell.label}</span>
-                      </OnboardingTooltip>
+                      linksHeader
                     ) : null
                   ) : (
                     headCell.label
@@ -177,7 +178,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
                   {/* Collection name */}
                   <TableCell onClick={onClick} sx={sx}>
                     <Box display="flex" alignItems="center" gap={2}>
-                      {item.imageUri ? activeIcon : inactiveIcon}
+                      {item.imageUri ? activeNftIcon : inactiveNftIcon}
 
                       <div>
                         <Typography>{item.tokenName || item.tokenSymbol}</Typography>
