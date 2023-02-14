@@ -32,6 +32,12 @@ const NftCollections = (): ReactElement => {
     setSelectedNfts((prev) => (prev.includes(token) ? prev.filter((t) => t !== token) : prev.concat(token)))
   }, [])
 
+  // On NFT preview click
+  const onPreview = useCallback((token: SafeCollectibleResponse) => {
+    setPreviewNft(token)
+    trackEvent(NFT_EVENTS.PREVIEW)
+  }, [])
+
   const onSendSubmit = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault()
@@ -85,7 +91,7 @@ const NftCollections = (): ReactElement => {
             nfts={allNfts}
             selectedNfts={selectedNfts}
             onSelect={onSelect}
-            onPreview={setPreviewNft}
+            onPreview={onPreview}
             isLoading={(loading || !!nftPage?.next) && !error}
           >
             {/* Infinite scroll at the bottom of the table */}
