@@ -187,10 +187,9 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
                           <EthHashInfo
                             address={item.address}
                             showAvatar={false}
+                            showName={false}
                             showCopyButton
                             hasExplorer
-                            showPrefix={false}
-                            showName={false}
                           />
                         </Typography>
                       </div>

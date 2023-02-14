@@ -12,7 +12,6 @@ import type { EthHashInfoProps } from '@safe-global/safe-react-components'
 
 const PrefixedEthHashInfo = ({
   showName = true,
-  showPrefix = true,
   ...props
 }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
@@ -21,11 +20,10 @@ const PrefixedEthHashInfo = ({
   const addressBook = useAddressBook()
   const link = chain ? getBlockExplorerLink(chain, props.address) : undefined
   const name = showName ? props.name || addressBook[props.address] : undefined
-  const prefix = showPrefix ? chain?.shortName : undefined
 
   return (
     <EthHashInfo
-      prefix={prefix}
+      prefix={chain?.shortName}
       showPrefix={settings.shortName.show}
       copyPrefix={settings.shortName.copy}
       {...props}
