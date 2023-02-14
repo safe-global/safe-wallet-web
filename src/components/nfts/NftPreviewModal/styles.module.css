@@ -10,6 +10,7 @@
 
 .imageLink {
   flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,9 +21,10 @@
 
 .imageLink img {
   display: block;
-  border-radius: 16px;
-  max-width: 100%;
+  object-fit: cover;
   max-height: 100%;
+  max-width: 100%;
+  border-radius: 16px;
   position: relative;
   z-index: 2;
 }
