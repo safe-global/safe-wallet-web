@@ -1,7 +1,7 @@
 import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
-import { isObjectEIP712TypedData } from '@gnosis.pm/safe-apps-sdk'
+import type { RequestId } from '@safe-global/safe-apps-sdk'
+import { isObjectEIP712TypedData } from '@safe-global/safe-apps-sdk'
 import type { TypedDataDomain } from 'ethers'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 

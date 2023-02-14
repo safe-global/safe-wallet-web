@@ -1,4 +1,4 @@
-import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
+import type { RequestId } from '@safe-global/safe-apps-sdk'
 
 import EventBus from '../EventBus'
 

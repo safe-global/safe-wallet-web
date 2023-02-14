@@ -1,6 +1,6 @@
 import { hexZeroPad } from 'ethers/lib/utils'
-import { SafeMessageStatus, SafeMessageListItemType } from '@gnosis.pm/safe-react-gateway-sdk'
-import type { SafeMessageListItem } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeMessageStatus, SafeMessageListItemType } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeMessageListItem } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import { showNotification } from '@/store/notificationsSlice'

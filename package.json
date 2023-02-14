@@ -37,7 +37,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",
-    "@gnosis.pm/safe-apps-sdk": "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-sdk?safe-settings",
+    "@safe-global/safe-apps-sdk": "^7.10.0",
     "@gnosis.pm/safe-deployments": "^1.18.0",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@mui/icons-material": "^5.8.4",

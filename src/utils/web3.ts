@@ -1,5 +1,5 @@
 import { _TypedDataEncoder } from 'ethers/lib/utils'
-import type { EIP712TypedData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TypedDataDomain } from 'ethers'
 
 export type EIP712Normalized = EIP712TypedData & { primaryType: string }

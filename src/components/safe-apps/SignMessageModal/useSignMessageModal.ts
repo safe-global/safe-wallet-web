@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import type { EIP712TypedData } from '@gnosis.pm/safe-apps-sdk'
-import { Methods } from '@gnosis.pm/safe-apps-sdk'
+import type { EIP712TypedData } from '@safe-global/safe-apps-sdk'
+import { Methods } from '@safe-global/safe-apps-sdk'
 
 type StateType = {
   isOpen: boolean
