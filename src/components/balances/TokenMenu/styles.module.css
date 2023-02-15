@@ -9,24 +9,12 @@
   min-width: 185px;
 }
 
-.stickyBox {
-  position: sticky;
-  top: 111px; /* under AssetHeader */
-  z-index: 1;
-  padding: var(--space-2) 0;
-  background-color: var(--color-background-default);
+.wrapper {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
-  margin-top: -24px;
   gap: var(--space-3);
-}
-
-@media (max-width: 600px) {
-  .stickyBox {
-    margin-top: -16px;
-  }
 }
 
 .cancelButton {
