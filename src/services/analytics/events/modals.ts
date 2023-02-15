@@ -45,3 +45,10 @@ export const MODALS_EVENTS = {
     category: MODALS_CATEGORY,
   },
 }
+
+export const MESSAGE_MODAL_EVENTS = {
+  SIGN_MESSAGE: {
+    action: 'Sign message',
+    category: MODALS_CATEGORY,
+  },
+}

@@ -21,6 +21,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useSafeMessages from '@/hooks/useSafeMessages'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import { MESSAGE_MODAL_EVENTS, trackEvent } from '@/services/analytics'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 import { DecodedMsg } from '../DecodedMsg'
@@ -110,6 +111,8 @@ const MsgModal = ({
       } else {
         await dispatchSafeMsgConfirmation({ signer, safe, message: decodedMessage, requestId })
       }
+
+      trackEvent(MESSAGE_MODAL_EVENTS.SIGN_MESSAGE)
 
       onClose()
     } catch (e) {
