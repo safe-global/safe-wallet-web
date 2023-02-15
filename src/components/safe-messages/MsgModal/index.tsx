@@ -1,5 +1,5 @@
 import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { getSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -94,7 +94,7 @@ const MsgModal = ({
 
   const isDisabled = isWrongChain || !isOwner || hasSigned || !web3
 
-  const onSign = async () => {
+  const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
     if (!web3) {
       return
@@ -115,7 +115,7 @@ const MsgModal = ({
     } catch (e) {
       setSubmitError(e as Error)
     }
-  }
+  }, [alreadyProposedMessage, decodedMessage, onClose, requestId, safe, safeAppId, web3])
 
   return (
     <ModalDialog open onClose={onClose} maxWidth="sm" fullWidth>

@@ -27,7 +27,8 @@ import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
-import { useMsgBusTracking } from '@/hooks/useMsgBusTracking'
+import { useTxTracking } from '@/hooks/useTxTracking'
+import { useSafeMsgTracking } from '@/hooks/useSafeMsgTracking'
 import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
@@ -54,7 +55,8 @@ const InitApp = (): null => {
   useSafeNotifications()
   useTxPendingStatuses()
   useSafeMessagePendingStatuses()
-  useMsgBusTracking()
+  useTxTracking()
+  useSafeMsgTracking()
   useBeamer()
 
   return null

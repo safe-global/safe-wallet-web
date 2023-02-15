@@ -23,9 +23,6 @@ export const WALLET_EVENTS = {
     action: 'On-chain interaction',
     category: WALLET_CATEGORY,
   },
-}
-
-export const MESSAGE_WALLET_EVENTS = {
   SIGN_MESSAGE: {
     event: EventType.META,
     action: 'Sign message',
