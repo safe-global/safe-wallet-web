@@ -24,3 +24,16 @@ export const WALLET_EVENTS = {
     category: WALLET_CATEGORY,
   },
 }
+
+export const MESSAGE_WALLET_EVENTS = {
+  SIGN_MESSAGE: {
+    event: EventType.META,
+    action: 'Sign message',
+    category: WALLET_CATEGORY,
+  },
+  CONFIRM_MESSAGE: {
+    event: EventType.META,
+    action: 'Confirm message',
+    category: WALLET_CATEGORY,
+  },
+}
