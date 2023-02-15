@@ -4,6 +4,7 @@ import { isByte } from '@/utils/transaction-guards'
 import { type EIP712Normalized, normalizeTypedData } from '@/utils/web3'
 import { Box, Typography } from '@mui/material'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { ErrorBoundary } from '@sentry/react'
 import classNames from 'classnames'
 import { isAddress } from 'ethers/lib/utils'
 import type { ReactElement } from 'react'
@@ -83,8 +84,10 @@ export const DecodedMsg = ({
         borderRadius: (theme) => `${theme.shape.borderRadius}px`,
       }}
     >
-      <DecodedTypedObject eip712Msg={normalizedMsg} displayedType={EIP712_DOMAIN_TYPE} />
-      <DecodedTypedObject eip712Msg={normalizedMsg} displayedType={normalizedMsg.primaryType} />
+      <ErrorBoundary fallback={<div>Error decoding message</div>}>
+        <DecodedTypedObject eip712Msg={normalizedMsg} displayedType={EIP712_DOMAIN_TYPE} />
+        <DecodedTypedObject eip712Msg={normalizedMsg} displayedType={normalizedMsg.primaryType} />
+      </ErrorBoundary>
     </Box>
   )
 }
