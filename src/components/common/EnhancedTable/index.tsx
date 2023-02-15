@@ -103,7 +103,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
   )
 }
 
-type EnhancedTableProps = {
+export type EnhancedTableProps = {
   rows: EnhancedRow[]
   headCells: EnhancedHeadCell[]
   mobileVariant?: boolean

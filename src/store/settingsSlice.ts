@@ -14,12 +14,19 @@ export type EnvState = {
   }
 }
 
+export enum TOKEN_LISTS {
+  TRUSTED = 'TRUSTED',
+  ALL = 'ALL',
+}
+
 export type SettingsState = {
   currency: string
 
   hiddenTokens: {
     [chainId: string]: string[]
   }
+
+  tokenList: TOKEN_LISTS
 
   shortName: {
     show: boolean
@@ -34,6 +41,8 @@ export type SettingsState = {
 
 const initialState: SettingsState = {
   currency: 'usd',
+
+  tokenList: TOKEN_LISTS.TRUSTED,
 
   hiddenTokens: {},
 
@@ -75,6 +84,9 @@ export const settingsSlice = createSlice({
       const { chainId, assets } = payload
       state.hiddenTokens[chainId] = assets
     },
+    setTokenList: (state, { payload }: PayloadAction<SettingsState['tokenList']>) => {
+      state.tokenList = payload
+    },
     setEnv: (state, { payload }: PayloadAction<EnvState>) => {
       state.env = payload
     },
@@ -88,6 +100,7 @@ export const {
   setQrShortName,
   setDarkMode,
   setHiddenTokensForChain,
+  setTokenList,
   setEnv,
 } = settingsSlice.actions
 
@@ -95,6 +108,10 @@ export const selectSettings = (state: RootState): SettingsState => state[setting
 
 export const selectCurrency = (state: RootState): SettingsState['currency'] => {
   return state[settingsSlice.name].currency || initialState.currency
+}
+
+export const selectTokenList = (state: RootState): SettingsState['tokenList'] => {
+  return state[settingsSlice.name].tokenList || initialState.tokenList
 }
 
 export const selectHiddenTokensPerChain = (state: RootState, chainId: string): string[] => {

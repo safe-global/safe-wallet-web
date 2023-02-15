@@ -2,14 +2,13 @@ import { useMemo } from 'react'
 import { BigNumber } from 'ethers'
 import type { FeeData } from '@ethersproject/providers'
 import type { GasPrice, GasPriceOracle } from '@safe-global/safe-gateway-typescript-sdk'
-import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { GAS_PRICE_TYPE } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from './useChains'
 import useIntervalCounter from './useIntervalCounter'
 import { useWeb3ReadOnly } from '../hooks/wallets/web3'
 import { Errors, logError } from '@/services/exceptions'
-import { hasFeature } from '@/utils/chains'
+import { FEATURES, hasFeature } from '@/utils/chains'
 
 // Updat gas fees every 20 seconds
 const REFRESH_DELAY = 20e3

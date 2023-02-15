@@ -5,6 +5,7 @@ import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { safeParseUnits } from '@/utils/formatters'
 import HiddenTokenButton from '.'
 import { useState } from 'react'
+import { TOKEN_LISTS } from '@/store/settingsSlice'
 
 const TestComponent = () => {
   const [showHidden, setShowHidden] = useState(false)
@@ -66,6 +67,7 @@ describe('HiddenTokenToggle', () => {
         settings: {
           currency: 'usd',
           hiddenTokens: mockHiddenAssets,
+          tokenList: TOKEN_LISTS.ALL,
           shortName: {
             show: true,
             copy: true,

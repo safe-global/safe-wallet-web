@@ -37,6 +37,8 @@ import { PermissionStatus } from '@/components/safe-apps/types'
 import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
 import useGetSafeInfo from './useGetSafeInfo'
+import { selectTokenList, TOKEN_LISTS } from '@/store/settingsSlice'
+import { useAppSelector } from '@/store'
 
 const UNKNOWN_APP_NAME = 'Unknown App'
 
@@ -50,6 +52,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe, safeLoaded, safeAddress } = useSafeInfo()
+  const tokenlist = useAppSelector(selectTokenList)
+
   const addressBook = useAddressBook()
   const chain = useCurrentChain()
   const router = useRouter()
@@ -90,7 +94,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     onGetSafeBalances: (currency) =>
       getBalances(chainId, safeAddress, currency, {
         exclude_spam: true,
-        trusted: false,
+        trusted: TOKEN_LISTS.TRUSTED === tokenlist,
       }),
     onGetChainInfo: () => {
       if (!chain) return
