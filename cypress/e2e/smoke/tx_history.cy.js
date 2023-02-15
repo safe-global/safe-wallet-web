@@ -18,6 +18,9 @@ describe('Transaction history', () => {
     // Date label
     cy.contains('div', DATE).should('exist')
 
+    // Next date label
+    cy.contains('div', NEXT_DATE_LABEL).scrollIntoView()
+
     // Transaction summaries from October 9th
     const rows = cy.contains('div', DATE).nextUntil(`div:contains(${NEXT_DATE_LABEL})`)
 
@@ -96,21 +99,6 @@ describe('Transaction history', () => {
         // Status
         cy.contains('span', 'Success').should('exist')
       })
-      // Receive 120 DAI
-      .prev()
-      .within(() => {
-        // Type
-        cy.contains('div', 'Received').should('exist')
-
-        // Info
-        cy.contains('span', '120,497.61 DAI').should('exist')
-
-        // Time
-        cy.contains('span', '5:01 PM').should('exist')
-
-        // Status
-        cy.contains('span', 'Success').should('exist')
-      })
       // Send 0.11 WETH
       .prev()
       .within(() => {
@@ -120,6 +108,21 @@ describe('Transaction history', () => {
 
         // Info
         cy.contains('span', '-0.11 WETH').should('exist')
+
+        // Time
+        cy.contains('span', '5:01 PM').should('exist')
+
+        // Status
+        cy.contains('span', 'Success').should('exist')
+      })
+      // Receive 120 DAI
+      .prev()
+      .within(() => {
+        // Type
+        cy.contains('div', 'Received').should('exist')
+
+        // Info
+        cy.contains('span', '120,497.61 DAI').should('exist')
 
         // Time
         cy.contains('span', '5:01 PM').should('exist')

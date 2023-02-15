@@ -19,10 +19,19 @@ describe('Assets > Coins', () => {
     cy.contains('button', 'Accept selection').click()
     // Table is loaded
     cy.contains('Görli Ether')
+
+    cy.contains('button', 'Got it').click()
   })
 
   describe('should have different tokens', () => {
     it(`should have ${ASSETS_LENGTH} entries in the table`, () => {
+      // "Spam" tokens filtered
+      cy.get(balanceSingleRow).should('have.length', 2)
+
+      // Enable all tokens
+      cy.contains('div', 'Default tokens').click()
+      cy.contains('div', 'All tokens').click()
+
       cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
     })
 

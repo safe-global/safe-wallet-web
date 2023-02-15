@@ -8,12 +8,7 @@ import type {
   TransactionDetails,
   TransactionListPage,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import {
-  ConflictType,
-  FEATURES,
-  getTransactionDetails,
-  TransactionListItemType,
-} from '@safe-global/safe-gateway-typescript-sdk'
+import { ConflictType, getTransactionDetails, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   isModuleDetailedExecutionInfo,
   isMultisigDetailedExecutionInfo,
@@ -27,7 +22,7 @@ import { getGnosisSafeContractInstance } from '@/services/contracts/safeContract
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import type { TransactionOptions } from '@safe-global/safe-core-sdk-types'
-import { hasFeature } from '@/utils/chains'
+import { FEATURES, hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
 

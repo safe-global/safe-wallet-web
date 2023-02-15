@@ -1,8 +1,7 @@
 import NavTabs from '@/components/common/NavTabs'
 import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import { useCurrentChain } from '@/hooks/useChains'
-import { hasFeature } from '@/utils/chains'
-import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import { hasFeature, FEATURES } from '@/utils/chains'
 
 const TxNavigation = () => {
   const chain = useCurrentChain()

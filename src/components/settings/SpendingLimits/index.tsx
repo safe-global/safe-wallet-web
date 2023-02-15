@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux'
 import { selectSpendingLimits, selectSpendingLimitsLoading } from '@/store/spendingLimitsSlice'
 import { NewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit'
 import { useCurrentChain } from '@/hooks/useChains'
-import { hasFeature } from '@/utils/chains'
-import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES, hasFeature } from '@/utils/chains'
 import useIsGranted from '@/hooks/useIsGranted'
 
 const SpendingLimits = () => {
