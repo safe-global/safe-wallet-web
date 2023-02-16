@@ -11,6 +11,7 @@
     flex-flow: column;
     border-radius: 14px;
     width: fit-content;
+    max-width: 100%;
 }
 
 .flexmessagewrapper {
