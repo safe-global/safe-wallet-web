@@ -21,11 +21,11 @@ const NftPreviewModal = ({ nft, onClose }: { nft?: SafeCollectibleResponse; onCl
     >
       {nft && (
         <div className={css.wrapper}>
-          <a href={nft.imageUri} target="_blank" rel="noopener noreferrer" className={css.imageLink}>
+          <div className={css.imageWrapper} onClick={onClose}>
             <img src={nft.imageUri} alt={nft.name} />
 
             <CircularProgress className={css.loader} />
-          </a>
+          </div>
 
           {linkTemplate && <ExternalLink href={linkTemplate.getUrl(nft)}>View on {linkTemplate.title}</ExternalLink>}
         </div>
