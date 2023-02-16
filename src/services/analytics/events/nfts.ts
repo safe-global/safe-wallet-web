@@ -5,4 +5,9 @@ export const NFT_EVENTS = {
     action: 'Send NFTs',
     category: NFT_CATEGORY,
   },
+
+  PREVIEW: {
+    action: 'Preview NFT',
+    category: NFT_CATEGORY,
+  },
 }
