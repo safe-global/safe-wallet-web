@@ -6,12 +6,12 @@ import { getEmptySafeApp } from '@/components/safe-apps/utils'
 import type { SafeAppDataWithPermissions } from '@/components/safe-apps/types'
 
 type UseSafeAppFromManifestReturnType = {
-  safeApp?: SafeAppDataWithPermissions
+  safeApp: SafeAppDataWithPermissions
   isLoading: boolean
 }
 
 const useSafeAppFromManifest = (appUrl: string, chainId: string): UseSafeAppFromManifestReturnType => {
-  const [data, error, isLoading] = useAsync<SafeAppDataWithPermissions>(() => {
+  const [data, error, loading] = useAsync<SafeAppDataWithPermissions>(() => {
     if (appUrl && chainId) return fetchSafeAppFromManifest(appUrl, chainId)
   }, [appUrl, chainId])
 
@@ -22,7 +22,10 @@ const useSafeAppFromManifest = (appUrl: string, chainId: string): UseSafeAppFrom
     logError(Errors._903, `${appUrl}, ${(error as Error).message}`)
   }, [appUrl, error])
 
-  return { safeApp: data || emptyApp, isLoading }
+  return {
+    safeApp: data || emptyApp,
+    isLoading: loading || (!!appUrl && !data),
+  }
 }
 
 export { useSafeAppFromManifest }

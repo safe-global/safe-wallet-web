@@ -11,7 +11,7 @@ import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 const CustomSafeApps: NextPage = () => {
   // TODO: create a custom hook instead of use useSafeApps
-  const { customSafeApps, customSafeAppsLoading, addCustomApp, removeCustomApp } = useSafeApps()
+  const { customSafeApps, addCustomApp, removeCustomApp } = useSafeApps()
 
   const [isOpenRemoveSafeAppModal, setIsOpenRemoveSafeAppModal] = useState<boolean>(false)
   const [customSafeAppToRemove, setCustomSafeAppToRemove] = useState<SafeAppData>()

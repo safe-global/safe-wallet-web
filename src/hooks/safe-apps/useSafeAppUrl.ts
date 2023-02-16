@@ -1,15 +1,17 @@
 import { useRouter } from 'next/router'
 import { sanitizeUrl } from '@/utils/url'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-const useSafeAppUrl = (): [string | undefined, boolean] => {
+const useSafeAppUrl = (): string | undefined => {
   const router = useRouter()
-  const { appUrl } = router.query
+  const [appUrl, setAppUrl] = useState<string | undefined>()
 
-  return useMemo(
-    () => [typeof appUrl === 'string' ? sanitizeUrl(appUrl) : undefined, router.isReady],
-    [appUrl, router.isReady],
-  )
+  useEffect(() => {
+    if (!router.isReady) return
+    setAppUrl(router.query.appUrl?.toString())
+  }, [router])
+
+  return useMemo(() => (appUrl ? sanitizeUrl(appUrl) : undefined), [appUrl])
 }
 
 export { useSafeAppUrl }
