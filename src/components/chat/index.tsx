@@ -233,7 +233,7 @@ const Message = ({ msg, owner, isOwner, data, timeStamp }) => (
     >
       <div className={css.messagecontainer}>
         <span>{timeStamp}</span>
-        <span>{isOwner ? '' : owner} </span>
+        <span className={css.ownerstylingchat}>{isOwner ? 'You' : owner} </span>
         <span> {msg}</span>
       </div>
     </div>
