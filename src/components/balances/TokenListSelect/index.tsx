@@ -8,7 +8,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
 import Track from '@/components/common/Track'
-import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
+import { ASSETS_EVENTS, trackEvent } from '@/services/analytics'
 
 const LS_TOKENLIST_ONBOARDING = 'tokenlist_onboarding'
 
@@ -26,6 +26,13 @@ const TokenListSelect = () => {
   const handleSelectTokenList = (event: SelectChangeEvent<TOKEN_LISTS>) => {
     const selectedString = event.target.value as TOKEN_LISTS
     dispatch(setTokenList(selectedString))
+  }
+
+  const handleTrack = (label: 'Open' | 'Close') => {
+    trackEvent({
+      ...ASSETS_EVENTS.TOKEN_LIST_MENU,
+      label,
+    })
   }
 
   if (!hasDefaultTokenlist) {
@@ -46,6 +53,8 @@ const TokenListSelect = () => {
           label="Tokenlist"
           onChange={handleSelectTokenList}
           renderValue={(value) => TokenListLabel[value]}
+          onOpen={() => handleTrack('Open')}
+          onClose={() => handleTrack('Close')}
         >
           <MenuItem value={TOKEN_LISTS.TRUSTED}>
             <Track {...ASSETS_EVENTS.SHOW_DEFAULT_TOKENS}>
@@ -63,7 +72,7 @@ const TokenListSelect = () => {
                   }
                 >
                   <span>
-                    <SvgIcon sx={{ display: 'block' }} color="border" fontSize="small" component={InfoIcon}></SvgIcon>
+                    <SvgIcon sx={{ display: 'block' }} color="border" fontSize="small" component={InfoIcon} />
                   </span>
                 </Tooltip>
               </Box>
