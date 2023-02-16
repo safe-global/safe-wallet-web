@@ -49,7 +49,6 @@ const palette = {
     main: '#F4F4F4',
     paper: '#FFFFFF',
     light: '#EFFFF4',
-    header: '#FFFFFF',
   },
   backdrop: {
     main: '#636669',
