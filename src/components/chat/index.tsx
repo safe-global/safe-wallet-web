@@ -173,7 +173,7 @@ const Chat = ({ user }) => {
   return (
     <div className={css.chatfullheight}>
       <div>
-        <div id="messages-container">
+        <div id="messages-container" className={css.flexmessagewrapper}>
           {chatData.map((item: any, i) =>
             item.type === 'message' ? (
               <Message
