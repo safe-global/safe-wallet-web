@@ -4,6 +4,15 @@
     overflow-y: scroll;
 }
 
+.messagecontainer {
+    background: #8080801f;
+    padding: 14px;
+    display: flex;
+    flex-flow: column;
+    border-radius: 14px;
+    width: fit-content;
+}
+
 .chatsendbuttons {
   position: sticky;
   bottom: 0;
