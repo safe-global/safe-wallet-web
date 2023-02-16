@@ -49,7 +49,7 @@ const SafeApps: NextPage = () => {
     remoteSafeAppsLoading,
   })
 
-  // Indidual Safe Apps live on the same URL but with a query param
+  // Individual Safe Apps live on the same URL but with a query param
   if (appUrl && safeApp) {
     if (isModalVisible) {
       return (
