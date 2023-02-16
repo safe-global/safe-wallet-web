@@ -193,8 +193,8 @@ const Chat = ({ user }) => {
          <form onSubmit={handleSubmit}>
           <input
             type="text"
-            name="Leave a Message"
-            placeholder={!group?.hasJoined ? 'Join group first to chat...' : 'Leave a Message...'}
+            name="Send a message..."
+            placeholder={!group?.hasJoined ? 'Join group first to chat...' : 'Send a message...'}
             disabled={!group?.hasJoined}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -231,9 +231,9 @@ const Message = ({ msg, owner, isOwner, data, timeStamp }) => (
         console.log(data)
       }}
     >
-      <div>
+      <div className={css.messagecontainer}>
         <span>{timeStamp}</span>
-        <span>{isOwner ? 'You' : owner}: </span>
+        <span>{isOwner ? '' : owner} </span>
         <span> {msg}</span>
       </div>
     </div>
