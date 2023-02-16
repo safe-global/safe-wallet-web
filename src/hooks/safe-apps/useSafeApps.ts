@@ -29,14 +29,18 @@ const useSafeApps = (): ReturnType => {
   const { removePermissions: removeSafePermissions } = useSafePermissions()
   const { removePermissions: removeBrowserPermissions } = useBrowserPermissions()
 
+  const sortedRemoteSafeApps = useMemo(() => {
+    return (remoteSafeApps || []).sort((a, b) => a.name.localeCompare(b.name))
+  }, [remoteSafeApps])
+
   const allSafeApps = useMemo(
-    () => (remoteSafeApps || []).concat(customSafeApps).sort((a, b) => a.name.localeCompare(b.name)),
-    [remoteSafeApps, customSafeApps],
+    () => sortedRemoteSafeApps.concat(customSafeApps).sort((a, b) => a.name.localeCompare(b.name)),
+    [sortedRemoteSafeApps, customSafeApps],
   )
 
   const pinnedSafeApps = useMemo(
-    () => remoteSafeApps?.filter((app) => pinnedSafeAppIds.has(app.id)) || [],
-    [remoteSafeApps, pinnedSafeAppIds],
+    () => sortedRemoteSafeApps.filter((app) => pinnedSafeAppIds.has(app.id)),
+    [sortedRemoteSafeApps, pinnedSafeAppIds],
   )
 
   const rankedSafeApps = useRankedSafeApps(allSafeApps, pinnedSafeApps)
@@ -80,7 +84,7 @@ const useSafeApps = (): ReturnType => {
     allSafeApps,
     rankedSafeApps,
 
-    remoteSafeApps: remoteSafeApps || [],
+    remoteSafeApps: sortedRemoteSafeApps,
     remoteSafeAppsLoading: remoteSafeAppsLoading || !(remoteSafeApps || remoteSafeAppsError),
     remoteSafeAppsError,
 
