@@ -22,7 +22,7 @@ const SafeApps: NextPage = () => {
   const chainId = useChainId()
   const router = useRouter()
   const [appUrl] = useSafeAppUrl()
-  const { safeApp } = useSafeAppFromManifest(appUrl || '', chainId)
+  const { safeApp, isLoading } = useSafeAppFromManifest(appUrl || '', chainId)
 
   const {
     remoteSafeApps,
@@ -54,6 +54,7 @@ const SafeApps: NextPage = () => {
     if (isModalVisible) {
       return (
         <SafeAppsInfoModal
+          key={isLoading.toString()}
           onCancel={() =>
             router.push({
               pathname: AppRoutes.apps.index,
@@ -61,7 +62,7 @@ const SafeApps: NextPage = () => {
             })
           }
           onConfirm={onComplete}
-          features={safeApp?.safeAppsPermissions || []}
+          features={safeApp.safeAppsPermissions}
           appUrl={appUrl}
           isConsentAccepted={isConsentAccepted}
           isPermissionsReviewCompleted={isPermissionsReviewCompleted}
