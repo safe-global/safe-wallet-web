@@ -39,6 +39,7 @@ interface NftsTableProps {
 }
 
 const PAGE_SIZE = 10
+const INITIAL_SKELETON_SIZE = 1
 
 const headCells = [
   {
@@ -49,11 +50,12 @@ const headCells = [
   {
     id: 'id',
     label: 'Token ID',
+    width: '35%',
   },
   {
     id: 'links',
     label: 'Links',
-    width: '10%',
+    width: '23%',
     xsHidden: true,
   },
   {
@@ -242,7 +244,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
 
             {/* Show placeholders when loading */}
             {isLoading &&
-              Array.from({ length: PAGE_SIZE }).map((_, index) => (
+              Array.from({ length: nfts.length ? PAGE_SIZE : INITIAL_SKELETON_SIZE }).map((_, index) => (
                 <TableRow tabIndex={-1} key={index} sx={{ pointerEvents: 'none' }}>
                   {headCells.map((headCell) => (
                     <TableCell

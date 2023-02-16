@@ -12,18 +12,18 @@ import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 const NftApps = memo(function NftApps(): ReactElement | null {
   const [nftApps] = useRemoteSafeApps(SafeAppsTag.NFT)
 
-  if (!nftApps?.length) {
+  if (nftApps?.length === 0) {
     return null
   }
 
   return (
     <Grid item sm={12} lg={3} order={{ lg: 1 }}>
-      <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2} mt={0.6}>
+      <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2} mt={0.75}>
         NFT Safe Apps
       </Typography>
 
       <Grid container spacing={3}>
-        {nftApps.map((nftSafeApp) => (
+        {nftApps?.map((nftSafeApp) => (
           <Grid item lg={12} md={4} xs={6} key={nftSafeApp.id}>
             <SafeAppCard safeApp={nftSafeApp} />
           </Grid>

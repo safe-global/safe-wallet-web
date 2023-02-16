@@ -21,8 +21,8 @@ import { getOrigin } from '@/components/safe-apps/utils'
 const SafeApps: NextPage = () => {
   const chainId = useChainId()
   const router = useRouter()
-
-  const [appUrl, routerReady] = useSafeAppUrl()
+  const [appUrl] = useSafeAppUrl()
+  const { safeApp } = useSafeAppFromManifest(appUrl || '', chainId)
 
   const {
     remoteSafeApps,
@@ -31,7 +31,6 @@ const SafeApps: NextPage = () => {
     togglePin: onBookmarkSafeApp,
   } = useSafeApps()
 
-  const { isLoading, safeApp } = useSafeAppFromManifest(appUrl || '', chainId)
   const { addPermissions, getPermissions, getAllowedFeaturesList } = useBrowserPermissions()
   const origin = getOrigin(appUrl)
   const {
@@ -50,11 +49,8 @@ const SafeApps: NextPage = () => {
     remoteSafeAppsLoading,
   })
 
-  if (!routerReady || isLoading) {
-    return null
-  }
-
-  if (appUrl) {
+  // Indidual Safe Apps live on the same URL but with a query param
+  if (appUrl && safeApp) {
     if (isModalVisible) {
       return (
         <SafeAppsInfoModal
@@ -85,7 +81,7 @@ const SafeApps: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – Safe Apps List</title>
+        <title>Safe – Safe Apps</title>
       </Head>
 
       <SafeAppsSDKLink />
@@ -95,6 +91,7 @@ const SafeApps: NextPage = () => {
       <main>
         <SafeAppList
           safeAppsList={remoteSafeApps}
+          safeAppsListLoading={remoteSafeAppsLoading}
           bookmarkedSafeAppsId={bookmarkedSafeAppsId}
           onBookmarkSafeApp={onBookmarkSafeApp}
           showFilters
