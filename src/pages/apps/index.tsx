@@ -51,10 +51,11 @@ const SafeApps: NextPage = () => {
 
   // Individual Safe Apps live on the same URL but with a query param
   if (appUrl && safeApp) {
+    if (isLoading) return null
+
     if (isModalVisible) {
       return (
         <SafeAppsInfoModal
-          key={isLoading.toString()}
           onCancel={() =>
             router.push({
               pathname: AppRoutes.apps.index,
