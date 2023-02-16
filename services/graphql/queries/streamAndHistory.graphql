@@ -1,0 +1,87 @@
+query StreamAndHistory($id: ID!, $network: String!) {
+  user(id: $id) {
+    streams(orderBy: createdTimestamp, orderDirection: desc, where: { active: true }) {
+      ...UserStream
+    }
+    historicalEvents(orderBy: createdTimestamp, orderDirection: desc, first: 1000) {
+      ...UserHistory
+    }
+  }
+}
+
+fragment UserStream on Stream {
+  streamId
+  contract {
+    address
+  }
+  payer {
+    id
+  }
+  payee {
+    id
+  }
+  token {
+    address
+    name
+    decimals
+    symbol
+  }
+  historicalEvents(orderBy: createdTimestamp, orderDirection: desc) {
+    eventType
+    txHash
+    createdTimestamp
+  }
+  active
+  reason
+  paused
+  pausedAmount
+  lastPaused
+  amountPerSec
+  createdTimestamp
+}
+
+fragment UserHistory on HistoryEvent {
+  txHash
+  eventType
+  users {
+    id
+  }
+  stream {
+    streamId
+    payer {
+      id
+    }
+    payee {
+      id
+    }
+    token {
+      address
+      name
+      decimals
+      symbol
+    }
+    amountPerSec
+    createdTimestamp
+  }
+  oldStream {
+    streamId
+    payer {
+      id
+    }
+    payee {
+      id
+    }
+    token {
+      address
+      symbol
+    }
+    amountPerSec
+    createdTimestamp
+  }
+  token {
+    symbol
+    decimals
+  }
+  amount
+  createdTimestamp
+}

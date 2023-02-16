@@ -31,6 +31,7 @@ const CreateTxPage: React.FunctionComponent<ICreateTxPageProps> = ({ amount, to,
     return () => {
       unsubPropose()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

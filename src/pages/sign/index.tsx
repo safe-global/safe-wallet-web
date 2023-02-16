@@ -63,8 +63,6 @@ const SignPage: React.FunctionComponent<ISignPageProps> = (props) => {
   }
 
   React.useEffect(() => {
-    console.log('api', props.api)
-
     if (wallet && chainId && provider) {
       const siweMsg = createSiweMessage(wallet?.address, message, chainId as any)
       console.log(siweMsg)

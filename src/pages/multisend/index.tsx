@@ -55,7 +55,7 @@ const MultiSendPage: React.FunctionComponent<IMultiSendPageProps> = (props) => {
     return () => {
       unsubPropose()
     }
-  }, [])
+  }, [prefix, props.chatId, router])
 
   return (
     <WalletConnectFence>

@@ -1,0 +1,50 @@
+.gridContainer {
+  width: 100%;
+  display: grid;
+  grid-gap: 4px;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: var(--color-background-paper);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+}
+
+.gridContainer:hover {
+  background-color: var(--color-background-light);
+  border-color: var(--color-secondary-light);
+}
+
+.confirmationsCount {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 12px;
+  background-color: var(--color-secondary-light);
+  color: var(--color-static-main);
+  text-align: center;
+}
+
+.columnTemplate {
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-areas: 'nonce type type type type type type info info info confirmations icon';
+}
+
+.columnWrap {
+  white-space: normal;
+  word-break: break-word;
+}
+
+@media (max-width: 600px) {
+  .confirmationsCount {
+    padding: 4px var(--space-1);
+  }
+
+  .columnTemplate {
+    grid-template-areas:
+      'nonce type type type type type type type type type confirmations icon'
+      'empty info info info info info info info info info info info';
+  }
+}

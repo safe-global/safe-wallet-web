@@ -1,0 +1,36 @@
+query StreamById($id: Bytes!, $network: String!) {
+  streams(where: { streamId: $id }) {
+    ...UserStream
+  }
+}
+
+fragment UserStream on Stream {
+  streamId
+  contract {
+    address
+  }
+  payer {
+    id
+  }
+  payee {
+    id
+  }
+  token {
+    address
+    name
+    decimals
+    symbol
+  }
+  historicalEvents(orderBy: createdTimestamp, orderDirection: desc) {
+    eventType
+    txHash
+    createdTimestamp
+  }
+  active
+  reason
+  paused
+  pausedAmount
+  lastPaused
+  amountPerSec
+  createdTimestamp
+}

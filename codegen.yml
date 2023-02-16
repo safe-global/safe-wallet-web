@@ -1,0 +1,13 @@
+overwrite: true
+schema: 'https://api.thegraph.com/subgraphs/name/nemusonaneko/llamapay-avalanche-mainnet'
+documents: './services/graphql/**/*.graphql'
+generates:
+  ./services/generated/graphql.tsx:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher: fetch
+      exposeFetcher: true
+      exposeQueryKeys: true

@@ -49,3 +49,21 @@ export const isBrowserFeature = (featureKey: string): featureKey is AllowedFeatu
 export type AllowedFeatureSelection = { feature: AllowedFeatures; checked: boolean }
 
 export type SafeAppDataWithPermissions = SafeAppData & { safeAppsPermissions: AllowedFeatures[] }
+
+export interface IStream {
+  llamaContractAddress: string
+  amountPerSec: string
+  createdTimestamp: string
+  payerAddress: string
+  payeeAddress: string
+  streamId: string
+  streamType: 'outgoingStream' | 'incomingStream'
+  token: { address: string; name: string; decimals: number; symbol: string }
+  tokenName: string
+  tokenSymbol: string
+  historicalEvents: { eventType: string; txHash: string; createdTimestamp: string }[]
+  paused: boolean
+  pausedAmount: string
+  lastPaused: string
+  reason: string | null | undefined
+}
