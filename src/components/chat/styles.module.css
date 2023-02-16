@@ -14,6 +14,11 @@
     max-width: 100%;
 }
 
+.ownerstylingchat {
+    font-weight: 600;
+    word-break: break-all;
+}
+
 .flexmessagewrapper {
     gap: 6px;
     display: flex;
