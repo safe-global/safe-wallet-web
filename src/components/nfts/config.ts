@@ -27,7 +27,7 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
     {
       title: 'Blur',
       logo: '/images/common/nft-blur.svg',
-      getUrl: (item) => `https://blur.io/asset/${item.address}/${item.id}`,
+      getUrl: (item) => `https://blur.io/asset/${item.address.toLowerCase()}/${item.id}`,
     },
   ],
 
