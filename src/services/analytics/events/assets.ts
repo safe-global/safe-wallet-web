@@ -50,4 +50,12 @@ export const ASSETS_EVENTS = {
     action: 'Deselect all hide dialog',
     category: ASSETS_CATEGORY,
   },
+  SHOW_DEFAULT_TOKENS: {
+    action: 'Show default tokens',
+    category: ASSETS_CATEGORY,
+  },
+  SHOW_ALL_TOKENS: {
+    action: 'Show all tokens',
+    category: ASSETS_CATEGORY,
+  },
 }
