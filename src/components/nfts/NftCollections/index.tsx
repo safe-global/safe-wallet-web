@@ -66,7 +66,11 @@ const NftCollections = (): ReactElement => {
 
   return (
     <>
-      {(allNfts?.length > 0 || loading) && (
+      {error ? (
+        /* Loading error */
+        <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>
+      ) : (
+        /* NFTs */
         <form onSubmit={onSendSubmit}>
           {/* Batch send form */}
           <NftSendForm
@@ -82,16 +86,13 @@ const NftCollections = (): ReactElement => {
             selectedNfts={selectedNfts}
             onSelect={onSelect}
             onPreview={onPreview}
-            isLoading={(loading || !!nftPage?.next) && !error}
+            isLoading={loading || !nftPage || !!nftPage?.next}
           >
             {/* Infinite scroll at the bottom of the table */}
             {nftPage?.next ? <InfiniteScroll onLoadMore={() => setPageUrl(nftPage.next)} /> : null}
           </NftGrid>
         </form>
       )}
-
-      {/* Loading error */}
-      {error && <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>}
 
       {/* Send NFT modal */}
       {showSendModal && (

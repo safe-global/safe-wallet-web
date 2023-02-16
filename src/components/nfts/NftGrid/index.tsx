@@ -39,7 +39,7 @@ interface NftsTableProps {
 }
 
 const PAGE_SIZE = 10
-const INITIAL_SKELETON_SIZE = 1
+const INITIAL_SKELETON_SIZE = 3
 
 const headCells = [
   {
