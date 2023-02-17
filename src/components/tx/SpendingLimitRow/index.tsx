@@ -13,7 +13,7 @@ const SpendingLimitRow = ({
   availableAmount: BigNumber
   selectedToken: TokenInfo | undefined
 }) => {
-  const { control } = useFormContext()
+  const { control, trigger } = useFormContext()
   const isOnlySpendLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
 
   const formattedAmount = safeFormatUnits(availableAmount, selectedToken?.decimals)
@@ -26,8 +26,16 @@ const SpendingLimitRow = ({
           rules={{ required: true }}
           control={control}
           name={SendAssetsField.type}
-          render={({ field }) => (
-            <RadioGroup {...field} defaultValue={SendTxType.multiSig}>
+          render={({ field: { onChange, ...field } }) => (
+            <RadioGroup
+              onChange={async (e) => {
+                // Validate only after the field is changed
+                await onChange(e)
+                trigger(SendAssetsField.amount)
+              }}
+              {...field}
+              defaultValue={SendTxType.multiSig}
+            >
               {!isOnlySpendLimitBeneficiary && (
                 <FormControlLabel
                   value={SendTxType.multiSig}
