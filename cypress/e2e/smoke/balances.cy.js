@@ -30,6 +30,7 @@ describe('Assets > Coins', () => {
 
       // Enable all tokens
       cy.contains('div', 'Default tokens').click()
+      cy.wait(100)
       cy.contains('div', 'All tokens').click()
 
       cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
