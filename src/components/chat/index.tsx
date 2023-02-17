@@ -192,6 +192,7 @@ const Chat = ({ user }) => {
         <div className={css.chatsendbuttons}>
          <form onSubmit={handleSubmit}>
           <input
+            className={css.inputmessage}
             type="text"
             name="Send a message..."
             placeholder={!group?.hasJoined ? 'Join group first to chat...' : 'Send a message...'}
