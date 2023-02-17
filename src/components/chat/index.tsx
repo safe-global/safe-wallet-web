@@ -194,14 +194,14 @@ const Chat = ({ user }) => {
           <input
             className={css.inputmessage}
             type="text"
-            name="Send a message..."
-            placeholder={!group?.hasJoined ? 'Join group first to chat...' : 'Send a message...'}
+            name="Write a message..."
+            placeholder={!group?.hasJoined ? 'Join group first to chat...' : 'Write a message...'}
             disabled={!group?.hasJoined}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
           />
-          <button type="submit" className={css.submitbuttonchat}>Send</button>
+          <button type="submit" className={css.submitbuttonchat}>></button>
          </form>
         </div>
         
