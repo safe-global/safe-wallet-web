@@ -12,7 +12,7 @@ Cypress.Commands.add('visitSafeApp', (appUrl, testSafe = TEST_SAFE) => {
     )
   })
 
-  cy.visit(`/${testSafe}/apps?appUrl=${encodeURIComponent(appUrl)}`, {
+  cy.visit(`/apps/open?safe=${TEST_SAFE}&appUrl=${encodeURIComponent(appUrl)}`, {
     failOnStatusCode: false,
     onBeforeLoad: (win) => {
       win.addEventListener('message', cy.stub().as('safeAppsMessage'))
