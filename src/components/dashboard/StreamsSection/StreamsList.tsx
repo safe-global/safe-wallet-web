@@ -34,7 +34,7 @@ const EmptyState = () => {
         <NoTransactionsIcon />
 
         <Typography variant="body1" color="primary.light">
-          This Safe has no queued transactions
+          This Safe has no streams
         </Typography>
       </Box>
     </Card>
