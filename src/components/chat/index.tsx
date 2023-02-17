@@ -190,7 +190,7 @@ const Chat = ({ user }) => {
           )}
         </div>
         <div className={css.chatsendbuttons}>
-         <form onSubmit={handleSubmit}>
+         <form onSubmit={handleSubmit} className={css.formchatbuttonswrapper}>
           <input
             className={css.inputmessage}
             type="text"
