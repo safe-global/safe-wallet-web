@@ -201,7 +201,7 @@ const Chat = ({ user }) => {
             onChange={(e) => setMessage(e.target.value)}
             required
           />
-          <button type="submit">Send</button>
+          <button type="submit" className={css.submitbuttonchat}>Send</button>
          </form>
         </div>
         
