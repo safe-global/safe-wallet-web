@@ -18,7 +18,7 @@ const useWCAppLink = (): LinkProps['href'] => {
 
   return useMemo(
     () => ({
-      pathname: AppRoutes.apps.index,
+      pathname: AppRoutes.apps.open,
       query: { safe: router.query.safe, appUrl: app?.url },
     }),
     [app?.url, router.query.safe],

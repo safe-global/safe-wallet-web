@@ -8,10 +8,10 @@ import Head from 'next/head'
 
 const ShareSafeApp = () => {
   const router = useRouter()
-  const [appUrl, routerReady] = useSafeAppUrl()
+  const appUrl = useSafeAppUrl()
   const { chain, validChain, loading: chainLoading, error: chainError } = useChainFromQueryParams()
 
-  if (!routerReady || chainLoading) {
+  if (chainLoading) {
     return (
       <Box py={4} textAlign="center">
         <CircularProgress size={40} />

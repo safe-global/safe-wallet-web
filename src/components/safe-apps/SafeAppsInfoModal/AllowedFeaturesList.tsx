@@ -19,6 +19,7 @@ const AllowedFeaturesList: React.FC<SafeAppsInfoAllowedFeaturesProps> = ({
   return (
     <>
       <SvgIcon component={ShieldIcon} inheritViewBox color="primary" />
+
       <Typography
         variant="body2"
         color="text.secondary"
@@ -29,10 +30,11 @@ const AllowedFeaturesList: React.FC<SafeAppsInfoAllowedFeaturesProps> = ({
       >
         Manage the features Safe App can use
       </Typography>
+
       <Box mx={1} my={3} textAlign="left">
         <Typography>This app is requesting permission to use:</Typography>
-        <br />
-        <Box display="flex" flexDirection="column" ml={2}>
+
+        <Box display="flex" flexDirection="column" ml={2} mt={1}>
           {features
             .filter(({ feature }) => isBrowserFeature(feature))
             .map(({ feature, checked }, index) => (
