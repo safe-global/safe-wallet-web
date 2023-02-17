@@ -32,6 +32,12 @@
   padding-top: 4px;
 }
 
+.formchatbuttonswrapper {
+    display: flex;
+    flex-flow: row;
+    gap: 8px;
+}
+
 .inputmessage {
     background: transparent;
     border: 1px solid var(--color-border-light);
@@ -42,4 +48,13 @@
     outline: none;
     font-size: 16px;
     width: 100%;
+}
+
+.submitbuttonchat {
+    padding: 9px 14px;
+    border-radius: 14px;
+    border: 0;
+    background: #2f92f5;
+    color: #fff;
+    font-size: 25px;
 }
