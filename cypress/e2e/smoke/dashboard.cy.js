@@ -19,7 +19,7 @@ describe('Dashboard', () => {
       cy.contains('0xCD4FddB8FfA90012DFE11eD4bf258861204FeEAE').should('exist')
       cy.contains('1/1')
       cy.get(`a[href="/balances?safe=${encodeURIComponent(SAFE)}"]`).contains('View assets')
-      cy.contains('p', 'Tokens').next().contains('3')
+      cy.contains('p', 'Tokens').next().contains('1')
       cy.contains('p', 'NFTs').next().contains('0')
     })
   })
@@ -68,7 +68,7 @@ describe('Dashboard', () => {
     // Regular safe apps
     cy.get('@safeAppsSection').within(() => {
       // Find exactly 5 Safe Apps cards inside the Safe Apps section
-      cy.get(`a[href^="/apps?safe=${encodeURIComponent(SAFE)}&appUrl=http"]`).should('have.length', 5)
+      cy.get(`a[href^="/apps/open?safe=${encodeURIComponent(SAFE)}&appUrl=http"]`).should('have.length', 5)
     })
   })
 })

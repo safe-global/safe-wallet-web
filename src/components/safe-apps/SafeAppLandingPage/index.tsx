@@ -80,7 +80,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
               <Grid xs={12} sm={12} md={6}>
                 <TryDemo
                   demoUrl={{
-                    pathname: AppRoutes.apps.index,
+                    pathname: AppRoutes.apps.open,
                     query: { safe: SAFE_APPS_DEMO_SAFE_MAINNET, appUrl },
                   }}
                   onClick={handleDemoClick}

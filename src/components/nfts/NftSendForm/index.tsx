@@ -3,18 +3,12 @@ import { Box, Button, Grid, SvgIcon, Typography } from '@mui/material'
 import ArrowIcon from '@/public/images/common/arrow-nw.svg'
 import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsGranted from '@/hooks/useIsGranted'
+import { Sticky } from '@/components/common/Sticky'
 
 type NftSendFormProps = {
   selectedNfts: SafeCollectibleResponse[]
   onSelectAll: () => void
 }
-
-const stickyTop = { xs: '103px', md: '111px' }
-const Sticky = ({ children }: { children: ReactElement }): ReactElement => (
-  <Box position="sticky" zIndex="1" top={stickyTop} py={1} bgcolor="background.main" mt={-1} mb={1}>
-    {children}
-  </Box>
-)
 
 const NftSendForm = ({ selectedNfts, onSelectAll }: NftSendFormProps): ReactElement => {
   const isGranted = useIsGranted()

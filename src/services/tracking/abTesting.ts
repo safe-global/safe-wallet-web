@@ -1,9 +1,7 @@
 /**
  * Holds current A/B test identifiers.
  */
-export const enum AbTest {
-  HIDE_TOKEN_PROMO = 'hide_token_promo',
-}
+export const enum AbTest {}
 
 let _abTest: AbTest | null = null
 

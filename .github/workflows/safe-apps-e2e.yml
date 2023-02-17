@@ -7,10 +7,10 @@ on:
 jobs:
   e2e:
     runs-on: ubuntu-latest
-    name: E2E on Chrome
+    name: Safe Apps E2E tests
     steps:
       - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.8.0
+        uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
 

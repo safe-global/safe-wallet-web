@@ -56,7 +56,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
     case hasWallet && hasSafes && !!safeToUse:
       const safe = `${safeToUse?.shortName}:${safeToUse?.address}`
       const href: UrlObject = {
-        pathname: AppRoutes.apps.index,
+        pathname: AppRoutes.apps.open,
         query: { safe, appUrl },
       }
 
