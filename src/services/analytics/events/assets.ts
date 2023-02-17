@@ -7,8 +7,12 @@ export const ASSETS_EVENTS = {
     action: 'Currency menu',
     category: ASSETS_CATEGORY,
   },
-  TOKEN_LIST_MENU: {
-    action: 'Token list menu',
+  OPEN_TOKEN_LIST_MENU: {
+    action: 'Open token list menu',
+    category: ASSETS_CATEGORY,
+  },
+  CLOSE_TOKEN_LIST_MENU: {
+    action: 'Close token list menu',
     category: ASSETS_CATEGORY,
   },
   CHANGE_CURRENCY: {

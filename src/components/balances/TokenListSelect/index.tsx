@@ -17,11 +17,6 @@ const TokenListLabel = {
   [TOKEN_LISTS.ALL]: 'All tokens',
 }
 
-const enum TokenListActions {
-  OPEN = 'Open token list',
-  CLOSE = 'Close token list',
-}
-
 const TokenListSelect = () => {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
@@ -33,10 +28,11 @@ const TokenListSelect = () => {
     dispatch(setTokenList(selectedString))
   }
 
-  const handleTrack = (label: TokenListActions) => {
+  const handleTrack = (
+    event: typeof ASSETS_EVENTS['OPEN_TOKEN_LIST_MENU'] | typeof ASSETS_EVENTS['CLOSE_TOKEN_LIST_MENU'],
+  ) => {
     trackEvent({
-      ...ASSETS_EVENTS.TOKEN_LIST_MENU,
-      label,
+      ...event,
     })
   }
 
@@ -58,8 +54,8 @@ const TokenListSelect = () => {
           label="Tokenlist"
           onChange={handleSelectTokenList}
           renderValue={(value) => TokenListLabel[value]}
-          onOpen={() => handleTrack(TokenListActions.OPEN)}
-          onClose={() => handleTrack(TokenListActions.CLOSE)}
+          onOpen={() => handleTrack(ASSETS_EVENTS.OPEN_TOKEN_LIST_MENU)}
+          onClose={() => handleTrack(ASSETS_EVENTS.CLOSE_TOKEN_LIST_MENU)}
         >
           <MenuItem value={TOKEN_LISTS.TRUSTED}>
             <Track {...ASSETS_EVENTS.SHOW_DEFAULT_TOKENS}>
