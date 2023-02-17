@@ -129,8 +129,8 @@ const SendAssetsForm = ({
   const isSpendingLimitType = type === SendTxType.spendingLimit
   const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
   const totalAmount = BigNumber.from(selectedToken?.balance || 0)
-  const maxAmount = spendingLimitAmount
-    ? totalAmount.gt(spendingLimitAmount)
+  const maxAmount = isSpendingLimitType
+    ? spendingLimitAmount && totalAmount.gt(spendingLimitAmount)
       ? spendingLimitAmount
       : totalAmount
     : totalAmount
