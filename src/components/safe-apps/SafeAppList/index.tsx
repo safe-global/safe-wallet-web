@@ -12,9 +12,11 @@ import SafeAppsZeroResultsPlaceholder from '@/components/safe-apps/SafeAppsZeroR
 import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import css from './styles.module.css'
+import { Skeleton } from '@mui/material'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
+  safeAppsListLoading?: boolean
   bookmarkedSafeAppsId?: Set<number>
   onBookmarkSafeApp?: (safeAppId: number) => void
   showFilters?: boolean
@@ -24,6 +26,7 @@ type SafeAppListProps = {
 
 const SafeAppList = ({
   safeAppsList,
+  safeAppsListLoading,
   bookmarkedSafeAppsId,
   onBookmarkSafeApp,
   showFilters,
@@ -82,6 +85,13 @@ const SafeAppList = ({
             <AddCustomSafeAppCard safeAppList={safeAppsList} onSave={addCustomApp} />
           </li>
         )}
+
+        {safeAppsListLoading &&
+          Array.from({ length: 8 }, (_, index) => (
+            <li key={index}>
+              <Skeleton variant="rounded" height="271px" />
+            </li>
+          ))}
 
         {filteredApps.map((safeApp) => {
           return (

@@ -101,7 +101,7 @@ describe('Load existing Safe', () => {
 
   it('should load successfully the custom Safe name', () => {
     // Safe loaded
-    cy.location('pathname', { timeout: 10000 }).should('include', `${SAFE_QR_CODE_ADDRESS}/home`)
+    cy.location('href', { timeout: 10000 }).should('include', `/home?safe=${SAFE_QR_CODE_ADDRESS}`)
 
     // Finds Safe name in the sidebar
     cy.get('aside').contains('Test safe name')

@@ -33,10 +33,10 @@ const Balances: NextPage = () => {
       </AssetsHeader>
 
       <main>
-        {!error ? (
-          <AssetsTable setShowHiddenAssets={setShowHiddenAssets} showHiddenAssets={showHiddenAssets} />
-        ) : (
+        {error ? (
           <PagePlaceholder img={<NoAssetsIcon />} text="There was an error loading your assets" />
+        ) : (
+          <AssetsTable setShowHiddenAssets={setShowHiddenAssets} showHiddenAssets={showHiddenAssets} />
         )}
       </main>
     </>

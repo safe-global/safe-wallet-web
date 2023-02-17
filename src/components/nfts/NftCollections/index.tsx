@@ -1,6 +1,5 @@
 import { type SyntheticEvent, type ReactElement, useCallback, useEffect, useState } from 'react'
 import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NftIcon from '@/public/images/common/nft.svg'
@@ -60,15 +59,6 @@ const NftCollections = (): ReactElement => {
     }
   }, [nftPage])
 
-  // Initial loading
-  if (loading && !allNfts.length) {
-    return (
-      <Box py={4} textAlign="center">
-        <CircularProgress size={40} />
-      </Box>
-    )
-  }
-
   // No NFTs to display
   if (nftPage && !nftPage.results.length) {
     return <PagePlaceholder img={<NftIcon />} text="No NFTs available or none detected" />
@@ -76,7 +66,11 @@ const NftCollections = (): ReactElement => {
 
   return (
     <>
-      {allNfts?.length > 0 && (
+      {error ? (
+        /* Loading error */
+        <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>
+      ) : (
+        /* NFTs */
         <form onSubmit={onSendSubmit}>
           {/* Batch send form */}
           <NftSendForm
@@ -92,16 +86,13 @@ const NftCollections = (): ReactElement => {
             selectedNfts={selectedNfts}
             onSelect={onSelect}
             onPreview={onPreview}
-            isLoading={(loading || !!nftPage?.next) && !error}
+            isLoading={loading || !nftPage || !!nftPage?.next}
           >
             {/* Infinite scroll at the bottom of the table */}
             {nftPage?.next ? <InfiniteScroll onLoadMore={() => setPageUrl(nftPage.next)} /> : null}
           </NftGrid>
         </form>
       )}
-
-      {/* Loading error */}
-      {error && <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>}
 
       {/* Send NFT modal */}
       {showSendModal && (

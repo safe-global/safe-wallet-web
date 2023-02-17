@@ -35,7 +35,7 @@ export const FeaturedApps = (): ReactElement | null => {
               <StyledGridItem item xs md key={app.id}>
                 <NextLink
                   passHref
-                  href={{ pathname: AppRoutes.apps.index, query: { ...router.query, appUrl: app.url } }}
+                  href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}
                 >
                   <a>
                     <Card>
