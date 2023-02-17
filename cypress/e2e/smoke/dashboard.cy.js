@@ -68,7 +68,7 @@ describe('Dashboard', () => {
     // Regular safe apps
     cy.get('@safeAppsSection').within(() => {
       // Find exactly 5 Safe Apps cards inside the Safe Apps section
-      cy.get(`a[href^="/apps?safe=${encodeURIComponent(SAFE)}&appUrl=http"]`).should('have.length', 5)
+      cy.get(`a[href^="/apps/open?safe=${encodeURIComponent(SAFE)}&appUrl=http"]`).should('have.length', 5)
     })
   })
 })

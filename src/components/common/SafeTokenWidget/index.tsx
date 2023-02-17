@@ -35,7 +35,7 @@ const SafeTokenWidget = () => {
 
   const url: UrlObject | undefined = claimingApp
     ? {
-        pathname: AppRoutes.apps.index,
+        pathname: AppRoutes.apps.open,
         query: { safe: router.query.safe, appUrl: claimingApp.url },
       }
     : undefined
