@@ -157,7 +157,7 @@ const SafeAppsFilters = ({
             <FormLabel className={css.optimizedWithBatchLabel}>Optimized with</FormLabel>
             <FormControlLabel
               control={<Checkbox />}
-              onChange={(e, value) => {
+              onChange={(_, value) => {
                 onChangeOptimizedWithBatch(value)
               }}
               label={
