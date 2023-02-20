@@ -62,6 +62,7 @@ describe('useSafeTokenAllocation', () => {
   })
 
   test('return 0 without web3Provider', async () => {
+    global.fetch = jest.fn().mockImplementation(setupFetchStub('', 404))
     const { result } = renderHook(() => useSafeTokenAllocation())
 
     await waitFor(() => {
