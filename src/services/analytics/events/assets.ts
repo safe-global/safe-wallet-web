@@ -11,10 +11,6 @@ export const ASSETS_EVENTS = {
     action: 'Open token list menu',
     category: ASSETS_CATEGORY,
   },
-  CLOSE_TOKEN_LIST_MENU: {
-    action: 'Close token list menu',
-    category: ASSETS_CATEGORY,
-  },
   CHANGE_CURRENCY: {
     event: EventType.META,
     action: 'Change currency',
