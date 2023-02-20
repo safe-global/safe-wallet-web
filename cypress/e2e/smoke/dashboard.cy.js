@@ -17,7 +17,7 @@ describe('Dashboard', () => {
     cy.get('@overviewSection').within(() => {
       // Prefix is separated across elements in EthHashInfo
       cy.contains('0xCD4FddB8FfA90012DFE11eD4bf258861204FeEAE').should('exist')
-      cy.contains('1/1')
+      cy.contains('2/3')
       cy.get(`a[href="/balances?safe=${encodeURIComponent(SAFE)}"]`).contains('View assets')
       cy.contains('p', 'Tokens').next().contains('1')
       cy.contains('p', 'NFTs').next().contains('0')
@@ -33,8 +33,11 @@ describe('Dashboard', () => {
       cy.contains('This Safe has no queued transactions').should('not.exist')
 
       // Queued txns
-      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '0' + 'addOwnerWithThreshold' + '1/1').should('exist')
-      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '2' + 'Send' + '-1 USDC' + '1/1').should('exist')
+      cy.contains(
+        `a[href="/transactions/queue?safe=${SAFE}"]`,
+        '1' + 'Contract interaction' + '3 actions' + '1/2',
+      ).should('exist')
+      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '2' + 'Send' + '-1 USDC' + '1/2').should('exist')
 
       cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, 'View all')
     })
