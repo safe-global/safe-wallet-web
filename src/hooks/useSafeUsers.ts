@@ -14,8 +14,7 @@ export const useSafeUsers = (address: string): IUser[] => {
         console.error(error)
       }
     }
-
-    fetchUsers()
+    if (address) fetchUsers()
   }, [address])
 
   return users

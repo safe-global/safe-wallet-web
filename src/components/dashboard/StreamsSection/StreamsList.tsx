@@ -76,7 +76,7 @@ const StreamsList = ({ size = 4 }: { size?: number }): ReactElement | null => {
         })}
       </StyledList>
     ),
-    [chain?.chainName, router.query.safe, streams],
+    [chain?.chainName, router.query.safe, streams, users],
   )
 
   const getWidgetBody = () => {
