@@ -13,14 +13,15 @@ import { shortenAddress } from '@/utils/formatters'
 type props = {
   stream: IStream
   url: LinkProps['href']
+  username?: string
 }
 
-const Stream = ({ stream, url }: props): ReactElement => {
+const Stream = ({ stream, url, username }: props): ReactElement => {
   return (
     <NextLink href={url} passHref>
       <a>
         <Box className={classNames(css.gridContainer, css.columnTemplate)}>
-          <Box gridArea="nonce">{shortenAddress(stream.payeeAddress)}</Box>
+          <Box gridArea="nonce">{username || shortenAddress(stream.payeeAddress)}</Box>
 
           <Box gridArea="icon" marginLeft="12px">
             <ChevronRight color="border" />

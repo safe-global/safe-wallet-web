@@ -1,0 +1,11 @@
+query GetAllTokens($network: String!) {
+  tokens(first: 100) {
+    address
+    symbol
+    name
+    decimals
+    contract {
+      id
+    }
+  }
+}

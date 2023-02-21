@@ -67,3 +67,26 @@ export interface IStream {
   lastPaused: string
   reason: string | null | undefined
 }
+
+export interface ITokenList {
+  [key: string]: {
+    chainId: number
+    name: string
+    symbol: string
+    decimals: number
+    logoURI: string
+  }
+}
+
+export interface ITokenLists extends IToken {
+  logoURI: string
+  isVerified: boolean
+}
+
+export interface IToken {
+  tokenAddress: string
+  llamaContractAddress: string
+  name: string
+  symbol: string
+  decimals: number
+}

@@ -39,6 +39,7 @@ import type { ReactElement } from 'react'
 import { useEffect } from 'react'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
+import type { ITokenLists } from '@/components/safe-apps/types'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -50,6 +51,20 @@ export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }
       <Typography variant="caption" component="p">
         {formatVisualAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
       </Typography>
+    </Grid>
+  </Grid>
+)
+
+export const AutocompleteItemForStream = (item: ITokenLists): ReactElement => (
+  <Grid container alignItems="center" gap={1}>
+    <TokenIcon logoUri={item.logoURI} tokenSymbol={item.symbol} />
+
+    <Grid item xs>
+      <Typography variant="body2">{item.name}</Typography>
+
+      {/* <Typography variant="caption" component="p">
+        {formatVisualAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
+      </Typography> */}
     </Grid>
   </Grid>
 )
