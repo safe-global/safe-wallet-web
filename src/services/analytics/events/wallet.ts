@@ -18,6 +18,11 @@ export const WALLET_EVENTS = {
     action: 'Off-chain signature',
     category: WALLET_CATEGORY,
   },
+  // Please note that this event isn't triggered for any on-chain interaction.
+  // It's only triggered on:
+  // * safe tx execution
+  // * batch execution
+  // * spending limit tx execution
   ON_CHAIN_INTERACTION: {
     event: EventType.META,
     action: 'On-chain interaction',
