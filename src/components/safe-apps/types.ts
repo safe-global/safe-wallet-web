@@ -81,6 +81,7 @@ export interface ITokenList {
 export interface ITokenLists extends IToken {
   logoURI: string
   isVerified: boolean
+  balance?: string
 }
 
 export interface IToken {
@@ -89,4 +90,5 @@ export interface IToken {
   name: string
   symbol: string
   decimals: number
+  balance?: string
 }

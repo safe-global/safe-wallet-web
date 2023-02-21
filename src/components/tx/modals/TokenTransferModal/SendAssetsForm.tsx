@@ -62,9 +62,11 @@ export const AutocompleteItemForStream = (item: ITokenLists): ReactElement => (
     <Grid item xs>
       <Typography variant="body2">{item.name}</Typography>
 
-      {/* <Typography variant="caption" component="p">
-        {formatVisualAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
-      </Typography> */}
+      {item.balance && (
+        <Typography variant="caption" component="p">
+          {formatVisualAmount(item.balance, item.decimals)} {item.symbol}
+        </Typography>
+      )}
     </Grid>
   </Grid>
 )

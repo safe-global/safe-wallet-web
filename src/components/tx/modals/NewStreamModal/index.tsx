@@ -11,6 +11,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import { useTokenList } from '@/hooks/queries/useTokenList'
 import { fetchStreamTransactions } from '@/hooks/queries/fetchStreamTransactions'
 import { useRouter } from 'next/router'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 
 export enum DurationType {
   year = 'year',
@@ -33,9 +34,9 @@ export type NewStreamFormData = {
 }
 
 const NewStreamModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-  // const { balances } = useVisibleBalances()
+  const { balances } = useVisibleBalances()
   const router = useRouter()
-  const { data: tokens = [] } = useTokenList()
+  const { data: tokens = [] } = useTokenList(balances)
   const formMethods = useForm<NewStreamFormData>({
     defaultValues: {
       [NewStreamField.recipient]: '',
