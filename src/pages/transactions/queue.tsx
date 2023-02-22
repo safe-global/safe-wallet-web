@@ -29,7 +29,10 @@ const Queue: NextPage = () => {
 
         <main>
           <Box mb={4}>
+            {/* Pending unsigned transactions */}
             <PaginatedTxns useTxns={usePendingTxsQueue} />
+
+            {/* The main queue of signed transactions */}
             <PaginatedTxns useTxns={useTxQueue} />
           </Box>
         </main>
