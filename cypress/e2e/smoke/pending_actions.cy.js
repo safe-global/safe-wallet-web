@@ -10,7 +10,7 @@ describe('Pending actions', () => {
     cy.contains('button', 'Accept all').click()
 
     // Ensure wallet is connected to correct chain via header
-    cy.contains('E2E Wallet @ Görli')
+    cy.contains('MetaMask @ Görli')
   })
 
   it('should add the Safe with the pending actions', () => {
