@@ -8,6 +8,7 @@ import NavTabs from '@/components/common/NavTabs'
 import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import { Box } from '@mui/material'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
+import { usePendingTxsQueue } from '@/hooks/usePendingTxs'
 
 const Queue: NextPage = () => {
   return (
@@ -27,7 +28,10 @@ const Queue: NextPage = () => {
         />
 
         <main>
-          <PaginatedTxns useTxns={useTxQueue} />
+          <Box mb={4}>
+            <PaginatedTxns useTxns={usePendingTxsQueue} />
+            <PaginatedTxns useTxns={useTxQueue} />
+          </Box>
         </main>
       </BatchExecuteHoverProvider>
     </>

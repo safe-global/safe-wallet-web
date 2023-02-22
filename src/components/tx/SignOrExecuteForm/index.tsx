@@ -22,7 +22,7 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
-import useHasPendingTxs from '@/hooks/useHasPendingTxs'
+import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction

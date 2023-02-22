@@ -42,7 +42,10 @@ const History: NextPage = () => {
 
       <main>
         {showFilter && <TxFilterForm toggleFilter={toggleFilter} />}
-        <PaginatedTxns useTxns={useTxHistory} />
+
+        <Box mb={4}>
+          <PaginatedTxns useTxns={useTxHistory} />
+        </Box>
       </main>
     </>
   )
