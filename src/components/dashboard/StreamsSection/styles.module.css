@@ -29,7 +29,7 @@
 
 .columnTemplate {
   grid-template-columns: repeat(12, 1fr);
-  grid-template-areas: 'nonce type type type type type type info info info confirmations icon';
+  grid-template-areas: 'username username username username username username address address amountPerSec streamed symbol icon';
 }
 
 .columnWrap {
