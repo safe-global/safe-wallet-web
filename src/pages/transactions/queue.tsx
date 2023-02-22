@@ -8,9 +8,11 @@ import NavTabs from '@/components/common/NavTabs'
 import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import { Box } from '@mui/material'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
-import { usePendingTxsQueue } from '@/hooks/usePendingTxs'
+import { useHasPendingTxs, usePendingTxsQueue } from '@/hooks/usePendingTxs'
 
 const Queue: NextPage = () => {
+  const hasPending = useHasPendingTxs()
+
   return (
     <>
       <Head>
@@ -30,7 +32,7 @@ const Queue: NextPage = () => {
         <main>
           <Box mb={4}>
             {/* Pending unsigned transactions */}
-            <PaginatedTxns useTxns={usePendingTxsQueue} />
+            {hasPending && <PaginatedTxns useTxns={usePendingTxsQueue} />}
 
             {/* The main queue of signed transactions */}
             <PaginatedTxns useTxns={useTxQueue} />
