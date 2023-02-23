@@ -42,6 +42,8 @@ export const useUrlChainId = (): string | undefined => {
   const { prefix } = parsePrefixedAddress(safe)
   const shortName = prefix || chain
 
+  if (!shortName) return undefined
+
   return chains[shortName] || configs.find((item) => item.shortName === shortName)?.chainId
 }
 
