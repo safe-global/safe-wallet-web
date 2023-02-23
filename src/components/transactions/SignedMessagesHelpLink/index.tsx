@@ -15,8 +15,7 @@ const SignedMessagesHelpLink = () => {
   return (
     <Box display="flex" alignItems="center" gap={1}>
       <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
-      {/* TODO: Add link to help article */}
-      <ExternalLink noIcon href="#">
+      <ExternalLink noIcon href="https://help.safe.global/en/articles/7021891-what-are-signed-messages">
         <Typography variant="body2" fontWeight={700}>
           What are signed messages?
         </Typography>
