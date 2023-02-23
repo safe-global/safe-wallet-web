@@ -136,15 +136,10 @@ export const getMultiSendCallOnlyContractInstance = (
 // GnosisSafeProxyFactory
 
 const getProxyFactoryContractDeployment = (chainId: string) => {
-  return (
-    getProxyFactoryDeployment({
-      version: LATEST_SAFE_VERSION,
-      network: chainId,
-    }) ||
-    getProxyFactoryDeployment({
-      version: LATEST_SAFE_VERSION,
-    })
-  )
+  return getProxyFactoryDeployment({
+    version: LATEST_SAFE_VERSION,
+    network: chainId,
+  })
 }
 
 export const getProxyFactoryContractInstance = (chainId: string, safeVersion: string = LATEST_SAFE_VERSION) => {
@@ -159,15 +154,10 @@ export const getProxyFactoryContractInstance = (chainId: string, safeVersion: st
 // Fallback handler
 
 const getFallbackHandlerContractDeployment = (chainId: string) => {
-  return (
-    getFallbackHandlerDeployment({
-      version: LATEST_SAFE_VERSION,
-      network: chainId,
-    }) ||
-    getFallbackHandlerDeployment({
-      version: LATEST_SAFE_VERSION,
-    })
-  )
+  return getFallbackHandlerDeployment({
+    version: LATEST_SAFE_VERSION,
+    network: chainId,
+  })
 }
 
 export const getFallbackHandlerContractInstance = (
