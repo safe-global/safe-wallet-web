@@ -2099,13 +2099,6 @@
   dependencies:
     semver "^7.3.7"
 
-"@gnosis.pm/safe-deployments@^1.18.0":
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.18.0.tgz#bc795681056837ab0784a9bf5f590ef2b12b5fe7"
-  integrity sha512-6BL60bvCP2lS9GrDhd4bY+lcxo2wBS+h745AODiLIn46R+ywKJsch6LMD3cUQE5KBYhaNJdTmSYONcLrplFnVg==
-  dependencies:
-    semver "^7.3.7"
-
 "@gnosis.pm/safe-modules-deployments@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-modules-deployments/-/safe-modules-deployments-1.0.0.tgz#b4cfcf7782c3fa1491b84405ac06cfa4f7eff365"
@@ -3008,6 +3001,13 @@
     ethereumjs-util "^7.1.5"
     semver "^7.3.8"
     web3-utils "^1.8.1"
+
+"@safe-global/safe-deployments@^1.20.2":
+  version "1.20.2"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.20.2.tgz#a005493c584909bba82bb7f06fef40a1e69d8fa8"
+  integrity sha512-4uPNpC5RUl2muGKfWUMMduG5+vKDHZOdPmFPmBkdyG+JL3jDzihgdZzdbKERQClg5xrwPhJY38hJezUFCGPR/w==
+  dependencies:
+    semver "^7.3.7"
 
 "@safe-global/safe-ethers-lib@^1.9.1":
   version "1.9.1"
