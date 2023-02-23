@@ -1,7 +1,6 @@
 import {
   validateAddress,
   validateLimitedAmount,
-  validateChainId,
   validateAmount,
   validatePrefixedAddress,
   validateDecimalLength,
@@ -19,26 +18,11 @@ describe('validation', () => {
     })
   })
 
-  describe('Ethereum chain ID validation', () => {
-    it('should return undefined if the chain ID is valid', () => {
-      expect(validateChainId('1')).toBeUndefined()
-    })
-    it('should return an error if the chain ID is invalid', () => {
-      expect(validateChainId('0')).toBe('Invalid chain ID')
-      expect(validateChainId('34534534532634565345646456546')).toBe('Invalid chain ID')
-      expect(validateChainId('0x8Ba1f109551bD432803012645Ac136ddd64DBA72')).toBe('Invalid chain ID')
-    })
-  })
-
   describe('Prefixed address validation', () => {
     const validate = validatePrefixedAddress('rin')
 
     it('should pass a bare address', () => {
       expect(validate('0x1234567890123456789012345678901234567890')).toBe(undefined)
-    })
-
-    it('should return an error if the address has an invalid prefix', () => {
-      expect(validate('xyz:0x1234567890123456789012345678901234567890')).toBe('Invalid chain prefix "xyz"')
     })
 
     it('should return an error if the address has the wrong prefix', () => {

@@ -15,7 +15,6 @@ import { isWalletRejection } from '@/utils/wallets'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import type { UrlObject } from 'url'
-import { getShortName } from '@/utils/chains'
 import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import type { AppDispatch, AppThunk } from '@/store'
@@ -234,12 +233,11 @@ export const checkSafeCreationTx = async (
 }
 
 export const getRedirect = (
-  chainId: string,
+  chainPrefix: string,
   safeAddress: string,
   redirectQuery?: string | string[],
 ): UrlObject | string => {
   const redirectUrl = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery
-  const chainPrefix = getShortName(chainId)
   const address = `${chainPrefix}:${safeAddress}`
 
   // Should never happen in practice
