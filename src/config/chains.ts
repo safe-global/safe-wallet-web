@@ -261,6 +261,7 @@ const chains: Record<string, string> = {
   vt: '73799',
   firenze: '78110',
   maticmum: '80001',
+  'base-gor': '84531',
   usctest: '99998',
   usc: '99999',
   'qkc-r': '100000',
