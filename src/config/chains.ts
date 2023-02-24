@@ -133,6 +133,7 @@ const chains: Record<string, string> = {
   tao: '558',
   'metis-stardust': '588',
   maca: '595',
+  'metis-goerli': '599',
   'mesh-chain-testnet': '600',
   'pixie-chain-testnet': '666',
   kar: '686',
