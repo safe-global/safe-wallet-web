@@ -173,7 +173,7 @@ const Chat = ({ user }) => {
   return (
     <div className={css.chatfullheight}>
       <div>
-        <div id="messages-container">
+        <div id="messages-container" className={css.flexmessagewrapper}>
           {chatData.map((item: any, i) =>
             item.type === 'message' ? (
               <Message
@@ -190,17 +190,18 @@ const Chat = ({ user }) => {
           )}
         </div>
         <div className={css.chatsendbuttons}>
-         <form onSubmit={handleSubmit}>
+         <form onSubmit={handleSubmit} className={css.formchatbuttonswrapper}>
           <input
+            className={css.inputmessage}
             type="text"
-            name="Leave a Message"
-            placeholder={!group?.hasJoined ? 'Join group first to chat...' : 'Leave a Message...'}
+            name="Write a message..."
+            placeholder={!group?.hasJoined ? 'Join group first to chat...' : 'Write a message...'}
             disabled={!group?.hasJoined}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
           />
-          <button type="submit">Send</button>
+          <button type="submit" className={css.submitbuttonchat}>&gt;</button>
          </form>
         </div>
         
@@ -231,9 +232,9 @@ const Message = ({ msg, owner, isOwner, data, timeStamp }) => (
         console.log(data)
       }}
     >
-      <div>
+      <div className={css.messagecontainer}>
         <span>{timeStamp}</span>
-        <span>{isOwner ? 'You' : owner}: </span>
+        <span className={css.ownerstylingchat}>{isOwner ? 'You' : owner} </span>
         <span> {msg}</span>
       </div>
     </div>
