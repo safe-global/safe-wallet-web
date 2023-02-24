@@ -39,7 +39,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
 
   return (
     <Paper className={css.container}>
-      <div className={classnames(css.element, css.menuButton)}>
+      <div className={classnames(css.element, css.menuButton, css.hideMobile)}>
         <IconButton onClick={handleMenuToggle} size="large" edge="start" color="default" aria-label="menu">
           <MenuIcon />
         </IconButton>
@@ -67,7 +67,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
         <NotificationCenter />
       </div>
 
-      <div className={css.element}>
+      <div className={classnames(css.element, css.marginMobile)}>
         <ConnectWallet />
       </div>
 

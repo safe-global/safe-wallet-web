@@ -68,4 +68,8 @@
   .hideMobile {
     display: none;
   }
+  
+  .marginMobile {
+    margin-inline-start: auto;
+  }
 }
