@@ -28,7 +28,7 @@ describe('Pending actions', () => {
     cy.contains('Add').click()
   })
 
-  it('should display the queued transactions', () => {
+  it('should display the pending actions in the Safe list sidebar', () => {
     cy.get('aside').within(() => {
       cy.get('[data-testid=ChevronRightIcon]').click({ force: true })
     })
@@ -36,19 +36,22 @@ describe('Pending actions', () => {
     cy.get('li').within(() => {
       cy.contains('0xCD4F...eEAE').should('exist')
 
-      cy.get('img[alt="E2E Wallet logo"]').next().contains('3')
-      cy.get('[data-testid=CheckIcon]').next().contains('3')
+      cy.get('img[alt="E2E Wallet logo"]').next().contains('3').should('exist')
+      cy.get('[data-testid=CheckIcon]').next().contains('3').should('exist')
+
+      // click on the pending actions
+      cy.get('[data-testid=CheckIcon]').next().click()
     })
   })
 
-  it.skip('should open the tx queue when clicking on the pending actions', () => {
-    // clicks on generic queue txs
-    // number of queued transactions equals the cicked number
-  })
+  it('should have the right number of queued and signable transactions', () => {
+    // Navigates to the tx queue
+    cy.contains('h3', 'Transactions').should('be.visible')
 
-  it.skip('should open the tx queue when clicking the signable txs', () => {
-    // clicks on signable txs
-    // goes to tx queue
-    // number of transactions with "confirma" equals the cicked number
+    // contains 3 queued transactions
+    cy.get('span:contains("out of 2")').should('have.length', 3)
+
+    // contains 3 signable transactions
+    cy.get('span:contains("Needs your confirmation")').should('have.length', 3)
   })
 })
