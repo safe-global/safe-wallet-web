@@ -3,7 +3,7 @@
   "homepage": "https://github.com/safe-global/web-core",
   "license": "GPL-3.0",
   "type": "module",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "scripts": {
     "dev": "next dev",
     "start": "next dev",
@@ -41,12 +41,13 @@
     "@gnosis.pm/safe-deployments": "^1.18.0",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.11.2",
+    "@mui/material": "^5.11.10",
     "@mui/x-date-pickers": "^5.0.12",
     "@reduxjs/toolkit": "^1.8.2",
-    "@safe-global/safe-core-sdk": "^3.3.1",
-    "@safe-global/safe-core-sdk-utils": "^1.7.1",
-    "@safe-global/safe-ethers-lib": "^1.9.1",
+    "@safe-global/safe-core-sdk": "^3.3.2",
+    "@safe-global/safe-core-sdk-utils": "^1.7.2",
+    "@safe-global/safe-deployments": "^1.20.2",
+    "@safe-global/safe-ethers-lib": "^1.9.2",
     "@safe-global/safe-gateway-typescript-sdk": "^3.7.0",
     "@safe-global/safe-react-components": "^2.0.2",
     "@sentry/react": "^7.28.1",
@@ -120,7 +121,7 @@
     "ts-prune": "^0.10.3",
     "typechain": "^8.0.0",
     "typescript": "4.9.4",
-    "typescript-plugin-css-modules": "^4.1.1",
+    "typescript-plugin-css-modules": "^4.2.2",
     "whatwg-fetch": "3.6.2"
   }
 }

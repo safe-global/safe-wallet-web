@@ -28,7 +28,7 @@ const cachedGetSafeApps = (chainId: string): ReturnType<typeof getSafeApps> | un
 const useRemoteSafeApps = (tag?: SafeAppsTag): AsyncResult<SafeAppsResponse> => {
   const chainId = useChainId()
 
-  const [remoteApps, error, loading] = useAsync(async () => {
+  const [remoteApps, error, loading] = useAsync<SafeAppsResponse>(() => {
     if (!chainId) return
     return cachedGetSafeApps(chainId)
   }, [chainId])

@@ -37,6 +37,7 @@ const SafeAppIconCard = ({
       height={height}
       style={{ pointerEvents: 'none', border: 0 }}
       tabIndex={-1}
+      loading="lazy"
     />
   )
 }

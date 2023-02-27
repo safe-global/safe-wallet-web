@@ -22,6 +22,7 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
+import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -62,11 +63,12 @@ const SignOrExecuteForm = ({
   const isOwner = useIsSafeOwner()
   const provider = useWeb3()
   const currentChain = useCurrentChain()
+  const hasPending = useHasPendingTxs()
 
   const { createTx, dispatchTxProposal, dispatchOnChainSigning, dispatchTxSigning, dispatchTxExecution } = useTxSender()
 
   // Check that the transaction is executable
-  const isNewExecutableTx = !txId && safe.threshold === 1
+  const isNewExecutableTx = !txId && safe.threshold === 1 && !hasPending
   const isCorrectNonce = tx?.data.nonce === safe.nonce
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 

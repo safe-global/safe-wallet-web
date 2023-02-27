@@ -65,7 +65,7 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
   },
   SAFE_TOKEN_WIDGET: {
-    action: 'Open Safe Claiming App from widget',
+    action: 'Open Safe Governance App from widget',
     category: OVERVIEW_CATEGORY,
   },
   OPEN_MISSING_SIGNATURES: {
