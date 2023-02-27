@@ -43,8 +43,15 @@ describe('Pending actions', () => {
       cy.get('[data-testid=CheckIcon]').next().contains('2')
     })
   })
+
+  it.skip('should open the tx queue when clicking on the pending actions', () => {
+    // clicks on generic queue txs
+    // number of queued transactions equals the cicked number
+  })
+
+  it.skip('should open the tx queue when clicking the signable txs', () => {
+    // clicks on signable txs
+    // goes to tx queue
+    // number of transactions with "confirma" equals the cicked number
+  })
 })
-
-// 0xcd4fddb8ffa90012dfe11ed4bf258861204feeae
-
-// ChevronRightIcon
