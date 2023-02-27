@@ -8,7 +8,7 @@ import { hexZeroPad } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
 import useSafeTokenAllocation from '@/hooks/useSafeTokenAllocation'
 
-const MOCK_CLAIMING_APP_URL = 'https://fake.claiming-app.safe.global'
+const MOCK_GOVERNANCE_APP_URL = 'https://mock.governance.safe.global'
 
 jest.mock('@/hooks/useChainId', () => jest.fn(() => '1'))
 
@@ -21,12 +21,12 @@ jest.mock(
       [
         {
           id: 61,
-          url: MOCK_CLAIMING_APP_URL,
+          url: MOCK_GOVERNANCE_APP_URL,
           chainIds: ['4'],
-          name: '$SAFE Claiming App',
+          name: 'Safe {DAO} Governance',
           description: '',
           iconUrl: '',
-          tags: ['safe-claiming-app'],
+          tags: ['safe-dao-governance-app'],
           accessControl: {
             type: SafeAppAccessPolicyTypes.NoRestrictions,
           },
@@ -81,13 +81,13 @@ describe('SafeTokenWidget', () => {
     })
   })
 
-  it('Should render a link to the claiming app', async () => {
+  it('Should render a link to the governance app', async () => {
     ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [BigNumber.from(420000), false])
 
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
       expect(result.baseElement).toContainHTML(
-        `href="${AppRoutes.apps.open}?safe=${fakeSafeAddress}&appUrl=${encodeURIComponent(MOCK_CLAIMING_APP_URL)}"`,
+        `href="${AppRoutes.apps.open}?safe=${fakeSafeAddress}&appUrl=${encodeURIComponent(MOCK_GOVERNANCE_APP_URL)}"`,
       )
     })
   })
