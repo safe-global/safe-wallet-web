@@ -10,6 +10,7 @@ import tallyhoIcon from '@web3-onboard/tallyho/dist/icon'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import pairingIcon from '@/services/pairing/icon'
 import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
+import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 
 enum ADDITIONAL_KEYS {
   METAMASK = 'METAMASK',
@@ -39,6 +40,10 @@ const WALLET_LABELS: { [label: string]: WALLET_KEYS } = {
 }
 
 const getWalletIcon = (provider: string) => {
+  if (provider === E2E_WALLET_NAME) {
+    return metamaskIcon
+  }
+
   const label = WALLET_LABELS?.[provider] || provider.toUpperCase()
 
   return WALLET_ICONS[label]

@@ -8,7 +8,7 @@ describe('Create Safe', () => {
     cy.contains('button', 'Accept all').click()
 
     // Ensure wallet is connected to correct chain via header
-    cy.contains('MetaMask @ Görli')
+    cy.contains('E2E Wallet @ Görli')
 
     cy.contains('Create new Safe').click()
 

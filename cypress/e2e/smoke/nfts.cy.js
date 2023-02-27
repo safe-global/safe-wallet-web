@@ -6,7 +6,7 @@ describe('Assets > NFTs', () => {
 
     cy.visit(`/${TEST_SAFE}/balances/nfts`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
-    cy.contains('MetaMask @ Görli')
+    cy.contains('E2E Wallet @ Görli')
   })
 
   describe('should have NFTs', () => {

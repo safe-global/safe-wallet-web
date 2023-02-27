@@ -10,7 +10,7 @@ describe('Pending actions', () => {
     cy.contains('button', 'Accept all').click()
 
     // Ensure wallet is connected to correct chain via header
-    cy.contains('MetaMask @ Görli')
+    cy.contains('E2E Wallet @ Görli')
   })
 
   it('should add the Safe with the pending actions', () => {
@@ -36,11 +36,8 @@ describe('Pending actions', () => {
     cy.get('li').within(() => {
       cy.contains('0xCD4F...eEAE').should('exist')
 
-      // get img with alt "Metamask logo"
-      cy.get('img[alt="Metamask logo"]').should('exist')
-
-      cy.get('img[alt="Metamask logo"]').next().contains('2')
-      cy.get('[data-testid=CheckIcon]').next().contains('2')
+      cy.get('img[alt="E2E Wallet logo"]').next().contains('3')
+      cy.get('[data-testid=CheckIcon]').next().contains('3')
     })
   })
 
