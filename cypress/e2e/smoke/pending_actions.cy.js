@@ -51,6 +51,12 @@ describe('Pending actions', () => {
     // contains 3 queued transactions
     cy.get('span:contains("out of 2")').should('have.length', 3)
 
+    // TODO: This is a workaround to ensure the wallet is connected after page navigation
+    window.localStorage.setItem('SAFE_v2__lastWallet', JSON.stringify('E2E Wallet'))
+
+    // Ensure wallet is connected after page navigation
+    cy.contains('E2E Wallet @ Görli')
+
     // contains 3 signable transactions
     cy.get('span:contains("Needs your confirmation")').should('have.length', 3)
   })
