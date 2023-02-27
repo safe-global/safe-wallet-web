@@ -40,7 +40,7 @@
     "@gnosis.pm/safe-apps-sdk": "^7.8.0",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.11.2",
+    "@mui/material": "^5.11.10",
     "@mui/x-date-pickers": "^5.0.12",
     "@reduxjs/toolkit": "^1.8.2",
     "@safe-global/safe-core-sdk": "^3.3.2",
