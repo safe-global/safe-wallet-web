@@ -6,7 +6,16 @@ const useAppsSearch = (apps: SafeAppData[], query: string): SafeAppData[] => {
   const fuse = useMemo(
     () =>
       new Fuse(apps, {
-        keys: ['name', 'description'],
+        keys: [
+          {
+            name: 'name',
+            weight: 0.99,
+          },
+          {
+            name: 'description',
+            weight: 0.5,
+          },
+        ],
         // https://fusejs.io/api/options.html#threshold
         // Very naive explanation: threshold represents how accurate the search results should be. The default is 0.6
         // I tested it and found it to make the search results more accurate when the threshold is 0.3
