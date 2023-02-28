@@ -315,12 +315,13 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Submit')).not.toBeDisabled()
   })
 
-  it('disables the submit button if connected wallet is on a different chain', () => {
+  it('displays an error and disables the submit button if connected wallet is on a different chain', () => {
     jest.spyOn(wrongChain, 'default').mockReturnValue(true)
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
+    expect(result.getByText('Your wallet is connected to the wrong chain.')).toBeInTheDocument()
     expect(result.getByText('Submit')).toBeDisabled()
   })
 
