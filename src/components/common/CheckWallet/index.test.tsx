@@ -100,7 +100,7 @@ describe('CheckWallet', () => {
     expect(container.querySelector('button')).toBeDisabled()
     expect(container.querySelector('span[aria-label]')).toHaveAttribute(
       'aria-label',
-      'You can only create ERC20 transactions within the spending limit',
+      'You can only create ERC-20 transactions within your spending limit',
     )
 
     const { container: allowContainer } = render(
