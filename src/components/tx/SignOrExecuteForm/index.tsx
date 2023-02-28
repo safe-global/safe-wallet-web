@@ -18,11 +18,11 @@ import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
+import CheckWallet from '@/components/common/CheckWallet'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -59,7 +59,6 @@ const SignOrExecuteForm = ({
 
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
   const isOwner = useIsSafeOwner()
   const provider = useWeb3()
   const currentChain = useCurrentChain()
@@ -210,7 +209,6 @@ const SignOrExecuteForm = ({
     isEstimating ||
     !tx ||
     disableSubmit ||
-    isWrongChain ||
     cannotPropose ||
     isExecutionLoop ||
     isValidExecutionLoading
@@ -244,9 +242,7 @@ const SignOrExecuteForm = ({
         />
 
         {/* Error messages */}
-        {isWrongChain ? (
-          <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>
-        ) : cannotPropose ? (
+        {cannotPropose ? (
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
           </ErrorMessage>
@@ -273,9 +269,13 @@ const SignOrExecuteForm = ({
         </Typography>
 
         {/* Submit button */}
-        <Button variant="contained" type="submit" disabled={submitDisabled}>
-          {isEstimating ? 'Estimating...' : 'Submit'}
-        </Button>
+        <CheckWallet allowNonOwner={willExecute}>
+          {(isOk) => (
+            <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+              {isEstimating ? 'Estimating...' : 'Submit'}
+            </Button>
+          )}
+        </CheckWallet>
       </DialogContent>
     </form>
   )

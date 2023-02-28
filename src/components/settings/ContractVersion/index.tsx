@@ -13,7 +13,7 @@ import UpdateSafeDialog from './UpdateSafeDialog'
 import ExternalLink from '@/components/common/ExternalLink'
 import Tooltip from '@mui/material/Tooltip'
 
-export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
+export const ContractVersion = () => {
   const [masterCopies] = useMasterCopies()
   const { safe } = useSafeInfo()
   const masterCopyAddress = safe.implementation.value
@@ -74,7 +74,7 @@ You will need to confirm this update just like any other transaction."
         )}
       </div>
 
-      {showUpdateDialog && isGranted && <UpdateSafeDialog />}
+      {showUpdateDialog && <UpdateSafeDialog />}
     </div>
   )
 }

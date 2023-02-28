@@ -10,6 +10,7 @@ import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import ReplaceOwnerIcon from '@/public/images/settings/setup/replace-owner.svg'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const ReplaceOwnerSteps: TxStepperProps['steps'] = [
   {
@@ -36,13 +37,18 @@ export const ReplaceOwnerDialog = ({ address }: { address: string }) => {
 
   return (
     <div>
-      <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
-        <Tooltip title="Replace owner">
-          <IconButton onClick={() => setOpen(true)} size="small">
-            <SvgIcon component={ReplaceOwnerIcon} inheritViewBox color="border" fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </Track>
+      <CheckWallet>
+        {(isOk) => (
+          <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
+            <Tooltip title="Replace owner">
+              <IconButton onClick={() => setOpen(true)} size="small" disabled={!isOk}>
+                <SvgIcon component={ReplaceOwnerIcon} inheritViewBox color="border" fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Track>
+        )}
+      </CheckWallet>
+
       {open && <TxModal wide onClose={handleClose} steps={ReplaceOwnerSteps} initialData={[initialModalData]} />}
     </div>
   )

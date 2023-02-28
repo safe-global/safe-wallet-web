@@ -11,7 +11,6 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
-import useIsGranted from '@/hooks/useIsGranted'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AddressBookHeader from '../AddressBookHeader'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -24,6 +23,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import { SendAssetsField } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -47,7 +47,6 @@ const defaultOpen = {
 
 const AddressBookTable = () => {
   const chain = useCurrentChain()
-  const isGranted = useIsGranted()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [searchQuery, setSearchQuery] = useState('')
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
@@ -111,13 +110,21 @@ const AddressBookTable = () => {
               </Tooltip>
             </Track>
 
-            {isGranted && (
-              <Track {...ADDRESS_BOOK_EVENTS.SEND}>
-                <Button variant="contained" color="primary" size="small" onClick={() => setSelectedAddress(address)}>
-                  Send
-                </Button>
-              </Track>
-            )}
+            <CheckWallet>
+              {(isOk) => (
+                <Track {...ADDRESS_BOOK_EVENTS.SEND}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => setSelectedAddress(address)}
+                    disabled={!isOk}
+                  >
+                    Send
+                  </Button>
+                </Track>
+              )}
+            </CheckWallet>
           </div>
         ),
       },
