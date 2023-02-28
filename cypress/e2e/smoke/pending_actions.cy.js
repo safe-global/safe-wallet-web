@@ -1,7 +1,7 @@
 const SAFE = 'gor:0xCD4FddB8FfA90012DFE11eD4bf258861204FeEAE'
 
 describe('Pending actions', () => {
-  it('should navigate to the form', () => {
+  before(() => {
     cy.connectE2EWallet()
 
     cy.visit('/welcome')
@@ -11,6 +11,14 @@ describe('Pending actions', () => {
 
     // Ensure wallet is connected to correct chain via header
     cy.contains('E2E Wallet @ Görli')
+  })
+
+  beforeEach(() => {
+    cy.restoreLocalStorageCache()
+  })
+
+  afterEach(() => {
+    cy.saveLocalStorageCache()
   })
 
   it('should add the Safe with the pending actions', () => {
@@ -51,10 +59,7 @@ describe('Pending actions', () => {
     // contains 3 queued transactions
     cy.get('span:contains("out of 2")').should('have.length', 3)
 
-    // TODO: This is a workaround to ensure the wallet is connected after page navigation
-    window.localStorage.setItem('SAFE_v2__lastWallet', JSON.stringify('E2E Wallet'))
-
-    // Ensure wallet is connected after page navigation
+    // Ensure wallet is connected
     cy.contains('E2E Wallet @ Görli')
 
     // contains 3 signable transactions
