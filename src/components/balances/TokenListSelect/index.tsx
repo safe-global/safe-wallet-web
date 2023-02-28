@@ -34,10 +34,17 @@ const TokenListSelect = () => {
 
   return (
     <FormControl size="small">
-      <InputLabel id="tokenlist-select-label">Filter by</InputLabel>
+      <InputLabel id="tokenlist-select-label">Token list</InputLabel>
+
       <OnboardingTooltip
         widgetLocalStorageId={LS_TOKENLIST_ONBOARDING}
-        text="Missing tokens? Switch to “All tokens” to see more than the default tokens here."
+        text={
+          <>
+            Spam filter on!
+            <br />
+            Switch to &quot;All tokens&quot; to see all of your tokens.
+          </>
+        }
       >
         <Select
           labelId="tokenlist-select-label"
@@ -47,10 +54,11 @@ const TokenListSelect = () => {
           onChange={handleSelectTokenList}
           renderValue={(value) => TokenListLabel[value]}
           onOpen={() => trackEvent(ASSETS_EVENTS.OPEN_TOKEN_LIST_MENU)}
+          sx={{ minWidth: '152px' }}
         >
           <MenuItem value={TOKEN_LISTS.TRUSTED}>
             <Track {...ASSETS_EVENTS.SHOW_DEFAULT_TOKENS}>
-              <Box display="flex" flexDirection="row" gap="4px" alignItems="center">
+              <Box display="flex" flexDirection="row" gap="4px" alignItems="center" minWidth={155}>
                 {TokenListLabel.TRUSTED}
                 <Tooltip
                   arrow
@@ -70,6 +78,7 @@ const TokenListSelect = () => {
               </Box>
             </Track>
           </MenuItem>
+
           <MenuItem value={TOKEN_LISTS.ALL}>
             <Track {...ASSETS_EVENTS.SHOW_ALL_TOKENS}>
               <span>{TokenListLabel.ALL}</span>
