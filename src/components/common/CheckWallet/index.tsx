@@ -36,12 +36,12 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner }: CheckWalle
     ? Message.OnlySpendingLimitBeneficiary
     : ''
 
-  return message ? (
+  if (!message) return children(true)
+
+  return (
     <Tooltip title={message}>
       <span>{children(false)}</span>
     </Tooltip>
-  ) : (
-    <>{children(true)}</>
   )
 }
 
