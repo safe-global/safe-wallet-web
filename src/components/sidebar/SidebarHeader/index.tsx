@@ -58,12 +58,12 @@ const SafeHeader = (): ReactElement => {
           </div>
 
           <div className={css.address}>
-            {safeLoading ? (
+            {safeAddress ? (
+              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
+            ) : (
               <Typography variant="body2">
                 <Skeleton variant="text" width={86} />
               </Typography>
-            ) : (
-              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
             )}
 
             <Typography variant="body2" fontWeight={700}>
@@ -101,6 +101,7 @@ const SafeHeader = (): ReactElement => {
               </IconButton>
             </Tooltip>
           </Track>
+
           <EnvHintButton />
         </div>
       </div>
