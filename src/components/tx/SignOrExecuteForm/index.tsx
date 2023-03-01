@@ -54,6 +54,7 @@ const SignOrExecuteForm = ({
   // Hooks & variables
   //
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [willRelay, setWillRelay] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
@@ -227,7 +228,9 @@ const SignOrExecuteForm = ({
 
         {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
 
-        {shouldExecute && <ExecutionMethod walletLabel={wallet?.label || ''} />}
+        {shouldExecute && (
+          <ExecutionMethod walletLabel={wallet?.label || ''} willRelay={willRelay} onSelectRelay={setWillRelay} />
+        )}
 
         <AdvancedParams
           params={advancedParams}
@@ -237,6 +240,7 @@ const SignOrExecuteForm = ({
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
           gasLimitError={gasLimitError}
+          willRelay={shouldExecute && willRelay}
         />
 
         <TxSimulation

@@ -16,6 +16,12 @@
   font-weight: bold;
 }
 
+.chipSkeleton {
+  height: 30px;
+  width: 80px;
+  margin-left: auto !important;
+}
+
 .newChip {
   position: absolute;
   top: -15px;
