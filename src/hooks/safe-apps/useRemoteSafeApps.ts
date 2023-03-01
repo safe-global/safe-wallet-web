@@ -41,10 +41,18 @@ const useRemoteSafeApps = (tag?: SafeAppsTag): AsyncResult<SafeAppsResponse> => 
 
   const apps = useMemo(() => {
     if (!remoteApps || !tag) return remoteApps
-    return remoteApps.filter((app) => app.tags.includes(tag))
+    return remoteApps
+      .filter((app) => app.tags.includes(tag))
+      .sort((a, b) => {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+      })
   }, [remoteApps, tag])
 
-  return [apps, error, loading]
+  const sortedApps = useMemo(() => {
+    return apps?.sort((a, b) => a.name.localeCompare(b.name))
+  }, [apps])
+
+  return [sortedApps, error, loading]
 }
 
 export { useRemoteSafeApps }
