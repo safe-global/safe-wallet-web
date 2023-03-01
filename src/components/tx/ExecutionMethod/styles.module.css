@@ -1,0 +1,10 @@
+.relayingChip {
+  padding: var(--space-1);
+  border-radius: 6px;
+  height: 30px;
+  background-color: var(--color-secondary-light);
+  display: flex;
+  align-items: center;
+  margin-left: auto !important;
+  font-weight: bold;
+}

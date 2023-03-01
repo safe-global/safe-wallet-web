@@ -23,6 +23,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
+import ExecutionMethod from '@/components/tx/ExecutionMethod'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -225,6 +226,8 @@ const SignOrExecuteForm = ({
         <DecodedTx tx={tx} txId={txId} />
 
         {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
+
+        {shouldExecute && <ExecutionMethod wallet={wallet} />}
 
         <AdvancedParams
           params={advancedParams}
