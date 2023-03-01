@@ -11,7 +11,13 @@ import AppstoreButton from '../AppStoreButton'
 import ExternalLink from '../ExternalLink'
 import MUILink from '@mui/material/Link'
 
-const footerPages = [AppRoutes.welcome, AppRoutes.settings.index, AppRoutes.imprint, AppRoutes.privacy]
+const footerPages = [
+  AppRoutes.welcome,
+  AppRoutes.settings.index,
+  AppRoutes.imprint,
+  AppRoutes.privacy,
+  AppRoutes.cookie,
+]
 
 const Footer = (): ReactElement | null => {
   const router = useRouter()
@@ -38,9 +44,9 @@ const Footer = (): ReactElement | null => {
           </ExternalLink>
         </li>
         <li>
-          <ExternalLink noIcon href="https://safe.global/privacy">
-            Privacy
-          </ExternalLink>
+          <Link href={AppRoutes.privacy} passHref>
+            <MUILink>Privacy</MUILink>
+          </Link>
         </li>
         <li>
           <ExternalLink noIcon href="https://safe.global/licenses">
@@ -53,9 +59,9 @@ const Footer = (): ReactElement | null => {
           </Link>
         </li>
         <li>
-          <ExternalLink noIcon href="https://safe.global/cookie">
-            Cookie Policy
-          </ExternalLink>
+          <Link href={AppRoutes.cookie} passHref>
+            <MUILink>Cookie Policy</MUILink>
+          </Link>
           &nbsp;&mdash;&nbsp;
           <MUILink href="#" onClick={onCookieClick}>
             Preferences

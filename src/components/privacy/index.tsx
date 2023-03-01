@@ -10,9 +10,7 @@ const SafePrivacyPolicy = () => {
       <p>
         Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
         regulation regarding any personal information we may collect about you, including across our website,{' '}
-        <a href="https://www.google.com/url?q=https://app.safe.global&amp;sa=D&amp;source=editors&amp;ust=1677670461968387&amp;usg=AOvVaw3V2Kc3KgyuW6TqsMfGAs15">
-          https://app.safe.global
-        </a>
+        <a href="https://app.safe.global">https://app.safe.global</a>
         ,&nbsp;and other sites we own and operate as well as mobile applications we offer. Wherever possible, we have
         designed our website so that you may navigate and use our website without having to provide Personal Data.
       </p>
@@ -117,9 +115,11 @@ const SafePrivacyPolicy = () => {
         <li>
           &ldquo;Safe&rdquo; is a modular, self-custodial (i.e. not supervised by us) smart contract-based
           multi-signature Wallet. Safe is{' '}
-          <a href="https://www.google.com/url?q=https://github.com/safe-global/safe-contracts/&amp;sa=D&amp;source=editors&amp;ust=1677670461974783&amp;usg=AOvVaw0VU7ej4w-4PKSYww4aFXyt">
-            open-source
-          </a>
+          <Link href="https://github.com/safe-global/safe-contracts/" passHref>
+            <MUILink target="_blank" rel="noreferrer">
+              open-source
+            </MUILink>
+          </Link>
           &nbsp;released under LGPL-3.0.
         </li>
         <li>
@@ -444,29 +444,37 @@ const SafePrivacyPolicy = () => {
       <h4>5.2. Amazon Web Services</h4>
       <p>
         We use{' '}
-        <a href="https://www.google.com/url?q=https://aws.amazon.com/&amp;sa=D&amp;source=editors&amp;ust=1677670461998336&amp;usg=AOvVaw0klUOiMtFQiqXOnVo-NxtZ">
-          Amazon Web Services (AWS)
-        </a>
+        <Link href="https://aws.amazon.com/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Amazon Web Services (AWS)
+          </MUILink>
+        </Link>
         &nbsp;to store log and database data as described in section 4.1.
       </p>
       <h4>5.3. Datadog</h4>
       <p>
         We use{' '}
-        <a href="https://www.google.com/url?q=https://www.datadoghq.com/&amp;sa=D&amp;source=editors&amp;ust=1677670461999033&amp;usg=AOvVaw3rYJZBo6VNH8rKYtFyQeRD">
-          Datadog
-        </a>
+        <Link href="https://www.datadoghq.com/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Datadog
+          </MUILink>
+        </Link>
         &nbsp;to store log data as described in section 4.1.
       </p>
       <h4>5.4. Mobile app stores</h4>
       <p>
         Safe mobile apps are distributed via{' '}
-        <a href="https://www.google.com/url?q=https://www.apple.com/app-store/&amp;sa=D&amp;source=editors&amp;ust=1677670461999703&amp;usg=AOvVaw0FQLE9DGc__i48SYxTwCzJ">
-          Apple AppStore
-        </a>
+        <Link href="https://www.apple.com/app-store/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Apple AppStore
+          </MUILink>
+        </Link>
         &nbsp;and{' '}
-        <a href="https://www.google.com/url?q=https://play.google.com/&amp;sa=D&amp;source=editors&amp;ust=1677670462000051&amp;usg=AOvVaw0xdj_3JNm_HHuv6tClADLo">
-          Google Play Store
-        </a>
+        <Link href="https://play.google.com/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Google Play Store
+          </MUILink>
+        </Link>
         . They most likely track user behavior when downloading apps from their stores as well as when using apps. We
         only have very limited access to that data. We can view aggregated statistics on installs and uninstalls.
         Grouping by device type, app version, language, carrier and country is possible.
@@ -481,9 +489,11 @@ const SafePrivacyPolicy = () => {
       <h4>5.6. Google Firebase</h4>
       <p>
         We use the following{' '}
-        <a href="https://www.google.com/url?q=https://firebase.google.com/&amp;sa=D&amp;source=editors&amp;ust=1677670462001228&amp;usg=AOvVaw0PvjHiv6LzUshRGaz9KwDc">
-          Google Firebase
-        </a>
+        <Link href="https://firebase.google.com/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Google Firebase
+          </MUILink>
+        </Link>
         &nbsp;services:
       </p>
       <ul>
@@ -499,44 +509,56 @@ const SafePrivacyPolicy = () => {
       </ul>
       <h4>5.7. WalletConnect</h4>
       <p>
-        <a href="https://www.google.com/url?q=https://walletconnect.com/&amp;sa=D&amp;source=editors&amp;ust=1677670462002729&amp;usg=AOvVaw3fns2anVcEVZjXS6gxfger">
-          WalletConnect
-        </a>
+        <Link href="https://walletconnect.com/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            WalletConnect
+          </MUILink>
+        </Link>
         &nbsp;is used to connect wallets to dapps using end-to-end encryption by scanning a QR code. We do not store any
         information collected by WalletConnect.{' '}
       </p>
       <h4>5.8. Sentry</h4>
       <p>
         We use{' '}
-        <a href="https://www.google.com/url?q=https://sentry.io/&amp;sa=D&amp;source=editors&amp;ust=1677670462003432&amp;usg=AOvVaw0awYpXXYSCHZcWOeIr7IXY">
-          Sentry
-        </a>
+        <Link href="https://sentry.io/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Sentry
+          </MUILink>
+        </Link>
         &nbsp;to collect error reports and crashes to improve product and user experience.{' '}
       </p>
       <h4>5.9. Beamer</h4>
       <p>
         We use{' '}
-        <a href="https://www.google.com/url?q=https://www.getbeamer.com/&amp;sa=D&amp;source=editors&amp;ust=1677670462004085&amp;usg=AOvVaw3mKE7fFDU9R9XnTtgrSkwz">
-          Beamer
-        </a>
+        <Link href="https://www.getbeamer.com/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Beamer
+          </MUILink>
+        </Link>
         &nbsp;providing updates to the user about changes in the app. Beamer&apos;s purpose and function are further
         explained under the following link{' '}
-        <a href="https://www.google.com/url?q=https://www.getbeamer.com/showcase/notification-center&amp;sa=D&amp;source=editors&amp;ust=1677670462004398&amp;usg=AOvVaw1TTpszDU9wZy4QP-SU-Mz2">
-          https://www.getbeamer.com/showcase/notification-center
-        </a>
+        <Link href="https://www.getbeamer.com/showcase/notification-center" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            https://www.getbeamer.com/showcase/notification-center
+          </MUILink>
+        </Link>
         .
       </p>
       <p>We do not store any information collected by Beamer.</p>
       <h4>5.10. Node providers</h4>
       <p>
         We use{' '}
-        <a href="https://www.google.com/url?q=https://www.infura.io/&amp;sa=D&amp;source=editors&amp;ust=1677670462005213&amp;usg=AOvVaw3Z7giCkorlD4Jsvrh_si8a">
-          Infura
-        </a>
+        <Link href="https://www.infura.io/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Infura
+          </MUILink>
+        </Link>
         &nbsp;and{' '}
-        <a href="https://www.google.com/url?q=https://nodereal.io/&amp;sa=D&amp;source=editors&amp;ust=1677670462005507&amp;usg=AOvVaw2MaUVqR0xB4JDnSBMH5IS4">
-          Nodereal
-        </a>
+        <Link href="https://nodereal.io/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Nodereal
+          </MUILink>
+        </Link>
         &nbsp;to query public blockchain data from our backend services. All Safes are monitored, no personalization is
         happening and no user IP addresses are forwarded. Personal data processed are:
       </p>
@@ -548,9 +570,11 @@ const SafePrivacyPolicy = () => {
       <h4>5.11. Tenderly</h4>
       <p>
         We use{' '}
-        <a href="https://www.google.com/url?q=https://tenderly.co/&amp;sa=D&amp;source=editors&amp;ust=1677670462006850&amp;usg=AOvVaw35y42G_oU-fWhcI_iNwfBg">
-          Tenderly
-        </a>
+        <Link href="https://tenderly.co/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Tenderly
+          </MUILink>
+        </Link>
         &nbsp;to simulate blockchain transactions before they are executed. For that we send your smart contract address
         of your Safe and transaction data to Tenderly.
       </p>
@@ -558,19 +582,25 @@ const SafePrivacyPolicy = () => {
       <p>We use the following tools for internal communication. </p>
       <ul>
         <li>
-          <a href="https://www.google.com/url?q=https://slack.com/&amp;sa=D&amp;source=editors&amp;ust=1677670462007752&amp;usg=AOvVaw0LysMSW4tdq8cG4KbCOzaa">
-            Slack
-          </a>
+          <Link href="https://slack.com/" passHref>
+            <MUILink target="_blank" rel="noreferrer">
+              Slack
+            </MUILink>
+          </Link>
         </li>
         <li>
-          <a href="https://www.google.com/url?q=https://workspace.google.com/&amp;sa=D&amp;source=editors&amp;ust=1677670462008110&amp;usg=AOvVaw0eNEELfZnd0R91E3J2XnB5">
-            Google Workspace
-          </a>
+          <Link href="https://workspace.google.com/" passHref>
+            <MUILink target="_blank" rel="noreferrer">
+              Google Workspace
+            </MUILink>
+          </Link>
         </li>
         <li>
-          <a href="https://www.google.com/url?q=https://notion.so&amp;sa=D&amp;source=editors&amp;ust=1677670462008559&amp;usg=AOvVaw0LlPhL5VvrcNajC6vp7ou5">
-            Notion
-          </a>
+          <Link href="https://notion.so" passHref>
+            <MUILink target="_blank" rel="noreferrer">
+              Notion
+            </MUILink>
+          </Link>
         </li>
       </ul>
       <h3 id="6">6. Sharing Your Personal Data</h3>
@@ -633,9 +663,11 @@ const SafePrivacyPolicy = () => {
         You have certain rights under applicable legislation, and in particular under Regulation EU 2016/679 (General
         Data Protection Regulation or &lsquo;GDPR&rsquo;). We explain these below. You can find out more about the GDPR
         and your rights by accessing the{' '}
-        <a href="https://www.google.com/url?q=https://ec.europa.eu/info/law/law-topic/data-protection_en&amp;sa=D&amp;source=editors&amp;ust=1677670462013109&amp;usg=AOvVaw130yoKbfsfpLG6xbgjr5oB">
-          European Commission&rsquo;s website
-        </a>
+        <Link href="https://ec.europa.eu/info/law/law-topic/data-protection_en" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            European Commission&rsquo;s website
+          </MUILink>
+        </Link>
         . If you wish to exercise your data subject rights, please contact us by post or at privacy@cc0x.dev.
       </p>
       <h5>Right Information and access</h5>

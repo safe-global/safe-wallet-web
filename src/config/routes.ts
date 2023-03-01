@@ -7,6 +7,7 @@ export const AppRoutes = {
   import: '/import',
   home: '/home',
   environmentVariables: '/environment-variables',
+  cookie: '/cookie',
   addressBook: '/address-book',
   _offline: '/_offline',
   apps: {

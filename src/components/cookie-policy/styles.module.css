@@ -1,0 +1,15 @@
+.table {
+  width: 100%;
+  border-spacing: 0;
+  border: 0;
+  border-collapse: collapse;
+}
+
+.table td {
+  border: 1px solid;
+  padding: 0 8px;
+}
+
+.table tr:first-child td {
+  font-weight: bold;
+}

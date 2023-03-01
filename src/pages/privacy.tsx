@@ -2,11 +2,11 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import SafePrivacyPolicy from '@/components/privacy'
 
-const Privacy: NextPage = () => {
+const PrivacyPolicy: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – Imprint</title>
+        <title>Safe – Privacy policy</title>
       </Head>
 
       <main>
@@ -16,4 +16,4 @@ const Privacy: NextPage = () => {
   )
 }
 
-export default Privacy
+export default PrivacyPolicy
