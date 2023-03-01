@@ -8,7 +8,7 @@ import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
 
 const SafeAppsSDKLink = () => {
-  const [mini, setMini] = useState(false)
+  const [isMini, setMini] = useState(false)
 
   useEffect(() => {
     const minScroll = 130
@@ -23,7 +23,7 @@ const SafeAppsSDKLink = () => {
   }, [])
 
   return (
-    <div className={classnames(css.container, { [css.mini]: mini })}>
+    <div className={classnames(css.container, { [css.mini]: isMini })}>
       <CodeIcon />
 
       <Typography variant="h6" className={css.title}>
