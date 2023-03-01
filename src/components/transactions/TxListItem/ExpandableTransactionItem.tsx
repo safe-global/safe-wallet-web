@@ -1,5 +1,5 @@
 import { type Transaction, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TxSummary from '@/components/transactions/TxSummary'
 import TxDetails from '@/components/transactions/TxDetails'
@@ -52,5 +52,23 @@ export const ExpandableTransactionItem = ({
     </Accordion>
   )
 }
+
+export const TransactionSkeleton = () => (
+  <>
+    <Box pt="20px" pb="4px">
+      <Skeleton variant="text" width="35px" />
+    </Box>
+
+    <Accordion disableGutters elevation={0} defaultExpanded className={css.accordion}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
+        <Skeleton width="100%" />
+      </AccordionSummary>
+
+      <AccordionDetails sx={{ padding: 0 }}>
+        <Skeleton variant="rounded" width="100%" height="325px" />
+      </AccordionDetails>
+    </Accordion>
+  </>
+)
 
 export default ExpandableTransactionItem

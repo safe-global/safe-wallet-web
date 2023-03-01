@@ -44,14 +44,18 @@ const EmptyState = () => {
 
 const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null => {
   const { page, loading } = useTxQueue()
-  const router = useRouter()
-  const url = `${AppRoutes.transactions.queue}?safe=${router.query.safe}`
-
   const queuedTxns = useMemo(() => getLatestTransactions(page?.results), [page?.results])
-
   const queuedTxsToDisplay = queuedTxns.slice(0, size)
-
   const totalQueuedTxs = getQueuedTransactionCount(page)
+  const router = useRouter()
+
+  const queueUrl = useMemo(
+    () => ({
+      pathname: AppRoutes.transactions.queue,
+      query: { safe: router.query.safe },
+    }),
+    [router],
+  )
 
   const LoadingState = useMemo(
     () => (
@@ -70,11 +74,11 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
     () => (
       <StyledList>
         {queuedTxsToDisplay.map((transaction) => (
-          <PendingTxListItem transaction={transaction.transaction} url={url} key={transaction.transaction.id} />
+          <PendingTxListItem transaction={transaction.transaction} key={transaction.transaction.id} />
         ))}
       </StyledList>
     ),
-    [queuedTxsToDisplay, url],
+    [queuedTxsToDisplay],
   )
 
   const getWidgetBody = () => {
@@ -89,7 +93,7 @@ const PendingTxsList = ({ size = 4 }: { size?: number }): ReactElement | null =>
         <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
           Transaction queue {totalQueuedTxs ? ` (${totalQueuedTxs})` : ''}
         </Typography>
-        {queuedTxns.length > 0 && <ViewAllLink url={url} />}
+        {queuedTxns.length > 0 && <ViewAllLink url={queueUrl} />}
       </StyledWidgetTitle>
       <WidgetBody>{getWidgetBody()}</WidgetBody>
     </WidgetContainer>
