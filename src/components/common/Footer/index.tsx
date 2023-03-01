@@ -11,7 +11,7 @@ import AppstoreButton from '../AppStoreButton'
 import ExternalLink from '../ExternalLink'
 import MUILink from '@mui/material/Link'
 
-const footerPages = [AppRoutes.welcome, AppRoutes.settings.index, AppRoutes.imprint]
+const footerPages = [AppRoutes.welcome, AppRoutes.settings.index, AppRoutes.imprint, AppRoutes.privacy]
 
 const Footer = (): ReactElement | null => {
   const router = useRouter()
