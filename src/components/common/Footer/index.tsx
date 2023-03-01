@@ -17,6 +17,7 @@ const footerPages = [
   AppRoutes.imprint,
   AppRoutes.privacy,
   AppRoutes.cookie,
+  AppRoutes.terms,
 ]
 
 const Footer = (): ReactElement | null => {
@@ -39,9 +40,9 @@ const Footer = (): ReactElement | null => {
           <Typography variant="caption">&copy;2022–{new Date().getFullYear()} Safe Ecosystem Foundation</Typography>
         </li>
         <li>
-          <ExternalLink noIcon href="https://safe.global/terms">
-            Terms
-          </ExternalLink>
+          <Link href={AppRoutes.terms} passHref>
+            <MUILink>Terms</MUILink>
+          </Link>
         </li>
         <li>
           <Link href={AppRoutes.privacy} passHref>
