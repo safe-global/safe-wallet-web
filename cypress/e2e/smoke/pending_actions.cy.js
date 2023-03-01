@@ -14,6 +14,8 @@ describe('Pending actions', () => {
   })
 
   beforeEach(() => {
+    // Uses the previously saved local storage
+    // to preserve the wallet connection between tests
     cy.restoreLocalStorageCache()
   })
 
