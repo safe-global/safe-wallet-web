@@ -17,6 +17,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import WalletIcon from '@/components/common/WalletIcon'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import css from './styles.module.css'
+import useRemainingRelays from '@/hooks/useRemainingRelays'
 
 enum ExecutionType {
   RELAYER = 'Via relayer',
@@ -25,15 +26,21 @@ enum ExecutionType {
 
 const RelayingChip = ({ children }: { children: ReactNode }) => <Box className={css.relayingChip}>{children}</Box>
 
-const RelayerLabelContent = ({ value }: { value: string }) => (
-  <>
-    <SvgIcon component={RelayerIcon} inheritViewBox />
-    <Typography fontWeight="bold">{value}</Typography>
-    <RelayingChip>
-      <SvgIcon component={InfoIcon} fontSize="small" />5 of 5
-    </RelayingChip>
-  </>
-)
+const RelayerLabelContent = ({ value, remaining }: { value: string; remaining: number | undefined }) => {
+  if (remaining === undefined) return null
+
+  return (
+    <>
+      <SvgIcon component={RelayerIcon} inheritViewBox />
+      <Typography fontWeight="bold">{value}</Typography>
+      <RelayingChip>
+        {/* Will the relays limit be variable? Can we fetch it from BE? */}
+        <SvgIcon component={InfoIcon} fontSize="small" />
+        {remaining} of 5
+      </RelayingChip>
+    </>
+  )
+}
 
 const ConnectedWalletLabelContent = ({
   value,
@@ -48,11 +55,19 @@ const ConnectedWalletLabelContent = ({
   </>
 )
 
-const CustomFormControlLabel = ({ value, walletLabel }: { value: string; walletLabel?: ConnectedWallet['label'] }) => {
+const CustomFormControlLabel = ({
+  value,
+  walletLabel,
+  remaining,
+}: {
+  value: string
+  walletLabel?: ConnectedWallet['label']
+  remaining?: number
+}) => {
   const labelComponent = (
     <Stack direction="row" spacing={1} alignItems="center">
       {value === ExecutionType.RELAYER ? (
-        <RelayerLabelContent value={value} />
+        <RelayerLabelContent value={value} remaining={remaining} />
       ) : (
         <ConnectedWalletLabelContent value={value} walletLabel={walletLabel || ''} />
       )}
@@ -68,6 +83,8 @@ const CustomFormControlLabel = ({ value, walletLabel }: { value: string; walletL
 }
 
 const ExecutionMethod = ({ walletLabel }: { walletLabel: ConnectedWallet['label'] }) => {
+  const [remaining] = useRemainingRelays()
+
   return (
     <Paper elevation={0} variant="outlined" sx={{ position: 'relative', borderWidth: '1px', marginBottom: '16px' }}>
       <div className={css.newChip}>
@@ -83,7 +100,7 @@ const ExecutionMethod = ({ walletLabel }: { walletLabel: ConnectedWallet['label'
           }}
         >
           {Object.values(ExecutionType).map((value) => (
-            <CustomFormControlLabel value={value} key={value} walletLabel={walletLabel} />
+            <CustomFormControlLabel value={value} key={value} walletLabel={walletLabel} remaining={remaining} />
           ))}
         </RadioGroup>
       </FormControl>
