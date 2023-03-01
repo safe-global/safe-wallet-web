@@ -10,5 +10,5 @@ Resolves #
 
 ## Checklist
 * [ ] I've tested the branch on mobile 📱
-* [ ] I've checked if it affects the analytics 📊
+* [ ] I've documented how it affects the analytics (if at all) 📊
 * [ ] I've written a unit/e2e test for it (if applicable) 🧑‍💻
