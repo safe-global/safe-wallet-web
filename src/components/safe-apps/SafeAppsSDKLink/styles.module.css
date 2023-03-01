@@ -31,6 +31,7 @@
   transition-duration: 0.4s;
 }
 
+.container:focus,
 .container:hover {
   z-index: 1200;
   transform: translateY(0);
@@ -52,6 +53,7 @@
   transition: transform 0.3s ease-in-out;
 }
 
+.container:focus .openButton svg,
 .container:hover .openButton svg {
   transform: rotate(0deg);
 }
@@ -79,6 +81,7 @@
 }
 
 .mini .link,
+.container:focus .link,
 .container:hover .link {
   opacity: 1;
   max-height: 10ex;
