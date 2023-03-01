@@ -59,7 +59,7 @@ describe('Pending actions', () => {
     cy.contains('h3', 'Transactions').should('be.visible')
 
     // contains 3 queued transactions
-    cy.get('span:contains("out of 2")').should('have.length', 3)
+    cy.get('span:contains("1 out of 2")').should('have.length', 3)
 
     // Ensure wallet is connected
     cy.contains('E2E Wallet @ Görli')
