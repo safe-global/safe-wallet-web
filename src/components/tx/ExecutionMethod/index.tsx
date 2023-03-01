@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/material'
 import RelayerIcon from '@/public/images/common/relayer.svg'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import WalletIcon from '@/components/common/WalletIcon'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import css from './styles.module.css'
@@ -24,30 +25,56 @@ enum ExecutionType {
 
 const RelayingChip = ({ children }: { children: ReactNode }) => <Box className={css.relayingChip}>{children}</Box>
 
-const RelayerLabel = ({ text }: { text: string }) => {
-  const svg = <SvgIcon component={RelayerIcon} inheritViewBox />
+const RelayerLabelContent = ({ value }: { value: string }) => (
+  <>
+    <SvgIcon component={RelayerIcon} inheritViewBox />
+    <Typography fontWeight="bold">{value}</Typography>
+    <RelayingChip>
+      <SvgIcon component={InfoIcon} fontSize="small" />5 of 5
+    </RelayingChip>
+  </>
+)
+
+const ConnectedWalletLabelContent = ({
+  value,
+  walletLabel,
+}: {
+  value: string
+  walletLabel: ConnectedWallet['label']
+}) => (
+  <>
+    <WalletIcon provider={walletLabel} />
+    <Typography fontWeight="bold">{value}</Typography>
+  </>
+)
+
+const CustomFormControlLabel = ({ value, walletLabel }: { value: string; walletLabel?: ConnectedWallet['label'] }) => {
+  const labelComponent = (
+    <Stack direction="row" spacing={1} alignItems="center">
+      {value === ExecutionType.RELAYER ? (
+        <RelayerLabelContent value={value} />
+      ) : (
+        <ConnectedWalletLabelContent value={value} walletLabel={walletLabel || ''} />
+      )}
+    </Stack>
+  )
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
-      {svg}
-      <Typography sx={{ fontWeight: 'bold' }}>{text}</Typography>
-      <RelayingChip>5 of 5</RelayingChip>
-    </Stack>
+    <>
+      <Divider />
+      <FormControlLabel value={value} control={<Radio />} label={labelComponent} />
+    </>
   )
 }
 
-const ConnectedWalletLabel = ({ text, wallet }: { text: string; wallet: ConnectedWallet | null }) => (
-  <Stack direction="row" spacing={1} alignItems="center">
-    {wallet ? <WalletIcon provider={wallet.label} /> : null}
-    <Typography sx={{ fontWeight: 'bold' }}>{text}</Typography>
-  </Stack>
-)
-
-const ExecutionMethod = ({ wallet }: { wallet: ConnectedWallet | null }) => {
+const ExecutionMethod = ({ walletLabel }: { walletLabel: ConnectedWallet['label'] }) => {
   return (
-    <Paper elevation={0} variant="outlined" sx={{ borderWidth: '1px', marginBottom: '16px' }}>
+    <Paper elevation={0} variant="outlined" sx={{ position: 'relative', borderWidth: '1px', marginBottom: '16px' }}>
+      <div className={css.newChip}>
+        <RelayingChip>New</RelayingChip>
+      </div>
       <FormControl fullWidth>
-        <FormLabel sx={{ padding: '16px' }}>Chose the transaction execution method</FormLabel>
+        <FormLabel className={css.formLabel}>Chose the transaction execution method</FormLabel>
         <RadioGroup
           sx={{
             '& .MuiFormControlLabel-label': { width: '100%', padding: '16px' },
@@ -55,17 +82,9 @@ const ExecutionMethod = ({ wallet }: { wallet: ConnectedWallet | null }) => {
             '& .MuiFormControlLabel-root': { margin: '0px' },
           }}
         >
-          {/* {Object.values(ExecutionType).map((value) => (
-            <FormControlLabel value={value} control={<Radio />} label={value} key={value} />
-          ))} */}
-          <Divider />
-          <FormControlLabel value="RELAYER" control={<Radio />} label={<RelayerLabel text={ExecutionType.RELAYER} />} />
-          <Divider />
-          <FormControlLabel
-            value="CONNECTED_WALLET"
-            control={<Radio />}
-            label={<ConnectedWalletLabel text={ExecutionType.CONNECTED_WALLET} wallet={wallet} />}
-          />
+          {Object.values(ExecutionType).map((value) => (
+            <CustomFormControlLabel value={value} key={value} walletLabel={walletLabel} />
+          ))}
         </RadioGroup>
       </FormControl>
     </Paper>

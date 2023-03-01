@@ -1,3 +1,8 @@
+.formLabel {
+  padding: var(--space-2);
+  color: var(--color-text-primary);
+}
+
 .relayingChip {
   padding: var(--space-1);
   border-radius: 6px;
@@ -6,5 +11,14 @@
   display: flex;
   align-items: center;
   margin-left: auto !important;
+  gap: var(--space-1);
+  line-height: 1em;
   font-weight: bold;
+}
+
+.newChip {
+  position: absolute;
+  top: -15px;
+  right: 16px;
+  font-size: 12px;
 }
