@@ -10,10 +10,12 @@ import ExternalLink from '@/components/common/ExternalLink'
 const SafeAppsSDKLink = () => {
   const [isMini, setMini] = useState(false)
 
+  // Minimize the widget when the user scrolls down
   useEffect(() => {
-    const minScroll = 130
+    const MAX_SCROLL = 130
+
     const onScroll = () => {
-      const isScrolled = document.documentElement.scrollTop > minScroll
+      const isScrolled = document.documentElement.scrollTop > MAX_SCROLL
       setMini(isScrolled)
     }
 
