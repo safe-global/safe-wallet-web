@@ -2,6 +2,7 @@ export const AppRoutes = {
   '404': '/404',
   welcome: '/welcome',
   index: '/',
+  imprint: '/imprint',
   import: '/import',
   home: '/home',
   environmentVariables: '/environment-variables',

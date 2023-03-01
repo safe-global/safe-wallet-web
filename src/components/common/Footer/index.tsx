@@ -1,5 +1,6 @@
 import type { SyntheticEvent, ReactElement } from 'react'
-import { Link, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useAppDispatch } from '@/store'
@@ -8,8 +9,9 @@ import { AppRoutes } from '@/config/routes'
 import packageJson from '../../../../package.json'
 import AppstoreButton from '../AppStoreButton'
 import ExternalLink from '../ExternalLink'
+import MUILink from '@mui/material/Link'
 
-const footerPages = [AppRoutes.welcome, AppRoutes.settings.index]
+const footerPages = [AppRoutes.welcome, AppRoutes.settings.index, AppRoutes.imprint]
 
 const Footer = (): ReactElement | null => {
   const router = useRouter()
@@ -46,18 +48,18 @@ const Footer = (): ReactElement | null => {
           </ExternalLink>
         </li>
         <li>
-          <ExternalLink noIcon href="https://safe.global/imprint">
-            Imprint
-          </ExternalLink>
+          <Link href={AppRoutes.imprint} passHref>
+            <MUILink>Imprint</MUILink>
+          </Link>
         </li>
         <li>
           <ExternalLink noIcon href="https://safe.global/cookie">
             Cookie Policy
           </ExternalLink>
           &nbsp;&mdash;&nbsp;
-          <Link href="#" onClick={onCookieClick}>
+          <MUILink href="#" onClick={onCookieClick}>
             Preferences
-          </Link>
+          </MUILink>
         </li>
         <li>
           <ExternalLink noIcon href={`${packageJson.homepage}/releases/tag/v${packageJson.version}`}>
