@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { useState } from 'react'
 
 import { LATEST_SAFE_VERSION } from '@/config/constants'
@@ -31,7 +31,7 @@ const UpdateSafeDialog = () => {
   const handleClose = () => setOpen(false)
 
   return (
-    <Box paddingTop={2}>
+    <>
       <CheckWallet>
         {(isOk) => (
           <Button onClick={() => setOpen(true)} variant="contained" disabled={!isOk}>
@@ -40,7 +40,7 @@ const UpdateSafeDialog = () => {
         )}
       </CheckWallet>
       {open && <TxModal onClose={handleClose} steps={UpdateSafeSteps} />}
-    </Box>
+    </>
   )
 }
 

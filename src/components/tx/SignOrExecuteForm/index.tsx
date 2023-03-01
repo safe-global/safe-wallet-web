@@ -211,7 +211,7 @@ const SignOrExecuteForm = ({
     isEstimating ||
     !tx ||
     disableSubmit ||
-    isWrongChain ||
+    (isWrongChain && willExecute) ||
     cannotPropose ||
     isExecutionLoop ||
     isValidExecutionLoading
@@ -246,7 +246,7 @@ const SignOrExecuteForm = ({
 
         {/* Error messages */}
         {isWrongChain ? (
-          <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>
+          <ErrorMessage>Please connect your wallet to {currentChain?.chainName}</ErrorMessage>
         ) : cannotPropose ? (
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.

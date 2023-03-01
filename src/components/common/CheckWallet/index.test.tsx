@@ -16,7 +16,7 @@ jest.mock('@/hooks/wallets/useWallet', () => ({
 // mock useIsWrongChain
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
-  default: jest.fn(() => false),
+  default: jest.fn(() => true),
 }))
 
 // mock useIsSafeOwner
