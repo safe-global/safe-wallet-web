@@ -41,11 +41,7 @@ const useRemoteSafeApps = (tag?: SafeAppsTag): AsyncResult<SafeAppsResponse> => 
 
   const apps = useMemo(() => {
     if (!remoteApps || !tag) return remoteApps
-    return remoteApps
-      .filter((app) => app.tags.includes(tag))
-      .sort((a, b) => {
-        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-      })
+    return remoteApps.filter((app) => app.tags.includes(tag))
   }, [remoteApps, tag])
 
   const sortedApps = useMemo(() => {
