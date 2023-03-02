@@ -30,6 +30,7 @@ const SafeAppsDashboardSection = () => {
               onBookmarkSafeApp={togglePin}
               isBookmarked={pinnedSafeAppIds.has(rankedSafeApp.id)}
               onClickSafeApp={() => openPreviewDrawer(rankedSafeApp)}
+              openPreviewDrawer={openPreviewDrawer}
             />
           </Grid>
         ))}

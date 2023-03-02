@@ -103,6 +103,7 @@ const SafeAppList = ({
                 onBookmarkSafeApp={onBookmarkSafeApp}
                 removeCustomApp={removeCustomApp}
                 onClickSafeApp={handleSafeAppClick(safeApp)}
+                openPreviewDrawer={openPreviewDrawer}
               />
             </li>
           )
