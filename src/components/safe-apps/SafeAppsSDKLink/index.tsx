@@ -1,5 +1,4 @@
-import type { SyntheticEvent } from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Fab, Typography } from '@mui/material'
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
 import classnames from 'classnames'
@@ -25,11 +24,6 @@ const SafeAppsSDKLink = () => {
     return () => document.removeEventListener('scroll', onScroll)
   }, [])
 
-  const onButtonClick = useCallback((e: SyntheticEvent) => {
-    e.preventDefault()
-    ;(e.target as HTMLButtonElement).parentElement?.focus()
-  }, [])
-
   return (
     <div className={classnames(css.container, { [css.mini]: isMini })} tabIndex={0}>
       <CodeIcon />
@@ -42,7 +36,7 @@ const SafeAppsSDKLink = () => {
         <span>Learn more about Safe Apps SDK</span>
       </ExternalLink>
 
-      <Fab className={css.openButton} variant="extended" size="small" color="secondary" onClick={onButtonClick}>
+      <Fab className={css.openButton} variant="extended" size="small" color="secondary" tabIndex={-1}>
         <KeyboardDoubleArrowUpRoundedIcon fontSize="small" />
       </Fab>
     </div>
