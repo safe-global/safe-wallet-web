@@ -7,6 +7,7 @@ import type { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'
 import type { SafeAppDataWithPermissions } from './types'
+import { SafeAppsTag } from '@/config/constants'
 
 const validateTransaction = (t: BaseTransaction): boolean => {
   if (!['string', 'number'].includes(typeof t.value)) {
@@ -94,13 +95,8 @@ export const isOptimizedForBatchTransactions = (safeApp: SafeAppData) =>
 
 // some categories are used internally and we dont want to display them in the UI
 export const filterInternalCategories = (categories: string[]): string[] => {
+  // TODO: Remove safe-claiming-app when we remove the old claiming app
+  const internalCategories = ['safe-claiming-app', ...Object.values(SafeAppsTag)]
+
   return categories.filter((tag) => !internalCategories.some((internalCategory) => tag === internalCategory))
 }
-
-export const internalCategories = [
-  'dashboard-widgets',
-  'nft',
-  'safe-claiming-app',
-  'transaction-builder',
-  'wallet-connect',
-]
