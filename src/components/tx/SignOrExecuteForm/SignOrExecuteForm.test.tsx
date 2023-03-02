@@ -315,7 +315,7 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Submit')).not.toBeDisabled()
   })
 
-  it('displays an error and disables the submit button if connected wallet is on a different chain', async () => {
+  it('displays an error and disables the submit button if connected wallet is on a different chain', () => {
     jest.spyOn(wrongChain, 'default').mockReturnValue(true)
 
     const mockTx = createSafeTx()

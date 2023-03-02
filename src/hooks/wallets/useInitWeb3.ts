@@ -12,7 +12,7 @@ export const useInitWeb3 = () => {
   const customRpc = useAppSelector(selectRpc)
 
   useEffect(() => {
-    if (!chain || !wallet || chain.chainId !== wallet.chainId) {
+    if (!chain || !wallet) {
       return
     }
     const web3 = createWeb3(wallet.provider)

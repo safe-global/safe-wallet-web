@@ -30,8 +30,6 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner }: CheckWalle
 
   const message = !wallet
     ? Message.WalletNotConnected
-    : isWrongChain
-    ? Message.WrongNetwork + (currentChain?.chainName || '')
     : !isSafeOwner && !isSpendingLimit && !allowNonOwner
     ? Message.NotSafeOwner
     : isSpendingLimit && !allowSpendingLimit

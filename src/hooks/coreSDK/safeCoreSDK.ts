@@ -1,12 +1,12 @@
 import chains from '@/config/chains'
-import { getWeb3 } from '@/hooks/wallets/web3'
+import { createWeb3ReadOnly, getWeb3 } from '@/hooks/wallets/web3'
 import ExternalStore from '@/services/ExternalStore'
 import { invariant } from '@/utils/helpers'
 import { Web3Provider } from '@ethersproject/providers'
 import Safe from '@safe-global/safe-core-sdk'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
@@ -38,12 +38,17 @@ export const createEthersAdapter = (provider = getWeb3()) => {
   })
 }
 
+const signerMethods = [
+  'eth_sign', 'eth_signTypedData', 'eth_accounts', 'personal_sign'
+]
+
 // Safe Core SDK
 export const initSafeSDK = async (
   provider: EIP1193Provider,
   chainId: string,
   safeAddress: string,
   safeVersion: string,
+  chainInfo: ChainInfo,
 ): Promise<Safe> => {
   let isL1SafeMasterCopy = chainId === chains.eth
   // Legacy Safe contracts
@@ -51,9 +56,21 @@ export const initSafeSDK = async (
     isL1SafeMasterCopy = true
   }
 
-  const ethersProvider = new Web3Provider(provider)
+  const readonlyProvider = createWeb3ReadOnly(chainInfo.rpcUri)
+  const signerProvider = new Web3Provider(provider)
+  const originalSend = signerProvider.send
+
+  signerProvider.send = (request, ...args) => {
+    if (!signerMethods.includes(request)) {
+      return readonlyProvider.send.call(readonlyProvider, request, ...args)
+    }
+    return originalSend.call(signerProvider, request, ...args)
+  }
+
+  const ethAdapter = createEthersAdapter(signerProvider)
+
   return Safe.create({
-    ethAdapter: createEthersAdapter(ethersProvider),
+    ethAdapter,
     safeAddress,
     isL1SafeMasterCopy,
   })

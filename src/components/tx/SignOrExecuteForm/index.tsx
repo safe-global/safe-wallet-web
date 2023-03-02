@@ -61,7 +61,7 @@ const SignOrExecuteForm = ({
   const { createTx, dispatchTxProposal, dispatchOnChainSigning, dispatchTxSigning, dispatchTxExecution } = useTxSender()
 
   // Internal state
-  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [shouldExecute, setShouldExecute] = useState<boolean>(onlyExecute)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
@@ -209,6 +209,7 @@ const SignOrExecuteForm = ({
     isEstimating ||
     !tx ||
     disableSubmit ||
+    (willExecute && isWrongChain) ||
     cannotPropose ||
     isExecutionLoop ||
     isValidExecutionLoading
@@ -242,7 +243,7 @@ const SignOrExecuteForm = ({
         />
 
         {/* Error messages */}
-        {isWrongChain ? (
+        {(willExecute && isWrongChain) ? (
           <ErrorMessage>Please connect your wallet to {currentChain?.chainName}</ErrorMessage>
         ) : cannotPropose ? (
           <ErrorMessage>
