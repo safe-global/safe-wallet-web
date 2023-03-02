@@ -25,7 +25,6 @@ import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
 import useSponsoredCall from '@/hooks/useSponsoredCall'
-import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
 import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 
 type SignOrExecuteProps = {
@@ -179,32 +178,45 @@ const SignOrExecuteForm = ({
     return id
   }
 
-  const onRelay = () => {
-    // TODO: wait for BE fix to add gasLimit
+  const onRelay = async () => {
+    const [_, createdTx, _provider] = assertDependencies()
     const { gasLimit } = getTxOptions(advancedParams, currentChain)
 
-    let transaction
     let input
-    if (tx?.data) {
-      transaction = new EthSafeTransaction(tx?.data)
 
-      const instance = getSpecificGnosisSafeContractInstance(safe)
+    let transactionToRelay: SafeTransaction = createdTx
+    if (createdTx.signatures.size < safe.threshold) {
+      // add a signature because the tx is not fully signed yet
+      const signedTransaction = await dispatchTxSigning(createdTx, safe.version, txId)
+      /**
+       * We need to handle this case because of the way useTxSender is designed,
+       * but it should never happen here because this function is explicitly called
+       * through a user interaction
+       */
+      if (!signedTransaction) {
+        throw new Error('Could not sign transaction')
+      }
 
-      input = instance.encode('execTransaction', [
-        transaction.data.to,
-        transaction.data.value,
-        transaction.data.data,
-        transaction.data.operation,
-        transaction.data.safeTxGas,
-        transaction.data.baseGas,
-        transaction.data.gasPrice,
-        transaction.data.gasToken,
-        transaction.data.refundReceiver,
-        transaction.encodedSignatures(),
-      ])
+      await proposeTx(signedTransaction)
+      transactionToRelay = signedTransaction
     }
 
-    sponsoredCall({ chainId: safe.chainId, to: safeAddress, data: input })
+    const instance = getSpecificGnosisSafeContractInstance(safe)
+
+    input = instance.encode('execTransaction', [
+      transactionToRelay.data.to,
+      transactionToRelay.data.value,
+      transactionToRelay.data.data,
+      transactionToRelay.data.operation,
+      transactionToRelay.data.safeTxGas,
+      transactionToRelay.data.baseGas,
+      transactionToRelay.data.gasPrice,
+      transactionToRelay.data.gasToken,
+      transactionToRelay.data.refundReceiver,
+      transactionToRelay.encodedSignatures(),
+    ])
+
+    sponsoredCall({ chainId: safe.chainId, to: safeAddress, data: input, gasLimit })
   }
 
   // On modal submit
