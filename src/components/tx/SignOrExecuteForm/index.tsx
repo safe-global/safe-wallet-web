@@ -41,23 +41,16 @@ type SignOrExecuteProps = {
 const SignOrExecuteForm = ({
   safeTx,
   txId,
-  onlyExecute,
   onSubmit,
   children,
+  onlyExecute = false,
   isExecutable = false,
   isRejection = false,
   disableSubmit = false,
   origin,
   ...props
 }: SignOrExecuteProps): ReactElement => {
-  //
-  // Hooks & variables
-  //
-  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
-  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
-  const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
-  const [submitError, setSubmitError] = useState<Error | undefined>()
-
+  // Hooks
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
@@ -65,8 +58,13 @@ const SignOrExecuteForm = ({
   const provider = useWeb3()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
-
   const { createTx, dispatchTxProposal, dispatchOnChainSigning, dispatchTxSigning, dispatchTxExecution } = useTxSender()
+
+  // Internal state
+  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
+  const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
+  const [submitError, setSubmitError] = useState<Error | undefined>()
 
   // Check that the transaction is executable
   const isNewExecutableTx = !txId && safe.threshold === 1 && !hasPending
@@ -74,7 +72,7 @@ const SignOrExecuteForm = ({
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
-  const willExecute = shouldExecute && canExecute
+  const willExecute = (onlyExecute || shouldExecute) && canExecute
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -211,7 +209,6 @@ const SignOrExecuteForm = ({
     isEstimating ||
     !tx ||
     disableSubmit ||
-    (isWrongChain && willExecute) ||
     cannotPropose ||
     isExecutionLoop ||
     isValidExecutionLoading

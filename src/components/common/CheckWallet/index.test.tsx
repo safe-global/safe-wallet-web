@@ -16,7 +16,7 @@ jest.mock('@/hooks/wallets/useWallet', () => ({
 // mock useIsWrongChain
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
-  default: jest.fn(() => true),
+  default: jest.fn(() => false),
 }))
 
 // mock useIsSafeOwner
@@ -65,12 +65,16 @@ describe('CheckWallet', () => {
     expect(container.querySelector('span[aria-label]')).toHaveAttribute('aria-label', 'Please connect your wallet')
   })
 
-  it('should not disable the button when the wallet is connected to the wrong chain', () => {
+  it('should disable the button when the wallet is connected to the wrong chain', () => {
     ;(useIsWrongChain as jest.MockedFunction<typeof useIsWrongChain>).mockReturnValueOnce(true)
 
     const { container } = renderButton()
 
-    expect(container.querySelector('button')).not.toBeDisabled()
+    expect(container.querySelector('button')).toBeDisabled()
+    expect(container.querySelector('span[aria-label]')).toHaveAttribute(
+      'aria-label',
+      'Please connect your wallet to Optimism',
+    )
   })
 
   it('should disable the button when the wallet is connected to the right chain but is not an owner', () => {
