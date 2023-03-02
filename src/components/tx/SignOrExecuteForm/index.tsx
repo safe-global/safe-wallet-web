@@ -24,6 +24,9 @@ import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
+import useSponsoredCall from '@/hooks/useSponsoredCall'
+import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
+import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -66,6 +69,7 @@ const SignOrExecuteForm = ({
   const provider = useWeb3()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
+  const { sponsoredCall } = useSponsoredCall()
 
   const { createTx, dispatchTxProposal, dispatchOnChainSigning, dispatchTxSigning, dispatchTxExecution } = useTxSender()
 
@@ -175,6 +179,34 @@ const SignOrExecuteForm = ({
     return id
   }
 
+  const onRelay = () => {
+    // TODO: wait for BE fix to add gasLimit
+    const { gasLimit } = getTxOptions(advancedParams, currentChain)
+
+    let transaction
+    let input
+    if (tx?.data) {
+      transaction = new EthSafeTransaction(tx?.data)
+
+      const instance = getSpecificGnosisSafeContractInstance(safe)
+
+      input = instance.encode('execTransaction', [
+        transaction.data.to,
+        transaction.data.value,
+        transaction.data.data,
+        transaction.data.operation,
+        transaction.data.safeTxGas,
+        transaction.data.baseGas,
+        transaction.data.gasPrice,
+        transaction.data.gasToken,
+        transaction.data.refundReceiver,
+        transaction.encodedSignatures(),
+      ])
+    }
+
+    sponsoredCall({ chainId: safe.chainId, to: safeAddress, data: input })
+  }
+
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
@@ -182,7 +214,7 @@ const SignOrExecuteForm = ({
     setSubmitError(undefined)
 
     try {
-      await (willExecute ? onExecute() : onSign())
+      await (willRelay ? onRelay() : willExecute ? onExecute() : onSign())
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
@@ -251,7 +283,7 @@ const SignOrExecuteForm = ({
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
           gasLimitError={gasLimitError}
-          willRelay={shouldExecute && willRelay}
+          willRelay={willRelay}
         />
 
         <TxSimulation
