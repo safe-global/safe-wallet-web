@@ -57,4 +57,6 @@ export enum SafeAppsTag {
   DASHBOARD_FEATURED = 'dashboard-widgets',
   SAFE_GOVERNANCE_APP = 'safe-governance-app',
   WALLET_CONNECT = 'wallet-connect',
+  // TODO: Remove safe-claiming-app when we remove the old claiming app
+  SAFE_CLAIMING_APP = 'safe-claiming-app',
 }

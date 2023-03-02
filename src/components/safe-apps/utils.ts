@@ -95,8 +95,6 @@ export const isOptimizedForBatchTransactions = (safeApp: SafeAppData) =>
 
 // some categories are used internally and we dont want to display them in the UI
 export const filterInternalCategories = (categories: string[]): string[] => {
-  // TODO: Remove safe-claiming-app when we remove the old claiming app
-  const internalCategories = ['safe-claiming-app', ...Object.values(SafeAppsTag)]
-
+  const internalCategories = Object.values(SafeAppsTag)
   return categories.filter((tag) => !internalCategories.some((internalCategory) => tag === internalCategory))
 }
