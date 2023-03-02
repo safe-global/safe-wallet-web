@@ -86,6 +86,7 @@ const useTxPendingStatuses = (): void => {
             txHash: 'txHash' in detail ? detail.txHash : undefined,
             groupKey: 'groupKey' in detail ? detail.groupKey : undefined,
             signerAddress: `signerAddress` in detail ? detail.signerAddress : undefined,
+            taskId: 'taskId' in detail ? detail.taskId : undefined,
           }),
         )
       }),
