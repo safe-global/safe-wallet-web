@@ -38,10 +38,6 @@ export const createEthersAdapter = (provider = getWeb3()) => {
   })
 }
 
-const signerMethods = [
-  'eth_sign', 'eth_signTypedData', 'eth_accounts', 'personal_sign'
-]
-
 // Safe Core SDK
 export const initSafeSDK = async (
   provider: EIP1193Provider,
@@ -49,6 +45,7 @@ export const initSafeSDK = async (
   safeAddress: string,
   safeVersion: string,
   chainInfo: ChainInfo,
+  walletChainId: string,
 ): Promise<Safe> => {
   let isL1SafeMasterCopy = chainId === chains.eth
   // Legacy Safe contracts
@@ -56,15 +53,22 @@ export const initSafeSDK = async (
     isL1SafeMasterCopy = true
   }
 
-  const readonlyProvider = createWeb3ReadOnly(chainInfo.rpcUri)
   const signerProvider = new Web3Provider(provider)
-  const originalSend = signerProvider.send
 
-  signerProvider.send = (request, ...args) => {
-    if (!signerMethods.includes(request)) {
-      return readonlyProvider.send.call(readonlyProvider, request, ...args)
+  // Monkey patch the signerProvider to proxy requests to the "readonly" provider if on the wrong chain
+  if (walletChainId !== chainId) {
+    const signerMethods = ['eth_sign', 'eth_signTypedData', 'eth_accounts', 'personal_sign']
+    const readonlyProvider = createWeb3ReadOnly(chainInfo.rpcUri)
+    const originalSend = signerProvider.send
+
+    signerProvider.send = (request, ...args) => {
+      console.log(request, ...args)
+
+      if (!signerMethods.includes(request)) {
+        return readonlyProvider.send.call(readonlyProvider, request, ...args)
+      }
+      return originalSend.call(signerProvider, request, ...args)
     }
-    return originalSend.call(signerProvider, request, ...args)
   }
 
   const ethAdapter = createEthersAdapter(signerProvider)

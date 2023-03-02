@@ -24,6 +24,7 @@ import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import CheckWallet from '@/components/common/CheckWallet'
+import ChainSwitcher from '@/components/common/ChainSwitcher'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -243,8 +244,14 @@ const SignOrExecuteForm = ({
         />
 
         {/* Error messages */}
-        {(willExecute && isWrongChain) ? (
-          <ErrorMessage>Please connect your wallet to {currentChain?.chainName}</ErrorMessage>
+        {willExecute && isWrongChain ? (
+          <>
+            <ErrorMessage>Please connect your wallet to {currentChain?.chainName}</ErrorMessage>
+
+            <center>
+              <ChainSwitcher />
+            </center>
+          </>
         ) : cannotPropose ? (
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.

@@ -4,8 +4,6 @@ import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBen
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '../ConnectWallet/useConnectWallet'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import { useCurrentChain } from '@/hooks/useChains'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement
@@ -22,11 +20,9 @@ enum Message {
 
 const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner }: CheckWalletProps): ReactElement => {
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
   const isSafeOwner = useIsSafeOwner()
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
-  const currentChain = useCurrentChain()
 
   const message = !wallet
     ? Message.WalletNotConnected
