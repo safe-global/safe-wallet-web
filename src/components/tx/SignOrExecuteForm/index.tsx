@@ -229,7 +229,7 @@ const SignOrExecuteForm = ({
         {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
 
         {shouldExecute && (
-          <ExecutionMethod walletLabel={wallet?.label || ''} willRelay={willRelay} onSelectRelay={setWillRelay} />
+          <ExecutionMethod walletLabel={wallet?.label || ''} willRelay={willRelay} onChange={setWillRelay} />
         )}
 
         <AdvancedParams

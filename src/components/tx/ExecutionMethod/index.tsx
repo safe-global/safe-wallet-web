@@ -62,7 +62,7 @@ const CustomFormControlLabel = ({
   remaining,
 }: {
   value: string
-  walletLabel?: ConnectedWallet['label']
+  walletLabel: ConnectedWallet['label']
   remaining?: number
 }) => {
   const labelComponent = (
@@ -70,7 +70,7 @@ const CustomFormControlLabel = ({
       {value === ExecutionType.RELAYER ? (
         <RelayerLabelContent value={value} remaining={remaining} />
       ) : (
-        <ConnectedWalletLabelContent value={value} walletLabel={walletLabel || ''} />
+        <ConnectedWalletLabelContent value={value} walletLabel={walletLabel} />
       )}
     </Stack>
   )
@@ -86,11 +86,11 @@ const CustomFormControlLabel = ({
 const ExecutionMethod = ({
   walletLabel,
   willRelay,
-  onSelectRelay,
+  onChange,
 }: {
   walletLabel: ConnectedWallet['label']
   willRelay: boolean
-  onSelectRelay: (value: boolean) => void
+  onChange: (value: boolean) => void
 }) => {
   const [remaining] = useRemainingRelays()
 
@@ -103,7 +103,7 @@ const ExecutionMethod = ({
         <FormLabel className={css.formLabel}>Chose the transaction execution method</FormLabel>
         <RadioGroup
           value={willRelay ? ExecutionType.RELAYER : ExecutionType.CONNECTED_WALLET}
-          onChange={(e) => onSelectRelay(e.target.value === ExecutionType.RELAYER)}
+          onChange={(e) => onChange(e.target.value === ExecutionType.RELAYER)}
           sx={{
             '& .MuiFormControlLabel-label': { width: '100%', padding: '16px' },
             '& .MuiFormControlLabel-label img': { width: '24px' },
