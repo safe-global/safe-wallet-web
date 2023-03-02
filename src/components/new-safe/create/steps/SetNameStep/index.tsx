@@ -16,7 +16,6 @@ import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import MUILink from '@mui/material/Link'
 import Link from 'next/link'
-import React from 'react'
 
 type SetNameStepForm = {
   name: string

@@ -23,7 +23,7 @@ const SafeImprint = () => {
       <Typography mb={4}>
         Managing directors: Richard Meißner, Tobias Schubotz
         <br />
-        Contact: info@cc0x.dev
+        Contact: <a href="mailto:info@cc0x.dev">info@cc0x.dev</a>
         <br />
         District Court: Berlin Charlottenburg
         <br />

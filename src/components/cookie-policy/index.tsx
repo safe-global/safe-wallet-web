@@ -20,7 +20,10 @@ const SafeCookiePolicy = () => {
         process your personal data in pseudonymised form.
       </p>
       <p>
-        This Cookie Policy applies to our website at <a href="https://app.safe.global">https://app.safe.global</a>
+        This Cookie Policy applies to our website at{' '}
+        <Link href="https://app.safe.global" passHref>
+          <MUILink>https://app.safe.global</MUILink>
+        </Link>
         &nbsp;and sets out some further detail on how and why we use these technologies on our website.{' '}
       </p>
       <p>

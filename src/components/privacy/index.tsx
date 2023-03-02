@@ -10,7 +10,9 @@ const SafePrivacyPolicy = () => {
       <p>
         Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
         regulation regarding any personal information we may collect about you, including across our website,{' '}
-        <a href="https://app.safe.global">https://app.safe.global</a>
+        <Link href="https://app.safe.global" passHref>
+          <MUILink>https://app.safe.global</MUILink>
+        </Link>
         ,&nbsp;and other sites we own and operate as well as mobile applications we offer. Wherever possible, we have
         designed our website so that you may navigate and use our website without having to provide Personal Data.
       </p>
@@ -42,40 +44,64 @@ const SafePrivacyPolicy = () => {
       <p>If you are viewing this policy online, you can click on the below links to jump to the relevant section:</p>
       <ol start={2}>
         <li>
-          <a href="#2">Glossary</a>
+          <Link href="#2" passHref>
+            <MUILink>Glossary</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#3">Your information and the Blockchain</a>
+          <Link href="#3" passHref>
+            <MUILink>Your information and the Blockchain</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#4">How We Use Personal Data</a>
+          <Link href="#4" passHref>
+            <MUILink>How We Use Personal Data</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#5">Use of Third Party Applications</a>
+          <Link href="#5" passHref>
+            <MUILink>Use of Third Party Applications</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#6">Sharing Your Personal Data</a>
+          <Link href="#6" passHref>
+            <MUILink>Sharing Your Personal Data</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#7">Transferring Your data outside of the EU</a>
+          <Link href="#7" passHref>
+            <MUILink>Transferring Your data outside of the EU</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#8">Existence of Automated Decision-making</a>
+          <Link href="#8" passHref>
+            <MUILink>Existence of Automated Decision-making</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#9">Data Security</a>
+          <Link href="#9" passHref>
+            <MUILink>Data Security</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#10">Your Rights as a Data Subject</a>
+          <Link href="#10" passHref>
+            <MUILink>Your Rights as a Data Subject</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#11">Storing Personal Data</a>
+          <Link href="#11" passHref>
+            <MUILink>Storing Personal Data</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#12">Changes to this Privacy Policy</a>
+          <Link href="#12" passHref>
+            <MUILink>Changes to this Privacy Policy</MUILink>
+          </Link>
         </li>
         <li>
-          <a href="#13">Contacts us</a>
+          <Link href="#13" passHref>
+            <MUILink>Contacts us</MUILink>
+          </Link>
         </li>
       </ol>
       <h3 id="2">2. Glossary</h3>
@@ -818,10 +844,7 @@ const SafePrivacyPolicy = () => {
         Phone: 030/138 89-0
       </p>
       <p>
-        <Link
-          href="https://www.google.com/url?q=https://www.datenschutz-berlin.de&amp;sa=D&amp;source=editors&amp;ust=1677670462021305&amp;usg=AOvVaw1sgbmKiiYL0n7tPM5It81-"
-          passHref
-        >
+        <Link href="https://www.datenschutz-berlin.de" passHref>
           <MUILink target="_blank" rel="noreferrer">
             https://www.datenschutz-berlin.de
           </MUILink>
@@ -877,7 +900,9 @@ const SafePrivacyPolicy = () => {
         Germany
       </p>
       <p>
-        <a href="mailto:corecontributors.dpo@techgdpr.com">corecontributors.dpo@techgdpr.com</a>&nbsp;
+        <Link href="mailto:corecontributors.dpo@techgdpr.com" passHref>
+          <MUILink>corecontributors.dpo@techgdpr.com</MUILink>
+        </Link>
       </p>
     </div>
   )
