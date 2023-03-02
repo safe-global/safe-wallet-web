@@ -26,6 +26,8 @@ import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
 import useSponsoredCall from '@/hooks/useSponsoredCall'
 import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { waitForRelayedTx } from '@/services/tx/txMonitor'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -197,7 +199,7 @@ const SignOrExecuteForm = ({
         throw new Error('Could not sign transaction')
       }
 
-      await proposeTx(signedTransaction)
+      txId = await proposeTx(signedTransaction)
       transactionToRelay = signedTransaction
     }
 
@@ -216,7 +218,18 @@ const SignOrExecuteForm = ({
       transactionToRelay.encodedSignatures(),
     ])
 
-    sponsoredCall({ chainId: safe.chainId, to: safeAddress, data: input, gasLimit })
+    const sponsorResponse = await sponsoredCall({ chainId: safe.chainId, to: safeAddress, data: input, gasLimit })
+
+    if (!txId || !sponsorResponse?.taskId) {
+      throw new Error('Transaction could not be proposed / relayed')
+    }
+
+    if (txId && sponsorResponse?.taskId) {
+      txDispatch(TxEvent.RELAYING, { txId, taskId: sponsorResponse?.taskId })
+
+      // Trigger tx polling
+      waitForRelayedTx(sponsorResponse?.taskId, txId)
+    }
   }
 
   // On modal submit

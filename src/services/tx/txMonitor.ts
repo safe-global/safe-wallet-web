@@ -1,7 +1,10 @@
 import { didRevert } from '@/utils/ethers-utils'
+import { GelatoRelay } from '@gelatonetwork/relay-sdk'
+
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 import type { JsonRpcProvider } from '@ethersproject/providers'
+import { POLLING_INTERVAL } from '@/config/constants'
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
 export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string) => {
@@ -32,4 +35,54 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
       error: error as Error,
     })
   }
+}
+
+export const waitForRelayedTx = (taskId: string, txId: string): void => {
+  const gelato = new GelatoRelay()
+  const checkTxStatus = async () => {
+    // Send request to Gelato
+    const taskStatus = await gelato.getTaskStatus(taskId)
+
+    console.log('Fetched task status: ', taskStatus)
+
+    switch (taskStatus?.taskState) {
+      case 'CheckPending':
+      case 'ExecPending':
+      case 'WaitingForConfirmation':
+        // still pending we set a timeout to check again
+        setTimeout(checkTxStatus, POLLING_INTERVAL)
+        return
+      case 'ExecSuccess':
+        txDispatch(TxEvent.PROCESSED, {
+          txId,
+        })
+        return
+      case 'ExecReverted':
+        txDispatch(TxEvent.REVERTED, {
+          txId,
+          error: new Error(`Relayed transaction reverted by EVM.`),
+        })
+        return
+      case 'Blacklisted':
+        txDispatch(TxEvent.FAILED, {
+          txId,
+          error: new Error(`Relayed transaction was blacklisted by Relay provider`),
+        })
+        return
+      case 'Cancelled':
+        txDispatch(TxEvent.FAILED, {
+          txId,
+          error: new Error(`Relayed transaction was cancelled by Relay provider`),
+        })
+        return
+      case 'NotFound':
+        txDispatch(TxEvent.FAILED, {
+          txId,
+          error: new Error(`Relayed transaction was not found.`),
+        })
+        return
+    }
+  }
+
+  setTimeout(checkTxStatus, 2000)
 }

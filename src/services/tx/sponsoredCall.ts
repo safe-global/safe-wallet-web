@@ -9,7 +9,7 @@ export type SponsoredCallPayload = {
 
 const SPONSORED_CALL_URL = 'http://localhost:3001/v1/relay'
 
-export const executeSponsoredCall = async (tx: SponsoredCallPayload): Promise<string | undefined> => {
+export const executeSponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId: string }> => {
   const requestObject: RequestInit = {
     method: 'POST',
     headers: {

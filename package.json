@@ -37,6 +37,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@gelatonetwork/relay-sdk": "^3.3.0",
     "@gnosis.pm/safe-apps-sdk": "^7.8.0",
     "@gnosis.pm/safe-modules-deployments": "^1.0.0",
     "@mui/icons-material": "^5.8.4",

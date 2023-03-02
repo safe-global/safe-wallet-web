@@ -4,7 +4,7 @@ const useSponsoredCall = () => {
   const sponsoredCall = async (params: SponsoredCallPayload) => {
     try {
       const data = await executeSponsoredCall(params)
-      console.log('data', data)
+      return data
     } catch (error) {
       console.error(error)
     }
