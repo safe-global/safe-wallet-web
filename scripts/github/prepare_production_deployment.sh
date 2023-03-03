@@ -13,5 +13,5 @@ then
      -F "variables[TRIGGER_RELEASE_COMMIT_TAG]=$VERSION_TAG" \
       $PROD_DEPLOYMENT_HOOK_URL
 else
-  echo "[ERROR] Production deployment could not be prepared"
+  echo "⚠︎ Production deployment could not be prepared"
 fi

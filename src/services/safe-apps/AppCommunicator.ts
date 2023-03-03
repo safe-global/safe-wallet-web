@@ -1,6 +1,6 @@
 import type { MutableRefObject } from 'react'
-import type { SDKMessageEvent, MethodToResponse, ErrorResponse, RequestId } from '@gnosis.pm/safe-apps-sdk'
-import { getSDKVersion, Methods, MessageFormatter } from '@gnosis.pm/safe-apps-sdk'
+import type { SDKMessageEvent, MethodToResponse, ErrorResponse, RequestId } from '@safe-global/safe-apps-sdk'
+import { getSDKVersion, Methods, MessageFormatter } from '@safe-global/safe-apps-sdk'
 
 type MessageHandler = (
   msg: SDKMessageEvent,

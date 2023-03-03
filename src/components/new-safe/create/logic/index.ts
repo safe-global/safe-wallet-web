@@ -20,7 +20,6 @@ import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import type { AppDispatch, AppThunk } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { formatError } from '@/hooks/useTxNotifications'
 import { SafeFactory } from '@safe-global/safe-core-sdk'
 import type Safe from '@safe-global/safe-core-sdk'
 import type { DeploySafeProps } from '@safe-global/safe-core-sdk'
@@ -29,6 +28,7 @@ import type { PredictSafeProps } from '@safe-global/safe-core-sdk/dist/src/safeF
 import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { formatError } from '@/utils/formatters'
 
 export type SafeCreationProps = {
   owners: string[]
