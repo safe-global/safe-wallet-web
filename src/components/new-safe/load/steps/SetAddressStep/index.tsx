@@ -27,7 +27,9 @@ import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import { LOAD_SAFE_EVENTS, trackEvent } from '@/services/analytics'
-import ExternalLink from '@/components/common/ExternalLink'
+import { AppRoutes } from '@/config/routes'
+import MUILink from '@mui/material/Link'
+import Link from 'next/link'
 
 enum Field {
   name = 'name',
@@ -136,8 +138,15 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
           <AddressInput label="Safe" validate={validateSafeAddress} name={Field.address} />
 
           <Typography mt={4}>
-            By continuing you consent to the <ExternalLink href="https://safe.global/terms">terms of use</ExternalLink>{' '}
-            and <ExternalLink href="https://safe.global/privacy">privacy policy</ExternalLink>.
+            By continuing you consent to the{' '}
+            <Link href={AppRoutes.terms} passHref>
+              <MUILink>terms of use</MUILink>
+            </Link>{' '}
+            and{' '}
+            <Link href={AppRoutes.privacy} passHref>
+              <MUILink>privacy policy</MUILink>
+            </Link>
+            .
           </Typography>
         </Box>
 
