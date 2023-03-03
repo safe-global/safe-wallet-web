@@ -14,6 +14,8 @@ export const validateAddress = (address: string) => {
   }
 }
 
+export const isValidAddress = (address: string): boolean => validateAddress(address) === undefined
+
 const chainIds = Object.values(chains)
 export const validateChainId = (chainId: string) => {
   if (!chainIds.includes(chainId)) {

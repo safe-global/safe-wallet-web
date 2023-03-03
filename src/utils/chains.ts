@@ -12,6 +12,7 @@ export enum FEATURES {
   SAFE_TX_GAS_OPTIONAL = 'SAFE_TX_GAS_OPTIONAL',
   TX_SIMULATION = 'TX_SIMULATION',
   DEFAULT_TOKENLIST = 'DEFAULT_TOKENLIST',
+  EIP1271 = 'EIP1271',
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {

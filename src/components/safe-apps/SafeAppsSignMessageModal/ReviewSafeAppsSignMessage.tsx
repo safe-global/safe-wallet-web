@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { useMemo } from 'react'
 import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
 import { Box } from '@mui/system'
-import { TextField, Typography, SvgIcon } from '@mui/material'
+import { Typography, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
-import { isObjectEIP712TypedData, Methods } from '@gnosis.pm/safe-apps-sdk'
+import { isObjectEIP712TypedData, Methods } from '@safe-global/safe-apps-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 
@@ -19,6 +19,8 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
 import useTxSender from '@/hooks/useTxSender'
+import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
+import CopyButton from '@/components/common/CopyButton'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 
 type ReviewSafeAppsSignMessageProps = {
@@ -38,12 +40,14 @@ const ReviewSafeAppsSignMessage = ({
   const signMessageDeploymentInstance = useMemo(() => getSignMessageLibDeploymentContractInstance(chainId), [chainId])
   const signMessageAddress = signMessageDeploymentInstance.getAddress()
 
-  const readableData = useMemo(() => {
+  const [decodedMessage, readableMessage] = useMemo(() => {
     if (isTextMessage) {
-      return getDecodedMessage(message)
+      const decoded = getDecodedMessage(message)
+      return [decoded, decoded]
     } else if (isTypedMessage) {
-      return JSON.stringify(message, undefined, 2)
+      return [message, JSON.stringify(message, null, 2)]
     }
+    return []
   }, [isTextMessage, isTypedMessage, message])
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
@@ -101,29 +105,13 @@ const ReviewSafeAppsSignMessage = ({
         )}
 
         <Typography my={1}>
-          <b>Signing Method:</b> <code>{method}</code>
+          <b>Signing method:</b> <code>{method}</code>
         </Typography>
 
         <Typography my={2}>
-          <b>Signing message:</b>
+          <b>Signing message:</b> {readableMessage && <CopyButton text={readableMessage} />}
         </Typography>
-
-        <TextField
-          rows={isTextMessage ? 2 : 6}
-          multiline
-          disabled
-          fullWidth
-          sx={({ palette }) => ({
-            '&& .MuiInputBase-input': {
-              WebkitTextFillColor: palette.text.primary,
-              fontFamily: 'monospace',
-              fontSize: '0.85rem',
-            },
-          })}
-          inputProps={{
-            value: readableData,
-          }}
-        />
+        <DecodedMsg message={decodedMessage} isInModal />
 
         <Box display="flex" alignItems="center" my={2}>
           <SvgIcon component={WarningIcon} inheritViewBox color="warning" />

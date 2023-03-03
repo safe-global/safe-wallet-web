@@ -1,9 +1,11 @@
-import type { DateLabel } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DateLabel, SafeMessageDateLabel } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
-import css from './styles.module.css'
+
 import { formatWithSchema } from '@/utils/date'
 
-const TxDateLabel = ({ item }: { item: DateLabel }): ReactElement => {
+import css from './styles.module.css'
+
+const TxDateLabel = ({ item }: { item: DateLabel | SafeMessageDateLabel }): ReactElement => {
   return (
     <div className={css.container}>
       <span>{formatWithSchema(item.timestamp, 'MMM d, yyyy')}</span>
