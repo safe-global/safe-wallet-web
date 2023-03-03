@@ -23,7 +23,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import ExecutionMethod from '@/components/tx/ExecutionMethod'
+import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -54,7 +54,7 @@ const SignOrExecuteForm = ({
   // Hooks & variables
   //
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
-  const [willRelay, setWillRelay] = useState<boolean>(true)
+  const [executionMethod, setExecutionMethod] = useState<ExecutionType>(ExecutionType.RELAYER)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
@@ -76,6 +76,9 @@ const SignOrExecuteForm = ({
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = shouldExecute && canExecute
+
+  // The transaction will be executed through relaying
+  const willRelay = willExecute && executionMethod === ExecutionType.RELAYER
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -219,6 +222,10 @@ const SignOrExecuteForm = ({
 
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
+  const handleExecutionMethodChange = (value: ExecutionType) => {
+    setExecutionMethod(value)
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <DialogContent>
@@ -229,7 +236,11 @@ const SignOrExecuteForm = ({
         {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
 
         {shouldExecute && (
-          <ExecutionMethod walletLabel={wallet?.label || ''} willRelay={willRelay} onChange={setWillRelay} />
+          <ExecutionMethod
+            walletLabel={wallet?.label || ''}
+            willRelay={willRelay}
+            onChange={handleExecutionMethodChange}
+          />
         )}
 
         <AdvancedParams
