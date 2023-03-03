@@ -15,6 +15,7 @@ describe('The transaction modal', () => {
 
     cy.visitSafeApp(`${appUrl}/dummy`)
 
+    cy.contains('button', 'Ok').click()
     cy.findByText(/accept selection/i).click()
   })
 

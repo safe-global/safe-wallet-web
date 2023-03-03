@@ -13,7 +13,7 @@ const SafeCookiePolicy = () => {
         <Link href={AppRoutes.privacy} passHref>
           <MUILink>Privacy Policy</MUILink>
         </Link>
-        , For general web-browsing of this website, your personal data is not revealed to us, although certain
+        , for general web-browsing of this website, your personal data is not revealed to us, although certain
         statistical information is available to us via our internet service provider as well as through the use of
         special tracking technologies. Such information tells us about the pages you are clicking on or the hardware you
         are using, but not your name, age, address or anything we can use to identify you personally. We exclusively

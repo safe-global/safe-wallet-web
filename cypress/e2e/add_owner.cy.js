@@ -7,8 +7,8 @@ describe('Adding an owner', () => {
     cy.connectE2EWallet()
 
     cy.visit(`/${TEST_SAFE}/settings/setup`)
-    cy.contains('button', 'Accept selection').click()
     cy.contains('button', 'Ok').click()
+    cy.contains('button', 'Accept selection').click()
 
     // Advanced Settings page is loaded
     cy.contains('Safe nonce', { timeout: 10000 })
