@@ -1,0 +1,46 @@
+.container {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px var(--space-3);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.addbutton {
+    background: rgba(171, 164, 99, 0.08);
+    color: rgb(171, 164, 99);
+    border: 2px solid transparent;
+}
+
+.ownedLabelWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border-light);
+  padding: 0 24px;
+  height: 60px;
+}
+
+.iconExpandButton {
+  padding: 0px;
+}
+
+.ownedLabel {
+  cursor: pointer;
+  color: #bbb;
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-1);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.list {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding: 0 0;
+}

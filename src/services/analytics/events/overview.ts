@@ -27,6 +27,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Add Safe',
     category: OVERVIEW_CATEGORY,
   },
+  ADD_GROUP: {
+    action: 'Add Group',
+    category: OVERVIEW_CATEGORY,
+  },
   SIDEBAR: {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
