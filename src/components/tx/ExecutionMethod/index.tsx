@@ -86,11 +86,11 @@ const CustomFormControlLabel = ({
 
 const ExecutionMethod = ({
   walletLabel,
-  willRelay,
+  executionMethod,
   onChange,
 }: {
   walletLabel: ConnectedWallet['label']
-  willRelay: boolean
+  executionMethod: ExecutionType
   onChange: (value: ExecutionType) => void
 }) => {
   const [remainingRelays] = useRemainingRelays()
@@ -102,10 +102,7 @@ const ExecutionMethod = ({
       </div>
       <FormControl fullWidth>
         <FormLabel className={css.formLabel}>Chose the transaction execution method</FormLabel>
-        <RadioGroup
-          value={willRelay ? ExecutionType.RELAYER : ExecutionType.CONNECTED_WALLET}
-          onChange={(e) => onChange(e.target.value as ExecutionType)}
-        >
+        <RadioGroup value={executionMethod} onChange={(e) => onChange(e.target.value as ExecutionType)}>
           {Object.values(ExecutionType).map((value) => (
             <CustomFormControlLabel value={value} key={value} walletLabel={walletLabel} remaining={remainingRelays} />
           ))}

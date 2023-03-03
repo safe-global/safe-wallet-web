@@ -238,7 +238,7 @@ const SignOrExecuteForm = ({
         {shouldExecute && (
           <ExecutionMethod
             walletLabel={wallet?.label || ''}
-            willRelay={willRelay}
+            executionMethod={executionMethod}
             onChange={handleExecutionMethodChange}
           />
         )}
