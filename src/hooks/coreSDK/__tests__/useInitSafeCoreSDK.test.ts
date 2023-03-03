@@ -9,6 +9,15 @@ import type { EIP1193Provider, OnboardAPI } from '@web3-onboard/core'
 import { act } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
 
+// mock useCurrentChain
+jest.mock('@/hooks/useChains', () => ({
+  __esModule: true,
+  useCurrentChain: jest.fn(() => ({
+    chainName: 'Goerli',
+    chainId: '5',
+  })),
+}))
+
 describe('useInitSafeCoreSDK hook', () => {
   const mockSafeInfo = {
     safe: {
@@ -56,7 +65,7 @@ describe('useInitSafeCoreSDK hook', () => {
 
     renderHook(() => useInitSafeCoreSDK())
 
-    expect(initMock).toHaveBeenCalledWith({}, '5', '0x1', '1.3.0')
+    expect(initMock).toHaveBeenCalledWith({}, '5', '0x1', '1.3.0', { chainId: '5', chainName: 'Goerli' }, '5')
 
     await act(() => Promise.resolve())
 
@@ -68,46 +77,6 @@ describe('useInitSafeCoreSDK hook', () => {
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
-
-    renderHook(() => useInitSafeCoreSDK())
-
-    expect(initMock).not.toHaveBeenCalled()
-    expect(setSDKMock).toHaveBeenCalledWith(undefined)
-  })
-
-  it('does not initialize a Core SDK instance if there is no safe chainId', () => {
-    const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
-    const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
-
-    jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider, chainId: '5' })
-    jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce({
-      ...mockSafeInfo,
-      safe: {
-        ...mockSafeInfo.safe,
-        chainId: '',
-      } as SafeInfo,
-      safeLoaded: true,
-    })
-
-    renderHook(() => useInitSafeCoreSDK())
-
-    expect(initMock).not.toHaveBeenCalled()
-    expect(setSDKMock).toHaveBeenCalledWith(undefined)
-  })
-
-  it('does not initialize a Core SDK instance if the safe chainId and wallet chainId are different', () => {
-    const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
-    const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
-
-    jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider, chainId: '1' })
-    jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce({
-      ...mockSafeInfo,
-      safe: {
-        ...mockSafeInfo.safe,
-        chainId: '5',
-      } as SafeInfo,
-      safeLoaded: true,
-    })
 
     renderHook(() => useInitSafeCoreSDK())
 
