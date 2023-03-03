@@ -62,7 +62,7 @@ const GasParams = ({
 
   return (
     <Accordion elevation={0} onChange={onChangeExpand} className={classnames({ [css.accordionSponsored]: willRelay })}>
-      <AccordionSummary sx={{ position: 'relative', p: '16px', '& .MuiAccordionSummary-content': { m: '0' } }}>
+      <AccordionSummary className={css.accordionSummary}>
         {isExecution ? (
           <>
             <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>

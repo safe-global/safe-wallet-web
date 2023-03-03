@@ -20,10 +20,12 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import css from './styles.module.css'
 import useRemainingRelays from '@/hooks/useRemainingRelays'
 
-enum ExecutionType {
+export enum ExecutionType {
   RELAYER = 'Via relayer',
   CONNECTED_WALLET = 'With connected wallet',
 }
+
+const MAX_RELAYS = 5
 
 const RelayingChip = ({ children }: { children: ReactNode }) => <Box className={css.relayingChip}>{children}</Box>
 
@@ -34,8 +36,7 @@ const RelayerLabelContent = ({ value, remaining }: { value: string; remaining: n
     {remaining !== undefined ? (
       <RelayingChip>
         <SvgIcon component={InfoIcon} fontSize="small" />
-        {/* Will the relays limit be variable? Can we fetch it from BE? */}
-        {remaining} of 5
+        {remaining} of {MAX_RELAYS}
       </RelayingChip>
     ) : (
       <Skeleton className={css.chipSkeleton} variant="rounded" />
@@ -61,7 +62,7 @@ const CustomFormControlLabel = ({
   walletLabel,
   remaining,
 }: {
-  value: string
+  value: ExecutionType
   walletLabel: ConnectedWallet['label']
   remaining?: number
 }) => {
@@ -90,12 +91,12 @@ const ExecutionMethod = ({
 }: {
   walletLabel: ConnectedWallet['label']
   willRelay: boolean
-  onChange: (value: boolean) => void
+  onChange: (value: ExecutionType) => void
 }) => {
-  const [remaining] = useRemainingRelays()
+  const [remainingRelays] = useRemainingRelays()
 
   return (
-    <Paper elevation={0} variant="outlined" sx={{ position: 'relative', borderWidth: '1px', marginBottom: '16px' }}>
+    <Paper elevation={0} variant="outlined" className={css.wrapper}>
       <div className={css.newChip}>
         <RelayingChip>New</RelayingChip>
       </div>
@@ -103,15 +104,10 @@ const ExecutionMethod = ({
         <FormLabel className={css.formLabel}>Chose the transaction execution method</FormLabel>
         <RadioGroup
           value={willRelay ? ExecutionType.RELAYER : ExecutionType.CONNECTED_WALLET}
-          onChange={(e) => onChange(e.target.value === ExecutionType.RELAYER)}
-          sx={{
-            '& .MuiFormControlLabel-label': { width: '100%', padding: '16px' },
-            '& .MuiFormControlLabel-label img': { width: '24px' },
-            '& .MuiFormControlLabel-root': { margin: '0px' },
-          }}
+          onChange={(e) => onChange(e.target.value as ExecutionType)}
         >
           {Object.values(ExecutionType).map((value) => (
-            <CustomFormControlLabel value={value} key={value} walletLabel={walletLabel} remaining={remaining} />
+            <CustomFormControlLabel value={value} key={value} walletLabel={walletLabel} remaining={remainingRelays} />
           ))}
         </RadioGroup>
       </FormControl>

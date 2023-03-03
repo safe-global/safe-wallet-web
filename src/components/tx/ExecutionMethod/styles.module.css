@@ -1,3 +1,22 @@
+.wrapper {
+  position: relative;
+  border-width: 1px;
+  margin-bottom: var(--space-2);
+}
+
+.wrapper :global .MuiFormControlLabel-label {
+  width: 100%;
+  padding: 16px;
+}
+
+.wrapper :global .MuiFormControlLabel-label img {
+  width: 24px;
+}
+
+.wrapper :global .MuiFormControlLabel-root {
+  margin: 0px;
+}
+
 .formLabel {
   padding: var(--space-2);
   color: var(--color-text-primary);

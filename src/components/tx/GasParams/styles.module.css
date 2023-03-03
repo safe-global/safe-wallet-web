@@ -1,3 +1,12 @@
+.accordionSummary {
+  position: relative;
+  padding: var(--space-2);
+}
+
+.accordionSummary :global .MuiAccordionSummary-content {
+  margin: 0px;
+}
+
 .accordionSponsored {
   overflow: visible;
   border: 1px solid var(--color-primary-main);
@@ -9,6 +18,7 @@
 }
 
 .sponsoredChip {
+  font-size: 14px;
   padding: 2px 8px;
   background-color: var(--color-primary-main);
   color: var(--color-background-paper);
