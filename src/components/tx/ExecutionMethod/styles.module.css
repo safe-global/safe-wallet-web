@@ -1,0 +1,49 @@
+.wrapper {
+  position: relative;
+  border-width: 1px;
+  margin-bottom: var(--space-2);
+}
+
+.wrapper :global .MuiFormControlLabel-label {
+  width: 100%;
+  padding: 16px;
+}
+
+.wrapper :global .MuiFormControlLabel-label img {
+  width: 24px;
+}
+
+.wrapper :global .MuiFormControlLabel-root {
+  margin: 0px;
+}
+
+.formLabel {
+  padding: var(--space-2);
+  color: var(--color-text-primary);
+}
+
+.relayingChip {
+  padding: var(--space-1);
+  border-radius: 6px;
+  height: 30px;
+  background-color: var(--color-secondary-light);
+  display: flex;
+  align-items: center;
+  margin-left: auto !important;
+  gap: var(--space-1);
+  line-height: 1em;
+  font-weight: bold;
+}
+
+.chipSkeleton {
+  height: 30px;
+  width: 80px;
+  margin-left: auto !important;
+}
+
+.newChip {
+  position: absolute;
+  top: -15px;
+  right: 16px;
+  font-size: 12px;
+}

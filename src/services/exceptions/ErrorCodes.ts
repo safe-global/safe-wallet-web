@@ -29,6 +29,7 @@ enum ErrorCodes {
   _616 = '616: Failed to retrieve recommended nonce',
   _619 = '619: Error fetching data from master-copies',
   _620 = '620: Error loading chains',
+  _630 = '630: Error fetching remaining hourly relays',
 
   _700 = '700: Failed to read from local/session storage',
   _701 = '701: Failed to write to local/session storage',

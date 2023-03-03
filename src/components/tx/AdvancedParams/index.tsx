@@ -14,6 +14,7 @@ type Props = {
   nonceReadonly: boolean
   onFormSubmit: (data: AdvancedParameters) => void
   gasLimitError?: Error
+  willRelay?: boolean
 }
 
 const AdvancedParams = ({
@@ -24,6 +25,7 @@ const AdvancedParams = ({
   nonceReadonly,
   onFormSubmit,
   gasLimitError,
+  willRelay,
 }: Props) => {
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const chain = useCurrentChain()
@@ -56,6 +58,7 @@ const AdvancedParams = ({
       isEIP1559={isEIP1559}
       gasLimitError={gasLimitError}
       onEdit={onEditOpen}
+      willRelay={willRelay}
     />
   )
 }
