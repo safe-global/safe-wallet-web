@@ -1,12 +1,12 @@
 import chains from '@/config/chains'
-import { createWeb3ReadOnly, getWeb3 } from '@/hooks/wallets/web3'
+import { getWeb3 } from '@/hooks/wallets/web3'
 import ExternalStore from '@/services/ExternalStore'
 import { invariant } from '@/utils/helpers'
-import { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider, type JsonRpcProvider } from '@ethersproject/providers'
 import Safe from '@safe-global/safe-core-sdk'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
-import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
@@ -40,25 +40,24 @@ export const createEthersAdapter = (provider = getWeb3()) => {
 
 // Safe Core SDK
 export const initSafeSDK = async (
-  provider: EIP1193Provider,
-  chainId: string,
+  readonlyProvider: JsonRpcProvider,
+  walletProvider: EIP1193Provider,
+  walletChainId: string,
+  safeChainId: string,
   safeAddress: string,
   safeVersion: string,
-  chainInfo: ChainInfo,
-  walletChainId: string,
 ): Promise<Safe> => {
-  let isL1SafeMasterCopy = chainId === chains.eth
+  let isL1SafeMasterCopy = safeChainId === chains.eth
   // Legacy Safe contracts
   if (isLegacyVersion(safeVersion)) {
     isL1SafeMasterCopy = true
   }
 
-  const signerProvider = new Web3Provider(provider)
+  const signerProvider = new Web3Provider(walletProvider)
 
   // Monkey patch the signerProvider to proxy requests to the "readonly" provider if on the wrong chain
-  if (walletChainId !== chainId) {
-    const signerMethods = ['eth_sign', 'eth_signTypedData', 'eth_accounts', 'personal_sign']
-    const readonlyProvider = createWeb3ReadOnly(chainInfo.rpcUri)
+  if (walletChainId !== safeChainId) {
+    const signerMethods = ['personal_sign', 'eth_sign', 'eth_signTypedData', 'eth_signTypedData_v4', 'eth_accounts']
     const originalSend = signerProvider.send
 
     signerProvider.send = (request, ...args) => {
