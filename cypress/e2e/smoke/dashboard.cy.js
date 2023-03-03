@@ -5,6 +5,7 @@ describe('Dashboard', () => {
     // Go to the test Safe home page
     cy.visit(`/${SAFE}/home`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
+    cy.contains('button', 'Ok').click()
 
     // Wait for dashboard to initialize
     cy.contains('Connect & transact')

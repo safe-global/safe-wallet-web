@@ -4,19 +4,25 @@ import { Button, Typography } from '@mui/material'
 import Link from 'next/link'
 import MUILink from '@mui/material/Link'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { useEffect, useState } from 'react'
 
 const TERMS_KEY = 'terms_dismissed'
 
 const TermsBanner = () => {
+  const [isMounted, setIsMounted] = useState<boolean>(false)
   const [isDismissed = false, setIsDismissed] = useLocalStorage<boolean>(TERMS_KEY)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const dismissBanner = () => {
     setIsDismissed(true)
   }
 
-  if (isDismissed) return null
+  if (!isMounted) return <></>
 
-  return (
+  return !isDismissed ? (
     <div className={css.wrapper}>
       <Typography variant="h4" fontWeight="bold" mb={1}>
         Terms
@@ -38,7 +44,7 @@ const TermsBanner = () => {
         Ok
       </Button>
     </div>
-  )
+  ) : null
 }
 
 export default TermsBanner

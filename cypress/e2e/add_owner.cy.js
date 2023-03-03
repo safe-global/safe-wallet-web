@@ -8,6 +8,7 @@ describe('Adding an owner', () => {
 
     cy.visit(`/${TEST_SAFE}/settings/setup`)
     cy.contains('button', 'Accept selection').click()
+    cy.contains('button', 'Ok').click()
 
     // Advanced Settings page is loaded
     cy.contains('Safe nonce', { timeout: 10000 })
