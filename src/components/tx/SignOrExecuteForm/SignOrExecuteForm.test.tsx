@@ -165,6 +165,10 @@ describe('SignOrExecuteForm', () => {
       const mockTx = createSafeTx()
       const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
+      act(() => {
+        fireEvent.click(result.getByText('Execute transaction'))
+      })
+
       expect(
         result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
       ).toBeInTheDocument()
@@ -187,6 +191,10 @@ describe('SignOrExecuteForm', () => {
 
       const mockTx = createSafeTx()
       const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+      act(() => {
+        fireEvent.click(result.getByText('Execute transaction'))
+      })
 
       expect(
         result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
@@ -319,7 +327,7 @@ describe('SignOrExecuteForm', () => {
     jest.spyOn(wrongChain, 'default').mockReturnValue(true)
 
     const mockTx = createSafeTx()
-    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+    const result = render(<SignOrExecuteForm isExecutable={true} onlyExecute onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(result.getByText('Please connect your wallet to')).toBeInTheDocument()
     expect(result.getByText('Submit')).toBeDisabled()
@@ -382,8 +390,10 @@ describe('SignOrExecuteForm', () => {
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
     const submitButton = result.getByText('Submit')
+    const executeCheckbox = result.getByText('Execute transaction')
 
     act(() => {
+      fireEvent.click(executeCheckbox)
       fireEvent.click(submitButton)
     })
 
