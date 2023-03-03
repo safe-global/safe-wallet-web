@@ -172,7 +172,7 @@ export const isSupportedSpendingLimitAddress = (txInfo: TransactionInfo, chainId
 }
 
 // Method parameter types
-export const isArrayParameter = (parameter: string): boolean => /(\[\d*])+$/.test(parameter)
+export const isArrayParameter = (parameter: string): boolean => /(\[\d*?])+$/.test(parameter)
 export const isAddress = (type: string): boolean => type.indexOf('address') === 0
 export const isByte = (type: string): boolean => type.indexOf('byte') === 0
 

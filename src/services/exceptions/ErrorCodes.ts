@@ -22,6 +22,7 @@ enum ErrorCodes {
   _603 = '603: Error fetching queued txs',
   _604 = '604: Error fetching collectibles',
   _607 = '607: Error fetching available currencies',
+  _608 = '608: Error fetching messages',
   _609 = '609: Failed to retrieve SpendingLimits module information',
   _610 = '610: Error fetching safes by owner',
   _611 = '611: Error fetching gasPrice',

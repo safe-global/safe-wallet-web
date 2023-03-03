@@ -13,6 +13,8 @@ export const validateAddress = (address: string) => {
   }
 }
 
+export const isValidAddress = (address: string): boolean => validateAddress(address) === undefined
+
 export const validatePrefixedAddress =
   (chainShortName?: string) =>
   (value: string): string | undefined => {

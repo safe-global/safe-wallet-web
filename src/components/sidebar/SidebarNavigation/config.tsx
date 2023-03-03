@@ -58,6 +58,10 @@ export const transactionNavItems = [
     label: 'History',
     href: AppRoutes.transactions.history,
   },
+  {
+    label: 'Messages',
+    href: AppRoutes.transactions.messages,
+  },
 ]
 
 export const balancesNavItems = [

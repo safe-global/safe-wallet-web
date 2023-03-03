@@ -39,7 +39,7 @@ const HiddenTokenButton = ({
         >
           <>
             <VisibilityOutlined fontSize="small" />
-            <Typography fontSize="small">
+            <Typography fontSize="medium">
               {hiddenAssetCount === 0
                 ? 'Hide tokens'
                 : `${hiddenAssetCount} hidden token${hiddenAssetCount > 1 ? 's' : ''}`}{' '}

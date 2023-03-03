@@ -23,24 +23,20 @@ type ReturnType = {
 }
 
 const useSafeApps = (): ReturnType => {
-  const [remoteSafeApps, remoteSafeAppsError, remoteSafeAppsLoading] = useRemoteSafeApps()
+  const [remoteSafeApps = [], remoteSafeAppsError, remoteSafeAppsLoading] = useRemoteSafeApps()
   const { customSafeApps, loading: customSafeAppsLoading, updateCustomSafeApps } = useCustomSafeApps()
   const { pinnedSafeAppIds, updatePinnedSafeApps } = usePinnedSafeApps()
   const { removePermissions: removeSafePermissions } = useSafePermissions()
   const { removePermissions: removeBrowserPermissions } = useBrowserPermissions()
 
-  const sortedRemoteSafeApps = useMemo(() => {
-    return (remoteSafeApps || []).sort((a, b) => a.name.localeCompare(b.name))
-  }, [remoteSafeApps])
-
   const allSafeApps = useMemo(
-    () => sortedRemoteSafeApps.concat(customSafeApps).sort((a, b) => a.name.localeCompare(b.name)),
-    [sortedRemoteSafeApps, customSafeApps],
+    () => remoteSafeApps.concat(customSafeApps).sort((a, b) => a.name.localeCompare(b.name)),
+    [remoteSafeApps, customSafeApps],
   )
 
   const pinnedSafeApps = useMemo(
-    () => sortedRemoteSafeApps.filter((app) => pinnedSafeAppIds.has(app.id)),
-    [sortedRemoteSafeApps, pinnedSafeAppIds],
+    () => remoteSafeApps.filter((app) => pinnedSafeAppIds.has(app.id)),
+    [remoteSafeApps, pinnedSafeAppIds],
   )
 
   const rankedSafeApps = useRankedSafeApps(allSafeApps, pinnedSafeApps)
@@ -84,7 +80,7 @@ const useSafeApps = (): ReturnType => {
     allSafeApps,
     rankedSafeApps,
 
-    remoteSafeApps: sortedRemoteSafeApps,
+    remoteSafeApps,
     remoteSafeAppsLoading: remoteSafeAppsLoading || !(remoteSafeApps || remoteSafeAppsError),
     remoteSafeAppsError,
 

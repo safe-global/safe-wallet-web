@@ -23,8 +23,8 @@ export const getSafeTokenAddress = (chainId: string): string => {
 const SafeTokenWidget = () => {
   const chainId = useChainId()
   const router = useRouter()
-  const [apps] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
-  const claimingApp = apps?.[0]
+  const [apps] = useRemoteSafeApps(SafeAppsTag.SAFE_GOVERNANCE_APP)
+  const governanceApp = apps?.[0]
 
   const [allocation, allocationLoading] = useSafeTokenAllocation()
 
@@ -33,10 +33,10 @@ const SafeTokenWidget = () => {
     return null
   }
 
-  const url: UrlObject | undefined = claimingApp
+  const url: UrlObject | undefined = governanceApp
     ? {
         pathname: AppRoutes.apps.open,
-        query: { safe: router.query.safe, appUrl: claimingApp.url },
+        query: { safe: router.query.safe, appUrl: governanceApp.url },
       }
     : undefined
 
@@ -44,12 +44,12 @@ const SafeTokenWidget = () => {
 
   return (
     <Box className={css.buttonContainer}>
-      <Tooltip title={url ? `Open ${claimingApp?.name}` : ''}>
+      <Tooltip title={url ? `Open ${governanceApp?.name}` : ''}>
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
             <Link href={url || ''} passHref>
               <ButtonBase
-                aria-describedby={'safe-token-widget'}
+                aria-describedby="safe-token-widget"
                 sx={{ alignSelf: 'stretch' }}
                 className={css.tokenButton}
                 disabled={url === undefined}
