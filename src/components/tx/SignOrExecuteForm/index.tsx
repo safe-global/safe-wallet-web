@@ -251,7 +251,7 @@ const SignOrExecuteForm = ({
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
           gasLimitError={gasLimitError}
-          willRelay={shouldExecute && willRelay}
+          willRelay={willRelay}
         />
 
         <TxSimulation
