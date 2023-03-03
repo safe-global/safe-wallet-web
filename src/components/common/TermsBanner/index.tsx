@@ -28,10 +28,11 @@ const TermsBanner = () => {
         Terms
       </Typography>
       <Typography>
-        We updated our Terms and Conditions. Review the new terms{' '}
+        We&apos;ve updated our Terms and Conditions. You can review them{' '}
         <Link href={AppRoutes.terms} passHref>
-          <MUILink color="success.main"> here</MUILink>
+          <MUILink color="success.main">here</MUILink>
         </Link>
+        .
       </Typography>
       <Button
         variant="contained"
