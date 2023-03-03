@@ -235,7 +235,7 @@ const SignOrExecuteForm = ({
 
         {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
 
-        {shouldExecute && (
+        {willExecute && (
           <ExecutionMethod
             walletLabel={wallet?.label || ''}
             executionMethod={executionMethod}
