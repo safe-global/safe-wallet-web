@@ -35,6 +35,11 @@
   font-weight: bold;
 }
 
+.relayingChip.unavailable {
+  background-color: var(--color-error-light);
+  color: var(--color-text-primary);
+}
+
 .chipSkeleton {
   height: 30px;
   width: 80px;

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import {
   Box,
   Divider,
@@ -19,6 +19,7 @@ import WalletIcon from '@/components/common/WalletIcon'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import css from './styles.module.css'
 import useRemainingRelays from '@/hooks/useRemainingRelays'
+import classnames from 'classnames'
 
 export enum ExecutionType {
   RELAYER = 'Via relayer',
@@ -27,16 +28,24 @@ export enum ExecutionType {
 
 const MAX_RELAYS = 5
 
-const RelayingChip = ({ children }: { children: ReactNode }) => <Box className={css.relayingChip}>{children}</Box>
+const isRelayExecution = (executionMethod: ExecutionType) => executionMethod === ExecutionType.RELAYER
 
-const RelayerLabelContent = ({ value, remaining }: { value: string; remaining: number | undefined }) => (
+const RelayingChip = ({
+  hasReachedRelayLimit = false,
+  children,
+}: {
+  hasReachedRelayLimit?: boolean
+  children: ReactNode
+}) => <Box className={classnames(css.relayingChip, { [css.unavailable]: hasReachedRelayLimit })}>{children}</Box>
+
+const RelayerLabelContent = ({ value, remainingRelays }: { value: string; remainingRelays: number | undefined }) => (
   <>
     <SvgIcon component={RelayerIcon} inheritViewBox />
     <Typography fontWeight="bold">{value}</Typography>
-    {remaining !== undefined ? (
-      <RelayingChip>
+    {remainingRelays !== undefined ? (
+      <RelayingChip hasReachedRelayLimit={remainingRelays === 0}>
         <SvgIcon component={InfoIcon} fontSize="small" />
-        {remaining} of {MAX_RELAYS}
+        {remainingRelays} of {MAX_RELAYS}
       </RelayingChip>
     ) : (
       <Skeleton className={css.chipSkeleton} variant="rounded" />
@@ -60,16 +69,18 @@ const ConnectedWalletLabelContent = ({
 const CustomFormControlLabel = ({
   value,
   walletLabel,
-  remaining,
+  remainingRelays,
 }: {
   value: ExecutionType
   walletLabel: ConnectedWallet['label']
-  remaining?: number
+  remainingRelays?: number
 }) => {
+  const relayLimitReached = remainingRelays === 0 && isRelayExecution(value)
+
   const labelComponent = (
     <Stack direction="row" spacing={1} alignItems="center">
-      {value === ExecutionType.RELAYER ? (
-        <RelayerLabelContent value={value} remaining={remaining} />
+      {isRelayExecution(value) ? (
+        <RelayerLabelContent value={value} remainingRelays={remainingRelays} />
       ) : (
         <ConnectedWalletLabelContent value={value} walletLabel={walletLabel} />
       )}
@@ -79,7 +90,7 @@ const CustomFormControlLabel = ({
   return (
     <>
       <Divider />
-      <FormControlLabel value={value} control={<Radio />} label={labelComponent} />
+      <FormControlLabel value={value} control={<Radio />} label={labelComponent} disabled={relayLimitReached} />
     </>
   )
 }
@@ -95,6 +106,12 @@ const ExecutionMethod = ({
 }) => {
   const [remainingRelays] = useRemainingRelays()
 
+  useEffect(() => {
+    if (remainingRelays === 0) {
+      onChange(ExecutionType.CONNECTED_WALLET)
+    }
+  }, [onChange, remainingRelays])
+
   return (
     <Paper elevation={0} variant="outlined" className={css.wrapper}>
       <div className={css.newChip}>
@@ -104,7 +121,12 @@ const ExecutionMethod = ({
         <FormLabel className={css.formLabel}>Chose the transaction execution method</FormLabel>
         <RadioGroup value={executionMethod} onChange={(e) => onChange(e.target.value as ExecutionType)}>
           {Object.values(ExecutionType).map((value) => (
-            <CustomFormControlLabel value={value} key={value} walletLabel={walletLabel} remaining={remainingRelays} />
+            <CustomFormControlLabel
+              value={value}
+              key={value}
+              walletLabel={walletLabel}
+              remainingRelays={remainingRelays}
+            />
           ))}
         </RadioGroup>
       </FormControl>
