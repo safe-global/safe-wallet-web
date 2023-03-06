@@ -39,11 +39,9 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
 
 export const waitForRelayedTx = (taskId: string, txId: string): void => {
   const gelato = new GelatoRelay()
-  const checkTxStatus = async () => {
-    // Send request to Gelato
-    const taskStatus = await gelato.getTaskStatus(taskId)
 
-    console.log('Fetched task status: ', taskStatus)
+  const checkTxStatus = async () => {
+    const taskStatus = await gelato.getTaskStatus(taskId)
 
     switch (taskStatus?.taskState) {
       case 'CheckPending':
@@ -76,6 +74,7 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
         })
         return
       case 'NotFound':
+      default:
         txDispatch(TxEvent.FAILED, {
           txId,
           error: new Error(`Relayed transaction was not found.`),

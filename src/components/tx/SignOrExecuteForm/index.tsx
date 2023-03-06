@@ -24,10 +24,8 @@ import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
-import useSponsoredCall from '@/hooks/useSponsoredCall'
-import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
-import { waitForRelayedTx } from '@/services/tx/txMonitor'
+import { prepareRelayTxData } from '@/components/tx/ExecutionMethod/utils'
+import { sponsoredCall } from '@/services/tx/sponsoredCall'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -70,9 +68,15 @@ const SignOrExecuteForm = ({
   const provider = useWeb3()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
-  const { sponsoredCall } = useSponsoredCall()
 
-  const { createTx, dispatchTxProposal, dispatchOnChainSigning, dispatchTxSigning, dispatchTxExecution } = useTxSender()
+  const {
+    createTx,
+    dispatchTxProposal,
+    dispatchOnChainSigning,
+    dispatchTxSigning,
+    dispatchTxExecution,
+    dispatchTxRelay,
+  } = useTxSender()
 
   // Check that the transaction is executable
   const isNewExecutableTx = !txId && safe.threshold === 1 && !hasPending
@@ -181,54 +185,24 @@ const SignOrExecuteForm = ({
   }
 
   const onRelay = async () => {
-    const [_, createdTx, _provider] = assertDependencies()
     const { gasLimit } = getTxOptions(advancedParams, currentChain)
 
-    let input
+    const [, createdTx] = assertDependencies()
 
-    let transactionToRelay: SafeTransaction = createdTx
-    if (createdTx.signatures.size < safe.threshold) {
-      // add a signature because the tx is not fully signed yet
-      const signedTransaction = await dispatchTxSigning(createdTx, safe.version, txId)
-      /**
-       * We need to handle this case because of the way useTxSender is designed,
-       * but it should never happen here because this function is explicitly called
-       * through a user interaction
-       */
-      if (!signedTransaction) {
-        throw new Error('Could not sign transaction')
-      }
-
-      txId = await proposeTx(signedTransaction)
-      transactionToRelay = signedTransaction
+    let txData
+    try {
+      txData = await prepareRelayTxData(createdTx, safe, proposeTx)
+    } catch (err) {
+      console.error('Error signing relay tx data', err)
+      return
     }
 
-    const instance = getSpecificGnosisSafeContractInstance(safe)
-
-    input = instance.encode('execTransaction', [
-      transactionToRelay.data.to,
-      transactionToRelay.data.value,
-      transactionToRelay.data.data,
-      transactionToRelay.data.operation,
-      transactionToRelay.data.safeTxGas,
-      transactionToRelay.data.baseGas,
-      transactionToRelay.data.gasPrice,
-      transactionToRelay.data.gasToken,
-      transactionToRelay.data.refundReceiver,
-      transactionToRelay.encodedSignatures(),
-    ])
-
-    const sponsorResponse = await sponsoredCall({ chainId: safe.chainId, to: safeAddress, data: input, gasLimit })
-
-    if (!txId || !sponsorResponse?.taskId) {
-      throw new Error('Transaction could not be proposed / relayed')
-    }
-
-    if (txId && sponsorResponse?.taskId) {
-      txDispatch(TxEvent.RELAYING, { txId, taskId: sponsorResponse?.taskId })
-
-      // Trigger tx polling
-      waitForRelayedTx(sponsorResponse?.taskId, txId)
+    try {
+      const relayResponse = await sponsoredCall({ chainId: safe.chainId, to: safeAddress, data: txData.data, gasLimit })
+      await dispatchTxRelay(relayResponse.taskId, txData.txId)
+    } catch (err) {
+      logError(Errors._631, (err as Error).message)
+      return
     }
   }
 

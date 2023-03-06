@@ -1,5 +1,6 @@
 import { type SafeTransactionData } from '@safe-global/safe-core-sdk-types'
 
+// TODO: import type from relay-service
 export type SponsoredCallPayload = {
   chainId: string
   to: string
@@ -9,7 +10,7 @@ export type SponsoredCallPayload = {
 
 const SPONSORED_CALL_URL = 'http://localhost:3001/v1/relay'
 
-export const executeSponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId: string }> => {
+export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId: string }> => {
   const requestObject: RequestInit = {
     method: 'POST',
     headers: {

@@ -11,6 +11,7 @@ import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { getAndValidateSafeSDK, getUncheckedSafeSDK, tryOffChainSigning } from './sdk'
+import { waitForRelayedTx } from '@/services/tx/txMonitor'
 
 /**
  * Propose a transaction
@@ -267,4 +268,13 @@ export const dispatchSafeAppsTx = async (safeTx: SafeTransaction, safeAppRequest
   const sdk = getAndValidateSafeSDK()
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, safeTxHash })
+}
+
+export const dispatchTxRelay = async (taskId: string, txId?: string) => {
+  if (txId && taskId) {
+    txDispatch(TxEvent.RELAYING, { txId, taskId: taskId })
+
+    // Monitor relay tx
+    waitForRelayedTx(taskId, txId)
+  }
 }
