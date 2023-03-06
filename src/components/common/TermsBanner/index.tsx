@@ -1,31 +1,31 @@
+import { useEffect } from 'react'
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
 import { Button, Typography } from '@mui/material'
 import Link from 'next/link'
 import MUILink from '@mui/material/Link'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { useMemo } from 'react'
 import { type CookiesState, CookieType } from '@/store/cookiesSlice'
 import local from '@/services/local-storage/local'
 
-const TERMS_KEY = 'terms_dismissed'
-
-const isExistingUser = () => {
-  return local.getItem<CookiesState>('cookies')?.[CookieType.NECESSARY] || false
-}
+const TERMS_KEY = 'show_terms'
 
 const TermsBanner = () => {
-  const [isDismissed = false, setIsDismissed] = useLocalStorage<boolean>(TERMS_KEY)
+  const [showTerms = true, setShowTerms] = useLocalStorage<boolean>(TERMS_KEY)
 
-  // Check on page load if "necessary" cookies have been accepted
-  const existingUser = useMemo(() => isExistingUser(), [])
-  const shouldOpen = existingUser && !isDismissed
+  useEffect(() => {
+    const existingUser = local.getItem<CookiesState>('cookies')?.[CookieType.NECESSARY] || false
+
+    if (!existingUser) {
+      setShowTerms(false)
+    }
+  }, [setShowTerms])
 
   const dismissBanner = () => {
-    setIsDismissed(true)
+    setShowTerms(false)
   }
 
-  return shouldOpen ? (
+  return showTerms ? (
     <div className={css.wrapper}>
       <Typography variant="h4" fontWeight="bold" mb={1}>
         Terms
