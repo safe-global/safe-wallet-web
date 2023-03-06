@@ -15,13 +15,13 @@ export const useInitSafeCoreSDK = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    if (!onboard || !wallet?.provider || !safeLoaded || safe.chainId !== wallet.chainId || !safe.version) {
+    if (!onboard || !wallet?.provider || !safeLoaded || safe.chainId !== wallet.chainId) {
       // If we don't reset the SDK, a previous Safe could remain in the store
       setSafeSDK(undefined)
       return
     }
 
-    initSafeSDK(wallet.provider, safe.chainId, safe.address.value, safe.version)
+    initSafeSDK(wallet.provider, safe)
       .then(setSafeSDK)
       .catch((e) => {
         dispatch(
@@ -37,5 +37,5 @@ export const useInitSafeCoreSDK = () => {
         // Disconnect the wallet
         onboard.disconnectWallet({ label: wallet.label })
       })
-  }, [onboard, wallet, safe.chainId, safe.address.value, safe.version, safeLoaded, dispatch])
+  }, [onboard, wallet, safe, safeLoaded, dispatch])
 }

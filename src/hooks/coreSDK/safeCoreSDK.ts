@@ -1,6 +1,8 @@
 import chains from '@/config/chains'
+import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import { getWeb3 } from '@/hooks/wallets/web3'
 import ExternalStore from '@/services/ExternalStore'
+import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
 import { Web3Provider } from '@ethersproject/providers'
 import Safe from '@safe-global/safe-core-sdk'
@@ -39,19 +41,38 @@ export const createEthersAdapter = (provider = getWeb3()) => {
 }
 
 // Safe Core SDK
-export const initSafeSDK = async (
-  provider: EIP1193Provider,
-  chainId: string,
-  safeAddress: string,
-  safeVersion: string,
-): Promise<Safe> => {
+export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Promise<Safe | undefined> => {
+  const masterCopy = safe.implementation.value
+
+  const chainId = safe.chainId
+  const safeAddress = safe.address.value
+  let safeVersion = safe.version
+
   let isL1SafeMasterCopy = chainId === chains.eth
-  // Legacy Safe contracts
-  if (isLegacyVersion(safeVersion)) {
-    isL1SafeMasterCopy = true
-  }
 
   const ethersProvider = new Web3Provider(provider)
+
+  // If it is an official deployed master copy we should still initiate the safeSDK
+  if (safeVersion === null) {
+    safeVersion = await Gnosis_safe__factory.connect(safeAddress, ethersProvider).VERSION()
+
+    const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
+    const safeL2Deployment = getSafeL2SingletonDeployment({ network: chainId, version: safeVersion })
+
+    isL1SafeMasterCopy = masterCopy === safeL1Deployment?.defaultAddress
+    const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.defaultAddress
+
+    if (!isL1SafeMasterCopy && !isL2SafeMasterCopy) {
+      // Unknown masterCopy, which we do not want to support
+      return Promise.resolve(undefined)
+    }
+  } else {
+    // Legacy Safe contracts
+    if (isLegacyVersion(safeVersion)) {
+      isL1SafeMasterCopy = true
+    }
+  }
+
   return Safe.create({
     ethAdapter: createEthersAdapter(ethersProvider),
     safeAddress,
