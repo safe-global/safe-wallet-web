@@ -8,7 +8,6 @@ describe('Transaction history', () => {
   before(() => {
     // Go to the test Safe transaction history
     cy.visit(`/${SAFE}/transactions/history`, { failOnStatusCode: false })
-    cy.contains('button', 'Ok').click()
     cy.contains('button', 'Accept selection').click()
   })
 

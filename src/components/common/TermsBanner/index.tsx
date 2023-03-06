@@ -4,13 +4,23 @@ import { Button, Typography } from '@mui/material'
 import Link from 'next/link'
 import MUILink from '@mui/material/Link'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { type CookiesState, CookieType } from '@/store/cookiesSlice'
+import local from '@/services/local-storage/local'
 
 const TERMS_KEY = 'terms_dismissed'
+
+const isExistingUser = () => {
+  return local.getItem<CookiesState>('cookies')?.[CookieType.NECESSARY] || false
+}
 
 const TermsBanner = () => {
   const [isMounted, setIsMounted] = useState<boolean>(false)
   const [isDismissed = false, setIsDismissed] = useLocalStorage<boolean>(TERMS_KEY)
+
+  // Check on page load if "necessary" cookies have been accepted
+  const existingUser = useMemo(() => isExistingUser(), [])
+  const shouldOpen = existingUser && !isDismissed
 
   useEffect(() => {
     setIsMounted(true)
@@ -22,7 +32,7 @@ const TermsBanner = () => {
 
   if (!isMounted) return <></>
 
-  return !isDismissed ? (
+  return shouldOpen ? (
     <div className={css.wrapper}>
       <Typography variant="h4" fontWeight="bold" mb={1}>
         Terms

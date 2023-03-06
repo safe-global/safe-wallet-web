@@ -3,7 +3,6 @@ import { TEST_SAFE } from './constants'
 describe('The Safe Apps list', () => {
   before(() => {
     cy.visit(`/${TEST_SAFE}/apps`, { failOnStatusCode: false })
-    cy.contains('button', 'Ok').click()
     cy.findByText(/accept selection/i).click()
   })
 

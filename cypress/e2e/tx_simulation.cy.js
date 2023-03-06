@@ -7,7 +7,6 @@ describe('Tx Simulation', () => {
 
     // Open the Safe used for testing
     cy.visit(`/${TEST_SAFE}/home`, { failOnStatusCode: false })
-    cy.contains('button', 'Ok').click()
     cy.contains('button', 'Accept selection').click()
 
     // Open Send Funds Modal

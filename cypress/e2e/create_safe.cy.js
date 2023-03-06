@@ -4,7 +4,6 @@ describe('Create Safe', () => {
 
     cy.visit('/welcome')
 
-    cy.contains('button', 'Ok').click()
     // Close cookie banner
     cy.contains('button', 'Accept all').click()
 

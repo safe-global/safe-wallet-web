@@ -13,7 +13,6 @@ describe('When visiting a custom Safe App', () => {
 
     cy.visitSafeApp(`${appUrl}`)
     cy.wait(1000)
-    cy.contains('button', 'Ok').click()
     cy.contains('button', 'Accept all').click()
   })
 

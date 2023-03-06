@@ -3,7 +3,6 @@ import { TEST_SAFE, BROWSER_PERMISSIONS_KEY, INFO_MODAL_KEY } from './constants'
 describe('The Safe Apps info modal', () => {
   before(() => {
     cy.visit(`/${TEST_SAFE}/apps`, { failOnStatusCode: false })
-    cy.contains('button', 'Ok').click()
     cy.findByText(/accept selection/i).click()
   })
 

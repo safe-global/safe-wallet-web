@@ -24,7 +24,6 @@ describe('The Browser permissions system', () => {
     })
 
     it('should allow to change, accept and store the selection', () => {
-      cy.contains('button', 'Ok').click()
       cy.findByText(/accept selection/i).click()
 
       cy.findByRole('checkbox', { name: /microphone/i }).click()

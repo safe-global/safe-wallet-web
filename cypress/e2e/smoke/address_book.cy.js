@@ -20,7 +20,6 @@ const GNO_CSV_ENTRY = {
 describe('Address book', () => {
   before(() => {
     cy.visit(`/${GOERLI_TEST_SAFE}/address-book`, { failOnStatusCode: false })
-    cy.contains('button', 'Ok').click()
     cy.contains('Accept selection').click()
     // Waits for the Address Book table to be in the page
     cy.contains('p', 'Address book').should('be.visible')

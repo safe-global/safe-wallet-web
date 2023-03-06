@@ -8,7 +8,7 @@ export enum CookieType {
   ANALYTICS = 'analytics',
 }
 
-type CookiesState = Record<CookieType, boolean>
+export type CookiesState = Record<CookieType, boolean>
 
 const initialState: CookiesState = {
   [CookieType.NECESSARY]: false,

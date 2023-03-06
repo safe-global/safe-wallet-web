@@ -5,7 +5,6 @@ describe('Beamer', () => {
     // Disable PWA, otherwise it will throw a security error
     cy.visit(`/${TEST_SAFE}/address-book`, { failOnStatusCode: false })
 
-    cy.contains('button', 'Ok').click()
     // Way to select the cookies banner without an id
     cy.contains('We use cookies to provide')
     cy.contains('Accept selection').click()

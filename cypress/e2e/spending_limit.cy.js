@@ -7,7 +7,6 @@ describe('Check spending limit modal', () => {
 
     cy.visit(`/${SPENDING_LIMIT_SAFE}/home`, { failOnStatusCode: false })
 
-    cy.contains('button', 'Ok').click()
     cy.contains('Accept selection').click()
   })
 
