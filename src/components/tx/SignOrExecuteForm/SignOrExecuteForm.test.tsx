@@ -381,6 +381,12 @@ describe('SignOrExecuteForm', () => {
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
+    const executionMethod = result.getByText('With connected wallet')
+
+    act(() => {
+      fireEvent.click(executionMethod)
+    })
+
     const submitButton = result.getByText('Submit')
 
     act(() => {
@@ -483,6 +489,12 @@ describe('SignOrExecuteForm', () => {
     const result = render(
       <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} />,
     )
+
+    const executionMethod = result.getByText('With connected wallet')
+
+    act(() => {
+      fireEvent.click(executionMethod)
+    })
 
     const submitButton = result.getByText('Submit')
 
