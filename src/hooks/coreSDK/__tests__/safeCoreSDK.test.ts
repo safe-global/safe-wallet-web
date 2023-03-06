@@ -1,14 +1,13 @@
+import { ethers } from 'ethers'
+import Safe from '@safe-global/safe-core-sdk'
 import {
   getProxyFactoryContract,
   getSafeContract,
 } from '@safe-global/safe-core-sdk/dist/src/contracts/safeDeploymentContracts'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { EIP1193Provider } from '@web3-onboard/core'
-import Safe from '@safe-global/safe-core-sdk'
 
 import { isValidSafeVersion, initSafeSDK } from '../safeCoreSDK'
-import { hexZeroPad } from 'ethers/lib/utils'
-import { ethers } from 'ethers'
 
 jest.mock('@safe-global/safe-core-sdk/dist/src/contracts/safeDeploymentContracts')
 
@@ -106,7 +105,7 @@ describe('safeCoreSDK', () => {
 
         const sdk = await initSafeSDK(mockProvider, {
           chainId,
-          address: { value: hexZeroPad('0x1', 20) },
+          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
           version,
           implementation: { value: MAINNET_MASTER_COPY },
         } as SafeInfo)
@@ -122,7 +121,7 @@ describe('safeCoreSDK', () => {
 
         const sdk = await initSafeSDK(mockProvider, {
           chainId,
-          address: { value: hexZeroPad('0x1', 20) },
+          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
           version,
           implementation: { value: MAINNET_MASTER_COPY },
         } as SafeInfo)
@@ -139,7 +138,7 @@ describe('safeCoreSDK', () => {
 
         const sdk = await initSafeSDK(mockProvider, {
           chainId,
-          address: { value: hexZeroPad('0x1', 20) },
+          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
           version: `${version}+L2`,
           implementation: { value: POLYGON_MASTER_COPY },
         } as SafeInfo)
@@ -156,7 +155,7 @@ describe('safeCoreSDK', () => {
 
         const sdk = await initSafeSDK(mockProvider, {
           chainId,
-          address: { value: hexZeroPad('0x1', 20) },
+          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
           version,
           implementation: { value: POLYGON_MASTER_COPY },
         } as SafeInfo)
@@ -176,7 +175,7 @@ describe('safeCoreSDK', () => {
 
         const sdk = await initSafeSDK(mockProvider, {
           chainId: '1',
-          address: { value: hexZeroPad('0x1', 20) },
+          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
           version: null, // Indexer returns null if unsupported contract version
           implementation: { value: MAINNET_MASTER_COPY },
         } as SafeInfo)
@@ -192,7 +191,7 @@ describe('safeCoreSDK', () => {
 
         const sdk = await initSafeSDK(mockProvider, {
           chainId,
-          address: { value: hexZeroPad('0x1', 20) },
+          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
           version: null,
           implementation: { value: MAINNET_MASTER_COPY },
         } as SafeInfo)
@@ -209,7 +208,7 @@ describe('safeCoreSDK', () => {
 
         const sdk = await initSafeSDK(mockProvider, {
           chainId,
-          address: { value: hexZeroPad('0x1', 20) },
+          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
           version: null,
           implementation: { value: '0xinvalid' },
         } as SafeInfo)
