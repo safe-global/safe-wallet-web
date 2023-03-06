@@ -4,6 +4,7 @@ describe('The Safe Apps list', () => {
   before(() => {
     cy.visit(`/${TEST_SAFE}/apps`, { failOnStatusCode: false })
     cy.findByText(/accept selection/i).click()
+    cy.contains('button', 'Ok').click()
   })
 
   describe('When searching apps', () => {

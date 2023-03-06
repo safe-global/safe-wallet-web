@@ -35,6 +35,7 @@ import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
 import useAdjustUrl from '@/hooks/useAdjustUrl'
 
+// Importing it dynamically to prevent hydration errors because we read the local storage
 const TermsBanner = dynamic(() => import('@/components/common/TermsBanner'), { ssr: false })
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING

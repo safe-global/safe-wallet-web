@@ -18,6 +18,7 @@ describe('Load existing Safe', () => {
   before(() => {
     cy.visit('/welcome?chain=matic')
     cy.contains('Accept selection').click()
+    cy.contains('button', 'Ok').click()
 
     // Enters Loading Safe form
     cy.contains('button', 'Add existing Safe').click()
