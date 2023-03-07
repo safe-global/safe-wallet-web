@@ -13,9 +13,9 @@ import type { Transfer } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { isERC20Transfer, isNativeTokenTransfer } from '@/utils/transaction-guards'
-import useIsGranted from '@/hooks/useIsGranted'
 import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 import { safeFormatUnits } from '@/utils/formatters'
+import CheckWallet from '@/components/common/CheckWallet'
 
 enum ModalType {
   SEND_AGAIN = 'SEND_AGAIN',
@@ -29,7 +29,6 @@ const defaultOpen = { [ModalType.SEND_AGAIN]: false, [ModalType.ADD_TO_AB]: fals
 const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfer }): ReactElement => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
-  const isGranted = useIsGranted()
   const addressBook = useAddressBook()
   const name = addressBook?.[address]
 
@@ -74,9 +73,13 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
       </IconButton>
       <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
         {canSendAgain && (
-          <MenuItem onClick={handleOpenModal(ModalType.SEND_AGAIN, TX_LIST_EVENTS.SEND_AGAIN)} disabled={!isGranted}>
-            <ListItemText>Send again</ListItemText>
-          </MenuItem>
+          <CheckWallet>
+            {(isOk) => (
+              <MenuItem onClick={handleOpenModal(ModalType.SEND_AGAIN, TX_LIST_EVENTS.SEND_AGAIN)} disabled={!isOk}>
+                <ListItemText>Send again</ListItemText>
+              </MenuItem>
+            )}
+          </CheckWallet>
         )}
 
         <MenuItem onClick={handleOpenModal(ModalType.ADD_TO_AB, TX_LIST_EVENTS.ADDRESS_BOOK)}>

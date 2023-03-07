@@ -4,7 +4,6 @@ import { Paper, Grid, Typography, Box } from '@mui/material'
 
 import css from './styles.module.css'
 import { RemoveModule } from '@/components/settings/SafeModules/RemoveModule'
-import useIsGranted from '@/hooks/useIsGranted'
 import ExternalLink from '@/components/common/ExternalLink'
 
 const NoModules = () => {
@@ -16,8 +15,6 @@ const NoModules = () => {
 }
 
 const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name?: string }) => {
-  const isGranted = useIsGranted()
-
   return (
     <Box className={css.container}>
       <EthHashInfo
@@ -28,7 +25,7 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
         chainId={chainId}
         hasExplorer
       />
-      {isGranted && <RemoveModule address={moduleAddress} />}
+      <RemoveModule address={moduleAddress} />
     </Box>
   )
 }

@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { useState } from 'react'
 
 import { LATEST_SAFE_VERSION } from '@/config/constants'
@@ -16,6 +16,7 @@ import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import ExternalLink from '@/components/common/ExternalLink'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const UpdateSafeSteps: TxStepperProps['steps'] = [
   {
@@ -30,14 +31,16 @@ const UpdateSafeDialog = () => {
   const handleClose = () => setOpen(false)
 
   return (
-    <Box paddingTop={2}>
-      <div>
-        <Button onClick={() => setOpen(true)} variant="contained">
-          Update Safe
-        </Button>
-      </div>
+    <>
+      <CheckWallet>
+        {(isOk) => (
+          <Button onClick={() => setOpen(true)} variant="contained" disabled={!isOk}>
+            Update Safe
+          </Button>
+        )}
+      </CheckWallet>
       {open && <TxModal onClose={handleClose} steps={UpdateSafeSteps} />}
-    </Box>
+    </>
   )
 }
 

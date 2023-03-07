@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { SvgIcon, Typography } from '@mui/material'
+import { Box, SvgIcon, Typography } from '@mui/material'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { sameAddress } from '@/utils/addresses'
@@ -13,7 +13,7 @@ import UpdateSafeDialog from './UpdateSafeDialog'
 import ExternalLink from '@/components/common/ExternalLink'
 import Tooltip from '@mui/material/Tooltip'
 
-export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
+export const ContractVersion = () => {
   const [masterCopies] = useMasterCopies()
   const { safe } = useSafeInfo()
   const masterCopyAddress = safe.implementation.value
@@ -30,10 +30,11 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
   }
 
   return (
-    <div>
+    <>
       <Typography variant="h4" fontWeight={700} marginBottom={1}>
         Contract version
       </Typography>
+
       {safe.version ? (
         <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>
           {safe.version}
@@ -44,37 +45,41 @@ export const ContractVersion = ({ isGranted }: { isGranted: boolean }) => {
           Unsupported contract
         </Typography>
       )}
-      <div style={{ marginTop: 15 }}>
-        {needsUpdate ? (
-          <Typography display="flex" alignItems="center">
-            Why should I upgrade?
-            <Tooltip
-              title="Update now to take advantage of new features and the highest security standards available.
-You will need to confirm this update just like any other transaction."
-              placement="right-start"
-            >
-              <span>
-                <SvgIcon
-                  component={InfoIcon}
-                  inheritViewBox
-                  fontSize="small"
-                  color="border"
-                  sx={{
-                    verticalAlign: 'middle',
-                    ml: 0.5,
-                  }}
-                />
-              </span>
-            </Tooltip>
-          </Typography>
+
+      <Box mt={2}>
+        {showUpdateDialog ? (
+          <Box display="flex" alignItems="center" gap={2}>
+            <UpdateSafeDialog />
+
+            <Typography display="flex" alignItems="center">
+              Why should I upgrade?
+              <Tooltip
+                title="Update now to take advantage of new features and the highest security standards available.
+  You will need to confirm this update just like any other transaction."
+                placement="right"
+                arrow
+              >
+                <span>
+                  <SvgIcon
+                    component={InfoIcon}
+                    inheritViewBox
+                    fontSize="small"
+                    color="border"
+                    sx={{
+                      verticalAlign: 'middle',
+                      ml: 0.5,
+                    }}
+                  />
+                </span>
+              </Tooltip>
+            </Typography>
+          </Box>
         ) : (
           <Typography display="flex" alignItems="center">
             <CheckCircleIcon color="primary" sx={{ mr: 0.5 }} /> Latest version
           </Typography>
         )}
-      </div>
-
-      {showUpdateDialog && isGranted && <UpdateSafeDialog />}
-    </div>
+      </Box>
+    </>
   )
 }
