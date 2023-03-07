@@ -120,7 +120,13 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           </div>
           <Divider />
           <Box padding={2}>
-            <EthHashInfo address={newOwner.address} shortAddress={false} showCopyButton hasExplorer />
+            <EthHashInfo
+              name={newOwner.name}
+              address={newOwner.address}
+              shortAddress={false}
+              showCopyButton
+              hasExplorer
+            />
           </Box>
         </Grid>
       </Grid>
