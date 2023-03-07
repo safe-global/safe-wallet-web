@@ -24,8 +24,6 @@ import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
-import { prepareRelayTxData } from '@/components/tx/ExecutionMethod/utils'
-import { sponsoredCall } from '@/services/tx/sponsoredCall'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -185,25 +183,29 @@ const SignOrExecuteForm = ({
   }
 
   const onRelay = async () => {
-    const { gasLimit } = getTxOptions(advancedParams, currentChain)
-
     const [, createdTx] = assertDependencies()
 
-    let txData
-    try {
-      txData = await prepareRelayTxData(createdTx, safe, proposeTx)
-    } catch (err) {
-      console.error('Error signing relay tx data', err)
-      return
+    const { gasLimit } = getTxOptions(advancedParams, currentChain)
+
+    let id = txId
+    let safeTx = createdTx
+    // Add missing signature
+    if (createdTx.signatures.size < safe.threshold) {
+      const signedTransaction = await dispatchTxSigning(createdTx, safe.version)
+
+      if (!signedTransaction) {
+        throw new Error('Could not sign transaction')
+      }
+
+      id = await proposeTx(signedTransaction)
+      safeTx = signedTransaction
     }
 
-    try {
-      const relayResponse = await sponsoredCall({ chainId: safe.chainId, to: safeAddress, data: txData.data, gasLimit })
-      await dispatchTxRelay(relayResponse.taskId, txData.txId)
-    } catch (err) {
-      logError(Errors._631, (err as Error).message)
-      return
+    if (!id) {
+      throw new Error('Transaction could not be proposed')
     }
+
+    dispatchTxRelay(safeTx, safe, safeAddress, id, gasLimit)
   }
 
   // On modal submit
