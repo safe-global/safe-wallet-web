@@ -38,6 +38,10 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
 }
 
 export const waitForRelayedTx = (taskId: string, txId: string): void => {
+  // A small delay is necessary before the initial polling as the task status
+  // is not immediately available after the sponsoredCall request
+  const INITIAL_POLLING_DELAY = 2_000
+
   const gelato = new GelatoRelay()
 
   const checkTxStatus = async () => {
@@ -83,5 +87,5 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
     }
   }
 
-  setTimeout(checkTxStatus, 2000)
+  setTimeout(checkTxStatus, INITIAL_POLLING_DELAY)
 }
