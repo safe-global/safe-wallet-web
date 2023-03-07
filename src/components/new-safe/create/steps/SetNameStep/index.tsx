@@ -13,7 +13,9 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import NameInput from '@/components/common/NameInput'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
-import ExternalLink from '@/components/common/ExternalLink'
+import { AppRoutes } from '@/config/routes'
+import MUILink from '@mui/material/Link'
+import Link from 'next/link'
 
 type SetNameStepForm = {
   name: string
@@ -93,13 +95,13 @@ function SetNameStep({
           </Grid>
           <Typography variant="body2" mt={2}>
             By continuing, you agree to our{' '}
-            <ExternalLink href="https://safe.global/terms" fontWeight={700}>
-              terms of use
-            </ExternalLink>{' '}
+            <Link href={AppRoutes.terms} passHref>
+              <MUILink>terms of use</MUILink>
+            </Link>{' '}
             and{' '}
-            <ExternalLink href="https://safe.global/privacy" fontWeight={700}>
-              privacy policy
-            </ExternalLink>
+            <Link href={AppRoutes.privacy} passHref>
+              <MUILink>privacy policy</MUILink>
+            </Link>
             .
           </Typography>
 

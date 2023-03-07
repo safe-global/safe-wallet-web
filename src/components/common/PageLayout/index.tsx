@@ -18,6 +18,10 @@ const isNoSidebarRoute = (pathname: string): boolean => {
     AppRoutes.index,
     AppRoutes.import,
     AppRoutes.environmentVariables,
+    AppRoutes.imprint,
+    AppRoutes.privacy,
+    AppRoutes.cookie,
+    AppRoutes.terms,
   ].includes(pathname)
 }
 
