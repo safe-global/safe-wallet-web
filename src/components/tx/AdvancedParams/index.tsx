@@ -50,6 +50,7 @@ const AdvancedParams = ({
       nonceReadonly={nonceReadonly}
       onSubmit={onAdvancedSubmit}
       isEIP1559={isEIP1559}
+      willRelay={willRelay}
     />
   ) : (
     <GasParams
