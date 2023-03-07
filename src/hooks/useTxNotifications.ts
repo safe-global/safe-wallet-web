@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
+import { formatError } from '@/utils/formatters'
 import type { LinkProps } from 'next/link'
-import { capitalize } from '@/utils/formatters'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
@@ -42,14 +42,6 @@ enum Variant {
 }
 
 const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
-
-// Format the error message
-export const formatError = (error: Error & { reason?: string }): string => {
-  let { reason } = error
-  if (!reason) return ''
-  if (!reason.endsWith('.')) reason += '.'
-  return capitalize(reason)
-}
 
 const getTxLink = (txId: string, chain: ChainInfo, safeAddress: string): { href: LinkProps['href']; title: string } => {
   return {

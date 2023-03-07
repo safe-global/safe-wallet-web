@@ -1,5 +1,5 @@
 import EventBus from '@/services/EventBus'
-import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
+import type { RequestId } from '@safe-global/safe-apps-sdk'
 
 export enum TxEvent {
   SIGNED = 'SIGNED',
@@ -52,6 +52,6 @@ export const txSubscribe = txEventBus.subscribe.bind(txEventBus)
 // Log all events
 Object.values(TxEvent).forEach((event: TxEvent) => {
   txSubscribe<TxEvent>(event, (detail) => {
-    console.info(`${event} event received`, detail)
+    console.info(`Transaction ${event} event received`, detail)
   })
 })

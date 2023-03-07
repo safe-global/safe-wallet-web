@@ -5,17 +5,22 @@ import {
   validateAmount,
   validatePrefixedAddress,
   validateDecimalLength,
+  isValidAddress,
 } from '@/utils/validation'
 
 describe('validation', () => {
   describe('Ethereum address validation', () => {
     it('should return undefined if the address is valid', () => {
       expect(validateAddress('0x1234567890123456789012345678901234567890')).toBeUndefined()
+      expect(isValidAddress('0x1234567890123456789012345678901234567890')).toBeTruthy()
     })
 
     it('should return an error if the address is invalid', () => {
       expect(validateAddress('0x1234567890123456789012345678901234567890x')).toBe('Invalid address format')
+      expect(isValidAddress('0x1234567890123456789012345678901234567890x')).toBeFalsy()
+
       expect(validateAddress('0x8Ba1f109551bD432803012645Ac136ddd64DBA72')).toBe('Invalid address checksum')
+      expect(isValidAddress('0x8Ba1f109551bD432803012645Ac136ddd64DBA72')).toBeFalsy()
     })
   })
 

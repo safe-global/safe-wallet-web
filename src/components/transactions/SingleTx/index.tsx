@@ -1,4 +1,3 @@
-import { CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -10,7 +9,9 @@ import { sameAddress } from '@/utils/addresses'
 import type { ReactElement } from 'react'
 import { makeTxFromDetails } from '@/utils/transactions'
 import { TxListGrid } from '@/components/transactions/TxList'
-import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
+import ExpandableTransactionItem, {
+  TransactionSkeleton,
+} from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import GroupLabel from '../GroupLabel'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
@@ -63,7 +64,8 @@ const SingleTx = () => {
     return <SingleTxGrid txDetails={txDetails} />
   }
 
-  return <CircularProgress />
+  // Loading skeleton
+  return <TransactionSkeleton />
 }
 
 export default SingleTx

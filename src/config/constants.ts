@@ -37,7 +37,7 @@ export const SAFE_APPS_INFURA_TOKEN = process.env.NEXT_PUBLIC_SAFE_APPS_INFURA_T
 export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = 'https://third-party-cookies-check.gnosis-safe.com'
 export const SAFE_APPS_SUPPORT_CHAT_URL = 'https://chat.safe.global'
 export const SAFE_APPS_DEMO_SAFE_MAINNET = 'eth:0xfF501B324DC6d78dC9F983f140B9211c3EdB4dc7'
-export const SAFE_APPS_SDK_DOCS_URL = 'https://docs.gnosis-safe.io/learn/safe-tools/sdks/safe-apps'
+export const SAFE_APPS_SDK_DOCS_URL = 'https://docs.safe.global/learn/safe-tools/sdks/safe-apps'
 
 // Google Tag Manager
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || ''
@@ -55,6 +55,8 @@ export enum SafeAppsTag {
   NFT = 'nft',
   TX_BUILDER = 'transaction-builder',
   DASHBOARD_FEATURED = 'dashboard-widgets',
-  SAFE_CLAIMING_APP = 'safe-claiming-app',
+  SAFE_GOVERNANCE_APP = 'safe-governance-app',
   WALLET_CONNECT = 'wallet-connect',
+  // TODO: Remove safe-claiming-app when we remove the old claiming app
+  SAFE_CLAIMING_APP = 'safe-claiming-app',
 }
