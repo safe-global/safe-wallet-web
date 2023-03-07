@@ -24,6 +24,7 @@ import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
+import { FEATURES, hasFeature } from '@/utils/chains'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -86,6 +87,9 @@ const SignOrExecuteForm = ({
 
   // The transaction will be executed through relaying
   const willRelay = willExecute && executionMethod === ExecutionType.RELAYER
+
+  // Chain has relaying feature
+  const canRelay = currentChain && hasFeature(currentChain, FEATURES.RELAYING)
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -268,7 +272,7 @@ const SignOrExecuteForm = ({
 
         {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
 
-        {willExecute && (
+        {canRelay && willExecute && (
           <ExecutionMethod
             walletLabel={wallet?.label || ''}
             executionMethod={executionMethod}
@@ -284,7 +288,7 @@ const SignOrExecuteForm = ({
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
           gasLimitError={gasLimitError}
-          willRelay={willRelay}
+          willRelay={canRelay && willRelay}
         />
 
         <TxSimulation
