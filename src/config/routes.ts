@@ -1,10 +1,14 @@
 export const AppRoutes = {
   '404': '/404',
   welcome: '/welcome',
+  terms: '/terms',
+  privacy: '/privacy',
   index: '/',
+  imprint: '/imprint',
   import: '/import',
   home: '/home',
   environmentVariables: '/environment-variables',
+  cookie: '/cookie',
   addressBook: '/address-book',
   _offline: '/_offline',
   apps: {
