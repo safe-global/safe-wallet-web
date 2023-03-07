@@ -1,13 +1,11 @@
+import { getSafeGelatoRelayServiceUrl } from '@/services/tx/sponsoredCall'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { Errors, logError } from '@/services/exceptions'
 
-// TODO: replace once the relay-service is deployed
-const RELAY_LIMIT_BASE_URL = 'http://localhost:3001/v1/relay'
-
 const fetchRemainingRelays = async (chainId: string, safeAddress: string): Promise<number | undefined> => {
-  const url = `${RELAY_LIMIT_BASE_URL}/${chainId}/${safeAddress}`
+  const url = `${getSafeGelatoRelayServiceUrl()}/${chainId}/${safeAddress}`
 
   try {
     const res = await fetch(url)

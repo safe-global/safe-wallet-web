@@ -1,3 +1,4 @@
+import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/config/constants'
 import { type SafeTransactionData } from '@safe-global/safe-core-sdk-types'
 
 // TODO: import type from relay-service
@@ -8,7 +9,9 @@ export type SponsoredCallPayload = {
   gasLimit?: string | number
 }
 
-const SPONSORED_CALL_URL = 'http://localhost:3001/v1/relay'
+export const getSafeGelatoRelayServiceUrl = () => {
+  return `${SAFE_GELATO_RELAY_SERVICE_URL}/v1/relay`
+}
 
 export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId: string }> => {
   const requestObject: RequestInit = {
@@ -19,7 +22,7 @@ export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId:
     body: JSON.stringify(tx),
   }
 
-  const data = await fetch(SPONSORED_CALL_URL, requestObject).then((res) => {
+  const data = await fetch(getSafeGelatoRelayServiceUrl(), requestObject).then((res) => {
     if (res.ok) {
       return res.json()
     }
