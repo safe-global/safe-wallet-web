@@ -275,7 +275,6 @@ export const dispatchSafeAppsTx = async (safeTx: SafeTransaction, safeAppRequest
 export const dispatchTxRelay = async (
   safeTx: SafeTransaction,
   safe: SafeInfo,
-  safeAddress: string,
   txId: string,
   gasLimit?: string | number,
 ) => {
@@ -296,7 +295,7 @@ export const dispatchTxRelay = async (
   ])
 
   try {
-    const relayResponse = await sponsoredCall({ chainId: safe.chainId, to: safeAddress, data, gasLimit })
+    const relayResponse = await sponsoredCall({ chainId: safe.chainId, to: safe.address.value, data, gasLimit })
     const taskId = relayResponse.taskId
 
     if (!taskId) {

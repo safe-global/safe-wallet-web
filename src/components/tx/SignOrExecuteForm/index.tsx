@@ -205,7 +205,7 @@ const SignOrExecuteForm = ({
       throw new Error('Transaction could not be proposed')
     }
 
-    dispatchTxRelay(safeTx, safe, safeAddress, id, gasLimit)
+    dispatchTxRelay(safeTx, safe, id, gasLimit)
   }
 
   // On modal submit

@@ -64,13 +64,13 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
       case 'Blacklisted':
         txDispatch(TxEvent.FAILED, {
           txId,
-          error: new Error(`Relayed transaction was blacklisted by Relay provider`),
+          error: new Error(`Relayed transaction was blacklisted by relay provider.`),
         })
         return
       case 'Cancelled':
         txDispatch(TxEvent.FAILED, {
           txId,
-          error: new Error(`Relayed transaction was cancelled by Relay provider`),
+          error: new Error(`Relayed transaction was cancelled by relay provider.`),
         })
         return
       case 'NotFound':

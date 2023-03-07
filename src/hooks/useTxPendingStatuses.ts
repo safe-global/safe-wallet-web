@@ -46,6 +46,7 @@ const useTxMonitor = (): void => {
 
       if (isProcessing) {
         waitForTx(provider, txId, txHash)
+        continue
       }
 
       if (isRelaying) {
