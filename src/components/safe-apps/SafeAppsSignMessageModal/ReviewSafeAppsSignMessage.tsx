@@ -18,10 +18,10 @@ import type { SafeAppsSignMessageParams } from '@/components/safe-apps/SafeAppsS
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
-import useTxSender from '@/hooks/useTxSender'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
+import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams
@@ -31,7 +31,6 @@ const ReviewSafeAppsSignMessage = ({
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const chainId = useChainId()
-  const { createTx, dispatchSafeAppsTx } = useTxSender()
   const [submitError, setSubmitError] = useState<Error>()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
@@ -74,7 +73,7 @@ const ReviewSafeAppsSignMessage = ({
       data: txData || '0x',
       operation: OperationType.DelegateCall,
     })
-  }, [message, createTx])
+  }, [message])
 
   const handleSubmit = async () => {
     setSubmitError(undefined)

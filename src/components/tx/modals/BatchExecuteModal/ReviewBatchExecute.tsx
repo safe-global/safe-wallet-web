@@ -4,11 +4,9 @@ import { getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeC
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { Button, DialogContent, Typography } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { useMemo, useState } from 'react'
-import useTxSender from '@/hooks/useTxSender'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { Errors, logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -16,14 +14,15 @@ import type { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
+import { dispatchBatchExecution } from '@/services/tx/tx-sender'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
-  const provider = useWeb3()
-  const { dispatchBatchExecution } = useTxSender()
+  const wallet = useWallet()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -47,13 +46,13 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!provider || !multiSendTxData || !multiSendContract || !txsWithDetails) return
+    if (!wallet || !multiSendTxData || !multiSendContract || !txsWithDetails) return
 
     setIsSubmittable(false)
     setSubmitError(undefined)
 
     try {
-      await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, provider)
+      await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, wallet, safe.chainId)
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)

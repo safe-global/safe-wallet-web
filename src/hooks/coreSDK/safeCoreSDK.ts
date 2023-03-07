@@ -1,5 +1,5 @@
 import chains from '@/config/chains'
-import { getWeb3 } from '@/hooks/wallets/web3'
+import { getWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import ExternalStore from '@/services/ExternalStore'
 import { invariant } from '@/utils/helpers'
 import { Web3Provider } from '@ethersproject/providers'
@@ -38,6 +38,17 @@ export const createEthersAdapter = (provider = getWeb3()) => {
   })
 }
 
+export const createReadOnlyEthersAdapter = (provider = getWeb3ReadOnly()) => {
+  if (!provider) {
+    throw new Error('Unable to create `EthersAdapter` without a provider')
+  }
+
+  return new EthersAdapter({
+    ethers,
+    signerOrProvider: provider,
+  })
+}
+
 // Safe Core SDK
 export const initSafeSDK = async (
   provider: EIP1193Provider,
@@ -54,6 +65,20 @@ export const initSafeSDK = async (
   const ethersProvider = new Web3Provider(provider)
   return Safe.create({
     ethAdapter: createEthersAdapter(ethersProvider),
+    safeAddress,
+    isL1SafeMasterCopy,
+  })
+}
+
+export const initReadOnlySafeSDK = async (chainId: string, safeAddress: string, safeVersion: string): Promise<Safe> => {
+  let isL1SafeMasterCopy = chainId === chains.eth
+  // Legacy Safe contracts
+  if (isLegacyVersion(safeVersion)) {
+    isL1SafeMasterCopy = true
+  }
+
+  return Safe.create({
+    ethAdapter: createReadOnlyEthersAdapter(),
     safeAddress,
     isL1SafeMasterCopy,
   })

@@ -15,7 +15,8 @@ import {
 } from '.'
 import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
-import { Web3Provider } from '@ethersproject/providers'
+import { type ConnectedWallet } from '@/services/onboard'
+import { type EIP1193Provider } from '@web3-onboard/core'
 
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -233,6 +234,12 @@ describe('txSender', () => {
   })
 
   describe('dispatchTxSigning', () => {
+    const mockProvider = {
+      request: jest.fn,
+    } as unknown as EIP1193Provider
+
+    const mockWallet: ConnectedWallet = { address: '', chainId: '', label: '', provider: mockProvider }
+
     it('should sign a tx', async () => {
       const tx = await createTx({
         to: '0x123',
@@ -241,7 +248,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+      const signedTx = await dispatchTxSigning(mockWallet, '5', tx, '1.3.0', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
 
@@ -262,7 +269,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, '1.0.0', '0x345')
+      const signedTx = await dispatchTxSigning(mockWallet, '5', tx, '1.0.0', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -283,7 +290,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, null, '0x345')
+      const signedTx = await dispatchTxSigning(mockWallet, '5', tx, null, '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -306,7 +313,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+      const signedTx = await dispatchTxSigning(mockWallet, '5', tx, '1.3.0', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -332,7 +339,7 @@ describe('txSender', () => {
       let signedTx
 
       try {
-        signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+        signedTx = await dispatchTxSigning(mockWallet, '5', tx, '1.3.0', '0x345')
       } catch (error) {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -363,7 +370,7 @@ describe('txSender', () => {
       let signedTx
 
       try {
-        signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+        signedTx = await dispatchTxSigning(mockWallet, '5', tx, '1.3.0', '0x345')
       } catch (error) {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -381,7 +388,11 @@ describe('txSender', () => {
   })
 
   describe('dispatchTxExecution', () => {
-    const mockProvider: Web3Provider = new Web3Provider(jest.fn())
+    const mockProvider = {
+      request: jest.fn,
+    } as unknown as EIP1193Provider
+
+    const mockWallet: ConnectedWallet = { address: '', chainId: '', label: '', provider: mockProvider }
 
     it('should execute a tx', async () => {
       const txId = 'tx_id_123'
@@ -393,7 +404,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
+      await dispatchTxExecution(safeTx, mockWallet, {}, txId, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -413,7 +424,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(safeTx, mockProvider, {}, txId)).rejects.toThrow('error')
+      await expect(dispatchTxExecution(safeTx, mockWallet, {}, txId, '5')).rejects.toThrow('error')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error') })
@@ -437,7 +448,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
+      await dispatchTxExecution(safeTx, mockWallet, {}, txId, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -466,7 +477,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
+      await dispatchTxExecution(safeTx, mockWallet, {}, txId, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -498,7 +509,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
+      await dispatchTxExecution(safeTx, mockWallet, {}, txId, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })

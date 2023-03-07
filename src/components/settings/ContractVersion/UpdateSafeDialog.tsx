@@ -5,7 +5,6 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 import TxModal from '@/components/tx/TxModal'
 
-import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -16,6 +15,7 @@ import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import ExternalLink from '@/components/common/ExternalLink'
+import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
 
 const UpdateSafeSteps: TxStepperProps['steps'] = [
   {
@@ -44,14 +44,13 @@ const UpdateSafeDialog = () => {
 const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: () => void }) => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
-  const { createMultiSendCallOnlyTx } = useTxSender()
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!chain || !safeLoaded) return
 
     const txs = createUpdateSafeTxs(safe, chain)
     return createMultiSendCallOnlyTx(txs)
-  }, [chain, safe, safeLoaded, createMultiSendCallOnlyTx])
+  }, [chain, safe, safeLoaded])
 
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>

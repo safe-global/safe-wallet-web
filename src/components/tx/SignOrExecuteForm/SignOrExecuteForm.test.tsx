@@ -4,7 +4,6 @@ import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useGasLimitHook from '@/hooks/useGasLimit'
 import * as txSenderDispatch from '@/services/tx/tx-sender/dispatch'
-import * as txSender from '@/hooks/useTxSender'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as walletUtils from '@/hooks/wallets/wallets'
 import * as web3 from '@/hooks/wallets/web3'
@@ -17,7 +16,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
-import type { NullableTxSenderFunctions } from '@/hooks/useTxSender'
 
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
@@ -179,26 +177,21 @@ describe('SignOrExecuteForm', () => {
     })
 
     it('hides the execution validation error', () => {
-      jest.spyOn(useIsValidExecutionHook, 'default').mockReturnValue({
-        isValidExecution: undefined,
-        executionValidationError: new Error('Error validating execution'),
-        isValidExecutionLoading: false,
+      jest.spyOn(useIsValidExecutionHook, 'isValidExecution').mockImplementation(() => {
+        throw new Error('Error validating execution')
       })
 
       const mockTx = createSafeTx()
       const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-      expect(
-        result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
-      ).toBeInTheDocument()
+      const submitButton = result.getByText('Submit')
 
       act(() => {
-        fireEvent.click(result.getByText('Execute transaction'))
+        expect(submitButton).not.toBeDisabled()
+        fireEvent.click(submitButton)
       })
 
-      expect(
-        result.queryByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
-      ).not.toBeInTheDocument()
+      expect(result.getByText('Error submitting the transaction. Please try again.')).toBeInTheDocument()
     })
   })
 
@@ -370,13 +363,11 @@ describe('SignOrExecuteForm', () => {
 
   it('executes a transaction', async () => {
     const executionSpy = jest.fn()
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchTxProposal: jest.fn(() => Promise.resolve({})),
-          dispatchTxExecution: executionSpy,
-        } as unknown as NullableTxSenderFunctions),
-    )
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxProposal')
+      .mockImplementation(jest.fn(() => Promise.resolve({} as TransactionDetails)))
+
+    jest.spyOn(txSenderDispatch, 'dispatchTxExecution').mockImplementation(executionSpy)
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
@@ -393,16 +384,11 @@ describe('SignOrExecuteForm', () => {
   it('signs a transactions', async () => {
     const mockTx = createSafeTx()
 
-    const signSpy = jest.fn(() => Promise.resolve({}))
-    const proposeSpy = jest.fn(() => Promise.resolve({}))
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchTxSigning: signSpy,
-          dispatchTxProposal: proposeSpy,
-        } as unknown as NullableTxSenderFunctions),
-    )
+    const signSpy = jest.fn(() => Promise.resolve({} as SafeTransaction))
+    const proposeSpy = jest.fn(() => Promise.resolve({} as TransactionDetails))
 
+    jest.spyOn(txSenderDispatch, 'dispatchTxSigning').mockImplementation(signSpy)
+    jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(proposeSpy)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(false))
 
     const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
@@ -420,16 +406,11 @@ describe('SignOrExecuteForm', () => {
   it('smart contract wallets have to propose when creating a tx with an on-chain signature', async () => {
     const mockTx = createSafeTx()
 
-    const onChainSignSpy = jest.fn(() => Promise.resolve({}))
-    const proposeSpy = jest.fn(() => Promise.resolve({}))
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchOnChainSigning: onChainSignSpy,
-          dispatchTxProposal: proposeSpy,
-        } as unknown as NullableTxSenderFunctions),
-    )
+    const onChainSignSpy = jest.fn(() => Promise.resolve())
+    const proposeSpy = jest.fn(() => Promise.resolve({} as TransactionDetails))
 
+    jest.spyOn(txSenderDispatch, 'dispatchOnChainSigning').mockImplementation(onChainSignSpy)
+    jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(proposeSpy)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
     const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
@@ -447,16 +428,11 @@ describe('SignOrExecuteForm', () => {
   it('smart contract wallets should not propose when on-chain signing an existing transactions', async () => {
     const mockTx = createSafeTx()
 
-    const onChainSignSpy = jest.fn(() => Promise.resolve({}))
-    const proposeSpy = jest.fn(() => Promise.resolve({}))
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchOnChainSigning: onChainSignSpy,
-          dispatchTxProposal: proposeSpy,
-        } as unknown as NullableTxSenderFunctions),
-    )
+    const onChainSignSpy = jest.fn(() => Promise.resolve())
+    const proposeSpy = jest.fn(() => Promise.resolve({} as TransactionDetails))
 
+    jest.spyOn(txSenderDispatch, 'dispatchOnChainSigning').mockImplementation(onChainSignSpy)
+    jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(proposeSpy)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
     const result = render(<SignOrExecuteForm txId="0x123" onSubmit={jest.fn} safeTx={mockTx} />)
@@ -472,12 +448,9 @@ describe('SignOrExecuteForm', () => {
   })
 
   it('displays an error if execution submission fails', async () => {
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchTxExecution: jest.fn(() => Promise.reject('Error while dispatching')),
-        } as unknown as NullableTxSenderFunctions),
-    )
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxExecution')
+      .mockImplementation(jest.fn(() => Promise.reject('Error while dispatching')))
 
     const mockTx = createSafeTx()
     const result = render(

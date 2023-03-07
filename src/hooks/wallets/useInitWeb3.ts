@@ -12,19 +12,16 @@ export const useInitWeb3 = () => {
   const customRpc = useAppSelector(selectRpc)
 
   useEffect(() => {
-    if (!chain || !wallet || chain.chainId !== wallet.chainId) {
-      return
-    }
+    if (!wallet) return
+
     const web3 = createWeb3(wallet.provider)
     setWeb3(web3)
-  }, [chain, wallet])
+  }, [wallet])
 
   useEffect(() => {
-    if (!chain) {
-      return
-    }
+    if (!chain) return
+
     const web3ReadOnly = createWeb3ReadOnly(chain.rpcUri, customRpc?.[chain.chainId])
     setWeb3ReadOnly(web3ReadOnly)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chain?.chainId, customRpc])
+  }, [chain, customRpc])
 }
