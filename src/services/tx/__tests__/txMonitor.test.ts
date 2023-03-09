@@ -3,10 +3,20 @@ import * as txEvents from '@/services/tx/txEvents'
 import * as txMonitor from '@/services/tx/txMonitor'
 
 import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
+import { act } from '@testing-library/react'
+import { POLLING_INTERVAL } from '@/config/constants'
 
-const { waitForTx } = txMonitor
+const { waitForTx, waitForRelayedTx } = txMonitor
 
 const provider = new JsonRpcProvider()
+
+const setupFetchStub = (data: any) => (_url: string) => {
+  return Promise.resolve({
+    json: () => Promise.resolve(data),
+    status: 200,
+    ok: true,
+  })
+}
 
 describe('txMonitor', () => {
   let txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
@@ -92,6 +102,143 @@ describe('txMonitor', () => {
       await waitForTx(provider, '0x0', '0x0')
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: new Error('Test error.') })
+    })
+  })
+
+  describe('waitForRelayedTx', () => {
+    it('expects setTimeout to be called if taskStatus is a pending state', async () => {
+      const mockData = {
+        task: {
+          taskState: 'CheckPending',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+      const mockSetTimeout = jest.spyOn(global, 'setTimeout')
+      // const mockCheckTxStatus = jest.spyOn(global, 'checkTxStatus')
+
+      waitForRelayedTx('0x1', '0x2')
+
+      await act(() => {
+        jest.advanceTimersByTime(2_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(mockSetTimeout).toHaveBeenCalledWith(expect.any(Function), 2000)
+      expect(mockSetTimeout).toHaveBeenCalledWith(expect.any(Function), POLLING_INTERVAL)
+    })
+
+    it("emits a PROCESSED event if taskStatus 'ExecSuccess'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'ExecSuccess',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      waitForRelayedTx('0x1', '0x2')
+
+      await act(() => {
+        jest.advanceTimersByTime(2_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2' })
+    })
+
+    it("emits a REVERTED event if taskStatus 'ExecReverted'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'ExecReverted',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      waitForRelayedTx('0x1', '0x2')
+
+      await act(() => {
+        jest.advanceTimersByTime(2_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
+        txId: '0x2',
+        error: new Error(`Relayed transaction reverted by EVM.`),
+      })
+    })
+
+    it("emits a FAILED event if taskStatus 'Blacklisted'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'Blacklisted',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      waitForRelayedTx('0x1', '0x2')
+
+      await act(() => {
+        jest.advanceTimersByTime(2_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+        txId: '0x2',
+        error: new Error(`Relayed transaction was blacklisted by relay provider.`),
+      })
+    })
+
+    it("emits a FAILED event if taskStatus 'Cancelled'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'Cancelled',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      waitForRelayedTx('0x1', '0x2')
+
+      await act(() => {
+        jest.advanceTimersByTime(2_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+        txId: '0x2',
+        error: new Error(`Relayed transaction was cancelled by relay provider.`),
+      })
+    })
+
+    it("emits a FAILED event if taskStatus 'NotFound'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'NotFound',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      waitForRelayedTx('0x1', '0x2')
+
+      await act(() => {
+        jest.advanceTimersByTime(2_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+        txId: '0x2',
+        error: new Error(`Relayed transaction was not found.`),
+      })
     })
   })
 })

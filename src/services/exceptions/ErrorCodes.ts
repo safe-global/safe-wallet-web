@@ -31,6 +31,7 @@ enum ErrorCodes {
   _620 = '620: Error loading chains',
   _630 = '630: Error fetching remaining hourly relays',
   _631 = '631: Transaction failed to be relayed',
+  _632 = '632: Error fetching task status',
 
   _700 = '700: Failed to read from local/session storage',
   _701 = '701: Failed to write to local/session storage',

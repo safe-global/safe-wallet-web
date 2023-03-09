@@ -1,10 +1,10 @@
 import { didRevert } from '@/utils/ethers-utils'
-import { GelatoRelay } from '@gelatonetwork/relay-sdk'
 
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { POLLING_INTERVAL } from '@/config/constants'
+import { Errors, logError } from '@/services/exceptions'
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
 export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string) => {
@@ -48,17 +48,49 @@ enum TaskState {
   NotFound = 'NotFound',
 }
 
+type TransactionStatusResponse = {
+  chainId: number
+  taskId: string
+  taskState: TaskState
+  creationDate: string
+  lastCheckDate?: string
+  lastCheckMessage?: string
+  transactionHash?: string
+  blockNumber?: number
+  executionDate?: string
+}
+
+const TASK_STATUS_URL = 'https://relay.gelato.digital/tasks/status'
+const getTaskTrackingUrl = (taskId: string) => {
+  return TASK_STATUS_URL + '/' + taskId
+}
+
 export const waitForRelayedTx = (taskId: string, txId: string): void => {
   // A small delay is necessary before the initial polling as the task status
   // is not immediately available after the sponsoredCall request
   const INITIAL_POLLING_DELAY = 2_000
 
-  const gelato = new GelatoRelay()
-
   const checkTxStatus = async () => {
-    const taskStatus = await gelato.getTaskStatus(taskId)
+    const url = getTaskTrackingUrl(taskId)
 
-    switch (taskStatus?.taskState) {
+    let response
+    try {
+      response = await fetch(url).then((res) => {
+        if (res.ok) {
+          return res.json()
+        }
+
+        return res.json().then((data) => {
+          throw new Error(`${res.status} - ${res.statusText}: ${data?.error?.message}`)
+        })
+      })
+    } catch (error) {
+      logError(Errors._632, (error as Error).message)
+    }
+
+    const task = response.task as TransactionStatusResponse
+
+    switch (task.taskState) {
       case TaskState.CheckPending:
       case TaskState.ExecPending:
       case TaskState.WaitingForConfirmation:
