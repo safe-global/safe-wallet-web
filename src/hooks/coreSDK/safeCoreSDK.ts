@@ -12,6 +12,7 @@ import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
+import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 
 export const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
@@ -42,35 +43,35 @@ export const createEthersAdapter = (provider = getWeb3()) => {
 
 // Safe Core SDK
 export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Promise<Safe | undefined> => {
-  const masterCopy = safe.implementation.value
+  const ethersProvider = new Web3Provider(provider)
 
   const chainId = safe.chainId
   const safeAddress = safe.address.value
-  let safeVersion = safe.version
+  const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, ethersProvider).VERSION())
 
   let isL1SafeMasterCopy = chainId === chains.eth
 
-  const ethersProvider = new Web3Provider(provider)
+  const masterCopy = safe.implementation.value
 
-  // If it is an official deployed master copy we should still initiate the safeSDK
-  if (safeVersion === null) {
-    safeVersion = await Gnosis_safe__factory.connect(safeAddress, ethersProvider).VERSION()
+  const isValid = await isValidMasterCopy(chainId, masterCopy)
 
+  // If it is an official deployment we should still initiate the safeSDK
+  if (!isValid) {
     const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
     const safeL2Deployment = getSafeL2SingletonDeployment({ network: chainId, version: safeVersion })
 
     isL1SafeMasterCopy = masterCopy === safeL1Deployment?.defaultAddress
     const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.defaultAddress
 
+    // Unknown deployment, which we do not want to support
     if (!isL1SafeMasterCopy && !isL2SafeMasterCopy) {
-      // Unknown masterCopy, which we do not want to support
       return Promise.resolve(undefined)
     }
-  } else {
-    // Legacy Safe contracts
-    if (isLegacyVersion(safeVersion)) {
-      isL1SafeMasterCopy = true
-    }
+  }
+
+  // Legacy Safe contracts
+  if (isLegacyVersion(safeVersion)) {
+    isL1SafeMasterCopy = true
   }
 
   return Safe.create({
