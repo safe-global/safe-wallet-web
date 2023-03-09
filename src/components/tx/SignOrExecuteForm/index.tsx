@@ -25,7 +25,7 @@ import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
 import { FEATURES, hasFeature } from '@/utils/chains'
-import useWalletCanRelay from '@/hooks/useCanRelayTx'
+import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
