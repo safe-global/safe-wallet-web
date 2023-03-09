@@ -37,6 +37,17 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
   }
 }
 
+enum TaskState {
+  CheckPending = 'CheckPending',
+  ExecPending = 'ExecPending',
+  ExecSuccess = 'ExecSuccess',
+  ExecReverted = 'ExecReverted',
+  WaitingForConfirmation = 'WaitingForConfirmation',
+  Blacklisted = 'Blacklisted',
+  Cancelled = 'Cancelled',
+  NotFound = 'NotFound',
+}
+
 export const waitForRelayedTx = (taskId: string, txId: string): void => {
   // A small delay is necessary before the initial polling as the task status
   // is not immediately available after the sponsoredCall request
@@ -48,36 +59,36 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
     const taskStatus = await gelato.getTaskStatus(taskId)
 
     switch (taskStatus?.taskState) {
-      case 'CheckPending':
-      case 'ExecPending':
-      case 'WaitingForConfirmation':
+      case TaskState.CheckPending:
+      case TaskState.ExecPending:
+      case TaskState.WaitingForConfirmation:
         // still pending we set a timeout to check again
         setTimeout(checkTxStatus, POLLING_INTERVAL)
         return
-      case 'ExecSuccess':
+      case TaskState.ExecSuccess:
         txDispatch(TxEvent.PROCESSED, {
           txId,
         })
         return
-      case 'ExecReverted':
+      case TaskState.ExecReverted:
         txDispatch(TxEvent.REVERTED, {
           txId,
           error: new Error(`Relayed transaction reverted by EVM.`),
         })
         return
-      case 'Blacklisted':
+      case TaskState.Blacklisted:
         txDispatch(TxEvent.FAILED, {
           txId,
           error: new Error(`Relayed transaction was blacklisted by relay provider.`),
         })
         return
-      case 'Cancelled':
+      case TaskState.Cancelled:
         txDispatch(TxEvent.FAILED, {
           txId,
           error: new Error(`Relayed transaction was cancelled by relay provider.`),
         })
         return
-      case 'NotFound':
+      case TaskState.NotFound:
       default:
         txDispatch(TxEvent.FAILED, {
           txId,
