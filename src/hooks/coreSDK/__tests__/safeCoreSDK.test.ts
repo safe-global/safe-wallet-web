@@ -6,8 +6,11 @@ import {
 } from '@safe-global/safe-core-sdk/dist/src/contracts/safeDeploymentContracts'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { EIP1193Provider } from '@web3-onboard/core'
+import * as safeContracts from '@/services/contracts/safeContracts'
 
 import { isValidSafeVersion, initSafeSDK } from '../safeCoreSDK'
+
+jest.mock('@/services/contracts/safeContracts')
 
 jest.mock('@safe-global/safe-core-sdk/dist/src/contracts/safeDeploymentContracts')
 
@@ -98,6 +101,8 @@ describe('safeCoreSDK', () => {
 
     describe('Supported contracts', () => {
       it('should return an SDK instance', async () => {
+        jest.spyOn(safeContracts, 'isValidMasterCopy').mockResolvedValue(true)
+
         const chainId = '1'
         const version = '1.3.0'
 
@@ -114,6 +119,8 @@ describe('safeCoreSDK', () => {
       })
 
       it('should return an L1 SDK instance for mainnet', async () => {
+        jest.spyOn(safeContracts, 'isValidMasterCopy').mockResolvedValue(true)
+
         const chainId = '1'
         const version = '1.3.0'
 
@@ -131,6 +138,8 @@ describe('safeCoreSDK', () => {
       })
 
       it('should return an L2 SDK instance for L2 chain', async () => {
+        jest.spyOn(safeContracts, 'isValidMasterCopy').mockResolvedValue(true)
+
         const chainId = '137' // Polygon
         const version = '1.3.0'
 
@@ -148,6 +157,8 @@ describe('safeCoreSDK', () => {
       })
 
       it('should return an L1 SDK instance for legacy Safes, regardless of chain', async () => {
+        jest.spyOn(safeContracts, 'isValidMasterCopy').mockResolvedValue(true)
+
         const chainId = '137' // Polygon
         const version = '1.0.0'
 
@@ -168,6 +179,8 @@ describe('safeCoreSDK', () => {
     describe('Unsupported contracts', () => {
       // Note: backend returns a null version for unsupported contracts
       it('should retrieve the Safe version from the contract if not provided', async () => {
+        jest.spyOn(safeContracts, 'isValidMasterCopy').mockResolvedValue(false)
+
         const chainId = '1'
         const version = '1.3.0'
 
@@ -184,6 +197,8 @@ describe('safeCoreSDK', () => {
       })
 
       it('should return an L1 SDK instance for L1 contracts not deployed on mainnet', async () => {
+        jest.spyOn(safeContracts, 'isValidMasterCopy').mockResolvedValue(false)
+
         const chainId = '137' // Polygon
         const version = '1.3.0'
 
@@ -201,6 +216,8 @@ describe('safeCoreSDK', () => {
       })
 
       it('should return undefined for unsupported mastercopies', async () => {
+        jest.spyOn(safeContracts, 'isValidMasterCopy').mockResolvedValue(false)
+
         const chainId = '1'
         const version = '1.3.0'
 
