@@ -68,6 +68,9 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
   // is not immediately available after the sponsoredCall request
   const INITIAL_POLLING_DELAY = 2_000
 
+  const TIMEOUT_MINUTES = 3
+  let timeoutId: NodeJS.Timeout
+
   const checkTxStatus = async () => {
     const url = getTaskTrackingUrl(taskId)
 
@@ -86,14 +89,14 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
       logError(Errors._632, (error as Error).message)
     }
 
-    const task = response.task as TransactionStatusResponse
+    const task = response?.task as TransactionStatusResponse
 
     switch (task.taskState) {
       case TaskState.CheckPending:
       case TaskState.ExecPending:
       case TaskState.WaitingForConfirmation:
         // still pending we set a timeout to check again
-        setTimeout(checkTxStatus, POLLING_INTERVAL)
+        timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
         return
       case TaskState.ExecSuccess:
         txDispatch(TxEvent.PROCESSED, {
@@ -129,4 +132,13 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
   }
 
   setTimeout(checkTxStatus, INITIAL_POLLING_DELAY)
+  setTimeout(() => {
+    clearTimeout(timeoutId)
+    txDispatch(TxEvent.FAILED, {
+      txId,
+      error: new Error(
+        `Transaction not relayed in ${TIMEOUT_MINUTES} minutes. Be aware that it might still be relayed.`,
+      ),
+    })
+  }, TIMEOUT_MINUTES * 60_000)
 }

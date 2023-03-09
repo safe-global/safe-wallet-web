@@ -240,5 +240,25 @@ describe('txMonitor', () => {
         error: new Error(`Relayed transaction was not found.`),
       })
     })
+
+    it('emits a FAILED event if the tx relaying timed out', async () => {
+      const mockData = {
+        task: {
+          taskState: 'WaitingForConfirmation',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      waitForRelayedTx('0x1', '0x2')
+
+      await act(() => {
+        jest.advanceTimersByTime(2_000 + 1 + 3 * 60_000 + 1)
+      })
+
+      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+        txId: '0x2',
+        error: new Error('Transaction not relayed in 3 minutes. Be aware that it might still be relayed.'),
+      })
+    })
   })
 })
