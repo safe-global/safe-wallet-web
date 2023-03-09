@@ -9,10 +9,6 @@ export type SponsoredCallPayload = {
   gasLimit?: string | number
 }
 
-export const getSafeGelatoRelayServiceUrl = () => {
-  return `${SAFE_GELATO_RELAY_SERVICE_URL}/v1/relay`
-}
-
 export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId: string }> => {
   const requestObject: RequestInit = {
     method: 'POST',
@@ -22,7 +18,7 @@ export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId:
     body: JSON.stringify(tx),
   }
 
-  const data = await fetch(getSafeGelatoRelayServiceUrl(), requestObject).then((res) => {
+  const data = await fetch(SAFE_GELATO_RELAY_SERVICE_URL, requestObject).then((res) => {
     if (res.ok) {
       return res.json()
     }

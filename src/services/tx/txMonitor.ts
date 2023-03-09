@@ -61,9 +61,7 @@ type TransactionStatusResponse = {
 }
 
 const TASK_STATUS_URL = 'https://relay.gelato.digital/tasks/status'
-const getTaskTrackingUrl = (taskId: string) => {
-  return TASK_STATUS_URL + '/' + taskId
-}
+const getTaskTrackingUrl = (taskId: string) => `${TASK_STATUS_URL}/${taskId}`
 
 export const waitForRelayedTx = (taskId: string, txId: string): void => {
   // A small delay is necessary before the initial polling as the task status
