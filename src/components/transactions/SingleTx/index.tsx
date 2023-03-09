@@ -40,21 +40,17 @@ const SingleTx = () => {
   const transactionId = Array.isArray(id) ? id[0] : id
   const { safe, safeAddress } = useSafeInfo()
 
-  const [txDetails, txDetailsError] = useAsync<TransactionDetails>(
-    () => {
-      if (!transactionId || !safeAddress) return
+  const [txDetails, txDetailsError] = useAsync<TransactionDetails>(() => {
+    if (!transactionId || !safeAddress) return
 
-      return getTransactionDetails(safe.chainId, transactionId).then((details) => {
-        // If the transaction is not related to the current safe, throw an error
-        if (!sameAddress(details.safeAddress, safeAddress)) {
-          return Promise.reject(new Error('Transaction with this id was not found in this Safe'))
-        }
-        return details
-      })
-    },
-    [transactionId, safe.chainId, safe.txQueuedTag, safe.txHistoryTag, safeAddress],
-    false,
-  )
+    return getTransactionDetails(safe.chainId, transactionId).then((details) => {
+      // If the transaction is not related to the current safe, throw an error
+      if (!sameAddress(details.safeAddress, safeAddress)) {
+        return Promise.reject(new Error('Transaction with this id was not found in this Safe'))
+      }
+      return details
+    })
+  }, [transactionId, safe.chainId, safe.txQueuedTag, safe.txHistoryTag, safeAddress])
 
   if (txDetailsError) {
     return <ErrorMessage error={txDetailsError}>Failed to load transaction</ErrorMessage>

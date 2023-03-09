@@ -4,6 +4,7 @@ import ListItemText from '@mui/material/ListItemText'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import classnames from 'classnames'
 
 import css from './styles.module.css'
@@ -42,6 +43,7 @@ const SafeListItem = ({
   isAdded?: boolean
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
   const safeAddress = useSafeAddress()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const allAddressBooks = useAppSelector(selectAllAddressBooks)
@@ -80,7 +82,13 @@ const SafeListItem = ({
         )
       }
     >
-      <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
+      <Link
+        href={{
+          pathname: !safeAddress ? AppRoutes.home : router.pathname,
+          query: { ...router.query, safe: `${shortName}:${address}` },
+        }}
+        passHref
+      >
         <ListItemButton
           key={address}
           onClick={closeDrawer}
