@@ -80,7 +80,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit, gasLimitError }: Ga
       <AccordionDetails>
         {nonce !== undefined && <GasDetail isLoading={false} name="Safe transaction nonce" value={nonce.toString()} />}
 
-        {safeTxGas !== undefined && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
+        {!!safeTxGas && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
 
         {isExecution && (
           <>
