@@ -25,6 +25,7 @@ import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
 import { FEATURES, hasFeature } from '@/utils/chains'
+import useWalletCanRelay from '@/hooks/useCanRelayTx'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -88,8 +89,11 @@ const SignOrExecuteForm = ({
   // The transaction will be executed through relaying
   const willRelay = willExecute && executionMethod === ExecutionType.RELAYER
 
-  // Chain has relaying feature
-  const canRelay = currentChain && hasFeature(currentChain, FEATURES.RELAYING)
+  // SC wallets can relay fully signed transactions
+  const walletCanRelay = useWalletCanRelay(tx)
+
+  // Chain has relaying feature and tx can be relayed
+  const canRelay = currentChain && hasFeature(currentChain, FEATURES.RELAYING) && walletCanRelay
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -219,7 +223,7 @@ const SignOrExecuteForm = ({
     setSubmitError(undefined)
 
     try {
-      await (willRelay ? onRelay() : willExecute ? onExecute() : onSign())
+      await (canRelay && willRelay ? onRelay() : willExecute ? onExecute() : onSign())
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
