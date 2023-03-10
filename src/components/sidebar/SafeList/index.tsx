@@ -1,4 +1,4 @@
-import React, { Fragment, useState, type ReactElement } from 'react'
+import React, { Fragment, useState, type ReactElement, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import List from '@mui/material/List'
@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton'
 import SvgIcon from '@mui/material/SvgIcon'
 import Box from '@mui/material/Box'
 import { Link as MuiLink } from '@mui/material'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import AddIcon from '@/public/images/common/add.svg'
 import useChains from '@/hooks/useChains'
@@ -74,6 +75,16 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome
+
+  const getDestination = useCallback(
+    (chain: ChainInfo, address: string) => {
+      return {
+        pathname: isWelcomePage ? AppRoutes.home : router.pathname,
+        query: { ...router.query, safe: `${chain.shortName}:${address}` },
+      }
+    },
+    [isWelcomePage, router.pathname, router.query],
+  )
 
   return (
     <div className={css.container}>
@@ -157,18 +168,22 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
               {/* Added Safes */}
               <List className={css.list}>
-                {addedSafeEntriesOnChain.map(([address, { threshold, owners }]) => (
-                  <SafeListItem
-                    key={address}
-                    address={address}
-                    threshold={threshold}
-                    owners={owners.length}
-                    chainId={chain.chainId}
-                    closeDrawer={closeDrawer}
-                    shouldScrollToSafe
-                    isAdded
-                  />
-                ))}
+                {addedSafeEntriesOnChain.map(([address, { threshold, owners }]) => {
+                  const destination = getDestination(chain, address)
+                  return (
+                    <SafeListItem
+                      key={address}
+                      address={address}
+                      threshold={threshold}
+                      owners={owners.length}
+                      chainId={chain.chainId}
+                      closeDrawer={closeDrawer}
+                      destination={destination}
+                      shouldScrollToSafe
+                      isAdded
+                    />
+                  )
+                })}
 
                 {isCurrentChain &&
                   safeAddress &&
@@ -180,6 +195,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                       owners={safe.owners.length}
                       chainId={safe.chainId}
                       closeDrawer={closeDrawer}
+                      destination={{ pathname: router.pathname, query: router.query }}
                       shouldScrollToSafe
                     />
                   )}
@@ -197,15 +213,20 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
                   <Collapse key={chainId} in={isOpen}>
                     <List sx={{ py: 0 }}>
-                      {ownedSafesOnChain.map((address) => (
-                        <SafeListItem
-                          key={address}
-                          address={address}
-                          chainId={chain.chainId}
-                          closeDrawer={closeDrawer}
-                          shouldScrollToSafe={!addedSafesOnChain[address]}
-                        />
-                      ))}
+                      {ownedSafesOnChain.map((address) => {
+                        const destination = getDestination(chain, address)
+
+                        return (
+                          <SafeListItem
+                            key={address}
+                            address={address}
+                            chainId={chain.chainId}
+                            closeDrawer={closeDrawer}
+                            destination={destination}
+                            shouldScrollToSafe={!addedSafesOnChain[address]}
+                          />
+                        )
+                      })}
                     </List>
                   </Collapse>
                 </>

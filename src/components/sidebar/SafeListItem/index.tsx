@@ -4,7 +4,7 @@ import ListItemText from '@mui/material/ListItemText'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { type UrlObject } from 'url'
 import classnames from 'classnames'
 
 import css from './styles.module.css'
@@ -29,6 +29,7 @@ const SafeListItem = ({
   chainId,
   closeDrawer,
   shouldScrollToSafe,
+  destination,
   noActions = false,
   isAdded = false,
   ...rest
@@ -36,6 +37,7 @@ const SafeListItem = ({
   address: string
   chainId: string
   shouldScrollToSafe: boolean
+  destination: UrlObject
   closeDrawer?: () => void
   threshold?: string | number
   owners?: string | number
@@ -43,7 +45,6 @@ const SafeListItem = ({
   isAdded?: boolean
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
-  const router = useRouter()
   const safeAddress = useSafeAddress()
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const allAddressBooks = useAppSelector(selectAllAddressBooks)
@@ -82,13 +83,7 @@ const SafeListItem = ({
         )
       }
     >
-      <Link
-        href={{
-          pathname: !safeAddress ? AppRoutes.home : router.pathname,
-          query: { ...router.query, safe: `${shortName}:${address}` },
-        }}
-        passHref
-      >
+      <Link href={destination} passHref>
         <ListItemButton
           key={address}
           onClick={closeDrawer}
