@@ -185,10 +185,15 @@ describe('Assets > Coins', () => {
     })
 
     it('unhide hidden token', () => {
+      // Open hide token menu
       cy.contains('1 hidden token').click()
+      // uncheck dai token
       cy.contains('Dai').parents('tr').find('input[type="checkbox"]').click()
+      // apply changes
       cy.contains('Save').click()
+      // Dai token is visible again
       cy.contains('Dai')
+      // The menu button shows "Hide tokens" label again
       cy.contains('Hide tokens')
     })
   })
