@@ -26,7 +26,7 @@ describe('Assets > Coins', () => {
   describe('should have different tokens', () => {
     it(`should have ${ASSETS_LENGTH} entries in the table`, () => {
       // "Spam" tokens filtered
-      cy.get(balanceSingleRow).should('have.length', 2)
+      cy.get(balanceSingleRow).should('have.length', 3)
 
       // Enable all tokens
       cy.contains('div', 'Default tokens').click()
