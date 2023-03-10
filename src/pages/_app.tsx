@@ -2,6 +2,7 @@ import Sentry from '@/services/sentry' // needs to be imported first
 import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
+import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'
 import type { Theme } from '@mui/material/styles'
@@ -34,6 +35,9 @@ import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
 import useAdjustUrl from '@/hooks/useAdjustUrl'
+
+// Importing it dynamically to prevent hydration errors because we read the local storage
+const TermsBanner = dynamic(() => import('@/components/common/TermsBanner'), { ssr: false })
 
 import useSafeMessageNotifications from '@/hooks/useSafeMessageNotifications'
 import useSafeMessagePendingStatuses from '@/hooks/useSafeMessagePendingStatuses'
@@ -110,6 +114,7 @@ const WebCoreApp = ({
           </PageLayout>
 
           <CookieBanner />
+          <TermsBanner />
 
           <Notifications />
         </AppProviders>

@@ -14,7 +14,6 @@ import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import TxConfirmations from '../TxConfirmations'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsPending from '@/hooks/useIsPending'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette) => {
@@ -40,7 +39,6 @@ type TxSummaryProps = {
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
   const txStatusLabel = useTransactionStatus(tx)
   const isPending = useIsPending(tx.id)
   const isQueue = isTxQueued(tx.txStatus)
@@ -89,7 +87,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      {wallet && !isWrongChain && isQueue && (
+      {wallet && isQueue && (
         <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
           {awaitingExecution ? (
             <ExecuteTxButton txSummary={item.transaction} compact />

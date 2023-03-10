@@ -5,6 +5,7 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import TxModal from '@/components/tx/TxModal'
 import { ReviewRemoveGuard } from '@/components/settings/TransactionGuards/RemoveGuard/steps/ReviewRemoveGuard'
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
+import CheckWallet from '@/components/common/CheckWallet'
 
 export type RemoveGuardData = {
   address: string
@@ -26,9 +27,14 @@ export const RemoveGuard = ({ address }: { address: string }) => {
 
   return (
     <>
-      <IconButton onClick={() => setOpen(true)} color="error" size="small">
-        <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-      </IconButton>
+      <CheckWallet>
+        {(isOk) => (
+          <IconButton onClick={() => setOpen(true)} color="error" size="small" disabled={!isOk}>
+            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+          </IconButton>
+        )}
+      </CheckWallet>
+
       {open && <TxModal onClose={() => setOpen(false)} steps={RemoveGuardSteps} initialData={[initialData]} />}
     </>
   )

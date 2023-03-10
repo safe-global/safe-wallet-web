@@ -10,6 +10,7 @@ import { SetThresholdStep } from './DialogSteps/SetThresholdStep'
 import { ReviewRemoveOwnerTxStep } from './DialogSteps/ReviewRemoveOwnerTxStep'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import CheckWallet from '@/components/common/CheckWallet'
 
 export type RemoveOwnerData = {
   removedOwner: OwnerData
@@ -51,13 +52,18 @@ export const RemoveOwnerDialog = ({ owner }: { owner: OwnerData }) => {
 
   return (
     <div>
-      <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
-        <Tooltip title="Remove owner">
-          <IconButton onClick={() => setOpen(true)} size="small">
-            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </Track>
+      <CheckWallet>
+        {(isOk) => (
+          <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
+            <Tooltip title="Remove owner">
+              <IconButton onClick={() => setOpen(true)} size="small" disabled={!isOk}>
+                <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Track>
+        )}
+      </CheckWallet>
+
       {open && <TxModal wide onClose={handleClose} steps={RemoveOwnerSteps} initialData={[initialModalData]} />}
     </div>
   )

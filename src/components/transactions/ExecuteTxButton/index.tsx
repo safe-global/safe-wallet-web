@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvider'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const ExecuteTxButton = ({
   txSummary,
@@ -44,35 +45,39 @@ const ExecuteTxButton = ({
 
   return (
     <>
-      <Track {...TX_LIST_EVENTS.EXECUTE}>
-        {compact ? (
-          <Tooltip title="Execute" arrow placement="top">
-            <span>
-              <IconButton
+      <CheckWallet allowNonOwner>
+        {(isOk) => (
+          <Track {...TX_LIST_EVENTS.EXECUTE}>
+            {compact ? (
+              <Tooltip title="Execute" arrow placement="top">
+                <span>
+                  <IconButton
+                    onClick={onClick}
+                    onMouseEnter={onMouseEnter}
+                    onMouseLeave={onMouseLeave}
+                    color="primary"
+                    disabled={!isOk || isDisabled}
+                    size="small"
+                  >
+                    <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ) : (
+              <Button
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                color="primary"
-                disabled={isDisabled}
-                size="small"
+                variant="contained"
+                disabled={!isOk || isDisabled}
+                size="stretched"
               >
-                <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
-              </IconButton>
-            </span>
-          </Tooltip>
-        ) : (
-          <Button
-            onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            variant="contained"
-            disabled={isDisabled}
-            size="stretched"
-          >
-            Execute
-          </Button>
+                Execute
+              </Button>
+            )}
+          </Track>
         )}
-      </Track>
+      </CheckWallet>
 
       {open && <ExecuteTxModal onClose={() => setOpen(false)} initialData={[txSummary]} />}
     </>
