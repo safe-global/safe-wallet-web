@@ -1,10 +1,9 @@
-import { useEffect, useRef, type ReactElement } from 'react'
+import { useEffect, useRef, type ReactElement, type ComponentProps } from 'react'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Link from 'next/link'
-import { type UrlObject } from 'url'
 import classnames from 'classnames'
 
 import css from './styles.module.css'
@@ -37,7 +36,7 @@ const SafeListItem = ({
   address: string
   chainId: string
   shouldScrollToSafe: boolean
-  destination: UrlObject
+  destination: ComponentProps<typeof Link>['href']
   closeDrawer?: () => void
   threshold?: string | number
   owners?: string | number
