@@ -175,6 +175,24 @@ describe('Assets > Coins', () => {
     })
   })
 
+  describe('tokens can be manually hidden', () => {
+    it('hide single token', () => {
+      // Click hide Dai
+      cy.contains('Dai').parents('tr').find('button[aria-label="Hide asset"]').click()
+      // time to hide the asset
+      cy.wait(350)
+      cy.contains('Dai').should('not.exist')
+    })
+
+    it('unhide hidden token', () => {
+      cy.contains('1 hidden token').click()
+      cy.contains('Dai').parents('tr').find('input[type="checkbox"]').click()
+      cy.contains('Save').click()
+      cy.contains('Dai')
+      cy.contains('Hide tokens')
+    })
+  })
+
   describe.skip('pagination should work', () => {
     before(() => {
       // Open the Safe used for testing pagination
