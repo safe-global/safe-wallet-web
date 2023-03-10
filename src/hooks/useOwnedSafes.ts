@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { getOwnedSafes, type OwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
 
-import useChainId from '@/hooks/useChainId'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import useWallet from '@/hooks/wallets/useWallet'
 import useAsync from './useAsync'
 import { Errors, logError } from '@/services/exceptions'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 const CACHE_KEY = 'ownedSafes'
 
@@ -16,26 +16,26 @@ type OwnedSafesCache = {
 }
 
 const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
-  const chainId = useChainId()
+  const { safe } = useSafeInfo()
   const { address: walletAddress } = useWallet() || {}
   const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY)
 
   const [ownedSafes, error] = useAsync<OwnedSafes>(() => {
-    if (!chainId || !walletAddress) return
-    return getOwnedSafes(chainId, walletAddress)
-  }, [chainId, walletAddress])
+    if (!safe.chainId || !walletAddress) return
+    return getOwnedSafes(safe.chainId, walletAddress)
+  }, [safe.chainId, walletAddress])
 
   useEffect(() => {
-    if (!ownedSafes || !walletAddress || !chainId) return
+    if (!ownedSafes || !walletAddress || !safe.chainId) return
 
     setOwnedSafesCache((prev) => ({
       ...prev,
       [walletAddress]: {
         ...(prev?.[walletAddress] || {}),
-        [chainId]: ownedSafes.safes,
+        [safe.chainId]: ownedSafes.safes,
       },
     }))
-  }, [ownedSafes, setOwnedSafesCache, walletAddress, chainId])
+  }, [ownedSafes, setOwnedSafesCache, walletAddress, safe.chainId])
 
   useEffect(() => {
     if (error) {
