@@ -76,7 +76,11 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome
 
-  const getDestination = useCallback(
+  /**
+   * Navigate to the dashboard when selecting a safe on the welcome page,
+   * otherwise keep the current route
+   */
+  const getHref = useCallback(
     (chain: ChainInfo, address: string) => {
       return {
         pathname: isWelcomePage ? AppRoutes.home : router.pathname,
@@ -169,7 +173,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
               {/* Added Safes */}
               <List className={css.list}>
                 {addedSafeEntriesOnChain.map(([address, { threshold, owners }]) => {
-                  const destination = getDestination(chain, address)
+                  const href = getHref(chain, address)
                   return (
                     <SafeListItem
                       key={address}
@@ -178,7 +182,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                       owners={owners.length}
                       chainId={chain.chainId}
                       closeDrawer={closeDrawer}
-                      destination={destination}
+                      href={href}
                       shouldScrollToSafe
                       isAdded
                     />
@@ -195,7 +199,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                       owners={safe.owners.length}
                       chainId={safe.chainId}
                       closeDrawer={closeDrawer}
-                      destination={{ pathname: router.pathname, query: router.query }}
+                      href={{ pathname: router.pathname, query: router.query }}
                       shouldScrollToSafe
                     />
                   )}
@@ -214,7 +218,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                   <Collapse key={chainId} in={isOpen}>
                     <List sx={{ py: 0 }}>
                       {ownedSafesOnChain.map((address) => {
-                        const destination = getDestination(chain, address)
+                        const href = getHref(chain, address)
 
                         return (
                           <SafeListItem
@@ -222,7 +226,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                             address={address}
                             chainId={chain.chainId}
                             closeDrawer={closeDrawer}
-                            destination={destination}
+                            href={href}
                             shouldScrollToSafe={!addedSafesOnChain[address]}
                           />
                         )

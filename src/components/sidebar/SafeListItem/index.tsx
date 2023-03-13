@@ -28,7 +28,7 @@ const SafeListItem = ({
   chainId,
   closeDrawer,
   shouldScrollToSafe,
-  destination,
+  href,
   noActions = false,
   isAdded = false,
   ...rest
@@ -36,7 +36,7 @@ const SafeListItem = ({
   address: string
   chainId: string
   shouldScrollToSafe: boolean
-  destination: ComponentProps<typeof Link>['href']
+  href: ComponentProps<typeof Link>['href']
   closeDrawer?: () => void
   threshold?: string | number
   owners?: string | number
@@ -82,7 +82,7 @@ const SafeListItem = ({
         )
       }
     >
-      <Link href={destination} passHref>
+      <Link href={href} passHref>
         <ListItemButton
           key={address}
           onClick={closeDrawer}
