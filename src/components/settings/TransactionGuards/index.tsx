@@ -2,7 +2,6 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Paper, Grid, Typography, Box } from '@mui/material'
 import { RemoveGuard } from './RemoveGuard'
-import useIsGranted from '@/hooks/useIsGranted'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -18,12 +17,10 @@ const NoTransactionGuard = () => {
 }
 
 const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId: string }) => {
-  const isGranted = useIsGranted()
-
   return (
     <Box className={css.guardDisplay}>
       <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} />
-      {isGranted && <RemoveGuard address={guardAddress} />}
+      <RemoveGuard address={guardAddress} />
     </Box>
   )
 }

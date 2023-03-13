@@ -20,6 +20,7 @@ import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
 import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -37,6 +38,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const currentChain = useCurrentChain()
   const wallet = useWallet()
+  const isWrongChain = useIsWrongChain()
   const { safe, safeAddress } = useSafeInfo()
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
@@ -92,7 +94,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
     }
   }
 
-  const submitDisabled = !isSubmittable || gasLimitLoading
+  const submitDisabled = !isSubmittable || gasLimitLoading || isWrongChain
 
   return (
     <form onSubmit={handleSubmit}>
@@ -115,8 +117,12 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
           onFormSubmit={setManualParams}
         />
 
-        {submitError && (
-          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        {isWrongChain ? (
+          <ErrorMessage>Please connect your wallet to {currentChain?.chainName}</ErrorMessage>
+        ) : (
+          submitError && (
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          )
         )}
 
         <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>

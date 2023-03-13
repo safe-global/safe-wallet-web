@@ -1,15 +1,7 @@
 import { ChangeThresholdDialog } from '@/components/settings/owner/ChangeThresholdDialog'
 import { Box, Grid, Typography } from '@mui/material'
 
-export const RequiredConfirmation = ({
-  threshold,
-  owners,
-  isGranted,
-}: {
-  threshold: number
-  owners: number
-  isGranted: boolean
-}) => {
+export const RequiredConfirmation = ({ threshold, owners }: { threshold: number; owners: number }) => {
   return (
     <Box marginTop={6}>
       <Grid container spacing={3}>
@@ -24,7 +16,8 @@ export const RequiredConfirmation = ({
           <Typography paddingTop={3}>
             <b>{threshold}</b> out of <b>{owners}</b> owners.
           </Typography>
-          {isGranted && owners > 1 && <ChangeThresholdDialog />}
+
+          {owners > 1 && <ChangeThresholdDialog />}
         </Grid>
       </Grid>
     </Box>

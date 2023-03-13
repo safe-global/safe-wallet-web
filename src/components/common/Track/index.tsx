@@ -10,7 +10,7 @@ type Props = {
   label?: EventLabel
 }
 
-const Track = ({ children, as: Wrapper = 'div', ...trackData }: Props): typeof children => {
+const Track = ({ children, as: Wrapper = 'span', ...trackData }: Props): typeof children => {
   const el = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

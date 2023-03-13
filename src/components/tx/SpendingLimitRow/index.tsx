@@ -28,10 +28,13 @@ const SpendingLimitRow = ({
           name={SendAssetsField.type}
           render={({ field: { onChange, ...field } }) => (
             <RadioGroup
-              onChange={async (e) => {
+              onChange={(e) => {
+                onChange(e)
+
                 // Validate only after the field is changed
-                await onChange(e)
-                trigger(SendAssetsField.amount)
+                setTimeout(() => {
+                  trigger(SendAssetsField.amount)
+                }, 10)
               }}
               {...field}
               defaultValue={SendTxType.multiSig}
@@ -39,14 +42,14 @@ const SpendingLimitRow = ({
               {!isOnlySpendLimitBeneficiary && (
                 <FormControlLabel
                   value={SendTxType.multiSig}
-                  label="Multisig Transaction"
+                  label="Multisig transaction"
                   control={<Radio />}
                   componentsProps={{ typography: { variant: 'body2' } }}
                 />
               )}
               <FormControlLabel
                 value={SendTxType.spendingLimit}
-                label={`Spending Limit Transaction (${formattedAmount} ${selectedToken?.symbol})`}
+                label={`Spending limit transaction (${formattedAmount} ${selectedToken?.symbol})`}
                 control={<Radio />}
                 componentsProps={{ typography: { variant: 'body2' } }}
               />

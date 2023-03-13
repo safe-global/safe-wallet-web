@@ -6,6 +6,7 @@ import { SpendingLimitForm } from '@/components/settings/SpendingLimits/NewSpend
 import { ReviewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit/steps/ReviewSpendingLimit'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const NewSpendingLimitSteps: TxStepperProps['steps'] = [
   {
@@ -30,11 +31,16 @@ export const NewSpendingLimit = () => {
 
   return (
     <>
-      <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.NEW_LIMIT}>
-        <Button onClick={() => setOpen(true)} sx={{ marginTop: 2 }} variant="contained">
-          New spending limit
-        </Button>
-      </Track>
+      <CheckWallet>
+        {(isOk) => (
+          <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.NEW_LIMIT}>
+            <Button onClick={() => setOpen(true)} sx={{ marginTop: 2 }} variant="contained" disabled={!isOk}>
+              New spending limit
+            </Button>
+          </Track>
+        )}
+      </CheckWallet>
+
       {open && <TxModal onClose={() => setOpen(false)} steps={NewSpendingLimitSteps} />}
     </>
   )

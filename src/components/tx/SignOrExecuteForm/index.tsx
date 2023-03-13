@@ -29,6 +29,7 @@ import {
   dispatchTxProposal,
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
+import CheckWallet from '@/components/common/CheckWallet'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -46,23 +47,16 @@ type SignOrExecuteProps = {
 const SignOrExecuteForm = ({
   safeTx,
   txId,
-  onlyExecute,
   onSubmit,
   children,
+  onlyExecute = false,
   isExecutable = false,
   isRejection = false,
   disableSubmit = false,
   origin,
   ...props
 }: SignOrExecuteProps): ReactElement => {
-  //
-  // Hooks & variables
-  //
-  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
-  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
-  const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
-  const [submitError, setSubmitError] = useState<Error | undefined>()
-
+  // Hooks
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
@@ -71,13 +65,19 @@ const SignOrExecuteForm = ({
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
 
+  // Internal state
+  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
+  const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
+  const [submitError, setSubmitError] = useState<Error | undefined>()
+
   // Check that the transaction is executable
   const isNewExecutableTx = !txId && safe.threshold === 1 && !hasPending
   const isCorrectNonce = tx?.data.nonce === safe.nonce
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
-  const willExecute = shouldExecute && canExecute
+  const willExecute = (onlyExecute || shouldExecute) && canExecute
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -188,8 +188,7 @@ const SignOrExecuteForm = ({
 
   const isExecutionLoop = wallet ? sameString(wallet.address, safeAddress) : false // Can't execute own transaction
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
-  const submitDisabled =
-    !isSubmittable || isEstimating || !tx || disableSubmit || isWrongChain || cannotPropose || isExecutionLoop
+  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || cannotPropose || isExecutionLoop
 
   const error = props.error || (willExecute ? gasLimitError : undefined)
 
@@ -221,7 +220,7 @@ const SignOrExecuteForm = ({
 
         {/* Error messages */}
         {isWrongChain ? (
-          <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>
+          <ErrorMessage>Please connect your wallet to {currentChain?.chainName}</ErrorMessage>
         ) : cannotPropose ? (
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
@@ -249,9 +248,13 @@ const SignOrExecuteForm = ({
         </Typography>
 
         {/* Submit button */}
-        <Button variant="contained" type="submit" disabled={submitDisabled}>
-          {isEstimating ? 'Estimating...' : 'Submit'}
-        </Button>
+        <CheckWallet allowNonOwner={willExecute}>
+          {(isOk) => (
+            <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+              {isEstimating ? 'Estimating...' : 'Submit'}
+            </Button>
+          )}
+        </CheckWallet>
       </DialogContent>
     </form>
   )

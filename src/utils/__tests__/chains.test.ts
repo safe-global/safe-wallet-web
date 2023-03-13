@@ -1,26 +1,40 @@
-import { getShortName, getChainId } from '@/utils/chains'
+import { hasFeature, getBlockExplorerLink, FEATURES } from '@/utils/chains'
+import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 
 describe('chains', () => {
-  describe('getShortName', () => {
-    it('should return the prefix of a chain', () => {
-      expect(getShortName('1')).toEqual('eth')
-      expect(getShortName('5')).toEqual('gor')
-      expect(getShortName('137')).toEqual('matic')
+  describe('hasFeature', () => {
+    it('returns true for a feature that exists', () => {
+      expect(hasFeature(CONFIG_SERVICE_CHAINS[0], FEATURES.CONTRACT_INTERACTION)).toBe(true)
     })
 
-    it('should return undefined when the prefix is not found', () => {
-      expect(getShortName('132453456435645')).toEqual(undefined)
+    it("returns false for a feature that doesn't exists", () => {
+      expect(
+        hasFeature(
+          {
+            ...CONFIG_SERVICE_CHAINS[0],
+            features: [],
+          },
+          FEATURES.DOMAIN_LOOKUP,
+        ),
+      ).toBe(false)
     })
   })
 
-  describe('getChainId', () => {
-    it('should return the chain id of a chain', () => {
-      expect(getChainId('eth')).toEqual('1')
-      expect(getChainId('gor')).toEqual('5')
-      expect(getChainId('matic')).toEqual('137')
+  describe('getExplorerLink', () => {
+    it('returns the correct link for an address', () => {
+      expect(getBlockExplorerLink(CONFIG_SERVICE_CHAINS[0], '0x123')).toEqual({
+        href: 'https://etherscan.io/address/0x123',
+        title: 'View on etherscan.io',
+      })
     })
-    it('should return undefined when the chain id is not found', () => {
-      expect(getShortName('sdfgserdgsdfgdfgd')).toEqual(undefined)
+
+    it('returns the correct link for a transaction', () => {
+      expect(
+        getBlockExplorerLink(CONFIG_SERVICE_CHAINS[0], '0x123436456456754735474574575475675435353453465645645656'),
+      ).toEqual({
+        href: 'https://etherscan.io/tx/0x123436456456754735474574575475675435353453465645645656',
+        title: 'View on etherscan.io',
+      })
     })
   })
 })

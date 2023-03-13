@@ -9,7 +9,6 @@ import TokenIcon from '@/components/common/TokenIcon'
 import EnhancedTable, { type EnhancedTableProps } from '@/components/common/EnhancedTable'
 import TokenExplorerLink from '@/components/common/TokenExplorerLink'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
-import useIsGranted from '@/hooks/useIsGranted'
 import Track from '@/components/common/Track'
 import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -18,6 +17,8 @@ import TokenMenu from '../TokenMenu'
 import useBalances from '@/hooks/useBalances'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { useHideAssets } from './useHideAssets'
+import CheckWallet from '@/components/common/CheckWallet'
+import useSpendingLimit from '@/hooks/useSpendingLimit'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -84,6 +85,34 @@ const headCells = [
   },
 ]
 
+const SendButton = ({
+  tokenInfo,
+  onClick,
+}: {
+  tokenInfo: TokenInfo
+  onClick: (tokenAddress: string) => void
+}): ReactElement => {
+  const spendingLimit = useSpendingLimit(tokenInfo)
+
+  return (
+    <CheckWallet allowSpendingLimit={!!spendingLimit}>
+      {(isOk) => (
+        <Track {...ASSETS_EVENTS.SEND}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => onClick(tokenInfo.address)}
+            disabled={!isOk}
+          >
+            Send
+          </Button>
+        </Track>
+      )}
+    </CheckWallet>
+  )
+}
+
 const AssetsTable = ({
   showHiddenAssets,
   setShowHiddenAssets,
@@ -92,7 +121,6 @@ const AssetsTable = ({
   setShowHiddenAssets: (hidden: boolean) => void
 }): ReactElement => {
   const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
-  const isGranted = useIsGranted()
   const hiddenAssets = useHiddenTokens()
   const { balances, loading } = useBalances()
 
@@ -109,8 +137,6 @@ const AssetsTable = ({
   )
 
   const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
-
-  const shouldHideSend = !isGranted
 
   const rows = loading
     ? skeletonRows
@@ -177,19 +203,8 @@ const AssetsTable = ({
               content: (
                 <Box display="flex" flexDirection="row" gap={1} alignItems="center">
                   <>
-                    {!shouldHideSend && (
-                      <Track {...ASSETS_EVENTS.SEND}>
-                        <Button
-                          sx={{ visibility: showHiddenAssets ? 'hidden' : 'visible' }}
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          onClick={() => setSelectedAsset(item.tokenInfo.address)}
-                        >
-                          Send
-                        </Button>
-                      </Track>
-                    )}
+                    <SendButton tokenInfo={item.tokenInfo} onClick={setSelectedAsset} />
+
                     {showHiddenAssets ? (
                       <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
                     ) : (
