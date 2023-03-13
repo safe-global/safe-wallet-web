@@ -37,7 +37,7 @@ const ReviewSafeAppsTx = ({
   const isMultiSend = txList.length > 1
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    const tx = isMultiSend ? await createMultiSendCallOnlyTx(txs) : await createTx(txs[0])
+    const tx = isMultiSend ? await createMultiSendCallOnlyTx(txList) : await createTx(txList[0])
 
     if (params?.safeTxGas) {
       // FIXME: do it properly via the Core SDK

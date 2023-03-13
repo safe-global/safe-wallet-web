@@ -1,32 +1,19 @@
-import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
 import TokenIcon from '@/components/common/TokenIcon'
 import useBalances from '@/hooks/useBalances'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { WarningOutlined } from '@mui/icons-material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import EditIcon from '@/public/images/common/edit.svg'
-import CheckIcon from '@mui/icons-material/Check'
 
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Grid,
-  IconButton,
-  SvgIcon,
-  Typography,
-} from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, IconButton, Skeleton, Typography } from '@mui/material'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber, ethers } from 'ethers'
 import { Interface, keccak256, parseUnits, toUtf8Bytes } from 'ethers/lib/utils'
 import { groupBy } from 'lodash'
-import { useMemo, useState } from 'react'
 import css from './styles.module.css'
-import { useForm } from 'react-hook-form'
-import { shortenAddress } from '@/utils/formatters'
-import { validateAmount, validateDecimalLength } from '@/utils/validation'
-import NumberField from '@/components/common/NumberField'
+import useAsync from '@/hooks/useAsync'
+import { getERC20TokenInfoOnChain } from '@/utils/tokens'
+import { ApprovalEditorForm } from './ApprovalEditorForm'
+import { useMemo } from 'react'
 
 const approvalSigHash = keccak256(toUtf8Bytes('approve(address,uint256)')).slice(0, 10)
 
@@ -49,16 +36,12 @@ const Summary = ({ approvalInfos, uniqueTokenCount }: { approvalInfos: ApprovalI
     </Typography>
   )
 
-type ApprovalInfo = {
-  tokenInfo: TokenInfo | undefined
+export type ApprovalInfo = {
+  tokenInfo: (Omit<TokenInfo, 'logoUri' | 'name'> & { logoUri?: string }) | undefined
   tokenAddress: string
   spender: any
   amount: any
   amountFormatted: string
-}
-
-type FormData = {
-  approvals: string[]
 }
 
 export const ApprovalEditor = ({
@@ -68,43 +51,34 @@ export const ApprovalEditor = ({
   txs: BaseTransaction[]
   updateTxs: (txs: BaseTransaction[]) => void
 }) => {
+  console.log(txs)
   const { balances } = useBalances()
-  const [editIDx, setEditIdx] = useState(-1)
 
-  const approvalTxs = txs.filter((tx) => tx.data.startsWith(approvalSigHash))
+  const approvalTxs = useMemo(() => txs.filter((tx) => tx.data.startsWith(approvalSigHash)), [txs])
 
-  const approvalInfos = useMemo(
-    () =>
-      approvalTxs.map((tx) => {
-        const [spender, amount] = erc20interface.decodeFunctionData('approve', tx.data)
-        const tokenInfo = balances.items.find((item) => item.tokenInfo.address === tx.to)?.tokenInfo
-        return {
-          tokenInfo: tokenInfo,
-          tokenAddress: tx.to,
-          spender: spender,
-          amount: amount,
-          amountFormatted: UNLIMITED.eq(amount) ? 'Unlimited' : ethers.utils.formatUnits(amount, tokenInfo?.decimals),
-        }
-      }),
+  const [approvalInfos, error, loading] = useAsync(
+    async () =>
+      Promise.all(
+        approvalTxs.map(async (tx) => {
+          const [spender, amount] = erc20interface.decodeFunctionData('approve', tx.data)
+          let tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> | undefined = balances.items.find(
+            (item) => item.tokenInfo.address === tx.to,
+          )?.tokenInfo
 
+          tokenInfo = await getERC20TokenInfoOnChain(tx.to)
+
+          return {
+            tokenInfo: tokenInfo,
+            tokenAddress: tx.to,
+            spender: spender,
+            amount: amount,
+            amountFormatted: UNLIMITED.eq(amount) ? 'Unlimited' : ethers.utils.formatUnits(amount, tokenInfo?.decimals),
+          }
+        }),
+      ),
     [balances, approvalTxs],
+    false, // Do not clear data on balance updates
   )
-
-  const formMethods = useForm<FormData>({
-    defaultValues: {
-      approvals: approvalInfos.map((info) => info.amountFormatted),
-    },
-    mode: 'onChange',
-  })
-
-  const {
-    handleSubmit,
-    setValue,
-    control,
-    register,
-    formState: { errors },
-    getValues,
-  } = formMethods
 
   if (approvalTxs.length === 0) {
     return null
@@ -113,20 +87,19 @@ export const ApprovalEditor = ({
   const uniqueTokens = groupBy(approvalTxs, (tx) => tx.to)
   const uniqueTokenCount = Object.keys(uniqueTokens).length
 
-  const onSetEditing = (idx: number) => {
-    setEditIdx(idx)
-  }
-
-  const onSave = () => {
-    const formData = getValues('approvals')
-
+  const updateApprovals = (approvals: string[]) => {
     let approvalID = 0
     const updatedTxs = txs.map((tx) => {
       if (tx.data.startsWith(approvalSigHash)) {
-        const newApproval = formData[approvalID]
-        const approvalInfo = approvalInfos[approvalID]
+        debugger
+        const newApproval = approvals[approvalID]
+        const approvalInfo = approvalInfos?.[approvalID]
+        if (!approvalInfo || !approvalInfo.tokenInfo) {
+          // Without decimals and spender we cannot create a new tx
+          return tx
+        }
         approvalID++
-        const decimals = approvalInfo?.tokenInfo?.decimals
+        const decimals = approvalInfo.tokenInfo.decimals
         const newAmountWei = parseUnits(newApproval, decimals)
         return {
           to: approvalInfo.tokenAddress,
@@ -137,11 +110,12 @@ export const ApprovalEditor = ({
       return tx
     })
     updateTxs(updatedTxs)
-    setEditIdx(-1)
   }
 
+  console.log(loading, approvalInfos)
+
   return (
-    <Accordion className={css.warningAccordion}>
+    <Accordion className={css.warningAccordion} disabled={loading}>
       <AccordionSummary
         expandIcon={
           <IconButton size="small">
@@ -149,64 +123,10 @@ export const ApprovalEditor = ({
           </IconButton>
         }
       >
-        <Summary approvalInfos={approvalInfos} uniqueTokenCount={uniqueTokenCount} />
+        {loading ? <Skeleton /> : <Summary approvalInfos={approvalInfos || []} uniqueTokenCount={uniqueTokenCount} />}
       </AccordionSummary>
       <AccordionDetails>
-        <Grid container direction="column">
-          {approvalInfos.map((tx, idx) => (
-            <Grid
-              container
-              key={tx.tokenAddress + tx.spender}
-              className={css.approval}
-              gap="4px"
-              justifyContent="space-between"
-            >
-              <Grid item display="flex" xs={12} md={3} flexDirection="column">
-                <Typography variant="overline">Token</Typography>
-                <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
-                  <TokenIcon logoUri={tx.tokenInfo?.logoUri} tokenSymbol={tx.tokenInfo?.symbol} />
-                  <Typography>{tx.tokenInfo?.symbol || shortenAddress(tx.tokenAddress)}</Typography>
-                </Box>
-              </Grid>
-              <Grid item display="flex" xs flexDirection="column">
-                <NumberField
-                  label={errors.approvals?.[idx]?.message || 'Amount'}
-                  error={!!errors.approvals?.[idx]}
-                  size="small"
-                  disabled={editIDx !== idx}
-                  InputProps={{
-                    endAdornment:
-                      (editIDx === -1 || idx === editIDx) &&
-                      (editIDx === idx ? (
-                        <IconButton size="small" onClick={onSave}>
-                          <SvgIcon component={CheckIcon} />
-                        </IconButton>
-                      ) : (
-                        <IconButton size="small" onClick={() => onSetEditing(idx)}>
-                          <SvgIcon component={EditIcon} />
-                        </IconButton>
-                      )),
-                  }}
-                  {...register(`approvals.${idx}`, {
-                    required: true,
-                    validate: (val) => {
-                      const decimals = tx.tokenInfo?.decimals
-                      return validateAmount(val, true) || validateDecimalLength(val, decimals)
-                    },
-                  })}
-                />
-              </Grid>
-
-              <Grid item display="flex" xs={4} flexDirection="column">
-                <Typography variant="overline">Spender</Typography>
-
-                <Typography>
-                  <PrefixedEthHashInfo address={tx.spender} hasExplorer showAvatar={false} />{' '}
-                </Typography>
-              </Grid>
-            </Grid>
-          ))}
-        </Grid>
+        {loading ? null : <ApprovalEditorForm approvalInfos={approvalInfos || []} updateApprovals={updateApprovals} />}
       </AccordionDetails>
     </Accordion>
   )
