@@ -24,6 +24,9 @@ import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import CheckWallet from '@/components/common/CheckWallet'
+import ExternalLink from '@/components/common/ExternalLink'
+import { getExplorerLink } from '@/utils/gateway'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -59,6 +62,9 @@ const SignOrExecuteForm = ({
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
   const { createTx, dispatchTxProposal, dispatchOnChainSigning, dispatchTxSigning, dispatchTxExecution } = useTxSender()
+
+  // Unsupported base contract
+  const isUnknown = safe.implementationVersionState === ImplementationVersionState.UNKNOWN
 
   // Internal state
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
@@ -261,6 +267,16 @@ const SignOrExecuteForm = ({
           </ErrorMessage>
         ) : submitError ? (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        ) : willExecute && isUnknown ? (
+          <ErrorMessage>
+            This Safe was created with an unsupported base contract. It should <b>ONLY</b> be used for fund recovery.
+            Transactions will execute but the transaction list may not immediately update. Transaction success can be
+            verified on the{' '}
+            <ExternalLink href={getExplorerLink(safeAddress, currentChain!.blockExplorerUriTemplate).href}>
+              {currentChain?.chainName} explorer
+            </ExternalLink>
+            .
+          </ErrorMessage>
         ) : null}
 
         {/* Info text */}
