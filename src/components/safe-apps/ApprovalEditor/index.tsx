@@ -91,7 +91,6 @@ export const ApprovalEditor = ({
     let approvalID = 0
     const updatedTxs = txs.map((tx) => {
       if (tx.data.startsWith(approvalSigHash)) {
-        debugger
         const newApproval = approvals[approvalID]
         const approvalInfo = approvalInfos?.[approvalID]
         if (!approvalInfo || !approvalInfo.tokenInfo) {
