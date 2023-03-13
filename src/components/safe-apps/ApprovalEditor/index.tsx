@@ -51,7 +51,6 @@ export const ApprovalEditor = ({
   txs: BaseTransaction[]
   updateTxs: (txs: BaseTransaction[]) => void
 }) => {
-  console.log(txs)
   const { balances } = useBalances()
 
   const approvalTxs = useMemo(() => txs.filter((tx) => tx.data.startsWith(approvalSigHash)), [txs])
@@ -110,8 +109,6 @@ export const ApprovalEditor = ({
     })
     updateTxs(updatedTxs)
   }
-
-  console.log(loading, approvalInfos)
 
   return (
     <Accordion className={css.warningAccordion} disabled={loading}>
