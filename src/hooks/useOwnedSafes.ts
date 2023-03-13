@@ -3,7 +3,6 @@ import { getOwnedSafes, type OwnedSafes } from '@safe-global/safe-gateway-typesc
 
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import useWallet from '@/hooks/wallets/useWallet'
-import useAsync from './useAsync'
 import { Errors, logError } from '@/services/exceptions'
 import useChainId from './useChainId'
 
@@ -20,25 +19,32 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const { address: walletAddress } = useWallet() || {}
   const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY)
 
-  const [_, error] = useAsync<void>(async () => {
-    if (!chainId || !walletAddress) return
-
-    const ownedSafes = await getOwnedSafes(chainId, walletAddress)
-
-    setOwnedSafesCache((prev) => ({
-      ...prev,
-      [walletAddress]: {
-        ...(prev?.[walletAddress] || {}),
-        [chainId]: ownedSafes.safes,
-      },
-    }))
-  }, [chainId, walletAddress, setOwnedSafesCache])
-
   useEffect(() => {
-    if (error) {
-      logError(Errors._610, error.message)
+    if (!walletAddress || !chainId) return
+    let isCurrent = true
+
+    /**
+     * No useAsync in this case to avoid updating
+     * for a new chainId with stale data see https://github.com/safe-global/web-core/pull/1760#discussion_r1133705349
+     */
+    getOwnedSafes(chainId, walletAddress)
+      .then(
+        (ownedSafes) =>
+          isCurrent &&
+          setOwnedSafesCache((prev) => ({
+            ...prev,
+            [walletAddress]: {
+              ...(prev?.[walletAddress] || {}),
+              [chainId]: ownedSafes.safes,
+            },
+          })),
+      )
+      .catch((error: Error) => logError(Errors._610, error.message))
+
+    return () => {
+      isCurrent = false
     }
-  }, [error])
+  }, [chainId, walletAddress, setOwnedSafesCache])
 
   return ownedSafesCache?.[walletAddress || ''] ?? {}
 }
