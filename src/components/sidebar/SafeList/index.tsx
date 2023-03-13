@@ -75,19 +75,21 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome
+  const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   /**
    * Navigate to the dashboard when selecting a safe on the welcome page,
+   * navigate to the history when selecting a safe on a single tx page,
    * otherwise keep the current route
    */
   const getHref = useCallback(
     (chain: ChainInfo, address: string) => {
       return {
-        pathname: isWelcomePage ? AppRoutes.home : router.pathname,
+        pathname: isWelcomePage ? AppRoutes.home : isSingleTxPage ? AppRoutes.transactions.history : router.pathname,
         query: { ...router.query, safe: `${chain.shortName}:${address}` },
       }
     },
-    [isWelcomePage, router.pathname, router.query],
+    [isWelcomePage, isSingleTxPage, router.pathname, router.query],
   )
 
   return (
