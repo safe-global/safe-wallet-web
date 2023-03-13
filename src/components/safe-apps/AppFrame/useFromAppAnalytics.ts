@@ -10,6 +10,7 @@ const ALLOWED_DOMAINS: RegExp[] = [
   /^http:\/\/localhost:[0-9]{4}$/,
   /^https:\/\/safe-apps\.dev\.5afe\.dev$/,
   /^https:\/\/apps\.gnosis-safe\.io$/,
+  /^https:\/\/apps-portal\.safe\.global$/,
 ]
 
 const useAnalyticsFromSafeApp = (iframeRef: MutableRefObject<HTMLIFrameElement | null>): void => {
