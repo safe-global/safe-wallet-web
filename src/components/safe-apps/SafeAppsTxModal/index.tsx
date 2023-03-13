@@ -1,12 +1,12 @@
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import type { BaseTransaction, RequestId, SendTransactionRequestParams } from '@gnosis.pm/safe-apps-sdk'
+import type { BaseTransaction, RequestId, SendTransactionRequestParams } from '@safe-global/safe-apps-sdk'
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
 import ReviewSafeAppsTx from './ReviewSafeAppsTx'
 import InvalidTransaction from './InvalidTransaction'
-import SafeAppsTxModalLabel from '../SafeAppsModalLabel'
-import { isTxValid } from '../utils'
+import SafeAppsTxModalLabel from '@/components/safe-apps/SafeAppsModalLabel'
+import { isTxValid } from '@/components/safe-apps/utils'
 
 export type SafeAppsTxParams = {
   appId?: string

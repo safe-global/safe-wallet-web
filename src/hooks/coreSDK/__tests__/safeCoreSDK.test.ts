@@ -16,7 +16,9 @@ describe('safeCoreSDK', () => {
 
       expect(isValidSafeVersion('1.4.0')).toBe(false)
 
-      expect(isValidSafeVersion('1.0.0')).toBe(false)
+      expect(isValidSafeVersion('1.0.0')).toBe(true)
+
+      expect(isValidSafeVersion('0.0.1')).toBe(false)
 
       expect(isValidSafeVersion('')).toBe(false)
 

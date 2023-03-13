@@ -1,5 +1,6 @@
-import EnhancedTable from '@/components/common/EnhancedTable'
 import { useMemo, useState } from 'react'
+import { Box } from '@mui/material'
+import EnhancedTable from '@/components/common/EnhancedTable'
 import type { AddressEntry } from '@/components/address-book/EntryDialog'
 import EntryDialog from '@/components/address-book/EntryDialog'
 import ExportDialog from '@/components/address-book/ExportDialog'
@@ -10,8 +11,6 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import RemoveDialog from '@/components/address-book/RemoveDialog'
-import useIsGranted from '@/hooks/useIsGranted'
-import NewTxModal from '@/components/tx/modals/NewTxModal'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AddressBookHeader from '../AddressBookHeader'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -21,9 +20,10 @@ import SvgIcon from '@mui/material/SvgIcon'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoEntriesIcon from '@/public/images/address-book/no-entries.svg'
 import { useCurrentChain } from '@/hooks/useChains'
-
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
-import { Box } from '@mui/material'
+import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
+import { SendAssetsField } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -47,7 +47,6 @@ const defaultOpen = {
 
 const AddressBookTable = () => {
   const chain = useCurrentChain()
-  const isGranted = useIsGranted()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [searchQuery, setSearchQuery] = useState('')
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
@@ -111,13 +110,21 @@ const AddressBookTable = () => {
               </Tooltip>
             </Track>
 
-            {isGranted && (
-              <Track {...ADDRESS_BOOK_EVENTS.SEND}>
-                <Button variant="contained" color="primary" size="small" onClick={() => setSelectedAddress(address)}>
-                  Send
-                </Button>
-              </Track>
-            )}
+            <CheckWallet>
+              {(isOk) => (
+                <Track {...ADDRESS_BOOK_EVENTS.SEND}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => setSelectedAddress(address)}
+                    disabled={!isOk}
+                  >
+                    Send
+                  </Button>
+                </Track>
+              )}
+            </CheckWallet>
           </div>
         ),
       },
@@ -160,7 +167,12 @@ const AddressBookTable = () => {
       {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
 
       {/* Send funds modal */}
-      {selectedAddress && <NewTxModal onClose={() => setSelectedAddress(undefined)} recipient={selectedAddress} />}
+      {selectedAddress && (
+        <TokenTransferModal
+          onClose={() => setSelectedAddress(undefined)}
+          initialData={[{ [SendAssetsField.recipient]: selectedAddress }]}
+        />
+      )}
     </>
   )
 }

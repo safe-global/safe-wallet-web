@@ -1,6 +1,6 @@
+import { useMemo } from 'react'
 import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { useMemo } from 'react'
 
 const useConnectWallet = (): (() => void) => {
   const onboard = useOnboard()

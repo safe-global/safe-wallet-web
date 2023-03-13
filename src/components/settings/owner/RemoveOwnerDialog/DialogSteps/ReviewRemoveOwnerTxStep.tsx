@@ -12,13 +12,7 @@ import type { RemoveOwnerData } from '..'
 import React from 'react'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 
-export const ReviewRemoveOwnerTxStep = ({
-  data,
-  onSubmit,
-}: {
-  data: RemoveOwnerData
-  onSubmit: (txId?: string) => void
-}) => {
+export const ReviewRemoveOwnerTxStep = ({ data, onSubmit }: { data: RemoveOwnerData; onSubmit: () => void }) => {
   const { createRemoveOwnerTx } = useTxSender()
   const { safe, safeAddress } = useSafeInfo()
   const addressBook = useAddressBook()
@@ -30,11 +24,11 @@ export const ReviewRemoveOwnerTxStep = ({
 
   const newOwnerLength = safe.owners.length - 1
 
-  const onFormSubmit = (txId?: string) => {
+  const onFormSubmit = () => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
 
-    onSubmit(txId)
+    onSubmit()
   }
 
   return (

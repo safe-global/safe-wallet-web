@@ -89,3 +89,11 @@ export const ellipsis = (str: string, length: number): string => {
 export const capitalize = (str: string): string => {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
 }
+
+// Format the error message
+export const formatError = (error: Error & { reason?: string }): string => {
+  let { reason } = error
+  if (!reason) return ''
+  if (!reason.endsWith('.')) reason += '.'
+  return ` ${capitalize(reason)}`
+}

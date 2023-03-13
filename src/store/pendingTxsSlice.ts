@@ -9,17 +9,17 @@ export enum PendingStatus {
   INDEXING = 'INDEXING',
 }
 
-type PendingTxsState =
-  | {
-      [txId: string]: {
-        chainId: string
-        status: PendingStatus
-        txHash?: string
-        groupKey?: string
-        signerAddress?: string
-      }
-    }
-  | Record<string, never>
+export type PendingTx = {
+  chainId: string
+  status: PendingStatus
+  txHash?: string
+  groupKey?: string
+  signerAddress?: string
+}
+
+type PendingTxsState = {
+  [txId: string]: PendingTx
+}
 
 const initialState: PendingTxsState = {}
 

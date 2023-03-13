@@ -15,25 +15,19 @@ import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/R
 import { safeFormatUnits } from '@/utils/formatters'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 
-export const RemoveSpendingLimit = ({
-  data,
-  onSubmit,
-}: {
-  data: SpendingLimitState
-  onSubmit: (txId?: string) => void
-}) => {
+export const RemoveSpendingLimit = ({ data, onSubmit }: { data: SpendingLimitState; onSubmit: () => void }) => {
   const { createTx } = useTxSender()
   const chainId = useChainId()
   const provider = useWeb3()
   const { balances } = useBalances()
-  const token = balances.items.find((item) => item.tokenInfo.address === data.token)
+  const token = balances.items.find((item) => item.tokenInfo.address === data.token.address)
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     const spendingLimitAddress = getSpendingLimitModuleAddress(chainId)
     if (!provider || !spendingLimitAddress) return
 
     const spendingLimitInterface = getSpendingLimitInterface()
-    const txData = spendingLimitInterface.encodeFunctionData('deleteAllowance', [data.beneficiary, data.token])
+    const txData = spendingLimitInterface.encodeFunctionData('deleteAllowance', [data.beneficiary, data.token.address])
 
     const txParams = {
       to: spendingLimitAddress,
@@ -44,10 +38,10 @@ export const RemoveSpendingLimit = ({
     return createTx(txParams)
   }, [provider, chainId, data.beneficiary, data.token, createTx])
 
-  const onFormSubmit = (txId?: string) => {
+  const onFormSubmit = () => {
     trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
 
-    onSubmit(txId)
+    onSubmit()
   }
 
   return (

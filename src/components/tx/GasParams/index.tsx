@@ -34,6 +34,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit, gasLimitError }: Ga
 
   const chain = useCurrentChain()
   const isLoading = !gasLimit || !maxFeePerGas
+  const isError = gasLimitError && !gasLimit
 
   // Total gas cost
   const totalFee = !isLoading
@@ -56,7 +57,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit, gasLimitError }: Ga
         {isExecution ? (
           <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
             <span>Estimated fee </span>
-            {gasLimitError ? null : isLoading ? (
+            {isError ? null : isLoading ? (
               <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
             ) : (
               <span>
@@ -87,11 +88,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit, gasLimitError }: Ga
               <GasDetail isLoading={false} name="Wallet nonce" value={userNonce.toString()} />
             )}
 
-            <GasDetail
-              isLoading={isLoading}
-              name="Gas limit"
-              value={gasLimitError ? 'Cannot estimate' : gasLimitString}
-            />
+            <GasDetail isLoading={isLoading} name="Gas limit" value={isError ? 'Cannot estimate' : gasLimitString} />
 
             {isEIP1559 ? (
               <>

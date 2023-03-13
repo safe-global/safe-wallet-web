@@ -28,7 +28,7 @@ const cachedGetSafeApps = (chainId: string): ReturnType<typeof getSafeApps> | un
 const useRemoteSafeApps = (tag?: SafeAppsTag): AsyncResult<SafeAppsResponse> => {
   const chainId = useChainId()
 
-  const [remoteApps, error, loading] = useAsync(async () => {
+  const [remoteApps, error, loading] = useAsync<SafeAppsResponse>(() => {
     if (!chainId) return
     return cachedGetSafeApps(chainId)
   }, [chainId])
@@ -44,7 +44,11 @@ const useRemoteSafeApps = (tag?: SafeAppsTag): AsyncResult<SafeAppsResponse> => 
     return remoteApps.filter((app) => app.tags.includes(tag))
   }, [remoteApps, tag])
 
-  return [apps, error, loading]
+  const sortedApps = useMemo(() => {
+    return apps?.sort((a, b) => a.name.localeCompare(b.name))
+  }, [apps])
+
+  return [sortedApps, error, loading]
 }
 
 export { useRemoteSafeApps }

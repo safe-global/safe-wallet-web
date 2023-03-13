@@ -9,7 +9,7 @@ import TxModal from '@/components/tx/TxModal'
 
 export type TokenTransferModalProps = {
   params: SendAssetsFormData & { txNonce?: number; disableSpendingLimit?: boolean }
-  onSubmit: (txId?: string) => void
+  onSubmit: () => void
 }
 
 export const TokenTransferSteps: TxStepperProps['steps'] = [

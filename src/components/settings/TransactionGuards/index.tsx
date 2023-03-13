@@ -1,12 +1,12 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Paper, Grid, Typography, Box } from '@mui/material'
-import { gte } from 'semver'
 import { RemoveGuard } from './RemoveGuard'
-import useIsGranted from '@/hooks/useIsGranted'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
+import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
+import { hasSafeFeature } from '@/utils/safe-versions'
 
 const NoTransactionGuard = () => {
   return (
@@ -17,22 +17,18 @@ const NoTransactionGuard = () => {
 }
 
 const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId: string }) => {
-  const isGranted = useIsGranted()
-
   return (
     <Box className={css.guardDisplay}>
       <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} />
-      {isGranted && <RemoveGuard address={guardAddress} />}
+      <RemoveGuard address={guardAddress} />
     </Box>
   )
 }
 
-const GUARD_SUPPORTED_SAFE_VERSION = '1.3.0'
-
 const TransactionGuards = () => {
   const { safe, safeLoaded } = useSafeInfo()
 
-  const isVersionWithGuards = safeLoaded && safe.version && gte(safe.version, GUARD_SUPPORTED_SAFE_VERSION)
+  const isVersionWithGuards = safeLoaded && hasSafeFeature(SAFE_FEATURES.SAFE_TX_GUARDS, safe.version)
 
   if (!isVersionWithGuards) {
     return null

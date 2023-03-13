@@ -5,11 +5,17 @@ import type { ReactElement } from 'react'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import WalletIcon from '@/components/common/WalletIcon'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useAppSelector } from '@/store'
+import { selectChainById } from '@/store/chainsSlice'
 
 import css from './styles.module.css'
 
-const WalletInfo = ({ wallet, chain }: { wallet: ConnectedWallet; chain: ChainInfo }): ReactElement => {
+export const UNKNOWN_CHAIN_NAME = 'Unknown'
+
+const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
+  const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
+  const prefix = walletChain?.shortName
+
   return (
     <Box className={css.container}>
       <Box className={css.imageContainer}>
@@ -19,19 +25,13 @@ const WalletInfo = ({ wallet, chain }: { wallet: ConnectedWallet; chain: ChainIn
       </Box>
       <Box>
         <Typography variant="caption" component="div" className={css.walletDetails}>
-          {wallet.label} @ {chain.chainName}
+          {wallet.label} @ {walletChain?.chainName || UNKNOWN_CHAIN_NAME}
         </Typography>
-        <Typography variant="caption" fontWeight="bold">
+        <Typography variant="caption" fontWeight="bold" component="div">
           {wallet.ens ? (
             <div>{wallet.ens}</div>
           ) : (
-            <EthHashInfo
-              prefix={chain.shortName}
-              address={wallet.address}
-              showName={false}
-              showAvatar
-              avatarSize={12}
-            />
+            <EthHashInfo prefix={prefix || ''} address={wallet.address} showName={false} showAvatar avatarSize={12} />
           )}
         </Typography>
       </Box>

@@ -19,10 +19,20 @@ describe('Assets > Coins', () => {
     cy.contains('button', 'Accept selection').click()
     // Table is loaded
     cy.contains('Görli Ether')
+
+    cy.contains('button', 'Got it').click()
   })
 
   describe('should have different tokens', () => {
     it(`should have ${ASSETS_LENGTH} entries in the table`, () => {
+      // "Spam" tokens filtered
+      cy.get(balanceSingleRow).should('have.length', 3)
+
+      // Enable all tokens
+      cy.contains('div', 'Default tokens').click()
+      cy.wait(100)
+      cy.contains('div', 'All tokens').click()
+
       cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
     })
 
@@ -162,6 +172,29 @@ describe('Assets > Coins', () => {
       cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'USD')
       // First row Fiat balance should contain EUR
       cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('contain', 'EUR')
+    })
+  })
+
+  describe('tokens can be manually hidden', () => {
+    it('hide single token', () => {
+      // Click hide Dai
+      cy.contains('Dai').parents('tr').find('button[aria-label="Hide asset"]').click()
+      // time to hide the asset
+      cy.wait(350)
+      cy.contains('Dai').should('not.exist')
+    })
+
+    it('unhide hidden token', () => {
+      // Open hide token menu
+      cy.contains('1 hidden token').click()
+      // uncheck dai token
+      cy.contains('Dai').parents('tr').find('input[type="checkbox"]').click()
+      // apply changes
+      cy.contains('Save').click()
+      // Dai token is visible again
+      cy.contains('Dai')
+      // The menu button shows "Hide tokens" label again
+      cy.contains('Hide tokens')
     })
   })
 

@@ -13,6 +13,7 @@ import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import Track from '@/components/common/Track'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
+import CheckWallet from '@/components/common/CheckWallet'
 
 interface ChangeThresholdData {
   threshold: number
@@ -36,19 +37,22 @@ export const ChangeThresholdDialog = () => {
 
   return (
     <Box paddingTop={2}>
-      <div>
-        <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD}>
-          <Button onClick={() => setOpen(true)} variant="contained">
-            Change
-          </Button>
-        </Track>
-      </div>
+      <CheckWallet>
+        {(isOk) => (
+          <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD}>
+            <Button onClick={() => setOpen(true)} variant="contained" disabled={!isOk}>
+              Change
+            </Button>
+          </Track>
+        )}
+      </CheckWallet>
+
       {open && <TxModal onClose={handleClose} steps={ChangeThresholdSteps} initialData={[initialModalData]} />}
     </Box>
   )
 }
 
-const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: (txId?: string) => void }) => {
+const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: () => void }) => {
   const { safe } = useSafeInfo()
   const { createUpdateThresholdTx } = useTxSender()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(safe.threshold)
@@ -67,11 +71,11 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
     return createUpdateThresholdTx(selectedThreshold)
   }, [selectedThreshold, createUpdateThresholdTx])
 
-  const onChangeTheshold = (txId?: string) => {
+  const onChangeTheshold = () => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: selectedThreshold })
 
-    onSubmit(txId)
+    onSubmit()
   }
 
   return (

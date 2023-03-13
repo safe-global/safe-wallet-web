@@ -21,6 +21,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
 import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -39,6 +40,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
   const chainId = useChainId()
   const currentChain = useCurrentChain()
   const provider = useWeb3()
+  const isWrongChain = useIsWrongChain()
   const { safeAddress } = useSafeInfo()
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
@@ -47,7 +49,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
   const txParams: SpendingLimitTxParams = useMemo(
     () => ({
       safeAddress,
-      token: spendingLimit?.token || ZERO_ADDRESS,
+      token: spendingLimit?.token.address || ZERO_ADDRESS,
       to: params.recipient,
       amount: parseUnits(params.amount, token?.tokenInfo.decimals).toString(),
       paymentToken: ZERO_ADDRESS,
@@ -86,7 +88,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
     try {
       await dispatchSpendingLimitTxExecution(txParams, txOptions, chainId, provider)
 
-      onSubmit('')
+      onSubmit()
     } catch (err) {
       logError(Errors._801, (err as Error).message)
       setIsSubmittable(true)
@@ -94,7 +96,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
     }
   }
 
-  const submitDisabled = !isSubmittable || gasLimitLoading
+  const submitDisabled = !isSubmittable || gasLimitLoading || isWrongChain
 
   return (
     <form onSubmit={handleSubmit}>
@@ -117,8 +119,12 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
           onFormSubmit={setManualParams}
         />
 
-        {submitError && (
-          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        {isWrongChain ? (
+          <ErrorMessage>Please connect your wallet to {currentChain?.chainName}</ErrorMessage>
+        ) : (
+          submitError && (
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          )
         )}
 
         <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>

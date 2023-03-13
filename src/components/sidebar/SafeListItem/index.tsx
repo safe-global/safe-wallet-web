@@ -19,6 +19,9 @@ import Box from '@mui/material/Box'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
+import PendingActionButtons from '@/components/sidebar/PendingActions'
+import usePendingActions from '@/hooks/usePendingActions'
+import useOnceVisible from '@/hooks/useOnceVisible'
 
 const SafeListItem = ({
   address,
@@ -26,6 +29,7 @@ const SafeListItem = ({
   closeDrawer,
   shouldScrollToSafe,
   noActions = false,
+  isAdded = false,
   ...rest
 }: {
   address: string
@@ -35,6 +39,7 @@ const SafeListItem = ({
   threshold?: string | number
   owners?: string | number
   noActions?: boolean
+  isAdded?: boolean
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
@@ -44,6 +49,8 @@ const SafeListItem = ({
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
   const shortName = chain?.shortName || ''
+  const isVisible = useOnceVisible(safeRef)
+  const { totalQueued, totalToSign } = usePendingActions(chainId, isAdded && isVisible ? address : undefined)
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -54,9 +61,8 @@ const SafeListItem = ({
 
   return (
     <ListItem
-      className={css.container}
+      className={classnames(css.container, { [css.withPendingButtons]: totalQueued || totalToSign })}
       disablePadding
-      sx={{ '& .MuiListItemSecondaryAction-root': { right: 24 } }}
       secondaryAction={
         noActions ? undefined : (
           <Box display="flex" alignItems="center" gap={1}>
@@ -100,6 +106,14 @@ const SafeListItem = ({
           />
         </ListItemButton>
       </Link>
+
+      <PendingActionButtons
+        safeAddress={address}
+        closeDrawer={closeDrawer}
+        shortName={shortName}
+        totalQueued={totalQueued}
+        totalToSign={totalToSign}
+      />
     </ListItem>
   )
 }

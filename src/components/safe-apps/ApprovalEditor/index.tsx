@@ -1,7 +1,7 @@
 import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
 import TokenIcon from '@/components/common/TokenIcon'
 import useBalances from '@/hooks/useBalances'
-import type { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
+import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { WarningOutlined } from '@mui/icons-material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import EditIcon from '@/public/images/common/edit.svg'

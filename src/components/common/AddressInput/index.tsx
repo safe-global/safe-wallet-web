@@ -2,12 +2,11 @@ import type { ReactElement } from 'react'
 import { useEffect, useCallback, useRef, useMemo, useState } from 'react'
 import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
 import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
-import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from './useNameResolver'
 import ScanQRButton from '../ScanQRModal/ScanQRButton'
-import { hasFeature } from '@/utils/chains'
+import { FEATURES, hasFeature } from '@/utils/chains'
 import { parsePrefixedAddress } from '@/utils/addresses'
 import useDebounce from '@/hooks/useDebounce'
 
@@ -29,6 +28,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
 
   // Fetch an ENS resolution for the current address
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
+  const label = `${props.label} address${isDomainLookupEnabled ? ' or ENS' : ''}`
   const { address, resolverError, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
 
   // errors[name] doesn't work with nested field names like 'safe.address', need to use the lodash get
@@ -61,7 +61,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
         <TextField
           {...props}
           autoComplete="off"
-          label={<>{error?.message || props.label}</>}
+          label={<>{error?.message || label}</>}
           error={!!error}
           fullWidth
           spellCheck={false}

@@ -23,3 +23,11 @@
 .select :global .MuiSvgIcon-root {
   margin-right: var(--space-2);
 }
+
+.newChip {
+  font-weight: bold;
+  letter-spacing: -0.1px;
+  margin-top: -18px;
+  margin-left: -14px;
+  transform: scale(0.7);
+}

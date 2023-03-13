@@ -1,32 +1,25 @@
 import {
   validateAddress,
   validateLimitedAmount,
-  validateChainId,
   validateAmount,
   validatePrefixedAddress,
   validateDecimalLength,
+  isValidAddress,
 } from '@/utils/validation'
 
 describe('validation', () => {
   describe('Ethereum address validation', () => {
     it('should return undefined if the address is valid', () => {
       expect(validateAddress('0x1234567890123456789012345678901234567890')).toBeUndefined()
+      expect(isValidAddress('0x1234567890123456789012345678901234567890')).toBeTruthy()
     })
 
     it('should return an error if the address is invalid', () => {
       expect(validateAddress('0x1234567890123456789012345678901234567890x')).toBe('Invalid address format')
-      expect(validateAddress('0x8Ba1f109551bD432803012645Ac136ddd64DBA72')).toBe('Invalid address checksum')
-    })
-  })
+      expect(isValidAddress('0x1234567890123456789012345678901234567890x')).toBeFalsy()
 
-  describe('Ethereum chain ID validation', () => {
-    it('should return undefined if the chain ID is valid', () => {
-      expect(validateChainId('1')).toBeUndefined()
-    })
-    it('should return an error if the chain ID is invalid', () => {
-      expect(validateChainId('0')).toBe('Invalid chain ID')
-      expect(validateChainId('34534534532634565345646456546')).toBe('Invalid chain ID')
-      expect(validateChainId('0x8Ba1f109551bD432803012645Ac136ddd64DBA72')).toBe('Invalid chain ID')
+      expect(validateAddress('0x8Ba1f109551bD432803012645Ac136ddd64DBA72')).toBe('Invalid address checksum')
+      expect(isValidAddress('0x8Ba1f109551bD432803012645Ac136ddd64DBA72')).toBeFalsy()
     })
   })
 
@@ -35,10 +28,6 @@ describe('validation', () => {
 
     it('should pass a bare address', () => {
       expect(validate('0x1234567890123456789012345678901234567890')).toBe(undefined)
-    })
-
-    it('should return an error if the address has an invalid prefix', () => {
-      expect(validate('xyz:0x1234567890123456789012345678901234567890')).toBe('Invalid chain prefix "xyz"')
     })
 
     it('should return an error if the address has the wrong prefix', () => {

@@ -26,11 +26,14 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { SvgIcon } from '@mui/material'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
+import EnvHintButton from '@/components/settings/EnvironmentVariables/EnvHintButton'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
   const { balances } = useVisibleBalances()
-  const { safe, safeAddress, safeLoading } = useSafeInfo()
+  const safeAddress = useSafeAddress()
+  const { safe } = useSafeInfo()
   const { threshold, owners } = safe
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
@@ -49,20 +52,21 @@ const SafeHeader = (): ReactElement => {
       <div className={css.info}>
         <div className={css.safe}>
           <div>
-            {safeLoading ? (
-              <Skeleton variant="circular" width={40} height={40} />
-            ) : (
+            {safeAddress ? (
               <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
+            ) : (
+              <Skeleton variant="circular" width={40} height={40} />
             )}
           </div>
 
           <div className={css.address}>
-            {safeLoading ? (
+            {safeAddress ? (
+              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
+            ) : (
               <Typography variant="body2">
                 <Skeleton variant="text" width={86} />
+                <Skeleton variant="text" width={120} />
               </Typography>
-            ) : (
-              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
             )}
 
             <Typography variant="body2" fontWeight={700}>
@@ -100,6 +104,8 @@ const SafeHeader = (): ReactElement => {
               </IconButton>
             </Tooltip>
           </Track>
+
+          <EnvHintButton />
         </div>
       </div>
 

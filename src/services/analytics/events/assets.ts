@@ -7,8 +7,8 @@ export const ASSETS_EVENTS = {
     action: 'Currency menu',
     category: ASSETS_CATEGORY,
   },
-  TOKEN_LIST_MENU: {
-    action: 'Token list menu',
+  OPEN_TOKEN_LIST_MENU: {
+    action: 'Open token list menu',
     category: ASSETS_CATEGORY,
   },
   CHANGE_CURRENCY: {
@@ -48,6 +48,14 @@ export const ASSETS_EVENTS = {
   },
   DESELECT_ALL_HIDE_DIALOG: {
     action: 'Deselect all hide dialog',
+    category: ASSETS_CATEGORY,
+  },
+  SHOW_DEFAULT_TOKENS: {
+    action: 'Show default tokens',
+    category: ASSETS_CATEGORY,
+  },
+  SHOW_ALL_TOKENS: {
+    action: 'Show all tokens',
     category: ASSETS_CATEGORY,
   },
 }

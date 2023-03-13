@@ -26,11 +26,10 @@ import { ErrorBoundary } from '@sentry/react'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
-import useWallet from '@/hooks/wallets/useWallet'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/Warning'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import useIsPending from '@/hooks/useIsPending'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -41,8 +40,7 @@ type TxDetailsProps = {
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
   const chainId = useChainId()
-  const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
+  const isPending = useIsPending(txSummary.id)
   const isQueue = isTxQueued(txSummary.txStatus)
   const awaitingExecution = isAwaitingExecution(txSummary.txStatus)
   const isUnsigned =
@@ -81,7 +79,8 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
         )}
 
         <div className={css.txSummary}>
-          {isUntrusted && <UnsignedWarning />}
+          {isUntrusted && !isPending && <UnsignedWarning />}
+
           {txDetails.txData?.operation === Operation.DELEGATE && (
             <div className={css.delegateCall}>
               <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
@@ -103,7 +102,8 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
       {!isUnsigned && (
         <div className={css.txSigners}>
           <TxSigners txDetails={txDetails} txSummary={txSummary} />
-          {wallet && !isWrongChain && isQueue && (
+
+          {isQueue && (
             <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
               {awaitingExecution ? <ExecuteTxButton txSummary={txSummary} /> : <SignTxButton txSummary={txSummary} />}
               <RejectTxButton txSummary={txSummary} />

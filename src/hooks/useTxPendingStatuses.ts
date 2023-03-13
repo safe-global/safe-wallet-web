@@ -1,10 +1,12 @@
 import { useAppDispatch, useAppSelector } from '@/store'
 import { clearPendingTx, setPendingTx, selectPendingTxs, PendingStatus } from '@/store/pendingTxsSlice'
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
 import { waitForTx } from '@/services/tx/txMonitor'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import useTxHistory from './useTxHistory'
+import { isTransactionListItem } from '@/utils/transaction-guards'
 
 const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
   [TxEvent.SIGNATURE_PROPOSED]: PendingStatus.SIGNING,
@@ -52,6 +54,11 @@ const useTxMonitor = (): void => {
 const useTxPendingStatuses = (): void => {
   const dispatch = useAppDispatch()
   const chainId = useChainId()
+  const txHistory = useTxHistory()
+  const historicalTxs = useMemo(() => {
+    return txHistory.page?.results?.filter(isTransactionListItem) || []
+  }, [txHistory.page?.results])
+
   useTxMonitor()
 
   // Subscribe to pending statuses
@@ -69,24 +76,30 @@ const useTxPendingStatuses = (): void => {
           return
         }
 
-        // Or set a new status
-        dispatch(
-          setPendingTx({
-            chainId,
-            txId,
-            status,
-            txHash: 'txHash' in detail ? detail.txHash : undefined,
-            groupKey: 'groupKey' in detail ? detail.groupKey : undefined,
-            signerAddress: `signerAddress` in detail ? detail.signerAddress : undefined,
-          }),
-        )
+        // If we have future issues with statuses, we should refactor `useTxPendingStatuses`
+        // @see https://github.com/safe-global/web-core/issues/1754
+        const isIndexed = historicalTxs.some((tx) => tx.transaction.id === txId)
+
+        if (!isIndexed) {
+          // Or set a new status
+          dispatch(
+            setPendingTx({
+              chainId,
+              txId,
+              status,
+              txHash: 'txHash' in detail ? detail.txHash : undefined,
+              groupKey: 'groupKey' in detail ? detail.groupKey : undefined,
+              signerAddress: `signerAddress` in detail ? detail.signerAddress : undefined,
+            }),
+          )
+        }
       }),
     )
 
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch, chainId])
+  }, [dispatch, chainId, historicalTxs])
 }
 
 export default useTxPendingStatuses

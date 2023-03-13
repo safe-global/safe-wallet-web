@@ -47,15 +47,17 @@ const ModalDialog = ({
   dialogTitle,
   hideChainIndicator,
   children,
+  fullScreen = false,
   ...restProps
 }: ModalDialogProps): React.ReactElement => {
   const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const isFullScreen = fullScreen || isSmallScreen
 
   return (
     <Dialog
       {...restProps}
-      fullScreen={fullScreen}
+      fullScreen={isFullScreen}
       scroll={fullScreen ? 'paper' : 'body'}
       className={css.dialog}
       onClick={(e) => e.stopPropagation()}

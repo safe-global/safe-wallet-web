@@ -19,9 +19,6 @@ describe('Load existing Safe', () => {
     cy.visit('/welcome?chain=matic')
     cy.contains('Accept selection').click()
 
-    // Close banner
-    cy.get('[data-testid=CloseIcon]').click()
-
     // Enters Loading Safe form
     cy.contains('button', 'Add existing Safe').click()
     cy.contains('Connect wallet & select network')
@@ -104,7 +101,7 @@ describe('Load existing Safe', () => {
 
   it('should load successfully the custom Safe name', () => {
     // Safe loaded
-    cy.location('pathname', { timeout: 10000 }).should('include', `${SAFE_QR_CODE_ADDRESS}/home`)
+    cy.location('href', { timeout: 10000 }).should('include', `/home?safe=${SAFE_QR_CODE_ADDRESS}`)
 
     // Finds Safe name in the sidebar
     cy.get('aside').contains('Test safe name')

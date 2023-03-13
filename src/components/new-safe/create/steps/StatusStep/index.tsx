@@ -15,11 +15,11 @@ import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusSte
 import { SafeCreationStatus, useSafeCreation } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import StatusStepper from '@/components/new-safe/create/steps/StatusStep/StatusStepper'
 import { trackEvent } from '@/services/analytics'
-import useChainId from '@/hooks/useChainId'
 import { getRedirect } from '@/components/new-safe/create/logic'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { AppRoutes } from '@/config/routes'
-import palette from '@/styles/colors'
+import { lightPalette } from '@safe-global/safe-react-components'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
@@ -32,7 +32,8 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
   const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const router = useRouter()
-  const chainId = useChainId()
+  const chainInfo = useCurrentChain()
+  const chainPrefix = chainInfo?.shortName || ''
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain
@@ -63,9 +64,9 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
 
     if (safeAddress) {
       setPendingSafe(undefined)
-      router.push(getRedirect(chainId, safeAddress, router.query?.safeViewRedirectURL))
+      router.push(getRedirect(chainPrefix, safeAddress, router.query?.safeViewRedirectURL))
     }
-  }, [chainId, pendingSafe, router, setPendingSafe])
+  }, [chainPrefix, pendingSafe, router, setPendingSafe])
 
   const displaySafeLink = status >= SafeCreationStatus.INDEXED
   const isError = status >= SafeCreationStatus.WALLET_REJECTED && status <= SafeCreationStatus.TIMEOUT
@@ -74,9 +75,9 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
     if (!setProgressColor) return
 
     if (isError) {
-      setProgressColor(palette.error.main)
+      setProgressColor(lightPalette.error.main)
     } else {
-      setProgressColor(palette.secondary.main)
+      setProgressColor(lightPalette.secondary.main)
     }
   }, [isError, setProgressColor])
 

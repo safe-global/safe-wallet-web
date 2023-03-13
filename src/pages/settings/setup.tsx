@@ -7,14 +7,12 @@ import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
-import useIsGranted from '@/hooks/useIsGranted'
 
 const Setup: NextPage = () => {
   const { safe } = useSafeInfo()
   const nonce = safe.nonce
   const ownerLength = safe.owners.length
   const threshold = safe.threshold
-  const isGranted = useIsGranted()
 
   return (
     <>
@@ -52,14 +50,15 @@ const Setup: NextPage = () => {
             </Grid>
 
             <Grid item xs>
-              <ContractVersion isGranted={isGranted} />
+              <ContractVersion />
             </Grid>
           </Grid>
         </Paper>
 
         <Paper sx={{ p: 4 }}>
-          <OwnerList isGranted={isGranted} />
-          <RequiredConfirmation threshold={threshold} owners={ownerLength} isGranted={isGranted} />
+          <OwnerList />
+
+          <RequiredConfirmation threshold={threshold} owners={ownerLength} />
         </Paper>
       </main>
     </>

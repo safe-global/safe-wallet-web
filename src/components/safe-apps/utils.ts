@@ -1,9 +1,13 @@
 import { isHexString, toUtf8String } from 'ethers/lib/utils'
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
-import type { BaseTransaction, ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import { SafeAppFeatures } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import type { BaseTransaction, ChainInfo } from '@safe-global/safe-apps-sdk'
+
 import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'
 import type { SafeAppDataWithPermissions } from './types'
+import { SafeAppsTag } from '@/config/constants'
 
 const validateTransaction = (t: BaseTransaction): boolean => {
   if (!['string', 'number'].includes(typeof t.value)) {
@@ -72,6 +76,9 @@ export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
     },
     tags: [],
     safeAppsPermissions: [],
+    features: [],
+    socialProfiles: [],
+    developerWebsite: '',
   }
 }
 
@@ -81,4 +88,13 @@ export const getOrigin = (url?: string): string => {
   const { origin } = new URL(url)
 
   return origin
+}
+
+export const isOptimizedForBatchTransactions = (safeApp: SafeAppData) =>
+  safeApp.features?.includes(SafeAppFeatures.BATCHED_TRANSACTIONS)
+
+// some categories are used internally and we dont want to display them in the UI
+export const filterInternalCategories = (categories: string[]): string[] => {
+  const internalCategories = Object.values(SafeAppsTag)
+  return categories.filter((tag) => !internalCategories.some((internalCategory) => tag === internalCategory))
 }

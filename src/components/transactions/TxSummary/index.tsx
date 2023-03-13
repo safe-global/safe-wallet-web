@@ -1,5 +1,5 @@
 import type { Palette } from '@mui/material'
-import { Box, CircularProgress, SvgIcon, Typography } from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -13,8 +13,7 @@ import { isAwaitingExecution, isMultisigExecutionInfo, isTxQueued } from '@/util
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
-import OwnersIcon from '@/public/images/common/owners.svg'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
+import TxConfirmations from '../TxConfirmations'
 import useIsPending from '@/hooks/useIsPending'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette) => {
@@ -40,7 +39,6 @@ type TxSummaryProps = {
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
   const txStatusLabel = useTransactionStatus(tx)
   const isPending = useIsPending(tx.id)
   const isQueue = isTxQueued(tx.txStatus)
@@ -54,8 +52,6 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
     : undefined
 
   const displayConfirmations = isQueue && !!submittedConfirmations && !!requiredConfirmations
-  const confirmationColor =
-    displayConfirmations && requiredConfirmations > submittedConfirmations ? 'border' : 'primary'
 
   return (
     <Box
@@ -84,14 +80,14 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
       {displayConfirmations && (
         <Box gridArea="confirmations" display="flex" alignItems="center" gap={1}>
-          <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" color={confirmationColor} />
-          <Typography variant="caption" fontWeight="bold" color={confirmationColor}>
-            {submittedConfirmations} out of {requiredConfirmations}
-          </Typography>
+          <TxConfirmations
+            submittedConfirmations={submittedConfirmations}
+            requiredConfirmations={requiredConfirmations}
+          />
         </Box>
       )}
 
-      {wallet && !isWrongChain && isQueue && (
+      {wallet && isQueue && (
         <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
           {awaitingExecution ? (
             <ExecuteTxButton txSummary={item.transaction} compact />

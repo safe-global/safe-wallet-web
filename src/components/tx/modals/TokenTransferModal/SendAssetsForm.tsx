@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useCallback, useMemo } from 'react'
+import { useForm, FormProvider, Controller } from 'react-hook-form'
 import {
   Button,
   FormControl,
@@ -32,6 +33,10 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
 import NumberField from '@/components/common/NumberField'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
+import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
+import { useAppSelector } from '@/store'
+import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
+import useWallet from '@/hooks/wallets/useWallet'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -72,12 +77,20 @@ type SendAssetsFormProps = {
   onSubmit: (formData: SendAssetsFormData) => void
 }
 
-const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: SendAssetsFormProps): ReactElement => {
+const SendAssetsForm = ({
+  onSubmit,
+  formData,
+  // Spending limits only disabled upon replacement, which pure spending limit beneficiaries can't do
+  disableSpendingLimit = false,
+}: SendAssetsFormProps): ReactElement => {
   const { balances } = useVisibleBalances()
   const addressBook = useAddressBook()
   const chainId = useChainId()
   const safeTokenAddress = getSafeTokenAddress(chainId)
   const isSafeTokenPaused = useIsSafeTokenPaused()
+  const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
+  const spendingLimits = useAppSelector(selectSpendingLimits)
+  const wallet = useWallet()
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: {
@@ -86,6 +99,8 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
       [SendAssetsField.amount]: formData?.[SendAssetsField.amount] || '',
       [SendAssetsField.type]: disableSpendingLimit
         ? SendTxType.multiSig
+        : isOnlySpendingLimitBeneficiary
+        ? SendTxType.spendingLimit
         : formData?.[SendAssetsField.type] || SendTxType.multiSig,
     },
     mode: 'onChange',
@@ -95,8 +110,10 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
     register,
     handleSubmit,
     setValue,
+    resetField,
     watch,
     formState: { errors },
+    control,
   } = formMethods
 
   const recipient = watch(SendAssetsField.recipient)
@@ -110,12 +127,25 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
   const type = watch(SendAssetsField.type)
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
   const isSpendingLimitType = type === SendTxType.spendingLimit
-
-  const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
-
   const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
+  const totalAmount = BigNumber.from(selectedToken?.balance || 0)
+  const maxAmount = isSpendingLimitType
+    ? spendingLimitAmount && totalAmount.gt(spendingLimitAmount)
+      ? spendingLimitAmount
+      : totalAmount
+    : totalAmount
 
-  const onMaxAmountClick = () => {
+  const balancesItems = useMemo(() => {
+    return isOnlySpendingLimitBeneficiary
+      ? balances.items.filter(({ tokenInfo }) => {
+          return spendingLimits?.some(({ beneficiary, token }) => {
+            return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token.address)
+          })
+        })
+      : balances.items
+  }, [balances.items, isOnlySpendingLimitBeneficiary, spendingLimits, wallet?.address])
+
+  const onMaxAmountClick = useCallback(() => {
     if (!selectedToken) return
 
     const amount =
@@ -126,8 +156,9 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
     setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
       shouldValidate: true,
     })
-  }
+  }, [isSpendingLimitType, selectedToken, setValue, spendingLimitAmount])
 
+  const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
 
   return (
@@ -146,27 +177,34 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
             )}
           </FormControl>
 
-          <FormControl fullWidth>
-            <InputLabel id="asset-label" required>
-              Select an asset
-            </InputLabel>
-            <Select
-              labelId="asset-label"
-              label={errors.tokenAddress?.message || 'Select an asset'}
-              defaultValue={formData?.tokenAddress || ''}
-              error={!!errors.tokenAddress}
-              {...register(SendAssetsField.tokenAddress, {
-                required: true,
-                onChange: () => setValue(SendAssetsField.amount, ''),
-              })}
-            >
-              {balances.items.map((item) => (
-                <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
-                  <AutocompleteItem {...item} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Controller
+            name={SendAssetsField.tokenAddress}
+            control={control}
+            rules={{ required: true }}
+            render={({ fieldState, field }) => (
+              <FormControl fullWidth>
+                <InputLabel id="asset-label" required>
+                  Select an asset
+                </InputLabel>
+                <Select
+                  labelId="asset-label"
+                  label={fieldState.error?.message || 'Select an asset'}
+                  error={!!fieldState.error}
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e)
+                    resetField(SendAssetsField.amount)
+                  }}
+                >
+                  {balancesItems.map((item) => (
+                    <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
+                      <AutocompleteItem {...item} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
 
           {isDisabled && (
             <Box mt={1} display="flex" alignItems="center">
@@ -203,8 +241,9 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
                 required: true,
                 validate: (val) => {
                   const decimals = selectedToken?.tokenInfo.decimals
-                  const max = isSpendingLimitType ? spendingLimitAmount?.toString() : selectedToken?.balance
-                  return validateLimitedAmount(val, decimals, max) || validateDecimalLength(val, decimals)
+                  return (
+                    validateLimitedAmount(val, decimals, maxAmount.toString()) || validateDecimalLength(val, decimals)
+                  )
                 },
               })}
             />
