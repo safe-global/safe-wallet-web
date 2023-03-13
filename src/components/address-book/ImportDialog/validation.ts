@@ -1,8 +1,8 @@
 import type { ParseResult } from 'papaparse'
 
-import { validateAddress, validateChainId } from '@/utils/validation'
+import { validateAddress } from '@/utils/validation'
 
-export const abCsvReaderValidator = ({ type, size }: File): string[] | undefined => {
+export const abCsvReaderValidator = ({ size }: File): string[] | undefined => {
   if (size > 1_000_000) {
     return ['Address book cannot be larger than 1MB']
   }
@@ -18,16 +18,6 @@ export const hasValidAbEntryAddresses = (entries: string[][]) => {
 
 export const hasValidAbNames = (entries: string[][]) => {
   return entries.every((entry) => entry.length >= 2 && !!entry[1])
-}
-
-export const hasValidAbEntryChainIds = (entries: string[][]) => {
-  return entries.every((entry) => {
-    if (entry.length < 3) {
-      return false
-    }
-    const chainId = entry[2].trim()
-    return !validateChainId(chainId)
-  })
 }
 
 export const abOnUploadValidator = ({ data, errors }: ParseResult<string[]>): string | undefined => {
@@ -65,11 +55,5 @@ export const abOnUploadValidator = ({ data, errors }: ParseResult<string[]>): st
   if (!hasValidAbNames(entries)) {
     const i = entries.findIndex((entry) => (entry.length >= 2 ? !entry[1] : true))
     return `Address book contains an invalid name on row ${i + 2}`
-  }
-
-  // An entry has invalid chainId
-  if (!hasValidAbEntryChainIds(entries)) {
-    const i = entries.findIndex((entry) => (entry.length >= 3 ? validateChainId(entry[2]) : true))
-    return `Address book contains an invalid chain ID on row ${i + 2}`
   }
 }

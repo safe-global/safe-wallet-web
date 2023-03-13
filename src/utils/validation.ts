@@ -1,4 +1,3 @@
-import chains from '@/config/chains'
 import { parsePrefixedAddress, sameAddress, isChecksummedAddress } from './addresses'
 import { safeFormatUnits, safeParseUnits } from './formatters'
 
@@ -16,22 +15,12 @@ export const validateAddress = (address: string) => {
 
 export const isValidAddress = (address: string): boolean => validateAddress(address) === undefined
 
-const chainIds = Object.values(chains)
-export const validateChainId = (chainId: string) => {
-  if (!chainIds.includes(chainId)) {
-    return 'Invalid chain ID'
-  }
-}
-
 export const validatePrefixedAddress =
   (chainShortName?: string) =>
   (value: string): string | undefined => {
     const { prefix, address } = parsePrefixedAddress(value)
 
     if (prefix) {
-      if (!chains[prefix]) {
-        return `Invalid chain prefix "${prefix}"`
-      }
       if (prefix !== chainShortName) {
         return `"${prefix}" doesn't match the current chain`
       }

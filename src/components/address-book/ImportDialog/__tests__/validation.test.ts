@@ -3,7 +3,6 @@ import {
   abCsvReaderValidator,
   abOnUploadValidator,
   hasValidAbEntryAddresses,
-  hasValidAbEntryChainIds,
   hasValidAbHeader,
   hasValidAbNames,
 } from '../validation'
@@ -90,33 +89,6 @@ describe('Address book import validation', () => {
     })
   })
 
-  describe('hasValidAbEntryChainIds', () => {
-    it('should return true if all entries have valid chainIds', () => {
-      const entries = [
-        ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', '1'],
-        ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '4'],
-        ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '   100'],
-      ]
-
-      expect(hasValidAbEntryChainIds(entries)).toBe(true)
-    })
-
-    it('should return false if any entry has invalid chainId', () => {
-      const entries1 = [
-        ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', '1234523453245324634567543'],
-        ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', ''],
-      ]
-      const entries2 = [
-        ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', ' 1 0 0 '],
-        ['0x1F2504De05f5167650bE5B28c472601Be434b60A', 'name1', '4', 'extra'],
-      ]
-      const entries3 = [['0xAb5e3288640396C3988af5a820510682f3C58adF'], []]
-
-      expect(hasValidAbEntryChainIds(entries1)).toBe(false)
-      expect(hasValidAbEntryChainIds(entries2)).toBe(false)
-      expect(hasValidAbEntryChainIds(entries3)).toBe(false)
-    })
-  })
   describe('abOnUploadValidator', () => {
     it('should return undefined if result is valid', () => {
       const result = {
@@ -198,19 +170,6 @@ describe('Address book import validation', () => {
       } as ParseResult<string[]>
 
       expect(abOnUploadValidator(result)).toBe('Address book contains an invalid name on row 2')
-    })
-
-    it('should return an error if some entries have invalid chain IDs', () => {
-      const result = {
-        data: [
-          ['address', 'name', 'chainId'],
-          ['0xAb5e3288640396C3988af5a820510682f3C58adF', 'name', '2394857230948572034598723049587230495872304958704'],
-        ],
-        errors: [],
-        meta: {} as ParseMeta,
-      } as ParseResult<string[]>
-
-      expect(abOnUploadValidator(result)).toBe('Address book contains an invalid chain ID on row 2')
     })
   })
 })
