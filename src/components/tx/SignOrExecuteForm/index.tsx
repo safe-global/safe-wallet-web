@@ -90,7 +90,7 @@ const SignOrExecuteForm = ({
   const willRelay = willExecute && executionMethod === ExecutionType.RELAYER
 
   // SC wallets can relay fully signed transactions
-  const walletCanRelay = useWalletCanRelay(tx)
+  const [walletCanRelay] = useWalletCanRelay(tx)
 
   // Chain has relaying feature and tx can be relayed
   const canRelay = currentChain && hasFeature(currentChain, FEATURES.RELAYING) && walletCanRelay

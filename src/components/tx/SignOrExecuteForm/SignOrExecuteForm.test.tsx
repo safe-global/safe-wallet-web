@@ -18,7 +18,6 @@ import { ethers } from 'ethers'
 import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
 import * as useChains from '@/hooks/useChains'
-import * as useIsSmartContractWallet from '@/hooks/useIsSmartContractWallet'
 import type { NullableTxSenderFunctions } from '@/hooks/useTxSender'
 import { FEATURES } from '@/utils/chains'
 
@@ -97,7 +96,7 @@ describe('SignOrExecuteForm', () => {
       features: [FEATURES.RELAYING],
       chainId: '5',
     } as unknown as ChainInfo)
-    jest.spyOn(useIsSmartContractWallet, 'default').mockReturnValue([false, , false])
+    jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(false)
   })
 
   it('displays decoded data if there is a tx', () => {
@@ -376,7 +375,7 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Estimating...')).toBeDisabled()
   })
 
-  it('relays a 1 out of 2 signed transaction', async () => {
+  it('relays a 1 out of 2 signed transaction with a connected EOA', async () => {
     const signSpy = jest.fn(() => Promise.resolve({}))
     const relaySpy = jest.fn()
     const proposeSpy = jest.fn(() => Promise.resolve({ txId: '0xdead' }))
@@ -399,6 +398,8 @@ describe('SignOrExecuteForm', () => {
     })
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="0xdead" />)
+
+    await act(() => Promise.resolve())
 
     const submitButton = result.getByText('Submit')
 
@@ -424,7 +425,7 @@ describe('SignOrExecuteForm', () => {
     )
 
     // SC wallet connected
-    jest.spyOn(useIsSmartContractWallet, 'default').mockReturnValue([true, , false])
+    jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(true)
 
     const mockTx = createSafeTx()
 
@@ -436,6 +437,8 @@ describe('SignOrExecuteForm', () => {
     })
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="0xdead" />)
+
+    await act(() => Promise.resolve())
 
     const submitButton = result.getByText('Submit')
 
@@ -457,7 +460,7 @@ describe('SignOrExecuteForm', () => {
     )
 
     // SC wallet connected
-    jest.spyOn(useIsSmartContractWallet, 'default').mockReturnValue([true, , false])
+    jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(true)
 
     const mockTx = createSafeTx()
 
@@ -476,6 +479,8 @@ describe('SignOrExecuteForm', () => {
     })
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="0xdead" />)
+
+    await act(() => Promise.resolve())
 
     const submitButton = result.getByText('Submit')
 
@@ -496,9 +501,6 @@ describe('SignOrExecuteForm', () => {
         } as unknown as NullableTxSenderFunctions),
     )
 
-    // EOA connected
-    jest.spyOn(useIsSmartContractWallet, 'default').mockReturnValue([false, , false])
-
     const mockTx = createSafeTx()
 
     mockTx.addSignature({
@@ -516,6 +518,8 @@ describe('SignOrExecuteForm', () => {
     })
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="0xdead" />)
+
+    await act(() => Promise.resolve())
 
     const submitButton = result.getByText('Submit')
 
@@ -538,6 +542,8 @@ describe('SignOrExecuteForm', () => {
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    await act(() => Promise.resolve())
 
     const executionMethod = result.getByText('With connected wallet')
 
@@ -647,6 +653,8 @@ describe('SignOrExecuteForm', () => {
     const result = render(
       <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} />,
     )
+
+    await act(() => Promise.resolve())
 
     const executionMethod = result.getByText('With connected wallet')
 
