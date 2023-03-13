@@ -5,9 +5,9 @@ import type { EthersError } from '@/utils/ethers-utils'
 import useAsync from './useAsync'
 import ContractErrorCodes from '@/services/contracts/ContractErrorCodes'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
-import { type ConnectedWallet } from '@/services/onboard'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
+import { type OnboardAPI } from '@web3-onboard/core'
 
 const isContractError = (error: EthersError) => {
   if (!error.reason) return false
@@ -16,14 +16,14 @@ const isContractError = (error: EthersError) => {
 }
 
 export const isValidExecution = async (
-  wallet: ConnectedWallet,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeTx: SafeTransaction,
   gasLimit?: BigNumber,
 ) => {
   if (!gasLimit) return
 
-  const safeSdk = await getSafeSDKWithSigner(wallet, chainId)
+  const safeSdk = await getSafeSDKWithSigner(onboard, chainId)
 
   try {
     return safeSdk.isValidTransaction(safeTx, { gasLimit: gasLimit.toString() })

@@ -19,8 +19,8 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
 import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
-import useWallet from '@/hooks/wallets/useWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useOnboard from '@/hooks/wallets/useOnboard'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -37,7 +37,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const currentChain = useCurrentChain()
-  const wallet = useWallet()
+  const onboard = useOnboard()
   const isWrongChain = useIsWrongChain()
   const { safe, safeAddress } = useSafeInfo()
   const { balances } = useBalances()
@@ -74,7 +74,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
-    if (!wallet) return
+    if (!onboard) return
 
     trackEvent(MODALS_EVENTS.USE_SPENDING_LIMIT)
 
@@ -84,7 +84,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await dispatchSpendingLimitTxExecution(txParams, txOptions, wallet, safe.chainId)
+      await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId)
 
       onSubmit()
     } catch (err) {

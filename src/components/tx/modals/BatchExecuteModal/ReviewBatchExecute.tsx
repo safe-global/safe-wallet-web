@@ -15,14 +15,14 @@ import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { dispatchBatchExecution } from '@/services/tx/tx-sender'
-import useWallet from '@/hooks/wallets/useWallet'
+import useOnboard from '@/hooks/wallets/useOnboard'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
-  const wallet = useWallet()
+  const onboard = useOnboard()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -46,13 +46,13 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!wallet || !multiSendTxData || !multiSendContract || !txsWithDetails) return
+    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails) return
 
     setIsSubmittable(false)
     setSubmitError(undefined)
 
     try {
-      await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, wallet, safe.chainId)
+      await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, onboard, safe.chainId)
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)

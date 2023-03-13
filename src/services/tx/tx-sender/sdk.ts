@@ -1,14 +1,17 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/safe-core-sdk'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { isWalletRejection } from '@/utils/wallets'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
-import { type ConnectedWallet } from '@/services/onboard'
 import { createWeb3 } from '@/hooks/wallets/web3'
+import { hexValue } from 'ethers/lib/utils'
+import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { isHardwareWallet } from '@/hooks/wallets/wallets'
+import { type OnboardAPI } from '@web3-onboard/core'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -18,7 +21,25 @@ export const getAndValidateSafeSDK = (): Safe => {
   return safeSDK
 }
 
-export const switchWalletChain = (wallet: ConnectedWallet, chainId: SafeInfo['chainId']) => {
+export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) => {
+  const chainIdInHex = hexValue(parseInt(chainId))
+
+  const wallets = onboard.state.get().wallets || []
+  const wallet = getConnectedWallet(wallets)
+
+  if (!wallet) throw new Error('No wallet connected')
+
+  if (wallet && isHardwareWallet(wallet)) {
+    await onboard.disconnectWallet({ label: wallet.label })
+    await connectWallet(onboard, { autoSelect: wallet.label })
+  } else {
+    await onboard.setChain({ chainId: chainIdInHex })
+  }
+
+  return wallet
+}
+
+/*export const switchWalletChain = (wallet: ConnectedWallet, chainId: SafeInfo['chainId']) => {
   const chainIdInHex = ethers.utils.hexValue(BigNumber.from(chainId))
 
   return wallet.provider.request({
@@ -29,7 +50,7 @@ export const switchWalletChain = (wallet: ConnectedWallet, chainId: SafeInfo['ch
       },
     ],
   })
-}
+}*/
 
 /**
  * https://docs.ethers.io/v5/api/providers/jsonrpc-provider/#UncheckedJsonRpcSigner
@@ -37,8 +58,8 @@ export const switchWalletChain = (wallet: ConnectedWallet, chainId: SafeInfo['ch
  * most of the values of transactionResponse which is needed when
  * dealing with smart-contract wallet owners
  */
-export const getUncheckedSafeSDK = async (wallet: ConnectedWallet, chainId: SafeInfo['chainId']): Promise<Safe> => {
-  await switchWalletChain(wallet, chainId)
+export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
+  const wallet = await switchWalletChain(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 
   const provider = createWeb3(wallet.provider)
@@ -51,8 +72,8 @@ export const getUncheckedSafeSDK = async (wallet: ConnectedWallet, chainId: Safe
   return sdk.connect({ ethAdapter })
 }
 
-export const getSafeSDKWithSigner = async (wallet: ConnectedWallet, chainId: SafeInfo['chainId']): Promise<Safe> => {
-  await switchWalletChain(wallet, chainId)
+export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
+  const wallet = await switchWalletChain(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 
   const provider = createWeb3(wallet.provider)
