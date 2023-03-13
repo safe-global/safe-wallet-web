@@ -272,7 +272,9 @@ const SignOrExecuteForm = ({
             This Safe was created with an unsupported base contract. It should <b>ONLY</b> be used for fund recovery.
             Transactions will execute but the transaction list may not immediately update. Transaction success can be
             verified on the{' '}
-            <ExternalLink href={getExplorerLink(safeAddress, currentChain!.blockExplorerUriTemplate).href}>
+            <ExternalLink
+              href={currentChain ? getExplorerLink(safeAddress, currentChain.blockExplorerUriTemplate).href : ''}
+            >
               {currentChain?.chainName} explorer
             </ExternalLink>
             .
