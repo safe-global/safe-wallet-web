@@ -107,7 +107,8 @@ describe('txMonitor', () => {
 
   describe('waitForRelayedTx', () => {
     it('expects setTimeout to be called if taskStatus is a pending state', async () => {
-      const mockData = {
+      const INITIAL_POLLING_DELAY = 2_000
+      let mockData = {
         task: {
           taskState: 'CheckPending',
         },
@@ -115,18 +116,27 @@ describe('txMonitor', () => {
       global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
 
       const mockFetch = jest.spyOn(global, 'fetch')
-      const mockSetTimeout = jest.spyOn(global, 'setTimeout')
-      // const mockCheckTxStatus = jest.spyOn(global, 'checkTxStatus')
 
       waitForRelayedTx('0x1', '0x2')
 
       await act(() => {
-        jest.advanceTimersByTime(2_000 + 1)
+        jest.advanceTimersByTime(INITIAL_POLLING_DELAY + 1)
       })
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(mockSetTimeout).toHaveBeenCalledWith(expect.any(Function), 2000)
-      expect(mockSetTimeout).toHaveBeenCalledWith(expect.any(Function), POLLING_INTERVAL)
+
+      mockData = {
+        task: {
+          taskState: 'ExecSuccess',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      await act(() => {
+        jest.advanceTimersByTime(POLLING_INTERVAL)
+      })
+
+      expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2' })
     })
 
     it("emits a PROCESSED event if taskStatus 'ExecSuccess'", async () => {

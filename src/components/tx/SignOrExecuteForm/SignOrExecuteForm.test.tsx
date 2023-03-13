@@ -377,12 +377,13 @@ describe('SignOrExecuteForm', () => {
   })
 
   it('relays a 1 out of 2 signed transaction', async () => {
+    const signSpy = jest.fn(() => Promise.resolve({}))
     const relaySpy = jest.fn()
     const proposeSpy = jest.fn(() => Promise.resolve({ txId: '0xdead' }))
     jest.spyOn(txSender, 'default').mockImplementation(
       () =>
         ({
-          dispatchTxSigning: jest.fn(() => Promise.resolve({})),
+          dispatchTxSigning: signSpy,
           dispatchTxProposal: proposeSpy,
           dispatchTxRelay: relaySpy,
         } as unknown as NullableTxSenderFunctions),
@@ -406,6 +407,7 @@ describe('SignOrExecuteForm', () => {
     })
 
     await waitFor(() => {
+      expect(signSpy).toHaveBeenCalledTimes(1)
       expect(proposeSpy).toHaveBeenCalledTimes(1)
       expect(relaySpy).toHaveBeenCalledTimes(1)
     })
@@ -444,7 +446,7 @@ describe('SignOrExecuteForm', () => {
     await waitFor(() => expect(relaySpy).toHaveBeenCalledTimes(0))
   })
 
-  it('relays a fully signed transaction', async () => {
+  it('relays a fully signed transaction with a connected SC wallet', async () => {
     const relaySpy = jest.fn()
     jest.spyOn(txSender, 'default').mockImplementation(
       () =>
@@ -456,6 +458,46 @@ describe('SignOrExecuteForm', () => {
 
     // SC wallet connected
     jest.spyOn(useIsSmartContractWallet, 'default').mockReturnValue([true, , false])
+
+    const mockTx = createSafeTx()
+
+    mockTx.addSignature({
+      signer: '0x123',
+      data: '0xEEE',
+      staticPart: () => '0xEEE',
+      dynamicPart: () => '',
+    })
+
+    mockTx.addSignature({
+      signer: '0x345',
+      data: '0xAAA',
+      staticPart: () => '0xAAA',
+      dynamicPart: () => '',
+    })
+
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="0xdead" />)
+
+    const submitButton = result.getByText('Submit')
+
+    act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    await waitFor(() => expect(relaySpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('relays a fully signed transaction with a connected EOA', async () => {
+    const relaySpy = jest.fn()
+    jest.spyOn(txSender, 'default').mockImplementation(
+      () =>
+        ({
+          dispatchTxProposal: jest.fn(() => Promise.resolve({})),
+          dispatchTxRelay: relaySpy,
+        } as unknown as NullableTxSenderFunctions),
+    )
+
+    // EOA connected
+    jest.spyOn(useIsSmartContractWallet, 'default').mockReturnValue([false, , false])
 
     const mockTx = createSafeTx()
 
