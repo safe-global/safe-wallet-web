@@ -24,10 +24,7 @@ export const getAndValidateSafeSDK = (): Safe => {
 export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) => {
   const chainIdInHex = hexValue(parseInt(chainId))
 
-  const wallets = onboard.state.get().wallets || []
-  const wallet = getConnectedWallet(wallets)
-
-  if (!wallet) throw new Error('No wallet connected')
+  const wallet = getConnectedWallet(onboard.state.get().wallets)
 
   if (wallet && isHardwareWallet(wallet)) {
     await onboard.disconnectWallet({ label: wallet.label })
@@ -36,21 +33,12 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) =>
     await onboard.setChain({ chainId: chainIdInHex })
   }
 
-  return wallet
+  const newWallet = getConnectedWallet(onboard.state.get().wallets)
+
+  if (!newWallet) throw new Error('No wallet connected')
+
+  return newWallet
 }
-
-/*export const switchWalletChain = (wallet: ConnectedWallet, chainId: SafeInfo['chainId']) => {
-  const chainIdInHex = ethers.utils.hexValue(BigNumber.from(chainId))
-
-  return wallet.provider.request({
-    method: 'wallet_switchEthereumChain',
-    params: [
-      {
-        chainId: chainIdInHex,
-      },
-    ],
-  })
-}*/
 
 /**
  * https://docs.ethers.io/v5/api/providers/jsonrpc-provider/#UncheckedJsonRpcSigner

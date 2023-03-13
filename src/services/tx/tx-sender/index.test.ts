@@ -286,7 +286,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(mockOnboard, '5', tx, '1.3.0', '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
 
@@ -307,7 +307,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(mockOnboard, '5', tx, '1.0.0', '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.0.0', mockOnboard, '5', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -328,7 +328,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(mockOnboard, '5', tx, null, '0x345')
+      const signedTx = await dispatchTxSigning(tx, null, mockOnboard, '5', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -351,7 +351,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(mockOnboard, '5', tx, '1.3.0', '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -377,7 +377,7 @@ describe('txSender', () => {
       let signedTx
 
       try {
-        signedTx = await dispatchTxSigning(mockOnboard, '5', tx, '1.3.0', '0x345')
+        signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
       } catch (error) {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -408,7 +408,7 @@ describe('txSender', () => {
       let signedTx
 
       try {
-        signedTx = await dispatchTxSigning(mockOnboard, '5', tx, '1.3.0', '0x345')
+        signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
       } catch (error) {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -436,7 +436,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockOnboard, {}, txId, '5')
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -456,7 +456,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(safeTx, mockOnboard, {}, txId, '5')).rejects.toThrow('error')
+      await expect(dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')).rejects.toThrow('error')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error') })
@@ -480,7 +480,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockOnboard, {}, txId, '5')
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -509,7 +509,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockOnboard, {}, txId, '5')
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -541,7 +541,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockOnboard, {}, txId, '5')
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })

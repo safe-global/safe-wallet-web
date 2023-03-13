@@ -65,10 +65,10 @@ export const dispatchTxProposal = async ({
  * Sign a transaction
  */
 export const dispatchTxSigning = async (
-  onboard: OnboardAPI,
-  chainId: SafeInfo['chainId'],
   safeTx: SafeTransaction,
   safeVersion: SafeInfo['version'],
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
   txId?: string,
 ): Promise<SafeTransaction> => {
   const sdk = await getSafeSDKWithSigner(onboard, chainId)
@@ -91,8 +91,8 @@ export const dispatchTxSigning = async (
  */
 export const dispatchOnChainSigning = async (
   safeTx: SafeTransaction,
-  onboard: OnboardAPI,
   txId: string,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
@@ -120,9 +120,9 @@ export const dispatchOnChainSigning = async (
  */
 export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
-  onboard: OnboardAPI,
   txOptions: TransactionOptions,
   txId: string,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)

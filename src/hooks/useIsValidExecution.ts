@@ -16,9 +16,9 @@ const isContractError = (error: EthersError) => {
 }
 
 export const isValidExecution = async (
+  safeTx: SafeTransaction,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
-  safeTx: SafeTransaction,
   gasLimit?: BigNumber,
 ) => {
   if (!gasLimit) return

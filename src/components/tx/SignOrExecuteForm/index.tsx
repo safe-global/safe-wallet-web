@@ -132,12 +132,12 @@ const SignOrExecuteForm = ({
       // Otherwise the backend won't pick up the tx
       // The signature will be added once the on-chain signature is indexed
       const id = txId || (await proposeTx(createdTx))
-      await dispatchOnChainSigning(createdTx, onboard, id, safe.chainId)
+      await dispatchOnChainSigning(createdTx, id, onboard, safe.chainId)
       return id
     }
 
     // Otherwise, sign off-chain
-    const signedTx = await dispatchTxSigning(onboard, safe.chainId, createdTx, safe.version, txId)
+    const signedTx = await dispatchTxSigning(createdTx, safe.version, onboard, safe.chainId, txId)
 
     return await proposeTx(signedTx)
   }
@@ -147,12 +147,12 @@ const SignOrExecuteForm = ({
     const [, createdTx, , onboard] = assertDependencies()
 
     // TODO: Verify that this is still working as intended
-    await isValidExecution(onboard, safe.chainId, createdTx, advancedParams.gasLimit)
+    await isValidExecution(createdTx, onboard, safe.chainId, advancedParams.gasLimit)
 
     // If no txId was provided, it's an immediate execution of a new tx
     const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
-    await dispatchTxExecution(createdTx, onboard, txOptions, id, safe.chainId)
+    await dispatchTxExecution(createdTx, txOptions, id, onboard, safe.chainId)
 
     return id
   }
