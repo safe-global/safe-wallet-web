@@ -10,17 +10,18 @@ import {
 } from '@safe-global/safe-deployments'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import semverSatisfies from 'semver/functions/satisfies'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getMasterCopies, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { assertValidSafeVersion, createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
-import { sameAddress } from '@/utils/addresses'
 import type SignMessageLibEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/SignMessageLib/SignMessageLibEthersContract'
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 
-export const isValidMasterCopy = async (chainId: string, address: string): Promise<boolean> => {
-  const masterCopies = await getMasterCopies(chainId)
-  return masterCopies.some((masterCopy) => sameAddress(masterCopy.address, address))
+// `UNKNOWN` is returned if the mastercopy does not match supported ones
+// @see https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/handlers/safes.rs#L28-L31
+//      https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/converters.rs#L77-L79
+export const isValidMasterCopy = (safe: SafeInfo): boolean => {
+  return safe.implementationVersionState !== ImplementationVersionState.UNKNOWN
 }
 
 export const _getValidatedGetContractProps = (

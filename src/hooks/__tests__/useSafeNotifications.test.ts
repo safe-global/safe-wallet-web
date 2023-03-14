@@ -1,9 +1,7 @@
-import { act } from '@testing-library/react'
 import { renderHook } from '@/tests//test-utils'
 import useSafeNotifications from '../../hooks/useSafeNotifications'
 import useSafeInfo from '../../hooks/useSafeInfo'
 import { showNotification } from '@/store/notificationsSlice'
-import * as contracts from '@/services/contracts/safeContracts'
 
 // mock showNotification
 jest.mock('@/store/notificationsSlice', () => {
@@ -36,7 +34,7 @@ describe('useSafeNotifications', () => {
   })
 
   describe('Safe upgrade', () => {
-    it('should show a notification when the Safe version is out of date', async () => {
+    it('should show a notification when the Safe version is out of date', () => {
       // mock useSafeInfo to return a SafeInfo with an outdated version
       ;(useSafeInfo as jest.Mock).mockReturnValue({
         safe: {
@@ -49,9 +47,6 @@ describe('useSafeNotifications', () => {
 
       // render the hook
       const { result } = renderHook(() => useSafeNotifications())
-
-      // await
-      await act(async () => Promise.resolve())
 
       // check that the notification was shown
       expect(result.current).toBeUndefined()
@@ -69,7 +64,7 @@ describe('useSafeNotifications', () => {
       })
     })
 
-    it('should show a notification for legacy Safes', async () => {
+    it('should show a notification for legacy Safes', () => {
       // mock useSafeInfo to return a SafeInfo with an outdated version
       ;(useSafeInfo as jest.Mock).mockReturnValue({
         safe: {
@@ -82,9 +77,6 @@ describe('useSafeNotifications', () => {
 
       // render the hook
       const { result } = renderHook(() => useSafeNotifications())
-
-      // await
-      await act(async () => Promise.resolve())
 
       // check that the notification was shown
       expect(result.current).toBeUndefined()
@@ -99,7 +91,7 @@ describe('useSafeNotifications', () => {
       })
     })
 
-    it('should not show a notification when the Safe version is up to date', async () => {
+    it('should not show a notification when the Safe version is up to date', () => {
       ;(useSafeInfo as jest.Mock).mockReturnValue({
         safe: {
           implementation: { value: '0x123' },
@@ -110,9 +102,6 @@ describe('useSafeNotifications', () => {
 
       // render the hook
       const { result } = renderHook(() => useSafeNotifications())
-
-      // await
-      await act(async () => Promise.resolve())
 
       // check that the notification was shown
       expect(result.current).toBeUndefined()
@@ -121,21 +110,17 @@ describe('useSafeNotifications', () => {
   })
 
   describe('Invalid mastercopy', () => {
-    it('should show a notification when the mastercopy is invalid', async () => {
+    it('should show a notification when the mastercopy is invalid', () => {
       ;(useSafeInfo as jest.Mock).mockReturnValue({
         safe: {
           implementation: { value: '0x123' },
-          implementationVersionState: 'UP_TO_DATE',
+          implementationVersionState: 'UNKNOWN',
           version: '1.3.0',
         },
       })
-      jest.spyOn(contracts, 'isValidMasterCopy').mockImplementation((...args: any[]) => Promise.resolve(false))
 
       // render the hook
       const { result } = renderHook(() => useSafeNotifications())
-
-      // await
-      await act(async () => Promise.resolve())
 
       // check that the notification was shown
       expect(result.current).toBeUndefined()
@@ -159,13 +144,9 @@ describe('useSafeNotifications', () => {
           version: '1.3.0',
         },
       })
-      jest.spyOn(contracts, 'isValidMasterCopy').mockImplementation((...args: any[]) => Promise.resolve(true))
 
       // render the hook
       const { result } = renderHook(() => useSafeNotifications())
-
-      // await
-      await act(async () => Promise.resolve())
 
       // check that the notification was shown
       expect(result.current).toBeUndefined()
