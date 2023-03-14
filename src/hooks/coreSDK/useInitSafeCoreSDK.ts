@@ -11,7 +11,7 @@ export const useInitSafeCoreSDK = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    if (!safeLoaded || !safe.version) {
+    if (!safeLoaded || !safe.version || !safe.chainId) {
       // If we don't reset the SDK, a previous Safe could remain in the store
       setSafeSDK(undefined)
       return

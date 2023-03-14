@@ -5,6 +5,7 @@ import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useGasLimitHook from '@/hooks/useGasLimit'
 import * as txSenderDispatch from '@/services/tx/tx-sender/dispatch'
 import * as wallet from '@/hooks/wallets/useWallet'
+import * as onboard from '@/hooks/wallets/useOnboard'
 import * as walletUtils from '@/hooks/wallets/wallets'
 import * as web3 from '@/hooks/wallets/web3'
 import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -16,6 +17,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
+import { type OnboardAPI } from '@web3-onboard/core'
 
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
@@ -83,6 +85,7 @@ describe('SignOrExecuteForm', () => {
     jest.spyOn(wallet, 'default').mockReturnValue({
       address: ethers.utils.hexZeroPad('0x123', 20),
     } as ConnectedWallet)
+    jest.spyOn(onboard, 'default').mockReturnValue({} as OnboardAPI)
     jest.spyOn(web3, 'useWeb3').mockReturnValue(mockProvider)
     jest.spyOn(wrongChain, 'default').mockReturnValue(false)
     jest
@@ -177,21 +180,26 @@ describe('SignOrExecuteForm', () => {
     })
 
     it('hides the execution validation error', () => {
-      jest.spyOn(useIsValidExecutionHook, 'isValidExecution').mockImplementation(() => {
-        throw new Error('Error validating execution')
+      jest.spyOn(useIsValidExecutionHook, 'default').mockReturnValue({
+        isValidExecution: undefined,
+        executionValidationError: new Error('Error validating execution'),
+        isValidExecutionLoading: false,
       })
 
       const mockTx = createSafeTx()
       const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-      const submitButton = result.getByText('Submit')
+      expect(
+        result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
+      ).toBeInTheDocument()
 
       act(() => {
-        expect(submitButton).not.toBeDisabled()
-        fireEvent.click(submitButton)
+        fireEvent.click(result.getByText('Execute transaction'))
       })
 
-      expect(result.getByText('Error submitting the transaction. Please try again.')).toBeInTheDocument()
+      expect(
+        result.queryByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
+      ).not.toBeInTheDocument()
     })
   })
 

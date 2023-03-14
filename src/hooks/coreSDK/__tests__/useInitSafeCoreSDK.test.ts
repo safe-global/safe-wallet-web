@@ -28,7 +28,7 @@ describe('useInitSafeCoreSDK hook', () => {
     address: '',
     chainId: '5',
     label: '',
-    provider: null as unknown as EIP1193Provider,
+    provider: jest.fn() as unknown as EIP1193Provider,
   }
 
   const mockOnboard = {
@@ -45,7 +45,7 @@ describe('useInitSafeCoreSDK hook', () => {
 
   it('initializes a Core SDK instance', async () => {
     const mockSafe = {} as Safe
-    const initMock = jest.spyOn(coreSDK, 'initSafeSDK').mockReturnValue(Promise.resolve(mockSafe))
+    const initMock = jest.spyOn(coreSDK, 'initReadOnlySafeSDK').mockReturnValue(Promise.resolve(mockSafe))
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
@@ -56,7 +56,7 @@ describe('useInitSafeCoreSDK hook', () => {
 
     renderHook(() => useInitSafeCoreSDK())
 
-    expect(initMock).toHaveBeenCalledWith({}, '5', '0x1', '1.3.0')
+    expect(initMock).toHaveBeenCalledWith('5', '0x1', '1.3.0')
 
     await act(() => Promise.resolve())
 
@@ -76,7 +76,7 @@ describe('useInitSafeCoreSDK hook', () => {
   })
 
   it('does not initialize a Core SDK instance if there is no safe chainId', () => {
-    const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
+    const initMock = jest.spyOn(coreSDK, 'initReadOnlySafeSDK')
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider, chainId: '5' })
@@ -85,26 +85,6 @@ describe('useInitSafeCoreSDK hook', () => {
       safe: {
         ...mockSafeInfo.safe,
         chainId: '',
-      } as SafeInfo,
-      safeLoaded: true,
-    })
-
-    renderHook(() => useInitSafeCoreSDK())
-
-    expect(initMock).not.toHaveBeenCalled()
-    expect(setSDKMock).toHaveBeenCalledWith(undefined)
-  })
-
-  it('does not initialize a Core SDK instance if the safe chainId and wallet chainId are different', () => {
-    const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
-    const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
-
-    jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider, chainId: '1' })
-    jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce({
-      ...mockSafeInfo,
-      safe: {
-        ...mockSafeInfo.safe,
-        chainId: '5',
       } as SafeInfo,
       safeLoaded: true,
     })

@@ -4,10 +4,15 @@ import type { EthersError } from '@/utils/ethers-utils'
 
 import useAsync from './useAsync'
 import ContractErrorCodes from '@/services/contracts/ContractErrorCodes'
-import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
-import { type OnboardAPI } from '@web3-onboard/core'
+import { getAndValidateSafeSDK } from '@/services/tx/tx-sender/sdk'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { createWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import EthersAdapter from '@safe-global/safe-ethers-lib'
+import { ethers } from 'ethers'
+import useWallet from '@/hooks/wallets/useWallet'
+import { type JsonRpcProvider } from '@ethersproject/providers'
+import { type ConnectedWallet } from '@/services/onboard'
 
 const isContractError = (error: EthersError) => {
   if (!error.reason) return false
@@ -15,28 +20,27 @@ const isContractError = (error: EthersError) => {
   return Object.keys(ContractErrorCodes).includes(error.reason)
 }
 
-export const isValidExecution = async (
-  safeTx: SafeTransaction,
-  onboard: OnboardAPI,
+// Monkey patch the signerProvider to proxy requests to the "readonly" provider if on the wrong chain
+const getPatchedSignerProvider = (
+  wallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
-  gasLimit?: BigNumber,
+  readOnlyProvider: JsonRpcProvider,
 ) => {
-  if (!gasLimit) return
+  const signerProvider = createWeb3(wallet.provider)
 
-  const safeSdk = await getSafeSDKWithSigner(onboard, chainId)
+  if (wallet.chainId !== chainId) {
+    const signerMethods = ['eth_accounts']
+    const originalSend = signerProvider.send
 
-  try {
-    return safeSdk.isValidTransaction(safeTx, { gasLimit: gasLimit.toString() })
-  } catch (_err) {
-    const err = _err as EthersError
-
-    if (isContractError(err)) {
-      // @ts-ignore
-      err.reason += `: ${ContractErrorCodes[err.reason]}`
+    signerProvider.send = (request, ...args) => {
+      if (!signerMethods.includes(request)) {
+        return readOnlyProvider.send.call(readOnlyProvider, request, ...args)
+      }
+      return originalSend.call(signerProvider, request, ...args)
     }
-
-    throw err
   }
+
+  return signerProvider
 }
 
 const useIsValidExecution = (
@@ -47,14 +51,30 @@ const useIsValidExecution = (
   executionValidationError?: Error
   isValidExecutionLoading: boolean
 } => {
-  const safeSdk = useSafeSDK()
+  const wallet = useWallet()
+  const { safe } = useSafeInfo()
+  const readOnlyProvider = useWeb3ReadOnly()
 
   const [isValidExecution, executionValidationError, isValidExecutionLoading] = useAsync(async () => {
-    if (!safeTx || !safeSdk || !gasLimit) {
+    if (!safeTx || !wallet || !gasLimit || !readOnlyProvider) {
       return
     }
     try {
-      return await safeSdk.isValidTransaction(safeTx, { gasLimit: gasLimit.toString() })
+      /**
+       * We need to provide a signer address for isValidTransaction but
+       * don't actually need to sign anything, so we get a patched instance
+       * of the provider where the wallet network of the signer doesn't matter
+       */
+      const patchedSignerProvider = getPatchedSignerProvider(wallet, safe.chainId, readOnlyProvider)
+
+      const sdk = getAndValidateSafeSDK()
+      const ethAdapter = new EthersAdapter({
+        ethers,
+        signerOrProvider: patchedSignerProvider,
+      })
+
+      const safeSdk = await sdk.connect({ ethAdapter })
+      return await safeSdk.isValidTransaction(safeTx, { gasLimit: gasLimit.toString(), from: wallet.address })
     } catch (_err) {
       const err = _err as EthersError
 
@@ -65,7 +85,7 @@ const useIsValidExecution = (
 
       throw err
     }
-  }, [safeTx, safeSdk, gasLimit])
+  }, [safeTx, wallet, gasLimit, safe.chainId, readOnlyProvider])
 
   return { isValidExecution, executionValidationError, isValidExecutionLoading }
 }

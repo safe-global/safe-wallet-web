@@ -20,7 +20,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
-import { isValidExecution } from '@/hooks/useIsValidExecution'
+import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import {
   createTx,
@@ -87,6 +87,12 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
+  // Check if transaction will fail
+  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(
+    willExecute ? tx : undefined,
+    gasLimit,
+  )
+
   const [advancedParams, setAdvancedParams] = useAdvancedParams({
     nonce: tx?.data.nonce,
     gasLimit,
@@ -146,9 +152,6 @@ const SignOrExecuteForm = ({
   const onExecute = async (): Promise<string | undefined> => {
     const [, createdTx, , onboard] = assertDependencies()
 
-    // TODO: Verify that this is still working as intended
-    await isValidExecution(createdTx, onboard, safe.chainId, advancedParams.gasLimit)
-
     // If no txId was provided, it's an immediate execution of a new tx
     const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
@@ -192,9 +195,16 @@ const SignOrExecuteForm = ({
 
   const isExecutionLoop = wallet ? sameString(wallet.address, safeAddress) : false // Can't execute own transaction
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
-  const submitDisabled = !isSubmittable || isEstimating || !tx || disableSubmit || cannotPropose || isExecutionLoop
+  const submitDisabled =
+    !isSubmittable ||
+    isEstimating ||
+    !tx ||
+    disableSubmit ||
+    cannotPropose ||
+    isExecutionLoop ||
+    isValidExecutionLoading
 
-  const error = props.error || (willExecute ? gasLimitError : undefined)
+  const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
   return (
     <form onSubmit={handleSubmit}>
