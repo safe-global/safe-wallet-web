@@ -6,6 +6,7 @@ export enum PendingStatus {
   SIGNING = 'SIGNING',
   SUBMITTING = 'SUBMITTING',
   PROCESSING = 'PROCESSING',
+  RELAYING = 'RELAYING',
   INDEXING = 'INDEXING',
 }
 
@@ -15,6 +16,7 @@ export type PendingTx = {
   txHash?: string
   groupKey?: string
   signerAddress?: string
+  taskId?: string
 }
 
 type PendingTxsState = {
@@ -36,6 +38,7 @@ export const pendingTxsSlice = createSlice({
         groupKey?: string
         status: PendingStatus
         signerAddress?: string
+        taskId?: string
       }>,
     ) => {
       const { txId, ...pendingTx } = action.payload

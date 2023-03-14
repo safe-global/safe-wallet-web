@@ -58,3 +58,6 @@ export enum SafeAppsTag {
   SAFE_GOVERNANCE_APP = 'safe-governance-app',
   WALLET_CONNECT = 'wallet-connect',
 }
+
+// Safe Gelato relay service
+export const SAFE_GELATO_RELAY_SERVICE_URL = process.env.NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL || ''

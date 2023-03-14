@@ -11,6 +11,9 @@ import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { getAndValidateSafeSDK, getUncheckedSafeSDK, tryOffChainSigning } from './sdk'
+import { waitForRelayedTx } from '@/services/tx/txMonitor'
+import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import { sponsoredCall } from '@/services/tx/sponsoredCall'
 
 /**
  * Propose a transaction
@@ -267,4 +270,44 @@ export const dispatchSafeAppsTx = async (safeTx: SafeTransaction, safeAppRequest
   const sdk = getAndValidateSafeSDK()
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, safeTxHash })
+}
+
+export const dispatchTxRelay = async (
+  safeTx: SafeTransaction,
+  safe: SafeInfo,
+  txId: string,
+  gasLimit?: string | number,
+) => {
+  const instance = getSpecificGnosisSafeContractInstance(safe)
+
+  let transactionToRelay = safeTx
+  const data = instance.encode('execTransaction', [
+    transactionToRelay.data.to,
+    transactionToRelay.data.value,
+    transactionToRelay.data.data,
+    transactionToRelay.data.operation,
+    transactionToRelay.data.safeTxGas,
+    transactionToRelay.data.baseGas,
+    transactionToRelay.data.gasPrice,
+    transactionToRelay.data.gasToken,
+    transactionToRelay.data.refundReceiver,
+    transactionToRelay.encodedSignatures(),
+  ])
+
+  try {
+    const relayResponse = await sponsoredCall({ chainId: safe.chainId, to: safe.address.value, data, gasLimit })
+    const taskId = relayResponse.taskId
+
+    if (!taskId) {
+      throw new Error('Transaction could not be relayed')
+    }
+
+    txDispatch(TxEvent.RELAYING, { taskId, txId })
+
+    // Monitor relay tx
+    waitForRelayedTx(taskId, txId)
+  } catch (error) {
+    txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+    throw error
+  }
 }
