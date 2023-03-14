@@ -14,7 +14,7 @@ import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
-import { getTxOptions } from '@/utils/transactions'
+import { getTxOptions, hasEnoughSignatures } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import type { Web3Provider } from '@ethersproject/providers'
@@ -198,7 +198,7 @@ const SignOrExecuteForm = ({
     let id = txId
     let safeTx = createdTx
     // Add missing signature
-    if (createdTx.signatures.size < safe.threshold) {
+    if (!hasEnoughSignatures(createdTx, safe)) {
       const signedTransaction = await dispatchTxSigning(createdTx, safe.version)
 
       if (!signedTransaction) {
