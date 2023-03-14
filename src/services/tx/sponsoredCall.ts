@@ -5,7 +5,7 @@ import { type SafeTransactionData } from '@safe-global/safe-core-sdk-types'
 export type SponsoredCallPayload = {
   chainId: string
   to: string
-  data: SafeTransactionData['data'] | undefined
+  data: SafeTransactionData['data']
   gasLimit?: string | number
 }
 
