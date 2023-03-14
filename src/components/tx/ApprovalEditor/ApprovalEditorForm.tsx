@@ -20,8 +20,9 @@ export const ApprovalEditorForm = ({
   updateApprovals,
 }: {
   approvalInfos: ApprovalInfo[]
-  updateApprovals: (newApprovals: string[]) => void
+  updateApprovals?: (newApprovals: string[]) => void
 }) => {
+  const readonly = updateApprovals === undefined
   const [editIDx, setEditIdx] = useState(-1)
 
   const formMethods = useForm<FormData>({
@@ -43,7 +44,7 @@ export const ApprovalEditorForm = ({
 
   const onSave = () => {
     const formData = getValues('approvals')
-    updateApprovals(formData)
+    !readonly && updateApprovals(formData)
     setEditIdx(-1)
   }
 
@@ -65,32 +66,39 @@ export const ApprovalEditorForm = ({
             </Box>
           </Grid>
           <Grid item display="flex" xs={12} md flexDirection="column">
-            <NumberField
-              label={errors.approvals?.[idx]?.message || 'Amount'}
-              error={!!errors.approvals?.[idx]}
-              size="small"
-              disabled={editIDx !== idx}
-              InputProps={{
-                endAdornment:
-                  (editIDx === -1 || idx === editIDx) &&
-                  (editIDx === idx ? (
-                    <IconButton size="small" onClick={onSave}>
-                      <SvgIcon component={CheckIcon} />
-                    </IconButton>
-                  ) : (
-                    <IconButton size="small" onClick={() => onSetEditing(idx)}>
-                      <SvgIcon component={EditIcon} />
-                    </IconButton>
-                  )),
-              }}
-              {...register(`approvals.${idx}`, {
-                required: true,
-                validate: (val) => {
-                  const decimals = tx.tokenInfo?.decimals
-                  return validateAmount(val, true) || validateDecimalLength(val, decimals)
-                },
-              })}
-            />
+            {readonly ? (
+              <>
+                <Typography variant="overline">Amount</Typography>
+                <Typography>{tx.amountFormatted}</Typography>
+              </>
+            ) : (
+              <NumberField
+                label={errors.approvals?.[idx]?.message || 'Amount'}
+                error={!!errors.approvals?.[idx]}
+                size="small"
+                disabled={editIDx !== idx}
+                InputProps={{
+                  endAdornment:
+                    (editIDx === -1 || idx === editIDx) &&
+                    (editIDx === idx ? (
+                      <IconButton size="small" onClick={onSave} disabled={!!errors.approvals}>
+                        <SvgIcon component={CheckIcon} />
+                      </IconButton>
+                    ) : (
+                      <IconButton size="small" onClick={() => onSetEditing(idx)}>
+                        <SvgIcon component={EditIcon} />
+                      </IconButton>
+                    )),
+                }}
+                {...register(`approvals.${idx}`, {
+                  required: true,
+                  validate: (val) => {
+                    const decimals = tx.tokenInfo?.decimals
+                    return validateAmount(val, true) || validateDecimalLength(val, decimals)
+                  },
+                })}
+              />
+            )}
           </Grid>
 
           <Grid item display="flex" xs={4} flexDirection="column">

@@ -19,7 +19,7 @@ import type { SafeAppsTxParams } from '.'
 import { isEmptyHexData } from '@/utils/hex'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
-import { ApprovalEditor } from '../ApprovalEditor'
+import { ApprovalEditor } from '../../tx/ApprovalEditor'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams

@@ -5,7 +5,7 @@ import { WarningOutlined } from '@mui/icons-material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import { Accordion, AccordionDetails, AccordionSummary, IconButton, Skeleton, Typography } from '@mui/material'
-import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DecodedDataResponse, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber, ethers } from 'ethers'
 import { Interface, keccak256, parseUnits, toUtf8Bytes } from 'ethers/lib/utils'
 import { groupBy } from 'lodash'
@@ -20,6 +20,41 @@ const approvalSigHash = keccak256(toUtf8Bytes('approve(address,uint256)')).slice
 const erc20interface = new Interface(['function approve(address,uint256)'])
 
 const UNLIMITED = BigNumber.from(2).pow(256).sub(1)
+
+const extractTxs: (txs: BaseTransaction[] | (DecodedDataResponse & { to: string })) => BaseTransaction[] = (txs) => {
+  if (Array.isArray(txs)) {
+    return txs
+  }
+  // Our multisend contract takes 1 param called transactions
+  if (txs.method === 'multiSend' && txs.parameters.length === 1) {
+    const txParam = txs.parameters[0]
+    if (txParam.name === 'transactions') {
+      return txParam.valueDecoded
+        ? txParam.valueDecoded.map((innerTx) => ({
+            to: innerTx.to,
+            data: innerTx.data,
+            value: innerTx.value,
+          }))
+        : []
+    }
+  }
+  if (txs.method === 'approve' && txs.parameters.length === 2) {
+    const spenderParam = txs.parameters[0]
+    const amountParam = txs.parameters[1]
+
+    // We only check the types here instead of the names may vary in ERC20 implementations
+    if (spenderParam.type == 'address' && amountParam.type === 'uint256') {
+      return [
+        {
+          to: txs.to,
+          value: '0x',
+          data: erc20interface.encodeFunctionData('approve', [spenderParam.value, amountParam.value]),
+        },
+      ]
+    }
+  }
+  return []
+}
 
 const Summary = ({ approvalInfos, uniqueTokenCount }: { approvalInfos: ApprovalInfo[]; uniqueTokenCount: number }) =>
   approvalInfos.length === 1 ? (
@@ -48,12 +83,12 @@ export const ApprovalEditor = ({
   txs,
   updateTxs,
 }: {
-  txs: BaseTransaction[]
-  updateTxs: (txs: BaseTransaction[]) => void
+  txs: BaseTransaction[] | (DecodedDataResponse & { to: string })
+  updateTxs?: (txs: BaseTransaction[]) => void
 }) => {
   const { balances } = useBalances()
-
-  const approvalTxs = useMemo(() => txs.filter((tx) => tx.data.startsWith(approvalSigHash)), [txs])
+  const extractedTxs = useMemo(() => extractTxs(txs), [txs])
+  const approvalTxs = useMemo(() => extractedTxs.filter((tx) => tx.data.startsWith(approvalSigHash)), [extractedTxs])
 
   const [approvalInfos, error, loading] = useAsync(
     async () =>
@@ -63,8 +98,9 @@ export const ApprovalEditor = ({
           let tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> | undefined = balances.items.find(
             (item) => item.tokenInfo.address === tx.to,
           )?.tokenInfo
-
-          tokenInfo = await getERC20TokenInfoOnChain(tx.to)
+          if (!tokenInfo) {
+            tokenInfo = await getERC20TokenInfoOnChain(tx.to)
+          }
 
           return {
             tokenInfo: tokenInfo,
@@ -86,29 +122,32 @@ export const ApprovalEditor = ({
   const uniqueTokens = groupBy(approvalTxs, (tx) => tx.to)
   const uniqueTokenCount = Object.keys(uniqueTokens).length
 
-  const updateApprovals = (approvals: string[]) => {
-    let approvalID = 0
-    const updatedTxs = txs.map((tx) => {
-      if (tx.data.startsWith(approvalSigHash)) {
-        const newApproval = approvals[approvalID]
-        const approvalInfo = approvalInfos?.[approvalID]
-        if (!approvalInfo || !approvalInfo.tokenInfo) {
-          // Without decimals and spender we cannot create a new tx
-          return tx
+  const updateApprovals =
+    updateTxs === undefined
+      ? undefined
+      : (approvals: string[]) => {
+          let approvalID = 0
+          const updatedTxs = extractedTxs.map((tx) => {
+            if (tx.data.startsWith(approvalSigHash)) {
+              const newApproval = approvals[approvalID]
+              const approvalInfo = approvalInfos?.[approvalID]
+              if (!approvalInfo || !approvalInfo.tokenInfo) {
+                // Without decimals and spender we cannot create a new tx
+                return tx
+              }
+              approvalID++
+              const decimals = approvalInfo.tokenInfo.decimals
+              const newAmountWei = parseUnits(newApproval, decimals)
+              return {
+                to: approvalInfo.tokenAddress,
+                value: '0',
+                data: erc20interface.encodeFunctionData('approve', [approvalInfo.spender, newAmountWei]),
+              }
+            }
+            return tx
+          })
+          updateTxs(updatedTxs)
         }
-        approvalID++
-        const decimals = approvalInfo.tokenInfo.decimals
-        const newAmountWei = parseUnits(newApproval, decimals)
-        return {
-          to: approvalInfo.tokenAddress,
-          value: '0',
-          data: erc20interface.encodeFunctionData('approve', [approvalInfo.spender, newAmountWei]),
-        }
-      }
-      return tx
-    })
-    updateTxs(updatedTxs)
-  }
 
   return (
     <Accordion className={css.warningAccordion} disabled={loading}>
@@ -119,10 +158,16 @@ export const ApprovalEditor = ({
           </IconButton>
         }
       >
-        {loading ? <Skeleton /> : <Summary approvalInfos={approvalInfos || []} uniqueTokenCount={uniqueTokenCount} />}
+        {loading || !approvalInfos ? (
+          <Skeleton />
+        ) : (
+          <Summary approvalInfos={approvalInfos} uniqueTokenCount={uniqueTokenCount} />
+        )}
       </AccordionSummary>
       <AccordionDetails>
-        {loading ? null : <ApprovalEditorForm approvalInfos={approvalInfos || []} updateApprovals={updateApprovals} />}
+        {loading || !approvalInfos ? null : (
+          <ApprovalEditorForm approvalInfos={approvalInfos} updateApprovals={updateApprovals} />
+        )}
       </AccordionDetails>
     </Accordion>
   )
