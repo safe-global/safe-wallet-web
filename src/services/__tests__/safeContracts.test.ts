@@ -1,49 +1,29 @@
-import { getMasterCopies } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { _getValidatedGetContractProps, isValidMasterCopy } from '../contracts/safeContracts'
-
-jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
-  getMasterCopies: jest.fn(),
-}))
 
 describe('safeContracts', () => {
   describe('isValidMasterCopy', () => {
-    it('returns false if address is not contained in result', async () => {
-      ;(getMasterCopies as jest.Mock).mockResolvedValue([
-        {
-          address: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
-          version: '1.3.0',
-          deployer: 'Gnosis',
-          deployedBlockNumber: 12504268,
-          lastIndexedBlockNumber: 14927028,
-          l2: false,
-        },
-      ])
+    it('returns false if the implementation is unknown', async () => {
+      const isValid = isValidMasterCopy({
+        implementationVersionState: 'UNKNOWN',
+      } as SafeInfo)
 
-      const isValid = await isValidMasterCopy('1', '0x0000000000000000000000000000000000000005')
       expect(isValid).toBe(false)
     })
 
-    it('returns true if address is contained in list', async () => {
-      ;(getMasterCopies as jest.Mock).mockResolvedValue([
-        {
-          address: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
-          version: '1.3.0',
-          deployer: 'Gnosis',
-          deployedBlockNumber: 12504268,
-          lastIndexedBlockNumber: 14927028,
-          l2: false,
-        },
-        {
-          address: '0x3E5c63644E683549055b9Be8653de26E0B4CD36E',
-          version: '1.3.0+L2',
-          deployer: 'Gnosis',
-          deployedBlockNumber: 12504423,
-          lastIndexedBlockNumber: 14927028,
-          l2: true,
-        },
-      ])
+    it('returns true if the implementation is up-to-date', async () => {
+      const isValid = isValidMasterCopy({
+        implementationVersionState: 'UP_TO_DATE',
+      } as SafeInfo)
 
-      const isValid = await isValidMasterCopy('1', '0x3E5c63644E683549055b9Be8653de26E0B4CD36E')
+      expect(isValid).toBe(true)
+    })
+
+    it('returns true if the implementation is outdated', async () => {
+      const isValid = isValidMasterCopy({
+        implementationVersionState: 'OUTDATED',
+      } as SafeInfo)
+
       expect(isValid).toBe(true)
     })
   })

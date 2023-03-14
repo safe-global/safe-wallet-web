@@ -4,7 +4,6 @@ import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript
 import useSafeInfo from './useSafeInfo'
 import { useAppDispatch } from '@/store'
 import { AppRoutes } from '@/config/routes'
-import useAsync from './useAsync'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 import { useRouter } from 'next/router'
 import useIsSafeOwner from './useIsSafeOwner'
@@ -68,15 +67,8 @@ const useSafeNotifications = (): void => {
    * Show a notification when the Safe master copy is not supported
    */
 
-  const masterCopy = safe.implementation.value
-
-  const [validMasterCopy] = useAsync(() => {
-    if (!masterCopy) return
-    return isValidMasterCopy(chainId, masterCopy)
-  }, [chainId, masterCopy])
-
   useEffect(() => {
-    if (validMasterCopy === undefined || validMasterCopy) return
+    if (isValidMasterCopy(safe)) return
 
     const id = dispatch(
       showNotification({
@@ -92,7 +84,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, validMasterCopy])
+  }, [dispatch, safe])
 }
 
 export default useSafeNotifications
