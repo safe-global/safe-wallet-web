@@ -51,12 +51,10 @@ export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Pr
 
   let isL1SafeMasterCopy = chainId === chains.eth
 
-  const masterCopy = safe.implementation.value
-
-  const isValid = await isValidMasterCopy(chainId, masterCopy)
-
   // If it is an official deployment we should still initiate the safeSDK
-  if (!isValid) {
+  if (!isValidMasterCopy(safe)) {
+    const masterCopy = safe.implementation.value
+
     const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
     const safeL2Deployment = getSafeL2SingletonDeployment({ network: chainId, version: safeVersion })
 

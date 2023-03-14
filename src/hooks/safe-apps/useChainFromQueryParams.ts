@@ -1,3 +1,5 @@
+// TODO: refactor using useCurrentChain()
+
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'

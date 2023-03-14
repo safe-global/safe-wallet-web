@@ -18,7 +18,7 @@ const SafeTerms = () => {
           (&ldquo;CC&rdquo;, &ldquo;we&rdquo;, &ldquo;our&rdquo; or &ldquo;us&rdquo;) provided we made these Terms
           accessible to you prior to entering into the Agreement and you consent to these Terms. We are a limited
           liability company registered with the commercial register of Berlin Charlottenburg under company number HRB
-          24041&nbsp;B, with its registered office at the ℅ Full Node, Skalitzer Str. 85-86, 10997 Berlin, Germany. You
+          240421&nbsp;B, with its registered office at the ℅ Full Node, Skalitzer Str. 85-86, 10997 Berlin, Germany. You
           can contact us by writing to info@cc0x.dev.
         </li>
         <li>
