@@ -1,5 +1,6 @@
 import { renderHook } from '@/tests/test-utils'
 import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
+import * as web3 from '@/hooks/wallets/web3'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as coreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import * as useWallet from '@/hooks/wallets/useWallet'
@@ -8,6 +9,7 @@ import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { EIP1193Provider, OnboardAPI } from '@web3-onboard/core'
 import { act } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 describe('useInitSafeCoreSDK hook', () => {
   const mockSafeInfo = {
@@ -35,9 +37,13 @@ describe('useInitSafeCoreSDK hook', () => {
     disconnectWallet: jest.fn(),
   } as unknown as OnboardAPI
 
+  let mockProvider: JsonRpcProvider
+
   beforeEach(() => {
     jest.clearAllMocks()
 
+    mockProvider = jest.fn() as unknown as JsonRpcProvider
+    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(mockProvider)
     jest.spyOn(useSafeInfo, 'default').mockReturnValue(mockSafeInfo)
     jest.spyOn(useWallet, 'default').mockReturnValue(mockWallet)
     jest.spyOn(useOnboard, 'default').mockReturnValue(mockOnboard)
@@ -45,7 +51,7 @@ describe('useInitSafeCoreSDK hook', () => {
 
   it('initializes a Core SDK instance', async () => {
     const mockSafe = {} as Safe
-    const initMock = jest.spyOn(coreSDK, 'initReadOnlySafeSDK').mockReturnValue(Promise.resolve(mockSafe))
+    const initMock = jest.spyOn(coreSDK, 'initSafeSDK').mockReturnValue(Promise.resolve(mockSafe))
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
@@ -56,7 +62,7 @@ describe('useInitSafeCoreSDK hook', () => {
 
     renderHook(() => useInitSafeCoreSDK())
 
-    expect(initMock).toHaveBeenCalledWith('5', '0x1', '1.3.0')
+    expect(initMock).toHaveBeenCalledWith(mockProvider, mockSafeInfo.safe)
 
     await act(() => Promise.resolve())
 
@@ -68,26 +74,6 @@ describe('useInitSafeCoreSDK hook', () => {
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
-
-    renderHook(() => useInitSafeCoreSDK())
-
-    expect(initMock).not.toHaveBeenCalled()
-    expect(setSDKMock).toHaveBeenCalledWith(undefined)
-  })
-
-  it('does not initialize a Core SDK instance if there is no safe chainId', () => {
-    const initMock = jest.spyOn(coreSDK, 'initReadOnlySafeSDK')
-    const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
-
-    jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider, chainId: '5' })
-    jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce({
-      ...mockSafeInfo,
-      safe: {
-        ...mockSafeInfo.safe,
-        chainId: '',
-      } as SafeInfo,
-      safeLoaded: true,
-    })
 
     renderHook(() => useInitSafeCoreSDK())
 
