@@ -4,7 +4,7 @@ import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
-import { Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import Safe from '@safe-global/safe-core-sdk'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
@@ -53,12 +53,10 @@ export const createReadOnlyEthersAdapter = (provider = getWeb3ReadOnly()) => {
 }
 
 // Safe Core SDK
-export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Promise<Safe | undefined> => {
-  const ethersProvider = new Web3Provider(provider)
-
+export const initReadOnlySafeSDK = async (provider: JsonRpcProvider, safe: SafeInfo): Promise<Safe | undefined> => {
   const chainId = safe.chainId
   const safeAddress = safe.address.value
-  const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, ethersProvider).VERSION())
+  const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, provider).VERSION())
 
   let isL1SafeMasterCopy = chainId === chains.eth
 
@@ -78,20 +76,6 @@ export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Pr
     }
   }
 
-  // Legacy Safe contracts
-  if (isLegacyVersion(safeVersion)) {
-    isL1SafeMasterCopy = true
-  }
-
-  return Safe.create({
-    ethAdapter: createEthersAdapter(ethersProvider),
-    safeAddress,
-    isL1SafeMasterCopy,
-  })
-}
-
-export const initReadOnlySafeSDK = async (chainId: string, safeAddress: string, safeVersion: string): Promise<Safe> => {
-  let isL1SafeMasterCopy = chainId === chains.eth
   // Legacy Safe contracts
   if (isLegacyVersion(safeVersion)) {
     isL1SafeMasterCopy = true

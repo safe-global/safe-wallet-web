@@ -29,11 +29,12 @@ const getPatchedSignerProvider = (
   const signerProvider = createWeb3(wallet.provider)
 
   if (wallet.chainId !== chainId) {
-    const readOnlyMethods = ['eth_getCode', 'eth_call']
+    // The RPC methods that are used when we call contract.callStatic.execTransaction
+    const READ_ONLY_METHODS = ['eth_chainId', 'eth_call']
     const originalSend = signerProvider.send
 
     signerProvider.send = (request, ...args) => {
-      if (readOnlyMethods.includes(request)) {
+      if (READ_ONLY_METHODS.includes(request)) {
         return readOnlyProvider.send.call(readOnlyProvider, request, ...args)
       }
       return originalSend.call(signerProvider, request, ...args)
@@ -66,9 +67,10 @@ const useIsValidExecution = (
       const { contract } = getSpecificGnosisSafeContractInstance(safe, provider)
 
       /**
-       * We need to call the contract directly instead of using sdk.isValidTransaction
-       * because gasLimit errors are not propagated otherwise. It also fixes the over-fetching
-       * issue that the monkey patched provider does
+       * We need to call the contract directly instead of using `sdk.isValidTransaction`
+       * because `gasLimit` errors are otherwise not propagated.
+       * @see https://github.com/safe-global/safe-core-sdk/blob/main/packages/safe-ethers-lib/src/contracts/GnosisSafe/GnosisSafeContractEthers.ts#L126
+       * This also fixes the over-fetching issue of the monkey patched provider.
        */
       return contract.callStatic.execTransaction(
         safeTx.data.to,

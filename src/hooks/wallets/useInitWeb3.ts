@@ -23,5 +23,6 @@ export const useInitWeb3 = () => {
 
     const web3ReadOnly = createWeb3ReadOnly(chain.rpcUri, customRpc?.[chain.chainId])
     setWeb3ReadOnly(web3ReadOnly)
-  }, [chain, customRpc])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chain?.chainId, customRpc])
 }

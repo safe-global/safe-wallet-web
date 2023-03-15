@@ -5,19 +5,22 @@ import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 export const useInitSafeCoreSDK = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const dispatch = useAppDispatch()
+  const provider = useWeb3ReadOnly()
 
   useEffect(() => {
-    if (!safeLoaded || !safe.version || !safe.chainId) {
+    if (!safeLoaded || !provider) {
       // If we don't reset the SDK, a previous Safe could remain in the store
       setSafeSDK(undefined)
       return
     }
 
-    initReadOnlySafeSDK(safe.chainId, safe.address.value, safe.version)
+    // A read-only instance of the SDK is sufficient because we connect the signer to it when needed
+    initReadOnlySafeSDK(provider, safe)
       .then(setSafeSDK)
       .catch((e) => {
         dispatch(
@@ -30,5 +33,5 @@ export const useInitSafeCoreSDK = () => {
         )
         trackError(ErrorCodes._105, (e as Error).message)
       })
-  }, [safe.chainId, safe.address.value, safe.version, safeLoaded, dispatch])
+  }, [safe, safeLoaded, dispatch, provider])
 }

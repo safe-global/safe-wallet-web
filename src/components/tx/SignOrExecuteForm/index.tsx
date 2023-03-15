@@ -16,7 +16,6 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import type { Web3Provider } from '@ethersproject/providers'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
@@ -109,13 +108,12 @@ const SignOrExecuteForm = ({
   const nonceReadonly = !!txId || !!tx?.signatures.size || isRejection
 
   // Assert that wallet, tx and provider are defined
-  const assertDependencies = (): [ConnectedWallet, SafeTransaction, Web3Provider, OnboardAPI] => {
+  const assertDependencies = (): [ConnectedWallet, SafeTransaction, OnboardAPI] => {
     if (!wallet) throw new Error('Wallet not connected')
     if (!tx) throw new Error('Transaction not ready')
-    if (!provider) throw new Error('Provider not ready')
     if (!onboard) throw new Error('Onboard not ready')
 
-    return [wallet, tx, provider, onboard]
+    return [wallet, tx, onboard]
   }
 
   // Propose transaction if no txId
@@ -134,7 +132,7 @@ const SignOrExecuteForm = ({
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
-    const [connectedWallet, createdTx, , onboard] = assertDependencies()
+    const [connectedWallet, createdTx, onboard] = assertDependencies()
 
     // Smart contract wallets must sign via an on-chain tx
     if (await isSmartContractWallet(connectedWallet)) {
@@ -154,7 +152,7 @@ const SignOrExecuteForm = ({
 
   // Execute transaction
   const onExecute = async (): Promise<string | undefined> => {
-    const [, createdTx, , onboard] = assertDependencies()
+    const [, createdTx, onboard] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
     const id = txId || (await proposeTx(createdTx))
