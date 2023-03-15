@@ -55,7 +55,7 @@ const useIsValidExecution = (
   const readOnlyProvider = useWeb3ReadOnly()
 
   const [isValidExecution, executionValidationError, isValidExecutionLoading] = useAsync(async () => {
-    if (!safeTx || !wallet?.address || !gasLimit || !readOnlyProvider) {
+    if (!safeTx || !wallet || !gasLimit || !readOnlyProvider) {
       return
     }
 
@@ -91,7 +91,7 @@ const useIsValidExecution = (
 
       throw err
     }
-  }, [safeTx, wallet?.address, gasLimit, safe, readOnlyProvider])
+  }, [safeTx, wallet, gasLimit, safe, readOnlyProvider])
 
   return { isValidExecution, executionValidationError, isValidExecutionLoading }
 }
