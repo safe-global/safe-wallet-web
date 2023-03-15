@@ -12,6 +12,7 @@ import { hexValue } from 'ethers/lib/utils'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import { type OnboardAPI } from '@web3-onboard/core'
+import { type ConnectedWallet } from '@/services/onboard'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -33,11 +34,19 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) =>
     await onboard.setChain({ chainId: chainIdInHex })
   }
 
-  const newWallet = getConnectedWallet(onboard.state.get().wallets)
+  /**
+   * Onboard doesn't update immediately and returns a wallet that's on the
+   * previous chain, so we add a slight timeout before accessing its state again
+   */
+  return new Promise<ConnectedWallet>((resolve) => {
+    setTimeout(() => {
+      const newWallet = getConnectedWallet(onboard.state.get().wallets)
 
-  if (!newWallet) throw new Error('No wallet connected')
+      if (!newWallet) throw new Error('No wallet connected')
 
-  return newWallet
+      return resolve(newWallet)
+    }, 500)
+  })
 }
 
 /**
