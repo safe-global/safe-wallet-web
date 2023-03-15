@@ -235,7 +235,7 @@ const SignOrExecuteForm = ({
         />
 
         {/* Error messages */}
-        {cannotPropose ? (
+        {isSubmittable && cannotPropose ? (
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
           </ErrorMessage>
