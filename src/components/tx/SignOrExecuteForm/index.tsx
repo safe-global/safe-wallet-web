@@ -30,6 +30,9 @@ import {
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
 import CheckWallet from '@/components/common/CheckWallet'
+import ExternalLink from '@/components/common/ExternalLink'
+import { getExplorerLink } from '@/utils/gateway'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { type OnboardAPI } from '@web3-onboard/core'
 
 type SignOrExecuteProps = {
@@ -66,6 +69,9 @@ const SignOrExecuteForm = ({
   const provider = useWeb3()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
+
+  // Unsupported base contract
+  const isUnknown = safe.implementationVersionState === ImplementationVersionState.UNKNOWN
 
   // Internal state
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
@@ -252,6 +258,18 @@ const SignOrExecuteForm = ({
           </ErrorMessage>
         ) : submitError ? (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        ) : willExecute && isUnknown ? (
+          <ErrorMessage>
+            This Safe was created with an unsupported base contract. It should <b>ONLY</b> be used for fund recovery.
+            Transactions will execute but the transaction list may not immediately update. Transaction success can be
+            verified on the{' '}
+            <ExternalLink
+              href={currentChain ? getExplorerLink(safeAddress, currentChain.blockExplorerUriTemplate).href : ''}
+            >
+              {currentChain?.chainName} explorer
+            </ExternalLink>
+            .
+          </ErrorMessage>
         ) : null}
 
         {/* Info text */}

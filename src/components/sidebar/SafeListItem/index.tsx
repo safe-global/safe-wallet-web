@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactElement } from 'react'
+import { useEffect, useRef, type ReactElement, type ComponentProps } from 'react'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListItem from '@mui/material/ListItem'
@@ -28,6 +28,7 @@ const SafeListItem = ({
   chainId,
   closeDrawer,
   shouldScrollToSafe,
+  href,
   noActions = false,
   isAdded = false,
   ...rest
@@ -35,6 +36,7 @@ const SafeListItem = ({
   address: string
   chainId: string
   shouldScrollToSafe: boolean
+  href: ComponentProps<typeof Link>['href']
   closeDrawer?: () => void
   threshold?: string | number
   owners?: string | number
@@ -80,7 +82,7 @@ const SafeListItem = ({
         )
       }
     >
-      <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
+      <Link href={href} passHref>
         <ListItemButton
           key={address}
           onClick={closeDrawer}

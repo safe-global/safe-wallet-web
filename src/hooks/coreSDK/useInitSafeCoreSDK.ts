@@ -22,7 +22,7 @@ export const useInitSafeCoreSDK = () => {
       .catch((e) => {
         dispatch(
           showNotification({
-            message: 'There was an error. Please try to reload the page.',
+            message: 'Please try connecting your wallet again.',
             groupKey: 'core-sdk-init-error',
             variant: 'error',
             detailedMessage: (e as Error).message,
