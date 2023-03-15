@@ -5,14 +5,13 @@ import type { EthersError } from '@/utils/ethers-utils'
 import useAsync from './useAsync'
 import ContractErrorCodes from '@/services/contracts/ContractErrorCodes'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getAndValidateSafeSDK } from '@/services/tx/tx-sender/sdk'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { createWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import EthersAdapter from '@safe-global/safe-ethers-lib'
-import { ethers } from 'ethers'
-import useWallet from '@/hooks/wallets/useWallet'
 import { type JsonRpcProvider } from '@ethersproject/providers'
 import { type ConnectedWallet } from '@/services/onboard'
+import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useWallet from '@/hooks/wallets/useWallet'
+import { encodeSignatures } from '@/services/tx/encodeSignatures'
 
 const isContractError = (error: EthersError) => {
   if (!error.reason) return false
@@ -56,25 +55,32 @@ const useIsValidExecution = (
   const readOnlyProvider = useWeb3ReadOnly()
 
   const [isValidExecution, executionValidationError, isValidExecutionLoading] = useAsync(async () => {
-    if (!safeTx || !wallet || !gasLimit || !readOnlyProvider) {
+    if (!safeTx || !wallet?.address || !gasLimit || !readOnlyProvider) {
       return
     }
+
     try {
+      const provider = getPatchedSignerProvider(wallet, safe.chainId, readOnlyProvider)
+      const { contract } = getSpecificGnosisSafeContractInstance(safe, provider)
+
       /**
-       * We need to provide a signer address for isValidTransaction but
-       * don't actually need to sign anything, so we get a patched instance
-       * of the provider where the wallet network of the signer doesn't matter
+       * We need to call the contract directly instead of using sdk.isValidTransaction
+       * because gasLimit errors are not propagated otherwise. It also fixes the over-fetching
+       * issue that the monkey patched provider does
        */
-      const patchedSignerProvider = getPatchedSignerProvider(wallet, safe.chainId, readOnlyProvider)
-
-      const sdk = getAndValidateSafeSDK()
-      const ethAdapter = new EthersAdapter({
-        ethers,
-        signerOrProvider: patchedSignerProvider,
-      })
-
-      const safeSdk = await sdk.connect({ ethAdapter })
-      return await safeSdk.isValidTransaction(safeTx, { gasLimit: gasLimit.toString(), from: wallet.address })
+      return contract.callStatic.execTransaction(
+        safeTx.data.to,
+        safeTx.data.value,
+        safeTx.data.data,
+        safeTx.data.operation,
+        safeTx.data.safeTxGas,
+        safeTx.data.baseGas,
+        safeTx.data.gasPrice,
+        safeTx.data.gasToken,
+        safeTx.data.refundReceiver,
+        encodeSignatures(safeTx, wallet.address),
+        { from: wallet.address, gasLimit: gasLimit.toString() },
+      )
     } catch (_err) {
       const err = _err as EthersError
 
@@ -85,7 +91,7 @@ const useIsValidExecution = (
 
       throw err
     }
-  }, [safeTx, wallet, gasLimit, safe.chainId, readOnlyProvider])
+  }, [safeTx, wallet?.address, gasLimit, safe, readOnlyProvider])
 
   return { isValidExecution, executionValidationError, isValidExecutionLoading }
 }

@@ -17,6 +17,7 @@ import { assertValidSafeVersion, createEthersAdapter } from '@/hooks/coreSDK/saf
 import { sameAddress } from '@/utils/addresses'
 import type SignMessageLibEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/SignMessageLib/SignMessageLibEthersContract'
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
+import type { Web3Provider } from '@ethersproject/providers'
 
 export const isValidMasterCopy = async (chainId: string, address: string): Promise<boolean> => {
   const masterCopies = await getMasterCopies(chainId)
@@ -41,8 +42,8 @@ export const _getValidatedGetContractProps = (
 
 // GnosisSafe
 
-export const getSpecificGnosisSafeContractInstance = (safe: SafeInfo) => {
-  const ethAdapter = createEthersAdapter()
+export const getSpecificGnosisSafeContractInstance = (safe: SafeInfo, provider?: Web3Provider) => {
+  const ethAdapter = createEthersAdapter(provider)
 
   return ethAdapter.getSafeContract({
     customContractAddress: safe.address.value,

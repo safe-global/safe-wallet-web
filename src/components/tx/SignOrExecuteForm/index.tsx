@@ -87,17 +87,17 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
-  // Check if transaction will fail
-  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(
-    willExecute ? tx : undefined,
-    gasLimit,
-  )
-
   const [advancedParams, setAdvancedParams] = useAdvancedParams({
     nonce: tx?.data.nonce,
     gasLimit,
     safeTxGas: tx?.data.safeTxGas,
   })
+
+  // Check if transaction will fail
+  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(
+    willExecute ? tx : undefined,
+    advancedParams.gasLimit,
+  )
 
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
