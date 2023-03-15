@@ -29,11 +29,11 @@ const getPatchedSignerProvider = (
   const signerProvider = createWeb3(wallet.provider)
 
   if (wallet.chainId !== chainId) {
-    const signerMethods = ['eth_accounts']
+    const readOnlyMethods = ['eth_getCode', 'eth_call']
     const originalSend = signerProvider.send
 
     signerProvider.send = (request, ...args) => {
-      if (!signerMethods.includes(request)) {
+      if (readOnlyMethods.includes(request)) {
         return readOnlyProvider.send.call(readOnlyProvider, request, ...args)
       }
       return originalSend.call(signerProvider, request, ...args)
