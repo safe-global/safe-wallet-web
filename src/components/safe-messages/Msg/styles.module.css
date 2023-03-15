@@ -1,0 +1,6 @@
+.msg :global .MuiInputBase-input {
+  white-space: pre;
+  font-family: monospace;
+  font-size: 0.85rem;
+  -webkit-text-fill-color: var(--color-text-primary);
+}

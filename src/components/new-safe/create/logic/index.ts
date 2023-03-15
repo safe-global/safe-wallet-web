@@ -15,12 +15,10 @@ import { isWalletRejection } from '@/utils/wallets'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import type { UrlObject } from 'url'
-import { getShortName } from '@/utils/chains'
 import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import type { AppDispatch, AppThunk } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { formatError } from '@/hooks/useTxNotifications'
 import { SafeFactory } from '@safe-global/safe-core-sdk'
 import type Safe from '@safe-global/safe-core-sdk'
 import type { DeploySafeProps } from '@safe-global/safe-core-sdk'
@@ -29,6 +27,7 @@ import type { PredictSafeProps } from '@safe-global/safe-core-sdk/dist/src/safeF
 import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { formatError } from '@/utils/formatters'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -234,12 +233,11 @@ export const checkSafeCreationTx = async (
 }
 
 export const getRedirect = (
-  chainId: string,
+  chainPrefix: string,
   safeAddress: string,
   redirectQuery?: string | string[],
 ): UrlObject | string => {
   const redirectUrl = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery
-  const chainPrefix = getShortName(chainId)
   const address = `${chainPrefix}:${safeAddress}`
 
   // Should never happen in practice

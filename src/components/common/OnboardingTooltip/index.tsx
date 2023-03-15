@@ -19,7 +19,7 @@ export const OnboardingTooltip = ({
 }: {
   children: ReactElement // NB: this has to be an actual HTML element, otherwise the Tooltip will not work
   widgetLocalStorageId: string
-  text: string
+  text: string | ReactElement
   initiallyShown?: boolean
   className?: string
   placement?: TooltipProps['placement']

@@ -53,7 +53,8 @@ const TxPage = ({
 
       {error && <ErrorMessage>Error loading transactions</ErrorMessage>}
 
-      {loading && <SkeletonTxList />}
+      {/* No skeletons for pending as they are shown above the queue which has them */}
+      {loading && !hasPending && <SkeletonTxList />}
 
       {page?.next && onNextPage && (
         <Box my={4} textAlign="center">

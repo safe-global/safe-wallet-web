@@ -1,12 +1,12 @@
-import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectLastSafeAddress } from '@/store/sessionSlice'
-import { getShortName } from '@/utils/chains'
+import { useCurrentChain } from './useChains'
 
 const useLastSafe = (): string | undefined => {
-  const chainId = useChainId()
+  const chainInfo = useCurrentChain()
+  const chainId = chainInfo?.chainId || ''
+  const prefix = chainInfo?.shortName || ''
   const lastSafeAddress = useAppSelector((state) => selectLastSafeAddress(state, chainId))
-  const prefix = getShortName(chainId)
   return prefix && lastSafeAddress ? `${prefix}:${lastSafeAddress}` : undefined
 }
 

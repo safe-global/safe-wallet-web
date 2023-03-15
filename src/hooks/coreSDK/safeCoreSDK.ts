@@ -1,6 +1,8 @@
 import chains from '@/config/chains'
+import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import { getWeb3 } from '@/hooks/wallets/web3'
 import ExternalStore from '@/services/ExternalStore'
+import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
 import { Web3Provider } from '@ethersproject/providers'
 import Safe from '@safe-global/safe-core-sdk'
@@ -10,6 +12,7 @@ import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
+import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 
 export const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
@@ -39,19 +42,36 @@ export const createEthersAdapter = (provider = getWeb3()) => {
 }
 
 // Safe Core SDK
-export const initSafeSDK = async (
-  provider: EIP1193Provider,
-  chainId: string,
-  safeAddress: string,
-  safeVersion: string,
-): Promise<Safe> => {
+export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Promise<Safe | undefined> => {
+  const ethersProvider = new Web3Provider(provider)
+
+  const chainId = safe.chainId
+  const safeAddress = safe.address.value
+  const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, ethersProvider).VERSION())
+
   let isL1SafeMasterCopy = chainId === chains.eth
+
+  // If it is an official deployment we should still initiate the safeSDK
+  if (!isValidMasterCopy(safe)) {
+    const masterCopy = safe.implementation.value
+
+    const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
+    const safeL2Deployment = getSafeL2SingletonDeployment({ network: chainId, version: safeVersion })
+
+    isL1SafeMasterCopy = masterCopy === safeL1Deployment?.defaultAddress
+    const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.defaultAddress
+
+    // Unknown deployment, which we do not want to support
+    if (!isL1SafeMasterCopy && !isL2SafeMasterCopy) {
+      return Promise.resolve(undefined)
+    }
+  }
+
   // Legacy Safe contracts
   if (isLegacyVersion(safeVersion)) {
     isL1SafeMasterCopy = true
   }
 
-  const ethersProvider = new Web3Provider(provider)
   return Safe.create({
     ethAdapter: createEthersAdapter(ethersProvider),
     safeAddress,

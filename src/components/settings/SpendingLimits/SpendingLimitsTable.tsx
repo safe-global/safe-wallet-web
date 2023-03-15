@@ -10,11 +10,11 @@ import { BigNumber } from '@ethersproject/bignumber'
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import TxModal from '@/components/tx/TxModal'
 import { RemoveSpendingLimit } from '@/components/settings/SpendingLimits/RemoveSpendingLimit'
-import useIsGranted from '@/hooks/useIsGranted'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import TokenIcon from '@/components/common/TokenIcon'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const RemoveSpendingLimitSteps: TxStepperProps['steps'] = [
   {
@@ -74,9 +74,6 @@ export const SpendingLimitsTable = ({
 }) => {
   const [open, setOpen] = useState<boolean>(false)
   const [initialData, setInitialData] = useState<SpendingLimitState>()
-  const isGranted = useIsGranted()
-
-  const shouldHideactions = !isGranted
 
   const onRemove = (spendingLimit: SpendingLimitState) => {
     setOpen(true)
@@ -88,9 +85,9 @@ export const SpendingLimitsTable = ({
       { id: 'beneficiary', label: 'Beneficiary' },
       { id: 'spent', label: 'Spent' },
       { id: 'resetTime', label: 'Reset time' },
-      { id: 'actions', label: 'Actions', sticky: true, hide: shouldHideactions },
+      { id: 'actions', label: 'Actions', sticky: true },
     ],
-    [shouldHideactions],
+    [],
   )
 
   const rows = useMemo(
@@ -133,19 +130,27 @@ export const SpendingLimitsTable = ({
                 actions: {
                   rawValue: '',
                   sticky: true,
-                  hide: shouldHideactions,
                   content: (
-                    <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
-                      <IconButton onClick={() => onRemove(spendingLimit)} color="error" size="small">
-                        <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                      </IconButton>
-                    </Track>
+                    <CheckWallet>
+                      {(isOk) => (
+                        <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
+                          <IconButton
+                            onClick={() => onRemove(spendingLimit)}
+                            color="error"
+                            size="small"
+                            disabled={!isOk}
+                          >
+                            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                          </IconButton>
+                        </Track>
+                      )}
+                    </CheckWallet>
                   ),
                 },
               },
             }
           }),
-    [isLoading, shouldHideactions, spendingLimits],
+    [isLoading, spendingLimits],
   )
   return (
     <>

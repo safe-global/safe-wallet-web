@@ -17,7 +17,7 @@ export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement | n
     <div className={css.gridRow}>
       <div className={css.title}>{title}</div>
 
-      <Typography component="div">{children}</Typography>
+      {typeof children === 'string' ? <Typography component="div">{children}</Typography> : children}
     </div>
   )
 }

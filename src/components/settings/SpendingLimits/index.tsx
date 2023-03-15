@@ -6,10 +6,8 @@ import { selectSpendingLimits, selectSpendingLimitsLoading } from '@/store/spend
 import { NewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit'
 import { useCurrentChain } from '@/hooks/useChains'
 import { FEATURES, hasFeature } from '@/utils/chains'
-import useIsGranted from '@/hooks/useIsGranted'
 
 const SpendingLimits = () => {
-  const isGranted = useIsGranted()
   const spendingLimits = useSelector(selectSpendingLimits)
   const spendingLimitsLoading = useSelector(selectSpendingLimitsLoading)
   const currentChain = useCurrentChain()
@@ -32,7 +30,8 @@ const SpendingLimits = () => {
                 all signatures.
               </Typography>
 
-              {isGranted && <NewSpendingLimit />}
+              <NewSpendingLimit />
+
               {!spendingLimits.length && !spendingLimitsLoading && <NoSpendingLimits />}
             </Box>
           ) : (

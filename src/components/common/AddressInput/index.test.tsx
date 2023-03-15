@@ -83,13 +83,6 @@ describe('AddressInput tests', () => {
     const { input, utils } = setup('')
 
     act(() => {
-      fireEvent.change(input, { target: { value: `xyz:${TEST_ADDRESS_A}` } })
-      jest.advanceTimersByTime(1000)
-    })
-
-    await waitFor(() => expect(utils.getByLabelText('Invalid chain prefix "xyz"', { exact: false })).toBeDefined())
-
-    act(() => {
       fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
       jest.advanceTimersByTime(1000)
     })

@@ -12,6 +12,7 @@ import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import Box from '@mui/material/Box'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const AddOwnerSteps: TxStepperProps['steps'] = [
   {
@@ -39,17 +40,21 @@ export const AddOwnerDialog = () => {
 
   return (
     <Box paddingTop={2}>
-      <div>
-        <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
-          <Button
-            onClick={() => setOpen(true)}
-            variant="text"
-            startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-          >
-            Add new owner
-          </Button>
-        </Track>
-      </div>
+      <CheckWallet>
+        {(isOk) => (
+          <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
+            <Button
+              onClick={() => setOpen(true)}
+              variant="text"
+              startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+              disabled={!isOk}
+            >
+              Add new owner
+            </Button>
+          </Track>
+        )}
+      </CheckWallet>
+
       {open && <TxModal wide onClose={handleClose} steps={AddOwnerSteps} initialData={[initialModalData]} />}
     </Box>
   )

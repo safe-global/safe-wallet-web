@@ -7,7 +7,7 @@ import type MultiSendCallOnlyEthersContract from '@safe-global/safe-ethers-lib/d
 import type { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import type { ContractTransaction } from 'ethers'
-import type { RequestId } from '@gnosis.pm/safe-apps-sdk'
+import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { getAndValidateSafeSDK, getUncheckedSafeSDK, tryOffChainSigning } from './sdk'

@@ -70,7 +70,7 @@ jobs:
         shell: bash
         ## Cut off "refs/heads/" and only allow alphanumeric characters,
         ## e.g. "refs/heads/features/hello-1.2.0" -> "features_hello_1_2_0"
-        run: echo "##[set-output name=branch;]$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/[^a-z0-9]/_/ig')"
+        run: echo "branch=$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/[^a-z0-9]/_/ig')" >> $GITHUB_OUTPUT
         id: extract_branch
 
       # Deploy to S3

@@ -26,6 +26,10 @@ import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import ExecutionMethod, { ExecutionType } from '@/components/tx/ExecutionMethod'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
+import CheckWallet from '@/components/common/CheckWallet'
+import ExternalLink from '@/components/common/ExternalLink'
+import { getExplorerLink } from '@/utils/gateway'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -43,9 +47,9 @@ type SignOrExecuteProps = {
 const SignOrExecuteForm = ({
   safeTx,
   txId,
-  onlyExecute,
   onSubmit,
   children,
+  onlyExecute = false,
   isExecutable = false,
   isRejection = false,
   disableSubmit = false,
@@ -61,6 +65,7 @@ const SignOrExecuteForm = ({
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
+  // Hooks
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
@@ -78,13 +83,16 @@ const SignOrExecuteForm = ({
     dispatchTxRelay,
   } = useTxSender()
 
+  // Unsupported base contract
+  const isUnknown = safe.implementationVersionState === ImplementationVersionState.UNKNOWN
+
   // Check that the transaction is executable
   const isNewExecutableTx = !txId && safe.threshold === 1 && !hasPending
   const isCorrectNonce = tx?.data.nonce === safe.nonce
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
-  const willExecute = shouldExecute && canExecute
+  const willExecute = (onlyExecute || shouldExecute) && canExecute
 
   // The transaction will be executed through relaying
   const willRelay = willExecute && executionMethod === ExecutionType.RELAYER
@@ -256,7 +264,6 @@ const SignOrExecuteForm = ({
     isEstimating ||
     !tx ||
     disableSubmit ||
-    isWrongChain ||
     cannotPropose ||
     isExecutionLoop ||
     isValidExecutionLoading
@@ -304,7 +311,7 @@ const SignOrExecuteForm = ({
 
         {/* Error messages */}
         {isWrongChain ? (
-          <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>
+          <ErrorMessage>Please connect your wallet to {currentChain?.chainName}</ErrorMessage>
         ) : cannotPropose ? (
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
@@ -322,6 +329,18 @@ const SignOrExecuteForm = ({
           </ErrorMessage>
         ) : submitError ? (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        ) : willExecute && isUnknown ? (
+          <ErrorMessage>
+            This Safe was created with an unsupported base contract. It should <b>ONLY</b> be used for fund recovery.
+            Transactions will execute but the transaction list may not immediately update. Transaction success can be
+            verified on the{' '}
+            <ExternalLink
+              href={currentChain ? getExplorerLink(safeAddress, currentChain.blockExplorerUriTemplate).href : ''}
+            >
+              {currentChain?.chainName} explorer
+            </ExternalLink>
+            .
+          </ErrorMessage>
         ) : null}
 
         {/* Info text */}
@@ -332,9 +351,13 @@ const SignOrExecuteForm = ({
         </Typography>
 
         {/* Submit button */}
-        <Button variant="contained" type="submit" disabled={submitDisabled}>
-          {isEstimating ? 'Estimating...' : 'Submit'}
-        </Button>
+        <CheckWallet allowNonOwner={willExecute}>
+          {(isOk) => (
+            <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+              {isEstimating ? 'Estimating...' : 'Submit'}
+            </Button>
+          )}
+        </CheckWallet>
       </DialogContent>
     </form>
   )

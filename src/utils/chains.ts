@@ -1,6 +1,5 @@
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getExplorerLink } from './gateway'
-import chains from '@/config/chains'
 
 export enum FEATURES {
   ERC721 = 'ERC721',
@@ -13,6 +12,7 @@ export enum FEATURES {
   TX_SIMULATION = 'TX_SIMULATION',
   DEFAULT_TOKENLIST = 'DEFAULT_TOKENLIST',
   RELAYING = 'RELAYING',
+  EIP1271 = 'EIP1271',
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {
@@ -26,12 +26,4 @@ export const getBlockExplorerLink = (
   if (chain.blockExplorerUriTemplate) {
     return getExplorerLink(address, chain.blockExplorerUriTemplate)
   }
-}
-
-export const getShortName = (chainId: string): string | undefined => {
-  return Object.keys(chains).find((prefix) => chains[prefix] === chainId)
-}
-
-export const getChainId = (shortName: string): string | undefined => {
-  return chains[shortName]
 }

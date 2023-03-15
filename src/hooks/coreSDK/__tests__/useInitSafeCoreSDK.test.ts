@@ -56,7 +56,7 @@ describe('useInitSafeCoreSDK hook', () => {
 
     renderHook(() => useInitSafeCoreSDK())
 
-    expect(initMock).toHaveBeenCalledWith({}, '5', '0x1', '1.3.0')
+    expect(initMock).toHaveBeenCalledWith({}, { chainId: '5', address: { value: '0x1' }, version: '1.3.0' })
 
     await act(() => Promise.resolve())
 

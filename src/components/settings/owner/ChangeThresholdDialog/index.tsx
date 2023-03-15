@@ -13,6 +13,7 @@ import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import Track from '@/components/common/Track'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
+import CheckWallet from '@/components/common/CheckWallet'
 
 interface ChangeThresholdData {
   threshold: number
@@ -36,13 +37,16 @@ export const ChangeThresholdDialog = () => {
 
   return (
     <Box paddingTop={2}>
-      <div>
-        <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD}>
-          <Button onClick={() => setOpen(true)} variant="contained">
-            Change
-          </Button>
-        </Track>
-      </div>
+      <CheckWallet>
+        {(isOk) => (
+          <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD}>
+            <Button onClick={() => setOpen(true)} variant="contained" disabled={!isOk}>
+              Change
+            </Button>
+          </Track>
+        )}
+      </CheckWallet>
+
       {open && <TxModal onClose={handleClose} steps={ChangeThresholdSteps} initialData={[initialModalData]} />}
     </Box>
   )

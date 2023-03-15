@@ -1,4 +1,4 @@
-import { Methods } from '@gnosis.pm/safe-apps-sdk'
+import { Methods } from '@safe-global/safe-apps-sdk'
 import * as web3 from '../../../hooks/wallets/web3'
 import { Web3Provider } from '@ethersproject/providers'
 import { render, screen } from '@/tests/test-utils'

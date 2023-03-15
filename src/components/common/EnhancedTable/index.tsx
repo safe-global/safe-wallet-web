@@ -21,7 +21,6 @@ type EnhancedCell = {
   content: ReactNode
   rawValue: string | number
   sticky?: boolean
-  hide?: boolean
 }
 
 type EnhancedRow = {
@@ -36,7 +35,6 @@ type EnhancedHeadCell = {
   label: string
   width?: string
   sticky?: boolean
-  hide?: boolean
 }
 
 function descendingComparator(a: EnhancedRow, b: EnhancedRow, orderBy: string) {
@@ -78,7 +76,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
             padding="normal"
             sortDirection={orderBy === headCell.id ? order : false}
             sx={headCell.width ? { width: headCell.width } : undefined}
-            className={classNames({ sticky: headCell.sticky, [css.hide]: headCell.hide })}
+            className={classNames({ sticky: headCell.sticky })}
           >
             {headCell.label && (
               <>
@@ -154,7 +152,6 @@ function EnhancedTable({ rows, headCells, mobileVariant }: EnhancedTableProps) {
                       key={key}
                       className={classNames({
                         sticky: cell.sticky,
-                        [css.hide]: cell.hide,
                         [css.collapsedCell]: row.collapsed,
                       })}
                     >

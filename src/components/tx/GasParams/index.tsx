@@ -44,6 +44,7 @@ const GasParams = ({
 
   const chain = useCurrentChain()
   const isLoading = !gasLimit || !maxFeePerGas
+  const isError = gasLimitError && !gasLimit
 
   // Total gas cost
   const totalFee = !isLoading
@@ -100,11 +101,7 @@ const GasParams = ({
               <GasDetail isLoading={false} name="Wallet nonce" value={userNonce.toString()} />
             )}
 
-            <GasDetail
-              isLoading={isLoading}
-              name="Gas limit"
-              value={gasLimitError ? 'Cannot estimate' : gasLimitString}
-            />
+            <GasDetail isLoading={isLoading} name="Gas limit" value={isError ? 'Cannot estimate' : gasLimitString} />
 
             {isEIP1559 ? (
               <>
