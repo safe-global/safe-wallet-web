@@ -12,6 +12,7 @@ import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safe
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
 const isContractError = (error: EthersError) => {
   if (!error.reason) return false
@@ -53,6 +54,7 @@ const useIsValidExecution = (
   const wallet = useWallet()
   const { safe } = useSafeInfo()
   const readOnlyProvider = useWeb3ReadOnly()
+  const isOwner = useIsSafeOwner()
 
   const [isValidExecution, executionValidationError, isValidExecutionLoading] = useAsync(async () => {
     if (!safeTx || !wallet || !gasLimit || !readOnlyProvider) {
@@ -78,7 +80,7 @@ const useIsValidExecution = (
         safeTx.data.gasPrice,
         safeTx.data.gasToken,
         safeTx.data.refundReceiver,
-        encodeSignatures(safeTx, wallet.address),
+        encodeSignatures(safeTx, isOwner ? wallet.address : undefined),
         { from: wallet.address, gasLimit: gasLimit.toString() },
       )
     } catch (_err) {
