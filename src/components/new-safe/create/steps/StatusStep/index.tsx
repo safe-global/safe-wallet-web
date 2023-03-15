@@ -7,7 +7,6 @@ import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import StatusMessage from '@/components/new-safe/create/steps/StatusStep/StatusMessage'
 import useWallet from '@/hooks/wallets/useWallet'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
@@ -35,8 +34,7 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
   const chainInfo = useCurrentChain()
   const chainPrefix = chainInfo?.shortName || ''
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
-  const isConnected = wallet && !isWrongChain
+  const isConnected = wallet
 
   const { createSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus)
 

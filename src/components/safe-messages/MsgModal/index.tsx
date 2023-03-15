@@ -14,7 +14,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { generateSafeMessageHash, generateSafeMessageMessage } from '@/utils/safe-messages'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -61,7 +60,6 @@ const MsgModal = ({
 
   const web3 = useWeb3()
   const { safe } = useSafeInfo()
-  const isWrongChain = useIsWrongChain()
   const isOwner = useIsSafeOwner()
   const wallet = useWallet()
   const messages = useSafeMessages()
@@ -92,7 +90,7 @@ const MsgModal = ({
 
   const hasSigned = !!alreadyProposedMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
-  const isDisabled = isWrongChain || !isOwner || hasSigned || !web3
+  const isDisabled = !isOwner || hasSigned || !web3
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
@@ -171,8 +169,6 @@ const MsgModal = ({
 
           {!web3 ? (
             <ErrorMessage>No wallet is connected.</ErrorMessage>
-          ) : isWrongChain ? (
-            <ErrorMessage>Your wallet is connected to the wrong chain.</ErrorMessage>
           ) : !isOwner ? (
             <ErrorMessage>
               You are currently not an owner of this Safe and won&apos;t be able to confirm this message.

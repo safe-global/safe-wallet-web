@@ -9,8 +9,6 @@ import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCre
 
 import css from '@/components/new-safe/create/steps/SetNameStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import NameInput from '@/components/common/NameInput'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
@@ -34,7 +32,6 @@ function SetNameStep({
   setSafeName,
 }: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
   const fallbackName = useMnemonicSafeName()
-  const isWrongChain = useIsWrongChain()
   useSyncSafeCreationStep(setStep)
 
   const formMethods = useForm<SetNameStepForm>({
@@ -59,7 +56,7 @@ function SetNameStep({
     }
   }
 
-  const isDisabled = isWrongChain || !isValid
+  const isDisabled = !isValid
 
   return (
     <FormProvider {...formMethods}>
@@ -104,8 +101,6 @@ function SetNameStep({
             </Link>
             .
           </Typography>
-
-          {isWrongChain && <NetworkWarning />}
         </Box>
         <Divider />
         <Box className={layoutCss.row}>

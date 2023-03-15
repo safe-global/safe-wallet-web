@@ -13,8 +13,6 @@ import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCre
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import css from '@/components/new-safe/create/steps/OwnerPolicyStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import OwnerRow from '@/components/new-safe/OwnerRow'
 
@@ -39,7 +37,6 @@ const OwnerPolicyStep = ({
 }: StepRenderProps<NewSafeFormData> & {
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
 }): ReactElement => {
-  const isWrongChain = useIsWrongChain()
   useSyncSafeCreationStep(setStep)
 
   const formMethods = useForm<OwnerPolicyStepForm>({
@@ -67,7 +64,7 @@ const OwnerPolicyStep = ({
     trigger(OwnerPolicyStepFields.owners)
   }
 
-  const isDisabled = isWrongChain || !formState.isValid
+  const isDisabled = !formState.isValid
 
   useSafeSetupHints(threshold, ownerFields.length, setDynamicHint)
 
@@ -161,8 +158,6 @@ const OwnerPolicyStep = ({
             />{' '}
             out of {ownerFields.length} owner(s).
           </Box>
-
-          {isWrongChain && <NetworkWarning />}
         </Box>
         <Divider />
         <Box className={layoutCss.row}>
