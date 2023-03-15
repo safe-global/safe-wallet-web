@@ -5,7 +5,6 @@ import { IconButton, Paper } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import classnames from 'classnames'
 import css from './styles.module.css'
-import ChainSwitcher from '@/components/common/ChainSwitcher'
 import ConnectWallet from '@/components/common/ConnectWallet'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import SafeTokenWidget, { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
@@ -51,10 +50,6 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
             <SafeLogo alt="Safe logo" />
           </a>
         </Link>
-      </div>
-
-      <div className={classnames(css.element, css.hideMobile)}>
-        <ChainSwitcher />
       </div>
 
       {showSafeToken && (
