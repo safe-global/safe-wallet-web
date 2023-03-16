@@ -12,7 +12,7 @@ import { hexValue } from 'ethers/lib/utils'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import { type OnboardAPI } from '@web3-onboard/core'
-import { sleep } from '@/utils/helpers'
+import type { ConnectedWallet } from '@/services/onboard'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -22,26 +22,40 @@ export const getAndValidateSafeSDK = (): Safe => {
   return safeSDK
 }
 
-export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) => {
-  const wallet = getConnectedWallet(onboard.state.get().wallets)
+export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): Promise<ConnectedWallet | null> => {
+  const currentWallet = getConnectedWallet(onboard.state.get().wallets)
 
-  if (!wallet) {
-    return
+  if (!currentWallet) {
+    return null
+  }
+
+  if (isHardwareWallet(currentWallet)) {
+    await onboard.disconnectWallet({ label: currentWallet.label })
+    const wallets = await connectWallet(onboard, { autoSelect: currentWallet.label })
+
+    return wallets ? getConnectedWallet(wallets) : null
+  }
+
+  const didSwitch = await onboard.setChain({ chainId: hexValue(parseInt(chainId)) })
+  if (!didSwitch) {
+    return currentWallet
   }
 
   /**
-   * It's not possible to switch the chain of hardware wallets, so we disconnect
-   * and reconnect the wallet
+   * Onboard doesn't update immediately and otherwise returns a stale wallet if we directly get its state
    */
-  if (isHardwareWallet(wallet)) {
-    await onboard.disconnectWallet({ label: wallet.label })
-    await connectWallet(onboard, { autoSelect: wallet.label })
-  } else {
-    await onboard.setChain({ chainId: hexValue(parseInt(chainId)) })
-  }
+  return new Promise((resolve) => {
+    const source$ = onboard.state.select('wallets').subscribe((newWallets) => {
+      const newWallet = getConnectedWallet(newWallets)
+      if (newWallet && newWallet.chainId === chainId) {
+        source$.unsubscribe()
+        resolve(newWallet)
+      }
+    })
+  })
 }
 
-export const assertWalletChain = async (onboard: OnboardAPI, chainId: string) => {
+export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): Promise<ConnectedWallet> => {
   const wallet = getConnectedWallet(onboard.state.get().wallets)
 
   if (!wallet) {
@@ -52,15 +66,9 @@ export const assertWalletChain = async (onboard: OnboardAPI, chainId: string) =>
     return wallet
   }
 
-  await switchWalletChain(onboard, chainId)
+  const newWallet = await switchWalletChain(onboard, chainId)
 
-  /**
-   * Onboard doesn't update immediately and returns a wallet that's on the
-   * previous chain, so we add a slight timeout before accessing its state again
-   */
-  await sleep(500)
-
-  const newWallet = getConnectedWallet(onboard.state.get().wallets)
+  console.log('New wallet', newWallet)
 
   if (!newWallet) {
     throw new Error('No wallet connected.')
