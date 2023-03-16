@@ -6,7 +6,7 @@ inputs:
   secrets:
     required: true
 
-  prod:  # id of input
+  prod: # id of input
     description: 'Production build flag'
     required: false
 
@@ -35,3 +35,4 @@ runs:
         NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL }}
         NEXT_PUBLIC_WC_BRIDGE: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_WC_BRIDGE }}
         NEXT_PUBLIC_CYPRESS_MNEMONIC: ${{ inputs.e2e_mnemonic }}
+        NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL }}
