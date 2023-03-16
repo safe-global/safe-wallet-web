@@ -2,9 +2,8 @@ import TokenIcon from '@/components/common/TokenIcon'
 import useBalances from '@/hooks/useBalances'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { WarningOutlined } from '@mui/icons-material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-import { Accordion, AccordionDetails, AccordionSummary, IconButton, Skeleton, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography } from '@mui/material'
 import type { DecodedDataResponse, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber, ethers } from 'ethers'
 import { Interface, keccak256, parseUnits, toUtf8Bytes } from 'ethers/lib/utils'
@@ -114,7 +113,7 @@ export const ApprovalEditor = ({
           }
         }),
       ),
-    [balances, approvalTxs],
+    [balances.items.length, approvalTxs],
     false, // Do not clear data on balance updates
   )
 
@@ -154,13 +153,7 @@ export const ApprovalEditor = ({
 
   return (
     <Accordion className={css.warningAccordion} disabled={loading}>
-      <AccordionSummary
-        expandIcon={
-          <IconButton size="small">
-            <ExpandMoreIcon color="border" />
-          </IconButton>
-        }
-      >
+      <AccordionSummary>
         {loading || !approvalInfos ? (
           <Skeleton />
         ) : (

@@ -67,6 +67,7 @@ export const ApprovalEditorForm = ({
                       paddingTop: '4px',
                       paddingBottom: '4px',
                     },
+                    readOnly: readonly || editIDx !== idx,
                     startAdornment: (
                       <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
                         <TokenIcon size={32} logoUri={tx.tokenInfo?.logoUri} tokenSymbol={tx.tokenInfo?.symbol} />
