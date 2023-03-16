@@ -7,7 +7,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isSmartContractWallet } from '@/hooks/wallets/wallets'
+import { isHardwareWallet, isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -15,7 +15,7 @@ import useOnboard, { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
@@ -63,7 +63,7 @@ const SignOrExecuteForm = ({
   const wallet = useWallet()
   const onboard = useOnboard()
   const isOwner = useIsSafeOwner()
-  const provider = useWeb3()
+  const isWrongChain = useIsWrongChain()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
 
@@ -83,6 +83,9 @@ const SignOrExecuteForm = ({
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
+
+  // Should warn that submission will first dis-/connect hardware wallet
+  const willReconnectWallet = isSubmittable && isWrongChain && wallet && isHardwareWallet(wallet)
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -265,6 +268,14 @@ const SignOrExecuteForm = ({
             .
           </ErrorMessage>
         ) : null}
+
+        {/* Warning messages */}
+        {willReconnectWallet && (
+          <ErrorMessage>
+            Your {wallet.label} is connected to the wrong chain. Submission will first request connection to{' '}
+            {currentChain?.chainName}.
+          </ErrorMessage>
+        )}
 
         {/* Info text */}
         <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
