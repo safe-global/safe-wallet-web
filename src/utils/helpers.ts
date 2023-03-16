@@ -6,3 +6,7 @@ export function invariant<T extends unknown>(condition: T, error: string): asser
 
   throw new Error(error)
 }
+
+export const sleep = async (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}

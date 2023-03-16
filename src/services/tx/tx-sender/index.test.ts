@@ -53,7 +53,7 @@ const mockOnboardState = {
       label: 'Wallet 1',
       icon: '',
       provider: mockProvider,
-      chains: [{ id: '0x4' }],
+      chains: [{ id: '0x5' }],
       accounts: [
         {
           address: '0x1234567890123456789012345678901234567890',

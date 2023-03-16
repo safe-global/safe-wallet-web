@@ -12,7 +12,7 @@ import { hexValue } from 'ethers/lib/utils'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import { type OnboardAPI } from '@web3-onboard/core'
-import { type ConnectedWallet } from '@/services/onboard'
+import { sleep } from '@/utils/helpers'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -23,36 +23,44 @@ export const getAndValidateSafeSDK = (): Safe => {
 }
 
 export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) => {
-  const chainIdInHex = hexValue(parseInt(chainId))
-
   const wallet = getConnectedWallet(onboard.state.get().wallets)
 
-  if (wallet && isHardwareWallet(wallet)) {
+  if (!wallet) {
+    throw new Error('No wallet connected.')
+  }
+
+  if (wallet.chainId === chainId) {
+    return wallet
+  }
+
+  /**
+   * It's not possible to switch the chain of hardware wallets, so we disconnect
+   * and reconnect the wallet
+   */
+  if (isHardwareWallet(wallet)) {
     await onboard.disconnectWallet({ label: wallet.label })
     await connectWallet(onboard, { autoSelect: wallet.label })
   } else {
-    await onboard.setChain({ chainId: chainIdInHex })
+    await onboard.setChain({ chainId: hexValue(parseInt(chainId)) })
   }
 
   /**
    * Onboard doesn't update immediately and returns a wallet that's on the
    * previous chain, so we add a slight timeout before accessing its state again
    */
-  return new Promise<ConnectedWallet>((resolve) => {
-    setTimeout(() => {
-      const newWallet = getConnectedWallet(onboard.state.get().wallets)
+  await sleep(500)
 
-      if (!newWallet) {
-        throw new Error('No wallet connected.')
-      }
+  const newWallet = getConnectedWallet(onboard.state.get().wallets)
 
-      if (newWallet.chainId !== chainId) {
-        throw new Error('Wallet not connected to current chain.')
-      }
+  if (!newWallet) {
+    throw new Error('No wallet connected.')
+  }
 
-      return resolve(newWallet)
-    }, 500)
-  })
+  if (newWallet.chainId !== chainId) {
+    throw new Error('Wallet connected to wrong chain.')
+  }
+
+  return newWallet
 }
 
 /**
