@@ -5,7 +5,7 @@ import { Errors, logError } from '@/services/exceptions'
 import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/config/constants'
 
 const fetchRemainingRelays = async (chainId: string, safeAddress: string): Promise<number | undefined> => {
-  const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/${chainId}/${safeAddress}`
+  const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/v1/relay/${chainId}/${safeAddress}`
 
   try {
     const res = await fetch(url)
