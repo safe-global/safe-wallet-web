@@ -128,14 +128,14 @@ describe('ApprovalEditor', () => {
         },
       })
       await waitFor(() => {
-        const accordionSummary = result.getByText('You are about to give access to', { exact: false })
+        const accordionSummary = result.getByText('Give access to', { exact: false })
         getByText(accordionSummary, '2', { exact: false })
         getByText(accordionSummary, 'Tokens', { exact: false })
       })
 
       // Edit first approval
       {
-        const accordionSummary = result.getByText('You are about to give access to', { exact: false })
+        const accordionSummary = result.getByText('Give access to', { exact: false })
         fireEvent.click(accordionSummary)
 
         const parentContainer = accordionSummary.closest('.MuiPaper-root')
@@ -158,7 +158,7 @@ describe('ApprovalEditor', () => {
         const amountInput = accordionDetails?.querySelector('input[name="approvals.0"]') as HTMLInputElement
 
         fireEvent.change(amountInput!, { target: { value: '123' } })
-        getByRole(accordionDetails as HTMLElement, 'button').click()
+        getAllByRole(accordionDetails as HTMLElement, 'button')[0].click()
 
         await waitFor(() => {
           expect(updateCallback).toHaveBeenCalledWith([
@@ -183,7 +183,7 @@ describe('ApprovalEditor', () => {
 
       // Edit second approval
       {
-        const accordionSummary = result.getByText('You are about to give access to', { exact: false })
+        const accordionSummary = result.getByText('Give access to', { exact: false })
         fireEvent.click(accordionSummary)
 
         const parentContainer = accordionSummary.closest('.MuiPaper-root')
@@ -206,7 +206,7 @@ describe('ApprovalEditor', () => {
         const amountInput = accordionDetails?.querySelector('input[name="approvals.1"]') as HTMLInputElement
 
         fireEvent.change(amountInput!, { target: { value: '456' } })
-        getByRole(accordionDetails as HTMLElement, 'button').click()
+        getAllByRole(accordionDetails as HTMLElement, 'button')[1].click()
 
         await waitFor(() => {
           expect(updateCallback).toHaveBeenCalledWith([
@@ -263,13 +263,13 @@ describe('ApprovalEditor', () => {
         },
       })
       await waitFor(() => {
-        const accordionSummary = result.getByText('You are about to give access to', { exact: false })
+        const accordionSummary = result.getByText('Give access to', { exact: false })
         getByText(accordionSummary, '420', { exact: false })
         getByText(accordionSummary, 'TST', { exact: false })
       })
 
       // Edit tx
-      const accordionSummary = result.getByText('You are about to give access to', { exact: false })
+      const accordionSummary = result.getByText('Give access to', { exact: false })
       fireEvent.click(accordionSummary)
 
       const parentContainer = accordionSummary.closest('.MuiPaper-root')
@@ -434,7 +434,7 @@ describe('ApprovalEditor', () => {
           },
         })
         await waitFor(() => {
-          const accordionSummary = result.getByText('You are about to give access to', { exact: false })
+          const accordionSummary = result.getByText('Give access to', { exact: false })
           getByText(accordionSummary, '420', { exact: false })
           getByText(accordionSummary, 'TST', { exact: false })
         })
@@ -475,7 +475,7 @@ describe('ApprovalEditor', () => {
           },
         })
         await waitFor(() => {
-          const accordionSummary = result.getByText('You are about to give access to', { exact: false })
+          const accordionSummary = result.getByText('Give access to', { exact: false })
           getByText(accordionSummary, '420', { exact: false })
           getByText(accordionSummary, 'TST', { exact: false })
         })
@@ -529,7 +529,7 @@ describe('ApprovalEditor', () => {
           },
         })
         await waitFor(() => {
-          const accordionSummary = result.getByText('You are about to give access to', { exact: false })
+          const accordionSummary = result.getByText('Give access to', { exact: false })
           getByText(accordionSummary, '69', { exact: false })
           getByText(accordionSummary, 'TST', { exact: false })
         })

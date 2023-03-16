@@ -3,14 +3,38 @@
   margin-bottom: var(--space-2) !important;
 }
 .warningAccordion:hover {
-  border: 1px var(--color-warning-dark) solid !important;
+  border: 1px var(--color-warning-main) solid !important;
 }
 
 .warningAccordion :global .Mui-expanded.MuiAccordionSummary-root,
 .warningAccordion :global .MuiAccordionSummary-root:hover {
-  background-color: var(--color-warning-light);
+  background-color: var(--color-warning-background);
 }
 
 .approval {
   padding: 8px;
+}
+
+.approvalAmount {
+  text-align: right !important;
+}
+
+.iconButton {
+  border-radius: 4px;
+  padding: 6px;
+  background-color: var(--color-background-main);
+  width: 48px;
+  height: 48px;
+}
+
+.applyIconButton {
+  background-color: var(--color-primary-main);
+}
+
+.applyIconButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.applyIconButton svg {
+  color: var(--color-background-paper);
 }

@@ -60,14 +60,17 @@ const Summary = ({ approvalInfos, uniqueTokenCount }: { approvalInfos: ApprovalI
   approvalInfos.length === 1 ? (
     <Typography display="inline-flex" alignItems="center" gap={1}>
       <WarningOutlined color="warning" />
-      You are about to give access to <b>{approvalInfos[0].amountFormatted}</b>
+      Give access to <b>{approvalInfos[0].amountFormatted}</b>
       <TokenIcon logoUri={approvalInfos[0].tokenInfo?.logoUri} tokenSymbol={approvalInfos[0].tokenInfo?.symbol} />
       {approvalInfos[0].tokenInfo?.symbol}
     </Typography>
   ) : (
-    <Typography display="inline-flex" alignItems="center" gap={1}>
+    <Typography color="warning" display="inline-flex" alignItems="center" gap={1}>
       <WarningOutlined color="warning" />
-      You are about to give access to {uniqueTokenCount} Token{uniqueTokenCount > 1 ? 's' : ''}
+      Give access to{' '}
+      <Typography color="warning.main">
+        {uniqueTokenCount} Token{uniqueTokenCount > 1 ? 's' : ''}
+      </Typography>
     </Typography>
   )
 
