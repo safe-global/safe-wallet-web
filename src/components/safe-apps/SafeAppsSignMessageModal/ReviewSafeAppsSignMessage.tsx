@@ -22,6 +22,8 @@ import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams
@@ -31,6 +33,8 @@ const ReviewSafeAppsSignMessage = ({
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const chainId = useChainId()
+  const { safe } = useSafeInfo()
+  const onboard = useOnboard()
   const [submitError, setSubmitError] = useState<Error>()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
@@ -77,9 +81,9 @@ const ReviewSafeAppsSignMessage = ({
 
   const handleSubmit = async () => {
     setSubmitError(undefined)
-    if (!safeTx) return
+    if (!safeTx || !onboard) return
     try {
-      await dispatchSafeAppsTx(safeTx, requestId)
+      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
       setSubmitError(error as Error)
     }

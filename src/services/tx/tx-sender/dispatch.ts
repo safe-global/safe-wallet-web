@@ -286,8 +286,13 @@ export const dispatchSpendingLimitTxExecution = async (
   return result?.hash
 }
 
-export const dispatchSafeAppsTx = async (safeTx: SafeTransaction, safeAppRequestId: RequestId) => {
-  const sdk = getAndValidateSafeSDK()
+export const dispatchSafeAppsTx = async (
+  safeTx: SafeTransaction,
+  safeAppRequestId: RequestId,
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
+) => {
+  const sdk = await getSafeSDKWithSigner(onboard, chainId)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, safeTxHash })
 }
