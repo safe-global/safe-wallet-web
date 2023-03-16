@@ -1,7 +1,5 @@
-import { waitFor } from '@testing-library/react'
 import { migrateAddressBook } from './addressBook'
 import { migrateAddedSafes, migrateAddedSafesOwners } from './addedSafes'
-import { createIframe, sendReadyMessage, receiveMessage } from './iframe'
 
 describe('Local storage migration', () => {
   describe('migrateAddressBook', () => {
@@ -278,45 +276,5 @@ describe('Local storage migration', () => {
 
       expect(newData).toEqual(undefined)
     })
-  })
-
-  describe('iframe', () => {
-    it('should create an iframe', () => {
-      const iframe = createIframe('http://localhost:3000/test')
-      expect(iframe).toBeInstanceOf(HTMLIFrameElement)
-      expect(iframe.src).toBe('http://localhost:3000/test')
-      expect(iframe.style.display).toBe('none')
-      iframe.remove()
-    })
-
-    it('should send a message to the iframe', async () => {
-      const postMessage = jest.fn()
-      const onLoad = jest.fn((callback: () => void) => callback())
-
-      sendReadyMessage(
-        {
-          addEventListener: jest.fn((_, callback: () => void) => onLoad(callback)),
-          contentWindow: {
-            postMessage,
-          },
-        } as unknown as HTMLIFrameElement,
-        '*',
-      )
-
-      expect(onLoad).toHaveBeenCalled()
-      expect(postMessage).toHaveBeenCalledWith('ready', '*')
-    })
-  })
-
-  it('should receive a message from the iframe', async () => {
-    let message: string | null = null
-
-    receiveMessage((data) => {
-      message = data
-    }, '')
-
-    window.postMessage('hello', '*')
-
-    await waitFor(() => expect(message).toEqual('hello'))
   })
 })
