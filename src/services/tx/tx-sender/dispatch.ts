@@ -13,7 +13,7 @@ import {
   getAndValidateSafeSDK,
   getSafeSDKWithSigner,
   getUncheckedSafeSDK,
-  switchWalletChain,
+  assertWalletChain,
   tryOffChainSigning,
 } from './sdk'
 import { createWeb3 } from '@/hooks/wallets/web3'
@@ -175,7 +175,7 @@ export const dispatchBatchExecution = async (
   let result: TransactionResult | undefined
 
   try {
-    const wallet = await switchWalletChain(onboard, chainId)
+    const wallet = await assertWalletChain(onboard, chainId)
 
     const provider = createWeb3(wallet.provider)
     result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData)
@@ -244,7 +244,7 @@ export const dispatchSpendingLimitTxExecution = async (
 
   let result: ContractTransaction | undefined
   try {
-    const wallet = await switchWalletChain(onboard, chainId)
+    const wallet = await assertWalletChain(onboard, chainId)
     const provider = createWeb3(wallet.provider)
     const contract = getSpendingLimitContract(chainId, provider.getSigner())
 

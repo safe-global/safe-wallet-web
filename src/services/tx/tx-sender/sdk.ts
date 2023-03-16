@@ -26,11 +26,7 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) =>
   const wallet = getConnectedWallet(onboard.state.get().wallets)
 
   if (!wallet) {
-    throw new Error('No wallet connected.')
-  }
-
-  if (wallet.chainId === chainId) {
-    return wallet
+    return
   }
 
   /**
@@ -43,6 +39,20 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) =>
   } else {
     await onboard.setChain({ chainId: hexValue(parseInt(chainId)) })
   }
+}
+
+export const assertWalletChain = async (onboard: OnboardAPI, chainId: string) => {
+  const wallet = getConnectedWallet(onboard.state.get().wallets)
+
+  if (!wallet) {
+    throw new Error('No wallet connected.')
+  }
+
+  if (wallet.chainId === chainId) {
+    return wallet
+  }
+
+  await switchWalletChain(onboard, chainId)
 
   /**
    * Onboard doesn't update immediately and returns a wallet that's on the
@@ -70,7 +80,7 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) =>
  * dealing with smart-contract wallet owners
  */
 export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
-  const wallet = await switchWalletChain(onboard, chainId)
+  const wallet = await assertWalletChain(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 
   const provider = createWeb3(wallet.provider)
@@ -84,7 +94,7 @@ export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo
 }
 
 export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
-  const wallet = await switchWalletChain(onboard, chainId)
+  const wallet = await assertWalletChain(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 
   const provider = createWeb3(wallet.provider)
