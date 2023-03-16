@@ -22,7 +22,6 @@ import useTxNotifications from '@/hooks/useTxNotifications'
 import useSafeNotifications from '@/hooks/useSafeNotifications'
 import useTxPendingStatuses from '@/hooks/useTxPendingStatuses'
 import { useInitSession } from '@/hooks/useInitSession'
-import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
 import { useDarkMode } from '@/hooks/useDarkMode'
@@ -47,7 +46,6 @@ const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCT
 const InitApp = (): null => {
   setGatewayBaseUrl(GATEWAY_URL)
   useAdjustUrl()
-  useStorageMigration()
   useGtm()
   useInitSession()
   useLoadableStores()
