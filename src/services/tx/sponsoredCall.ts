@@ -18,7 +18,7 @@ export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId:
     body: JSON.stringify(tx),
   }
 
-  const data = await fetch(`${SAFE_GELATO_RELAY_SERVICE_URL}/v1/relay`, requestObject).then((res) => {
+  const data = await fetch(SAFE_GELATO_RELAY_SERVICE_URL, requestObject).then((res) => {
     if (res.ok) {
       return res.json()
     }
