@@ -42,7 +42,13 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string) =>
     setTimeout(() => {
       const newWallet = getConnectedWallet(onboard.state.get().wallets)
 
-      if (!newWallet) throw new Error('No wallet connected')
+      if (!newWallet) {
+        throw new Error('No wallet connected.')
+      }
+
+      if (newWallet.chainId !== chainId) {
+        throw new Error('Wallet not connected to current chain.')
+      }
 
       return resolve(newWallet)
     }, 500)
