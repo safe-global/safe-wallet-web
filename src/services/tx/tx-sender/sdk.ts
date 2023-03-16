@@ -68,8 +68,6 @@ export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): P
 
   const newWallet = await switchWalletChain(onboard, chainId)
 
-  console.log('New wallet', newWallet)
-
   if (!newWallet) {
     throw new Error('No wallet connected.')
   }

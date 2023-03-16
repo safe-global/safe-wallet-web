@@ -77,6 +77,7 @@ describe('SignOrExecuteForm', () => {
       isValidExecutionLoading: false,
     })
     jest.spyOn(wallet, 'default').mockReturnValue({
+      label: 'MetaMask',
       address: ethers.utils.hexZeroPad('0x123', 20),
     } as ConnectedWallet)
     jest.spyOn(onboard, 'default').mockReturnValue({} as OnboardAPI)
@@ -210,6 +211,7 @@ describe('SignOrExecuteForm', () => {
   it('displays an error and disables the submit button if connected wallet is not an owner', () => {
     jest.spyOn(wallet, 'default').mockReturnValue({
       chainId: '1',
+      label: 'MetaMask',
       address: ethers.utils.hexZeroPad('0x789', 20),
     } as ConnectedWallet)
 
@@ -237,6 +239,7 @@ describe('SignOrExecuteForm', () => {
 
     jest.spyOn(wallet, 'default').mockReturnValue({
       chainId: '1',
+      label: 'MetaMask',
       address: address,
     } as ConnectedWallet)
 
@@ -252,6 +255,7 @@ describe('SignOrExecuteForm', () => {
   describe('adjusts the generic error text creating/executing transactions', () => {
     it('displays an error for newly created transactions', () => {
       jest.spyOn(wallet, 'default').mockReturnValue({
+        label: 'MetaMask',
         address: ethers.utils.hexZeroPad('0x456', 20),
       } as ConnectedWallet)
 
@@ -297,6 +301,7 @@ describe('SignOrExecuteForm', () => {
   it('allows execution for non-owners', () => {
     jest.spyOn(wallet, 'default').mockReturnValue({
       chainId: '1',
+      label: 'MetaMask',
       address: ethers.utils.hexZeroPad('0x789', 20),
     } as ConnectedWallet)
 
