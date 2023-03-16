@@ -157,6 +157,13 @@ describe('txMonitor', () => {
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
       expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2' })
+
+      // The relay timeout should have been cancelled
+      txDispatchSpy.mockClear()
+      await act(() => {
+        jest.advanceTimersByTime(3 * 60_000 + 1)
+      })
+      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it("emits a REVERTED event if taskStatus 'ExecReverted'", async () => {
@@ -180,6 +187,13 @@ describe('txMonitor', () => {
         txId: '0x2',
         error: new Error(`Relayed transaction reverted by EVM.`),
       })
+
+      // The relay timeout should have been cancelled
+      txDispatchSpy.mockClear()
+      await act(() => {
+        jest.advanceTimersByTime(3 * 60_000 + 1)
+      })
+      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it("emits a FAILED event if taskStatus 'Blacklisted'", async () => {
@@ -203,6 +217,13 @@ describe('txMonitor', () => {
         txId: '0x2',
         error: new Error(`Relayed transaction was blacklisted by relay provider.`),
       })
+
+      // The relay timeout should have been cancelled
+      txDispatchSpy.mockClear()
+      await act(() => {
+        jest.advanceTimersByTime(3 * 60_000 + 1)
+      })
+      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it("emits a FAILED event if taskStatus 'Cancelled'", async () => {
@@ -226,6 +247,13 @@ describe('txMonitor', () => {
         txId: '0x2',
         error: new Error(`Relayed transaction was cancelled by relay provider.`),
       })
+
+      // The relay timeout should have been cancelled
+      txDispatchSpy.mockClear()
+      await act(() => {
+        jest.advanceTimersByTime(3 * 60_000 + 1)
+      })
+      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it("emits a FAILED event if taskStatus 'NotFound'", async () => {
@@ -249,6 +277,13 @@ describe('txMonitor', () => {
         txId: '0x2',
         error: new Error(`Relayed transaction was not found.`),
       })
+
+      // The relay timeout should have been cancelled
+      txDispatchSpy.mockClear()
+      await act(() => {
+        jest.advanceTimersByTime(3 * 60_000 + 1)
+      })
+      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it('emits a FAILED event if the tx relaying timed out', async () => {
@@ -262,7 +297,7 @@ describe('txMonitor', () => {
       waitForRelayedTx('0x1', '0x2')
 
       await act(() => {
-        jest.advanceTimersByTime(2_000 + 1 + 3 * 60_000 + 1)
+        jest.advanceTimersByTime(3 * 60_000 + 1)
       })
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {

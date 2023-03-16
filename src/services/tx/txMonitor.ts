@@ -70,6 +70,7 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
 
   const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
   let timeoutId: NodeJS.Timeout
+  let failAfterTimeoutId: NodeJS.Timeout
 
   const checkTxStatus = async () => {
     const url = getTaskTrackingUrl(taskId)
@@ -102,24 +103,28 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
         txDispatch(TxEvent.PROCESSED, {
           txId,
         })
+        clearTimeout(failAfterTimeoutId)
         return
       case TaskState.ExecReverted:
         txDispatch(TxEvent.REVERTED, {
           txId,
           error: new Error(`Relayed transaction reverted by EVM.`),
         })
+        clearTimeout(failAfterTimeoutId)
         return
       case TaskState.Blacklisted:
         txDispatch(TxEvent.FAILED, {
           txId,
           error: new Error(`Relayed transaction was blacklisted by relay provider.`),
         })
+        clearTimeout(failAfterTimeoutId)
         return
       case TaskState.Cancelled:
         txDispatch(TxEvent.FAILED, {
           txId,
           error: new Error(`Relayed transaction was cancelled by relay provider.`),
         })
+        clearTimeout(failAfterTimeoutId)
         return
       case TaskState.NotFound:
       default:
@@ -127,12 +132,13 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
           txId,
           error: new Error(`Relayed transaction was not found.`),
         })
+        clearTimeout(failAfterTimeoutId)
         return
     }
   }
 
   setTimeout(checkTxStatus, INITIAL_POLLING_DELAY)
-  setTimeout(() => {
+  failAfterTimeoutId = setTimeout(() => {
     clearTimeout(timeoutId)
     txDispatch(TxEvent.FAILED, {
       txId,
