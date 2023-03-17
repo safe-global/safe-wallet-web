@@ -19,7 +19,7 @@ import local from '@/services/local-storage/local'
 /**
  * `useInitPairing` is responsible for WC session management, creating a session when:
  *
- * - no wallet is connected to onboard, deemed "intializing" pairing (disconnecting wallets via the UI)
+ * - no wallet is connected to onboard, deemed "initializing" pairing (disconnecting wallets via the UI)
  * - on WC 'disconnect' event (disconnecting via the app)
  */
 
