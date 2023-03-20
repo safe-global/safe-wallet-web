@@ -19,7 +19,7 @@ const FallbackChainIcon = ({ color }: { color: string }) => (
 )
 
 const Relaying = () => {
-  const [remainingRelays] = useRemainingRelays()
+  const [remainingRelays, remainingRelaysError] = useRemainingRelays()
   const { configs } = useChains()
   const currentChain = useCurrentChain()
 
@@ -31,11 +31,11 @@ const Relaying = () => {
 
       <WidgetBody>
         <Card sx={{ padding: 4, height: 'inherit' }}>
-          <Grid container mb={3}>
+          <Grid container mb={3} columnSpacing={3}>
             <Grid item xs={12} sm={2}>
-              <SvgIcon component={RelayerIcon} sx={{ width: 'auto', height: '60px' }} inheritViewBox />
+              <SvgIcon component={RelayerIcon} sx={{ width: 'auto', height: '100%' }} inheritViewBox />
             </Grid>
-            <Grid item xs={10}>
+            <Grid item sm={10}>
               <Box display="flex" alignItems="center">
                 <Typography variant="h6" fontWeight={700}>
                   Introducing Relayer
@@ -44,10 +44,11 @@ const Relaying = () => {
                   New
                 </Box>
               </Box>
-              <Typography variant="body2" sx={{ display: 'inline' }}>
+              <Typography variant="body2" marginRight={1} sx={{ display: 'inline' }}>
                 Benefit from a gasless experience powered by Gelato and Safe.{' '}
               </Typography>
-              <Link href="#" color="primary.main" fontWeight="bold" marginLeft={1}>
+              {/* TODO: change the href when implementing the educational content route */}
+              <Link href="#" color="primary.main" fontWeight="bold">
                 Read about trial
               </Link>
             </Grid>
@@ -57,7 +58,11 @@ const Relaying = () => {
             {currentChain && hasFeature(currentChain, FEATURES.RELAYING) && (
               <Grid item xs={12} sm={5}>
                 <Typography color="primary.light">Free transactions</Typography>
-                {remainingRelays !== undefined ? (
+                {remainingRelaysError ? (
+                  <Typography fontWeight={700} lineHeight="30px">
+                    5 per hour
+                  </Typography>
+                ) : remainingRelays !== undefined ? (
                   <Typography fontWeight={700} lineHeight="30px">
                     {remainingRelays} out of 5 remaining
                   </Typography>
