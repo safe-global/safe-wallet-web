@@ -10,6 +10,14 @@ Sentry.init({
   sampleRate: 0.1,
   // ignore MetaMask errors we don't control
   ignoreErrors: ['Internal JSON-RPC error', 'JsonRpcEngine', 'Non-Error promise rejection captured with keys: code'],
+
+  beforeSend: (event) => {
+    // Remove URL query params
+    if (event.request?.query_string) {
+      delete event.request?.query_string
+    }
+    return event
+  },
 })
 
 export default Sentry
