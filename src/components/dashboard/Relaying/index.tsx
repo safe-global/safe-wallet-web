@@ -45,7 +45,7 @@ const Relaying = () => {
                 </Box>
               </Box>
               <Typography variant="body2" marginRight={1} sx={{ display: 'inline' }}>
-                Benefit from a gasless experience powered by Gelato and Safe.{' '}
+                Benefit from a gasless experience powered by Gelato and Safe.
               </Typography>
               {/* TODO: change the href when implementing the educational content route */}
               <Link href="#" color="primary.main" fontWeight="bold">
