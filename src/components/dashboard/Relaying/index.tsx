@@ -18,6 +18,8 @@ const FallbackChainIcon = ({ color }: { color: string }) => (
   />
 )
 
+const MAX_HOUR_RELAYS = 5
+
 const Relaying = () => {
   const [remainingRelays, remainingRelaysError] = useRemainingRelays()
   const { configs } = useChains()
@@ -40,7 +42,7 @@ const Relaying = () => {
                 <Typography variant="h6" fontWeight={700}>
                   Introducing Relayer
                 </Typography>
-                <Box className={css.inlineChip} sx={{ backgroundColor: 'secondary.light' }}>
+                <Box className={css.inlineChip} color="static.main" sx={{ backgroundColor: 'secondary.light' }}>
                   New
                 </Box>
               </Box>
@@ -60,11 +62,11 @@ const Relaying = () => {
                 <Typography color="primary.light">Free transactions</Typography>
                 {remainingRelaysError ? (
                   <Typography fontWeight={700} lineHeight="30px">
-                    5 per hour
+                    {MAX_HOUR_RELAYS} per hour
                   </Typography>
                 ) : remainingRelays !== undefined ? (
                   <Typography fontWeight={700} lineHeight="30px">
-                    {remainingRelays} out of 5 remaining
+                    {remainingRelays} out of {MAX_HOUR_RELAYS} remaining
                   </Typography>
                 ) : (
                   <Skeleton className={css.chipSkeleton} variant="rounded" />
