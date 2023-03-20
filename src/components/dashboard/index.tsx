@@ -7,6 +7,7 @@ import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSe
 import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
+import Relaying from '@/components/dashboard/Relaying'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
@@ -23,8 +24,12 @@ const Dashboard = (): ReactElement => {
           <PendingTxsList size={4} />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={12} md={12} lg={6}>
           <FeaturedApps />
+        </Grid>
+
+        <Grid item xs={12} md={12} lg={6}>
+          <Relaying />
         </Grid>
 
         <Grid item xs={12}>
