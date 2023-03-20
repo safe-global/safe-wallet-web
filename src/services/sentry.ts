@@ -12,9 +12,15 @@ Sentry.init({
   ignoreErrors: ['Internal JSON-RPC error', 'JsonRpcEngine', 'Non-Error promise rejection captured with keys: code'],
 
   beforeSend: (event) => {
-    // Remove URL query params
-    if (event.request?.query_string) {
-      delete event.request?.query_string
+    // Remove sensitive URL query params
+    const query = event.request?.query_string
+    if (event.request && query) {
+      const appUrl = typeof query !== 'string' && !Array.isArray(query) ? query.appUrl : ''
+      if (appUrl) {
+        event.request.query_string = { appUrl }
+      } else {
+        delete event.request.query_string
+      }
     }
     return event
   },
