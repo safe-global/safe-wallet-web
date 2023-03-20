@@ -13,6 +13,7 @@ import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/services/onboard'
+import type { JsonRpcSigner } from '@ethersproject/providers'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -79,6 +80,15 @@ export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): P
   return newWallet
 }
 
+export const getAssertedChainSigner = async (
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
+): Promise<JsonRpcSigner> => {
+  const wallet = await assertWalletChain(onboard, chainId)
+  const provider = createWeb3(wallet.provider)
+  return provider.getSigner()
+}
+
 /**
  * https://docs.ethers.io/v5/api/providers/jsonrpc-provider/#UncheckedJsonRpcSigner
  * This resolves the promise sooner when executing a tx and mocks
@@ -86,11 +96,9 @@ export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): P
  * dealing with smart-contract wallet owners
  */
 export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
-  const wallet = await assertWalletChain(onboard, chainId)
+  const signer = await getAssertedChainSigner(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 
-  const provider = createWeb3(wallet.provider)
-  const signer = provider.getSigner()
   const ethAdapter = new EthersAdapter({
     ethers,
     signerOrProvider: signer.connectUnchecked(),
@@ -100,11 +108,9 @@ export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo
 }
 
 export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
-  const wallet = await assertWalletChain(onboard, chainId)
+  const signer = await getAssertedChainSigner(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 
-  const provider = createWeb3(wallet.provider)
-  const signer = provider.getSigner()
   const ethAdapter = new EthersAdapter({
     ethers,
     signerOrProvider: signer,

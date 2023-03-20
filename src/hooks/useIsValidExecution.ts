@@ -21,6 +21,7 @@ const isContractError = (error: EthersError) => {
 }
 
 // Monkey patch the signerProvider to proxy requests to the "readonly" provider if on the wrong chain
+// This is ONLY used to check the validity of a transaction in `useIsValidExecution`
 const getPatchedSignerProvider = (
   wallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
@@ -31,13 +32,18 @@ const getPatchedSignerProvider = (
   if (wallet.chainId !== chainId) {
     // The RPC methods that are used when we call contract.callStatic.execTransaction
     const READ_ONLY_METHODS = ['eth_chainId', 'eth_call']
+    const ETH_ACCOUNTS_METHOD = 'eth_accounts'
+
     const originalSend = signerProvider.send
 
     signerProvider.send = (request, ...args) => {
       if (READ_ONLY_METHODS.includes(request)) {
         return readOnlyProvider.send.call(readOnlyProvider, request, ...args)
       }
-      return originalSend.call(signerProvider, request, ...args)
+      if (request === ETH_ACCOUNTS_METHOD) {
+        return originalSend.call(signerProvider, request, ...args)
+      }
+      throw new Error('Invalid execution validity request')
     }
   }
 

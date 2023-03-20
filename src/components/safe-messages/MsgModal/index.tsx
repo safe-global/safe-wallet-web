@@ -19,11 +19,13 @@ import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeMessages from '@/hooks/useSafeMessages'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import useOnboard from '@/hooks/wallets/useOnboard'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
+import { useCurrentChain } from '@/hooks/useChains'
+import { useShouldManuallySwitchChain } from '@/hooks/useShouldManuallySwitchChain'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -58,11 +60,15 @@ const MsgModal = ({
   // Hooks & variables
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
-  const web3 = useWeb3()
+  const currentChain = useCurrentChain()
+  const onboard = useOnboard()
   const { safe } = useSafeInfo()
   const isOwner = useIsSafeOwner()
   const wallet = useWallet()
   const messages = useSafeMessages()
+
+  // Should warn that submission will first dis-/connect hardware wallet
+  const [willReconnectWallet] = useShouldManuallySwitchChain()
 
   // Decode message if UTF-8 encoded
   const decodedMessage = useMemo(() => {
@@ -90,30 +96,28 @@ const MsgModal = ({
 
   const hasSigned = !!alreadyProposedMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
-  const isDisabled = !isOwner || hasSigned || !web3
+  const isDisabled = !isOwner || hasSigned || !onboard
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
-    if (!web3) {
+    if (!onboard) {
       return
     }
 
     setSubmitError(undefined)
 
-    const signer = web3.getSigner()
-
     try {
       if (requestId && !alreadyProposedMessage) {
-        await dispatchSafeMsgProposal({ signer, safe, message: decodedMessage, requestId, safeAppId })
+        await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, requestId, safeAppId })
       } else {
-        await dispatchSafeMsgConfirmation({ signer, safe, message: decodedMessage, requestId })
+        await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage, requestId })
       }
 
       onClose()
     } catch (e) {
       setSubmitError(e as Error)
     }
-  }, [alreadyProposedMessage, decodedMessage, onClose, requestId, safe, safeAppId, web3])
+  }, [alreadyProposedMessage, decodedMessage, onClose, requestId, safe, safeAppId, onboard])
 
   return (
     <ModalDialog open onClose={onClose} maxWidth="sm" fullWidth>
@@ -167,7 +171,15 @@ const MsgModal = ({
             <EthHashInfo address={safeMessageHash} showAvatar={false} shortAddress={false} showCopyButton />
           </Typography>
 
-          {!web3 ? (
+          {/* Warning messages */}
+          {willReconnectWallet && (
+            <ErrorMessage>
+              Your {wallet?.label} is connected to the wrong chain. Submission will first request connection to{' '}
+              {currentChain?.chainName}.
+            </ErrorMessage>
+          )}
+
+          {!wallet || !onboard ? (
             <ErrorMessage>No wallet is connected.</ErrorMessage>
           ) : !isOwner ? (
             <ErrorMessage>

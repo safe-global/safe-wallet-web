@@ -7,7 +7,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isHardwareWallet, isSmartContractWallet } from '@/hooks/wallets/wallets'
+import { isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -32,6 +32,7 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { getExplorerLink } from '@/utils/gateway'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { type OnboardAPI } from '@web3-onboard/core'
+import { useShouldManuallySwitchChain } from '@/hooks/useShouldManuallySwitchChain'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -85,7 +86,7 @@ const SignOrExecuteForm = ({
   const willExecute = (onlyExecute || shouldExecute) && canExecute
 
   // Should warn that submission will first dis-/connect hardware wallet
-  const willReconnectWallet = isSubmittable && isWrongChain && wallet && isHardwareWallet(wallet)
+  const [willReconnectWallet] = useShouldManuallySwitchChain()
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -272,7 +273,7 @@ const SignOrExecuteForm = ({
         {/* Warning messages */}
         {willReconnectWallet && (
           <ErrorMessage>
-            Your {wallet.label} is connected to the wrong chain. Submission will first request connection to{' '}
+            Your {wallet?.label} is connected to the wrong chain. Submission will first request connection to{' '}
             {currentChain?.chainName}.
           </ErrorMessage>
         )}
