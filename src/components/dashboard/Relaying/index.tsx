@@ -45,7 +45,7 @@ const Relaying = () => {
                 </Box>
               </Box>
               <Typography variant="body2" sx={{ display: 'inline' }}>
-                Benefit from gasless experience powered by Gelato and Safe.{' '}
+                Benefit from a gasless experience powered by Gelato and Safe.{' '}
               </Typography>
               <Link href="#" color="primary.main" fontWeight="bold">
                 Read about trial
