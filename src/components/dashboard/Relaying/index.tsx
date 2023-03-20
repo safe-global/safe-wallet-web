@@ -30,7 +30,7 @@ const Relaying = () => {
       </Typography>
 
       <WidgetBody>
-        <Card sx={{ padding: 3, height: 'inherit' }}>
+        <Card sx={{ padding: 4, height: 'inherit' }}>
           <Grid container mb={3}>
             <Grid item xs={12} sm={2}>
               <SvgIcon component={RelayerIcon} sx={{ width: 'auto', height: '60px' }} inheritViewBox />
@@ -47,30 +47,28 @@ const Relaying = () => {
               <Typography variant="body2" sx={{ display: 'inline' }}>
                 Benefit from a gasless experience powered by Gelato and Safe.{' '}
               </Typography>
-              <Link href="#" color="primary.main" fontWeight="bold">
+              <Link href="#" color="primary.main" fontWeight="bold" marginLeft={1}>
                 Read about trial
               </Link>
             </Grid>
           </Grid>
           <Divider />
-          <Grid container mt={2} spacing={3}>
+          <Grid container mt={2} columnSpacing={6}>
             {currentChain && hasFeature(currentChain, FEATURES.RELAYING) && (
-              <Grid item xs={12} sm={4}>
-                <Typography variant="body1" color="primary.light">
-                  Free transactions{' '}
-                </Typography>
+              <Grid item xs={12} sm={5}>
+                <Typography color="primary.light">Free transactions</Typography>
                 {remainingRelays !== undefined ? (
-                  <Typography fontWeight={700}>{remainingRelays} out of 5 remaining</Typography>
+                  <Typography fontWeight={700} lineHeight="30px">
+                    {remainingRelays} out of 5 remaining
+                  </Typography>
                 ) : (
                   <Skeleton className={css.chipSkeleton} variant="rounded" />
                 )}
               </Grid>
             )}
-            <Grid item xs={12} sm={8}>
-              <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Typography variant="body1" color="primary.light">
-                  Supported on{' '}
-                </Typography>
+            <Grid item xs={12} sm={7}>
+              <Box display="flex" alignItems="flex-start">
+                <Typography color="primary.light">Supported on</Typography>
                 <Box className={css.inlineChip} sx={{ backgroundColor: 'border.light' }}>
                   More coming soon
                 </Box>
@@ -87,7 +85,7 @@ const Relaying = () => {
                       fallbackComponent={<FallbackChainIcon color={chain.theme.backgroundColor} />}
                       height="16px"
                     />
-                    <Typography key={chain.chainId}>{chain.chainName}</Typography>
+                    <Typography fontWeight={700}>{chain.chainName}</Typography>
                   </Box>
                 ))}
             </Grid>
