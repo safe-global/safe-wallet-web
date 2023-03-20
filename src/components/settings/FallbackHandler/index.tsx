@@ -1,4 +1,5 @@
-import { Typography, Box, SvgIcon, Tooltip, Grid, Paper } from '@mui/material'
+import NextLink from 'next/link'
+import { Typography, Box, SvgIcon, Tooltip, Grid, Paper, Link } from '@mui/material'
 import semverSatisfies from 'semver/functions/satisfies'
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
@@ -9,6 +10,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { getFallbackHandlerDeployment } from '@safe-global/safe-deployments'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import ExternalLink from '@/components/common/ExternalLink'
+import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 
 import css from '../SafeModules/styles.module.css'
 
@@ -18,10 +20,10 @@ const FALLBACK_HANDLER_ARTICLE =
 
 export const FallbackHandler = (): ReactElement | null => {
   const { safe } = useSafeInfo()
+  const txBuilder = useTxBuilderApp()
 
   const supportsFallbackHandler = !!safe.version && semverSatisfies(safe.version, FALLBACK_HANDLER_VERSION)
 
-  const fallbackHandler = safe.fallbackHandler?.value
   const fallbackHandlerDeployment = useMemo(() => {
     return getFallbackHandlerDeployment({
       version: safe.version || LATEST_SAFE_VERSION,
@@ -33,7 +35,39 @@ export const FallbackHandler = (): ReactElement | null => {
     return null
   }
 
-  const shouldWarn = fallbackHandler ? fallbackHandler !== fallbackHandlerDeployment?.defaultAddress : false
+  const isOfficial = !!safe.fallbackHandler && safe.fallbackHandler.value === fallbackHandlerDeployment?.defaultAddress
+
+  const fallbackHandlerName = safe.fallbackHandler?.name || fallbackHandlerDeployment?.contractName
+
+  const tooltip = !safe.fallbackHandler ? (
+    <>
+      The Safe may not work correctly as no fallback handler is currently set.
+      {txBuilder && (
+        <>
+          {' '}
+          It can be set via the{' '}
+          <NextLink href={txBuilder.link} passHref>
+            <Link>Transaction Builder</Link>
+          </NextLink>
+          .
+        </>
+      )}
+    </>
+  ) : !isOfficial ? (
+    <>
+      An unofficial fallback handler is currently set.
+      {txBuilder && (
+        <>
+          {' '}
+          It can be altered via the{' '}
+          <NextLink href={txBuilder.link} passHref>
+            <Link>Transaction Builder</Link>
+          </NextLink>
+          .
+        </>
+      )}
+    </>
+  ) : undefined
 
   return (
     <Paper sx={{ padding: 4 }}>
@@ -41,10 +75,11 @@ export const FallbackHandler = (): ReactElement | null => {
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
             Fallback handler
-            {shouldWarn && (
-              <Tooltip placement="top" title="An unofficial fallback handler is currently set.">
+            {tooltip && (
+              <Tooltip placement="top" title={tooltip}>
                 <span>
                   <SvgIcon
+                    data-testid="fallback-handler-warning"
                     component={AlertIcon}
                     inheritViewBox
                     fontSize="small"
@@ -61,12 +96,17 @@ export const FallbackHandler = (): ReactElement | null => {
           <Box>
             <Typography>
               The fallback handler adds fallback logic for funtionality that may not be present in the Safe contract.
-              Learn more about the fallback handler here{' '}
-              <ExternalLink href={FALLBACK_HANDLER_ARTICLE}>here</ExternalLink>
+              Learn more about the fallback handler <ExternalLink href={FALLBACK_HANDLER_ARTICLE}>here</ExternalLink>
             </Typography>
-            {fallbackHandler ? (
+            {safe.fallbackHandler ? (
               <Box className={css.container}>
-                <EthHashInfo shortAddress={false} address={fallbackHandler} showCopyButton hasExplorer />
+                <EthHashInfo
+                  shortAddress={false}
+                  name={fallbackHandlerName}
+                  address={safe.fallbackHandler.value}
+                  showCopyButton
+                  hasExplorer
+                />
               </Box>
             ) : (
               <Typography mt={2} color={({ palette }) => palette.primary.light}>
