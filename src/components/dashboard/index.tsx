@@ -16,19 +16,19 @@ const Dashboard = (): ReactElement => {
   return (
     <>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={12} lg={6}>
+        <Grid item xs={12} lg={6}>
           <Overview />
         </Grid>
 
-        <Grid item xs={12} md={12} lg={6}>
+        <Grid item xs={12} lg={6}>
           <PendingTxsList size={4} />
         </Grid>
 
-        <Grid item xs={12} md={12} lg={6}>
+        <Grid item xs={12} lg={6}>
           <FeaturedApps />
         </Grid>
 
-        <Grid item xs={12} md={12} lg={6}>
+        <Grid item xs={12} lg={6}>
           <Relaying />
         </Grid>
 
