@@ -1,0 +1,16 @@
+.progressBar {
+  height: 6px;
+  border-top-left-radius: var(--mui-shape-borderRadius);
+  border-top-right-radius: var(--mui-shape-borderRadius);
+  background-color: transparent;
+}
+
+.progressBar :global .MuiLinearProgress-bar {
+  background: linear-gradient(84.56deg, #11ff80 -0.82%, #5eddff 75.55%);
+}
+
+@media (max-width: 600px) {
+  .progressBar {
+    border-radius: 0;
+  }
+}
