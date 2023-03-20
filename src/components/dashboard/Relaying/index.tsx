@@ -3,7 +3,7 @@ import { Box, Card, Divider, Grid, Link, Skeleton, SvgIcon, Typography } from '@
 import RelayerIcon from '@/public/images/common/relayer.svg'
 import css from './styles.module.css'
 import useRemainingRelays from '@/hooks/useRemainingRelays'
-import useChains from '@/hooks/useChains'
+import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import ImageFallback from '@/components/common/ImageFallback'
 
@@ -21,6 +21,7 @@ const FallbackChainIcon = ({ color }: { color: string }) => (
 const Relaying = () => {
   const [remainingRelays] = useRemainingRelays()
   const { configs } = useChains()
+  const currentChain = useCurrentChain()
 
   return (
     <WidgetContainer>
@@ -29,7 +30,7 @@ const Relaying = () => {
       </Typography>
 
       <WidgetBody>
-        <Card sx={{ padding: 3 }}>
+        <Card sx={{ padding: 3, height: 'inherit' }}>
           <Grid container mb={3}>
             <Grid item xs={12} sm={2}>
               <SvgIcon component={RelayerIcon} sx={{ width: 'auto', height: '60px' }} inheritViewBox />
@@ -53,16 +54,18 @@ const Relaying = () => {
           </Grid>
           <Divider />
           <Grid container mt={2} spacing={3}>
-            <Grid item xs={12} sm={4}>
-              <Typography variant="body1" color="primary.light">
-                Free transactions{' '}
-              </Typography>
-              {remainingRelays !== undefined ? (
-                <Typography fontWeight={700}>{remainingRelays} out of 5 remaining</Typography>
-              ) : (
-                <Skeleton className={css.chipSkeleton} variant="rounded" />
-              )}
-            </Grid>
+            {currentChain && hasFeature(currentChain, FEATURES.RELAYING) && (
+              <Grid item xs={12} sm={4}>
+                <Typography variant="body1" color="primary.light">
+                  Free transactions{' '}
+                </Typography>
+                {remainingRelays !== undefined ? (
+                  <Typography fontWeight={700}>{remainingRelays} out of 5 remaining</Typography>
+                ) : (
+                  <Skeleton className={css.chipSkeleton} variant="rounded" />
+                )}
+              </Grid>
+            )}
             <Grid item xs={12} sm={8}>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Typography variant="body1" color="primary.light">
