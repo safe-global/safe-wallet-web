@@ -1,7 +1,7 @@
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
@@ -51,6 +51,21 @@ export const Multisend = ({
 }: MultisendProps): ReactElement | null => {
   const [open, setOpen] = useState<Record<number, boolean>>()
 
+  // multiSend method receives one parameter `transactions`
+  const multiSendTransactions = txData?.dataDecoded?.parameters?.[0].valueDecoded
+
+  useEffect(() => {
+    // Initialise whether each transaction should be expanded or not
+    const multiSendTransactions = txData?.dataDecoded?.parameters?.[0]?.valueDecoded
+    if (!open && multiSendTransactions) {
+      setOpen(
+        multiSendTransactions.map(({ operation }) => {
+          return showDelegateCallWarning ? operation === Operation.DELEGATE : false
+        }),
+      )
+    }
+  }, [open, showDelegateCallWarning, txData?.dataDecoded?.parameters])
+
   if (!txData) return null
 
   // ? when can a multiSend call take no parameters?
@@ -61,26 +76,14 @@ export const Multisend = ({
     return null
   }
 
-  // multiSend method receives one parameter `transactions`
-  const multiSendTransactions = txData.dataDecoded.parameters?.[0].valueDecoded
-
   if (!multiSendTransactions) {
     return null
-  }
-
-  // Initialise whether each transaction should be expanded or not
-  if (!open) {
-    setOpen(
-      multiSendTransactions.map(({ operation }) => {
-        return showDelegateCallWarning ? operation === Operation.DELEGATE : false
-      }),
-    )
   }
 
   return (
     <>
       <MultisendActionsHeader setOpen={setOpen} amount={multiSendTransactions.length} />
-      {multiSendTransactions?.map(({ dataDecoded, data, value, to, operation }, index) => {
+      {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
         const onChange: AccordionProps['onChange'] = (_, expanded) => {
           setOpen((prev) => ({
             ...prev,
