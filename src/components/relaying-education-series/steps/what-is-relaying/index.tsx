@@ -1,6 +1,7 @@
+import { type StepRenderProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
 import { Box, Button } from '@mui/material'
 
-const WhatIsRelaying = () => {
+const WhatIsRelaying = ({ onNext, onClose }: Partial<StepRenderProps>) => {
   return (
     <Box height="100%" display="flex" flexDirection="column" justifyContent="space-between">
       <Box>
@@ -22,7 +23,7 @@ const WhatIsRelaying = () => {
         </p>
       </Box>
       <Box display="flex" flexDirection="row" justifyContent="flex-end" mt={3}>
-        <Button variant="contained" size="stretched" onClick={() => {}}>
+        <Button variant="contained" size="stretched" onClick={onNext}>
           Next
         </Button>
       </Box>

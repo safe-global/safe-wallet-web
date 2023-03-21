@@ -1,14 +1,16 @@
 import { Box, Card, Grid, Typography } from '@mui/material'
 import Navigator from '@/components/relaying-education-series/Navigator'
-import { type TxStepperProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import { useCardStepper } from '@/components/new-safe/CardStepper/useCardStepper'
-import { lightPalette } from '@safe-global/safe-react-components'
-import { useState } from 'react'
+import useEducationSeriesStepper, {
+  type EducationSeriesStepperProps,
+} from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
 import css from './styles.module.css'
 
-function RelaySeriesStepper<StepperData>(props: TxStepperProps<StepperData>) {
-  const [progressColor, setProgressColor] = useState(lightPalette.secondary.main)
-  const { activeStep, onSubmit, onBack, stepData, setStep } = useCardStepper<StepperData>(props)
+const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
+  // const [progressColor, setProgressColor] = useState(lightPalette.secondary.main)
+  const { onBack, onNext, activeStep, setStep, onClose } = useEducationSeriesStepper({
+    steps: props.steps,
+    onClose: props.onClose,
+  })
   const { steps } = props
   const currentStep = steps[activeStep]
 
@@ -26,7 +28,7 @@ function RelaySeriesStepper<StepperData>(props: TxStepperProps<StepperData>) {
               </Typography>
               <h1>{currentStep.title}</h1>
             </Box>
-            {currentStep.render(stepData, onSubmit, onBack, setStep, setProgressColor)}
+            {currentStep.render(onBack, onNext, onClose)}
           </Card>
         </Grid>
       )}

@@ -4,34 +4,31 @@ import Benefits from '@/components/relaying-education-series/steps/benefits'
 import TechnicalInformation from '@/components/relaying-education-series/steps/technical-information'
 import { Container } from '@mui/material'
 import RelaySeriesStepper from '@/components/relaying-education-series/RelaySeriesStepper'
+import { type EducationSeriesStepperProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
 
 const RelayingEducationSeries = () => {
-  const RelayingSeriesSteps = [
+  const RelayingSeriesSteps: EducationSeriesStepperProps['steps'] = [
     {
       title: 'What is relaying?',
-      subtitle: '',
-      render: () => <WhatIsRelaying />,
+      render: (_, onNext, onClose) => <WhatIsRelaying onNext={onNext} onClose={onClose} />,
     },
     {
       title: 'How it works?',
-      subtitle: '',
-      render: () => <HowItWorks />,
+      render: (onBack, onNext, onClose) => <HowItWorks onBack={onBack} onNext={onNext} onClose={onClose} />,
     },
     {
       title: 'Benefits',
-      subtitle: '',
-      render: () => <Benefits />,
+      render: (onBack, onNext, onClose) => <Benefits onBack={onBack} onNext={onNext} onClose={onClose} />,
     },
     {
       title: 'Technical information',
-      subtitle: '',
-      render: () => <TechnicalInformation />,
+      render: (onBack, _, onClose) => <TechnicalInformation onBack={onBack} onClose={onClose} />,
     },
   ]
 
   return (
     <Container sx={{ margin: '86px 113px' }}>
-      <RelaySeriesStepper steps={RelayingSeriesSteps} initialData={{}} onClose={() => {}} />
+      <RelaySeriesStepper steps={RelayingSeriesSteps} onClose={() => {}} />
     </Container>
   )
 }
