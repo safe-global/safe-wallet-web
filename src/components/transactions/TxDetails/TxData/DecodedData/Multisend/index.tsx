@@ -49,22 +49,22 @@ export const Multisend = ({
   variant = 'elevation',
   showDelegateCallWarning = true,
 }: MultisendProps): ReactElement | null => {
-  const [open, setOpen] = useState<Record<number, boolean>>()
+  const [openMap, setOpenMap] = useState<Record<number, boolean>>()
+  const isOpenMapUndefined = openMap == null
 
   // multiSend method receives one parameter `transactions`
   const multiSendTransactions = txData?.dataDecoded?.parameters?.[0].valueDecoded
 
   useEffect(() => {
     // Initialise whether each transaction should be expanded or not
-    const multiSendTransactions = txData?.dataDecoded?.parameters?.[0]?.valueDecoded
-    if (!open && multiSendTransactions) {
-      setOpen(
+    if (isOpenMapUndefined && multiSendTransactions) {
+      setOpenMap(
         multiSendTransactions.map(({ operation }) => {
           return showDelegateCallWarning ? operation === Operation.DELEGATE : false
         }),
       )
     }
-  }, [open, showDelegateCallWarning, txData?.dataDecoded?.parameters])
+  }, [multiSendTransactions, isOpenMapUndefined, showDelegateCallWarning])
 
   if (!txData) return null
 
@@ -82,10 +82,10 @@ export const Multisend = ({
 
   return (
     <>
-      <MultisendActionsHeader setOpen={setOpen} amount={multiSendTransactions.length} />
+      <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />
       {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
         const onChange: AccordionProps['onChange'] = (_, expanded) => {
-          setOpen((prev) => ({
+          setOpenMap((prev) => ({
             ...prev,
             [index]: expanded,
           }))
@@ -105,7 +105,7 @@ export const Multisend = ({
             showDelegateCallWarning={showDelegateCallWarning}
             actionTitle={`Action ${index + 1}`}
             variant={variant}
-            expanded={open?.[index] ?? false}
+            expanded={openMap?.[index] ?? false}
             onChange={onChange}
           />
         )
