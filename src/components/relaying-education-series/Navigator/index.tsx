@@ -1,5 +1,5 @@
 // import { useRelayingEducationSeriesStepper } from '@/components/relaying-education-series'
-import { Box, Card, Divider, SvgIcon, Typography } from '@mui/material'
+import { Box, Card, Divider, ListItemButton, SvgIcon, Typography } from '@mui/material'
 import RelayerIcon from '@/public/images/common/relayer.svg'
 import css from './styles.module.css'
 
@@ -22,9 +22,7 @@ const Steps = [
   },
 ]
 
-const Navigator = () => {
-  // const { currentStep } = useRelayingEducationSeriesStepper()
-
+const Navigator = ({ setStep }: { setStep: (step: number) => void }) => {
   return (
     <Card>
       <Box className={css.navigatorHeader}>
@@ -36,10 +34,10 @@ const Navigator = () => {
       <Divider />
       <Box className={css.navigatorBody}>
         {Steps.map((step, index) => (
-          <Box key={index} className={css.navigatorBodyItem}>
+          <ListItemButton key={index} className={css.navigatorBodyItem} onClick={() => setStep(index)}>
             <Typography className={css.step}>{step.number}</Typography>
             <Typography>{step.title}</Typography>
-          </Box>
+          </ListItemButton>
         ))}
       </Box>
     </Card>

@@ -1,16 +1,39 @@
-import { lazy } from 'react'
+import WhatIsRelaying from '@/components/relaying-education-series/steps/what-is-relaying'
+import HowItWorks from '@/components/relaying-education-series/steps/how-it-works'
+import Benefits from '@/components/relaying-education-series/steps/benefits'
+import TechnicalInformation from '@/components/relaying-education-series/steps/technical-information'
+import { Container } from '@mui/material'
+import RelaySeriesStepper from '@/components/relaying-education-series/RelaySeriesStepper'
 
-import { createStepper } from '@/services/StepperFactory'
+const RelayingEducationSeries = () => {
+  const RelayingSeriesSteps = [
+    {
+      title: 'What is relaying?',
+      subtitle: '',
+      render: () => <WhatIsRelaying />,
+    },
+    {
+      title: 'How it works?',
+      subtitle: '',
+      render: () => <HowItWorks />,
+    },
+    {
+      title: 'Benefits',
+      subtitle: '',
+      render: () => <Benefits />,
+    },
+    {
+      title: 'Technical information',
+      subtitle: '',
+      render: () => <TechnicalInformation />,
+    },
+  ]
 
-const steps = [
-  lazy(() => import('@/components/relaying-education-series/steps/what-is-relaying')),
-  lazy(() => import('@/components/relaying-education-series/steps/how-it-works')),
-  lazy(() => import('@/components/relaying-education-series/steps/benefits')),
-  lazy(() => import('@/components/relaying-education-series/steps/technical-information')),
-]
+  return (
+    <Container sx={{ margin: '86px 113px' }}>
+      <RelaySeriesStepper steps={RelayingSeriesSteps} initialData={{}} onClose={() => {}} />
+    </Container>
+  )
+}
 
-const RelayingEducationSeriesContext = createStepper({ steps })
-
-export const useRelayingEducationSeriesStepper = RelayingEducationSeriesContext.useStepper
-
-export const RelayingEducationSeries = RelayingEducationSeriesContext.Stepper
+export default RelayingEducationSeries

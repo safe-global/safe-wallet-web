@@ -1,0 +1,18 @@
+.infoCard {
+  padding: 48px;
+  height: 100%;
+}
+
+.step {
+  border: 1.3px solid var(--color-text-primary);
+  font-weight: 700;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
