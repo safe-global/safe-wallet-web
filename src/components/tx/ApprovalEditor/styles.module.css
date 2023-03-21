@@ -17,6 +17,7 @@
 
 .approvalAmount {
   text-align: right !important;
+  padding-left: var(--space-1);
 }
 
 .iconButton {

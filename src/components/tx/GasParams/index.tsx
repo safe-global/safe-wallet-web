@@ -1,5 +1,6 @@
 import type { ReactElement, SyntheticEvent } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useCurrentChain } from '@/hooks/useChains'
 import { formatVisualAmount } from '@/utils/formatters'
 import { type AdvancedParameters } from '../AdvancedParams/types'
@@ -53,7 +54,7 @@ const GasParams = ({ params, isExecution, isEIP1559, onEdit, gasLimitError }: Ga
 
   return (
     <Accordion elevation={0} onChange={onChangeExpand}>
-      <AccordionSummary>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         {isExecution ? (
           <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
             <span>Estimated fee </span>

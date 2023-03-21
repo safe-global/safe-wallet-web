@@ -1,6 +1,9 @@
 import { getWeb3 } from '@/hooks/wallets/web3'
 import { ERC20__factory } from '@/types/contracts'
 import { type TokenInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import { BigNumber } from 'ethers'
+
+export const UNLIMITED_APPROVAL_AMOUNT = BigNumber.from(2).pow(256).sub(1)
 
 /**
  * Fetches ERC20 token symbol and decimals from on-chain.

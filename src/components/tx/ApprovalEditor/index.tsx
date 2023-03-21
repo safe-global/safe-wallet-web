@@ -2,23 +2,22 @@ import TokenIcon from '@/components/common/TokenIcon'
 import useBalances from '@/hooks/useBalances'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { WarningOutlined } from '@mui/icons-material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, IconButton, Skeleton, Typography } from '@mui/material'
 import type { DecodedDataResponse, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { Interface, keccak256, parseUnits, toUtf8Bytes } from 'ethers/lib/utils'
 import { groupBy } from 'lodash'
 import css from './styles.module.css'
 import useAsync from '@/hooks/useAsync'
-import { getERC20TokenInfoOnChain } from '@/utils/tokens'
+import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
 import { useMemo } from 'react'
 
 const approvalSigHash = keccak256(toUtf8Bytes('approve(address,uint256)')).slice(0, 10)
 
 const erc20interface = new Interface(['function approve(address,uint256)'])
-
-const UNLIMITED = BigNumber.from(2).pow(256).sub(1)
 
 const extractTxs: (txs: BaseTransaction[] | (DecodedDataResponse & { to: string })) => BaseTransaction[] = (txs) => {
   if (Array.isArray(txs)) {
@@ -59,7 +58,8 @@ const Summary = ({ approvalInfos, uniqueTokenCount }: { approvalInfos: ApprovalI
   approvalInfos.length === 1 ? (
     <Typography display="inline-flex" alignItems="center" gap={1}>
       <WarningOutlined color="warning" />
-      Give access to <b>{approvalInfos[0].amountFormatted}</b>
+      Give access to{' '}
+      <b>{UNLIMITED_APPROVAL_AMOUNT.eq(approvalInfos[0].amount) ? 'Unlimited' : approvalInfos[0].amountFormatted}</b>
       <TokenIcon logoUri={approvalInfos[0].tokenInfo?.logoUri} tokenSymbol={approvalInfos[0].tokenInfo?.symbol} />
       {approvalInfos[0].tokenInfo?.symbol}
     </Typography>
@@ -109,7 +109,7 @@ export const ApprovalEditor = ({
             tokenAddress: tx.to,
             spender: spender,
             amount: amount,
-            amountFormatted: UNLIMITED.eq(amount) ? 'Unlimited' : ethers.utils.formatUnits(amount, tokenInfo?.decimals),
+            amountFormatted: ethers.utils.formatUnits(amount, tokenInfo?.decimals),
           }
         }),
       ),
@@ -153,7 +153,14 @@ export const ApprovalEditor = ({
 
   return (
     <Accordion className={css.warningAccordion} disabled={loading}>
-      <AccordionSummary>
+      <AccordionSummary
+        expandIcon={
+          <IconButton size="small">
+            <ExpandMoreIcon />
+          </IconButton>
+        }
+      >
+        {' '}
         {loading || !approvalInfos ? (
           <Skeleton />
         ) : (
