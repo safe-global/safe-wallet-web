@@ -1,0 +1,16 @@
+.inlineChip {
+  margin-left: var(--space-1);
+  padding: 4px 12px;
+  border-radius: 6px;
+  height: 28px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  margin-top: -2px;
+}
+
+.chipSkeleton {
+  height: 30px;
+  width: 80px;
+}

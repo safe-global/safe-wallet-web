@@ -20,7 +20,11 @@ const useRemainingRelays = () => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
 
-  return useAsync(() => fetchRemainingRelays(chainId, safeAddress), [chainId, safeAddress])
+  return useAsync(() => {
+    if (!safeAddress) return
+
+    return fetchRemainingRelays(chainId, safeAddress)
+  }, [chainId, safeAddress])
 }
 
 export default useRemainingRelays
