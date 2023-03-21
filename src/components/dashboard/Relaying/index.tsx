@@ -8,6 +8,8 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import ImageFallback from '@/components/common/ImageFallback'
 import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
+import { type UrlObject } from 'url'
+import { useRouter } from 'next/router'
 
 const FallbackChainIcon = ({ color }: { color: string }) => (
   <div
@@ -26,6 +28,12 @@ const Relaying = () => {
   const [remainingRelays, remainingRelaysError] = useRemainingRelays()
   const { configs } = useChains()
   const currentChain = useCurrentChain()
+  const router = useRouter()
+
+  const educationalSeriesLink: UrlObject = {
+    pathname: AppRoutes.relayingEducational,
+    query: { safe: router.query.safe },
+  }
 
   return (
     <WidgetContainer>
@@ -51,8 +59,8 @@ const Relaying = () => {
               <Typography variant="body2" marginRight={1} sx={{ display: 'inline' }}>
                 Benefit from a gasless experience powered by Gelato and Safe.
               </Typography>
-              <NextLink href={AppRoutes.relayingEducational} passHref>
-                <Link href="#" color="primary.main" fontWeight="bold">
+              <NextLink href={educationalSeriesLink} passHref>
+                <Link color="primary.main" fontWeight="bold">
                   Read about trial
                 </Link>
               </NextLink>
