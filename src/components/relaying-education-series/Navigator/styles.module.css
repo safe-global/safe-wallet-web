@@ -1,3 +1,7 @@
+.wrapper {
+  height: fit-content;
+}
+
 .navigatorHeader {
   padding: var(--space-3);
   display: flex;

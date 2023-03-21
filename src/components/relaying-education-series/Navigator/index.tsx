@@ -24,7 +24,7 @@ const Steps = [
 
 const Navigator = ({ setStep }: { setStep: (step: number) => void }) => {
   return (
-    <Card>
+    <Card className={css.wrapper}>
       <Box className={css.navigatorHeader}>
         <SvgIcon component={RelayerIcon} sx={{ width: 'auto', height: '100%', margin: '0 auto' }} inheritViewBox />
         <Typography variant="h4" fontWeight={700}>
