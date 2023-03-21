@@ -2,6 +2,12 @@
   padding: 48px;
   height: 100%;
   width: 648px;
+  position: relative;
+  border: none;
+}
+
+.navigator {
+  height: fit-content;
 }
 
 .step {

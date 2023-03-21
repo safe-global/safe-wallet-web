@@ -3,11 +3,11 @@ import Navigator from '@/components/relaying-education-series/Navigator'
 import useEducationSeriesStepper, {
   type EducationSeriesStepperProps,
 } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
+import { ProgressBar } from '@/components/common/ProgressBar'
 import css from './styles.module.css'
 
 const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
-  // const [progressColor, setProgressColor] = useState(lightPalette.secondary.main)
-  const { onBack, onNext, activeStep, setStep, onClose } = useEducationSeriesStepper({
+  const { onBack, onNext, activeStep, setStep, onClose, progress } = useEducationSeriesStepper({
     steps: props.steps,
     onClose: props.onClose,
   })
@@ -17,6 +17,7 @@ const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
   return (
     <Box display="flex" gap={3} mt="86px" ml="114px">
       <Card className={css.infoCard}>
+        <ProgressBar value={progress} />
         <Box display="flex" alignItems="center" gap="12px">
           <Typography className={css.step}>
             {(activeStep + 1).toLocaleString('en-US', {
@@ -28,7 +29,7 @@ const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
         </Box>
         {currentStep.render(onBack, onNext, onClose)}
       </Card>
-      <Card>
+      <Card className={css.navigator}>
         <Navigator setStep={setStep} />
       </Card>
     </Box>

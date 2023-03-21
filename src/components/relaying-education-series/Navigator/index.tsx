@@ -1,5 +1,4 @@
-// import { useRelayingEducationSeriesStepper } from '@/components/relaying-education-series'
-import { Box, Card, Divider, ListItemButton, SvgIcon, Typography } from '@mui/material'
+import { Box, Divider, ListItemButton, SvgIcon, Typography } from '@mui/material'
 import RelayerIcon from '@/public/images/common/relayer.svg'
 import css from './styles.module.css'
 
@@ -24,7 +23,7 @@ const Steps = [
 
 const Navigator = ({ setStep }: { setStep: (step: number) => void }) => {
   return (
-    <Card className={css.wrapper}>
+    <>
       <Box className={css.navigatorHeader}>
         <SvgIcon component={RelayerIcon} sx={{ width: 'auto', height: '100%', margin: '0 auto' }} inheritViewBox />
         <Typography variant="h4" fontWeight={700}>
@@ -40,7 +39,7 @@ const Navigator = ({ setStep }: { setStep: (step: number) => void }) => {
           </ListItemButton>
         ))}
       </Box>
-    </Card>
+    </>
   )
 }
 

@@ -3,7 +3,7 @@ import { Box, Button } from '@mui/material'
 
 const WhatIsRelaying = ({ onNext, onClose }: Partial<StepRenderProps>) => {
   return (
-    <Box height="100%" display="flex" flexDirection="column" justifyContent="space-between">
+    <Box height="100%" display="flex" flexDirection="column">
       <Box>
         <p>
           Tired of handling gas limits? We’ve heard you! Transact gasless with our <strong>Relayer V1</strong> service

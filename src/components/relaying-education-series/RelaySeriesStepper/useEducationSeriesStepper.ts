@@ -41,12 +41,15 @@ const useEducationSeriesStepper = ({ steps, onClose }: EducationSeriesStepperPro
     setActiveStep(step)
   }
 
+  const progress = ((activeStep + 1) / steps.length) * 100
+
   return {
     onBack,
     onNext,
     activeStep,
     setStep,
     onClose,
+    progress,
   }
 }
 
