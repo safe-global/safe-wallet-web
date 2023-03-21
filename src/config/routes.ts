@@ -47,4 +47,5 @@ export const AppRoutes = {
     index: '/transactions',
     history: '/transactions/history',
   },
+  relayingEducational: '/relaying-educational',
 }

@@ -6,6 +6,8 @@ import useRemainingRelays from '@/hooks/useRemainingRelays'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import ImageFallback from '@/components/common/ImageFallback'
+import NextLink from 'next/link'
+import { AppRoutes } from '@/config/routes'
 
 const FallbackChainIcon = ({ color }: { color: string }) => (
   <div
@@ -49,10 +51,11 @@ const Relaying = () => {
               <Typography variant="body2" marginRight={1} sx={{ display: 'inline' }}>
                 Benefit from a gasless experience powered by Gelato and Safe.
               </Typography>
-              {/* TODO: change the href when implementing the educational content route */}
-              <Link href="#" color="primary.main" fontWeight="bold">
-                Read about trial
-              </Link>
+              <NextLink href={AppRoutes.relayingEducational} passHref>
+                <Link href="#" color="primary.main" fontWeight="bold">
+                  Read about trial
+                </Link>
+              </NextLink>
             </Grid>
           </Grid>
           <Divider />
