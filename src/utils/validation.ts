@@ -57,7 +57,7 @@ export const validateAmount = (amount?: string) => {
 }
 
 export const validateLimitedAmount = (amount: string, decimals?: number, max?: string) => {
-  if (!decimals || !max) return
+  if (typeof decimals === 'undefined' || !max) return
 
   const numberError = validateAmount(amount)
   if (numberError) {

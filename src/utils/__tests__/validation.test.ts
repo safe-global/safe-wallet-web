@@ -57,9 +57,12 @@ describe('validation', () => {
 
   describe('Limited amount validation', () => {
     it('returns an error if its not a number', () => {
-      const result = validateLimitedAmount('abc', 18, '100')
+      const result1 = validateLimitedAmount('abc', 18, '100')
+      expect(result1).toBe('The value must be a number')
 
-      expect(result).toBe('The value must be a number')
+      // No decimals
+      const result2 = validateLimitedAmount('abc', 0, '100')
+      expect(result2).toBe('The value must be a number')
     })
 
     it('returns an error if its a number smaller than or equal 0', () => {
@@ -68,11 +71,22 @@ describe('validation', () => {
 
       const result2 = validateLimitedAmount('-1', 18, '100')
       expect(result2).toBe('The value must be greater than 0')
+
+      // No decimals
+      const result3 = validateLimitedAmount('0', 0, '100')
+      expect(result3).toBe('The value must be greater than 0')
+
+      const result4 = validateLimitedAmount('-1', 0, '100')
+      expect(result4).toBe('The value must be greater than 0')
     })
 
     it('returns an error if its larger than the max', () => {
-      const result = validateLimitedAmount('101', 18, '100000000000000000000')
-      expect(result).toBe('Maximum value is 100')
+      const result1 = validateLimitedAmount('101', 18, '100000000000000000000')
+      expect(result1).toBe('Maximum value is 100')
+
+      // No decimals
+      const result2 = validateLimitedAmount('101', 18, '100000000000000000000')
+      expect(result2).toBe('Maximum value is 100')
     })
   })
 
