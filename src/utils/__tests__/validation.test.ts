@@ -100,14 +100,15 @@ describe('validation', () => {
     })
 
     it('returns an error if there are too many decimals', () => {
-      const result = validateDecimalLength('1.123', 2)
+      const result1 = validateDecimalLength('1.123', 2)
+      expect(result1).toBe('Should have 1 to 2 decimals')
 
-      expect(result).toBe('Should have 1 to 2 decimals')
+      const result2 = validateDecimalLength('1.2', 0)
+      expect(result2).toBe('Should not have decimals')
     })
 
     it('returns undefined if no maximum length is given', () => {
       const result = validateDecimalLength('1.123')
-
       expect(result).toBeUndefined()
     })
 
@@ -123,6 +124,9 @@ describe('validation', () => {
 
       const result2 = validateDecimalLength('1.234', 18, 3)
       expect(result2).toBeUndefined()
+
+      const result3 = validateDecimalLength('1', 0)
+      expect(result3).toBeUndefined()
     })
   })
 })

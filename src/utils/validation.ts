@@ -70,8 +70,12 @@ export const validateLimitedAmount = (amount: string, decimals?: number, max?: s
 }
 
 export const validateDecimalLength = (value: string, maxLen?: number, minLen = 1) => {
-  if (!maxLen || !value.includes('.')) {
+  if (typeof maxLen === 'undefined' || !value.includes('.')) {
     return
+  }
+
+  if (maxLen === 0) {
+    return 'Should not have decimals'
   }
 
   const decimals = value.split('.')[1] || ''
