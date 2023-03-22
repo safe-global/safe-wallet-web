@@ -1,7 +1,7 @@
 import { type StepRenderProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
 import { Box, Button, Typography } from '@mui/material'
 
-const HowItWorks = ({ onBack, onNext, onClose }: Partial<StepRenderProps>) => {
+const HowItWorks = ({ onBack, onNext }: Partial<StepRenderProps>) => {
   return (
     <Box>
       <Typography fontWeight={700}>Which networks are supported</Typography>

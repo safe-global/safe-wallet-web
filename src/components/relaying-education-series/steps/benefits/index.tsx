@@ -2,7 +2,7 @@ import { Box, Button, Grid, SvgIcon, Typography } from '@mui/material'
 import CheckIcon from '@/public/images/common/check.svg'
 import { type StepRenderProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
 
-const Benefits = ({ onBack, onNext, onClose }: Partial<StepRenderProps>) => {
+const Benefits = ({ onBack, onNext }: Partial<StepRenderProps>) => {
   return (
     <Box>
       <Grid container mb={5}>
