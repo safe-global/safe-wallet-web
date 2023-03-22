@@ -1,0 +1,13 @@
+.alert {
+  background-color: var(--color-error-background);
+  color: var(--color-error-dark);
+  display: flex;
+  align-items: center;
+  padding-top: var(--space-1);
+  padding-bottom: var(--space-1);
+  margin: var(--space-2) 0;
+}
+
+.alert :global .MuiAlert-message {
+  width: 100%;
+}

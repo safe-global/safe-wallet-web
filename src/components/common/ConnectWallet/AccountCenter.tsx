@@ -10,6 +10,7 @@ import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
 import useAddressBook from '@/hooks/useAddressBook'
+import ChainSwitcher from '../ChainSwitcher'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
 
@@ -104,6 +105,8 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
               <Typography variant="body2">{chainInfo?.chainName || UNKNOWN_CHAIN_NAME}</Typography>
             </Box>
           </Box>
+
+          <ChainSwitcher fullWidth />
 
           <Button
             variant="contained"

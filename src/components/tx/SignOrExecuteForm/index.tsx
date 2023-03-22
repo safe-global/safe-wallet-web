@@ -32,7 +32,7 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { getExplorerLink } from '@/utils/gateway'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { type OnboardAPI } from '@web3-onboard/core'
-import { useShouldManuallySwitchChain } from '@/hooks/useShouldManuallySwitchChain'
+import { WrongChainWarning } from '../WrongChainWarning'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -63,8 +63,8 @@ const SignOrExecuteForm = ({
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const onboard = useOnboard()
-  const isOwner = useIsSafeOwner()
   const isWrongChain = useIsWrongChain()
+  const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
 
@@ -84,9 +84,6 @@ const SignOrExecuteForm = ({
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
-
-  // Should warn that submission will first dis-/connect hardware wallet
-  const [willReconnectWallet] = useShouldManuallySwitchChain()
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -208,7 +205,8 @@ const SignOrExecuteForm = ({
     disableSubmit ||
     cannotPropose ||
     isExecutionLoop ||
-    isValidExecutionLoading
+    isValidExecutionLoading ||
+    isWrongChain
 
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
@@ -237,6 +235,9 @@ const SignOrExecuteForm = ({
           canExecute={canExecute}
           disabled={submitDisabled}
         />
+
+        {/* Warning message and switch button */}
+        {isWrongChain && <WrongChainWarning />}
 
         {/* Error messages */}
         {isSubmittable && cannotPropose ? (
@@ -269,14 +270,6 @@ const SignOrExecuteForm = ({
             .
           </ErrorMessage>
         ) : null}
-
-        {/* Warning messages */}
-        {willReconnectWallet && (
-          <ErrorMessage>
-            Your {wallet?.label} is connected to the wrong chain. Submission will first request connection to{' '}
-            {currentChain?.chainName}.
-          </ErrorMessage>
-        )}
 
         {/* Info text */}
         <Typography variant="body2" color="border.main" textAlign="center" mt={3}>

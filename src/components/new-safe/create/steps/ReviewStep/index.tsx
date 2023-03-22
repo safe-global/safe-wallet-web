@@ -19,9 +19,12 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/create/steps/StatusStep'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
+  const isWrongChain = useIsWrongChain()
   useSyncSafeCreationStep(setStep)
   const chain = useCurrentChain()
   const wallet = useWallet()
@@ -138,6 +141,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             />
           </Grid>
         </Grid>
+
+        {isWrongChain && <NetworkWarning />}
       </Box>
       <Divider />
       <Box className={layoutCss.row}>
@@ -145,7 +150,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
             Back
           </Button>
-          <Button onClick={createSafe} variant="contained" size="stretched">
+          <Button onClick={createSafe} variant="contained" size="stretched" disabled={isWrongChain}>
             Next
           </Button>
         </Box>
