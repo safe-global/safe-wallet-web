@@ -14,7 +14,7 @@ const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
   const currentStep = steps[activeStep]
 
   return (
-    <Box display="flex" gap={3} mt="86px" ml="114px">
+    <Box className={css.wrapper}>
       <Card className={css.infoCard}>
         <ProgressBar value={progress} />
         <Box display="flex" alignItems="center" gap="12px">

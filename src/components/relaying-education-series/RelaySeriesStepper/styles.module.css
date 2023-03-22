@@ -1,11 +1,26 @@
+.wrapper {
+  display: flex;
+  gap: var(--space-3);
+  margin: 86px auto;
+}
+
 .infoCard {
-  padding: 48px;
+  padding: var(--space-6);
   height: 100%;
-  width: 648px;
+  max-width: 648px;
   position: relative;
   border: none;
 }
 
 .navigator {
   height: fit-content;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1200px) {
+  .navigator {
+    display: none;
+  }
 }
