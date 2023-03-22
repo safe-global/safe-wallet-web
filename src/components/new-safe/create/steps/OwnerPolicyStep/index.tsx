@@ -67,7 +67,7 @@ const OwnerPolicyStep = ({
     trigger(OwnerPolicyStepFields.owners)
   }
 
-  const isDisabled = !formState.isValid
+  const isDisabled = isWrongChain || !formState.isValid
 
   useSafeSetupHints(threshold, ownerFields.length, setDynamicHint)
 
@@ -161,6 +161,7 @@ const OwnerPolicyStep = ({
             />{' '}
             out of {ownerFields.length} owner(s).
           </Box>
+
           {isWrongChain && <NetworkWarning />}
         </Box>
         <Divider />

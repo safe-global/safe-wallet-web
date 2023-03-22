@@ -9,8 +9,8 @@ import useOnboard, { forgetLastWallet, switchWallet } from '@/hooks/wallets/useO
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
-import useAddressBook from '@/hooks/useAddressBook'
 import ChainSwitcher from '../ChainSwitcher'
+import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
 

@@ -15,8 +15,14 @@ import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/safe-core-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
+import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
 import { type OnboardAPI } from '@web3-onboard/core'
+
+jest.mock('@/hooks/useIsWrongChain', () => ({
+  __esModule: true,
+  default: jest.fn(() => false),
+}))
 
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
@@ -82,6 +88,7 @@ describe('SignOrExecuteForm', () => {
     } as ConnectedWallet)
     jest.spyOn(onboard, 'default').mockReturnValue({} as OnboardAPI)
     jest.spyOn(web3, 'useWeb3').mockReturnValue(mockProvider)
+    jest.spyOn(wrongChain, 'default').mockReturnValue(false)
     jest
       .spyOn(txSenderDispatch, 'dispatchTxProposal')
       .mockImplementation(jest.fn(() => Promise.resolve({ txId: '0x12' } as TransactionDetails)))
@@ -312,6 +319,16 @@ describe('SignOrExecuteForm', () => {
       result.queryByText("You are currently not an owner of this Safe and won't be able to submit this transaction."),
     ).not.toBeInTheDocument()
     expect(result.getByText('Submit')).not.toBeDisabled()
+  })
+
+  it('displays an error and disables the submit button if connected wallet is on a different chain', async () => {
+    jest.spyOn(wrongChain, 'default').mockReturnValue(true)
+
+    const mockTx = createSafeTx()
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    expect(result.getByText('Your wallet is connected to the wrong chain.')).toBeInTheDocument()
+    expect(result.getByText('Submit')).toBeDisabled()
   })
 
   it('disables the submit button if there is no tx', () => {
