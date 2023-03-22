@@ -4,6 +4,9 @@ import Benefits from '@/components/relaying-education-series/steps/benefits'
 import TechnicalInformation from '@/components/relaying-education-series/steps/technical-information'
 import RelaySeriesStepper from '@/components/relaying-education-series/RelaySeriesStepper'
 import { type EducationSeriesStepperProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
+import { type UrlObject } from 'url'
 
 const RelayingSeriesSteps: EducationSeriesStepperProps['steps'] = [
   {
@@ -25,7 +28,16 @@ const RelayingSeriesSteps: EducationSeriesStepperProps['steps'] = [
 ]
 
 const RelayingEducationSeries = () => {
-  return <RelaySeriesStepper steps={RelayingSeriesSteps} onClose={() => {}} />
+  const router = useRouter()
+
+  const homeLink: UrlObject = {
+    pathname: AppRoutes.home,
+    query: { safe: router.query.safe },
+  }
+
+  const onClose = () => router.push(homeLink)
+
+  return <RelaySeriesStepper steps={RelayingSeriesSteps} onClose={onClose} />
 }
 
 export default RelayingEducationSeries

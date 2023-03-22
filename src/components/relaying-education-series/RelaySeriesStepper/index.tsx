@@ -1,16 +1,14 @@
-import { Box, Card, Typography } from '@mui/material'
+import { Box, Card, IconButton, SvgIcon, Typography } from '@mui/material'
 import Navigator from '@/components/relaying-education-series/Navigator'
 import useEducationSeriesStepper, {
   type EducationSeriesStepperProps,
 } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
 import { ProgressBar } from '@/components/common/ProgressBar'
+import CloseIcon from '@/public/images/common/close.svg'
 import css from './styles.module.css'
 
 const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
-  const { onBack, onNext, activeStep, setStep, onClose, progress } = useEducationSeriesStepper({
-    steps: props.steps,
-    onClose: props.onClose,
-  })
+  const { onBack, onNext, activeStep, setStep, onClose, progress } = useEducationSeriesStepper({ ...props })
   const { steps } = props
   const currentStep = steps[activeStep]
 
@@ -26,6 +24,10 @@ const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
             })}
           </Typography>
           <h1>{currentStep.title}</h1>
+          <span style={{ flex: '1' }} />
+          <IconButton onClick={onClose}>
+            <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" />
+          </IconButton>
         </Box>
         {currentStep.render(onBack, onNext, onClose)}
       </Card>
