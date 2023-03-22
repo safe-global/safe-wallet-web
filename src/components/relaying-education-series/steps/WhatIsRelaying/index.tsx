@@ -1,5 +1,6 @@
+import Footer from '@/components/relaying-education-series/Footer'
 import { type StepRenderProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 
 const WhatIsRelaying = ({ onNext }: Partial<StepRenderProps>) => {
   return (
@@ -22,11 +23,7 @@ const WhatIsRelaying = ({ onNext }: Partial<StepRenderProps>) => {
           zero balance, no more handling of gas limits and other cumbersome issues - meet Relayer
         </p>
       </Box>
-      <Box display="flex" flexDirection="row" justifyContent="flex-end" mt={3}>
-        <Button variant="contained" size="stretched" onClick={onNext}>
-          Next
-        </Button>
-      </Box>
+      <Footer next={{ label: 'Next', cb: onNext }} justifyContent="flex-end" />
     </Box>
   )
 }

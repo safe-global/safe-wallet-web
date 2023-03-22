@@ -1,5 +1,6 @@
+import Footer from '@/components/relaying-education-series/Footer'
 import { type StepRenderProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 const HowItWorks = ({ onBack, onNext }: Partial<StepRenderProps>) => {
   return (
@@ -22,14 +23,11 @@ const HowItWorks = ({ onBack, onNext }: Partial<StepRenderProps>) => {
         owner key or wait until the next one hour window opens up for you.
       </Typography>
 
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <Button variant="outlined" size="stretched" onClick={onBack}>
-          Back
-        </Button>
-        <Button variant="contained" size="stretched" onClick={onNext}>
-          Next
-        </Button>
-      </Box>
+      <Footer
+        back={{ label: 'Back', cb: onBack }}
+        next={{ label: 'Next', cb: onNext }}
+        justifyContent="space-between"
+      />
     </Box>
   )
 }

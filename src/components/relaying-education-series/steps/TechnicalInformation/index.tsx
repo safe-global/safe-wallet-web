@@ -1,5 +1,6 @@
+import Footer from '@/components/relaying-education-series/Footer'
 import { type StepRenderProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 
 const TechnicalInformation = ({ onBack, onClose }: Partial<StepRenderProps>) => {
   return (
@@ -16,14 +17,11 @@ const TechnicalInformation = ({ onBack, onClose }: Partial<StepRenderProps>) => 
 
       <img src="/images/common/relayer-flow.png" alt="relayer flow" width="100%" />
 
-      <Box display="flex" flexDirection="row" justifyContent="space-between" mt={5}>
-        <Button variant="outlined" size="stretched" onClick={onBack}>
-          Back
-        </Button>
-        <Button variant="contained" size="stretched" onClick={onClose}>
-          Done
-        </Button>
-      </Box>
+      <Footer
+        back={{ label: 'Back', cb: onBack }}
+        next={{ label: 'Done', cb: onClose }}
+        justifyContent="space-between"
+      />
     </Box>
   )
 }

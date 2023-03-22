@@ -1,6 +1,7 @@
-import { Box, Button, Grid, SvgIcon, Typography } from '@mui/material'
+import { Box, Grid, SvgIcon, Typography } from '@mui/material'
 import CheckIcon from '@/public/images/common/check.svg'
 import { type StepRenderProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
+import Footer from '@/components/relaying-education-series/Footer'
 
 const Benefits = ({ onBack, onNext }: Partial<StepRenderProps>) => {
   return (
@@ -41,14 +42,11 @@ const Benefits = ({ onBack, onNext }: Partial<StepRenderProps>) => {
           </Typography>
         </Grid>
       </Grid>
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <Button variant="outlined" size="stretched" onClick={onBack}>
-          Back
-        </Button>
-        <Button variant="contained" size="stretched" onClick={onNext}>
-          Next
-        </Button>
-      </Box>
+      <Footer
+        back={{ label: 'Back', cb: onBack }}
+        next={{ label: 'Next', cb: onNext }}
+        justifyContent="space-between"
+      />
     </Box>
   )
 }

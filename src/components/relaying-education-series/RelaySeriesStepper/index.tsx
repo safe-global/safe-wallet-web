@@ -9,7 +9,7 @@ import IndexNumber from '@/components/relaying-education-series/IndexNumber'
 import css from './styles.module.css'
 
 const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
-  const { onBack, onNext, activeStep, setStep, onClose, progress } = useEducationSeriesStepper({ ...props })
+  const { onBack, onNext, activeStep, setStep, onClose, progress } = useEducationSeriesStepper(props)
   const { steps } = props
   const currentStep = steps[activeStep]
 
@@ -22,7 +22,7 @@ const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
           <h1>{currentStep.title}</h1>
           <span style={{ flex: '1' }} />
           <IconButton onClick={onClose}>
-            <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" />
+            <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ color: 'primary.main' }} />
           </IconButton>
         </Box>
         {currentStep.render(onBack, onNext, onClose)}
