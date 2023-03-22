@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 
@@ -12,8 +12,9 @@ import SafeAppsZeroResultsPlaceholder from '@/components/safe-apps/SafeAppsZeroR
 import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import css from './styles.module.css'
-import { Box, Grid, Skeleton } from '@mui/material'
+import { Box, Grid, Skeleton, Typography } from '@mui/material'
 import { getUniqueTags } from '../utils'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -25,6 +26,8 @@ type SafeAppListProps = {
   removeCustomApp?: (safeApp: SafeAppData) => void
 }
 
+const VIEW_MODE_KEY = 'SafeApps_viewMode'
+
 const SafeAppList = ({
   safeAppsList,
   safeAppsListLoading,
@@ -34,7 +37,7 @@ const SafeAppList = ({
   addCustomApp,
   removeCustomApp,
 }: SafeAppListProps) => {
-  const [safeAppsViewMode, setSafeAppsViewMode] = useState<SafeAppsViewMode>(GRID_VIEW_MODE)
+  const [safeAppsViewMode = GRID_VIEW_MODE, setSafeAppsViewMode] = useLocalStorage<SafeAppsViewMode>(VIEW_MODE_KEY)
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
 
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
@@ -85,7 +88,12 @@ const SafeAppList = ({
 
           return (
             <Box key={category} pb={2}>
-              <h3>{category}</h3>
+              <h3>
+                {category}&nbsp;
+                <Typography component="span" variant="body2" sx={{ opacity: 0.4 }}>
+                  ({categoryApps.length})
+                </Typography>
+              </h3>
 
               <Grid container spacing={2}>
                 {categoryApps.map((safeApp) => {
