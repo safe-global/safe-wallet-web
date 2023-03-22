@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 
@@ -12,8 +12,7 @@ import SafeAppsZeroResultsPlaceholder from '@/components/safe-apps/SafeAppsZeroR
 import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import css from './styles.module.css'
-import { Box, Grid, Skeleton, Typography } from '@mui/material'
-import { getUniqueTags } from '../utils'
+import { Skeleton } from '@mui/material'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 
 type SafeAppListProps = {
@@ -56,11 +55,6 @@ const SafeAppList = ({
     [openPreviewDrawer],
   )
 
-  // Get the list of categories from the safeAppsList
-  const categories: string[] = useMemo(() => {
-    return getUniqueTags(safeAppsList)
-  }, [safeAppsList])
-
   return (
     <>
       {/* Safe Apps Filters */}
@@ -81,75 +75,41 @@ const SafeAppList = ({
         setSafeAppsViewMode={setSafeAppsViewMode}
       />
 
-      {/* Categorized list */}
-      {!query && safeAppsViewMode !== GRID_VIEW_MODE ? (
-        categories.map((category) => {
-          const categoryApps = filteredApps.filter((app) => app.tags.includes(category))
+      {/* Safe Apps List */}
+      <ul
+        className={classnames(
+          css.safeAppsContainer,
+          safeAppsViewMode === GRID_VIEW_MODE ? css.safeAppsGridViewContainer : css.safeAppsListViewContainer,
+        )}
+      >
+        {/* Add Custom Safe App Card */}
+        {addCustomApp && (
+          <li>
+            <AddCustomSafeAppCard safeAppList={safeAppsList} onSave={addCustomApp} />
+          </li>
+        )}
 
-          return (
-            <Box key={category} pb={2}>
-              <h3>
-                {category}&nbsp;
-                <Typography component="span" variant="body2" sx={{ opacity: 0.4 }}>
-                  ({categoryApps.length})
-                </Typography>
-              </h3>
-
-              <Grid container spacing={2}>
-                {categoryApps.map((safeApp) => {
-                  return (
-                    <Grid item key={safeApp.id} xl={3} lg={4} sm={6} xs={12}>
-                      <SafeAppCard
-                        safeApp={safeApp}
-                        viewMode={safeAppsViewMode}
-                        isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
-                        onBookmarkSafeApp={onBookmarkSafeApp}
-                        removeCustomApp={removeCustomApp}
-                        onClickSafeApp={handleSafeAppClick(safeApp)}
-                      />
-                    </Grid>
-                  )
-                })}
-              </Grid>
-            </Box>
-          )
-        })
-      ) : (
-        <ul
-          className={classnames(
-            css.safeAppsContainer,
-            safeAppsViewMode === GRID_VIEW_MODE ? css.safeAppsGridViewContainer : css.safeAppsListViewContainer,
-          )}
-        >
-          {/* Add Custom Safe App Card */}
-          {addCustomApp && (
-            <li>
-              <AddCustomSafeAppCard safeAppList={safeAppsList} onSave={addCustomApp} />
-            </li>
-          )}
-
-          {safeAppsListLoading &&
-            Array.from({ length: 8 }, (_, index) => (
-              <li key={index}>
-                <Skeleton variant="rounded" height="271px" />
-              </li>
-            ))}
-
-          {/* Flat list filtered by search query */}
-          {filteredApps.map((safeApp) => (
-            <li key={safeApp.id}>
-              <SafeAppCard
-                safeApp={safeApp}
-                viewMode={safeAppsViewMode}
-                isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
-                onBookmarkSafeApp={onBookmarkSafeApp}
-                removeCustomApp={removeCustomApp}
-                onClickSafeApp={handleSafeAppClick(safeApp)}
-              />
+        {safeAppsListLoading &&
+          Array.from({ length: 8 }, (_, index) => (
+            <li key={index}>
+              <Skeleton variant="rounded" height="271px" />
             </li>
           ))}
-        </ul>
-      )}
+
+        {/* Flat list filtered by search query */}
+        {filteredApps.map((safeApp) => (
+          <li key={safeApp.id}>
+            <SafeAppCard
+              safeApp={safeApp}
+              viewMode={safeAppsViewMode}
+              isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
+              onBookmarkSafeApp={onBookmarkSafeApp}
+              removeCustomApp={removeCustomApp}
+              onClickSafeApp={handleSafeAppClick(safeApp)}
+            />
+          </li>
+        ))}
+      </ul>
 
       {/* Zero results placeholder */}
       {showZeroResultsPlaceholder && <SafeAppsZeroResultsPlaceholder searchQuery={query} />}
