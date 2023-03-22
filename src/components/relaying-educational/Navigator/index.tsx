@@ -1,8 +1,8 @@
 import { Box, Divider, ListItemButton, SvgIcon, Typography } from '@mui/material'
 import RelayerIcon from '@/public/images/common/relayer.svg'
 import css from './styles.module.css'
-import { type EducationSeriesStepperProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
-import IndexNumber from '@/components/relaying-education-series/IndexNumber'
+import { type EducationSeriesStepperProps } from '@/components/relaying-educational/RelaySeriesStepper/useEducationSeriesStepper'
+import IndexNumber from '@/components/relaying-educational/IndexNumber'
 import classnames from 'classnames'
 
 const Navigator = ({

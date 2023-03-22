@@ -1,11 +1,11 @@
 import { Box, Card, IconButton, SvgIcon } from '@mui/material'
-import Navigator from '@/components/relaying-education-series/Navigator'
+import Navigator from '@/components/relaying-educational/Navigator'
 import useEducationSeriesStepper, {
   type EducationSeriesStepperProps,
-} from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
+} from '@/components/relaying-educational/RelaySeriesStepper/useEducationSeriesStepper'
 import ProgressBar from '@/components/common/ProgressBar'
 import CloseIcon from '@/public/images/common/close.svg'
-import IndexNumber from '@/components/relaying-education-series/IndexNumber'
+import IndexNumber from '@/components/relaying-educational/IndexNumber'
 import css from './styles.module.css'
 
 const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {

@@ -1,5 +1,5 @@
-import Footer from '@/components/relaying-education-series/Footer'
-import { type StepRenderProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
+import Footer from '@/components/relaying-educational/Footer'
+import { type StepRenderProps } from '@/components/relaying-educational/RelaySeriesStepper/useEducationSeriesStepper'
 import { Box } from '@mui/material'
 
 const TechnicalInformation = ({ onBack, onClose }: Partial<StepRenderProps>) => {

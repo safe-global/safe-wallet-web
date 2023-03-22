@@ -1,7 +1,7 @@
 import { Box, Grid, SvgIcon, Typography } from '@mui/material'
 import CheckIcon from '@/public/images/common/check.svg'
-import { type StepRenderProps } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
-import Footer from '@/components/relaying-education-series/Footer'
+import { type StepRenderProps } from '@/components/relaying-educational/RelaySeriesStepper/useEducationSeriesStepper'
+import Footer from '@/components/relaying-educational/Footer'
 
 const Benefits = ({ onBack, onNext }: Partial<StepRenderProps>) => {
   return (
