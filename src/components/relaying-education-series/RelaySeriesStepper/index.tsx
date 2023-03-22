@@ -1,10 +1,11 @@
-import { Box, Card, IconButton, SvgIcon, Typography } from '@mui/material'
+import { Box, Card, IconButton, SvgIcon } from '@mui/material'
 import Navigator from '@/components/relaying-education-series/Navigator'
 import useEducationSeriesStepper, {
   type EducationSeriesStepperProps,
 } from '@/components/relaying-education-series/RelaySeriesStepper/useEducationSeriesStepper'
-import { ProgressBar } from '@/components/common/ProgressBar'
+import ProgressBar from '@/components/common/ProgressBar'
 import CloseIcon from '@/public/images/common/close.svg'
+import IndexNumber from '@/components/relaying-education-series/IndexNumber'
 import css from './styles.module.css'
 
 const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
@@ -17,12 +18,7 @@ const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
       <Card className={css.infoCard}>
         <ProgressBar value={progress} />
         <Box display="flex" alignItems="center" gap="12px">
-          <Typography className={css.step}>
-            {(activeStep + 1).toLocaleString('en-US', {
-              minimumIntegerDigits: 2,
-              useGrouping: false,
-            })}
-          </Typography>
+          <IndexNumber value={activeStep + 1} />
           <h1>{currentStep.title}</h1>
           <span style={{ flex: '1' }} />
           <IconButton onClick={onClose}>
@@ -32,7 +28,7 @@ const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
         {currentStep.render(onBack, onNext, onClose)}
       </Card>
       <Card className={css.navigator}>
-        <Navigator setStep={setStep} />
+        <Navigator activeStep={activeStep} setStep={setStep} steps={steps} />
       </Card>
     </Box>
   )
