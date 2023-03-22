@@ -152,7 +152,7 @@ export const ApprovalEditor = ({
         }
 
   return (
-    <Accordion className={css.warningAccordion} disabled={loading}>
+    <Accordion className={css.warningAccordion} disabled={loading} defaultExpanded={true}>
       <AccordionSummary
         expandIcon={
           <IconButton size="small">

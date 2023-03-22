@@ -136,8 +136,6 @@ describe('ApprovalEditor', () => {
       // Edit first approval
       {
         const accordionSummary = result.getByText('Give access to', { exact: false })
-        fireEvent.click(accordionSummary)
-
         const parentContainer = accordionSummary.closest('.MuiPaper-root')
         const accordionDetails = parentContainer?.querySelector('.MuiAccordionDetails-root')
         expect(accordionDetails).not.toBeNull()
@@ -184,7 +182,6 @@ describe('ApprovalEditor', () => {
       // Edit second approval
       {
         const accordionSummary = result.getByText('Give access to', { exact: false })
-        fireEvent.click(accordionSummary)
 
         const parentContainer = accordionSummary.closest('.MuiPaper-root')
         const accordionDetails = parentContainer?.querySelector('.MuiAccordionDetails-root')
@@ -270,7 +267,6 @@ describe('ApprovalEditor', () => {
 
       // Edit tx
       const accordionSummary = result.getByText('Give access to', { exact: false })
-      fireEvent.click(accordionSummary)
 
       const parentContainer = accordionSummary.closest('.MuiPaper-root')
       const accordionDetails = parentContainer?.querySelector('.MuiAccordionDetails-root')

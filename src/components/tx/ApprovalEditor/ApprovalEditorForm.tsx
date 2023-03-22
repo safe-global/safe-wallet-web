@@ -8,6 +8,8 @@ import CheckIcon from '@mui/icons-material/Check'
 import type { ApprovalInfo } from '.'
 import classnames from 'classnames'
 import { ApprovalValueField } from './ApprovalValueField'
+import { MODALS_EVENTS } from '@/services/analytics'
+import Track from '@/components/common/Track'
 
 export type ApprovalEditorFormData = {
   approvals: string[]
@@ -64,9 +66,15 @@ export const ApprovalEditorForm = ({
                       <SvgIcon component={CheckIcon} />
                     </IconButton>
                   ) : (
-                    <IconButton className={css.iconButton} disabled={editIDx !== -1} onClick={() => onSetEditing(idx)}>
-                      <SvgIcon component={EditIcon} />
-                    </IconButton>
+                    <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
+                      <IconButton
+                        className={css.iconButton}
+                        disabled={editIDx !== -1}
+                        onClick={() => onSetEditing(idx)}
+                      >
+                        <SvgIcon component={EditIcon} />
+                      </IconButton>
+                    </Track>
                   )}
                 </Grid>
 
