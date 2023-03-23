@@ -23,7 +23,7 @@ const WhatIsRelaying = ({ onNext }: Partial<StepRenderProps>) => {
           zero balance, no more handling of gas limits and other cumbersome issues - meet Relayer
         </p>
       </Box>
-      <Footer next={{ label: 'Next', cb: onNext }} justifyContent="flex-end" />
+      <Footer next={{ label: 'Next', cb: onNext }} />
     </Box>
   )
 }

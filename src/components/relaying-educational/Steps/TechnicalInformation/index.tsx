@@ -17,11 +17,7 @@ const TechnicalInformation = ({ onBack, onClose }: Partial<StepRenderProps>) => 
 
       <img src="/images/common/relayer-flow.png" alt="relayer flow" width="100%" />
 
-      <Footer
-        back={{ label: 'Back', cb: onBack }}
-        next={{ label: 'Done', cb: onClose }}
-        justifyContent="space-between"
-      />
+      <Footer back={{ label: 'Back', cb: onBack }} next={{ label: 'Done', cb: onClose }} />
     </Box>
   )
 }

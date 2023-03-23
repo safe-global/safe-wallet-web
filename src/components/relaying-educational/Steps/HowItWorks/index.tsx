@@ -23,11 +23,7 @@ const HowItWorks = ({ onBack, onNext }: Partial<StepRenderProps>) => {
         owner key or wait until the next one hour window opens up for you.
       </Typography>
 
-      <Footer
-        back={{ label: 'Back', cb: onBack }}
-        next={{ label: 'Next', cb: onNext }}
-        justifyContent="space-between"
-      />
+      <Footer back={{ label: 'Back', cb: onBack }} next={{ label: 'Next', cb: onNext }} />
     </Box>
   )
 }

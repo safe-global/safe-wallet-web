@@ -2,7 +2,7 @@ import RelayingEducationSeries from '@/components/relaying-educational'
 import { type NextPage } from 'next'
 import Head from 'next/head'
 
-const RelayingEducational: NextPage = () => {
+const relayingEducation: NextPage = () => {
   return (
     <>
       <Head>
@@ -14,4 +14,4 @@ const RelayingEducational: NextPage = () => {
   )
 }
 
-export default RelayingEducational
+export default relayingEducation

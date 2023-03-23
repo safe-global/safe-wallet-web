@@ -7,21 +7,18 @@ type ButtonProps = {
 
 type FooterProps = {
   back?: ButtonProps
-  next?: ButtonProps
-  justifyContent: 'space-between' | 'flex-start' | 'flex-end'
+  next: ButtonProps
 }
 
-const Footer = ({ back, next, justifyContent }: FooterProps) => {
+const Footer = ({ back, next }: FooterProps) => {
   return (
-    <Box display="flex" flexDirection="row" justifyContent={justifyContent} mt={5}>
+    <Box display="flex" flexDirection="row-reverse" justifyContent="space-between" mt={5}>
+      <Button variant="contained" size="stretched" onClick={next.cb}>
+        {next.label}
+      </Button>
       {back ? (
         <Button variant="outlined" size="stretched" onClick={back.cb}>
           {back.label}
-        </Button>
-      ) : null}
-      {next ? (
-        <Button variant="contained" size="stretched" onClick={next.cb}>
-          {next.label}
         </Button>
       ) : null}
     </Box>

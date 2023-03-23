@@ -31,7 +31,7 @@ const Relaying = () => {
   const router = useRouter()
 
   const educationalSeriesLink: UrlObject = {
-    pathname: AppRoutes.relayingEducational,
+    pathname: AppRoutes.relayingEducation,
     query: { safe: router.query.safe },
   }
 

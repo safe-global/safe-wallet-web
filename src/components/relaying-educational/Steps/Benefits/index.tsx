@@ -40,11 +40,7 @@ const Benefits = ({ onBack, onNext }: Partial<StepRenderProps>) => {
           </Typography>
         </Grid>
       </Grid>
-      <Footer
-        back={{ label: 'Back', cb: onBack }}
-        next={{ label: 'Next', cb: onNext }}
-        justifyContent="space-between"
-      />
+      <Footer back={{ label: 'Back', cb: onBack }} next={{ label: 'Next', cb: onNext }} />
     </Box>
   )
 }
