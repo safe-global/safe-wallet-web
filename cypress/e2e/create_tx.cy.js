@@ -19,7 +19,9 @@ describe('Queue a transaction on 1/N', () => {
     // Assert that "New transaction" button is visible
     cy.contains('New transaction', {
       timeout: 60_000, // `lastWallet` takes a while initialize in CI
-    }).should('be.visible').and('not.be.disabled')
+    })
+      .should('be.visible')
+      .and('not.be.disabled')
 
     // Open the new transaction modal
     cy.contains('New transaction').click()
@@ -76,49 +78,39 @@ describe('Queue a transaction on 1/N', () => {
         })
     })
     cy.contains('Estimated fee').should('exist')
- 
+
     // Asserting the relayer option is present
     cy.contains('Via relayer').find('[type="radio"]').should('be.checked')
     cy.contains('Sponsored by Gnosis Chain')
-    cy.get('span')
-      .contains('Estimated fee')
-      .next()
-      .should('have.css', 'text-decoration-line', 'line-through')
-     cy.contains('Via relayer').contains(/[0-5] of 5/)
-    
+    cy.get('span').contains('Estimated fee').next().should('have.css', 'text-decoration-line', 'line-through')
+    cy.contains('Via relayer').contains(/[0-5] of 5/)
+
     cy.contains('Estimated fee').click()
     cy.contains('Edit').click()
     cy.contains('Owner transaction (Execution)').parents('form').as('Paramsform')
 
     // Only gaslimit should be editable when the relayer is selected
-    const arrayNames = ['userNonce','maxPriorityFeePerGas','maxFeePerGas' ]
-    arrayNames.forEach(element => {
+    const arrayNames = ['userNonce', 'maxPriorityFeePerGas', 'maxFeePerGas']
+    arrayNames.forEach((element) => {
       cy.get('@Paramsform').find(`[name="${element}"]`).should('be.disabled')
-      
-    });
-    cy.get('@Paramsform').find('[name="gasLimit"]')
+    })
+    cy.get('@Paramsform')
+      .find('[name="gasLimit"]')
       .clear()
       .type('300000')
       .invoke('prop', 'value')
       .should('equal', '300000')
-    cy.get('@Paramsform')
-      .find('[name="gasLimit"]')
-      .parent('div')
-      .find('[data-testid="RotateLeftIcon"]')
-      .click()
+    cy.get('@Paramsform').find('[name="gasLimit"]').parent('div').find('[data-testid="RotateLeftIcon"]').click()
     cy.contains('Confirm').click()
 
     // Unselecting relayer. Adv parameters options should be editable now
-    cy.contains('With connected wallet')
-      .click()
-      .find('[type="radio"]').should('be.checked')
+    cy.contains('With connected wallet').click().find('[type="radio"]').should('be.checked')
     cy.contains('Estimated fee').click()
     cy.contains('Edit').click()
-    
-    arrayNames.forEach(element => {
+
+    arrayNames.forEach((element) => {
       cy.get('@Paramsform').find(`[name="${element}"]`).should('not.be.disabled')
-      
-    });
+    })
 
     cy.contains('Confirm').click()
 
@@ -136,9 +128,7 @@ describe('Queue a transaction on 1/N', () => {
     })
 
     // If the checkbox is unchecked the relayer is not present
-    cy.get('@modal')
-      .should('not.contain', 'Via relayer')
-      .and('not.contain', 'With connected wallet')
+    cy.get('@modal').should('not.contain', 'Via relayer').and('not.contain', 'With connected wallet')
 
     cy.contains('Signing the transaction with nonce').should('exist')
 
