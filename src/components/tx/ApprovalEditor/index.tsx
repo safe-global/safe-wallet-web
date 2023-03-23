@@ -10,13 +10,24 @@ import css from './styles.module.css'
 import { UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
 import { useMemo } from 'react'
-import { type ApprovalInfo, APPROVAL_SIGNATURE_HASH, extractTxs, updateApprovalTxs } from './utils/approvals'
+import {
+  type ApprovalInfo,
+  APPROVAL_SIGNATURE_HASH,
+  extractTxs,
+  updateApprovalTxs,
+  PSEUDO_APPROVAL_VALUES,
+} from './utils/approvals'
 import { useApprovalInfos } from './hooks/useApprovalInfos'
 
-const Summary = ({ approvalInfos, uniqueTokenCount }: { approvalInfos: ApprovalInfo[]; uniqueTokenCount: number }) => {
+const Summary = ({ approvalInfos, approvalTxs }: { approvalInfos: ApprovalInfo[]; approvalTxs: BaseTransaction[] }) => {
+  const uniqueTokens = groupBy(approvalTxs, (tx) => tx.to)
+  const uniqueTokenCount = Object.keys(uniqueTokens).length
+
   if (approvalInfos.length === 1) {
     const approval = approvalInfos[0]
-    const amount = UNLIMITED_APPROVAL_AMOUNT.eq(approval.amount) ? 'Unlimited' : approval.amountFormatted
+    const amount = UNLIMITED_APPROVAL_AMOUNT.eq(approval.amount)
+      ? PSEUDO_APPROVAL_VALUES.UNLIMITED
+      : approval.amountFormatted
     return (
       <Typography display="inline-flex" alignItems="center" gap={1}>
         <WarningOutlined color="warning" />
@@ -57,9 +68,7 @@ export const ApprovalEditor = ({
     return null
   }
 
-  const uniqueTokens = groupBy(approvalTxs, (tx) => tx.to)
-  const uniqueTokenCount = Object.keys(uniqueTokens).length
-
+  // If a callback is handed in, we update the txs on change, otherwise a `undefined` callback will change the form to readonly
   const updateApprovals =
     updateTxs === undefined
       ? undefined
@@ -78,11 +87,7 @@ export const ApprovalEditor = ({
         }
       >
         {' '}
-        {loading || !approvalInfos ? (
-          <Skeleton />
-        ) : (
-          <Summary approvalInfos={approvalInfos} uniqueTokenCount={uniqueTokenCount} />
-        )}
+        {loading || !approvalInfos ? <Skeleton /> : <Summary approvalInfos={approvalInfos} approvalTxs={approvalTxs} />}
       </AccordionSummary>
       <AccordionDetails>
         {loading || !approvalInfos ? null : (

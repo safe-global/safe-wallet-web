@@ -12,7 +12,7 @@
 }
 
 .approval {
-  padding: 8px;
+  padding: var(--space-1);
 }
 
 .approvalAmount {

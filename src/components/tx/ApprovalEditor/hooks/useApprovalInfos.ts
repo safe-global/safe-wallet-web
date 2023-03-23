@@ -5,6 +5,7 @@ import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tok
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
+import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 
 export type ApprovalInfo = {
   tokenInfo: (Omit<TokenInfo, 'logoUri' | 'name'> & { logoUri?: string }) | undefined
@@ -32,7 +33,7 @@ export const useApprovalInfos = (approvalTxs: BaseTransaction[]) => {
           }
 
           const amountFormatted = UNLIMITED_APPROVAL_AMOUNT.eq(amount)
-            ? 'Unlimited'
+            ? PSEUDO_APPROVAL_VALUES.UNLIMITED
             : ethers.utils.formatUnits(amount, tokenInfo?.decimals)
 
           return {

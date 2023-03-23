@@ -24,7 +24,8 @@ export const ApprovalValueField = ({
   readonly?: boolean
   tx: ApprovalInfo
 }) => {
-  const { control } = useFormContext() || {}
+  const { control } = useFormContext()
+  const selectValues = Object.values(PSEUDO_APPROVAL_VALUES)
 
   const {
     field: { ref, onBlur, onChange, value },
@@ -35,7 +36,7 @@ export const ApprovalValueField = ({
     rules: {
       required: true,
       validate: (val) => {
-        if (Object.values(PSEUDO_APPROVAL_VALUES).includes(val)) {
+        if (selectValues.includes(val)) {
           return undefined
         }
         const decimals = tx.tokenInfo?.decimals
@@ -45,7 +46,7 @@ export const ApprovalValueField = ({
   })
 
   const label = fieldState.error?.message || 'Token'
-  const options = [PSEUDO_APPROVAL_VALUES.REVOKE, PSEUDO_APPROVAL_VALUES.UNLIMITED]
+  const options = selectValues
 
   return (
     <Autocomplete

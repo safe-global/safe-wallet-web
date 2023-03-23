@@ -18,8 +18,8 @@ const UINT256_TYPE = 'uint256'
 const ERC20_INTERFACE = ERC20__factory.createInterface()
 
 export enum PSEUDO_APPROVAL_VALUES {
-  UNLIMITED = 'Unlimited',
   REVOKE = 'Revoke',
+  UNLIMITED = 'Unlimited',
 }
 
 export type ApprovalInfo = {
