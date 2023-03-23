@@ -30,6 +30,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import ExternalLink from '@/components/common/ExternalLink'
 import { getExplorerLink } from '@/utils/gateway'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -193,6 +194,7 @@ const SignOrExecuteForm = ({
     // If no txId was provided, it's an immediate execution of a new tx
     const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
+    trackEvent({ ...MODALS_EVENTS.PROPOSE_TX, label: ExecutionType.CONNECTED_WALLET })
     await dispatchTxExecution(createdTx, provider, txOptions, id)
 
     return id
@@ -221,6 +223,7 @@ const SignOrExecuteForm = ({
       throw new Error('Transaction could not be proposed')
     }
 
+    trackEvent({ ...MODALS_EVENTS.PROPOSE_TX, label: ExecutionType.RELAYER })
     dispatchTxRelay(safeTx, safe, id, gasLimit)
   }
 
