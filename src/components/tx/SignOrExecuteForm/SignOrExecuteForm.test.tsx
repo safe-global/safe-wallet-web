@@ -3,12 +3,13 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm/index'
 import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useGasLimitHook from '@/hooks/useGasLimit'
+import * as useChainsHook from '@/hooks/useChains'
 import * as txSenderDispatch from '@/services/tx/tx-sender/dispatch'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as onboard from '@/hooks/wallets/useOnboard'
 import * as walletUtils from '@/hooks/wallets/wallets'
 import * as web3 from '@/hooks/wallets/web3'
-import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, FEATURES, SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { waitFor } from '@testing-library/react'
 import type { ConnectedWallet } from '@/services/onboard'
 import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
@@ -321,14 +322,21 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Submit')).not.toBeDisabled()
   })
 
-  it('displays an error and disables the submit button if connected wallet is on a different chain', async () => {
+  it('displays a warning if connected wallet is on a different chain', async () => {
     jest.spyOn(wrongChain, 'default').mockReturnValue(true)
+    jest
+      .spyOn(useChainsHook, 'useCurrentChain')
+      .mockReturnValue({ chainName: 'Goerli', features: [] as FEATURES[] } as ChainInfo)
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-    expect(result.getByText('Your wallet is connected to the wrong chain.')).toBeInTheDocument()
-    expect(result.getByText('Submit')).toBeDisabled()
+    expect(
+      result.getByText(
+        'Your wallet is connected to the wrong chain. When you submit, you will first be asked to connect to Goerli.',
+      ),
+    ).toBeInTheDocument()
+    expect(result.getByText('Submit')).not.toBeDisabled()
   })
 
   it('disables the submit button if there is no tx', () => {

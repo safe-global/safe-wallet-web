@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { initSafeSDK, setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { trackError } from '@/services/exceptions'
@@ -6,14 +7,19 @@ import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { parsePrefixedAddress, sameAddress } from '@/utils/addresses'
 
 export const useInitSafeCoreSDK = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const dispatch = useAppDispatch()
   const web3ReadOnly = useWeb3ReadOnly()
 
+  const { query } = useRouter()
+  const prefixedAddress = Array.isArray(query.safe) ? query.safe[0] : query.safe
+  const { address } = parsePrefixedAddress(prefixedAddress || '')
+
   useEffect(() => {
-    if (!safeLoaded || !web3ReadOnly) {
+    if (!safeLoaded || !web3ReadOnly || !sameAddress(address, safe.address.value)) {
       // If we don't reset the SDK, a previous Safe could remain in the store
       setSafeSDK(undefined)
       return
@@ -33,5 +39,5 @@ export const useInitSafeCoreSDK = () => {
         )
         trackError(ErrorCodes._105, (e as Error).message)
       })
-  }, [safe, safeLoaded, dispatch, web3ReadOnly])
+  }, [safe, safeLoaded, dispatch, web3ReadOnly, address])
 }

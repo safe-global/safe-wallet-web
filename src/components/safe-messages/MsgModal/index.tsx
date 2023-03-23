@@ -14,7 +14,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { generateSafeMessageHash, generateSafeMessageMessage } from '@/utils/safe-messages'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -62,7 +61,6 @@ const MsgModal = ({
 
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
-  const isWrongChain = useIsWrongChain()
   const isOwner = useIsSafeOwner()
   const wallet = useWallet()
   const messages = useSafeMessages()
@@ -93,7 +91,7 @@ const MsgModal = ({
 
   const hasSigned = !!alreadyProposedMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
-  const isDisabled = isWrongChain || !isOwner || hasSigned || !onboard
+  const isDisabled = !isOwner || hasSigned || !onboard
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
@@ -169,7 +167,7 @@ const MsgModal = ({
           </Typography>
 
           {/* Warning message and switch button */}
-          {isWrongChain && <WrongChainWarning />}
+          <WrongChainWarning />
 
           {!wallet || !onboard ? (
             <ErrorMessage>No wallet is connected.</ErrorMessage>

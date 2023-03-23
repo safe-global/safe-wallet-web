@@ -15,7 +15,6 @@ import useOnboard, { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
@@ -63,7 +62,6 @@ const SignOrExecuteForm = ({
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const onboard = useOnboard()
-  const isWrongChain = useIsWrongChain()
   const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
@@ -205,8 +203,7 @@ const SignOrExecuteForm = ({
     disableSubmit ||
     cannotPropose ||
     isExecutionLoop ||
-    isValidExecutionLoading ||
-    isWrongChain
+    isValidExecutionLoading
 
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
@@ -237,7 +234,7 @@ const SignOrExecuteForm = ({
         />
 
         {/* Warning message and switch button */}
-        {isWrongChain && <WrongChainWarning />}
+        <WrongChainWarning />
 
         {/* Error messages */}
         {isSubmittable && cannotPropose ? (

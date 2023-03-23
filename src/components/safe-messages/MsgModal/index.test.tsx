@@ -1,5 +1,5 @@
 import { hexlify, hexZeroPad, toUtf8Bytes } from 'ethers/lib/utils'
-import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import MsgModal from '@/components/safe-messages/MsgModal'
 import * as useIsWrongChainHook from '@/hooks/useIsWrongChain'
@@ -7,6 +7,7 @@ import * as useIsSafeOwnerHook from '@/hooks/useIsSafeOwner'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useAsyncHook from '@/hooks/useAsync'
+import * as useChainsHook from '@/hooks/useChains'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
 import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
@@ -80,6 +81,8 @@ describe('MsgModal', () => {
       safeLoading: false,
       safeLoaded: true,
     }))
+
+    jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
   })
 
   it('renders the message hash', () => {
@@ -229,7 +232,6 @@ describe('MsgModal', () => {
   })
 
   it('proposes a message if not already proposed', async () => {
-    jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
 
@@ -272,7 +274,6 @@ describe('MsgModal', () => {
 
   it('confirms the message if already proposed', async () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
-    jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useWalletHook, 'default').mockImplementation(
       () =>
@@ -349,6 +350,7 @@ describe('MsgModal', () => {
   it('displays an error if connected to the wrong chain', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => true)
+    jest.spyOn(useChainsHook, 'useCurrentChain').mockReturnValue({ chainName: 'Goerli' } as ChainInfo)
 
     const { getByText } = render(
       <MsgModal
@@ -361,13 +363,16 @@ describe('MsgModal', () => {
       />,
     )
 
-    expect(getByText('Your wallet is connected to the wrong chain.')).toBeInTheDocument()
+    expect(
+      getByText(
+        'Your wallet is connected to the wrong chain. When you submit, you will first be asked to connect to Goerli.',
+      ),
+    ).toBeInTheDocument()
 
-    expect(getByText('Sign')).toBeDisabled()
+    expect(getByText('Sign')).not.toBeDisabled()
   })
 
   it('displays an error if not an owner', () => {
-    jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => false)
 
@@ -391,7 +396,6 @@ describe('MsgModal', () => {
 
   it('displays an error if the message has already been signed', async () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
-    jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useWalletHook, 'default').mockImplementation(
       () =>
@@ -434,7 +438,6 @@ describe('MsgModal', () => {
 
   it('displays an error if the message could not be proposed', async () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
-    jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
 
     jest.spyOn(useAsyncHook, 'default').mockReturnValue([undefined, new Error('SafeMessage not found'), false])
@@ -469,7 +472,6 @@ describe('MsgModal', () => {
 
   it('displays an error if the message could not be confirmed', async () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
-    jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
 
     jest
