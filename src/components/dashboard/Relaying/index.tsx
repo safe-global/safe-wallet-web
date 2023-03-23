@@ -6,6 +6,8 @@ import useRemainingRelays from '@/hooks/useRemainingRelays'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import ImageFallback from '@/components/common/ImageFallback'
+import { OVERVIEW_EVENTS } from '@/services/analytics'
+import Track from '@/components/common/Track'
 
 const FallbackChainIcon = ({ color }: { color: string }) => (
   <div
@@ -49,10 +51,12 @@ const Relaying = () => {
               <Typography variant="body2" marginRight={1} sx={{ display: 'inline' }}>
                 Benefit from a gasless experience powered by Gelato and Safe.
               </Typography>
-              {/* TODO: change the href when implementing the educational content route */}
-              <Link href="#" color="primary.main" fontWeight="bold">
-                Read about trial
-              </Link>
+              <Track {...OVERVIEW_EVENTS.RELAYING_HELP_ARTICLE}>
+                {/* TODO: change the href when implementing the educational content route */}
+                <Link href="#" color="primary.main" fontWeight="bold">
+                  Read about trial
+                </Link>
+              </Track>
             </Grid>
           </Grid>
           <Divider />
