@@ -5,11 +5,13 @@ import { FormProvider, useForm } from 'react-hook-form'
 import css from './styles.module.css'
 import EditIcon from '@/public/images/common/edit.svg'
 import CheckIcon from '@mui/icons-material/Check'
-import type { ApprovalInfo } from '.'
+import type { ApprovalInfo } from './hooks/useApprovalInfos'
 import classnames from 'classnames'
 import { ApprovalValueField } from './ApprovalValueField'
 import { MODALS_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
+
+const NO_ID_SELECTED = -1
 
 export type ApprovalEditorFormData = {
   approvals: string[]
@@ -23,7 +25,7 @@ export const ApprovalEditorForm = ({
   updateApprovals?: (newApprovals: string[]) => void
 }) => {
   const readonly = updateApprovals === undefined
-  const [editIDx, setEditIdx] = useState(-1)
+  const [editIDx, setEditIdx] = useState(NO_ID_SELECTED)
 
   const formMethods = useForm<ApprovalEditorFormData>({
     defaultValues: {
@@ -44,16 +46,16 @@ export const ApprovalEditorForm = ({
   const onSave = () => {
     const formData = getValues('approvals')
     !readonly && updateApprovals(formData)
-    setEditIdx(-1)
+    setEditIdx(NO_ID_SELECTED)
   }
 
   return (
     <List>
       <FormProvider {...formMethods}>
         {approvalInfos.map((tx, idx) => (
-          <>
+          <div key={tx.tokenAddress + tx.spender}>
             {idx > 0 && <Divider component="li" variant="middle" />}
-            <ListItem disableGutters key={tx.tokenAddress + tx.spender}>
+            <ListItem disableGutters>
               <Grid container className={css.approval} gap={1} justifyContent="space-between">
                 <Grid item display="flex" xs={12} flexDirection="row" alignItems="center" gap={1}>
                   <ApprovalValueField name={`approvals.${idx}`} tx={tx} readonly={readonly || editIDx !== idx} />
@@ -69,7 +71,7 @@ export const ApprovalEditorForm = ({
                     <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
                       <IconButton
                         className={css.iconButton}
-                        disabled={editIDx !== -1}
+                        disabled={editIDx !== NO_ID_SELECTED}
                         onClick={() => onSetEditing(idx)}
                       >
                         <SvgIcon component={EditIcon} />
@@ -89,7 +91,7 @@ export const ApprovalEditorForm = ({
                 </Grid>
               </Grid>
             </ListItem>
-          </>
+          </div>
         ))}
       </FormProvider>
     </List>

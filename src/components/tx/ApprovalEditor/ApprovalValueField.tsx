@@ -1,34 +1,16 @@
 import NumberField from '@/components/common/NumberField'
 import TokenIcon from '@/components/common/TokenIcon'
 import { shortenAddress } from '@/utils/formatters'
-import { UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
 import { Autocomplete, Box, type MenuItemProps, Typography, MenuItem } from '@mui/material'
-import { ethers } from 'ethers'
 import { useController, useFormContext } from 'react-hook-form'
-import type { ApprovalInfo } from '.'
 import css from './styles.module.css'
+import { PSEUDO_APPROVAL_VALUES, type ApprovalInfo } from './utils/approvals'
 
-const ApprovalOption = ({
-  menuItemProps,
-  value,
-  decimals,
-}: {
-  menuItemProps: MenuItemProps
-  value: string
-  decimals?: number
-}) => {
-  let label = value
-  if (ethers.utils.formatUnits(UNLIMITED_APPROVAL_AMOUNT, decimals) === value) {
-    label = 'Unlimited'
-  }
-  if ('0' === value) {
-    label = 'Revoke'
-  }
-
+const ApprovalOption = ({ menuItemProps, value }: { menuItemProps: MenuItemProps; value: string }) => {
   return (
     <MenuItem key={value} {...menuItemProps}>
-      {label}
+      {value}
     </MenuItem>
   )
 }
@@ -53,6 +35,9 @@ export const ApprovalValueField = ({
     rules: {
       required: true,
       validate: (val) => {
+        if (Object.values(PSEUDO_APPROVAL_VALUES).includes(val)) {
+          return undefined
+        }
         const decimals = tx.tokenInfo?.decimals
         return validateAmount(val, true) || validateDecimalLength(val, decimals)
       },
@@ -60,55 +45,20 @@ export const ApprovalValueField = ({
   })
 
   const label = fieldState.error?.message || 'Token'
+  const options = [PSEUDO_APPROVAL_VALUES.REVOKE, PSEUDO_APPROVAL_VALUES.UNLIMITED]
 
-  const readonlyValueLabel =
-    ethers.utils.formatUnits(UNLIMITED_APPROVAL_AMOUNT, tx.tokenInfo?.decimals) === value ? 'Unlimited' : value
-
-  const options = ['0', ethers.utils.formatUnits(UNLIMITED_APPROVAL_AMOUNT, tx.tokenInfo?.decimals)]
-
-  return readonly ? (
-    <NumberField
-      label={label}
-      fullWidth
-      value={readonlyValueLabel}
-      name={`${name}_readonly`}
-      error={!!fieldState.error}
-      size="small"
-      InputProps={{
-        sx: {
-          paddingTop: '4px',
-          paddingBottom: '4px',
-          paddingLeft: 1,
-        },
-        readOnly: readonly,
-        startAdornment: (
-          <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
-            <TokenIcon size={32} logoUri={tx.tokenInfo?.logoUri} tokenSymbol={tx.tokenInfo?.symbol} />
-            <Typography>{tx.tokenInfo?.symbol || shortenAddress(tx.tokenAddress)}</Typography>
-          </Box>
-        ),
-      }}
-      inputProps={{
-        className: css.approvalAmount,
-      }}
-      InputLabelProps={{
-        shrink: true,
-      }}
-    />
-  ) : (
+  return (
     <Autocomplete
       freeSolo
       fullWidth
       options={options}
-      renderOption={(props, value: string) => (
-        <ApprovalOption decimals={tx.tokenInfo?.decimals} menuItemProps={props} value={value} />
-      )}
+      renderOption={(props, value: string) => <ApprovalOption menuItemProps={props} value={value} />}
       value={value}
       // On option select or free text entry
       onInputChange={(_, value) => {
         onChange(value)
       }}
-      disabled={readonly}
+      readOnly={readonly}
       disableClearable
       selectOnFocus
       componentsProps={{
