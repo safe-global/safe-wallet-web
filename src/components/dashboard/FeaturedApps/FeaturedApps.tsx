@@ -32,7 +32,7 @@ export const FeaturedApps = (): ReactElement | null => {
         <WidgetBody>
           <StyledGrid container>
             {featuredApps?.map((app) => (
-              <StyledGridItem item xs md key={app.id}>
+              <StyledGridItem item xs={12} key={app.id}>
                 <NextLink
                   passHref
                   href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}

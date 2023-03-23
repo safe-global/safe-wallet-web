@@ -22,7 +22,7 @@ const RelaySeriesStepper = (props: EducationSeriesStepperProps) => {
           <h1>{currentStep.title}</h1>
           <span style={{ flex: '1' }} />
           <IconButton onClick={onClose}>
-            <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ color: 'primary.main' }} />
+            <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ color: 'primary.light' }} />
           </IconButton>
         </Box>
         {currentStep.render(onBack, onNext, onClose)}
