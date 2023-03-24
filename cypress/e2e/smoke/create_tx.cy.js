@@ -34,7 +34,9 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('input[name="recipient"]').type(EOA)
     // Click on the Token selector
     cy.get('input[name="tokenAddress"]').prev().click()
-    cy.get('ul[role="listbox"]').contains('Goerli Ether').click()
+    cy.get('ul[role="listbox"]')
+      .contains(/G(ö|oe)rli Ether/)
+      .click()
 
     // Insert max amount
     cy.contains('Max').click()
