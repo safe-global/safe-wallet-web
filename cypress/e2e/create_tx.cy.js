@@ -34,7 +34,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('input[name="recipient"]').type(EOA)
     // Click on the Token selector
     cy.get('input[name="tokenAddress"]').prev().click()
-    cy.get('ul[role="listbox"]').contains('Görli Ether').click()
+    cy.get('ul[role="listbox"]').contains('Goerli Ether').click()
 
     // Insert max amount
     cy.contains('Max').click()
@@ -90,10 +90,11 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('Owner transaction (Execution)').parents('form').as('Paramsform')
 
     // Only gaslimit should be editable when the relayer is selected
-    const arrayNames = ['userNonce', 'maxPriorityFeePerGas', 'maxFeePerGas']
+    const arrayNames = ['Wallet nonce', 'Max priority fee (Gwei)', 'Max fee (Gwei)']
     arrayNames.forEach((element) => {
-      cy.get('@Paramsform').find(`[name="${element}"]`).should('be.disabled')
+      cy.get('@Paramsform').find('label').contains(`${element}`).next().find('input').should('be.disabled')
     })
+
     cy.get('@Paramsform')
       .find('[name="gasLimit"]')
       .clear()
@@ -109,7 +110,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('Edit').click()
 
     arrayNames.forEach((element) => {
-      cy.get('@Paramsform').find(`[name="${element}"]`).should('not.be.disabled')
+      cy.get('@Paramsform').find('label').contains(`${element}`).next().find('input').should('not.be.disabled')
     })
 
     cy.contains('Confirm').click()
