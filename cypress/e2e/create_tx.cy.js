@@ -83,7 +83,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('Via relayer').find('[type="radio"]').should('be.checked')
     cy.contains('Sponsored by Gnosis Chain')
     cy.get('span').contains('Estimated fee').next().should('have.css', 'text-decoration-line', 'line-through')
-    cy.contains('Via relayer').contains(/[0-5] of 5/)
+    cy.contains('Via relayer').contains('5 of 5')
 
     cy.contains('Estimated fee').click()
     cy.contains('Edit').click()
@@ -144,11 +144,10 @@ describe('Queue a transaction on 1/N', () => {
       cy.get('input[type="checkbox"]').should('not.exist')
     })
 
-    // We don't want to keep queing tx for now
-    //cy.contains('Submit').click()
+    cy.contains('Submit').click()
   })
 
-  it.skip('should click the notification and see the transaction queued', () => {
+  it('should click the notification and see the transaction queued', () => {
     // Wait for the /propose request
     cy.intercept('POST', '/**/propose').as('ProposeTx')
     cy.wait('@ProposeTx')
