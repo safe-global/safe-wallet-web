@@ -22,7 +22,7 @@ const Relaying = () => {
 
       <WidgetBody>
         <Card sx={{ padding: 4, height: 'inherit' }}>
-          <Box mb={2}>
+          <Box mb={4}>
             <Stack direction="row" spacing={0.5} alignItems="center" mb={1}>
               <Box className={css.icon}>
                 <SvgIcon component={GasStationIcon} fontWeight={700} inheritViewBox />
@@ -44,7 +44,7 @@ const Relaying = () => {
             </Track>
           </Box>
           <Divider />
-          <Box mt={3} display="flex">
+          <Box mt={4} display="flex">
             <Typography color="primary.light">Transactions per hour</Typography>
             <Box className={classnames(css.relayingChip, { [css.unavailable]: remainingRelays === 0 })}>
               <SvgIcon component={InfoIcon} fontSize="small" />
