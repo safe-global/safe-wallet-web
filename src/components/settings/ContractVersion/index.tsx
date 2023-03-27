@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Box, SvgIcon, Typography, Alert, AlertTitle } from '@mui/material'
+import { Box, SvgIcon, Typography, Alert, AlertTitle, Skeleton } from '@mui/material'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { sameAddress } from '@/utils/addresses'
@@ -13,7 +13,7 @@ import UpdateSafeDialog from './UpdateSafeDialog'
 import ExternalLink from '@/components/common/ExternalLink'
 export const ContractVersion = () => {
   const [masterCopies] = useMasterCopies()
-  const { safe } = useSafeInfo()
+  const { safe, safeLoaded } = useSafeInfo()
   const masterCopyAddress = safe.implementation.value
 
   const safeMasterCopy: MasterCopy | undefined = useMemo(() => {
@@ -30,24 +30,26 @@ export const ContractVersion = () => {
       </Typography>
 
       <Typography variant="body1" fontWeight={400}>
-        {safe.version ? safe.version : 'Unsupported contract'}
+        {safeLoaded ? safe.version ? safe.version : 'Unsupported contract' : <Skeleton width="60px" />}
       </Typography>
       <Box mt={2}>
-        {showUpdateDialog ? (
-          <Alert icon={<SvgIcon component={InfoIcon} inheritViewBox />}>
-            <AlertTitle sx={{ fontWeight: 700 }}>New version is available: {LATEST_SAFE_VERSION}</AlertTitle>
-            <Typography mb={3}>
-              Update now to take advantage of new features and the highest security standards available. You will need
-              to confirm this update just like any other transaction.{' '}
-              <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>GitHub</ExternalLink>
+        {safeLoaded ? (
+          showUpdateDialog ? (
+            <Alert icon={<SvgIcon component={InfoIcon} inheritViewBox />}>
+              <AlertTitle sx={{ fontWeight: 700 }}>New version is available: {LATEST_SAFE_VERSION}</AlertTitle>
+              <Typography mb={3}>
+                Update now to take advantage of new features and the highest security standards available. You will need
+                to confirm this update just like any other transaction.{' '}
+                <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>GitHub</ExternalLink>
+              </Typography>
+              <UpdateSafeDialog />
+            </Alert>
+          ) : (
+            <Typography display="flex" alignItems="center">
+              <CheckCircleIcon color="primary" sx={{ mr: 0.5 }} /> Latest version
             </Typography>
-            <UpdateSafeDialog />
-          </Alert>
-        ) : (
-          <Typography display="flex" alignItems="center">
-            <CheckCircleIcon color="primary" sx={{ mr: 0.5 }} /> Latest version
-          </Typography>
-        )}
+          )
+        ) : null}
       </Box>
     </>
   )
