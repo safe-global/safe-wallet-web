@@ -6,10 +6,7 @@
   color: var(--color-static-main);
   display: flex;
   align-items: center;
-  margin-left: auto !important;
   gap: var(--space-1);
-  line-height: 1em;
-  font-weight: bold;
 }
 
 .relayingChip.unavailable {

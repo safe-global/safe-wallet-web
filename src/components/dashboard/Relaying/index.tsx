@@ -45,7 +45,10 @@ const Relaying = () => {
           </Box>
           <Divider />
           <Box mt={4} display="flex">
-            <Typography color="primary.light">Transactions per hour</Typography>
+            <Typography color="primary.light" alignSelf="center">
+              Transactions per hour
+            </Typography>
+            <span style={{ flex: '1' }} />
             <Box className={classnames(css.relayingChip, { [css.unavailable]: remainingRelays === 0 })}>
               <SvgIcon component={InfoIcon} fontSize="small" />
               {remainingRelaysError ? (
