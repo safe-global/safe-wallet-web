@@ -66,7 +66,7 @@ export const ApprovalEditor = ({
     [extractedTxs],
   )
 
-  const [approvalInfos, _, loading] = useApprovalInfos(approvalTxs)
+  const [approvalInfos, error, loading] = useApprovalInfos(approvalTxs)
 
   if (approvalTxs.length === 0) {
     return null
@@ -91,7 +91,13 @@ export const ApprovalEditor = ({
         }
       >
         {' '}
-        {loading || !approvalInfos ? <Skeleton /> : <Summary approvalInfos={approvalInfos} approvalTxs={approvalTxs} />}
+        {error ? (
+          <Typography>Error while decoding approval transactions.</Typography>
+        ) : loading || !approvalInfos ? (
+          <Skeleton />
+        ) : (
+          <Summary approvalInfos={approvalInfos} approvalTxs={approvalTxs} />
+        )}
       </AccordionSummary>
       <AccordionDetails>
         {loading || !approvalInfos ? null : (
