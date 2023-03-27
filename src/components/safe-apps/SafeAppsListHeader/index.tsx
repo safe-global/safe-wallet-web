@@ -9,6 +9,7 @@ import ListViewIcon from '@/public/images/apps/list-view-icon.svg'
 import { GRID_VIEW_MODE, LIST_VIEW_MODE } from '@/components/safe-apps/SafeAppCard'
 import type { SafeAppsViewMode } from '@/components/safe-apps/SafeAppCard'
 import css from './styles.module.css'
+import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 
 type SafeAppsListHeaderProps = {
   amount?: number
@@ -31,7 +32,8 @@ const SafeAppsListHeader = ({ amount, safeAppsViewMode, setSafeAppsViewMode }: S
           aria-label="safe apps view mode selector"
           name="safe-apps-view-mode"
           sx={{ flexDirection: 'row' }}
-          onChange={(e, viewMode) => {
+          onChange={(_, viewMode) => {
+            trackEvent({ ...SAFE_APPS_EVENTS.SWITCH_LIST_VIEW, label: viewMode })
             setSafeAppsViewMode(viewMode as SafeAppsViewMode)
           }}
         >

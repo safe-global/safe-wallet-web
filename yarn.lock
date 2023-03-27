@@ -3018,10 +3018,10 @@
   dependencies:
     cross-fetch "^3.1.5"
 
-"@safe-global/safe-react-components@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.2.tgz#c56e84b994e02b3cd6dd678bf1c8a8cd913ea3dd"
-  integrity sha512-BbgD5lKFPdftT6Cxl7JCWOVAU7YpgsjO957QTypUQb/ZNw+zW9yWMHdoKIy4paZ0EkX2OvFleKx82BYi+p5/IA==
+"@safe-global/safe-react-components@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.5.tgz#294b1198ef27322d74eac5f49e54652b57b6eb55"
+  integrity sha512-ExrE2ZAV+3qm6wi5QfEGUcb4R7rFsvP2oHcZ4k6gGZDLsvAnP8X5LMnXldriOvBjLBD3m3RoLYLfDER5hBrQ3A==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     ethereum-blockies-base64 "^1.0.2"
