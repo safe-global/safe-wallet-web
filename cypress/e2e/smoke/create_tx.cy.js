@@ -3,8 +3,8 @@ const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 // generate number between 0.00001 and 0.00020
 const sendValue = Math.floor(Math.random() * 20 + 1) / 100000
-let recommendedNonce
 const currentNonce = 3
+let recommendedNonce
 
 describe('Queue a transaction on 1/N', () => {
   before(() => {
@@ -40,6 +40,25 @@ describe('Queue a transaction on 1/N', () => {
 
     // Insert max amount
     cy.contains('Max').click()
+
+    // Validates the "Max" button action, then clears and sets the actual sendValue
+    cy.get('input[name="tokenAddress"]')
+      .prev()
+      .find('p')
+      .contains(/G(ö|oe)rli Ether/)
+      .next()
+      .then((element) => {
+        const maxBalance = element.text().replace(' GOR', '').trim()
+        cy.wrap(element)
+          .parents('form')
+          .find('label')
+          .contains('Amount')
+          .next()
+          .find('input')
+          .should('have.value', maxBalance)
+          .clear()
+          .type(sendValue)
+      })
 
     cy.contains('Next').click()
   })
@@ -157,6 +176,8 @@ describe('Queue a transaction on 1/N', () => {
 
     // Click on the notification
     cy.contains('View transaction').click()
+
+    cy.contains('Queue').click()
 
     // Single Tx page
     cy.contains('h3', 'Transaction details').should('be.visible')
