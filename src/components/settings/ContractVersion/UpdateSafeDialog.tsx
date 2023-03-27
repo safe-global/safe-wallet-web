@@ -35,7 +35,7 @@ const UpdateSafeDialog = () => {
       <CheckWallet>
         {(isOk) => (
           <Button onClick={() => setOpen(true)} variant="contained" disabled={!isOk}>
-            Update Safe
+            Update
           </Button>
         )}
       </CheckWallet>
