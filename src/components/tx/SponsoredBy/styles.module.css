@@ -8,6 +8,7 @@
 
 .icon {
   margin-right: 8px;
+  margin-top: -1px;
   color: var(--color-text-secondary);
   width: 24px;
 }

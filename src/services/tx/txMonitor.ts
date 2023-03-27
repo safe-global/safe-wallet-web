@@ -83,11 +83,12 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
         }
 
         return res.json().then((data) => {
-          throw new Error(`${res.status} - ${res.statusText}: ${data?.error?.message}`)
+          throw new Error(data.message)
         })
       })
     } catch (error) {
       logError(Errors._632, (error as Error).message)
+      return
     }
 
     const task = response?.task as TransactionStatusResponse
