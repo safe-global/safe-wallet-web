@@ -16,6 +16,7 @@ import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { dispatchBatchExecution } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -91,6 +92,8 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         <DecodedTxs txs={txsWithDetails} />
 
         {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
+
+        <WrongChainWarning />
 
         <Typography variant="body2" mt={2} textAlign="center">
           Be aware that if any of the included transactions revert, none of them will be executed. This will result in

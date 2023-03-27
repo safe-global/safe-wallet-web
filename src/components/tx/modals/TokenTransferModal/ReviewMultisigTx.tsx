@@ -22,7 +22,7 @@ const ReviewMultisigTx = ({ params, onSubmit }: TokenTransferModalProps): ReactE
     if (!address || !decimals) return
     const txParams = createTokenTransferParams(params.recipient, params.amount, decimals, address)
     return createTx(txParams, params.txNonce)
-  }, [params, decimals, address, createTx])
+  }, [params, decimals, address])
 
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>

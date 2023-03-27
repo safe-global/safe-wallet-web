@@ -20,6 +20,7 @@ import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
 import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import useOnboard from '@/hooks/wallets/useOnboard'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -114,6 +115,8 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
           nonceReadonly={false}
           onFormSubmit={setManualParams}
         />
+
+        <WrongChainWarning />
 
         {submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
