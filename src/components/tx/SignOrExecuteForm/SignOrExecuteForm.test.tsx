@@ -532,7 +532,7 @@ describe('SignOrExecuteForm', () => {
     await waitFor(() => expect(relaySpy).toHaveBeenCalledTimes(1))
   })
 
-  it('executes a transaction', async () => {
+  it('executes a transaction with the connected wallet if relaying is not available', async () => {
     const executionSpy = jest.fn()
     jest.spyOn(txSender, 'default').mockImplementation(
       () =>

@@ -8,8 +8,7 @@ import GasStationIcon from '@/public/images/common/gas-station.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import classnames from 'classnames'
 import css from './styles.module.css'
-
-const MAX_HOUR_RELAYS = 5
+import { MAX_HOUR_RELAYS } from '@/components/tx/SponsoredBy'
 
 const Relaying = () => {
   const [remainingRelays, remainingRelaysError] = useRemainingRelays()
@@ -30,13 +29,13 @@ const Relaying = () => {
               <Typography variant="h6" fontWeight={700}>
                 Gas fees sponsored by
               </Typography>
-              <img src="/images/common/GnosisChainLogo.png" alt="Gnosis Chain" className={css.gcLogo} />
+              <img src="/images/common/gnosis-chain-logo.png" alt="Gnosis Chain" className={css.gcLogo} />
               <Typography variant="h6" fontWeight={700} flexShrink={0}>
                 Gnosis Chain
               </Typography>
             </Stack>
             <Typography variant="body2" marginRight={1} sx={{ display: 'inline' }}>
-              Benefit from gasless experience powered by Gelato and Safe. Experience gasless UX for the next month!
+              Benefit from a gasless experience powered by Gelato and Safe. Experience gasless UX for the next month!
             </Typography>
             <Track {...OVERVIEW_EVENTS.RELAYING_HELP_ARTICLE}>
               {/* TODO: change the href when creating the help article */}

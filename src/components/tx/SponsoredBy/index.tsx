@@ -3,7 +3,7 @@ import GasStationIcon from '@/public/images/common/gas-station.svg'
 import useRemainingRelays from '@/hooks/useRemainingRelays'
 import css from './styles.module.css'
 
-const MAX_HOUR_RELAYS = 5
+export const MAX_HOUR_RELAYS = 5
 
 const SponsoredBy = () => {
   const [remainingRelays] = useRemainingRelays()
@@ -16,7 +16,7 @@ const SponsoredBy = () => {
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
             Sponsored by
           </Typography>
-          <img src="/images/common/GnosisChainLogo.png" alt="Gnosis Chain" className={css.gcLogo} />
+          <img src="/images/common/gnosis-chain-logo.png" alt="Gnosis Chain" className={css.gcLogo} />
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
             Gnosis Chain
           </Typography>
