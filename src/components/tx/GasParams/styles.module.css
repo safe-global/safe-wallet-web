@@ -1,29 +1,9 @@
-.accordionSummary {
-  position: relative;
-  padding: var(--space-2);
-}
-
-.accordionSummary :global .MuiAccordionSummary-content {
-  margin: 0px;
-}
-
 .accordionSponsored {
-  overflow: visible;
-  border: 1px solid var(--color-primary-main);
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 
 .sponsoredFee {
   text-decoration: line-through;
   color: var(--color-text-secondary);
-}
-
-.sponsoredChip {
-  font-size: 14px;
-  padding: 2px 8px;
-  background-color: var(--color-primary-main);
-  color: var(--color-background-paper);
-  border-radius: 6px;
-  position: absolute;
-  bottom: -14px;
-  left: 8px;
 }

@@ -63,21 +63,18 @@ const GasParams = ({
 
   return (
     <Accordion elevation={0} onChange={onChangeExpand} className={classnames({ [css.accordionSponsored]: willRelay })}>
-      <AccordionSummary className={css.accordionSummary}>
+      <AccordionSummary>
         {isExecution ? (
-          <>
-            <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
-              <span>Estimated fee </span>
-              {gasLimitError ? null : isLoading ? (
-                <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
-              ) : (
-                <span className={classnames({ [css.sponsoredFee]: willRelay })}>
-                  {totalFee} {chain?.nativeCurrency.symbol}
-                </span>
-              )}
-            </Typography>
-            {willRelay ? <div className={css.sponsoredChip}>Sponsored by Gnosis Chain</div> : null}
-          </>
+          <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
+            <span>Estimated fee </span>
+            {gasLimitError ? null : isLoading ? (
+              <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
+            ) : (
+              <span className={classnames({ [css.sponsoredFee]: willRelay })}>
+                {totalFee} {chain?.nativeCurrency.symbol}
+              </span>
+            )}
+          </Typography>
         ) : (
           <Typography>
             Signing the transaction with nonce&nbsp;
