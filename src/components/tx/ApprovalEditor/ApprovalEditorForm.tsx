@@ -85,7 +85,7 @@ export const ApprovalEditorForm = ({
                     Spender
                   </Typography>
 
-                  <Typography>
+                  <Typography fontSize="14px">
                     <PrefixedEthHashInfo address={tx.spender} hasExplorer showAvatar={false} />{' '}
                   </Typography>
                 </Grid>

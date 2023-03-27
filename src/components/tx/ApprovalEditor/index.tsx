@@ -1,9 +1,8 @@
 import TokenIcon from '@/components/common/TokenIcon'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
-import { WarningOutlined } from '@mui/icons-material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-import { Accordion, AccordionDetails, AccordionSummary, IconButton, Skeleton, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Skeleton, Typography } from '@mui/material'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { groupBy } from 'lodash'
 import css from './styles.module.css'
@@ -29,23 +28,28 @@ const Summary = ({ approvalInfos, approvalTxs }: { approvalInfos: ApprovalInfo[]
       ? PSEUDO_APPROVAL_VALUES.UNLIMITED
       : approval.amountFormatted
     return (
-      <Typography display="inline-flex" alignItems="center" gap={1}>
-        <WarningOutlined color="warning" />
-        Give access to <b>{amount}</b>
-        <TokenIcon logoUri={approval.tokenInfo?.logoUri} tokenSymbol={approval.tokenInfo?.symbol} />
-        {approval.tokenInfo?.symbol}
-      </Typography>
+      <Box display="flex" flexDirection="row" justifyContent="space-between" width="100%">
+        <Typography fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
+          Approve access to
+        </Typography>
+        <Typography display="inline-flex" alignItems="center" gap={1} color="warning.main">
+          {amount}
+          <TokenIcon logoUri={approval.tokenInfo?.logoUri} tokenSymbol={approval.tokenInfo?.symbol} />
+          {approval.tokenInfo?.symbol}
+        </Typography>
+      </Box>
     )
   }
 
   return (
-    <Typography color="warning" display="inline-flex" alignItems="center" gap={1}>
-      <WarningOutlined color="warning" />
-      Give access to{' '}
-      <Typography color="warning.main">
+    <Box display="flex" flexDirection="row" justifyContent="space-between" width="100%">
+      <Typography fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
+        Approve access to
+      </Typography>
+      <Typography display="inline-flex" alignItems="center" gap={1} color="warning.main">
         {uniqueTokenCount} Token{uniqueTokenCount > 1 ? 's' : ''}
       </Typography>
-    </Typography>
+    </Box>
   )
 }
 
@@ -91,7 +95,12 @@ export const ApprovalEditor = ({
       </AccordionSummary>
       <AccordionDetails>
         {loading || !approvalInfos ? null : (
-          <ApprovalEditorForm approvalInfos={approvalInfos} updateApprovals={updateApprovals} />
+          <>
+            <Typography fontSize="14px">
+              This allows contracts to spend the selected amounts of your asset balance.
+            </Typography>
+            <ApprovalEditorForm approvalInfos={approvalInfos} updateApprovals={updateApprovals} />
+          </>
         )}
       </AccordionDetails>
     </Accordion>

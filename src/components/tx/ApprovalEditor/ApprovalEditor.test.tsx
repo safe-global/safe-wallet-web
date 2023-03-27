@@ -1,4 +1,13 @@
-import { fireEvent, getAllByRole, getByRole, getByText, mockWeb3Provider, render, waitFor } from '@/tests/test-utils'
+import {
+  fireEvent,
+  getAllByRole,
+  getByRole,
+  getByText,
+  mockWeb3Provider,
+  render,
+  type RenderResult,
+  waitFor,
+} from '@/tests/test-utils'
 import ApprovalEditor from '.'
 import { type DecodedDataResponse, type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexlify, hexZeroPad, Interface } from 'ethers/lib/utils'
@@ -7,6 +16,7 @@ import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { parseUnits } from '@ethersproject/units'
 
+const PREFIX_TEXT = 'Approve access to'
 const ERC20_INTERFACE = ERC20__factory.createInterface()
 const MULTISEND_INTERFACE = Multi_send__factory.createInterface()
 
@@ -20,6 +30,12 @@ const createNonApproveCallData = (to: string, value: string) => {
 
 const createMultiSendData = (txs: BaseTransaction[]) => {
   return MULTISEND_INTERFACE.encodeFunctionData('multiSend', [encodeMultiSendData(txs)])
+}
+
+const getApprovalSummaryElement = (text: string, result: RenderResult): HTMLElement => {
+  const accordionSummary = result.getByText(PREFIX_TEXT, { exact: false })
+  expect(accordionSummary.parentElement).not.toBeNull()
+  return accordionSummary.parentElement!
 }
 
 describe('ApprovalEditor', () => {
@@ -128,14 +144,14 @@ describe('ApprovalEditor', () => {
         },
       })
       await waitFor(() => {
-        const accordionSummary = result.getByText('Give access to', { exact: false })
+        const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
         getByText(accordionSummary, '2', { exact: false })
         getByText(accordionSummary, 'Tokens', { exact: false })
       })
 
       // Edit first approval
       {
-        const accordionSummary = result.getByText('Give access to', { exact: false })
+        const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
         const parentContainer = accordionSummary.closest('.MuiPaper-root')
         const accordionDetails = parentContainer?.querySelector('.MuiAccordionDetails-root')
         expect(accordionDetails).not.toBeNull()
@@ -181,8 +197,7 @@ describe('ApprovalEditor', () => {
 
       // Edit second approval
       {
-        const accordionSummary = result.getByText('Give access to', { exact: false })
-
+        const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
         const parentContainer = accordionSummary.closest('.MuiPaper-root')
         const accordionDetails = parentContainer?.querySelector('.MuiAccordionDetails-root')
         expect(accordionDetails).not.toBeNull()
@@ -260,13 +275,13 @@ describe('ApprovalEditor', () => {
         },
       })
       await waitFor(() => {
-        const accordionSummary = result.getByText('Give access to', { exact: false })
+        const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
         getByText(accordionSummary, '420', { exact: false })
         getByText(accordionSummary, 'TST', { exact: false })
       })
 
       // Edit tx
-      const accordionSummary = result.getByText('Give access to', { exact: false })
+      const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
 
       const parentContainer = accordionSummary.closest('.MuiPaper-root')
       const accordionDetails = parentContainer?.querySelector('.MuiAccordionDetails-root')
@@ -430,7 +445,7 @@ describe('ApprovalEditor', () => {
           },
         })
         await waitFor(() => {
-          const accordionSummary = result.getByText('Give access to', { exact: false })
+          const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
           getByText(accordionSummary, '420', { exact: false })
           getByText(accordionSummary, 'TST', { exact: false })
         })
@@ -471,7 +486,7 @@ describe('ApprovalEditor', () => {
           },
         })
         await waitFor(() => {
-          const accordionSummary = result.getByText('Give access to', { exact: false })
+          const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
           getByText(accordionSummary, '420', { exact: false })
           getByText(accordionSummary, 'TST', { exact: false })
         })
@@ -525,7 +540,7 @@ describe('ApprovalEditor', () => {
           },
         })
         await waitFor(() => {
-          const accordionSummary = result.getByText('Give access to', { exact: false })
+          const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
           getByText(accordionSummary, '69', { exact: false })
           getByText(accordionSummary, 'TST', { exact: false })
         })

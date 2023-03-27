@@ -18,7 +18,6 @@ const UINT256_TYPE = 'uint256'
 const ERC20_INTERFACE = ERC20__factory.createInterface()
 
 export enum PSEUDO_APPROVAL_VALUES {
-  REVOKE = 'Revoke',
   UNLIMITED = 'Unlimited',
 }
 
@@ -33,10 +32,6 @@ export type ApprovalInfo = {
 const parseApprovalAmount = (amount: string, decimals: number) => {
   if (amount === PSEUDO_APPROVAL_VALUES.UNLIMITED) {
     return UNLIMITED_APPROVAL_AMOUNT
-  }
-
-  if (amount === PSEUDO_APPROVAL_VALUES.REVOKE) {
-    return '0'
   }
 
   return parseUnits(amount, decimals)
