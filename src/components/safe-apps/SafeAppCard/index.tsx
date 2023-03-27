@@ -159,7 +159,7 @@ const SafeAppCardListView = ({
 }: SafeAppCardViewProps) => {
   return (
     <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
-      <CardContent>
+      <CardContent sx={{ pb: '16px !important' }}>
         <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
           <div className={css.safeAppIconContainer}>
             {/* Batch transactions Icon */}

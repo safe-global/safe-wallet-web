@@ -98,3 +98,18 @@ export const filterInternalCategories = (categories: string[]): string[] => {
   const internalCategories = Object.values(SafeAppsTag)
   return categories.filter((tag) => !internalCategories.some((internalCategory) => tag === internalCategory))
 }
+
+// Get unique tags from all apps
+export const getUniqueTags = (apps: SafeAppData[]): string[] => {
+  // Get the list of categories from the safeAppsList
+  const tags = apps.reduce<Set<string>>((result, app) => {
+    app.tags.forEach((tag) => result.add(tag))
+    return result
+  }, new Set())
+
+  // Filter out internal tags
+  const filteredTags = filterInternalCategories(Array.from(tags))
+
+  // Sort alphabetically
+  return filteredTags.sort()
+}

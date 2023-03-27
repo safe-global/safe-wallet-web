@@ -71,7 +71,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
     return createUpdateThresholdTx(selectedThreshold)
   }, [selectedThreshold, createUpdateThresholdTx])
 
-  const onChangeTheshold = () => {
+  const onChangeThreshold = () => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: selectedThreshold })
 
@@ -117,7 +117,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
       <Box mt={-5}>
         <SignOrExecuteForm
           safeTx={safeTx}
-          onSubmit={onChangeTheshold}
+          onSubmit={onChangeThreshold}
           error={safeTxError}
           disableSubmit={isSameThreshold}
         />
