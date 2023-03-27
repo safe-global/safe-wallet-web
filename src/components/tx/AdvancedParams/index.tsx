@@ -1,7 +1,9 @@
 import GasParams from '@/components/tx/GasParams'
+import SponsoredBy from '@/components/tx/SponsoredBy'
 import { useCurrentChain } from '@/hooks/useChains'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import { FEATURES, hasFeature } from '@/utils/chains'
+import { Box } from '@mui/material'
 import { useState } from 'react'
 import AdvancedParamsForm from './AdvancedParamsForm'
 import { type AdvancedParameters } from './types'
@@ -53,14 +55,29 @@ const AdvancedParams = ({
       willRelay={willRelay}
     />
   ) : (
-    <GasParams
-      params={params}
-      isExecution={willExecute}
-      isEIP1559={isEIP1559}
-      gasLimitError={gasLimitError}
-      onEdit={onEditOpen}
-      willRelay={willRelay}
-    />
+    <>
+      <GasParams
+        params={params}
+        isExecution={willExecute}
+        isEIP1559={isEIP1559}
+        gasLimitError={gasLimitError}
+        onEdit={onEditOpen}
+        willRelay={willRelay}
+      />
+      {willRelay ? (
+        <Box
+          sx={{
+            '& > div': {
+              marginTop: '-1px',
+              borderTopLeftRadius: 0,
+              borderTopRightRadius: 0,
+            },
+          }}
+        >
+          <SponsoredBy />
+        </Box>
+      ) : null}
+    </>
   )
 }
 

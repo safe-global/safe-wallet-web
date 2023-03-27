@@ -18,6 +18,7 @@ import { ethers } from 'ethers'
 import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
 import * as useChains from '@/hooks/useChains'
+import * as useRemainingRelays from '@/hooks/useRemainingRelays'
 import type { NullableTxSenderFunctions } from '@/hooks/useTxSender'
 import { FEATURES } from '@/utils/chains'
 
@@ -97,6 +98,7 @@ describe('SignOrExecuteForm', () => {
       chainId: '5',
     } as unknown as ChainInfo)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(false)
+    jest.spyOn(useRemainingRelays, 'default').mockReturnValue([5, undefined, false])
   })
 
   it('displays decoded data if there is a tx', () => {
@@ -530,7 +532,7 @@ describe('SignOrExecuteForm', () => {
     await waitFor(() => expect(relaySpy).toHaveBeenCalledTimes(1))
   })
 
-  it('executes a transaction', async () => {
+  it('executes a transaction with the connected wallet if relaying is not available', async () => {
     const executionSpy = jest.fn()
     jest.spyOn(txSender, 'default').mockImplementation(
       () =>
@@ -539,17 +541,12 @@ describe('SignOrExecuteForm', () => {
           dispatchTxExecution: executionSpy,
         } as unknown as NullableTxSenderFunctions),
     )
+    jest.spyOn(useRemainingRelays, 'default').mockReturnValue([0, undefined, false])
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
     await act(() => Promise.resolve())
-
-    const executionMethod = result.getByText('With connected wallet')
-
-    act(() => {
-      fireEvent.click(executionMethod)
-    })
 
     const submitButton = result.getByText('Submit')
 
@@ -655,12 +652,6 @@ describe('SignOrExecuteForm', () => {
     )
 
     await act(() => Promise.resolve())
-
-    const executionMethod = result.getByText('With connected wallet')
-
-    act(() => {
-      fireEvent.click(executionMethod)
-    })
 
     const submitButton = result.getByText('Submit')
 

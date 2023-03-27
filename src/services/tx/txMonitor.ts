@@ -66,7 +66,7 @@ const getTaskTrackingUrl = (taskId: string) => `${TASK_STATUS_URL}/${taskId}`
 export const waitForRelayedTx = (taskId: string, txId: string): void => {
   // A small delay is necessary before the initial polling as the task status
   // is not immediately available after the sponsoredCall request
-  const INITIAL_POLLING_DELAY = 2_000
+  const INITIAL_POLLING_DELAY = 50
 
   const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
   let timeoutId: NodeJS.Timeout
@@ -83,11 +83,12 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
         }
 
         return res.json().then((data) => {
-          throw new Error(`${res.status} - ${res.statusText}: ${data?.error?.message}`)
+          throw new Error(`${res.status} - ${res.statusText}: ${data?.message}`)
         })
       })
     } catch (error) {
       logError(Errors._632, (error as Error).message)
+      return
     }
 
     const task = response?.task as TransactionStatusResponse
