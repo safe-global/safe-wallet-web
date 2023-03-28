@@ -48,6 +48,7 @@ export const useSafeCreation = (
 ) => {
   const [isCreating, setIsCreating] = useState(false)
   const [isWatching, setIsWatching] = useState(false)
+  const [isRelaying, setIsRelaying] = useState(false)
   const dispatch = useAppDispatch()
 
   const wallet = useWallet()
@@ -70,8 +71,9 @@ export const useSafeCreation = (
     setIsCreating(true)
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
-    if (willRelay) {
+    if (willRelay && !isRelaying) {
       console.log('enter RELAYING')
+      setIsRelaying(true)
       const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
       const proxyFactoryAddress = proxyFactory.getAddress()
       const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)
@@ -123,7 +125,7 @@ export const useSafeCreation = (
         console.error(error)
         throw error
       }
-    } else {
+    } else if (!willRelay) {
       try {
         const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, wallet)
 
@@ -152,7 +154,7 @@ export const useSafeCreation = (
     }
 
     setIsCreating(false)
-  }, [chain, createSafeCallback, dispatch, isCreating, pendingSafe, provider, setStatus, wallet, willRelay])
+  }, [chain, createSafeCallback, dispatch, isCreating, isRelaying, pendingSafe, provider, setStatus, wallet, willRelay])
 
   const watchSafeTx = useCallback(async () => {
     if (!pendingSafe?.tx || !pendingSafe?.txHash || !web3ReadOnly || isWatching) return
