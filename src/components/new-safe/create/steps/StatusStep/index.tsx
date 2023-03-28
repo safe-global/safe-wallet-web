@@ -26,6 +26,7 @@ export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 export type PendingSafeData = NewSafeFormData & {
   txHash?: string
   tx?: PendingSafeTx
+  taskId?: string
 }
 
 export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<NewSafeFormData>) => {

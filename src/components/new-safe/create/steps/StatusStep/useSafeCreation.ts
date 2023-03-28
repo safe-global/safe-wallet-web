@@ -120,7 +120,8 @@ export const useSafeCreation = (
           throw new Error('Transaction could not be relayed')
         }
 
-        console.log('monitoring', taskId)
+        setPendingSafe((prev) => (prev ? { ...prev, taskId } : undefined))
+        setStatus(SafeCreationStatus.PROCESSING)
         waitForRelayedTx(taskId, undefined, setStatus)
       } catch (error) {
         console.error(error)

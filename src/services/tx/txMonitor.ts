@@ -83,7 +83,6 @@ export const waitForRelayedTx = (
     let response
     try {
       response = await fetch(url).then((res) => {
-        setStatus && setStatus(SafeCreationStatus.PROCESSING)
         if (res.ok) {
           return res.json()
         }
@@ -103,7 +102,6 @@ export const waitForRelayedTx = (
       case TaskState.CheckPending:
       case TaskState.ExecPending:
       case TaskState.WaitingForConfirmation:
-        setStatus && setStatus(SafeCreationStatus.PROCESSING)
         // still pending we set a timeout to check again
         timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
         return
