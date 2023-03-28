@@ -5,6 +5,7 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
 export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string) => {
@@ -63,10 +64,14 @@ type TransactionStatusResponse = {
 const TASK_STATUS_URL = 'https://relay.gelato.digital/tasks/status'
 const getTaskTrackingUrl = (taskId: string) => `${TASK_STATUS_URL}/${taskId}`
 
-export const waitForRelayedTx = (taskId: string, txId: string): void => {
+export const waitForRelayedTx = (
+  taskId: string,
+  txId?: string,
+  setStatus?: (value: SafeCreationStatus) => void,
+): void => {
   // A small delay is necessary before the initial polling as the task status
   // is not immediately available after the sponsoredCall request
-  const INITIAL_POLLING_DELAY = 50
+  const INITIAL_POLLING_DELAY = 3_000
 
   const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
   let timeoutId: NodeJS.Timeout
@@ -78,6 +83,7 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
     let response
     try {
       response = await fetch(url).then((res) => {
+        setStatus && setStatus(SafeCreationStatus.PROCESSING)
         if (res.ok) {
           return res.json()
         }
@@ -97,42 +103,52 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
       case TaskState.CheckPending:
       case TaskState.ExecPending:
       case TaskState.WaitingForConfirmation:
+        setStatus && setStatus(SafeCreationStatus.PROCESSING)
         // still pending we set a timeout to check again
         timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
         return
       case TaskState.ExecSuccess:
-        txDispatch(TxEvent.PROCESSED, {
-          txId,
-        })
+        txId &&
+          txDispatch(TxEvent.PROCESSED, {
+            txId,
+          })
+        setStatus && setStatus(SafeCreationStatus.SUCCESS)
         clearTimeout(failAfterTimeoutId)
         return
       case TaskState.ExecReverted:
-        txDispatch(TxEvent.REVERTED, {
-          txId,
-          error: new Error(`Relayed transaction reverted by EVM.`),
-        })
+        txId &&
+          txDispatch(TxEvent.REVERTED, {
+            txId,
+            error: new Error(`Relayed transaction reverted by EVM.`),
+          })
         clearTimeout(failAfterTimeoutId)
         return
       case TaskState.Blacklisted:
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: new Error(`Relayed transaction was blacklisted by relay provider.`),
-        })
+        txId &&
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: new Error(`Relayed transaction was blacklisted by relay provider.`),
+          })
         clearTimeout(failAfterTimeoutId)
         return
       case TaskState.Cancelled:
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: new Error(`Relayed transaction was cancelled by relay provider.`),
-        })
+        txId &&
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: new Error(`Relayed transaction was cancelled by relay provider.`),
+          })
+        // TODO: show Safe creation error
+        // setStatus && dispatch(showSafeCreationError(_err))
+        setStatus && setStatus(SafeCreationStatus.ERROR)
         clearTimeout(failAfterTimeoutId)
         return
       case TaskState.NotFound:
       default:
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: new Error(`Relayed transaction was not found.`),
-        })
+        txId &&
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: new Error(`Relayed transaction was not found.`),
+          })
         clearTimeout(failAfterTimeoutId)
         return
     }
@@ -141,13 +157,14 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
   setTimeout(checkTxStatus, INITIAL_POLLING_DELAY)
   failAfterTimeoutId = setTimeout(() => {
     clearTimeout(timeoutId)
-    txDispatch(TxEvent.FAILED, {
-      txId,
-      error: new Error(
-        `Transaction not relayed in ${
-          WAIT_FOR_RELAY_TIMEOUT / 60_000
-        } minutes. Be aware that it might still be relayed.`,
-      ),
-    })
+    txId &&
+      txDispatch(TxEvent.FAILED, {
+        txId,
+        error: new Error(
+          `Transaction not relayed in ${
+            WAIT_FOR_RELAY_TIMEOUT / 60_000
+          } minutes. Be aware that it might still be relayed.`,
+        ),
+      })
   }, WAIT_FOR_RELAY_TIMEOUT)
 }

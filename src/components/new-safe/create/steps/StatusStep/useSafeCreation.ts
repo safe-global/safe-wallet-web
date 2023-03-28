@@ -26,6 +26,7 @@ import {
 import { sponsoredCall } from '@/services/tx/sponsoredCall'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { Gnosis_safe__factory } from '@/types/contracts/factories/@gnosis.pm/safe-deployments/dist/assets/v1.3.0'
+import { waitForRelayedTx } from '@/services/tx/txMonitor'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -72,7 +73,6 @@ export const useSafeCreation = (
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
     if (willRelay && !isRelaying) {
-      console.log('enter RELAYING')
       setIsRelaying(true)
       const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
       const proxyFactoryAddress = proxyFactory.getAddress()
@@ -121,6 +121,7 @@ export const useSafeCreation = (
         }
 
         console.log('monitoring', taskId)
+        waitForRelayedTx(taskId, undefined, setStatus)
       } catch (error) {
         console.error(error)
         throw error
@@ -174,8 +175,6 @@ export const useSafeCreation = (
       void watchSafeTx()
       return
     }
-
-    // call watchRelaySafeCreation
 
     void createSafe()
   }, [createSafe, watchSafeTx, isCreating, pendingSafe?.txHash, status])

@@ -23,6 +23,7 @@ import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import SponsoredBy from '@/components/tx/SponsoredBy'
+import { FEATURES, hasFeature } from '@/utils/chains'
 import useRemainingRelays from '@/hooks/useRemainingRelays'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
@@ -35,6 +36,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const saltNonce = useMemo(() => Date.now(), [])
   const [_, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const [remainingRelays] = useRemainingRelays(wallet?.address)
+
+  // Chain supports relaying and relay transactions are available
+  const willRelay = chain && hasFeature(chain, FEATURES.RELAYING) && !!remainingRelays && remainingRelays > 0
 
   const safeParams = useMemo(() => {
     return {
@@ -74,7 +78,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     const safeAddress = await computeNewSafeAddress(provider, props)
 
     setPendingSafe({ ...data, saltNonce, safeAddress })
-    onSubmit({ ...data, saltNonce, safeAddress })
+    onSubmit({ ...data, saltNonce, safeAddress, willRelay })
   }
 
   return (
@@ -117,7 +121,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       <Box className={layoutCss.row}>
         <Grid item xs={12}>
           <Grid container spacing={3}>
-            {remainingRelays ? (
+            {willRelay ? (
               <ReviewRow name="Execution method" value={<SponsoredBy remainingRelays={remainingRelays} />} />
             ) : null}
             <ReviewRow
