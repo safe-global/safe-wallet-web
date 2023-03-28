@@ -49,7 +49,7 @@ const useSafeNotifications = (): void => {
 
     if (dismissedNotificationTimestamp) {
       if (Date.now() >= dismissedNotificationTimestamp) {
-        delete dismissedNotifications?.[chainId][safeAddress]
+        delete dismissedNotifications?.[chainId]?.[safeAddress]
         local.setItem<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY, dismissedNotifications)
       } else {
         return
@@ -58,7 +58,7 @@ const useSafeNotifications = (): void => {
 
     const isUnsupported = !isValidSafeVersion(version)
 
-    const notification = dispatch(
+    const id = dispatch(
       showNotification({
         variant: 'warning',
         groupKey: OUTDATED_VERSION_KEY,
@@ -80,7 +80,7 @@ const useSafeNotifications = (): void => {
     )
 
     return () => {
-      dispatch(closeNotification(notification))
+      dispatch(closeNotification({ id }))
     }
   }, [dispatch, implementationVersionState, version, query.safe, isOwner, safeAddress, urlSafeAddress, chainId])
 
@@ -91,7 +91,7 @@ const useSafeNotifications = (): void => {
   useEffect(() => {
     if (isValidMasterCopy(safe)) return
 
-    const notification = dispatch(
+    const id = dispatch(
       showNotification({
         variant: 'warning',
         message: `This Safe was created with an unsupported base contract.
@@ -103,7 +103,7 @@ const useSafeNotifications = (): void => {
     )
 
     return () => {
-      dispatch(closeNotification(notification))
+      dispatch(closeNotification({ id }))
     }
   }, [dispatch, safe])
 }

@@ -26,7 +26,7 @@ export const notificationsSlice = createSlice({
     enqueueNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
       return [...state, payload]
     },
-    closeNotification: (state, { payload }: PayloadAction<Notification>): NotificationState => {
+    closeNotification: (state, { payload }: PayloadAction<{ id: string }>): NotificationState => {
       return state.map((notification) => {
         return notification.id === payload.id ? { ...notification, isDismissed: true } : notification
       })
@@ -53,7 +53,7 @@ export const notificationsSlice = createSlice({
 export const { closeNotification, closeByGroupKey, deleteNotification, deleteAllNotifications, readNotification } =
   notificationsSlice.actions
 
-export const showNotification = (payload: Omit<Notification, 'id' | 'timestamp'>): AppThunk<Notification> => {
+export const showNotification = (payload: Omit<Notification, 'id' | 'timestamp'>): AppThunk<string> => {
   return (dispatch) => {
     const id = Math.random().toString(32).slice(2)
 
@@ -65,7 +65,7 @@ export const showNotification = (payload: Omit<Notification, 'id' | 'timestamp'>
 
     dispatch(notificationsSlice.actions.enqueueNotification(notification))
 
-    return notification
+    return id
   }
 }
 

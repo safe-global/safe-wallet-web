@@ -59,9 +59,9 @@ const NotificationCenter = (): ReactElement => {
     if (!open) {
       trackEvent(OVERVIEW_EVENTS.NOTIFICATION_CENTER)
 
-      notifications.forEach((notification) => {
-        if (!notification.isDismissed) {
-          dispatch(closeNotification(notification))
+      notifications.forEach(({ isDismissed, id }) => {
+        if (!isDismissed) {
+          dispatch(closeNotification({ id }))
         }
       })
     } else {

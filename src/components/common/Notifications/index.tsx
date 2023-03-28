@@ -106,7 +106,7 @@ const handleDismissUpdateSafeNotification = (notification: Notification, safe: S
 
   if (!isUpdateSafeNotification(notification.groupKey)) return
 
-  const dismissedNotifications = local.getItem<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY)
+  const dismissedNotifications = local.getItem<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY) || {}
 
   const expiryDate = Date.now() + EXPIRY_DAYS * 24 * 60 * 60 * 1000
 
