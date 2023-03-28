@@ -11,7 +11,7 @@ import { ModalType } from '../AddressBookTable'
 import { useAppSelector } from '@/store'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import ImportIcon from '@/public/images/address-book/import.svg'
-import ExportIcon from '@/public/images/address-book/export.svg'
+import ExportIcon from '@/public/images/common/export.svg'
 import AddCircleIcon from '@/public/images/common/add-outlined.svg'
 
 const HeaderButton = ({

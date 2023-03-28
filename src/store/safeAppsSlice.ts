@@ -22,15 +22,22 @@ export const safeAppsSlice = createSlice({
       state[chainId] ??= { pinned: [] }
       state[chainId].pinned = pinned
     },
+    setSafeApps: (state, { payload }: PayloadAction<SafeAppsState>) => {
+      state = payload
+    },
   },
 })
 
 export const { setPinned } = safeAppsSlice.actions
 
+export const selectSafeApps = (state: RootState): SafeAppsState => {
+  return state[safeAppsSlice.name]
+}
+
 export const selectPinned = createSelector(
-  [(state: RootState) => state, (_: RootState, chainId: string) => chainId],
-  (state, chainId): SafeAppsPerChain['pinned'] => {
-    const perChain = state[safeAppsSlice.name][chainId]
+  [selectSafeApps, (_: RootState, chainId: string) => chainId],
+  (safeApps, chainId): SafeAppsPerChain['pinned'] => {
+    const perChain = safeApps[chainId]
     return perChain?.pinned || []
   },
 )
