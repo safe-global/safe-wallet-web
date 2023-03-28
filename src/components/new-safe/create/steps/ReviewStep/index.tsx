@@ -23,7 +23,6 @@ import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import SponsoredBy from '@/components/tx/SponsoredBy'
-import { FEATURES, hasFeature } from '@/utils/chains'
 import useRemainingRelays from '@/hooks/useRemainingRelays'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
@@ -118,7 +117,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       <Box className={layoutCss.row}>
         <Grid item xs={12}>
           <Grid container spacing={3}>
-            {chain && hasFeature(chain, FEATURES.RELAYING) && remainingRelays && remainingRelays > 0 ? (
+            {remainingRelays ? (
               <ReviewRow name="Execution method" value={<SponsoredBy remainingRelays={remainingRelays} />} />
             ) : null}
             <ReviewRow

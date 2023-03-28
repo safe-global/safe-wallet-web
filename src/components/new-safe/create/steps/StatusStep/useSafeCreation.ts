@@ -18,6 +18,14 @@ import {
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
+import {
+  getFallbackHandlerContractInstance,
+  getGnosisSafeContractInstance,
+  getProxyFactoryContractInstance,
+} from '@/services/contracts/safeContracts'
+import { sponsoredCall } from '@/services/tx/sponsoredCall'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { Gnosis_safe__factory } from '@/types/contracts/factories/@gnosis.pm/safe-deployments/dist/assets/v1.3.0'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -36,6 +44,7 @@ export const useSafeCreation = (
   setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>,
   status: SafeCreationStatus,
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
+  willRelay?: boolean,
 ) => {
   const [isCreating, setIsCreating] = useState(false)
   const [isWatching, setIsWatching] = useState(false)
@@ -61,34 +70,89 @@ export const useSafeCreation = (
     setIsCreating(true)
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
-    try {
-      const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, wallet)
+    if (willRelay) {
+      console.log('enter RELAYING')
+      const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
+      const proxyFactoryAddress = proxyFactory.getAddress()
+      const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)
 
-      const safeParams = getSafeDeployProps(
-        {
-          threshold: pendingSafe.threshold,
-          owners: pendingSafe.owners.map((owner) => owner.address),
-          saltNonce: pendingSafe.saltNonce,
-        },
-        (txHash) => createSafeCallback(txHash, tx),
-        chain.chainId,
-      )
+      const callData = {
+        owners: pendingSafe.owners.map((owner) => owner.address),
+        threshold: pendingSafe.threshold,
+        to: ZERO_ADDRESS,
+        data: EMPTY_DATA,
+        fallbackHandlerAddress: fallbackHandlerDeployment.getAddress(),
+        paymentToken: ZERO_ADDRESS,
+        payment: 0,
+        paymentReceiver: ZERO_ADDRESS,
+      }
 
-      await createNewSafe(provider, safeParams)
-      setStatus(SafeCreationStatus.SUCCESS)
-    } catch (err) {
-      const _err = err as EthersError
-      const status = handleSafeCreationError(_err)
+      const initializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
+        callData.owners,
+        callData.threshold,
+        callData.to,
+        callData.data,
+        callData.fallbackHandlerAddress,
+        callData.paymentToken,
+        callData.payment,
+        callData.paymentReceiver,
+      ])
 
-      setStatus(status)
+      const safeContract = getGnosisSafeContractInstance(chain)
 
-      if (status !== SafeCreationStatus.SUCCESS) {
-        dispatch(showSafeCreationError(_err))
+      const createProxyWithNonceCallData = proxyFactory.contract.interface.encodeFunctionData('createProxyWithNonce', [
+        safeContract.getAddress(),
+        initializer,
+        pendingSafe.saltNonce,
+      ])
+
+      try {
+        const relayResponse = await sponsoredCall({
+          chainId: chain.chainId,
+          to: proxyFactoryAddress,
+          data: createProxyWithNonceCallData,
+        })
+        const taskId = relayResponse.taskId
+
+        if (!taskId) {
+          throw new Error('Transaction could not be relayed')
+        }
+
+        console.log('monitoring', taskId)
+      } catch (error) {
+        console.error(error)
+        throw error
+      }
+    } else {
+      try {
+        const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, wallet)
+
+        const safeParams = getSafeDeployProps(
+          {
+            threshold: pendingSafe.threshold,
+            owners: pendingSafe.owners.map((owner) => owner.address),
+            saltNonce: pendingSafe.saltNonce,
+          },
+          (txHash) => createSafeCallback(txHash, tx),
+          chain.chainId,
+        )
+
+        await createNewSafe(provider, safeParams)
+        setStatus(SafeCreationStatus.SUCCESS)
+      } catch (err) {
+        const _err = err as EthersError
+        const status = handleSafeCreationError(_err)
+
+        setStatus(status)
+
+        if (status !== SafeCreationStatus.SUCCESS) {
+          dispatch(showSafeCreationError(_err))
+        }
       }
     }
 
     setIsCreating(false)
-  }, [chain, createSafeCallback, dispatch, isCreating, pendingSafe, provider, setStatus, wallet])
+  }, [chain, createSafeCallback, dispatch, isCreating, pendingSafe, provider, setStatus, wallet, willRelay])
 
   const watchSafeTx = useCallback(async () => {
     if (!pendingSafe?.tx || !pendingSafe?.txHash || !web3ReadOnly || isWatching) return
@@ -108,6 +172,8 @@ export const useSafeCreation = (
       void watchSafeTx()
       return
     }
+
+    // call watchRelaySafeCreation
 
     void createSafe()
   }, [createSafe, watchSafeTx, isCreating, pendingSafe?.txHash, status])

@@ -28,7 +28,10 @@ export type PendingSafeData = NewSafeFormData & {
   tx?: PendingSafeTx
 }
 
-export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFormData>) => {
+export const CreateSafeStatus = ({
+  setProgressColor,
+  willRelay,
+}: StepRenderProps<NewSafeFormData> & { willRelay: boolean }) => {
   const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const router = useRouter()
@@ -38,7 +41,7 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain
 
-  const { createSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus)
+  const { createSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus, !!willRelay)
 
   useSafeCreationEffects({
     pendingSafe,
@@ -52,6 +55,7 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
     router.push(AppRoutes.welcome)
   }, [router, setPendingSafe])
 
+  // Callback used on Retry
   const onCreate = useCallback(() => {
     setStatus(SafeCreationStatus.AWAITING)
     void createSafe()

@@ -19,6 +19,9 @@ import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafe
 import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
+import { useCurrentChain } from '@/hooks/useChains'
+import useRemainingRelays from '@/hooks/useRemainingRelays'
+import { FEATURES, hasFeature } from '@/utils/chains'
 
 export type NewSafeFormData = {
   name: string
@@ -111,6 +114,14 @@ const CreateSafe = () => {
   const [dynamicHint, setDynamicHint] = useState<CreateSafeInfoItem>()
   const [activeStep, setActiveStep] = useState(0)
 
+  const chain = useCurrentChain()
+  console.count('useRemainingRelays')
+  const [remainingRelays] = useRemainingRelays(wallet?.address)
+  const chainSupportsRelaying = chain && hasFeature(chain, FEATURES.RELAYING)
+  const hasRemainingRelays = remainingRelays && remainingRelays > 0
+  // Chain supports relaying and relay transactions are available
+  const willRelay = chainSupportsRelaying && hasRemainingRelays
+
   const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
     {
       title: 'Connect wallet',
@@ -157,6 +168,7 @@ const CreateSafe = () => {
           onBack={onBack}
           setStep={setStep}
           setProgressColor={setProgressColor}
+          willRelay={!!willRelay}
         />
       ),
     },
