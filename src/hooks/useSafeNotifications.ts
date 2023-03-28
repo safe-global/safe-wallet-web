@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { closeNotification, showNotification } from '@/store/notificationsSlice'
+import { DISMISS_NOTIFICATION_KEY, showNotification } from '@/store/notificationsSlice'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from './useSafeInfo'
 import { useAppDispatch } from '@/store'
@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import useIsSafeOwner from './useIsSafeOwner'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import local from '@/services/local-storage/local'
 
 const CLI_LINK = {
   href: 'https://github.com/5afe/safe-cli',
@@ -35,9 +36,10 @@ const useSafeNotifications = (): void => {
     if (!isOwner) return
     if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
+    const isDismissed = local.getWithExpiry<boolean>(DISMISS_NOTIFICATION_KEY + '_' + chainId + ':' + safeAddress)
     const isUnsupported = !isValidSafeVersion(version)
 
-    const id = dispatch(
+    dispatch(
       showNotification({
         variant: 'warning',
         groupKey: 'safe-outdated-version',
@@ -45,6 +47,7 @@ const useSafeNotifications = (): void => {
         message: isUnsupported
           ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the CLI.`
           : `Your Safe version ${version} is out of date. Please update it.`,
+        isDismissed,
 
         link: isUnsupported
           ? CLI_LINK
@@ -57,11 +60,7 @@ const useSafeNotifications = (): void => {
             },
       }),
     )
-
-    return () => {
-      dispatch(closeNotification({ id }))
-    }
-  }, [dispatch, implementationVersionState, version, query.safe, isOwner, safeAddress, urlSafeAddress])
+  }, [dispatch, implementationVersionState, version, query.safe, isOwner, safeAddress, urlSafeAddress, chainId])
 
   /**
    * Show a notification when the Safe master copy is not supported
@@ -70,7 +69,7 @@ const useSafeNotifications = (): void => {
   useEffect(() => {
     if (isValidMasterCopy(safe)) return
 
-    const id = dispatch(
+    dispatch(
       showNotification({
         variant: 'warning',
         message: `This Safe was created with an unsupported base contract.
@@ -80,10 +79,6 @@ const useSafeNotifications = (): void => {
         link: CLI_LINK,
       }),
     )
-
-    return () => {
-      dispatch(closeNotification({ id }))
-    }
   }, [dispatch, safe])
 }
 
