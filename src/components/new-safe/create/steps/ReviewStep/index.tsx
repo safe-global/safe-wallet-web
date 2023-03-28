@@ -24,7 +24,7 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import SponsoredBy from '@/components/tx/SponsoredBy'
 import { FEATURES, hasFeature } from '@/utils/chains'
-import useRemainingRelays from '@/hooks/useRemainingRelays'
+import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
@@ -35,10 +35,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
   const saltNonce = useMemo(() => Date.now(), [])
   const [_, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
-  const [remainingRelays] = useRemainingRelays(wallet?.address)
+
+  const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
+  const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
   // Chain supports relaying and relay transactions are available
-  const willRelay = chain && hasFeature(chain, FEATURES.RELAYING) && !!remainingRelays && remainingRelays > 0
+  const willRelay = chain && hasFeature(chain, FEATURES.RELAYING) && !!minRelays
 
   const safeParams = useMemo(() => {
     return {
@@ -122,7 +124,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         <Grid item xs={12}>
           <Grid container spacing={3}>
             {willRelay ? (
-              <ReviewRow name="Execution method" value={<SponsoredBy remainingRelays={remainingRelays} />} />
+              <ReviewRow name="Execution method" value={<SponsoredBy remainingRelays={minRelays} />} />
             ) : null}
             <ReviewRow
               name="Est. network fee"

@@ -1,6 +1,6 @@
 import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Box, Card, Divider, Skeleton, Stack, SvgIcon, Typography } from '@mui/material'
-import useRemainingRelays from '@/hooks/useRemainingRelays'
+import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -11,7 +11,7 @@ import css from './styles.module.css'
 import { MAX_HOUR_RELAYS } from '@/components/tx/SponsoredBy'
 
 const Relaying = () => {
-  const [remainingRelays, remainingRelaysError] = useRemainingRelays()
+  const [remainingRelays, remainingRelaysError] = useRemainingRelaysBySafe()
 
   return (
     <WidgetContainer>

@@ -4,7 +4,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import { Errors, logError } from '@/services/exceptions'
 import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/config/constants'
 
-const fetchRemainingRelays = async (chainId: string, address: string): Promise<number | undefined> => {
+const fetchRemainingRelays = async (chainId: string, address: string) => {
   const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/${chainId}/${address}`
 
   try {
@@ -13,18 +13,31 @@ const fetchRemainingRelays = async (chainId: string, address: string): Promise<n
     return data.remaining
   } catch (error) {
     logError(Errors._630, (error as Error).message)
+    return 0
   }
 }
 
-const useRemainingRelays = (connectedAddress?: string) => {
+export const useRemainingRelaysBySafe = () => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
 
   return useAsync(() => {
-    if (!connectedAddress && !safeAddress) return
+    if (!safeAddress) return
 
-    return fetchRemainingRelays(chainId, connectedAddress || safeAddress)
-  }, [chainId, safeAddress, connectedAddress])
+    return fetchRemainingRelays(chainId, safeAddress)
+  }, [chainId, safeAddress])
 }
 
-export default useRemainingRelays
+export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
+  const chainId = useChainId()
+
+  const getMinimum = (result: number[]) => Math.min(...result)
+
+  return useAsync(
+    () =>
+      Promise.all(ownerAddresses.map((address) => fetchRemainingRelays(chainId, address))).then((result) => {
+        return getMinimum(result)
+      }),
+    [chainId, ownerAddresses],
+  )
+}

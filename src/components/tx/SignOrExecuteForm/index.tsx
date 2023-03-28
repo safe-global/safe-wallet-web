@@ -30,7 +30,7 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { getExplorerLink } from '@/utils/gateway'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
-import useRemainingRelays from '@/hooks/useRemainingRelays'
+import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 
 enum ExecutionType {
   RELAYER = 'Via relayer',
@@ -78,7 +78,7 @@ const SignOrExecuteForm = ({
   const provider = useWeb3()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
-  const [remainingRelays] = useRemainingRelays()
+  const [remainingRelays] = useRemainingRelaysBySafe()
 
   const {
     createTx,

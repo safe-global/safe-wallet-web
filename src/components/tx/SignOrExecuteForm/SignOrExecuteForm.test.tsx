@@ -98,7 +98,7 @@ describe('SignOrExecuteForm', () => {
       chainId: '5',
     } as unknown as ChainInfo)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(false)
-    jest.spyOn(useRemainingRelays, 'default').mockReturnValue([5, undefined, false])
+    jest.spyOn(useRemainingRelays, 'useRemainingRelaysBySafe').mockReturnValue([5, undefined, false])
   })
 
   it('displays decoded data if there is a tx', () => {
@@ -541,7 +541,7 @@ describe('SignOrExecuteForm', () => {
           dispatchTxExecution: executionSpy,
         } as unknown as NullableTxSenderFunctions),
     )
-    jest.spyOn(useRemainingRelays, 'default').mockReturnValue([0, undefined, false])
+    jest.spyOn(useRemainingRelays, 'useRemainingRelaysBySafe').mockReturnValue([0, undefined, false])
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
