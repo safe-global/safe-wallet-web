@@ -53,7 +53,6 @@ export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<New
     router.push(AppRoutes.welcome)
   }, [router, setPendingSafe])
 
-  // Callback used on Retry
   const onCreate = useCallback(() => {
     setStatus(SafeCreationStatus.AWAITING)
     void createSafe()

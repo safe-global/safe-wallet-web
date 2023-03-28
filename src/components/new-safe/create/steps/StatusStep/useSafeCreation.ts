@@ -16,7 +16,7 @@ import {
   showSafeCreationError,
 } from '@/components/new-safe/create/logic'
 import { useAppDispatch } from '@/store'
-import { closeByGroupKey } from '@/store/notificationsSlice'
+import { closeByGroupKey, showNotification } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import {
   getFallbackHandlerContractInstance,
@@ -49,7 +49,6 @@ export const useSafeCreation = (
 ) => {
   const [isCreating, setIsCreating] = useState(false)
   const [isWatching, setIsWatching] = useState(false)
-  const [isRelaying, setIsRelaying] = useState(false)
   const dispatch = useAppDispatch()
 
   const wallet = useWallet()
@@ -72,8 +71,7 @@ export const useSafeCreation = (
     setIsCreating(true)
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
-    if (willRelay && !isRelaying) {
-      setIsRelaying(true)
+    if (willRelay) {
       const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
       const proxyFactoryAddress = proxyFactory.getAddress()
       const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)
@@ -89,26 +87,25 @@ export const useSafeCreation = (
         paymentReceiver: ZERO_ADDRESS,
       }
 
-      const initializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
-        callData.owners,
-        callData.threshold,
-        callData.to,
-        callData.data,
-        callData.fallbackHandlerAddress,
-        callData.paymentToken,
-        callData.payment,
-        callData.paymentReceiver,
-      ])
-
-      const safeContract = getGnosisSafeContractInstance(chain)
-
-      const createProxyWithNonceCallData = proxyFactory.contract.interface.encodeFunctionData('createProxyWithNonce', [
-        safeContract.getAddress(),
-        initializer,
-        pendingSafe.saltNonce,
-      ])
-
       try {
+        const initializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
+          callData.owners,
+          callData.threshold,
+          callData.to,
+          callData.data,
+          callData.fallbackHandlerAddress,
+          callData.paymentToken,
+          callData.payment,
+          callData.paymentReceiver,
+        ])
+
+        const safeContract = getGnosisSafeContractInstance(chain)
+
+        const createProxyWithNonceCallData = proxyFactory.contract.interface.encodeFunctionData(
+          'createProxyWithNonce',
+          [safeContract.getAddress(), initializer, pendingSafe.saltNonce],
+        )
+
         const relayResponse = await sponsoredCall({
           chainId: chain.chainId,
           to: proxyFactoryAddress,
@@ -124,8 +121,15 @@ export const useSafeCreation = (
         setStatus(SafeCreationStatus.PROCESSING)
         waitForRelayedTx(taskId, undefined, setStatus)
       } catch (error) {
-        console.error(error)
-        throw error
+        setStatus(SafeCreationStatus.ERROR)
+        dispatch(
+          showNotification({
+            message: `Your transaction was unsuccessful. Reason: ${(error as Error).message}`,
+            detailedMessage: (error as Error).message,
+            groupKey: SAFE_CREATION_ERROR_KEY,
+            variant: 'error',
+          }),
+        )
       }
     } else if (!willRelay) {
       try {
@@ -156,7 +160,18 @@ export const useSafeCreation = (
     }
 
     setIsCreating(false)
-  }, [chain, createSafeCallback, dispatch, isCreating, isRelaying, pendingSafe, provider, setStatus, wallet, willRelay])
+  }, [
+    chain,
+    createSafeCallback,
+    dispatch,
+    isCreating,
+    pendingSafe,
+    provider,
+    setPendingSafe,
+    setStatus,
+    wallet,
+    willRelay,
+  ])
 
   const watchSafeTx = useCallback(async () => {
     if (!pendingSafe?.tx || !pendingSafe?.txHash || !web3ReadOnly || isWatching) return
@@ -177,8 +192,13 @@ export const useSafeCreation = (
       return
     }
 
+    if (pendingSafe?.taskId && !isCreating) {
+      waitForRelayedTx(pendingSafe?.taskId, undefined, setStatus)
+      return
+    }
+
     void createSafe()
-  }, [createSafe, watchSafeTx, isCreating, pendingSafe?.txHash, status])
+  }, [createSafe, watchSafeTx, isCreating, pendingSafe?.txHash, status, pendingSafe?.taskId, setStatus])
 
   return {
     createSafe,
