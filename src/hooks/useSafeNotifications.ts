@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { DISMISS_NOTIFICATION_KEY, showNotification } from '@/store/notificationsSlice'
+import { showNotification, closeNotification } from '@/store/notificationsSlice'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from './useSafeInfo'
 import { useAppDispatch } from '@/store'
@@ -10,10 +10,18 @@ import useIsSafeOwner from './useIsSafeOwner'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import local from '@/services/local-storage/local'
+import { type DismissedUpdateNotifications } from '@/components/common/Notifications'
 
 const CLI_LINK = {
   href: 'https://github.com/5afe/safe-cli',
   title: 'Get CLI',
+}
+
+export const DISMISS_NOTIFICATION_KEY = 'dismissUpdateSafe'
+export const OUTDATED_VERSION_KEY = 'safe-outdated-version'
+
+export const isUpdateSafeNotification = (groupKey: string) => {
+  return groupKey === OUTDATED_VERSION_KEY
 }
 
 /**
@@ -36,18 +44,28 @@ const useSafeNotifications = (): void => {
     if (!isOwner) return
     if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
-    const isDismissed = local.getWithExpiry<boolean>(DISMISS_NOTIFICATION_KEY + '_' + chainId + ':' + safeAddress)
+    const dismissedNotifications = local.getItem<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY)
+    const dismissedNotificationTimestamp = dismissedNotifications?.[chainId]?.[safeAddress]
+
+    if (dismissedNotificationTimestamp) {
+      if (Date.now() >= dismissedNotificationTimestamp) {
+        delete dismissedNotifications?.[chainId][safeAddress]
+        local.setItem<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY, dismissedNotifications)
+      } else {
+        return
+      }
+    }
+
     const isUnsupported = !isValidSafeVersion(version)
 
-    dispatch(
+    const notification = dispatch(
       showNotification({
         variant: 'warning',
-        groupKey: 'safe-outdated-version',
+        groupKey: OUTDATED_VERSION_KEY,
 
         message: isUnsupported
           ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the CLI.`
           : `Your Safe version ${version} is out of date. Please update it.`,
-        isDismissed,
 
         link: isUnsupported
           ? CLI_LINK
@@ -60,6 +78,10 @@ const useSafeNotifications = (): void => {
             },
       }),
     )
+
+    return () => {
+      dispatch(closeNotification(notification))
+    }
   }, [dispatch, implementationVersionState, version, query.safe, isOwner, safeAddress, urlSafeAddress, chainId])
 
   /**
@@ -69,7 +91,7 @@ const useSafeNotifications = (): void => {
   useEffect(() => {
     if (isValidMasterCopy(safe)) return
 
-    dispatch(
+    const notification = dispatch(
       showNotification({
         variant: 'warning',
         message: `This Safe was created with an unsupported base contract.
@@ -79,6 +101,10 @@ const useSafeNotifications = (): void => {
         link: CLI_LINK,
       }),
     )
+
+    return () => {
+      dispatch(closeNotification(notification))
+    }
   }, [dispatch, safe])
 }
 

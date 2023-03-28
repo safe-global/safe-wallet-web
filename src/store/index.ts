@@ -16,7 +16,7 @@ import { sessionSlice } from './sessionSlice'
 import { txHistorySlice, txHistoryMiddleware } from './txHistorySlice'
 import { txQueueSlice, txQueueMiddleware } from './txQueueSlice'
 import { addressBookSlice } from './addressBookSlice'
-import { notificationsMiddleware, notificationsSlice } from './notificationsSlice'
+import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
 import { pendingTxsSlice } from './pendingTxsSlice'
 import { addedSafesMiddleware, addedSafesSlice } from './addedSafesSlice'
@@ -65,7 +65,6 @@ const middleware = [
   txQueueMiddleware,
   addedSafesMiddleware,
   safeMessagesMiddleware,
-  notificationsMiddleware,
 ]
 
 export const getPersistedState = () => {
