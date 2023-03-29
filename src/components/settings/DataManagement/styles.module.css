@@ -36,6 +36,8 @@
 .listIcon {
   min-width: unset;
   margin-right: var(--space-3);
+  padding-top: var(--space-1);
+  align-self: flex-start;
 }
 
 .networkIcon {
@@ -43,14 +45,4 @@
   height: 10px;
   border-radius: 2px;
   margin-right: calc(var(--space-1) / 2);
-}
-
-.hint {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--space-1) / 2);
-}
-
-.disabled :global .MuiDialogContent-root {
-  padding-bottom: 0;
 }

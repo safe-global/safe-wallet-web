@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Paper, Grid, Typography, Button, SvgIcon, Box } from '@mui/material'
-import { useDropzone } from 'react-dropzone'
 
 import FileIcon from '@/public/images/settings/data/file.svg'
 import ExportIcon from '@/public/images/common/export.svg'
@@ -11,23 +10,19 @@ import { safeAppsSlice, selectSafeApps } from '@/store/safeAppsSlice'
 import { selectSettings, settingsSlice } from '@/store/settingsSlice'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
-import FileUpload, { FileTypes } from '@/components/common/FileUpload'
+import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFileUpload'
 import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
 import { SAFE_EXPORT_VERSION } from '@/components/settings/DataManagement/useGlobalImportFileParser'
 import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
 
 import css from './styles.module.css'
 
-const AcceptedMimeTypes = {
-  'application/json': ['.json'],
-}
-
 const getExportFileName = () => {
   const today = new Date().toISOString().slice(0, 10)
   return `safe-${today}.json`
 }
 
-const handleExport = () => {
+export const handleExport = () => {
   // Extract the slices we want to export
   const {
     [addressBookSlice.name]: addressBook,
@@ -64,48 +59,6 @@ const DataManagement = () => {
   const settings = useAppSelector(selectSettings)
   const safeApps = useAppSelector(selectSafeApps)
 
-  const onDrop = (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) {
-      return
-    }
-    const file = acceptedFiles[0]
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      if (!event.target) {
-        return
-      }
-      if (typeof event.target.result !== 'string') {
-        return
-      }
-      setFileName(file.name)
-      setJsonData(event.target.result)
-    }
-    reader.readAsText(file)
-  }
-
-  const onClose = () => {
-    setFileName(undefined)
-    setJsonData(undefined)
-  }
-
-  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
-    maxFiles: 1,
-    onDrop,
-    accept: AcceptedMimeTypes,
-  })
-
-  const infoIcon = (
-    <SvgIcon
-      component={InfoIcon}
-      inheritViewBox
-      fontSize="small"
-      color="border"
-      sx={{
-        verticalAlign: 'middle',
-      }}
-    />
-  )
-
   return (
     <Paper sx={{ p: 4, mb: 2 }}>
       <Grid container spacing={3}>
@@ -135,8 +88,17 @@ const DataManagement = () => {
             settings={settings}
             safeApps={safeApps}
           />
-          <Typography className={css.hint}>
-            {infoIcon}
+          <Typography>
+            <SvgIcon
+              component={InfoIcon}
+              inheritViewBox
+              fontSize="small"
+              color="border"
+              sx={{
+                verticalAlign: 'middle',
+                mr: 0.5,
+              }}
+            />
             You can also export your data from the{' '}
             <ExternalLink href="https://gnosis-safe.io/app/export">old app</ExternalLink>
           </Typography>
@@ -151,24 +113,12 @@ const DataManagement = () => {
         </Grid>
 
         <Grid item xs>
-          <Typography>Import Safe data by clicking or dragging a file below.</Typography>
-
-          <FileUpload
-            fileType={FileTypes.JSON}
-            getRootProps={() => ({ ...getRootProps(), height: '228px' })}
-            getInputProps={getInputProps}
-            isDragActive={isDragActive}
-            isDragReject={isDragReject}
-            onRemove={onClose}
-          />
-
-          <Typography className={css.hint}>
-            {infoIcon}
-            Only JSON files exported from a Safe can be imported.
-          </Typography>
-
-          {jsonData && <ImportDialog handleClose={onClose} jsonData={jsonData} fileName={fileName} />}
+          <ImportFileUpload setFileName={setFileName} setJsonData={setJsonData} />
         </Grid>
+
+        {jsonData && (
+          <ImportDialog jsonData={jsonData} fileName={fileName} setJsonData={setJsonData} setFileName={setFileName} />
+        )}
       </Grid>
     </Paper>
   )

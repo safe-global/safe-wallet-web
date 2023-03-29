@@ -4,7 +4,6 @@ import { useTheme } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import * as React from 'react'
-import classNames from 'classnames'
 
 import css from './styles.module.css'
 
@@ -49,7 +48,6 @@ const ModalDialog = ({
   hideChainIndicator,
   children,
   fullScreen = false,
-  className,
   ...restProps
 }: ModalDialogProps): React.ReactElement => {
   const theme = useTheme()
@@ -61,7 +59,7 @@ const ModalDialog = ({
       {...restProps}
       fullScreen={isFullScreen}
       scroll={fullScreen ? 'paper' : 'body'}
-      className={classNames(css.dialog, className)}
+      className={css.dialog}
       onClick={(e) => e.stopPropagation()}
     >
       {dialogTitle && (
