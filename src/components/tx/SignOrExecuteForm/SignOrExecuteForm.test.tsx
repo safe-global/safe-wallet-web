@@ -3,12 +3,13 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm/index'
 import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useGasLimitHook from '@/hooks/useGasLimit'
+import * as useChainsHook from '@/hooks/useChains'
 import * as txSenderDispatch from '@/services/tx/tx-sender/dispatch'
-import * as txSender from '@/hooks/useTxSender'
 import * as wallet from '@/hooks/wallets/useWallet'
+import * as onboard from '@/hooks/wallets/useOnboard'
 import * as walletUtils from '@/hooks/wallets/wallets'
 import * as web3 from '@/hooks/wallets/web3'
-import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, FEATURES, SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { waitFor } from '@testing-library/react'
 import type { ConnectedWallet } from '@/services/onboard'
 import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
@@ -17,7 +18,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
-import type { NullableTxSenderFunctions } from '@/hooks/useTxSender'
+import { type OnboardAPI } from '@web3-onboard/core'
 
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
@@ -83,8 +84,10 @@ describe('SignOrExecuteForm', () => {
       isValidExecutionLoading: false,
     })
     jest.spyOn(wallet, 'default').mockReturnValue({
+      label: 'MetaMask',
       address: ethers.utils.hexZeroPad('0x123', 20),
     } as ConnectedWallet)
+    jest.spyOn(onboard, 'default').mockReturnValue({} as OnboardAPI)
     jest.spyOn(web3, 'useWeb3').mockReturnValue(mockProvider)
     jest.spyOn(wrongChain, 'default').mockReturnValue(false)
     jest
@@ -216,6 +219,7 @@ describe('SignOrExecuteForm', () => {
   it('displays an error and disables the submit button if connected wallet is not an owner', () => {
     jest.spyOn(wallet, 'default').mockReturnValue({
       chainId: '1',
+      label: 'MetaMask',
       address: ethers.utils.hexZeroPad('0x789', 20),
     } as ConnectedWallet)
 
@@ -243,6 +247,7 @@ describe('SignOrExecuteForm', () => {
 
     jest.spyOn(wallet, 'default').mockReturnValue({
       chainId: '1',
+      label: 'MetaMask',
       address: address,
     } as ConnectedWallet)
 
@@ -258,6 +263,7 @@ describe('SignOrExecuteForm', () => {
   describe('adjusts the generic error text creating/executing transactions', () => {
     it('displays an error for newly created transactions', () => {
       jest.spyOn(wallet, 'default').mockReturnValue({
+        label: 'MetaMask',
         address: ethers.utils.hexZeroPad('0x456', 20),
       } as ConnectedWallet)
 
@@ -303,6 +309,7 @@ describe('SignOrExecuteForm', () => {
   it('allows execution for non-owners', () => {
     jest.spyOn(wallet, 'default').mockReturnValue({
       chainId: '1',
+      label: 'MetaMask',
       address: ethers.utils.hexZeroPad('0x789', 20),
     } as ConnectedWallet)
 
@@ -315,14 +322,21 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Submit')).not.toBeDisabled()
   })
 
-  it('displays an error and disables the submit button if connected wallet is on a different chain', async () => {
+  it('displays a warning if connected wallet is on a different chain', async () => {
     jest.spyOn(wrongChain, 'default').mockReturnValue(true)
+    jest
+      .spyOn(useChainsHook, 'useCurrentChain')
+      .mockReturnValue({ chainName: 'Goerli', features: [] as FEATURES[] } as ChainInfo)
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-    expect(result.getByText('Please connect your wallet to')).toBeInTheDocument()
-    expect(result.getByText('Submit')).toBeDisabled()
+    expect(
+      result.getByText(
+        'Your wallet is connected to the wrong chain. When you submit, you will first be asked to connect to Goerli.',
+      ),
+    ).toBeInTheDocument()
+    expect(result.getByText('Submit')).not.toBeDisabled()
   })
 
   it('disables the submit button if there is no tx', () => {
@@ -370,13 +384,11 @@ describe('SignOrExecuteForm', () => {
 
   it('executes a transaction', async () => {
     const executionSpy = jest.fn()
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchTxProposal: jest.fn(() => Promise.resolve({})),
-          dispatchTxExecution: executionSpy,
-        } as unknown as NullableTxSenderFunctions),
-    )
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxProposal')
+      .mockImplementation(jest.fn(() => Promise.resolve({} as TransactionDetails)))
+
+    jest.spyOn(txSenderDispatch, 'dispatchTxExecution').mockImplementation(executionSpy)
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
@@ -393,16 +405,11 @@ describe('SignOrExecuteForm', () => {
   it('signs a transactions', async () => {
     const mockTx = createSafeTx()
 
-    const signSpy = jest.fn(() => Promise.resolve({}))
-    const proposeSpy = jest.fn(() => Promise.resolve({}))
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchTxSigning: signSpy,
-          dispatchTxProposal: proposeSpy,
-        } as unknown as NullableTxSenderFunctions),
-    )
+    const signSpy = jest.fn(() => Promise.resolve({} as SafeTransaction))
+    const proposeSpy = jest.fn(() => Promise.resolve({} as TransactionDetails))
 
+    jest.spyOn(txSenderDispatch, 'dispatchTxSigning').mockImplementation(signSpy)
+    jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(proposeSpy)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(false))
 
     const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
@@ -420,16 +427,11 @@ describe('SignOrExecuteForm', () => {
   it('smart contract wallets have to propose when creating a tx with an on-chain signature', async () => {
     const mockTx = createSafeTx()
 
-    const onChainSignSpy = jest.fn(() => Promise.resolve({}))
-    const proposeSpy = jest.fn(() => Promise.resolve({}))
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchOnChainSigning: onChainSignSpy,
-          dispatchTxProposal: proposeSpy,
-        } as unknown as NullableTxSenderFunctions),
-    )
+    const onChainSignSpy = jest.fn(() => Promise.resolve())
+    const proposeSpy = jest.fn(() => Promise.resolve({} as TransactionDetails))
 
+    jest.spyOn(txSenderDispatch, 'dispatchOnChainSigning').mockImplementation(onChainSignSpy)
+    jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(proposeSpy)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
     const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
@@ -447,16 +449,11 @@ describe('SignOrExecuteForm', () => {
   it('smart contract wallets should not propose when on-chain signing an existing transactions', async () => {
     const mockTx = createSafeTx()
 
-    const onChainSignSpy = jest.fn(() => Promise.resolve({}))
-    const proposeSpy = jest.fn(() => Promise.resolve({}))
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchOnChainSigning: onChainSignSpy,
-          dispatchTxProposal: proposeSpy,
-        } as unknown as NullableTxSenderFunctions),
-    )
+    const onChainSignSpy = jest.fn(() => Promise.resolve())
+    const proposeSpy = jest.fn(() => Promise.resolve({} as TransactionDetails))
 
+    jest.spyOn(txSenderDispatch, 'dispatchOnChainSigning').mockImplementation(onChainSignSpy)
+    jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(proposeSpy)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(true))
 
     const result = render(<SignOrExecuteForm txId="0x123" onSubmit={jest.fn} safeTx={mockTx} />)
@@ -472,12 +469,9 @@ describe('SignOrExecuteForm', () => {
   })
 
   it('displays an error if execution submission fails', async () => {
-    jest.spyOn(txSender, 'default').mockImplementation(
-      () =>
-        ({
-          dispatchTxExecution: jest.fn(() => Promise.reject('Error while dispatching')),
-        } as unknown as NullableTxSenderFunctions),
-    )
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxExecution')
+      .mockImplementation(jest.fn(() => Promise.reject('Error while dispatching')))
 
     const mockTx = createSafeTx()
     const result = render(

@@ -16,8 +16,8 @@ import { relativeTime } from '@/utils/date'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
-import useTxSender from '@/hooks/useTxSender'
 import type { NewSpendingLimitData } from '@/services/tx/tx-sender'
+import { createNewSpendingLimitTx } from '@/services/tx/tx-sender'
 
 type Props = {
   data: NewSpendingLimitData
@@ -29,7 +29,6 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
   const spendingLimits = useSelector(selectSpendingLimits)
   const chainId = useChainId()
   const { balances } = useBalances()
-  const { createNewSpendingLimitTx } = useTxSender()
 
   useEffect(() => {
     const existingSpendingLimit = spendingLimits.find(
@@ -51,7 +50,7 @@ export const ReviewSpendingLimit = ({ data, onSubmit }: Props) => {
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(() => {
     return createNewSpendingLimitTx(data, spendingLimits, chainId, decimals, existingSpendingLimit)
-  }, [data, spendingLimits, chainId, decimals, existingSpendingLimit, createNewSpendingLimitTx])
+  }, [data, spendingLimits, chainId, decimals, existingSpendingLimit])
 
   const onFormSubmit = () => {
     trackEvent({

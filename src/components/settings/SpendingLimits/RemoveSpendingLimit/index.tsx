@@ -2,7 +2,6 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { getSpendingLimitInterface, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -14,9 +13,9 @@ import useBalances from '@/hooks/useBalances'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import { safeFormatUnits } from '@/utils/formatters'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
+import { createTx } from '@/services/tx/tx-sender'
 
 export const RemoveSpendingLimit = ({ data, onSubmit }: { data: SpendingLimitState; onSubmit: () => void }) => {
-  const { createTx } = useTxSender()
   const chainId = useChainId()
   const provider = useWeb3()
   const { balances } = useBalances()
@@ -36,7 +35,7 @@ export const RemoveSpendingLimit = ({ data, onSubmit }: { data: SpendingLimitSta
     }
 
     return createTx(txParams)
-  }, [provider, chainId, data.beneficiary, data.token, createTx])
+  }, [provider, chainId, data.beneficiary, data.token])
 
   const onFormSubmit = () => {
     trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
