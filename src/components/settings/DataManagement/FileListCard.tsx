@@ -76,6 +76,7 @@ const getItems = ({
 
   const addedSafeChainAmount = Object.keys(addedSafes || {}).length
   const addressBookChainAmount = Object.keys(addressBook || {}).length
+  const bookmarkedSafeApps = Object.keys(safeApps || {}).length
 
   const items: Array<ListItemTextProps> = [
     ...(addedSafeChainAmount > 0
@@ -102,13 +103,23 @@ const getItems = ({
           },
         ]
       : []),
-    ...(settings || safeApps
+    ...(settings
       ? [
           {
             primary: (
               <>
-                <b>Settings</b> (appearance, bookmarked Safe Apps, currency, hidden tokens and custom environment
-                variables)
+                <b>Settings</b> (appearance, currency, hidden tokens and custom environment variables)
+              </>
+            ),
+          },
+        ]
+      : []),
+    ...(bookmarkedSafeApps > 0
+      ? [
+          {
+            primary: (
+              <>
+                Bookmarked <b>Safe Apps</b> on {bookmarkedSafeApps} {bookmarkedSafeApps === 1 ? 'chain' : 'chains'}
               </>
             ),
           },
