@@ -9,8 +9,8 @@ import { useRouter } from 'next/router'
 import useIsSafeOwner from './useIsSafeOwner'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import local from '@/services/local-storage/local'
 import { type DismissedUpdateNotifications } from '@/components/common/Notifications'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 
 const CLI_LINK = {
   href: 'https://github.com/5afe/safe-cli',
@@ -28,6 +28,8 @@ export const isUpdateSafeNotification = (groupKey: string) => {
  * General-purpose notifications relating to the entire Safe
  */
 const useSafeNotifications = (): void => {
+  const [dismissedNotifications, setDismissedNotifications] =
+    useLocalStorage<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY)
   const dispatch = useAppDispatch()
   const { query } = useRouter()
   const { safe, safeAddress } = useSafeInfo()
@@ -44,13 +46,14 @@ const useSafeNotifications = (): void => {
     if (!isOwner) return
     if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
-    const dismissedNotifications = local.getItem<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY)
     const dismissedNotificationTimestamp = dismissedNotifications?.[chainId]?.[safeAddress]
 
     if (dismissedNotificationTimestamp) {
       if (Date.now() >= dismissedNotificationTimestamp) {
-        delete dismissedNotifications?.[chainId]?.[safeAddress]
-        local.setItem<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY, dismissedNotifications)
+        const newState = { ...dismissedNotifications }
+        delete newState?.[chainId]?.[safeAddress]
+
+        setDismissedNotifications(newState)
       } else {
         return
       }
@@ -82,7 +85,18 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, implementationVersionState, version, query.safe, isOwner, safeAddress, urlSafeAddress, chainId])
+  }, [
+    dispatch,
+    implementationVersionState,
+    version,
+    query.safe,
+    isOwner,
+    safeAddress,
+    urlSafeAddress,
+    chainId,
+    dismissedNotifications,
+    setDismissedNotifications,
+  ])
 
   /**
    * Show a notification when the Safe master copy is not supported

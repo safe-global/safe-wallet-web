@@ -13,9 +13,9 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import Track from '../Track'
 import { isRelativeUrl } from '@/utils/url'
-import local from '@/services/local-storage/local'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { DISMISS_NOTIFICATION_KEY, isUpdateSafeNotification } from '@/hooks/useSafeNotifications'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 
 const toastStyle = { position: 'static', margin: 1 }
 
@@ -101,12 +101,15 @@ export type DismissedUpdateNotifications = {
   }
 }
 
-const handleDismissUpdateSafeNotification = (notification: Notification, safe: SafeInfo) => {
+const handleDismissUpdateSafeNotification = (
+  notification: Notification,
+  safe: SafeInfo,
+  dismissedNotifications: ReturnType<typeof useLocalStorage<DismissedUpdateNotifications>>[0],
+  setDismissedNotifications: ReturnType<typeof useLocalStorage<DismissedUpdateNotifications>>[1],
+) => {
   const EXPIRY_DAYS = 90
 
   if (!isUpdateSafeNotification(notification.groupKey)) return
-
-  const dismissedNotifications = local.getItem<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY) || {}
 
   const expiryDate = Date.now() + EXPIRY_DAYS * 24 * 60 * 60 * 1000
 
@@ -118,10 +121,12 @@ const handleDismissUpdateSafeNotification = (notification: Notification, safe: S
     },
   }
 
-  local.setItem<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY, newState)
+  setDismissedNotifications(newState)
 }
 
 const Notifications = (): ReactElement | null => {
+  const [dismissedNotifications, setDismissedNotifications] =
+    useLocalStorage<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY)
   const notifications = useAppSelector(selectNotifications)
   const dispatch = useAppDispatch()
   const { safe } = useSafeInfo()
@@ -131,9 +136,9 @@ const Notifications = (): ReactElement | null => {
   const handleClose = useCallback(
     (item: Notification) => {
       dispatch(closeNotification(item))
-      handleDismissUpdateSafeNotification(item, safe)
+      handleDismissUpdateSafeNotification(item, safe, dismissedNotifications, setDismissedNotifications)
     },
-    [dispatch, safe],
+    [dispatch, safe, dismissedNotifications, setDismissedNotifications],
   )
 
   // Close previous notifications in the same group
