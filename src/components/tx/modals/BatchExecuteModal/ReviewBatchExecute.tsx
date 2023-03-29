@@ -26,7 +26,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
   const provider = useWeb3()
-  const { dispatchBatchExecution } = useTxSender()
+  const { dispatchBatchExecution, dispatchBatchExecutionRelay } = useTxSender()
   const [remainingRelays] = useRemainingRelays()
 
   // Chain has relaying feature and available relays
@@ -62,10 +62,10 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }
 
   const onRelay = async () => {
+    if (!provider || !multiSendTxData || !multiSendContract || !txsWithDetails) return
     // Add GA event
     //
-    // should relay
-    // dispatchTxRelay(safeTx)
+    dispatchBatchExecutionRelay(txsWithDetails, multiSendContract, multiSendTxData, safe)
     console.log('implement batch relay')
   }
 

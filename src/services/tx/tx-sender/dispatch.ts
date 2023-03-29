@@ -311,3 +311,40 @@ export const dispatchTxRelay = async (
     throw error
   }
 }
+
+export const dispatchBatchExecutionRelay = async (
+  txs: TransactionDetails[],
+  multiSendContract: MultiSendCallOnlyEthersContract,
+  multiSendTxData: string,
+  safe: SafeInfo,
+) => {
+  const to = multiSendContract.getAddress()
+
+  try {
+    const relayResponse = await sponsoredCall({
+      chainId: safe.chainId,
+      to,
+      data: multiSendTxData,
+    })
+    const taskId = relayResponse.taskId
+
+    if (!taskId) {
+      throw new Error('Transaction could not be relayed')
+    }
+
+    txs.forEach(({ txId }) => {
+      txDispatch(TxEvent.RELAYING, { taskId, txId })
+    })
+
+    // Monitor relay tx
+    // waitForRelayedTx(taskId, txId)
+  } catch (error) {
+    txs.forEach(({ txId }) => {
+      txDispatch(TxEvent.FAILED, {
+        txId,
+        error: error as Error,
+      })
+    })
+    throw error
+  }
+}
