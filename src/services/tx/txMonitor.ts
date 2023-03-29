@@ -87,6 +87,11 @@ export const waitForRelayedTx = (
           return res.json()
         }
 
+        // 404s can happen if gelato is a bit slow with picking up the taskID
+        if (res.status === 404) {
+          timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
+        }
+
         return res.json().then((data) => {
           throw new Error(`${res.status} - ${res.statusText}: ${data?.message}`)
         })

@@ -16,6 +16,7 @@ import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-t
 import { assertValidSafeVersion, createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import type SignMessageLibEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/SignMessageLib/SignMessageLibEthersContract'
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
+import type { Web3Provider } from '@ethersproject/providers'
 
 // `UNKNOWN` is returned if the mastercopy does not match supported ones
 // @see https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/handlers/safes.rs#L28-L31
@@ -42,8 +43,8 @@ export const _getValidatedGetContractProps = (
 
 // GnosisSafe
 
-export const getSpecificGnosisSafeContractInstance = (safe: SafeInfo) => {
-  const ethAdapter = createEthersAdapter()
+export const getSpecificGnosisSafeContractInstance = (safe: SafeInfo, provider?: Web3Provider) => {
+  const ethAdapter = createEthersAdapter(provider)
 
   return ethAdapter.getSafeContract({
     customContractAddress: safe.address.value,
