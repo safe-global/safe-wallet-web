@@ -71,7 +71,7 @@ export const waitForRelayedTx = (
 ): void => {
   // A small delay is necessary before the initial polling as the task status
   // is not immediately available after the sponsoredCall request
-  const INITIAL_POLLING_DELAY = 3_000
+  const INITIAL_POLLING_DELAY = 2_000
 
   const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
   let timeoutId: NodeJS.Timeout
@@ -135,8 +135,6 @@ export const waitForRelayedTx = (
             txId,
             error: new Error(`Relayed transaction was cancelled by relay provider.`),
           })
-        // TODO: show Safe creation error
-        // setStatus && dispatch(showSafeCreationError(_err))
         setStatus && setStatus(SafeCreationStatus.ERROR)
         clearTimeout(failAfterTimeoutId)
         return

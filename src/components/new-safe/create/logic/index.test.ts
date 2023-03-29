@@ -217,19 +217,22 @@ describe('handleSafeCreationError', () => {
 })
 
 describe('createNewSafeViaRelayer', () => {
-  it('returns taskId if successfull', async () => {
-    const mockChainInfo = {
-      chainId: '5',
-      l2: false,
-    } as unknown as ChainInfo
+  const owner1 = hexZeroPad('0x1', 20)
+  const owner2 = hexZeroPad('0x2', 20)
+
+  const mockChainInfo = {
+    chainId: '5',
+    l2: false,
+  } as ChainInfo
+
+  it('returns taskId if create Safe successfully relayed', async () => {
+    const sponsoredCallSpy = jest.spyOn(sponsoredCall, 'sponsoredCall').mockResolvedValue({ taskId: '0x123' })
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
-    const owner1 = hexZeroPad('0x1', 20)
-    const owner2 = hexZeroPad('0x2', 20)
-    const proxyFactory = getProxyFactoryContractInstance('5')
+    const proxyFactoryAddress = getProxyFactoryContractInstance('5').getAddress()
     const fallbackHandlerDeployment = getFallbackHandlerContractInstance('5')
-    const safeContract = getGnosisSafeContractInstance(mockChainInfo)
+    const safeContractAddress = getGnosisSafeContractInstance(mockChainInfo).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
       [owner1, owner2],
@@ -241,33 +244,29 @@ describe('createNewSafeViaRelayer', () => {
       0,
       ZERO_ADDRESS,
     ])
+
     const expectedCallData = Proxy_factory__factory.createInterface().encodeFunctionData('createProxyWithNonce', [
-      safeContract.getAddress(),
+      safeContractAddress,
       expectedInitializer,
       expectedSaltNonce,
     ])
 
-    const sponsoredCallSpy = jest.spyOn(sponsoredCall, 'sponsoredCall').mockResolvedValue({ taskId: '0x123' })
     const taskId = await createNewSafeViaRelayer(mockChainInfo, [owner1, owner2], expectedThreshold, expectedSaltNonce)
 
     expect(taskId).toEqual('0x123')
     expect(sponsoredCallSpy).toHaveBeenCalledTimes(1)
     expect(sponsoredCallSpy).toHaveBeenCalledWith({
       chainId: '5',
-      to: proxyFactory.getAddress(),
+      to: proxyFactoryAddress,
       data: expectedCallData,
     })
   })
 
-  it('throws error if relaying fails', () => {
-    const owner1 = hexZeroPad('0x1', 20)
-    const owner2 = hexZeroPad('0x2', 20)
+  it('should throw an error if relaying fails', () => {
+    const relayFailedError = new Error('Relay failed')
 
-    const mockChainInfo = {
-      chainId: '5',
-      l2: false,
-    } as unknown as ChainInfo
-    jest.spyOn(sponsoredCall, 'sponsoredCall').mockRejectedValue(new Error('Relay failed'))
-    expect(createNewSafeViaRelayer(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(new Error('Relay failed'))
+    jest.spyOn(sponsoredCall, 'sponsoredCall').mockRejectedValue(relayFailedError)
+
+    expect(createNewSafeViaRelayer(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
   })
 })

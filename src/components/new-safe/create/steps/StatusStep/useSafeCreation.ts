@@ -17,7 +17,7 @@ import {
   createNewSafeViaRelayer,
 } from '@/components/new-safe/create/logic'
 import { useAppDispatch } from '@/store'
-import { closeByGroupKey, showNotification } from '@/store/notificationsSlice'
+import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { waitForRelayedTx } from '@/services/tx/txMonitor'
 
@@ -64,14 +64,13 @@ export const useSafeCreation = (
     setIsCreating(true)
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
+    const { owners, threshold, saltNonce } = pendingSafe
+    const ownersAddresses = owners.map((owner) => owner.address)
+
     if (willRelay) {
       try {
-        const taskId = await createNewSafeViaRelayer(
-          chain,
-          pendingSafe.owners.map((owner) => owner.address),
-          pendingSafe.threshold,
-          pendingSafe.saltNonce,
-        )
+        const taskId = await createNewSafeViaRelayer(chain, ownersAddresses, threshold, saltNonce)
+
         if (!taskId) {
           throw new Error('Transaction could not be relayed')
         }
@@ -81,14 +80,7 @@ export const useSafeCreation = (
         waitForRelayedTx(taskId, undefined, setStatus)
       } catch (error) {
         setStatus(SafeCreationStatus.ERROR)
-        dispatch(
-          showNotification({
-            message: `Your transaction was unsuccessful. Reason: ${(error as Error).message}`,
-            detailedMessage: (error as Error).message,
-            groupKey: SAFE_CREATION_ERROR_KEY,
-            variant: 'error',
-          }),
-        )
+        showSafeCreationError(error as Error)
       }
     } else {
       try {
@@ -96,9 +88,9 @@ export const useSafeCreation = (
 
         const safeParams = getSafeDeployProps(
           {
-            threshold: pendingSafe.threshold,
-            owners: pendingSafe.owners.map((owner) => owner.address),
-            saltNonce: pendingSafe.saltNonce,
+            threshold,
+            owners: ownersAddresses,
+            saltNonce,
           },
           (txHash) => createSafeCallback(txHash, tx),
           chain.chainId,

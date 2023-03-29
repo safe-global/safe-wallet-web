@@ -192,7 +192,7 @@ export const handleSafeCreationError = (error: EthersError) => {
 }
 
 export const SAFE_CREATION_ERROR_KEY = 'create-safe-error'
-export const showSafeCreationError = (error: EthersError): AppThunk => {
+export const showSafeCreationError = (error: EthersError | Error): AppThunk => {
   return (dispatch) => {
     dispatch(
       showNotification({
@@ -275,32 +275,33 @@ export const createNewSafeViaRelayer = async (
   const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
   const proxyFactoryAddress = proxyFactory.getAddress()
   const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)
+  const fallbackHandlerAddress = fallbackHandlerDeployment.getAddress()
+  const safeContractAddress = getGnosisSafeContractInstance(chain).getAddress()
 
   const callData = {
     owners,
     threshold,
     to: ZERO_ADDRESS,
     data: EMPTY_DATA,
-    fallbackHandlerAddress: fallbackHandlerDeployment.getAddress(),
+    fallbackHandler: fallbackHandlerAddress,
     paymentToken: ZERO_ADDRESS,
     payment: 0,
     paymentReceiver: ZERO_ADDRESS,
   }
+
   const initializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
     callData.owners,
     callData.threshold,
     callData.to,
     callData.data,
-    callData.fallbackHandlerAddress,
+    callData.fallbackHandler,
     callData.paymentToken,
     callData.payment,
     callData.paymentReceiver,
   ])
 
-  const safeContract = getGnosisSafeContractInstance(chain)
-
   const createProxyWithNonceCallData = proxyFactory.contract.interface.encodeFunctionData('createProxyWithNonce', [
-    safeContract.getAddress(),
+    safeContractAddress,
     initializer,
     saltNonce,
   ])
@@ -310,5 +311,6 @@ export const createNewSafeViaRelayer = async (
     to: proxyFactoryAddress,
     data: createProxyWithNonceCallData,
   })
+
   return relayResponse.taskId
 }
