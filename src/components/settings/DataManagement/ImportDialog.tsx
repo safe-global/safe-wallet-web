@@ -14,6 +14,7 @@ import FileIcon from '@/public/images/settings/data/file.svg'
 import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFileUpload'
 
 import css from './styles.module.css'
+import { showNotification } from '@/store/notificationsSlice'
 
 export const ImportDialog = ({
   onClose,
@@ -66,7 +67,14 @@ export const ImportDialog = ({
       trackEvent(SETTINGS_EVENTS.DATA.IMPORT_SAFE_APPS)
     }
 
-    // TODO: Notification
+    dispatch(
+      showNotification({
+        variant: 'success',
+        groupKey: 'global-import-success',
+        message: 'Successfully imported data',
+      }),
+    )
+
     handleClose()
   }
 
