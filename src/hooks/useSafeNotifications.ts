@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { showNotification, closeNotification } from '@/store/notificationsSlice'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from './useSafeInfo'
@@ -36,6 +36,27 @@ const useSafeNotifications = (): void => {
   const { chainId, version, implementationVersionState } = safe
   const isOwner = useIsSafeOwner()
   const urlSafeAddress = useSafeAddress()
+
+  const dismissUpdateNotification = useCallback(
+    (groupKey: string) => {
+      const EXPIRY_DAYS = 90
+
+      if (!isUpdateSafeNotification(groupKey)) return
+
+      const expiryDate = Date.now() + EXPIRY_DAYS * 24 * 60 * 60 * 1000
+
+      const newState = {
+        ...dismissedNotifications,
+        [safe.chainId]: {
+          ...dismissedNotifications?.[safe.chainId],
+          [safe.address.value]: expiryDate,
+        },
+      }
+
+      setDismissedNotifications(newState)
+    },
+    [dismissedNotifications, safe.address.value, safe.chainId, setDismissedNotifications],
+  )
 
   /**
    * Show a notification when the Safe version is out of date
@@ -79,6 +100,8 @@ const useSafeNotifications = (): void => {
               },
               title: 'Update Safe',
             },
+
+        onClose: () => dismissUpdateNotification(OUTDATED_VERSION_KEY),
       }),
     )
 
@@ -96,6 +119,7 @@ const useSafeNotifications = (): void => {
     chainId,
     dismissedNotifications,
     setDismissedNotifications,
+    dismissUpdateNotification,
   ])
 
   /**
