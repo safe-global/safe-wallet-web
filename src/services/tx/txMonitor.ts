@@ -63,10 +63,10 @@ type TransactionStatusResponse = {
 const TASK_STATUS_URL = 'https://relay.gelato.digital/tasks/status'
 const getTaskTrackingUrl = (taskId: string) => `${TASK_STATUS_URL}/${taskId}`
 
-export const waitForRelayedTx = (taskId: string, txId: string): void => {
+export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: string): void => {
   // A small delay is necessary before the initial polling as the task status
   // is not immediately available after the sponsoredCall request
-  const INITIAL_POLLING_DELAY = 50
+  const INITIAL_POLLING_DELAY = 2_000
 
   const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
   let timeoutId: NodeJS.Timeout
@@ -80,6 +80,11 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
       response = await fetch(url).then((res) => {
         if (res.ok) {
           return res.json()
+        }
+
+        // 404s can happen if gelato is a bit slow with picking up the taskID
+        if (res.status === 404) {
+          timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
         }
 
         return res.json().then((data) => {
@@ -101,38 +106,53 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
         timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
         return
       case TaskState.ExecSuccess:
-        txDispatch(TxEvent.PROCESSED, {
-          txId,
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.PROCESSED, {
+            txId,
+            groupKey,
+          }),
+        )
         clearTimeout(failAfterTimeoutId)
         return
       case TaskState.ExecReverted:
-        txDispatch(TxEvent.REVERTED, {
-          txId,
-          error: new Error(`Relayed transaction reverted by EVM.`),
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.REVERTED, {
+            txId,
+            error: new Error(`Relayed transaction reverted by EVM.`),
+            groupKey,
+          }),
+        )
         clearTimeout(failAfterTimeoutId)
         return
       case TaskState.Blacklisted:
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: new Error(`Relayed transaction was blacklisted by relay provider.`),
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: new Error(`Relayed transaction was blacklisted by relay provider.`),
+            groupKey,
+          }),
+        )
         clearTimeout(failAfterTimeoutId)
         return
       case TaskState.Cancelled:
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: new Error(`Relayed transaction was cancelled by relay provider.`),
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: new Error(`Relayed transaction was cancelled by relay provider.`),
+            groupKey,
+          }),
+        )
         clearTimeout(failAfterTimeoutId)
         return
       case TaskState.NotFound:
       default:
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: new Error(`Relayed transaction was not found.`),
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: new Error(`Relayed transaction was not found.`),
+            groupKey,
+          }),
+        )
         clearTimeout(failAfterTimeoutId)
         return
     }
@@ -141,13 +161,16 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
   setTimeout(checkTxStatus, INITIAL_POLLING_DELAY)
   failAfterTimeoutId = setTimeout(() => {
     clearTimeout(timeoutId)
-    txDispatch(TxEvent.FAILED, {
-      txId,
-      error: new Error(
-        `Transaction not relayed in ${
-          WAIT_FOR_RELAY_TIMEOUT / 60_000
-        } minutes. Be aware that it might still be relayed.`,
-      ),
-    })
+    txIds.forEach((txId) =>
+      txDispatch(TxEvent.FAILED, {
+        txId,
+        error: new Error(
+          `Transaction not relayed in ${
+            WAIT_FOR_RELAY_TIMEOUT / 60_000
+          } minutes. Be aware that it might still be relayed.`,
+        ),
+        groupKey,
+      }),
+    )
   }, WAIT_FOR_RELAY_TIMEOUT)
 }

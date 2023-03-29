@@ -305,7 +305,7 @@ export const dispatchTxRelay = async (
     txDispatch(TxEvent.RELAYING, { taskId, txId })
 
     // Monitor relay tx
-    waitForRelayedTx(taskId, txId)
+    waitForRelayedTx(taskId, [txId])
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, error: error as Error })
     throw error
@@ -320,6 +320,7 @@ export const dispatchBatchExecutionRelay = async (
 ) => {
   const to = multiSendContract.getAddress()
   const data = multiSendContract.contract.interface.encodeFunctionData('multiSend', [multiSendTxData])
+  const groupKey = multiSendTxData
 
   try {
     const relayResponse = await sponsoredCall({
@@ -334,16 +335,21 @@ export const dispatchBatchExecutionRelay = async (
     }
 
     txs.forEach(({ txId }) => {
-      txDispatch(TxEvent.RELAYING, { taskId, txId })
+      txDispatch(TxEvent.RELAYING, { taskId, txId, groupKey })
     })
 
     // Monitor relay tx
-    // waitForRelayedTx(taskId, txId)
+    waitForRelayedTx(
+      taskId,
+      txs.map((tx) => tx.txId),
+      groupKey,
+    )
   } catch (error) {
     txs.forEach(({ txId }) => {
       txDispatch(TxEvent.FAILED, {
         txId,
         error: error as Error,
+        groupKey,
       })
     })
     throw error
