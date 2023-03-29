@@ -66,7 +66,7 @@ const getTaskTrackingUrl = (taskId: string) => `${TASK_STATUS_URL}/${taskId}`
 export const waitForRelayedTx = (taskId: string, txId: string): void => {
   // A small delay is necessary before the initial polling as the task status
   // is not immediately available after the sponsoredCall request
-  const INITIAL_POLLING_DELAY = 50
+  const INITIAL_POLLING_DELAY = 2_000
 
   const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
   let timeoutId: NodeJS.Timeout
@@ -80,6 +80,11 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
       response = await fetch(url).then((res) => {
         if (res.ok) {
           return res.json()
+        }
+
+        // 404s can happen if gelato is a bit slow with picking up the taskID
+        if (res.status === 404) {
+          timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
         }
 
         return res.json().then((data) => {
