@@ -37,8 +37,6 @@ export const FallbackHandler = (): ReactElement | null => {
 
   const isOfficial = !!safe.fallbackHandler && safe.fallbackHandler.value === fallbackHandlerDeployment?.defaultAddress
 
-  const fallbackHandlerName = safe.fallbackHandler?.name || fallbackHandlerDeployment?.contractName
-
   const tooltip = !safe.fallbackHandler ? (
     <>
       The Safe may not work correctly as no fallback handler is currently set.
@@ -102,8 +100,9 @@ export const FallbackHandler = (): ReactElement | null => {
               <Box className={css.container}>
                 <EthHashInfo
                   shortAddress={false}
-                  name={fallbackHandlerName}
+                  name={safe.fallbackHandler.name || fallbackHandlerDeployment?.contractName}
                   address={safe.fallbackHandler.value}
+                  customAvatar={safe.fallbackHandler.logoUri}
                   showCopyButton
                   hasExplorer
                 />
