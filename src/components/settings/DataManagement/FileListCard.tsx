@@ -107,7 +107,8 @@ const getItems = ({
           {
             primary: (
               <>
-                <b>Settings</b>
+                <b>Settings</b> (appearance, bookmarked Safe Apps, currency, hidden tokens and custom environment
+                variables)
               </>
             ),
           },
