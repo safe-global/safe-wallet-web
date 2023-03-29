@@ -38,6 +38,13 @@
   margin-right: var(--space-3);
 }
 
+.networkIcon {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: calc(var(--space-1) / 2);
+}
+
 .hint {
   display: flex;
   align-items: center;

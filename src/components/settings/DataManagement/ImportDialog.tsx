@@ -79,6 +79,7 @@ export const ImportDialog = ({
           settings={settings}
           safeApps={safeApps}
           error={error}
+          showPreview
         />
         {!isDisabled && (
           <Alert severity="warning">
