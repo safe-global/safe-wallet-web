@@ -35,7 +35,10 @@ export const ContractVersion = () => {
       <Box mt={2}>
         {safeLoaded ? (
           showUpdateDialog ? (
-            <Alert icon={<SvgIcon component={InfoIcon} inheritViewBox />}>
+            <Alert
+              sx={{ borderRadius: '2px', borderColor: '#B0FFC9' }}
+              icon={<SvgIcon component={InfoIcon} inheritViewBox color="secondary" />}
+            >
               <AlertTitle sx={{ fontWeight: 700 }}>New version is available: {LATEST_SAFE_VERSION}</AlertTitle>
               <Typography mb={3}>
                 Update now to take advantage of new features and the highest security standards available. You will need
