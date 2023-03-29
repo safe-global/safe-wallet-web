@@ -32,10 +32,13 @@
 
 .columnWrap {
   white-space: normal;
-  word-break: break-word;
 }
 
 @media (max-width: 600px) {
+  .columnWrap {
+    word-break: break-word;
+  }
+
   .gridContainer {
     gap: var(--space-1);
   }

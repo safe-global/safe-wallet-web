@@ -49,7 +49,7 @@
     "@safe-global/safe-deployments": "^1.20.2",
     "@safe-global/safe-ethers-lib": "^1.9.2",
     "@safe-global/safe-gateway-typescript-sdk": "^3.7.0",
-    "@safe-global/safe-react-components": "^2.0.2",
+    "@safe-global/safe-react-components": "^2.0.5",
     "@sentry/react": "^7.28.1",
     "@sentry/tracing": "^7.28.1",
     "@truffle/hdwallet-provider": "^2.1.4",
@@ -85,7 +85,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^13.1.1",
-    "@openzeppelin/contracts": "^4.8.1",
+    "@openzeppelin/contracts": "^4.8.2",
     "@safe-global/safe-core-sdk-types": "^1.9.0",
     "@sentry/types": "^7.28.1",
     "@svgr/webpack": "^6.3.1",
