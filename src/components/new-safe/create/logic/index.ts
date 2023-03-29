@@ -28,6 +28,8 @@ import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { formatError } from '@/utils/formatters'
+import { Gnosis_safe__factory } from '@/types/contracts/factories/@gnosis.pm/safe-deployments/dist/assets/v1.3.0'
+import { sponsoredCall } from '@/services/tx/sponsoredCall'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -262,4 +264,51 @@ export const getRedirect = (
   const hasQueryParams = redirectUrl.includes('?')
   const appendChar = hasQueryParams ? '&' : '?'
   return redirectUrl + `${appendChar}safe=${address}`
+}
+
+export const createNewSafeViaRelayer = async (
+  chain: ChainInfo,
+  owners: string[],
+  threshold: number,
+  saltNonce: number,
+) => {
+  const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
+  const proxyFactoryAddress = proxyFactory.getAddress()
+  const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)
+
+  const callData = {
+    owners,
+    threshold,
+    to: ZERO_ADDRESS,
+    data: EMPTY_DATA,
+    fallbackHandlerAddress: fallbackHandlerDeployment.getAddress(),
+    paymentToken: ZERO_ADDRESS,
+    payment: 0,
+    paymentReceiver: ZERO_ADDRESS,
+  }
+  const initializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
+    callData.owners,
+    callData.threshold,
+    callData.to,
+    callData.data,
+    callData.fallbackHandlerAddress,
+    callData.paymentToken,
+    callData.payment,
+    callData.paymentReceiver,
+  ])
+
+  const safeContract = getGnosisSafeContractInstance(chain)
+
+  const createProxyWithNonceCallData = proxyFactory.contract.interface.encodeFunctionData('createProxyWithNonce', [
+    safeContract.getAddress(),
+    initializer,
+    saltNonce,
+  ])
+
+  const relayResponse = await sponsoredCall({
+    chainId: chain.chainId,
+    to: proxyFactoryAddress,
+    data: createProxyWithNonceCallData,
+  })
+  return relayResponse.taskId
 }

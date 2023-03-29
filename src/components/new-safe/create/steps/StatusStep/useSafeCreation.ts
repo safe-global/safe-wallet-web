@@ -14,18 +14,11 @@ import {
   handleSafeCreationError,
   SAFE_CREATION_ERROR_KEY,
   showSafeCreationError,
+  createNewSafeViaRelayer,
 } from '@/components/new-safe/create/logic'
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey, showNotification } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
-import {
-  getFallbackHandlerContractInstance,
-  getGnosisSafeContractInstance,
-  getProxyFactoryContractInstance,
-} from '@/services/contracts/safeContracts'
-import { sponsoredCall } from '@/services/tx/sponsoredCall'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { Gnosis_safe__factory } from '@/types/contracts/factories/@gnosis.pm/safe-deployments/dist/assets/v1.3.0'
 import { waitForRelayedTx } from '@/services/tx/txMonitor'
 
 export enum SafeCreationStatus {
@@ -72,47 +65,13 @@ export const useSafeCreation = (
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
     if (willRelay) {
-      const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
-      const proxyFactoryAddress = proxyFactory.getAddress()
-      const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)
-
-      const callData = {
-        owners: pendingSafe.owners.map((owner) => owner.address),
-        threshold: pendingSafe.threshold,
-        to: ZERO_ADDRESS,
-        data: EMPTY_DATA,
-        fallbackHandlerAddress: fallbackHandlerDeployment.getAddress(),
-        paymentToken: ZERO_ADDRESS,
-        payment: 0,
-        paymentReceiver: ZERO_ADDRESS,
-      }
-
       try {
-        const initializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
-          callData.owners,
-          callData.threshold,
-          callData.to,
-          callData.data,
-          callData.fallbackHandlerAddress,
-          callData.paymentToken,
-          callData.payment,
-          callData.paymentReceiver,
-        ])
-
-        const safeContract = getGnosisSafeContractInstance(chain)
-
-        const createProxyWithNonceCallData = proxyFactory.contract.interface.encodeFunctionData(
-          'createProxyWithNonce',
-          [safeContract.getAddress(), initializer, pendingSafe.saltNonce],
+        const taskId = await createNewSafeViaRelayer(
+          chain,
+          pendingSafe.owners.map((owner) => owner.address),
+          pendingSafe.threshold,
+          pendingSafe.saltNonce,
         )
-
-        const relayResponse = await sponsoredCall({
-          chainId: chain.chainId,
-          to: proxyFactoryAddress,
-          data: createProxyWithNonceCallData,
-        })
-        const taskId = relayResponse.taskId
-
         if (!taskId) {
           throw new Error('Transaction could not be relayed')
         }
@@ -131,7 +90,7 @@ export const useSafeCreation = (
           }),
         )
       }
-    } else if (!willRelay) {
+    } else {
       try {
         const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, wallet)
 

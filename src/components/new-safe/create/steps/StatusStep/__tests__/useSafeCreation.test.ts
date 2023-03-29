@@ -5,6 +5,7 @@ import * as chain from '@/hooks/useChains'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '@/components/new-safe/create/logic'
 import * as contracts from '@/services/contracts/safeContracts'
+import * as txMonitor from '@/services/tx/txMonitor'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -211,6 +212,19 @@ describe('useSafeCreation', () => {
 
     await waitFor(() => {
       expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
+    })
+  })
+
+  it('should set a PROCESSING state and watch taskId after relay success', async () => {
+    jest.spyOn(logic, 'createNewSafeViaRelayer').mockResolvedValue('0x456')
+    const txMonitorSpy = jest.spyOn(txMonitor, 'waitForRelayedTx').mockImplementation(jest.fn())
+    renderHook(() =>
+      useSafeCreation({ ...mockPendingSafe, tx: mockSafeInfo }, mockSetPendingSafe, mockStatus, mockSetStatus, true),
+    )
+
+    await waitFor(() => {
+      expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
+      expect(txMonitorSpy).toHaveBeenCalledWith('0x456', undefined, expect.anything())
     })
   })
 })
