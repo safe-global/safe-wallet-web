@@ -6,13 +6,13 @@ import SignOrExecuteForm from '../../SignOrExecuteForm'
 import SendToBlock from '@/components/tx/SendToBlock'
 import useAsync from '@/hooks/useAsync'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
-import useTxSender from '@/hooks/useTxSender'
 import { type NftTransferParams } from '.'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { getDecodedData, Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
+import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 
 type ReviewNftBatchProps = {
   params: NftTransferParams
@@ -20,7 +20,6 @@ type ReviewNftBatchProps = {
 }
 
 const ReviewNftBatch = ({ params, onSubmit }: ReviewNftBatchProps): ReactElement => {
-  const { createTx, createMultiSendCallOnlyTx } = useTxSender()
   const safeAddress = useSafeAddress()
   const chainId = useChainId()
   const { tokens } = params
@@ -30,7 +29,7 @@ const ReviewNftBatch = ({ params, onSubmit }: ReviewNftBatchProps): ReactElement
       return createNftTransferParams(safeAddress, params.recipient, token.id, token.address)
     })
     return calls.length > 1 ? createMultiSendCallOnlyTx(calls) : createTx(calls[0])
-  }, [safeAddress, params, createMultiSendCallOnlyTx])
+  }, [safeAddress, params])
 
   const [decodedData] = useAsync<DecodedDataResponse | undefined>(async () => {
     if (!safeTx) return

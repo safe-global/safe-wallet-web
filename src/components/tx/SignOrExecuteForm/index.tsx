@@ -2,7 +2,6 @@ import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useS
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
-import useTxSender from '@/hooks/useTxSender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -12,25 +11,32 @@ import { isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
-import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import useOnboard, { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions, hasEnoughSignatures } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
-import { useWeb3 } from '@/hooks/wallets/web3'
-import type { Web3Provider } from '@ethersproject/providers'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
+import {
+  createTx,
+  dispatchOnChainSigning,
+  dispatchTxExecution,
+  dispatchTxProposal,
+  dispatchTxRelay,
+  dispatchTxSigning,
+} from '@/services/tx/tx-sender'
 import CheckWallet from '@/components/common/CheckWallet'
 import ExternalLink from '@/components/common/ExternalLink'
 import { getExplorerLink } from '@/utils/gateway'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import useRemainingRelays from '@/hooks/useRemainingRelays'
+import { type OnboardAPI } from '@web3-onboard/core'
+import { WrongChainWarning } from '../WrongChainWarning'
 
 enum ExecutionType {
   RELAYER = 'Via relayer',
@@ -73,21 +79,11 @@ const SignOrExecuteForm = ({
   // Hooks
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
+  const onboard = useOnboard()
   const isOwner = useIsSafeOwner()
-  const provider = useWeb3()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
   const [remainingRelays] = useRemainingRelays()
-
-  const {
-    createTx,
-    dispatchTxProposal,
-    dispatchOnChainSigning,
-    dispatchTxSigning,
-    dispatchTxExecution,
-    dispatchTxRelay,
-  } = useTxSender()
 
   // Unsupported base contract
   const isUnknown = safe.implementationVersionState === ImplementationVersionState.UNKNOWN
@@ -115,17 +111,17 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
-  // Check if transaction will fail
-  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(
-    willExecute ? tx : undefined,
-    gasLimit,
-  )
-
   const [advancedParams, setAdvancedParams] = useAdvancedParams({
     nonce: tx?.data.nonce,
     gasLimit,
     safeTxGas: tx?.data.safeTxGas,
   })
+
+  // Check if transaction will fail
+  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(
+    willExecute ? tx : undefined,
+    advancedParams.gasLimit,
+  )
 
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
@@ -133,11 +129,12 @@ const SignOrExecuteForm = ({
   const nonceReadonly = !!txId || !!tx?.signatures.size || isRejection
 
   // Assert that wallet, tx and provider are defined
-  const assertDependencies = (): [ConnectedWallet, SafeTransaction, Web3Provider] => {
+  const assertDependencies = (): [ConnectedWallet, SafeTransaction, OnboardAPI] => {
     if (!wallet) throw new Error('Wallet not connected')
     if (!tx) throw new Error('Transaction not ready')
-    if (!provider) throw new Error('Provider not ready')
-    return [wallet, tx, provider]
+    if (!onboard) throw new Error('Onboard not ready')
+
+    return [wallet, tx, onboard]
   }
 
   // Propose transaction if no txId
@@ -151,21 +148,12 @@ const SignOrExecuteForm = ({
       origin,
     })
 
-    /**
-     * We need to handle this case because of the way useTxSender is designed,
-     * but it should never happen here because this function is explicitly called
-     * through a user interaction
-     */
-    if (!proposedTx) {
-      throw new Error('Could not propose transaction')
-    }
-
     return proposedTx.txId
   }
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
-    const [connectedWallet, createdTx, provider] = assertDependencies()
+    const [connectedWallet, createdTx, onboard] = assertDependencies()
 
     // Smart contract wallets must sign via an on-chain tx
     if (await isSmartContractWallet(connectedWallet)) {
@@ -173,40 +161,31 @@ const SignOrExecuteForm = ({
       // Otherwise the backend won't pick up the tx
       // The signature will be added once the on-chain signature is indexed
       const id = txId || (await proposeTx(createdTx))
-      await dispatchOnChainSigning(createdTx, provider, id)
+      await dispatchOnChainSigning(createdTx, id, onboard, safe.chainId)
       return id
     }
 
     // Otherwise, sign off-chain
-    const signedTx = await dispatchTxSigning(createdTx, safe.version, txId)
-
-    /**
-     * We need to handle this case because of the way useTxSender is designed,
-     * but it should never happen here because this function is explicitly called
-     * through a user interaction
-     */
-    if (!signedTx) {
-      throw new Error('Could not sign transaction')
-    }
+    const signedTx = await dispatchTxSigning(createdTx, safe.version, onboard, safe.chainId, txId)
 
     return await proposeTx(signedTx)
   }
 
   // Execute transaction
   const onExecute = async (): Promise<string | undefined> => {
-    const [, createdTx, provider] = assertDependencies()
+    const [, createdTx, onboard] = assertDependencies()
 
     // If no txId was provided, it's an immediate execution of a new tx
     const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
     trackEvent({ ...MODALS_EVENTS.PROPOSE_TX, label: ExecutionType.CONNECTED_WALLET })
-    await dispatchTxExecution(createdTx, provider, txOptions, id)
+    await dispatchTxExecution(createdTx, txOptions, id, onboard, safe.chainId)
 
     return id
   }
 
   const onRelay = async () => {
-    const [, createdTx] = assertDependencies()
+    const [, createdTx, onboard] = assertDependencies()
 
     const { gasLimit } = getTxOptions(advancedParams, currentChain)
 
@@ -214,7 +193,7 @@ const SignOrExecuteForm = ({
     let safeTx = createdTx
     // Add missing signature
     if (!hasEnoughSignatures(createdTx, safe)) {
-      const signedTransaction = await dispatchTxSigning(createdTx, safe.version)
+      const signedTransaction = await dispatchTxSigning(createdTx, safe.version, onboard, safe.chainId, txId)
 
       if (!signedTransaction) {
         throw new Error('Could not sign transaction')
@@ -305,10 +284,11 @@ const SignOrExecuteForm = ({
           disabled={submitDisabled}
         />
 
+        {/* Warning message and switch button */}
+        <WrongChainWarning />
+
         {/* Error messages */}
-        {isWrongChain ? (
-          <ErrorMessage>Please connect your wallet to {currentChain?.chainName}</ErrorMessage>
-        ) : cannotPropose ? (
+        {isSubmittable && cannotPropose ? (
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
           </ErrorMessage>

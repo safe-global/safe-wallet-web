@@ -4,12 +4,12 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useChainId } from '@/hooks/useChainId'
-import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
 import { Skeleton, Typography } from '@mui/material'
+import { createExistingTx } from '@/services/tx/tx-sender'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -21,7 +21,6 @@ const EXECUTE_TEXT = 'Submit the form to execute this transaction.'
 const SIGN_EXECUTE_TEXT = 'Sign or immediately execute this transaction.'
 
 const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): ReactElement => {
-  const { createExistingTx } = useTxSender()
   const wallet = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
@@ -32,7 +31,7 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createExistingTx(chainId, safeAddress, txId)
-  }, [txId, safeAddress, chainId, createExistingTx])
+  }, [txId, safeAddress, chainId])
 
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 
