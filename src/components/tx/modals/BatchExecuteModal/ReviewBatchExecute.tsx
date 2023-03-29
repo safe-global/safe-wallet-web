@@ -7,7 +7,7 @@ import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/t
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { Button, DialogContent, Typography } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
-import { useMemo, useState } from 'react'
+import { type SyntheticEvent, useMemo, useState } from 'react'
 import useTxSender from '@/hooks/useTxSender'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { Errors, logError } from '@/services/exceptions'
@@ -16,6 +16,9 @@ import type { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
+import useRemainingRelays from '@/hooks/useRemainingRelays'
+import SponsoredBy from '@/components/tx/SponsoredBy'
+import { FEATURES, hasFeature } from '@/utils/chains'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -24,6 +27,10 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const { safe } = useSafeInfo()
   const provider = useWeb3()
   const { dispatchBatchExecution } = useTxSender()
+  const [remainingRelays] = useRemainingRelays()
+
+  // Chain has relaying feature and available relays
+  const canRelay = chain && hasFeature(chain, FEATURES.RELAYING) && !!remainingRelays
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -49,18 +56,32 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const onExecute = async () => {
     if (!provider || !multiSendTxData || !multiSendContract || !txsWithDetails) return
 
+    await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, provider)
+
+    onSubmit(null)
+  }
+
+  const onRelay = async () => {
+    // Add GA event
+    //
+    // should relay
+    // dispatchTxRelay(safeTx)
+    console.log('implement batch relay')
+  }
+
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault()
     setIsSubmittable(false)
     setSubmitError(undefined)
 
     try {
-      await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, provider)
+      await (canRelay ? onRelay() : onExecute())
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
       setSubmitError(err as Error)
+      return
     }
-
-    onSubmit(null)
   }
 
   const submitDisabled = loading || !isSubmittable
@@ -91,6 +112,15 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         </Typography>
         <DecodedTxs txs={txsWithDetails} />
 
+        {canRelay ? (
+          <>
+            <Typography mt={2} color="primary.light">
+              How to pay:
+            </Typography>
+            <SponsoredBy remainingRelays={remainingRelays} />
+          </>
+        ) : null}
+
         {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
 
         <Typography variant="body2" mt={2} textAlign="center">
@@ -109,7 +139,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         )}
 
         <Button
-          onClick={onExecute}
+          onClick={handleSubmit}
           disabled={submitDisabled}
           variant="contained"
           sx={{ position: 'absolute', bottom: '24px', right: '24px', zIndex: 1 }}

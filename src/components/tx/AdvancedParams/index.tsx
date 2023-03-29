@@ -7,6 +7,7 @@ import { Box } from '@mui/material'
 import { useState } from 'react'
 import AdvancedParamsForm from './AdvancedParamsForm'
 import { type AdvancedParameters } from './types'
+import useRemainingRelays from '@/hooks/useRemainingRelays'
 
 type Props = {
   params: AdvancedParameters
@@ -32,6 +33,7 @@ const AdvancedParams = ({
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const chain = useCurrentChain()
   const isEIP1559 = !!chain && hasFeature(chain, FEATURES.EIP1559)
+  const [remainingRelays] = useRemainingRelays()
 
   const onEditOpen = () => {
     setIsEditing(true)
@@ -64,7 +66,7 @@ const AdvancedParams = ({
         onEdit={onEditOpen}
         willRelay={willRelay}
       />
-      {willRelay ? (
+      {willRelay && remainingRelays ? (
         <Box
           sx={{
             '& > div': {
@@ -74,7 +76,7 @@ const AdvancedParams = ({
             },
           }}
         >
-          <SponsoredBy />
+          <SponsoredBy remainingRelays={remainingRelays} />
         </Box>
       ) : null}
     </>
