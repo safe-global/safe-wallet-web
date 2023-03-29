@@ -527,6 +527,8 @@ describe('SignOrExecuteForm', () => {
   })
 
   it('executes a transaction with the connected wallet if relaying is not available', async () => {
+    jest.spyOn(useRemainingRelays, 'default').mockReturnValue([0, undefined, false])
+
     const executionSpy = jest.fn()
     jest
       .spyOn(txSenderDispatch, 'dispatchTxProposal')
