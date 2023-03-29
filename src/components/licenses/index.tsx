@@ -19,11 +19,11 @@ const SafeLicenses = () => {
         <Typography variant="h2" mb={2}>
           Android
         </Typography>
-        <TableContainer component={Paper} sx={{ width: '100%' }}>
+        <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
+                <TableCell width="30%">
                   <strong>Library</strong>
                 </TableCell>
                 <TableCell>
@@ -221,7 +221,7 @@ const SafeLicenses = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
+                <TableCell width="30%">
                   <strong>Library</strong>
                 </TableCell>
                 <TableCell>
@@ -347,7 +347,7 @@ const SafeLicenses = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Library</TableCell>
+                <TableCell width="30%">Library</TableCell>
                 <TableCell>License</TableCell>
               </TableRow>
             </TableHead>
@@ -355,8 +355,8 @@ const SafeLicenses = () => {
               <TableRow>
                 <TableCell>@date-io/date-fns</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/dmtrKovalenko/date-io/blob/main/LICENSE">
-                    https://github.com/dmtrKovalenko/date-io/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/dmtrKovalenko/date-io/blob/master/LICENSE">
+                    https://github.com/dmtrKovalenko/date-io/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
@@ -411,56 +411,56 @@ const SafeLicenses = () => {
               <TableRow>
                 <TableCell>@mui/icons-material</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/mui/material-ui/blob/main/LICENSE">
-                    https://github.com/mui/material-ui/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/mui/material-ui/blob/master/LICENSE">
+                    https://github.com/mui/material-ui/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@mui/material</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/mui/material-ui/blob/main/LICENSE">
-                    https://github.com/mui/material-ui/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/mui/material-ui/blob/master/LICENSE">
+                    https://github.com/mui/material-ui/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@mui/x-date-pickers</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/mui/mui-x/blob/main/LICENSE">
-                    https://github.com/mui/mui-x/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/mui/mui-x#mit-vs-commercial-licenses">
+                    https://github.com/mui/mui-x#mit-vs-commercial-licenses
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@reduxjs/toolkit</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/reduxjs/redux-toolkit/blob/main/LICENSE">
-                    https://github.com/reduxjs/redux-toolkit/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/reduxjs/redux-toolkit/blob/master/LICENSE">
+                    https://github.com/reduxjs/redux-toolkit/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@safe-global/safe-apps-sdk</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/safe-global/safe-apps-sdk/blob/main/LICENSE">
-                    https://github.com/safe-global/safe-apps-sdk/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/safe-global/safe-apps-sdk/blob/main/LICENSE.md">
+                    https://github.com/safe-global/safe-apps-sdk/blob/main/LICENSE.md
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@safe-global/safe-core-sdk</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE">
-                    https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md">
+                    https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@safe-global/safe-core-sdk-utils</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE">
-                    https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md">
+                    https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md
                   </ExternalLink>
                 </TableCell>
               </TableRow>
@@ -475,48 +475,48 @@ const SafeLicenses = () => {
               <TableRow>
                 <TableCell>@safe-global/safe-ethers-lib</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE">
-                    https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md">
+                    https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@safe-global/safe-gateway-typescript-sdk</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/safe-global/safe-gateway-typescript-sdk/blob/main/LICENSE">
-                    https://github.com/safe-global/safe-gateway-typescript-sdk/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/safe-global/safe-gateway-typescript-sdk/blob/main/LICENSE.md">
+                    https://github.com/safe-global/safe-gateway-typescript-sdk/blob/main/LICENSE.md
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@safe-global/safe-react-components</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/safe-global/safe-react-components/blob/main/LICENSE">
-                    https://github.com/safe-global/safe-react-components/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/safe-global/safe-react-components/blob/main/LICENSE.md">
+                    https://github.com/safe-global/safe-react-components/blob/main/LICENSE.md
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@sentry/react</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/getsentry/sentry-javascript/blob/main/LICENSE">
-                    https://github.com/getsentry/sentry-javascript/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/getsentry/sentry-javascript/blob/develop/LICENSE">
+                    https://github.com/getsentry/sentry-javascript/blob/develop/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@sentry/tracing</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/getsentry/sentry-javascript/blob/main/LICENSE">
-                    https://github.com/getsentry/sentry-javascript/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/getsentry/sentry-javascript/blob/develop/LICENSE">
+                    https://github.com/getsentry/sentry-javascript/blob/develop/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>@truffle/hdwallet-provider</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/trufflesuite/truffle/blob/main/LICENSE">
-                    https://github.com/trufflesuite/truffle/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/trufflesuite/truffle/blob/develop/LICENSE">
+                    https://github.com/trufflesuite/truffle/blob/develop/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
@@ -595,40 +595,40 @@ const SafeLicenses = () => {
               <TableRow>
                 <TableCell>date-fns</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/date-fns/date-fns/blob/main/LICENSE">
-                    https://github.com/date-fns/date-fns/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/date-fns/date-fns/blob/main/LICENSE.md">
+                    https://github.com/date-fns/date-fns/blob/main/LICENSE.md
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>ethereum-blockies-base64</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/MyCryptoHQ/ethereum-blockies-base64/blob/main/LICENSE">
-                    https://github.com/MyCryptoHQ/ethereum-blockies-base64/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/MyCryptoHQ/ethereum-blockies-base64">
+                    https://github.com/MyCryptoHQ/ethereum-blockies-base64
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>ethers</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/ethers-io/ethers.js/blob/main/LICENSE">
-                    https://github.com/ethers-io/ethers.js/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/ethers-io/ethers.js/blob/main/LICENSE.md">
+                    https://github.com/ethers-io/ethers.js/blob/main/LICENSE.md
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>exponential-backoff</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/coveo/exponential-backoff/blob/main/LICENSE">
-                    https://github.com/coveo/exponential-backoff/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/coveo/exponential-backoff/blob/master/LICENSE">
+                    https://github.com/coveo/exponential-backoff/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>fuse.js</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/krisk/Fuse/blob/main/LICENSE">
-                    https://github.com/krisk/Fuse/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/krisk/Fuse/blob/master/LICENSE">
+                    https://github.com/krisk/Fuse/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
@@ -643,32 +643,32 @@ const SafeLicenses = () => {
               <TableRow>
                 <TableCell>lodash</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/lodash/lodash/blob/main/LICENSE">
-                    https://github.com/lodash/lodash/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/lodash/lodash/blob/master/LICENSE">
+                    https://github.com/lodash/lodash/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>next</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/vercel/next.js/blob/main/LICENSE">
-                    https://github.com/vercel/next.js/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/vercel/next.js/blob/canary/LICENSE">
+                    https://github.com/vercel/next.js/blob/canary/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>next-pwa</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/shadowwalker/next-pwa/blob/main/LICENSE">
-                    https://github.com/shadowwalker/next-pwa/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/shadowwalker/next-pwa/blob/master/LICENSE">
+                    https://github.com/shadowwalker/next-pwa/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>papaparse</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/mholt/PapaParse/blob/main/LICENSE">
-                    https://github.com/mholt/PapaParse/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/mholt/PapaParse/blob/master/LICENSE">
+                    https://github.com/mholt/PapaParse/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
@@ -699,48 +699,48 @@ const SafeLicenses = () => {
               <TableRow>
                 <TableCell>react-dropzone</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/react-dropzone/react-dropzone/blob/main/LICENSE">
-                    https://github.com/react-dropzone/react-dropzone/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/react-dropzone/react-dropzone/blob/master/LICENSE">
+                    https://github.com/react-dropzone/react-dropzone/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>react-gtm-module</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/alinemorelli/react-gtm/blob/main/LICENSE">
-                    https://github.com/alinemorelli/react-gtm/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/alinemorelli/react-gtm/blob/master/LICENSE">
+                    https://github.com/alinemorelli/react-gtm/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>react-hook-form</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/react-hook-form/react-hook-form/blob/main/LICENSE">
-                    https://github.com/react-hook-form/react-hook-form/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/react-hook-form/react-hook-form/blob/master/LICENSE">
+                    https://github.com/react-hook-form/react-hook-form/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>react-papaparse</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/Bunlong/react-papaparse/blob/main/LICENSE">
-                    https://github.com/Bunlong/react-papaparse/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/Bunlong/react-papaparse/blob/master/LICENSE">
+                    https://github.com/Bunlong/react-papaparse/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>react-qr-reader</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/JodusNodus/react-qr-reader/blob/main/LICENSE">
-                    https://github.com/JodusNodus/react-qr-reader/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/JodusNodus/react-qr-reader/blob/master/LICENSE">
+                    https://github.com/JodusNodus/react-qr-reader/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>react-redux</TableCell>
                 <TableCell>
-                  <ExternalLink href="https://github.com/reduxjs/react-redux/blob/main/LICENSE">
-                    https://github.com/reduxjs/react-redux/blob/main/LICENSE
+                  <ExternalLink href="https://github.com/reduxjs/react-redux/blob/master/LICENSE">
+                    https://github.com/reduxjs/react-redux/blob/master/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
@@ -749,318 +749,6 @@ const SafeLicenses = () => {
                 <TableCell>
                   <ExternalLink href="https://github.com/npm/node-semver/blob/main/LICENSE">
                     https://github.com/npm/node-semver/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@next/bundle-analyzer</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/vercel/next.js/blob/main/LICENSE">
-                    https://github.com/vercel/next.js/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@openzeppelin/contracts</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/main/LICENSE">
-                    https://github.com/OpenZeppelin/openzeppelin-contracts/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@safe-global/safe-core-sdk-types</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE">
-                    https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@sentry/types</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/getsentry/sentry-javascript/blob/main/LICENSE">
-                    https://github.com/getsentry/sentry-javascript/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@svgr/webpack</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/gregberge/svgr/blob/main/LICENSE">
-                    https://github.com/gregberge/svgr/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@testing-library/cypress</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/kentcdodds/cypress-testing-library/blob/main/LICENSE">
-                    https://github.com/kentcdodds/cypress-testing-library/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@testing-library/jest-dom</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/testing-library/jest-dom/blob/main/LICENSE">
-                    https://github.com/testing-library/jest-dom/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@testing-library/react</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/testing-library/react-testing-library/blob/main/LICENSE">
-                    https://github.com/testing-library/react-testing-library/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@testing-library/user-event</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/testing-library/user-event/blob/main/LICENSE">
-                    https://github.com/testing-library/user-event/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@typechain/ethers-v5</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/ethereum-ts/Typechain/blob/main/LICENSE">
-                    https://github.com/ethereum-ts/Typechain/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/jest</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/js-cookie</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/lodash</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/node</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/qrcode</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/react</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/react-dom</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/react-gtm-module</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/react-qr-reader</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@types/semver</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE">
-                    https://github.com/DefinitelyTyped/DefinitelyTyped/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>@typescript-eslint/eslint-plugin</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/typescript-eslint/typescript-eslint/blob/main/LICENSE">
-                    https://github.com/typescript-eslint/typescript-eslint/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>cross-env</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/kentcdodds/cross-env/blob/main/LICENSE">
-                    https://github.com/kentcdodds/cross-env/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>cypress</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/cypress-io/cypress/blob/main/LICENSE">
-                    https://github.com/cypress-io/cypress/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>cypress-file-upload</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/abramenal/cypress-file-upload/blob/main/LICENSE">
-                    https://github.com/abramenal/cypress-file-upload/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>eslint</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/eslint/eslint/blob/main/LICENSE">
-                    https://github.com/eslint/eslint/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>eslint-config-next</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/vercel/next.js/blob/main/LICENSE">
-                    https://github.com/vercel/next.js/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>eslint-config-prettier</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/prettier/eslint-config-prettier/blob/main/LICENSE">
-                    https://github.com/prettier/eslint-config-prettier/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>eslint-plugin-prettier</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/prettier/eslint-plugin-prettier/blob/main/LICENSE">
-                    https://github.com/prettier/eslint-plugin-prettier/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>eslint-plugin-unused-imports</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/sweepline/eslint-plugin-unused-imports/blob/main/LICENSE">
-                    https://github.com/sweepline/eslint-plugin-unused-imports/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>jest</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/facebook/jest/blob/main/LICENSE">
-                    https://github.com/facebook/jest/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>jest-environment-jsdom</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/facebook/jest/blob/main/LICENSE">
-                    https://github.com/facebook/jest/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>pre-commit</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/observing/pre-commit/blob/main/LICENSE">
-                    https://github.com/observing/pre-commit/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>prettier</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/prettier/prettier/blob/main/LICENSE">
-                    https://github.com/prettier/prettier/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>ts-node</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/TypeStrong/ts-node/blob/main/LICENSE">
-                    https://github.com/TypeStrong/ts-node/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>ts-prune</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/nadeesha/ts-prune/blob/main/LICENSE">
-                    https://github.com/nadeesha/ts-prune/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>typechain</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/ethereum-ts/Typechain/blob/main/LICENSE">
-                    https://github.com/ethereum-ts/Typechain/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>typescript</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/Microsoft/TypeScript/blob/main/LICENSE">
-                    https://github.com/Microsoft/TypeScript/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>typescript-plugin-css-modules</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/mrmckeb/typescript-plugin-css-modules/blob/main/LICENSE">
-                    https://github.com/mrmckeb/typescript-plugin-css-modules/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>whatwg-fetch</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/github/fetch/blob/main/LICENSE">
-                    https://github.com/github/fetch/blob/main/LICENSE
                   </ExternalLink>
                 </TableCell>
               </TableRow>
