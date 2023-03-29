@@ -4,6 +4,7 @@ import { Grid } from '@mui/material'
 import SafeModules from '@/components/settings/SafeModules'
 import TransactionGuards from '@/components/settings/TransactionGuards'
 import SettingsHeader from '@/components/settings/SettingsHeader'
+import { FallbackHandler } from '@/components/settings/FallbackHandler'
 
 const Modules: NextPage = () => {
   return (
@@ -22,6 +23,10 @@ const Modules: NextPage = () => {
 
           <Grid item>
             <TransactionGuards />
+          </Grid>
+
+          <Grid item>
+            <FallbackHandler />
           </Grid>
         </Grid>
       </main>
