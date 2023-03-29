@@ -65,8 +65,9 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     if (!provider || !multiSendTxData || !multiSendContract || !txsWithDetails) return
     // Add GA event
     //
-    dispatchBatchExecutionRelay(txsWithDetails, multiSendContract, multiSendTxData, safe)
-    console.log('implement batch relay')
+    await dispatchBatchExecutionRelay(txsWithDetails, multiSendContract, multiSendTxData, safe)
+
+    onSubmit(null)
   }
 
   const handleSubmit = async (e: SyntheticEvent) => {

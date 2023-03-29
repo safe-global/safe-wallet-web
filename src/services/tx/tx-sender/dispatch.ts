@@ -319,12 +319,13 @@ export const dispatchBatchExecutionRelay = async (
   safe: SafeInfo,
 ) => {
   const to = multiSendContract.getAddress()
+  const data = multiSendContract.contract.interface.encodeFunctionData('multiSend', [multiSendTxData])
 
   try {
     const relayResponse = await sponsoredCall({
       chainId: safe.chainId,
       to,
-      data: multiSendTxData,
+      data,
     })
     const taskId = relayResponse.taskId
 
