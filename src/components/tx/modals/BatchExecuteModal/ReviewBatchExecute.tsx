@@ -118,7 +118,11 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
             <Typography mt={2} color="primary.light">
               How to pay:
             </Typography>
-            <SponsoredBy remainingRelays={remainingRelays} />
+            <SponsoredBy
+              remainingRelays={remainingRelays}
+              tooltip="You can only relay multisend transactions containing
+executions from the same Safe."
+            />
           </>
         ) : null}
 
