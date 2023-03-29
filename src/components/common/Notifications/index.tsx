@@ -91,12 +91,6 @@ const getVisibleNotifications = (notifications: Notification[]) => {
   return notifications.filter((notification) => !notification.isDismissed)
 }
 
-export type DismissedUpdateNotifications = {
-  [chainId: string]: {
-    [address: string]: number
-  }
-}
-
 const Notifications = (): ReactElement | null => {
   const notifications = useAppSelector(selectNotifications)
   const dispatch = useAppDispatch()

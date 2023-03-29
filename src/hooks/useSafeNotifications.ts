@@ -9,7 +9,6 @@ import { useRouter } from 'next/router'
 import useIsSafeOwner from './useIsSafeOwner'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import { type DismissedUpdateNotifications } from '@/components/common/Notifications'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 
 const CLI_LINK = {
@@ -17,10 +16,16 @@ const CLI_LINK = {
   title: 'Get CLI',
 }
 
-export const DISMISS_NOTIFICATION_KEY = 'dismissUpdateSafe'
-export const OUTDATED_VERSION_KEY = 'safe-outdated-version'
+type DismissedUpdateNotifications = {
+  [chainId: string]: {
+    [address: string]: number
+  }
+}
 
-export const isUpdateSafeNotification = (groupKey: string) => {
+const DISMISS_NOTIFICATION_KEY = 'dismissUpdateSafe'
+const OUTDATED_VERSION_KEY = 'safe-outdated-version'
+
+const isUpdateSafeNotification = (groupKey: string) => {
   return groupKey === OUTDATED_VERSION_KEY
 }
 
@@ -28,7 +33,7 @@ export const isUpdateSafeNotification = (groupKey: string) => {
  * General-purpose notifications relating to the entire Safe
  */
 const useSafeNotifications = (): void => {
-  const [dismissedNotifications, setDismissedNotifications] =
+  const [dismissedUpdateNotifications, setDismissedUpdateNotifications] =
     useLocalStorage<DismissedUpdateNotifications>(DISMISS_NOTIFICATION_KEY)
   const dispatch = useAppDispatch()
   const { query } = useRouter()
@@ -46,16 +51,16 @@ const useSafeNotifications = (): void => {
       const expiryDate = Date.now() + EXPIRY_DAYS * 24 * 60 * 60 * 1000
 
       const newState = {
-        ...dismissedNotifications,
+        ...dismissedUpdateNotifications,
         [safe.chainId]: {
-          ...dismissedNotifications?.[safe.chainId],
+          ...dismissedUpdateNotifications?.[safe.chainId],
           [safe.address.value]: expiryDate,
         },
       }
 
-      setDismissedNotifications(newState)
+      setDismissedUpdateNotifications(newState)
     },
-    [dismissedNotifications, safe.address.value, safe.chainId, setDismissedNotifications],
+    [dismissedUpdateNotifications, safe.address.value, safe.chainId, setDismissedUpdateNotifications],
   )
 
   /**
@@ -67,14 +72,14 @@ const useSafeNotifications = (): void => {
     if (!isOwner) return
     if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
-    const dismissedNotificationTimestamp = dismissedNotifications?.[chainId]?.[safeAddress]
+    const dismissedNotificationTimestamp = dismissedUpdateNotifications?.[chainId]?.[safeAddress]
 
     if (dismissedNotificationTimestamp) {
       if (Date.now() >= dismissedNotificationTimestamp) {
-        const newState = { ...dismissedNotifications }
+        const newState = { ...dismissedUpdateNotifications }
         delete newState?.[chainId]?.[safeAddress]
 
-        setDismissedNotifications(newState)
+        setDismissedUpdateNotifications(newState)
       } else {
         return
       }
@@ -117,8 +122,8 @@ const useSafeNotifications = (): void => {
     safeAddress,
     urlSafeAddress,
     chainId,
-    dismissedNotifications,
-    setDismissedNotifications,
+    dismissedUpdateNotifications,
+    setDismissedUpdateNotifications,
     dismissUpdateNotification,
   ])
 
