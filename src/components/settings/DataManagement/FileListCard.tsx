@@ -77,54 +77,57 @@ const getItems = ({
   const addedSafeChainAmount = Object.keys(addedSafes || {}).length
   const addressBookChainAmount = Object.keys(addressBook || {}).length
 
-  const items: Array<ListItemTextProps> = [
-    ...(addedSafeChainAmount > 0
-      ? [
-          {
-            primary: (
-              <>
-                <b>Added Safes</b> on {addedSafeChainAmount} {addedSafeChainAmount === 1 ? 'chain' : 'chains'}
-              </>
-            ),
-            secondary: showPreview ? getItemSecondaryText(chains, addedSafes, 'Safe', 'Safes') : undefined,
-          },
-        ]
-      : []),
-    ...(addressBookChainAmount > 0
-      ? [
-          {
-            primary: (
-              <>
-                <b>Address book</b> for {addressBookChainAmount} {addressBookChainAmount === 1 ? 'chain' : 'chains'}
-              </>
-            ),
-            secondary: showPreview ? getItemSecondaryText(chains, addressBook, 'contact', 'contacts') : undefined,
-          },
-        ]
-      : []),
-    ...(settings
-      ? [
-          {
-            primary: (
-              <>
-                <b>Settings</b> (appearance, currency, hidden tokens and custom environment variables)
-              </>
-            ),
-          },
-        ]
-      : []),
-    ...(safeApps
-      ? [
-          {
-            primary: (
-              <>
-                Bookmarked <b>Safe Apps</b>
-              </>
-            ),
-          },
-        ]
-      : []),
-  ]
+  const items: Array<ListItemTextProps> = []
+
+  if (addedSafeChainAmount > 0) {
+    const addedSafesPreview: ListItemTextProps = {
+      primary: (
+        <>
+          <b>Added Safes</b> on {addedSafeChainAmount} {addedSafeChainAmount === 1 ? 'chain' : 'chains'}
+        </>
+      ),
+      secondary: showPreview ? getItemSecondaryText(chains, addedSafes, 'Safe', 'Safes') : undefined,
+    }
+
+    items.push(addedSafesPreview)
+  }
+
+  if (addressBookChainAmount > 0) {
+    const addressBookPreview: ListItemTextProps = {
+      primary: (
+        <>
+          <b>Address book</b> for {addressBookChainAmount} {addressBookChainAmount === 1 ? 'chain' : 'chains'}
+        </>
+      ),
+      secondary: showPreview ? getItemSecondaryText(chains, addressBook, 'contact', 'contacts') : undefined,
+    }
+
+    items.push(addressBookPreview)
+  }
+
+  if (settings) {
+    const settingsPreview: ListItemTextProps = {
+      primary: (
+        <>
+          <b>Settings</b> (appearance, currency, hidden tokens and custom environment variables)
+        </>
+      ),
+    }
+
+    items.push(settingsPreview)
+  }
+
+  if (safeApps) {
+    const safeAppsPreview: ListItemTextProps = {
+      primary: (
+        <>
+          Bookmarked <b>Safe Apps</b>
+        </>
+      ),
+    }
+
+    items.push(safeAppsPreview)
+  }
 
   if (items.length === 0) {
     return [{ primary: <>{ImportErrors.NO_IMPORT_DATA_FOUND}</> }]
