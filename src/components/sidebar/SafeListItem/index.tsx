@@ -94,7 +94,7 @@ const SafeListItem = ({
             <SafeIcon address={address} {...rest} />
           </ListItemIcon>
           <ListItemText
-            sx={noActions ? undefined : { pr: 10 }}
+            sx={noActions ? undefined : { pr: 13 }}
             primaryTypographyProps={{
               variant: 'body2',
               component: 'div',

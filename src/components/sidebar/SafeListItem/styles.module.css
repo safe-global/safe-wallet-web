@@ -28,9 +28,3 @@
 .withPendingButtons :global .MuiListItemSecondaryAction-root {
   right: 74px;
 }
-
-@media (max-width: 400px) {
-  .withPendingButtons :global .MuiListItemSecondaryAction-root {
-    right: 48px;
-  }
-}
