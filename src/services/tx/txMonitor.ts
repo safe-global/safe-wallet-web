@@ -107,48 +107,38 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
         txDispatch(TxEvent.PROCESSED, {
           txId,
         })
-
-        clearTimeout(failAfterTimeoutId)
-        clearInterval(intervalId)
-        return
+        break
       case TaskState.ExecReverted:
         txDispatch(TxEvent.REVERTED, {
           txId,
           error: new Error(`Relayed transaction reverted by EVM.`),
         })
-
-        clearTimeout(failAfterTimeoutId)
-        clearInterval(intervalId)
-        return
+        break
       case TaskState.Blacklisted:
         txDispatch(TxEvent.FAILED, {
           txId,
           error: new Error(`Relayed transaction was blacklisted by relay provider.`),
         })
-
-        clearTimeout(failAfterTimeoutId)
-        clearInterval(intervalId)
-        return
+        break
       case TaskState.Cancelled:
         txDispatch(TxEvent.FAILED, {
           txId,
           error: new Error(`Relayed transaction was cancelled by relay provider.`),
         })
-
-        clearTimeout(failAfterTimeoutId)
-        clearInterval(intervalId)
-        return
+        break
       case TaskState.NotFound:
         txDispatch(TxEvent.FAILED, {
           txId,
           error: new Error(`Relayed transaction was not found.`),
         })
-
-        clearTimeout(failAfterTimeoutId)
-        clearInterval(intervalId)
+        break
       default:
+        // Don't clear interval as we're still waiting for the tx to be relayed
         return
     }
+
+    clearTimeout(failAfterTimeoutId)
+    clearInterval(intervalId)
   }, POLLING_INTERVAL)
 
   failAfterTimeoutId = setTimeout(() => {
@@ -180,22 +170,20 @@ export const waitForCreateSafeTx = (taskId: string, setStatus: (value: SafeCreat
     switch (status.task.taskState) {
       case TaskState.ExecSuccess:
         setStatus(SafeCreationStatus.SUCCESS)
-
-        clearTimeout(failAfterTimeoutId)
-        clearInterval(intervalId)
-        return
+        break
       case TaskState.ExecReverted:
       case TaskState.Blacklisted:
       case TaskState.Cancelled:
       case TaskState.NotFound:
         setStatus(SafeCreationStatus.ERROR)
-
-        clearTimeout(failAfterTimeoutId)
-        clearInterval(intervalId)
-        return
+        break
       default:
+        // Don't clear interval as we're still waiting for the tx to be relayed
         return
     }
+
+    clearTimeout(failAfterTimeoutId)
+    clearInterval(intervalId)
   }, POLLING_INTERVAL)
 
   failAfterTimeoutId = setTimeout(() => {
