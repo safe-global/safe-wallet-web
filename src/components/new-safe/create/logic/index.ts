@@ -28,7 +28,6 @@ import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { formatError } from '@/utils/formatters'
-import { Gnosis_safe__factory } from '@/types/contracts/factories/@gnosis.pm/safe-deployments/dist/assets/v1.3.0'
 import { sponsoredCall } from '@/services/tx/sponsoredCall'
 
 export type SafeCreationProps = {
@@ -276,7 +275,8 @@ export const createNewSafeViaRelayer = async (
   const proxyFactoryAddress = proxyFactory.getAddress()
   const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)
   const fallbackHandlerAddress = fallbackHandlerDeployment.getAddress()
-  const safeContractAddress = getGnosisSafeContractInstance(chain).getAddress()
+  const safeContract = getGnosisSafeContractInstance(chain)
+  const safeContractAddress = safeContract.getAddress()
 
   const callData = {
     owners,
@@ -289,7 +289,7 @@ export const createNewSafeViaRelayer = async (
     paymentReceiver: ZERO_ADDRESS,
   }
 
-  const initializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
+  const initializer = safeContract.encode('setup', [
     callData.owners,
     callData.threshold,
     callData.to,
@@ -300,7 +300,7 @@ export const createNewSafeViaRelayer = async (
     callData.paymentReceiver,
   ])
 
-  const createProxyWithNonceCallData = proxyFactory.contract.interface.encodeFunctionData('createProxyWithNonce', [
+  const createProxyWithNonceCallData = proxyFactory.encode('createProxyWithNonce', [
     safeContractAddress,
     initializer,
     saltNonce,
