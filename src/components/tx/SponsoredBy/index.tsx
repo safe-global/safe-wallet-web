@@ -20,7 +20,7 @@ const SponsoredBy = ({ remainingRelays, tooltip }: { remainingRelays: number; to
           </Typography>
           {tooltip ? (
             <Tooltip title={tooltip} placement="top" arrow>
-              <span>
+              <span style={{ display: 'flex' }}>
                 <SvgIcon
                   component={InfoIcon}
                   inheritViewBox

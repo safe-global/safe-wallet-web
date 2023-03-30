@@ -316,7 +316,7 @@ export const dispatchBatchExecutionRelay = async (
   txs: TransactionDetails[],
   multiSendContract: MultiSendCallOnlyEthersContract,
   multiSendTxData: string,
-  safe: SafeInfo,
+  chainId: string,
 ) => {
   const to = multiSendContract.getAddress()
   const data = multiSendContract.contract.interface.encodeFunctionData('multiSend', [multiSendTxData])
@@ -324,7 +324,7 @@ export const dispatchBatchExecutionRelay = async (
 
   try {
     const relayResponse = await sponsoredCall({
-      chainId: safe.chainId,
+      chainId,
       to,
       data,
     })
