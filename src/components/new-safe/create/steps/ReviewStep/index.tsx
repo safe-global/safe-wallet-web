@@ -23,7 +23,6 @@ import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import SponsoredBy from '@/components/tx/SponsoredBy'
-import { FEATURES, hasFeature } from '@/utils/chains'
 import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import classnames from 'classnames'
 
@@ -41,7 +40,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
   // Chain supports relaying and relay transactions are available
-  const willRelay = chain && hasFeature(chain, FEATURES.RELAYING) && !!minRelays
+  const willRelay = !!minRelays
 
   const safeParams = useMemo(() => {
     return {

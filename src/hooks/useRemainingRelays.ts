@@ -1,8 +1,9 @@
 import useAsync from '@/hooks/useAsync'
-import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { Errors, logError } from '@/services/exceptions'
 import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/config/constants'
+import { FEATURES, hasFeature } from '@/utils/chains'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const fetchRemainingRelays = async (chainId: string, address: string) => {
   const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/${chainId}/${address}`
@@ -18,26 +19,26 @@ const fetchRemainingRelays = async (chainId: string, address: string) => {
 }
 
 export const useRemainingRelaysBySafe = () => {
-  const chainId = useChainId()
+  const chain = useCurrentChain()
   const safeAddress = useSafeAddress()
 
   return useAsync(() => {
-    if (!safeAddress) return
+    if (!safeAddress || !chain || !hasFeature(chain, FEATURES.RELAYING)) return
 
-    return fetchRemainingRelays(chainId, safeAddress)
-  }, [chainId, safeAddress])
+    return fetchRemainingRelays(chain.chainId, safeAddress)
+  }, [chain, safeAddress])
 }
 
+const getMinimum = (result: number[]) => Math.min(...result)
+
 export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
-  const chainId = useChainId()
+  const chain = useCurrentChain()
 
-  const getMinimum = (result: number[]) => Math.min(...result)
+  return useAsync(async () => {
+    if (!chain || !hasFeature(chain, FEATURES.RELAYING)) return
 
-  return useAsync(
-    () =>
-      Promise.all(ownerAddresses.map((address) => fetchRemainingRelays(chainId, address))).then((result) => {
-        return getMinimum(result)
-      }),
-    [chainId, ownerAddresses],
-  )
+    const result = await Promise.all(ownerAddresses.map((address) => fetchRemainingRelays(chain.chainId, address)))
+    console.log('result', result)
+    return getMinimum(result)
+  }, [chain, ownerAddresses])
 }

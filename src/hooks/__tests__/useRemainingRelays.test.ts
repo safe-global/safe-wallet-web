@@ -2,13 +2,17 @@ import { renderHook, waitFor } from '@/tests/test-utils'
 import { useLeastRemainingRelays, useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/config/constants'
 import * as useSafeAddress from '@/hooks/useSafeAddress'
-import * as useChainId from '@/hooks/useChainId'
+import * as useChains from '@/hooks/useChains'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES } from '@/utils/chains'
 
 const SAFE_ADDRESS = '0x0000000000000000000000000000000000000001'
 
 describe('fetch remaining relays hooks', () => {
   beforeEach(() => {
-    jest.spyOn(useChainId, 'default').mockReturnValue('5')
+    jest
+      .spyOn(useChains, 'useCurrentChain')
+      .mockReturnValue({ chainId: '5', features: FEATURES.RELAYING } as unknown as ChainInfo)
     jest.spyOn(useSafeAddress, 'default').mockReturnValue(SAFE_ADDRESS)
   })
 
@@ -32,6 +36,16 @@ describe('fetch remaining relays hooks', () => {
       renderHook(() => useRemainingRelaysBySafe())
       expect(mockFetch).toHaveBeenCalledTimes(1)
       expect(mockFetch).toHaveBeenCalledWith(url)
+    })
+
+    it('should not do a network request if chain does not support relay', () => {
+      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({ chainId: '5', features: [] } as unknown as ChainInfo)
+
+      global.fetch = jest.fn()
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      renderHook(() => useRemainingRelaysBySafe())
+      expect(mockFetch).toHaveBeenCalledTimes(0)
     })
   })
 
@@ -96,6 +110,25 @@ describe('fetch remaining relays hooks', () => {
       await waitFor(async () => {
         expect(result.current[0]).toBe(0)
       })
+    })
+
+    it('should not do a network request if chain does not support relay', () => {
+      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({ chainId: '5', features: [] } as unknown as ChainInfo)
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({
+          json: () => Promise.resolve({ remaining: 3 }),
+        })
+        .mockRejectedValueOnce({
+          json: () => Promise.reject('Failed to fetch'),
+        })
+        .mockResolvedValueOnce({
+          json: () => Promise.resolve({ remaining: 2 }),
+        })
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      renderHook(() => useLeastRemainingRelays(ownerAddresses))
+      expect(mockFetch).toHaveBeenCalledTimes(0)
     })
   })
 })
