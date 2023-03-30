@@ -71,10 +71,6 @@ export const useSafeCreation = (
       try {
         const taskId = await createNewSafeViaRelayer(chain, ownersAddresses, threshold, saltNonce)
 
-        if (!taskId) {
-          throw new Error('Transaction could not be relayed')
-        }
-
         setPendingSafe((prev) => (prev ? { ...prev, taskId } : undefined))
         setStatus(SafeCreationStatus.PROCESSING)
         waitForRelayedTx(taskId, undefined, setStatus)
