@@ -70,7 +70,6 @@ const useSafeNotifications = (): void => {
   useEffect(() => {
     if (safeAddress !== urlSafeAddress) return
     if (!isOwner) return
-    if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
     const dismissedNotificationTimestamp = dismissedUpdateNotifications?.[chainId]?.[safeAddress]
 
@@ -84,6 +83,8 @@ const useSafeNotifications = (): void => {
         return
       }
     }
+
+    if (implementationVersionState !== ImplementationVersionState.OUTDATED) return
 
     const isUnsupported = !isValidSafeVersion(version)
 
