@@ -5,7 +5,7 @@ import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/config/constants'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
 
-const fetchRemainingRelays = async (chainId: string, address: string) => {
+const fetchRemainingRelays = async (chainId: string, address: string): Promise<number> => {
   const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/${chainId}/${address}`
 
   try {

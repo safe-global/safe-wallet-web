@@ -66,7 +66,7 @@ const AdvancedParams = ({
         onEdit={onEditOpen}
         willRelay={willRelay}
       />
-      {willRelay ? (
+      {willRelay && !!remainingRelays ? (
         <Box
           sx={{
             '& > div': {
