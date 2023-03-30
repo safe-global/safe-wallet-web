@@ -90,7 +90,7 @@ const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStat
 
 const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
 
-export const waitForRelayedTx = (taskId: string, txId: string): void => {
+export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: string): void => {
   let intervalId: NodeJS.Timeout
   let failAfterTimeoutId: NodeJS.Timeout
 
@@ -104,33 +104,48 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
 
     switch (status.task.taskState) {
       case TaskState.ExecSuccess:
-        txDispatch(TxEvent.PROCESSED, {
-          txId,
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.PROCESSED, {
+            txId,
+            groupKey,
+          }),
+        )
         break
       case TaskState.ExecReverted:
-        txDispatch(TxEvent.REVERTED, {
-          txId,
-          error: new Error(`Relayed transaction reverted by EVM.`),
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.REVERTED, {
+            txId,
+            error: new Error(`Relayed transaction reverted by EVM.`),
+            groupKey,
+          }),
+        )
         break
       case TaskState.Blacklisted:
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: new Error(`Relayed transaction was blacklisted by relay provider.`),
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: new Error(`Relayed transaction was blacklisted by relay provider.`),
+            groupKey,
+          }),
+        )
         break
       case TaskState.Cancelled:
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: new Error(`Relayed transaction was cancelled by relay provider.`),
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: new Error(`Relayed transaction was cancelled by relay provider.`),
+            groupKey,
+          }),
+        )
         break
       case TaskState.NotFound:
-        txDispatch(TxEvent.FAILED, {
-          txId,
-          error: new Error(`Relayed transaction was not found.`),
-        })
+        txIds.forEach((txId) =>
+          txDispatch(TxEvent.FAILED, {
+            txId,
+            error: new Error(`Relayed transaction was not found.`),
+            groupKey,
+          }),
+        )
         break
       default:
         // Don't clear interval as we're still waiting for the tx to be relayed
@@ -142,14 +157,17 @@ export const waitForRelayedTx = (taskId: string, txId: string): void => {
   }, POLLING_INTERVAL)
 
   failAfterTimeoutId = setTimeout(() => {
-    txDispatch(TxEvent.FAILED, {
-      txId,
-      error: new Error(
-        `Transaction not relayed in ${
-          WAIT_FOR_RELAY_TIMEOUT / 60_000
-        } minutes. Be aware that it might still be relayed.`,
-      ),
-    })
+    txIds.forEach((txId) =>
+      txDispatch(TxEvent.FAILED, {
+        txId,
+        error: new Error(
+          `Transaction not relayed in ${
+            WAIT_FOR_RELAY_TIMEOUT / 60_000
+          } minutes. Be aware that it might still be relayed.`,
+        ),
+        groupKey,
+      }),
+    )
 
     clearInterval(intervalId)
   }, WAIT_FOR_RELAY_TIMEOUT)

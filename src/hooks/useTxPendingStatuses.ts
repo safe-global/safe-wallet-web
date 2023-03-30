@@ -52,7 +52,7 @@ const useTxMonitor = (): void => {
       }
 
       if (isRelaying) {
-        waitForRelayedTx(taskId, txId)
+        waitForRelayedTx(taskId, [txId])
       }
     }
     // `provider` is updated when switching chains, re-running this effect

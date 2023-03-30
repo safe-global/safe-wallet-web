@@ -116,7 +116,7 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', '0x2')
+      waitForRelayedTx('0x1', ['0x2'])
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
@@ -143,7 +143,7 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', '0x2')
+      waitForRelayedTx('0x1', ['0x2'])
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
@@ -173,7 +173,7 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', '0x2')
+      waitForRelayedTx('0x1', ['0x2'])
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
@@ -203,7 +203,7 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', '0x2')
+      waitForRelayedTx('0x1', ['0x2'])
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
@@ -233,7 +233,7 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', '0x2')
+      waitForRelayedTx('0x1', ['0x2'])
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
@@ -261,7 +261,7 @@ describe('txMonitor', () => {
       }
       global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
 
-      waitForRelayedTx('0x1', '0x2')
+      waitForRelayedTx('0x1', ['0x2'])
 
       await act(() => {
         jest.advanceTimersByTime(3 * 60_000 + 1)
