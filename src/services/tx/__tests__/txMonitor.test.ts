@@ -4,9 +4,9 @@ import * as txMonitor from '@/services/tx/txMonitor'
 
 import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
 import { act } from '@testing-library/react'
-import { POLLING_INTERVAL } from '@/config/constants'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 
-const { waitForTx, waitForRelayedTx } = txMonitor
+const { waitForTx, waitForRelayedTx, waitForCreateSafeTx } = txMonitor
 
 const provider = new JsonRpcProvider()
 
@@ -106,39 +106,6 @@ describe('txMonitor', () => {
   })
 
   describe('waitForRelayedTx', () => {
-    it('expects setTimeout to be called if taskStatus is a pending state', async () => {
-      const INITIAL_POLLING_DELAY = 2_000
-      let mockData = {
-        task: {
-          taskState: 'CheckPending',
-        },
-      }
-      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
-
-      const mockFetch = jest.spyOn(global, 'fetch')
-
-      waitForRelayedTx('0x1', '0x2')
-
-      await act(() => {
-        jest.advanceTimersByTime(INITIAL_POLLING_DELAY + 1)
-      })
-
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-
-      mockData = {
-        task: {
-          taskState: 'ExecSuccess',
-        },
-      }
-      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
-
-      await act(() => {
-        jest.advanceTimersByTime(POLLING_INTERVAL)
-      })
-
-      expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2' })
-    })
-
     it("emits a PROCESSED event if taskStatus 'ExecSuccess'", async () => {
       const mockData = {
         task: {
@@ -152,7 +119,7 @@ describe('txMonitor', () => {
       waitForRelayedTx('0x1', '0x2')
 
       await act(() => {
-        jest.advanceTimersByTime(2_000 + 1)
+        jest.advanceTimersByTime(15_000 + 1)
       })
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -179,7 +146,7 @@ describe('txMonitor', () => {
       waitForRelayedTx('0x1', '0x2')
 
       await act(() => {
-        jest.advanceTimersByTime(2_000 + 1)
+        jest.advanceTimersByTime(15_000 + 1)
       })
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -209,7 +176,7 @@ describe('txMonitor', () => {
       waitForRelayedTx('0x1', '0x2')
 
       await act(() => {
-        jest.advanceTimersByTime(2_000 + 1)
+        jest.advanceTimersByTime(15_000 + 1)
       })
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -239,7 +206,7 @@ describe('txMonitor', () => {
       waitForRelayedTx('0x1', '0x2')
 
       await act(() => {
-        jest.advanceTimersByTime(2_000 + 1)
+        jest.advanceTimersByTime(15_000 + 1)
       })
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -269,7 +236,7 @@ describe('txMonitor', () => {
       waitForRelayedTx('0x1', '0x2')
 
       await act(() => {
-        jest.advanceTimersByTime(2_000 + 1)
+        jest.advanceTimersByTime(15_000 + 1)
       })
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -304,6 +271,134 @@ describe('txMonitor', () => {
         txId: '0x2',
         error: new Error('Transaction not relayed in 3 minutes. Be aware that it might still be relayed.'),
       })
+    })
+  })
+
+  describe('waitForCreateSafeTx', () => {
+    it("sets the status to SUCCESS if taskStatus 'ExecSuccess'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'ExecSuccess',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+      const setStatusSpy = jest.fn()
+
+      waitForCreateSafeTx('0x1', setStatusSpy)
+
+      await act(() => {
+        jest.advanceTimersByTime(15_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.SUCCESS)
+    })
+
+    it("sets the status to ERROR if taskStatus 'ExecReverted'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'ExecReverted',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+      const setStatusSpy = jest.fn()
+
+      waitForCreateSafeTx('0x1', setStatusSpy)
+
+      await act(() => {
+        jest.advanceTimersByTime(15_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+    })
+
+    it("sets the status to ERROR if taskStatus 'Blacklisted'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'Blacklisted',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+      const setStatusSpy = jest.fn()
+
+      waitForCreateSafeTx('0x1', setStatusSpy)
+
+      await act(() => {
+        jest.advanceTimersByTime(15_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+    })
+
+    it("sets the status to ERROR if taskStatus 'Cancelled'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'Cancelled',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+      const setStatusSpy = jest.fn()
+
+      waitForCreateSafeTx('0x1', setStatusSpy)
+
+      await act(() => {
+        jest.advanceTimersByTime(15_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+    })
+
+    it("sets the status to ERROR if taskStatus 'NotFound'", async () => {
+      const mockData = {
+        task: {
+          taskState: 'NotFound',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+      const setStatusSpy = jest.fn()
+
+      waitForCreateSafeTx('0x1', setStatusSpy)
+
+      await act(() => {
+        jest.advanceTimersByTime(15_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+    })
+
+    it('sets the status to ERROR if the tx relaying timed out', async () => {
+      const mockData = {
+        task: {
+          taskState: 'WaitingForConfirmation',
+        },
+      }
+      global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+      const setStatusSpy = jest.fn()
+
+      waitForCreateSafeTx('0x1', setStatusSpy)
+
+      await act(() => {
+        jest.advanceTimersByTime(3 * 60_000 + 1)
+      })
+
+      expect(mockFetch).toHaveBeenCalled()
+      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
     })
   })
 })

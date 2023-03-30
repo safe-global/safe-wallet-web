@@ -64,108 +64,143 @@ type TransactionStatusResponse = {
 const TASK_STATUS_URL = 'https://relay.gelato.digital/tasks/status'
 const getTaskTrackingUrl = (taskId: string) => `${TASK_STATUS_URL}/${taskId}`
 
-export const waitForRelayedTx = (
-  taskId: string,
-  txId?: string,
-  setStatus?: (value: SafeCreationStatus) => void,
-): void => {
-  // A small delay is necessary before the initial polling as the task status
-  // is not immediately available after the sponsoredCall request
-  const INITIAL_POLLING_DELAY = 2_000
+const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStatusResponse } | undefined> => {
+  const url = getTaskTrackingUrl(taskId)
 
-  const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
-  let timeoutId: NodeJS.Timeout
+  let response
+
+  try {
+    response = await fetch(url).then((res) => {
+      // 404s can happen if gelato is a bit slow with picking up the taskID
+      if (res.status !== 404 && res.ok) {
+        return res.json()
+      }
+
+      return res.json().then((data) => {
+        throw new Error(`${res.status} - ${res.statusText}: ${data?.message}`)
+      })
+    })
+  } catch (error) {
+    logError(Errors._632, (error as Error).message)
+    return
+  }
+
+  return response
+}
+
+const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
+
+export const waitForRelayedTx = (taskId: string, txId: string): void => {
+  let intervalId: NodeJS.Timeout
   let failAfterTimeoutId: NodeJS.Timeout
 
-  const checkTxStatus = async () => {
-    const url = getTaskTrackingUrl(taskId)
+  intervalId = setInterval(async () => {
+    const status = await getRelayTxStatus(taskId)
 
-    let response
-    try {
-      response = await fetch(url).then((res) => {
-        if (res.ok) {
-          return res.json()
-        }
-
-        // 404s can happen if gelato is a bit slow with picking up the taskID
-        if (res.status === 404) {
-          timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
-        }
-
-        return res.json().then((data) => {
-          throw new Error(`${res.status} - ${res.statusText}: ${data?.message}`)
-        })
-      })
-    } catch (error) {
-      logError(Errors._632, (error as Error).message)
+    // 404
+    if (!status) {
       return
     }
 
-    const task = response?.task as TransactionStatusResponse
-
-    switch (task.taskState) {
-      case TaskState.CheckPending:
-      case TaskState.ExecPending:
-      case TaskState.WaitingForConfirmation:
-        // still pending we set a timeout to check again
-        timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
-        return
+    switch (status.task.taskState) {
       case TaskState.ExecSuccess:
-        txId &&
-          txDispatch(TxEvent.PROCESSED, {
-            txId,
-          })
-        setStatus && setStatus(SafeCreationStatus.SUCCESS)
+        txDispatch(TxEvent.PROCESSED, {
+          txId,
+        })
+
         clearTimeout(failAfterTimeoutId)
+        clearInterval(intervalId)
         return
       case TaskState.ExecReverted:
-        txId &&
-          txDispatch(TxEvent.REVERTED, {
-            txId,
-            error: new Error(`Relayed transaction reverted by EVM.`),
-          })
+        txDispatch(TxEvent.REVERTED, {
+          txId,
+          error: new Error(`Relayed transaction reverted by EVM.`),
+        })
+
         clearTimeout(failAfterTimeoutId)
+        clearInterval(intervalId)
         return
       case TaskState.Blacklisted:
-        txId &&
-          txDispatch(TxEvent.FAILED, {
-            txId,
-            error: new Error(`Relayed transaction was blacklisted by relay provider.`),
-          })
+        txDispatch(TxEvent.FAILED, {
+          txId,
+          error: new Error(`Relayed transaction was blacklisted by relay provider.`),
+        })
+
         clearTimeout(failAfterTimeoutId)
+        clearInterval(intervalId)
         return
       case TaskState.Cancelled:
-        txId &&
-          txDispatch(TxEvent.FAILED, {
-            txId,
-            error: new Error(`Relayed transaction was cancelled by relay provider.`),
-          })
-        setStatus && setStatus(SafeCreationStatus.ERROR)
+        txDispatch(TxEvent.FAILED, {
+          txId,
+          error: new Error(`Relayed transaction was cancelled by relay provider.`),
+        })
+
         clearTimeout(failAfterTimeoutId)
+        clearInterval(intervalId)
         return
       case TaskState.NotFound:
-      default:
-        txId &&
-          txDispatch(TxEvent.FAILED, {
-            txId,
-            error: new Error(`Relayed transaction was not found.`),
-          })
+        txDispatch(TxEvent.FAILED, {
+          txId,
+          error: new Error(`Relayed transaction was not found.`),
+        })
+
         clearTimeout(failAfterTimeoutId)
+        clearInterval(intervalId)
+      default:
         return
     }
-  }
+  }, POLLING_INTERVAL)
 
-  setTimeout(checkTxStatus, INITIAL_POLLING_DELAY)
   failAfterTimeoutId = setTimeout(() => {
-    clearTimeout(timeoutId)
-    txId &&
-      txDispatch(TxEvent.FAILED, {
-        txId,
-        error: new Error(
-          `Transaction not relayed in ${
-            WAIT_FOR_RELAY_TIMEOUT / 60_000
-          } minutes. Be aware that it might still be relayed.`,
-        ),
-      })
+    txDispatch(TxEvent.FAILED, {
+      txId,
+      error: new Error(
+        `Transaction not relayed in ${
+          WAIT_FOR_RELAY_TIMEOUT / 60_000
+        } minutes. Be aware that it might still be relayed.`,
+      ),
+    })
+
+    clearInterval(intervalId)
+  }, WAIT_FOR_RELAY_TIMEOUT)
+}
+
+export const waitForCreateSafeTx = (taskId: string, setStatus: (value: SafeCreationStatus) => void): void => {
+  let intervalId: NodeJS.Timeout
+  let failAfterTimeoutId: NodeJS.Timeout
+
+  intervalId = setInterval(async () => {
+    const status = await getRelayTxStatus(taskId)
+
+    // 404
+    if (!status) {
+      return
+    }
+
+    switch (status.task.taskState) {
+      case TaskState.ExecSuccess:
+        setStatus(SafeCreationStatus.SUCCESS)
+
+        clearTimeout(failAfterTimeoutId)
+        clearInterval(intervalId)
+        return
+      case TaskState.ExecReverted:
+      case TaskState.Blacklisted:
+      case TaskState.Cancelled:
+      case TaskState.NotFound:
+        setStatus(SafeCreationStatus.ERROR)
+
+        clearTimeout(failAfterTimeoutId)
+        clearInterval(intervalId)
+        return
+      default:
+        return
+    }
+  }, POLLING_INTERVAL)
+
+  failAfterTimeoutId = setTimeout(() => {
+    setStatus(SafeCreationStatus.ERROR)
+
+    clearInterval(intervalId)
   }, WAIT_FOR_RELAY_TIMEOUT)
 }

@@ -19,7 +19,7 @@ import {
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
-import { waitForRelayedTx } from '@/services/tx/txMonitor'
+import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -73,7 +73,7 @@ export const useSafeCreation = (
 
         setPendingSafe((prev) => (prev ? { ...prev, taskId } : undefined))
         setStatus(SafeCreationStatus.PROCESSING)
-        waitForRelayedTx(taskId, undefined, setStatus)
+        waitForCreateSafeTx(taskId, setStatus)
       } catch (error) {
         setStatus(SafeCreationStatus.ERROR)
         showSafeCreationError(error as Error)
@@ -140,7 +140,7 @@ export const useSafeCreation = (
     }
 
     if (pendingSafe?.taskId && !isCreating) {
-      waitForRelayedTx(pendingSafe?.taskId, undefined, setStatus)
+      waitForCreateSafeTx(pendingSafe.taskId, setStatus)
       return
     }
 
