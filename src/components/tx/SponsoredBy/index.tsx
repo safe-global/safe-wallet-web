@@ -1,12 +1,11 @@
 import { Box, Stack, SvgIcon, Typography } from '@mui/material'
 import GasStationIcon from '@/public/images/common/gas-station.svg'
-import useRemainingRelays from '@/hooks/useRemainingRelays'
 import css from './styles.module.css'
 
 export const MAX_HOUR_RELAYS = 5
 
-const SponsoredBy = () => {
-  const [remainingRelays] = useRemainingRelays()
+const SponsoredBy = ({ remainingRelays }: { remainingRelays: number }) => {
+  if (!remainingRelays) return null
 
   return (
     <Box className={css.sponsoredBy}>

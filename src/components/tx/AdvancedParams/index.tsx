@@ -1,6 +1,7 @@
 import GasParams from '@/components/tx/GasParams'
 import SponsoredBy from '@/components/tx/SponsoredBy'
 import { useCurrentChain } from '@/hooks/useChains'
+import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { Box } from '@mui/material'
@@ -32,6 +33,7 @@ const AdvancedParams = ({
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const chain = useCurrentChain()
   const isEIP1559 = !!chain && hasFeature(chain, FEATURES.EIP1559)
+  const [remainingRelays] = useRemainingRelaysBySafe()
 
   const onEditOpen = () => {
     setIsEditing(true)
@@ -74,7 +76,7 @@ const AdvancedParams = ({
             },
           }}
         >
-          <SponsoredBy />
+          <SponsoredBy remainingRelays={remainingRelays} />
         </Box>
       ) : null}
     </>

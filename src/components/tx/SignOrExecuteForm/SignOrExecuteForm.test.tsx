@@ -101,7 +101,7 @@ describe('SignOrExecuteForm', () => {
       chainId: '5',
     } as unknown as ChainInfo)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(false)
-    jest.spyOn(useRemainingRelays, 'default').mockReturnValue([5, undefined, false])
+    jest.spyOn(useRemainingRelays, 'useRemainingRelaysBySafe').mockReturnValue([5, undefined, false])
   })
 
   it('displays decoded data if there is a tx', () => {
@@ -527,7 +527,7 @@ describe('SignOrExecuteForm', () => {
   })
 
   it('executes a transaction with the connected wallet if relaying is not available', async () => {
-    jest.spyOn(useRemainingRelays, 'default').mockReturnValue([0, undefined, false])
+    jest.spyOn(useRemainingRelays, 'useRemainingRelaysBySafe').mockReturnValue([0, undefined, false])
 
     const executionSpy = jest.fn()
     jest

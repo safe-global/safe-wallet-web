@@ -19,7 +19,6 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import { FEATURES, hasFeature } from '@/utils/chains'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import {
   createTx,
@@ -34,7 +33,7 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { getExplorerLink } from '@/utils/gateway'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
-import useRemainingRelays from '@/hooks/useRemainingRelays'
+import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { WrongChainWarning } from '../WrongChainWarning'
 
@@ -83,7 +82,7 @@ const SignOrExecuteForm = ({
   const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
-  const [remainingRelays] = useRemainingRelays()
+  const [remainingRelays] = useRemainingRelaysBySafe()
 
   // Unsupported base contract
   const isUnknown = safe.implementationVersionState === ImplementationVersionState.UNKNOWN
@@ -96,14 +95,11 @@ const SignOrExecuteForm = ({
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
 
-  // The transaction will be executed through relaying
-  const willRelay = willExecute && !!remainingRelays
-
   // SC wallets can relay fully signed transactions
   const [walletCanRelay] = useWalletCanRelay(tx)
 
-  // Chain has relaying feature and tx can be relayed
-  const canRelay = currentChain && hasFeature(currentChain, FEATURES.RELAYING) && walletCanRelay
+  // The transaction will be executed through relaying
+  const willRelay = willExecute && !!remainingRelays && walletCanRelay
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -218,7 +214,7 @@ const SignOrExecuteForm = ({
     setSubmitError(undefined)
 
     try {
-      await (canRelay && willRelay ? onRelay() : willExecute ? onExecute() : onSign())
+      await (willRelay ? onRelay() : willExecute ? onExecute() : onSign())
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
@@ -274,7 +270,7 @@ const SignOrExecuteForm = ({
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
           gasLimitError={gasLimitError}
-          willRelay={canRelay && willRelay}
+          willRelay={willRelay}
         />
 
         <TxSimulation
