@@ -14,7 +14,7 @@ import type { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
-import useRemainingRelays from '@/hooks/useRemainingRelays'
+import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import SponsoredBy from '@/components/tx/SponsoredBy'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
@@ -26,7 +26,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
-  const [remainingRelays] = useRemainingRelays()
+  const [remainingRelays] = useRemainingRelaysBySafe()
 
   // Chain has relaying feature and available relays
   const canRelay = chain && hasFeature(chain, FEATURES.RELAYING) && !!remainingRelays

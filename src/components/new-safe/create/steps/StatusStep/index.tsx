@@ -26,9 +26,10 @@ export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 export type PendingSafeData = NewSafeFormData & {
   txHash?: string
   tx?: PendingSafeTx
+  taskId?: string
 }
 
-export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFormData>) => {
+export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<NewSafeFormData>) => {
   const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const router = useRouter()
@@ -38,7 +39,7 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain
 
-  const { createSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus)
+  const { createSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus, data.willRelay)
 
   useSafeCreationEffects({
     pendingSafe,

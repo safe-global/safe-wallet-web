@@ -5,6 +5,7 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
 export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string) => {
@@ -63,48 +64,45 @@ type TransactionStatusResponse = {
 const TASK_STATUS_URL = 'https://relay.gelato.digital/tasks/status'
 const getTaskTrackingUrl = (taskId: string) => `${TASK_STATUS_URL}/${taskId}`
 
-export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: string): void => {
-  // A small delay is necessary before the initial polling as the task status
-  // is not immediately available after the sponsoredCall request
-  const INITIAL_POLLING_DELAY = 2_000
+const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStatusResponse } | undefined> => {
+  const url = getTaskTrackingUrl(taskId)
 
-  const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
-  let timeoutId: NodeJS.Timeout
+  let response
+
+  try {
+    response = await fetch(url).then((res) => {
+      // 404s can happen if gelato is a bit slow with picking up the taskID
+      if (res.status !== 404 && res.ok) {
+        return res.json()
+      }
+
+      return res.json().then((data) => {
+        throw new Error(`${res.status} - ${res.statusText}: ${data?.message}`)
+      })
+    })
+  } catch (error) {
+    logError(Errors._632, (error as Error).message)
+    return
+  }
+
+  return response
+}
+
+const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
+
+export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: string): void => {
+  let intervalId: NodeJS.Timeout
   let failAfterTimeoutId: NodeJS.Timeout
 
-  const checkTxStatus = async () => {
-    const url = getTaskTrackingUrl(taskId)
+  intervalId = setInterval(async () => {
+    const status = await getRelayTxStatus(taskId)
 
-    let response
-    try {
-      response = await fetch(url).then((res) => {
-        if (res.ok) {
-          return res.json()
-        }
-
-        // 404s can happen if gelato is a bit slow with picking up the taskID
-        if (res.status === 404) {
-          timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
-        }
-
-        return res.json().then((data) => {
-          throw new Error(`${res.status} - ${res.statusText}: ${data?.message}`)
-        })
-      })
-    } catch (error) {
-      logError(Errors._632, (error as Error).message)
+    // 404
+    if (!status) {
       return
     }
 
-    const task = response?.task as TransactionStatusResponse
-
-    switch (task.taskState) {
-      case TaskState.CheckPending:
-      case TaskState.ExecPending:
-      case TaskState.WaitingForConfirmation:
-        // still pending we set a timeout to check again
-        timeoutId = setTimeout(checkTxStatus, POLLING_INTERVAL)
-        return
+    switch (status.task.taskState) {
       case TaskState.ExecSuccess:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.PROCESSED, {
@@ -112,8 +110,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: str
             groupKey,
           }),
         )
-        clearTimeout(failAfterTimeoutId)
-        return
+        break
       case TaskState.ExecReverted:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.REVERTED, {
@@ -122,8 +119,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: str
             groupKey,
           }),
         )
-        clearTimeout(failAfterTimeoutId)
-        return
+        break
       case TaskState.Blacklisted:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.FAILED, {
@@ -132,8 +128,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: str
             groupKey,
           }),
         )
-        clearTimeout(failAfterTimeoutId)
-        return
+        break
       case TaskState.Cancelled:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.FAILED, {
@@ -142,10 +137,8 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: str
             groupKey,
           }),
         )
-        clearTimeout(failAfterTimeoutId)
-        return
+        break
       case TaskState.NotFound:
-      default:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.FAILED, {
             txId,
@@ -153,14 +146,17 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: str
             groupKey,
           }),
         )
-        clearTimeout(failAfterTimeoutId)
+        break
+      default:
+        // Don't clear interval as we're still waiting for the tx to be relayed
         return
     }
-  }
 
-  setTimeout(checkTxStatus, INITIAL_POLLING_DELAY)
+    clearTimeout(failAfterTimeoutId)
+    clearInterval(intervalId)
+  }, POLLING_INTERVAL)
+
   failAfterTimeoutId = setTimeout(() => {
-    clearTimeout(timeoutId)
     txIds.forEach((txId) =>
       txDispatch(TxEvent.FAILED, {
         txId,
@@ -172,5 +168,45 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: str
         groupKey,
       }),
     )
+
+    clearInterval(intervalId)
+  }, WAIT_FOR_RELAY_TIMEOUT)
+}
+
+export const waitForCreateSafeTx = (taskId: string, setStatus: (value: SafeCreationStatus) => void): void => {
+  let intervalId: NodeJS.Timeout
+  let failAfterTimeoutId: NodeJS.Timeout
+
+  intervalId = setInterval(async () => {
+    const status = await getRelayTxStatus(taskId)
+
+    // 404
+    if (!status) {
+      return
+    }
+
+    switch (status.task.taskState) {
+      case TaskState.ExecSuccess:
+        setStatus(SafeCreationStatus.SUCCESS)
+        break
+      case TaskState.ExecReverted:
+      case TaskState.Blacklisted:
+      case TaskState.Cancelled:
+      case TaskState.NotFound:
+        setStatus(SafeCreationStatus.ERROR)
+        break
+      default:
+        // Don't clear interval as we're still waiting for the tx to be relayed
+        return
+    }
+
+    clearTimeout(failAfterTimeoutId)
+    clearInterval(intervalId)
+  }, POLLING_INTERVAL)
+
+  failAfterTimeoutId = setTimeout(() => {
+    setStatus(SafeCreationStatus.ERROR)
+
+    clearInterval(intervalId)
   }, WAIT_FOR_RELAY_TIMEOUT)
 }

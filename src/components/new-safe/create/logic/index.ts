@@ -28,6 +28,7 @@ import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { formatError } from '@/utils/formatters'
+import { sponsoredCall } from '@/services/tx/sponsoredCall'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -190,7 +191,7 @@ export const handleSafeCreationError = (error: EthersError) => {
 }
 
 export const SAFE_CREATION_ERROR_KEY = 'create-safe-error'
-export const showSafeCreationError = (error: EthersError): AppThunk => {
+export const showSafeCreationError = (error: EthersError | Error): AppThunk => {
   return (dispatch) => {
     dispatch(
       showNotification({
@@ -262,4 +263,54 @@ export const getRedirect = (
   const hasQueryParams = redirectUrl.includes('?')
   const appendChar = hasQueryParams ? '&' : '?'
   return redirectUrl + `${appendChar}safe=${address}`
+}
+
+export const createNewSafeViaRelayer = async (
+  chain: ChainInfo,
+  owners: string[],
+  threshold: number,
+  saltNonce: number,
+) => {
+  const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
+  const proxyFactoryAddress = proxyFactory.getAddress()
+  const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)
+  const fallbackHandlerAddress = fallbackHandlerDeployment.getAddress()
+  const safeContract = getGnosisSafeContractInstance(chain)
+  const safeContractAddress = safeContract.getAddress()
+
+  const callData = {
+    owners,
+    threshold,
+    to: ZERO_ADDRESS,
+    data: EMPTY_DATA,
+    fallbackHandler: fallbackHandlerAddress,
+    paymentToken: ZERO_ADDRESS,
+    payment: 0,
+    paymentReceiver: ZERO_ADDRESS,
+  }
+
+  const initializer = safeContract.encode('setup', [
+    callData.owners,
+    callData.threshold,
+    callData.to,
+    callData.data,
+    callData.fallbackHandler,
+    callData.paymentToken,
+    callData.payment,
+    callData.paymentReceiver,
+  ])
+
+  const createProxyWithNonceCallData = proxyFactory.encode('createProxyWithNonce', [
+    safeContractAddress,
+    initializer,
+    saltNonce,
+  ])
+
+  const relayResponse = await sponsoredCall({
+    chainId: chain.chainId,
+    to: proxyFactoryAddress,
+    data: createProxyWithNonceCallData,
+  })
+
+  return relayResponse.taskId
 }
