@@ -38,7 +38,7 @@ export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
     if (!chain || !hasFeature(chain, FEATURES.RELAYING)) return
 
     const result = await Promise.all(ownerAddresses.map((address) => fetchRemainingRelays(chain.chainId, address)))
-    console.log('result', result)
+
     return getMinimum(result)
   }, [chain, ownerAddresses])
 }
