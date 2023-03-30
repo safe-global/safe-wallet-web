@@ -25,6 +25,7 @@ import ReviewRow from '@/components/new-safe/ReviewRow'
 import SponsoredBy from '@/components/tx/SponsoredBy'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
+import classnames from 'classnames'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
@@ -123,9 +124,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       <Box className={layoutCss.row}>
         <Grid item xs={12}>
           <Grid container spacing={3}>
-            {willRelay ? (
-              <ReviewRow name="Execution method" value={<SponsoredBy remainingRelays={minRelays} />} />
-            ) : null}
             <ReviewRow
               name="Est. network fee"
               value={
@@ -139,18 +137,21 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
                       borderRadius: '6px',
                     }}
                   >
-                    <Typography variant="body1">
+                    <Typography variant="body1" className={classnames({ [css.sponsoredFee]: willRelay })}>
                       <b>
                         &asymp; {totalFee} {chain?.nativeCurrency.symbol}
                       </b>
                     </Typography>
                   </Box>
-                  <Typography variant="body2" color="text.secondary" mt={1}>
-                    You will have to confirm a transaction with your connected wallet.
-                  </Typography>
+                  {willRelay ? null : (
+                    <Typography variant="body2" color="text.secondary" mt={1}>
+                      You will have to confirm a transaction with your connected wallet.
+                    </Typography>
+                  )}
                 </>
               }
             />
+            {willRelay ? <ReviewRow name="" value={<SponsoredBy remainingRelays={minRelays} />} /> : null}
           </Grid>
         </Grid>
 
