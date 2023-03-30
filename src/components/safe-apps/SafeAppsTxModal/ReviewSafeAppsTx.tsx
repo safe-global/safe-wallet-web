@@ -13,12 +13,14 @@ import { generateDataRowValue } from '@/components/transactions/TxDetails/Summar
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
-import useTxSender from '@/hooks/useTxSender'
 import { getInteractionTitle } from '../utils'
 import type { SafeAppsTxParams } from '.'
 import { isEmptyHexData } from '@/utils/hex'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
+import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -27,8 +29,9 @@ type ReviewSafeAppsTxProps = {
 const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
 }: ReviewSafeAppsTxProps): ReactElement => {
-  const { createMultiSendCallOnlyTx, dispatchSafeAppsTx, createTx } = useTxSender()
   const chainId = useChainId()
+  const { safe } = useSafeInfo()
+  const onboard = useOnboard()
   const chain = useCurrentChain()
   const [submitError, setSubmitError] = useState<Error>()
 
@@ -44,7 +47,7 @@ const ReviewSafeAppsTx = ({
     }
 
     return tx
-  }, [txs, createMultiSendCallOnlyTx])
+  }, [txs])
 
   const [decodedData] = useAsync<DecodedDataResponse | undefined>(async () => {
     if (!safeTx || isEmptyHexData(safeTx.data.data)) return
@@ -54,11 +57,11 @@ const ReviewSafeAppsTx = ({
 
   const handleSubmit = async () => {
     setSubmitError(undefined)
-    if (!safeTx) return
+    if (!safeTx || !onboard) return
     trackSafeAppTxCount(Number(appId))
 
     try {
-      await dispatchSafeAppsTx(safeTx, requestId)
+      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
       setSubmitError(error as Error)
     }

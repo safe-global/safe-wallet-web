@@ -1,15 +1,14 @@
 import chains from '@/config/chains'
-import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import { getWeb3 } from '@/hooks/wallets/web3'
+import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
-import { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import Safe from '@safe-global/safe-core-sdk'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { type EIP1193Provider } from '@web3-onboard/core'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
@@ -41,13 +40,22 @@ export const createEthersAdapter = (provider = getWeb3()) => {
   })
 }
 
-// Safe Core SDK
-export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Promise<Safe | undefined> => {
-  const ethersProvider = new Web3Provider(provider)
+const createReadOnlyEthersAdapter = (provider: JsonRpcProvider) => {
+  if (!provider) {
+    throw new Error('Unable to create `EthersAdapter` without a provider')
+  }
 
+  return new EthersAdapter({
+    ethers,
+    signerOrProvider: provider,
+  })
+}
+
+// Safe Core SDK
+export const initSafeSDK = async (provider: JsonRpcProvider, safe: SafeInfo): Promise<Safe | undefined> => {
   const chainId = safe.chainId
   const safeAddress = safe.address.value
-  const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, ethersProvider).VERSION())
+  const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, provider).VERSION())
 
   let isL1SafeMasterCopy = chainId === chains.eth
 
@@ -73,7 +81,7 @@ export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Pr
   }
 
   return Safe.create({
-    ethAdapter: createEthersAdapter(ethersProvider),
+    ethAdapter: createReadOnlyEthersAdapter(provider),
     safeAddress,
     isL1SafeMasterCopy,
   })

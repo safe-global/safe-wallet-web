@@ -31,10 +31,6 @@ describe('Create Safe form', () => {
     cy.get('[data-cy="create-safe-select-network"]').click()
     cy.contains('Ethereum').click()
 
-    // Network hint should be displayed
-    cy.contains('Change your wallet network').should('be.visible')
-    cy.contains('button', 'Next').should('be.disabled')
-
     // Switch back to Görli
     cy.get('[data-cy="create-safe-select-network"]').click()
     cy.contains('li span', 'Görli').click()

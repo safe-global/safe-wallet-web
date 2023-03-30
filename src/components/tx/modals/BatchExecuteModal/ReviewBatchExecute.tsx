@@ -4,11 +4,9 @@ import { getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeC
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { Button, DialogContent, Typography } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { type SyntheticEvent, useMemo, useState } from 'react'
-import useTxSender from '@/hooks/useTxSender'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { Errors, logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -19,18 +17,20 @@ import { TxSimulation } from '@/components/tx/TxSimulation'
 import useRemainingRelays from '@/hooks/useRemainingRelays'
 import SponsoredBy from '@/components/tx/SponsoredBy'
 import { FEATURES, hasFeature } from '@/utils/chains'
+import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
-  const provider = useWeb3()
-  const { dispatchBatchExecution, dispatchBatchExecutionRelay } = useTxSender()
   const [remainingRelays] = useRemainingRelays()
 
   // Chain has relaying feature and available relays
   const canRelay = chain && hasFeature(chain, FEATURES.RELAYING) && !!remainingRelays
+  const onboard = useOnboard()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -54,9 +54,9 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!provider || !multiSendTxData || !multiSendContract || !txsWithDetails) return
+    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails) return
 
-    await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, provider)
+    await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, onboard, safe.chainId)
 
     onSubmit(null)
   }
@@ -126,6 +126,8 @@ executions from the same Safe."
         ) : null}
 
         {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
+
+        <WrongChainWarning />
 
         <Typography variant="body2" mt={2} textAlign="center">
           Be aware that if any of the included transactions revert, none of them will be executed. This will result in
