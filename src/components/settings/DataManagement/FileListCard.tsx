@@ -33,7 +33,7 @@ const getItemSecondaryText = (
         const chain = chains.find((chain) => chain.chainId === chainId)
 
         return (
-          <ListItem key={chainId} sx={{ p: 0, m: '4px' }}>
+          <ListItem key={chainId} sx={{ p: 0, m: 0.5 }}>
             <Box
               className={css.networkIcon}
               sx={{ backgroundColor: chain?.theme.backgroundColor ?? '#D9D9D9' }}
