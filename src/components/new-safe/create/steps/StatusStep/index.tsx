@@ -39,7 +39,7 @@ export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<New
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain
 
-  const { createSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus, data.willRelay)
+  const { handleCreateSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus, data.willRelay)
 
   useSafeCreationEffects({
     pendingSafe,
@@ -53,10 +53,10 @@ export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<New
     router.push(AppRoutes.welcome)
   }, [router, setPendingSafe])
 
-  const onCreate = useCallback(() => {
+  const handleRetry = useCallback(() => {
     setStatus(SafeCreationStatus.AWAITING)
-    void createSafe()
-  }, [createSafe, setStatus])
+    void handleCreateSafe()
+  }, [handleCreateSafe])
 
   const onFinish = useCallback(() => {
     trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
@@ -129,7 +129,7 @@ export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<New
                   title={!isConnected ? 'Please make sure your wallet is connected on the correct network.' : ''}
                 >
                   <Typography display="flex" height={1}>
-                    <Button onClick={onCreate} variant="contained" disabled={!isConnected}>
+                    <Button onClick={handleRetry} variant="contained" disabled={!isConnected}>
                       Retry
                     </Button>
                   </Typography>

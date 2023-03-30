@@ -112,16 +112,18 @@ export const encodeSafeCreationTx = ({
  */
 export const getSafeCreationTxInfo = async (
   provider: Web3Provider,
-  params: NewSafeFormData,
+  owners: NewSafeFormData['owners'],
+  threshold: NewSafeFormData['threshold'],
+  saltNonce: NewSafeFormData['saltNonce'],
   chain: ChainInfo,
   wallet: ConnectedWallet,
 ): Promise<PendingSafeTx> => {
   const proxyContract = getProxyFactoryContractInstance(chain.chainId)
 
   const data = encodeSafeCreationTx({
-    owners: params.owners.map((owner) => owner.address),
-    threshold: params.threshold,
-    saltNonce: params.saltNonce,
+    owners: owners.map((owner) => owner.address),
+    threshold,
+    saltNonce,
     chain,
   })
 
@@ -265,12 +267,7 @@ export const getRedirect = (
   return redirectUrl + `${appendChar}safe=${address}`
 }
 
-export const createNewSafeViaRelayer = async (
-  chain: ChainInfo,
-  owners: string[],
-  threshold: number,
-  saltNonce: number,
-) => {
+export const relaySafeCreation = async (chain: ChainInfo, owners: string[], threshold: number, saltNonce: number) => {
   const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
   const proxyFactoryAddress = proxyFactory.getAddress()
   const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)

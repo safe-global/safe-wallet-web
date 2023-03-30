@@ -5,7 +5,7 @@ import * as web3 from '@/hooks/wallets/web3'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 import {
   checkSafeCreationTx,
-  createNewSafeViaRelayer,
+  relaySafeCreation,
   handleSafeCreationError,
 } from '@/components/new-safe/create/logic/index'
 import { ErrorCode } from '@ethersproject/logger'
@@ -251,7 +251,7 @@ describe('createNewSafeViaRelayer', () => {
       expectedSaltNonce,
     ])
 
-    const taskId = await createNewSafeViaRelayer(mockChainInfo, [owner1, owner2], expectedThreshold, expectedSaltNonce)
+    const taskId = await relaySafeCreation(mockChainInfo, [owner1, owner2], expectedThreshold, expectedSaltNonce)
 
     expect(taskId).toEqual('0x123')
     expect(sponsoredCallSpy).toHaveBeenCalledTimes(1)
@@ -267,6 +267,6 @@ describe('createNewSafeViaRelayer', () => {
 
     jest.spyOn(sponsoredCall, 'sponsoredCall').mockRejectedValue(relayFailedError)
 
-    expect(createNewSafeViaRelayer(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
+    expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
   })
 })
