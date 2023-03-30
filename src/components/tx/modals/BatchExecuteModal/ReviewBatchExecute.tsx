@@ -16,7 +16,6 @@ import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import SponsoredBy from '@/components/tx/SponsoredBy'
-import { FEATURES, hasFeature } from '@/utils/chains'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
@@ -29,7 +28,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const [remainingRelays] = useRemainingRelaysBySafe()
 
   // Chain has relaying feature and available relays
-  const canRelay = chain && hasFeature(chain, FEATURES.RELAYING) && !!remainingRelays
+  const willRelay = !!remainingRelays
   const onboard = useOnboard()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
@@ -75,7 +74,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     setSubmitError(undefined)
 
     try {
-      await (canRelay ? onRelay() : onExecute())
+      await (willRelay ? onRelay() : onExecute())
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
@@ -112,10 +111,10 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         </Typography>
         <DecodedTxs txs={txsWithDetails} />
 
-        {canRelay ? (
+        {willRelay ? (
           <>
-            <Typography mt={2} color="primary.light">
-              How to pay:
+            <Typography mt={2} mb={1} color="primary.light">
+              Gas fees:
             </Typography>
             <SponsoredBy
               remainingRelays={remainingRelays}
