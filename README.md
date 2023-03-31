@@ -37,6 +37,7 @@ Here's the list of all the required and optional variables:
 | `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH` | optional | Preview GTM key |
 | `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH` | optional | Production GTM key |
 | `NEXT_PUBLIC_SENTRY_DSN` | optional | [Sentry](https://sentry.io) id for tracking runtime errors |
+| `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL` | optional | [Safe Gelato Relay Service](https://github.com/safe-global/safe-gelato-relay-service) URL to allow relaying transactions via Gelato |
 
 If you don't provide some of the optional vars, the corresponding features will be disabled in the UI.
 
