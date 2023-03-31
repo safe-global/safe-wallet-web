@@ -2,9 +2,9 @@ const SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
 const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 // generate number between 0.00001 and 0.00020
+let recommendedNonce
 const sendValue = Math.floor(Math.random() * 20 + 1) / 100000
 const currentNonce = 3
-let recommendedNonce
 
 describe('Queue a transaction on 1/N', () => {
   before(() => {
@@ -100,11 +100,13 @@ describe('Queue a transaction on 1/N', () => {
     })
     cy.contains('Estimated fee').should('exist')
 
-    // Asserting the relayer option is present
-    cy.contains('Via relayer').find('[type="radio"]').should('be.checked')
-    cy.contains('Sponsored by Gnosis Chain')
+    // Asserting the sponsored info is present
+    cy.contains('Sponsored by').should('be.visible')
+    cy.contains('Gnosis Chain').should('be.visible')
+
     cy.get('span').contains('Estimated fee').next().should('have.css', 'text-decoration-line', 'line-through')
-    cy.contains('Via relayer').contains('5 of 5')
+    cy.contains('Transactions per hour')
+    cy.contains('5 of 5')
 
     cy.contains('Estimated fee').click()
     cy.contains('Edit').click()
@@ -125,17 +127,6 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('@Paramsform').find('[name="gasLimit"]').parent('div').find('[data-testid="RotateLeftIcon"]').click()
     cy.contains('Confirm').click()
 
-    // Unselecting relayer. Adv parameters options should be editable now
-    cy.contains('With connected wallet').click().find('[type="radio"]').should('be.checked')
-    cy.contains('Estimated fee').click()
-    cy.contains('Edit').click()
-
-    arrayNames.forEach((element) => {
-      cy.get('@Paramsform').find('label').contains(`${element}`).next().find('input').should('not.be.disabled')
-    })
-
-    cy.contains('Confirm').click()
-
     // Asserts the execute checkbox is uncheckable
     cy.contains('Execute transaction').click()
     cy.get('@modal').within(() => {
@@ -150,7 +141,7 @@ describe('Queue a transaction on 1/N', () => {
     })
 
     // If the checkbox is unchecked the relayer is not present
-    cy.get('@modal').should('not.contain', 'Via relayer').and('not.contain', 'With connected wallet')
+    cy.get('@modal').should('not.contain', 'Sponsored by').and('not.contain', 'Transactions per hour')
 
     cy.contains('Signing the transaction with nonce').should('exist')
 
