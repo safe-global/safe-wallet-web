@@ -1,10 +1,16 @@
 import chains from './chains'
+import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
 
 export const GATEWAY_URL_PRODUCTION =
   process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.safe.global'
 export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-client.staging.5afe.dev'
+
+export const SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION =
+  process.env.NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION || 'https://safe-client-nest.safe.global/v1/relay'
+export const SAFE_GELATO_RELAY_SERVICE_URL_STAGING =
+  process.env.NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING || 'https://safe-client-nest.staging.5afe.dev/v1/relay'
 
 // Magic numbers
 export const POLLING_INTERVAL = 15_000
@@ -62,4 +68,7 @@ export enum SafeAppsTag {
 }
 
 // Safe Gelato relay service
-export const SAFE_GELATO_RELAY_SERVICE_URL = process.env.NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL || ''
+export const SAFE_GELATO_RELAY_SERVICE_URL =
+  IS_PRODUCTION || cgwDebugStorage.get()
+    ? SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION
+    : SAFE_GELATO_RELAY_SERVICE_URL_STAGING
