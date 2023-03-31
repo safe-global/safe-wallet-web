@@ -216,7 +216,7 @@ describe('useSafeCreation', () => {
   })
 
   it('should set a PROCESSING state and monitor relay taskId after successfully tx relay', async () => {
-    jest.spyOn(logic, 'createNewSafeViaRelayer').mockResolvedValue('0x456')
+    jest.spyOn(logic, 'relaySafeCreation').mockResolvedValue('0x456')
 
     const txMonitorSpy = jest.spyOn(txMonitor, 'waitForCreateSafeTx').mockImplementation(jest.fn())
 
