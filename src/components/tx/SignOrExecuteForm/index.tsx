@@ -2,36 +2,22 @@ import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useS
 import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
-import useWallet from '@/hooks/wallets/useWallet'
 import useGasLimit from '@/hooks/useGasLimit'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
-import useOnboard, { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
-import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import {
-  createTx,
-  dispatchOnChainSigning,
-  dispatchTxExecution,
-  dispatchTxProposal,
-  dispatchTxSigning,
-} from '@/services/tx/tx-sender'
+import { createTx } from '@/services/tx/tx-sender'
 import CheckWallet from '@/components/common/CheckWallet'
-import ExternalLink from '@/components/common/ExternalLink'
-import { getExplorerLink } from '@/utils/gateway'
-import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
-import { type OnboardAPI } from '@web3-onboard/core'
 import { WrongChainWarning } from '../WrongChainWarning'
+import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
+import UnknownContractError from './UnknownContractError'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -59,15 +45,9 @@ const SignOrExecuteForm = ({
   ...props
 }: SignOrExecuteProps): ReactElement => {
   // Hooks
-  const { safe, safeAddress } = useSafeInfo()
-  const wallet = useWallet()
-  const onboard = useOnboard()
   const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
-  const hasPending = useHasPendingTxs()
-
-  // Unsupported base contract
-  const isUnknown = safe.implementationVersionState === ImplementationVersionState.UNKNOWN
+  const { signTx, executeTx } = useTxActions()
 
   // Internal state
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
@@ -76,9 +56,11 @@ const SignOrExecuteForm = ({
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
   // Check that the transaction is executable
-  const isNewExecutableTx = !txId && safe.threshold === 1 && !hasPending
-  const isCorrectNonce = tx?.data.nonce === safe.nonce
+  const isCreation = !txId
+  const isNewExecutableTx = useImmediatelyExecutable() && isCreation
+  const isCorrectNonce = useValidateNonce(tx)
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
+  const isExecutionLoop = useIsExecutionLoop()
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
@@ -104,61 +86,19 @@ const SignOrExecuteForm = ({
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
   // Nonce cannot be edited if the tx is already proposed, or signed, or it's a rejection
-  const nonceReadonly = !!txId || !!tx?.signatures.size || isRejection
-
-  // Assert that wallet, tx and provider are defined
-  const assertDependencies = (): [ConnectedWallet, SafeTransaction, OnboardAPI] => {
-    if (!wallet) throw new Error('Wallet not connected')
-    if (!tx) throw new Error('Transaction not ready')
-    if (!onboard) throw new Error('Onboard not ready')
-
-    return [wallet, tx, onboard]
-  }
-
-  // Propose transaction if no txId
-  const proposeTx = async (newTx: SafeTransaction): Promise<string> => {
-    const proposedTx = await dispatchTxProposal({
-      chainId: safe.chainId,
-      safeAddress,
-      sender: wallet!.address,
-      safeTx: newTx,
-      txId,
-      origin,
-    })
-
-    return proposedTx.txId
-  }
+  const nonceReadonly = !isCreation || !!tx?.signatures.size || isRejection
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
-    const [connectedWallet, createdTx, onboard] = assertDependencies()
-
-    // Smart contract wallets must sign via an on-chain tx
-    if (await isSmartContractWallet(connectedWallet)) {
-      // If the first signature is a smart contract wallet, we have to propose w/o signatures
-      // Otherwise the backend won't pick up the tx
-      // The signature will be added once the on-chain signature is indexed
-      const id = txId || (await proposeTx(createdTx))
-      await dispatchOnChainSigning(createdTx, id, onboard, safe.chainId)
-      return id
-    }
-
-    // Otherwise, sign off-chain
-    const signedTx = await dispatchTxSigning(createdTx, safe.version, onboard, safe.chainId, txId)
-
-    return await proposeTx(signedTx)
+    if (!tx) throw new Error('Transaction not ready')
+    return await signTx(tx, txId)
   }
 
   // Execute transaction
   const onExecute = async (): Promise<string | undefined> => {
-    const [, createdTx, onboard] = assertDependencies()
-
-    // If no txId was provided, it's an immediate execution of a new tx
-    const id = txId || (await proposeTx(createdTx))
+    if (!tx) throw new Error('Transaction not ready')
     const txOptions = getTxOptions(advancedParams, currentChain)
-    await dispatchTxExecution(createdTx, txOptions, id, onboard, safe.chainId)
-
-    return id
+    return await executeTx(tx, txId, txOptions)
   }
 
   // On modal submit
@@ -179,7 +119,7 @@ const SignOrExecuteForm = ({
     onSubmit()
   }
 
-  // On advanced params submit (nonce, gas limit, price, etc)
+  // On advanced params submit (nonce, gas limit, price, etc), recreate the transaction
   const onAdvancedSubmit = async (data: AdvancedParameters) => {
     // If nonce was edited, create a new tx with that nonce
     if (tx && (data.nonce !== tx.data.nonce || data.safeTxGas !== tx.data.safeTxGas)) {
@@ -194,7 +134,6 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
-  const isExecutionLoop = wallet ? sameString(wallet.address, safeAddress) : false // Can't execute own transaction
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled =
     !isSubmittable ||
@@ -254,19 +193,9 @@ const SignOrExecuteForm = ({
           </ErrorMessage>
         ) : submitError ? (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-        ) : willExecute && isUnknown ? (
-          <ErrorMessage>
-            This Safe was created with an unsupported base contract. It should <b>ONLY</b> be used for fund recovery.
-            Transactions will execute but the transaction list may not immediately update. Transaction success can be
-            verified on the{' '}
-            <ExternalLink
-              href={currentChain ? getExplorerLink(safeAddress, currentChain.blockExplorerUriTemplate).href : ''}
-            >
-              {currentChain?.chainName} explorer
-            </ExternalLink>
-            .
-          </ErrorMessage>
-        ) : null}
+        ) : (
+          willExecute && <UnknownContractError />
+        )}
 
         {/* Info text */}
         <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
