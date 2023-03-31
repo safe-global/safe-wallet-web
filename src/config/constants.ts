@@ -1,5 +1,4 @@
 import chains from './chains'
-import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
 
@@ -66,9 +65,3 @@ export enum SafeAppsTag {
   // TODO: Remove safe-claiming-app when we remove the old claiming app
   SAFE_CLAIMING_APP = 'safe-claiming-app',
 }
-
-// Safe Gelato relay service
-export const SAFE_GELATO_RELAY_SERVICE_URL =
-  IS_PRODUCTION || cgwDebugStorage.get()
-    ? SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION
-    : SAFE_GELATO_RELAY_SERVICE_URL_STAGING

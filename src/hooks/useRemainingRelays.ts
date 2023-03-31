@@ -1,9 +1,19 @@
 import useAsync from '@/hooks/useAsync'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { Errors, logError } from '@/services/exceptions'
-import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/config/constants'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
+import {
+  IS_PRODUCTION,
+  SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION,
+  SAFE_GELATO_RELAY_SERVICE_URL_STAGING,
+} from '@/config/constants'
+import { relayServiceStorage } from '@/components/sidebar/DebugToggle'
+
+export const SAFE_GELATO_RELAY_SERVICE_URL =
+  IS_PRODUCTION || relayServiceStorage.get()
+    ? SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION
+    : SAFE_GELATO_RELAY_SERVICE_URL_STAGING
 
 const fetchRemainingRelays = async (chainId: string, address: string): Promise<number> => {
   const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/${chainId}/${address}`
