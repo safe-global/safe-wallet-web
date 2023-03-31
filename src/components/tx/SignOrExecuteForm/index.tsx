@@ -59,8 +59,8 @@ const SignOrExecuteForm = ({
   const isCreation = !txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(tx)
-  const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
   const isExecutionLoop = useIsExecutionLoop()
+  const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx) && !isExecutionLoop
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
@@ -136,13 +136,7 @@ const SignOrExecuteForm = ({
 
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled =
-    !isSubmittable ||
-    isEstimating ||
-    !tx ||
-    disableSubmit ||
-    cannotPropose ||
-    isExecutionLoop ||
-    isValidExecutionLoading
+    !isSubmittable || isEstimating || !tx || disableSubmit || cannotPropose || isValidExecutionLoading
 
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
