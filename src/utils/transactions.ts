@@ -18,7 +18,7 @@ import {
 } from './transaction-guards'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types/dist/src/types'
 import { OperationType } from '@safe-global/safe-core-sdk-types/dist/src/types'
-import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import { getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import type { TransactionOptions } from '@safe-global/safe-core-sdk-types'
@@ -97,7 +97,7 @@ export const getMultiSendTxs = (
   safeAddress: string,
   safeVersion: string,
 ): MetaTransactionData[] => {
-  const safeContractInstance = getGnosisSafeContractInstance(chain, safeVersion)
+  const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain, safeVersion)
 
   return txs
     .map((tx) => {
@@ -106,7 +106,7 @@ export const getMultiSendTxs = (
       const args = extractTxInfo(tx, safeAddress)
       const sigs = getSignatures(args.signatures)
 
-      const data = safeContractInstance.encode('execTransaction', [
+      const data = readOnlySafeContract.encode('execTransaction', [
         args.txParams.to,
         args.txParams.value,
         args.txParams.data,

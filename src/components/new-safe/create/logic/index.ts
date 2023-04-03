@@ -1,9 +1,9 @@
 import type { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
-  getFallbackHandlerContractInstance,
-  getGnosisSafeContractInstance,
-  getProxyFactoryContractInstance,
+  getReadOnlyFallbackHandlerContract,
+  getReadOnlyGnosisSafeContract,
+  getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
 import type { ConnectedWallet } from '@/services/onboard'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -43,13 +43,13 @@ export const getSafeDeployProps = (
   callback: (txHash: string) => void,
   chainId: string,
 ): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
-  const fallbackHandler = getFallbackHandlerContractInstance(chainId)
+  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chainId)
 
   return {
     safeAccountConfig: {
       threshold: safeParams.threshold,
       owners: safeParams.owners,
-      fallbackHandler: fallbackHandler.getAddress(),
+      fallbackHandler: readOnlyFallbackHandlerContract.getAddress(),
     },
     safeDeploymentConfig: {
       saltNonce: safeParams.saltNonce.toString(),
@@ -88,22 +88,22 @@ export const encodeSafeCreationTx = ({
   saltNonce,
   chain,
 }: SafeCreationProps & { chain: ChainInfo }) => {
-  const safeContract = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION)
-  const proxyContract = getProxyFactoryContractInstance(chain.chainId)
-  const fallbackHandlerContract = getFallbackHandlerContractInstance(chain.chainId)
+  const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
+  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId)
+  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
 
-  const setupData = safeContract.encode('setup', [
+  const setupData = readOnlySafeContract.encode('setup', [
     owners,
     threshold,
     ZERO_ADDRESS,
     EMPTY_DATA,
-    fallbackHandlerContract.getAddress(),
+    readOnlyFallbackHandlerContract.getAddress(),
     ZERO_ADDRESS,
     '0',
     ZERO_ADDRESS,
   ])
 
-  return proxyContract.encode('createProxyWithNonce', [safeContract.getAddress(), setupData, saltNonce])
+  return readOnlyProxyContract.encode('createProxyWithNonce', [readOnlySafeContract.getAddress(), setupData, saltNonce])
 }
 
 /**
@@ -115,7 +115,7 @@ export const getSafeCreationTxInfo = async (
   chain: ChainInfo,
   wallet: ConnectedWallet,
 ): Promise<PendingSafeTx> => {
-  const proxyContract = getProxyFactoryContractInstance(chain.chainId)
+  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId)
 
   const data = encodeSafeCreationTx({
     owners: params.owners.map((owner) => owner.address),
@@ -128,7 +128,7 @@ export const getSafeCreationTxInfo = async (
     data,
     from: wallet.address,
     nonce: await provider.getTransactionCount(wallet.address),
-    to: proxyContract.getAddress(),
+    to: readOnlyProxyContract.getAddress(),
     value: BigNumber.from(0),
     startBlock: await provider.getBlockNumber(),
   }
@@ -140,12 +140,12 @@ export const estimateSafeCreationGas = async (
   from: string,
   safeParams: SafeCreationProps,
 ): Promise<BigNumber> => {
-  const proxyFactoryContract = getProxyFactoryContractInstance(chain.chainId)
+  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId)
   const encodedSafeCreationTx = encodeSafeCreationTx({ ...safeParams, chain })
 
   return provider.estimateGas({
     from: from,
-    to: proxyFactoryContract.getAddress(),
+    to: readOnlyProxyFactoryContract.getAddress(),
     data: encodedSafeCreationTx,
   })
 }

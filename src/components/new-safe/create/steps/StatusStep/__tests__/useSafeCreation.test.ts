@@ -47,13 +47,13 @@ describe('useSafeCreation', () => {
     } as unknown as ChainInfo
 
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
-    jest.spyOn(web3, 'getWeb3').mockImplementation(() => mockProvider)
+    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockProvider)
     jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() => mockChain)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(logic, 'getSafeCreationTxInfo').mockReturnValue(Promise.resolve(mockSafeInfo))
     jest
-      .spyOn(contracts, 'getFallbackHandlerContractInstance')
+      .spyOn(contracts, 'getReadOnlyFallbackHandlerContract')
       .mockReturnValue({ getAddress: () => hexZeroPad('0x123', 20) } as CompatibilityFallbackHandlerEthersContract)
   })
 
