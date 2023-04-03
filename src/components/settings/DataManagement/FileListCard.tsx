@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { Box, Card, CardContent, CardHeader, List, ListItem, ListItemIcon, ListItemText, SvgIcon } from '@mui/material'
 import type { ListItemTextProps } from '@mui/material'
 import type { CardHeaderProps } from '@mui/material'
@@ -148,9 +147,7 @@ export const FileListCard = ({
   ...cardHeaderProps
 }: Props): ReactElement => {
   const chains = useChains()
-  const items = useMemo<Array<ListItemTextProps>>(() => {
-    return getItems({ addedSafes, addressBook, settings, safeApps, error, chains: chains.configs, showPreview })
-  }, [addedSafes, addressBook, settings, safeApps, error, chains.configs, showPreview])
+  const items = getItems({ addedSafes, addressBook, settings, safeApps, error, chains: chains.configs, showPreview })
 
   return (
     <Card className={css.card}>
