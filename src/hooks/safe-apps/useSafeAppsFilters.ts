@@ -30,7 +30,7 @@ const useSafeAppsFilters = (safeAppsList: SafeAppData[]): ReturnType => {
 
   const filteredApps = useAppsFilterByOptimizedForBatch(filteredAppsByQueryAndCategories, optimizedWithBatchFilter)
 
-  const debouncedSearchQuery = useDebounce(query, 500)
+  const debouncedSearchQuery = useDebounce(query, 2000)
 
   useEffect(() => {
     if (debouncedSearchQuery) {
