@@ -90,15 +90,13 @@ const SignOrExecuteForm = ({
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
-    if (!tx) throw new Error('Transaction not ready')
     return await signTx(tx, txId)
   }
 
   // Execute transaction
   const onExecute = async (): Promise<string | undefined> => {
-    if (!tx) throw new Error('Transaction not ready')
     const txOptions = getTxOptions(advancedParams, currentChain)
-    return await executeTx(tx, txId, txOptions)
+    return await executeTx(txOptions, tx, txId)
   }
 
   // On modal submit

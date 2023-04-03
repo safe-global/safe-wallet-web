@@ -188,11 +188,20 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useTxActions())
       const { executeTx } = result.current
 
-      const id = await executeTx(createSafeTx(), undefined, { gasPrice: 1 })
+      const id = await executeTx({ gasPrice: 1 }, createSafeTx())
       expect(id).toEqual('123')
 
-      const id2 = await executeTx(createSafeTx(), '455', { gasPrice: 1 })
+      const id2 = await executeTx({ gasPrice: 1 }, createSafeTx(), '455')
       expect(id2).toEqual('455')
+    })
+
+    it('should throw an error if the tx is undefined', async () => {
+      const { result } = renderHook(() => useTxActions())
+      const { signTx, executeTx } = result.current
+
+      // Expect signTx to throw an error
+      await expect(signTx()).rejects.toThrowError('Transaction not provided')
+      await expect(executeTx({ gasPrice: 1 })).rejects.toThrowError('Transaction not provided')
     })
   })
 })

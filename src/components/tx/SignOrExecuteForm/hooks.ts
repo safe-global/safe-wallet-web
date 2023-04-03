@@ -14,8 +14,14 @@ import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 
 type TxActions = {
-  signTx: (safeTx: SafeTransaction, txId?: string) => Promise<string>
-  executeTx: (safeTx: SafeTransaction, txId: string | undefined, txOptions: TransactionOptions) => Promise<string>
+  signTx: (safeTx?: SafeTransaction, txId?: string) => Promise<string>
+  executeTx: (txOptions: TransactionOptions, safeTx?: SafeTransaction, txId?: string) => Promise<string>
+}
+
+enum DependencyError {
+  NO_TX = 'Transaction not provided',
+  NO_WALLET = 'Wallet not connected',
+  NO_ONBOARD = 'Onboard not connected',
 }
 
 export const useTxActions = (): TxActions => {
@@ -38,8 +44,9 @@ export const useTxActions = (): TxActions => {
     }
 
     const signTx: TxActions['signTx'] = async (safeTx, txId) => {
-      if (!onboard) throw 'Onboard not ready'
-      if (!wallet) throw 'Wallet not connected'
+      if (!safeTx) throw Error(DependencyError.NO_TX)
+      if (!onboard) throw Error(DependencyError.NO_ONBOARD)
+      if (!wallet) throw Error(DependencyError.NO_WALLET)
 
       // Smart contract wallets must sign via an on-chain tx
       if (await isSmartContractWallet(wallet)) {
@@ -56,9 +63,10 @@ export const useTxActions = (): TxActions => {
       return await proposeTx(wallet.address, signedTx, txId, origin)
     }
 
-    const executeTx: TxActions['executeTx'] = async (safeTx, txId, txOptions) => {
-      if (!onboard) throw 'Onboard not ready'
-      if (!wallet) throw 'Wallet not connected'
+    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId) => {
+      if (!safeTx) throw Error(DependencyError.NO_TX)
+      if (!onboard) throw Error(DependencyError.NO_ONBOARD)
+      if (!wallet) throw Error(DependencyError.NO_WALLET)
 
       const id = txId || (await proposeTx(wallet.address, safeTx, txId, origin))
       await dispatchTxExecution(safeTx, txOptions, id, onboard, chainId)
@@ -71,13 +79,13 @@ export const useTxActions = (): TxActions => {
 
 export const useValidateNonce = (safeTx?: SafeTransaction): boolean => {
   const { safe } = useSafeInfo()
-  return !!safe && !!safeTx && safeTx?.data.nonce === safe.nonce
+  return !!safeTx && safeTx?.data.nonce === safe.nonce
 }
 
 export const useImmediatelyExecutable = (): boolean => {
   const { safe } = useSafeInfo()
   const hasPending = useHasPendingTxs()
-  return safe && safe.threshold === 1 && !hasPending
+  return safe.threshold === 1 && !hasPending
 }
 
 // Check if the executor is the safe itself (it won't work)
