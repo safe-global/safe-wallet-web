@@ -1,4 +1,4 @@
-import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/config/constants'
+import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/hooks/useRemainingRelays'
 import { type SafeTransactionData } from '@safe-global/safe-core-sdk-types'
 
 // TODO: import type from relay-service

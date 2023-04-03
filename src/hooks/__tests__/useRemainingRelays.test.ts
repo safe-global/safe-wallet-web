@@ -1,6 +1,9 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { useLeastRemainingRelays, useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
-import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/config/constants'
+import {
+  useLeastRemainingRelays,
+  useRemainingRelaysBySafe,
+  SAFE_GELATO_RELAY_SERVICE_URL,
+} from '@/hooks/useRemainingRelays'
 import * as useSafeAddress from '@/hooks/useSafeAddress'
 import * as useChains from '@/hooks/useChains'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
