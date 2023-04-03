@@ -7,6 +7,7 @@ import { waitForTx } from '@/services/tx/txMonitor'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useTxHistory from './useTxHistory'
 import { isTransactionListItem } from '@/utils/transaction-guards'
+import useSafeInfo from './useSafeInfo'
 
 const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
   [TxEvent.SIGNATURE_PROPOSED]: PendingStatus.SIGNING,
@@ -53,7 +54,8 @@ const useTxMonitor = (): void => {
 
 const useTxPendingStatuses = (): void => {
   const dispatch = useAppDispatch()
-  const chainId = useChainId()
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId } = safe
   const txHistory = useTxHistory()
   const historicalTxs = useMemo(() => {
     return txHistory.page?.results?.filter(isTransactionListItem) || []
@@ -85,6 +87,7 @@ const useTxPendingStatuses = (): void => {
           dispatch(
             setPendingTx({
               chainId,
+              safeAddress,
               txId,
               status,
               txHash: 'txHash' in detail ? detail.txHash : undefined,
@@ -99,7 +102,7 @@ const useTxPendingStatuses = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch, chainId, historicalTxs])
+  }, [dispatch, chainId, safeAddress, historicalTxs])
 }
 
 export default useTxPendingStatuses

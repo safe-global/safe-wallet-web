@@ -6,7 +6,7 @@ import {
   getTransactionQueue,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
-import { selectPendingTxs } from '@/store/pendingTxsSlice'
+import { selectPendingTxIdsBySafe } from '@/store/pendingTxsSlice'
 import useChainId from './useChainId'
 import useAsync from './useAsync'
 import useSafeAddress from './useSafeAddress'
@@ -14,12 +14,8 @@ import { isLabelListItem, isTransactionListItem } from '@/utils/transaction-guar
 
 const usePendingTxIds = (): Array<TransactionSummary['id']> => {
   const chainId = useChainId()
-  const pendingTxs = useAppSelector(selectPendingTxs)
-
-  return useMemo(() => {
-    const ids = Object.keys(pendingTxs).filter((txId) => pendingTxs[txId].chainId === chainId)
-    return ids as Array<TransactionSummary['id']>
-  }, [chainId, pendingTxs])
+  const safeAddress = useSafeAddress()
+  return useAppSelector((state) => selectPendingTxIdsBySafe(state, chainId, safeAddress))
 }
 
 export const useHasPendingTxs = (): boolean => {
