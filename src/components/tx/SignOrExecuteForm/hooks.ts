@@ -12,16 +12,22 @@ import {
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
+import type { ConnectedWallet } from '@/services/onboard'
+import type { OnboardAPI } from '@web3-onboard/core'
 
 type TxActions = {
   signTx: (safeTx?: SafeTransaction, txId?: string) => Promise<string>
   executeTx: (txOptions: TransactionOptions, safeTx?: SafeTransaction, txId?: string) => Promise<string>
 }
 
-enum DependencyError {
-  NO_TX = 'Transaction not provided',
-  NO_WALLET = 'Wallet not connected',
-  NO_ONBOARD = 'Onboard not connected',
+function assertTx(safeTx?: SafeTransaction): asserts safeTx {
+  if (!safeTx) throw new Error('Transaction not provided')
+}
+function assertWallet(wallet: ConnectedWallet | null): asserts wallet {
+  if (!wallet) throw new Error('Wallet not connected')
+}
+function assertOnboard(onboard?: OnboardAPI): asserts onboard {
+  if (!onboard) throw new Error('Onboard not connected')
 }
 
 export const useTxActions = (): TxActions => {
@@ -44,9 +50,9 @@ export const useTxActions = (): TxActions => {
     }
 
     const signTx: TxActions['signTx'] = async (safeTx, txId) => {
-      if (!safeTx) throw Error(DependencyError.NO_TX)
-      if (!onboard) throw Error(DependencyError.NO_ONBOARD)
-      if (!wallet) throw Error(DependencyError.NO_WALLET)
+      assertTx(safeTx)
+      assertWallet(wallet)
+      assertOnboard(onboard)
 
       // Smart contract wallets must sign via an on-chain tx
       if (await isSmartContractWallet(wallet)) {
@@ -64,9 +70,9 @@ export const useTxActions = (): TxActions => {
     }
 
     const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId) => {
-      if (!safeTx) throw Error(DependencyError.NO_TX)
-      if (!onboard) throw Error(DependencyError.NO_ONBOARD)
-      if (!wallet) throw Error(DependencyError.NO_WALLET)
+      assertTx(safeTx)
+      assertWallet(wallet)
+      assertOnboard(onboard)
 
       const id = txId || (await proposeTx(wallet.address, safeTx, txId, origin))
       await dispatchTxExecution(safeTx, txOptions, id, onboard, chainId)
