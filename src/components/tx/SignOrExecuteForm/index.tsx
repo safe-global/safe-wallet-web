@@ -60,7 +60,7 @@ const SignOrExecuteForm = ({
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(tx)
   const isExecutionLoop = useIsExecutionLoop()
-  const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx) && !isExecutionLoop
+  const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
@@ -136,7 +136,13 @@ const SignOrExecuteForm = ({
 
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled =
-    !isSubmittable || isEstimating || !tx || disableSubmit || cannotPropose || isValidExecutionLoading
+    !isSubmittable ||
+    isEstimating ||
+    !tx ||
+    disableSubmit ||
+    cannotPropose ||
+    isValidExecutionLoading ||
+    (willExecute && isExecutionLoop)
 
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
 
@@ -174,7 +180,7 @@ const SignOrExecuteForm = ({
           <ErrorMessage>
             You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
           </ErrorMessage>
-        ) : isExecutionLoop ? (
+        ) : willExecute && isExecutionLoop ? (
           <ErrorMessage>
             Cannot execute a transaction from the Safe itself, please connect a different account.
           </ErrorMessage>

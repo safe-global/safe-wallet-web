@@ -239,6 +239,7 @@ describe('SignOrExecuteForm', () => {
       safeAddress: address,
       safe: {
         owners: [{ value: address }],
+        nonce: 100,
       } as SafeInfo,
       safeLoaded: true,
       safeLoading: false,
@@ -252,7 +253,7 @@ describe('SignOrExecuteForm', () => {
     } as ConnectedWallet)
 
     const mockTx = createSafeTx()
-    const result = render(<SignOrExecuteForm isExecutable={false} onSubmit={jest.fn} safeTx={mockTx} />)
+    const result = render(<SignOrExecuteForm isExecutable onlyExecute onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(
       result.getByText('Cannot execute a transaction from the Safe itself, please connect a different account.'),
