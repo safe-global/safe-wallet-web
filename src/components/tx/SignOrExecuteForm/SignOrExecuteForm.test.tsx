@@ -25,7 +25,7 @@ jest.mock('@/hooks/useIsWrongChain', () => ({
   default: jest.fn(() => false),
 }))
 
-const createSafeTx = (data = '0x'): SafeTransaction => {
+export const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
     data: {
       to: '0x0000000000000000000000000000000000000000',
