@@ -19,7 +19,7 @@ export type PendingTx = {
   signerAddress?: string
 }
 
-type PendingTxsState = {
+export type PendingTxsState = {
   [txId: string]: PendingTx
 }
 
