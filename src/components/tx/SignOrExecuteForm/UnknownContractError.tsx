@@ -1,17 +1,17 @@
 import { type ReactElement } from 'react'
-import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getExplorerLink } from '@/utils/gateway'
 import ErrorMessage from '../ErrorMessage'
+import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 
 const UnknownContractError = (): ReactElement | null => {
   const { safe, safeAddress } = useSafeInfo()
   const currentChain = useCurrentChain()
 
   // Unsupported base contract
-  const isUnknown = safe.implementationVersionState === ImplementationVersionState.UNKNOWN
+  const isUnknown = !isValidMasterCopy(safe)
 
   if (!isUnknown) return null
 
