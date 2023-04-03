@@ -2091,11 +2091,6 @@
   dependencies:
     semver "^7.3.7"
 
-"@gnosis.pm/safe-modules-deployments@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-modules-deployments/-/safe-modules-deployments-1.0.0.tgz#b4cfcf7782c3fa1491b84405ac06cfa4f7eff365"
-  integrity sha512-mZkGtfGmEym7l5w2K6d/mIaS8sDmy50uGWAfTj5Q/+Y1cU9fHYU6hzhb0QaeyNM7F7HM3jg5ZTJjartZJUqu3w==
-
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"
@@ -3017,6 +3012,11 @@
   integrity sha512-3BvlUgp0oZ1Zkn7nG3wY1jvCEE4t530BjKcaa3r0qsf0whf/ez/0gmQwk7DTOGmVmvOfjj6HHikxnrUCCX+/3Q==
   dependencies:
     cross-fetch "^3.1.5"
+
+"@safe-global/safe-modules-deployments@^1.0.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-modules-deployments/-/safe-modules-deployments-1.1.0.tgz#e8441d6da17ed4b29a211ecb9b97fadbd7c7ca2b"
+  integrity sha512-UgSH/7Zcv6BJBBqoipKts6SKCPYPau9F1/arndsBYvb5Ayn28Q9cu/yiRbln2iI4VL21SIl9lcO/zRKJKl7QbQ==
 
 "@safe-global/safe-react-components@^2.0.5":
   version "2.0.5"

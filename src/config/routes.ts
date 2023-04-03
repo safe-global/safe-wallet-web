@@ -3,6 +3,7 @@ export const AppRoutes = {
   welcome: '/welcome',
   terms: '/terms',
   privacy: '/privacy',
+  licenses: '/licenses',
   index: '/',
   imprint: '/imprint',
   import: '/import',
