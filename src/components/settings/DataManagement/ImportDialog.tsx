@@ -42,6 +42,8 @@ export const ImportDialog = ({
   }
 
   const handleImport = () => {
+    trackEvent(SETTINGS_EVENTS.DATA.EXPORT_ALL_BUTTON)
+
     if (addressBook) {
       dispatch(addressBookSlice.actions.setAddressBook(addressBook))
       trackEvent({
@@ -90,7 +92,12 @@ export const ImportDialog = ({
             <FileListCard
               avatar={
                 <Box sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
-                  <SvgIcon component={FileIcon} inheritViewBox fontSize="small" sx={{ fill: 'none' }} />
+                  <SvgIcon
+                    component={FileIcon}
+                    inheritViewBox
+                    fontSize="small"
+                    sx={{ fill: 'none', display: 'block' }}
+                  />
                 </Box>
               }
               title={<b>{fileName}</b>}

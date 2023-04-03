@@ -31,6 +31,7 @@ export const _filterValidAbEntries = (ab?: AddressBookState): AddressBookState |
 
   return Object.entries(ab).reduce<AddressBookState>((acc, [chainId, chainAb]) => {
     const sanitizedChainAb = Object.entries(chainAb).reduce<AddressBook>((acc, [address, name]) => {
+      // Legacy imported address books could have undefined name or address entries
       if (name?.trim() && address && isChecksummedAddress(address)) {
         acc[address] = name
       }

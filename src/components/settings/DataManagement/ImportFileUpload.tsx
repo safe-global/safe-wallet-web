@@ -1,5 +1,6 @@
 import { useDropzone } from 'react-dropzone'
 import { Typography, SvgIcon } from '@mui/material'
+import { useCallback } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 
 import FileUpload, { FileTypes } from '@/components/common/FileUpload'
@@ -16,24 +17,27 @@ export const ImportFileUpload = ({
   setFileName: Dispatch<SetStateAction<string | undefined>>
   setJsonData: Dispatch<SetStateAction<string | undefined>>
 }) => {
-  const onDrop = (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) {
-      return
-    }
-    const file = acceptedFiles[0]
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      if (!event.target) {
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) {
         return
       }
-      if (typeof event.target.result !== 'string') {
-        return
+      const file = acceptedFiles[0]
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        if (!event.target) {
+          return
+        }
+        if (typeof event.target.result !== 'string') {
+          return
+        }
+        setFileName(file.name)
+        setJsonData(event.target.result)
       }
-      setFileName(file.name)
-      setJsonData(event.target.result)
-    }
-    reader.readAsText(file)
-  }
+      reader.readAsText(file)
+    },
+    [setFileName, setJsonData],
+  )
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     maxFiles: 1,

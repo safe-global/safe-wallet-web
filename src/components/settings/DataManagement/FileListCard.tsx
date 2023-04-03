@@ -159,7 +159,11 @@ export const FileListCard = ({
               <ListItemIcon className={css.listIcon}>
                 <SvgIcon component={FileIcon} inheritViewBox fontSize="small" sx={{ fill: 'none' }} />
               </ListItemIcon>
-              <ListItemText {...item} />
+              <ListItemText
+                {...item}
+                // <ul> cannot appear as a descendant of <p>
+                secondaryTypographyProps={{ component: 'div' }}
+              />
             </ListItem>
           ))}
         </List>

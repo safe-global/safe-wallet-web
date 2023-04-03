@@ -22,7 +22,7 @@ const getExportFileName = () => {
   return `safe-${today}.json`
 }
 
-export const handleExport = () => {
+export const exportAppData = () => {
   // Extract the slices we want to export
   const {
     [addressBookSlice.name]: addressBook,
@@ -79,7 +79,7 @@ const DataManagement = () => {
             }
             title={<b>{getExportFileName()}</b>}
             action={
-              <Button variant="contained" className={css.exportIcon} onClick={handleExport}>
+              <Button variant="contained" className={css.exportIcon} onClick={exportAppData}>
                 <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
               </Button>
             }

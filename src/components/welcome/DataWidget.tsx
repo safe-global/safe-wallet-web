@@ -8,7 +8,7 @@ import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import FileIcon from '@/public/images/settings/data/file.svg'
 import ExportIcon from '@/public/images/common/export.svg'
 import ImportIcon from '@/public/images/common/import.svg'
-import { handleExport } from '@/components/settings/DataManagement'
+import { exportAppData } from '@/components/settings/DataManagement'
 import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
@@ -55,7 +55,7 @@ export const DataWidget = (): ReactElement => {
                 <Button
                   variant="outlined"
                   size="small"
-                  onClick={handleExport}
+                  onClick={exportAppData}
                   startIcon={<SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />}
                   sx={{ width: '100%' }}
                 >
