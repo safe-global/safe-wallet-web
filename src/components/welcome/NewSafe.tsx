@@ -48,7 +48,7 @@ const NewSafe = () => {
         className={css.sidebar}
         flexDirection="column"
       >
-        <Grid item xs>
+        <Grid item lg>
           <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h4" display="inline" fontWeight={700}>
