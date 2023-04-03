@@ -12,9 +12,9 @@ import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
 import { useGlobalImportJsonParser } from '@/components/settings/DataManagement/useGlobalImportFileParser'
 import FileIcon from '@/public/images/settings/data/file.svg'
 import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFileUpload'
+import { showNotification } from '@/store/notificationsSlice'
 
 import css from './styles.module.css'
-import { showNotification } from '@/store/notificationsSlice'
 
 export const ImportDialog = ({
   onClose,
@@ -42,8 +42,6 @@ export const ImportDialog = ({
   }
 
   const handleImport = () => {
-    trackEvent(SETTINGS_EVENTS.DATA.EXPORT_ALL_BUTTON)
-
     if (addressBook) {
       dispatch(addressBookSlice.actions.setAddressBook(addressBook))
       trackEvent({

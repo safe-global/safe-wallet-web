@@ -14,6 +14,7 @@ import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFil
 import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
 import { SAFE_EXPORT_VERSION } from '@/components/settings/DataManagement/useGlobalImportFileParser'
 import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
+import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 
 import css from './styles.module.css'
 
@@ -48,6 +49,8 @@ export const exportAppData = () => {
   link.href = window.URL.createObjectURL(blob)
   link.dataset.downloadurl = ['text/json', link.download, link.href].join(':')
   link.dispatchEvent(new MouseEvent('click'))
+
+  trackEvent(SETTINGS_EVENTS.DATA.EXPORT_ALL_BUTTON)
 }
 
 const DataManagement = () => {
