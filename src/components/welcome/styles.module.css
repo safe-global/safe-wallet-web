@@ -24,7 +24,7 @@
 }
 
 .sidebar :global .MuiPaper-root {
-  max-height: calc(100vh - var(--header-height) - var(--footer-height));
+  max-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--import-export-widget-height) - 24px);
   overflow: auto;
 }
 
