@@ -41,6 +41,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x123' },
           implementationVersionState: 'OUTDATED',
           version: '1.1.1',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
         safeAddress: '0x123',
       })
@@ -61,6 +65,7 @@ describe('useSafeNotifications', () => {
           },
           title: 'Update Safe',
         },
+        onClose: expect.anything(),
       })
     })
 
@@ -71,6 +76,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x123' },
           implementationVersionState: 'OUTDATED',
           version: '0.0.1',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
         safeAddress: '0x123',
       })
@@ -88,6 +97,7 @@ describe('useSafeNotifications', () => {
           href: 'https://github.com/5afe/safe-cli',
           title: 'Get CLI',
         },
+        onClose: expect.anything(),
       })
     })
 
@@ -97,6 +107,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x123' },
           implementationVersionState: 'UP_TO_DATE',
           version: '1.3.0',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
       })
 
@@ -116,6 +130,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x123' },
           implementationVersionState: 'UNKNOWN',
           version: '1.3.0',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
       })
 
@@ -142,6 +160,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x456' },
           implementationVersionState: 'UP_TO_DATE',
           version: '1.3.0',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
       })
 
