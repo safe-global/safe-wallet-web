@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 const events = {
   [TxEvent.SIGNED]: WALLET_EVENTS.OFF_CHAIN_SIGNATURE,
   [TxEvent.PROCESSING]: WALLET_EVENTS.ON_CHAIN_INTERACTION,
+  [TxEvent.RELAYING]: WALLET_EVENTS.RELAYED_EXECUTION,
 }
 
 export const useTxTracking = (): void => {
