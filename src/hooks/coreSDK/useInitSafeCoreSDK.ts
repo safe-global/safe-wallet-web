@@ -26,7 +26,14 @@ export const useInitSafeCoreSDK = () => {
     }
 
     // A read-only instance of the SDK is sufficient because we connect the signer to it when needed
-    initSafeSDK(web3ReadOnly, safe)
+    initSafeSDK({
+      provider: web3ReadOnly,
+      chainId: safe.chainId,
+      address: safe.address.value,
+      version: safe.version,
+      implementationVersionState: safe.implementationVersionState,
+      implementation: safe.implementation.value,
+    })
       .then(setSafeSDK)
       .catch((e) => {
         dispatch(
@@ -39,5 +46,15 @@ export const useInitSafeCoreSDK = () => {
         )
         trackError(ErrorCodes._105, (e as Error).message)
       })
-  }, [safe, safeLoaded, dispatch, web3ReadOnly, address])
+  }, [
+    address,
+    dispatch,
+    safe.address.value,
+    safe.chainId,
+    safe.implementation.value,
+    safe.implementationVersionState,
+    safe.version,
+    safeLoaded,
+    web3ReadOnly,
+  ])
 }
