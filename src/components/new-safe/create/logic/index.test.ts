@@ -17,7 +17,7 @@ import * as sponsoredCall from '@/services/tx/sponsoredCall'
 import {
   Gnosis_safe__factory,
   Proxy_factory__factory,
-} from '@/types/contracts/factories/@gnosis.pm/safe-deployments/dist/assets/v1.3.0'
+} from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
 import {
   getFallbackHandlerContractInstance,
   getGnosisSafeContractInstance,

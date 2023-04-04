@@ -393,14 +393,6 @@ const SafeLicenses = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>@gnosis.pm/safe-deployments</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/gnosis/safe-deployments/blob/main/LICENSE">
-                    https://github.com/gnosis/safe-deployments/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
                 <TableCell>@safe-global/safe-modules-deployments</TableCell>
                 <TableCell>
                   <ExternalLink href="https://github.com/safe-global/safe-modules-deployments/blob/main/LICENSE">
