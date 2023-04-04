@@ -1,0 +1,19 @@
+.sponsoredBy {
+  padding: 8px 12px;
+  background-color: var(--color-background-main);
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+  display: flex;
+}
+
+.icon {
+  margin-right: 8px;
+  margin-top: -1px;
+  color: var(--color-text-secondary);
+  width: 24px;
+}
+
+.gcLogo {
+  width: 16px;
+  height: 16px;
+}

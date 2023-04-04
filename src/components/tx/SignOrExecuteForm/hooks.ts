@@ -8,6 +8,7 @@ import {
   dispatchOnChainSigning,
   dispatchTxExecution,
   dispatchTxProposal,
+  dispatchTxRelay,
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
@@ -17,7 +18,12 @@ import type { OnboardAPI } from '@web3-onboard/core'
 
 type TxActions = {
   signTx: (safeTx?: SafeTransaction, txId?: string) => Promise<string>
-  executeTx: (txOptions: TransactionOptions, safeTx?: SafeTransaction, txId?: string) => Promise<string>
+  executeTx: (
+    txOptions: TransactionOptions,
+    safeTx?: SafeTransaction,
+    txId?: string,
+    isRelayed?: boolean,
+  ) => Promise<string>
 }
 
 function assertTx(safeTx?: SafeTransaction): asserts safeTx {
@@ -31,12 +37,14 @@ function assertOnboard(onboard?: OnboardAPI): asserts onboard {
 }
 
 export const useTxActions = (): TxActions => {
-  const { safe, safeAddress } = useSafeInfo()
-  const { chainId, version } = safe
+  const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const wallet = useWallet()
 
   return useMemo<TxActions>(() => {
+    const safeAddress = safe.address.value
+    const { chainId, version } = safe
+
     const proposeTx = async (sender: string, safeTx: SafeTransaction, txId?: string, origin?: string) => {
       const tx = await dispatchTxProposal({
         chainId,
@@ -69,18 +77,24 @@ export const useTxActions = (): TxActions => {
       return await proposeTx(wallet.address, signedTx, txId, origin)
     }
 
-    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId) => {
+    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
 
       const id = txId || (await proposeTx(wallet.address, safeTx, txId, origin))
-      await dispatchTxExecution(safeTx, txOptions, id, onboard, chainId)
+
+      if (isRelayed) {
+        await dispatchTxRelay(safeTx, safe, id, txOptions.gasLimit)
+      } else {
+        await dispatchTxExecution(safeTx, txOptions, id, onboard, chainId)
+      }
+
       return id
     }
 
     return { signTx, executeTx }
-  }, [chainId, safeAddress, version, onboard, wallet])
+  }, [safe, onboard, wallet])
 }
 
 export const useValidateNonce = (safeTx?: SafeTransaction): boolean => {

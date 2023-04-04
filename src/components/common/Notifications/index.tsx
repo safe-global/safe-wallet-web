@@ -100,6 +100,7 @@ const Notifications = (): ReactElement | null => {
   const handleClose = useCallback(
     (item: Notification) => {
       dispatch(closeNotification(item))
+      item.onClose?.()
     },
     [dispatch],
   )

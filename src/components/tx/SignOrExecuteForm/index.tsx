@@ -18,6 +18,8 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
 import UnknownContractError from './UnknownContractError'
+import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
+import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -44,16 +46,19 @@ const SignOrExecuteForm = ({
   origin,
   ...props
 }: SignOrExecuteProps): ReactElement => {
-  // Hooks
-  const isOwner = useIsSafeOwner()
-  const currentChain = useCurrentChain()
-  const { signTx, executeTx } = useTxActions()
-
-  // Internal state
+  //
+  // Hooks & variables
+  //
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+
+  // Hooks
+  const isOwner = useIsSafeOwner()
+  const currentChain = useCurrentChain()
+  const { signTx, executeTx } = useTxActions()
+  const [remainingRelays = 0] = useRemainingRelaysBySafe()
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -64,6 +69,12 @@ const SignOrExecuteForm = ({
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
+
+  // SC wallets can relay fully signed transactions
+  const [walletCanRelay] = useWalletCanRelay(tx)
+
+  // The transaction will be executed through relaying
+  const willRelay = willExecute && walletCanRelay && remainingRelays > 0
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -96,7 +107,7 @@ const SignOrExecuteForm = ({
   // Execute transaction
   const onExecute = async (): Promise<string | undefined> => {
     const txOptions = getTxOptions(advancedParams, currentChain)
-    return await executeTx(txOptions, tx, txId)
+    return await executeTx(txOptions, tx, txId, willRelay)
   }
 
   // On modal submit
@@ -161,6 +172,7 @@ const SignOrExecuteForm = ({
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
           gasLimitError={gasLimitError}
+          willRelay={willRelay}
         />
 
         <TxSimulation
