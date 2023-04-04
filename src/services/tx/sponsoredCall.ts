@@ -1,5 +1,15 @@
-import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/hooks/useRemainingRelays'
 import { type SafeTransactionData } from '@safe-global/safe-core-sdk-types'
+import {
+  IS_PRODUCTION,
+  SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION,
+  SAFE_GELATO_RELAY_SERVICE_URL_STAGING,
+} from '@/config/constants'
+import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
+
+export const SAFE_GELATO_RELAY_SERVICE_URL =
+  IS_PRODUCTION || cgwDebugStorage.get()
+    ? SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION
+    : SAFE_GELATO_RELAY_SERVICE_URL_STAGING
 
 // TODO: import type from relay-service
 export type SponsoredCallPayload = {
@@ -18,14 +28,30 @@ export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId:
     body: JSON.stringify(tx),
   }
 
-  const data = await fetch(SAFE_GELATO_RELAY_SERVICE_URL, requestObject).then((res) => {
-    if (res.ok) {
-      return res.json()
-    }
-    return res.json().then((data) => {
-      throw new Error(`${res.status} - ${res.statusText}: ${data?.error?.message}`)
-    })
-  })
+  const res = await fetch(SAFE_GELATO_RELAY_SERVICE_URL, requestObject)
 
-  return data
+  if (res.ok) {
+    return res.json()
+  }
+
+  const errorData: { error?: { message: string } } = await res.json()
+  throw new Error(`${res.status} - ${res.statusText}: ${errorData?.error?.message}`)
+}
+
+export const getRemainingRelays = async (chainId: string, address: string): Promise<number> => {
+  const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/${chainId}/${address}`
+
+  try {
+    const res = await fetch(url)
+
+    if (res.ok) {
+      const data = await res.json()
+      return data.remaining
+    }
+
+    const errorData: { error?: { message: string } } = await res.json()
+    throw new Error(errorData?.error?.message || 'Unknown error')
+  } catch (error) {
+    throw new Error(`Error fetching remaining relays: ${error}`)
+  }
 }

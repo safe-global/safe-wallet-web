@@ -1,13 +1,10 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import {
-  useLeastRemainingRelays,
-  useRemainingRelaysBySafe,
-  SAFE_GELATO_RELAY_SERVICE_URL,
-} from '@/hooks/useRemainingRelays'
+import { useLeastRemainingRelays, useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import * as useSafeAddress from '@/hooks/useSafeAddress'
 import * as useChains from '@/hooks/useChains'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { FEATURES } from '@/utils/chains'
+import { SAFE_GELATO_RELAY_SERVICE_URL } from '@/services/tx/sponsoredCall'
 
 const SAFE_ADDRESS = '0x0000000000000000000000000000000000000001'
 
