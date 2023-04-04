@@ -10,6 +10,7 @@ import type {
   TransactionListPage,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { ConflictType, getTransactionDetails, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
+import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import {
   isModuleDetailedExecutionInfo,
   isMultisigDetailedExecutionInfo,
@@ -19,13 +20,14 @@ import {
 } from './transaction-guards'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types/dist/src/types'
 import { OperationType } from '@safe-global/safe-core-sdk-types/dist/src/types'
-import { getGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import { getGnosisSafeContractInstance, getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import type { TransactionOptions, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -128,6 +130,49 @@ export const getMultiSendTxs = (
       }
     })
     .filter(Boolean) as MetaTransactionData[]
+}
+
+export const _isValidMultiSend = async (safe: SafeInfo, txs: MetaTransactionData[]): Promise<boolean> => {
+  const multiSendContract = getMultiSendCallOnlyContractInstance(safe.chainId, safe.version)
+  const data = encodeMultiSendData(txs)
+
+  try {
+    await multiSendContract.contract.callStatic.multiSend(data)
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
+export const getValidBatch = async (
+  txs: TransactionDetails[],
+  safe: SafeInfo,
+  chain: ChainInfo,
+): Promise<MetaTransactionData[]> => {
+  const safeAddress = safe.address.value
+  const safeVersion = safe.version || LATEST_SAFE_VERSION
+
+  const multiSendTxs = getMultiSendTxs(txs, chain, safeAddress, safeVersion)
+
+  const isValidBatch = await _isValidMultiSend(safe, multiSendTxs)
+
+  if (isValidBatch) {
+    return multiSendTxs
+  }
+
+  const validMultiSendTxs: MetaTransactionData[] = []
+
+  for await (const multiSendTx of multiSendTxs) {
+    const isValidBatch = await _isValidMultiSend(safe, [...validMultiSendTxs, multiSendTx])
+
+    if (!isValidBatch) {
+      break
+    }
+
+    validMultiSendTxs.push(multiSendTx)
+  }
+
+  return validMultiSendTxs
 }
 
 export const getTxsWithDetails = (txs: Transaction[], chainId: string) => {

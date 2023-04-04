@@ -19,6 +19,8 @@ import SponsoredBy from '@/components/tx/SponsoredBy'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import { getValidBatch } from '@/utils/transactions'
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -31,7 +33,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const willRelay = !!remainingRelays
   const onboard = useOnboard()
 
-  const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
+  const [txsWithDetails, txWithDetailsError, txWithDetailsLoading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
 
     return getTxsWithDetails(data.txs, chain.chainId)
@@ -42,28 +44,38 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     return getMultiSendCallOnlyContractInstance(chain.chainId, safe.version)
   }, [chain?.chainId, safe.version])
 
-  const multiSendTxs = useMemo(() => {
+  const allMultiSendTxs = useMemo(() => {
     if (!txsWithDetails || !chain || !safe.version) return
     return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
   }, [chain, safe.address.value, safe.version, txsWithDetails])
 
+  const [validMultiSendTxs, , validMultiSendTxsLoading] = useAsync<MetaTransactionData[]>(() => {
+    if (!txsWithDetails || !chain) return
+    return getValidBatch(txsWithDetails, safe, chain)
+  }, [txsWithDetails, safe, chain])
+
+  const validTxsWithDetails =
+    txsWithDetails && validMultiSendTxs ? txsWithDetails.slice(0, validMultiSendTxs.length) : undefined
+  const invalidTxsWithDetails =
+    txsWithDetails && validMultiSendTxs ? txsWithDetails.slice(validMultiSendTxs.length) : undefined
+
   const multiSendTxData = useMemo(() => {
-    if (!txsWithDetails || !multiSendTxs) return
-    return encodeMultiSendData(multiSendTxs)
-  }, [txsWithDetails, multiSendTxs])
+    if (!validMultiSendTxs) return
+    return encodeMultiSendData(validMultiSendTxs)
+  }, [validMultiSendTxs])
 
   const onExecute = async () => {
-    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails) return
+    if (!onboard || !multiSendTxData || !multiSendContract || !validTxsWithDetails) return
 
-    await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, onboard, safe.chainId)
+    await dispatchBatchExecution(validTxsWithDetails, multiSendContract, multiSendTxData, onboard, safe.chainId)
 
     onSubmit(null)
   }
 
   const onRelay = async () => {
-    if (!multiSendTxData || !multiSendContract || !txsWithDetails) return
+    if (!multiSendTxData || !multiSendContract || !validTxsWithDetails) return
 
-    await dispatchBatchExecutionRelay(txsWithDetails, multiSendContract, multiSendTxData, safe.chainId)
+    await dispatchBatchExecutionRelay(validTxsWithDetails, multiSendContract, multiSendTxData, safe.chainId)
 
     onSubmit(null)
   }
@@ -83,7 +95,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     }
   }
 
-  const submitDisabled = loading || !isSubmittable
+  const submitDisabled = txWithDetailsLoading || validMultiSendTxsLoading || !isSubmittable
 
   return (
     <div>
@@ -109,7 +121,20 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         <Typography mt={2} color="primary.light">
           Batched transactions:
         </Typography>
-        <DecodedTxs txs={txsWithDetails} />
+
+        <DecodedTxs txs={validTxsWithDetails} />
+
+        {invalidTxsWithDetails && invalidTxsWithDetails.length > 0 && (
+          <>
+            <Typography mt={2} color="primary.light">
+              Excluded transactions:
+            </Typography>
+            <Typography variant="body2" mb={2}>
+              The following transactions are excluded from the batch as they will otherwise cause it to fail.
+            </Typography>
+            <DecodedTxs txs={invalidTxsWithDetails} />
+          </>
+        )}
 
         {willRelay ? (
           <>
@@ -124,7 +149,7 @@ executions from the same Safe."
           </>
         ) : null}
 
-        {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
+        {allMultiSendTxs && <TxSimulation canExecute transactions={allMultiSendTxs} disabled={submitDisabled} />}
 
         <WrongChainWarning />
 
@@ -133,8 +158,8 @@ executions from the same Safe."
           the loss of the allocated transaction fees.
         </Typography>
 
-        {error && (
-          <ErrorMessage error={error}>
+        {txWithDetailsError && (
+          <ErrorMessage error={txWithDetailsError}>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
           </ErrorMessage>
         )}
