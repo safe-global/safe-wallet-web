@@ -4,7 +4,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import { Errors, logError } from '@/services/exceptions'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
-import { getRemainingRelays } from '@/services/tx/sponsoredCall'
+import { getRemainingRelays } from '@/services/tx/relaying'
 
 const fetchRemainingRelays = async (chainId: string, address: string): Promise<number> => {
   try {

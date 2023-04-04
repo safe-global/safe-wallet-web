@@ -1,15 +1,9 @@
 import { type SafeTransactionData } from '@safe-global/safe-core-sdk-types'
-import {
-  IS_PRODUCTION,
-  SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION,
-  SAFE_GELATO_RELAY_SERVICE_URL_STAGING,
-} from '@/config/constants'
+import { IS_PRODUCTION, SAFE_RELAY_SERVICE_URL_PRODUCTION, SAFE_RELAY_SERVICE_URL_STAGING } from '@/config/constants'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 
-export const SAFE_GELATO_RELAY_SERVICE_URL =
-  IS_PRODUCTION || cgwDebugStorage.get()
-    ? SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION
-    : SAFE_GELATO_RELAY_SERVICE_URL_STAGING
+export const SAFE_RELAY_SERVICE_URL =
+  IS_PRODUCTION || cgwDebugStorage.get() ? SAFE_RELAY_SERVICE_URL_PRODUCTION : SAFE_RELAY_SERVICE_URL_STAGING
 
 // TODO: import type from relay-service
 export type SponsoredCallPayload = {
@@ -28,7 +22,7 @@ export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId:
     body: JSON.stringify(tx),
   }
 
-  const res = await fetch(SAFE_GELATO_RELAY_SERVICE_URL, requestObject)
+  const res = await fetch(SAFE_RELAY_SERVICE_URL, requestObject)
 
   if (res.ok) {
     return res.json()
@@ -39,7 +33,7 @@ export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId:
 }
 
 export const getRemainingRelays = async (chainId: string, address: string): Promise<number> => {
-  const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/${chainId}/${address}`
+  const url = `${SAFE_RELAY_SERVICE_URL}/${chainId}/${address}`
 
   try {
     const res = await fetch(url)
