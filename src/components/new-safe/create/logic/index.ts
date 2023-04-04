@@ -268,12 +268,12 @@ export const getRedirect = (
 }
 
 export const relaySafeCreation = async (chain: ChainInfo, owners: string[], threshold: number, saltNonce: number) => {
-  const proxyFactory = getProxyFactoryContractInstance(chain.chainId)
-  const proxyFactoryAddress = proxyFactory.getAddress()
-  const fallbackHandlerDeployment = getFallbackHandlerContractInstance(chain.chainId)
-  const fallbackHandlerAddress = fallbackHandlerDeployment.getAddress()
-  const safeContract = getGnosisSafeContractInstance(chain)
-  const safeContractAddress = safeContract.getAddress()
+  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId)
+  const proxyFactoryAddress = readOnlyProxyFactoryContract.getAddress()
+  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
+  const fallbackHandlerAddress = readOnlyFallbackHandlerContract.getAddress()
+  const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain)
+  const safeContractAddress = readOnlySafeContract.getAddress()
 
   const callData = {
     owners,
@@ -286,7 +286,7 @@ export const relaySafeCreation = async (chain: ChainInfo, owners: string[], thre
     paymentReceiver: ZERO_ADDRESS,
   }
 
-  const initializer = safeContract.encode('setup', [
+  const initializer = readOnlySafeContract.encode('setup', [
     callData.owners,
     callData.threshold,
     callData.to,
@@ -297,7 +297,7 @@ export const relaySafeCreation = async (chain: ChainInfo, owners: string[], thre
     callData.paymentReceiver,
   ])
 
-  const createProxyWithNonceCallData = proxyFactory.encode('createProxyWithNonce', [
+  const createProxyWithNonceCallData = readOnlyProxyFactoryContract.encode('createProxyWithNonce', [
     safeContractAddress,
     initializer,
     saltNonce,
