@@ -7,25 +7,36 @@ import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSe
 import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
+import Relaying from '@/components/dashboard/Relaying'
+import { useCurrentChain } from '@/hooks/useChains'
+import { FEATURES, hasFeature } from '@/utils/chains'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
+  const currentChain = useCurrentChain()
+  const supportsRelaying = currentChain && hasFeature(currentChain, FEATURES.RELAYING)
   const { showCreationModal = '' } = router.query
 
   return (
     <>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={12} lg={6}>
+        <Grid item xs={12} lg={6}>
           <Overview />
         </Grid>
 
-        <Grid item xs={12} md={12} lg={6}>
+        <Grid item xs={12} lg={6}>
           <PendingTxsList size={4} />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={12} lg={supportsRelaying ? 6 : undefined}>
           <FeaturedApps />
         </Grid>
+
+        {supportsRelaying ? (
+          <Grid item xs={12} lg={6}>
+            <Relaying />
+          </Grid>
+        ) : null}
 
         <Grid item xs={12}>
           <GovernanceSection />

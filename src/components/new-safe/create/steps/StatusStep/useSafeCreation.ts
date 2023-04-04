@@ -5,7 +5,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { EthersError } from '@/utils/ethers-utils'
 import type { PendingSafeData } from '@/components/new-safe/create/steps/StatusStep/index'
-import type { PendingSafeTx } from '@/components/new-safe/create/types'
+import type { NamedAddress, PendingSafeTx } from '@/components/new-safe/create/types'
 import {
   createNewSafe,
   getSafeDeployProps,
@@ -14,10 +14,12 @@ import {
   handleSafeCreationError,
   SAFE_CREATION_ERROR_KEY,
   showSafeCreationError,
+  relaySafeCreation,
 } from '@/components/new-safe/create/logic'
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
+import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -36,6 +38,7 @@ export const useSafeCreation = (
   setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>,
   status: SafeCreationStatus,
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
+  willRelay?: boolean,
 ) => {
   const [isCreating, setIsCreating] = useState(false)
   const [isWatching, setIsWatching] = useState(false)
@@ -55,40 +58,76 @@ export const useSafeCreation = (
     [setStatus, setPendingSafe],
   )
 
-  const createSafe = useCallback(async () => {
-    if (!pendingSafe || !provider || !chain || !wallet || isCreating) return
+  const createSafeViaRelayer = useCallback(
+    async (ownersAddresses: string[], threshold: number, saltNonce: number) => {
+      if (!chain) return
+
+      try {
+        const taskId = await relaySafeCreation(chain, ownersAddresses, threshold, saltNonce)
+
+        setPendingSafe((prev) => (prev ? { ...prev, taskId } : undefined))
+        setStatus(SafeCreationStatus.PROCESSING)
+        waitForCreateSafeTx(taskId, setStatus)
+      } catch (error) {
+        setStatus(SafeCreationStatus.ERROR)
+        showSafeCreationError(error as Error)
+      }
+    },
+    [chain, setPendingSafe, setStatus],
+  )
+
+  const createSafe = useCallback(
+    async (owners: NamedAddress[], threshold: number, saltNonce: number) => {
+      if (!provider || !chain || !wallet) return
+
+      try {
+        const tx = await getSafeCreationTxInfo(provider, owners, threshold, saltNonce, chain, wallet)
+
+        const safeParams = getSafeDeployProps(
+          {
+            threshold,
+            owners: owners.map((owner) => owner.address),
+            saltNonce,
+          },
+          (txHash) => createSafeCallback(txHash, tx),
+          chain.chainId,
+        )
+
+        await createNewSafe(provider, safeParams)
+        setStatus(SafeCreationStatus.SUCCESS)
+      } catch (err) {
+        const _err = err as EthersError
+        const status = handleSafeCreationError(_err)
+
+        setStatus(status)
+
+        if (status !== SafeCreationStatus.SUCCESS) {
+          dispatch(showSafeCreationError(_err))
+        }
+      }
+
+      setIsCreating(false)
+    },
+    [chain, createSafeCallback, dispatch, provider, setStatus, wallet],
+  )
+
+  const handleCreateSafe = useCallback(() => {
+    if (!pendingSafe || isCreating) return
 
     setIsCreating(true)
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
-    try {
-      const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, wallet)
+    const { owners, threshold, saltNonce } = pendingSafe
+    const ownersAddresses = owners.map((owner) => owner.address)
 
-      const safeParams = getSafeDeployProps(
-        {
-          threshold: pendingSafe.threshold,
-          owners: pendingSafe.owners.map((owner) => owner.address),
-          saltNonce: pendingSafe.saltNonce,
-        },
-        (txHash) => createSafeCallback(txHash, tx),
-        chain.chainId,
-      )
-
-      await createNewSafe(provider, safeParams)
-      setStatus(SafeCreationStatus.SUCCESS)
-    } catch (err) {
-      const _err = err as EthersError
-      const status = handleSafeCreationError(_err)
-
-      setStatus(status)
-
-      if (status !== SafeCreationStatus.SUCCESS) {
-        dispatch(showSafeCreationError(_err))
-      }
+    if (willRelay) {
+      void createSafeViaRelayer(ownersAddresses, threshold, saltNonce)
+    } else {
+      void createSafe(owners, threshold, saltNonce)
     }
 
     setIsCreating(false)
-  }, [chain, createSafeCallback, dispatch, isCreating, pendingSafe, provider, setStatus, wallet])
+  }, [createSafe, createSafeViaRelayer, dispatch, isCreating, pendingSafe, willRelay])
 
   const watchSafeTx = useCallback(async () => {
     if (!pendingSafe?.tx || !pendingSafe?.txHash || !web3ReadOnly || isWatching) return
@@ -109,10 +148,15 @@ export const useSafeCreation = (
       return
     }
 
-    void createSafe()
-  }, [createSafe, watchSafeTx, isCreating, pendingSafe?.txHash, status])
+    if (pendingSafe?.taskId && !isCreating) {
+      waitForCreateSafeTx(pendingSafe.taskId, setStatus)
+      return
+    }
+
+    void handleCreateSafe()
+  }, [handleCreateSafe, isCreating, pendingSafe?.taskId, pendingSafe?.txHash, setStatus, status, watchSafeTx])
 
   return {
-    createSafe,
+    handleCreateSafe,
   }
 }
