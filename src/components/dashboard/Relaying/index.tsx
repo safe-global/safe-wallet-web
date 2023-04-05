@@ -1,6 +1,6 @@
 import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Box, Card, Divider, Skeleton, Stack, SvgIcon, Typography } from '@mui/material'
-import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
+import { MAX_HOUR_RELAYS, useRelaysBySafe } from '@/hooks/useRelaysBySafe'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -8,10 +8,11 @@ import GasStationIcon from '@/public/images/common/gas-station.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import classnames from 'classnames'
 import css from './styles.module.css'
-import { MAX_HOUR_RELAYS } from '@/components/tx/SponsoredBy'
 
 const Relaying = () => {
-  const [remainingRelays, remainingRelaysError] = useRemainingRelaysBySafe()
+  const [relays, relaysError] = useRelaysBySafe()
+
+  const limit = relays?.limit || MAX_HOUR_RELAYS
 
   return (
     <WidgetContainer>
@@ -47,13 +48,17 @@ const Relaying = () => {
             <Typography color="primary.light" alignSelf="center">
               Transactions per hour
             </Typography>
-            <Box className={classnames(css.relayingChip, { [css.unavailable]: remainingRelays === 0 })}>
+            <Box
+              className={classnames(css.relayingChip, {
+                [css.unavailable]: relays && relays.remaining === 0,
+              })}
+            >
               <SvgIcon component={InfoIcon} fontSize="small" />
-              {remainingRelaysError ? (
-                <Typography fontWeight={700}>{MAX_HOUR_RELAYS} per hour</Typography>
-              ) : remainingRelays !== undefined ? (
+              {relaysError ? (
+                <Typography fontWeight={700}>{limit} per hour</Typography>
+              ) : relays?.remaining !== undefined ? (
                 <Typography fontWeight={700}>
-                  {remainingRelays} of {MAX_HOUR_RELAYS}
+                  {relays.remaining} of {limit}
                 </Typography>
               ) : (
                 <Skeleton className={css.chipSkeleton} variant="rounded" />

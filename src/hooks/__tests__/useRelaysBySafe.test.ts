@@ -1,13 +1,10 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import {
-  useLeastRemainingRelays,
-  useRemainingRelaysBySafe,
-  SAFE_GELATO_RELAY_SERVICE_URL,
-} from '@/hooks/useRemainingRelays'
+import { useLeastRemainingRelays, useRelaysBySafe } from '@/hooks/useRelaysBySafe'
 import * as useSafeAddress from '@/hooks/useSafeAddress'
 import * as useChains from '@/hooks/useChains'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { FEATURES } from '@/utils/chains'
+import { SAFE_RELAY_SERVICE_URL } from '@/services/tx/relaying'
 
 const SAFE_ADDRESS = '0x0000000000000000000000000000000000000001'
 
@@ -19,14 +16,14 @@ describe('fetch remaining relays hooks', () => {
     jest.spyOn(useSafeAddress, 'default').mockReturnValue(SAFE_ADDRESS)
   })
 
-  describe('useRemainingRelaysBySafe hook', () => {
+  describe('useRelaysBySafe hook', () => {
     it('should not call fetch if empty safe address', () => {
       jest.spyOn(useSafeAddress, 'default').mockReturnValue('')
 
       global.fetch = jest.fn()
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      renderHook(() => useRemainingRelaysBySafe())
+      renderHook(() => useRelaysBySafe())
       expect(mockFetch).not.toHaveBeenCalled()
     })
 
@@ -34,9 +31,9 @@ describe('fetch remaining relays hooks', () => {
       global.fetch = jest.fn()
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/5/${SAFE_ADDRESS}`
+      const url = `${SAFE_RELAY_SERVICE_URL}/5/${SAFE_ADDRESS}`
 
-      renderHook(() => useRemainingRelaysBySafe())
+      renderHook(() => useRelaysBySafe())
       expect(mockFetch).toHaveBeenCalledTimes(1)
       expect(mockFetch).toHaveBeenCalledWith(url)
     })
@@ -47,7 +44,7 @@ describe('fetch remaining relays hooks', () => {
       global.fetch = jest.fn()
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      renderHook(() => useRemainingRelaysBySafe())
+      renderHook(() => useRelaysBySafe())
       expect(mockFetch).toHaveBeenCalledTimes(0)
     })
   })
@@ -59,19 +56,22 @@ describe('fetch remaining relays hooks', () => {
       global.fetch = jest
         .fn()
         .mockResolvedValue({
+          ok: true,
           json: () => Promise.resolve({ remaining: 3 }),
         })
         .mockResolvedValueOnce({
+          ok: true,
           json: () => Promise.resolve({ remaining: 0 }),
         })
         .mockResolvedValueOnce({
+          ok: true,
           json: () => Promise.resolve({ remaining: 5 }),
         })
 
       const { result } = renderHook(() => useLeastRemainingRelays(ownerAddresses))
 
       await waitFor(async () => {
-        expect(result.current[0]).toBe(0)
+        expect(result.current[0]?.remaining).toBe(0)
       })
     })
 
@@ -79,19 +79,22 @@ describe('fetch remaining relays hooks', () => {
       global.fetch = jest
         .fn()
         .mockResolvedValue({
+          ok: true,
           json: () => Promise.resolve({ remaining: 3 }),
         })
         .mockResolvedValueOnce({
+          ok: true,
           json: () => Promise.resolve({ remaining: 2 }),
         })
         .mockResolvedValueOnce({
+          ok: true,
           json: () => Promise.resolve({ remaining: 5 }),
         })
 
       const { result } = renderHook(() => useLeastRemainingRelays(ownerAddresses))
 
       await waitFor(async () => {
-        expect(result.current[0]).toBe(2)
+        expect(result.current[0]?.remaining).toBe(2)
       })
     })
 
@@ -99,19 +102,22 @@ describe('fetch remaining relays hooks', () => {
       global.fetch = jest
         .fn()
         .mockResolvedValue({
+          ok: true,
           json: () => Promise.resolve({ remaining: 3 }),
         })
         .mockRejectedValueOnce({
+          ok: false,
           json: () => Promise.reject('Failed to fetch'),
         })
         .mockResolvedValueOnce({
+          ok: true,
           json: () => Promise.resolve({ remaining: 2 }),
         })
 
       const { result } = renderHook(() => useLeastRemainingRelays(ownerAddresses))
 
       await waitFor(async () => {
-        expect(result.current[0]).toBe(0)
+        expect(result.current[0]?.remaining).toBe(0)
       })
     })
 
@@ -120,12 +126,15 @@ describe('fetch remaining relays hooks', () => {
       global.fetch = jest
         .fn()
         .mockResolvedValue({
+          ok: true,
           json: () => Promise.resolve({ remaining: 3 }),
         })
         .mockRejectedValueOnce({
+          ok: false,
           json: () => Promise.reject('Failed to fetch'),
         })
         .mockResolvedValueOnce({
+          ok: true,
           json: () => Promise.resolve({ remaining: 2 }),
         })
       const mockFetch = jest.spyOn(global, 'fetch')

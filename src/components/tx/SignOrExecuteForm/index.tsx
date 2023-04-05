@@ -33,7 +33,7 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { getExplorerLink } from '@/utils/gateway'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
-import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
+import { useRelaysBySafe } from '@/hooks/useRelaysBySafe'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { WrongChainWarning } from '../WrongChainWarning'
 
@@ -82,7 +82,7 @@ const SignOrExecuteForm = ({
   const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
-  const [remainingRelays] = useRemainingRelaysBySafe()
+  const [relays] = useRelaysBySafe()
 
   // Unsupported base contract
   const isUnknown = safe.implementationVersionState === ImplementationVersionState.UNKNOWN
@@ -99,7 +99,7 @@ const SignOrExecuteForm = ({
   const [walletCanRelay] = useWalletCanRelay(tx)
 
   // The transaction will be executed through relaying
-  const willRelay = willExecute && !!remainingRelays && walletCanRelay
+  const willRelay = willExecute && relays && relays.remaining > 0 && walletCanRelay
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])

@@ -13,7 +13,7 @@ import { EthersTxReplacedReason } from '@/utils/ethers-utils'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
-import * as sponsoredCall from '@/services/tx/sponsoredCall'
+import * as sponsoredCall from '@/services/tx/relaying'
 import {
   Gnosis_safe__factory,
   Proxy_factory__factory,

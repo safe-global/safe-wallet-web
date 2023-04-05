@@ -19,7 +19,7 @@ import { ethers } from 'ethers'
 import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
 import * as useChains from '@/hooks/useChains'
-import * as useRemainingRelays from '@/hooks/useRemainingRelays'
+import * as useRelaysBySafe from '@/hooks/useRelaysBySafe'
 import { FEATURES } from '@/utils/chains'
 import { type OnboardAPI } from '@web3-onboard/core'
 
@@ -101,7 +101,7 @@ describe('SignOrExecuteForm', () => {
       chainId: '5',
     } as unknown as ChainInfo)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(false)
-    jest.spyOn(useRemainingRelays, 'useRemainingRelaysBySafe').mockReturnValue([5, undefined, false])
+    jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 5, limit: 5 }, undefined, false])
   })
 
   it('displays decoded data if there is a tx', () => {
@@ -527,7 +527,7 @@ describe('SignOrExecuteForm', () => {
   })
 
   it('executes a transaction with the connected wallet if relaying is not available', async () => {
-    jest.spyOn(useRemainingRelays, 'useRemainingRelaysBySafe').mockReturnValue([0, undefined, false])
+    jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 0, limit: 5 }, undefined, false])
 
     const executionSpy = jest.fn()
     jest
