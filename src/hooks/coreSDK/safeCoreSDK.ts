@@ -1,10 +1,10 @@
 import chains from '@/config/chains'
-import { getWeb3 } from '@/hooks/wallets/web3'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import Safe from '@safe-global/safe-core-sdk'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
@@ -28,11 +28,7 @@ export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersio
   return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe version`)
 }
 
-export const createEthersAdapter = (provider = getWeb3()) => {
-  if (!provider) {
-    throw new Error('Unable to create `EthersAdapter` without a provider')
-  }
-
+export const createEthersAdapter = (provider: Web3Provider) => {
   const signer = provider.getSigner(0)
   return new EthersAdapter({
     ethers,
@@ -40,7 +36,7 @@ export const createEthersAdapter = (provider = getWeb3()) => {
   })
 }
 
-const createReadOnlyEthersAdapter = (provider: JsonRpcProvider) => {
+export const createReadOnlyEthersAdapter = (provider = getWeb3ReadOnly()) => {
   if (!provider) {
     throw new Error('Unable to create `EthersAdapter` without a provider')
   }

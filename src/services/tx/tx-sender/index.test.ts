@@ -589,7 +589,7 @@ describe('txSender', () => {
       } as MultiSendCallOnlyEthersContract
 
       jest
-        .spyOn(safeContracts, 'getMultiSendCallOnlyContractInstance')
+        .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')
         .mockImplementation(() => multisendContractMock as any)
 
       const mockData = {
