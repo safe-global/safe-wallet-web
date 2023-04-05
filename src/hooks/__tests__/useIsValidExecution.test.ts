@@ -59,7 +59,7 @@ describe('useIsValidExecution', () => {
     const error = new Error('Some error') as EthersError
     error.reason = 'GS026' as EthersTxReplacedReason
 
-    jest.spyOn(contracts, 'getSpecificGnosisSafeContractInstance').mockImplementation(
+    jest.spyOn(contracts, 'getCurrentGnosisSafeContract').mockImplementation(
       () =>
         ({
           contract: {
