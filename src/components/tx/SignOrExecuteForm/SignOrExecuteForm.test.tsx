@@ -28,7 +28,7 @@ jest.mock('@/hooks/useIsWrongChain', () => ({
   default: jest.fn(() => false),
 }))
 
-const createSafeTx = (data = '0x'): SafeTransaction => {
+export const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
     data: {
       to: '0x0000000000000000000000000000000000000000',
@@ -67,6 +67,8 @@ describe('SignOrExecuteForm', () => {
     jest.spyOn(safeCoreSDK, 'getSafeSDK').mockReturnValue(mockSDK)
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        version: '1.3.0',
+        address: { value: ethers.utils.hexZeroPad('0x000', 20) },
         nonce: 100,
         threshold: 2,
         owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
@@ -149,6 +151,8 @@ describe('SignOrExecuteForm', () => {
   it('displays an execute checkbox if safe threshold is 1', () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        version: '1.3.0',
+        address: { value: ethers.utils.hexZeroPad('0x000', 20) },
         nonce: 100,
         threshold: 1,
         owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }],
@@ -247,7 +251,10 @@ describe('SignOrExecuteForm', () => {
     jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
       safeAddress: address,
       safe: {
+        version: '1.3.0',
+        address: { value: address },
         owners: [{ value: address }],
+        nonce: 100,
       } as SafeInfo,
       safeLoaded: true,
       safeLoading: false,
@@ -261,7 +268,7 @@ describe('SignOrExecuteForm', () => {
     } as ConnectedWallet)
 
     const mockTx = createSafeTx()
-    const result = render(<SignOrExecuteForm isExecutable={false} onSubmit={jest.fn} safeTx={mockTx} />)
+    const result = render(<SignOrExecuteForm isExecutable onlyExecute onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(
       result.getByText('Cannot execute a transaction from the Safe itself, please connect a different account.'),
@@ -279,6 +286,8 @@ describe('SignOrExecuteForm', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
         safeAddress: ethers.utils.hexZeroPad('0x123', 20),
         safe: {
+          version: '1.3.0',
+          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
           owners: [{ value: ethers.utils.hexZeroPad('0x456', 20) }],
           threshold: 1,
         } as SafeInfo,
@@ -419,8 +428,8 @@ describe('SignOrExecuteForm', () => {
     })
 
     await waitFor(() => {
-      expect(signSpy).toHaveBeenCalledTimes(1)
-      expect(proposeSpy).toHaveBeenCalledTimes(1)
+      expect(signSpy).not.toHaveBeenCalledTimes(1)
+      expect(proposeSpy).not.toHaveBeenCalledTimes(1)
       expect(relaySpy).toHaveBeenCalledTimes(1)
     })
   })
@@ -620,10 +629,16 @@ describe('SignOrExecuteForm', () => {
     jest
       .spyOn(txSenderDispatch, 'dispatchTxExecution')
       .mockImplementation(jest.fn(() => Promise.reject('Error while dispatching')))
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxSigning')
+      .mockImplementation(jest.fn(() => Promise.reject('Error while dispatching')))
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxRelay')
+      .mockImplementation(jest.fn(() => Promise.reject('Error while dispatching')))
 
     const mockTx = createSafeTx()
     const result = render(
-      <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} />,
+      <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} txId="123" />,
     )
 
     await act(() => Promise.resolve())

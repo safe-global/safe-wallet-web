@@ -13,7 +13,7 @@ import { EthersTxReplacedReason } from '@/utils/ethers-utils'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
-import * as sponsoredCall from '@/services/tx/relaying'
+import * as relaying from '@/services/tx/relaying'
 import {
   Gnosis_safe__factory,
   Proxy_factory__factory,
@@ -226,7 +226,7 @@ describe('createNewSafeViaRelayer', () => {
   } as ChainInfo
 
   it('returns taskId if create Safe successfully relayed', async () => {
-    const sponsoredCallSpy = jest.spyOn(sponsoredCall, 'sponsoredCall').mockResolvedValue({ taskId: '0x123' })
+    const sponsoredCallSpy = jest.spyOn(relaying, 'sponsoredCall').mockResolvedValue({ taskId: '0x123' })
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
@@ -265,7 +265,7 @@ describe('createNewSafeViaRelayer', () => {
   it('should throw an error if relaying fails', () => {
     const relayFailedError = new Error('Relay failed')
 
-    jest.spyOn(sponsoredCall, 'sponsoredCall').mockRejectedValue(relayFailedError)
+    jest.spyOn(relaying, 'sponsoredCall').mockRejectedValue(relayFailedError)
 
     expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
   })
