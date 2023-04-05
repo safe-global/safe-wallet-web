@@ -24,6 +24,11 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
       logo: '/images/common/nft-blur.svg',
       getUrl: (item) => `https://blur.io/asset/${item.address.toLowerCase()}/${item.id}`,
     },
+    {
+      title: 'Zerion',
+      logo: '/images/common/nft-zerion.svg',
+      getUrl: (item) => `https://app.zerion.io/nfts/ethereum/${item.address.toLowerCase()}:${item.id}`,
+    },
   ],
 
   [chains.matic]: [
@@ -37,6 +42,11 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
       logo: '/images/common/nft-opensea.svg',
       getUrl: (item) => `https://opensea.io/assets/matic/${item.address}/${item.id}`,
     },
+    {
+      title: 'Zerion',
+      logo: '/images/common/nft-zerion.svg',
+      getUrl: (item) => `https://app.zerion.io/nfts/polygon/${item.address.toLowerCase()}:${item.id}`,
+    },
   ],
 
   [chains.gno]: [
@@ -44,6 +54,11 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
       title: 'GnosisScan',
       logo: '/images/common/nft-gnosisscan.svg',
       getUrl: (item) => `https://gnosisscan.io/nft/${item.address}/${item.id}`,
+    },
+    {
+      title: 'Zerion',
+      logo: '/images/common/nft-zerion.svg',
+      getUrl: (item) => `https://app.zerion.io/nfts/xdai/${item.address.toLowerCase()}:${item.id}`,
     },
   ],
 
@@ -61,6 +76,11 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
       logo: '/images/common/nft-opensea.svg',
       getUrl: (item) => `https://opensea.io/assets/optimism/${item.address}/${item.id}`,
     },
+    {
+      title: 'Zerion',
+      logo: '/images/common/nft-zerion.svg',
+      getUrl: (item) => `https://app.zerion.io/nfts/optimism/${item.address.toLowerCase()}:${item.id}`,
+    },
   ],
 
   [chains.arb1]: [
@@ -68,6 +88,11 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
       title: 'OpenSea',
       logo: '/images/common/nft-opensea.svg',
       getUrl: (item) => `https://opensea.io/assets/arbitrum/${item.address}/${item.id}`,
+    },
+    {
+      title: 'Zerion',
+      logo: '/images/common/nft-zerion.svg',
+      getUrl: (item) => `https://app.zerion.io/nfts/arbitrum/${item.address.toLowerCase()}:${item.id}`,
     },
   ],
 
