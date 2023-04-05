@@ -160,19 +160,10 @@ export const getValidBatch = async (
     return multiSendTxs
   }
 
-  const validMultiSendTxs: MetaTransactionData[] = []
+  const validity = await Promise.all(multiSendTxs.map((_, i) => _isValidMultiSend(safe, multiSendTxs.slice(0, i))))
+  const failedIndex = validity.findIndex((isValid) => !isValid)
 
-  for await (const multiSendTx of multiSendTxs) {
-    const isValidBatch = await _isValidMultiSend(safe, [...validMultiSendTxs, multiSendTx])
-
-    if (!isValidBatch) {
-      break
-    }
-
-    validMultiSendTxs.push(multiSendTx)
-  }
-
-  return validMultiSendTxs
+  return multiSendTxs.slice(0, failedIndex)
 }
 
 export const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
