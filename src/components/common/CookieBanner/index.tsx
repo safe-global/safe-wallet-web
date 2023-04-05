@@ -1,7 +1,5 @@
 import { useEffect, type ReactElement } from 'react'
-import Link from 'next/link'
-import MUILink from '@mui/material/Link'
-import { Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon } from '@mui/material'
+import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { useForm } from 'react-hook-form'
 
@@ -11,10 +9,10 @@ import { selectCookieBanner, openCookieBanner, closeCookieBanner } from '@/store
 
 import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
+import ExternalLink from '../ExternalLink'
 
 const COOKIE_WARNING: Record<CookieType, string> = {
-  [CookieType.NECESSARY]: '',
-  [CookieType.UPDATES]: `You attempted to open the "What's new" section but need to accept the "Updates & Feedback" cookies first.`,
+  [CookieType.UPDATES]: `You attempted to open the "What's new" section but need to accept the "Beamer" cookies first.`,
   [CookieType.ANALYTICS]: '',
 }
 
@@ -25,13 +23,13 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
 
   const { register, watch, getValues, setValue } = useForm({
     defaultValues: {
-      ...cookies,
+      [CookieType.UPDATES]: cookies[CookieType.UPDATES] ?? false,
+      [CookieType.ANALYTICS]: cookies[CookieType.ANALYTICS] ?? false,
       ...(warningKey ? { [warningKey]: true } : {}),
     },
   })
 
   const handleAccept = () => {
-    setValue(CookieType.NECESSARY, true)
     dispatch(saveCookieConsent(getValues()))
     dispatch(closeCookieBanner())
   }
@@ -39,10 +37,7 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
   const handleAcceptAll = () => {
     setValue(CookieType.UPDATES, true)
     setValue(CookieType.ANALYTICS, true)
-
-    setTimeout(() => {
-      handleAccept()
-    }, 100)
+    setTimeout(handleAccept, 100)
   }
 
   return (
@@ -53,42 +48,71 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
         </Typography>
       )}
 
-      <Typography align="center">
-        We use cookies to provide you with the best experience and to help improve our website and application. Please
-        read our{' '}
-        <Link href={AppRoutes.cookie} passHref>
-          <MUILink>Cookie Policy</MUILink>
-        </Link>{' '}
-        for more information. By clicking &quot;Accept all&quot;, you agree to the storing of cookies on your device to
-        enhance site navigation, analyze site usage and provide customer support.
-      </Typography>
+      <form>
+        <Grid container alignItems="center" spacing={4}>
+          <Grid item md={3} />
 
-      <form className={css.grid}>
-        <FormControlLabel
-          control={<Checkbox defaultChecked disabled {...register(CookieType.NECESSARY)} />}
-          label="Necessary"
-        />
+          <Grid item xs>
+            <Typography align="center" mb={5}>
+              By clicking &quot;Accept all&quot; you agree to the use of the tools listed below and their corresponding{' '}
+              <span style={{ whiteSpace: 'nowrap' }}>3rd-party</span> cookies.{' '}
+              <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
+            </Typography>
 
-        <FormControlLabel
-          control={<Checkbox {...register(CookieType.UPDATES)} />}
-          label="Updates (Beamer)"
-          checked={watch(CookieType.UPDATES)}
-        />
+            <Grid container alignItems="center" gap={4}>
+              <Grid item xs={12} sm>
+                <Grid container justifyItems="flex-start" gap={1} pb={2}>
+                  <Grid item width={200}>
+                    <FormControlLabel
+                      control={<Checkbox {...register(CookieType.UPDATES)} id="beamer" />}
+                      label="Beamer"
+                      checked={watch(CookieType.UPDATES)}
+                      sx={{ mt: '-9px' }}
+                    />
+                  </Grid>
 
-        <FormControlLabel
-          control={<Checkbox {...register(CookieType.ANALYTICS)} />}
-          label="Analytics"
-          checked={watch(CookieType.ANALYTICS)}
-        />
+                  <Grid item sm xs={12}>
+                    <label htmlFor="beamer">New features and product announcements</label>
+                  </Grid>
+                </Grid>
 
-        <div className={css.grid}>
-          <Button onClick={handleAccept} variant="outlined" disableElevation>
-            Accept selection
-          </Button>
-          <Button onClick={handleAcceptAll} variant="contained" disableElevation>
-            Accept all
-          </Button>
-        </div>
+                <Grid container justifyItems="flex-start" gap={1}>
+                  <Grid item width={200}>
+                    <FormControlLabel
+                      control={<Checkbox {...register(CookieType.ANALYTICS)} id="ga" />}
+                      label="Google Analytics"
+                      checked={watch(CookieType.ANALYTICS)}
+                      sx={{ mt: '-9px' }}
+                    />
+                  </Grid>
+
+                  <Grid item sm xs={12}>
+                    <label htmlFor="ga">
+                      Help us make the app better. We never track your Safe or wallet addresses, or any transaction
+                      data.
+                    </label>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid container alignItems="center" justifyContent="center" mt={4} gap={2}>
+              <Grid item>
+                <Button onClick={handleAccept} variant="text" disableElevation>
+                  Accept selection
+                </Button>
+              </Grid>
+
+              <Grid item>
+                <Button onClick={handleAcceptAll} variant="contained" disableElevation sx={{ width: 200 }}>
+                  Accept all
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid item md={3} />
+        </Grid>
       </form>
     </Paper>
   )
@@ -99,8 +123,9 @@ const CookieBanner = (): ReactElement | null => {
   const cookies = useAppSelector(selectCookies)
   const dispatch = useAppDispatch()
 
-  // Open the banner if "necessary" cookies haven't been accepted
-  const shouldOpen = !cookies[CookieType.NECESSARY]
+  // Open the banner if cookie preferences haven't been set
+  const shouldOpen = cookies[CookieType.ANALYTICS] === undefined || cookies[CookieType.UPDATES] === undefined
+
   useEffect(() => {
     if (shouldOpen) {
       dispatch(openCookieBanner({}))

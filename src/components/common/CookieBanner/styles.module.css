@@ -8,13 +8,6 @@
   border-radius: 0 !important;
 }
 
-.grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-  justify-content: center;
-}
-
 .container form {
   margin-top: var(--space-2);
 }

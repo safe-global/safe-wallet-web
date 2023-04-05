@@ -3,26 +3,22 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '.'
 
 export enum CookieType {
-  NECESSARY = 'necessary',
   UPDATES = 'updates',
   ANALYTICS = 'analytics',
 }
 
-export type CookiesState = Record<CookieType, boolean>
+export type CookiesState = Record<CookieType, boolean | undefined>
 
 const initialState: CookiesState = {
-  [CookieType.NECESSARY]: false,
-  [CookieType.UPDATES]: false,
-  [CookieType.ANALYTICS]: false,
+  [CookieType.UPDATES]: undefined,
+  [CookieType.ANALYTICS]: undefined,
 }
 
 export const cookiesSlice = createSlice({
   name: 'cookies',
   initialState,
   reducers: {
-    saveCookieConsent: (_, { payload }: PayloadAction<CookiesState>) => {
-      return payload
-    },
+    saveCookieConsent: (_, { payload }: PayloadAction<CookiesState>) => payload,
   },
 })
 
