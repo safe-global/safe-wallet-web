@@ -20,11 +20,6 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
       getUrl: (item) => `https://opensea.io/assets/${item.address}/${item.id}`,
     },
     {
-      title: 'atomic0',
-      logo: '/images/common/nft-atomic0.svg',
-      getUrl: (item) => `https://atomic0.com/nft/${item.address}/${item.id}`,
-    },
-    {
       title: 'Blur',
       logo: '/images/common/nft-blur.svg',
       getUrl: (item) => `https://blur.io/asset/${item.address.toLowerCase()}/${item.id}`,
