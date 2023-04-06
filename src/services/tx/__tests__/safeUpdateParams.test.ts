@@ -14,7 +14,7 @@ import * as web3 from '@/hooks/wallets/web3'
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 
 describe('safeUpgradeParams', () => {
-  jest.spyOn(web3, 'getWeb3').mockImplementation(() => new Web3Provider(jest.fn()))
+  jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => new Web3Provider(jest.fn()))
 
   it('Should add empty setFallbackHandler transaction data for older Safes', () => {
     const mockSafe = {

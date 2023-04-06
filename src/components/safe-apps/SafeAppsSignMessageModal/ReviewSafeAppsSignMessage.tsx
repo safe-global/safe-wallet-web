@@ -17,7 +17,7 @@ import { generateDataRowValue } from '@/components/transactions/TxDetails/Summar
 import type { SafeAppsSignMessageParams } from '@/components/safe-apps/SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
-import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
+import { getReadOnlySignMessageLibContract } from '@/services/contracts/safeContracts'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
@@ -40,8 +40,8 @@ const ReviewSafeAppsSignMessage = ({
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
 
-  const signMessageDeploymentInstance = useMemo(() => getSignMessageLibDeploymentContractInstance(chainId), [chainId])
-  const signMessageAddress = signMessageDeploymentInstance.getAddress()
+  const readOnlySignMessageLibContract = useMemo(() => getReadOnlySignMessageLibContract(chainId), [chainId])
+  const signMessageAddress = readOnlySignMessageLibContract.getAddress()
 
   const [decodedMessage, readableMessage] = useMemo(() => {
     if (isTextMessage) {
@@ -57,7 +57,7 @@ const ReviewSafeAppsSignMessage = ({
     let txData
 
     if (isTextMessage) {
-      txData = signMessageDeploymentInstance.encode('signMessage', [hashMessage(getDecodedMessage(message))])
+      txData = readOnlySignMessageLibContract.encode('signMessage', [hashMessage(getDecodedMessage(message))])
     } else if (isTypedMessage) {
       const typesCopy = { ...message.types }
 
@@ -66,7 +66,7 @@ const ReviewSafeAppsSignMessage = ({
       // The types are not allowed to be recursive, so ever type must either be used by another type, or be
       // the primary type. And there must only be one type that is not used by any other type.
       delete typesCopy.EIP712Domain
-      txData = signMessageDeploymentInstance.encode('signMessage', [
+      txData = readOnlySignMessageLibContract.encode('signMessage', [
         _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
