@@ -36,8 +36,8 @@ export const useLeastRemainingRelays = (ownerAddresses: string[]): AsyncResult<R
       logError(Errors._630, (error as Error).message)
     }
 
-    const mininmum = minBy(relays, 'remaining')
+    const minimum = minBy(relays, 'remaining')
 
-    return mininmum || { remaining: 0, limit: MAX_HOUR_RELAYS }
+    return minimum || { remaining: 0, limit: MAX_HOUR_RELAYS }
   }, [chain, ownerAddresses])
 }
