@@ -14,7 +14,7 @@ import type { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
-import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
+import { useRelaysBySafe } from '@/hooks/useRelaysBySafe'
 import SponsoredBy from '@/components/tx/SponsoredBy'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
@@ -26,10 +26,10 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
-  const [remainingRelays] = useRemainingRelaysBySafe()
+  const [relays] = useRelaysBySafe()
 
   // Chain has relaying feature and available relays
-  const willRelay = !!remainingRelays
+  const willRelay = relays && relays.remaining > 0
   const onboard = useOnboard()
   const web3 = useWeb3()
 
@@ -119,7 +119,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
               Gas fees:
             </Typography>
             <SponsoredBy
-              remainingRelays={remainingRelays}
+              relays={relays}
               tooltip="You can only relay multisend transactions containing
 executions from the same Safe."
             />

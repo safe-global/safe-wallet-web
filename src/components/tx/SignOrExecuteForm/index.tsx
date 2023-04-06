@@ -18,7 +18,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
 import UnknownContractError from './UnknownContractError'
-import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
+import { useRelaysBySafe } from '@/hooks/useRelaysBySafe'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 
 type SignOrExecuteProps = {
@@ -58,7 +58,7 @@ const SignOrExecuteForm = ({
   const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
   const { signTx, executeTx } = useTxActions()
-  const [remainingRelays = 0] = useRemainingRelaysBySafe()
+  const [relays] = useRelaysBySafe()
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -74,7 +74,7 @@ const SignOrExecuteForm = ({
   const [walletCanRelay] = useWalletCanRelay(tx)
 
   // The transaction will be executed through relaying
-  const willRelay = willExecute && walletCanRelay && remainingRelays > 0
+  const willRelay = willExecute && relays && relays.remaining > 0 && walletCanRelay
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])

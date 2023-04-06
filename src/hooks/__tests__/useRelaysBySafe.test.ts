@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { useLeastRemainingRelays, useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
+import { useLeastRemainingRelays, useRelaysBySafe } from '@/hooks/useRelaysBySafe'
 import * as useSafeAddress from '@/hooks/useSafeAddress'
 import * as useChains from '@/hooks/useChains'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -16,14 +16,14 @@ describe('fetch remaining relays hooks', () => {
     jest.spyOn(useSafeAddress, 'default').mockReturnValue(SAFE_ADDRESS)
   })
 
-  describe('useRemainingRelaysBySafe hook', () => {
+  describe('useRelaysBySafe hook', () => {
     it('should not call fetch if empty safe address', () => {
       jest.spyOn(useSafeAddress, 'default').mockReturnValue('')
 
       global.fetch = jest.fn()
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      renderHook(() => useRemainingRelaysBySafe())
+      renderHook(() => useRelaysBySafe())
       expect(mockFetch).not.toHaveBeenCalled()
     })
 
@@ -33,7 +33,7 @@ describe('fetch remaining relays hooks', () => {
 
       const url = `${SAFE_RELAY_SERVICE_URL}/5/${SAFE_ADDRESS}`
 
-      renderHook(() => useRemainingRelaysBySafe())
+      renderHook(() => useRelaysBySafe())
       expect(mockFetch).toHaveBeenCalledTimes(1)
       expect(mockFetch).toHaveBeenCalledWith(url)
     })
@@ -44,7 +44,7 @@ describe('fetch remaining relays hooks', () => {
       global.fetch = jest.fn()
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      renderHook(() => useRemainingRelaysBySafe())
+      renderHook(() => useRelaysBySafe())
       expect(mockFetch).toHaveBeenCalledTimes(0)
     })
   })
@@ -71,7 +71,7 @@ describe('fetch remaining relays hooks', () => {
       const { result } = renderHook(() => useLeastRemainingRelays(ownerAddresses))
 
       await waitFor(async () => {
-        expect(result.current[0]).toBe(0)
+        expect(result.current[0]?.remaining).toBe(0)
       })
     })
 
@@ -94,7 +94,7 @@ describe('fetch remaining relays hooks', () => {
       const { result } = renderHook(() => useLeastRemainingRelays(ownerAddresses))
 
       await waitFor(async () => {
-        expect(result.current[0]).toBe(2)
+        expect(result.current[0]?.remaining).toBe(2)
       })
     })
 
@@ -117,7 +117,7 @@ describe('fetch remaining relays hooks', () => {
       const { result } = renderHook(() => useLeastRemainingRelays(ownerAddresses))
 
       await waitFor(async () => {
-        expect(result.current[0]).toBe(0)
+        expect(result.current[0]?.remaining).toBe(0)
       })
     })
 

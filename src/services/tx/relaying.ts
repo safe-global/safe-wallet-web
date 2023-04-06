@@ -5,15 +5,24 @@ import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 export const SAFE_RELAY_SERVICE_URL =
   IS_PRODUCTION || cgwDebugStorage.get() ? SAFE_RELAY_SERVICE_URL_PRODUCTION : SAFE_RELAY_SERVICE_URL_STAGING
 
-// TODO: import type from relay-service
+// TODO: import types from relay-service
 export type SponsoredCallPayload = {
   chainId: string
   to: string
   data: SafeTransactionData['data']
   gasLimit?: string | number
 }
+type SponsoredCallResponse = {
+  taskId: string
+}
 
-export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId: string }> => {
+export type RelayResponse = {
+  limit: number
+  remaining: number
+  expiresAt?: number
+}
+
+export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<SponsoredCallResponse> => {
   const requestObject: RequestInit = {
     method: 'POST',
     headers: {
@@ -32,7 +41,7 @@ export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<{ taskId:
   throw new Error(`${res.status} - ${res.statusText}: ${errorData?.error?.message}`)
 }
 
-export const getRemainingRelays = async (chainId: string, address: string): Promise<number> => {
+export const getRelays = async (chainId: string, address: string): Promise<RelayResponse> => {
   const url = `${SAFE_RELAY_SERVICE_URL}/${chainId}/${address}`
 
   try {
@@ -40,12 +49,12 @@ export const getRemainingRelays = async (chainId: string, address: string): Prom
 
     if (res.ok) {
       const data = await res.json()
-      return data.remaining
+      return data
     }
 
     const errorData: { error?: { message: string } } = await res.json()
     throw new Error(errorData?.error?.message || 'Unknown error')
   } catch (error) {
-    throw new Error(`Error fetching remaining relays: ${error}`)
+    throw new Error(`Error fetching relays: ${error}`)
   }
 }
