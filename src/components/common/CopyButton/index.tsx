@@ -29,7 +29,7 @@ const CopyButton = ({
         onCopy?.()
       } catch (err) {
         setIsCopyEnabled(false);
-        setTooltipText('copying is disabled in your browser');
+        setTooltipText('Copying is disabled in your browser');
       }
     },
     [text, onCopy],
