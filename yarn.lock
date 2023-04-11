@@ -1298,7 +1298,7 @@
     crc-32 "^1.2.0"
     ethereumjs-util "^7.1.4"
 
-"@ethereumjs/common@^2.0.0", "@ethereumjs/common@^2.4.0", "@ethereumjs/common@^2.5.0", "@ethereumjs/common@^2.6.3", "@ethereumjs/common@^2.6.4":
+"@ethereumjs/common@^2.0.0", "@ethereumjs/common@^2.3.1", "@ethereumjs/common@^2.4.0", "@ethereumjs/common@^2.5.0", "@ethereumjs/common@^2.6.3", "@ethereumjs/common@^2.6.4":
   version "2.6.5"
   resolved "https://registry.yarnpkg.com/@ethereumjs/common/-/common-2.6.5.tgz#0a75a22a046272579d91919cb12d84f2756e8d30"
   integrity sha512-lRyVQOeCDaIVtgfbowla32pzeDv2Obr8oR8Put5RdUBNRGr1VGPGQNGP6elWIpgK3YdpzqTOh4GyUGOureVeeA==
@@ -1313,6 +1313,14 @@
   dependencies:
     "@ethereumjs/common" "^2.0.0"
     ethereumjs-util "^7.0.7"
+
+"@ethereumjs/tx@3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@ethereumjs/tx/-/tx-3.2.1.tgz#65f5f1c11541764f08377a94ba4b0dcbbd67739e"
+  integrity sha512-i9V39OtKvwWos1uVNZxdVhd7zFOyzFLjgt69CoiOY0EmXugS0HjO3uxpLBSglDKFMRriuGqw6ddKEv+RP1UNEw==
+  dependencies:
+    "@ethereumjs/common" "^2.3.1"
+    ethereumjs-util "^7.0.10"
 
 "@ethereumjs/tx@3.3.2":
   version "3.3.2"
@@ -3118,7 +3126,7 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@sideway/formula@^3.0.0":
+"@sideway/formula@^3.0.0", "@sideway/formula@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@sideway/formula/-/formula-3.0.1.tgz#80fcbcbaf7ce031e0ef2dd29b1bfc7c3f583611f"
   integrity sha512-/poHZJJVjx3L+zVD6g9KgHfYnb443oi7wLu/XKojDviHy6HOEOA6z1Trk5aR1dGcmPenJEgb2sK2I80LeS3MIg==
@@ -4129,6 +4137,15 @@
     ethers "5.5.4"
     joi "^17.6.1"
 
+"@web3-onboard/common@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/common/-/common-2.3.1.tgz#69ad0d5167e5103086c34a4f7e8af90681d71be4"
+  integrity sha512-VRIsJLW92Q+bu6w9WSlTrPIk0vGmFvVwnoAKy1ubKuBvSKKhMUmrnv8N5tusr0mk+gcUuUdDF6gLDCABqrfC7g==
+  dependencies:
+    bignumber.js "^9.1.0"
+    ethers "5.5.4"
+    joi "17.9.1"
+
 "@web3-onboard/core@2.8.5":
   version "2.8.5"
   resolved "https://registry.yarnpkg.com/@web3-onboard/core/-/core-2.8.5.tgz#1a53da35620f8519af0eacda017385c67a69c5b9"
@@ -4148,6 +4165,17 @@
     svelte "^3.49.0"
     svelte-i18n "^3.3.13"
 
+"@web3-onboard/dcent@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/dcent/-/dcent-2.2.5.tgz#edb1a32c78ccda1c78854d34880745c8dc741bdf"
+  integrity sha512-dzqniOvq0+M8yI5kGtgZVkGeIdGsAM8xTutwwj3f4a5Pcu31HzKnRwuugtEiFeIusID8jMHp99MU2JmUeHdaHw==
+  dependencies:
+    "@ethereumjs/tx" "^3.4.0"
+    "@ethersproject/providers" "^5.5.0"
+    "@web3-onboard/common" "^2.3.1"
+    "@web3-onboard/hw-common" "^2.2.1"
+    eth-dcent-keyring "^0.2.2"
+
 "@web3-onboard/hw-common@^2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@web3-onboard/hw-common/-/hw-common-2.0.4.tgz#2767ecf5726a67e604f472675b310892dd3b642e"
@@ -4157,6 +4185,17 @@
     "@web3-onboard/common" "^2.2.3"
     ethers "5.5.4"
     joi "^17.6.1"
+    rxjs "^7.5.2"
+
+"@web3-onboard/hw-common@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/hw-common/-/hw-common-2.2.1.tgz#aae5b0323e6ee56b0cd6c23731955078ff69962d"
+  integrity sha512-KdYXaa2OulL4ghGAsopN9A4lx28IBKIeBgFNZm7hmY7kwZWY5I7E3CxbXdyubySmQQcXTeEvOXBpC2z0CLZeiA==
+  dependencies:
+    "@ethereumjs/common" "2.6.2"
+    "@web3-onboard/common" "^2.3.1"
+    ethers "5.5.4"
+    joi "17.9.1"
     rxjs "^7.5.2"
 
 "@web3-onboard/injected-wallets@^2.3.0":
@@ -5858,6 +5897,13 @@ dayjs@^1.10.4:
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.7.tgz#4b296922642f70999544d1144a2c25730fce63e2"
   integrity sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==
 
+dcent-web-connector@^0.11.2:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/dcent-web-connector/-/dcent-web-connector-0.11.4.tgz#3fba5612fdca670bea2e0b63a3742ae17d761724"
+  integrity sha512-j2sTtQJsQieILD6XZd0r/EK/tTqmn9Au0Tlb01/TwnTOuLBaX2VMEQ4y057nvgDC87WqHuOOBCaHxOTCrT7ASw==
+  dependencies:
+    events "^3.0.0"
+
 debug@2.6.9, debug@^2.2.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -6730,6 +6776,15 @@ eth-crypto@^2.1.0:
     ethers "5.7.2"
     secp256k1 "4.0.3"
 
+eth-dcent-keyring@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/eth-dcent-keyring/-/eth-dcent-keyring-0.2.2.tgz#4af7ccd9089411b0ca8366a7401a7c0d0acb6ef7"
+  integrity sha512-dPrR2Umx/OnOeycaoYx7O0Tzejzpya7dy0cx9+tjwsXTU8j1yIPfgUhfpHGX4k3xifK0u48OB47jyZdaGXNgVA==
+  dependencies:
+    "@ethereumjs/tx" "3.2.1"
+    dcent-web-connector "^0.11.2"
+    ethereumjs-util "7.0.9"
+
 eth-ens-namehash@2.0.8:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/eth-ens-namehash/-/eth-ens-namehash-2.0.8.tgz#229ac46eca86d52e0c991e7cb2aef83ff0f68bcf"
@@ -6961,6 +7016,18 @@ ethereumjs-tx@^2.1.1:
   dependencies:
     ethereumjs-common "^1.5.0"
     ethereumjs-util "^6.0.0"
+
+ethereumjs-util@7.0.9:
+  version "7.0.9"
+  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-7.0.9.tgz#2038baeb30f370a3e576ec175bd70bbbb6807d42"
+  integrity sha512-cRqvYYKJoitq6vMKMf8pXeVwvTrX+dRD0JwHaYqm8jvogK14tqIoCWH/KUHcRwnVxVXEYF/o6pup5jRG4V0xzg==
+  dependencies:
+    "@types/bn.js" "^5.1.0"
+    bn.js "^5.1.2"
+    create-hash "^1.1.2"
+    ethereum-cryptography "^0.1.3"
+    ethjs-util "0.1.6"
+    rlp "^2.2.4"
 
 ethereumjs-util@7.1.5, ethereumjs-util@^7.0.10, ethereumjs-util@^7.0.7, ethereumjs-util@^7.0.8, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.1, ethereumjs-util@^7.1.2, ethereumjs-util@^7.1.3, ethereumjs-util@^7.1.4, ethereumjs-util@^7.1.5:
   version "7.1.5"
@@ -9046,6 +9113,17 @@ jest@^28.1.2:
     "@jest/types" "^28.1.3"
     import-local "^3.0.2"
     jest-cli "^28.1.3"
+
+joi@17.9.1:
+  version "17.9.1"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-17.9.1.tgz#74899b9fa3646904afa984a11df648eca66c9018"
+  integrity sha512-FariIi9j6QODKATGBrEX7HZcja8Bsh3rfdGYy/Sb65sGlZWK/QWesU1ghk7aJWDj95knjXlQfSmzFSPPkLVsfw==
+  dependencies:
+    "@hapi/hoek" "^9.0.0"
+    "@hapi/topo" "^5.0.0"
+    "@sideway/address" "^4.1.3"
+    "@sideway/formula" "^3.0.1"
+    "@sideway/pinpoint" "^2.0.0"
 
 joi@^17.6.1:
   version "17.7.0"

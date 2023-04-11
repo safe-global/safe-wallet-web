@@ -585,6 +585,14 @@ const SafeLicenses = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
+                <TableCell>@web3-onboard/dcent</TableCell>
+                <TableCell>
+                  <ExternalLink href="https://github.com/blocknative/web3-onboard/blob/main/LICENSE">
+                    https://github.com/blocknative/web3-onboard/blob/main/LICENSE
+                  </ExternalLink>
+                </TableCell>
+              </TableRow>
+              <TableRow>
                 <TableCell>classnames</TableCell>
                 <TableCell>
                   <ExternalLink href="https://github.com/JedWatson/classnames/blob/main/LICENSE">
