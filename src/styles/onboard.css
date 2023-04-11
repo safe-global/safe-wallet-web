@@ -75,7 +75,7 @@
   --onboard-modal-z-index: 1301;
   --onboard-account-select-modal-z-index: 1301;
 
-  /* onboard theme style for dcent (@web3-onboard/common version up to 2.3.1) */
+  /* onboard theme style for dcent (@web3-onboard/common version 2.3.1 or later) */
   --w3o-background-color: var(--color-background-paper); 
   --w3o-foreground-color: var(--color-background-paper);
   --w3o-text-color: var(--onboard-black, var(--black));
