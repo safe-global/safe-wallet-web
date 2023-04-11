@@ -88,6 +88,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trezor',
       'trust',
       'walletLink',
+      'dcent',
     ],
     features: [
       FEATURES.CONTRACT_INTERACTION,
@@ -142,6 +143,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trezor',
       'trust',
       'walletLink',
+      'dcent',
     ],
     features: [
       FEATURES.CONTRACT_INTERACTION,
@@ -193,6 +195,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trezor',
       'trust',
       'walletLink',
+      'dcent',
     ],
     features: [
       FEATURES.CONTRACT_INTERACTION,
@@ -241,6 +244,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trezor',
       'trust',
       'walletLink',
+      'dcent',
     ],
     features: [
       FEATURES.CONTRACT_INTERACTION,
@@ -288,6 +292,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trezor',
       'trust',
       'walletLink',
+      'dcent',
     ],
     features: [
       FEATURES.CONTRACT_INTERACTION,
@@ -335,6 +340,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trezor',
       'trust',
       'walletLink',
+      'dcent',
     ],
     features: [FEATURES.CONTRACT_INTERACTION, FEATURES.ERC721, FEATURES.SAFE_APPS, FEATURES.SAFE_TX_GAS_OPTIONAL],
   },
@@ -380,6 +386,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'torus',
       'trezor',
       'trust',
+      'dcent',
     ],
     features: [
       FEATURES.CONTRACT_INTERACTION,
@@ -428,6 +435,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trezor',
       'trust',
       'walletLink',
+      'dcent',
     ],
     features: [
       FEATURES.CONTRACT_INTERACTION,
@@ -474,6 +482,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'torus',
       'trust',
       'walletLink',
+      'dcent',
     ],
     features: [
       FEATURES.CONTRACT_INTERACTION,
@@ -563,6 +572,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trezor',
       'trust',
       'walletLink',
+      'dcent',
     ],
     features: [
       FEATURES.CONTRACT_INTERACTION,

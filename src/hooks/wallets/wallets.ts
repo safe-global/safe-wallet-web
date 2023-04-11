@@ -9,7 +9,7 @@ import ledgerModule from '@web3-onboard/ledger'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 import tallyhoModule from '@web3-onboard/tallyho'
-import dcentModule from '@web3-onboard/dcent'
+import dcentModule from '@web3-onboard/dcent/dist/index'
 
 import pairingModule from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
@@ -81,7 +81,7 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
 }
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
-  return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE].includes(
+  return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE, WALLET_KEYS.DCENT].includes(
     wallet.label.toUpperCase() as WALLET_KEYS,
   )
 }
