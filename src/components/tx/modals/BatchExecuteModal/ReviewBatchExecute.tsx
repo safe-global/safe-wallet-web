@@ -4,7 +4,7 @@ import { getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeC
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
-import { Button, DialogContent, Typography } from '@mui/material'
+import { Button, DialogContent, SvgIcon, Typography } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { type SyntheticEvent, useMemo, useState } from 'react'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
@@ -19,8 +19,9 @@ import SponsoredBy from '@/components/tx/SponsoredBy'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
-import { getValidBatch } from '@/utils/transactions'
-import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { getSimulationPayload, getSimulation } from '../../TxSimulation/utils'
+import useWallet from '@/hooks/wallets/useWallet'
+import CrossIcon from '@/public/images/transactions/circle-cross-red.svg'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -28,6 +29,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
   const [remainingRelays] = useRemainingRelaysBySafe()
+  const wallet = useWallet()
 
   // Chain has relaying feature and available relays
   const willRelay = !!remainingRelays
@@ -49,10 +51,37 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
   }, [chain, safe.address.value, safe.version, txsWithDetails])
 
-  const [validMultiSendTxs, , validMultiSendTxsLoading] = useAsync<MetaTransactionData[]>(() => {
-    if (!txsWithDetails || !chain) return
-    return getValidBatch(txsWithDetails, safe, chain)
-  }, [txsWithDetails, safe, chain])
+  const [simulation, , simulationLoading] = useAsync(async () => {
+    if (!wallet?.address || !allMultiSendTxs) return
+
+    const simulationPayload = await getSimulationPayload({
+      canExecute: true,
+      executionOwner: wallet.address,
+      safe,
+      transactions: allMultiSendTxs,
+    })
+
+    // Use default Tenderly API
+    return getSimulation(simulationPayload, undefined)
+  }, [wallet?.address, safe.address.value, allMultiSendTxs])
+
+  const validMultiSendTxs = useMemo(() => {
+    if (!chain || !simulation || !allMultiSendTxs) return
+
+    const callErrors = simulation.transaction.call_trace.filter((call) => {
+      return call.error
+    })
+
+    if (callErrors.length === 0) {
+      return allMultiSendTxs
+    }
+
+    const firstRevertedTx = allMultiSendTxs.findIndex((tx) => {
+      return callErrors.some((error) => tx.data === error.input)
+    })
+
+    return firstRevertedTx ? allMultiSendTxs.slice(0, firstRevertedTx) : allMultiSendTxs
+  }, [allMultiSendTxs, chain, simulation])
 
   const validTxsWithDetails =
     txsWithDetails && validMultiSendTxs ? txsWithDetails.slice(0, validMultiSendTxs.length) : undefined
@@ -95,7 +124,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     }
   }
 
-  const submitDisabled = txWithDetailsLoading || validMultiSendTxsLoading || !isSubmittable
+  const submitDisabled = txWithDetailsLoading || simulationLoading || !isSubmittable
 
   return (
     <div>
@@ -126,8 +155,9 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
 
         {invalidTxsWithDetails && invalidTxsWithDetails.length > 0 && (
           <>
-            <Typography mt={2} color="primary.light">
-              Excluded transactions:
+            <Typography mt={2} color="primary.light" display="flex" alignItems="center">
+              <SvgIcon component={CrossIcon} inheritViewBox color="border" fontSize="small" sx={{ mr: 0.5 }} /> Excluded
+              transactions:
             </Typography>
             <Typography variant="body2" mb={2}>
               The following transactions are excluded from the batch as they will otherwise cause it to fail.
