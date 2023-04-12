@@ -28,7 +28,7 @@ const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; 
         </StatusStep>
       </Step>
       <Step>
-        <StatusStep isLoading={!pendingSafe.txHash} safeAddress={pendingSafe.safeAddress}>
+        <StatusStep isLoading={!(pendingSafe.txHash || pendingSafe.taskId)} safeAddress={pendingSafe.safeAddress}>
           <Box>
             <Typography variant="body2" fontWeight="700">
               Validating transaction

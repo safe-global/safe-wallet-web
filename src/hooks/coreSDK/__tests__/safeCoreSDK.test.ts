@@ -5,7 +5,7 @@ import {
   getSafeContract,
 } from '@safe-global/safe-core-sdk/dist/src/contracts/safeDeploymentContracts'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { EIP1193Provider } from '@web3-onboard/core'
+import { Web3Provider } from '@ethersproject/providers'
 
 import { isValidSafeVersion, initSafeSDK } from '../safeCoreSDK'
 
@@ -86,21 +86,23 @@ describe('safeCoreSDK', () => {
     })
 
     const getMockProvider = (chainId: string, version: string) => {
-      return jest.fn((method, params) => {
-        const VERSION_SIG_HASH = ethers.utils.id('VERSION()').slice(0, 10)
+      return new Web3Provider(
+        jest.fn((method, params) => {
+          const VERSION_SIG_HASH = ethers.utils.id('VERSION()').slice(0, 10)
 
-        if (method === 'eth_chainId') {
-          return Promise.resolve(+chainId)
-        }
+          if (method === 'eth_chainId') {
+            return Promise.resolve(+chainId)
+          }
 
-        if (method === 'eth_call' && params[0].data.startsWith(VERSION_SIG_HASH)) {
-          const encodedVersion = ethers.utils.defaultAbiCoder.encode(['string'], [version])
+          if (method === 'eth_call' && params?.[0].data.startsWith(VERSION_SIG_HASH)) {
+            const encodedVersion = ethers.utils.defaultAbiCoder.encode(['string'], [version])
 
-          return Promise.resolve(encodedVersion)
-        }
+            return Promise.resolve(encodedVersion)
+          }
 
-        return Promise.resolve()
-      }) as unknown as EIP1193Provider
+          return Promise.resolve()
+        }),
+      )
     }
 
     describe('Supported contracts', () => {

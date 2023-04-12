@@ -7,7 +7,7 @@ import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-s
 
 describe('SafeAppsSignMessageModal', () => {
   test('can handle messages with EIP712Domain type in the JSON-RPC payload', () => {
-    jest.spyOn(web3, 'getWeb3').mockImplementation(() => new Web3Provider(jest.fn()))
+    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => new Web3Provider(jest.fn()))
 
     render(
       <SafeAppsSignMessageModal

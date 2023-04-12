@@ -90,7 +90,10 @@ const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 let isConnecting = false
 
 // Wrapper that tracks/sets the last used wallet
-export const connectWallet = async (onboard: OnboardAPI, options?: Parameters<OnboardAPI['connectWallet']>[0]) => {
+export const connectWallet = async (
+  onboard: OnboardAPI,
+  options?: Parameters<OnboardAPI['connectWallet']>[0],
+): Promise<WalletState[] | undefined> => {
   if (isConnecting) {
     return
   }
@@ -104,8 +107,10 @@ export const connectWallet = async (onboard: OnboardAPI, options?: Parameters<On
     }
   }
 
+  let wallets: WalletState[] | undefined
+
   try {
-    await onboard.connectWallet(options)
+    wallets = await onboard.connectWallet(options)
   } catch (e) {
     logError(Errors._302, (e as Error).message)
 
@@ -114,7 +119,7 @@ export const connectWallet = async (onboard: OnboardAPI, options?: Parameters<On
   }
 
   // Save the last used wallet and track the wallet type
-  const newWallet = getConnectedWallet(onboard.state.get().wallets)
+  const newWallet = getConnectedWallet(wallets)
 
   if (newWallet) {
     // Save
@@ -125,6 +130,8 @@ export const connectWallet = async (onboard: OnboardAPI, options?: Parameters<On
   }
 
   isConnecting = false
+
+  return wallets
 }
 
 // A workaround for an onboard "feature" that shows a defunct account select popup

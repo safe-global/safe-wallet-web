@@ -11,7 +11,7 @@ import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardS
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import { getFallbackHandlerContractInstance } from '@/services/contracts/safeContracts'
+import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
@@ -22,6 +22,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ReviewRow from '@/components/new-safe/ReviewRow'
+import SponsoredBy from '@/components/tx/SponsoredBy'
+import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
+import classnames from 'classnames'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
@@ -32,6 +35,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
   const saltNonce = useMemo(() => Date.now(), [])
   const [_, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
+
+  const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
+  const [minRelays] = useLeastRemainingRelays(ownerAddresses)
+
+  // Chain supports relaying and relay transactions are available
+  const willRelay = !!minRelays
 
   const safeParams = useMemo(() => {
     return {
@@ -55,13 +64,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const createSafe = async () => {
     if (!wallet || !provider || !chain) return
 
-    const fallbackHandler = getFallbackHandlerContractInstance(chain.chainId)
+    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
 
     const props = {
       safeAccountConfig: {
         threshold: data.threshold,
         owners: data.owners.map((owner) => owner.address),
-        fallbackHandler: fallbackHandler.getAddress(),
+        fallbackHandler: readOnlyFallbackHandlerContract.getAddress(),
       },
       safeDeploymentConfig: {
         saltNonce: saltNonce.toString(),
@@ -71,7 +80,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     const safeAddress = await computeNewSafeAddress(provider, props)
 
     setPendingSafe({ ...data, saltNonce, safeAddress })
-    onSubmit({ ...data, saltNonce, safeAddress })
+    onSubmit({ ...data, saltNonce, safeAddress, willRelay })
   }
 
   return (
@@ -127,18 +136,21 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
                       borderRadius: '6px',
                     }}
                   >
-                    <Typography variant="body1">
+                    <Typography variant="body1" className={classnames({ [css.sponsoredFee]: willRelay })}>
                       <b>
                         &asymp; {totalFee} {chain?.nativeCurrency.symbol}
                       </b>
                     </Typography>
                   </Box>
-                  <Typography variant="body2" color="text.secondary" mt={1}>
-                    You will have to confirm a transaction with your connected wallet.
-                  </Typography>
+                  {willRelay ? null : (
+                    <Typography variant="body2" color="text.secondary" mt={1}>
+                      You will have to confirm a transaction with your connected wallet.
+                    </Typography>
+                  )}
                 </>
               }
             />
+            {willRelay ? <ReviewRow name="" value={<SponsoredBy remainingRelays={minRelays} />} /> : null}
           </Grid>
         </Grid>
 
