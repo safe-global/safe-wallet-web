@@ -9,6 +9,7 @@ import {
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
+import { useRelayingDebugger } from '@/hooks/useRelayingDebugger'
 
 export const SAFE_GELATO_RELAY_SERVICE_URL =
   IS_PRODUCTION || cgwDebugStorage.get()
@@ -31,9 +32,10 @@ const fetchRemainingRelays = async (chainId: string, address: string): Promise<n
 export const useRemainingRelaysBySafe = () => {
   const chain = useCurrentChain()
   const safeAddress = useSafeAddress()
+  const [isRelayingEnabled] = useRelayingDebugger()
 
   return useAsync(() => {
-    if (!safeAddress || !chain || !hasFeature(chain, FEATURES.RELAYING)) return
+    if (!safeAddress || !chain || !hasFeature(chain, FEATURES.RELAYING) || !isRelayingEnabled) return
 
     return fetchRemainingRelays(chain.chainId, safeAddress)
   }, [chain, safeAddress])
@@ -43,9 +45,10 @@ const getMinimum = (result: number[]) => Math.min(...result)
 
 export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
   const chain = useCurrentChain()
+  const [isRelayingEnabled] = useRelayingDebugger()
 
   return useAsync(async () => {
-    if (!chain || !hasFeature(chain, FEATURES.RELAYING)) return
+    if (!chain || !hasFeature(chain, FEATURES.RELAYING) || !isRelayingEnabled) return
 
     const result = await Promise.all(ownerAddresses.map((address) => fetchRemainingRelays(chain.chainId, address)))
 

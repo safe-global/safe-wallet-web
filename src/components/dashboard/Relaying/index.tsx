@@ -10,6 +10,8 @@ import classnames from 'classnames'
 import css from './styles.module.css'
 import { MAX_HOUR_RELAYS } from '@/components/tx/SponsoredBy'
 
+const RELAYING_HELP_ARTICLE = 'https://help.safe.global/en/articles/7224713-what-is-gas-fee-sponsoring'
+
 const Relaying = () => {
   const [remainingRelays, remainingRelaysError] = useRemainingRelaysBySafe()
 
@@ -38,8 +40,7 @@ const Relaying = () => {
               Benefit from a gasless experience powered by Gelato and Safe. Experience gasless UX for the next month!
             </Typography>
             <Track {...OVERVIEW_EVENTS.RELAYING_HELP_ARTICLE}>
-              {/* TODO: change the href when creating the help article */}
-              <ExternalLink href="#">Read more</ExternalLink>
+              <ExternalLink href={RELAYING_HELP_ARTICLE}>Read more</ExternalLink>
             </Track>
           </Box>
           <Divider />
