@@ -8,7 +8,7 @@ import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { createWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type JsonRpcProvider } from '@ethersproject/providers'
 import { type ConnectedWallet } from '@/services/onboard'
-import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import { getCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
@@ -70,7 +70,7 @@ const useIsValidExecution = (
 
     try {
       const provider = getPatchedSignerProvider(wallet, safe.chainId, readOnlyProvider)
-      const { contract } = getSpecificGnosisSafeContractInstance(safe, provider)
+      const safeContract = getCurrentGnosisSafeContract(safe, provider)
 
       /**
        * We need to call the contract directly instead of using `sdk.isValidTransaction`
@@ -78,7 +78,7 @@ const useIsValidExecution = (
        * @see https://github.com/safe-global/safe-core-sdk/blob/main/packages/safe-ethers-lib/src/contracts/GnosisSafe/GnosisSafeContractEthers.ts#L126
        * This also fixes the over-fetching issue of the monkey patched provider.
        */
-      return contract.callStatic.execTransaction(
+      return safeContract.contract.callStatic.execTransaction(
         safeTx.data.to,
         safeTx.data.value,
         safeTx.data.data,

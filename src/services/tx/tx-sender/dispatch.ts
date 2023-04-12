@@ -10,7 +10,7 @@ import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { waitForRelayedTx } from '@/services/tx/txMonitor'
-import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import { sponsoredCall } from '@/services/tx/sponsoredCall'
 import {
   getAndValidateSafeSDK,
@@ -306,10 +306,10 @@ export const dispatchTxRelay = async (
   txId: string,
   gasLimit?: string | number,
 ) => {
-  const instance = getSpecificGnosisSafeContractInstance(safe)
+  const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(safe)
 
   let transactionToRelay = safeTx
-  const data = instance.encode('execTransaction', [
+  const data = readOnlySafeContract.encode('execTransaction', [
     transactionToRelay.data.to,
     transactionToRelay.data.value,
     transactionToRelay.data.data,

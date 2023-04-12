@@ -1,6 +1,6 @@
 import useAsync from '@/hooks/useAsync'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { getMultiSendCallOnlyContractInstance } from '@/services/contracts/safeContracts'
+import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
@@ -19,6 +19,7 @@ import SponsoredBy from '@/components/tx/SponsoredBy'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import { getSimulationPayload, getSimulation } from '../../TxSimulation/utils'
 import useWallet from '@/hooks/wallets/useWallet'
 import CrossIcon from '@/public/images/transactions/circle-cross-red.svg'
@@ -34,6 +35,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   // Chain has relaying feature and available relays
   const willRelay = !!remainingRelays
   const onboard = useOnboard()
+  const web3 = useWeb3()
 
   const [txsWithDetails, txWithDetailsError, txWithDetailsLoading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -42,9 +44,9 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [data.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
-    if (!chain?.chainId || !safe.version) return
-    return getMultiSendCallOnlyContractInstance(chain.chainId, safe.version)
-  }, [chain?.chainId, safe.version])
+    if (!chain?.chainId || !safe.version || !web3) return
+    return getMultiSendCallOnlyContract(chain.chainId, safe.version, web3)
+  }, [chain?.chainId, safe.version, web3])
 
   const allMultiSendTxs = useMemo(() => {
     if (!txsWithDetails || !chain || !safe.version) return
