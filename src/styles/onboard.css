@@ -78,10 +78,10 @@
   /* onboard theme style for dcent (@web3-onboard/common version 2.3.1 or later) */
   --w3o-background-color: var(--color-background-paper); 
   --w3o-foreground-color: var(--color-background-paper);
-  --w3o-text-color: var(--onboard-black, var(--black));
-  --w3o-border-color: var(--onboard-gray-100, var(--gray-100));
-  --w3o-action-color:  var(--onboard-gray-400, var(--gray-400));
-  --w3o-action-color: var(--color-border-main);
+  --w3o-text-color: var(--onboard-black);
+  --w3o-border-color: var(--onboard-gray-100);
+  --w3o-action-color:  var(--color-primary-main);
+  --account-select-primary-100 : var(--onboard-white);
 }
 
 #walletconnect-qrcode-modal {
