@@ -48,4 +48,8 @@ export const MODALS_EVENTS = {
     action: 'Edit approval',
     category: MODALS_CATEGORY,
   },
+  PROPOSE_TX: {
+    action: 'Propose transaction',
+    category: MODALS_CATEGORY,
+  },
 }

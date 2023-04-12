@@ -1,6 +1,7 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/safe-core-sdk'
 import { type TransactionResult } from '@safe-global/safe-core-sdk-types'
+import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails, postSafeGasEstimation } from '@safe-global/safe-gateway-typescript-sdk'
 import extractTxInfo from '../extractTxInfo'
 import proposeTx from '../proposeTransaction'
@@ -12,10 +13,22 @@ import {
   dispatchTxExecution,
   dispatchTxProposal,
   dispatchTxSigning,
+  dispatchBatchExecutionRelay,
 } from '.'
 import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
-import { Web3Provider } from '@ethersproject/providers'
+import { ethers } from 'ethers'
+import * as safeContracts from '@/services/contracts/safeContracts'
+import type MultiSendCallOnlyEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
+
+const setupFetchStub = (data: any) => (_url: string) => {
+  return Promise.resolve({
+    json: () => Promise.resolve(data),
+    status: 200,
+    ok: true,
+  })
+}
+import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
 
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -40,6 +53,51 @@ jest.mock('../proposeTransaction', () => ({
   __esModule: true,
   default: jest.fn(() => Promise.resolve({ txId: '123' })),
 }))
+
+const mockProvider = {
+  request: jest.fn,
+} as unknown as EIP1193Provider
+
+const mockOnboardState = {
+  chains: [],
+  walletModules: [],
+  wallets: [
+    {
+      label: 'Wallet 1',
+      icon: '',
+      provider: mockProvider,
+      chains: [{ id: '0x5' }],
+      accounts: [
+        {
+          address: '0x1234567890123456789012345678901234567890',
+          ens: null,
+          balance: null,
+        },
+      ],
+    },
+  ] as WalletState[],
+  accountCenter: {
+    enabled: true,
+  },
+} as unknown as AppState
+
+const mockOnboard = {
+  connectWallet: jest.fn(),
+  disconnectWallet: jest.fn(),
+  setChain: jest.fn(),
+  state: {
+    select: (key: keyof AppState) => ({
+      subscribe: (next: any) => {
+        next(mockOnboardState[key])
+
+        return {
+          unsubscribe: jest.fn(),
+        }
+      },
+    }),
+    get: () => mockOnboardState,
+  },
+} as unknown as OnboardAPI
 
 // Mock Safe SDK
 const mockSafeSDK = {
@@ -241,7 +299,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
 
@@ -262,7 +320,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, '1.0.0', '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.0.0', mockOnboard, '5', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -283,7 +341,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, null, '0x345')
+      const signedTx = await dispatchTxSigning(tx, null, mockOnboard, '5', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -306,7 +364,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -332,7 +390,7 @@ describe('txSender', () => {
       let signedTx
 
       try {
-        signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+        signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
       } catch (error) {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -363,7 +421,7 @@ describe('txSender', () => {
       let signedTx
 
       try {
-        signedTx = await dispatchTxSigning(tx, '1.3.0', '0x345')
+        signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
       } catch (error) {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -381,8 +439,6 @@ describe('txSender', () => {
   })
 
   describe('dispatchTxExecution', () => {
-    const mockProvider: Web3Provider = new Web3Provider(jest.fn())
-
     it('should execute a tx', async () => {
       const txId = 'tx_id_123'
 
@@ -393,7 +449,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -413,7 +469,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(safeTx, mockProvider, {}, txId)).rejects.toThrow('error')
+      await expect(dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')).rejects.toThrow('error')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error') })
@@ -437,7 +493,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -466,7 +522,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -498,12 +554,61 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, mockProvider, {}, txId)
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { txId })
       expect(txEvents.txDispatch).not.toHaveBeenCalledWith('FAILED')
+    })
+  })
+
+  describe('dispatchBatchExecutionRelay', () => {
+    it('should relay a batch execution', async () => {
+      const mockMultisendAddress = ethers.utils.hexZeroPad('0x1234', 20)
+
+      const txDetails1 = {
+        txId: 'multisig_0x01',
+      } as TransactionDetails
+
+      const txDetails2 = {
+        txId: 'multisig_0x02',
+      } as TransactionDetails
+
+      const txs = [txDetails1, txDetails2]
+
+      const expectedData = '0xfefe'
+
+      const multisendContractMock = {
+        contract: {
+          interface: {
+            encodeFunctionData: jest.fn(() => expectedData),
+          },
+        } as any,
+        getAddress: () => mockMultisendAddress,
+      } as MultiSendCallOnlyEthersContract
+
+      jest
+        .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')
+        .mockImplementation(() => multisendContractMock as any)
+
+      const mockData = {
+        taskId: '0xdead1',
+      }
+      global.fetch = jest.fn().mockImplementationOnce(setupFetchStub(mockData))
+
+      await dispatchBatchExecutionRelay(txs, multisendContractMock, '0x1234', '5')
+
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('RELAYING', {
+        txId: 'multisig_0x01',
+        groupKey: '0x1234',
+        taskId: '0xdead1',
+      })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('RELAYING', {
+        txId: 'multisig_0x02',
+        groupKey: '0x1234',
+        taskId: '0xdead1',
+      })
     })
   })
 })

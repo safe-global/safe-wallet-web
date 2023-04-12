@@ -14,7 +14,6 @@ import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDet
 import MsgSigners from '@/components/safe-messages/MsgSigners'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignMsgButton from '@/components/safe-messages/SignMsgButton'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { generateSafeMessageMessage } from '@/utils/safe-messages'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
@@ -25,7 +24,6 @@ import CopyButton from '@/components/common/CopyButton'
 
 const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
   const safeMessage = useMemo(() => {
     return generateSafeMessageMessage(msg.message)
@@ -106,7 +104,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
       </div>
       <div className={txDetailsCss.txSigners}>
         <MsgSigners msg={msg} />
-        {wallet && !isWrongChain && !isConfirmed && (
+        {wallet && !isConfirmed && (
           <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
             <SignMsgButton msg={msg} />
           </Box>

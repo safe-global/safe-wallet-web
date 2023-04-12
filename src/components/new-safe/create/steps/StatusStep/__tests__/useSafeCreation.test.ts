@@ -5,6 +5,7 @@ import * as chain from '@/hooks/useChains'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '@/components/new-safe/create/logic'
 import * as contracts from '@/services/contracts/safeContracts'
+import * as txMonitor from '@/services/tx/txMonitor'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -47,13 +48,13 @@ describe('useSafeCreation', () => {
     } as unknown as ChainInfo
 
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
-    jest.spyOn(web3, 'getWeb3').mockImplementation(() => mockProvider)
+    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockProvider)
     jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() => mockChain)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(logic, 'getSafeCreationTxInfo').mockReturnValue(Promise.resolve(mockSafeInfo))
     jest
-      .spyOn(contracts, 'getFallbackHandlerContractInstance')
+      .spyOn(contracts, 'getReadOnlyFallbackHandlerContract')
       .mockReturnValue({ getAddress: () => hexZeroPad('0x123', 20) } as CompatibilityFallbackHandlerEthersContract)
   })
 
@@ -211,6 +212,21 @@ describe('useSafeCreation', () => {
 
     await waitFor(() => {
       expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
+    })
+  })
+
+  it('should set a PROCESSING state and monitor relay taskId after successfully tx relay', async () => {
+    jest.spyOn(logic, 'relaySafeCreation').mockResolvedValue('0x456')
+
+    const txMonitorSpy = jest.spyOn(txMonitor, 'waitForCreateSafeTx').mockImplementation(jest.fn())
+
+    renderHook(() =>
+      useSafeCreation({ ...mockPendingSafe, tx: mockSafeInfo }, mockSetPendingSafe, mockStatus, mockSetStatus, true),
+    )
+
+    await waitFor(() => {
+      expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
+      expect(txMonitorSpy).toHaveBeenCalledWith('0x456', expect.anything())
     })
   })
 })

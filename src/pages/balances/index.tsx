@@ -13,6 +13,8 @@ import HiddenTokenButton from '@/components/balances/HiddenTokenButton'
 import CurrencySelect from '@/components/balances/CurrencySelect'
 import TokenListSelect from '@/components/balances/TokenListSelect'
 
+import css from '@/components/balances/AssetsTable/styles.module.css'
+
 const Balances: NextPage = () => {
   const { error } = useBalances()
   const [showHiddenAssets, setShowHiddenAssets] = useState(false)
@@ -25,14 +27,14 @@ const Balances: NextPage = () => {
       </Head>
 
       <AssetsHeader>
-        <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+        <Box className={css.assetsHeader}>
           <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />
           <TokenListSelect />
           <CurrencySelect />
         </Box>
       </AssetsHeader>
 
-      <main>
+      <main className={css.contentWrapper}>
         {error ? (
           <PagePlaceholder img={<NoAssetsIcon />} text="There was an error loading your assets" />
         ) : (

@@ -1,29 +1,10 @@
 import { Box, DialogContent } from '@mui/material'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import type { UrlObject } from 'url'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import ModalDialog from '@/components/common/ModalDialog'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import { AppRoutes } from '@/config/routes'
-import { SafeAppsTag } from '@/config/constants'
+import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import TxButton, { SendNFTsButton, SendTokensButton } from './TxButton'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
-
-const useTxBuilderApp = (): { app?: SafeAppData; link: UrlObject } => {
-  const [matchingApps] = useRemoteSafeApps(SafeAppsTag.TX_BUILDER)
-  const router = useRouter()
-  const app = matchingApps?.[0]
-
-  return {
-    app,
-    link: {
-      pathname: AppRoutes.apps.open,
-      query: { safe: router.query.safe, appUrl: app?.url },
-    },
-  }
-}
 
 const CreationModal = ({
   open,
@@ -53,7 +34,7 @@ const CreationModal = ({
             <>
               {onNFTModalOpen && <SendNFTsButton onClick={onNFTModalOpen} />}
 
-              {txBuilder.app && shouldShowTxBuilder && (
+              {txBuilder && txBuilder.app && shouldShowTxBuilder && (
                 <Link href={txBuilder.link} passHref>
                   <a style={{ width: '100%' }}>
                     <TxButton
