@@ -13,25 +13,34 @@ import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
 import useOnboard, { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useCurrentChain } from '@/hooks/useChains'
-import { getTxOptions } from '@/utils/transactions'
+import { getTxOptions, hasEnoughSignatures } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
+import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import {
   createTx,
   dispatchOnChainSigning,
   dispatchTxExecution,
   dispatchTxProposal,
+  dispatchTxRelay,
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
 import CheckWallet from '@/components/common/CheckWallet'
 import ExternalLink from '@/components/common/ExternalLink'
 import { getExplorerLink } from '@/utils/gateway'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { WrongChainWarning } from '../WrongChainWarning'
+
+enum ExecutionType {
+  RELAYER = 'Via relayer',
+  CONNECTED_WALLET = 'With connected wallet',
+}
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -58,6 +67,14 @@ const SignOrExecuteForm = ({
   origin,
   ...props
 }: SignOrExecuteProps): ReactElement => {
+  //
+  // Hooks & variables
+  //
+  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
+  const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
+  const [submitError, setSubmitError] = useState<Error | undefined>()
+
   // Hooks
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
@@ -65,15 +82,10 @@ const SignOrExecuteForm = ({
   const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
   const hasPending = useHasPendingTxs()
+  const [remainingRelays] = useRemainingRelaysBySafe()
 
   // Unsupported base contract
   const isUnknown = safe.implementationVersionState === ImplementationVersionState.UNKNOWN
-
-  // Internal state
-  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
-  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
-  const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
-  const [submitError, setSubmitError] = useState<Error | undefined>()
 
   // Check that the transaction is executable
   const isNewExecutableTx = !txId && safe.threshold === 1 && !hasPending
@@ -82,6 +94,12 @@ const SignOrExecuteForm = ({
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
+
+  // SC wallets can relay fully signed transactions
+  const [walletCanRelay] = useWalletCanRelay(tx)
+
+  // The transaction will be executed through relaying
+  const willRelay = willExecute && !!remainingRelays && walletCanRelay
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -156,9 +174,37 @@ const SignOrExecuteForm = ({
     // If no txId was provided, it's an immediate execution of a new tx
     const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
+    trackEvent({ ...MODALS_EVENTS.PROPOSE_TX, label: ExecutionType.CONNECTED_WALLET })
     await dispatchTxExecution(createdTx, txOptions, id, onboard, safe.chainId, safeAddress)
 
     return id
+  }
+
+  const onRelay = async () => {
+    const [, createdTx, onboard] = assertDependencies()
+
+    const { gasLimit } = getTxOptions(advancedParams, currentChain)
+
+    let id = txId
+    let safeTx = createdTx
+    // Add missing signature
+    if (!hasEnoughSignatures(createdTx, safe)) {
+      const signedTransaction = await dispatchTxSigning(createdTx, safe.version, onboard, safe.chainId, txId)
+
+      if (!signedTransaction) {
+        throw new Error('Could not sign transaction')
+      }
+
+      id = await proposeTx(signedTransaction)
+      safeTx = signedTransaction
+    }
+
+    if (!id) {
+      throw new Error('Transaction could not be proposed')
+    }
+
+    trackEvent({ ...MODALS_EVENTS.PROPOSE_TX, label: ExecutionType.RELAYER })
+    dispatchTxRelay(safeTx, safe, id, gasLimit)
   }
 
   // On modal submit
@@ -168,7 +214,7 @@ const SignOrExecuteForm = ({
     setSubmitError(undefined)
 
     try {
-      await (willExecute ? onExecute() : onSign())
+      await (willRelay ? onRelay() : willExecute ? onExecute() : onSign())
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
@@ -224,6 +270,7 @@ const SignOrExecuteForm = ({
           nonceReadonly={nonceReadonly}
           onFormSubmit={onAdvancedSubmit}
           gasLimitError={gasLimitError}
+          willRelay={willRelay}
         />
 
         <TxSimulation

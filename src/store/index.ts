@@ -90,7 +90,7 @@ export const _hydrationReducer: typeof rootReducer = (state, action) => {
 const makeStore = (initialState?: Record<string, any>) => {
   return configureStore({
     reducer: _hydrationReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(middleware),
     devTools: !IS_PRODUCTION,
     preloadedState: initialState,
   })

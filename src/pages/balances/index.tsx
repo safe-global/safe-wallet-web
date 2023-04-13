@@ -13,7 +13,7 @@ import HiddenTokenButton from '@/components/balances/HiddenTokenButton'
 import CurrencySelect from '@/components/balances/CurrencySelect'
 import TokenListSelect from '@/components/balances/TokenListSelect'
 
-import css from './styles.module.css'
+import css from '@/components/balances/AssetsTable/styles.module.css'
 
 const Balances: NextPage = () => {
   const { error } = useBalances()

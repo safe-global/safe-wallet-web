@@ -4,3 +4,8 @@
   gap: var(--space-2);
   font-size: 14px;
 }
+
+.sponsoredFee {
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}

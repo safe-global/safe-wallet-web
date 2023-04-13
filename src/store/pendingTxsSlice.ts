@@ -7,6 +7,7 @@ export enum PendingStatus {
   SIGNING = 'SIGNING',
   SUBMITTING = 'SUBMITTING',
   PROCESSING = 'PROCESSING',
+  RELAYING = 'RELAYING',
   INDEXING = 'INDEXING',
 }
 
@@ -17,6 +18,7 @@ export type PendingTx = {
   txHash?: string
   groupKey?: string
   signerAddress?: string
+  taskId?: string
 }
 
 export type PendingTxsState = {

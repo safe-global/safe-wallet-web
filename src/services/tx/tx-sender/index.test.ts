@@ -1,6 +1,7 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/safe-core-sdk'
 import { type TransactionResult } from '@safe-global/safe-core-sdk-types'
+import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails, postSafeGasEstimation } from '@safe-global/safe-gateway-typescript-sdk'
 import extractTxInfo from '../extractTxInfo'
 import proposeTx from '../proposeTransaction'
@@ -12,9 +13,21 @@ import {
   dispatchTxExecution,
   dispatchTxProposal,
   dispatchTxSigning,
+  dispatchBatchExecutionRelay,
 } from '.'
 import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
+import { ethers } from 'ethers'
+import * as safeContracts from '@/services/contracts/safeContracts'
+import type MultiSendCallOnlyEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
+
+const setupFetchStub = (data: any) => (_url: string) => {
+  return Promise.resolve({
+    json: () => Promise.resolve(data),
+    status: 200,
+    ok: true,
+  })
+}
 import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
 import { hexZeroPad } from 'ethers/lib/utils'
 
@@ -550,6 +563,56 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { txId })
       expect(txEvents.txDispatch).not.toHaveBeenCalledWith('FAILED')
+    })
+  })
+
+  describe('dispatchBatchExecutionRelay', () => {
+    it('should relay a batch execution', async () => {
+      const mockMultisendAddress = ethers.utils.hexZeroPad('0x1234', 20)
+      const safeAddress = hexZeroPad('0x567', 20)
+
+      const txDetails1 = {
+        txId: 'multisig_0x01',
+      } as TransactionDetails
+
+      const txDetails2 = {
+        txId: 'multisig_0x02',
+      } as TransactionDetails
+
+      const txs = [txDetails1, txDetails2]
+
+      const expectedData = '0xfefe'
+
+      const multisendContractMock = {
+        contract: {
+          interface: {
+            encodeFunctionData: jest.fn(() => expectedData),
+          },
+        } as any,
+        getAddress: () => mockMultisendAddress,
+      } as MultiSendCallOnlyEthersContract
+
+      jest
+        .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')
+        .mockImplementation(() => multisendContractMock as any)
+
+      const mockData = {
+        taskId: '0xdead1',
+      }
+      global.fetch = jest.fn().mockImplementationOnce(setupFetchStub(mockData))
+
+      await dispatchBatchExecutionRelay(txs, multisendContractMock, '0x1234', '5', safeAddress)
+
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('RELAYING', {
+        txId: 'multisig_0x01',
+        groupKey: '0x1234',
+        taskId: '0xdead1',
+      })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('RELAYING', {
+        txId: 'multisig_0x02',
+        groupKey: '0x1234',
+        taskId: '0xdead1',
+      })
     })
   })
 })
