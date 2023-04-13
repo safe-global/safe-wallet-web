@@ -15,6 +15,20 @@ type SimulationResultProps = {
   onClose: () => void
 }
 
+const didRevert = (simulation: TenderlySimulation): boolean => {
+  if (!simulation.simulation.status) {
+    return true
+  }
+
+  // Safe emits `ExecutionFailure` when the gas/safeTxGas is too low
+  // but the Tenderly simulation can still succeed
+  const callErrors = simulation.transaction.call_trace.filter((call) => {
+    return call.error
+  })
+
+  return callErrors.length > 0
+}
+
 export const SimulationResult = ({
   simulationRequestStatus,
   simulation,
@@ -31,7 +45,7 @@ export const SimulationResult = ({
   }
 
   // Error
-  if (requestError || !simulation?.simulation.status) {
+  if (requestError || !simulation || didRevert(simulation)) {
     return (
       <Alert severity="error" onClose={onClose} className={css.result}>
         <AlertTitle color="error">
