@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import { Box } from '@mui/material'
 
 import NavTabs from '@/components/common/NavTabs'
 import PageHeader from '@/components/common/PageHeader'
@@ -11,9 +10,9 @@ const SettingsHeader = (): ReactElement => {
     <PageHeader
       title="Settings"
       action={
-        <Box className={css.navWrapper}>
+        <div className={css.navWrapper}>
           <NavTabs tabs={settingsNavItems} />
-        </Box>
+        </div>
       }
     />
   )

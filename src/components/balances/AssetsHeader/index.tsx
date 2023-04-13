@@ -1,4 +1,3 @@
-import { Box } from '@mui/material'
 import type { ReactElement, ReactNode } from 'react'
 
 import NavTabs from '@/components/common/NavTabs'
@@ -12,14 +11,12 @@ const AssetsHeader = ({ children }: { children?: ReactNode }): ReactElement => {
     <PageHeader
       title="Assets"
       action={
-        <>
-          <Box className={css.pageHeader}>
-            <Box className={css.navWrapper}>
-              <NavTabs tabs={balancesNavItems} />
-            </Box>
-            {children && <Box className={css.actionsWrapper}>{children}</Box>}
-          </Box>
-        </>
+        <div className={css.pageHeader}>
+          <div className={css.navWrapper}>
+            <NavTabs tabs={balancesNavItems} />
+          </div>
+          {children && <div className={css.actionsWrapper}>{children}</div>}
+        </div>
       }
     />
   )
