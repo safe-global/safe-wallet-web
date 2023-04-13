@@ -38,11 +38,10 @@ export const SimulationResult = ({
     return null
   }
 
-  const isSuccess = !simulation?.simulation.status
+  const isSuccess = simulation?.simulation.status
 
-  const callTraceErrors = getCallTraceErrors(simulation)
-  // Safe can emit `ExecutionFailure` even though Tenderly simulation succeeds
-  const isCallTraceError = !isSuccess && callTraceErrors.length > 0
+  // Safe can emit failure event even though Tenderly simulation succeeds
+  const isCallTraceError = isSuccess && getCallTraceErrors(simulation).length > 0
 
   // Error
   if (requestError || !isSuccess || isCallTraceError) {
@@ -58,19 +57,16 @@ export const SimulationResult = ({
           </Typography>
         ) : (
           <Typography>
-            The transaction failed during the simulation{' '}
             {isCallTraceError ? (
-              <>
-                with error <b>{callTraceErrors[0].error}</b>.
-              </>
+              <>The transaction failed during the simulation.</>
             ) : (
               <>
-                throwing error <b>{simulation?.transaction.error_message}</b> in the contract at{' '}
+                The transaction failed during the simulation throwing error{' '}
+                <b>{simulation?.transaction.error_message}</b> in the contract at{' '}
                 <b>{simulation?.transaction.error_info?.address}</b>.
               </>
             )}{' '}
-            Full simulation report is available
-            <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
+            Full simulation report is available <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
           </Typography>
         )}
       </Alert>
