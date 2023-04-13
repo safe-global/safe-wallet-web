@@ -15,18 +15,12 @@ type SimulationResultProps = {
   onClose: () => void
 }
 
-const didRevert = (simulation: TenderlySimulation): boolean => {
-  if (!simulation.simulation.status) {
-    return true
+const getCallTraceErrors = (simulation?: TenderlySimulation) => {
+  if (!simulation) {
+    return []
   }
 
-  // Safe emits `ExecutionFailure` when the gas/safeTxGas is too low
-  // but the Tenderly simulation can still succeed
-  const callErrors = simulation.transaction.call_trace.filter((call) => {
-    return call.error
-  })
-
-  return callErrors.length > 0
+  return simulation.transaction.call_trace.filter((call) => call.error)
 }
 
 export const SimulationResult = ({
@@ -44,8 +38,14 @@ export const SimulationResult = ({
     return null
   }
 
+  const callTraceErrors = getCallTraceErrors(simulation)
+  const isCallTraceError = callTraceErrors.length > 0
+
+  // Safe can emit `ExecutionFailure` even though Tenderly simulation succeeds
+  const didRevert = !simulation || !simulation.simulation.status || isCallTraceError
+
   // Error
-  if (requestError || !simulation || didRevert(simulation)) {
+  if (requestError || didRevert) {
     return (
       <Alert severity="error" onClose={onClose} className={css.result}>
         <AlertTitle color="error">
@@ -58,8 +58,18 @@ export const SimulationResult = ({
           </Typography>
         ) : (
           <Typography>
-            The transaction failed during the simulation throwing error <b>{simulation?.transaction.error_message}</b>{' '}
-            in the contract at <b>{simulation?.transaction.error_info?.address}</b>. Full simulation report is available{' '}
+            The transaction failed during the simulation{' '}
+            {isCallTraceError ? (
+              <>
+                with error <b>{callTraceErrors[0].error}</b>.
+              </>
+            ) : (
+              <>
+                throwing error <b>{simulation?.transaction.error_message}</b> in the contract at{' '}
+                <b>{simulation?.transaction.error_info?.address}</b>.
+              </>
+            )}{' '}
+            Full simulation report is available
             <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
           </Typography>
         )}
