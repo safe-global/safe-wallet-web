@@ -87,7 +87,7 @@ const useTxPendingStatuses = (): void => {
           dispatch(
             setPendingTx({
               chainId,
-              safeAddress,
+              safeAddress: 'safeAddress' in detail ? detail.safeAddress : safeAddress,
               txId,
               status,
               txHash: 'txHash' in detail ? detail.txHash : undefined,

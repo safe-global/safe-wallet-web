@@ -16,6 +16,7 @@ import {
 import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
 import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
+import { hexZeroPad } from 'ethers/lib/utils'
 
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -428,6 +429,7 @@ describe('txSender', () => {
   describe('dispatchTxExecution', () => {
     it('should execute a tx', async () => {
       const txId = 'tx_id_123'
+      const safeAddress = hexZeroPad('0x123', 20)
 
       const safeTx = await createTx({
         to: '0x123',
@@ -436,18 +438,19 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5', safeAddress)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', { txId })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { txId, safeAddress })
     })
 
     it('should fail executing a tx', async () => {
       jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() => Promise.reject(new Error('error')))
 
       const txId = 'tx_id_123'
+      const safeAddress = hexZeroPad('0x123', 20)
 
       const safeTx = await createTx({
         to: '0x123',
@@ -456,7 +459,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')).rejects.toThrow('error')
+      await expect(dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5', safeAddress)).rejects.toThrow('error')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error') })
@@ -480,7 +483,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5', '0x123')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -509,7 +512,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5', '0x123')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -541,7 +544,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5')
+      await dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5', '0x123')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })

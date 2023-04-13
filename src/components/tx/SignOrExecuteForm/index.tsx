@@ -156,7 +156,7 @@ const SignOrExecuteForm = ({
     // If no txId was provided, it's an immediate execution of a new tx
     const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
-    await dispatchTxExecution(createdTx, txOptions, id, onboard, safe.chainId)
+    await dispatchTxExecution(createdTx, txOptions, id, onboard, safe.chainId, safeAddress)
 
     return id
   }

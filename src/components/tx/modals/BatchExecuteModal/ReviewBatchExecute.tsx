@@ -53,7 +53,14 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     setSubmitError(undefined)
 
     try {
-      await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, onboard, safe.chainId)
+      await dispatchBatchExecution(
+        txsWithDetails,
+        multiSendContract,
+        multiSendTxData,
+        onboard,
+        safe.chainId,
+        safe.address.value,
+      )
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)

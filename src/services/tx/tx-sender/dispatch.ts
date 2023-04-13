@@ -124,6 +124,7 @@ export const dispatchTxExecution = async (
   txId: string,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
+  safeAddress: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
   const eventParams = { txId }
@@ -147,14 +148,14 @@ export const dispatchTxExecution = async (
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, eventParams)
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
       }
     })
     .catch((err) => {
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams })
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
       } else {
         txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
       }
@@ -169,6 +170,7 @@ export const dispatchBatchExecution = async (
   multiSendTxData: string,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
+  safeAddress: string,
 ) => {
   const groupKey = multiSendTxData
 
@@ -209,6 +211,7 @@ export const dispatchBatchExecution = async (
           txDispatch(TxEvent.PROCESSED, {
             txId,
             groupKey,
+            safeAddress,
           })
         })
       }
@@ -218,7 +221,7 @@ export const dispatchBatchExecution = async (
 
       if (didReprice(error)) {
         txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, { txId })
+          txDispatch(TxEvent.PROCESSED, { txId, safeAddress })
         })
       } else {
         txs.forEach(({ txId }) => {
@@ -239,6 +242,7 @@ export const dispatchSpendingLimitTxExecution = async (
   txOptions: TransactionOptions,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
+  safeAddress: string,
 ) => {
   const id = JSON.stringify(txParams)
 
@@ -276,7 +280,7 @@ export const dispatchSpendingLimitTxExecution = async (
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { groupKey: id, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, { groupKey: id })
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress })
       }
     })
     .catch((error) => {
