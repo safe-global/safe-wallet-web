@@ -54,4 +54,4 @@ enum ErrorCodes {
   _905 = '905: Third party cookies are disabled',
 }
 
-export default ErrorCodes 
+export default ErrorCodes
