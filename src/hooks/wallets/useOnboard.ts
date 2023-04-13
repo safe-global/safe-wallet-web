@@ -55,8 +55,8 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
       chainId: Number(primaryWallet.chains[0].id).toString(10),
       provider: primaryWallet.provider,
     }
-  } catch (error) {
-    console.error(error)
+  } catch (e) {
+    logError(Errors._106, (e as Error).message)
     return null
   }
 }
