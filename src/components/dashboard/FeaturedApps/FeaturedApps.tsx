@@ -16,9 +16,6 @@ const StyledGrid = styled(Grid)`
 
 const StyledGridItem = styled(Grid)`
   min-width: 300px;
-  @media (min-width: 1460px) {
-    min-width: 500px;
-  }
 `
 
 export const FeaturedApps = (): ReactElement | null => {
@@ -34,7 +31,7 @@ export const FeaturedApps = (): ReactElement | null => {
           Connect &amp; transact
         </Typography>
         <WidgetBody>
-          <StyledGrid container>
+          <StyledGrid container flexDirection={{ xs: 'column', sm: 'row', lg: 'column' }}>
             {featuredApps?.map((app) => (
               <StyledGridItem item xs md key={app.id}>
                 <NextLink
