@@ -26,7 +26,7 @@ import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { isSameUrl, trimTrailingSlash } from '@/utils/url'
 import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
-import { getShareSafeAppUrl } from '@/components/safe-apps/SafeAppActionButtons'
+import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -90,7 +90,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
     [safeAppsList],
   )
 
-  const shareSafeAppUrl = getShareSafeAppUrl(router, safeApp?.url || '', currentChain)
+  const shareSafeAppUrl = useShareSafeAppUrl(safeApp?.url || '')
   const isSafeAppValid = isValid && safeApp
   const isCustomAppInTheDefaultList = errors?.appUrl?.type === 'alreadyExists'
 
