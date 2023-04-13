@@ -11,10 +11,14 @@ import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 const StyledGrid = styled(Grid)`
   gap: 24px;
+  height:100%;
 `
 
 const StyledGridItem = styled(Grid)`
   min-width: 300px;
+  @media (min-width: 1460px) {
+    min-width: 500px;
+  }
 `
 
 export const FeaturedApps = (): ReactElement | null => {
@@ -24,7 +28,7 @@ export const FeaturedApps = (): ReactElement | null => {
   if (!featuredApps?.length && !remoteSafeAppsLoading) return null
 
   return (
-    <Grid item xs={12} md>
+    <Grid item xs={12} md style={{ height: '100%'}}>
       <WidgetContainer id="featured-safe-apps">
         <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
           Connect &amp; transact
