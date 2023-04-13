@@ -38,14 +38,14 @@ export const SimulationResult = ({
     return null
   }
 
-  const callTraceErrors = getCallTraceErrors(simulation)
-  const isCallTraceError = callTraceErrors.length > 0
+  const isSuccess = !simulation?.simulation.status
 
+  const callTraceErrors = getCallTraceErrors(simulation)
   // Safe can emit `ExecutionFailure` even though Tenderly simulation succeeds
-  const didRevert = !simulation || !simulation.simulation.status || isCallTraceError
+  const isCallTraceError = !isSuccess && callTraceErrors.length > 0
 
   // Error
-  if (requestError || didRevert) {
+  if (requestError || !isSuccess || isCallTraceError) {
     return (
       <Alert severity="error" onClose={onClose} className={css.result}>
         <AlertTitle color="error">
