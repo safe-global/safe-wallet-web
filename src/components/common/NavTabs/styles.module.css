@@ -12,11 +12,11 @@
 }
 
 .tabs :global .MuiTabScrollButton-root:first-of-type {
-  margin-left: -24px;
+  margin-left: -16px;
 }
 
 .tabs :global .MuiTabScrollButton-root:last-of-type {
-  margin-right: -24px;
+  margin-right: -16px;
 }
 
 .tab {

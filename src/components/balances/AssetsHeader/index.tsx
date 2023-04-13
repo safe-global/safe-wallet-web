@@ -5,15 +5,19 @@ import NavTabs from '@/components/common/NavTabs'
 import PageHeader from '@/components/common/PageHeader'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 
+import css from '@/components/common/PageHeader/styles.module.css'
+
 const AssetsHeader = ({ children }: { children?: ReactNode }): ReactElement => {
   return (
     <PageHeader
       title="Assets"
       action={
         <>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <NavTabs tabs={balancesNavItems} />
-            {children}
+          <Box className={css.pageHeader}>
+            <Box className={css.navWrapper}>
+              <NavTabs tabs={balancesNavItems} />
+            </Box>
+            {children && <Box className={css.actionsWrapper}>{children}</Box>}
           </Box>
         </>
       }

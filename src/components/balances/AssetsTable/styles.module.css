@@ -14,24 +14,9 @@
   gap: var(--space-1);
 }
 
-.assetsHeader {
-  display: flex;
-  gap: var(--space-1);
-  align-items: center;
-}
-
 @media (max-width: 600px) {
   .container td:last-of-type,
   .container th:last-of-type {
     display: none;
-  }
-
-  .assetsHeader {
-    position: absolute;
-    bottom: -56px;
-  }
-
-  .contentWrapper {
-    margin-top: 56px;
   }
 }
