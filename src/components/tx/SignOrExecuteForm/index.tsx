@@ -7,7 +7,6 @@ import useGasLimit from '@/hooks/useGasLimit'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { isSmartContractWallet } from '@/hooks/wallets/wallets'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -22,7 +21,6 @@ import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import {
   createTx,
-  dispatchOnChainSigning,
   dispatchTxExecution,
   dispatchTxProposal,
   dispatchTxRelay,
@@ -149,7 +147,7 @@ const SignOrExecuteForm = ({
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
-    const [connectedWallet, createdTx, onboard] = assertDependencies()
+    const [_connectedWallet, createdTx, onboard] = assertDependencies()
 
     // Smart contract wallets must sign via an on-chain tx
     /*
