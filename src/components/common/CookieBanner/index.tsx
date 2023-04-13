@@ -1,5 +1,5 @@
 import { useEffect, type ReactElement } from 'react'
-import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon } from '@mui/material'
+import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { useForm } from 'react-hook-form'
 
@@ -49,69 +49,73 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
       )}
 
       <form>
-        <Grid container alignItems="center" spacing={4}>
-          <Grid item md={3} />
-
+        <Grid container alignItems="center">
           <Grid item xs>
-            <Typography align="center" mb={5}>
+            <Typography variant="body2" color="background.paper" mb={2}>
               By clicking &quot;Accept all&quot; you agree to the use of the tools listed below and their corresponding{' '}
               <span style={{ whiteSpace: 'nowrap' }}>3rd-party</span> cookies.{' '}
-              <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
+              <ExternalLink href={AppRoutes.cookie} color="background.paper">
+                Cookie policy
+              </ExternalLink>
             </Typography>
 
             <Grid container alignItems="center" gap={4}>
               <Grid item xs={12} sm>
-                <Grid container justifyItems="flex-start" gap={1} pb={2}>
-                  <Grid item width={200}>
-                    <FormControlLabel
-                      control={<Checkbox {...register(CookieType.UPDATES)} id="beamer" />}
-                      label="Beamer"
-                      checked={watch(CookieType.UPDATES)}
-                      sx={{ mt: '-9px' }}
-                    />
-                  </Grid>
-
-                  <Grid item sm xs={12}>
-                    <label htmlFor="beamer">New features and product announcements</label>
-                  </Grid>
-                </Grid>
-
-                <Grid container justifyItems="flex-start" gap={1}>
-                  <Grid item width={200}>
-                    <FormControlLabel
-                      control={<Checkbox {...register(CookieType.ANALYTICS)} id="ga" />}
-                      label="Google Analytics"
-                      checked={watch(CookieType.ANALYTICS)}
-                      sx={{ mt: '-9px' }}
-                    />
-                  </Grid>
-
-                  <Grid item sm xs={12}>
-                    <label htmlFor="ga">
-                      Help us make the app better. We never track your Safe or wallet addresses, or any transaction
-                      data.
-                    </label>
-                  </Grid>
-                </Grid>
+                <Box mb={2}>
+                  <FormControlLabel
+                    control={<Checkbox {...register(CookieType.UPDATES)} id="beamer" />}
+                    label="Beamer"
+                    checked={watch(CookieType.UPDATES)}
+                    sx={{
+                      mt: '-9px',
+                      color: (theme) => theme.palette.background.paper,
+                      '.MuiCheckbox-root': {
+                        color: (theme) => theme.palette.background.paper,
+                      },
+                    }}
+                  />
+                  <br />
+                  <Typography variant="body2" color="background.paper">
+                    New features and product announcements
+                  </Typography>
+                </Box>
+                <Box>
+                  <FormControlLabel
+                    control={<Checkbox {...register(CookieType.ANALYTICS)} id="ga" />}
+                    label="Google Analytics"
+                    checked={watch(CookieType.ANALYTICS)}
+                    sx={{
+                      mt: '-9px',
+                      color: (theme) => theme.palette.background.paper,
+                      '.MuiCheckbox-root': {
+                        color: (theme) => theme.palette.background.paper,
+                      },
+                    }}
+                  />
+                  <br />
+                  <Typography variant="body2" color="background.paper">
+                    Help us make the app better. We never track your Safe or wallet addresses, or any transaction data.
+                  </Typography>
+                </Box>
               </Grid>
             </Grid>
 
             <Grid container alignItems="center" justifyContent="center" mt={4} gap={2}>
               <Grid item>
-                <Button onClick={handleAccept} variant="text" disableElevation>
-                  Accept selection
-                </Button>
+                <Typography color="background.paper">
+                  <Button onClick={handleAccept} variant="text" size="small" color="inherit" disableElevation>
+                    Accept selection
+                  </Button>
+                </Typography>
               </Grid>
 
               <Grid item>
-                <Button onClick={handleAcceptAll} variant="contained" disableElevation sx={{ width: 200 }}>
+                <Button onClick={handleAcceptAll} variant="contained" color="secondary" size="small" disableElevation>
                   Accept all
                 </Button>
               </Grid>
             </Grid>
           </Grid>
-
-          <Grid item md={3} />
         </Grid>
       </form>
     </Paper>
