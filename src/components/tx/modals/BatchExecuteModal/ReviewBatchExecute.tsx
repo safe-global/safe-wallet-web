@@ -88,7 +88,6 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const validMultiSendTxs = useMemo(() => {
     // Simulation failed, return all txs
     if (simulationError) {
-      console.log('error')
       return allMultiSendTxs
     }
 
