@@ -4,7 +4,7 @@ import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
-import { Button, DialogContent, SvgIcon, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, DialogContent, SvgIcon, Typography } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { type SyntheticEvent, useMemo, useState } from 'react'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
@@ -71,7 +71,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
   }, [chain, safe.address.value, safe.version, txsWithDetails])
 
-  const [simulation, , simulationLoading] = useAsync(async () => {
+  const [simulation, simulationError, simulationLoading] = useAsync(async () => {
     if (!wallet?.address || !allMultiSendTxs) return
 
     const simulationPayload = await getSimulationPayload({
@@ -86,9 +86,16 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [wallet?.address, safe.address.value, allMultiSendTxs])
 
   const validMultiSendTxs = useMemo(() => {
+    // Simulation failed, return all txs
+    if (simulationError) {
+      console.log('error')
+      return allMultiSendTxs
+    }
+
     if (!allMultiSendTxs || !simulation) return
+
     return _getValidBatch(allMultiSendTxs, simulation)
-  }, [allMultiSendTxs, simulation])
+  }, [allMultiSendTxs, simulation, simulationError])
 
   const validTxsWithDetails =
     txsWithDetails && validMultiSendTxs ? txsWithDetails.slice(0, validMultiSendTxs.length) : undefined
@@ -131,62 +138,73 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     }
   }
 
-  const submitDisabled = txWithDetailsLoading || simulationLoading || !isSubmittable
+  const isLoading = txWithDetailsLoading || simulationLoading
+  const submitDisabled = isLoading || !isSubmittable
 
   return (
     <div>
       <DialogContent>
         <Typography variant="body2" mb={2}>
-          This transaction batches a total of {data.txs.length} transactions from your queue into a single Ethereum
-          transaction. Please check every included transaction carefully, especially if you have rejection transactions,
-          and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
-          over the execute button.
+          This transaction {isLoading ? 'will batch' : 'batches'} a total of {data.txs.length} transactions from your
+          queue into a single Ethereum transaction. Please check every included transaction carefully, especially if you
+          have rejection transactions, and make sure you want to execute all of them. Included transactions are
+          highlighted in green when you hover over the execute button.
         </Typography>
 
-        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with:" />}
-
-        {multiSendTxData && (
+        {isLoading ? (
+          <Box py={4} textAlign="center">
+            <CircularProgress size={40} />
+          </Box>
+        ) : (
           <>
+            {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with:" />}
+
+            {multiSendTxData && (
+              <>
+                <Typography mt={2} color="primary.light">
+                  Data (hex encoded)
+                </Typography>
+                {generateDataRowValue(multiSendTxData, 'rawData')}
+              </>
+            )}
+
             <Typography mt={2} color="primary.light">
-              Data (hex encoded)
+              Batched transactions:
             </Typography>
-            {generateDataRowValue(multiSendTxData, 'rawData')}
-          </>
-        )}
 
-        <Typography mt={2} color="primary.light">
-          Batched transactions:
-        </Typography>
+            <DecodedTxs txs={validTxsWithDetails} />
 
-        <DecodedTxs txs={validTxsWithDetails} />
+            {invalidTxsWithDetails && invalidTxsWithDetails.length > 0 && (
+              <>
+                <Typography mt={2} color="primary.light" display="flex" alignItems="center">
+                  <SvgIcon component={CrossIcon} inheritViewBox color="border" fontSize="small" sx={{ mr: 0.5 }} />{' '}
+                  Excluded transactions:
+                </Typography>
+                <Typography variant="body2" mb={2}>
+                  The following transactions are excluded from the batch as they will otherwise cause it to fail.
+                </Typography>
+                <DecodedTxs txs={invalidTxsWithDetails} />
+              </>
+            )}
 
-        {invalidTxsWithDetails && invalidTxsWithDetails.length > 0 && (
-          <>
-            <Typography mt={2} color="primary.light" display="flex" alignItems="center">
-              <SvgIcon component={CrossIcon} inheritViewBox color="border" fontSize="small" sx={{ mr: 0.5 }} /> Excluded
-              transactions:
-            </Typography>
-            <Typography variant="body2" mb={2}>
-              The following transactions are excluded from the batch as they will otherwise cause it to fail.
-            </Typography>
-            <DecodedTxs txs={invalidTxsWithDetails} />
-          </>
-        )}
-
-        {willRelay ? (
-          <>
-            <Typography mt={2} mb={1} color="primary.light">
-              Gas fees:
-            </Typography>
-            <SponsoredBy
-              remainingRelays={remainingRelays}
-              tooltip="You can only relay multisend transactions containing
+            {willRelay ? (
+              <>
+                <Typography mt={2} mb={1} color="primary.light">
+                  Gas fees:
+                </Typography>
+                <SponsoredBy
+                  remainingRelays={remainingRelays}
+                  tooltip="You can only relay multisend transactions containing
 executions from the same Safe."
-            />
-          </>
-        ) : null}
+                />
+              </>
+            ) : null}
 
-        {validMultiSendTxs && <TxSimulation canExecute transactions={validMultiSendTxs} disabled={submitDisabled} />}
+            {validMultiSendTxs && (
+              <TxSimulation canExecute transactions={validMultiSendTxs} disabled={submitDisabled} />
+            )}
+          </>
+        )}
 
         <WrongChainWarning />
 
