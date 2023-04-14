@@ -23,6 +23,24 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 import { getSimulationPayload, getSimulation } from '../../TxSimulation/utils'
 import useWallet from '@/hooks/wallets/useWallet'
 import CrossIcon from '@/public/images/transactions/circle-cross-red.svg'
+import type { TenderlySimulation } from '../../TxSimulation/types'
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+
+export const _getValidBatch = (allMultiSendTxs: MetaTransactionData[], simulation: TenderlySimulation) => {
+  const callErrors = simulation.transaction.call_trace.filter((call) => {
+    return call.error
+  })
+
+  if (callErrors.length === 0) {
+    return allMultiSendTxs
+  }
+
+  const firstRevertedTx = allMultiSendTxs.findIndex((tx) => {
+    return callErrors.some((error) => tx.data === error.input)
+  })
+
+  return firstRevertedTx !== -1 ? allMultiSendTxs.slice(0, firstRevertedTx) : allMultiSendTxs
+}
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -68,22 +86,9 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [wallet?.address, safe.address.value, allMultiSendTxs])
 
   const validMultiSendTxs = useMemo(() => {
-    if (!chain || !simulation || !allMultiSendTxs) return
-
-    const callErrors = simulation.transaction.call_trace.filter((call) => {
-      return call.error
-    })
-
-    if (callErrors.length === 0) {
-      return allMultiSendTxs
-    }
-
-    const firstRevertedTx = allMultiSendTxs.findIndex((tx) => {
-      return callErrors.some((error) => tx.data === error.input)
-    })
-
-    return firstRevertedTx ? allMultiSendTxs.slice(0, firstRevertedTx) : allMultiSendTxs
-  }, [allMultiSendTxs, chain, simulation])
+    if (!allMultiSendTxs || !simulation) return
+    return _getValidBatch(allMultiSendTxs, simulation)
+  }, [allMultiSendTxs, simulation])
 
   const validTxsWithDetails =
     txsWithDetails && validMultiSendTxs ? txsWithDetails.slice(0, validMultiSendTxs.length) : undefined
@@ -181,7 +186,7 @@ executions from the same Safe."
           </>
         ) : null}
 
-        {allMultiSendTxs && <TxSimulation canExecute transactions={allMultiSendTxs} disabled={submitDisabled} />}
+        {validMultiSendTxs && <TxSimulation canExecute transactions={validMultiSendTxs} disabled={submitDisabled} />}
 
         <WrongChainWarning />
 
