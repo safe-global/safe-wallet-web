@@ -46,7 +46,7 @@ describe('getConnectedWallet', () => {
     })
   })
 
-  it('Failed to get connected wallet', () => {
+  it('should return null if the address is invalid', () => {
     const wallets = [
       {
         label: 'Wallet 1',
