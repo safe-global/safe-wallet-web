@@ -152,10 +152,10 @@ export const SpendingLimitsTable = ({
           }),
     [isLoading, spendingLimits],
   )
-  return (
+  return spendingLimits.length > 0 ? (
     <>
       <EnhancedTable rows={rows} headCells={headCells} />
       {open && <TxModal onClose={() => setOpen(false)} steps={RemoveSpendingLimitSteps} initialData={[initialData]} />}
     </>
-  )
+  ) : null
 }
