@@ -23,7 +23,8 @@ export const safeAppsSlice = createSlice({
       state[chainId].pinned = pinned
     },
     setSafeApps: (state, { payload }: PayloadAction<SafeAppsState>) => {
-      state = payload
+      // We much return as we are overwriting the entire state
+      return payload
     },
   },
 })
