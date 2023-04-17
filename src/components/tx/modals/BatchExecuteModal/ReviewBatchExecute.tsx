@@ -138,7 +138,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }
 
   const isLoading = txWithDetailsLoading || simulationLoading
-  const submitDisabled = isLoading || !isSubmittable
+  const submitDisabled = isLoading || !isSubmittable || !validMultiSendTxs || validMultiSendTxs.length === 0
 
   return (
     <div>
