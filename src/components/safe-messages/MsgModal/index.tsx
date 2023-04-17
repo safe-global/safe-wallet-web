@@ -1,6 +1,6 @@
 import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } from '@mui/material'
-import { useCallback, useMemo, useState } from 'react'
-import { getSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { getSafeMessage, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
@@ -26,6 +26,7 @@ import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import CloseDialog from '@/components/safe-messages/MsgModal/CloseDialog'
+import Confirmations from '@/components/safe-messages/MsgModal/Confirmations'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -96,6 +97,40 @@ const MsgModal = ({
 
   const isDisabled = !isOwner || hasSigned || !onboard
 
+  const [isPolling, setIsPolling] = useState(false)
+
+  // TODO: move to hook
+  const [ongoingMessage, setOngoingMessage] = useState<Omit<SafeMessage, 'type'>>()
+  const CONFIRMATIONS_POLLING_INTERVAL = 3000
+  useEffect(() => {
+    if (!isPolling) return
+
+    const fetchSafeMessage = async () => {
+      try {
+        const message = await getSafeMessage(safe.chainId, safeMessageHash)
+        setOngoingMessage(message)
+
+        if (message.confirmationsSubmitted === message.confirmationsRequired) {
+          setIsPolling(false)
+          clearInterval(intervalId)
+        }
+
+        console.log('message', message)
+      } catch (e) {
+        // TODO: write a logError
+        console.error(e)
+      }
+    }
+
+    fetchSafeMessage()
+
+    const intervalId = setInterval(() => {
+      fetchSafeMessage()
+    }, CONFIRMATIONS_POLLING_INTERVAL)
+
+    return () => clearInterval(intervalId)
+  }, [isPolling, safe.chainId, safeMessageHash])
+
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
     if (!onboard) {
@@ -105,18 +140,22 @@ const MsgModal = ({
     setSubmitError(undefined)
 
     try {
+      // If you are connected through WC
       if (requestId && !alreadyProposedMessage) {
         await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, requestId, safeAppId })
+        setIsPolling(true)
       } else {
         await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage, requestId })
       }
 
-      onClose()
+      if (ongoingMessage && ongoingMessage?.confirmationsSubmitted === ongoingMessage?.confirmationsRequired - 1) {
+        // TODO: send the fully signed message
+        onClose()
+      }
     } catch (e) {
       setSubmitError(e as Error)
     }
-  }, [alreadyProposedMessage, decodedMessage, onClose, requestId, safe, safeAppId, onboard])
-
+  }, [alreadyProposedMessage, decodedMessage, onClose, requestId, safe, safeAppId, onboard, ongoingMessage])
 
   const handleClose = () => {
     if (!alreadyProposedMessage || alreadyProposedMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION) {
@@ -164,18 +203,7 @@ const MsgModal = ({
               />
             </Typography>
             <DecodedMsg message={decodedMessage} isInModal />
-            <Box
-              mt={2}
-              sx={{
-                padding: '8px',
-                border: '1px solid',
-                borderColor: alreadyProposedMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION ? 'red' : 'green',
-              }}
-            >
-              {alreadyProposedMessage?.confirmations.map(({ owner }) => (
-                <EthHashInfo address={owner.value} key={owner.value} />
-              ))}
-            </Box>
+            <Confirmations message={ongoingMessage || alreadyProposedMessage} threshold={safe.threshold} />
             <Typography fontWeight={700} mt={2}>
               SafeMessage:
             </Typography>
