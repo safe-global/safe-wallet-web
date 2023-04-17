@@ -9,7 +9,7 @@ import { formatError } from '@/utils/formatters'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import useSafeMessages from '@/hooks/useSafeMessages'
 import { selectPendingSafeMessages } from '@/store/pendingSafeMessagesSlice'
-import useIsGranted from '@/hooks/useIsGranted'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { AppRoutes } from '@/config/routes'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -76,7 +76,7 @@ const useSafeMessageNotifications = () => {
   const { page } = useSafeMessages()
   const pendingMsgs = useAppSelector(selectPendingSafeMessages)
   const wallet = useWallet()
-  const isGranted = useIsGranted()
+  const isOwner = useIsSafeOwner()
   const notifications = useAppSelector(selectNotifications)
   const chain = useCurrentChain()
   const safeAddress = useSafeAddress()
@@ -90,7 +90,7 @@ const useSafeMessageNotifications = () => {
   }, [page?.results, pendingMsgs, wallet?.address])
 
   useEffect(() => {
-    if (!isGranted || msgsNeedingConfirmation.length === 0) {
+    if (!isOwner || msgsNeedingConfirmation.length === 0) {
       return
     }
 
@@ -110,7 +110,7 @@ const useSafeMessageNotifications = () => {
         }),
       )
     }
-  }, [dispatch, isGranted, notifications, msgsNeedingConfirmation, chain?.shortName, safeAddress])
+  }, [dispatch, isOwner, notifications, msgsNeedingConfirmation, chain?.shortName, safeAddress])
 }
 
 export default useSafeMessageNotifications

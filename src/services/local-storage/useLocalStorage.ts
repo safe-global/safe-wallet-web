@@ -6,7 +6,7 @@ import local from './local'
 // Mimics the behavior of useState
 type Undefinable<T> = T | undefined
 
-type Setter<T> = (val: T | ((prevVal: Undefinable<T>) => Undefinable<T>)) => void
+export type Setter<T> = (val: T | ((prevVal: Undefinable<T>) => Undefinable<T>)) => void
 
 // External stores for each localStorage key which act as a shared cache for LS
 const externalStores: Record<string, ExternalStore<any>> = {}

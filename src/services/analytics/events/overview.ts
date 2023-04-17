@@ -84,4 +84,8 @@ export const OVERVIEW_EVENTS = {
     action: 'Import data from sidebar',
     category: OVERVIEW_CATEGORY,
   },
+  RELAYING_HELP_ARTICLE: {
+    action: 'Open relaying help article',
+    category: OVERVIEW_CATEGORY,
+  },
 }

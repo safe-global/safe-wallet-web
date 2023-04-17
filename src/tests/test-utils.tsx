@@ -6,6 +6,10 @@ import type { Theme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material/styles'
 import { SafeThemeProvider } from '@safe-global/safe-react-components'
 import type { RootState } from '@/store'
+import * as web3 from '@/hooks/wallets/web3'
+import { defaultAbiCoder } from 'ethers/lib/utils'
+import { ethers } from 'ethers'
+import type { Web3Provider } from '@ethersproject/providers'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',
@@ -17,6 +21,7 @@ const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
     off: jest.fn(),
     emit: jest.fn(),
   },
+
   isFallback: false,
   isLocaleDomain: true,
   isPreview: true,
@@ -75,9 +80,56 @@ function customRenderHook<Result, Props>(
   return renderHook(render, { wrapper, ...options })
 }
 
+type MockCallImplementation = {
+  signature: string
+  returnType: string
+  returnValue: unknown
+}
+
+/**
+ * Creates a getWeb3 spy which returns a Web3Provider with a mocked `call` and `resolveName` function.
+ *
+ * @param callImplementations list of supported function calls and the mocked return value. i.e.
+ * ```
+ * [{
+ *   signature: "balanceOf(address)",
+ *   returnType: "uint256",
+ *   returnValue: "200"
+ * }]
+ * ```
+ * @param resolveName mock ens resolveName implementation
+ * @returns web3provider jest spy
+ */
+const mockWeb3Provider = (
+  callImplementations: MockCallImplementation[],
+  resolveName?: (name: string) => string,
+): jest.SpyInstance<any, unknown[]> => {
+  return jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+    () =>
+      ({
+        call: (tx: { data: string; to: string }) => {
+          {
+            const matchedImplementation = callImplementations.find((implementation) => {
+              return tx.data.startsWith(ethers.utils.id(implementation.signature).slice(0, 10))
+            })
+
+            if (!matchedImplementation) {
+              throw new Error(`No matcher for call data: ${tx.data}`)
+            }
+
+            return defaultAbiCoder.encode([matchedImplementation.returnType], [matchedImplementation.returnValue])
+          }
+        },
+        _isProvider: true,
+        resolveName: resolveName,
+      } as unknown as Web3Provider),
+  )
+}
+
 // re-export everything
 export * from '@testing-library/react'
 
 // override render method
 export { customRender as render }
 export { customRenderHook as renderHook }
+export { mockWeb3Provider }

@@ -1,6 +1,5 @@
 import useAsync from '@/hooks/useAsync'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import useTxSender from '@/hooks/useTxSender'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { Typography } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
@@ -8,12 +7,12 @@ import type { RemoveModuleData } from '@/components/settings/SafeModules/RemoveM
 import { useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
+import { createRemoveModuleTx } from '@/services/tx/tx-sender'
 
 export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData; onSubmit: () => void }) => {
-  const { createRemoveModuleTx } = useTxSender()
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     return createRemoveModuleTx(data.address)
-  }, [data.address, createRemoveModuleTx])
+  }, [data.address])
 
   useEffect(() => {
     if (safeTxError) {

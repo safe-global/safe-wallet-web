@@ -1,33 +1,22 @@
 import type { ReactElement } from 'react'
 import { useCallback } from 'react'
 import { Box, Button } from '@mui/material'
-import { hexValue } from 'ethers/lib/utils'
 import { useCurrentChain } from '@/hooks/useChains'
-import useOnboard, { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
+import useOnboard from '@/hooks/wallets/useOnboard'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import css from './styles.module.css'
-import { isHardwareWallet } from '@/hooks/wallets/wallets'
+import { switchWalletChain } from '@/services/tx/tx-sender/sdk'
 
 const ChainSwitcher = ({ fullWidth }: { fullWidth?: boolean }): ReactElement | null => {
   const chain = useCurrentChain()
   const onboard = useOnboard()
   const isWrongChain = useIsWrongChain()
 
-  const handleChainSwitch = useCallback(() => {
-    if (!chain) return
-    const chainId = hexValue(parseInt(chain.chainId))
+  const handleChainSwitch = useCallback(async () => {
+    if (!onboard || !chain) return
 
-    const wallets = onboard?.state.get()?.wallets || []
-    const wallet = getConnectedWallet(wallets)
-
-    if (wallet && isHardwareWallet(wallet)) {
-      onboard?.disconnectWallet({ label: wallet.label }).then(() => {
-        connectWallet(onboard, { autoSelect: wallet.label })
-      })
-    } else {
-      onboard?.setChain({ chainId })
-    }
-  }, [onboard, chain])
+    await switchWalletChain(onboard, chain.chainId)
+  }, [chain, onboard])
 
   if (!isWrongChain) return null
 

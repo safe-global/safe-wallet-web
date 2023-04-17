@@ -67,7 +67,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
         <NotificationCenter />
       </div>
 
-      <div className={css.element}>
+      <div className={classnames(css.element, css.connectWallet)}>
         <ConnectWallet />
       </div>
 

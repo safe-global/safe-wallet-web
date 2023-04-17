@@ -1,0 +1,9 @@
+.accordionSponsored {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.sponsoredFee {
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}

@@ -16,6 +16,7 @@ const setupFetchStub =
     })
   }
 
+// TODO: use mockWeb3Provider()
 describe('useSafeTokenAllocation', () => {
   afterEach(() => {
     //@ts-ignore
@@ -74,7 +75,6 @@ describe('useSafeTokenAllocation', () => {
   test('return 0 if no allocations / balances exist', async () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub('', 404))
     const mockFetch = jest.spyOn(global, 'fetch')
-
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
       () =>
         ({

@@ -13,6 +13,7 @@ export type Notification = {
   isDismissed?: boolean
   isRead?: boolean
   link?: { href: LinkProps['href']; title: string }
+  onClose?: () => void
 }
 
 export type NotificationState = Notification[]
