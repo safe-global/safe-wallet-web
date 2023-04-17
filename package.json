@@ -84,7 +84,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^13.1.1",
-    "@openzeppelin/contracts": "^4.8.2",
+    "@openzeppelin/contracts": "^4.8.3",
     "@safe-global/safe-core-sdk-types": "^1.9.0",
     "@sentry/types": "^7.28.1",
     "@svgr/webpack": "^6.3.1",
