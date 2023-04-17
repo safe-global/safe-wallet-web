@@ -9,7 +9,7 @@ import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 const TxShareLink = ({ id }: { id: string }): ReactElement => {
   const router = useRouter()
   const { safe = '' } = router.query
-  const href = `/${safe}${AppRoutes.transactions.tx}?id=${id}`
+  const href = `${AppRoutes.transactions.tx}?safe=${safe}&id=${id}`
 
   const onClick = (e: MouseEvent) => {
     if (!e.ctrlKey && !e.metaKey) {
