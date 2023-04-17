@@ -18,7 +18,7 @@ export const _getRedirectUrl = (location: Location): string | undefined => {
       const isStaticPath = Object.values(AppRoutes.transactions).some((route) => route === newPath)
       if (!isStaticPath) {
         const txId = newPath.match(/\/transactions\/([^/]+)/)?.[1]
-        newPath = '/transactions/tx'
+        newPath = AppRoutes.transactions.tx
         newSearch = `${newSearch}&id=${txId}`
       }
     }
