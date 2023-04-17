@@ -20,8 +20,8 @@
 }
 
 .menuButton,
-.logo {
-  flex: 1;
+.logo,
+.safeSwitcher {
   border: none;
   align-items: flex-start;
 }
@@ -34,6 +34,10 @@
 
 .menuButton {
   display: none;
+}
+
+.safeSwitcher {
+  flex: 1;
 }
 
 .networkSelector {

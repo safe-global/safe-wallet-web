@@ -15,6 +15,7 @@ import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/images/logo.svg'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import SafeSwitcher from '../SafeSwitcher'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -51,6 +52,10 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
             <SafeLogo alt="Safe logo" />
           </a>
         </Link>
+      </div>
+
+      <div className={css.safeSwitcher}>
+        <SafeSwitcher />
       </div>
 
       <div className={classnames(css.element, css.hideMobile)}>
