@@ -25,6 +25,7 @@ import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import CloseDialog from '@/components/safe-messages/MsgModal/CloseDialog'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -58,6 +59,8 @@ const MsgModal = ({
 }: ProposeProps | ConfirmProps): ReactElement => {
   // Hooks & variables
   const [submitError, setSubmitError] = useState<Error | undefined>()
+
+  const [closeDialogOpen, setCloseDialogOpen] = useState(false)
 
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
@@ -114,82 +117,104 @@ const MsgModal = ({
     }
   }, [alreadyProposedMessage, decodedMessage, onClose, requestId, safe, safeAppId, onboard])
 
+
+  const handleClose = () => {
+    if (!alreadyProposedMessage || alreadyProposedMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION) {
+      setCloseDialogOpen(true)
+    }
+  }
+
   return (
-    <ModalDialog open onClose={onClose} maxWidth="sm" fullWidth>
-      <div className={txStepperCss.container}>
-        <ModalDialogTitle onClose={onClose}>
-          <Grid container px={1} alignItems="center" gap={2}>
-            <Grid item>
-              <Box display="flex" alignItems="center">
-                <SafeAppIconCard
-                  src={logoUri || APP_LOGO_FALLBACK_IMAGE}
-                  alt={name || 'An icon of an application'}
-                  width={24}
-                  height={24}
-                />
-                <Typography variant="h4" pl={1}>
-                  {name || APP_NAME_FALLBACK}
-                </Typography>
-              </Box>
+    <>
+      <CloseDialog isOpen={closeDialogOpen} onClose={() => setCloseDialogOpen(false)} onConfirm={onClose} />
+      <ModalDialog open onClose={handleClose} maxWidth="sm" fullWidth>
+        <div className={txStepperCss.container}>
+          <ModalDialogTitle onClose={handleClose}>
+            <Grid container px={1} alignItems="center" gap={2}>
+              <Grid item>
+                <Box display="flex" alignItems="center">
+                  <SafeAppIconCard
+                    src={logoUri || APP_LOGO_FALLBACK_IMAGE}
+                    alt={name || 'An icon of an application'}
+                    width={24}
+                    height={24}
+                  />
+                  <Typography variant="h4" pl={1}>
+                    {name || APP_NAME_FALLBACK}
+                  </Typography>
+                </Box>
+              </Grid>
             </Grid>
-          </Grid>
-        </ModalDialogTitle>
+          </ModalDialogTitle>
 
-        <DialogContent>
-          <Box textAlign="center" mt={4} mb={2}>
-            <SvgIcon component={RequiredIcon} viewBox="0 0 32 32" fontSize="large" />
-          </Box>
-          <Typography variant="h4" textAlign="center" gutterBottom>
-            Confirm message
-          </Typography>
-          <Typography variant="body1" textAlign="center" mb={2}>
-            This action will confirm the message and add your confirmation to the prepared signature.
-          </Typography>
-          <Typography fontWeight={700} mb={1}>
-            Message:{' '}
-            <CopyButton
-              text={typeof decodedMessage === 'string' ? decodedMessage : JSON.stringify(decodedMessage, null, 2)}
-            />
-          </Typography>
-          <DecodedMsg message={decodedMessage} isInModal />
-          <Typography fontWeight={700} mt={2}>
-            SafeMessage:
-          </Typography>
-          <Typography variant="body2">
-            <EthHashInfo address={safeMessageMessage} showAvatar={false} shortAddress={false} showCopyButton />
-          </Typography>
+          <DialogContent>
+            <Box textAlign="center" mt={4} mb={2}>
+              <SvgIcon component={RequiredIcon} viewBox="0 0 32 32" fontSize="large" />
+            </Box>
+            <Typography variant="h4" textAlign="center" gutterBottom>
+              Confirm message
+            </Typography>
+            <Typography variant="body1" textAlign="center" mb={2}>
+              This action will confirm the message and add your confirmation to the prepared signature.
+            </Typography>
+            <Typography fontWeight={700} mb={1}>
+              Message:{' '}
+              <CopyButton
+                text={typeof decodedMessage === 'string' ? decodedMessage : JSON.stringify(decodedMessage, null, 2)}
+              />
+            </Typography>
+            <DecodedMsg message={decodedMessage} isInModal />
+            <Box
+              mt={2}
+              sx={{
+                padding: '8px',
+                border: '1px solid',
+                borderColor: alreadyProposedMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION ? 'red' : 'green',
+              }}
+            >
+              {alreadyProposedMessage?.confirmations.map(({ owner }) => (
+                <EthHashInfo address={owner.value} key={owner.value} />
+              ))}
+            </Box>
+            <Typography fontWeight={700} mt={2}>
+              SafeMessage:
+            </Typography>
+            <Typography variant="body2">
+              <EthHashInfo address={safeMessageMessage} showAvatar={false} shortAddress={false} showCopyButton />
+            </Typography>
 
-          <Typography fontWeight={700} mt={2}>
-            SafeMessage hash:
-          </Typography>
-          <Typography variant="body2">
-            <EthHashInfo address={safeMessageHash} showAvatar={false} shortAddress={false} showCopyButton />
-          </Typography>
+            <Typography fontWeight={700} mt={2}>
+              SafeMessage hash:
+            </Typography>
+            <Typography variant="body2">
+              <EthHashInfo address={safeMessageHash} showAvatar={false} shortAddress={false} showCopyButton />
+            </Typography>
 
-          {/* Warning message and switch button */}
-          <WrongChainWarning />
+            {/* Warning message and switch button */}
+            <WrongChainWarning />
 
-          {!wallet || !onboard ? (
-            <ErrorMessage>No wallet is connected.</ErrorMessage>
-          ) : !isOwner ? (
-            <ErrorMessage>
-              You are currently not an owner of this Safe and won&apos;t be able to confirm this message.
-            </ErrorMessage>
-          ) : hasSigned ? (
-            <ErrorMessage>Your connected wallet has already signed this message.</ErrorMessage>
-          ) : submitError ? (
-            <ErrorMessage error={submitError}>Error confirming the message. Please try again.</ErrorMessage>
-          ) : null}
-        </DialogContent>
+            {!wallet || !onboard ? (
+              <ErrorMessage>No wallet is connected.</ErrorMessage>
+            ) : !isOwner ? (
+              <ErrorMessage>
+                You are currently not an owner of this Safe and won&apos;t be able to confirm this message.
+              </ErrorMessage>
+            ) : hasSigned ? (
+              <ErrorMessage>Your connected wallet has already signed this message.</ErrorMessage>
+            ) : submitError ? (
+              <ErrorMessage error={submitError}>Error confirming the message. Please try again.</ErrorMessage>
+            ) : null}
+          </DialogContent>
 
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button color="inherit" onClick={onSign} disabled={isDisabled}>
-            Sign
-          </Button>
-        </DialogActions>
-      </div>
-    </ModalDialog>
+          <DialogActions>
+            <Button onClick={onClose}>Cancel</Button>
+            <Button color="inherit" onClick={onSign} disabled={isDisabled}>
+              Sign
+            </Button>
+          </DialogActions>
+        </div>
+      </ModalDialog>
+    </>
   )
 }
 
