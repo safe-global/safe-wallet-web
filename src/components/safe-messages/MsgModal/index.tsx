@@ -15,10 +15,8 @@ import { generateSafeMessageHash, generateSafeMessageMessage } from '@/utils/saf
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeMessages from '@/hooks/useSafeMessages'
-import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import useOnboard from '@/hooks/wallets/useOnboard'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
@@ -27,6 +25,7 @@ import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import CloseDialog from '@/components/safe-messages/MsgModal/CloseDialog'
 import Confirmations from '@/components/safe-messages/MsgModal/Confirmations'
+import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -84,52 +83,50 @@ const MsgModal = ({
     return messageHash ?? generateSafeMessageHash(safe, decodedMessage)
   }, [messageHash, safe, decodedMessage])
 
-  // Get already proposed message
-  const [alreadyProposedMessage] = useAsync<SafeMessage | Omit<SafeMessage, 'type'>>(() => {
-    const localMessage = messages.page?.results
-      .filter(isSafeMessageListItem)
-      .find((message) => message.messageHash === messageHash)
-
-    return localMessage ? Promise.resolve(localMessage) : getSafeMessage(safe.chainId, safeMessageHash)
-  }, [safe.chainId, messageHash, safeMessageHash])
-
-  const hasSigned = !!alreadyProposedMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
-
-  const isDisabled = !isOwner || hasSigned || !onboard
-
   const [isPolling, setIsPolling] = useState(false)
 
   // TODO: move to hook
   const [ongoingMessage, setOngoingMessage] = useState<Omit<SafeMessage, 'type'>>()
   const CONFIRMATIONS_POLLING_INTERVAL = 3000
   useEffect(() => {
-    if (!isPolling) return
-
     const fetchSafeMessage = async () => {
       try {
         const message = await getSafeMessage(safe.chainId, safeMessageHash)
         setOngoingMessage(message)
 
-        if (message.confirmationsSubmitted === message.confirmationsRequired) {
+        if (message.confirmationsSubmitted === message.confirmationsRequired && message.preparedSignature) {
           setIsPolling(false)
           clearInterval(intervalId)
+          safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, {
+            messageHash: safeMessageHash,
+            requestId,
+            signature: message.preparedSignature,
+          })
+          onClose()
         }
-
-        console.log('message', message)
       } catch (e) {
-        // TODO: write a logError
         console.error(e)
       }
     }
 
-    fetchSafeMessage()
+    // Inititally load message
+    if (!ongoingMessage) {
+      fetchSafeMessage()
+    }
 
+    if (!isPolling) return
+
+    // Start polling
     const intervalId = setInterval(() => {
       fetchSafeMessage()
     }, CONFIRMATIONS_POLLING_INTERVAL)
 
     return () => clearInterval(intervalId)
-  }, [isPolling, safe.chainId, safeMessageHash])
+  }, [isPolling, onClose, ongoingMessage, requestId, safe.chainId, safeMessageHash])
+
+  const hasSigned = !!ongoingMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
+
+  const isDisabled = !isOwner || hasSigned || !onboard
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
@@ -141,24 +138,19 @@ const MsgModal = ({
 
     try {
       // If you are connected through WC
-      if (requestId && !alreadyProposedMessage) {
+      if (requestId && !ongoingMessage) {
         await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, requestId, safeAppId })
         setIsPolling(true)
       } else {
         await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage, requestId })
       }
-
-      if (ongoingMessage && ongoingMessage?.confirmationsSubmitted === ongoingMessage?.confirmationsRequired - 1) {
-        // TODO: send the fully signed message
-        onClose()
-      }
     } catch (e) {
       setSubmitError(e as Error)
     }
-  }, [alreadyProposedMessage, decodedMessage, onClose, requestId, safe, safeAppId, onboard, ongoingMessage])
+  }, [decodedMessage, requestId, safe, safeAppId, onboard, ongoingMessage])
 
   const handleClose = () => {
-    if (!alreadyProposedMessage || alreadyProposedMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION) {
+    if (!ongoingMessage || ongoingMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION) {
       setCloseDialogOpen(true)
     }
   }
@@ -203,7 +195,7 @@ const MsgModal = ({
               />
             </Typography>
             <DecodedMsg message={decodedMessage} isInModal />
-            <Confirmations message={ongoingMessage || alreadyProposedMessage} threshold={safe.threshold} />
+            <Confirmations message={ongoingMessage} threshold={safe.threshold} />
             <Typography fontWeight={700} mt={2}>
               SafeMessage:
             </Typography>

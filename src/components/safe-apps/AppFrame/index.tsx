@@ -204,8 +204,9 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   }, [appName, chainId, closeSignMessageModal, closeTxModal, communicator, signMessageModalState, txModalState])
 
   useEffect(() => {
-    const unsubFns = [SafeMsgEvent.PROPOSE, SafeMsgEvent.CONFIRM_PROPOSE].map((event) => {
+    const unsubFns = [SafeMsgEvent.SIGNATURE_PREPARED].map((event) => {
       return safeMsgSubscribe(event, (details) => {
+        console.log('Signature is prepared', details)
         const requestId = 'requestId' in details ? details.requestId : undefined
         const signature = 'signature' in details ? details.signature : undefined
         if (signMessageModalState.requestId === requestId) {

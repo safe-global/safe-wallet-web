@@ -68,7 +68,7 @@ describe('useSafeMessagePendingStatuses', () => {
   it('should unset a message as pending when it is fully confirmed', () => {
     renderHook(() => useSafeMessagePendingStatuses())
 
-    safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, { messageHash: '0x678' })
+    safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, { messageHash: '0x678', requestId: 'test-id', signature: '0x456' })
 
     expect(clearPendingSafeMessage).toHaveBeenCalledWith('0x678')
     expect(setPendingSafeMessage).not.toHaveBeenCalled()

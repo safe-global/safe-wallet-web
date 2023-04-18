@@ -53,7 +53,6 @@ export const dispatchSafeMsgProposal = async ({
   safeMsgDispatch(SafeMsgEvent.PROPOSE, {
     messageHash,
     requestId,
-    signature: safe.threshold === 1 ? signature : undefined,
   })
 }
 
