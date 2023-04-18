@@ -1,16 +1,11 @@
-import { useRouter } from 'next/router'
-import { resolveHref } from 'next/dist/shared/lib/router/router'
-import type { UrlObject } from 'url'
-import type { ChainInfo, SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import type { NextRouter } from 'next/router'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import SvgIcon from '@mui/material/SvgIcon'
 
-import { AppRoutes } from '@/config/routes'
+import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
-import { useCurrentChain } from '@/hooks/useChains'
 import CopyButton from '@/components/common/CopyButton'
 import ShareIcon from '@/public/images/common/share.svg'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
@@ -30,11 +25,8 @@ const SafeAppActionButtons = ({
   onBookmarkSafeApp,
   removeCustomApp,
 }: SafeAppActionButtonsProps) => {
-  const router = useRouter()
-  const currentChain = useCurrentChain()
-
   const isCustomApp = safeApp.id < 1
-  const shareSafeAppUrl = getShareSafeAppUrl(router, safeApp.url, currentChain)
+  const shareSafeAppUrl = useShareSafeAppUrl(safeApp.url)
 
   const handleCopyShareSafeAppUrl = () => {
     const appName = isCustomApp ? safeApp.url : safeApp.name
@@ -93,14 +85,3 @@ const SafeAppActionButtons = ({
 }
 
 export default SafeAppActionButtons
-
-export const getShareSafeAppUrl = (router: NextRouter, appUrl: string, currentChain?: ChainInfo) => {
-  const shareUrlObj: UrlObject = {
-    protocol: typeof window !== 'undefined' ? window.location.protocol : '',
-    host: typeof window !== 'undefined' ? window.location.host : '',
-    pathname: AppRoutes.share.safeApp,
-    query: { appUrl, chain: currentChain?.shortName },
-  }
-
-  return resolveHref(router, shareUrlObj)
-}

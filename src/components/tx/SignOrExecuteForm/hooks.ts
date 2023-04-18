@@ -15,6 +15,7 @@ import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import type { ConnectedWallet } from '@/services/onboard'
 import type { OnboardAPI } from '@web3-onboard/core'
+import { hasEnoughSignatures } from '@/utils/transactions'
 
 type TxActions = {
   signTx: (safeTx?: SafeTransaction, txId?: string) => Promise<string>
@@ -85,9 +86,14 @@ export const useTxActions = (): TxActions => {
       const id = txId || (await proposeTx(wallet.address, safeTx, txId, origin))
 
       if (isRelayed) {
-        await dispatchTxRelay(safeTx, safe, id, txOptions.gasLimit)
+        // Relayed transactions must be fully signed, so request a final signature if needed
+        let signedTx = safeTx
+        if (!hasEnoughSignatures(safeTx, safe)) {
+          signedTx = await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
+        }
+        await dispatchTxRelay(signedTx, safe, id, txOptions.gasLimit)
       } else {
-        await dispatchTxExecution(safeTx, txOptions, id, onboard, chainId)
+        await dispatchTxExecution(safeTx, txOptions, id, onboard, chainId, safeAddress)
       }
 
       return id

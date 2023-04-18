@@ -9,8 +9,8 @@ import type { JsonRpcProvider } from '@ethersproject/providers'
 import { getSpendingLimitContract, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import type { AddressEx, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { sameAddress } from '@/utils/addresses'
-import { ERC20__factory } from '@/types/contracts'
-import type { AllowanceModule } from '@/types/contracts'
+import { type AllowanceModule, ERC20__factory } from '@/types/contracts'
+import { getERC20TokenInfoOnChain } from '@/utils/tokens'
 
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import { useAppSelector } from '@/store'
@@ -59,7 +59,7 @@ export const getTokenAllowanceForDelegate = async (
   return {
     beneficiary: delegate,
     token: getTokenInfoFromBalances(tokenInfoFromBalances, token) ||
-      (await getTokenInfoOnChain(token)) || { ...DEFAULT_TOKEN_INFO, address: token },
+      (await getERC20TokenInfoOnChain(token)) || { ...DEFAULT_TOKEN_INFO, address: token },
     amount: amount.toString(),
     spent: spent.toString(),
     resetTimeMin: resetTimeMin.toString(),

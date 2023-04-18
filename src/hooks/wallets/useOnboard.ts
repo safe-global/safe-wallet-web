@@ -46,12 +46,18 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   const account = primaryWallet?.accounts[0]
   if (!account) return null
 
-  return {
-    label: primaryWallet.label,
-    address: getAddress(account.address),
-    ens: account.ens?.name,
-    chainId: Number(primaryWallet.chains[0].id).toString(10),
-    provider: primaryWallet.provider,
+  try {
+    const address = getAddress(account.address)
+    return {
+      label: primaryWallet.label,
+      address,
+      ens: account.ens?.name,
+      chainId: Number(primaryWallet.chains[0].id).toString(10),
+      provider: primaryWallet.provider,
+    }
+  } catch (e) {
+    logError(Errors._106, (e as Error).message)
+    return null
   }
 }
 
