@@ -131,4 +131,28 @@ describe('Transaction history', () => {
         cy.contains('span', 'Success').should('exist')
       })
   })
+
+  it('should expand/collapse all actions', () => {
+    // Open the tx details
+    cy.contains('div', 'Mar 24, 2023')
+      .next()
+      .click()
+      .within(() => {
+        cy.contains('True').should('not.be.visible')
+        cy.contains('1337').should('not.be.visible')
+        cy.contains('5688').should('not.be.visible')
+        cy.contains('Expand all').click()
+
+        // All the values in the actions must be visible
+        cy.contains('True').should('exist')
+        cy.contains('1337').should('exist')
+        cy.contains('5688').should('exist')
+
+        // After collapse all the same values should not be visible
+        cy.contains('Collapse all').click()
+        cy.contains('True').should('not.be.visible')
+        cy.contains('1337').should('not.be.visible')
+        cy.contains('5688').should('not.be.visible')
+      })
+  })
 })
