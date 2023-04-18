@@ -14,7 +14,7 @@ const TermsBanner = () => {
   const [showTerms = true, setShowTerms] = useLocalStorage<boolean>(TERMS_KEY)
 
   useEffect(() => {
-    const existingUser = local.getItem<CookiesState>('cookies')?.[CookieType.ANALYTICS] !== undefined
+    const existingUser = local.getItem<CookiesState>('cookies')?.[CookieType.NECESSARY] !== undefined
 
     if (!existingUser) {
       setShowTerms(false)

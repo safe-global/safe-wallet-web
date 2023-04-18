@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '.'
 
 export enum CookieType {
+  NECESSARY = 'necessary',
   UPDATES = 'updates',
   ANALYTICS = 'analytics',
 }
@@ -10,6 +11,7 @@ export enum CookieType {
 export type CookiesState = Record<CookieType, boolean | undefined>
 
 const initialState: CookiesState = {
+  [CookieType.NECESSARY]: undefined,
   [CookieType.UPDATES]: undefined,
   [CookieType.ANALYTICS]: undefined,
 }

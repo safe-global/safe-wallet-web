@@ -1,4 +1,5 @@
 import { useEffect, type ReactElement } from 'react'
+import type { CheckboxProps } from '@mui/material'
 import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { useForm } from 'react-hook-form'
@@ -12,9 +13,33 @@ import { AppRoutes } from '@/config/routes'
 import ExternalLink from '../ExternalLink'
 
 const COOKIE_WARNING: Record<CookieType, string> = {
+  [CookieType.NECESSARY]: '',
   [CookieType.UPDATES]: `You attempted to open the "What's new" section but need to accept the "Beamer" cookies first.`,
   [CookieType.ANALYTICS]: '',
 }
+
+const CookieCheckbox = ({
+  checkboxProps,
+  label,
+  checked,
+}: {
+  label: string
+  checked: boolean
+  checkboxProps: CheckboxProps
+}) => (
+  <FormControlLabel
+    label={label}
+    checked={checked}
+    control={<Checkbox {...checkboxProps} />}
+    sx={{
+      mt: '-9px',
+      color: (theme) => theme.palette.background.paper,
+      '.MuiCheckbox-root': {
+        color: (theme) => theme.palette.background.paper + '!important',
+      },
+    }}
+  />
+)
 
 const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactElement => {
   const warning = warningKey ? COOKIE_WARNING[warningKey] : undefined
@@ -23,6 +48,7 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
 
   const { register, watch, getValues, setValue } = useForm({
     defaultValues: {
+      [CookieType.NECESSARY]: true,
       [CookieType.UPDATES]: cookies[CookieType.UPDATES] ?? false,
       [CookieType.ANALYTICS]: cookies[CookieType.ANALYTICS] ?? false,
       ...(warningKey ? { [warningKey]: true } : {}),
@@ -37,14 +63,14 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
   const handleAcceptAll = () => {
     setValue(CookieType.UPDATES, true)
     setValue(CookieType.ANALYTICS, true)
-    setTimeout(handleAccept, 100)
+    setTimeout(handleAccept, 300)
   }
 
   return (
     <Paper className={css.container} elevation={3}>
       {warning && (
-        <Typography align="center" paddingBottom="8px">
-          <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" color="error" /> {warning}
+        <Typography align="center" mb={2} color="warning.background" variant="body2">
+          <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" color="error" sx={{ mb: -0.4 }} /> {warning}
         </Typography>
       )}
 
@@ -62,17 +88,17 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
             <Grid container alignItems="center" gap={4}>
               <Grid item xs={12} sm>
                 <Box mb={2}>
-                  <FormControlLabel
-                    control={<Checkbox {...register(CookieType.UPDATES)} id="beamer" />}
+                  <CookieCheckbox checkboxProps={{ id: 'necessary', disabled: true }} label="Necessary" checked />
+                  <br />
+                  <Typography variant="body2" color="background.paper">
+                    Locally stored data for core functionality
+                  </Typography>
+                </Box>
+                <Box mb={2}>
+                  <CookieCheckbox
+                    checkboxProps={{ ...register(CookieType.UPDATES), id: 'beamer' }}
                     label="Beamer"
                     checked={watch(CookieType.UPDATES)}
-                    sx={{
-                      mt: '-9px',
-                      color: (theme) => theme.palette.background.paper,
-                      '.MuiCheckbox-root': {
-                        color: (theme) => theme.palette.background.paper,
-                      },
-                    }}
                   />
                   <br />
                   <Typography variant="body2" color="background.paper">
@@ -80,17 +106,10 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
                   </Typography>
                 </Box>
                 <Box>
-                  <FormControlLabel
-                    control={<Checkbox {...register(CookieType.ANALYTICS)} id="ga" />}
+                  <CookieCheckbox
+                    checkboxProps={{ ...register(CookieType.ANALYTICS), id: 'ga' }}
                     label="Google Analytics"
                     checked={watch(CookieType.ANALYTICS)}
-                    sx={{
-                      mt: '-9px',
-                      color: (theme) => theme.palette.background.paper,
-                      '.MuiCheckbox-root': {
-                        color: (theme) => theme.palette.background.paper,
-                      },
-                    }}
                   />
                   <br />
                   <Typography variant="body2" color="background.paper">
@@ -128,7 +147,7 @@ const CookieBanner = (): ReactElement | null => {
   const dispatch = useAppDispatch()
 
   // Open the banner if cookie preferences haven't been set
-  const shouldOpen = cookies[CookieType.ANALYTICS] === undefined || cookies[CookieType.UPDATES] === undefined
+  const shouldOpen = cookies[CookieType.NECESSARY] === undefined
 
   useEffect(() => {
     if (shouldOpen) {
