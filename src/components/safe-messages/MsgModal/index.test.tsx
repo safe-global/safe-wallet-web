@@ -8,6 +8,7 @@ import * as useWalletHook from '@/hooks/wallets/useWallet'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useAsyncHook from '@/hooks/useAsync'
 import * as useChainsHook from '@/hooks/useChains'
+import * as usePollOffchainMessage from '@/hooks/usePollOffchainMessage'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
 import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
@@ -305,7 +306,7 @@ describe('MsgModal', () => {
       Promise.resolve()
     })
 
-    const confirmationSpy = jest.spyOn(sender, 'dispatchSafeMsgConfirmation')
+    const confirmationSpy = jest.spyOn(sender, 'dispatchSafeMsgProposal')
 
     const button = getByText('Sign')
 
@@ -404,19 +405,15 @@ describe('MsgModal', () => {
         } as ConnectedWallet),
     )
 
-    jest.spyOn(useAsyncHook, 'default').mockReturnValue([
-      {
-        confirmations: [
-          {
-            owner: {
-              value: hexZeroPad('0x2', 20),
-            },
+    jest.spyOn(usePollOffchainMessage, 'default').mockReturnValue({
+      confirmations: [
+        {
+          owner: {
+            value: hexZeroPad('0x2', 20),
           },
-        ],
-      } as SafeMessage,
-      new Error('SafeMessage not found'),
-      false,
-    ])
+        },
+      ],
+    } as SafeMessage)
 
     const { getByText } = render(
       <MsgModal
@@ -440,7 +437,7 @@ describe('MsgModal', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
 
-    jest.spyOn(useAsyncHook, 'default').mockReturnValue([undefined, new Error('SafeMessage not found'), false])
+    jest.spyOn(usePollOffchainMessage, 'default').mockReturnValue(undefined)
 
     const proposalSpy = jest
       .spyOn(sender, 'dispatchSafeMsgProposal')
@@ -475,12 +472,8 @@ describe('MsgModal', () => {
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
 
     jest
-      .spyOn(useAsyncHook, 'default')
-      .mockReturnValue([
-        { confirmations: [] as SafeMessage['confirmations'] } as SafeMessage,
-        new Error('SafeMessage not found'),
-        false,
-      ])
+      .spyOn(usePollOffchainMessage, 'default')
+      .mockReturnValue({ confirmations: [] as SafeMessage['confirmations'] } as SafeMessage)
 
     const confirmationSpy = jest
       .spyOn(sender, 'dispatchSafeMsgConfirmation')
