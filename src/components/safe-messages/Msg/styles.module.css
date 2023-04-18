@@ -3,4 +3,5 @@
   font-family: monospace;
   font-size: 0.85rem;
   -webkit-text-fill-color: var(--color-text-primary);
+  overflow: auto !important;
 }
