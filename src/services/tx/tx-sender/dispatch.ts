@@ -10,7 +10,7 @@ import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { waitForRelayedTx } from '@/services/tx/txMonitor'
-import { getSpecificGnosisSafeContractInstance } from '@/services/contracts/safeContracts'
+import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import { sponsoredCall } from '@/services/tx/sponsoredCall'
 import {
   getAndValidateSafeSDK,
@@ -127,6 +127,7 @@ export const dispatchTxExecution = async (
   txId: string,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
+  safeAddress: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
   const eventParams = { txId }
@@ -150,14 +151,14 @@ export const dispatchTxExecution = async (
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, eventParams)
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
       }
     })
     .catch((err) => {
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams })
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
       } else {
         txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
       }
@@ -172,6 +173,7 @@ export const dispatchBatchExecution = async (
   multiSendTxData: string,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
+  safeAddress: string,
 ) => {
   const groupKey = multiSendTxData
 
@@ -212,6 +214,7 @@ export const dispatchBatchExecution = async (
           txDispatch(TxEvent.PROCESSED, {
             txId,
             groupKey,
+            safeAddress,
           })
         })
       }
@@ -221,7 +224,7 @@ export const dispatchBatchExecution = async (
 
       if (didReprice(error)) {
         txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, { txId })
+          txDispatch(TxEvent.PROCESSED, { txId, safeAddress })
         })
       } else {
         txs.forEach(({ txId }) => {
@@ -242,6 +245,7 @@ export const dispatchSpendingLimitTxExecution = async (
   txOptions: TransactionOptions,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
+  safeAddress: string,
 ) => {
   const id = JSON.stringify(txParams)
 
@@ -279,7 +283,7 @@ export const dispatchSpendingLimitTxExecution = async (
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { groupKey: id, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, { groupKey: id })
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress })
       }
     })
     .catch((error) => {
@@ -306,10 +310,10 @@ export const dispatchTxRelay = async (
   txId: string,
   gasLimit?: string | number,
 ) => {
-  const instance = getSpecificGnosisSafeContractInstance(safe)
+  const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(safe)
 
   let transactionToRelay = safeTx
-  const data = instance.encode('execTransaction', [
+  const data = readOnlySafeContract.encode('execTransaction', [
     transactionToRelay.data.to,
     transactionToRelay.data.value,
     transactionToRelay.data.data,
@@ -333,7 +337,7 @@ export const dispatchTxRelay = async (
     txDispatch(TxEvent.RELAYING, { taskId, txId })
 
     // Monitor relay tx
-    waitForRelayedTx(taskId, [txId])
+    waitForRelayedTx(taskId, [txId], safe.address.value)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, error: error as Error })
     throw error
@@ -345,6 +349,7 @@ export const dispatchBatchExecutionRelay = async (
   multiSendContract: MultiSendCallOnlyEthersContract,
   multiSendTxData: string,
   chainId: string,
+  safeAddress: string,
 ) => {
   const to = multiSendContract.getAddress()
   const data = multiSendContract.contract.interface.encodeFunctionData('multiSend', [multiSendTxData])
@@ -377,6 +382,7 @@ export const dispatchBatchExecutionRelay = async (
   waitForRelayedTx(
     taskId,
     txs.map((tx) => tx.txId),
+    safeAddress,
     groupKey,
   )
 }

@@ -53,6 +53,10 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
   )
 }
 
+export const ApprovalWarning = ({ approvalTxCount }: { approvalTxCount: number }): ReactElement => (
+  <Warning title="" severity="warning" text={`${approvalTxCount} ERC20 approval${approvalTxCount > 1 ? 's' : ''}`} />
+)
+
 export const ThresholdWarning = (): ReactElement => (
   <Warning
     title="This transaction potentially alters the number of confirmations required to execute a transaction. Please verify before signing."

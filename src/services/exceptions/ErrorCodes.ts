@@ -12,6 +12,7 @@ enum ErrorCodes {
   _103 = '103: Error creating a SafeTransaction',
   _104 = '104: Invalid chain short name in the URL',
   _105 = '105: Error initializing the Safe Core SDK',
+  _106 = '106: Failed to get connected wallet',
 
   _302 = '302: Error connecting to the wallet',
   _303 = '303: Error creating pairing session',

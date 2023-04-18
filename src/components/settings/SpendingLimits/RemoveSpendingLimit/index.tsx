@@ -1,7 +1,6 @@
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { getSpendingLimitInterface, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import useChainId from '@/hooks/useChainId'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import useAsync from '@/hooks/useAsync'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -17,13 +16,12 @@ import { createTx } from '@/services/tx/tx-sender'
 
 export const RemoveSpendingLimit = ({ data, onSubmit }: { data: SpendingLimitState; onSubmit: () => void }) => {
   const chainId = useChainId()
-  const provider = useWeb3()
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === data.token.address)
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     const spendingLimitAddress = getSpendingLimitModuleAddress(chainId)
-    if (!provider || !spendingLimitAddress) return
+    if (!spendingLimitAddress) return
 
     const spendingLimitInterface = getSpendingLimitInterface()
     const txData = spendingLimitInterface.encodeFunctionData('deleteAllowance', [data.beneficiary, data.token.address])
@@ -35,7 +33,7 @@ export const RemoveSpendingLimit = ({ data, onSubmit }: { data: SpendingLimitSta
     }
 
     return createTx(txParams)
-  }, [provider, chainId, data.beneficiary, data.token])
+  }, [chainId, data.beneficiary, data.token])
 
   const onFormSubmit = () => {
     trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)

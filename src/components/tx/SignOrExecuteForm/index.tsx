@@ -175,7 +175,7 @@ const SignOrExecuteForm = ({
     const id = txId || (await proposeTx(createdTx))
     const txOptions = getTxOptions(advancedParams, currentChain)
     trackEvent({ ...MODALS_EVENTS.PROPOSE_TX, label: ExecutionType.CONNECTED_WALLET })
-    await dispatchTxExecution(createdTx, txOptions, id, onboard, safe.chainId)
+    await dispatchTxExecution(createdTx, txOptions, id, onboard, safe.chainId, safeAddress)
 
     return id
   }

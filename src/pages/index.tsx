@@ -13,6 +13,10 @@ const IndexPage: NextPage = () => {
   const safeAddress = safe || lastSafe
 
   useIsomorphicEffect(() => {
+    if (router.pathname !== AppRoutes.index) {
+      return
+    }
+
     router.replace(
       safeAddress
         ? `${AppRoutes.home}?safe=${safeAddress}`

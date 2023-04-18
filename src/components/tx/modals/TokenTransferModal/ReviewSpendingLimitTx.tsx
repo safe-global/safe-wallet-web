@@ -83,7 +83,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId)
+      await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress)
 
       onSubmit()
     } catch (err) {
