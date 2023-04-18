@@ -400,7 +400,7 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Estimating...')).toBeDisabled()
   })
 
-  it('relays a 1 out of 2 signed transaction with a connected EOA', async () => {
+  it('relays a 2 out of 2 signed transaction with a connected EOA', async () => {
     const signSpy = jest.fn(() => Promise.resolve({}))
     const relaySpy = jest.fn()
     const proposeSpy = jest.fn(() => Promise.resolve({ txId: '0xdead' }))
@@ -412,6 +412,12 @@ describe('SignOrExecuteForm', () => {
 
     mockTx.addSignature({
       signer: '0x123',
+      data: '0xEEE',
+      staticPart: () => '0xEEE',
+      dynamicPart: () => '',
+    })
+    mockTx.addSignature({
+      signer: '0x1234',
       data: '0xEEE',
       staticPart: () => '0xEEE',
       dynamicPart: () => '',

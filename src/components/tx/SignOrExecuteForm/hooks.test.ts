@@ -345,7 +345,7 @@ describe('SignOrExecute hooks', () => {
           version: '1.3.0',
           address: { value: ethers.utils.hexZeroPad('0x000', 20) },
           nonce: 100,
-          threshold: 2,
+          threshold: 1,
           owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
         } as SafeInfo,
         safeAddress: '0x123',
@@ -362,10 +362,117 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useTxActions())
       const { executeTx } = result.current
 
-      const id = await executeTx({ gasPrice: 1 }, createSafeTx(), '123', true)
+      const tx = createSafeTx()
+      tx.addSignature({
+        signer: '0x123',
+        data: '0x0001',
+        staticPart: () => '',
+        dynamicPart: () => '',
+      })
+
+      const id = await executeTx({ gasPrice: 1 }, tx, '123', true)
       expect(proposeSpy).not.toHaveBeenCalled()
       expect(relaySpy).toHaveBeenCalled()
       expect(id).toEqual('123')
+    })
+
+    it('should sign a not fully signed tx when relaying', async () => {
+      jest.spyOn(walletHooks, 'isSmartContractWallet').mockReturnValue(Promise.resolve(false))
+
+      jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
+        safe: {
+          version: '1.3.0',
+          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          nonce: 100,
+          threshold: 2,
+          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+        } as SafeInfo,
+        safeAddress: '0x123',
+        safeError: undefined,
+        safeLoading: false,
+        safeLoaded: true,
+      }))
+
+      const tx = createSafeTx()
+      tx.addSignature({
+        signer: '0x123',
+        data: '0x0001',
+        staticPart: () => '',
+        dynamicPart: () => '',
+      })
+
+      const proposeSpy = jest
+        .spyOn(txSender, 'dispatchTxProposal')
+        .mockImplementation((() => Promise.resolve({ txId: '123' })) as unknown as typeof txSender.dispatchTxProposal)
+      const signSpy = jest.spyOn(txSender, 'dispatchTxSigning').mockImplementation(() => {
+        tx.addSignature({
+          signer: '0x12345',
+          data: '0x0001',
+          staticPart: () => '',
+          dynamicPart: () => '',
+        })
+        return Promise.resolve(tx)
+      })
+      const relaySpy = jest.spyOn(txSender, 'dispatchTxRelay').mockImplementation(() => Promise.resolve(undefined))
+
+      const { result } = renderHook(() => useTxActions())
+      const { executeTx } = result.current
+
+      const id = await executeTx({ gasPrice: 1 }, tx, '123', true)
+      expect(proposeSpy).toHaveBeenCalled()
+      expect(signSpy).toHaveBeenCalled()
+      expect(relaySpy).toHaveBeenCalled()
+      expect(id).toEqual('123')
+    })
+
+    it('should throw when relaying an unsigned tx as a smart contract wallet', async () => {
+      jest.spyOn(walletHooks, 'isSmartContractWallet').mockReturnValue(Promise.resolve(true))
+
+      jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
+        safe: {
+          version: '1.3.0',
+          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          nonce: 100,
+          threshold: 2,
+          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+        } as SafeInfo,
+        safeAddress: '0x123',
+        safeError: undefined,
+        safeLoading: false,
+        safeLoaded: true,
+      }))
+
+      const tx = createSafeTx()
+      tx.addSignature({
+        signer: '0x123',
+        data: '0x0001',
+        staticPart: () => '',
+        dynamicPart: () => '',
+      })
+
+      const proposeSpy = jest
+        .spyOn(txSender, 'dispatchTxProposal')
+        .mockImplementation((() => Promise.resolve({ txId: '123' })) as unknown as typeof txSender.dispatchTxProposal)
+      const signSpy = jest.spyOn(txSender, 'dispatchTxSigning').mockImplementation(() => {
+        tx.addSignature({
+          signer: '0x12345',
+          data: '0x0001',
+          staticPart: () => '',
+          dynamicPart: () => '',
+        })
+        return Promise.resolve(tx)
+      })
+      const relaySpy = jest.spyOn(txSender, 'dispatchTxRelay').mockImplementation(() => Promise.resolve(undefined))
+
+      const { result } = renderHook(() => useTxActions())
+      const { executeTx } = result.current
+
+      await expect(() => executeTx({ gasPrice: 1 }, tx, '123', true)).rejects.toThrowError(
+        'Cannot relay an unsigned transaction from a smart contract wallet',
+      )
+      expect(proposeSpy).not.toHaveBeenCalled()
+      expect(signSpy).not.toHaveBeenCalled()
+      expect(relaySpy).not.toHaveBeenCalled()
     })
   })
 })
