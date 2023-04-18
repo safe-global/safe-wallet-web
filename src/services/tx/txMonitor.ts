@@ -90,7 +90,7 @@ const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStat
 
 const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
 
-export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: string): void => {
+export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: string, groupKey?: string): void => {
   let intervalId: NodeJS.Timeout
   let failAfterTimeoutId: NodeJS.Timeout
 
@@ -108,6 +108,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: str
           txDispatch(TxEvent.PROCESSED, {
             txId,
             groupKey,
+            safeAddress,
           }),
         )
         break
