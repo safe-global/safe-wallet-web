@@ -28,8 +28,8 @@ const CopyButton = ({
         navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
         onCopy?.()
       } catch (err) {
-        setIsCopyEnabled(false);
-        setTooltipText('Copying is disabled in your browser');
+        setIsCopyEnabled(false)
+        setTooltipText('Copying is disabled in your browser')
       }
     },
     [text, onCopy],
@@ -38,14 +38,20 @@ const CopyButton = ({
   const handleMouseLeave = useCallback(() => {
     setTimeout(() => {
       if (isCopyEnabled) {
-        setTooltipText(initialToolTipText);
+        setTooltipText(initialToolTipText)
       }
-    }, 500);
+    }, 500)
   }, [initialToolTipText, isCopyEnabled])
 
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
-      <IconButton aria-label={initialToolTipText} onClick={handleCopy} size="small" className={className} disabled={!isCopyEnabled}>
+      <IconButton
+        aria-label={initialToolTipText}
+        onClick={handleCopy}
+        size="small"
+        className={className}
+        disabled={!isCopyEnabled}
+      >
         {children ?? <SvgIcon component={CopyIcon} inheritViewBox color="border" fontSize="small" />}
       </IconButton>
     </Tooltip>
