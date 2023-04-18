@@ -1,6 +1,6 @@
 import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon, Link, Stack } from '@mui/material'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { getSafeMessage, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { useCallback, useMemo, useState } from 'react'
+import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
@@ -23,8 +23,8 @@ import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
-import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import usePollOffchainMessage from '@/hooks/usePollOffchainMessage'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -80,49 +80,7 @@ const MsgModal = ({
     return messageHash ?? generateSafeMessageHash(safe, decodedMessage)
   }, [messageHash, safe, decodedMessage])
 
-  const [isPolling, setIsPolling] = useState(false)
-
-  // TODO: move to hook
-  const [ongoingMessage, setOngoingMessage] = useState<SafeMessage>()
-  const CONFIRMATIONS_POLLING_INTERVAL = 3000
-  useEffect(() => {
-    const fetchSafeMessage = async () => {
-      try {
-        // the response has to be a SafeMessage as it is the only type with safeMessageHash
-        const message = (await getSafeMessage(safe.chainId, safeMessageHash)) as SafeMessage
-        setOngoingMessage(message)
-        setIsPolling(true)
-
-        if (message.confirmationsSubmitted === message.confirmationsRequired && message.preparedSignature) {
-          setIsPolling(false)
-          clearInterval(intervalId)
-          safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, {
-            messageHash: safeMessageHash,
-            requestId,
-            signature: message.preparedSignature,
-          })
-          onClose()
-        }
-      } catch (e) {
-        // TODO: add logError
-        console.error(e)
-      }
-    }
-
-    // Inititally load message
-    if (!ongoingMessage) {
-      fetchSafeMessage()
-    }
-
-    if (!isPolling) return
-
-    // Start polling
-    const intervalId = setInterval(() => {
-      fetchSafeMessage()
-    }, CONFIRMATIONS_POLLING_INTERVAL)
-
-    return () => clearInterval(intervalId)
-  }, [isPolling, onClose, ongoingMessage, requestId, safe.chainId, safeMessageHash])
+  const ongoingMessage = usePollOffchainMessage(safe.chainId, safeMessageHash, onClose, requestId)
 
   const hasSigned = !!ongoingMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
@@ -140,7 +98,6 @@ const MsgModal = ({
       // If you are connected through WC
       if (requestId && !ongoingMessage) {
         await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, requestId, safeAppId })
-        setIsPolling(true)
       } else {
         await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage, requestId })
       }
