@@ -1,20 +1,20 @@
-import type { Dispatch, SetStateAction } from 'react'
-import { type ReactElement } from 'react'
-import { useRouter } from 'next/router'
-import { IconButton, Paper } from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import classnames from 'classnames'
-import css from './styles.module.css'
+import BatchIndicator from '@/components/batch/BatchIndicator'
 import ConnectWallet from '@/components/common/ConnectWallet'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import SafeTokenWidget, { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import NotificationCenter from '@/components/notification-center/NotificationCenter'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
-import SafeLogo from '@/public/images/logo.svg'
-import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import BatchIndicator from '@/components/batch/BatchIndicator'
+import SafeLogo from '@/public/images/logo.svg'
+import MenuIcon from '@mui/icons-material/Menu'
+import { IconButton, Paper } from '@mui/material'
+import classnames from 'classnames'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import type { Dispatch, SetStateAction } from 'react'
+import { type ReactElement } from 'react'
+import css from './styles.module.css'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -56,6 +56,20 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         <Link href={logoHref} passHref>
           <SafeLogo alt="Safe logo" />
         </Link>
+        <span className={css.hideMobile}>
+          Celo Safe is now supported on the official{' '}
+          <a target="_blank" rel="noreferrer" href="https://app.safe.global/welcome?chain=celo">
+            Safe app.
+          </a>{' '}
+          Learn more{' '}
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://forum.celo.org/t/multisig-native-safe-launch-migration-guidance/5705"
+          >
+            here.
+          </a>
+        </span>
       </div>
 
       {showSafeToken && (
