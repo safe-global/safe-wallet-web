@@ -21,10 +21,11 @@ describe('Beamer', () => {
     cy.contains('Accept selection').should('not.exist')
 
     // wait for Beamer cookies to be set
-    cy.wait(300)
+    cy.wait(600)
 
     // Open What's new
     cy.contains("What's new").click({ force: true }) // clicks through the "lastPostTitle"
+
     cy.get('#beamerOverlay .iframeCointaner').should('exist')
   })
 })
