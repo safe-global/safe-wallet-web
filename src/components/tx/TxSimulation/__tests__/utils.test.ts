@@ -33,9 +33,9 @@ describe('simulation utils', () => {
         multiSendContractInterface.encodeFunctionData(functionFragment, values),
       getAddress: () => mockMultisendAddress,
     }
-    jest.spyOn(safeContracts, 'getSpecificGnosisSafeContractInstance').mockImplementation(() => safeContractMock as any)
+    jest.spyOn(safeContracts, 'getReadOnlyCurrentGnosisSafeContract').mockImplementation(() => safeContractMock as any)
     jest
-      .spyOn(safeContracts, 'getMultiSendCallOnlyContractInstance')
+      .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')
       .mockImplementation(() => multisendContractMock as any)
 
     jest.spyOn(Web3, 'getWeb3ReadOnly').mockImplementation(

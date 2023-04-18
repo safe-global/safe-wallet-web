@@ -45,4 +45,24 @@ describe('getConnectedWallet', () => {
       chainId: '4',
     })
   })
+
+  it('should return null if the address is invalid', () => {
+    const wallets = [
+      {
+        label: 'Wallet 1',
+        icon: '',
+        provider: null as unknown as EIP1193Provider,
+        chains: [{ id: '0x4' }],
+        accounts: [
+          {
+            address: '0xinvalid',
+            ens: null,
+            balance: null,
+          },
+        ],
+      },
+    ] as WalletState[]
+
+    expect(getConnectedWallet(wallets)).toBeNull()
+  })
 })

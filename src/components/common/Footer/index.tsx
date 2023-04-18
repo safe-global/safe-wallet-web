@@ -18,6 +18,7 @@ const footerPages = [
   AppRoutes.privacy,
   AppRoutes.cookie,
   AppRoutes.terms,
+  AppRoutes.licenses,
 ]
 
 const Footer = (): ReactElement | null => {
@@ -50,9 +51,9 @@ const Footer = (): ReactElement | null => {
           </Link>
         </li>
         <li>
-          <ExternalLink noIcon href="https://safe.global/licenses">
-            Licenses
-          </ExternalLink>
+          <Link href={AppRoutes.licenses} passHref>
+            <MUILink>Licenses</MUILink>
+          </Link>
         </li>
         <li>
           <Link href={AppRoutes.imprint} passHref>

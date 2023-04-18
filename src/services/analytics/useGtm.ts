@@ -15,7 +15,7 @@ import useMetaEvents from './useMetaEvents'
 const useGtm = () => {
   const chainId = useChainId()
   const cookies = useAppSelector(selectCookies)
-  const isAnalyticsEnabled = cookies[CookieType.ANALYTICS]
+  const isAnalyticsEnabled = cookies[CookieType.ANALYTICS] || false
   const router = useRouter()
 
   // Initialize GTM, or clear it if analytics is disabled

@@ -16,6 +16,7 @@ export enum TxEvent {
   PROCESSING_MODULE = 'PROCESSING_MODULE',
   PROCESSED = 'PROCESSED',
   REVERTED = 'REVERTED',
+  RELAYING = 'RELAYING',
   FAILED = 'FAILED',
   SUCCESS = 'SUCCESS',
   SAFE_APPS_REQUEST = 'SAFE_APPS_REQUEST',
@@ -36,8 +37,9 @@ interface TxEvents {
   [TxEvent.EXECUTING]: Id
   [TxEvent.PROCESSING]: Id & { txHash: string }
   [TxEvent.PROCESSING_MODULE]: Id & { txHash: string }
-  [TxEvent.PROCESSED]: Id
+  [TxEvent.PROCESSED]: Id & { safeAddress: string }
   [TxEvent.REVERTED]: Id & { error: Error }
+  [TxEvent.RELAYING]: Id & { taskId: string }
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id
   [TxEvent.SAFE_APPS_REQUEST]: { safeAppRequestId: RequestId; safeTxHash: string }

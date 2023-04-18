@@ -5,8 +5,8 @@ import { type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescr
 import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import {
-  getMultiSendCallOnlyContractInstance,
-  getSpecificGnosisSafeContractInstance,
+  getReadOnlyMultiSendCallOnlyContract,
+  getReadOnlyCurrentGnosisSafeContract,
 } from '@/services/contracts/safeContracts'
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
 import { FEATURES, hasFeature } from '@/utils/chains'
@@ -99,9 +99,9 @@ export const _getSingleTransactionPayload = (
     transaction = simulatedTransaction
   }
 
-  const instance = getSpecificGnosisSafeContractInstance(params.safe)
+  const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(params.safe)
 
-  const input = instance.encode('execTransaction', [
+  const input = readOnlySafeContract.encode('execTransaction', [
     transaction.data.to,
     transaction.data.value,
     transaction.data.data,
@@ -115,7 +115,7 @@ export const _getSingleTransactionPayload = (
   ])
 
   return {
-    to: instance.getAddress(),
+    to: readOnlySafeContract.getAddress(),
     input,
   }
 }
@@ -124,11 +124,11 @@ export const _getMultiSendCallOnlyPayload = (
   params: MultiSendTransactionSimulationParams,
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   const data = encodeMultiSendData(params.transactions)
-  const instance = getMultiSendCallOnlyContractInstance(params.safe.chainId, params.safe.version)
+  const readOnlyMultiSendContract = getReadOnlyMultiSendCallOnlyContract(params.safe.chainId, params.safe.version)
 
   return {
-    to: instance.getAddress(),
-    input: instance.encode('multiSend', [data]),
+    to: readOnlyMultiSendContract.getAddress(),
+    input: readOnlyMultiSendContract.encode('multiSend', [data]),
   }
 }
 

@@ -2084,17 +2084,12 @@
   dependencies:
     tslib "^2.1.0"
 
-"@gnosis.pm/safe-deployments@1.19.0", "@gnosis.pm/safe-deployments@^1.18.0":
+"@gnosis.pm/safe-deployments@1.19.0":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.19.0.tgz#f4ba8cf92cd6fdff4241ac50e410b4a6ff89babe"
   integrity sha512-EvHR/LjMwJm0QKXyTscRXqR9vnJwCUDiMnRNKRyXe1akW+udiYXjJTAiGuleFS4DOUSqs6DpAjYlLnXMzUsVMw==
   dependencies:
     semver "^7.3.7"
-
-"@gnosis.pm/safe-modules-deployments@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-modules-deployments/-/safe-modules-deployments-1.0.0.tgz#b4cfcf7782c3fa1491b84405ac06cfa4f7eff365"
-  integrity sha512-mZkGtfGmEym7l5w2K6d/mIaS8sDmy50uGWAfTj5Q/+Y1cU9fHYU6hzhb0QaeyNM7F7HM3jg5ZTJjartZJUqu3w==
 
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
@@ -3018,10 +3013,15 @@
   dependencies:
     cross-fetch "^3.1.5"
 
-"@safe-global/safe-react-components@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.2.tgz#c56e84b994e02b3cd6dd678bf1c8a8cd913ea3dd"
-  integrity sha512-BbgD5lKFPdftT6Cxl7JCWOVAU7YpgsjO957QTypUQb/ZNw+zW9yWMHdoKIy4paZ0EkX2OvFleKx82BYi+p5/IA==
+"@safe-global/safe-modules-deployments@^1.0.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-modules-deployments/-/safe-modules-deployments-1.1.0.tgz#e8441d6da17ed4b29a211ecb9b97fadbd7c7ca2b"
+  integrity sha512-UgSH/7Zcv6BJBBqoipKts6SKCPYPau9F1/arndsBYvb5Ayn28Q9cu/yiRbln2iI4VL21SIl9lcO/zRKJKl7QbQ==
+
+"@safe-global/safe-react-components@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.5.tgz#294b1198ef27322d74eac5f49e54652b57b6eb55"
+  integrity sha512-ExrE2ZAV+3qm6wi5QfEGUcb4R7rFsvP2oHcZ4k6gGZDLsvAnP8X5LMnXldriOvBjLBD3m3RoLYLfDER5hBrQ3A==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     ethereum-blockies-base64 "^1.0.2"

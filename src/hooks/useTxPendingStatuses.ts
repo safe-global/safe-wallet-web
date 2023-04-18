@@ -3,10 +3,11 @@ import { clearPendingTx, setPendingTx, selectPendingTxs, PendingStatus } from '@
 import { useEffect, useMemo, useRef } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
-import { waitForTx } from '@/services/tx/txMonitor'
+import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useTxHistory from './useTxHistory'
 import { isTransactionListItem } from '@/utils/transaction-guards'
+import useSafeInfo from './useSafeInfo'
 
 const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
   [TxEvent.SIGNATURE_PROPOSED]: PendingStatus.SIGNING,
@@ -14,6 +15,7 @@ const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
   [TxEvent.EXECUTING]: PendingStatus.SUBMITTING,
   [TxEvent.PROCESSING]: PendingStatus.PROCESSING,
   [TxEvent.PROCESSED]: PendingStatus.INDEXING,
+  [TxEvent.RELAYING]: PendingStatus.RELAYING,
   [TxEvent.SUCCESS]: null,
   [TxEvent.REVERTED]: null,
   [TxEvent.FAILED]: null,
@@ -34,17 +36,25 @@ const useTxMonitor = (): void => {
       return
     }
 
-    for (const [txId, { txHash, status }] of pendingTxEntriesOnChain) {
-      const isProcessing = status === PendingStatus.PROCESSING
+    for (const [txId, { txHash, status, taskId, safeAddress }] of pendingTxEntriesOnChain) {
+      const isProcessing = status === PendingStatus.PROCESSING && txHash !== undefined
       const isMonitored = monitoredTxs.current[txId]
+      const isRelaying = status === PendingStatus.RELAYING && taskId !== undefined
 
-      if (!txHash || !isProcessing || isMonitored) {
+      if (!(isProcessing || isRelaying) || isMonitored) {
         continue
       }
 
       monitoredTxs.current[txId] = true
 
-      waitForTx(provider, txId, txHash)
+      if (isProcessing) {
+        waitForTx(provider, txId, txHash)
+        continue
+      }
+
+      if (isRelaying) {
+        waitForRelayedTx(taskId, [txId], safeAddress)
+      }
     }
     // `provider` is updated when switching chains, re-running this effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,7 +63,8 @@ const useTxMonitor = (): void => {
 
 const useTxPendingStatuses = (): void => {
   const dispatch = useAppDispatch()
-  const chainId = useChainId()
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId } = safe
   const txHistory = useTxHistory()
   const historicalTxs = useMemo(() => {
     return txHistory.page?.results?.filter(isTransactionListItem) || []
@@ -85,11 +96,13 @@ const useTxPendingStatuses = (): void => {
           dispatch(
             setPendingTx({
               chainId,
+              safeAddress: 'safeAddress' in detail ? detail.safeAddress : safeAddress,
               txId,
               status,
               txHash: 'txHash' in detail ? detail.txHash : undefined,
               groupKey: 'groupKey' in detail ? detail.groupKey : undefined,
               signerAddress: `signerAddress` in detail ? detail.signerAddress : undefined,
+              taskId: 'taskId' in detail ? detail.taskId : undefined,
             }),
           )
         }
@@ -99,7 +112,7 @@ const useTxPendingStatuses = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch, chainId, historicalTxs])
+  }, [dispatch, chainId, safeAddress, historicalTxs])
 }
 
 export default useTxPendingStatuses

@@ -42,6 +42,10 @@
   border-right: none;
 }
 
+.connectWallet {
+  flex-shrink: 0;
+}
+
 @media (max-width: 900px) {
   .logo {
     display: none;

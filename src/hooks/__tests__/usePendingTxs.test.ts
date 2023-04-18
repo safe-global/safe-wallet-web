@@ -1,6 +1,7 @@
 import { type PendingTx } from '@/store/pendingTxsSlice'
 import { act, renderHook } from '@/tests/test-utils'
-import type { Label, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
+import type { Label, SafeInfo, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
+import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import { useHasPendingTxs, usePendingTxsQueue } from '../usePendingTxs'
 
 // Mock getTransactionQueue
@@ -35,6 +36,19 @@ describe('usePendingTxsQueue', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     localStorage.clear()
+
+    jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
+      safe: {
+        nonce: 100,
+        threshold: 1,
+        owners: [{ value: '0x123' }],
+        chainId: '5',
+      } as SafeInfo,
+      safeAddress: '0x0000000000000000000000000000000000000001',
+      safeError: undefined,
+      safeLoading: false,
+      safeLoaded: true,
+    }))
   })
 
   it('should return the pending txs queue', async () => {
@@ -42,7 +56,8 @@ describe('usePendingTxsQueue', () => {
       initialReduxState: {
         pendingTxs: {
           multisig_123: {
-            chainId: '4',
+            chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000001',
             txHash: 'tx123',
           } as PendingTx,
         },
@@ -75,11 +90,13 @@ describe('useHasPendingTxs', () => {
         pendingTxs: {
           multisig_123: {
             chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000001',
             txHash: 'tx123',
           } as PendingTx,
 
           multisig_456: {
-            chainId: '4',
+            chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000002',
             txHash: 'tx456',
           } as PendingTx,
         },
@@ -95,6 +112,7 @@ describe('useHasPendingTxs', () => {
         pendingTxs: {
           multisig_789: {
             chainId: '1',
+            safeAddress: '0x0000000000000000000000000000000000000001',
             txHash: 'tx789',
           } as PendingTx,
         },

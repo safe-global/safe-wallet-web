@@ -1,4 +1,4 @@
-import { getAllowanceModuleDeployment } from '@gnosis.pm/safe-modules-deployments'
+import { getAllowanceModuleDeployment } from '@safe-global/safe-modules-deployments'
 
 import type { AllowanceModule } from '@/types/contracts'
 import { AllowanceModule__factory } from '@/types/contracts'

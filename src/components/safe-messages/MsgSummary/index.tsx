@@ -6,7 +6,6 @@ import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import useWallet from '@/hooks/wallets/useWallet'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import MsgType from '@/components/safe-messages/MsgType'
 import SignMsgButton from '@/components/safe-messages/SignMsgButton'
 import useSafeMessageStatus from '@/hooks/useSafeMessageStatus'
@@ -30,7 +29,6 @@ const getStatusColor = (value: SafeMessageStatus, palette: Palette) => {
 const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const { confirmationsSubmitted, confirmationsRequired } = msg
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
   const txStatusLabel = useSafeMessageStatus(msg)
   const isPending = useIsSafeMessagePending(msg.messageHash)
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
@@ -58,7 +56,7 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
         </Box>
       )}
 
-      {wallet && !isWrongChain && !isConfirmed && (
+      {wallet && !isConfirmed && (
         <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
           <SignMsgButton msg={msg} compact />
         </Box>

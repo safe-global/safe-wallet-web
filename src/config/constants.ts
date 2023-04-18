@@ -60,3 +60,9 @@ export enum SafeAppsTag {
   // TODO: Remove safe-claiming-app when we remove the old claiming app
   SAFE_CLAIMING_APP = 'safe-claiming-app',
 }
+
+// Safe Gelato relay service
+export const SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION =
+  process.env.NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION || 'https://safe-client-nest.safe.global/v1/relay'
+export const SAFE_GELATO_RELAY_SERVICE_URL_STAGING =
+  process.env.NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING || 'https://safe-client-nest.staging.5afe.dev/v1/relay'
