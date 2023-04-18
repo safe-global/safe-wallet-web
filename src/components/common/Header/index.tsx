@@ -51,13 +51,21 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
           </a>
         </Link>
         <span className={css.hideMobile}>
-          Celo Safe was{' '}
-          <a target="_blank" rel="noreferrer" href={FORUM_POST_URL}>
-            was upgraded
-          </a>
-          ! Use the{' '}
+          Celo Safe is now supported on the official{' '}
+          <a target="_blank" rel="noreferrer" href="https://app.safe.global/welcome?chain=celo">
+            Safe app.
+          </a>{' '}
+          Learn more{' '}
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://forum.celo.org/t/multisig-native-safe-launch-migration-guidance/5705"
+          >
+            here.
+          </a>{' '}
+          Use the old version{' '}
           <a target="_blank" rel="noreferrer" href={OLD_SAFE_URL}>
-            previous version here
+            here
           </a>
           .
         </span>
