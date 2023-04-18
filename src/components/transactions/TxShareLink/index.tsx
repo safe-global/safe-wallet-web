@@ -5,7 +5,7 @@ import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
 const TxShareLink = ({ id }: { id: string }): ReactElement => {
   const [isCopyEnabled, setIsCopyEnabled] = useState(true)
@@ -18,7 +18,7 @@ const TxShareLink = ({ id }: { id: string }): ReactElement => {
     if (!e.ctrlKey && !e.metaKey) {
       e.preventDefault()
     }
-    
+
     try {
       // copy href to clipboard
       navigator.clipboard.writeText(location.origin + href)
