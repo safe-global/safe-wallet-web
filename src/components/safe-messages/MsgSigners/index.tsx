@@ -44,7 +44,13 @@ const shouldHideConfirmations = (msg: SafeMessage): boolean => {
   return isConfirmed || msg.confirmations.length > 3
 }
 
-export const MsgSigners = ({ msg }: { msg: SafeMessage }): ReactElement => {
+export const MsgSigners = ({
+  msg,
+  hideInitialItem = false,
+}: {
+  msg: SafeMessage
+  hideInitialItem?: boolean
+}): ReactElement => {
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(msg))
 
   const toggleHide = () => {
@@ -57,12 +63,14 @@ export const MsgSigners = ({ msg }: { msg: SafeMessage }): ReactElement => {
 
   return (
     <List className={css.signers}>
-      <ListItem>
-        <ListItemIcon>
-          <Created />
-        </ListItemIcon>
-        <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
-      </ListItem>
+      {!hideInitialItem && (
+        <ListItem>
+          <ListItemIcon>
+            <Created />
+          </ListItemIcon>
+          <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
+        </ListItem>
+      )}
       <ListItem>
         <ListItemIcon>
           <Signed />

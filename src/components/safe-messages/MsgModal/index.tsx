@@ -22,7 +22,7 @@ import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
-import Confirmations from '@/components/safe-messages/MsgModal/Confirmations'
+import MsgSigners from '@/components/safe-messages/MsgSigners'
 import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
@@ -83,13 +83,15 @@ const MsgModal = ({
   const [isPolling, setIsPolling] = useState(false)
 
   // TODO: move to hook
-  const [ongoingMessage, setOngoingMessage] = useState<Omit<SafeMessage, 'type'>>()
+  const [ongoingMessage, setOngoingMessage] = useState<SafeMessage>()
   const CONFIRMATIONS_POLLING_INTERVAL = 3000
   useEffect(() => {
     const fetchSafeMessage = async () => {
       try {
-        const message = await getSafeMessage(safe.chainId, safeMessageHash)
+        // the response has to be a SafeMessage as it is the only type with safeMessageHash
+        const message = (await getSafeMessage(safe.chainId, safeMessageHash)) as SafeMessage
         setOngoingMessage(message)
+        setIsPolling(true)
 
         if (message.confirmationsSubmitted === message.confirmationsRequired && message.preparedSignature) {
           setIsPolling(false)
@@ -102,6 +104,7 @@ const MsgModal = ({
           onClose()
         }
       } catch (e) {
+        // TODO: add logError
         console.error(e)
       }
     }
@@ -205,7 +208,7 @@ const MsgModal = ({
             />
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
-          <Confirmations message={ongoingMessage} threshold={safe.threshold} />
+          {ongoingMessage && <MsgSigners msg={ongoingMessage} hideInitialItem />}
           <Typography fontWeight={700} mt={2}>
             SafeMessage:
           </Typography>
