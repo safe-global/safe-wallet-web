@@ -2997,6 +2997,13 @@
   dependencies:
     semver "^7.3.7"
 
+"@safe-global/safe-deployments@^1.22.0":
+  version "1.22.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.22.0.tgz#4214ac5a9ebcad7cdbf5f641b0728bc0e497286e"
+  integrity sha512-SmbeCRMlcO/EONxbV6nP6pM/60q0NIHVezxx5FMv0dIAkDffdbm25reonKlOk3AJYW1b/c6pZA0RbWDwFSJEkQ==
+  dependencies:
+    semver "^7.3.7"
+
 "@safe-global/safe-ethers-lib@^1.9.2":
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-ethers-lib/-/safe-ethers-lib-1.9.2.tgz#e99e565d832e5b588c661b59936caa78aa1e3952"
