@@ -56,14 +56,14 @@ describe('useSafeNotifications', () => {
       expect(result.current).toBeUndefined()
       expect(showNotification).toHaveBeenCalledWith({
         variant: 'warning',
-        message: `Your Safe version 1.1.1 is out of date. Please update it.`,
+        message: `Your Safe Account version 1.1.1 is out of date. Please update it.`,
         groupKey: 'safe-outdated-version',
         link: {
           href: {
             pathname: '/settings/setup',
             query: { safe: 'eth:0x123' },
           },
-          title: 'Update Safe',
+          title: 'Update Safe Account',
         },
         onClose: expect.anything(),
       })
@@ -91,7 +91,7 @@ describe('useSafeNotifications', () => {
       expect(result.current).toBeUndefined()
       expect(showNotification).toHaveBeenCalledWith({
         variant: 'warning',
-        message: `Safe version 0.0.1 is not supported by this web app anymore. You can update your Safe via the CLI.`,
+        message: `Safe Account version 0.0.1 is not supported by this web app anymore. You can update your Safe Account via the CLI.`,
         groupKey: 'safe-outdated-version',
         link: {
           href: 'https://github.com/5afe/safe-cli',
@@ -144,7 +144,7 @@ describe('useSafeNotifications', () => {
       expect(result.current).toBeUndefined()
       expect(showNotification).toHaveBeenCalledWith({
         variant: 'warning',
-        message: `This Safe was created with an unsupported base contract.
+        message: `This Safe Account was created with an unsupported base contract.
            The web interface might not work correctly.
            We recommend using the command line interface instead.`,
         groupKey: 'invalid-mastercopy',

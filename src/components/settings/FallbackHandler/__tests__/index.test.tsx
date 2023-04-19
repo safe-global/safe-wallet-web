@@ -97,7 +97,9 @@ describe('FallbackHandler', () => {
 
       await waitFor(() => {
         expect(
-          fbHandler.queryByText(new RegExp('The Safe may not work correctly as no fallback handler is currently set.')),
+          fbHandler.queryByText(
+            new RegExp('The Safe{Wallet} may not work correctly as no fallback handler is currently set.'),
+          ),
         ).toBeInTheDocument()
         expect(fbHandler.queryByText('Transaction Builder')).toBeInTheDocument()
       })
@@ -131,7 +133,9 @@ describe('FallbackHandler', () => {
 
       await waitFor(() => {
         expect(
-          fbHandler.queryByText(new RegExp('The Safe may not work correctly as no fallback handler is currently set.')),
+          fbHandler.queryByText(
+            new RegExp('The Safe{Wallet} may not work correctly as no fallback handler is currently set.'),
+          ),
         ).toBeInTheDocument()
         expect(fbHandler.queryByText('Transaction Builder')).not.toBeInTheDocument()
       })
@@ -158,7 +162,7 @@ describe('FallbackHandler', () => {
       await waitFor(() => {
         expect(
           fbHandler.queryByText(
-            'The fallback handler adds fallback logic for funtionality that may not be present in the Safe contract. Learn more about the fallback handler',
+            'The fallback handler adds fallback logic for funtionality that may not be present in the Safe Account contract. Learn more about the fallback handler',
           ),
         ).toBeDefined()
 
@@ -218,7 +222,7 @@ describe('FallbackHandler', () => {
     })
   })
 
-  it('should render nothing if the Safe version does not support Fallback Handlers', () => {
+  it('should render nothing if the Safe Account version does not support Fallback Handlers', () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
       () =>
         ({
