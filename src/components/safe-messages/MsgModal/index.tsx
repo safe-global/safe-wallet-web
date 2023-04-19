@@ -9,13 +9,18 @@ import ModalDialog, { ModalDialogTitle } from '@/components/common/ModalDialog'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import RequiredIcon from '@/public/images/messages/required.svg'
-import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
+import {
+  dispatchPreparedSignature,
+  dispatchSafeMsgConfirmation,
+  dispatchSafeMsgProposal,
+} from '@/services/safe-messages/safeMsgSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { generateSafeMessageHash, generateSafeMessageMessage } from '@/utils/safe-messages'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useWallet from '@/hooks/wallets/useWallet'
+import useSafeMessages from '@/hooks/useSafeMessages'
 import useOnboard from '@/hooks/wallets/useOnboard'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
@@ -24,7 +29,7 @@ import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import usePollOffchainMessage from '@/hooks/usePollOffchainMessage'
+import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -64,6 +69,7 @@ const MsgModal = ({
   const { safe } = useSafeInfo()
   const isOwner = useIsSafeOwner()
   const wallet = useWallet()
+  const messages = useSafeMessages()
 
   // Decode message if UTF-8 encoded
   const decodedMessage = useMemo(() => {
@@ -80,7 +86,11 @@ const MsgModal = ({
     return messageHash ?? generateSafeMessageHash(safe, decodedMessage)
   }, [messageHash, safe, decodedMessage])
 
-  const ongoingMessage = usePollOffchainMessage(safe.chainId, safeMessageHash, onClose, requestId)
+  const existingMessage = messages.page?.results
+    ?.filter(isSafeMessageListItem)
+    .find((msg) => msg.messageHash === safeMessageHash)
+
+  const [ongoingMessage, setOngoingMessage] = useState<SafeMessage | undefined>(existingMessage)
 
   const hasSigned = !!ongoingMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
@@ -98,13 +108,16 @@ const MsgModal = ({
       // When collecting the first signature
       if (requestId && !ongoingMessage) {
         await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, requestId, safeAppId })
+        const message = await dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
+        setOngoingMessage(message)
       } else {
         await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage, requestId })
+        dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
       }
     } catch (e) {
       setSubmitError(e as Error)
     }
-  }, [decodedMessage, requestId, safe, safeAppId, onboard, ongoingMessage])
+  }, [onboard, requestId, ongoingMessage, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
 
   const handleClose = useCallback(() => {
     if (!ongoingMessage || ongoingMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION) {

@@ -1,5 +1,6 @@
 import { hexlify, hexZeroPad, toUtf8Bytes } from 'ethers/lib/utils'
 import type { ChainInfo, SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { SafeMessageListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 
 import MsgModal from '@/components/safe-messages/MsgModal'
 import * as useIsWrongChainHook from '@/hooks/useIsWrongChain'
@@ -8,7 +9,7 @@ import * as useWalletHook from '@/hooks/wallets/useWallet'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useAsyncHook from '@/hooks/useAsync'
 import * as useChainsHook from '@/hooks/useChains'
-import * as usePollOffchainMessage from '@/hooks/usePollOffchainMessage'
+import * as useSafeMessages from '@/hooks/useSafeMessages'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
 import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
@@ -283,9 +284,23 @@ describe('MsgModal', () => {
         } as ConnectedWallet),
     )
 
-    jest
-      .spyOn(usePollOffchainMessage, 'default')
-      .mockReturnValue({ confirmations: [] as SafeMessage['confirmations'] } as SafeMessage)
+    const msgPage = {
+      error: undefined,
+      loading: false,
+      page: {
+        next: undefined,
+        previous: undefined,
+        results: [
+          {
+            type: SafeMessageListItemType.MESSAGE,
+            messageHash: '0x123',
+            confirmations: [],
+          } as unknown as SafeMessage,
+        ],
+      },
+    }
+
+    jest.spyOn(useSafeMessages, 'default').mockReturnValue(msgPage)
 
     const { getByText } = render(
       <MsgModal
@@ -401,24 +416,38 @@ describe('MsgModal', () => {
         } as ConnectedWallet),
     )
 
-    jest.spyOn(usePollOffchainMessage, 'default').mockReturnValue({
-      confirmations: [
-        {
-          owner: {
-            value: hexZeroPad('0x2', 20),
-          },
-        },
-      ],
-    } as SafeMessage)
+    const msgPage = {
+      error: undefined,
+      loading: false,
+      page: {
+        next: undefined,
+        previous: undefined,
+        results: [
+          {
+            type: SafeMessageListItemType.MESSAGE,
+            messageHash: '0x123',
+            confirmations: [
+              {
+                owner: {
+                  value: hexZeroPad('0x2', 20),
+                },
+              },
+            ],
+          } as SafeMessage,
+        ],
+      },
+    }
+
+    jest.spyOn(useSafeMessages, 'default').mockReturnValue(msgPage)
 
     const { getByText } = render(
       <MsgModal
         logoUri="www.fake.com/test.png"
         name="Test App"
         message="Hello world!"
+        messageHash="0x123"
         requestId="123"
         onClose={jest.fn}
-        safeAppId={25}
       />,
     )
 
@@ -433,7 +462,7 @@ describe('MsgModal', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
 
-    jest.spyOn(usePollOffchainMessage, 'default').mockReturnValue(undefined)
+    jest.spyOn(useAsyncHook, 'default').mockReturnValue([undefined, new Error('SafeMessage not found'), false])
 
     const proposalSpy = jest
       .spyOn(sender, 'dispatchSafeMsgProposal')
@@ -468,11 +497,15 @@ describe('MsgModal', () => {
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
 
     jest
-      .spyOn(usePollOffchainMessage, 'default')
-      .mockReturnValue({ confirmations: [] as SafeMessage['confirmations'] } as SafeMessage)
+      .spyOn(useAsyncHook, 'default')
+      .mockReturnValue([
+        { confirmations: [] as SafeMessage['confirmations'] } as SafeMessage,
+        new Error('SafeMessage not found'),
+        false,
+      ])
 
     const confirmationSpy = jest
-      .spyOn(sender, 'dispatchSafeMsgConfirmation')
+      .spyOn(sender, 'dispatchSafeMsgProposal')
       .mockImplementation(() => Promise.reject(new Error('Test error')))
 
     const { getByText } = render(
