@@ -354,7 +354,7 @@ describe('AppsPage', () => {
       await waitFor(() => expect(screen.getByLabelText(/Safe{App} URL/)).toBeInTheDocument(), { timeout: 3000 })
       const appURLInput = screen.getByLabelText(/Safe{App} URL/)
       fireEvent.change(appURLInput, { target: { value: INVALID_SAFE_APP_URL } })
-      await screen.findByText(/the Safe{App} doesn't support Safe{App} functionality/i)
+      await screen.findByText(/the app doesn't support Safe{App} functionality/i)
     })
 
     it('Requires risk acknowledgment checkbox to add the app', async () => {
@@ -570,7 +570,7 @@ describe('AppsPage', () => {
           expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
 
           // zero results component
-          expect(screen.getByText('No apps found', { exact: false })).toBeInTheDocument()
+          expect(screen.getByText('No Safe{Apps} found', { exact: false })).toBeInTheDocument()
           expect(screen.queryByText('Use WalletConnect')).toBeInTheDocument()
         })
       })
