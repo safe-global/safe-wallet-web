@@ -133,7 +133,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
             <SponsoredBy
               remainingRelays={remainingRelays}
               tooltip="You can only relay multisend transactions containing
-executions from the same Safe."
+executions from the same Safe Account."
             />
           </>
         ) : null}

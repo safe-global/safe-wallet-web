@@ -42,9 +42,9 @@ export const createOnboard = (chainConfigs: ChainInfo[], rpcConfig: EnvState['rp
     },
 
     appMetadata: {
-      name: 'Safe',
+      name: 'Safe{Wallet}',
       icon: '/images/safe-logo-green.png',
-      description: 'Please select a wallet to connect to Safe',
+      description: 'Please select a wallet to connect to Safe{Wallet}',
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
   })

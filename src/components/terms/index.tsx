@@ -83,11 +83,11 @@ const SafeTerms = () => {
         interaction with it on the Blockchain.
       </p>
       <ol start={1}>
-        <li>&ldquo;Safe&rdquo; </li>
+        <li>&ldquo;Safe Account&rdquo; </li>
       </ol>
       <p>
-        The Safe (&ldquo;Safe&rdquo;) is a modular, self-custodial (i.e. not supervised by us) smart contract-based
-        wallet not provided by CC. Safe is{' '}
+        The Safe Account (&ldquo;<i>Safe</i>&rdquo;) is a modular, self-custodial (i.e. not supervised by us) smart
+        contract-based wallet not provided by CC. Safe Accounts are{' '}
         <Link href="https://github.com/safe-global/safe-contracts/" passHref>
           <MUILink target="_blank" rel="noreferrer">
             open-source
@@ -109,16 +109,17 @@ const SafeTerms = () => {
         <li>&ldquo;Safe&nbsp;App&rdquo;</li>
       </ol>
       <p>
-        You may access the Safe using the Safe web app, mobile app for iOS and android, or the browser
+        You may access the Safe Account using the Safe web app, mobile app for iOS and android, or the browser
         extension&nbsp;(each a &ldquo;Safe&nbsp;App&rdquo;). The Safe&nbsp;App may be used to manage your personal
-        digital assets on Ethereum and other common EVM chains when you connect the Safe with third-party&nbsp;services
-        (as defined below). The Safe&nbsp;App provides certain features that may be amended from time to time.{' '}
+        digital assets on Ethereum and other common EVM chains when you connect the Safe Account with
+        third-party&nbsp;services (as defined below). The Safe&nbsp;App provides certain features that may be amended
+        from time to time.{' '}
       </p>
       <ol start={3}>
         <li>&ldquo;Third-Party&nbsp;Apps&rdquo;</li>
       </ol>
       <p>
-        The Safe&nbsp;App allows you to connect the Safe to third-party decentralized applications
+        The Safe&nbsp;App allows you to connect the Safe Account to third-party decentralized applications
         (&ldquo;Third-Party&nbsp;Apps&rdquo;) and use third-party&nbsp;services such as from the decentralized finance
         sector, DAO Tools or services related to NFTs (&ldquo;Third-Party&nbsp;Services&quot;). The
         Third-Party&nbsp;Apps are integrated in the user interface of the Safe&nbsp;App via inline framing. The provider
@@ -142,12 +143,12 @@ const SafeTerms = () => {
         <li>coverage underwritten by any regulatory agency&rsquo;s compensation scheme;</li>
         <li>
           custody of your Recovery Phrase, Private Keys, Tokens or the ability to remove or freeze your Tokens, i.e.
-          Safe is a self-custodial wallet;
+          Safe Account is a self-custodial wallet;
         </li>
         <li>the storage or transmission of fiat currencies;</li>
         <li>
           back-up services to recover your Recovery Phrase or Private Keys, for whose safekeeping you are solely
-          responsible; CC has no means to recover your access to your Tokens, when you lose access to your Safe;
+          responsible; CC has no means to recover your access to your Tokens, when you lose access to your Safe Account;
         </li>
         <li>
           any form of legal, financial, investment, accounting, tax or other professional advice regarding Transactions
@@ -161,10 +162,10 @@ const SafeTerms = () => {
       <h3>5. What do you need to know about Third-Party Services?</h3>
       <ol start={1}>
         <li>
-          We provide you the possibility to interact with your Safe through&nbsp;Third-Party Services. Any activities
-          you engage in with, or services you receive from a third party is between you and that third party directly.
-          The conditions of service provisions, if any, shall be governed by the applicable contractual provisions
-          between you and the respective provider of the Third-Party Service.{' '}
+          We provide you the possibility to interact with your Safe Account through&nbsp;Third-Party Services. Any
+          activities you engage in with, or services you receive from a third party is between you and that third party
+          directly. The conditions of service provisions, if any, shall be governed by the applicable contractual
+          provisions between you and the respective provider of the Third-Party Service.{' '}
         </li>
         <li>
           The Services rely in part on third-party and open-source software, including the Blockchain, and the continued
@@ -263,9 +264,9 @@ const SafeTerms = () => {
         <li>
           We may terminate the Agreement and refuse access to the Safe&nbsp;Apps at any time giving 30 days&rsquo; prior
           notice. The right of the parties to terminate the Agreement for cause remains unaffected. In case of our
-          termination of the Agreement, you may no longer access your Safe via our Services. However, you may continue
-          to access your Safe and any Tokens via a third-party wallet provider using your Recovery Phrase and Private
-          Keys.
+          termination of the Agreement, you may no longer access your Safe Account via our Services. However, you may
+          continue to access your Safe Account and any Tokens via a third-party wallet provider using your Recovery
+          Phrase and Private Keys.
         </li>
         <li>
           We reserve the right to limit the use of the Safe&nbsp;Apps to a specified number of Users if necessary to
@@ -278,10 +279,10 @@ const SafeTerms = () => {
       <h3>10. What licenses and access do we grant to you?</h3>
       <ol start={1}>
         <li>
-          All intellectual property rights in the Safe and the Services throughout the world belong to us as owner or
-          our licensors. Nothing in these Terms gives you any rights in respect of any intellectual property owned by us
-          or our licensors and you acknowledge that you do not acquire any ownership rights by downloading the Safe App
-          or any content from the Safe App.
+          All intellectual property rights in the Safe Account and the Services throughout the world belong to us as
+          owner or our licensors. Nothing in these Terms gives you any rights in respect of any intellectual property
+          owned by us or our licensors and you acknowledge that you do not acquire any ownership rights by downloading
+          the Safe App or any content from the Safe App.
         </li>
         <li>
           If you are a consumer we grant you a simple, limited license, but do not sell, to you the Services you
@@ -338,11 +339,11 @@ const SafeTerms = () => {
         </li>
         <li>
           You understand the functionality, usage, storage, transmission mechanisms and intricacies associated with
-          Tokens as well as wallet (including Safe) and Blockchains.
+          Tokens as well as wallet (including Safe Account) and Blockchains.
         </li>
         <li>
           You understand that Transactions on the Blockchain are irreversible and may not be erased and that your Safe
-          address and Transactions are displayed permanently and publicly.
+          Account address and Transactions are displayed permanently and publicly.
         </li>
         <li>
           You will comply with any applicable tax obligations in your jurisdiction arising from your use of the
@@ -523,10 +524,10 @@ const SafeTerms = () => {
         is domiciled shall also apply, provided that these are more advantageous for the consumer than the provisions of
         the German law.
       </p>
-      <h3>24. How can you get support for the Safe and tell us about any problems?</h3>
+      <h3>24. How can you get support for the Safe Account and tell us about any problems?</h3>
       <p>
-        If you want to learn more about the Safe or the Service or have any problems using them or have any complaints
-        please get in touch via any of the following channels:
+        If you want to learn more about the Safe Account or the Service or have any problems using them or have any
+        complaints please get in touch via any of the following channels:
       </p>
       <ol start={1}>
         <li>

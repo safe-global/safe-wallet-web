@@ -210,7 +210,7 @@ const pairingModule = (): WalletInit => {
                 case ProviderMethods.ETH_SELECT_ACCOUNTS: {
                   throw new ProviderRpcError({
                     code: ProviderRpcErrorCode.UNSUPPORTED_METHOD,
-                    message: `The Mobile Safe does not support the requested method: ${method}`,
+                    message: `Safe{Wallet} mobile does not support the requested method: ${method}`,
                   })
                 }
 

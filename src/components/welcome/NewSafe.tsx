@@ -61,7 +61,7 @@ const NewSafe = () => {
             color="static.main"
             mb={1}
           >
-            Welcome to the Safe
+            Welcome to Safe{`Wallet`}
           </Typography>
 
           <Typography mb={5} color="static.main">
@@ -73,16 +73,16 @@ const NewSafe = () => {
               <Paper sx={{ padding: 4, height: 1 }}>
                 <SvgIcon component={NewSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                  Create Safe
+                  Create Safe Account
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  A new Safe that is controlled by one or multiple owners.
+                  A new Safe Account that is controlled by one or multiple owners.
                 </Typography>
 
                 <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
                   <Button variant="contained" onClick={() => router.push(AppRoutes.newSafe.create)}>
-                    + Create new Safe
+                    + Create new Safe Account
                   </Button>
                 </Track>
               </Paper>
@@ -92,16 +92,16 @@ const NewSafe = () => {
               <Paper sx={{ padding: 4, height: 1 }}>
                 <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                  Add existing Safe
+                  Add existing Safe Account
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  Already have a Safe? Add your Safe using your Safe address.
+                  Already have a Safe Account? Add your Safe Account using your Safe Account address.
                 </Typography>
 
                 <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
                   <Button variant="outlined" onClick={() => router.push(AppRoutes.newSafe.load)}>
-                    Add existing Safe
+                    Add existing Safe Account
                   </Button>
                 </Track>
               </Paper>
