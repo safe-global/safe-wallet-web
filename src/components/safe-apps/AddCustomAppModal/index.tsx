@@ -47,7 +47,7 @@ type CustomAppFormData = {
 
 const HELP_LINK = 'https://docs.safe.global/build/sdks/safe-apps'
 const APP_ALREADY_IN_THE_LIST_ERROR = 'This Safe{App} is already in the list'
-const MANIFEST_ERROR = "The Safe{App} doesn't support Safe{App} functionality"
+const MANIFEST_ERROR = "The app doesn't support Safe{App} functionality"
 const INVALID_URL_ERROR = 'The url is invalid'
 
 export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
