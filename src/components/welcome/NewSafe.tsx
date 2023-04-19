@@ -41,7 +41,7 @@ const NewSafe = () => {
         <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h4" display="inline" fontWeight={700}>
-              My Safes
+              My Safe Accounts
             </Typography>
           </AccordionSummary>
 

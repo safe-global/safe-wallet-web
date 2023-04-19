@@ -96,7 +96,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     <div className={css.container}>
       <div className={css.header}>
         <Typography variant="h4" display="inline" fontWeight={700}>
-          My Safes
+          My Safe Accounts
         </Typography>
 
         {!isWelcomePage && (
