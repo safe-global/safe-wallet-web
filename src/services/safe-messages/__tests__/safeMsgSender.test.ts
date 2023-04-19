@@ -85,10 +85,9 @@ describe('safeMsgSender', () => {
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
-      const requestId = '0x123'
       const safeAppId = 1
 
-      await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, requestId, safeAppId })
+      await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
 
       expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', hexZeroPad('0x789', 20), {
         message,
@@ -98,7 +97,6 @@ describe('safeMsgSender', () => {
 
       expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.PROPOSE, {
         messageHash: '0x123',
-        requestId,
       })
     })
 
@@ -132,10 +130,9 @@ describe('safeMsgSender', () => {
           test: 'Hello World!',
         },
       }
-      const requestId = '0x123'
       const safeAppId = 1
 
-      await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, requestId, safeAppId })
+      await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
 
       // Normalize message manually
       message.types['EIP712Domain'] = [
@@ -166,11 +163,10 @@ describe('safeMsgSender', () => {
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
-      const requestId = '0x123'
       const safeAppId = 1
 
       try {
-        await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, requestId, safeAppId })
+        await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
       } catch (e) {
         expect((e as Error).message).toBe('Example error')
 
@@ -203,9 +199,8 @@ describe('safeMsgSender', () => {
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
-      const requestId = '0x123'
 
-      await dispatchSafeMsgConfirmation({ onboard: mockOnboard, safe, message, requestId })
+      await dispatchSafeMsgConfirmation({ onboard: mockOnboard, safe, message })
 
       expect(confirmSafeMessageSpy).toHaveBeenCalledWith('5', '0x123', {
         signature: '0x456',
@@ -213,7 +208,6 @@ describe('safeMsgSender', () => {
 
       expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.CONFIRM_PROPOSE, {
         messageHash: '0x123',
-        requestId,
       })
     })
 
@@ -231,10 +225,9 @@ describe('safeMsgSender', () => {
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
-      const requestId = '0x123'
 
       try {
-        await dispatchSafeMsgConfirmation({ onboard: mockOnboard, safe, message, requestId })
+        await dispatchSafeMsgConfirmation({ onboard: mockOnboard, safe, message })
       } catch (e) {
         expect((e as Error).message).toBe('Example error')
 

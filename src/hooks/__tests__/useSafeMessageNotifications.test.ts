@@ -105,7 +105,7 @@ describe('useSafeMessageNotifications', () => {
   it('should show a notification when a message is created', () => {
     renderHook(() => useSafeMessageNotifications())
 
-    safeMsgDispatch(SafeMsgEvent.PROPOSE, { messageHash: '0x123', requestId: '123' })
+    safeMsgDispatch(SafeMsgEvent.PROPOSE, { messageHash: '0x123' })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'You successfully signed the message.',

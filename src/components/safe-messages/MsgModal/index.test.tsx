@@ -268,7 +268,6 @@ describe('MsgModal', () => {
           chainId: '5',
         } as SafeInfo,
         message: 'Hello world!',
-        requestId: '123',
         safeAppId: 25,
       }),
     )
@@ -335,7 +334,6 @@ describe('MsgModal', () => {
           chainId: '5',
         } as SafeInfo,
         message: 'Hello world!',
-        requestId: '123',
       }),
     )
   })

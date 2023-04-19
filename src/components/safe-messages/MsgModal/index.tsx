@@ -1,5 +1,5 @@
 import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon, Link, Stack } from '@mui/material'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -86,15 +86,20 @@ const MsgModal = ({
     return messageHash ?? generateSafeMessageHash(safe, decodedMessage)
   }, [messageHash, safe, decodedMessage])
 
-  const existingMessage = messages.page?.results
+  const ongoingMessage = messages.page?.results
     ?.filter(isSafeMessageListItem)
     .find((msg) => msg.messageHash === safeMessageHash)
-
-  const [ongoingMessage, setOngoingMessage] = useState<SafeMessage | undefined>(existingMessage)
 
   const hasSigned = !!ongoingMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
   const isDisabled = !isOwner || hasSigned || !onboard
+
+  // If the message gets updated in the messageSlice we dispatch it if the signature is prepared
+  useEffect(() => {
+    if (ongoingMessage?.preparedSignature) {
+      dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
+    }
+  }, [ongoingMessage, safe.chainId, safeMessageHash, onClose, requestId])
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
@@ -106,13 +111,26 @@ const MsgModal = ({
 
     try {
       // When collecting the first signature
-      if (requestId && !ongoingMessage) {
-        await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, requestId, safeAppId })
-        const message = await dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
-        setOngoingMessage(message)
+      if (!ongoingMessage) {
+        await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, safeAppId })
+
+        // If threshold 1, we do not want to wait for polling
+        if (safe.threshold === 1) {
+          await dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
+        }
       } else {
-        await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage, requestId })
-        dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
+        await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage })
+
+        // No requestID => we are in the confirm message dialog and do not need to leave the window open
+        if (!requestId) {
+          onClose()
+          return
+        }
+
+        // If the last signature was added to the message, we can immediately dispatch the signature
+        if (ongoingMessage?.confirmationsRequired === ongoingMessage.confirmationsSubmitted + 1) {
+          dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
+        }
       }
     } catch (e) {
       setSubmitError(e as Error)
@@ -120,12 +138,13 @@ const MsgModal = ({
   }, [onboard, requestId, ongoingMessage, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
 
   const handleClose = useCallback(() => {
-    if (!ongoingMessage || ongoingMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION) {
+    if (requestId && (!ongoingMessage || ongoingMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION)) {
+      // If we are in a Safe app modal we want to keep the modal open
       setShowCloseTooltip(true)
     } else {
       onClose()
     }
-  }, [onClose, ongoingMessage])
+  }, [onClose, ongoingMessage, requestId])
 
   const closeTooltipTitle = useMemo(
     () => (

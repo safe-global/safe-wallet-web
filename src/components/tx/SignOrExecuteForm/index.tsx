@@ -21,6 +21,7 @@ import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import {
   createTx,
+  dispatchOnChainSigning,
   dispatchTxExecution,
   dispatchTxProposal,
   dispatchTxRelay,
@@ -34,6 +35,7 @@ import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { WrongChainWarning } from '../WrongChainWarning'
+import { isSmartContractWallet } from '@/hooks/wallets/wallets'
 
 enum ExecutionType {
   RELAYER = 'Via relayer',
@@ -147,10 +149,8 @@ const SignOrExecuteForm = ({
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
-    const [_connectedWallet, createdTx, onboard] = assertDependencies()
+    const [connectedWallet, createdTx, onboard] = assertDependencies()
 
-    // Smart contract wallets must sign via an on-chain tx
-    /*
     if (await isSmartContractWallet(connectedWallet)) {
       // If the first signature is a smart contract wallet, we have to propose w/o signatures
       // Otherwise the backend won't pick up the tx
@@ -159,7 +159,6 @@ const SignOrExecuteForm = ({
       await dispatchOnChainSigning(createdTx, id, onboard, safe.chainId)
       return id
     }
-    */
 
     // Otherwise, sign off-chain
     const signedTx = await dispatchTxSigning(createdTx, safe.version, onboard, safe.chainId, txId)
