@@ -109,7 +109,7 @@ const SafeTerms = () => {
         <li>&ldquo;Safe&nbsp;App&rdquo;</li>
       </ol>
       <p>
-        You may access the Safe Account using the Safe{`{Wallet}`} web app, mobile app for iOS and android, or the
+        You may access the Safe Account using the Safe{'{Wallet}'} web app, mobile app for iOS and android, or the
         browser extension&nbsp;(each a &ldquo;Safe&nbsp;App&rdquo;). The Safe&nbsp;App may be used to manage your
         personal digital assets on Ethereum and other common EVM chains when you connect the Safe Account with
         third-party&nbsp;services (as defined below). The Safe&nbsp;App provides certain features that may be amended

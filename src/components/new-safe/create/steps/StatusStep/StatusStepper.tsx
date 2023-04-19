@@ -56,7 +56,7 @@ const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; 
       <Step>
         <StatusStep isLoading={status !== SafeCreationStatus.INDEXED} safeAddress={pendingSafe.safeAddress}>
           <Typography variant="body2" fontWeight="700">
-            Safe{`{Wallet}`} is ready
+            Safe Account is ready
           </Typography>
         </StatusStep>
       </Step>
