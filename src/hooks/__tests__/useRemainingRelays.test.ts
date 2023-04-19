@@ -4,9 +4,9 @@ import {
   useRemainingRelaysBySafe,
   SAFE_GELATO_RELAY_SERVICE_URL,
 } from '@/hooks/useRemainingRelays'
-import * as useSafeAddress from '@/hooks/useSafeAddress'
+import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as useChains from '@/hooks/useChains'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { FEATURES } from '@/utils/chains'
 
 const SAFE_ADDRESS = '0x0000000000000000000000000000000000000001'
@@ -16,12 +16,22 @@ describe('fetch remaining relays hooks', () => {
     jest
       .spyOn(useChains, 'useCurrentChain')
       .mockReturnValue({ chainId: '5', features: FEATURES.RELAYING } as unknown as ChainInfo)
-    jest.spyOn(useSafeAddress, 'default').mockReturnValue(SAFE_ADDRESS)
+    jest.spyOn(useSafeInfo, 'default').mockReturnValue({
+      safe: {
+        txHistoryTag: '0',
+      },
+      safeAddress: SAFE_ADDRESS,
+    } as ReturnType<typeof useSafeInfo.default>)
   })
 
   describe('useRemainingRelaysBySafe hook', () => {
     it('should not call fetch if empty safe address', () => {
-      jest.spyOn(useSafeAddress, 'default').mockReturnValue('')
+      jest.spyOn(useSafeInfo, 'default').mockReturnValue({
+        safe: {
+          txHistoryTag: '0',
+        },
+        safeAddress: '',
+      } as ReturnType<typeof useSafeInfo.default>)
 
       global.fetch = jest.fn()
       const mockFetch = jest.spyOn(global, 'fetch')
