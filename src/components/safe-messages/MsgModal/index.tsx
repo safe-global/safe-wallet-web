@@ -95,7 +95,7 @@ const MsgModal = ({
     setSubmitError(undefined)
 
     try {
-      // If you are connected through WC
+      // When collecting the first signature
       if (requestId && !ongoingMessage) {
         await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, requestId, safeAppId })
       } else {

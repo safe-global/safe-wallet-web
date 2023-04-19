@@ -284,12 +284,8 @@ describe('MsgModal', () => {
     )
 
     jest
-      .spyOn(useAsyncHook, 'default')
-      .mockReturnValue([
-        { confirmations: [] as SafeMessage['confirmations'] } as SafeMessage,
-        new Error('SafeMessage not found'),
-        false,
-      ])
+      .spyOn(usePollOffchainMessage, 'default')
+      .mockReturnValue({ confirmations: [] as SafeMessage['confirmations'] } as SafeMessage)
 
     const { getByText } = render(
       <MsgModal
@@ -306,7 +302,7 @@ describe('MsgModal', () => {
       Promise.resolve()
     })
 
-    const confirmationSpy = jest.spyOn(sender, 'dispatchSafeMsgProposal')
+    const confirmationSpy = jest.spyOn(sender, 'dispatchSafeMsgConfirmation')
 
     const button = getByText('Sign')
 

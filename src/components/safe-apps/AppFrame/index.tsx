@@ -204,19 +204,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   }, [appName, chainId, closeSignMessageModal, closeTxModal, communicator, signMessageModalState, txModalState])
 
   useEffect(() => {
-    const unsubFns = [SafeMsgEvent.SIGNATURE_PREPARED].map((event) => {
-      return safeMsgSubscribe(event, (details) => {
-        const requestId = 'requestId' in details ? details.requestId : undefined
-        const signature = 'signature' in details ? details.signature : undefined
-        if (signMessageModalState.requestId === requestId) {
-          communicator?.send({ messageHash: details.messageHash, signature }, requestId)
-        }
-      })
+    const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ messageHash, requestId, signature }) => {
+      if (signMessageModalState.requestId === requestId) {
+        communicator?.send({ messageHash, signature }, requestId)
+      }
     })
 
-    return () => {
-      unsubFns.forEach((unsub) => unsub())
-    }
+    return unsubscribe
   }, [communicator, signMessageModalState.requestId])
 
   const onSafeAppsModalClose = () => {

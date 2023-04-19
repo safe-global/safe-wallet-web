@@ -3,6 +3,10 @@ import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgE
 import { getSafeMessage, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import { Errors, logError } from '@/services/exceptions'
 
+const isMessageFullySigned = (message: SafeMessage): message is SafeMessage & { preparedSignature: string } => {
+  return message.confirmationsSubmitted >= message.confirmationsRequired && !!message.preparedSignature
+}
+
 const usePollOffchainMessage = (chainId: string, safeMessageHash: string, onClose: () => void, requestId?: string) => {
   const [ongoingMessage, setOngoingMessage] = useState<SafeMessage>()
   const [isPolling, setIsPolling] = useState(false)
@@ -16,7 +20,7 @@ const usePollOffchainMessage = (chainId: string, safeMessageHash: string, onClos
         setOngoingMessage(message)
         setIsPolling(true)
 
-        if (message.confirmationsSubmitted === message.confirmationsRequired && message.preparedSignature) {
+        if (isMessageFullySigned(message)) {
           setIsPolling(false)
           clearInterval(intervalId)
           safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, {
