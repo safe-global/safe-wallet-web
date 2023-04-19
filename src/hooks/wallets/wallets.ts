@@ -9,6 +9,7 @@ import ledgerModule from '@web3-onboard/ledger'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 import tallyhoModule from '@web3-onboard/tallyho'
+import phantomModule from '@web3-onboard/phantom'
 
 import pairingModule from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
@@ -25,6 +26,7 @@ export const enum WALLET_KEYS {
   TREZOR = 'TREZOR',
   WALLETCONNECT = 'WALLETCONNECT',
   TALLYHO = 'TALLYHO',
+  PHANTOM = 'PHANTOM',
 }
 
 export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
@@ -36,6 +38,7 @@ export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.TREZOR]: 'trezor',
   [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
   [WALLET_KEYS.TALLYHO]: 'tally',
+  [WALLET_KEYS.PHANTOM]: 'phantom',
 }
 
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
@@ -48,6 +51,7 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.TALLYHO]: tallyhoModule,
   [WALLET_KEYS.COINBASE]: () =>
     coinbaseModule({ darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches }),
+  [WALLET_KEYS.PHANTOM]: phantomModule,
 }
 
 export const getAllWallets = (): WalletInit[] => {

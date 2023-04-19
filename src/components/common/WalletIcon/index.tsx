@@ -6,6 +6,7 @@ import walletConnectIcon from '@web3-onboard/walletconnect/dist/icon'
 import trezorIcon from '@web3-onboard/trezor/dist/icon'
 import ledgerIcon from '@web3-onboard/ledger/dist/icon'
 import tallyhoIcon from '@web3-onboard/tallyho/dist/icon'
+import phantomIcon from '@web3-onboard/phantom/dist/icon'
 
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import pairingIcon from '@/services/pairing/icon'
@@ -32,6 +33,7 @@ const WALLET_ICONS: Props = {
   [WALLET_KEYS.LEDGER]: ledgerIcon,
   [WALLET_KEYS.PAIRING]: pairingIcon,
   [WALLET_KEYS.TALLYHO]: tallyhoIcon,
+  [WALLET_KEYS.PHANTOM]: phantomIcon,
 }
 
 // Labels may differ from ALL_WALLET_KEYS
