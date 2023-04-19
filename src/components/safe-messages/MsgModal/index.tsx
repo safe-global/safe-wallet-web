@@ -197,7 +197,11 @@ const MsgModal = ({
             />
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
-          {ongoingMessage && <MsgSigners msg={ongoingMessage} hideInitialItem />}
+          {ongoingMessage && (
+            <Box mt={2}>
+              <MsgSigners msg={ongoingMessage} showOnlyConfirmations />
+            </Box>
+          )}
           <Typography fontWeight={700} mt={2}>
             SafeMessage:
           </Typography>
