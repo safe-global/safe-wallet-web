@@ -19,6 +19,7 @@ import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafe
 import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 export type NewSafeFormData = {
   name: string
@@ -65,10 +66,7 @@ const staticHints: Record<
           <>
             Not sure how many owners and confirmations you need for your Safe?
             <br />
-            <ExternalLink
-              href="https://help.safe.global/en/articles/4772567-what-safe-setup-should-i-use"
-              fontWeight="bold"
-            >
+            <ExternalLink href={HelpCenterArticle.SAFE_SETUP} fontWeight="bold">
               Learn more about setting up your Safe.
             </ExternalLink>
           </>

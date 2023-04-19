@@ -8,7 +8,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import css from './styles.module.css'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import { SafeAppsTag, SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
+import { DISCORD_URL, SafeAppsTag } from '@/config/constants'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { OpenInNew } from '@mui/icons-material'
 import NetworkError from '@/public/images/common/network-error.svg'
@@ -36,7 +36,7 @@ const WidgetLoadErrorFallback = () => (
         <SvgIcon component={NetworkError} inheritViewBox className={css.loadErroricon} />
         <Typography variant="body1" color="text.primary">
           You can try to reload the page and in case the problem persists, please reach out to us via{' '}
-          <Link target="_blank" href={SAFE_APPS_SUPPORT_CHAT_URL} fontSize="medium">
+          <Link target="_blank" href={DISCORD_URL} fontSize="medium">
             Discord
             <OpenInNew fontSize="small" color="primary" className={css.loadErroricon} />
           </Link>

@@ -11,7 +11,7 @@ import InfiniteScroll from '@/components/common/InfiniteScroll'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import MsgList from '@/components/safe-messages/MsgList'
 import SkeletonTxList from '@/components/common/PaginatedTxns/SkeletonTxList'
-import { SIGNED_MESSAFES_HELP_LINK } from '@/components/transactions/SignedMessagesHelpLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 const NoMessages = (): ReactElement => {
   return (
@@ -24,7 +24,7 @@ const NoMessages = (): ReactElement => {
         </Typography>
       }
     >
-      <Link rel="noopener noreferrer" target="_blank" href={SIGNED_MESSAFES_HELP_LINK} fontWeight={700}>
+      <Link rel="noopener noreferrer" target="_blank" href={HelpCenterArticle.SIGNED_MESSAGES} fontWeight={700}>
         Learn more about off-chain messages{' '}
         <SvgIcon component={LinkIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', ml: 0.5 }} />
       </Link>
