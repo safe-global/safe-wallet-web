@@ -92,12 +92,7 @@ const trackWalletType = (wallet: ConnectedWallet) => {
 const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
 // Detect injected wallet
-const hasInjectedWallet = () => {
-  if (typeof window === 'undefined') {
-    return false
-  }
-  return !!window?.ethereum
-}
+const hasInjectedWallet = () => typeof window !== 'undefined' && !!window?.ethereum
 
 // `connectWallet` is called when connecting/switching wallets and on pairing `connect` event (when prev. session connects)
 // This re-entrant lock prevents multiple `connectWallet`/tracking calls that would otherwise occur for pairing module
