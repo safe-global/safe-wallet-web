@@ -92,7 +92,7 @@ export const settingsSlice = createSlice({
       state.env = payload
     },
     setSettings: (_, { payload }: PayloadAction<SettingsState>) => {
-      // We much return as we are overwriting the entire state
+      // We must return as we are overwriting the entire state
       // Preserve default nested settings if importing without
       return merge({}, initialState, payload)
     },
