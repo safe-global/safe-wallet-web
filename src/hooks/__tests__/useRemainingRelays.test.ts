@@ -60,6 +60,25 @@ describe('fetch remaining relays hooks', () => {
       renderHook(() => useRemainingRelaysBySafe())
       expect(mockFetch).toHaveBeenCalledTimes(0)
     })
+
+    it('refetch if the txHistoryTag changes', () => {
+      global.fetch = jest.fn()
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const render = renderHook(() => useRemainingRelaysBySafe())
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+
+      jest.spyOn(useSafeInfo, 'default').mockReturnValue({
+        safe: {
+          txHistoryTag: 'new',
+        },
+        safeAddress: SAFE_ADDRESS,
+      } as ReturnType<typeof useSafeInfo.default>)
+
+      render.rerender()
+
+      expect(mockFetch).toHaveBeenCalledTimes(2)
+    })
   })
 
   describe('useLeastRemainingRelays hook', () => {
@@ -142,6 +161,28 @@ describe('fetch remaining relays hooks', () => {
 
       renderHook(() => useLeastRemainingRelays(ownerAddresses))
       expect(mockFetch).toHaveBeenCalledTimes(0)
+    })
+
+    it('refetch if the txHistoryTag changes', () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({ remaining: 3 }),
+      })
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const render = renderHook(() => useLeastRemainingRelays(ownerAddresses))
+      expect(mockFetch).toHaveBeenCalledTimes(3)
+
+      jest.spyOn(useSafeInfo, 'default').mockReturnValue({
+        safe: {
+          txHistoryTag: 'new',
+        },
+        safeAddress: SAFE_ADDRESS,
+      } as ReturnType<typeof useSafeInfo.default>)
+
+      render.rerender()
+
+      expect(mockFetch).toHaveBeenCalledTimes(6)
     })
   })
 })
