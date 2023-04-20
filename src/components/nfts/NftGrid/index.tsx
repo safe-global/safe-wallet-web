@@ -83,7 +83,7 @@ const inactiveNftIcon = (
 
 const linksHeader = (
   <OnboardingTooltip
-    text="Please note that the links to OpenSea and Blur are provided only for viewing NFTs. Both these apps do not support the Safe Wallet right now."
+    text="Please note that the links to OpenSea and Blur are provided only for viewing NFTs. Both these apps do not support Safe Accounts right now."
     widgetLocalStorageId="tooltip_nft_links"
     placement="top"
   >

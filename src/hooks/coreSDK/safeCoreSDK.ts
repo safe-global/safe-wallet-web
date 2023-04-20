@@ -25,7 +25,7 @@ export const isValidSafeVersion = (safeVersion?: SafeInfo['version']): safeVersi
 
 // `assert` does not work with arrow functions
 export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersion?: T): asserts safeVersion {
-  return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe version`)
+  return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe Account version`)
 }
 
 export const createEthersAdapter = (provider: Web3Provider) => {

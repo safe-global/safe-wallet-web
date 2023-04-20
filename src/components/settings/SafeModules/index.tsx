@@ -39,15 +39,15 @@ const SafeModules = () => {
       <Grid container direction="row" justifyContent="space-between" spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
-            Safe modules
+            Safe Account modules
           </Typography>
         </Grid>
 
         <Grid item xs>
           <Box>
             <Typography>
-              Modules allow you to customize the access-control logic of your Safe. Modules are potentially risky, so
-              make sure to only use modules from trusted sources. Learn more about modules{' '}
+              Modules allow you to customize the access-control logic of your Safe Account. Modules are potentially
+              risky, so make sure to only use modules from trusted sources. Learn more about modules{' '}
               <ExternalLink href="https://docs.safe.global/contracts/modules-1">here</ExternalLink>
             </Typography>
             {safeModules.length === 0 ? (

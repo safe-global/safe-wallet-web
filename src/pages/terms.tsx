@@ -6,7 +6,7 @@ const Imprint: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – Terms</title>
+        <title>Safe{'{Wallet}'} – Terms</title>
       </Head>
 
       <main>

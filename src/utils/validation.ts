@@ -40,7 +40,7 @@ export const uniqueAddress =
 export const addressIsNotCurrentSafe =
   (safeAddress: string) =>
   (address: string): string | undefined => {
-    const OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe itself as owner.'
+    const OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe Account itself as owner.'
     return sameAddress(safeAddress, address) ? OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR : undefined
   }
 

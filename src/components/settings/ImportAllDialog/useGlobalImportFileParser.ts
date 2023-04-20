@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 const V1 = '1.0'
 
 export enum ImportErrors {
-  INVALID_VERSION = 'The file is not a Safe export.',
+  INVALID_VERSION = 'The file is not a Safe{Wallet} export.',
   INVALID_JSON_FORMAT = 'The JSON format is invalid.',
   NO_IMPORT_DATA_FOUND = 'This file contains no importable data.',
 }
