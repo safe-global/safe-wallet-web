@@ -128,7 +128,7 @@ const MsgModal = ({
         }
 
         // If the last signature was added to the message, we can immediately dispatch the signature
-        if (ongoingMessage?.confirmationsRequired === ongoingMessage.confirmationsSubmitted + 1) {
+        if (ongoingMessage.confirmationsRequired <= ongoingMessage.confirmationsSubmitted + 1) {
           dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
         }
       }
@@ -138,7 +138,7 @@ const MsgModal = ({
   }, [onboard, requestId, ongoingMessage, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
 
   const handleClose = useCallback(() => {
-    if (requestId && (!ongoingMessage || ongoingMessage?.status === SafeMessageStatus.NEEDS_CONFIRMATION)) {
+    if (requestId && (!ongoingMessage || ongoingMessage.status === SafeMessageStatus.NEEDS_CONFIRMATION)) {
       // If we are in a Safe app modal we want to keep the modal open
       setShowCloseTooltip(true)
     } else {

@@ -101,19 +101,20 @@ export const dispatchPreparedSignature = async (
   onClose: () => void,
   requestId?: string,
 ) => {
+  let message
   try {
     // the response has to be a SafeMessage as it is the only type with safeMessageHash
-    const message = (await getSafeMessage(chainId, safeMessageHash)) as SafeMessage
+    message = (await getSafeMessage(chainId, safeMessageHash)) as SafeMessage
+  } catch (err) {
+    logError(Errors._613, (err as Error).message)
+  }
 
-    if (!isMessageFullySigned(message)) return message
-
+  if (message && isMessageFullySigned(message)) {
     safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, {
       messageHash: safeMessageHash,
       requestId,
       signature: message.preparedSignature,
     })
     onClose()
-  } catch (err) {
-    logError(Errors._613, (err as Error).message)
   }
 }
