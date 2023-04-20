@@ -1,5 +1,5 @@
 import useAsync from '@/hooks/useAsync'
-import useSafeAddress from '@/hooks/useSafeAddress'
+import useSafeInfo from './useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
 import {
   IS_PRODUCTION,
@@ -31,20 +31,21 @@ const fetchRemainingRelays = async (chainId: string, address: string): Promise<n
 
 export const useRemainingRelaysBySafe = () => {
   const chain = useCurrentChain()
-  const safeAddress = useSafeAddress()
+  const { safe, safeAddress } = useSafeInfo()
   const [isRelayingEnabled] = useRelayingDebugger()
 
   return useAsync(() => {
     if (!safeAddress || !chain || !hasFeature(chain, FEATURES.RELAYING) || !isRelayingEnabled) return
 
     return fetchRemainingRelays(chain.chainId, safeAddress)
-  }, [chain, safeAddress])
+  }, [chain, safeAddress, safe.txHistoryTag])
 }
 
 const getMinimum = (result: number[]) => Math.min(...result)
 
 export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
   const chain = useCurrentChain()
+  const { safe } = useSafeInfo()
   const [isRelayingEnabled] = useRelayingDebugger()
 
   return useAsync(async () => {
@@ -53,5 +54,5 @@ export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
     const result = await Promise.all(ownerAddresses.map((address) => fetchRemainingRelays(chain.chainId, address)))
 
     return getMinimum(result)
-  }, [chain, ownerAddresses])
+  }, [chain, ownerAddresses, safe.txHistoryTag])
 }
