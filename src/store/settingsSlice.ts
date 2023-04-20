@@ -28,7 +28,7 @@ const initialState: SettingsState = {
   shortName: {
     show: true,
     copy: true,
-    qr: true,
+    qr: false,
   },
   theme: {},
 }
