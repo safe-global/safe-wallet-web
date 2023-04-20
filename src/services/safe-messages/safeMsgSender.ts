@@ -1,6 +1,5 @@
 import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import type { RequestId } from '@safe-global/safe-apps-sdk'
 import { isObjectEIP712TypedData } from '@safe-global/safe-apps-sdk'
 import type { TypedDataDomain } from 'ethers'
 import type { OnboardAPI } from '@web3-onboard/core'
@@ -14,13 +13,11 @@ export const dispatchSafeMsgProposal = async ({
   onboard,
   safe,
   message,
-  requestId,
   safeAppId,
 }: {
   onboard: OnboardAPI
   safe: SafeInfo
   message: SafeMessage['message']
-  requestId: RequestId
   safeAppId?: number
 }): Promise<void> => {
   const messageHash = generateSafeMessageHash(safe, message)
@@ -52,8 +49,6 @@ export const dispatchSafeMsgProposal = async ({
 
   safeMsgDispatch(SafeMsgEvent.PROPOSE, {
     messageHash,
-    requestId,
-    signature: safe.threshold === 1 ? signature : undefined,
   })
 }
 
@@ -61,12 +56,10 @@ export const dispatchSafeMsgConfirmation = async ({
   onboard,
   safe,
   message,
-  requestId,
 }: {
   onboard: OnboardAPI
   safe: SafeInfo
   message: SafeMessage['message']
-  requestId?: RequestId
 }): Promise<void> => {
   const messageHash = generateSafeMessageHash(safe, message)
 
@@ -94,6 +87,5 @@ export const dispatchSafeMsgConfirmation = async ({
 
   safeMsgDispatch(SafeMsgEvent.CONFIRM_PROPOSE, {
     messageHash,
-    requestId,
   })
 }

@@ -1,6 +1,6 @@
-import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } from '@mui/material'
-import { useCallback, useMemo, useState } from 'react'
-import { getSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon, Link, Stack } from '@mui/material'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
@@ -15,16 +15,18 @@ import { generateSafeMessageHash, generateSafeMessageMessage } from '@/utils/saf
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeMessages from '@/hooks/useSafeMessages'
-import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import useOnboard from '@/hooks/wallets/useOnboard'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import MsgSigners from '@/components/safe-messages/MsgSigners'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { isSafeMessageListItem } from '@/utils/safe-message-guards'
+import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -58,6 +60,7 @@ const MsgModal = ({
 }: ProposeProps | ConfirmProps): ReactElement => {
   // Hooks & variables
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [showCloseTooltip, setShowCloseTooltip] = useState<boolean>(false)
 
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
@@ -80,18 +83,20 @@ const MsgModal = ({
     return messageHash ?? generateSafeMessageHash(safe, decodedMessage)
   }, [messageHash, safe, decodedMessage])
 
-  // Get already proposed message
-  const [alreadyProposedMessage] = useAsync<SafeMessage | Omit<SafeMessage, 'type'>>(() => {
-    const localMessage = messages.page?.results
-      .filter(isSafeMessageListItem)
-      .find((message) => message.messageHash === messageHash)
+  const ongoingMessage = messages.page?.results
+    ?.filter(isSafeMessageListItem)
+    .find((msg) => msg.messageHash === safeMessageHash)
 
-    return localMessage ? Promise.resolve(localMessage) : getSafeMessage(safe.chainId, safeMessageHash)
-  }, [safe.chainId, messageHash, safeMessageHash])
-
-  const hasSigned = !!alreadyProposedMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
+  const hasSigned = !!ongoingMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
 
   const isDisabled = !isOwner || hasSigned || !onboard
+
+  // If the message gets updated in the messageSlice we dispatch it if the signature is prepared
+  useEffect(() => {
+    if (ongoingMessage?.preparedSignature) {
+      dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
+    }
+  }, [ongoingMessage, safe.chainId, safeMessageHash, onClose, requestId])
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
@@ -102,22 +107,59 @@ const MsgModal = ({
     setSubmitError(undefined)
 
     try {
-      if (requestId && !alreadyProposedMessage) {
-        await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, requestId, safeAppId })
-      } else {
-        await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage, requestId })
-      }
+      // When collecting the first signature
+      if (!ongoingMessage) {
+        await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, safeAppId })
 
-      onClose()
+        // If threshold 1, we do not want to wait for polling
+        if (safe.threshold === 1) {
+          await dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
+        }
+      } else {
+        await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage })
+
+        // No requestID => we are in the confirm message dialog and do not need to leave the window open
+        if (!requestId) {
+          onClose()
+          return
+        }
+
+        // If the last signature was added to the message, we can immediately dispatch the signature
+        if (ongoingMessage.confirmationsRequired <= ongoingMessage.confirmationsSubmitted + 1) {
+          dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
+        }
+      }
     } catch (e) {
       setSubmitError(e as Error)
     }
-  }, [alreadyProposedMessage, decodedMessage, onClose, requestId, safe, safeAppId, onboard])
+  }, [onboard, requestId, ongoingMessage, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
+
+  const handleClose = useCallback(() => {
+    if (requestId && (!ongoingMessage || ongoingMessage.status === SafeMessageStatus.NEEDS_CONFIRMATION)) {
+      // If we are in a Safe app modal we want to keep the modal open
+      setShowCloseTooltip(true)
+    } else {
+      onClose()
+    }
+  }, [onClose, ongoingMessage, requestId])
+
+  const closeTooltipTitle = useMemo(
+    () => (
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', padding: '8px' }}>
+        <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" />
+        <Typography>The signature is incomplete. If you submit the form now, it will be discarded.</Typography>
+        <Link onClick={onClose} component="button" variant="body1" sx={{ textDecoration: 'none' }}>
+          Discard signature
+        </Link>
+      </Stack>
+    ),
+    [onClose],
+  )
 
   return (
-    <ModalDialog open onClose={onClose} maxWidth="sm" fullWidth>
+    <ModalDialog open onClose={handleClose} maxWidth="sm" fullWidth>
       <div className={txStepperCss.container}>
-        <ModalDialogTitle onClose={onClose}>
+        <ModalDialogTitle onClose={handleClose} closeButtonTooltip={showCloseTooltip ? closeTooltipTitle : undefined}>
           <Grid container px={1} alignItems="center" gap={2}>
             <Grid item>
               <Box display="flex" alignItems="center">
@@ -152,6 +194,11 @@ const MsgModal = ({
             />
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
+          {ongoingMessage && (
+            <Box mt={2}>
+              <MsgSigners msg={ongoingMessage} showOnlyConfirmations />
+            </Box>
+          )}
           <Typography fontWeight={700} mt={2}>
             SafeMessage:
           </Typography>
