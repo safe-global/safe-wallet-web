@@ -16,6 +16,7 @@ import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { isEmptyHexData } from '@/utils/hex'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { ErrorBoundary } from '@sentry/react'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -47,7 +48,11 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
 
   return (
     <Box mb={2}>
-      {decodedData && txDetails?.txData && <ApprovalEditor txs={{ ...decodedData, to: txDetails.txData.to.value }} />}
+      {decodedData && txDetails?.txData && (
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor txs={{ ...decodedData, to: txDetails.txData.to.value }} />
+        </ErrorBoundary>
+      )}
       <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>Transaction details</AccordionSummary>
 

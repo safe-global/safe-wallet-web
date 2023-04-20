@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { getDecodedData, Operation } from '@safe-global/safe-gateway-typescript-sdk'
+import { ErrorBoundary } from '@sentry/react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { Box, Typography } from '@mui/material'
@@ -74,7 +75,9 @@ const ReviewSafeAppsTx = ({
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
       <>
-        <ApprovalEditor txs={txList} updateTxs={setTxList} />
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor txs={txList} updateTxs={setTxList} />
+        </ErrorBoundary>
         <SendFromBlock />
         {safeTx && (
           <>
