@@ -1,9 +1,8 @@
-import { proposeSafeMessage, confirmSafeMessage, getSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import { isObjectEIP712TypedData } from '@safe-global/safe-apps-sdk'
 import type { TypedDataDomain } from 'ethers'
 import type { OnboardAPI } from '@web3-onboard/core'
-import { Errors, logError } from '@/services/exceptions'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
 import { generateSafeMessageHash, generateSafeMessageTypedData } from '@/utils/safe-messages'
@@ -89,32 +88,4 @@ export const dispatchSafeMsgConfirmation = async ({
   safeMsgDispatch(SafeMsgEvent.CONFIRM_PROPOSE, {
     messageHash,
   })
-}
-
-const isMessageFullySigned = (message: SafeMessage): message is SafeMessage & { preparedSignature: string } => {
-  return message.confirmationsSubmitted >= message.confirmationsRequired && !!message.preparedSignature
-}
-
-export const dispatchPreparedSignature = async (
-  chainId: string,
-  safeMessageHash: string,
-  onClose: () => void,
-  requestId?: string,
-) => {
-  let message
-  try {
-    // the response has to be a SafeMessage as it is the only type with safeMessageHash
-    message = (await getSafeMessage(chainId, safeMessageHash)) as SafeMessage
-  } catch (err) {
-    logError(Errors._613, (err as Error).message)
-  }
-
-  if (message && isMessageFullySigned(message)) {
-    safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, {
-      messageHash: safeMessageHash,
-      requestId,
-      signature: message.preparedSignature,
-    })
-    onClose()
-  }
 }

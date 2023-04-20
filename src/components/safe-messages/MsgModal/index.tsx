@@ -9,11 +9,7 @@ import ModalDialog, { ModalDialogTitle } from '@/components/common/ModalDialog'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import RequiredIcon from '@/public/images/messages/required.svg'
-import {
-  dispatchPreparedSignature,
-  dispatchSafeMsgConfirmation,
-  dispatchSafeMsgProposal,
-} from '@/services/safe-messages/safeMsgSender'
+import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { generateSafeMessageHash, generateSafeMessageMessage } from '@/utils/safe-messages'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
@@ -30,6 +26,7 @@ import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
+import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
