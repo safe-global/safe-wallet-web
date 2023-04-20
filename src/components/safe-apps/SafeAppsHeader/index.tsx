@@ -12,7 +12,7 @@ const SafeAppsHeader = (): ReactElement => {
       <Box className={css.container}>
         {/* Safe Apps Title */}
         <Typography className={css.title} variant="h3">
-          Explore the Safe Apps ecosystem
+          Explore the Safe{'{Apps}'} ecosystem
         </Typography>
 
         {/* Safe Apps Subtitle */}

@@ -47,7 +47,7 @@ import useGetSafeInfo from './useGetSafeInfo'
 import { hasFeature, FEATURES } from '@/utils/chains'
 import { selectTokenList, TOKEN_LISTS } from '@/store/settingsSlice'
 
-const UNKNOWN_APP_NAME = 'Unknown App'
+const UNKNOWN_APP_NAME = 'Unknown Safe{App}'
 
 type AppFrameProps = {
   appUrl: string
@@ -248,7 +248,9 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   return (
     <>
       <Head>
-        <title>Safe Apps - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}</title>
+        <title>
+          Safe{'{Apps}'} - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}
+        </title>
       </Head>
 
       <div className={css.wrapper}>
@@ -258,7 +260,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           <div className={css.loadingContainer}>
             {isLoadingSlow && (
               <Typography variant="h4" gutterBottom>
-                The Safe App is taking too long to load, consider refreshing.
+                The Safe{'{App}'} is taking too long to load, consider refreshing.
               </Typography>
             )}
             <CircularProgress size={48} color="primary" />
