@@ -1,12 +1,12 @@
 import { type ReactElement } from 'react'
-import { Box, Switch, DialogContent, FormControlLabel, Typography } from '@mui/material'
+import { Box, DialogContent, Typography } from '@mui/material'
 import ModalDialog from '@/components/common/ModalDialog'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useCurrentChain } from '@/hooks/useChains'
 import QRCode from '@/components/common/QRCode'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSettings, setQrShortName } from '@/store/settingsSlice'
+import { selectSettings } from '@/store/settingsSlice'
 
 const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
   const safeAddress = useSafeAddress()
@@ -35,19 +35,8 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
             <QRCode value={qrCode} size={164} />
           </Box>
 
-          <FormControlLabel
-            control={
-              <Switch checked={settings.shortName.qr} onChange={(e) => dispatch(setQrShortName(e.target.checked))} />
-            }
-            label={
-              <>
-                QR code with chain prefix (<b>{chain?.shortName}:</b>)
-              </>
-            }
-          />
-
           <Box mt={2}>
-            <EthHashInfo address={safeAddress} shortAddress={false} hasExplorer showCopyButton />
+            <EthHashInfo address={safeAddress} shortAddress={false} hasExplorer showCopyButton showPrefix={false} />
           </Box>
         </Box>
       </DialogContent>
