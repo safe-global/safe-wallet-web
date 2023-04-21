@@ -1,17 +1,17 @@
 export const SECURITY_PRACTICES = [
   {
     id: '1',
-    title: 'Always load Safe Apps from trusted sources.',
+    title: 'Always load a Safe{App} from trusted sources.',
     imageSrc: './safe-apps-security-practices/1.png',
   },
   {
     id: '2',
-    title: 'Check the Safe App link you are trying to use.',
+    title: 'Check the Safe{App} link you are trying to use.',
     subtitle: 'Do you know the domain and trust it?',
   },
   {
     id: '3',
-    title: 'Always check transaction information while creating it, before proposing it to the Safe.',
+    title: 'Always check transaction information while creating it, before proposing it to the Safe Account.',
     imageSrc: './safe-apps-security-practices/2.png',
   },
   {

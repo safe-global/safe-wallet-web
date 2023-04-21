@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Grid, Paper, Skeleton, SvgIcon, Tooltip, Typography } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { ContractVersion } from '@/components/settings/ContractVersion'
 import { OwnerList } from '@/components/settings/owner/OwnerList'
@@ -9,7 +9,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
 
 const Setup: NextPage = () => {
-  const { safe } = useSafeInfo()
+  const { safe, safeLoaded } = useSafeInfo()
   const nonce = safe.nonce
   const ownerLength = safe.owners.length
   const threshold = safe.threshold
@@ -17,7 +17,7 @@ const Setup: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – Settings – Setup</title>
+        <title>Safe{'{Wallet}'} – Settings – Setup</title>
       </Head>
 
       <SettingsHeader />
@@ -27,10 +27,10 @@ const Setup: NextPage = () => {
           <Grid container spacing={3}>
             <Grid item lg={4} xs={12}>
               <Typography variant="h4" fontWeight={700}>
-                Safe nonce
+                Safe Account nonce
                 <Tooltip
                   placement="top"
-                  title="For security reasons, transactions made with Safe need to be executed in order. The nonce shows you which transaction will be executed next. You can find the nonce for a transaction in the transaction details."
+                  title="For security reasons, transactions made with a Safe Account need to be executed in order. The nonce shows you which transaction will be executed next. You can find the nonce for a transaction in the transaction details."
                 >
                   <span>
                     <SvgIcon
@@ -45,7 +45,8 @@ const Setup: NextPage = () => {
               </Typography>
 
               <Typography pt={1}>
-                Current nonce: <b>{nonce}</b>
+                Current nonce:{' '}
+                {safeLoaded ? <b>{nonce}</b> : <Skeleton width="30px" sx={{ display: 'inline-block' }} />}
               </Typography>
             </Grid>
 

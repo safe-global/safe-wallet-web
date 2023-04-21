@@ -5,7 +5,6 @@ import { useState } from 'react'
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -13,6 +12,7 @@ import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import Track from '@/components/common/Track'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
+import { createUpdateThresholdTx } from '@/services/tx/tx-sender'
 import CheckWallet from '@/components/common/CheckWallet'
 
 interface ChangeThresholdData {
@@ -54,7 +54,6 @@ export const ChangeThresholdDialog = () => {
 
 const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: () => void }) => {
   const { safe } = useSafeInfo()
-  const { createUpdateThresholdTx } = useTxSender()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(safe.threshold)
   const [isChanged, setChanged] = useState<boolean>(false)
   const isSameThreshold = selectedThreshold === safe.threshold
@@ -69,9 +68,9 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
     if (!selectedThreshold) return
 
     return createUpdateThresholdTx(selectedThreshold)
-  }, [selectedThreshold, createUpdateThresholdTx])
+  }, [selectedThreshold])
 
-  const onChangeTheshold = () => {
+  const onChangeThreshold = () => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: selectedThreshold })
 
@@ -117,7 +116,7 @@ const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; on
       <Box mt={-5}>
         <SignOrExecuteForm
           safeTx={safeTx}
-          onSubmit={onChangeTheshold}
+          onSubmit={onChangeThreshold}
           error={safeTxError}
           disableSubmit={isSameThreshold}
         />

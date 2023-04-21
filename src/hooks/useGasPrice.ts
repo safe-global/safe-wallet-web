@@ -10,7 +10,7 @@ import { useWeb3ReadOnly } from '../hooks/wallets/web3'
 import { Errors, logError } from '@/services/exceptions'
 import { FEATURES, hasFeature } from '@/utils/chains'
 
-// Updat gas fees every 20 seconds
+// Update gas fees every 20 seconds
 const REFRESH_DELAY = 20e3
 
 // Loop over the oracles and return the first one that works.

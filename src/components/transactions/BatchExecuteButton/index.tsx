@@ -8,7 +8,6 @@ import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import useWallet from '@/hooks/wallets/useWallet'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useTxQueue from '@/hooks/useTxQueue'
 
 const BatchExecuteButton = () => {
@@ -18,11 +17,10 @@ const BatchExecuteButton = () => {
   const { page } = useTxQueue()
   const batchableTransactions = useBatchedTxs(page?.results || [])
   const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
 
   const isBatchable = batchableTransactions.length > 1
   const hasPendingTx = batchableTransactions.some((tx) => pendingTxs[tx.transaction.id])
-  const isDisabled = !isBatchable || hasPendingTx || !wallet || isWrongChain
+  const isDisabled = !isBatchable || hasPendingTx || !wallet
 
   const handleOnMouseEnter = useCallback(() => {
     hoverContext.setActiveHover(batchableTransactions.map((tx) => tx.transaction.id))
@@ -48,7 +46,7 @@ const BatchExecuteButton = () => {
         arrow
         title={
           isDisabled
-            ? 'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe nonce.'
+            ? 'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe Account nonce.'
             : 'All transactions highlighted in light green will be included in the batch execution.'
         }
       >

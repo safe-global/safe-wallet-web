@@ -17,11 +17,13 @@ import { generateDataRowValue } from '@/components/transactions/TxDetails/Summar
 import type { SafeAppsSignMessageParams } from '@/components/safe-apps/SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
-import { getSignMessageLibDeploymentContractInstance } from '@/services/contracts/safeContracts'
-import useTxSender from '@/hooks/useTxSender'
+import { getReadOnlySignMessageLibContract } from '@/services/contracts/safeContracts'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
+import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams
@@ -31,14 +33,15 @@ const ReviewSafeAppsSignMessage = ({
   safeAppsSignMessage: { message, method, requestId },
 }: ReviewSafeAppsSignMessageProps): ReactElement => {
   const chainId = useChainId()
-  const { createTx, dispatchSafeAppsTx } = useTxSender()
+  const { safe } = useSafeInfo()
+  const onboard = useOnboard()
   const [submitError, setSubmitError] = useState<Error>()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
 
-  const signMessageDeploymentInstance = useMemo(() => getSignMessageLibDeploymentContractInstance(chainId), [chainId])
-  const signMessageAddress = signMessageDeploymentInstance.getAddress()
+  const readOnlySignMessageLibContract = useMemo(() => getReadOnlySignMessageLibContract(chainId), [chainId])
+  const signMessageAddress = readOnlySignMessageLibContract.getAddress()
 
   const [decodedMessage, readableMessage] = useMemo(() => {
     if (isTextMessage) {
@@ -54,7 +57,7 @@ const ReviewSafeAppsSignMessage = ({
     let txData
 
     if (isTextMessage) {
-      txData = signMessageDeploymentInstance.encode('signMessage', [hashMessage(getDecodedMessage(message))])
+      txData = readOnlySignMessageLibContract.encode('signMessage', [hashMessage(getDecodedMessage(message))])
     } else if (isTypedMessage) {
       const typesCopy = { ...message.types }
 
@@ -63,7 +66,7 @@ const ReviewSafeAppsSignMessage = ({
       // The types are not allowed to be recursive, so ever type must either be used by another type, or be
       // the primary type. And there must only be one type that is not used by any other type.
       delete typesCopy.EIP712Domain
-      txData = signMessageDeploymentInstance.encode('signMessage', [
+      txData = readOnlySignMessageLibContract.encode('signMessage', [
         _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
@@ -74,13 +77,13 @@ const ReviewSafeAppsSignMessage = ({
       data: txData || '0x',
       operation: OperationType.DelegateCall,
     })
-  }, [message, createTx])
+  }, [message])
 
   const handleSubmit = async () => {
     setSubmitError(undefined)
-    if (!safeTx) return
+    if (!safeTx || !onboard) return
     try {
-      await dispatchSafeAppsTx(safeTx, requestId)
+      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
       setSubmitError(error as Error)
     }
@@ -115,7 +118,9 @@ const ReviewSafeAppsSignMessage = ({
 
         <Box display="flex" alignItems="center" my={2}>
           <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
-          <Typography ml={1}>Signing a message with the Safe requires a transaction on the blockchain</Typography>
+          <Typography ml={1}>
+            Signing a message with your Safe Account requires a transaction on the blockchain
+          </Typography>
         </Box>
       </>
     </SignOrExecuteForm>

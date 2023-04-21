@@ -30,6 +30,11 @@
   width: auto;
   display: block;
   color: var(--color-logo-main);
+  height: 20px;
+}
+
+.logo {
+  padding: var(--space-2);
 }
 
 .menuButton {
@@ -40,6 +45,10 @@
   padding-right: 0;
   padding-left: 0;
   border-right: none;
+}
+
+.connectWallet {
+  flex-shrink: 0;
 }
 
 @media (max-width: 900px) {

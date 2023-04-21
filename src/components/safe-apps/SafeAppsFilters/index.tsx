@@ -18,7 +18,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import type { SelectChangeEvent } from '@mui/material/Select'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { filterInternalCategories } from '@/components/safe-apps/utils'
+import { getUniqueTags } from '@/components/safe-apps/utils'
 import SearchIcon from '@/public/images/common/search.svg'
 import BatchIcon from '@/public/images/apps/batch-icon.svg'
 import css from './styles.module.css'
@@ -52,7 +52,7 @@ const SafeAppsFilters = ({
         <TextField
           id="search-by-name"
           placeholder="Search by name or category"
-          aria-label="Search Safe App by name"
+          aria-label="Search Safe{App} by name"
           variant="filled"
           hiddenLabel
           onChange={(e) => {
@@ -191,21 +191,8 @@ const categoryMenuProps = {
 }
 
 const getCategoryOptions = (safeAppList: SafeAppData[]): safeAppCatogoryOptionType[] => {
-  return safeAppList.reduce<safeAppCatogoryOptionType[]>((categoryOptions, safeApp) => {
-    // we filter internal categories
-    const categories = filterInternalCategories(safeApp.tags)
-
-    // avoid repeated categories
-    const removeRepeatedCategories = categories.filter(
-      (category) => !categoryOptions.some((option) => option.value === category),
-    )
-
-    // from string[] to Object[] (label & value)
-    const newCategoryOptions = removeRepeatedCategories.map((category) => ({
-      label: category,
-      value: category,
-    }))
-
-    return [...categoryOptions, ...newCategoryOptions]
-  }, [])
+  return getUniqueTags(safeAppList).map((category) => ({
+    label: category,
+    value: category,
+  }))
 }

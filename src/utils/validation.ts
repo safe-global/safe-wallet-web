@@ -40,24 +40,24 @@ export const uniqueAddress =
 export const addressIsNotCurrentSafe =
   (safeAddress: string) =>
   (address: string): string | undefined => {
-    const OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe itself as owner.'
+    const OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe Account itself as owner.'
     return sameAddress(safeAddress, address) ? OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR : undefined
   }
 
 export const FLOAT_REGEX = /^[0-9]+([,.][0-9]+)?$/
 
-export const validateAmount = (amount?: string) => {
+export const validateAmount = (amount?: string, includingZero: boolean = false) => {
   if (!amount || isNaN(Number(amount))) {
     return 'The value must be a number'
   }
 
-  if (parseFloat(amount) <= 0) {
+  if (includingZero ? parseFloat(amount) < 0 : parseFloat(amount) <= 0) {
     return 'The value must be greater than 0'
   }
 }
 
 export const validateLimitedAmount = (amount: string, decimals?: number, max?: string) => {
-  if (!decimals || !max) return
+  if (typeof decimals === 'undefined' || !max) return
 
   const numberError = validateAmount(amount)
   if (numberError) {
@@ -70,8 +70,12 @@ export const validateLimitedAmount = (amount: string, decimals?: number, max?: s
 }
 
 export const validateDecimalLength = (value: string, maxLen?: number, minLen = 1) => {
-  if (!maxLen || !value.includes('.')) {
+  if (typeof maxLen === 'undefined' || !value.includes('.')) {
     return
+  }
+
+  if (maxLen === 0) {
+    return 'Should not have decimals'
   }
 
   const decimals = value.split('.')[1] || ''

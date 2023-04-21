@@ -41,6 +41,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x123' },
           implementationVersionState: 'OUTDATED',
           version: '1.1.1',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
         safeAddress: '0x123',
       })
@@ -52,15 +56,16 @@ describe('useSafeNotifications', () => {
       expect(result.current).toBeUndefined()
       expect(showNotification).toHaveBeenCalledWith({
         variant: 'warning',
-        message: `Your Safe version 1.1.1 is out of date. Please update it.`,
+        message: `Your Safe Account version 1.1.1 is out of date. Please update it.`,
         groupKey: 'safe-outdated-version',
         link: {
           href: {
             pathname: '/settings/setup',
             query: { safe: 'eth:0x123' },
           },
-          title: 'Update Safe',
+          title: 'Update Safe Account',
         },
+        onClose: expect.anything(),
       })
     })
 
@@ -71,6 +76,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x123' },
           implementationVersionState: 'OUTDATED',
           version: '0.0.1',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
         safeAddress: '0x123',
       })
@@ -82,12 +91,13 @@ describe('useSafeNotifications', () => {
       expect(result.current).toBeUndefined()
       expect(showNotification).toHaveBeenCalledWith({
         variant: 'warning',
-        message: `Safe version 0.0.1 is not supported by this web app anymore. You can update your Safe via the CLI.`,
+        message: `Safe Account version 0.0.1 is not supported by this web app anymore. You can update your Safe Account via the CLI.`,
         groupKey: 'safe-outdated-version',
         link: {
           href: 'https://github.com/5afe/safe-cli',
           title: 'Get CLI',
         },
+        onClose: expect.anything(),
       })
     })
 
@@ -97,6 +107,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x123' },
           implementationVersionState: 'UP_TO_DATE',
           version: '1.3.0',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
       })
 
@@ -116,6 +130,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x123' },
           implementationVersionState: 'UNKNOWN',
           version: '1.3.0',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
       })
 
@@ -126,7 +144,7 @@ describe('useSafeNotifications', () => {
       expect(result.current).toBeUndefined()
       expect(showNotification).toHaveBeenCalledWith({
         variant: 'warning',
-        message: `This Safe was created with an unsupported base contract.
+        message: `This Safe Account was created with an unsupported base contract.
            The web interface might not work correctly.
            We recommend using the command line interface instead.`,
         groupKey: 'invalid-mastercopy',
@@ -142,6 +160,10 @@ describe('useSafeNotifications', () => {
           implementation: { value: '0x456' },
           implementationVersionState: 'UP_TO_DATE',
           version: '1.3.0',
+          address: {
+            value: '0x1',
+          },
+          chainId: '5',
         },
       })
 

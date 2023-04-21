@@ -29,7 +29,7 @@ export const createSafeAppsWeb3Provider = (safeAppsRpcUri: RpcUri, customRpc?: s
   })
 }
 
-export const { getStore: getWeb3, setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<Web3Provider>()
+export const { setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<Web3Provider>()
 
 export const {
   getStore: getWeb3ReadOnly,

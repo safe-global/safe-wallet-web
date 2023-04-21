@@ -26,9 +26,10 @@ export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 export type PendingSafeData = NewSafeFormData & {
   txHash?: string
   tx?: PendingSafeTx
+  taskId?: string
 }
 
-export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFormData>) => {
+export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<NewSafeFormData>) => {
   const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const router = useRouter()
@@ -38,7 +39,7 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain
 
-  const { createSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus)
+  const { handleCreateSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus, data.willRelay)
 
   useSafeCreationEffects({
     pendingSafe,
@@ -52,10 +53,10 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
     router.push(AppRoutes.welcome)
   }, [router, setPendingSafe])
 
-  const onCreate = useCallback(() => {
+  const handleRetry = useCallback(() => {
     setStatus(SafeCreationStatus.AWAITING)
-    void createSafe()
-  }, [createSafe, setStatus])
+    void handleCreateSafe()
+  }, [handleCreateSafe])
 
   const onFinish = useCallback(() => {
     trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
@@ -106,7 +107,7 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
           <Box className={layoutCss.row}>
             <Track {...CREATE_SAFE_EVENTS.GO_TO_SAFE}>
               <Button variant="contained" onClick={onFinish}>
-                Start using Safe
+                Start using Safe{'{Wallet}'}
               </Button>
             </Track>
           </Box>
@@ -128,7 +129,7 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
                   title={!isConnected ? 'Please make sure your wallet is connected on the correct network.' : ''}
                 >
                   <Typography display="flex" height={1}>
-                    <Button onClick={onCreate} variant="contained" disabled={!isConnected}>
+                    <Button onClick={handleRetry} variant="contained" disabled={!isConnected}>
                       Retry
                     </Button>
                   </Typography>

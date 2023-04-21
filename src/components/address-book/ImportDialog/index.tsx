@@ -151,7 +151,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <Typography>
-          Only CSV files exported from a Safe can be imported.
+          Only CSV files exported from a Safe{'{Wallet}'} can be imported.
           <br />
           <ExternalLink
             href="https://help.safe.global/en/articles/5299068-address-book-export-and-import"

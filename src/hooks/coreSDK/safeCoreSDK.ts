@@ -1,15 +1,14 @@
 import chains from '@/config/chains'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
-import { getWeb3 } from '@/hooks/wallets/web3'
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
-import { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import Safe from '@safe-global/safe-core-sdk'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { type EIP1193Provider } from '@web3-onboard/core'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
@@ -26,14 +25,10 @@ export const isValidSafeVersion = (safeVersion?: SafeInfo['version']): safeVersi
 
 // `assert` does not work with arrow functions
 export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersion?: T): asserts safeVersion {
-  return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe version`)
+  return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe Account version`)
 }
 
-export const createEthersAdapter = (provider = getWeb3()) => {
-  if (!provider) {
-    throw new Error('Unable to create `EthersAdapter` without a provider')
-  }
-
+export const createEthersAdapter = (provider: Web3Provider) => {
   const signer = provider.getSigner(0)
   return new EthersAdapter({
     ethers,
@@ -41,13 +36,22 @@ export const createEthersAdapter = (provider = getWeb3()) => {
   })
 }
 
-// Safe Core SDK
-export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Promise<Safe | undefined> => {
-  const ethersProvider = new Web3Provider(provider)
+export const createReadOnlyEthersAdapter = (provider = getWeb3ReadOnly()) => {
+  if (!provider) {
+    throw new Error('Unable to create `EthersAdapter` without a provider')
+  }
 
+  return new EthersAdapter({
+    ethers,
+    signerOrProvider: provider,
+  })
+}
+
+// Safe Core SDK
+export const initSafeSDK = async (provider: JsonRpcProvider, safe: SafeInfo): Promise<Safe | undefined> => {
   const chainId = safe.chainId
   const safeAddress = safe.address.value
-  const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, ethersProvider).VERSION())
+  const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, provider).VERSION())
 
   let isL1SafeMasterCopy = chainId === chains.eth
 
@@ -73,7 +77,7 @@ export const initSafeSDK = async (provider: EIP1193Provider, safe: SafeInfo): Pr
   }
 
   return Safe.create({
-    ethAdapter: createEthersAdapter(ethersProvider),
+    ethAdapter: createReadOnlyEthersAdapter(provider),
     safeAddress,
     isL1SafeMasterCopy,
   })

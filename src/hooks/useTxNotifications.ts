@@ -10,7 +10,7 @@ import useTxQueue from './useTxQueue'
 import { isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
 import { type ChainInfo, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
-import useIsGranted from './useIsGranted'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
@@ -106,7 +106,7 @@ const useTxNotifications = (): void => {
    */
 
   const { page } = useTxQueue()
-  const isGranted = useIsGranted()
+  const isOwner = useIsSafeOwner()
   const pendingTxs = useAppSelector(selectPendingTxs)
   const notifications = useAppSelector(selectNotifications)
   const wallet = useWallet()
@@ -125,7 +125,7 @@ const useTxNotifications = (): void => {
   }, [page?.results, pendingTxs, wallet?.address])
 
   useEffect(() => {
-    if (!isGranted || txsAwaitingConfirmation.length === 0) {
+    if (!isOwner || txsAwaitingConfirmation.length === 0) {
       return
     }
 
@@ -142,7 +142,7 @@ const useTxNotifications = (): void => {
         }),
       )
     }
-  }, [chain, dispatch, isGranted, notifications, safeAddress, txsAwaitingConfirmation])
+  }, [chain, dispatch, isOwner, notifications, safeAddress, txsAwaitingConfirmation])
 }
 
 export default useTxNotifications

@@ -2,7 +2,6 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
-import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -11,16 +10,16 @@ import useAddressBook from '@/hooks/useAddressBook'
 import type { RemoveOwnerData } from '..'
 import React from 'react'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
+import { createRemoveOwnerTx } from '@/services/tx/tx-sender'
 
 export const ReviewRemoveOwnerTxStep = ({ data, onSubmit }: { data: RemoveOwnerData; onSubmit: () => void }) => {
-  const { createRemoveOwnerTx } = useTxSender()
   const { safe, safeAddress } = useSafeInfo()
   const addressBook = useAddressBook()
   const { removedOwner, threshold } = data
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     return createRemoveOwnerTx({ ownerAddress: removedOwner.address, threshold })
-  }, [removedOwner.address, threshold, createRemoveOwnerTx])
+  }, [removedOwner.address, threshold])
 
   const newOwnerLength = safe.owners.length - 1
 
@@ -44,7 +43,7 @@ export const ReviewRemoveOwnerTxStep = ({ data, onSubmit }: { data: RemoveOwnerD
         <Grid item md={4} pt={3} pl={3}>
           <Typography mb={3}>Details</Typography>
           <Typography variant="caption" color="text.secondary">
-            Name of the Safe:
+            Name of the Safe Account:
           </Typography>
           <Typography mb={3}>{addressBook[safeAddress] || 'No name'}</Typography>
           <Typography variant="caption" color="text.secondary">
@@ -62,7 +61,7 @@ export const ReviewRemoveOwnerTxStep = ({ data, onSubmit }: { data: RemoveOwnerD
           borderLeft={({ palette }) => [undefined, undefined, `1px solid ${palette.border.light}`]}
           borderTop={({ palette }) => [`1px solid ${palette.border.light}`, undefined, 'none']}
         >
-          <Typography p={3}>{newOwnerLength} Safe owner(s)</Typography>
+          <Typography p={3}>{newOwnerLength} Safe Account owner(s)</Typography>
           <Divider />
           {safe.owners
             .filter((owner) => !sameAddress(owner.value, removedOwner.address))

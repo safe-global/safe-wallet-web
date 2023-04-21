@@ -38,7 +38,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
     <Warning
       title={
         <>
-          This transaction calls a smart contract that will be able to modify your Safe.
+          This transaction calls a smart contract that will be able to modify your Safe Account.
           {showWarning && (
             <>
               <br />
@@ -52,6 +52,10 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
     />
   )
 }
+
+export const ApprovalWarning = ({ approvalTxCount }: { approvalTxCount: number }): ReactElement => (
+  <Warning title="" severity="warning" text={`${approvalTxCount} ERC20 approval${approvalTxCount > 1 ? 's' : ''}`} />
+)
 
 export const ThresholdWarning = (): ReactElement => (
   <Warning

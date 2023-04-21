@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 
 import { WidgetContainer } from '../styled'
@@ -12,6 +11,8 @@ import SafeAppCard, { SafeAppCardContainer } from '@/components/safe-apps/SafeAp
 import { AppRoutes } from '@/config/routes'
 import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
 
+import css from './styles.module.css'
+
 const SafeAppsDashboardSection = () => {
   const { rankedSafeApps, togglePin, pinnedSafeAppIds } = useSafeApps()
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
@@ -19,7 +20,7 @@ const SafeAppsDashboardSection = () => {
   return (
     <WidgetContainer>
       <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
-        Safe Apps
+        Safe{'{Apps}'}
       </Typography>
 
       <Grid container spacing={3}>
@@ -57,22 +58,12 @@ const ExploreSafeAppsCard = () => {
   const safeAppsLink = `${AppRoutes.apps.index}?safe=${router.query.safe}`
 
   return (
-    <SafeAppCardContainer safeAppUrl={safeAppsLink}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        height="100%"
-        gap={1}
-        padding={2}
-      >
-        <ExploreSafeAppsIcon alt="Explore Safe Apps icon" />
+    <SafeAppCardContainer safeAppUrl={safeAppsLink} className={css.container}>
+      <ExploreSafeAppsIcon alt="Explore Safe{Apps} icon" />
 
-        <Button variant="contained" size="small">
-          Explore Safe Apps
-        </Button>
-      </Box>
+      <Button variant="contained" size="small">
+        Explore Safe{`{Apps}`}
+      </Button>
     </SafeAppCardContainer>
   )
 }

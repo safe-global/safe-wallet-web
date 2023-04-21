@@ -73,7 +73,7 @@ Examples:
 - `_immortal|v2_MAINNET__SAFES` for mainnet
 - `_immortal|v2_5__SAFES` for goerli (chainId 5)
 
-Inside each of these keys the full Safe information (including balances) is stored in stringified format.
+Inside each of these keys the full Safe{Wallet} information (including balances) is stored in stringified format.
 Example:
 
 ```json

@@ -65,9 +65,9 @@ describe('Dashboard', () => {
 
   it('should show the Safe Apps Section', () => {
     // Create an alias for the Safe Apps section
-    cy.contains('h2', 'Safe Apps').parents('section').as('safeAppsSection')
+    cy.contains('h2', 'Safe{Apps}').parents('section').as('safeAppsSection')
 
-    cy.get('@safeAppsSection').contains('Explore Safe Apps')
+    cy.get('@safeAppsSection').contains('Explore Safe{Apps}')
 
     // Regular safe apps
     cy.get('@safeAppsSection').within(() => {

@@ -5,7 +5,6 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 import TxModal from '@/components/tx/TxModal'
 
-import useTxSender from '@/hooks/useTxSender'
 import useAsync from '@/hooks/useAsync'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -16,11 +15,12 @@ import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import ExternalLink from '@/components/common/ExternalLink'
+import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
 import CheckWallet from '@/components/common/CheckWallet'
 
 const UpdateSafeSteps: TxStepperProps['steps'] = [
   {
-    label: 'Update Safe version',
+    label: 'Update Safe Account version',
     render: (_, onSubmit) => <ReviewUpdateSafeStep onSubmit={onSubmit} />,
   },
 ]
@@ -35,7 +35,7 @@ const UpdateSafeDialog = () => {
       <CheckWallet>
         {(isOk) => (
           <Button onClick={() => setOpen(true)} variant="contained" disabled={!isOk}>
-            Update Safe
+            Update
           </Button>
         )}
       </CheckWallet>
@@ -47,14 +47,13 @@ const UpdateSafeDialog = () => {
 const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: () => void }) => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
-  const { createMultiSendCallOnlyTx } = useTxSender()
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
     if (!chain || !safeLoaded) return
 
     const txs = createUpdateSafeTxs(safe, chain)
     return createMultiSendCallOnlyTx(txs)
-  }, [chain, safe, safeLoaded, createMultiSendCallOnlyTx])
+  }, [chain, safe, safeLoaded])
 
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>
@@ -65,13 +64,13 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: () => void }) => {
       <Typography mb={2}>
         To check details about updates added by this smart contract version please visit{' '}
         <ExternalLink href={`https://github.com/safe-global/safe-contracts/releases/tag/v${LATEST_SAFE_VERSION}`}>
-          latest Safe contracts changelog
+          latest Safe Account contracts changelog
         </ExternalLink>
       </Typography>
 
       <Typography mb={2}>
         You will need to confirm this update just like any other transaction. This means other owners will have to
-        confirm the update in case more than one confirmation is required for this Safe.
+        confirm the update in case more than one confirmation is required for this Safe Account.
       </Typography>
 
       <Typography mb={2}>
