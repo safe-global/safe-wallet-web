@@ -1,6 +1,7 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/store'
+import { sameAddress } from '@/utils/addresses'
 
 export enum PendingStatus {
   SIGNING = 'SIGNING',
@@ -12,6 +13,7 @@ export enum PendingStatus {
 
 export type PendingTx = {
   chainId: string
+  safeAddress: string
   status: PendingStatus
   txHash?: string
   groupKey?: string
@@ -19,7 +21,7 @@ export type PendingTx = {
   taskId?: string
 }
 
-type PendingTxsState = {
+export type PendingTxsState = {
   [txId: string]: PendingTx
 }
 
@@ -29,18 +31,7 @@ export const pendingTxsSlice = createSlice({
   name: 'pendingTxs',
   initialState,
   reducers: {
-    setPendingTx: (
-      state,
-      action: PayloadAction<{
-        chainId: string
-        txId: string
-        txHash?: string
-        groupKey?: string
-        status: PendingStatus
-        signerAddress?: string
-        taskId?: string
-      }>,
-    ) => {
+    setPendingTx: (state, action: PayloadAction<PendingTx & { txId: string }>) => {
       const { txId, ...pendingTx } = action.payload
       state[txId] = pendingTx
     },
@@ -59,4 +50,12 @@ export const selectPendingTxs = (state: RootState): PendingTxsState => {
 export const selectPendingTxById = createSelector(
   [selectPendingTxs, (_: RootState, txId: string) => txId],
   (pendingTxs, txId) => pendingTxs[txId],
+)
+
+export const selectPendingTxIdsBySafe = createSelector(
+  [selectPendingTxs, (_: RootState, chainId: string, safeAddress: string) => [chainId, safeAddress]],
+  (pendingTxs, [chainId, safeAddress]) =>
+    Object.keys(pendingTxs).filter(
+      (id) => pendingTxs[id].chainId === chainId && sameAddress(pendingTxs[id].safeAddress, safeAddress),
+    ),
 )

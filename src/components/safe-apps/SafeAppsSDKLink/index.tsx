@@ -29,11 +29,11 @@ const SafeAppsSDKLink = () => {
       <CodeIcon />
 
       <Typography variant="h6" className={css.title}>
-        How to build on Safe?
+        How to build on <i>Safe</i>?
       </Typography>
 
       <ExternalLink href={SAFE_APPS_SDK_DOCS_URL} className={css.link} noIcon variant="body2">
-        <span>Learn more about Safe Apps SDK</span>
+        <span>Learn more about Safe{'{Apps}'} SDK</span>
       </ExternalLink>
 
       <Fab className={css.openButton} variant="extended" size="small" color="secondary" tabIndex={-1}>

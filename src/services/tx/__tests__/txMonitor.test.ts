@@ -5,6 +5,7 @@ import * as txMonitor from '@/services/tx/txMonitor'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
 import { act } from '@testing-library/react'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
+import { hexZeroPad } from 'ethers/lib/utils'
 
 const { waitForTx, waitForRelayedTx, waitForCreateSafeTx } = txMonitor
 
@@ -21,6 +22,7 @@ const setupFetchStub = (data: any) => (_url: string) => {
 describe('txMonitor', () => {
   let txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
   let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
+  const safeAddress = hexZeroPad('0x123', 20)
 
   beforeEach(() => {
     jest.useFakeTimers()
@@ -116,14 +118,14 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'])
+      waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
       })
 
       expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2' })
+      expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2', safeAddress })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
@@ -143,7 +145,7 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'])
+      waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
@@ -173,7 +175,7 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'])
+      waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
@@ -203,7 +205,7 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'])
+      waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
@@ -233,7 +235,7 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'])
+      waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
       await act(() => {
         jest.advanceTimersByTime(15_000 + 1)
@@ -261,7 +263,7 @@ describe('txMonitor', () => {
       }
       global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
 
-      waitForRelayedTx('0x1', ['0x2'])
+      waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
       await act(() => {
         jest.advanceTimersByTime(3 * 60_000 + 1)

@@ -67,7 +67,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
         <Grid item md={4} pt={3} pl={3}>
           <Typography mb={3}>Details</Typography>
           <Typography variant="caption" color="text.secondary">
-            Name of the Safe:
+            Name of the Safe Account:
           </Typography>
           <Typography mb={3}>{addressBook[safeAddress] || 'No name'}</Typography>
           <Typography variant="caption" color="text.secondary">
@@ -85,7 +85,7 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
           borderLeft={({ palette }) => [undefined, undefined, `1px solid ${palette.border.light}`]}
           borderTop={({ palette }) => [`1px solid ${palette.border.light}`, undefined, 'none']}
         >
-          <Typography padding={3}>{safe.owners.length} Safe owner(s)</Typography>
+          <Typography padding={3}>{safe.owners.length} Safe Account owner(s)</Typography>
           <Divider />
           <Box display="flex" flexDirection="column" gap={2} padding={3}>
             {safe.owners

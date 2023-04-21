@@ -15,6 +15,14 @@ type SimulationResultProps = {
   onClose: () => void
 }
 
+const getCallTraceErrors = (simulation?: TenderlySimulation) => {
+  if (!simulation) {
+    return []
+  }
+
+  return simulation.transaction.call_trace.filter((call) => call.error)
+}
+
 export const SimulationResult = ({
   simulationRequestStatus,
   simulation,
@@ -30,8 +38,13 @@ export const SimulationResult = ({
     return null
   }
 
+  const isSuccess = simulation?.simulation.status
+
+  // Safe can emit failure event even though Tenderly simulation succeeds
+  const isCallTraceError = isSuccess && getCallTraceErrors(simulation).length > 0
+
   // Error
-  if (requestError || !simulation?.simulation.status) {
+  if (requestError || !isSuccess || isCallTraceError) {
     return (
       <Alert severity="error" onClose={onClose} className={css.result}>
         <AlertTitle color="error">
@@ -44,9 +57,16 @@ export const SimulationResult = ({
           </Typography>
         ) : (
           <Typography>
-            The transaction failed during the simulation throwing error <b>{simulation?.transaction.error_message}</b>{' '}
-            in the contract at <b>{simulation?.transaction.error_info?.address}</b>. Full simulation report is available{' '}
-            <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
+            {isCallTraceError ? (
+              <>The transaction failed during the simulation.</>
+            ) : (
+              <>
+                The transaction failed during the simulation throwing error{' '}
+                <b>{simulation?.transaction.error_message}</b> in the contract at{' '}
+                <b>{simulation?.transaction.error_info?.address}</b>.
+              </>
+            )}{' '}
+            Full simulation report is available <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
           </Typography>
         )}
       </Alert>

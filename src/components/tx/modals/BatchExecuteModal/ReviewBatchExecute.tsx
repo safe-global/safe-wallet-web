@@ -57,15 +57,27 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const onExecute = async () => {
     if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails) return
 
-    await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, onboard, safe.chainId)
-
+    await dispatchBatchExecution(
+      txsWithDetails,
+      multiSendContract,
+      multiSendTxData,
+      onboard,
+      safe.chainId,
+      safe.address.value,
+    )
     onSubmit(null)
   }
 
   const onRelay = async () => {
     if (!multiSendTxData || !multiSendContract || !txsWithDetails) return
 
-    await dispatchBatchExecutionRelay(txsWithDetails, multiSendContract, multiSendTxData, safe.chainId)
+    await dispatchBatchExecutionRelay(
+      txsWithDetails,
+      multiSendContract,
+      multiSendTxData,
+      safe.chainId,
+      safe.address.value,
+    )
 
     onSubmit(null)
   }
@@ -121,7 +133,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
             <SponsoredBy
               remainingRelays={remainingRelays}
               tooltip="You can only relay multisend transactions containing
-executions from the same Safe."
+executions from the same Safe Account."
             />
           </>
         ) : null}

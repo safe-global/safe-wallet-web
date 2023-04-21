@@ -93,7 +93,7 @@ export const settingsNavItems = [
     href: AppRoutes.settings.spendingLimits,
   },
   {
-    label: 'Safe Apps permissions',
+    label: 'Safe{Apps} permissions',
     href: AppRoutes.settings.safeApps.index,
   },
   {
@@ -108,15 +108,15 @@ export const settingsNavItems = [
 
 export const safeAppsNavItems = [
   {
-    label: 'All apps',
+    label: 'All Safe{Apps}',
     href: AppRoutes.apps.index,
   },
   {
-    label: 'Bookmarked apps',
+    label: 'Bookmarked Safe{Apps}',
     href: AppRoutes.apps.bookmarked,
   },
   {
-    label: 'My custom apps',
+    label: 'My custom Safe{Apps}',
     href: AppRoutes.apps.custom,
   },
 ]

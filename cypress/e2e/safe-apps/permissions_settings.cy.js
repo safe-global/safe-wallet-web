@@ -42,6 +42,7 @@ describe('The Safe Apps permissions settings section', () => {
     })
 
     cy.visit(`${TEST_SAFE}/settings/safe-apps`, { failOnStatusCode: false })
+    cy.findByText(/accept selection/i).click()
   })
 
   it('should show the permissions configuration for each stored app', () => {
