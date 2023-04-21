@@ -286,11 +286,11 @@ const SignOrExecuteForm = ({
         {/* Error messages */}
         {isSubmittable && cannotPropose ? (
           <ErrorMessage>
-            You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
+            You are currently not an owner of this Safe Account and won&apos;t be able to submit this transaction.
           </ErrorMessage>
         ) : isExecutionLoop ? (
           <ErrorMessage>
-            Cannot execute a transaction from the Safe itself, please connect a different account.
+            Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
         ) : error ? (
           <ErrorMessage error={error}>
@@ -303,9 +303,9 @@ const SignOrExecuteForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         ) : willExecute && isUnknown ? (
           <ErrorMessage>
-            This Safe was created with an unsupported base contract. It should <b>ONLY</b> be used for fund recovery.
-            Transactions will execute but the transaction list may not immediately update. Transaction success can be
-            verified on the{' '}
+            This Safe Account was created with an unsupported base contract. It should <b>ONLY</b> be used for fund
+            recovery. Transactions will execute but the transaction list may not immediately update. Transaction success
+            can be verified on the{' '}
             <ExternalLink
               href={currentChain ? getExplorerLink(safeAddress, currentChain.blockExplorerUriTemplate).href : ''}
             >

@@ -87,7 +87,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
               {(params.nonce !== undefined || !!params.safeTxGas) && (
                 <Grid item xs={12}>
                   <Typography variant="body1" fontWeight={700}>
-                    Safe transaction
+                    Safe Account transaction
                   </Typography>
                 </Grid>
               )}

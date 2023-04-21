@@ -97,6 +97,6 @@ describe('SingleTx', () => {
     const button = screen.getByText('Details')
     fireEvent.click(button!)
 
-    expect(screen.getByText('Transaction with this id was not found in this Safe')).toBeInTheDocument()
+    expect(screen.getByText('Transaction with this id was not found in this Safe Account')).toBeInTheDocument()
   })
 })

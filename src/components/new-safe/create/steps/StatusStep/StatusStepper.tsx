@@ -14,7 +14,7 @@ const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; 
         <StatusStep isLoading={!pendingSafe.safeAddress} safeAddress={pendingSafe.safeAddress}>
           <Box>
             <Typography variant="body2" fontWeight="700">
-              Your Safe address
+              Your Safe Account address
             </Typography>
             <EthHashInfo
               address={pendingSafe.safeAddress}
@@ -56,7 +56,7 @@ const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; 
       <Step>
         <StatusStep isLoading={status !== SafeCreationStatus.INDEXED} safeAddress={pendingSafe.safeAddress}>
           <Typography variant="body2" fontWeight="700">
-            Safe is ready
+            Safe Account is ready
           </Typography>
         </StatusStep>
       </Step>

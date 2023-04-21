@@ -38,19 +38,19 @@ const getStep = (status: SafeCreationStatus) => {
       }
     case SafeCreationStatus.SUCCESS:
       return {
-        description: 'Your Safe was successfully created!',
+        description: 'Your Safe Account was successfully created!',
         instruction: 'It is now being indexed. Please do not leave this page.',
       }
     case SafeCreationStatus.INDEXED:
       return {
-        description: 'Your Safe was successfully created!',
+        description: 'Your Safe Account was successfully created!',
         instruction: '',
       }
     case SafeCreationStatus.INDEX_FAILED:
       return {
-        description: 'Your Safe is created and will be picked up by our services shortly.',
+        description: 'Your Safe Account is created and will be picked up by our services shortly.',
         instruction:
-          'You can already open your Safe. It might take a moment until it becomes fully usable in the interface.',
+          'You can already open Safe{Wallet}. It might take a moment until it becomes fully usable in the interface.',
       }
   }
 }

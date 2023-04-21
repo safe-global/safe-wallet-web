@@ -113,7 +113,8 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
                   />
                   <br />
                   <Typography variant="body2" color="background.paper">
-                    Help us make the app better. We never track your Safe or wallet addresses, or any transaction data.
+                    Help us make the app better. We never track your Safe Account address or wallet addresses, or any
+                    transaction data.
                   </Typography>
                 </Box>
               </Grid>

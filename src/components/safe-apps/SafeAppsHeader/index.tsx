@@ -12,12 +12,12 @@ const SafeAppsHeader = (): ReactElement => {
       <Box className={css.container}>
         {/* Safe Apps Title */}
         <Typography className={css.title} variant="h3">
-          Explore the Safe Apps ecosystem
+          Explore the Safe{'{Apps}'} ecosystem
         </Typography>
 
         {/* Safe Apps Subtitle */}
         <Typography className={css.subtitle}>
-          Connect to your favourite web3 applications with your Safe wallet, securely and efficiently.
+          Connect to your favourite web3 applications with your Safe Account, securely and efficiently.
         </Typography>
       </Box>
 

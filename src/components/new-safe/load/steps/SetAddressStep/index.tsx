@@ -69,13 +69,13 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
 
   const validateSafeAddress = async (address: string) => {
     if (addedSafes && Object.keys(addedSafes).includes(address)) {
-      return 'Safe is already added'
+      return 'Safe Account is already added'
     }
 
     try {
       await getSafeInfo(currentChainId, address)
     } catch (error) {
-      return 'Address given is not a valid Safe address'
+      return 'Address given is not a valid Safe Account address'
     }
   }
 
@@ -135,7 +135,7 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
             </Grid>
           </Grid>
 
-          <AddressInput label="Safe" validate={validateSafeAddress} name={Field.address} />
+          <AddressInput label="Safe Account" validate={validateSafeAddress} name={Field.address} />
 
           <Typography mt={4}>
             By continuing you consent to the{' '}
