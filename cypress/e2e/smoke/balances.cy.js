@@ -214,7 +214,7 @@ describe('Assets > Coins', () => {
     it('should allow changing rows per page and navigate to next and previous page', () => {
       // Table should have 25 rows inittially
       cy.contains('Rows per page:').next().contains('25')
-      cy.contains('1–25 of 26')
+      cy.contains('1–25 of 27')
       cy.get(balanceSingleRow).should('have.length', 25)
 
       // Change to 10 rows per page
@@ -224,22 +224,22 @@ describe('Assets > Coins', () => {
 
       // Table should have 10 rows
       cy.contains('Rows per page:').next().contains('10')
-      cy.contains('1–10 of 26')
+      cy.contains('1–10 of 27')
       cy.get(balanceSingleRow).should('have.length', 10)
 
       // Click on the next page button
       cy.get('button[aria-label="Go to next page"]').click({ force: true })
       cy.get('button[aria-label="Go to next page"]').click({ force: true })
 
-      // Table should have 6 rows
-      cy.contains('21–26 of 26')
-      cy.get(balanceSingleRow).should('have.length', 6)
+      // Table should have 7 rows
+      cy.contains('21–27 of 27')
+      cy.get(balanceSingleRow).should('have.length', 7)
 
       // Click on the previous page button
       cy.get('button[aria-label="Go to previous page"]').click({ force: true })
 
       // Table should have 10 rows
-      cy.contains('11–20 of 26')
+      cy.contains('11–20 of 27')
       cy.get(balanceSingleRow).should('have.length', 10)
     })
   })
