@@ -52,3 +52,19 @@ export const parsePrefixedAddress = (value: string): PrefixedAddress => {
 export const formatPrefixedAddress = (address: string, prefix?: string): string => {
   return prefix ? `${prefix}:${address}` : address
 }
+
+export const cleanInputValue = (value: string, prefix: string): string => {
+  const regex = /(0x[a-fA-F0-9]{40})\b/
+  const regexWithPrefix = new RegExp(`${prefix}:(0x[a-fA-F0-9]{40})\\b`)
+
+  // if value matches the regex with prefix, return the match with prefix
+  if (regexWithPrefix.test(value)) {
+    return value.match(regexWithPrefix)?.[0] || value
+  }
+  // if value matches the regex without prefix, return the match
+  if (regex.test(value)) {
+    return `${value.match(regex)?.[0]}`
+  }
+  // if no match, return the original value
+  return value
+}
