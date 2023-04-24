@@ -61,7 +61,7 @@ const NewSafe = () => {
             color="static.main"
             mb={1}
           >
-            Welcome to Safe{`Wallet`}
+            Welcome to Safe{'{Wallet}'}
           </Typography>
 
           <Typography mb={5} color="static.main">
@@ -77,12 +77,12 @@ const NewSafe = () => {
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  A new Safe Account that is controlled by one or multiple owners.
+                  A new Account that is controlled by one or multiple owners.
                 </Typography>
 
                 <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
                   <Button variant="contained" onClick={() => router.push(AppRoutes.newSafe.create)}>
-                    + Create new Safe Account
+                    + Create new Account
                   </Button>
                 </Track>
               </Paper>
@@ -96,12 +96,12 @@ const NewSafe = () => {
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  Already have a Safe Account? Add your Safe Account using your Safe Account address.
+                  Already have an Account? Add it via its address.
                 </Typography>
 
                 <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
                   <Button variant="outlined" onClick={() => router.push(AppRoutes.newSafe.load)}>
-                    Add existing Safe Account
+                    Add existing Account
                   </Button>
                 </Track>
               </Paper>
