@@ -27,7 +27,8 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
   const encodedData = tx?.data.data
   const isEmptyData = !!encodedData && isEmptyHexData(encodedData)
-  const nativeTransfer = isEmptyData ? getNativeTransferData(tx?.data) : undefined
+  const isRejection = isEmptyData && tx?.data.value === '0'
+  const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData(tx?.data) : undefined
 
   const [decodedData = nativeTransfer, decodedDataError, decodedDataLoading] = useAsync<DecodedDataResponse>(() => {
     if (!encodedData || isEmptyData) return
@@ -44,6 +45,8 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
+
+  if (isRejection) return null
 
   return (
     <Box mb={2}>

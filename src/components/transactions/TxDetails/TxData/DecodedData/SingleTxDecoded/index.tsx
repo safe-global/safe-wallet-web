@@ -34,7 +34,8 @@ export const SingleTxDecoded = ({
 }: SingleTxDecodedProps) => {
   const chain = useCurrentChain()
   const method = tx.dataDecoded?.method || ''
-  const { decimals, symbol } = chain!.nativeCurrency
+  // @FIXME: why is this always taking the native token decimals?
+  const { decimals, symbol } = chain?.nativeCurrency || {}
   const amount = tx.value ? formatVisualAmount(tx.value, decimals) : 0
 
   let details
