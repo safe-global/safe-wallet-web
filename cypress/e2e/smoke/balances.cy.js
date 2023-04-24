@@ -2,8 +2,7 @@ const assetsTable = '[aria-labelledby="tableTitle"] > tbody'
 const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 
 const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
-// TODO: replace PAGINATION_TEST_SAFE for a Görli safe with > 25 tokens
-const PAGINATION_TEST_SAFE = 'rin:0x656c1121a6f40d25C5CFfF0Db08938DB7633B2A3'
+const PAGINATION_TEST_SAFE = 'gor:0x850493a15914aAC05a821A3FAb973b4598889A7b'
 const ASSETS_LENGTH = 7
 const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
@@ -198,12 +197,18 @@ describe('Assets > Coins', () => {
     })
   })
 
-  describe.skip('pagination should work', () => {
+  describe('pagination should work', () => {
     before(() => {
       // Open the Safe used for testing pagination
       cy.visit(`/${PAGINATION_TEST_SAFE}/balances`, { failOnStatusCode: false })
+      
       // Table is loaded
       cy.contains('Görli Ether')
+      cy.contains('button', 'Got it').click()
+      // Enable all tokens
+      cy.contains('div', 'Default tokens').click()
+      cy.wait(100)
+      cy.contains('div', 'All tokens').click()
     })
 
     it('should allow changing rows per page and navigate to next and previous page', () => {

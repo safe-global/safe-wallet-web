@@ -1,7 +1,7 @@
 import GasParams from '@/components/tx/GasParams'
 import SponsoredBy from '@/components/tx/SponsoredBy'
 import { useCurrentChain } from '@/hooks/useChains'
-import { useRelaysBySafe } from '@/hooks/useRelaysBySafe'
+import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { Box } from '@mui/material'

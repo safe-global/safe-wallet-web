@@ -14,7 +14,7 @@ import type { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
-import { useRelaysBySafe } from '@/hooks/useRelaysBySafe'
+import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import SponsoredBy from '@/components/tx/SponsoredBy'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
@@ -133,7 +133,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
             <SponsoredBy
               relays={relays}
               tooltip="You can only relay multisend transactions containing
-executions from the same Safe."
+executions from the same Safe Account."
             />
           </>
         ) : null}

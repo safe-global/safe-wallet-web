@@ -91,7 +91,7 @@ const NonceForm = ({ name, nonce, recommendedNonce, readonly }: NonceFormProps):
   const editableNonce = useWatch({ name, control, exact: true })
   const nonceWarning =
     recommendedNonce != null && editableNonce > recommendedNonce ? `Recommended nonce is ${recommendedNonce}` : ''
-  const label = fieldState.error?.message || nonceWarning || 'Safe transaction nonce'
+  const label = fieldState.error?.message || nonceWarning || 'Safe Account transaction nonce'
 
   const onResetNonce = () => {
     if (recommendedNonce != null) {

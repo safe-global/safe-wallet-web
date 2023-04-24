@@ -18,7 +18,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
 import UnknownContractError from './UnknownContractError'
-import { useRelaysBySafe } from '@/hooks/useRelaysBySafe'
+import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 
 type SignOrExecuteProps = {
@@ -188,11 +188,11 @@ const SignOrExecuteForm = ({
         {/* Error messages */}
         {isSubmittable && cannotPropose ? (
           <ErrorMessage>
-            You are currently not an owner of this Safe and won&apos;t be able to submit this transaction.
+            You are currently not an owner of this Safe Account and won&apos;t be able to submit this transaction.
           </ErrorMessage>
         ) : willExecute && isExecutionLoop ? (
           <ErrorMessage>
-            Cannot execute a transaction from the Safe itself, please connect a different account.
+            Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
         ) : error ? (
           <ErrorMessage error={error}>

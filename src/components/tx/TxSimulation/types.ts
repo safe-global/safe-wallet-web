@@ -256,6 +256,11 @@ interface Transaction {
   timestamp: Date
   method: string
   decoded_input: null
+  // Note: manually added (partial keys of `call_trace`)
+  call_trace: Array<{
+    error?: string
+    input: string
+  }>
 }
 
 interface TransactionInfo {
