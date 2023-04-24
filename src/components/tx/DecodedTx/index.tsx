@@ -6,6 +6,7 @@ import {
   getDecodedData,
   getTransactionDetails,
   type TransactionDetails,
+  Operation,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
@@ -14,8 +15,8 @@ import ErrorMessage from '../ErrorMessage'
 import Summary from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { isEmptyHexData } from '@/utils/hex'
-import ApprovalEditor from '@/components/tx/ApprovalEditor'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { getNativeTransferData } from '@/services/tx/tokenTransferParams'
+import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -26,20 +27,19 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
   const encodedData = tx?.data.data
   const isEmptyData = !!encodedData && isEmptyHexData(encodedData)
+  const nativeTransfer = isEmptyData ? getNativeTransferData(tx?.data) : undefined
 
-  const [decodedData, decodedDataError, decodedDataLoading] = useAsync<DecodedDataResponse>(() => {
+  const [decodedData = nativeTransfer, decodedDataError, decodedDataLoading] = useAsync<DecodedDataResponse>(() => {
     if (!encodedData || isEmptyData) return
     return getDecodedData(chainId, encodedData)
   }, [chainId, encodedData, isEmptyData])
+
+  const isMultisend = !!decodedData?.parameters?.[0].valueDecoded
 
   const [txDetails, txDetailsError, txDetailsLoading] = useAsync<TransactionDetails>(() => {
     if (!txId) return
     return getTransactionDetails(chainId, txId)
   }, [])
-
-  if (isEmptyData && !txId) {
-    return null
-  }
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
@@ -47,9 +47,14 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
 
   return (
     <Box mb={2}>
-      {decodedData && txDetails?.txData && <ApprovalEditor txs={{ ...decodedData, to: txDetails.txData.to.value }} />}
-      <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>Transaction details</AccordionSummary>
+      <Accordion
+        elevation={0}
+        onChange={onChangeExpand}
+        sx={!tx ? { pointerEvents: 'none' } : undefined}
+        defaultExpanded={isMultisend}
+        key={isMultisend.toString()}
+      >
+        <AccordionSummary>Transaction details</AccordionSummary>
 
         <AccordionDetails>
           {txDetails ? (
@@ -68,6 +73,22 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
             <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
           ) : (
             decodedDataLoading && <Skeleton />
+          )}
+
+          {isMultisend && (
+            <Box mt={2}>
+              <Multisend
+                txData={{
+                  dataDecoded: decodedData,
+                  to: { value: tx?.data.to || '' },
+                  value: tx?.data.value,
+                  operation: Operation.CALL,
+                  trustedDelegateCallTarget: false,
+                }}
+                variant="outlined"
+                noHeader
+              />
+            </Box>
           )}
         </AccordionDetails>
       </Accordion>
