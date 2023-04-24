@@ -20,7 +20,7 @@ describe('Load existing Safe', () => {
     cy.contains('Accept selection').click()
 
     // Enters Loading Safe form
-    cy.contains('button', 'Add existing Safe').click()
+    cy.contains('button', 'Add existing Account').click()
     cy.contains('Connect wallet & select network')
   })
 
