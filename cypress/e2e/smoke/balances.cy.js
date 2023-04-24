@@ -201,7 +201,7 @@ describe('Assets > Coins', () => {
     before(() => {
       // Open the Safe used for testing pagination
       cy.visit(`/${PAGINATION_TEST_SAFE}/balances`, { failOnStatusCode: false })
-      
+
       // Table is loaded
       cy.contains('Görli Ether')
       cy.contains('button', 'Got it').click()
