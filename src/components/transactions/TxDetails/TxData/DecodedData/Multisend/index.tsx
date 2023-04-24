@@ -6,6 +6,7 @@ import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
 import { AccordionSummary, Box, Button, Divider } from '@mui/material'
+import css from './styles.module.css'
 
 type MultisendProps = {
   txData?: TransactionData
@@ -14,24 +15,7 @@ type MultisendProps = {
   noHeader?: boolean
 }
 
-const MIN_MULTISEND_TXS = 3
-
-const multisendScrollSx = {
-  'max-height': '168px',
-  overflow: 'auto',
-  pb: '2em',
-  '&:after': {
-    content: '""',
-    position: 'absolute',
-    'z-index': 1,
-    bottom: 0,
-    left: 0,
-    'pointer-events': 'none',
-    'background-image': 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)',
-    width: '100%',
-    height: '4em',
-  },
-}
+const MIN_SCROLL_TXS = 4
 
 const MultisendActionsHeader = ({
   setOpen,
@@ -46,14 +30,14 @@ const MultisendActionsHeader = ({
 
   return (
     <AccordionSummary
-      sx={{ borderBottom: ({ palette }) => `1px solid ${palette.border.light}`, cursor: 'auto !important', pr: 0 }}
+      className={css.summary}
       expandIcon={
         <>
-          <Button onClick={onClickAll(true)} variant="text" sx={{ px: '18px' }}>
+          <Button onClick={onClickAll(true)} variant="text">
             Expand all
           </Button>
-          <Divider sx={{ my: '14px', borderColor: 'border.light' }} />
-          <Button onClick={onClickAll(false)} variant="text" sx={{ px: '18px' }}>
+          <Divider className={css.divider} />
+          <Button onClick={onClickAll(false)} variant="text">
             Collapse all
           </Button>
         </>
@@ -105,7 +89,7 @@ export const Multisend = ({
     <>
       {!noHeader && <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />}
 
-      <Box sx={multiSendTransactions.length > MIN_MULTISEND_TXS ? multisendScrollSx : undefined}>
+      <div className={multiSendTransactions.length >= MIN_SCROLL_TXS ? css.scrollWrapper : undefined}>
         <Box display="flex" flexDirection="column" gap={1}>
           {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
             const onChange: AccordionProps['onChange'] = (_, expanded) => {
@@ -135,7 +119,7 @@ export const Multisend = ({
             )
           })}
         </Box>
-      </Box>
+      </div>
     </>
   )
 }
