@@ -24,11 +24,16 @@ export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
   const { safe } = useSafeInfo()
   const [isRelayingEnabled] = useRelayingDebugger()
 
-  return useAsync(async () => {
+  return useAsync(() => {
     if (!chain || !hasFeature(chain, FEATURES.RELAYING) || !isRelayingEnabled) return
 
-    const result = await Promise.all(ownerAddresses.map((address) => getRelays(chain.chainId, address)))
-    const min = Math.min(...result.map((r) => r.remaining))
-    return result.find((r) => r.remaining === min)
+    return Promise.all(ownerAddresses.map((address) => getRelays(chain.chainId, address)))
+      .then((result) => {
+        const min = Math.min(...result.map((r) => r.remaining))
+        return result.find((r) => r.remaining === min)
+      })
+      .catch(() => {
+        return { remaining: 0, limit: MAX_HOUR_RELAYS }
+      })
   }, [chain, ownerAddresses, safe.txHistoryTag])
 }
