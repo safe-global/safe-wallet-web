@@ -40,7 +40,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
   // Chain supports relaying and relay transactions are available
-  const willRelay = !!minRelays
+  const willRelay = minRelays && minRelays.remaining > 0
 
   const safeParams = useMemo(() => {
     return {
@@ -150,7 +150,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
                 </>
               }
             />
-            {willRelay ? <ReviewRow name="" value={<SponsoredBy remainingRelays={minRelays} />} /> : null}
+            {willRelay ? <ReviewRow name="" value={<SponsoredBy relays={minRelays} />} /> : null}
           </Grid>
         </Grid>
 

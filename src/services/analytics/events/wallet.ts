@@ -35,4 +35,9 @@ export const WALLET_EVENTS = {
     action: 'Confirm message',
     category: WALLET_CATEGORY,
   },
+  RELAYED_EXECUTION: {
+    event: EventType.META,
+    action: 'Relayed execution',
+    category: WALLET_CATEGORY,
+  },
 }
