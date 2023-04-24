@@ -1,6 +1,6 @@
 import type { SyntheticEvent, ReactElement } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
-import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import {
   type DecodedDataResponse,
   getDecodedData,
@@ -82,7 +82,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
                   dataDecoded: decodedData,
                   to: { value: tx?.data.to || '' },
                   value: tx?.data.value,
-                  operation: Operation.CALL,
+                  operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
                   trustedDelegateCallTarget: false,
                 }}
                 variant="outlined"
