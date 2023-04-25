@@ -25,8 +25,8 @@
     "cypress:open": "cross-env TZ=UTC cypress open",
     "cypress:run": "cypress run",
     "cypress:ci": "yarn cypress:run --config baseUrl=http://localhost:8080 --spec cypress/e2e/smoke/*.cy.js",
-    "static-serve": "yarn build && yarn export && yarn serve",
-    "serve": "npx -y http-server out"
+    "serve": "npx -y serve -p 8080 out",
+    "static-serve": "yarn build && yarn export && yarn serve"
   },
   "pre-commit": [
     "lint"

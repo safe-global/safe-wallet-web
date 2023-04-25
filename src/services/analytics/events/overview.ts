@@ -76,6 +76,14 @@ export const OVERVIEW_EVENTS = {
     action: 'Open transactions queue from queue size',
     category: OVERVIEW_CATEGORY,
   },
+  EXPORT_DATA: {
+    action: 'Export data from sidebar',
+    category: OVERVIEW_CATEGORY,
+  },
+  IMPORT_DATA: {
+    action: 'Import data from sidebar',
+    category: OVERVIEW_CATEGORY,
+  },
   RELAYING_HELP_ARTICLE: {
     action: 'Open relaying help article',
     category: OVERVIEW_CATEGORY,
