@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Paper, Grid, Typography, Button, SvgIcon, Box } from '@mui/material'
 
 import FileIcon from '@/public/images/settings/data/file.svg'
@@ -54,13 +54,19 @@ export const exportAppData = () => {
 }
 
 const DataManagement = () => {
+  const [exportFileName, setExportFileName] = useState('')
+  const [importFileName, setImportFileName] = useState<string>()
   const [jsonData, setJsonData] = useState<string>()
-  const [fileName, setFileName] = useState<string>()
 
   const addedSafes = useAppSelector(selectAllAddedSafes)
   const addressBook = useAppSelector(selectAllAddressBooks)
   const settings = useAppSelector(selectSettings)
   const safeApps = useAppSelector(selectSafeApps)
+
+  useEffect(() => {
+    // Prevent hydration errors
+    setExportFileName(getExportFileName())
+  }, [])
 
   return (
     <Paper sx={{ p: 4, mb: 2 }}>
@@ -80,7 +86,7 @@ const DataManagement = () => {
                 <SvgIcon component={FileIcon} inheritViewBox fontSize="small" sx={{ fill: 'none' }} />
               </Box>
             }
-            title={<b>{getExportFileName()}</b>}
+            title={<b>{exportFileName}</b>}
             action={
               <Button variant="contained" className={css.exportIcon} onClick={exportAppData}>
                 <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
@@ -116,11 +122,16 @@ const DataManagement = () => {
         </Grid>
 
         <Grid item xs>
-          <ImportFileUpload setFileName={setFileName} setJsonData={setJsonData} />
+          <ImportFileUpload setFileName={setImportFileName} setJsonData={setJsonData} />
         </Grid>
 
         {jsonData && (
-          <ImportDialog jsonData={jsonData} fileName={fileName} setJsonData={setJsonData} setFileName={setFileName} />
+          <ImportDialog
+            jsonData={jsonData}
+            fileName={importFileName}
+            setJsonData={setJsonData}
+            setFileName={setImportFileName}
+          />
         )}
       </Grid>
     </Paper>
