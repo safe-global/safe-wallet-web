@@ -116,7 +116,8 @@ const getItems = ({
     items.push(settingsPreview)
   }
 
-  if (safeApps) {
+  const hasBookmarkedSafeApps = Object.values(safeApps || {}).some((chainId) => chainId.pinned?.length > 0)
+  if (hasBookmarkedSafeApps) {
     const safeAppsPreview: ListItemTextProps = {
       primary: (
         <>
