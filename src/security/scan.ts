@@ -2,6 +2,8 @@ import { REDEFINE_API_KEY } from '@/config/constants'
 import { Gnosis_safe__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
 import { type JsonRpcProvider } from '@ethersproject/providers'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
+import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
 import type {
   ScanRequest,
   ScanResponse,
@@ -86,13 +88,21 @@ const mapSeverity = (severity: RedefineSeverity): TransactionSecurityWarning['se
 
 export const RedefineTransactionScanner: TransactionScanner = {
   scanTransaction: async (scanRequest: ScanRequest, provider: JsonRpcProvider): Promise<ScanResponse> => {
-    const { transaction, chainId, safeAddress, walletAddress } = scanRequest
+    const { chainId, safeAddress, walletAddress, threshold } = scanRequest
 
-    const context: ScanRequestContext = {
-      chainId,
-      safeAddress,
-      provider,
-      walletAddress,
+    let transaction = scanRequest.transaction
+    const hasOwnerSignature = transaction.signatures.has(walletAddress)
+    // If the owner's sig is missing and the tx threshold is not reached we add the owner's preValidated signature
+    const needsOwnerSignature = !hasOwnerSignature && transaction.signatures.size < threshold
+    if (needsOwnerSignature) {
+      const scannedTransaction = new EthSafeTransaction(transaction.data)
+
+      transaction.signatures.forEach((signature) => {
+        scannedTransaction.addSignature(signature)
+      })
+      scannedTransaction.addSignature(generatePreValidatedSignature(walletAddress))
+
+      transaction = scannedTransaction
     }
 
     // prepare payload
@@ -112,15 +122,15 @@ export const RedefineTransactionScanner: TransactionScanner = {
     ])
 
     const payload: RedefinePayload = {
-      chainId: context.chainId,
+      chainId: chainId,
       domain: 'https://app.safe.global',
       payload: {
         method: 'eth_sendTransaction',
         params: [
           {
-            from: context.walletAddress,
+            from: walletAddress,
             data: txData,
-            to: context.safeAddress,
+            to: safeAddress,
             value: '0x0',
           },
         ],

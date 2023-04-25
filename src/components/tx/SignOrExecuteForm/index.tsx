@@ -1,15 +1,5 @@
-import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState, useMemo } from 'react'
-import {
-  Button,
-  Chip,
-  DialogContent,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-} from '@mui/material'
+import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
+import { Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import useGasLimit from '@/hooks/useGasLimit'
@@ -30,13 +20,8 @@ import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidate
 import UnknownContractError from './UnknownContractError'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
-import useAddressBook from '@/hooks/useAddressBook'
-import { ReceiverNotInAddressbook, TransferToUnusedAddress, UnexpectedDelegateCall } from '@/security/rules'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useAsync from '@/hooks/useAsync'
-import { RedefineTransactionScanner, RuleBasedTransactionScanner } from '@/security/scan'
-import useWallet from '@/hooks/wallets/useWallet'
+import { TxSecurityWarnings } from '../TxSecurityWarnings'
 
 enum ExecutionType {
   RELAYER = 'Via relayer',
@@ -81,7 +66,7 @@ const SignOrExecuteForm = ({
   const currentChain = useCurrentChain()
   const { signTx, executeTx } = useTxActions()
   const [relays] = useRelaysBySafe()
-  const { safeAddress } = useSafeInfo()
+  const { safeAddress, safe } = useSafeInfo()
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -95,58 +80,12 @@ const SignOrExecuteForm = ({
 
   // SC wallets can relay fully signed transactions
   const [walletCanRelay] = useWalletCanRelay(tx)
-  const addressBook = useAddressBook()
-  const wallet = useWallet()
-  const knownAddresses = useMemo(() => Object.keys(addressBook), [addressBook])
 
   // The transaction will be executed through relaying
   const willRelay = willExecute && relays && relays.remaining > 0 && walletCanRelay
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
-
-  const securityScanResult = useAsync(async () => {
-    const provider = getWeb3ReadOnly()
-    if (!tx || !wallet || !provider) {
-      return undefined
-    }
-
-    const ruleBasedScanner = RuleBasedTransactionScanner([
-      ReceiverNotInAddressbook(knownAddresses),
-      UnexpectedDelegateCall,
-      TransferToUnusedAddress,
-    ])
-    const scanResult = await ruleBasedScanner.scanTransaction(
-      {
-        chainId: Number(currentChain?.chainId),
-        transaction: tx,
-        safeAddress,
-        walletAddress: wallet.address,
-      },
-      provider,
-    )
-
-    return scanResult
-  }, [currentChain?.chainId, knownAddresses, safeAddress, tx])
-
-  const redefineScanResult = useAsync(async () => {
-    const provider = getWeb3ReadOnly()
-    if (!tx || !wallet || !provider) {
-      return undefined
-    }
-
-    const scanResult = await RedefineTransactionScanner.scanTransaction(
-      {
-        chainId: Number(currentChain?.chainId),
-        transaction: tx,
-        safeAddress,
-        walletAddress: wallet.address,
-      },
-      provider,
-    )
-
-    return scanResult
-  }, [currentChain?.chainId, knownAddresses, safeAddress, tx])
 
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
@@ -231,6 +170,8 @@ const SignOrExecuteForm = ({
 
         <DecodedTx tx={tx} txId={txId} />
 
+        <TxSecurityWarnings safeTx={tx} />
+
         {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
 
         <AdvancedParams
@@ -250,78 +191,6 @@ const SignOrExecuteForm = ({
           canExecute={canExecute}
           disabled={submitDisabled}
         />
-
-        <List>
-          {securityScanResult[0]?.triggeredWarnings.map((warning) => (
-            <ListItem key={warning.id} alignItems="flex-start">
-              <ListItemAvatar>
-                <Chip
-                  sx={{ minWidth: '72px' }}
-                  label={warning.severity}
-                  color={
-                    warning.severity === 'MEDIUM'
-                      ? 'warning'
-                      : warning.severity === 'HIGH' || warning.severity === 'CRITICAL'
-                      ? 'error'
-                      : 'info'
-                  }
-                />
-              </ListItemAvatar>
-              <ListItemText inset>
-                <Grid container direction="row" gap={1}>
-                  <Grid item xs={3}>
-                    <Typography variant="caption">Description</Typography>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <Typography variant="body2">{warning.description}</Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant="caption">Advice</Typography>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <Typography variant="body2">{warning.advice}</Typography>
-                  </Grid>
-                </Grid>
-              </ListItemText>
-            </ListItem>
-          ))}
-        </List>
-
-        <List>
-          {redefineScanResult[0]?.triggeredWarnings.map((warning) => (
-            <ListItem key={warning.id} alignItems="flex-start">
-              <ListItemAvatar>
-                <Chip
-                  sx={{ minWidth: '72px' }}
-                  label={warning.severity}
-                  color={
-                    warning.severity === 'MEDIUM'
-                      ? 'warning'
-                      : warning.severity === 'HIGH' || warning.severity === 'CRITICAL'
-                      ? 'error'
-                      : 'info'
-                  }
-                />
-              </ListItemAvatar>
-              <ListItemText inset>
-                <Grid container direction="row" gap={1}>
-                  <Grid item xs={3}>
-                    <Typography variant="caption">Description</Typography>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <Typography variant="body2">{warning.description}</Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant="caption">Advice</Typography>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <Typography variant="body2">{warning.advice}</Typography>
-                  </Grid>
-                </Grid>
-              </ListItemText>
-            </ListItem>
-          ))}
-        </List>
 
         {/* Warning message and switch button */}
         <WrongChainWarning />

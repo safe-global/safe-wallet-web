@@ -19,6 +19,7 @@ export type ScanRequest = {
   safeAddress: string
   walletAddress: string
   transaction: SafeTransaction
+  threshold: number
 }
 
 export type ScanResponse = {
