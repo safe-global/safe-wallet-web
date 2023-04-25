@@ -1,9 +1,7 @@
 import { REDEFINE_API_KEY } from '@/config/constants'
-import { Gnosis_safe__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
 import { type JsonRpcProvider } from '@ethersproject/providers'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
-import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
+import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
 import type {
   ScanRequest,
   ScanResponse,
@@ -36,15 +34,8 @@ type RedefinePayload = {
   chainId: number
   domain: string
   payload: {
-    method: 'eth_sendTransaction'
-    params: [
-      {
-        from: string
-        to: string
-        data: string
-        value: string
-      },
-    ]
+    method: 'eth_signTypedData_v4'
+    params: [string, string]
   }
 }
 
@@ -86,54 +77,25 @@ const mapSeverity = (severity: RedefineSeverity): TransactionSecurityWarning['se
   }
 }
 
+const REDEFINE_URL = 'https://api.redefine.net/v2/risk-analysis/messages'
+
 export const RedefineTransactionScanner: TransactionScanner = {
   scanTransaction: async (scanRequest: ScanRequest, provider: JsonRpcProvider): Promise<ScanResponse> => {
-    const { chainId, safeAddress, walletAddress, threshold } = scanRequest
+    const { chainId, safeAddress } = scanRequest
 
-    let transaction = scanRequest.transaction
-    const hasOwnerSignature = transaction.signatures.has(walletAddress)
-    // If the owner's sig is missing and the tx threshold is not reached we add the owner's preValidated signature
-    const needsOwnerSignature = !hasOwnerSignature && transaction.signatures.size < threshold
-    if (needsOwnerSignature) {
-      const scannedTransaction = new EthSafeTransaction(transaction.data)
-
-      transaction.signatures.forEach((signature) => {
-        scannedTransaction.addSignature(signature)
-      })
-      scannedTransaction.addSignature(generatePreValidatedSignature(walletAddress))
-
-      transaction = scannedTransaction
-    }
-
-    // prepare payload
-    const REDEFINE_URL = 'https://api.redefine.net/v2/risk-analysis/txns'
-
-    const txData = Gnosis_safe__factory.createInterface().encodeFunctionData('execTransaction', [
-      transaction.data.to,
-      transaction.data.value,
-      transaction.data.data,
-      transaction.data.operation,
-      transaction.data.safeTxGas,
-      transaction.data.baseGas,
-      transaction.data.gasPrice,
-      transaction.data.gasToken,
-      transaction.data.refundReceiver,
-      transaction.encodedSignatures(),
-    ])
+    const txTypedData = generateTypedData({
+      safeAddress,
+      safeVersion: '1.3.0',
+      chainId,
+      safeTransactionData: scanRequest.transaction.data,
+    })
 
     const payload: RedefinePayload = {
       chainId: chainId,
-      domain: 'https://app.safe.global',
+      domain: 'http://localhost:3000',
       payload: {
-        method: 'eth_sendTransaction',
-        params: [
-          {
-            from: walletAddress,
-            data: txData,
-            to: safeAddress,
-            value: '0x0',
-          },
-        ],
+        method: 'eth_signTypedData_v4',
+        params: [safeAddress, JSON.stringify(txTypedData)],
       },
     }
 
@@ -147,6 +109,7 @@ export const RedefineTransactionScanner: TransactionScanner = {
     }
 
     const res = await fetch(REDEFINE_URL, requestObject)
+
     if (res.ok) {
       const result = (await res.json()) as RedefineResponse
       const warnings = result.data.insights.issues?.map((issue): TransactionSecurityWarning => {
