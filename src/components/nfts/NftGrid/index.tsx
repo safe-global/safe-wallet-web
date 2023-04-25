@@ -62,6 +62,7 @@ const headCells = [
     id: 'checkbox',
     label: '',
     width: '7%',
+    textAlign: 'right',
   },
 ]
 
@@ -150,6 +151,7 @@ const NftGrid = ({
                   sx={{
                     display: headCell.xsHidden ? { xs: 'none', sm: 'table-cell' } : undefined,
                     width: headCell.width,
+                    'text-align': headCell.textAlign,
                   }}
                 >
                   {headCell.id === 'collection' ? (
@@ -181,7 +183,11 @@ const NftGrid = ({
                       linksHeader
                     ) : null
                   ) : headCell.id === 'checkbox' ? (
-                    <Checkbox onChange={onSelectAll} title="Select all" />
+                    <Checkbox
+                      checked={filteredNfts.length > 0 && filteredNfts.length === selectedNfts.length}
+                      onChange={onSelectAll}
+                      title="Select all"
+                    />
                   ) : (
                     headCell.label
                   )}
