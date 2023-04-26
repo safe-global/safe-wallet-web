@@ -10,7 +10,7 @@ import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { useInitPairing } from '@/services/pairing/hooks'
 import { isWalletUnlocked, WalletNames } from '@/utils/wallets'
-import { SANCTIONED_ADDRESSES } from '@/utils/ofac-sanctioned-addresses'
+import { isSanctionedAddress } from '@/utils/is-sanctioned-address'
 
 export type ConnectedWallet = {
   label: string
@@ -53,7 +53,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
     ens: account.ens?.name,
     chainId: Number(primaryWallet.chains[0].id).toString(10),
     provider: primaryWallet.provider,
-    sanctioned: SANCTIONED_ADDRESSES.includes(address.toLowerCase()),
+    sanctioned: isSanctionedAddress(address),
   }
 }
 

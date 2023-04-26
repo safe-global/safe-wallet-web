@@ -5464,6 +5464,11 @@ commondir@^1.0.1:
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
   integrity sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==
 
+compliance-sdk@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/compliance-sdk/-/compliance-sdk-1.0.6.tgz#aa185b015b1d5458987b6484f02e428ac1d5eb1b"
+  integrity sha512-xnTAnBecTNt1amyGGG+RZ3DYeKXkbGmrWBJVtvlx6yky75RsUVjlV1AD/AKaCxvA/PM2GtURj3kwHyNyoz45Mw==
+
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
