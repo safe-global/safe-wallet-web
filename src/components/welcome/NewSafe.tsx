@@ -20,6 +20,7 @@ import NewSafeIcon from '@/public/images/welcome/new-safe.svg'
 import LoadSafeIcon from '@/public/images/welcome/load-safe.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useTheme } from '@mui/material/styles'
+import { DataWidget } from '@/components/welcome/DataWidget'
 
 const NewSafe = () => {
   const [expanded, setExpanded] = useState(true)
@@ -37,18 +38,33 @@ const NewSafe = () => {
 
   return (
     <Grid container spacing={3} p={3} pb={0} flex={1}>
-      <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 480 }} className={css.sidebar}>
-        <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h4" display="inline" fontWeight={700}>
-              My Safe Accounts
-            </Typography>
-          </AccordionSummary>
+      <Grid
+        container
+        item
+        xs={12}
+        md={4}
+        lg={3.5}
+        minWidth={{ md: 480 }}
+        className={css.sidebar}
+        flexDirection="column"
+      >
+        <Grid item lg width={1}>
+          <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h4" display="inline" fontWeight={700}>
+                My Safe Accounts
+              </Typography>
+            </AccordionSummary>
 
-          <AccordionDetails sx={{ padding: 0 }} onClick={(event) => event.stopPropagation()}>
-            <SafeList />
-          </AccordionDetails>
-        </Accordion>
+            <AccordionDetails sx={{ padding: 0 }} onClick={(event) => event.stopPropagation()}>
+              <SafeList />
+            </AccordionDetails>
+          </Accordion>
+        </Grid>
+
+        <Grid item>
+          <DataWidget />
+        </Grid>
       </Grid>
 
       <Grid item flex={1}>

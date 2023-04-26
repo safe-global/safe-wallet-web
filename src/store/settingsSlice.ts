@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
+import merge from 'lodash/merge'
 
 import type { RootState } from '@/store'
 import isEqual from 'lodash/isEqual'
@@ -89,6 +90,11 @@ export const settingsSlice = createSlice({
     },
     setEnv: (state, { payload }: PayloadAction<EnvState>) => {
       state.env = payload
+    },
+    setSettings: (_, { payload }: PayloadAction<SettingsState>) => {
+      // We must return as we are overwriting the entire state
+      // Preserve default nested settings if importing without
+      return merge({}, initialState, payload)
     },
   },
 })

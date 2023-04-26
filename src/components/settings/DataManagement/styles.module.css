@@ -1,0 +1,48 @@
+.card {
+  width: 100%;
+  border: 1px solid var(--color-border-light);
+  margin: var(--space-2) 0;
+}
+
+.fileIcon {
+  display: flex;
+  align-items: center;
+  padding: var(--space-1);
+  border: 1px solid var(--color-text-primary);
+}
+
+.exportIcon {
+  min-width: unset;
+  padding: var(--space-1);
+}
+
+.header {
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.header :global .MuiCardHeader-avatar {
+  margin-right: var(--space-2);
+}
+
+.header :global .MuiCardHeader-action {
+  align-self: center;
+  margin: 0;
+}
+
+.content {
+  padding: var(--space-3);
+}
+
+.listIcon {
+  min-width: unset;
+  margin-right: var(--space-3);
+  padding-top: var(--space-1);
+  align-self: flex-start;
+}
+
+.networkIcon {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: calc(var(--space-1) / 2);
+}

@@ -34,6 +34,8 @@ export const addressBookSlice = createSlice({
       const { chainId, address } = action.payload
       if (!state[chainId]) return state
       delete state[chainId][address]
+      if (Object.keys(state[chainId]).length > 0) return state
+      delete state[chainId]
     },
   },
 })

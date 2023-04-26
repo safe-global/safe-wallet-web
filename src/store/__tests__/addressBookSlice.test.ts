@@ -61,6 +61,19 @@ describe('addressBookSlice', () => {
     })
   })
 
+  it('should remove the chain if the last entry is removed', () => {
+    const state = addressBookSlice.reducer(
+      {
+        '1': { '0x0': 'Alice' },
+      },
+      removeAddressBookEntry({
+        chainId: '1',
+        address: '0x0',
+      }),
+    )
+    expect(state).toStrictEqual({})
+  })
+
   it('should not return entries with invalid address format', () => {
     const initialState = {
       '1': { '0x0': 'Alice', '0x1': 'Bob', '0x2': 'Fred' },
