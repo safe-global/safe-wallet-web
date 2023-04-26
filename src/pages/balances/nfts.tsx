@@ -19,7 +19,7 @@ const NftApps = memo(function NftApps(): ReactElement | null {
   return (
     <Grid item sm={12} lg={3} order={{ lg: 1 }}>
       <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2} mt={0.75}>
-        NFT {'Safe{Apps}'}
+        NFT {'Safe Apps'}
       </Typography>
 
       <Grid container spacing={3}>

@@ -121,7 +121,7 @@ const getItems = ({
     const safeAppsPreview: ListItemTextProps = {
       primary: (
         <>
-          Bookmarked <b>{'Safe{Apps}'}</b>
+          Bookmarked <b>{'Safe Apps'}</b>
         </>
       ),
     }

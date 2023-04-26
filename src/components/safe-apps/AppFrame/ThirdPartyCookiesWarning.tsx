@@ -22,7 +22,7 @@ export const ThirdPartyCookiesWarning = ({ onClose }: ThirdPartyCookiesWarningPr
       })}
     >
       <AlertTitle>
-        Third party cookies are disabled. {'Safe{Apps}'} may therefore not work properly. You can find out more
+        Third party cookies are disabled. {'Safe Apps'} may therefore not work properly. You can find out more
         information about this{' '}
         <ExternalLink href={HELP_LINK} fontSize="inherit">
           here

@@ -15,7 +15,7 @@ const SafeAppsLoadError = ({ onBackToApps }: SafeAppsLoadErrorProps): React.Reac
   return (
     <div className={css.wrapper}>
       <div className={css.content}>
-        <Typography variant="h1">{'Safe{App}'} could not be loaded</Typography>
+        <Typography variant="h1">{'Safe App'} could not be loaded</Typography>
 
         <SvgIcon component={NetworkError} inheritViewBox className={css.image} />
 
@@ -27,7 +27,7 @@ const SafeAppsLoadError = ({ onBackToApps }: SafeAppsLoadErrorProps): React.Reac
         </div>
 
         <Button href="#back" color="primary" onClick={onBackToApps}>
-          Go back to the {'Safe{Apps}'} list
+          Go back to the {'Safe Apps'} list
         </Button>
       </div>
     </div>
