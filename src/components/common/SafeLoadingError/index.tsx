@@ -1,11 +1,11 @@
 import type { ReactElement, ReactNode } from 'react'
+import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk'
 import { Button } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import PagePlaceholder from '../PagePlaceholder'
 import { AppRoutes } from '@/config/routes'
 import Link from 'next/link'
 import useWallet from '@/hooks/wallets/useWallet'
-import { SANCTIONED_ADDRESS_MESSAGE } from '@/utils/ofac-sanctioned-addresses'
 
 const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement => {
   const { safeError } = useSafeInfo()
@@ -13,7 +13,7 @@ const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement =
 
   let walletError = ''
   if (wallet && wallet.sanctioned) {
-    walletError = SANCTIONED_ADDRESS_MESSAGE
+    walletError = COMPLIANT_ERROR_RESPONSE
   }
 
   if (!safeError && !walletError) return <>{children}</>

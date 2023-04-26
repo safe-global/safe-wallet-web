@@ -28,7 +28,7 @@ import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import SendToBlock from '@/components/tx/SendToBlock'
 import useAddressBook from '@/hooks/useAddressBook'
-import { SANCTIONED_ADDRESSES, SANCTIONED_ADDRESS_MESSAGE } from '@/utils/ofac-sanctioned-addresses'
+import { COMPLIANT_ERROR_RESPONSE } from 'compliance-sdk'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
@@ -36,6 +36,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
 import NumberField from '@/components/common/NumberField'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
+import { isSanctionedAddress } from '@/utils/is-sanctioned-address'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -138,8 +139,8 @@ const SendAssetsForm = ({ onSubmit, formData, disableSpendingLimit = false }: Se
   }
 
   useEffect(() => {
-    if (recipient && SANCTIONED_ADDRESSES.includes(recipient.toLowerCase())) {
-      setOFACError(SANCTIONED_ADDRESS_MESSAGE)
+    if (isSanctionedAddress(recipient)) {
+      setOFACError(COMPLIANT_ERROR_RESPONSE)
     } else {
       setOFACError(undefined)
     }
