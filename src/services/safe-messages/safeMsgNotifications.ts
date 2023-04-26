@@ -1,4 +1,4 @@
-import { getSafeMessage, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { getSafeMessage, SafeMessageListItemType, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import { logError, Errors } from '../exceptions'
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
 
@@ -20,10 +20,12 @@ export const dispatchPreparedSignature = async (
   onClose: () => void,
   requestId?: string,
 ) => {
-  let message
+  let message: SafeMessage | undefined
   try {
-    // the response has to be a SafeMessage as it is the only type with safeMessageHash
-    message = (await getSafeMessage(chainId, safeMessageHash)) as SafeMessage
+    const fetchedMessage = await getSafeMessage(chainId, safeMessageHash)
+
+    // fetchedMessage does not have a type because it is explicitly a message
+    message = { ...fetchedMessage, type: SafeMessageListItemType.MESSAGE }
   } catch (err) {
     logError(Errors._613, (err as Error).message)
     throw err
