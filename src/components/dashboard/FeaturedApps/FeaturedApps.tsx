@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import styled from '@emotion/styled'
 import { Box, Grid, Typography, Link } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { useRouter } from 'next/router'
@@ -9,16 +8,7 @@ import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
-const StyledGrid = styled(Grid)`
-  gap: 24px;
-  height: 100%;
-`
-
-const StyledGridItem = styled(Grid)`
-  min-width: 300px;
-`
-
-export const FeaturedApps = (): ReactElement | null => {
+export const FeaturedApps = ({ smallLayout }: { smallLayout: boolean }): ReactElement | null => {
   const router = useRouter()
   const [featuredApps, _, remoteSafeAppsLoading] = useRemoteSafeApps(SafeAppsTag.DASHBOARD_FEATURED)
 
@@ -31,9 +21,14 @@ export const FeaturedApps = (): ReactElement | null => {
           Connect &amp; transact
         </Typography>
         <WidgetBody>
-          <StyledGrid container flexDirection={{ xs: 'column', sm: 'row', lg: 'column' }}>
+          <Grid
+            container
+            flexDirection={{ xs: 'column', sm: 'row', lg: smallLayout ? 'column' : undefined }}
+            gap={3}
+            height={1}
+          >
             {featuredApps?.map((app) => (
-              <StyledGridItem item xs md key={app.id}>
+              <Grid item xs md key={app.id}>
                 <NextLink
                   passHref
                   href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}
@@ -58,9 +53,9 @@ export const FeaturedApps = (): ReactElement | null => {
                     </Card>
                   </a>
                 </NextLink>
-              </StyledGridItem>
+              </Grid>
             ))}
-          </StyledGrid>
+          </Grid>
         </WidgetBody>
       </WidgetContainer>
     </Grid>
