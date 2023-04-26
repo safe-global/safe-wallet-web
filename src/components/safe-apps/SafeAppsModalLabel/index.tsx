@@ -6,7 +6,7 @@ const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 
 const SafeAppsModalLabel = ({ app }: { app?: SafeAppData }) => {
   if (!app) {
-    return <Typography variant="h3">Safe{'{Apps}'} Transaction</Typography>
+    return <Typography variant="h3">{'Safe{Apps}'} Transaction</Typography>
   }
 
   return (

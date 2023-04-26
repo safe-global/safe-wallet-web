@@ -28,7 +28,7 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
     </Box>
     <Divider />
     <Box sx={{ mt: 4 }}>
-      <Typography variant="body1">Safe{'{App}'} URL</Typography>
+      <Typography variant="body1">{'Safe{App}'} URL</Typography>
       <Typography
         variant="body2"
         sx={({ palette, shape }) => ({
@@ -64,7 +64,7 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
             </Typography>
           </Box>
           <Typography variant="body1" mt={1} sx={({ palette }) => ({ color: palette.warning.dark })}>
-            The application is not in the default Safe{'{App}'} list
+            The application is not in the default {'Safe{App}'} list
           </Typography>
           <Typography variant="body2" mt={2}>
             Check the app link and ensure it comes from a trusted source

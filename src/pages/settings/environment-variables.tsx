@@ -7,7 +7,9 @@ const EnvironmentVariablesPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'{Wallet}'} – Settings – Environment variables</title>
+        <title>
+          <>{'Safe{Wallet}'} – Settings – Environment variables</>
+        </title>
       </Head>
 
       <SettingsHeader />

@@ -249,7 +249,9 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     <>
       <Head>
         <title>
-          Safe{'{Apps}'} - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}
+          <>
+            {'Safe{Apps}'} - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}
+          </>
         </title>
       </Head>
 
@@ -260,7 +262,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           <div className={css.loadingContainer}>
             {isLoadingSlow && (
               <Typography variant="h4" gutterBottom>
-                The Safe{'{App}'} is taking too long to load, consider refreshing.
+                The {'Safe{App}'} is taking too long to load, consider refreshing.
               </Typography>
             )}
             <CircularProgress size={48} color="primary" />

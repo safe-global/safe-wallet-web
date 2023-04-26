@@ -121,7 +121,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
                   {isCustomAppInTheDefaultList ? (
                     <Box display="flex" mt={2} alignItems="center">
                       <CheckIcon color="success" />
-                      <Typography ml={1}>This Safe{'{App}'} is already registered</Typography>
+                      <Typography ml={1}>This {'Safe{App}'} is already registered</Typography>
                     </Box>
                   ) : (
                     <>
@@ -154,7 +154,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
             <InfoOutlinedIcon className={css.addCustomAppHelpIcon} />
             <Typography ml={0.5}>Learn more about building</Typography>
             <ExternalLink className={css.addCustomAppHelpLink} href={HELP_LINK} fontWeight={700}>
-              Safe{'{Apps}'}
+              {'Safe{Apps}'}
             </ExternalLink>
             .
           </div>

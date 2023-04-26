@@ -31,7 +31,9 @@ const ShareSafeApp = () => {
   return (
     <>
       <Head>
-        <title>Safe{'{Apps}'} – Share</title>
+        <title>
+          <>{'Safe{Apps}'} – Share</>
+        </title>
       </Head>
 
       <main>

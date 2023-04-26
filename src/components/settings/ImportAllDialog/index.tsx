@@ -94,7 +94,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
         groupKey: 'global-import-success',
         message: 'Successfully imported data',
         detailedMessage: [
-          ...(addedSafesCount > 0 ? [`${addedSafesCount} Safes were added.`] : []),
+          ...(addedSafesCount > 0 ? [`${addedSafesCount} Safe Accounts were added.`] : []),
           ...(addressBookEntriesCount > 0
             ? [`${addressBookEntriesCount} addresses were added to your address book.`]
             : []),
@@ -113,7 +113,7 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
           ...(addedSafesCount > 0 && addedSafes
             ? [
                 <Typography key="addedSafesInfo">
-                  Found <strong>{addedSafesCount} Added Safes</strong> entries on{' '}
+                  Found <strong>{addedSafesCount} Added Safe Account</strong> entries on{' '}
                   <strong>{Object.keys(addedSafes).length} chain(s)</strong>
                 </Typography>,
               ]
@@ -145,11 +145,11 @@ const ImportAllDialog = ({ handleClose }: { handleClose: () => void }): ReactEle
 
         <div className={css.horizontalDivider} />
 
-        <Typography>Only JSON files exported from a Safe{'{Wallet}'} can be imported.</Typography>
+        <Typography>Only JSON files exported from a {'Safe{Wallet}'} can be imported.</Typography>
         <Alert severity="warning" sx={{ mt: 3 }}>
           <AlertTitle sx={{ fontWeight: 700 }}>Overwrite your current data?</AlertTitle>
-          This action will overwrite your currently added Safes and address book entries with those from the imported
-          file.
+          This action will overwrite your currently added Safe Accounts and address book entries with those from the
+          imported file.
         </Alert>
       </DialogContent>
       <DialogActions>

@@ -7,7 +7,9 @@ const Data: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe{'{Wallet}'} – Settings – Data</title>
+        <title>
+          <>{'Safe{Wallet}'} – Settings – Data</>
+        </title>
       </Head>
 
       <SettingsHeader />

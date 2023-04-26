@@ -25,7 +25,9 @@ const DataManagement = () => {
             .
           </Typography>
 
-          <Typography mb={3}>The imported data will overwrite all added Safes and all address book entries.</Typography>
+          <Typography mb={3}>
+            The imported data will overwrite all added Safe Accounts and all address book entries.
+          </Typography>
 
           <Track {...SETTINGS_EVENTS.DATA.IMPORT_ALL_BUTTON}>
             <Button size="small" variant="contained" onClick={() => setModalOpen(true)}>

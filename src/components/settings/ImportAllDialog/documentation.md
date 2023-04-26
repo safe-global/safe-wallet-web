@@ -22,7 +22,7 @@ In the new interface navigate to `/import` or `Settings -> Data` and open the _I
 
 This will only import specific data:
 
-- The added Safes
+- The added Safe Accounts
 - The (valid\*) address book entries
 
 * Only named, checksummed address book entries will be added.
@@ -52,9 +52,9 @@ Example:
 }
 ```
 
-#### Added safes
+#### Added Safe Accounts
 
-Added safes are stored under one entry per chain.
+Added Safe Accounts are stored under one entry per chain.
 Each entry has a key in following format: `_immortal|v2_<chainPrefix>__SAFES`
 The chain prefix is either the chain ID or prefix, as follows:
 

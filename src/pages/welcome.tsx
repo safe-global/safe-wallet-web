@@ -6,7 +6,9 @@ const Welcome: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe{'{Wallet}'} – Welcome</title>
+        <title>
+          <>{'Safe{Wallet}'} – Welcome</>
+        </title>
       </Head>
 
       <NewSafe />
