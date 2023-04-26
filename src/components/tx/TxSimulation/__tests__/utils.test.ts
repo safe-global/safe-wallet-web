@@ -54,7 +54,7 @@ describe('simulation utils', () => {
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 1,
         nonce: 0,
-        chainId: '4',
+        chainId: '5',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
       const mockTx: SafeTransaction = new EthSafeTransaction({
@@ -120,7 +120,7 @@ describe('simulation utils', () => {
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 2,
         nonce: 0,
-        chainId: '4',
+        chainId: '5',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
       const mockTx: SafeTransaction = new EthSafeTransaction({
@@ -162,7 +162,7 @@ describe('simulation utils', () => {
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 2,
         nonce: 0,
-        chainId: '4',
+        chainId: '5',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
       const mockTx: SafeTransaction = new EthSafeTransaction({
@@ -207,7 +207,7 @@ describe('simulation utils', () => {
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 2,
         nonce: 0,
-        chainId: '4',
+        chainId: '5',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
       const mockTx: SafeTransaction = new EthSafeTransaction({
@@ -242,13 +242,13 @@ describe('simulation utils', () => {
       expect(tenderlyPayload.state_objects).toBeUndefined()
     })
 
-    it('unsigned signed not-executable multisig transaction with threshold 2', async () => {
+    it('unsigned not-executable multisig transaction with threshold 2', async () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
 
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 2,
         nonce: 0,
-        chainId: '4',
+        chainId: '5',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
       const mockTx: SafeTransaction = new EthSafeTransaction({
@@ -290,7 +290,7 @@ describe('simulation utils', () => {
       const mockSafeInfo: Partial<SafeInfo> = {
         threshold: 2,
         nonce: 0,
-        chainId: '4',
+        chainId: '5',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
       const mockTxs: MetaTransactionData[] = [
@@ -328,6 +328,42 @@ describe('simulation utils', () => {
       expect(decodedTxData[0]).toBeDefined()
 
       expect(tenderlyPayload.state_objects).toBeUndefined()
+    })
+
+    it('should reduce 10% safeTxGas if greater than or equal to transaction gasLimit', async () => {
+      const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
+
+      const mockSafeInfo: Partial<SafeInfo> = {
+        threshold: 2,
+        nonce: 0,
+        chainId: '5',
+        address: { value: ethers.utils.hexZeroPad('0x123', 20) },
+      }
+      const mockTx: SafeTransaction = new EthSafeTransaction({
+        to: ZERO_ADDRESS,
+        value: '0x0',
+        data: '0x',
+        baseGas: 0,
+        gasPrice: 0,
+        gasToken: ZERO_ADDRESS,
+        nonce: 0,
+        operation: 0,
+        refundReceiver: ZERO_ADDRESS,
+        safeTxGas: 100_000,
+      })
+
+      const tenderlyPayload = await getSimulationPayload({
+        canExecute: false,
+        executionOwner: ownerAddress,
+        gasLimit: 100_000,
+        safe: mockSafeInfo as SafeInfo,
+        transactions: mockTx,
+      })
+
+      const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
+
+      expect(decodedTxData[4]).toEqual(BigNumber.from(90_000))
+      expect(tenderlyPayload.gas).toEqual(100_000)
     })
   })
 })
