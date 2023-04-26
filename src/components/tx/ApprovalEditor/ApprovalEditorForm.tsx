@@ -1,17 +1,13 @@
 import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
 import { Grid, Typography, IconButton, SvgIcon, Divider, List, ListItem } from '@mui/material'
-import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import css from './styles.module.css'
-import EditIcon from '@/public/images/common/edit.svg'
 import CheckIcon from '@mui/icons-material/Check'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
-import classnames from 'classnames'
 import { ApprovalValueField } from './ApprovalValueField'
 import { MODALS_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
-
-const NO_ID_SELECTED = -1
+import { useMemo } from 'react'
 
 export type ApprovalEditorFormData = {
   approvals: string[]
@@ -24,33 +20,29 @@ export const ApprovalEditorForm = ({
   approvalInfos: ApprovalInfo[]
   updateApprovals?: (newApprovals: string[]) => void
 }) => {
-  const readonly = updateApprovals === undefined
-  const [editIDx, setEditIdx] = useState(NO_ID_SELECTED)
+  const isReadonly = updateApprovals === undefined
+  const initialApprovals = useMemo(() => approvalInfos.map((info) => info.amountFormatted), [approvalInfos])
 
   const formMethods = useForm<ApprovalEditorFormData>({
     defaultValues: {
-      approvals: approvalInfos.map((info) => info.amountFormatted),
+      approvals: initialApprovals,
     },
     mode: 'onChange',
   })
 
   const {
-    formState: { errors },
+    formState: { errors, isDirty },
     getValues,
   } = formMethods
 
-  const onSetEditing = (idx: number) => {
-    setEditIdx(idx)
-  }
-
   const onSave = () => {
+    if (isReadonly) return
     const formData = getValues('approvals')
-    !readonly && updateApprovals(formData)
-    setEditIdx(NO_ID_SELECTED)
+    updateApprovals(formData)
   }
 
   return (
-    <List>
+    <List className={css.approvalsList}>
       <FormProvider {...formMethods}>
         {approvalInfos.map((tx, idx) => (
           <div key={tx.tokenAddress + tx.spender}>
@@ -58,26 +50,20 @@ export const ApprovalEditorForm = ({
             <ListItem disableGutters>
               <Grid container className={css.approval} gap={1} justifyContent="space-between">
                 <Grid item display="flex" xs={12} flexDirection="row" alignItems="center" gap={1}>
-                  <ApprovalValueField name={`approvals.${idx}`} tx={tx} readonly={readonly || editIDx !== idx} />
-                  {readonly ? null : editIDx === idx ? (
+                  {/* Input */}
+                  <ApprovalValueField name={`approvals.${idx}`} tx={tx} readonly={isReadonly} />
+
+                  {/* Save button */}
+                  <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
                     <IconButton
-                      className={classnames(css.iconButton, css.applyIconButton)}
+                      className={css.iconButton}
                       onClick={onSave}
-                      disabled={!!errors.approvals}
+                      disabled={isReadonly || !!errors.approvals || !isDirty}
+                      title="Save"
                     >
                       <SvgIcon component={CheckIcon} />
                     </IconButton>
-                  ) : (
-                    <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
-                      <IconButton
-                        className={css.iconButton}
-                        disabled={editIDx !== NO_ID_SELECTED}
-                        onClick={() => onSetEditing(idx)}
-                      >
-                        <SvgIcon component={EditIcon} />
-                      </IconButton>
-                    </Track>
-                  )}
+                  </Track>
                 </Grid>
 
                 <Grid item display="flex" xs={12} flexDirection="column">
