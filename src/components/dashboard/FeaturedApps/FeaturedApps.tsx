@@ -8,7 +8,7 @@ import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
-export const FeaturedApps = ({ smallLayout }: { smallLayout: boolean }): ReactElement | null => {
+export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): ReactElement | null => {
   const router = useRouter()
   const [featuredApps, _, remoteSafeAppsLoading] = useRemoteSafeApps(SafeAppsTag.DASHBOARD_FEATURED)
 
@@ -23,7 +23,7 @@ export const FeaturedApps = ({ smallLayout }: { smallLayout: boolean }): ReactEl
         <WidgetBody>
           <Grid
             container
-            flexDirection={{ xs: 'column', sm: 'row', lg: smallLayout ? 'column' : undefined }}
+            flexDirection={{ xs: 'column', sm: 'row', lg: stackedLayout ? 'column' : undefined }}
             gap={3}
             height={1}
           >
