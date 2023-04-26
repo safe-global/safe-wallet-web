@@ -1,15 +1,11 @@
 import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { getDecodedData, Operation } from '@safe-global/safe-gateway-typescript-sdk'
+import { getDecodedData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { Box, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
-import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import SendToBlock from '@/components/tx/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -75,34 +71,10 @@ const ReviewSafeAppsTx = ({
     <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
       <>
         <ApprovalEditor txs={txList} updateTxs={setTxList} />
+
         <SendFromBlock />
-        {safeTx && (
-          <>
-            <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
 
-            <Box pb={2}>
-              <Typography mt={2} color="primary.light">
-                Data (hex encoded)
-              </Typography>
-              {generateDataRowValue(safeTx.data.data, 'rawData')}
-            </Box>
-
-            {isMultiSend && (
-              <Box mb={2} display="flex" flexDirection="column" gap={1}>
-                <Multisend
-                  txData={{
-                    dataDecoded: decodedData,
-                    to: { value: safeTx.data.to },
-                    value: safeTx.data.value,
-                    operation: safeTx.data.operation === OperationType.Call ? Operation.CALL : Operation.DELEGATE,
-                    trustedDelegateCallTarget: false,
-                  }}
-                  variant="outlined"
-                />
-              </Box>
-            )}
-          </>
-        )}
+        {safeTx && <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />}
       </>
     </SignOrExecuteForm>
   )

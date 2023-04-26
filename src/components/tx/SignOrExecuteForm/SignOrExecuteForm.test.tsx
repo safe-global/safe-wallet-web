@@ -113,12 +113,17 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Transaction details')).toBeInTheDocument()
   })
 
-  it("doesn't display decoded data if tx is a native transfer", () => {
+  it('displays decoded data if tx is a native transfer', () => {
     const mockTx = createSafeTx()
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-    expect(result.queryByText('Transaction details')).not.toBeInTheDocument()
+    expect(result.queryByText('Transaction details')).toBeInTheDocument()
+
+    // Click on it
+    fireEvent.click(result.getByText('Transaction details'))
+
+    expect(result.queryByText('Native token transfer')).toBeInTheDocument()
   })
 
   it('displays an execute checkbox if tx can be executed', () => {
