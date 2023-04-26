@@ -29,17 +29,19 @@ const fetchNewestListAndUpdateCache = async () => {
 const DAY = 24 * 60 * 60 * 1000
 
 // Make sure cache is always populated
-if (!readFromCache(OFAC_SANCTIONS_LIST_URL)) {
-  writeToCache(
-    OFAC_SANCTIONS_LIST_URL,
-    SANCTIONED_ADDRESSES.map((x) => x.toLowerCase()),
-  )
-}
-// Update it with latest (async)
-void fetchNewestListAndUpdateCache()
+if (typeof localStorage !== 'undefined') {
+  if (!readFromCache(OFAC_SANCTIONS_LIST_URL)) {
+    writeToCache(
+      OFAC_SANCTIONS_LIST_URL,
+      SANCTIONED_ADDRESSES.map((x) => x.toLowerCase()),
+    )
+  }
+  // Update it with latest (async)
+  void fetchNewestListAndUpdateCache()
 
-// """Cronjob""" to update the cache
-setInterval(fetchNewestListAndUpdateCache, DAY)
+  // """Cronjob""" to update the cache
+  setInterval(fetchNewestListAndUpdateCache, DAY)
+}
 
 export function isSanctionedAddress(address: string): boolean {
   const cache = readFromCache(OFAC_SANCTIONS_LIST_URL)
