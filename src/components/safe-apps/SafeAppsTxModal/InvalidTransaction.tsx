@@ -11,8 +11,8 @@ const InvalidTransaction = (): ReactElement => {
       </Box>
       <br />
       <Typography>
-        This Safe{'{App}'} initiated a transaction which cannot be processed. Please get in touch with the developer of
-        this Safe{'{App}'} for more information.
+        This Safe App initiated a transaction which cannot be processed. Please get in touch with the developer of this
+        Safe App for more information.
       </Typography>
     </Box>
   )

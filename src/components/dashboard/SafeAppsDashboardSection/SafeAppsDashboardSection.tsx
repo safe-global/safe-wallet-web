@@ -20,7 +20,7 @@ const SafeAppsDashboardSection = () => {
   return (
     <WidgetContainer>
       <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
-        Safe{'{Apps}'}
+        Safe Apps
       </Typography>
 
       <Grid container spacing={3}>
@@ -59,10 +59,10 @@ const ExploreSafeAppsCard = () => {
 
   return (
     <SafeAppCardContainer safeAppUrl={safeAppsLink} className={css.container}>
-      <ExploreSafeAppsIcon alt="Explore Safe{Apps} icon" />
+      <ExploreSafeAppsIcon alt="Explore Safe Apps icon" />
 
       <Button variant="contained" size="small">
-        Explore Safe{`{Apps}`}
+        Explore Safe Apps
       </Button>
     </SafeAppCardContainer>
   )

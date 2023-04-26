@@ -79,8 +79,8 @@ const SafeTerms = () => {
       </ol>
       <h3>3. What are the Services offered?</h3>
       <p>
-        Our services (&ldquo;Services&rdquo;) primarily consist of enabling users to create their Safes and ongoing
-        interaction with it on the Blockchain.
+        Our services (&ldquo;Services&rdquo;) primarily consist of enabling users to create their Safe Accounts and
+        ongoing interaction with it on the Blockchain.
       </p>
       <ol start={1}>
         <li>&ldquo;Safe Account&rdquo; </li>
@@ -106,32 +106,31 @@ const SafeTerms = () => {
         key Wallets such as hardware wallets, browser extension wallets and mobile wallets that support WalletConnect.
       </p>
       <ol start={2}>
-        <li>&ldquo;Safe&nbsp;{'{App}'}&rdquo;</li>
+        <li>&ldquo;Safe App&rdquo;</li>
       </ol>
       <p>
-        You may access the Safe Account using the Safe{'{Wallet}'} web app, mobile app for iOS and android, or the
-        browser extension&nbsp;(each a &ldquo;Safe&nbsp;{'{App}'}&rdquo;). The Safe&nbsp;{'{App}'} may be used to manage
-        your personal digital assets on Ethereum and other common EVM chains when you connect the Safe Account with
-        third-party&nbsp;services (as defined below). The Safe&nbsp;{'{App}'} provides certain features that may be
-        amended from time to time.{' '}
+        You may access the Safe Account using the {'Safe{Wallet}'} web app, mobile app for iOS and android, or the
+        browser extension&nbsp;(each a &ldquo;Safe App&rdquo;). The Safe App may be used to manage your personal digital
+        assets on Ethereum and other common EVM chains when you connect the Safe Account with third-party&nbsp;services
+        (as defined below). The Safe App provides certain features that may be amended from time to time.{' '}
       </p>
       <ol start={3}>
-        <li>&ldquo;Third-Party&nbsp;Safe{'{Apps}'}&rdquo;</li>
+        <li>&ldquo;Third-Party&nbsp;Safe Apps&rdquo;</li>
       </ol>
       <p>
-        The Safe&nbsp;{'{App}'} allows you to connect the Safe Account to third-party decentralized applications
-        (&ldquo;Third-Party&nbsp;Safe{'{Apps}'}&rdquo;) and use third-party&nbsp;services such as from the decentralized
+        The Safe App allows you to connect the Safe Account to third-party decentralized applications
+        (&ldquo;Third-Party&nbsp;Safe Apps&rdquo;) and use third-party&nbsp;services such as from the decentralized
         finance sector, DAO Tools or services related to NFTs (&ldquo;Third-Party&nbsp;Services&quot;). The
-        Third-Party&nbsp;Safe{'{Apps}'} are integrated in the user interface of the Safe&nbsp;{'{App}'} via inline
-        framing. The provider of the Third-Party&nbsp;Safe{'{App}'} and related Third-Party Service is responsible for
-        the operation of the service and the correctness, completeness and actuality of any information provided
-        therein. We make a pre-selection of Third-Party&nbsp;Safe{'{Apps}'} that we show in the Safe&nbsp;{'{App}'}.
-        However, we only perform a rough triage in advance for obvious problems and functionality in terms of loading
-        time and resolution capability of the transactions. Accordingly, in the event of any (technical) issues
-        concerning the Third-Party Services, the user must only contact the respective service provider directly. The
-        terms of service, if any, shall be governed by the applicable contractual provisions between the User and the
-        respective provider of the Third-Party&nbsp;Service. Accordingly, we are not liable in the event of a breach of
-        contract, damage or loss related to the use of such Third-Party Service.
+        Third-Party&nbsp;Safe Apps are integrated in the user interface of the Safe App via inline framing. The provider
+        of the Third-Party&nbsp;Safe App and related Third-Party Service is responsible for the operation of the service
+        and the correctness, completeness and actuality of any information provided therein. We make a pre-selection of
+        Third-Party&nbsp;Safe Apps that we show in the Safe App. However, we only perform a rough triage in advance for
+        obvious problems and functionality in terms of loading time and resolution capability of the transactions.
+        Accordingly, in the event of any (technical) issues concerning the Third-Party Services, the user must only
+        contact the respective service provider directly. The terms of service, if any, shall be governed by the
+        applicable contractual provisions between the User and the respective provider of the Third-Party&nbsp;Service.
+        Accordingly, we are not liable in the event of a breach of contract, damage or loss related to the use of such
+        Third-Party Service.
       </p>
       <h3>4. What do the Services not consist of?</h3>
       <p>Our Services do not&nbsp;consist of:</p>
@@ -178,7 +177,7 @@ const SafeTerms = () => {
       <ul>
         <li>
           We do not have any oversight over your activities with Third-Party&nbsp;Services especially by using
-          Third-Party&nbsp;Safe{'{Apps}'}, and therefore we do not and cannot make any representation regarding their
+          Third-Party&nbsp;Safe Apps, and therefore we do not and cannot make any representation regarding their
           appropriateness and suitability for you.
         </li>
         <li>
@@ -199,7 +198,7 @@ const SafeTerms = () => {
           When you access or use Third-Party&nbsp;Services you accept that there are risks in doing so and that you
           alone assume any such risks when choosing to interact with them. We are not liable for any errors or omissions
           or for any damages or loss you might suffer through interacting with those Third-Party&nbsp;Services, such as
-          Third-Party&nbsp;Safe{'{Apps}'}.
+          Third-Party&nbsp;Safe Apps.
         </li>
         <li>
           You know of the inherent risks of cryptographic and Blockchain-based systems and the high volatility of Token
@@ -234,10 +233,9 @@ const SafeTerms = () => {
       <h3>6. What are the fees for the Services?</h3>
       <ol start={1}>
         <li>
-          The use of the Safe{'{App}'} or Third-Party&nbsp;Safe{'{Apps}'} may cause fees, including network fees, as
-          indicated in the respective app. CC has no control over the fees charged by the Third-Party Services. CC may
-          change its own fees at any time. Price changes will be communicated to the User in due time before taking
-          effect.
+          The use of the Safe App or Third-Party&nbsp;Safe Apps may cause fees, including network fees, as indicated in
+          the respective app. CC has no control over the fees charged by the Third-Party Services. CC may change its own
+          fees at any time. Price changes will be communicated to the User in due time before taking effect.
         </li>
         <li>
           The User is only entitled to offset and/or assert rights of retention if his counterclaims are legally
@@ -283,7 +281,7 @@ const SafeTerms = () => {
           All intellectual property rights in the Safe Account and the Services throughout the world belong to us as
           owner or our licensors. Nothing in these Terms gives you any rights in respect of any intellectual property
           owned by us or our licensors and you acknowledge that you do not acquire any ownership rights by downloading
-          the Safe{'{App}'} or any content from the Safe{'{App}'}.
+          the Safe App or any content from the Safe App.
         </li>
         <li>
           If you are a consumer we grant you a simple, limited license, but do not sell, to you the Services you
@@ -298,8 +296,8 @@ const SafeTerms = () => {
           title or non-infringement.{' '}
         </li>
         <li>
-          If you use the Safe{'{App}'} via web browser, the strict liability of CC for damages (sec. 536a German Civil
-          Code) for defects existing at the time of conclusion of the contract is precluded.{' '}
+          If you use the Safe App via web browser, the strict liability of CC for damages (sec. 536a German Civil Code)
+          for defects existing at the time of conclusion of the contract is precluded.{' '}
         </li>
         <li>The foregoing provisions will not limit CC&rsquo;s liability as defined in Clause 13. </li>
         <li>
@@ -386,7 +384,7 @@ const SafeTerms = () => {
           negligence on our part, our legal representatives, our executive employees or other vicarious agents.
         </li>
         <li>
-          If we do not provide the Safe{'{App}'} or Services to you free of charge, we are liable in case of simple
+          If we do not provide the Safe App or Services to you free of charge, we are liable in case of simple
           negligence for damages resulting from the breach of an essential contractual duty (e.g. a duty, the
           performance of which enables the proper execution of the contract in the first place and on the compliance of
           which the contractual partner regularly relies and may rely), whereby in the latter case of breach of an
