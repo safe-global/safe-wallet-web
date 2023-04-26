@@ -11,7 +11,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { UrlObject } from 'url'
 import Track from '../Track'
-import SafeTokenIcon from '@/public/images/common/safe-token.svg'
+import SafeTokenIcon from '@/public/images/common/safe_token.svg'
 import css from './styles.module.css'
 
 const TOKEN_DECIMALS = 18
