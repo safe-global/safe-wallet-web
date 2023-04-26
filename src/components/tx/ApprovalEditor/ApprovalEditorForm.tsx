@@ -56,16 +56,18 @@ export const ApprovalEditorForm = ({
                   <ApprovalValueField name={`approvals.${idx}`} tx={tx} readonly={isReadonly} />
 
                   {/* Save button */}
-                  <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
-                    <IconButton
-                      className={css.iconButton}
-                      onClick={onSave}
-                      disabled={isReadonly || !!errors.approvals || !dirtyFields.approvals?.[idx]}
-                      title="Save"
-                    >
-                      <SvgIcon component={CheckIcon} />
-                    </IconButton>
-                  </Track>
+                  {!isReadonly && (
+                    <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
+                      <IconButton
+                        className={css.iconButton}
+                        onClick={onSave}
+                        disabled={!!errors.approvals || !dirtyFields.approvals?.[idx]}
+                        title="Save"
+                      >
+                        <SvgIcon component={CheckIcon} />
+                      </IconButton>
+                    </Track>
+                  )}
                 </Grid>
 
                 <Grid item display="flex" xs={12} flexDirection="column">

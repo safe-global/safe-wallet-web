@@ -42,7 +42,7 @@ const SafeListItemSecondaryAction = ({
             onClick?.()
           }}
         >
-          Add Safe Account
+          Add
         </Button>
       </Link>
     )
