@@ -43,9 +43,7 @@ const NFTs: NextPage = () => {
   return (
     <>
       <Head>
-        <title>
-          <>{'Safe{Wallet}'} – NFTs</>
-        </title>
+        <title>{'Safe{Wallet} – NFTs'}</title>
       </Head>
 
       <AssetsHeader />

@@ -9,9 +9,7 @@ const Messages: NextPage = () => {
   return (
     <>
       <Head>
-        <title>
-          <>{'Safe{Wallet}'} – Messages</>
-        </title>
+        <title>{'Safe{Wallet} – Messages'}</title>
       </Head>
 
       <TxHeader>
