@@ -33,12 +33,14 @@ export const ApprovalEditorForm = ({
   const {
     formState: { errors, dirtyFields },
     getValues,
+    reset,
   } = formMethods
 
   const onSave = () => {
     if (isReadonly) return
     const formData = getValues('approvals')
     updateApprovals(formData)
+    reset({ approvals: formData })
   }
 
   return (
