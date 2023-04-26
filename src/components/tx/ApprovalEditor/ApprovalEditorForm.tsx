@@ -31,7 +31,7 @@ export const ApprovalEditorForm = ({
   })
 
   const {
-    formState: { errors, isDirty },
+    formState: { errors, dirtyFields },
     getValues,
   } = formMethods
 
@@ -58,7 +58,7 @@ export const ApprovalEditorForm = ({
                     <IconButton
                       className={css.iconButton}
                       onClick={onSave}
-                      disabled={isReadonly || !!errors.approvals || !isDirty}
+                      disabled={isReadonly || !!errors.approvals || !dirtyFields.approvals?.[idx]}
                       title="Save"
                     >
                       <SvgIcon component={CheckIcon} />
