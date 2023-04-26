@@ -258,7 +258,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           <div className={css.loadingContainer}>
             {isLoadingSlow && (
               <Typography variant="h4" gutterBottom>
-                The {'Safe App'} is taking too long to load, consider refreshing.
+                The Safe App is taking too long to load, consider refreshing.
               </Typography>
             )}
             <CircularProgress size={48} color="primary" />
