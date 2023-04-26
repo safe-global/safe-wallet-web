@@ -28,7 +28,7 @@ enum ProviderMethods {
   WALLET_SWITCH_ETHEREUM_CHAIN = 'wallet_switchEthereumChain',
 }
 
-export const PAIRING_MODULE_LABEL = 'Safe Mobile'
+export const PAIRING_MODULE_LABEL = 'Safe{Wallet}'
 
 // Modified version of: https://github.com/blocknative/web3-onboard/blob/v2-web3-onboard-develop/packages/walletconnect/src/index.ts
 const pairingModule = (): WalletInit => {
@@ -210,7 +210,7 @@ const pairingModule = (): WalletInit => {
                 case ProviderMethods.ETH_SELECT_ACCOUNTS: {
                   throw new ProviderRpcError({
                     code: ProviderRpcErrorCode.UNSUPPORTED_METHOD,
-                    message: `The Mobile Safe does not support the requested method: ${method}`,
+                    message: `Safe{Wallet} mobile does not support the requested method: ${method}`,
                   })
                 }
 

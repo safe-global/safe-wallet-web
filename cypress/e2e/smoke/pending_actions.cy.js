@@ -25,7 +25,7 @@ describe('Pending actions', () => {
 
   it('should add the Safe with the pending actions', () => {
     // Enters Loading Safe form
-    cy.contains('button', 'Add existing Safe').click()
+    cy.contains('button', 'Add').click()
     cy.contains('Connect wallet & select network')
 
     // Inputs the Safe address

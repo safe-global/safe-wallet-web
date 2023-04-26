@@ -28,7 +28,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
       {showExpandBtn ? (
         <>
           {showTxData ? hexData : shortenText(hexData, 25)}{' '}
-          <Link component="button" onClick={toggleExpanded} type="button">
+          <Link component="button" onClick={toggleExpanded} type="button" sx={{ verticalAlign: 'text-top' }}>
             Show {showTxData ? 'less' : 'more'}
           </Link>
         </>

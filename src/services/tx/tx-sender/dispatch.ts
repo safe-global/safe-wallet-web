@@ -11,7 +11,7 @@ import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { waitForRelayedTx } from '@/services/tx/txMonitor'
 import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
-import { sponsoredCall } from '@/services/tx/sponsoredCall'
+import { sponsoredCall } from '@/services/tx/relaying'
 import {
   getAndValidateSafeSDK,
   getSafeSDKWithSigner,

@@ -52,7 +52,7 @@ const SafeAppsFilters = ({
         <TextField
           id="search-by-name"
           placeholder="Search by name or category"
-          aria-label="Search Safe App by name"
+          aria-label="Search Safe{App} by name"
           variant="filled"
           hiddenLabel
           onChange={(e) => {

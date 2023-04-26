@@ -20,6 +20,7 @@ import NewSafeIcon from '@/public/images/welcome/new-safe.svg'
 import LoadSafeIcon from '@/public/images/welcome/load-safe.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useTheme } from '@mui/material/styles'
+import { DataWidget } from '@/components/welcome/DataWidget'
 
 const NewSafe = () => {
   const [expanded, setExpanded] = useState(true)
@@ -37,18 +38,33 @@ const NewSafe = () => {
 
   return (
     <Grid container spacing={3} p={3} pb={0} flex={1}>
-      <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 480 }} className={css.sidebar}>
-        <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h4" display="inline" fontWeight={700}>
-              My Safes
-            </Typography>
-          </AccordionSummary>
+      <Grid
+        container
+        item
+        xs={12}
+        md={4}
+        lg={3.5}
+        minWidth={{ md: 480 }}
+        className={css.sidebar}
+        flexDirection="column"
+      >
+        <Grid item lg width={1}>
+          <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h4" display="inline" fontWeight={700}>
+                My Safe Accounts
+              </Typography>
+            </AccordionSummary>
 
-          <AccordionDetails sx={{ padding: 0 }} onClick={(event) => event.stopPropagation()}>
-            <SafeList />
-          </AccordionDetails>
-        </Accordion>
+            <AccordionDetails sx={{ padding: 0 }} onClick={(event) => event.stopPropagation()}>
+              <SafeList />
+            </AccordionDetails>
+          </Accordion>
+        </Grid>
+
+        <Grid item>
+          <DataWidget />
+        </Grid>
       </Grid>
 
       <Grid item flex={1}>
@@ -61,7 +77,7 @@ const NewSafe = () => {
             color="static.main"
             mb={1}
           >
-            Welcome to the Safe
+            Welcome to Safe{'{Wallet}'}
           </Typography>
 
           <Typography mb={5} color="static.main">
@@ -73,16 +89,16 @@ const NewSafe = () => {
               <Paper sx={{ padding: 4, height: 1 }}>
                 <SvgIcon component={NewSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                  Create Safe
+                  Create Safe Account
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  A new Safe that is controlled by one or multiple owners.
+                  A new Account that is controlled by one or multiple owners.
                 </Typography>
 
                 <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
                   <Button variant="contained" onClick={() => router.push(AppRoutes.newSafe.create)}>
-                    + Create new Safe
+                    + Create new Account
                   </Button>
                 </Track>
               </Paper>
@@ -92,16 +108,16 @@ const NewSafe = () => {
               <Paper sx={{ padding: 4, height: 1 }}>
                 <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                  Add existing Safe
+                  Add existing Safe Account
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  Already have a Safe? Add your Safe using your Safe address.
+                  Already have an Account? Add it via its address.
                 </Typography>
 
                 <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
                   <Button variant="outlined" onClick={() => router.push(AppRoutes.newSafe.load)}>
-                    Add existing Safe
+                    Add existing Account
                   </Button>
                 </Track>
               </Paper>
