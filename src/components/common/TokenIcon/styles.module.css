@@ -1,12 +1,10 @@
 .image {
   display: block;
   width: auto;
-  mix-blend-mode: multiply;
 }
 
 [data-theme='dark'] .image {
   background: var(--color-secondary-main);
   border-radius: 4px;
   padding: 2px;
-  mix-blend-mode: normal;
 }
