@@ -60,7 +60,6 @@ const AdvancedParams = ({
       gasLimitError={gasLimitError}
       onEdit={onEditOpen}
       willRelay={willRelay}
-      willExecute={willExecute}
     />
   )
 }
