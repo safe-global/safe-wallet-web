@@ -50,22 +50,24 @@ const Relaying = () => {
             <Typography color="primary.light" alignSelf="center">
               Transactions per hour
             </Typography>
-            <Box
-              className={classnames(css.relayingChip, {
-                [css.unavailable]: relays && relays.remaining === 0,
-              })}
-            >
-              <SvgIcon component={InfoIcon} fontSize="small" />
-              {relaysError ? (
-                <Typography fontWeight={700}>{limit} per hour</Typography>
-              ) : relays?.remaining !== undefined ? (
-                <Typography fontWeight={700}>
-                  {relays.remaining} of {limit}
-                </Typography>
-              ) : (
-                <Skeleton className={css.chipSkeleton} variant="rounded" />
-              )}
-            </Box>
+            {relays !== undefined ? (
+              <Box
+                className={classnames(css.relayingChip, {
+                  [css.unavailable]: relays && relays.remaining === 0,
+                })}
+              >
+                <SvgIcon component={InfoIcon} fontSize="small" />
+                {relaysError ? (
+                  <Typography fontWeight={700}>{limit} per hour</Typography>
+                ) : (
+                  <Typography fontWeight={700}>
+                    {relays?.remaining} of {limit}
+                  </Typography>
+                )}
+              </Box>
+            ) : (
+              <Skeleton className={css.chipSkeleton} variant="rounded" />
+            )}
           </Box>
         </Card>
       </WidgetBody>
