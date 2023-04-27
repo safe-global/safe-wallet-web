@@ -182,12 +182,13 @@ const SignOrExecuteForm = ({
           willRelay={willRelay}
         />
 
-        <ExecutionMethodSelector
-          executionMethod={executionMethod}
-          setExecutionMethod={setExecutionMethod}
-          canRelay={canRelay}
-          relays={relays}
-        />
+        {canRelay && (
+          <ExecutionMethodSelector
+            executionMethod={executionMethod}
+            setExecutionMethod={setExecutionMethod}
+            relays={relays}
+          />
+        )}
 
         <TxSimulation
           gasLimit={advancedParams.gasLimit?.toNumber()}

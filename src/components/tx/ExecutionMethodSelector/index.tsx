@@ -18,19 +18,13 @@ export const enum ExecutionMethod {
 export const ExecutionMethodSelector = ({
   executionMethod,
   setExecutionMethod,
-  canRelay,
   relays,
 }: {
   executionMethod: ExecutionMethod
   setExecutionMethod: Dispatch<SetStateAction<ExecutionMethod>>
-  canRelay: boolean
   relays?: RelayResponse
 }): ReactElement | null => {
   const wallet = useWallet()
-
-  if (!canRelay) {
-    return null
-  }
 
   const shouldRelay = executionMethod === ExecutionMethod.RELAY
 
