@@ -26,6 +26,7 @@ type GasParamsProps = {
   isEIP1559: boolean
   onEdit: () => void
   gasLimitError?: Error
+  willExecute?: boolean
   willRelay?: boolean
 }
 
@@ -35,6 +36,7 @@ const GasParams = ({
   isEIP1559,
   onEdit,
   gasLimitError,
+  willExecute,
   willRelay,
 }: GasParamsProps): ReactElement => {
   const { nonce, userNonce, safeTxGas, gasLimit, maxFeePerGas, maxPriorityFeePerGas } = params
@@ -63,7 +65,11 @@ const GasParams = ({
   }
 
   return (
-    <Accordion elevation={0} onChange={onChangeExpand} className={classnames({ [css.accordionSponsored]: willRelay })}>
+    <Accordion
+      elevation={0}
+      onChange={onChangeExpand}
+      className={classnames({ [css.withExecutionMethod]: willExecute })}
+    >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         {isExecution ? (
           <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>

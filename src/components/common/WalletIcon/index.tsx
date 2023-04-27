@@ -49,13 +49,18 @@ const getWalletIcon = (provider: string) => {
   return WALLET_ICONS[label]
 }
 
-const WalletIcon = ({ provider }: { provider: string }) => {
+const WalletIcon = ({ provider, width = 30, height = 30 }: { provider: string; width?: number; height?: number }) => {
   const icon = getWalletIcon(provider)
 
   return icon ? (
-    <img width={30} height={30} src={`data:image/svg+xml;utf8,${encodeURIComponent(icon)}`} alt={`${provider} logo`} />
+    <img
+      width={width}
+      height={height}
+      src={`data:image/svg+xml;utf8,${encodeURIComponent(icon)}`}
+      alt={`${provider} logo`}
+    />
   ) : (
-    <Skeleton variant="circular" width={30} height={30} />
+    <Skeleton variant="circular" width={width} height={height} />
   )
 }
 

@@ -19,7 +19,6 @@ type SponsoredCallResponse = {
 export type RelayResponse = {
   limit: number
   remaining: number
-  expiresAt?: number
 }
 
 export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<SponsoredCallResponse> => {
