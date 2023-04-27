@@ -30,7 +30,6 @@ export type PendingSafeData = NewSafeFormData & {
 }
 
 export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<NewSafeFormData>) => {
-  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const router = useRouter()
   const chainInfo = useCurrentChain()
@@ -39,7 +38,12 @@ export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<New
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain
 
-  const { handleCreateSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus, data.willRelay)
+  // The willRelay flag can come from the previous step or from local storage
+  const willRelay = data.willRelay || pendingSafe?.willRelay
+  const initialStatus = willRelay ? SafeCreationStatus.PROCESSING : SafeCreationStatus.AWAITING
+  const [status, setStatus] = useState<SafeCreationStatus>(initialStatus)
+
+  const { handleCreateSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus, willRelay)
 
   useSafeCreationEffects({
     pendingSafe,
@@ -54,9 +58,9 @@ export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<New
   }, [router, setPendingSafe])
 
   const handleRetry = useCallback(() => {
-    setStatus(SafeCreationStatus.AWAITING)
+    setStatus(initialStatus)
     void handleCreateSafe()
-  }, [handleCreateSafe])
+  }, [handleCreateSafe, initialStatus])
 
   const onFinish = useCallback(() => {
     trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)

@@ -140,8 +140,13 @@ export const useSafeCreation = (
     setIsWatching(false)
   }, [isWatching, pendingSafe, web3ReadOnly, setStatus, dispatch])
 
+  // Create or monitor Safe creation
   useEffect(() => {
-    if (status !== SafeCreationStatus.AWAITING) return
+    if (
+      (!willRelay && status !== SafeCreationStatus.AWAITING) ||
+      (willRelay && status !== SafeCreationStatus.PROCESSING)
+    )
+      return
 
     if (pendingSafe?.txHash && !isCreating) {
       void watchSafeTx()
@@ -154,7 +159,16 @@ export const useSafeCreation = (
     }
 
     void handleCreateSafe()
-  }, [handleCreateSafe, isCreating, pendingSafe?.taskId, pendingSafe?.txHash, setStatus, status, watchSafeTx])
+  }, [
+    handleCreateSafe,
+    isCreating,
+    pendingSafe?.taskId,
+    pendingSafe?.txHash,
+    setStatus,
+    status,
+    watchSafeTx,
+    willRelay,
+  ])
 
   return {
     handleCreateSafe,
