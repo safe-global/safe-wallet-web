@@ -86,7 +86,7 @@ const NewSafe = () => {
 
           <Grid container spacing={3} sx={{ maxWidth: '800px' }}>
             <Grid item xs={12} lg={6}>
-              <Paper sx={{ padding: 4, height: 1 }}>
+              <Paper className={css.createAddCard}>
                 <SvgIcon component={NewSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
                   Create Safe Account
@@ -96,6 +96,7 @@ const NewSafe = () => {
                   A new Account that is controlled by one or multiple owners.
                 </Typography>
 
+                <span style={{ flex: 1 }} />
                 <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
                   <Button variant="contained" onClick={() => router.push(AppRoutes.newSafe.create)}>
                     + Create new Account
@@ -105,7 +106,7 @@ const NewSafe = () => {
             </Grid>
 
             <Grid item xs={12} lg={6}>
-              <Paper sx={{ padding: 4, height: 1 }}>
+              <Paper className={css.createAddCard}>
                 <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
                   Add existing Safe Account
@@ -115,6 +116,7 @@ const NewSafe = () => {
                   Already have an Account? Add it via its address.
                 </Typography>
 
+                <span style={{ flex: 1 }} />
                 <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
                   <Button variant="outlined" onClick={() => router.push(AppRoutes.newSafe.load)}>
                     Add existing Account
