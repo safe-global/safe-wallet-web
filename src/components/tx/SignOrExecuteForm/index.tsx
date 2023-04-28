@@ -20,6 +20,7 @@ import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidate
 import UnknownContractError from './UnknownContractError'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
+import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -73,8 +74,14 @@ const SignOrExecuteForm = ({
   // SC wallets can relay fully signed transactions
   const [walletCanRelay] = useWalletCanRelay(tx)
 
+  // The transaction can be relayed
+  const canRelay = willExecute && !!relays && relays.remaining > 0 && !!walletCanRelay
+
+  // We default to relay, but the option is only shown if we canRelay
+  const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
+
   // The transaction will be executed through relaying
-  const willRelay = willExecute && relays && relays.remaining > 0 && walletCanRelay
+  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -174,6 +181,14 @@ const SignOrExecuteForm = ({
           gasLimitError={gasLimitError}
           willRelay={willRelay}
         />
+
+        {canRelay && (
+          <ExecutionMethodSelector
+            executionMethod={executionMethod}
+            setExecutionMethod={setExecutionMethod}
+            relays={relays}
+          />
+        )}
 
         <TxSimulation
           gasLimit={advancedParams.gasLimit?.toNumber()}
