@@ -1,5 +1,5 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
-import { Button, DialogContent, Typography } from '@mui/material'
+import { Box, Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import useGasLimit from '@/hooks/useGasLimit'
@@ -183,11 +183,21 @@ const SignOrExecuteForm = ({
         />
 
         {canRelay && (
-          <ExecutionMethodSelector
-            executionMethod={executionMethod}
-            setExecutionMethod={setExecutionMethod}
-            relays={relays}
-          />
+          <Box
+            sx={{
+              '& > div': {
+                marginTop: '-1px',
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+              },
+            }}
+          >
+            <ExecutionMethodSelector
+              executionMethod={executionMethod}
+              setExecutionMethod={setExecutionMethod}
+              relays={relays}
+            />
+          </Box>
         )}
 
         <TxSimulation

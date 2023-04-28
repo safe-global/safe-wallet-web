@@ -15,7 +15,7 @@ import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
-import SponsoredBy from '@/components/tx/SponsoredBy'
+import { ExecutionMethod, ExecutionMethodSelector } from '../../ExecutionMethodSelector'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
@@ -24,12 +24,14 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
   const [relays] = useRelaysBySafe()
 
   // Chain has relaying feature and available relays
-  const willRelay = relays && relays.remaining > 0
+  const canRelay = relays && relays.remaining > 0
+  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
   const web3 = useWeb3()
 
@@ -125,12 +127,14 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         </Typography>
         <DecodedTxs txs={txsWithDetails} />
 
-        {willRelay ? (
+        {canRelay ? (
           <>
             <Typography mt={2} mb={1} color="primary.light">
               Gas fees:
             </Typography>
-            <SponsoredBy
+            <ExecutionMethodSelector
+              executionMethod={executionMethod}
+              setExecutionMethod={setExecutionMethod}
               relays={relays}
               tooltip="You can only relay multisend transactions containing
 executions from the same Safe Account."

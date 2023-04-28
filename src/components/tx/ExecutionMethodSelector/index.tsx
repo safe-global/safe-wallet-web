@@ -1,4 +1,3 @@
-import classNames from 'classnames'
 import { Box, FormControl, FormControlLabel, SvgIcon, Radio, RadioGroup, Typography } from '@mui/material'
 import type { Dispatch, SetStateAction, ReactElement, ChangeEvent } from 'react'
 
@@ -19,10 +18,14 @@ export const ExecutionMethodSelector = ({
   executionMethod,
   setExecutionMethod,
   relays,
+  noLabel,
+  tooltip,
 }: {
   executionMethod: ExecutionMethod
   setExecutionMethod: Dispatch<SetStateAction<ExecutionMethod>>
   relays?: RelayResponse
+  noLabel?: boolean
+  tooltip?: string
 }): ReactElement | null => {
   const wallet = useWallet()
 
@@ -33,18 +36,20 @@ export const ExecutionMethodSelector = ({
   }
 
   return (
-    <Box className={classNames(css.noTopBorderRadius, { [css.noBorderRadius]: shouldRelay })}>
-      <Box className={css.container} sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
+    <Box className={css.container} sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
+      <Box className={css.method}>
         <FormControl sx={{ display: 'flex' }}>
-          <Typography variant="body2" sx={{ color: ({ palette }) => palette.text.secondary }}>
-            Choose execution method
-          </Typography>
+          {!noLabel ? (
+            <Typography variant="body2" className={css.label}>
+              Choose execution method
+            </Typography>
+          ) : null}
           <RadioGroup row value={executionMethod} onChange={onChooseExecutionMethod}>
             <FormControlLabel
               sx={{ flex: 1 }}
               value={ExecutionMethod.RELAY}
               label={
-                <Typography className={css.label}>
+                <Typography className={css.radioLabel}>
                   <SvgIcon component={RelayerIcon} inheritViewBox fontSize="small" />
                   Relayer
                 </Typography>
@@ -55,7 +60,7 @@ export const ExecutionMethodSelector = ({
               sx={{ flex: 1 }}
               value={ExecutionMethod.WALLET}
               label={
-                <Typography className={css.label}>
+                <Typography className={css.radioLabel}>
                   <WalletIcon provider={wallet?.label || ''} width={20} height={20} /> Connected wallet
                 </Typography>
               }
@@ -65,11 +70,7 @@ export const ExecutionMethodSelector = ({
         </FormControl>
       </Box>
 
-      {shouldRelay && relays ? (
-        <Box className={css.noTopBorderRadius}>
-          <SponsoredBy relays={relays} />
-        </Box>
-      ) : null}
+      {shouldRelay && relays ? <SponsoredBy relays={relays} tooltip={tooltip} /> : null}
     </Box>
   )
 }
