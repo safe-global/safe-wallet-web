@@ -79,8 +79,8 @@ const SignOrExecuteForm = ({
   const [walletCanRelay] = useWalletCanRelay(tx)
 
   // The transaction can/will be relayed
-  const canRelay = hasRemainingRelays(relays) && !!walletCanRelay
-  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY && willExecute
+  const canRelay = hasRemainingRelays(relays) && !!walletCanRelay && willExecute
+  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -181,7 +181,7 @@ const SignOrExecuteForm = ({
           willRelay={willRelay}
         />
 
-        {willExecute && canRelay && (
+        {canRelay && (
           <Box
             sx={{
               '& > div': {
