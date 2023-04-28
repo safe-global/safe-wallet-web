@@ -32,6 +32,7 @@
     "lint"
   ],
   "dependencies": {
+    "@cometchat-pro/chat": "^3.0.11",
     "@date-io/date-fns": "^2.15.0",
     "@emotion/cache": "^11.10.1",
     "@emotion/react": "^11.10.0",
@@ -80,6 +81,7 @@
     "react-papaparse": "^4.0.2",
     "react-qr-reader": "2.2.1",
     "react-redux": "^8.0.2",
+    "react-toastify": "^9.1.2",
     "semver": "^7.3.7"
   },
   "devDependencies": {
