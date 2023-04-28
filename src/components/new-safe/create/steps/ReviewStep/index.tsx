@@ -25,6 +25,7 @@ import ReviewRow from '@/components/new-safe/ReviewRow'
 import { ExecutionMethodSelector, ExecutionMethod } from '@/components/tx/ExecutionMethodSelector'
 import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import classnames from 'classnames'
+import { hasRemainingRelays } from '@/utils/relaying'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
@@ -40,8 +41,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
-  // Chain supports relaying and relay transactions are available
-  const canRelay = minRelays && minRelays.remaining > 0
+  // Every owner has remaining relays and relay method is selected
+  const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
   const safeParams = useMemo(() => {

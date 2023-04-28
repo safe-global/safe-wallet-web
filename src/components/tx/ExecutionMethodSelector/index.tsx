@@ -41,7 +41,7 @@ export const ExecutionMethodSelector = ({
         <FormControl sx={{ display: 'flex' }}>
           {!noLabel ? (
             <Typography variant="body2" className={css.label}>
-              Choose execution method
+              Choose execution method:
             </Typography>
           ) : null}
           <RadioGroup row value={executionMethod} onChange={onChooseExecutionMethod}>

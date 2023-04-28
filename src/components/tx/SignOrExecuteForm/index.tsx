@@ -21,6 +21,7 @@ import UnknownContractError from './UnknownContractError'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
+import { hasRemainingRelays } from '@/utils/relaying'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -75,13 +76,13 @@ const SignOrExecuteForm = ({
   const [walletCanRelay] = useWalletCanRelay(tx)
 
   // The transaction can be relayed
-  const canRelay = willExecute && !!relays && relays.remaining > 0 && !!walletCanRelay
+  const canRelay = hasRemainingRelays(relays) && !!walletCanRelay
 
   // We default to relay, but the option is only shown if we canRelay
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
 
   // The transaction will be executed through relaying
-  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
+  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY && willExecute
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -182,7 +183,7 @@ const SignOrExecuteForm = ({
           willRelay={willRelay}
         />
 
-        {canRelay && (
+        {willExecute && canRelay && (
           <Box
             sx={{
               '& > div': {

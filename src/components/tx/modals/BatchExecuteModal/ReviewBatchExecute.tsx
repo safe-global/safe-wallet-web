@@ -20,6 +20,7 @@ import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import { hasRemainingRelays } from '@/utils/relaying'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -30,7 +31,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const [relays] = useRelaysBySafe()
 
   // Chain has relaying feature and available relays
-  const canRelay = relays && relays.remaining > 0
+  const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
   const web3 = useWeb3()
