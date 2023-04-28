@@ -72,16 +72,14 @@ const SignOrExecuteForm = ({
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
 
-  // SC wallets can relay fully signed transactions
-  const [walletCanRelay] = useWalletCanRelay(tx)
-
-  // The transaction can be relayed
-  const canRelay = hasRemainingRelays(relays) && !!walletCanRelay
-
   // We default to relay, but the option is only shown if we canRelay
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
 
-  // The transaction will be executed through relaying
+  // SC wallets can relay fully signed transactions
+  const [walletCanRelay] = useWalletCanRelay(tx)
+
+  // The transaction can/will be relayed
+  const canRelay = hasRemainingRelays(relays) && !!walletCanRelay
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY && willExecute
 
   // Synchronize the tx with the safeTx
