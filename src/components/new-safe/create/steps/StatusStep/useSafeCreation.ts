@@ -4,7 +4,7 @@ import { useWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { EthersError } from '@/utils/ethers-utils'
-import type { PendingSafeData } from '@/components/new-safe/create/steps/StatusStep/index'
+import { getInitialCreationStatus, type PendingSafeData } from '@/components/new-safe/create/steps/StatusStep/index'
 import type { NamedAddress, PendingSafeTx } from '@/components/new-safe/create/types'
 import {
   createNewSafe,
@@ -38,7 +38,7 @@ export const useSafeCreation = (
   setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>,
   status: SafeCreationStatus,
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
-  willRelay?: boolean,
+  willRelay: boolean,
 ) => {
   const [isCreating, setIsCreating] = useState(false)
   const [isWatching, setIsWatching] = useState(false)
@@ -142,11 +142,7 @@ export const useSafeCreation = (
 
   // Create or monitor Safe creation
   useEffect(() => {
-    if (
-      (!willRelay && status !== SafeCreationStatus.AWAITING) ||
-      (willRelay && status !== SafeCreationStatus.PROCESSING)
-    )
-      return
+    if (status !== getInitialCreationStatus(willRelay)) return
 
     if (pendingSafe?.txHash && !isCreating) {
       void watchSafeTx()

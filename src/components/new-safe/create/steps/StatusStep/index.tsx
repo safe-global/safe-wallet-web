@@ -29,7 +29,7 @@ export type PendingSafeData = NewSafeFormData & {
   taskId?: string
 }
 
-const getInitialCreationStatus = (willRelay: boolean): SafeCreationStatus =>
+export const getInitialCreationStatus = (willRelay: boolean): SafeCreationStatus =>
   willRelay ? SafeCreationStatus.PROCESSING : SafeCreationStatus.AWAITING
 
 export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<NewSafeFormData>) => {
