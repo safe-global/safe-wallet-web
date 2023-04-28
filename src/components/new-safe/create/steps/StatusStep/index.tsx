@@ -29,6 +29,9 @@ export type PendingSafeData = NewSafeFormData & {
   taskId?: string
 }
 
+const getInitialCreationStatus = (willRelay: boolean): SafeCreationStatus =>
+  willRelay ? SafeCreationStatus.PROCESSING : SafeCreationStatus.AWAITING
+
 export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<NewSafeFormData>) => {
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const router = useRouter()
@@ -39,8 +42,8 @@ export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<New
   const isConnected = wallet && !isWrongChain
 
   // The willRelay flag can come from the previous step or from local storage
-  const willRelay = data.willRelay || pendingSafe?.willRelay
-  const initialStatus = willRelay ? SafeCreationStatus.PROCESSING : SafeCreationStatus.AWAITING
+  const willRelay = !!(data.willRelay || pendingSafe?.willRelay)
+  const initialStatus = getInitialCreationStatus(willRelay)
   const [status, setStatus] = useState<SafeCreationStatus>(initialStatus)
 
   const { handleCreateSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus, willRelay)

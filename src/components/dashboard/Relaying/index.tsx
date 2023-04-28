@@ -53,7 +53,7 @@ const Relaying = () => {
             {relays !== undefined ? (
               <Box
                 className={classnames(css.relayingChip, {
-                  [css.unavailable]: relays && relays.remaining === 0,
+                  [css.unavailable]: relays.remaining === 0,
                 })}
               >
                 <SvgIcon component={InfoIcon} fontSize="small" />
@@ -61,7 +61,7 @@ const Relaying = () => {
                   <Typography fontWeight={700}>{limit} per hour</Typography>
                 ) : (
                   <Typography fontWeight={700}>
-                    {relays?.remaining} of {limit}
+                    {relays.remaining} of {limit}
                   </Typography>
                 )}
               </Box>
