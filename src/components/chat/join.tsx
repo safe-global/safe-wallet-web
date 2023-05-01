@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import { joinGroup, createNewGroup, getGroup } from '../../services/chat'
+import { joinGroup, createNewGroup, getGroup, getMessages, listenForMessage } from '../../services/chat'
 import { Box, Button, Grid, Paper, Stack, SvgIcon, Typography } from '@mui/material'
 import NewChatIcon from '@/public/images/chat/chat.svg'
 import LogoGreen from '@/public/images/logo-green.svg'
@@ -11,13 +11,29 @@ import { useEffect } from 'react'
 const Join: React.FC<{
   user: any
   setGroup: any
-}> = ({ user, setGroup }) => {
+  setMessages: any
+}> = ({ user, setGroup, setMessages }) => {
   const safeAddress = useSafeAddress()
 
   useEffect(() => {
-    //handleCreateGroup()
-    //handleJoin()
-    //handleGetGroup()
+    async function getM() {
+      await getMessages(`pid_${safeAddress!}`)
+        .then((msgs: any) => {
+          console.log(msgs)
+          setMessages(msgs)
+        })
+        .catch((error) => {
+          console.log(error)
+          setMessages([])
+        })
+
+      await listenForMessage(`pid_${safeAddress!}`)
+        .then((msg: any) => {
+          setMessages((prevState: any) => [...prevState, msg])
+        })
+        .catch((error) => console.log(error))
+    }
+    getM()
   }, [])
 
   const handleJoin = async () => {

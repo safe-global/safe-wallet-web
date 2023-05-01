@@ -7,19 +7,12 @@ import { Box, Button, Grid, Paper, Stack, SvgIcon, Typography } from '@mui/mater
 import { Container } from '@mui/system'
 import React, { useEffect } from 'react'
 import { toast } from 'react-toastify'
-import {
-  loginWithCometChat,
-  signUpWithCometChat,
-  initCometChat,
-  getMessages,
-  listenForMessage,
-} from '../../services/chat'
+import { loginWithCometChat, signUpWithCometChat, initCometChat } from '../../services/chat'
 import css from './styles.module.css'
 
 const Login: React.FC<{
   setCurrentUser: any
-  setMessages: any
-}> = ({ setCurrentUser, setMessages }) => {
+}> = ({ setCurrentUser }) => {
   const wallet = useWallet()
   const safeAddress = useSafeAddress()
 
@@ -28,20 +21,6 @@ const Login: React.FC<{
       return
     }
     initCometChat()
-    async function getM() {
-      await getMessages(`pid_${safeAddress!}`)
-        .then((msgs: any) => {
-          setMessages(msgs)
-        })
-        .catch((error) => setMessages([]))
-
-      await listenForMessage(`pid_${safeAddress!}`)
-        .then((msg: any) => {
-          setMessages((prevState: any) => [...prevState, msg])
-        })
-        .catch((error) => console.log(error))
-    }
-    getM()
     if (!wallet?.address) return
     //handleLogin()
   }, [safeAddress])

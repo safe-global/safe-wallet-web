@@ -4,7 +4,6 @@ import TransactionHistory from '@/components/common/TransactionHistory'
 import TransactionQueue from '@/components/common/TransactionQueue'
 import FolderList from '@/components/folder-list'
 import ellipsisAddress from '@/utils/ellipsisAddress'
-import { Receipt } from '@mui/icons-material'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
@@ -44,6 +43,7 @@ import useTxHistory from '@/hooks/useTxHistory'
 import dynamic from 'next/dynamic'
 import TxListItem from '@/components/transactions/TxListItem'
 import FolderGroup from '@/components/folder-list/folderGroups'
+import NewTxButton from '@/components/sidebar/NewTxButton'
 
 const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
 
@@ -81,39 +81,6 @@ const StyledAlert = styled(Alert)(() => ({
   backgroundColor: 'hsla(231, 17%, 76%, 0.33)',
 }))
 
-const chatHistory = [
-  {
-    name: 'Sero',
-    transaction: false,
-    timeAgo: '4d',
-    message: `I'm trying to upload a profile image to my account but every time I try and upload the image nothing happens. I don't see any error messages but my profile image is still the same.Please can you take a look into this for me?`,
-  },
-  {
-    name: 'You',
-    transaction: false,
-    timeAgo: '4d',
-    message: `Hi Sero, sorry to hear that it's not working as expected. Please can you let me know what image format (JPEG, PNG, etc) you are trying to upload?`,
-  },
-  {
-    transaction: true,
-    author: 'Sero',
-    transactionTitle: 'addOwnerWithThreshold',
-    timeAgo: '4d',
-  },
-  {
-    name: 'You',
-    transaction: false,
-    timeAgo: '4d',
-    message: `Ahh yes, I've tried a JPEG and it's all working fine now. Thanks for your help!`,
-  },
-  {
-    name: 'You',
-    transaction: false,
-    timeAgo: '4d',
-    message: `Thank you Olen. Unfortunately we don't currently support the WebP image format. If you convert that to a JPEG and retry then it should work as expected.You should have received some feedback when you tried to upload it so I'll get someone to take a look into why this didn't happen. Thanks for getting in touch. Is there anything I can help you with?`,
-  },
-]
-
 const summary = [
   { name: 'Kristen', message: 'Requests $50 from you 🤔' },
   { name: 'Magnus', message: 'Challenges you to play Chess for $5' },
@@ -149,7 +116,7 @@ function a11yProps(index: number) {
 
 const Chat = () => {
   const [folders, setFolders] = useState([])
-  const [popup, togglePopup] = useState<boolean>(true)
+  const [popup, togglePopup] = useState<boolean>(false)
   const [open, setOpen] = useState(true)
   const [value, setValue] = React.useState(0)
   const [mobileValue, setMobileValue] = React.useState(0)
@@ -235,7 +202,7 @@ const Chat = () => {
         type: 'tx',
       })
     })
-    if (!messages) {
+    if (!messages.length) {
       setChatData(allData)
       return
     }
@@ -256,18 +223,17 @@ const Chat = () => {
       }
     })
     setChatData(allData)
+    console.log(allData)
   }, [messages, txHistory?.page?.results])
 
-  console.log(ownerArray)
-  //@ts-ignore
-  if (!ownerArray.includes(wallet?.address)) return <>Not Safe owner</>
+  if (!ownerArray.includes(wallet?.address!)) return <>Not Safe owner</>
 
   if (!currentUser) {
-    return <CometChatLoginNoSSR setCurrentUser={setCurrentUser} setMessages={setMessages} />
+    return <CometChatLoginNoSSR setCurrentUser={setCurrentUser} />
   }
 
   if (!group) {
-    return <JoinNoSSR user={currentUser} setGroup={setGroup} />
+    return <JoinNoSSR user={currentUser} setGroup={setGroup} setMessages={setMessages} />
   }
 
   return (
@@ -423,12 +389,12 @@ const Chat = () => {
                     </StyledAlert>
                     <Typography sx={{ fontWeight: 500 }}>Thursday, 9 March 2023</Typography>
                     <List>
-                      {chatHistory.map((chat, index) => {
-                        if (chat.transaction) {
+                      {chatData.map((chat, index) => {
+                        if (chat.type === 'message') {
                           return (
                             <ListItem key={index} alignItems="flex-start">
                               <ListItemIcon>
-                                <Receipt />
+                                <Avatar sx={{ width: 32, height: 32 }} alt={chat?.data?.sender.uid || ''} />
                               </ListItemIcon>
                               <ListItemText
                                 disableTypography
@@ -444,34 +410,15 @@ const Chat = () => {
                                       }}
                                     >
                                       <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                        Transaction proposed by {chat.author}
+                                        {chat.data.sender.name === wallet?.address ? 'You' : chat?.data?.sender.uid}
                                       </Typography>
                                       <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                        {chat.timeAgo}
+                                        {chat.timeStamp}
                                       </Typography>
                                     </Box>
                                   </React.Fragment>
                                 }
-                                secondary={
-                                  <React.Fragment>
-                                    <Box
-                                      sx={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-start',
-                                        alignItems: 'center',
-                                        gap: '10px',
-                                        border: '1px solid #F1F2F5',
-                                        borderRadius: '8px',
-                                        p: 2,
-                                      }}
-                                    >
-                                      <Avatar sx={{ width: 24, height: 24 }} alt={chat.transactionTitle} />
-                                      <Typography sx={{ display: 'inline' }} variant="body2" component="span">
-                                        {chat.transactionTitle}
-                                      </Typography>
-                                    </Box>
-                                  </React.Fragment>
-                                }
+                                secondary={chat.data.text}
                               />
                             </ListItem>
                           )
@@ -496,8 +443,9 @@ const Chat = () => {
                                     </Typography>
                                   </React.Fragment>
                                 }
-                                secondary={chat.message}
+                                secondary={chat.data.text}
                               />
+                              <TxListItem key={`${index}-tx`} item={chat?.data} />
                             </ListItem>
                           )
                         }
@@ -513,7 +461,13 @@ const Chat = () => {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                       />
-                      <Button variant="contained">Send chat</Button>
+                      <SendMessage
+                        message={message}
+                        safeAddress={safeAddress}
+                        setMessages={setMessages}
+                        setMessage={setMessage}
+                        prevState={messages}
+                      />
                     </Box>
                   </Box>
                 </Box>
@@ -536,7 +490,17 @@ const Chat = () => {
                       }}
                     >
                       <Typography sx={{ color: grey[500] }}>Network</Typography>
-                      <Typography>Ethereum</Typography>
+                      <Typography>
+                        {safe?.chainId === '137'
+                          ? 'Matic'
+                          : safe?.chainId === '1'
+                          ? 'Ethereum'
+                          : safe?.chainId === '10'
+                          ? 'Optimism'
+                          : safe?.chainId === '80001'
+                          ? 'Mumbai'
+                          : ''}
+                      </Typography>
                     </Box>
                     <Box
                       sx={{
@@ -552,7 +516,7 @@ const Chat = () => {
                         Address
                       </Typography>
                       <Typography paragraph noWrap>
-                        {ellipsisAddress('eth:0xaf4752EF320400CdbC659CF24c4da11635cEDb3c')}
+                        {ellipsisAddress(`${safeAddress}`)}
                       </Typography>
                     </Box>
                     <Divider />
@@ -574,12 +538,7 @@ const Chat = () => {
                     </Box>
                   </Box>
                   <Box sx={{ flexShrink: 0, position: 'sticky', bottom: 0, bgcolor: 'background.default' }}>
-                    <Button sx={{ mb: 2 }} variant="outlined" fullWidth>
-                      Send Tokens
-                    </Button>
-                    <Button variant="outlined" fullWidth>
-                      Send NFTs
-                    </Button>
+                    <NewTxButton />
                   </Box>
                 </Box>
               </TabPanel>
@@ -752,12 +711,7 @@ const Chat = () => {
                 page.
               </Typography>
               <Box sx={{ position: 'fixed', bottom: 0, bgcolor: 'background.default' }}>
-                <Button sx={{ mb: 2 }} variant="outlined" fullWidth onClick={() => setSend(true)}>
-                  Send Tokens
-                </Button>
-                <Button variant="outlined" fullWidth>
-                  Send NFTs
-                </Button>
+                <NewTxButton />
               </Box>
             </Box>
           </Drawer>
