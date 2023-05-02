@@ -62,7 +62,7 @@ const SignOrExecuteForm = ({
   // Hooks
   const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
-  const { signTx, executeTx, proposeTx } = useTxActions(origin)
+  const { signTx, executeTx, proposeTx } = useTxActions()
   const [relays] = useRelaysBySafe()
   const updateBatch = useUpdateBatch()
 
@@ -113,20 +113,18 @@ const SignOrExecuteForm = ({
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
-    return await signTx(tx, txId)
+    return await signTx(tx, txId, origin)
   }
 
   // Execute transaction
   const onExecute = async (): Promise<string | undefined> => {
     const txOptions = getTxOptions(advancedParams, currentChain)
-    return await executeTx(txOptions, tx, txId, willRelay)
+    return await executeTx(txOptions, tx, txId, origin, willRelay)
   }
 
   const onBatch = async () => {
-    if (!batchTx) {
-      throw new Error('Failed to create a batch transaction')
-    }
-    const id = await proposeTx(batchTx, txId)
+    if (!batchTx) throw new Error('Failed to create a batch transaction')
+    const id = await proposeTx(batchTx, txId, origin)
     updateBatch(id)
   }
 

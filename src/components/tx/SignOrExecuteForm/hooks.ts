@@ -18,16 +18,17 @@ import type { OnboardAPI } from '@web3-onboard/core'
 import { hasEnoughSignatures } from '@/utils/transactions'
 
 type TxActions = {
-  signTx: (safeTx?: SafeTransaction, txId?: string) => Promise<string>
+  signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string) => Promise<string>
 
   executeTx: (
     txOptions: TransactionOptions,
     safeTx?: SafeTransaction,
     txId?: string,
+    origin?: string,
     isRelayed?: boolean,
   ) => Promise<string>
 
-  proposeTx: (safeTx: SafeTransaction, txId?: string) => Promise<string>
+  proposeTx: (safeTx: SafeTransaction, txId?: string, origin?: string) => Promise<string>
 }
 
 function assertTx(safeTx?: SafeTransaction): asserts safeTx {
@@ -40,7 +41,7 @@ function assertOnboard(onboard?: OnboardAPI): asserts onboard {
   if (!onboard) throw new Error('Onboard not connected')
 }
 
-export const useTxActions = (origin?: string): TxActions => {
+export const useTxActions = (): TxActions => {
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const wallet = useWallet()
@@ -49,7 +50,7 @@ export const useTxActions = (origin?: string): TxActions => {
     const safeAddress = safe.address.value
     const { chainId, version } = safe
 
-    const proposeTx: TxActions['proposeTx'] = async (safeTx, txId) => {
+    const proposeTx: TxActions['proposeTx'] = async (safeTx, txId, origin) => {
       assertWallet(wallet)
 
       const tx = await dispatchTxProposal({
@@ -75,7 +76,7 @@ export const useTxActions = (origin?: string): TxActions => {
       return await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
     }
 
-    const signTx: TxActions['signTx'] = async (safeTx, txId) => {
+    const signTx: TxActions['signTx'] = async (safeTx, txId, origin) => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
@@ -85,29 +86,29 @@ export const useTxActions = (origin?: string): TxActions => {
         // If the first signature is a smart contract wallet, we have to propose w/o signatures
         // Otherwise the backend won't pick up the tx
         // The signature will be added once the on-chain signature is indexed
-        const id = txId || (await proposeTx(safeTx, txId))
+        const id = txId || (await proposeTx(safeTx, txId, origin))
         await dispatchOnChainSigning(safeTx, id, onboard, chainId)
         return id
       }
 
       // Otherwise, sign off-chain
       const signedTx = await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
-      return await proposeTx(signedTx, txId)
+      return await proposeTx(signedTx, txId, origin)
     }
 
-    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, isRelayed) => {
+    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
 
-      let id = txId || (await proposeTx(safeTx, txId))
+      let id = txId || (await proposeTx(safeTx, txId, origin))
 
       if (isRelayed) {
         // Relayed transactions must be fully signed, so request a final signature if needed
         let signedTx = safeTx
         if (!hasEnoughSignatures(safeTx, safe)) {
           signedTx = await signRelayedTx(safeTx)
-          id = await proposeTx(signedTx, id)
+          id = await proposeTx(signedTx, id, origin)
         }
 
         await dispatchTxRelay(signedTx, safe, id, txOptions.gasLimit)
@@ -119,7 +120,7 @@ export const useTxActions = (origin?: string): TxActions => {
     }
 
     return { signTx, executeTx, proposeTx }
-  }, [safe, onboard, wallet, origin])
+  }, [safe, onboard, wallet])
 }
 
 export const useValidateNonce = (safeTx?: SafeTransaction): boolean => {
