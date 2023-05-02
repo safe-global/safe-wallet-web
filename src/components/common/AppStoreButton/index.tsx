@@ -1,9 +1,8 @@
 import type { ReactElement } from 'react'
+import Image from 'next/image'
 
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { MOBILE_APP_EVENTS, trackEvent } from '@/services/analytics'
-
-import css from '@/components/common/AppStoreButton/styles.module.css'
 
 // App Store campaigns track the user interaction
 enum LINKS {
@@ -23,10 +22,11 @@ const AppstoreButton = ({ placement }: { placement: keyof typeof LINKS }): React
 
   return (
     <a href={LINKS[placement]} target="_blank" rel="noreferrer" onClick={onClick}>
-      <img
+      <Image
         src={isDarkMode ? '/images/common/appstore-light.svg' : '/images/common/appstore.svg'}
         alt="Download on the App Store"
-        className={css.button}
+        width={105}
+        height={35}
       />
     </a>
   )

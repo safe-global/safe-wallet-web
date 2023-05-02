@@ -3,6 +3,7 @@ import { UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import type { DecodedDataResponse, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { parseUnits, id } from 'ethers/lib/utils'
+import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 
 export const APPROVAL_SIGNATURE_HASH = id('approve(address,uint256)').slice(0, 10)
 
@@ -18,7 +19,7 @@ const UINT256_TYPE = 'uint256'
 const ERC20_INTERFACE = ERC20__factory.createInterface()
 
 export enum PSEUDO_APPROVAL_VALUES {
-  UNLIMITED = 'Unlimited',
+  UNLIMITED = 'Unlimited (not recommended)',
 }
 
 export type ApprovalInfo = {
@@ -53,7 +54,7 @@ export const extractTxs: (txs: BaseTransaction[] | (DecodedDataResponse & { to: 
       return txParam.valueDecoded
         ? txParam.valueDecoded.map((innerTx) => ({
             to: innerTx.to,
-            data: innerTx.data,
+            data: innerTx.data || EMPTY_DATA,
             value: innerTx.value,
           }))
         : []

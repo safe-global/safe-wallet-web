@@ -1,0 +1,22 @@
+.container {
+  border: 1px solid var(--color-border-light);
+  padding: var(--space-2) var(--space-2) var(--space-1) var(--space-2);
+  margin-top: -1px;
+}
+
+.label {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-1) / 2);
+}
+
+.noTopBorderRadius > div {
+  margin-top: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.noBorderRadius > div {
+  border-radius: 0;
+}

@@ -26,11 +26,6 @@ const NftCollections = (): ReactElement => {
   // Preview
   const [previewNft, setPreviewNft] = useState<SafeCollectibleResponse>()
 
-  // Add or remove NFT from the selected list on row click
-  const onSelect = useCallback((token: SafeCollectibleResponse) => {
-    setSelectedNfts((prev) => (prev.includes(token) ? prev.filter((t) => t !== token) : prev.concat(token)))
-  }, [])
-
   // On NFT preview click
   const onPreview = useCallback((token: SafeCollectibleResponse) => {
     setPreviewNft(token)
@@ -73,18 +68,13 @@ const NftCollections = (): ReactElement => {
         /* NFTs */
         <form onSubmit={onSendSubmit}>
           {/* Batch send form */}
-          <NftSendForm
-            selectedNfts={selectedNfts}
-            onSelectAll={() => {
-              setSelectedNfts((prev) => (prev.length ? [] : allNfts))
-            }}
-          />
+          <NftSendForm selectedNfts={selectedNfts} />
 
           {/* NFTs table */}
           <NftGrid
             nfts={allNfts}
             selectedNfts={selectedNfts}
-            onSelect={onSelect}
+            setSelectedNfts={setSelectedNfts}
             onPreview={onPreview}
             isLoading={loading || !nftPage || !!nftPage?.next}
           >

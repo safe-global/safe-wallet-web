@@ -63,7 +63,11 @@ const GasParams = ({
   }
 
   return (
-    <Accordion elevation={0} onChange={onChangeExpand} className={classnames({ [css.accordionSponsored]: willRelay })}>
+    <Accordion
+      elevation={0}
+      onChange={onChangeExpand}
+      className={classnames({ [css.withExecutionMethod]: isExecution })}
+    >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         {isExecution ? (
           <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>

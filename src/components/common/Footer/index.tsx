@@ -65,7 +65,7 @@ const Footer = (): ReactElement | null => {
             <MUILink>Cookie Policy</MUILink>
           </Link>
           &nbsp;&mdash;&nbsp;
-          <Link href="#" passHref>
+          <Link href={`${router.pathname}#`} passHref>
             <MUILink onClick={onCookieClick}>Preferences</MUILink>
           </Link>
         </li>

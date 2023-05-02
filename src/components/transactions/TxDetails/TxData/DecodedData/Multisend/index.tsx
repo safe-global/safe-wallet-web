@@ -5,13 +5,17 @@ import { useState, useEffect } from 'react'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
-import { AccordionSummary, Button, Divider } from '@mui/material'
+import { AccordionSummary, Box, Button, Divider } from '@mui/material'
+import css from './styles.module.css'
 
 type MultisendProps = {
   txData?: TransactionData
   variant?: AccordionProps['variant']
   showDelegateCallWarning?: boolean
+  noHeader?: boolean
 }
+
+const MIN_SCROLL_TXS = 4
 
 const MultisendActionsHeader = ({
   setOpen,
@@ -26,14 +30,14 @@ const MultisendActionsHeader = ({
 
   return (
     <AccordionSummary
-      sx={{ borderBottom: ({ palette }) => `1px solid ${palette.border.light}`, cursor: 'auto !important', pr: 0 }}
+      className={css.summary}
       expandIcon={
         <>
-          <Button onClick={onClickAll(true)} variant="text" sx={{ px: '18px' }}>
+          <Button onClick={onClickAll(true)} variant="text">
             Expand all
           </Button>
-          <Divider sx={{ my: '14px', borderColor: 'border.light' }} />
-          <Button onClick={onClickAll(false)} variant="text" sx={{ px: '18px' }}>
+          <Divider className={css.divider} />
+          <Button onClick={onClickAll(false)} variant="text">
             Collapse all
           </Button>
         </>
@@ -48,6 +52,7 @@ export const Multisend = ({
   txData,
   variant = 'elevation',
   showDelegateCallWarning = true,
+  noHeader = false,
 }: MultisendProps): ReactElement | null => {
   const [openMap, setOpenMap] = useState<Record<number, boolean>>()
   const isOpenMapUndefined = openMap == null
@@ -82,34 +87,39 @@ export const Multisend = ({
 
   return (
     <>
-      <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />
-      {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
-        const onChange: AccordionProps['onChange'] = (_, expanded) => {
-          setOpenMap((prev) => ({
-            ...prev,
-            [index]: expanded,
-          }))
-        }
+      {!noHeader && <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />}
 
-        return (
-          <SingleTxDecoded
-            key={`${data ?? to}-${index}`}
-            tx={{
-              dataDecoded,
-              data,
-              value,
-              to,
-              operation,
-            }}
-            txData={txData}
-            showDelegateCallWarning={showDelegateCallWarning}
-            actionTitle={`Action ${index + 1}`}
-            variant={variant}
-            expanded={openMap?.[index] ?? false}
-            onChange={onChange}
-          />
-        )
-      })}
+      <div className={multiSendTransactions.length >= MIN_SCROLL_TXS ? css.scrollWrapper : undefined}>
+        <Box display="flex" flexDirection="column" gap={1}>
+          {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
+            const onChange: AccordionProps['onChange'] = (_, expanded) => {
+              setOpenMap((prev) => ({
+                ...prev,
+                [index]: expanded,
+              }))
+            }
+
+            return (
+              <SingleTxDecoded
+                key={`${data ?? to}-${index}`}
+                tx={{
+                  dataDecoded,
+                  data,
+                  value,
+                  to,
+                  operation,
+                }}
+                txData={txData}
+                showDelegateCallWarning={showDelegateCallWarning}
+                actionTitle={`Action ${index + 1}`}
+                variant={variant}
+                expanded={openMap?.[index] ?? false}
+                onChange={onChange}
+              />
+            )
+          })}
+        </Box>
+      </div>
     </>
   )
 }

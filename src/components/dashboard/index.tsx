@@ -29,7 +29,7 @@ const Dashboard = (): ReactElement => {
         </Grid>
 
         <Grid item xs={12} lg={supportsRelaying ? 6 : undefined}>
-          <FeaturedApps />
+          <FeaturedApps stackedLayout={!!supportsRelaying} />
         </Grid>
 
         {supportsRelaying ? (
