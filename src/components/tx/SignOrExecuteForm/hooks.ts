@@ -18,11 +18,12 @@ import type { OnboardAPI } from '@web3-onboard/core'
 import { hasEnoughSignatures } from '@/utils/transactions'
 
 type TxActions = {
-  signTx: (safeTx?: SafeTransaction, txId?: string) => Promise<string>
+  signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string) => Promise<string>
   executeTx: (
     txOptions: TransactionOptions,
     safeTx?: SafeTransaction,
     txId?: string,
+    origin?: string,
     isRelayed?: boolean,
   ) => Promise<string>
 }
@@ -70,7 +71,7 @@ export const useTxActions = (): TxActions => {
       return await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
     }
 
-    const signTx: TxActions['signTx'] = async (safeTx, txId) => {
+    const signTx: TxActions['signTx'] = async (safeTx, txId, origin) => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
@@ -90,7 +91,7 @@ export const useTxActions = (): TxActions => {
       return await proposeTx(wallet.address, signedTx, txId, origin)
     }
 
-    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, isRelayed) => {
+    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
