@@ -34,6 +34,18 @@ import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
 import useAdjustUrl from '@/hooks/useAdjustUrl'
+import { createClient, configureChains, WagmiConfig } from 'wagmi'
+import { publicProvider } from 'wagmi/providers/public'
+import { SessionProvider } from 'next-auth/react'
+import { mainnet } from 'wagmi/chains'
+
+const { provider, webSocketProvider } = configureChains([mainnet], [publicProvider()])
+
+const client = createClient({
+  provider,
+  webSocketProvider,
+  autoConnect: true,
+})
 
 // Importing it dynamically to prevent hydration errors because we read the local storage
 const TermsBanner = dynamic(() => import('@/components/common/TermsBanner'), { ssr: false })
@@ -96,27 +108,31 @@ const WebCoreApp = ({
 }: WebCoreAppProps): ReactElement => {
   return (
     <StoreHydrator>
-      <Head>
-        <title key="default-title">{'Safe{Wallet}'}</title>
-        <MetaTags prefetchUrl={GATEWAY_URL} />
-      </Head>
+      <WagmiConfig client={client}>
+        <SessionProvider session={pageProps.session} refetchInterval={0}>
+          <Head>
+            <title key="default-title">{'Safe{Wallet}'}</title>
+            <MetaTags prefetchUrl={GATEWAY_URL} />
+          </Head>
 
-      <CacheProvider value={emotionCache}>
-        <AppProviders>
-          <CssBaseline />
+          <CacheProvider value={emotionCache}>
+            <AppProviders>
+              <CssBaseline />
 
-          <InitApp />
+              <InitApp />
 
-          <PageLayout pathname={router.pathname}>
-            <Component {...pageProps} />
-          </PageLayout>
+              <PageLayout pathname={router.pathname}>
+                <Component {...pageProps} />
+              </PageLayout>
 
-          <CookieBanner />
-          <TermsBanner />
+              <CookieBanner />
+              <TermsBanner />
 
-          <Notifications />
-        </AppProviders>
-      </CacheProvider>
+              <Notifications />
+            </AppProviders>
+          </CacheProvider>
+        </SessionProvider>
+      </WagmiConfig>
     </StoreHydrator>
   )
 }

@@ -38,6 +38,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@moralisweb3/next": "^2.19.0",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.11.10",
     "@mui/x-date-pickers": "^5.0.12",
@@ -69,7 +70,9 @@
     "fuse.js": "^6.6.2",
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
+    "moralis": "^2.19.0",
     "next": "12.2.0",
+    "next-auth": "^4.22.1",
     "next-pwa": "^5.6.0",
     "papaparse": "^5.3.2",
     "qrcode.react": "^3.1.0",
@@ -82,7 +85,8 @@
     "react-qr-reader": "2.2.1",
     "react-redux": "^8.0.2",
     "react-toastify": "^9.1.2",
-    "semver": "^7.3.7"
+    "semver": "^7.3.7",
+    "wagmi": "^0.12.12"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^13.1.1",

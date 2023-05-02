@@ -44,6 +44,7 @@ import dynamic from 'next/dynamic'
 import TxListItem from '@/components/transactions/TxListItem'
 import FolderGroup from '@/components/folder-list/folderGroups'
 import NewTxButton from '@/components/sidebar/NewTxButton'
+import { getSession, signOut } from 'next-auth/react'
 
 const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
 
@@ -114,7 +115,26 @@ function a11yProps(index: number) {
   }
 }
 
-const Chat = () => {
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context)
+
+  // redirect if not authenticated
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: { user: session.user },
+  }
+}
+
+//@ts-ignore
+const Chat = ({ user }) => {
   const [folders, setFolders] = useState([])
   const [popup, togglePopup] = useState<boolean>(false)
   const [open, setOpen] = useState(true)
@@ -135,6 +155,14 @@ const Chat = () => {
 
   const owners = safe?.owners || ['']
   const ownerArray = owners.map((owner) => owner.value)
+
+  useEffect(() => {
+    const userAuth = JSON.stringify(user, null, 2)
+    if (user.address !== wallet?.address) {
+      //@ts-ignore
+      signOut({ redirect: '/auth' })
+    }
+  }, [])
 
   useEffect(() => {
     const activeFolders = async () => {
