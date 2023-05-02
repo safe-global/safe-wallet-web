@@ -60,6 +60,7 @@ export const ApprovalValueField = ({
         onChange(value)
       }}
       readOnly={readonly}
+      disabled={readonly}
       disableClearable
       selectOnFocus
       componentsProps={{

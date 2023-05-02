@@ -9,13 +9,7 @@ import css from './styles.module.css'
 import { UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
 import { useMemo } from 'react'
-import {
-  type ApprovalInfo,
-  APPROVAL_SIGNATURE_HASH,
-  extractTxs,
-  updateApprovalTxs,
-  PSEUDO_APPROVAL_VALUES,
-} from './utils/approvals'
+import { type ApprovalInfo, APPROVAL_SIGNATURE_HASH, extractTxs, updateApprovalTxs } from './utils/approvals'
 import { useApprovalInfos } from './hooks/useApprovalInfos'
 
 const Summary = ({ approvalInfos, approvalTxs }: { approvalInfos: ApprovalInfo[]; approvalTxs: BaseTransaction[] }) => {
@@ -24,9 +18,7 @@ const Summary = ({ approvalInfos, approvalTxs }: { approvalInfos: ApprovalInfo[]
 
   if (approvalInfos.length === 1) {
     const approval = approvalInfos[0]
-    const amount = UNLIMITED_APPROVAL_AMOUNT.eq(approval.amount)
-      ? PSEUDO_APPROVAL_VALUES.UNLIMITED
-      : approval.amountFormatted
+    const amount = UNLIMITED_APPROVAL_AMOUNT.eq(approval.amount) ? 'unlimited' : approval.amountFormatted
     return (
       <Box display="flex" flexDirection="row" justifyContent="space-between" width="100%">
         <Typography fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
@@ -99,12 +91,14 @@ export const ApprovalEditor = ({
           <Summary approvalInfos={approvalInfos} approvalTxs={approvalTxs} />
         )}
       </AccordionSummary>
-      <AccordionDetails>
+
+      <AccordionDetails sx={{ pb: 0 }}>
         {loading || !approvalInfos ? null : (
           <>
             <Typography fontSize="14px">
               This allows contracts to spend the selected amounts of your asset balance.
             </Typography>
+
             <ApprovalEditorForm approvalInfos={approvalInfos} updateApprovals={updateApprovals} />
           </>
         )}

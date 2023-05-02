@@ -23,8 +23,8 @@ import type EthersAdapter from '@safe-global/safe-ethers-lib'
 // `UNKNOWN` is returned if the mastercopy does not match supported ones
 // @see https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/handlers/safes.rs#L28-L31
 //      https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/converters.rs#L77-L79
-export const isValidMasterCopy = (safe: SafeInfo): boolean => {
-  return safe.implementationVersionState !== ImplementationVersionState.UNKNOWN
+export const isValidMasterCopy = (implementationVersionState: SafeInfo['implementationVersionState']): boolean => {
+  return implementationVersionState !== ImplementationVersionState.UNKNOWN
 }
 
 export const _getValidatedGetContractProps = (

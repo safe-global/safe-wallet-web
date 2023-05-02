@@ -23,19 +23,27 @@
 .iconButton {
   border-radius: 4px;
   padding: 6px;
-  background-color: var(--color-background-main);
   width: 48px;
   height: 48px;
-}
-
-.applyIconButton {
   background-color: var(--color-primary-main);
 }
 
-.applyIconButton:hover {
+.iconButton:hover {
   background-color: var(--color-primary-dark);
 }
 
-.applyIconButton svg {
+.iconButton svg {
   color: var(--color-background-paper);
+}
+
+.iconButton:disabled {
+  background-color: var(--color-text-disabled);
+}
+
+.iconButton:disabled svg {
+  color: var(--color-border-dark);
+}
+
+.approvalsList {
+  padding-bottom: 0;
 }

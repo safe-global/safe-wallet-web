@@ -15,6 +15,8 @@ import ErrorMessage from '../ErrorMessage'
 import Summary from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { isEmptyHexData } from '@/utils/hex'
+import ApprovalEditor from '@/components/tx/ApprovalEditor'
+import { ErrorBoundary } from '@sentry/react'
 import { getNativeTransferData } from '@/services/tx/tokenTransferParams'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 
@@ -50,6 +52,12 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
 
   return (
     <Box mb={2}>
+      {decodedData && txDetails?.txData && (
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor txs={{ ...decodedData, to: txDetails.txData.to.value }} />
+        </ErrorBoundary>
+      )}
+
       <Accordion
         elevation={0}
         onChange={onChangeExpand}

@@ -1,17 +1,14 @@
 import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
-import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { getDecodedData } from '@safe-global/safe-gateway-typescript-sdk'
+import { ErrorBoundary } from '@sentry/react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import SendToBlock from '@/components/tx/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useAsync from '@/hooks/useAsync'
-import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getInteractionTitle } from '../utils'
 import type { SafeAppsTxParams } from '.'
-import { isEmptyHexData } from '@/utils/hex'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
 import { ApprovalEditor } from '../../tx/ApprovalEditor'
@@ -26,7 +23,6 @@ type ReviewSafeAppsTxProps = {
 const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
 }: ReviewSafeAppsTxProps): ReactElement => {
-  const chainId = useChainId()
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const chain = useCurrentChain()
@@ -47,12 +43,6 @@ const ReviewSafeAppsTx = ({
     return tx
   }, [txList])
 
-  const [decodedData] = useAsync<DecodedDataResponse | undefined>(async () => {
-    if (!safeTx || isEmptyHexData(safeTx.data.data)) return
-
-    return getDecodedData(chainId, safeTx.data.data)
-  }, [safeTx, chainId])
-
   const handleSubmit = async () => {
     setSubmitError(undefined)
     if (!safeTx || !onboard) return
@@ -70,7 +60,9 @@ const ReviewSafeAppsTx = ({
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
       <>
-        <ApprovalEditor txs={txList} updateTxs={setTxList} />
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor txs={txList} updateTxs={setTxList} />
+        </ErrorBoundary>
 
         <SendFromBlock />
 
