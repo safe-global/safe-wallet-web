@@ -16,6 +16,11 @@ const Join: React.FC<{
   const safeAddress = useSafeAddress()
 
   useEffect(() => {
+    handleCreateGroup()
+    handleJoin()
+  }, [])
+
+  useEffect(() => {
     async function getM() {
       await getMessages(`pid_${safeAddress!}`)
         .then((msgs: any) => {

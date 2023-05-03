@@ -30,7 +30,7 @@ const TransactionHistory = () => {
       </AccordionSummary>
 
       {/*todo Displaying stuff here is failing for some reason */}
-      <AccordionDetails>
+      <AccordionDetails className={styles.details} style={{ overflowY: 'scroll' }}>
         {txs.length &&
           txs.map((tx, i) => {
             return <TxListItem key={i} item={tx} />

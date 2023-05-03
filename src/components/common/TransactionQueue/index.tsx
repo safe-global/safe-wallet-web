@@ -1,20 +1,36 @@
-import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
+import useTxQueue from '@/hooks/useTxQueue'
+import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
+import PendingTxListItem from '../../dashboard/PendingTxs/PendingTxListItem'
+import { useState, useEffect } from 'react'
+import { Box, List, Typography } from '@mui/material'
 
 const TransactionQueue = () => {
+  const txQueue = useTxQueue()
+  const [queue, setQueue] = useState<any>()
+  useEffect(() => {
+    console.log(txQueue?.page?.results, 'test')
+    if (txQueue?.page?.results && txQueue?.page?.results.length > 0) {
+      setQueue(txQueue?.page?.results.filter((tx) => tx.type !== 'LABEL'))
+    }
+  }, [txQueue?.page?.results])
   return (
     <>
       <Box sx={{ pt: 3, pl: 3 }}>
         <Typography sx={{ fontWeight: 500 }}>Transaction queue</Typography>
       </Box>
       <List sx={{ pl: 1 }}>
-        {['addOwnerWithThreshold', 'On-chain rejection', 'Send'].map((text, index) => (
-          <ListItem key={text}>
-            <ListItemAvatar sx={{ minWidth: 35 }}>
-              <Avatar sx={{ width: 24, height: 24 }} alt={text} />
-            </ListItemAvatar>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        {queue ? (
+          queue.map((transaction: any, i: number) => {
+            return <PendingTxListItem transaction={transaction.transaction} key={transaction.transaction.id} />
+          })
+        ) : (
+          <>
+            <NoTransactionsIcon />
+            <Typography variant="body1" color="primary.light">
+              This Safe Account has no queued transactions
+            </Typography>
+          </>
+        )}
       </List>
     </>
   )

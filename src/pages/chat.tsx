@@ -1,4 +1,3 @@
-import BadgeAvatar from '@/components/badge-avatar'
 import AddFolder from '@/components/chat/addFolder'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import Members from '@/components/common/Members'
@@ -10,6 +9,8 @@ import TxListItem from '@/components/transactions/TxListItem'
 import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useTxHistory from '@/hooks/useTxHistory'
+import { AppRoutes } from '@/config/routes'
+import Link from 'next/link'
 import useTxQueue from '@/hooks/useTxQueue'
 import useWallet from '@/hooks/wallets/useWallet'
 import ellipsisAddress from '@/utils/ellipsisAddress'
@@ -35,14 +36,14 @@ import {
   Tabs,
   TextField,
   Toolbar,
-  Tooltip,
   Typography,
 } from '@mui/material'
 import { grey } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+import ChatNotifications from '@/components/chat/chatNotifications'
 
 const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
 
@@ -79,12 +80,6 @@ const Main = styled('div', { shouldForwardProp: (prop) => prop !== 'open' })<{
 const StyledAlert = styled(Alert)(() => ({
   backgroundColor: 'hsla(231, 17%, 76%, 0.33)',
 }))
-
-const summary = [
-  { name: 'Kristen', message: 'Requests $50 from you 🤔' },
-  { name: 'Magnus', message: 'Challenges you to play Chess for $5' },
-  { name: 'Decentra', badge: true, message: 'You need to sign a tx ✏' },
-]
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props
@@ -129,11 +124,17 @@ const Chat = () => {
   const [group, setGroup] = useState<any>()
   const [currentUser, setCurrentUser] = useState<any>()
   const { safe, safeAddress } = useSafeInfo()
+  console.log('test', safeAddress)
   const [ownerStatus, setOwnerStatus] = useState<boolean>()
   const [send, setSend] = useState(false)
-
+  const bottom = useRef(null)
   const owners = safe?.owners || ['']
   const ownerArray = owners.map((owner) => owner.value)
+
+  const scrollToBottom = () => {
+    //@ts-ignore
+    bottom?.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   useEffect(() => {
     const activeFolders = async () => {
@@ -179,9 +180,18 @@ const Chat = () => {
     setOpen(open)
   }
 
+  const getLast5Items = (arr: any) => {
+    if (arr) {
+      return arr.length > 5 ? arr.slice(Math.max(arr.length - 5, 0)) : arr
+    }
+    return arr
+  }
+
   useEffect(() => {
     let allData: any[] = []
-    txHistory.page?.results.forEach((tx: any) => {
+    const historyItems = getLast5Items(txHistory.page?.results)
+    const queueItems = getLast5Items(txQueue?.page?.results)
+    historyItems?.forEach((tx: any) => {
       if (tx.type === 'DATE_LABEL') {
         return
       }
@@ -191,7 +201,7 @@ const Chat = () => {
         type: 'tx',
       })
     })
-    txQueue.page?.results.forEach((tx: any) => {
+    queueItems?.forEach((tx: any) => {
       if (tx.type === 'LABEL') {
         return
       }
@@ -222,8 +232,11 @@ const Chat = () => {
       }
     })
     setChatData(allData)
-    console.log(allData)
   }, [messages, txHistory?.page?.results])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [chatData])
 
   if (!ownerArray.includes(wallet?.address!)) return <>Not Safe owner</>
 
@@ -264,33 +277,7 @@ const Chat = () => {
               </IconButton>
             </Toolbar>
             <Divider />
-            <List sx={{ display: 'flex' }}>
-              {summary.map((info, index) => (
-                <Tooltip
-                  title={
-                    <Typography sx={{ width: 80 }} noWrap>
-                      {info.message}
-                    </Typography>
-                  }
-                  placement="top"
-                  arrow
-                  key={info.name}
-                >
-                  <ListItem sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <ListItemAvatar sx={{ minWidth: 35 }}>
-                      {info.badge ? <BadgeAvatar name={info.name} /> : <Avatar alt={info.name} />}
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <Typography sx={{ fontSize: '14px' }} variant="body2" component="span">
-                          {info.name}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                </Tooltip>
-              ))}
-            </List>
+            <ChatNotifications />
             <Box sx={{ width: '100%', height: '100%' }}>
               {/*@ts-ignore*/}
               <Tabs value={value} onChange={handleChange} aria-label="folder tabs">
@@ -348,9 +335,11 @@ const Chat = () => {
             }}
           >
             <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
-              <IconButton aria-label="back">
-                <ArrowBackIos />
-              </IconButton>
+              <Link href={{ pathname: AppRoutes.home, query: { safe: `${safeAddress}` } }}>
+                <IconButton aria-label="back">
+                  <ArrowBackIos />
+                </IconButton>
+              </Link>
               <Avatar alt="Decentra" />
               <Typography variant="h6" component="h6">
                 Company Treasury
@@ -454,6 +443,7 @@ const Chat = () => {
                           )
                         }
                       })}
+                      <div ref={bottom} />
                     </List>
                   </Box>
                   <Box sx={{ flexShrink: 0, position: 'sticky', bottom: 0, bgcolor: 'background.default' }}>
@@ -630,6 +620,7 @@ const Chat = () => {
                         )
                       }
                     })}
+                  <div ref={bottom} />
                   {!chatData ? <ListItem>No Chat</ListItem> : ''}
                 </List>
               </Box>

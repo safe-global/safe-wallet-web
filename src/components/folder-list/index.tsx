@@ -41,30 +41,32 @@ export default function FolderList() {
   }, [ownedSafes])
 
   const handleListItemClick = (folder: string, index: number) => {
-    console.log(folder, safeAddress, safe.address, 'filter')
     setSelectedIndex(folder)
     history.push(`${folder}/new-chat`)
   }
-  //TODO
+
+  const matchSafe = (safe: string) => {
+    return safe.slice(safe.lastIndexOf(':') + 1) === safeAddress
+  }
   return (
     <List>
-      {safeFolder.map((folder, index) => (
-        <Link href={{ pathname: AppRoutes.home, query: { safe: `${folder}` } }} key={`${folder}-${index}`} passHref>
+      {safeFolder.map((safe, index) => (
+        <Link href={{ pathname: AppRoutes.chat, query: { safe: `${safe}` } }} key={`${safe}-${index}`} passHref>
           <ListItemButton
             sx={{ borderRadius: '6px' }}
             //key={folder.name}
-            key={folder}
-            selected={folder === safeAddress}
-            onClick={() => handleListItemClick(folder, index)}
+            key={safe}
+            selected={matchSafe(safe)}
+            onClick={() => handleListItemClick(safe, index)}
           >
             {/* <ListItemAvatar>
               {folder.badge ? <BadgeAvatar name={folder.name} /> : <Avatar alt={folder.name} />}
             </ListItemAvatar> */}
             <ListItemAvatar>
-              <Avatar alt={folder} />
+              <Avatar alt={safe} />
             </ListItemAvatar>
             <ListItemText
-              primary={<Typography sx={{ fontWeight: 500 }}>{ellipsisAddress(folder)}</Typography>}
+              primary={<Typography sx={{ fontWeight: 500 }}>{ellipsisAddress(safe)}</Typography>}
               //secondary={<Typography sx={{ color: grey[600] }}>{ellipsisAddress(folder.address)}</Typography>}
             />
           </ListItemButton>
