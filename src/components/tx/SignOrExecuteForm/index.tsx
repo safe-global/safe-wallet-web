@@ -107,13 +107,13 @@ const SignOrExecuteForm = ({
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
-    return await signTx(tx, txId)
+    return await signTx(tx, txId, origin)
   }
 
   // Execute transaction
   const onExecute = async (): Promise<string | undefined> => {
     const txOptions = getTxOptions(advancedParams, currentChain)
-    return await executeTx(txOptions, tx, txId, willRelay)
+    return await executeTx(txOptions, tx, txId, origin, willRelay)
   }
 
   // On modal submit

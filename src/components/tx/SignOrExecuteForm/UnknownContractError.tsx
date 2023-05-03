@@ -11,7 +11,7 @@ const UnknownContractError = (): ReactElement | null => {
   const currentChain = useCurrentChain()
 
   // Unsupported base contract
-  const isUnknown = !isValidMasterCopy(safe)
+  const isUnknown = !isValidMasterCopy(safe.implementationVersionState)
 
   if (!isUnknown) return null
 

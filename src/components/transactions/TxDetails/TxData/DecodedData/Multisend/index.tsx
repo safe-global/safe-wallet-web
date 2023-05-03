@@ -89,8 +89,8 @@ export const Multisend = ({
     <>
       {!noHeader && <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />}
 
-      <div className={multiSendTransactions.length >= MIN_SCROLL_TXS ? css.scrollWrapper : undefined}>
-        <Box display="flex" flexDirection="column" gap={1}>
+      <div className={noHeader && multiSendTransactions.length >= MIN_SCROLL_TXS ? css.scrollWrapper : undefined}>
+        <Box display="flex" flexDirection="column" gap={noHeader ? 1 : undefined}>
           {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
             const onChange: AccordionProps['onChange'] = (_, expanded) => {
               setOpenMap((prev) => ({
