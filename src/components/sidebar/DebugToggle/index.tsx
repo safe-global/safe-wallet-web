@@ -5,7 +5,6 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { setDarkMode } from '@/store/settingsSlice'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useAppDispatch } from '@/store'
-import { useRelayingDebugger } from '@/hooks/useRelayingDebugger'
 
 const LS_KEY = 'debugProdCgw'
 
@@ -16,7 +15,6 @@ const DebugToggle = (): ReactElement => {
   const isDarkMode = useDarkMode()
 
   const [isProdGateway = false, setIsProdGateway] = useLocalStorage<boolean>(LS_KEY)
-  const [isRelayingEnabled, setIsRelayingEnabled] = useRelayingDebugger()
 
   const onToggleGateway = (event: ChangeEvent<HTMLInputElement>) => {
     setIsProdGateway(event.target.checked)
@@ -26,17 +24,12 @@ const DebugToggle = (): ReactElement => {
     }, 300)
   }
 
-  const onToggleRelaying = (event: ChangeEvent<HTMLInputElement>) => {
-    setIsRelayingEnabled(event.target.checked)
-  }
-
   return (
     <Box py={2} ml={2}>
       <FormControlLabel
         control={<Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} />}
         label="Dark mode"
       />
-      <FormControlLabel control={<Switch checked={isRelayingEnabled} onChange={onToggleRelaying} />} label="Relaying" />
       <FormControlLabel control={<Switch checked={isProdGateway} onChange={onToggleGateway} />} label="Use prod CGW" />
     </Box>
   )

@@ -19,7 +19,6 @@ type SponsoredCallResponse = {
 export type RelayResponse = {
   limit: number
   remaining: number
-  expiresAt?: number
 }
 
 type ErrorResponse = {
