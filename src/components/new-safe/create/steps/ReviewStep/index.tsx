@@ -79,8 +79,15 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
     const safeAddress = await computeNewSafeAddress(provider, props)
 
-    setPendingSafe({ ...data, saltNonce, safeAddress })
-    onSubmit({ ...data, saltNonce, safeAddress, willRelay })
+    const pendingSafe = {
+      ...data,
+      saltNonce,
+      safeAddress,
+      willRelay,
+    }
+
+    setPendingSafe(pendingSafe)
+    onSubmit(pendingSafe)
   }
 
   return (
