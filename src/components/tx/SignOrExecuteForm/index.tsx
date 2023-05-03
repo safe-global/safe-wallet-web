@@ -1,5 +1,5 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
-import { Button, DialogContent, Typography } from '@mui/material'
+import { Box, Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import useGasLimit from '@/hooks/useGasLimit'
@@ -21,6 +21,7 @@ import UnknownContractError from './UnknownContractError'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
+import { hasRemainingRelays } from '@/utils/relaying'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -71,16 +72,14 @@ const SignOrExecuteForm = ({
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
 
-  // SC wallets can relay fully signed transactions
-  const [walletCanRelay] = useWalletCanRelay(tx)
-
-  // The transaction can be relayed
-  const canRelay = willExecute && !!relays && relays.remaining > 0 && !!walletCanRelay
-
   // We default to relay, but the option is only shown if we canRelay
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
 
-  // The transaction will be executed through relaying
+  // SC wallets can relay fully signed transactions
+  const [walletCanRelay] = useWalletCanRelay(tx)
+
+  // The transaction can/will be relayed
+  const canRelay = hasRemainingRelays(relays) && !!walletCanRelay && willExecute
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
   // Synchronize the tx with the safeTx
@@ -183,11 +182,21 @@ const SignOrExecuteForm = ({
         />
 
         {canRelay && (
-          <ExecutionMethodSelector
-            executionMethod={executionMethod}
-            setExecutionMethod={setExecutionMethod}
-            relays={relays}
-          />
+          <Box
+            sx={{
+              '& > div': {
+                marginTop: '-1px',
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+              },
+            }}
+          >
+            <ExecutionMethodSelector
+              executionMethod={executionMethod}
+              setExecutionMethod={setExecutionMethod}
+              relays={relays}
+            />
+          </Box>
         )}
 
         <TxSimulation
