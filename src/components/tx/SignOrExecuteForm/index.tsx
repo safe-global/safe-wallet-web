@@ -16,10 +16,18 @@ import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { createTx } from '@/services/tx/tx-sender'
 import CheckWallet from '@/components/common/CheckWallet'
 import { WrongChainWarning } from '../WrongChainWarning'
-import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
+import {
+  useImmediatelyExecutable,
+  useIsExecutionLoop,
+  useSafeTxGasError,
+  useTxActions,
+  useValidateNonce,
+} from './hooks'
 import UnknownContractError from './UnknownContractError'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
+import { ADVANCED_PARAMS_HELP_LINK } from '@/components/tx/AdvancedParams/AdvancedParamsForm'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -53,6 +61,7 @@ const SignOrExecuteForm = ({
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const safeTxGasError = useSafeTxGasError(safeTx)
 
   // Hooks
   const isOwner = useIsSafeOwner()
@@ -193,6 +202,14 @@ const SignOrExecuteForm = ({
         ) : willExecute && isExecutionLoop ? (
           <ErrorMessage>
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
+          </ErrorMessage>
+        ) : safeTxGasError ? (
+          <ErrorMessage>
+            You cannot execute a transaction with a <b>safeTxGas</b> equal or higher than the block gas limit. Please
+            change it on your risk or set it to 0.{' '}
+            <ExternalLink href={ADVANCED_PARAMS_HELP_LINK} color="error.dark">
+              Read more
+            </ExternalLink>
           </ErrorMessage>
         ) : error ? (
           <ErrorMessage error={error}>

@@ -100,12 +100,6 @@ export const _getSingleTransactionPayload = (
     transaction = simulatedTransaction
   }
 
-  // If gasLimit <= safeTxGas we reduce safeTxGas 10% in the simulation payload
-  let adjustedSafeTxGas
-  if (gasLimit <= transaction.data.safeTxGas) {
-    adjustedSafeTxGas = transaction.data.safeTxGas * 0.9
-  }
-
   const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(params.safe)
 
   const input = readOnlySafeContract.encode('execTransaction', [
@@ -113,7 +107,7 @@ export const _getSingleTransactionPayload = (
     transaction.data.value,
     transaction.data.data,
     transaction.data.operation,
-    adjustedSafeTxGas || transaction.data.safeTxGas,
+    transaction.data.safeTxGas,
     transaction.data.baseGas,
     transaction.data.gasPrice,
     transaction.data.gasToken,
@@ -210,7 +204,7 @@ const getStateOverwrites = (params: SimulationTxParams) => {
   return storageOverwrites
 }
 
-const getLatestBlockGasLimit = async (): Promise<number> => {
+export const getLatestBlockGasLimit = async (): Promise<number> => {
   const web3ReadOnly = getWeb3ReadOnly()
   const latestBlock = await web3ReadOnly?.getBlock('latest')
   if (!latestBlock) {

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -16,6 +16,7 @@ import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import type { ConnectedWallet } from '@/services/onboard'
 import type { OnboardAPI } from '@web3-onboard/core'
 import { hasEnoughSignatures } from '@/utils/transactions'
+import { getLatestBlockGasLimit } from '@/components/tx/TxSimulation/utils'
 
 type TxActions = {
   signTx: (safeTx?: SafeTransaction, txId?: string) => Promise<string>
@@ -133,4 +134,21 @@ export const useIsExecutionLoop = (): boolean => {
   const wallet = useWallet()
   const { safeAddress } = useSafeInfo()
   return wallet ? sameString(wallet.address, safeAddress) : false
+}
+
+// Returns true if the safeTxGas equals the block gas limit
+export const useSafeTxGasError = (safeTx?: SafeTransaction): boolean | undefined => {
+  const [hasSafeTxGasError, setHasSafeTxGasError] = useState<boolean>()
+
+  useEffect(() => {
+    if (!safeTx) return
+    ;(async function getBlockGasLimit() {
+      const blockGasLimit = await getLatestBlockGasLimit()
+
+      const hasError = blockGasLimit <= safeTx.data.safeTxGas
+      setHasSafeTxGasError(hasError)
+    })()
+  }, [safeTx])
+
+  return hasSafeTxGasError
 }
