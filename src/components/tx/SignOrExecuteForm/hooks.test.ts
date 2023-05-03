@@ -1,4 +1,4 @@
-import { renderHook } from '@/tests/test-utils'
+import { act, renderHook } from '@/tests/test-utils'
 import { ethers } from 'ethers'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/services/onboard'
@@ -484,7 +484,7 @@ describe('SignOrExecute hooks', () => {
     })
   })
 
-  it('should return true if safeTxGas is greater than or equeal to the latest block gas limit', () => {
+  it('should return true if safeTxGas is greater than or equeal to the latest block gas limit', async () => {
     jest.spyOn(signOrExecutionFormUtils, 'getLatestBlockGasLimit').mockImplementation(() => Promise.resolve(15_000_000))
 
     const mockSafeTransaction = {
@@ -495,6 +495,8 @@ describe('SignOrExecute hooks', () => {
 
     const { result } = renderHook(() => useSafeTxGasError(mockSafeTransaction))
 
-    expect(result).toBe(true)
+    await act(() => Promise.resolve())
+
+    expect(result.current).toBe(true)
   })
 })

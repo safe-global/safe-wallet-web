@@ -22,6 +22,7 @@ import * as useChains from '@/hooks/useChains'
 import * as useRelaysBySafe from '@/hooks/useRemainingRelays'
 import { FEATURES } from '@/utils/chains'
 import { type OnboardAPI } from '@web3-onboard/core'
+import * as signOrExecutionFormUtils from '@/components/tx/TxSimulation/utils'
 
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
@@ -104,6 +105,7 @@ describe('SignOrExecuteForm', () => {
     } as unknown as ChainInfo)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(false)
     jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 5, limit: 5 }, undefined, false])
+    jest.spyOn(signOrExecutionFormUtils, 'getLatestBlockGasLimit').mockImplementation(() => Promise.resolve(15_000_000))
   })
 
   it('displays decoded data if there is a tx', () => {
