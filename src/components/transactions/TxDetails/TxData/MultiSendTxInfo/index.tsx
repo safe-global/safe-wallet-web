@@ -1,9 +1,8 @@
-import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import type { ReactElement } from 'react'
-import React from 'react'
 import type { MultiSend } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ReactElement } from 'react'
 
 export const MultiSendTxInfo = ({ txInfo }: { txInfo: MultiSend }): ReactElement => {
   return (

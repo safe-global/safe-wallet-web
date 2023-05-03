@@ -1,13 +1,23 @@
-import React, { type ReactElement } from 'react'
+import { Box, CircularProgress } from '@mui/material'
 import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, CircularProgress } from '@mui/material'
+import { type ReactElement } from 'react'
 
-import TxSigners from '@/components/transactions/TxSigners'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
+import RejectTxButton from '@/components/transactions/RejectTxButton'
+import SignTxButton from '@/components/transactions/SignTxButton'
 import Summary from '@/components/transactions/TxDetails/Summary'
 import TxData from '@/components/transactions/TxDetails/TxData'
-import useChainId from '@/hooks/useChainId'
+import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import TxSigners from '@/components/transactions/TxSigners'
+import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/Warning'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 import useAsync from '@/hooks/useAsync'
+import useChainId from '@/hooks/useChainId'
+import useIsPending from '@/hooks/useIsPending'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import {
   isAwaitingExecution,
   isModuleExecutionInfo,
@@ -17,19 +27,9 @@ import {
   isSupportedMultiSendAddress,
   isTxQueued,
 } from '@/utils/transaction-guards'
-import { InfoDetails } from '@/components/transactions/InfoDetails'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import css from './styles.module.css'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import TxShareLink from '../TxShareLink'
 import { ErrorBoundary } from '@sentry/react'
-import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
-import SignTxButton from '@/components/transactions/SignTxButton'
-import RejectTxButton from '@/components/transactions/RejectTxButton'
-import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/Warning'
-import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useIsPending from '@/hooks/useIsPending'
+import TxShareLink from '../TxShareLink'
+import css from './styles.module.css'
 
 export const NOT_AVAILABLE = 'n/a'
 

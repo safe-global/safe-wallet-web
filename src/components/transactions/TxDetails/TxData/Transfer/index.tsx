@@ -1,10 +1,9 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { TransferTx } from '@/components/transactions/TxInfo'
 import { isTxQueued } from '@/utils/transaction-guards'
+import { Box, Typography } from '@mui/material'
 import type { TransactionStatus, Transfer } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Typography } from '@mui/material'
-import React from 'react'
 
 import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
 
@@ -34,7 +33,7 @@ const TransferTxInfo = ({ txInfo, txStatus }: TransferTxInfoProps) => {
     <Box>
       <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} />
       <Box display="flex" alignItems="center">
-        <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton>
+        <EthHashInfo address={address} shortAddress={true} hasExplorer showCopyButton>
           <TransferActions address={address} txInfo={txInfo} />
         </EthHashInfo>
       </Box>

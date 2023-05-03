@@ -3,11 +3,10 @@ import useWallet from '@/hooks/wallets/useWallet'
 import NewChatIcon from '@/public/images/chat/chat.svg'
 import LogoGreen from '@/public/images/logo-green.svg'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { Box, Button, Grid, Paper, Stack, SvgIcon, Typography } from '@mui/material'
-import { Container } from '@mui/system'
+import { Box, Button, Container, Grid, Paper, Stack, SvgIcon, Typography } from '@mui/material'
 import React, { useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { loginWithCometChat, signUpWithCometChat, initCometChat } from '../../services/chat'
+import { initCometChat, loginWithCometChat, signUpWithCometChat } from '../../services/chat'
 import css from './styles.module.css'
 
 const Login: React.FC<{
@@ -70,7 +69,7 @@ const Login: React.FC<{
   }
 
   return (
-    <Container>
+    <Container fixed sx={{ height: '100vh', width: '100vw' }}>
       <Box
         sx={{
           height: '100%',
@@ -83,7 +82,7 @@ const Login: React.FC<{
       >
         <Grid container spacing={1}>
           <Grid item xs lg={4} order={{ xs: 2, sm: 1 }}>
-            <Paper sx={{ padding: 4, height: 1, maxWidth: '400px' }} className={css.loginwindowelement}>
+            <Paper sx={{ padding: 4, height: 1, maxWidth: '400px' }} className={css.logincard}>
               <SvgIcon component={NewChatIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
               <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
                 Chat with your safe members now
