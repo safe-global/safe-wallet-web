@@ -113,12 +113,17 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Transaction details')).toBeInTheDocument()
   })
 
-  it("doesn't display decoded data if tx is a native transfer", () => {
+  it('displays decoded data if tx is a native transfer', () => {
     const mockTx = createSafeTx()
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-    expect(result.queryByText('Transaction details')).not.toBeInTheDocument()
+    expect(result.queryByText('Transaction details')).toBeInTheDocument()
+
+    // Click on it
+    fireEvent.click(result.getByText('Transaction details'))
+
+    expect(result.queryByText('Native token transfer')).toBeInTheDocument()
   })
 
   it('displays an execute checkbox if tx can be executed', () => {
@@ -545,6 +550,58 @@ describe('SignOrExecuteForm', () => {
     })
 
     await waitFor(() => expect(relaySpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('executes a transaction with the connected wallet if chosen instead of relaying', async () => {
+    jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 5, limit: 5 }, undefined, false])
+
+    const executionSpy = jest.fn()
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxProposal')
+      .mockImplementation(jest.fn(() => Promise.resolve({} as TransactionDetails)))
+
+    jest.spyOn(txSenderDispatch, 'dispatchTxExecution').mockImplementation(executionSpy)
+
+    const mockTx = createSafeTx()
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    await act(() => Promise.resolve())
+
+    const walletOptionRadio = result.getByText('Connected wallet')
+
+    expect(walletOptionRadio).toBeInTheDocument()
+
+    act(() => {
+      fireEvent.click(walletOptionRadio)
+    })
+
+    const submitButton = result.getByText('Submit')
+
+    act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    await waitFor(() => expect(executionSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('when there are no remaining relays, there should be no option to select the execution method', async () => {
+    jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 0, limit: 5 }, undefined, false])
+
+    const executionSpy = jest.fn()
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxProposal')
+      .mockImplementation(jest.fn(() => Promise.resolve({} as TransactionDetails)))
+
+    jest.spyOn(txSenderDispatch, 'dispatchTxExecution').mockImplementation(executionSpy)
+
+    const mockTx = createSafeTx()
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    await act(() => Promise.resolve())
+
+    const walletOptionRadio = result.queryByText('Connected wallet')
+
+    expect(walletOptionRadio).not.toBeInTheDocument()
   })
 
   it('executes a transaction with the connected wallet if relaying is not available', async () => {

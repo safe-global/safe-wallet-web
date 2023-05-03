@@ -11,7 +11,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { UrlObject } from 'url'
 import Track from '../Track'
-import SafeTokenIcon from './safe_token.svg'
+import SafeTokenIcon from '@/public/images/common/safe-token.svg'
 import css from './styles.module.css'
 
 const TOKEN_DECIMALS = 18
@@ -54,7 +54,7 @@ const SafeTokenWidget = () => {
                 className={css.tokenButton}
                 disabled={url === undefined}
               >
-                <SafeTokenIcon />
+                <SafeTokenIcon width={24} height={24} />
                 <Typography component="div" lineHeight="16px" fontWeight={700}>
                   {allocationLoading ? <Skeleton width="16px" animation="wave" /> : flooredSafeBalance}
                 </Typography>

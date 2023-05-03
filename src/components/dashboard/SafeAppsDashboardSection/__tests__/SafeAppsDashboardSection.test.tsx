@@ -102,7 +102,7 @@ describe('Safe Apps Dashboard Section', () => {
   it('should display the Safe Apps Section', async () => {
     render(<SafeAppsDashboardSection />)
 
-    await waitFor(() => expect(screen.getByText('Safe{Apps}')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Safe Apps')).toBeInTheDocument())
   })
 
   it('should display Safe Apps Cards (Name & Description)', async () => {
@@ -126,6 +126,6 @@ describe('Safe Apps Dashboard Section', () => {
   it('should show the Explore Safe Apps Link', async () => {
     render(<SafeAppsDashboardSection />)
 
-    await waitFor(() => expect(screen.getByText('Explore Safe{Apps}')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Explore Safe Apps')).toBeInTheDocument())
   })
 })

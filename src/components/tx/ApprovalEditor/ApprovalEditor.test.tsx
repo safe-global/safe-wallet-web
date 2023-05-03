@@ -7,6 +7,7 @@ import {
   render,
   type RenderResult,
   waitFor,
+  act,
 } from '@/tests/test-utils'
 import ApprovalEditor from '.'
 import { type DecodedDataResponse, type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -160,8 +161,7 @@ describe('ApprovalEditor', () => {
         const buttons = getAllByRole(accordionDetails as HTMLElement, 'button')
         // 2 rows with one button each
         expect(buttons).toHaveLength(2)
-        // edit first transfer
-        buttons[0].click()
+
         await waitFor(() => {
           const amountInput = accordionDetails?.querySelector('input[name="approvals.0"]') as HTMLInputElement
           expect(amountInput).not.toBeNull()
@@ -171,8 +171,13 @@ describe('ApprovalEditor', () => {
 
         const amountInput = accordionDetails?.querySelector('input[name="approvals.0"]') as HTMLInputElement
 
-        fireEvent.change(amountInput!, { target: { value: '123' } })
-        getAllByRole(accordionDetails as HTMLElement, 'button')[0].click()
+        await act(() => {
+          fireEvent.change(amountInput!, { target: { value: '123' } })
+        })
+
+        await act(() => {
+          buttons[0].click()
+        })
 
         await waitFor(() => {
           expect(updateCallback).toHaveBeenCalledWith([
@@ -206,8 +211,6 @@ describe('ApprovalEditor', () => {
         const buttons = getAllByRole(accordionDetails as HTMLElement, 'button')
         // 2 rows with one button each
         expect(buttons).toHaveLength(2)
-        // edit first transfer
-        buttons[1].click()
         await waitFor(() => {
           const amountInput = accordionDetails?.querySelector('input[name="approvals.1"]') as HTMLInputElement
           expect(amountInput).not.toBeNull()
@@ -217,8 +220,13 @@ describe('ApprovalEditor', () => {
 
         const amountInput = accordionDetails?.querySelector('input[name="approvals.1"]') as HTMLInputElement
 
-        fireEvent.change(amountInput!, { target: { value: '456' } })
-        getAllByRole(accordionDetails as HTMLElement, 'button')[1].click()
+        await act(() => {
+          fireEvent.change(amountInput!, { target: { value: '456' } })
+        })
+
+        await act(() => {
+          buttons[1].click()
+        })
 
         await waitFor(() => {
           expect(updateCallback).toHaveBeenCalledWith([
@@ -288,7 +296,6 @@ describe('ApprovalEditor', () => {
       expect(accordionDetails).not.toBeNull()
 
       // toggle edit row
-      getByRole(accordionDetails as HTMLElement, 'button').click()
       await waitFor(() => {
         const amountInput = accordionDetails?.querySelector('input[name="approvals.0"]') as HTMLInputElement
         expect(amountInput).not.toBeNull()
@@ -298,8 +305,13 @@ describe('ApprovalEditor', () => {
 
       const amountInput = accordionDetails?.querySelector('input[name="approvals.0"]') as HTMLInputElement
 
-      fireEvent.change(amountInput!, { target: { value: '100' } })
-      getByRole(accordionDetails as HTMLElement, 'button').click()
+      await act(() => {
+        fireEvent.change(amountInput!, { target: { value: '100' } })
+      })
+
+      await act(() => {
+        getByRole(accordionDetails as HTMLElement, 'button').click()
+      })
 
       await waitFor(() => {
         expect(updateCallback).toHaveBeenCalledWith([

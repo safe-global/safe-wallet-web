@@ -378,7 +378,7 @@ describe('SignOrExecute hooks', () => {
         dynamicPart: () => '',
       })
 
-      const id = await executeTx({ gasPrice: 1 }, tx, '123', true)
+      const id = await executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)
       expect(proposeSpy).not.toHaveBeenCalled()
       expect(relaySpy).toHaveBeenCalled()
       expect(id).toEqual('123')
@@ -426,7 +426,7 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useTxActions())
       const { executeTx } = result.current
 
-      const id = await executeTx({ gasPrice: 1 }, tx, '123', true)
+      const id = await executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)
       expect(proposeSpy).toHaveBeenCalled()
       expect(signSpy).toHaveBeenCalled()
       expect(relaySpy).toHaveBeenCalled()
@@ -475,7 +475,7 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useTxActions())
       const { executeTx } = result.current
 
-      await expect(() => executeTx({ gasPrice: 1 }, tx, '123', true)).rejects.toThrowError(
+      await expect(() => executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)).rejects.toThrowError(
         'Cannot relay an unsigned transaction from a smart contract wallet',
       )
       expect(proposeSpy).not.toHaveBeenCalled()
