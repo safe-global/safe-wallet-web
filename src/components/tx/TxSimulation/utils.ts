@@ -82,7 +82,6 @@ export type SimulationTxParams = SingleTransactionSimulationParams | MultiSendTr
 
 export const _getSingleTransactionPayload = (
   params: SingleTransactionSimulationParams,
-  gasLimit: number,
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   // If a transaction is executable we simulate with the proposed/selected gasLimit and the actual signatures
   let transaction = params.transactions
@@ -217,7 +216,7 @@ export const getSimulationPayload = async (params: SimulationTxParams): Promise<
   const gasLimit = params.gasLimit || (await getLatestBlockGasLimit())
 
   const payload = isSingleTransactionSimulation(params)
-    ? _getSingleTransactionPayload(params, gasLimit)
+    ? _getSingleTransactionPayload(params)
     : _getMultiSendCallOnlyPayload(params)
 
   const stateOverwrites = getStateOverwrites(params)
