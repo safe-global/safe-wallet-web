@@ -1,3 +1,7 @@
+.button {
+  text-decoration: none !important;
+}
+
 .circle {
   width: 0.8em;
   height: 0.8em;
