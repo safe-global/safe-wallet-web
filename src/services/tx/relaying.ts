@@ -21,6 +21,11 @@ export type RelayResponse = {
   remaining: number
 }
 
+type ErrorResponse = {
+  message: string
+  statusCode: number
+}
+
 export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<SponsoredCallResponse> => {
   const requestObject: RequestInit = {
     method: 'POST',
@@ -33,11 +38,11 @@ export const sponsoredCall = async (tx: SponsoredCallPayload): Promise<Sponsored
   const res = await fetch(SAFE_RELAY_SERVICE_URL, requestObject)
 
   if (res.ok) {
-    return res.json()
+    return res.json() as Promise<SponsoredCallResponse>
   }
 
-  const errorData: { error?: { message: string } } = await res.json()
-  throw new Error(`${res.status} - ${res.statusText}: ${errorData?.error?.message}`)
+  const errorData: ErrorResponse = await res.json()
+  throw new Error(`${res.status} - ${res.statusText}: ${errorData.message}`)
 }
 
 export const getRelays = async (chainId: string, address: string): Promise<RelayResponse> => {
@@ -47,12 +52,11 @@ export const getRelays = async (chainId: string, address: string): Promise<Relay
     const res = await fetch(url)
 
     if (res.ok) {
-      const data = await res.json()
-      return data
+      return res.json() as Promise<RelayResponse>
     }
 
-    const errorData: { error?: { message: string } } = await res.json()
-    throw new Error(errorData?.error?.message || 'Unknown error')
+    const errorData: ErrorResponse = await res.json()
+    throw new Error(errorData.message)
   } catch (error) {
     throw new Error(`Error fetching relays: ${error}`)
   }
