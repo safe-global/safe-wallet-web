@@ -7,8 +7,16 @@ import * as wallet from '@/hooks/wallets/useWallet'
 import * as walletHooks from '@/hooks/wallets/wallets'
 import * as pending from '@/hooks/usePendingTxs'
 import * as txSender from '@/services/tx/tx-sender'
-import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
+import {
+  useImmediatelyExecutable,
+  useIsExecutionLoop,
+  useTxActions,
+  useValidateNonce,
+  useSafeTxGasError,
+} from './hooks'
 import { createSafeTx } from './SignOrExecuteForm.test'
+import * as signOrExecutionFormUtils from '@/components/tx/TxSimulation/utils'
+import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 describe('SignOrExecute hooks', () => {
   beforeEach(() => {
@@ -474,5 +482,19 @@ describe('SignOrExecute hooks', () => {
       expect(signSpy).not.toHaveBeenCalled()
       expect(relaySpy).not.toHaveBeenCalled()
     })
+  })
+
+  it('should return true if safeTxGas is greater than or equeal to the latest block gas limit', () => {
+    jest.spyOn(signOrExecutionFormUtils, 'getLatestBlockGasLimit').mockImplementation(() => Promise.resolve(15_000_000))
+
+    const mockSafeTransaction = {
+      data: {
+        safeTxGas: 15_000_000,
+      },
+    } as SafeTransaction
+
+    const { result } = renderHook(() => useSafeTxGasError(mockSafeTransaction))
+
+    expect(result).toBe(true)
   })
 })
