@@ -1,4 +1,4 @@
-import { ListItemButton, Typography } from '@mui/material'
+import { Box, Button, ListItemButton, TextField, Typography } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 import List from '@mui/material/List'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
@@ -80,13 +80,24 @@ const FolderGroup: React.FC<{
   //TODO
   return (
     <>
-      <input
-        placeholder="add safe to folder"
-        value={safeAddress}
-        onChange={(e) => handleSetSafeAddress(e.target.value)}
-      />
-      <button onClick={addSafeToFolder}>Add</button>
-      <button onClick={deleteSafeFromFolder}>Delete</button>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <TextField
+          size="small"
+          variant="outlined"
+          label="add safe to folder"
+          value={safeAddress}
+          onChange={(e) => handleSetSafeAddress(e.target.value)}
+          fullWidth
+        />
+        <Box sx={{ display: 'flex', gap: '16px' }}>
+          <Button size="small" variant="contained" sx={{ width: '50%' }} onClick={addSafeToFolder}>
+            Add
+          </Button>
+          <Button size="small" variant="outlined" sx={{ width: '50%' }} onClick={deleteSafeFromFolder}>
+            Delete
+          </Button>
+        </Box>
+      </Box>
       <List>
         {safes.map((folder, index) => (
           <Link href={{ pathname: AppRoutes.home, query: { safe: `${folder}` } }} key={`${folder}-${index}`} passHref>

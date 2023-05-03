@@ -20,6 +20,7 @@ const Login: React.FC<{
       return
     }
     initCometChat()
+    handleSignup()
     if (!wallet?.address) return
     //handleLogin()
   }, [safeAddress])
