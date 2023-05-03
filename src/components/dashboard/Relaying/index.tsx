@@ -8,10 +8,13 @@ import GasStationIcon from '@/public/images/common/gas-station.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import classnames from 'classnames'
 import css from './styles.module.css'
+import { useCurrentChain } from '@/hooks/useChains'
+import { SPONSOR_LOGOS } from '@/components/tx/SponsoredBy'
 
 const RELAYING_HELP_ARTICLE = 'https://help.safe.global/en/articles/7224713-what-is-gas-fee-sponsoring'
 
 const Relaying = () => {
+  const chain = useCurrentChain()
   const [relays, relaysError] = useRelaysBySafe()
 
   const limit = relays?.limit || MAX_HOUR_RELAYS
@@ -32,9 +35,9 @@ const Relaying = () => {
               <Typography variant="h6" fontWeight={700}>
                 Gas fees sponsored by
               </Typography>
-              <img src="/images/common/gnosis-chain-logo.png" alt="Gnosis Chain" className={css.gcLogo} />
+              <img src={SPONSOR_LOGOS[chain?.chainId || '']} alt={chain?.chainName} className={css.gcLogo} />
               <Typography variant="h6" fontWeight={700} flexShrink={0}>
-                Gnosis Chain
+                {chain?.chainName}
               </Typography>
             </Stack>
             <Typography variant="body2" marginRight={1} sx={{ display: 'inline' }}>
