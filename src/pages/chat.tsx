@@ -1,17 +1,22 @@
 import BadgeAvatar from '@/components/badge-avatar'
+import AddFolder from '@/components/chat/addFolder'
+import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import Members from '@/components/common/Members'
 import TransactionHistory from '@/components/common/TransactionHistory'
 import TransactionQueue from '@/components/common/TransactionQueue'
 import FolderList from '@/components/folder-list'
+import FolderGroup from '@/components/folder-list/folderGroups'
+import TxListItem from '@/components/transactions/TxListItem'
+import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useTxHistory from '@/hooks/useTxHistory'
+import useTxQueue from '@/hooks/useTxQueue'
+import useWallet from '@/hooks/wallets/useWallet'
 import ellipsisAddress from '@/utils/ellipsisAddress'
+import { ArrowBackIos } from '@mui/icons-material'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
-import useWallet from '@/hooks/wallets/useWallet'
-import AddFolder from '@/components/chat/addFolder'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import {
   Alert,
   Avatar,
@@ -35,15 +40,9 @@ import {
 } from '@mui/material'
 import { grey } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
-import Head from 'next/head'
-import React, { useState, useEffect } from 'react'
-import css from './styles.module.css'
-import useTxQueue from '@/hooks/useTxQueue'
-import useTxHistory from '@/hooks/useTxHistory'
 import dynamic from 'next/dynamic'
-import TxListItem from '@/components/transactions/TxListItem'
-import FolderGroup from '@/components/folder-list/folderGroups'
-import NewTxButton from '@/components/sidebar/NewTxButton'
+import Head from 'next/head'
+import React, { useEffect, useState } from 'react'
 
 const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
 
@@ -59,7 +58,7 @@ interface TabPanelProps {
 
 const drawerWidth = 340
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+const Main = styled('div', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean
 }>(({ theme, open }) => ({
   flexGrow: 1,
@@ -258,7 +257,8 @@ const Chat = () => {
             variant="permanent"
             anchor="left"
           >
-            <Toolbar sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography sx={{ fontWeight: 500 }}>Decentra</Typography>
               <IconButton aria-label="add folder" onClick={() => togglePopup(!popup)}>
                 <AddIcon />
               </IconButton>
@@ -334,22 +334,26 @@ const Chat = () => {
             </Box>
           </Drawer>
         </Hidden>
-        <Main open={open} sx={{ flexGrow: 1, bgcolor: 'background.default' }} className={css.mainview}>
+        <Main open={open} sx={{ flexGrow: 1, bgcolor: 'background.default' }}>
           <Toolbar
             sx={{
               display: 'flex',
               position: 'sticky',
-              zIndex: '1000',
+              zIndex: 1,
               top: 0,
+              px: 3,
               justifyContent: 'space-between',
-              alignContent: 'center',
+              alignItems: 'center',
               bgcolor: 'background.default',
             }}
           >
             <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
+              <IconButton aria-label="back">
+                <ArrowBackIos />
+              </IconButton>
               <Avatar alt="Decentra" />
               <Typography variant="h6" component="h6">
-                Decentra
+                Company Treasury
               </Typography>
             </Box>
             <Hidden mdDown>
@@ -528,17 +532,18 @@ const Chat = () => {
                     <Divider />
                     <Box sx={{ p: 3 }}>
                       <Typography sx={{ fontWeight: 500 }} paragraph>
-                        Apps
+                        Assets
                       </Typography>
-                      <Typography paragraph>
-                        In Plain you can show any information about the customer you want here without having to sync
-                        anything. You can do this by building a very simple API endpoint that Plain will then query when
-                        you load this page.
-                      </Typography>
+                      <Typography paragraph>View all tokens and NFTs the Safe holds.</Typography>
+                      <Box sx={{ position: 'fixed', bottom: 0, bgcolor: 'background.default' }}>
+                        <Button sx={{ mb: 2 }} variant="outlined" fullWidth>
+                          Send Tokens
+                        </Button>
+                        <Button variant="outlined" fullWidth>
+                          Send NFTs
+                        </Button>
+                      </Box>
                     </Box>
-                  </Box>
-                  <Box sx={{ flexShrink: 0, position: 'sticky', bottom: 0, bgcolor: 'background.default' }}>
-                    <NewTxButton />
                   </Box>
                 </Box>
               </TabPanel>
@@ -599,7 +604,7 @@ const Chat = () => {
                         )
                       } else {
                         return (
-                          <ListItem key={index} alignItems="flex-start">
+                          <ListItem key={index} alignItems="flex-start" disableGutters>
                             <ListItemAvatar sx={{ minWidth: 35, pr: '10px' }}>
                               <Avatar sx={{ width: 32, height: 32 }} alt={chat.name} />
                             </ListItemAvatar>
@@ -703,15 +708,16 @@ const Chat = () => {
             <Divider />
             <Box sx={{ p: 3 }}>
               <Typography sx={{ fontWeight: 500 }} paragraph>
-                Apps
+                Assets
               </Typography>
-              <Typography paragraph>
-                In Plain you can show any information about the customer you want here without having to sync anything.
-                You can do this by building a very simple API endpoint that Plain will then query when you load this
-                page.
-              </Typography>
+              <Typography paragraph>View all tokens and NFTs the Safe holds.</Typography>
               <Box sx={{ position: 'fixed', bottom: 0, bgcolor: 'background.default' }}>
-                <NewTxButton />
+                <Button sx={{ mb: 2 }} variant="outlined" fullWidth>
+                  Send Tokens
+                </Button>
+                <Button variant="outlined" fullWidth>
+                  Send NFTs
+                </Button>
               </Box>
             </Box>
           </Drawer>
