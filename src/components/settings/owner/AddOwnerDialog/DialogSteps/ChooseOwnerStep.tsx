@@ -60,8 +60,8 @@ export const ChooseOwnerStep = ({
         <DialogContent>
           <Box mb={1}>
             {isReplace
-              ? 'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'
-              : 'Add a new owner to the active Safe Account.'}
+              ? 'Review the owner you want to replace in the active Safe, then specify the new owner you want to replace it with:'
+              : 'Add a new owner to the active Safe.'}
           </Box>
 
           {removedOwner && (

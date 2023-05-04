@@ -12,7 +12,7 @@ export const getClientMeta = () => {
   const host = location.origin
 
   const APP_META = {
-    name: `Safe{Wallet} web v${packageJson.version}`,
+    name: `Safe web v${packageJson.version}`,
     url: host,
     icons: [`${host}${PairingIcon.src}`],
   }

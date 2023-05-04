@@ -173,7 +173,7 @@ const MsgModal = ({
             <ErrorMessage>No wallet is connected.</ErrorMessage>
           ) : !isOwner ? (
             <ErrorMessage>
-              You are currently not an owner of this Safe Account and won&apos;t be able to confirm this message.
+              You are currently not an owner of this Safe and won&apos;t be able to confirm this message.
             </ErrorMessage>
           ) : hasSigned ? (
             <ErrorMessage>Your connected wallet has already signed this message.</ErrorMessage>
