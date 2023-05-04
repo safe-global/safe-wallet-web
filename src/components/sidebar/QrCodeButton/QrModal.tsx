@@ -22,12 +22,12 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
     <ModalDialog open dialogTitle="Receive assets" onClose={onClose} hideChainIndicator>
       <DialogContent>
         <Box bgcolor={chain?.theme.backgroundColor} color={chain?.theme.textColor} px={3} py={2} mx={-3}>
-          {chainName} network &mdash; only send {chainName} assets to this Safe.
+          {chainName} network &mdash; only send {chainName} assets to this Safe Account.
         </Box>
 
         <Typography my={2}>
-          This is the address of your Safe. Deposit funds by scanning the QR code or copying the address below. Only
-          send {nativeToken} and tokens (e.g. ERC20, ERC721) to this address.
+          This is the address of your Safe Account. Deposit funds by scanning the QR code or copying the address below.
+          Only send {nativeToken} and tokens (e.g. ERC20, ERC721) to this address.
         </Typography>
 
         <Box display="flex" flexDirection="column" flexWrap="wrap" justifyContent="center" alignItems="center" my={2}>

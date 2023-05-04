@@ -39,7 +39,7 @@ export const FallbackHandler = (): ReactElement | null => {
 
   const tooltip = !safe.fallbackHandler ? (
     <>
-      The {'Safe'} may not work correctly as no fallback handler is currently set.
+      The {'Safe{Wallet}'} may not work correctly as no fallback handler is currently set.
       {txBuilder && (
         <>
           {' '}
@@ -93,8 +93,9 @@ export const FallbackHandler = (): ReactElement | null => {
         <Grid item xs>
           <Box>
             <Typography>
-              The fallback handler adds fallback logic for funtionality that may not be present in the Safe contract.
-              Learn more about the fallback handler <ExternalLink href={FALLBACK_HANDLER_ARTICLE}>here</ExternalLink>
+              The fallback handler adds fallback logic for funtionality that may not be present in the Safe Account
+              contract. Learn more about the fallback handler{' '}
+              <ExternalLink href={FALLBACK_HANDLER_ARTICLE}>here</ExternalLink>
             </Typography>
             {safe.fallbackHandler ? (
               <Box className={css.container}>

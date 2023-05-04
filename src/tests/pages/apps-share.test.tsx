@@ -122,7 +122,7 @@ describe('Share Safe App Page', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByText('Create new Safe')).toBeInTheDocument()
+        expect(screen.getByText('Create new Safe Account')).toBeInTheDocument()
       },
       { timeout: FETCH_TIMEOUT },
     )
@@ -160,7 +160,7 @@ describe('Share Safe App Page', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByLabelText('Select a Safe')).toBeInTheDocument()
+        expect(screen.getByLabelText('Select a Safe Account')).toBeInTheDocument()
       },
       { timeout: FETCH_TIMEOUT },
     )

@@ -22,7 +22,7 @@ const Relaying = () => {
   return (
     <WidgetContainer>
       <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
-        New in {'Safe'}
+        New in {'Safe{Wallet}'}
       </Typography>
 
       <WidgetBody>
@@ -41,7 +41,8 @@ const Relaying = () => {
               </Typography>
             </Stack>
             <Typography variant="body2" marginRight={1} sx={{ display: 'inline' }}>
-              Benefit from a gasless experience powered by Gelato and Safe. Experience gasless UX for the next month!
+              Benefit from a gasless experience powered by Gelato and <i>Safe</i>. Experience gasless UX for the next
+              month!
             </Typography>
             <Track {...OVERVIEW_EVENTS.RELAYING_HELP_ARTICLE}>
               <ExternalLink href={RELAYING_HELP_ARTICLE}>Read more</ExternalLink>

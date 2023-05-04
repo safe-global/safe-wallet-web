@@ -114,7 +114,7 @@ export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<New
           <Box className={layoutCss.row}>
             <Track {...CREATE_SAFE_EVENTS.GO_TO_SAFE}>
               <Button variant="contained" onClick={onFinish}>
-                Start using {'Safe'}
+                Start using {'Safe{Wallet}'}
               </Button>
             </Track>
           </Box>

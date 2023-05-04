@@ -394,7 +394,7 @@ describe('AppsPage', () => {
       const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       const riskCheckbox = await screen.findByText(
-        /This Safe App is not part of Safe and I agree to use it at my own risk\./,
+        /This Safe App is not part of Safe{Wallet} and I agree to use it at my own risk\./,
       )
       await act(() => {
         fireEvent.click(riskCheckbox)
