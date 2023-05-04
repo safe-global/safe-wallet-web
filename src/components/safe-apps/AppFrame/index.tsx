@@ -37,7 +37,7 @@ import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsg
 import { useAppSelector } from '@/store'
 import { selectSafeMessages } from '@/store/safeMessagesSlice'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
-import { supportsEIP1271 } from '@/utils/safe-messages'
+import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
 import PermissionsPrompt from '@/components/safe-apps/PermissionsPrompt'
 import { PermissionStatus } from '@/components/safe-apps/types'
 
@@ -92,8 +92,10 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       message: string | EIP712TypedData,
       requestId: string,
       method: Methods.signMessage | Methods.signTypedMessage,
+      sdkVersion: string,
     ) => {
-      openSignMessageModal(message, requestId, method, !!settings.offChainSigning)
+      const isOffChainSigningSupported = isOffchainEIP1271Supported(safe, chain, sdkVersion)
+      openSignMessageModal(message, requestId, method, isOffChainSigningSupported && !!settings.offChainSigning)
     },
     onGetPermissions: getPermissions,
     onSetPermissions: setPermissionsRequest,
@@ -130,17 +132,12 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       }
     },
     onSetSafeSettings: (safeSettings: SafeSettings) => {
-      const isEIP1271Supported = supportsEIP1271(safe) && chain && hasFeature(chain, FEATURES.EIP1271)
       const newSettings: SafeSettings = {
         ...settings,
-        offChainSigning: isEIP1271Supported && !!safeSettings.offChainSigning,
+        offChainSigning: !!safeSettings.offChainSigning,
       }
 
       setSettings(newSettings)
-
-      if (!isEIP1271Supported && safeSettings.offChainSigning) {
-        console.warn('The connected Safe Account does not support off-chain signing.')
-      }
 
       return newSettings
     },
