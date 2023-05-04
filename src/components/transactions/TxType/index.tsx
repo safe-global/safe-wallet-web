@@ -1,8 +1,8 @@
-import ImageFallback from '@/components/common/ImageFallback'
 import { useTransactionType } from '@/hooks/useTransactionType'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box } from '@mui/material'
 import css from './styles.module.css'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 type TxTypeProps = {
   tx: TransactionSummary
@@ -13,12 +13,12 @@ const TxType = ({ tx }: TxTypeProps) => {
 
   return (
     <Box className={css.txType}>
-      <ImageFallback
+      <SafeAppIconCard
         src={type.icon}
-        fallbackSrc="/images/transactions/custom.svg"
-        alt="Transaction type"
+        alt={type.text}
         width={16}
         height={16}
+        fallback="/images/transactions/custom.svg"
       />
       {type.text}
     </Box>
