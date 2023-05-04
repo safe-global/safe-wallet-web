@@ -143,12 +143,14 @@ export const useSafeTxGasError = (safeTx?: SafeTransaction): boolean | undefined
 
   useEffect(() => {
     if (!safeTx) return
-    ;(async function getBlockGasLimit() {
-      const blockGasLimit = await getLatestBlockGasLimit()
 
+    const getBlockGasLimit = async () => {
+      const blockGasLimit = await getLatestBlockGasLimit()
       const hasError = blockGasLimit <= safeTx.data.safeTxGas
       setHasSafeTxGasError(hasError)
-    })()
+    }
+
+    getBlockGasLimit()
   }, [safeTx])
 
   return hasSafeTxGasError

@@ -220,8 +220,8 @@ const SignOrExecuteForm = ({
           </ErrorMessage>
         ) : safeTxGasError ? (
           <ErrorMessage>
-            You cannot execute a transaction with a <b>safeTxGas</b> equal or higher than the block gas limit. Please
-            change it on your risk or set it to 0.{' '}
+            You cannot execute a transaction with a <b>safeTxGas</b> equal to or higher than the current block&apos;s
+            gas limit. Please change it on your risk or set it to 0.{' '}
             <ExternalLink href={ADVANCED_PARAMS_HELP_LINK} color="error.dark">
               Read more
             </ExternalLink>
