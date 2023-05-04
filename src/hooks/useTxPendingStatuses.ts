@@ -88,7 +88,7 @@ const useTxPendingStatuses = (): void => {
         }
 
         // If we have future issues with statuses, we should refactor `useTxPendingStatuses`
-        // @see https://github.com/safe-global/web-core/issues/1754
+        // @see https://github.com/safe-global/safe-wallet-web/issues/1754
         const isIndexed = historicalTxs.some((tx) => tx.transaction.id === txId)
 
         if (!isIndexed) {
