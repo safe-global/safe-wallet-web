@@ -360,11 +360,7 @@ describe('SignOrExecuteForm', () => {
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-    expect(
-      result.getByText(
-        'Your wallet is connected to the wrong chain. When you submit, you will first be asked to connect to Goerli.',
-      ),
-    ).toBeInTheDocument()
+    expect(result.getByText('Wallet network switch')).toBeInTheDocument()
     expect(result.getByText('Submit')).not.toBeDisabled()
   })
 
