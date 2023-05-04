@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Box } from '@mui/material'
 
 import AssetsTable from '@/components/balances/AssetsTable'
 import AssetsHeader from '@/components/balances/AssetsHeader'
@@ -13,8 +12,6 @@ import HiddenTokenButton from '@/components/balances/HiddenTokenButton'
 import CurrencySelect from '@/components/balances/CurrencySelect'
 import TokenListSelect from '@/components/balances/TokenListSelect'
 
-import css from '@/components/balances/AssetsTable/styles.module.css'
-
 const Balances: NextPage = () => {
   const { error } = useBalances()
   const [showHiddenAssets, setShowHiddenAssets] = useState(false)
@@ -23,18 +20,16 @@ const Balances: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – Assets</title>
+        <title>{'Safe{Wallet} – Assets'}</title>
       </Head>
 
       <AssetsHeader>
-        <Box className={css.assetsHeader}>
-          <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />
-          <TokenListSelect />
-          <CurrencySelect />
-        </Box>
+        <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />
+        <TokenListSelect />
+        <CurrencySelect />
       </AssetsHeader>
 
-      <main className={css.contentWrapper}>
+      <main>
         {error ? (
           <PagePlaceholder img={<NoAssetsIcon />} text="There was an error loading your assets" />
         ) : (

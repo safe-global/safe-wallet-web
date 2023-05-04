@@ -80,9 +80,11 @@ describe('Assets > NFTs', () => {
       cy.contains('button', 'Next').click()
 
       // Review modal appears
-      cy.contains('Review transaction')
+      cy.contains('Review NFT transaction')
       cy.contains('Sending 2 NFTs from')
-      cy.contains('Batched transactions')
+      cy.wait(1000)
+      cy.contains('Action 1')
+      cy.contains('Action 2')
       cy.get('b:contains("safeTransferFrom")').should('have.length', 2)
       cy.contains('button:not([disabled])', 'Submit')
     })

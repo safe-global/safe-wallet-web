@@ -34,13 +34,13 @@ const CreationDialog = () => {
     <Dialog open={open}>
       <DialogContent sx={{ paddingX: 8, paddingTop: 9, paddingBottom: 6 }}>
         <Typography variant="h3" fontWeight="700" mb={1}>
-          Welcome to your Safe!
+          Welcome to {'Safe{Wallet}'}!
         </Typography>
         <Typography variant="body2">
           Congratulations on your first step to truly unlock ownership. Enjoy the experience and discover our app.
         </Typography>
         <Grid container mt={4} mb={6} spacing={3}>
-          <HintItem Icon={HomeIcon} title="Home" description="Get a status overview of your Safe here." />
+          <HintItem Icon={HomeIcon} title="Home" description="Get a status overview of your Safe Account here." />
           <HintItem
             Icon={TransactionIcon}
             title="Transactions"
@@ -54,7 +54,7 @@ const CreationDialog = () => {
           <HintItem
             Icon={SettingsIcon}
             title="Settings"
-            description="Want to change your Safe setup? Settings is the right place to go."
+            description="Want to change your Safe Account setup? Settings is the right place to go."
           />
           <HintItem Icon={BeamerIcon} title="What's new" description="Don't miss any future Safe updates." />
           <HintItem

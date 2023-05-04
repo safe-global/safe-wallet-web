@@ -6,7 +6,7 @@ Please note we have a Code of Conduct (see below), please follow it in all your 
 
 ## CLA
 
-It is a requirement for all contributors to sign the [Contributor License Agreement (CLA)](safe.global/cla/) in order to proceed with their contribution.
+It is a requirement for all contributors to sign the [Contributor License Agreement (CLA)](https://safe.global/cla) in order to proceed with their contribution.
 
 ## Pull Request Process
 

@@ -19,7 +19,7 @@ import { ethers } from 'ethers'
 import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
 import * as useChains from '@/hooks/useChains'
-import * as useRemainingRelays from '@/hooks/useRemainingRelays'
+import * as useRelaysBySafe from '@/hooks/useRemainingRelays'
 import { FEATURES } from '@/utils/chains'
 import { type OnboardAPI } from '@web3-onboard/core'
 
@@ -28,7 +28,7 @@ jest.mock('@/hooks/useIsWrongChain', () => ({
   default: jest.fn(() => false),
 }))
 
-const createSafeTx = (data = '0x'): SafeTransaction => {
+export const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
     data: {
       to: '0x0000000000000000000000000000000000000000',
@@ -67,6 +67,8 @@ describe('SignOrExecuteForm', () => {
     jest.spyOn(safeCoreSDK, 'getSafeSDK').mockReturnValue(mockSDK)
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        version: '1.3.0',
+        address: { value: ethers.utils.hexZeroPad('0x000', 20) },
         nonce: 100,
         threshold: 2,
         owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
@@ -101,7 +103,7 @@ describe('SignOrExecuteForm', () => {
       chainId: '5',
     } as unknown as ChainInfo)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(false)
-    jest.spyOn(useRemainingRelays, 'useRemainingRelaysBySafe').mockReturnValue([5, undefined, false])
+    jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 5, limit: 5 }, undefined, false])
   })
 
   it('displays decoded data if there is a tx', () => {
@@ -111,12 +113,17 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Transaction details')).toBeInTheDocument()
   })
 
-  it("doesn't display decoded data if tx is a native transfer", () => {
+  it('displays decoded data if tx is a native transfer', () => {
     const mockTx = createSafeTx()
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-    expect(result.queryByText('Transaction details')).not.toBeInTheDocument()
+    expect(result.queryByText('Transaction details')).toBeInTheDocument()
+
+    // Click on it
+    fireEvent.click(result.getByText('Transaction details'))
+
+    expect(result.queryByText('Native token transfer')).toBeInTheDocument()
   })
 
   it('displays an execute checkbox if tx can be executed', () => {
@@ -149,6 +156,8 @@ describe('SignOrExecuteForm', () => {
   it('displays an execute checkbox if safe threshold is 1', () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        version: '1.3.0',
+        address: { value: ethers.utils.hexZeroPad('0x000', 20) },
         nonce: 100,
         threshold: 1,
         owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }],
@@ -236,7 +245,9 @@ describe('SignOrExecuteForm', () => {
     const result = render(<SignOrExecuteForm isExecutable={false} onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(
-      result.getByText("You are currently not an owner of this Safe and won't be able to submit this transaction."),
+      result.getByText(
+        "You are currently not an owner of this Safe Account and won't be able to submit this transaction.",
+      ),
     ).toBeInTheDocument()
     expect(result.getByText('Submit')).toBeDisabled()
   })
@@ -247,7 +258,10 @@ describe('SignOrExecuteForm', () => {
     jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
       safeAddress: address,
       safe: {
+        version: '1.3.0',
+        address: { value: address },
         owners: [{ value: address }],
+        nonce: 100,
       } as SafeInfo,
       safeLoaded: true,
       safeLoading: false,
@@ -261,10 +275,12 @@ describe('SignOrExecuteForm', () => {
     } as ConnectedWallet)
 
     const mockTx = createSafeTx()
-    const result = render(<SignOrExecuteForm isExecutable={false} onSubmit={jest.fn} safeTx={mockTx} />)
+    const result = render(<SignOrExecuteForm isExecutable onlyExecute onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(
-      result.getByText('Cannot execute a transaction from the Safe itself, please connect a different account.'),
+      result.getByText(
+        'Cannot execute a transaction from the Safe Account itself, please connect a different account.',
+      ),
     ).toBeInTheDocument()
     expect(result.getByText('Submit')).toBeDisabled()
   })
@@ -279,6 +295,8 @@ describe('SignOrExecuteForm', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
         safeAddress: ethers.utils.hexZeroPad('0x123', 20),
         safe: {
+          version: '1.3.0',
+          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
           owners: [{ value: ethers.utils.hexZeroPad('0x456', 20) }],
           threshold: 1,
         } as SafeInfo,
@@ -326,7 +344,9 @@ describe('SignOrExecuteForm', () => {
     const result = render(<SignOrExecuteForm isExecutable onlyExecute onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(
-      result.queryByText("You are currently not an owner of this Safe and won't be able to submit this transaction."),
+      result.queryByText(
+        "You are currently not an owner of this Safe Account and won't be able to submit this transaction.",
+      ),
     ).not.toBeInTheDocument()
     expect(result.getByText('Submit')).not.toBeDisabled()
   })
@@ -391,7 +411,7 @@ describe('SignOrExecuteForm', () => {
     expect(result.getByText('Estimating...')).toBeDisabled()
   })
 
-  it('relays a 1 out of 2 signed transaction with a connected EOA', async () => {
+  it('relays a 2 out of 2 signed transaction with a connected EOA', async () => {
     const signSpy = jest.fn(() => Promise.resolve({}))
     const relaySpy = jest.fn()
     const proposeSpy = jest.fn(() => Promise.resolve({ txId: '0xdead' }))
@@ -403,6 +423,12 @@ describe('SignOrExecuteForm', () => {
 
     mockTx.addSignature({
       signer: '0x123',
+      data: '0xEEE',
+      staticPart: () => '0xEEE',
+      dynamicPart: () => '',
+    })
+    mockTx.addSignature({
+      signer: '0x1234',
       data: '0xEEE',
       staticPart: () => '0xEEE',
       dynamicPart: () => '',
@@ -419,8 +445,8 @@ describe('SignOrExecuteForm', () => {
     })
 
     await waitFor(() => {
-      expect(signSpy).toHaveBeenCalledTimes(1)
-      expect(proposeSpy).toHaveBeenCalledTimes(1)
+      expect(signSpy).not.toHaveBeenCalledTimes(1)
+      expect(proposeSpy).not.toHaveBeenCalledTimes(1)
       expect(relaySpy).toHaveBeenCalledTimes(1)
     })
   })
@@ -526,8 +552,60 @@ describe('SignOrExecuteForm', () => {
     await waitFor(() => expect(relaySpy).toHaveBeenCalledTimes(1))
   })
 
+  it('executes a transaction with the connected wallet if chosen instead of relaying', async () => {
+    jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 5, limit: 5 }, undefined, false])
+
+    const executionSpy = jest.fn()
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxProposal')
+      .mockImplementation(jest.fn(() => Promise.resolve({} as TransactionDetails)))
+
+    jest.spyOn(txSenderDispatch, 'dispatchTxExecution').mockImplementation(executionSpy)
+
+    const mockTx = createSafeTx()
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    await act(() => Promise.resolve())
+
+    const walletOptionRadio = result.getByText('Connected wallet')
+
+    expect(walletOptionRadio).toBeInTheDocument()
+
+    act(() => {
+      fireEvent.click(walletOptionRadio)
+    })
+
+    const submitButton = result.getByText('Submit')
+
+    act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    await waitFor(() => expect(executionSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('when there are no remaining relays, there should be no option to select the execution method', async () => {
+    jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 0, limit: 5 }, undefined, false])
+
+    const executionSpy = jest.fn()
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxProposal')
+      .mockImplementation(jest.fn(() => Promise.resolve({} as TransactionDetails)))
+
+    jest.spyOn(txSenderDispatch, 'dispatchTxExecution').mockImplementation(executionSpy)
+
+    const mockTx = createSafeTx()
+    const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
+
+    await act(() => Promise.resolve())
+
+    const walletOptionRadio = result.queryByText('Connected wallet')
+
+    expect(walletOptionRadio).not.toBeInTheDocument()
+  })
+
   it('executes a transaction with the connected wallet if relaying is not available', async () => {
-    jest.spyOn(useRemainingRelays, 'useRemainingRelaysBySafe').mockReturnValue([0, undefined, false])
+    jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 0, limit: 5 }, undefined, false])
 
     const executionSpy = jest.fn()
     jest
@@ -620,10 +698,16 @@ describe('SignOrExecuteForm', () => {
     jest
       .spyOn(txSenderDispatch, 'dispatchTxExecution')
       .mockImplementation(jest.fn(() => Promise.reject('Error while dispatching')))
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxSigning')
+      .mockImplementation(jest.fn(() => Promise.reject('Error while dispatching')))
+    jest
+      .spyOn(txSenderDispatch, 'dispatchTxRelay')
+      .mockImplementation(jest.fn(() => Promise.reject('Error while dispatching')))
 
     const mockTx = createSafeTx()
     const result = render(
-      <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} />,
+      <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} txId="123" />,
     )
 
     await act(() => Promise.resolve())

@@ -7,6 +7,7 @@ import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useTxHistory from './useTxHistory'
 import { isTransactionListItem } from '@/utils/transaction-guards'
+import useSafeInfo from './useSafeInfo'
 
 const pendingStatuses: Partial<Record<TxEvent, PendingStatus | null>> = {
   [TxEvent.SIGNATURE_PROPOSED]: PendingStatus.SIGNING,
@@ -35,7 +36,7 @@ const useTxMonitor = (): void => {
       return
     }
 
-    for (const [txId, { txHash, status, taskId }] of pendingTxEntriesOnChain) {
+    for (const [txId, { txHash, status, taskId, safeAddress }] of pendingTxEntriesOnChain) {
       const isProcessing = status === PendingStatus.PROCESSING && txHash !== undefined
       const isMonitored = monitoredTxs.current[txId]
       const isRelaying = status === PendingStatus.RELAYING && taskId !== undefined
@@ -52,7 +53,7 @@ const useTxMonitor = (): void => {
       }
 
       if (isRelaying) {
-        waitForRelayedTx(taskId, [txId])
+        waitForRelayedTx(taskId, [txId], safeAddress)
       }
     }
     // `provider` is updated when switching chains, re-running this effect
@@ -62,7 +63,8 @@ const useTxMonitor = (): void => {
 
 const useTxPendingStatuses = (): void => {
   const dispatch = useAppDispatch()
-  const chainId = useChainId()
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId } = safe
   const txHistory = useTxHistory()
   const historicalTxs = useMemo(() => {
     return txHistory.page?.results?.filter(isTransactionListItem) || []
@@ -86,7 +88,7 @@ const useTxPendingStatuses = (): void => {
         }
 
         // If we have future issues with statuses, we should refactor `useTxPendingStatuses`
-        // @see https://github.com/safe-global/web-core/issues/1754
+        // @see https://github.com/safe-global/safe-wallet-web/issues/1754
         const isIndexed = historicalTxs.some((tx) => tx.transaction.id === txId)
 
         if (!isIndexed) {
@@ -94,6 +96,7 @@ const useTxPendingStatuses = (): void => {
           dispatch(
             setPendingTx({
               chainId,
+              safeAddress: 'safeAddress' in detail ? detail.safeAddress : safeAddress,
               txId,
               status,
               txHash: 'txHash' in detail ? detail.txHash : undefined,
@@ -109,7 +112,7 @@ const useTxPendingStatuses = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch, chainId, historicalTxs])
+  }, [dispatch, chainId, safeAddress, historicalTxs])
 }
 
 export default useTxPendingStatuses

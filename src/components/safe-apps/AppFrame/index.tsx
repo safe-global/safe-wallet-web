@@ -47,7 +47,7 @@ import useGetSafeInfo from './useGetSafeInfo'
 import { hasFeature, FEATURES } from '@/utils/chains'
 import { selectTokenList, TOKEN_LISTS } from '@/store/settingsSlice'
 
-const UNKNOWN_APP_NAME = 'Unknown App'
+const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
 type AppFrameProps = {
   appUrl: string
@@ -109,11 +109,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       origin: document.location.origin,
     }),
     onGetSafeInfo: useGetSafeInfo(),
-    onGetSafeBalances: (currency) =>
-      getBalances(chainId, safeAddress, currency, {
+    onGetSafeBalances: (currency) => {
+      const isDefaultTokenlistSupported = chain && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
+      return getBalances(chainId, safeAddress, currency, {
         exclude_spam: true,
-        trusted: TOKEN_LISTS.TRUSTED === tokenlist,
-      }),
+        trusted: isDefaultTokenlistSupported && TOKEN_LISTS.TRUSTED === tokenlist,
+      })
+    },
     onGetChainInfo: () => {
       if (!chain) return
 
@@ -137,7 +139,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       setSettings(newSettings)
 
       if (!isEIP1271Supported && safeSettings.offChainSigning) {
-        console.warn('The connected Safe does not support off-chain signing.')
+        console.warn('The connected Safe Account does not support off-chain signing.')
       }
 
       return newSettings
@@ -246,7 +248,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   return (
     <>
       <Head>
-        <title>Safe Apps - Viewer - {remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}</title>
+        <title>{`Safe Apps - Viewer - ${remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}`}</title>
       </Head>
 
       <div className={css.wrapper}>

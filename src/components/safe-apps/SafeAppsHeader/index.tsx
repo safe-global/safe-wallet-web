@@ -17,7 +17,7 @@ const SafeAppsHeader = (): ReactElement => {
 
         {/* Safe Apps Subtitle */}
         <Typography className={css.subtitle}>
-          Connect to your favourite web3 applications with your Safe wallet, securely and efficiently.
+          Connect to your favourite web3 applications with your Safe Account, securely and efficiently.
         </Typography>
       </Box>
 

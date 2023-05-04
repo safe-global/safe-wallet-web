@@ -1,0 +1,49 @@
+.warningAccordion {
+  border: 1px var(--color-warning-main) solid !important;
+  margin-bottom: var(--space-2) !important;
+}
+.warningAccordion:hover {
+  border: 1px var(--color-warning-main) solid !important;
+}
+
+.warningAccordion :global .Mui-expanded.MuiAccordionSummary-root,
+.warningAccordion :global .MuiAccordionSummary-root:hover {
+  background-color: var(--color-warning-background);
+}
+
+.approval {
+  padding: var(--space-1);
+}
+
+.approvalAmount {
+  text-align: right !important;
+  padding-left: var(--space-1);
+}
+
+.iconButton {
+  border-radius: 4px;
+  padding: 6px;
+  width: 48px;
+  height: 48px;
+  background-color: var(--color-primary-main);
+}
+
+.iconButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.iconButton svg {
+  color: var(--color-background-paper);
+}
+
+.iconButton:disabled {
+  background-color: var(--color-text-disabled);
+}
+
+.iconButton:disabled svg {
+  color: var(--color-border-dark);
+}
+
+.approvalsList {
+  padding-bottom: 0;
+}

@@ -58,7 +58,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   }
 
   if (!safeApp) {
-    return <div>No safe app found</div>
+    return <div>No Safe App found</div>
   }
 
   return (

@@ -2,14 +2,14 @@ import { type ReactElement, memo } from 'react'
 
 const APP_LOGO_FALLBACK_IMAGE = `/images/apps/app-placeholder.svg`
 
-const getIframeContent = (url: string, width: number, height: number): string => {
+const getIframeContent = (url: string, width: number, height: number, fallback: string): string => {
   return `
      <body style="margin: 0; overflow: hidden;">
-       <img src="${encodeURI(url)}" alt="App logo" width="${width}" height="${height}" />
+       <img src="${encodeURI(url)}" alt="Safe App logo" width="${width}" height="${height}" />
        <script>
-          document.querySelector("img").onerror = (e) => {
+          document.querySelector('img').onerror = (e) => {
            e.target.onerror = null
-           e.target.src = "${APP_LOGO_FALLBACK_IMAGE}"
+           e.target.src = "${fallback}"
          }
        </script>
      </body>
@@ -21,16 +21,18 @@ const SafeAppIconCard = ({
   alt,
   width = 48,
   height = 48,
+  fallback = APP_LOGO_FALLBACK_IMAGE,
 }: {
   src: string
   alt: string
   width?: number
   height?: number
+  fallback?: string
 }): ReactElement => {
   return (
     <iframe
       title={alt}
-      srcDoc={getIframeContent(src, width, height)}
+      srcDoc={getIframeContent(src, width, height, fallback)}
       sandbox="allow-scripts"
       referrerPolicy="strict-origin"
       width={width}

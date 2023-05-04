@@ -28,7 +28,7 @@ const AddCustomSafeAppCard = ({ onSave, safeAppList }: Props) => {
               mt: 3,
             }}
           >
-            Add custom app
+            Add custom Safe App
           </Button>
         </Box>
       </Card>

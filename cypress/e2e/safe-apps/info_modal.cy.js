@@ -9,7 +9,7 @@ describe('The Safe Apps info modal', () => {
   describe('when opening a Safe App', () => {
     it('should show the disclaimer', () => {
       cy.findByRole('link', { name: /logo.*walletconnect/i }).click()
-      cy.findByRole('link', { name: /open app/i }).click()
+      cy.findByRole('link', { name: /open Safe App/i }).click()
       cy.findByRole('heading', { name: /disclaimer/i }).should('exist')
     })
 

@@ -94,8 +94,8 @@ const useSafeNotifications = (): void => {
         groupKey: OUTDATED_VERSION_KEY,
 
         message: isUnsupported
-          ? `Safe version ${version} is not supported by this web app anymore. You can update your Safe via the CLI.`
-          : `Your Safe version ${version} is out of date. Please update it.`,
+          ? `Safe Account version ${version} is not supported by this web app anymore. You can update your Safe Account via the CLI.`
+          : `Your Safe Account version ${version} is out of date. Please update it.`,
 
         link: isUnsupported
           ? CLI_LINK
@@ -104,7 +104,7 @@ const useSafeNotifications = (): void => {
                 pathname: AppRoutes.settings.setup,
                 query: { safe: query.safe },
               },
-              title: 'Update Safe',
+              title: 'Update Safe Account',
             },
 
         onClose: () => dismissUpdateNotification(OUTDATED_VERSION_KEY),
@@ -133,12 +133,12 @@ const useSafeNotifications = (): void => {
    */
 
   useEffect(() => {
-    if (isValidMasterCopy(safe)) return
+    if (isValidMasterCopy(safe.implementationVersionState)) return
 
     const id = dispatch(
       showNotification({
         variant: 'warning',
-        message: `This Safe was created with an unsupported base contract.
+        message: `This Safe Account was created with an unsupported base contract.
            The web interface might not work correctly.
            We recommend using the command line interface instead.`,
         groupKey: 'invalid-mastercopy',
@@ -149,7 +149,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, safe])
+  }, [dispatch, safe.implementationVersionState])
 }
 
 export default useSafeNotifications

@@ -38,6 +38,7 @@ describe('txHistorySlice', () => {
     jest.spyOn(mockPendingTxs, 'selectPendingTxs').mockImplementation(() => ({
       ['0x123']: {
         chainId: '5',
+        safeAddress: '0x0000000000000000000000000000000000000000',
         status: PendingStatus.INDEXING,
         groupKey: '0x123456',
       },

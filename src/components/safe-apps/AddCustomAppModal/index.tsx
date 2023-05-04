@@ -26,7 +26,7 @@ import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { isSameUrl, trimTrailingSlash } from '@/utils/url'
 import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
-import { getShareSafeAppUrl } from '@/components/safe-apps/SafeAppActionButtons'
+import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -46,7 +46,7 @@ type CustomAppFormData = {
 }
 
 const HELP_LINK = 'https://docs.safe.global/build/sdks/safe-apps'
-const APP_ALREADY_IN_THE_LIST_ERROR = 'This app is already in the list'
+const APP_ALREADY_IN_THE_LIST_ERROR = 'This Safe App is already in the list'
 const MANIFEST_ERROR = "The app doesn't support Safe App functionality"
 const INVALID_URL_ERROR = 'The url is invalid'
 
@@ -90,18 +90,18 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
     [safeAppsList],
   )
 
-  const shareSafeAppUrl = getShareSafeAppUrl(router, safeApp?.url || '', currentChain)
+  const shareSafeAppUrl = useShareSafeAppUrl(safeApp?.url || '')
   const isSafeAppValid = isValid && safeApp
   const isCustomAppInTheDefaultList = errors?.appUrl?.type === 'alreadyExists'
 
   return (
-    <ModalDialog open={open} onClose={handleClose} dialogTitle="Add custom app">
+    <ModalDialog open={open} onClose={handleClose} dialogTitle="Add custom Safe App">
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent className={css.addCustomAppContainer}>
           <div className={css.addCustomAppFields}>
             <TextField
               required
-              label="App URL"
+              label="Safe App URL"
               error={errors?.appUrl?.type === 'validUrl'}
               helperText={errors?.appUrl?.type === 'validUrl' && errors?.appUrl?.message}
               autoComplete="off"
@@ -121,7 +121,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
                   {isCustomAppInTheDefaultList ? (
                     <Box display="flex" mt={2} alignItems="center">
                       <CheckIcon color="success" />
-                      <Typography ml={1}>This app is already registered</Typography>
+                      <Typography ml={1}>This Safe App is already registered</Typography>
                     </Box>
                   ) : (
                     <>
@@ -134,7 +134,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
                             })}
                           />
                         }
-                        label="This app is not part of Safe and I agree to use it at my own risk."
+                        label="This Safe App is not part of Safe{Wallet} and I agree to use it at my own risk."
                         sx={{ mt: 2 }}
                       />
 

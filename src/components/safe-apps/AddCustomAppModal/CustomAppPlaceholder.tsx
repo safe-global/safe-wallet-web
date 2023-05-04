@@ -21,7 +21,7 @@ const CustomAppPlaceholder = ({ error = '' }: CustomAppPlaceholderProps) => {
         inheritViewBox
       />
       <Typography ml={2} color={error ? 'error' : 'text.secondary'}>
-        {error || 'App card'}
+        {error || 'Safe App card'}
       </Typography>
     </div>
   )

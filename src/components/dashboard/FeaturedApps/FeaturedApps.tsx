@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import styled from '@emotion/styled'
 import { Box, Grid, Typography, Link } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { useRouter } from 'next/router'
@@ -9,30 +8,27 @@ import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
-const StyledGrid = styled(Grid)`
-  gap: 24px;
-`
-
-const StyledGridItem = styled(Grid)`
-  min-width: 300px;
-`
-
-export const FeaturedApps = (): ReactElement | null => {
+export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): ReactElement | null => {
   const router = useRouter()
   const [featuredApps, _, remoteSafeAppsLoading] = useRemoteSafeApps(SafeAppsTag.DASHBOARD_FEATURED)
 
   if (!featuredApps?.length && !remoteSafeAppsLoading) return null
 
   return (
-    <Grid item xs={12} md>
+    <Grid item xs={12} md style={{ height: '100%' }}>
       <WidgetContainer id="featured-safe-apps">
         <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
           Connect &amp; transact
         </Typography>
         <WidgetBody>
-          <StyledGrid container>
+          <Grid
+            container
+            flexDirection={{ xs: 'column', sm: 'row', lg: stackedLayout ? 'column' : undefined }}
+            gap={3}
+            height={1}
+          >
             {featuredApps?.map((app) => (
-              <StyledGridItem item xs md key={app.id}>
+              <Grid item xs md key={app.id}>
                 <NextLink
                   passHref
                   href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}
@@ -57,9 +53,9 @@ export const FeaturedApps = (): ReactElement | null => {
                     </Card>
                   </a>
                 </NextLink>
-              </StyledGridItem>
+              </Grid>
             ))}
-          </StyledGrid>
+          </Grid>
         </WidgetBody>
       </WidgetContainer>
     </Grid>

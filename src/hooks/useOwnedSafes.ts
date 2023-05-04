@@ -25,7 +25,7 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
 
     /**
      * No useAsync in this case to avoid updating
-     * for a new chainId with stale data see https://github.com/safe-global/web-core/pull/1760#discussion_r1133705349
+     * for a new chainId with stale data see https://github.com/safe-global/safe-wallet-web/pull/1760#discussion_r1133705349
      */
     getOwnedSafes(chainId, walletAddress)
       .then(

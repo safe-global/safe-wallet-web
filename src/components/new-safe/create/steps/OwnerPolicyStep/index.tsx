@@ -113,9 +113,9 @@ const OwnerPolicyStep = ({
           </Button>
           <Box p={2} mt={3} sx={{ backgroundColor: 'background.main', borderRadius: '8px' }}>
             <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
-              Safe Mobile owner key (optional){' '}
+              {'Safe{Wallet}'} mobile owner key (optional){' '}
               <Tooltip
-                title="The Safe Mobile app allows for the generation of owner keys that you can add to this or an existing Safe."
+                title="The Safe{Wallet} mobile app allows for the generation of owner keys that you can add to this or an existing Safe Account."
                 arrow
                 placement="top"
               >
@@ -133,7 +133,7 @@ const OwnerPolicyStep = ({
           <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
             Threshold
             <Tooltip
-              title="The threshold of a Safe specifies how many owners need to confirm a Safe transaction before it can be executed."
+              title="The threshold of a Safe Account specifies how many owners need to confirm a Safe Account transaction before it can be executed."
               arrow
               placement="top"
             >

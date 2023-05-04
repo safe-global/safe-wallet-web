@@ -14,22 +14,25 @@ import type { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
 import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
-import { useRemainingRelaysBySafe } from '@/hooks/useRemainingRelays'
-import SponsoredBy from '@/components/tx/SponsoredBy'
+import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
+import { ExecutionMethod, ExecutionMethodSelector } from '../../ExecutionMethodSelector'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import { hasRemainingRelays } from '@/utils/relaying'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
-  const [remainingRelays] = useRemainingRelaysBySafe()
+  const [relays] = useRelaysBySafe()
 
   // Chain has relaying feature and available relays
-  const willRelay = !!remainingRelays
+  const canRelay = hasRemainingRelays(relays)
+  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
   const web3 = useWeb3()
 
@@ -57,15 +60,27 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const onExecute = async () => {
     if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails) return
 
-    await dispatchBatchExecution(txsWithDetails, multiSendContract, multiSendTxData, onboard, safe.chainId)
-
+    await dispatchBatchExecution(
+      txsWithDetails,
+      multiSendContract,
+      multiSendTxData,
+      onboard,
+      safe.chainId,
+      safe.address.value,
+    )
     onSubmit(null)
   }
 
   const onRelay = async () => {
     if (!multiSendTxData || !multiSendContract || !txsWithDetails) return
 
-    await dispatchBatchExecutionRelay(txsWithDetails, multiSendContract, multiSendTxData, safe.chainId)
+    await dispatchBatchExecutionRelay(
+      txsWithDetails,
+      multiSendContract,
+      multiSendTxData,
+      safe.chainId,
+      safe.address.value,
+    )
 
     onSubmit(null)
   }
@@ -113,15 +128,17 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         </Typography>
         <DecodedTxs txs={txsWithDetails} />
 
-        {willRelay ? (
+        {canRelay ? (
           <>
             <Typography mt={2} mb={1} color="primary.light">
               Gas fees:
             </Typography>
-            <SponsoredBy
-              remainingRelays={remainingRelays}
+            <ExecutionMethodSelector
+              executionMethod={executionMethod}
+              setExecutionMethod={setExecutionMethod}
+              relays={relays}
               tooltip="You can only relay multisend transactions containing
-executions from the same Safe."
+executions from the same Safe Account."
             />
           </>
         ) : null}
