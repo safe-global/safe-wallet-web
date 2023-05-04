@@ -15,7 +15,7 @@ const TxType = ({ tx }: TxTypeProps) => {
     <Box className={css.txType}>
       <SafeAppIconCard
         src={type.icon}
-        alt="Transaction type"
+        alt={type.text}
         width={16}
         height={16}
         fallback="/images/transactions/custom.svg"
