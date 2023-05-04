@@ -21,14 +21,7 @@ const ChainSwitcher = ({ fullWidth }: { fullWidth?: boolean }): ReactElement | n
   if (!isWrongChain) return null
 
   return (
-    <Button
-      onClick={handleChainSwitch}
-      variant="outlined"
-      size="small"
-      fullWidth={fullWidth}
-      color="primary"
-      className={css.button}
-    >
+    <Button onClick={handleChainSwitch} variant="outlined" size="small" fullWidth={fullWidth} color="primary">
       Switch to&nbsp;
       <Box className={css.circle} bgcolor={chain?.theme?.backgroundColor || ''} />
       &nbsp;{chain?.chainName}
