@@ -41,7 +41,7 @@
     "@mui/material": "^5.11.10",
     "@mui/x-date-pickers": "^5.0.12",
     "@reduxjs/toolkit": "^1.8.2",
-    "@safe-global/safe-apps-sdk": "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-sdk?safe-settings-sync",
+    "@safe-global/safe-apps-sdk": "7.11.0",
     "@safe-global/safe-core-sdk": "^3.3.3",
     "@safe-global/safe-core-sdk-utils": "^1.7.3",
     "@safe-global/safe-deployments": "^1.22.0",
