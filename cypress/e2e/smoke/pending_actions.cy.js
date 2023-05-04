@@ -10,6 +10,7 @@ describe('Pending actions', () => {
     cy.contains('button', 'Accept all').click()
 
     // Ensure wallet is connected to correct chain via header
+    cy.wait(5000)
     cy.contains('E2E Wallet @ Görli')
   })
 

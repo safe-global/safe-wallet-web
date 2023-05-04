@@ -77,7 +77,7 @@ jobs:
       - name: Deploy PR branch
         if: github.event.number
         env:
-          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/${{ steps.extract_branch.outputs.branch }}
+          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/walletweb/${{ steps.extract_branch.outputs.branch }}
         run: bash ./scripts/github/s3_upload.sh
 
       # Comnment
@@ -90,7 +90,7 @@ jobs:
             ## Branch preview
             ✅  Deploy successful!
 
-            https://${{ steps.extract_branch.outputs.branch }}--webcore.review-web-core.5afe.dev
+            https://${{ steps.extract_branch.outputs.branch }}--walletweb.review-wallet-web.5afe.dev
           message-failure: |
             ## Branch preview
             ❌  Deploy failed!

@@ -37,7 +37,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
     return getDecodedData(chainId, encodedData)
   }, [chainId, encodedData, isEmptyData])
 
-  const isMultisend = !!decodedData?.parameters?.[0].valueDecoded
+  const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
 
   const [txDetails, txDetailsError, txDetailsLoading] = useAsync<TransactionDetails>(() => {
     if (!txId) return
