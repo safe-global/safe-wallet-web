@@ -118,9 +118,7 @@ const ReviewSafeAppsSignMessage = ({
 
         <Box display="flex" alignItems="center" my={2}>
           <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
-          <Typography ml={1}>
-            Signing a message with your Safe Account requires a transaction on the blockchain
-          </Typography>
+          <Typography ml={1}>Signing a message with your Safe requires a transaction on the blockchain</Typography>
         </Box>
       </>
     </SignOrExecuteForm>

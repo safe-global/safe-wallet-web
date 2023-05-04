@@ -136,7 +136,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       setSettings(newSettings)
 
       if (!isEIP1271Supported && safeSettings.offChainSigning) {
-        console.warn('The connected Safe Account does not support off-chain signing.')
+        console.warn('The connected Safe does not support off-chain signing.')
       }
 
       return newSettings
