@@ -45,7 +45,7 @@ import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
 import useGetSafeInfo from './useGetSafeInfo'
 import { hasFeature, FEATURES } from '@/utils/chains'
-import { selectTokenList, TOKEN_LISTS } from '@/store/settingsSlice'
+import { selectTokenList, selectUseOnChainSigning, TOKEN_LISTS } from '@/store/settingsSlice'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -65,6 +65,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe, safeLoaded, safeAddress } = useSafeInfo()
   const tokenlist = useAppSelector(selectTokenList)
+  const useOnChainSigning = useAppSelector(selectUseOnChainSigning)
 
   const addressBook = useAddressBook()
   const chain = useCurrentChain()
@@ -95,7 +96,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       sdkVersion: string,
     ) => {
       const isOffChainSigningSupported = isOffchainEIP1271Supported(safe, chain, sdkVersion)
-      openSignMessageModal(message, requestId, method, isOffChainSigningSupported && !!settings.offChainSigning)
+      const signOffChain = isOffChainSigningSupported && !useOnChainSigning
+      openSignMessageModal(message, requestId, method, signOffChain && !!settings.offChainSigning)
     },
     onGetPermissions: getPermissions,
     onSetPermissions: setPermissionsRequest,

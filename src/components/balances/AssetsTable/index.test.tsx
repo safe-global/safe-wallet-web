@@ -105,6 +105,9 @@ describe('AssetsTable', () => {
             },
             rpc: {},
           },
+          signing: {
+            useOnChainSigning: false,
+          },
         },
       },
     })
@@ -207,6 +210,9 @@ describe('AssetsTable', () => {
             },
             rpc: {},
           },
+          signing: {
+            useOnChainSigning: false,
+          },
         },
       },
     })
@@ -305,6 +311,9 @@ describe('AssetsTable', () => {
             },
             rpc: {},
           },
+          signing: {
+            useOnChainSigning: false,
+          },
         },
       },
     })
@@ -399,6 +408,9 @@ describe('AssetsTable', () => {
               accessToken: '',
             },
             rpc: {},
+          },
+          signing: {
+            useOnChainSigning: false,
           },
         },
       },
