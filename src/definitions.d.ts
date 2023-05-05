@@ -10,6 +10,7 @@ declare global {
       _metamask: {
         isUnlocked: () => Promise<boolean>
       }
+      isConnected?: () => boolean
     }
     beamer_config?: BeamerConfig
     Beamer?: BeamerMethods
