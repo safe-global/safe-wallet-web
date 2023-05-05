@@ -4,7 +4,7 @@ describe('Pending actions', () => {
   before(() => {
     cy.connectE2EWallet()
 
-    cy.visit(`/welcome`, { failOnStatusCode: false })
+    cy.visit(`/welcome`)
     cy.contains('button', 'Accept selection').click()
     cy.contains('E2E Wallet @ Görli')
   })
