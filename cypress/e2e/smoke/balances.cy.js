@@ -201,7 +201,7 @@ describe('Assets > Coins', () => {
     before(() => {
       // Open the Safe used for testing pagination
       cy.visit(`/balances?safe=${PAGINATION_TEST_SAFE}`, { failOnStatusCode: false })
-      cy.contains('button', 'Accept all').click()
+      cy.contains('button', 'Accept selection').click()
 
       cy.wait(1000)
 

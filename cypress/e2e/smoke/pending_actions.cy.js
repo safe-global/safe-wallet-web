@@ -4,13 +4,8 @@ describe('Pending actions', () => {
   before(() => {
     cy.connectE2EWallet()
 
-    cy.visit('/welcome')
-
-    // Close cookie banner
-    cy.contains('button', 'Accept all').click()
-
-    // Ensure wallet is connected to correct chain via header
-    cy.wait(5000)
+    cy.visit(`/welcome`, { failOnStatusCode: false })
+    cy.contains('button', 'Accept selection').click()
     cy.contains('E2E Wallet @ Görli')
   })
 
