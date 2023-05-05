@@ -105,8 +105,7 @@ export const MobileChat: React.FC<{
               <StyledAlert icon={false}>
                 <Typography paragraph>This is the beginning of the timeline from this Safe</Typography>
                 <Typography paragraph>
-                  The timeline shows all your chat, transactions and events in one place. Only members of this
-                  group can see the chat. Say hi!
+                  The timeline shows all your chat, transactions and events in one place. Only members of this group can see the chat. Say hi!
                 </Typography>
                 <Typography sx={{ fontStyle: 'italic', fontSize: '12px' }} paragraph>
                   Safe created on 5 March 2023 at 19:34:53 CET
