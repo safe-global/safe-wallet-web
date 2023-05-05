@@ -96,22 +96,25 @@ export const useTxActions = (): TxActions => {
       assertWallet(wallet)
       assertOnboard(onboard)
 
-      let id = txId || (await proposeTx(wallet.address, safeTx, txId, origin))
-
-      if (isRelayed) {
-        // Relayed transactions must be fully signed, so request a final signature if needed
-        let signedTx = safeTx
-        if (!hasEnoughSignatures(safeTx, safe)) {
-          signedTx = await signRelayedTx(safeTx)
-          id = await proposeTx(wallet.address, signedTx, id, origin)
-        }
-
-        await dispatchTxRelay(signedTx, safe, id, txOptions.gasLimit)
-      } else {
-        await dispatchTxExecution(safeTx, txOptions, id, onboard, chainId, safeAddress)
+      // Relayed transactions must be fully signed, so request a final signature if needed
+      if (isRelayed && !hasEnoughSignatures(safeTx, safe)) {
+        safeTx = await signRelayedTx(safeTx)
+        txId = await proposeTx(wallet.address, safeTx, txId, origin)
       }
 
-      return id
+      // Propose the tx if there's no id yet ("immediate execution")
+      if (!txId) {
+        txId = await proposeTx(wallet.address, safeTx, txId, origin)
+      }
+
+      // Relay or execute the tx via connected wallet
+      if (isRelayed) {
+        await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit)
+      } else {
+        await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress)
+      }
+
+      return txId
     }
 
     return { signTx, executeTx }
