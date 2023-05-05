@@ -21,6 +21,7 @@ export default function FolderList() {
   useEffect(() => {
     if (ownedSafes) {
       let folderList: any[] = []
+      console.log(ownedSafes)
       const polygonSafes = ownedSafes[137]
       const optimismSafes = ownedSafes[5]
       const ethSafes = ownedSafes[1]

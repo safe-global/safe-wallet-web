@@ -1,7 +1,9 @@
 import { Box } from '@mui/material'
 import React, { useState } from 'react'
 
-export default function AddFolder() {
+export const AddFolder: React.FC<{
+  togglePopup: any
+}> = ({ togglePopup }) => {
   const [folderName, setFolderName] = useState<string>('')
 
   const createFolder = async () => {
@@ -25,7 +27,7 @@ export default function AddFolder() {
       <h4>Name of folder:</h4>
       <input value={folderName} placeholder={'folder name'} onChange={(e) => setFolderName(e.target.value)} />
       <button onClick={createFolder}>Create Folder</button>
-      <button onClick={() => {}}>Cancel</button>
+      <button onClick={togglePopup}>Cancel</button>
     </Box>
   )
 }

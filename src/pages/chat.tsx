@@ -1,4 +1,4 @@
-import AddFolder from '@/components/chat/addFolder'
+import { AddFolder } from '@/components/chat/addFolder'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import Members from '@/components/common/Members'
 import TransactionHistory from '@/components/common/TransactionHistory'
@@ -251,7 +251,7 @@ const Chat = () => {
   return (
     <>
       {/*Pop up, TODO: fix this shit to use real styled stuff*/}
-      {popup ? <AddFolder /> : ''}
+      {popup ? <AddFolder togglePopup={togglePopup} /> : ''}
       <Head>
         <title>Safe &mdash; Chat</title>
       </Head>
