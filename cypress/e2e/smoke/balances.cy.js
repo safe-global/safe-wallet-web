@@ -203,6 +203,9 @@ describe('Assets > Coins', () => {
       cy.visit(`/balances?safe=${PAGINATION_TEST_SAFE}`)
       cy.contains('button', 'Accept selection').click()
 
+      // Find button with the text OK (terms banner), and if it exists, click it
+      cy.get('button').contains('Ok').click({ force: true })
+
       // Table is loaded
       cy.contains('Görli Ether')
       cy.contains('button', 'Got it').click()
