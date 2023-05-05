@@ -14,7 +14,7 @@ const Msg = ({ message }: { message: SafeMessage['message'] }): ReactElement => 
 
   return (
     <TextField
-      maxRows={16}
+      maxRows={10}
       multiline
       disabled
       fullWidth

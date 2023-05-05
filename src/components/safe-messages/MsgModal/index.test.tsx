@@ -77,6 +77,7 @@ describe('MsgModal', () => {
           value: hexZeroPad('0x1', 20),
         },
         chainId: '5',
+        threshold: 2,
       } as SafeInfo,
       safeAddress: hexZeroPad('0x1', 20),
       safeError: undefined,
@@ -266,6 +267,7 @@ describe('MsgModal', () => {
             value: hexZeroPad('0x1', 20),
           },
           chainId: '5',
+          threshold: 2,
         } as SafeInfo,
         message: 'Hello world!',
         safeAppId: 25,
@@ -279,7 +281,7 @@ describe('MsgModal', () => {
     jest.spyOn(useWalletHook, 'default').mockImplementation(
       () =>
         ({
-          address: hexZeroPad('0x2', 20),
+          address: hexZeroPad('0x3', 20),
         } as ConnectedWallet),
     )
 
@@ -293,7 +295,15 @@ describe('MsgModal', () => {
           {
             type: SafeMessageListItemType.MESSAGE,
             messageHash: '0x123',
-            confirmations: [],
+            confirmations: [
+              {
+                owner: {
+                  value: hexZeroPad('0x2', 20),
+                },
+              },
+            ],
+            confirmationsRequired: 2,
+            confirmationsSubmitted: 1,
           } as unknown as SafeMessage,
         ],
       },
@@ -320,6 +330,8 @@ describe('MsgModal', () => {
 
     const button = getByText('Sign')
 
+    expect(button).toBeEnabled()
+
     await act(() => {
       fireEvent.click(button)
     })
@@ -332,6 +344,7 @@ describe('MsgModal', () => {
             value: hexZeroPad('0x1', 20),
           },
           chainId: '5',
+          threshold: 2,
         } as SafeInfo,
         message: 'Hello world!',
       }),
@@ -404,7 +417,7 @@ describe('MsgModal', () => {
     expect(getByText('Sign')).toBeDisabled()
   })
 
-  it('displays an error if the message has already been signed', async () => {
+  it('displays a success message if the message has already been signed', async () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useWalletHook, 'default').mockImplementation(
@@ -431,6 +444,8 @@ describe('MsgModal', () => {
                 },
               },
             ],
+            confirmationsRequired: 2,
+            confirmationsSubmitted: 1,
           } as SafeMessage,
         ],
       },
