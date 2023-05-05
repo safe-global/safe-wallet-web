@@ -11,7 +11,9 @@ import useOwnedSafes from '@/hooks/useOwnedSafes'
 import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-export default function FolderList() {
+export const FolderList: React.FC<{
+  resetGroup: () => void
+}> = ({ resetGroup }) => {
   const ownedSafes = useOwnedSafes()
   const history = useRouter()
   const [safeFolder, setSafeFolder] = useState([''])
@@ -47,6 +49,7 @@ export default function FolderList() {
   }, [ownedSafes])
 
   const handleListItemClick = (folder: string, index: number) => {
+    resetGroup()
     setSelectedIndex(folder)
     history.push(`${folder}/new-chat`)
   }

@@ -5,10 +5,9 @@ import { useDarkMode } from '@/hooks/useDarkMode'
 import { setDarkMode } from '@/store/settingsSlice'
 import TransactionHistory from '@/components/common/TransactionHistory'
 import TransactionQueue from '@/components/common/TransactionQueue'
-import FolderList from '@/components/folder-list'
+import { FolderList } from '@/components/folder-list'
 import FolderGroup from '@/components/folder-list/folderGroups'
 import TxListItem from '@/components/transactions/TxListItem'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useTxHistory from '@/hooks/useTxHistory'
 import { AppRoutes } from '@/config/routes'
@@ -135,12 +134,14 @@ const Chat = () => {
   const [group, setGroup] = useState<any>()
   const [currentUser, setCurrentUser] = useState<any>()
   const { safe, safeAddress } = useSafeInfo()
-  console.log('test', isDarkMode)
   const [ownerStatus, setOwnerStatus] = useState<boolean>()
-  const [send, setSend] = useState(false)
   const bottom = useRef<HTMLDivElement>(null)
   const owners = safe?.owners || ['']
   const ownerArray = owners.map((owner) => owner.value)
+
+  const resetGroup = () => {
+    setGroup('')
+  }
 
   const scrollToBottom = useCallback(() => {
     if (!bottom.current) return
@@ -258,7 +259,7 @@ const Chat = () => {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatData, bottom.current])
+  }, [chatData])
 
   if (!wallet?.address)
     return (
@@ -306,6 +307,7 @@ const Chat = () => {
     return <CometChatLoginNoSSR setCurrentUser={setCurrentUser} />
   }
 
+  //WHY TF is he not re-rendering?
   if (!group) {
     return <JoinNoSSR user={currentUser} setGroup={setGroup} setMessages={setMessages} />
   }
@@ -359,7 +361,7 @@ const Chat = () => {
                 <Tab label="Company multisigs" {...a11yProps(2)} /> */}
               </Tabs>
               <TabPanel value={value} index={0}>
-                <FolderList />
+                <FolderList resetGroup={resetGroup} />
               </TabPanel>
               {folders.map((folder, i) => {
                 return (
@@ -453,6 +455,9 @@ const Chat = () => {
                     <Typography sx={{ fontWeight: 500 }}>Thursday, 9 March 2023</Typography>
                     <List>
                       {chatData.map((chat, index) => {
+                        if (index === chat?.length) {
+                          return <div ref={bottom} key={`key`} />
+                        }
                         if (chat.type === 'message') {
                           return (
                             <ListItem key={index} alignItems="flex-start">
@@ -699,7 +704,7 @@ const Chat = () => {
                           )
                         }
                       })}
-                    <Box ref={bottom} sx={{ height: 0 }}></Box>
+                    <Box ref={bottom} sx={{ height: 0 }} />
                     {!chatData ? <ListItem>No Chat</ListItem> : ''}
                   </List>
                 </Box>
@@ -803,12 +808,6 @@ const Chat = () => {
             </Box>
           </Drawer>
         </Hidden>
-        {send ?? (
-          <TokenTransferModal
-            onClose={() => setSend(false)}
-            initialData={[{ tokenAddress: '0xcaa7349cea390f89641fe306d93591f87595dc1f' }]}
-          />
-        )}
       </Box>
     </>
   )
