@@ -24,9 +24,9 @@ export const AddFolder: React.FC<{
       sx={{
         zIndex: '10000',
         position: 'fixed',
-        marginTop: '40vh',
+        marginTop: '30vh',
         marginLeft: '30vw',
-        height: '20vh',
+        height: '30vh',
         width: '30vw',
         p: 3,
         backgroundColor: 'black',

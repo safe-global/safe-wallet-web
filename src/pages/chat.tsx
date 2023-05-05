@@ -1,6 +1,8 @@
 import { AddFolder } from '@/components/chat/addFolder'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import Members from '@/components/common/Members'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import { setDarkMode } from '@/store/settingsSlice'
 import TransactionHistory from '@/components/common/TransactionHistory'
 import TransactionQueue from '@/components/common/TransactionQueue'
 import FolderList from '@/components/folder-list'
@@ -17,8 +19,12 @@ import ellipsisAddress from '@/utils/ellipsisAddress'
 import { ArrowBackIos } from '@mui/icons-material'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
+import { useAppDispatch } from '@/store'
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
+import SettingsIcon from '@mui/icons-material/Settings'
 import {
+  FormControlLabel,
+  Switch,
   Alert,
   Avatar,
   Box,
@@ -112,6 +118,8 @@ function a11yProps(index: number) {
 }
 
 const Chat = () => {
+  const dispatch = useAppDispatch()
+  const isDarkMode = useDarkMode()
   const [folders, setFolders] = useState([])
   const [popup, togglePopup] = useState<boolean>(false)
   const [open, setOpen] = useState(true)
@@ -127,7 +135,7 @@ const Chat = () => {
   const [group, setGroup] = useState<any>()
   const [currentUser, setCurrentUser] = useState<any>()
   const { safe, safeAddress } = useSafeInfo()
-  console.log('test', safeAddress)
+  console.log('test', isDarkMode)
   const [ownerStatus, setOwnerStatus] = useState<boolean>()
   const [send, setSend] = useState(false)
   const bottom = useRef<HTMLDivElement>(null)
@@ -195,7 +203,7 @@ const Chat = () => {
     return arr
   }
 
-  useEffect(() => {
+  const getChat = useCallback(() => {
     let allData: any[] = []
     const historyItems = getLast5Items(txHistory.page?.results)
     const queueItems = getLast5Items(txQueue?.page?.results)
@@ -240,7 +248,13 @@ const Chat = () => {
       }
     })
     setChatData(allData)
-  }, [messages, txHistory?.page?.results])
+  }, [messages, txHistory?.page?.results, txQueue?.page?.results])
+
+  useEffect(() => {
+    if (safeAddress) {
+      getChat()
+    }
+  }, [safeAddress, messages, txHistory?.page?.results, txQueue?.page?.results])
 
   useEffect(() => {
     scrollToBottom()
@@ -323,6 +337,14 @@ const Chat = () => {
               <IconButton aria-label="add folder" onClick={() => togglePopup(!popup)}>
                 <AddIcon />
               </IconButton>
+              {/* TODO: MOVE THIS INFO MINI COMPONENT and make it into a column sidebar*/}
+              <FormControlLabel
+                control={<Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} />}
+                label="Dark mode"
+              />
+              <Link href={{ pathname: AppRoutes.settings.index, query: { safe: `${safeAddress}` } }}>
+                <SettingsIcon />
+              </Link>
             </Toolbar>
             <Divider />
             <ChatNotifications />
@@ -390,7 +412,7 @@ const Chat = () => {
               </Link>
               <Avatar alt="Decentra" />
               <Typography variant="h6" component="h6">
-                Company Treasury
+                Treasury Chat
               </Typography>
             </Box>
             <Hidden mdDown>

@@ -18,13 +18,18 @@ export default function FolderList() {
   const [selectedIndex, setSelectedIndex] = useState<any>()
   const { safe, safeAddress } = useSafeInfo()
 
+  //TODO: can be signficantly refactored
   useEffect(() => {
     if (ownedSafes) {
-      let folderList: any[] = []
-      console.log(ownedSafes)
+      let folderList: string[] = []
+      console.log(ownedSafes, 'see')
       const polygonSafes = ownedSafes[137]
       const optimismSafes = ownedSafes[5]
       const ethSafes = ownedSafes[1]
+      const gnosisSafes = ownedSafes[100]
+      if (gnosisSafes) {
+        gnosisSafes.forEach((safe) => folderList.push(`gno:${safe}`))
+      }
       if (polygonSafes) {
         polygonSafes.forEach((safe) => folderList.push(`matic:${safe}`))
       }
