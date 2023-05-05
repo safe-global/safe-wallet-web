@@ -7,7 +7,7 @@ const CONTRACT_INTERACTION = 'Contract interaction'
 describe('Transaction history', () => {
   before(() => {
     // Go to the test Safe transaction history
-    cy.visit(`/${SAFE}/transactions/history`, { failOnStatusCode: false })
+    cy.visit(`/transactions/history?safe=${SAFE}`)
     cy.contains('button', 'Accept selection').click()
   })
 
