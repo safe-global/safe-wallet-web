@@ -39,7 +39,7 @@ const Join: React.FC<{
         .catch((error) => console.log(error))
     }
     getM()
-  }, [])
+  }, [safeAddress])
 
   const handleJoin = async () => {
     await toast.promise(

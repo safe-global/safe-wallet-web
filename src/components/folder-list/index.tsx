@@ -11,19 +11,27 @@ import useOwnedSafes from '@/hooks/useOwnedSafes'
 import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-export default function FolderList() {
+export const FolderList: React.FC<{
+  resetGroup: () => void
+}> = ({ resetGroup }) => {
   const ownedSafes = useOwnedSafes()
   const history = useRouter()
   const [safeFolder, setSafeFolder] = useState([''])
   const [selectedIndex, setSelectedIndex] = useState<any>()
   const { safe, safeAddress } = useSafeInfo()
 
+  //TODO: can be signficantly refactored
   useEffect(() => {
     if (ownedSafes) {
-      let folderList: any[] = []
+      let folderList: string[] = []
+      console.log(ownedSafes, 'see')
       const polygonSafes = ownedSafes[137]
       const optimismSafes = ownedSafes[5]
       const ethSafes = ownedSafes[1]
+      const gnosisSafes = ownedSafes[100]
+      if (gnosisSafes) {
+        gnosisSafes.forEach((safe) => folderList.push(`gno:${safe}`))
+      }
       if (polygonSafes) {
         polygonSafes.forEach((safe) => folderList.push(`matic:${safe}`))
       }
@@ -41,6 +49,7 @@ export default function FolderList() {
   }, [ownedSafes])
 
   const handleListItemClick = (folder: string, index: number) => {
+    resetGroup()
     setSelectedIndex(folder)
     history.push(`${folder}/new-chat`)
   }

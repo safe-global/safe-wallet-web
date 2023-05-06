@@ -1,12 +1,12 @@
 import { AddFolder } from '@/components/chat/addFolder'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import Members from '@/components/common/Members'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import { setDarkMode } from '@/store/settingsSlice'
 import TransactionHistory from '@/components/common/TransactionHistory'
 import TransactionQueue from '@/components/common/TransactionQueue'
-import FolderList from '@/components/folder-list'
+import { FolderList } from '@/components/folder-list'
 import FolderGroup from '@/components/folder-list/folderGroups'
-import TxListItem from '@/components/transactions/TxListItem'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useTxHistory from '@/hooks/useTxHistory'
 import { AppRoutes } from '@/config/routes'
@@ -17,9 +17,12 @@ import ellipsisAddress from '@/utils/ellipsisAddress'
 import { ArrowBackIos } from '@mui/icons-material'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
+import { useAppDispatch } from '@/store'
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
+import SettingsIcon from '@mui/icons-material/Settings'
 import {
-  Alert,
+  FormControlLabel,
+  Switch,
   Avatar,
   Box,
   Button,
@@ -28,14 +31,8 @@ import {
   Drawer,
   Hidden,
   IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemIcon,
-  ListItemText,
   Tab,
   Tabs,
-  TextField,
   Toolbar,
   Typography,
 } from '@mui/material'
@@ -47,18 +44,12 @@ import React, { useEffect, useState, useRef, useCallback } from 'react'
 import ChatNotifications from '@/components/chat/chatNotifications'
 import NewTxButton from '@/components/chat/NewTxButton'
 import ConnectionCenter from '@/components/common/ConnectWallet/ConnectionCenter'
-
-const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
+import { DesktopChat } from '@/components/chat/desktopChat'
+import { MobileChat } from '@/components/chat/mobileChat'
 
 const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false })
 
 const CometChatLoginNoSSR = dynamic(() => import('@/components/chat/login'), { ssr: false })
-
-interface TabPanelProps {
-  children?: React.ReactNode
-  index: number
-  value: number
-}
 
 const drawerWidth = 340
 
@@ -80,9 +71,18 @@ const Main = styled('div', { shouldForwardProp: (prop) => prop !== 'open' })<{
   }),
 }))
 
-const StyledAlert = styled(Alert)(() => ({
-  backgroundColor: 'hsla(231, 17%, 76%, 0.33)',
-}))
+interface TabPanelProps {
+  children?: React.ReactNode
+  index: number
+  value: number
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  }
+}
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props
@@ -104,19 +104,13 @@ function TabPanel(props: TabPanelProps) {
   )
 }
 
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  }
-}
-
 const Chat = () => {
+  const dispatch = useAppDispatch()
+  const isDarkMode = useDarkMode()
   const [folders, setFolders] = useState([])
   const [popup, togglePopup] = useState<boolean>(false)
   const [open, setOpen] = useState(true)
   const [value, setValue] = React.useState(0)
-  const [mobileValue, setMobileValue] = React.useState(0)
   const wallet = useWallet()
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([''])
@@ -127,12 +121,14 @@ const Chat = () => {
   const [group, setGroup] = useState<any>()
   const [currentUser, setCurrentUser] = useState<any>()
   const { safe, safeAddress } = useSafeInfo()
-  console.log('test', safeAddress)
   const [ownerStatus, setOwnerStatus] = useState<boolean>()
-  const [send, setSend] = useState(false)
   const bottom = useRef<HTMLDivElement>(null)
   const owners = safe?.owners || ['']
   const ownerArray = owners.map((owner) => owner.value)
+
+  const resetGroup = () => {
+    setGroup('')
+  }
 
   const scrollToBottom = useCallback(() => {
     if (!bottom.current) return
@@ -174,9 +170,7 @@ const Chat = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
-  const handleMobileChange = (event: React.SyntheticEvent, newValue: number) => {
-    setMobileValue(newValue)
-  }
+
   const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
       event.type === 'keydown' &&
@@ -195,7 +189,7 @@ const Chat = () => {
     return arr
   }
 
-  useEffect(() => {
+  const getChat = useCallback(() => {
     let allData: any[] = []
     const historyItems = getLast5Items(txHistory.page?.results)
     const queueItems = getLast5Items(txQueue?.page?.results)
@@ -240,11 +234,17 @@ const Chat = () => {
       }
     })
     setChatData(allData)
-  }, [messages, txHistory?.page?.results])
+  }, [messages, txHistory?.page?.results, txQueue?.page?.results])
+
+  useEffect(() => {
+    if (safeAddress) {
+      getChat()
+    }
+  }, [safeAddress, messages, txHistory?.page?.results, txQueue?.page?.results])
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatData, bottom.current])
+  }, [chatData])
 
   if (!wallet?.address)
     return (
@@ -292,6 +292,7 @@ const Chat = () => {
     return <CometChatLoginNoSSR setCurrentUser={setCurrentUser} />
   }
 
+  //WHY TF is he not re-rendering?
   if (!group) {
     return <JoinNoSSR user={currentUser} setGroup={setGroup} setMessages={setMessages} />
   }
@@ -323,6 +324,14 @@ const Chat = () => {
               <IconButton aria-label="add folder" onClick={() => togglePopup(!popup)}>
                 <AddIcon />
               </IconButton>
+              {/* TODO: MOVE THIS INFO MINI COMPONENT and make it into a column sidebar*/}
+              <FormControlLabel
+                control={<Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} />}
+                label="Dark mode"
+              />
+              <Link href={{ pathname: AppRoutes.settings.index, query: { safe: `${safeAddress}` } }}>
+                <SettingsIcon />
+              </Link>
             </Toolbar>
             <Divider />
             <ChatNotifications />
@@ -337,7 +346,7 @@ const Chat = () => {
                 <Tab label="Company multisigs" {...a11yProps(2)} /> */}
               </Tabs>
               <TabPanel value={value} index={0}>
-                <FolderList />
+                <FolderList resetGroup={resetGroup} />
               </TabPanel>
               {folders.map((folder, i) => {
                 return (
@@ -390,7 +399,7 @@ const Chat = () => {
               </Link>
               <Avatar alt="Decentra" />
               <Typography variant="h6" component="h6">
-                Company Treasury
+                Treasury Chat
               </Typography>
             </Box>
             <Hidden mdDown>
@@ -400,314 +409,23 @@ const Chat = () => {
             </Hidden>
           </Toolbar>
           <Divider />
-          <Hidden mdUp>
-            <Box sx={{ width: '100%', height: '100%' }}>
-              <Tabs variant="fullWidth" value={mobileValue} onChange={handleMobileChange} aria-label="responsive tabs">
-                <Tab label="Timeline" {...a11yProps(0)} />
-                <Tab label="Overview" {...a11yProps(1)} />
-              </Tabs>
-              <TabPanel value={mobileValue} index={0}>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Box
-                    sx={{
-                      flex: '1 0 auto',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'start',
-                      alignItems: 'start',
-                      gap: '16px',
-                    }}
-                  >
-                    <StyledAlert icon={false}>
-                      <Typography paragraph>This is the beginning of the timeline from this Safe</Typography>
-                      <Typography paragraph>
-                        The timeline shows all your chat, transactions and events in one place. Only members of this
-                        group can see the chat. Say hi!
-                      </Typography>
-                      <Typography sx={{ fontStyle: 'italic', fontSize: '12px' }} paragraph>
-                        Safe created on 5 March 2023 at 19:34:53 CET
-                      </Typography>
-                    </StyledAlert>
-                    <Typography sx={{ fontWeight: 500 }}>Thursday, 9 March 2023</Typography>
-                    <List>
-                      {chatData.map((chat, index) => {
-                        if (chat.type === 'message') {
-                          return (
-                            <ListItem key={index} alignItems="flex-start">
-                              <ListItemIcon>
-                                <Avatar sx={{ width: 32, height: 32 }} alt={chat?.data?.sender.uid || ''} />
-                              </ListItemIcon>
-                              <ListItemText
-                                disableTypography
-                                sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
-                                primary={
-                                  <React.Fragment>
-                                    <Box
-                                      sx={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-start',
-                                        alignItems: 'center',
-                                        gap: '10px',
-                                      }}
-                                    >
-                                      <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                        {chat.data.sender.name === wallet?.address ? 'You' : chat?.data?.sender.uid}
-                                      </Typography>
-                                      <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                        {chat.timeStamp}
-                                      </Typography>
-                                    </Box>
-                                  </React.Fragment>
-                                }
-                                secondary={chat.data.text}
-                              />
-                            </ListItem>
-                          )
-                        } else {
-                          return (
-                            <ListItem key={index} alignItems="flex-start">
-                              <ListItemAvatar sx={{ minWidth: 35, pr: '10px' }}>
-                                <Avatar sx={{ width: 32, height: 32 }} alt={chat.name} />
-                              </ListItemAvatar>
-                              <ListItemText
-                                primary={
-                                  <React.Fragment>
-                                    <Typography
-                                      sx={{ display: 'inline', pr: '8px', fontWeight: 600 }}
-                                      component="span"
-                                      variant="subtitle2"
-                                    >
-                                      {chat.name}
-                                    </Typography>
-                                    <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                      {chat.timeAgo}
-                                    </Typography>
-                                  </React.Fragment>
-                                }
-                                secondary={chat.data.text}
-                              />
-                              <TxListItem key={`${index}-tx`} item={chat?.data} />
-                            </ListItem>
-                          )
-                        }
-                      })}
-                      <div ref={bottom} />
-                    </List>
-                  </Box>
-                  <Box sx={{ flexShrink: 0, position: 'sticky', bottom: 0, bgcolor: 'background.default' }}>
-                    <Divider />
-                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px', py: 2, px: 1 }}>
-                      <TextField
-                        sx={{ flexGrow: 1 }}
-                        label="Type Something"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                      />
-                      <SendMessage
-                        message={message}
-                        safeAddress={safeAddress}
-                        setMessages={setMessages}
-                        setMessage={setMessage}
-                        prevState={messages}
-                      />
-                    </Box>
-                  </Box>
-                </Box>
-              </TabPanel>
-              <TabPanel value={mobileValue} index={1}>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Box
-                    sx={{
-                      flex: '1 0 auto',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        gap: '40px',
-                        pt: 3,
-                        px: 3,
-                      }}
-                    >
-                      <Typography sx={{ color: grey[500] }}>Network</Typography>
-                      <Typography>
-                        {safe?.chainId === '137'
-                          ? 'Matic'
-                          : safe?.chainId === '1'
-                          ? 'Ethereum'
-                          : safe?.chainId === '10'
-                          ? 'Optimism'
-                          : safe?.chainId === '80001'
-                          ? 'Mumbai'
-                          : ''}
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        gap: '40px',
-                        pt: 3,
-                        px: 3,
-                      }}
-                    >
-                      <Typography sx={{ color: grey[500] }} paragraph>
-                        Address
-                      </Typography>
-                      <Typography paragraph noWrap>
-                        {ellipsisAddress(`${safeAddress}`)}
-                      </Typography>
-                    </Box>
-                    <Divider />
-                    <Members members={owners} />
-                    <Divider />
-                    <TransactionQueue />
-                    <Divider />
-                    <TransactionHistory />
-                    <Divider />
-                    <Box sx={{ p: 3 }}>
-                      <Typography sx={{ fontWeight: 500 }} paragraph>
-                        Assets
-                      </Typography>
-                      <Typography paragraph>View all tokens and NFTs the Safe holds.</Typography>
-                      <Box sx={{ position: 'fixed', bottom: 0, bgcolor: 'background.default' }}>
-                        <Button sx={{ mb: 2 }} variant="outlined" fullWidth>
-                          Send Tokens
-                        </Button>
-                        <Button variant="outlined" fullWidth>
-                          Send NFTs
-                        </Button>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </TabPanel>
-            </Box>
-          </Hidden>
-          <Hidden mdDown>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ height: '80vh', overflowY: 'auto' }}>
-                <Box
-                  sx={{
-                    flex: '1 0 auto',
-                    display: 'flex',
-                    height: '100%',
-                    flexDirection: 'column',
-                    justifyContent: 'start',
-                    alignItems: 'start',
-                    gap: '16px',
-                    p: 3,
-                    bgcolor: 'background.default',
-                  }}
-                >
-                  <StyledAlert icon={false}>
-                    <Typography paragraph>This is the beginning of the timeline from this Safe</Typography>
-                    <Typography paragraph>
-                      The timeline shows all your chat, transactions and events in one place. Only members of this group
-                      can see the chat. Say hi!
-                    </Typography>
-                    <Typography sx={{ fontStyle: 'italic', fontSize: '12px' }} paragraph>
-                      Safe created on 5 March 2023 at 19:34:53 CET
-                    </Typography>
-                  </StyledAlert>
-                  <Typography sx={{ fontWeight: 500 }}>Thursday, 9 March 2023</Typography>
-                  <List>
-                    {chatData &&
-                      chatData.map((chat, index) => {
-                        if (chat.type === 'message' && chat?.data?.sender) {
-                          return (
-                            <ListItem
-                              sx={{ display: 'flex', alignItems: 'center' }}
-                              key={index}
-                              alignItems="flex-start"
-                              disableGutters
-                            >
-                              <ListItemAvatar sx={{ minWidth: 35, pr: '10px' }}>
-                                <Avatar sx={{ width: 32, height: 32 }} alt={chat?.data?.sender.uid || ''} />
-                              </ListItemAvatar>
-                              <ListItemText
-                                sx={{ bgcolor: 'background.paper', p: 2, width: '100%' }}
-                                style={{ borderRadius: '8px' }}
-                                primary={
-                                  <React.Fragment>
-                                    <Typography
-                                      sx={{ display: 'inline', pr: '12px', fontWeight: 600 }}
-                                      component="span"
-                                      variant="subtitle2"
-                                    >
-                                      {chat.data.sender.name === wallet?.address ? 'You' : chat?.data?.sender.uid}
-                                    </Typography>
-                                    <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                      {chat.timeStamp}
-                                    </Typography>
-                                  </React.Fragment>
-                                }
-                                secondary={chat.data.text}
-                              />
-                            </ListItem>
-                          )
-                        } else {
-                          return (
-                            <ListItem key={index} alignItems="flex-start" disableGutters>
-                              <ListItemAvatar sx={{ minWidth: 35, pr: '10px' }}>
-                                <Avatar sx={{ width: 32, height: 32 }} alt={chat.name} />
-                              </ListItemAvatar>
-                              <TxListItem key={`${index}-tx`} item={chat?.data} />
-                              <ListItemText
-                                primary={
-                                  <React.Fragment>
-                                    <Typography
-                                      sx={{ display: 'inline', pr: '8px', fontWeight: 600 }}
-                                      component="span"
-                                      variant="subtitle2"
-                                    >
-                                      {chat.name}
-                                    </Typography>
-                                    <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                      {chat.timeAgo}
-                                    </Typography>
-                                  </React.Fragment>
-                                }
-                                secondary={chat.message}
-                              />
-                            </ListItem>
-                          )
-                        }
-                      })}
-                    <Box ref={bottom} sx={{ height: 0 }}></Box>
-                    {!chatData ? <ListItem>No Chat</ListItem> : ''}
-                  </List>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  height: '12vh',
-                  flexShrink: 0,
-                  bgcolor: 'background.default',
-                }}
-              >
-                <Divider />
-                <Box sx={{ width: '100%', display: 'flex', gap: '16px', p: 3 }}>
-                  <TextField
-                    sx={{ flexGrow: 1 }}
-                    label="Type Something"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                  />
-                  <SendMessage
-                    message={message}
-                    safeAddress={safeAddress}
-                    setMessages={setMessages}
-                    setMessage={setMessage}
-                    prevState={messages}
-                  />
-                </Box>
-              </Box>
-            </Box>
-          </Hidden>
+          <MobileChat
+            message={message}
+            setMessage={setMessage}
+            messages={messages}
+            setMessages={setMessages}
+            bottom={bottom}
+            chatData={chatData}
+            owners={owners}
+          />
+          <DesktopChat
+            message={message}
+            setMessage={setMessage}
+            messages={messages}
+            setMessages={setMessages}
+            bottom={bottom}
+            chatData={chatData}
+          />
         </Main>
         <Hidden mdDown>
           <Drawer
@@ -781,12 +499,6 @@ const Chat = () => {
             </Box>
           </Drawer>
         </Hidden>
-        {send ?? (
-          <TokenTransferModal
-            onClose={() => setSend(false)}
-            initialData={[{ tokenAddress: '0xcaa7349cea390f89641fe306d93591f87595dc1f' }]}
-          />
-        )}
       </Box>
     </>
   )
