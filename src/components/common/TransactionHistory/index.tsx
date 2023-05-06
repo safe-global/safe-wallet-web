@@ -23,9 +23,7 @@ const TransactionHistory = () => {
       passHref
     >
       <Box sx={{ display: 'flex', gap: '5px', p: 2, cursor: 'pointer' }}>
-        <Typography sx={({ palette }) => ({ color: palette.primary.light, fontWeight: 500 })}>
-          Transaction History
-        </Typography>
+        <Typography sx={{ fontWeight: 600 }}>Transaction History</Typography>
         <Chip label={`${txs?.length}`} size="small" />
         <OpenInNewIcon sx={({ palette }) => ({ color: palette.primary.light })} />
       </Box>

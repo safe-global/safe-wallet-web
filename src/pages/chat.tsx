@@ -31,7 +31,6 @@ import {
   Divider,
   Drawer,
   FormControlLabel,
-  Grid,
   Hidden,
   IconButton,
   Tab,
@@ -55,7 +54,7 @@ const drawerWidth = 300
 const Main = styled('div', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean
 }>(({ theme, open }) => ({
-  gridColumn: 'span 10',
+  flexGrow: 1,
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -298,16 +297,28 @@ const Chat = () => {
 
   return (
     <>
-      {popup ? <AddFolder togglePopup={togglePopup} /> : ''}
+      {popup ? <AddFolder open={popup} onClose={() => togglePopup(!popup)} /> : ''}
       <Head>
         <title>Safe &mdash; Chat</title>
       </Head>
-      <Grid container spacing={2} columns={12}>
+      <Box sx={{ display: 'flex' }}>
         <Hidden mdDown>
-          <Grid item xs={2}>
-            <Box bgcolor={'background.paper'} pr={2} width={drawerWidth} height="100%">
-              <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography sx={{ fontWeight: 500 }}>Decentra</Typography>
+          <Drawer
+            sx={{
+              width: drawerWidth,
+              flexShrink: 0,
+              '& .MuiDrawer-paper': {
+                width: drawerWidth,
+                bgcolor: 'background.paper',
+                boxSizing: 'border-box',
+              },
+            }}
+            variant="permanent"
+            anchor="left"
+          >
+            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography sx={{ fontWeight: 600 }}>Decentra</Typography>
+              <Box display="flex" alignItems="center" gap="10px">
                 <IconButton aria-label="add folder" onClick={() => togglePopup(!popup)}>
                   <AddIcon />
                 </IconButton>
@@ -316,63 +327,77 @@ const Chat = () => {
                     <SettingsIcon />
                   </IconButton>
                 </Link>
-              </Toolbar>
-              <Divider />
-              <ChatNotifications />
-              <Box sx={{ width: '100%', height: '100%' }}>
-                {/*@ts-ignore*/}
-                <Tabs value={value} onChange={handleChange} aria-label="folder tabs">
-                  <Tab label="All" {...a11yProps(0)} />
-                  {folders.map((folder, i) => {
-                    return <Tab label={folder} key={`${folder}-${i}`} />
-                  })}
-                  {/* <Tab label="Ricochet-related" {...a11yProps(1)} />
-                <Tab label="Company multisigs" {...a11yProps(2)} /> */}
-                </Tabs>
-                <TabPanel value={value} index={0}>
-                  <FolderList resetGroup={resetGroup} />
-                </TabPanel>
-                {folders.map((folder, i) => {
-                  return (
-                    <TabPanel value={value} index={i + 1} key={`${folder}-${i}`}>
-                      <FolderGroup group={folder} />
-                    </TabPanel>
-                  )
-                })}
               </Box>
-              <Divider />
-              <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', gap: '16px', pt: 2, px: 3 }}>
-                {wallet ? (
-                  <>
+            </Toolbar>
+            <Divider />
+            <ChatNotifications />
+            <Box sx={{ width: '100%', height: '100%' }}>
+              {/*@ts-ignore*/}
+              <Tabs value={value} onChange={handleChange} aria-label="folder tabs">
+                <Tab label="All" {...a11yProps(0)} />
+                {folders.map((folder, i) => {
+                  return <Tab label={folder} key={`${folder}-${i}`} />
+                })}
+                {/* <Tab label="Ricochet-related" {...a11yProps(1)} />
+                <Tab label="Company multisigs" {...a11yProps(2)} /> */}
+              </Tabs>
+              <TabPanel value={value} index={0}>
+                <FolderList resetGroup={resetGroup} />
+              </TabPanel>
+              {folders.map((folder, i) => {
+                return (
+                  <TabPanel value={value} index={i + 1} key={`${folder}-${i}`}>
+                    <FolderGroup group={folder} />
+                  </TabPanel>
+                )
+              })}
+            </Box>
+            <Divider />
+            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              {wallet ? (
+                <Box
+                  sx={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '16px',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                    }}
+                  >
                     <Avatar sx={{ height: 32, width: 32 }} alt="Daniel from Decentra" />
                     <Box>
-                      <Typography sx={{ fontWeight: 500 }}>From {ellipsisAddress(`${safeAddress}`)}</Typography>
-                      <Typography sx={{ color: grey[600] }} paragraph>
-                        {ellipsisAddress(`${wallet.address}`)}
-                      </Typography>
+                      <Typography sx={{ fontWeight: 600 }}>{ellipsisAddress(`${safeAddress}`)}</Typography>
+                      <Typography sx={{ color: grey[600] }}>{ellipsisAddress(`${wallet.address}`)}</Typography>
                     </Box>
-                    {/* <Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} /> */}
-                    <FormControlLabel
-                      control={
-                        <IconButton onClick={() => dispatch(setDarkMode(!isDarkMode))}>
-                          {isDarkMode ? <WbSunnyIcon /> : <ModeNightIcon />}
-                        </IconButton>
-                      }
-                      label=""
-                    />
-                  </>
-                ) : (
-                  <Button onClick={connectWallet}>
-                    <Typography sx={{ color: grey[600] }} paragraph>
-                      Connect Wallet
-                    </Typography>
-                  </Button>
-                )}
-              </Box>
-            </Box>
-          </Grid>
+                  </Box>
+                  {/* <Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} /> */}
+                  <FormControlLabel
+                    control={
+                      <IconButton onClick={() => dispatch(setDarkMode(!isDarkMode))}>
+                        {isDarkMode ? <WbSunnyIcon /> : <ModeNightIcon />}
+                      </IconButton>
+                    }
+                    label=""
+                  />
+                </Box>
+              ) : (
+                <Button onClick={connectWallet}>
+                  <Typography sx={{ color: grey[600] }} paragraph>
+                    Connect Wallet
+                  </Typography>
+                </Button>
+              )}
+            </Toolbar>
+          </Drawer>
         </Hidden>
-        <Grid item xs={10} sx={{ bgcolor: 'background.default' }}>
+        <Main open={open} sx={{ flexGrow: 1, bgcolor: 'background.default' }}>
           <Box display="flex">
             <Box flexGrow={1}>
               <Toolbar
@@ -393,8 +418,8 @@ const Chat = () => {
                       <ArrowBackIos />
                     </IconButton>
                   </Link>
-                  <Avatar alt="Decentra" />
-                  <Typography variant="h6" component="h6">
+                  <Avatar sx={{ height: 32, width: 32 }} alt="Decentra" />
+                  <Typography variant="h6" component="h6" sx={{ fontWeight: 600 }}>
                     Treasury Chat
                   </Typography>
                 </Box>
@@ -423,31 +448,38 @@ const Chat = () => {
                 chatData={chatData}
               />
             </Box>
-            <Hidden mdDown>
-              <Drawer
-                sx={{
-                  width: drawerWidth,
-                  flexShrink: 0,
-                  '& .MuiDrawer-paper': {
-                    width: drawerWidth,
-                    bgcolor: 'background.default',
-                    boxSizing: 'border-box',
-                  },
-                }}
-                variant="persistent"
-                anchor="right"
-                open={open}
-              >
-                <Toolbar>
-                  <Typography sx={{ fontWeight: 500 }}>Overview</Typography>
-                </Toolbar>
-                <Divider />
-                <ChatOverview owners={owners} />
-              </Drawer>
-            </Hidden>
           </Box>
-        </Grid>
-      </Grid>
+        </Main>
+        <Hidden mdDown>
+          <Drawer
+            sx={{
+              width: drawerWidth,
+              flexShrink: 0,
+              '& .MuiDrawer-paper': {
+                width: drawerWidth,
+                bgcolor: 'background.default',
+                boxSizing: 'border-box',
+              },
+            }}
+            variant="persistent"
+            anchor="right"
+            open={open}
+          >
+            <Toolbar
+              sx={{
+                position: 'sticky',
+                zIndex: 1,
+                top: 0,
+                bgcolor: 'background.default',
+              }}
+            >
+              <Typography sx={{ fontWeight: 600 }}>Overview</Typography>
+            </Toolbar>
+            <Divider />
+            <ChatOverview owners={owners} />
+          </Drawer>
+        </Hidden>
+      </Box>
     </>
   )
 }

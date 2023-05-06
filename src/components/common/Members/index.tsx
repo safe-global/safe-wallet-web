@@ -11,7 +11,7 @@ const Members: React.FC<TypeMembers> = ({ members }) => {
   return (
     <>
       <Box sx={{ pt: 3, pl: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography sx={{ fontWeight: 500 }}>Members</Typography>
+        <Typography sx={{ fontWeight: 600 }}>Members</Typography>
         <AddOwner />
       </Box>
       <List sx={{ pl: 1 }}>

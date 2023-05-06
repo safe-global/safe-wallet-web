@@ -18,7 +18,7 @@ const TransactionQueue = () => {
   return (
     <>
       <Box sx={{ pt: 2, pl: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography sx={{ fontWeight: 500 }}>Transaction queue</Typography>
+        <Typography sx={{ fontWeight: 600 }}>Transaction queue</Typography>
         <AddNewTxIconButton />
       </Box>
       <List sx={{ p: 3 }}>

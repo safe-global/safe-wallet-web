@@ -34,7 +34,7 @@ export const Notification: React.FC<{
           key={info.name}
         >
           <ListItem sx={{ display: 'flex', flexDirection: 'column' }}>
-            <ListItemAvatar sx={{ minWidth: 35 }}>
+            <ListItemAvatar sx={{ minWidth: 32 }}>
               {info.name ? <BadgeAvatar name={info.name} /> : <Avatar alt={info.name} />}
             </ListItemAvatar>
             <ListItemText

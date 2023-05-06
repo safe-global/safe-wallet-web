@@ -45,7 +45,7 @@ export const ChatOverview: React.FC<{
       <TransactionHistory />
       <Divider />
       <Box sx={{ p: 2 }}>
-        <Typography sx={{ fontWeight: 500 }} paragraph>
+        <Typography sx={{ fontWeight: 600 }} paragraph>
           Assets
         </Typography>
         <Typography paragraph>View all tokens and NFTs the Safe holds.</Typography>
@@ -56,7 +56,7 @@ export const ChatOverview: React.FC<{
         </Link>
       </Box>
       <Box sx={{ p: 2 }}>
-        <Typography sx={{ fontWeight: 500 }} paragraph>
+        <Typography sx={{ fontWeight: 600 }} paragraph>
           Apps
         </Typography>
         <Typography paragraph>
