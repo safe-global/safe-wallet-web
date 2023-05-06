@@ -6,7 +6,6 @@ import { Container } from '@mui/system'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { createNewGroup, getGroup, getMessages, joinGroup, listenForMessage } from '../../services/chat'
-import css from './styles.module.css'
 
 const Join: React.FC<{
   user: any
@@ -128,7 +127,7 @@ const Join: React.FC<{
       >
         <Grid container spacing={1}>
           <Grid item xs lg={4} order={{ xs: 2, sm: 1 }}>
-            <Paper sx={{ padding: 4, height: 1, maxWidth: '400px' }} className={css.logincard}>
+            <Paper sx={{ padding: 4, height: 1, maxWidth: '400px', background: 'transparent', border: '2px solid' }}>
               <SvgIcon component={NewChatIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
               <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
                 Chat with your safe members now

@@ -1,34 +1,36 @@
 import { AddFolder } from '@/components/chat/addFolder'
+import ChatNotifications from '@/components/chat/chatNotifications'
+import { ChatOverview } from '@/components/chat/chatOverview'
+import { DesktopChat } from '@/components/chat/desktopChat'
+import { MobileChat } from '@/components/chat/mobileChat'
+import ConnectionCenter from '@/components/common/ConnectWallet/ConnectionCenter'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
-import Members from '@/components/common/Members'
-import { useDarkMode } from '@/hooks/useDarkMode'
-import { setDarkMode } from '@/store/settingsSlice'
-import TransactionHistory from '@/components/common/TransactionHistory'
-import TransactionQueue from '@/components/common/TransactionQueue'
 import { FolderList } from '@/components/folder-list'
 import FolderGroup from '@/components/folder-list/folderGroups'
+import { AppRoutes } from '@/config/routes'
+import { useDarkMode } from '@/hooks/useDarkMode'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useTxHistory from '@/hooks/useTxHistory'
-import { AppRoutes } from '@/config/routes'
-import Link from 'next/link'
 import useTxQueue from '@/hooks/useTxQueue'
 import useWallet from '@/hooks/wallets/useWallet'
+import { useAppDispatch } from '@/store'
+import { setDarkMode } from '@/store/settingsSlice'
 import ellipsisAddress from '@/utils/ellipsisAddress'
 import { ArrowBackIos } from '@mui/icons-material'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
-import { useAppDispatch } from '@/store'
-import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
+import ModeNightIcon from '@mui/icons-material/ModeNight'
 import SettingsIcon from '@mui/icons-material/Settings'
+import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
+import WbSunnyIcon from '@mui/icons-material/WbSunny'
 import {
-  FormControlLabel,
-  Switch,
   Avatar,
   Box,
   Button,
   Container,
   Divider,
   Drawer,
+  FormControlLabel,
   Hidden,
   IconButton,
   Tab,
@@ -40,18 +42,14 @@ import { grey } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import React, { useEffect, useState, useRef, useCallback } from 'react'
-import ChatNotifications from '@/components/chat/chatNotifications'
-import NewTxButton from '@/components/chat/NewTxButton'
-import ConnectionCenter from '@/components/common/ConnectWallet/ConnectionCenter'
-import { DesktopChat } from '@/components/chat/desktopChat'
-import { MobileChat } from '@/components/chat/mobileChat'
+import Link from 'next/link'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false })
 
 const CometChatLoginNoSSR = dynamic(() => import('@/components/chat/login'), { ssr: false })
 
-const drawerWidth = 340
+const drawerWidth = 300
 
 const Main = styled('div', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean
@@ -299,8 +297,7 @@ const Chat = () => {
 
   return (
     <>
-      {/*Pop up, TODO: fix this shit to use real styled stuff*/}
-      {popup ? <AddFolder togglePopup={togglePopup} /> : ''}
+      {popup ? <AddFolder open={popup} onClose={() => togglePopup(!popup)} /> : ''}
       <Head>
         <title>Safe &mdash; Chat</title>
       </Head>
@@ -320,18 +317,17 @@ const Chat = () => {
             anchor="left"
           >
             <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Typography sx={{ fontWeight: 500 }}>Decentra</Typography>
-              <IconButton aria-label="add folder" onClick={() => togglePopup(!popup)}>
-                <AddIcon />
-              </IconButton>
-              {/* TODO: MOVE THIS INFO MINI COMPONENT and make it into a column sidebar*/}
-              <FormControlLabel
-                control={<Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} />}
-                label="Dark mode"
-              />
-              <Link href={{ pathname: AppRoutes.settings.index, query: { safe: `${safeAddress}` } }}>
-                <SettingsIcon />
-              </Link>
+              <Typography sx={{ fontWeight: 600 }}>Decentra</Typography>
+              <Box display="flex" alignItems="center" gap="10px">
+                <IconButton aria-label="add folder" onClick={() => togglePopup(!popup)}>
+                  <AddIcon />
+                </IconButton>
+                <Link href={{ pathname: AppRoutes.settings.index, query: { safe: `${safeAddress}` } }}>
+                  <IconButton>
+                    <SettingsIcon />
+                  </IconButton>
+                </Link>
+              </Box>
             </Toolbar>
             <Divider />
             <ChatNotifications />
@@ -357,17 +353,40 @@ const Chat = () => {
               })}
             </Box>
             <Divider />
-            <Box sx={{ width: '100%', display: 'flex', gap: '16px', pt: 2, px: 3 }}>
+            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
               {wallet ? (
-                <>
-                  <Avatar alt="Daniel from Decentra" />
-                  <Box>
-                    <Typography sx={{ fontWeight: 500 }}>From {ellipsisAddress(`${safeAddress}`)}</Typography>
-                    <Typography sx={{ color: grey[600] }} paragraph>
-                      {ellipsisAddress(`${wallet.address}`)}
-                    </Typography>
+                <Box
+                  sx={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '16px',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                    }}
+                  >
+                    <Avatar sx={{ height: 32, width: 32 }} alt="Daniel from Decentra" />
+                    <Box>
+                      <Typography sx={{ fontWeight: 600 }}>{ellipsisAddress(`${safeAddress}`)}</Typography>
+                      <Typography sx={{ color: grey[600] }}>{ellipsisAddress(`${wallet.address}`)}</Typography>
+                    </Box>
                   </Box>
-                </>
+                  {/* <Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} /> */}
+                  <FormControlLabel
+                    control={
+                      <IconButton onClick={() => dispatch(setDarkMode(!isDarkMode))}>
+                        {isDarkMode ? <WbSunnyIcon /> : <ModeNightIcon />}
+                      </IconButton>
+                    }
+                    label=""
+                  />
+                </Box>
               ) : (
                 <Button onClick={connectWallet}>
                   <Typography sx={{ color: grey[600] }} paragraph>
@@ -375,57 +394,61 @@ const Chat = () => {
                   </Typography>
                 </Button>
               )}
-            </Box>
+            </Toolbar>
           </Drawer>
         </Hidden>
         <Main open={open} sx={{ flexGrow: 1, bgcolor: 'background.default' }}>
-          <Toolbar
-            sx={{
-              display: 'flex',
-              position: 'sticky',
-              zIndex: 1,
-              top: 0,
-              px: 3,
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              bgcolor: 'background.default',
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
-              <Link href={{ pathname: AppRoutes.home, query: { safe: `${safeAddress}` } }}>
-                <IconButton aria-label="back">
-                  <ArrowBackIos />
-                </IconButton>
-              </Link>
-              <Avatar alt="Decentra" />
-              <Typography variant="h6" component="h6">
-                Treasury Chat
-              </Typography>
+          <Box display="flex">
+            <Box flexGrow={1}>
+              <Toolbar
+                sx={{
+                  display: 'flex',
+                  position: 'sticky',
+                  zIndex: 1,
+                  top: 0,
+                  px: 3,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  bgcolor: 'background.default',
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
+                  <Link href={{ pathname: AppRoutes.home, query: { safe: `${safeAddress}` } }}>
+                    <IconButton aria-label="back">
+                      <ArrowBackIos />
+                    </IconButton>
+                  </Link>
+                  <Avatar sx={{ height: 32, width: 32 }} alt="Decentra" />
+                  <Typography variant="h6" component="h6" sx={{ fontWeight: 600 }}>
+                    Treasury Chat
+                  </Typography>
+                </Box>
+                <Hidden mdDown>
+                  <IconButton onClick={toggleDrawer(!open)}>
+                    {open ? <CloseIcon aria-label="close sidebar" /> : <ViewSidebarIcon aria-label="show sidebar" />}
+                  </IconButton>
+                </Hidden>
+              </Toolbar>
+              <Divider />
+              <MobileChat
+                message={message}
+                setMessage={setMessage}
+                messages={messages}
+                setMessages={setMessages}
+                bottom={bottom}
+                chatData={chatData}
+                owners={owners}
+              />
+              <DesktopChat
+                message={message}
+                setMessage={setMessage}
+                messages={messages}
+                setMessages={setMessages}
+                bottom={bottom}
+                chatData={chatData}
+              />
             </Box>
-            <Hidden mdDown>
-              <IconButton onClick={toggleDrawer(!open)}>
-                {open ? <CloseIcon aria-label="close sidebar" /> : <ViewSidebarIcon aria-label="show sidebar" />}
-              </IconButton>
-            </Hidden>
-          </Toolbar>
-          <Divider />
-          <MobileChat
-            message={message}
-            setMessage={setMessage}
-            messages={messages}
-            setMessages={setMessages}
-            bottom={bottom}
-            chatData={chatData}
-            owners={owners}
-          />
-          <DesktopChat
-            message={message}
-            setMessage={setMessage}
-            messages={messages}
-            setMessages={setMessages}
-            bottom={bottom}
-            chatData={chatData}
-          />
+          </Box>
         </Main>
         <Hidden mdDown>
           <Drawer
@@ -442,61 +465,18 @@ const Chat = () => {
             anchor="right"
             open={open}
           >
-            <Toolbar>
-              <Typography sx={{ fontWeight: 500 }}>Overview</Typography>
+            <Toolbar
+              sx={{
+                position: 'sticky',
+                zIndex: 1,
+                top: 0,
+                bgcolor: 'background.default',
+              }}
+            >
+              <Typography sx={{ fontWeight: 600 }}>Overview</Typography>
             </Toolbar>
             <Divider />
-            <Box
-              sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 3, px: 3 }}
-            >
-              <Typography sx={{ color: grey[500] }}>Network</Typography>
-              <Typography>
-                {safe?.chainId === '137'
-                  ? 'Matic'
-                  : safe?.chainId === '1'
-                  ? 'Ethereum'
-                  : safe?.chainId === '10'
-                  ? 'Optimism'
-                  : safe?.chainId === '80001'
-                  ? 'Mumbai'
-                  : ''}
-              </Typography>
-            </Box>
-            <Box
-              sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 3, px: 3 }}
-            >
-              <Typography sx={{ color: grey[500] }} paragraph>
-                Address
-              </Typography>
-              <Typography paragraph noWrap>
-                {ellipsisAddress(`${safeAddress}`)}
-              </Typography>
-            </Box>
-            <Divider />
-            <Members members={owners} />
-            <Divider />
-            <TransactionQueue />
-            <Divider />
-            <TransactionHistory />
-            <Divider />
-            <Box sx={{ p: 3 }}>
-              <Typography sx={{ fontWeight: 500 }} paragraph>
-                Assets
-              </Typography>
-              <Typography paragraph>View all tokens and NFTs the Safe holds.</Typography>
-              <Box sx={{ bgcolor: 'background.default' }}>
-                <Link
-                  href={{ pathname: AppRoutes.balances.nfts, query: { safe: `${safeAddress}` } }}
-                  key={`${safe}`}
-                  passHref
-                >
-                  <Button variant="outlined" sx={{ mb: 2 }} fullWidth>
-                    View Assets
-                  </Button>
-                </Link>
-                <NewTxButton />
-              </Box>
-            </Box>
+            <ChatOverview owners={owners} />
           </Drawer>
         </Hidden>
       </Box>

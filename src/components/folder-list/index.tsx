@@ -72,7 +72,7 @@ export const FolderList: React.FC<{
               {folder.badge ? <BadgeAvatar name={folder.name} /> : <Avatar alt={folder.name} />}
             </ListItemAvatar> */}
             <ListItemAvatar>
-              <Avatar alt={safe} />
+              <Avatar sx={{ height: 32, width: 32 }} alt={safe} />
             </ListItemAvatar>
             <ListItemText
               primary={<Typography sx={{ fontWeight: 500 }}>{ellipsisAddress(safe)}</Typography>}
