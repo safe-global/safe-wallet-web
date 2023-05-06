@@ -1,16 +1,18 @@
 import CheckWallet from '@/components/common/CheckWallet'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import Button from '@mui/material/Button'
+import AddIcon from '@mui/icons-material/Add'
+import { IconButton } from '@mui/material'
 import dynamic from 'next/dynamic'
 import { Suspense, useState, type ReactElement } from 'react'
 
 const NewTxModal = dynamic(() => import('@/components/tx/modals/NewTxModal'))
 
-const NewTxButton = (): ReactElement => {
+const AddNewTxIconButton = (): ReactElement => {
   const [txOpen, setTxOpen] = useState<boolean>(false)
 
   const onClick = () => {
     setTxOpen(true)
+
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 
@@ -18,9 +20,9 @@ const NewTxButton = (): ReactElement => {
     <>
       <CheckWallet allowSpendingLimit>
         {(isOk) => (
-          <Button onClick={onClick} disabled={!isOk} variant="outlined" size="small">
-            New transaction
-          </Button>
+          <IconButton aria-label="add transaction" onClick={onClick} disabled={!isOk}>
+            <AddIcon fontSize="small" />
+          </IconButton>
         )}
       </CheckWallet>
 
@@ -33,4 +35,4 @@ const NewTxButton = (): ReactElement => {
   )
 }
 
-export default NewTxButton
+export default AddNewTxIconButton

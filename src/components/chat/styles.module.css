@@ -4,12 +4,6 @@
   overflow-y: scroll;
 }
 
-.logincard {
-  background: transparent;
-  border: 2px solid #fff;
-  color: #fff;
-}
-
 .messagecontainer {
   background: #8080801f;
   padding: 14px;

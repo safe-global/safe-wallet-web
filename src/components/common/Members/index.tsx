@@ -1,7 +1,7 @@
+import { AddOwner } from '@/components/chat/AddOwner'
+import ellipsisAddress from '@/utils/ellipsisAddress'
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
 import React from 'react'
-import ellipsisAddress from '@/utils/ellipsisAddress'
-import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
 
 interface TypeMembers {
   members: any[]
@@ -10,9 +10,9 @@ interface TypeMembers {
 const Members: React.FC<TypeMembers> = ({ members }) => {
   return (
     <>
-      <Box sx={{ pt: 3, pl: 3 }}>
+      <Box sx={{ pt: 3, pl: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography sx={{ fontWeight: 500 }}>Members</Typography>
-        <AddOwnerDialog />
+        <AddOwner />
       </Box>
       <List sx={{ pl: 1 }}>
         {members.map((member, index) => (
