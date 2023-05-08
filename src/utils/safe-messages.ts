@@ -1,6 +1,7 @@
 import { hashMessage } from 'ethers/lib/utils'
 import { gte } from 'semver'
 import { adjustVInSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
+import { ethers } from 'ethers'
 import type { SafeInfo, SafeMessage, EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { providers, TypedDataDomain } from 'ethers'
 
@@ -90,7 +91,7 @@ export const tryOffChainMsgSigning = async (
         const signerAddress = await signer.getAddress()
 
         const messageHash = generateSafeMessageHash(safe, message)
-        const signature = await signer.signMessage(messageHash)
+        const signature = await signer.signMessage(ethers.utils.arrayify(messageHash))
 
         return adjustVInSignature(signingMethod, signature, messageHash, signerAddress)
       }
