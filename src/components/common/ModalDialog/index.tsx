@@ -16,7 +16,6 @@ interface DialogTitleProps {
   children: ReactNode
   onClose?: ModalProps['onClose']
   hideChainIndicator?: boolean
-  closeButtonTooltip?: ReactElement
 }
 
 export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false, ...other }: DialogTitleProps) => {

@@ -6,8 +6,6 @@ import {
   Typography,
   DialogContent,
   SvgIcon,
-  Link,
-  Stack,
   Dialog,
   DialogTitle,
   DialogContentText,
@@ -38,7 +36,6 @@ import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 import SuccessMessage from '@/components/tx/SuccessMessage'
@@ -185,32 +182,17 @@ const MsgModal = ({
     }
   }, [onClose, ongoingMessage, requestId])
 
-  const closeTooltipTitle = useMemo(
-    () => (
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', padding: '8px' }}>
-        <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" />
-        <Link onClick={onClose} component="button" variant="body1" sx={{ textDecoration: 'none' }}>
-          Abort
-        </Link>
-      </Stack>
-    ),
-    [onClose],
-  )
-
   return (
     <>
-      <ModalDialog open onClose={handleClose} maxWidth="sm" fullWidth>
+      <ModalDialog open maxWidth="sm" fullWidth>
         <div className={txStepperCss.container}>
-          <ModalDialogTitle
-            onClose={requestId ? undefined : handleClose}
-            closeButtonTooltip={showCloseTooltip ? closeTooltipTitle : undefined}
-          >
+          <ModalDialogTitle onClose={requestId ? undefined : handleClose}>
             <Grid container px={1} alignItems="center" gap={2}>
               <Grid item>
                 <Box display="flex" alignItems="center">
                   <SafeAppIconCard
                     src={logoUri || APP_LOGO_FALLBACK_IMAGE}
-                    alt={name || 'An icon of an application'}
+                    alt={name || 'The icon of the application'}
                     width={24}
                     height={24}
                   />
@@ -230,7 +212,7 @@ const MsgModal = ({
               Confirm message
             </Typography>
             <Typography variant="body1" textAlign="center" mb={2}>
-              To sign this message, collect <b>{safe.threshold} signatures</b> from your Safe Account.
+              To sign this message, you need to collect <b>{safe.threshold} owner signatures</b> of your Safe Account.
             </Typography>
             <Typography fontWeight={700} mb={1}>
               Message:{' '}
@@ -271,8 +253,8 @@ const MsgModal = ({
             <InfoBox
               message={
                 requestId
-                  ? 'Please keep this modal open until all signers will confirm the message. Closing this modal will abort the signing request.'
-                  : 'The first signer will submit the siganture to the Safe App when the message is fully signed'
+                  ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
+                  : 'The signature will be submitted to the Safe App when the message is fully signed.'
               }
             >
               <MsgSigners
@@ -299,7 +281,7 @@ const MsgModal = ({
 
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button variant="contained" color="inherit" onClick={onSign} disabled={isDisabled}>
+            <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
               Sign
             </Button>
           </DialogActions>
@@ -312,10 +294,10 @@ const MsgModal = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Cancel sign message request</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Cancel message signing request</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <Typography variant="body2">If you close the modal now, the signature request will be aborted.</Typography>
+            <Typography variant="body2">If you close this modal, the signing request will be aborted.</Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
