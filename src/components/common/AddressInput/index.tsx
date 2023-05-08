@@ -91,7 +91,7 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
 
             setValueAs: (value: string): string => {
               // Clean the input value
-              const cleanValue = cleanInputValue(value, currentShortName)
+              const cleanValue = cleanInputValue(value)
               rawValueRef.current = cleanValue
               // This also checksums the address
               return parsePrefixedAddress(cleanValue).address

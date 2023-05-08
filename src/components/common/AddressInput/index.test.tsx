@@ -83,6 +83,15 @@ describe('AddressInput tests', () => {
     const { input, utils } = setup('')
 
     act(() => {
+      fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
+      jest.advanceTimersByTime(1000)
+    })
+
+    await waitFor(() =>
+      expect(utils.getByLabelText(`"eth" doesn't match the current chain`, { exact: false })).toBeDefined(),
+    )
+
+    act(() => {
       fireEvent.change(input, { target: { value: 'gor:0x123' } })
       jest.advanceTimersByTime(1000)
     })
