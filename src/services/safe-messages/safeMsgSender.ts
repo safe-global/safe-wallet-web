@@ -1,11 +1,10 @@
 import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import { isObjectEIP712TypedData } from '@safe-global/safe-apps-sdk'
-import type { TypedDataDomain } from 'ethers'
 import type { OnboardAPI } from '@web3-onboard/core'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
-import { generateSafeMessageHash, generateSafeMessageTypedData } from '@/utils/safe-messages'
+import { generateSafeMessageHash, tryOffChainMsgSigning } from '@/utils/safe-messages'
 import { normalizeTypedData } from '@/utils/web3'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
 
@@ -21,12 +20,10 @@ export const dispatchSafeMsgProposal = async ({
   safeAppId?: number
 }): Promise<void> => {
   const messageHash = generateSafeMessageHash(safe, message)
-  let signature = undefined
-  try {
-    const typedData = generateSafeMessageTypedData(safe, message)
 
+  try {
     const signer = await getAssertedChainSigner(onboard, safe.chainId)
-    signature = await signer._signTypedData(typedData.domain as TypedDataDomain, typedData.types, typedData.message)
+    const signature = await tryOffChainMsgSigning(signer, safe, message)
 
     let normalizedMessage = message
     if (isObjectEIP712TypedData(message)) {
@@ -64,14 +61,8 @@ export const dispatchSafeMsgConfirmation = async ({
   const messageHash = generateSafeMessageHash(safe, message)
 
   try {
-    const typedData = generateSafeMessageTypedData(safe, message)
-
     const signer = await getAssertedChainSigner(onboard, safe.chainId)
-    const signature = await signer._signTypedData(
-      typedData.domain as TypedDataDomain,
-      typedData.types,
-      typedData.message,
-    )
+    const signature = await tryOffChainMsgSigning(signer, safe, message)
 
     await confirmSafeMessage(safe.chainId, messageHash, {
       signature,

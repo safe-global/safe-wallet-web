@@ -17,7 +17,7 @@ import {
   getSafeSDKWithSigner,
   getUncheckedSafeSDK,
   assertWalletChain,
-  tryOffChainSigning,
+  tryOffChainTxSigning,
 } from './sdk'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
@@ -78,7 +78,7 @@ export const dispatchTxSigning = async (
 
   let signedTx: SafeTransaction | undefined
   try {
-    signedTx = await tryOffChainSigning(safeTx, safeVersion, sdk)
+    signedTx = await tryOffChainTxSigning(safeTx, safeVersion, sdk)
   } catch (error) {
     txDispatch(TxEvent.SIGN_FAILED, { txId, error: error as Error })
     throw error
