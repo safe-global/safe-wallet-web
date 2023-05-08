@@ -21,7 +21,7 @@ const AddNewTxIconButton = (): ReactElement => {
       <CheckWallet allowSpendingLimit>
         {(isOk) => (
           <IconButton aria-label="add transaction" onClick={onClick} disabled={!isOk}>
-            <AddIcon fontSize="small" />
+            <AddIcon fontSize="medium" />
           </IconButton>
         )}
       </CheckWallet>

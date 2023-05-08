@@ -3,7 +3,6 @@ import useWallet from '@/hooks/wallets/useWallet'
 import {
   Avatar,
   Box,
-  Divider,
   List,
   ListItem,
   ListItemAvatar,
@@ -40,7 +39,7 @@ export const ChatSection: React.FC<{
             alignItems: 'start',
             gap: '16px',
             p: 3,
-            bgcolor: 'background.default',
+            bgcolor: 'background.paper',
           }}
         >
           <Typography sx={{ fontWeight: 500 }}>Thursday, 9 March 2023</Typography>
@@ -53,9 +52,8 @@ export const ChatSection: React.FC<{
                       sx={{
                         display: 'flex',
                         alignItems: 'start',
-                        bgcolor: 'background.paper',
-                        borderRadius: '8px',
-                        p: 2,
+                        borderRadius: '4px',
+                        p: 0,
                         mb: 2,
                         width: '100%',
                       }}
@@ -89,22 +87,22 @@ export const ChatSection: React.FC<{
                     <ListItem key={index} sx={{ mb: 1 }} alignItems="flex-start" disableGutters>
                       <TxListItem key={`${index}-tx`} item={chat?.data} />
                       <ListItemText
-                        primary={
-                          <React.Fragment>
-                            <Typography
-                              sx={{ display: 'inline', pr: '8px', fontWeight: 600 }}
-                              component="span"
-                              variant="subtitle2"
-                            >
-                              {chat.name}
-                            </Typography>
-                            <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                              {chat.timeAgo}
-                            </Typography>
-                          </React.Fragment>
-                        }
-                        secondary={chat.message}
-                      />
+                         primary={
+                           <React.Fragment>
+                             <Typography
+                               sx={{ display: 'inline', pr: '8px', fontWeight: 600 }}
+                               component="span"
+                               variant="subtitle2"
+                             >
+                               {chat.name}
+                             </Typography>
+                             <Typography sx={{ display: 'inline' }} component="span" variant="body2">
+                               {chat.timeAgo}
+                             </Typography>
+                           </React.Fragment>
+                         }
+                         secondary={chat.message}
+                    />
                     </ListItem>
                   )
                 }
@@ -117,13 +115,12 @@ export const ChatSection: React.FC<{
       <Box
         sx={{
           flexShrink: 0,
-          bgcolor: 'background.default',
+          bgcolor: 'background.paper',
           position: 'sticky',
           bottom: 0,
         }}
       >
-        <Divider />
-        <Box sx={{ width: '100%', display: 'flex', gap: '16px', p: 3 }}>
+        <Box sx={{ width: '100%', display: 'flex', gap: '16px', p: 3, pt: 0 }}>
           <TextField
             sx={{ flexGrow: 1 }}
             label="Type Something"

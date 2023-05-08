@@ -1,5 +1,5 @@
 {
-  "extends": ["next", "prettier", "plugin:prettier/recommended"],
+  "extends": ["next"],
   "rules": {
     "@next/next/no-img-element": "off",
     "unused-imports/no-unused-imports-ts": "error",

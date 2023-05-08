@@ -8,6 +8,7 @@ import React from 'react'
 import Members from '../common/Members'
 import TransactionHistory from '../common/TransactionHistory'
 import TransactionQueue from '../common/TransactionQueue'
+import css from '@/components/chat/styles.module.css'
 
 export const ChatOverview: React.FC<{
   owners: any[]
@@ -15,7 +16,7 @@ export const ChatOverview: React.FC<{
   const { safe, safeAddress } = useSafeInfo()
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 2, px: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 2, px: 3 }}>
         <Typography sx={{ color: grey[600] }}>Network</Typography>
         <Typography>
           {safe?.chainId === '137'
@@ -29,7 +30,7 @@ export const ChatOverview: React.FC<{
             : ''}
         </Typography>
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 2, px: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 2, px: 3 }}>
         <Typography sx={{ color: grey[600] }} paragraph>
           Address
         </Typography>
@@ -44,18 +45,19 @@ export const ChatOverview: React.FC<{
       <Divider />
       <TransactionHistory />
       <Divider />
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 3 }}>
         <Typography sx={{ fontWeight: 600 }} paragraph>
           Assets
         </Typography>
         <Typography paragraph>View all tokens and NFTs the Safe holds.</Typography>
         <Link href={{ pathname: AppRoutes.balances.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" size="small">
+          <Button variant="outlined" className={css.buttonstyled} size="small">
             View Assets
           </Button>
         </Link>
       </Box>
-      <Box sx={{ p: 2 }}>
+      <Divider />
+      <Box sx={{ p: 3 }}>
         <Typography sx={{ fontWeight: 600 }} paragraph>
           Apps
         </Typography>
@@ -64,7 +66,7 @@ export const ChatOverview: React.FC<{
           securely and efficiently
         </Typography>
         <Link href={{ pathname: AppRoutes.apps.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" size="small">
+          <Button variant="outlined" className={css.buttonstyled} size="small">
             Explore Apps
           </Button>
         </Link>
@@ -74,19 +76,22 @@ export const ChatOverview: React.FC<{
           position: 'sticky',
           bottom: 0,
           p: 2,
+          pl: 3,
+          pr: 3,
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          bgcolor: 'background.default',
+          bgcolor: 'background.paper',
+          borderTop: '1px solid var(--color-border-light)'
         }}
       >
         <Link href={{ pathname: AppRoutes.balances.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" fullWidth>
-            Send Tokens
+          <Button variant="outlined" className={css.buttonstyled} fullWidth>
+            Send tokens
           </Button>
         </Link>
         <Link href={{ pathname: AppRoutes.balances.nfts, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" fullWidth>
+          <Button variant="outlined" className={css.buttonstyled} fullWidth>
             Send NFTs
           </Button>
         </Link>

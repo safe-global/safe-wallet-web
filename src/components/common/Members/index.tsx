@@ -10,7 +10,7 @@ interface TypeMembers {
 const Members: React.FC<TypeMembers> = ({ members }) => {
   return (
     <>
-      <Box sx={{ pt: 3, pl: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box sx={{ pt: 2, px: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography sx={{ fontWeight: 600 }}>Members</Typography>
         <AddOwner />
       </Box>

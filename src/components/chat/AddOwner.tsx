@@ -44,7 +44,7 @@ export const AddOwner = () => {
         {(isOk) => (
           <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
             <IconButton onClick={() => setOpen(true)} disabled={!isOk}>
-              <SvgIcon component={AddIcon} inheritViewBox fontSize="small" />
+              <SvgIcon component={AddIcon} inheritViewBox fontSize="medium" />
             </IconButton>
           </Track>
         )}

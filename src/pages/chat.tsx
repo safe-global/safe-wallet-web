@@ -49,7 +49,7 @@ const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false }
 
 const CometChatLoginNoSSR = dynamic(() => import('@/components/chat/login'), { ssr: false })
 
-const drawerWidth = 300
+const drawerWidth = 360
 
 const Main = styled('div', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean
@@ -309,7 +309,7 @@ const Chat = () => {
               flexShrink: 0,
               '& .MuiDrawer-paper': {
                 width: drawerWidth,
-                bgcolor: 'background.paper',
+                bgcolor: 'background.default',
                 boxSizing: 'border-box',
               },
             }}
@@ -397,7 +397,7 @@ const Chat = () => {
             </Toolbar>
           </Drawer>
         </Hidden>
-        <Main open={open} sx={{ flexGrow: 1, bgcolor: 'background.default' }}>
+        <Main open={open} sx={{ flexGrow: 1, bgcolor: 'background.paper' }}>
           <Box display="flex">
             <Box flexGrow={1}>
               <Toolbar
@@ -409,7 +409,7 @@ const Chat = () => {
                   px: 3,
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  bgcolor: 'background.default',
+                  bgcolor: 'background.paper',
                 }}
               >
                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
@@ -457,7 +457,7 @@ const Chat = () => {
               flexShrink: 0,
               '& .MuiDrawer-paper': {
                 width: drawerWidth,
-                bgcolor: 'background.default',
+                bgcolor: 'background.paper',
                 boxSizing: 'border-box',
               },
             }}
@@ -470,7 +470,7 @@ const Chat = () => {
                 position: 'sticky',
                 zIndex: 1,
                 top: 0,
-                bgcolor: 'background.default',
+                bgcolor: 'background.paper',
               }}
             >
               <Typography sx={{ fontWeight: 600 }}>Overview</Typography>
