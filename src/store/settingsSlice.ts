@@ -39,7 +39,7 @@ export type SettingsState = {
   }
   env: EnvState
   signing: {
-    useOnChainSigning: boolean
+    onChainSigning: boolean
   }
 }
 
@@ -64,7 +64,7 @@ const initialState: SettingsState = {
     },
   },
   signing: {
-    useOnChainSigning: false,
+    onChainSigning: false,
   },
 }
 
@@ -98,7 +98,7 @@ export const settingsSlice = createSlice({
       state.env = payload
     },
     setUseOnChainSigning: (state, { payload }: PayloadAction<boolean>) => {
-      state.signing.useOnChainSigning = payload
+      state.signing.onChainSigning = payload
     },
     setSettings: (_, { payload }: PayloadAction<SettingsState>) => {
       // We must return as we are overwriting the entire state
@@ -140,4 +140,4 @@ export const selectTenderly = createSelector(selectSettings, (settings) => setti
 
 export const isEnvInitialState = createSelector(selectSettings, (settings) => isEqual(settings.env, initialState.env))
 
-export const selectUseOnChainSigning = createSelector(selectSettings, (settings) => settings.signing.useOnChainSigning)
+export const selectUseOnChainSigning = createSelector(selectSettings, (settings) => settings.signing.onChainSigning)

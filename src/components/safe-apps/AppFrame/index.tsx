@@ -57,7 +57,7 @@ type AppFrameProps = {
 const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
-  // HACK: We enforce offChainSigning for all apps
+  // We use offChainSigning by default
   const [settings, setSettings] = useState<SafeSettings>({
     offChainSigning: true,
   })

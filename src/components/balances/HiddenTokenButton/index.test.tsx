@@ -84,7 +84,7 @@ describe('HiddenTokenToggle', () => {
             rpc: {},
           },
           signing: {
-            useOnChainSigning: false,
+            onChainSigning: false,
           },
         },
       },

@@ -5,13 +5,13 @@ import { selectUseOnChainSigning, setUseOnChainSigning } from '@/store/settingsS
 import { FormControlLabel, Checkbox, Paper, Typography, FormGroup, Grid } from '@mui/material'
 
 export const SafeAppsSigningMethod = () => {
-  const useOnChainSigning = useAppSelector(selectUseOnChainSigning)
+  const onChainSigning = useAppSelector(selectUseOnChainSigning)
 
   const dispatch = useAppDispatch()
 
   const onChange = () => {
     trackEvent(SETTINGS_EVENTS.SAFE_APPS.CHANGE_SIGNING_METHOD)
-    dispatch(setUseOnChainSigning(!useOnChainSigning))
+    dispatch(setUseOnChainSigning(!onChainSigning))
   }
 
   return (
@@ -25,9 +25,8 @@ export const SafeAppsSigningMethod = () => {
 
         <Grid item xs>
           <Typography mb={2}>
-            This setting determines how your Safe Account will sign message requests from Safe Apps. By default it is
-            preferred to use gasless off-chain signatures. In case some Dapps only support on-chain signatures the
-            default behavior can be changed with this setting. Learn more about message signing{' '}
+            This setting determines how the {'Safe{Wallet}'} will sign message requests from Safe Apps. Gasless,
+            off-chain signing is used by default. Learn more about message signing{' '}
             <ExternalLink href="https://help.safe.global/en/articles/7021891-what-are-signed-messages">
               here
             </ExternalLink>
@@ -41,7 +40,7 @@ export const SafeAppsSigningMethod = () => {
                   color: palette.text.disabled,
                 },
               })}
-              control={<Checkbox checked={useOnChainSigning} onChange={onChange} name="use-on-chain-signing" />}
+              control={<Checkbox checked={onChainSigning} onChange={onChange} name="use-on-chain-signing" />}
               label="Always use on-chain signatures"
             />
           </FormGroup>
