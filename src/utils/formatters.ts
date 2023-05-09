@@ -75,11 +75,8 @@ export const dateString = (date: number) => {
   return new Intl.DateTimeFormat(undefined, formatterOptions).format(new Date(date))
 }
 
-export const camelCaseToSpaces = (str: string): string => {
-  return str
-    .replace(/([A-Z][a-z0-9]+)/g, ' $1 ')
-    .replace(/\s{2}/g, ' ')
-    .trim()
+export const camelCaseToWords = (camelCase: string): string => {
+  return camelCase.replace(/[a-z](?=[A-Z])/g, (str) => str + ' ')
 }
 
 export const ellipsis = (str: string, length: number): string => {
