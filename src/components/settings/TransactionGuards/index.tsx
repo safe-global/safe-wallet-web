@@ -47,9 +47,9 @@ const TransactionGuards = () => {
         <Grid item xs>
           <Box>
             <Typography>
-              Transaction guards impose additional constraints that are checked prior to executing a Safe Account
-              transaction. Transaction guards are potentially risky, so make sure to only use transaction guards from
-              trusted sources. Learn more about transaction guards{' '}
+              Transaction guards impose additional constraints that are checked prior to executing a Safe transaction.
+              Transaction guards are potentially risky, so make sure to only use transaction guards from trusted
+              sources. Learn more about transaction guards{' '}
               <ExternalLink href={HelpCenterArticle.TRANSACTION_GUARD}>here</ExternalLink>.
             </Typography>
             {safe.guard ? (

@@ -106,11 +106,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       origin: document.location.origin,
     }),
     onGetSafeInfo: useGetSafeInfo(),
-    onGetSafeBalances: (currency) =>
-      getBalances(chainId, safeAddress, currency, {
+    onGetSafeBalances: (currency) => {
+      const isDefaultTokenlistSupported = chain && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
+      return getBalances(chainId, safeAddress, currency, {
         exclude_spam: true,
-        trusted: TOKEN_LISTS.TRUSTED === tokenlist,
-      }),
+        trusted: isDefaultTokenlistSupported && TOKEN_LISTS.TRUSTED === tokenlist,
+      })
+    },
     onGetChainInfo: () => {
       if (!chain) return
 
@@ -134,7 +136,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       setSettings(newSettings)
 
       if (!isEIP1271Supported && safeSettings.offChainSigning) {
-        console.warn('The connected Safe Account does not support off-chain signing.')
+        console.warn('The connected Safe does not support off-chain signing.')
       }
 
       return newSettings

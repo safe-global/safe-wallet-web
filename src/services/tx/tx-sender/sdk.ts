@@ -18,9 +18,7 @@ import type { JsonRpcSigner } from '@ethersproject/providers'
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
   if (!safeSDK) {
-    throw new Error(
-      'The Safe SDK could not be initialized. Please be aware that we only support v1.0.0 Safe Accounts and up.',
-    )
+    throw new Error('The Safe SDK could not be initialized. Please be aware that we only support v1.0.0 Safes and up.')
   }
   return safeSDK
 }

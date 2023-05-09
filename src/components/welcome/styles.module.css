@@ -41,6 +41,13 @@
   height: 100%;
 }
 
+.createAddCard {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  height: 100%;
+}
+
 .fileIcon {
   display: flex;
   align-items: center;
