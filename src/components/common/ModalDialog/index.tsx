@@ -1,9 +1,9 @@
-import { type ReactElement, type ReactNode, useState } from 'react'
-import { type ModalProps, Tooltip } from '@mui/material'
-import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery } from '@mui/material'
+import { type ReactElement, type ReactNode } from 'react'
+import { IconButton, type ModalProps } from '@mui/material'
+import { Dialog, DialogTitle, type DialogProps, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import CloseIcon from '@mui/icons-material/Close'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import CloseIcon from '@mui/icons-material/Close'
 
 import css from './styles.module.css'
 
@@ -16,46 +16,28 @@ interface DialogTitleProps {
   children: ReactNode
   onClose?: ModalProps['onClose']
   hideChainIndicator?: boolean
-  closeButtonTooltip?: ReactElement
 }
 
-export const ModalDialogTitle = ({
-  children,
-  onClose,
-  hideChainIndicator = false,
-  closeButtonTooltip,
-  ...other
-}: DialogTitleProps) => {
-  const [tooltipOpen, setTooltipOpen] = useState<boolean>(false)
-
+export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false, ...other }: DialogTitleProps) => {
   return (
     <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }} {...other}>
       {children}
       <span style={{ flex: 1 }} />
       {!hideChainIndicator && <ChainIndicator inline />}
       {onClose ? (
-        <Tooltip
-          open={tooltipOpen && !!closeButtonTooltip}
-          title={closeButtonTooltip}
-          arrow
-          disableHoverListener
-          disableFocusListener
+        <IconButton
+          aria-label="close"
+          onClick={(e) => {
+            onClose(e, 'backdropClick')
+          }}
+          size="small"
+          sx={{
+            ml: 2,
+            color: 'border.main',
+          }}
         >
-          <IconButton
-            aria-label="close"
-            onClick={(e) => {
-              setTooltipOpen((val) => !val)
-              onClose(e, 'backdropClick')
-            }}
-            size="small"
-            sx={{
-              ml: 2,
-              color: 'border.main',
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Tooltip>
+          <CloseIcon />
+        </IconButton>
       ) : null}
     </DialogTitle>
   )
