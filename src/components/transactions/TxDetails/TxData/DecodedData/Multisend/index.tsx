@@ -10,9 +10,8 @@ import css from './styles.module.css'
 
 type MultisendProps = {
   txData?: TransactionData
-  variant?: AccordionProps['variant']
   showDelegateCallWarning?: boolean
-  noHeader?: boolean
+  compact?: boolean
 }
 
 const MIN_SCROLL_TXS = 4
@@ -50,9 +49,8 @@ const MultisendActionsHeader = ({
 
 export const Multisend = ({
   txData,
-  variant = 'elevation',
   showDelegateCallWarning = true,
-  noHeader = false,
+  compact = false,
 }: MultisendProps): ReactElement | null => {
   const [openMap, setOpenMap] = useState<Record<number, boolean>>()
   const isOpenMapUndefined = openMap == null
@@ -87,39 +85,37 @@ export const Multisend = ({
 
   return (
     <>
-      {!noHeader && <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />}
+      <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />
 
-      <div className={noHeader && multiSendTransactions.length >= MIN_SCROLL_TXS ? css.scrollWrapper : undefined}>
-        <Box display="flex" flexDirection="column" gap={noHeader ? 1 : undefined}>
-          {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
-            const onChange: AccordionProps['onChange'] = (_, expanded) => {
-              setOpenMap((prev) => ({
-                ...prev,
-                [index]: expanded,
-              }))
-            }
+      <Box display="flex" flexDirection="column" gap={compact ? 1 : undefined}>
+        {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
+          const onChange: AccordionProps['onChange'] = (_, expanded) => {
+            setOpenMap((prev) => ({
+              ...prev,
+              [index]: expanded,
+            }))
+          }
 
-            return (
-              <SingleTxDecoded
-                key={`${data ?? to}-${index}`}
-                tx={{
-                  dataDecoded,
-                  data,
-                  value,
-                  to,
-                  operation,
-                }}
-                txData={txData}
-                showDelegateCallWarning={showDelegateCallWarning}
-                actionTitle={`Action ${index + 1}`}
-                variant={variant}
-                expanded={openMap?.[index] ?? false}
-                onChange={onChange}
-              />
-            )
-          })}
-        </Box>
-      </div>
+          return (
+            <SingleTxDecoded
+              key={`${data ?? to}-${index}`}
+              tx={{
+                dataDecoded,
+                data,
+                value,
+                to,
+                operation,
+              }}
+              txData={txData}
+              showDelegateCallWarning={showDelegateCallWarning}
+              actionTitle={`Action ${index + 1}`}
+              variant="elevation"
+              expanded={openMap?.[index] ?? false}
+              onChange={onChange}
+            />
+          )
+        })}
+      </Box>
     </>
   )
 }
