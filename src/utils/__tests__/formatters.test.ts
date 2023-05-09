@@ -33,7 +33,7 @@ describe('formatters', () => {
       expect(formatters.camelCaseToSpaces('safeTransferFrom')).toEqual('safe Transfer From')
     })
 
-    it('should convert "depositERC20token" to "transfer ERC20 Token"', () => {
+    it('should convert "depositERC20token" to "deposit ERC20 Token"', () => {
       expect(formatters.camelCaseToSpaces('depositERC20Token')).toEqual('deposit ERC20 Token')
     })
   })
