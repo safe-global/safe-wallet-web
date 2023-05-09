@@ -45,7 +45,7 @@ import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
 import useGetSafeInfo from './useGetSafeInfo'
 import { hasFeature, FEATURES } from '@/utils/chains'
-import { selectTokenList, selectUseOnChainSigning, TOKEN_LISTS } from '@/store/settingsSlice'
+import { selectTokenList, selectOnChainSigning, TOKEN_LISTS } from '@/store/settingsSlice'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -65,7 +65,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe, safeLoaded, safeAddress } = useSafeInfo()
   const tokenlist = useAppSelector(selectTokenList)
-  const useOnChainSigning = useAppSelector(selectUseOnChainSigning)
+  const useOnChainSigning = useAppSelector(selectOnChainSigning)
 
   const addressBook = useAddressBook()
   const chain = useCurrentChain()

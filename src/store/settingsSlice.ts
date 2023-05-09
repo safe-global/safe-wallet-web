@@ -97,7 +97,7 @@ export const settingsSlice = createSlice({
     setEnv: (state, { payload }: PayloadAction<EnvState>) => {
       state.env = payload
     },
-    setUseOnChainSigning: (state, { payload }: PayloadAction<boolean>) => {
+    setOnChainSigning: (state, { payload }: PayloadAction<boolean>) => {
       state.signing.onChainSigning = payload
     },
     setSettings: (_, { payload }: PayloadAction<SettingsState>) => {
@@ -117,7 +117,7 @@ export const {
   setHiddenTokensForChain,
   setTokenList,
   setEnv,
-  setUseOnChainSigning,
+  setOnChainSigning,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
@@ -140,4 +140,4 @@ export const selectTenderly = createSelector(selectSettings, (settings) => setti
 
 export const isEnvInitialState = createSelector(selectSettings, (settings) => isEqual(settings.env, initialState.env))
 
-export const selectUseOnChainSigning = createSelector(selectSettings, (settings) => settings.signing.onChainSigning)
+export const selectOnChainSigning = createSelector(selectSettings, (settings) => settings.signing.onChainSigning)

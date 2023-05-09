@@ -1,21 +1,21 @@
 import ExternalLink from '@/components/common/ExternalLink'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectUseOnChainSigning, setUseOnChainSigning } from '@/store/settingsSlice'
+import { selectOnChainSigning, setOnChainSigning } from '@/store/settingsSlice'
 import { FormControlLabel, Checkbox, Paper, Typography, FormGroup, Grid } from '@mui/material'
 
 export const SafeAppsSigningMethod = () => {
-  const onChainSigning = useAppSelector(selectUseOnChainSigning)
+  const onChainSigning = useAppSelector(selectOnChainSigning)
 
   const dispatch = useAppDispatch()
 
   const onChange = () => {
     trackEvent(SETTINGS_EVENTS.SAFE_APPS.CHANGE_SIGNING_METHOD)
-    dispatch(setUseOnChainSigning(!onChainSigning))
+    dispatch(setOnChainSigning(!onChainSigning))
   }
 
   return (
-    <Paper sx={{ padding: 4 }}>
+    <Paper sx={{ padding: 4, mt: 2 }}>
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight="bold" mb={1}>
