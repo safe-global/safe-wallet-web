@@ -1,13 +1,17 @@
 import { AppRoutes } from '@/config/routes'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ellipsisAddress from '@/utils/ellipsisAddress'
-import { Box, Button, Divider, Typography } from '@mui/material'
+import { Box, Button, Divider, Typography, SvgIcon } from '@mui/material'
 import { grey } from '@mui/material/colors'
 import Link from 'next/link'
 import React from 'react'
 import Members from '../common/Members'
 import TransactionHistory from '../common/TransactionHistory'
 import TransactionQueue from '../common/TransactionQueue'
+
+import AssetsIcon from '@/public/images/sidebar/assets.svg'
+import NftIcon from '@/public/images/common/nft.svg'
+
 import css from '@/components/chat/styles.module.css'
 
 export const ChatOverview: React.FC<{
@@ -86,12 +90,12 @@ export const ChatOverview: React.FC<{
         }}
       >
         <Link href={{ pathname: AppRoutes.balances.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" className={css.buttonstyled} fullWidth>
+          <Button variant="outlined" className={css.buttonstyled} startIcon={<SvgIcon component={AssetsIcon} inheritViewBox />} fullWidth>
             Send tokens
           </Button>
         </Link>
         <Link href={{ pathname: AppRoutes.balances.nfts, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" className={css.buttonstyled} fullWidth>
+          <Button variant="outlined" className={css.buttonstyled} startIcon={<SvgIcon component={NftIcon} inheritViewBox />} fullWidth>
             Send NFTs
           </Button>
         </Link>

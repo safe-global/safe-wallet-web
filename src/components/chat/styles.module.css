@@ -76,7 +76,7 @@
 .buttonstyled {
   border: 1px solid var(--color-border-light);
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: inherit;
 }
 

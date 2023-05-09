@@ -371,10 +371,9 @@ const Chat = () => {
                       gap: '16px',
                     }}
                   >
-                    <Avatar sx={{ height: 32, width: 32 }} alt="Daniel from Decentra" />
+                    <Avatar sx={{ height: 36, width: 36 }} alt="Daniel from Decentra" />
                     <Box>
-                      <Typography sx={{ fontWeight: 600 }}>{ellipsisAddress(`${safeAddress}`)}</Typography>
-                      <Typography sx={{ color: grey[600] }}>{ellipsisAddress(`${wallet.address}`)}</Typography>
+                      <Typography sx={{ fontWeight: 600 }}>{ellipsisAddress(`${wallet.address}`)}</Typography>
                     </Box>
                   </Box>
                   {/* <Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} /> */}
@@ -412,16 +411,14 @@ const Chat = () => {
                   bgcolor: 'background.paper',
                 }}
               >
-                <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '14px' }}>
                   <Link href={{ pathname: AppRoutes.home, query: { safe: `${safeAddress}` } }}>
                     <IconButton aria-label="back">
                       <ArrowBackIos />
                     </IconButton>
                   </Link>
-                  <Avatar sx={{ height: 32, width: 32 }} alt="Decentra" />
-                  <Typography variant="h6" component="h6" sx={{ fontWeight: 600 }}>
-                    Treasury Chat
-                  </Typography>
+                  <Avatar sx={{ height: 36, width: 36, borderRadius: '6px' }} alt="Decentra" />
+                  <Typography sx={{ fontWeight: 600 }}>{ellipsisAddress(`${safeAddress}`)}</Typography>
                 </Box>
                 <Hidden mdDown>
                   <IconButton onClick={toggleDrawer(!open)}>
