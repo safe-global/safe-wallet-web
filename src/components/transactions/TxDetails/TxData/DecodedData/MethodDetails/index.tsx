@@ -14,8 +14,8 @@ export const MethodDetails = ({ data }: MethodDetailsProps): ReactElement => {
   const methodName = camelCaseToSpaces(data.method)
   return (
     <Box>
-      <Typography variant="overline" sx={({ palette }) => ({ color: `${palette.border.main}` })}>
-        <b>{methodName}</b>
+      <Typography variant="overline" fontWeight="bold" color="border.main">
+        {methodName}
       </Typography>
 
       {data.parameters?.map((param, index) => {

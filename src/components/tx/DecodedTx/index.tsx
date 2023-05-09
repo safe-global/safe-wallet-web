@@ -1,5 +1,5 @@
 import type { SyntheticEvent, ReactElement } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Typography } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import {
   type DecodedDataResponse,
@@ -68,22 +68,25 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
         <AccordionSummary>Transaction details</AccordionSummary>
 
         <AccordionDetails>
-          {txDetails ? (
-            <Box mb={1}>
-              <Summary txDetails={txDetails} defaultExpanded />
-            </Box>
-          ) : txDetailsError ? (
-            <ErrorMessage error={txDetailsError}>Failed loading transaction details</ErrorMessage>
-          ) : (
-            txDetailsLoading && <Skeleton />
-          )}
-
           {decodedData ? (
             <MethodDetails data={decodedData} />
           ) : decodedDataError ? (
             <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
           ) : (
             decodedDataLoading && <Skeleton />
+          )}
+
+          {txDetails ? (
+            <Box mt={2}>
+              <Typography variant="overline" fontWeight="bold" color="border.main">
+                Advanced details
+              </Typography>
+              <Summary txDetails={txDetails} defaultExpanded />
+            </Box>
+          ) : txDetailsError ? (
+            <ErrorMessage error={txDetailsError}>Failed loading transaction details</ErrorMessage>
+          ) : (
+            txDetailsLoading && <Skeleton />
           )}
 
           {isMultisend && (
