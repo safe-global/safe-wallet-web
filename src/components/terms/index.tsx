@@ -2,6 +2,7 @@ import { Typography } from '@mui/material'
 import Link from 'next/link'
 import MUILink from '@mui/material/Link'
 import { AppRoutes } from '@/config/routes'
+import { DISCORD_URL, HELP_CENTER_URL, TWITTER_URL } from '@/config/constants'
 
 const SafeTerms = () => {
   return (
@@ -531,25 +532,25 @@ const SafeTerms = () => {
       <ol start={1}>
         <li>
           Intercom:{' '}
-          <Link href="https://help.safe.global" passHref>
+          <Link href={HELP_CENTER_URL} passHref>
             <MUILink target="_blank" rel="noreferrer">
-              https://help.safe.global
+              {HELP_CENTER_URL}
             </MUILink>
           </Link>
         </li>
         <li>
           Discord:{' '}
-          <Link href="https://chat.safe.global/" passHref>
+          <Link href={DISCORD_URL} passHref>
             <MUILink target="_blank" rel="noreferrer">
-              https://chat.safe.global
+              {DISCORD_URL}
             </MUILink>
           </Link>
         </li>
         <li>
           Twitter:{' '}
-          <Link href="https://twitter.com/safe" passHref>
+          <Link href={TWITTER_URL} passHref>
             <MUILink target="_blank" rel="noreferrer">
-              https://twitter.com/safe
+              {TWITTER_URL}
             </MUILink>
           </Link>
         </li>

@@ -8,10 +8,9 @@ import GasStationIcon from '@/public/images/common/gas-station.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import classnames from 'classnames'
 import css from './styles.module.css'
+import { HelpCenterArticle } from '@/config/constants'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SPONSOR_LOGOS } from '@/components/tx/SponsoredBy'
-
-const RELAYING_HELP_ARTICLE = 'https://help.safe.global/en/articles/7224713-what-is-gas-fee-sponsoring'
 
 const Relaying = () => {
   const chain = useCurrentChain()
@@ -44,7 +43,7 @@ const Relaying = () => {
               Benefit from a gasless experience powered by Gelato and Safe. Experience gasless UX for the next month!
             </Typography>
             <Track {...OVERVIEW_EVENTS.RELAYING_HELP_ARTICLE}>
-              <ExternalLink href={RELAYING_HELP_ARTICLE}>Read more</ExternalLink>
+              <ExternalLink href={HelpCenterArticle.RELAYING}>Read more</ExternalLink>
             </Track>
           </Box>
           <Divider />
