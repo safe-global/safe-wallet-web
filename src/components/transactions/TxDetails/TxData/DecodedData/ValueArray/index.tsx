@@ -63,7 +63,7 @@ export const Value = ({ type, value, ...props }: ValueArrayProps): ReactElement 
     )
   }
 
-  return <GenericValue type={type} value={parsedValue} {...props} />
+  return <GenericValue value={parsedValue} {...props} />
 }
 
 const getTextValue = (value: string, key?: string) => {
@@ -89,7 +89,7 @@ const getArrayValue = (parentId: string, value: string[], separator?: boolean) =
   </Typography>
 )
 
-const GenericValue = ({ method, value }: ValueArrayProps): React.ReactElement => {
+const GenericValue = ({ method, value }: Omit<ValueArrayProps, 'type'>): React.ReactElement => {
   if (Array.isArray(value)) {
     return getArrayValue(method, value)
   }
