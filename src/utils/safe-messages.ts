@@ -1,9 +1,16 @@
 import { hashMessage } from 'ethers/lib/utils'
 import { gte } from 'semver'
-import type { SafeInfo, SafeMessage, EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  type SafeInfo,
+  type SafeMessage,
+  type EIP712TypedData,
+  type ChainInfo,
+  FEATURES,
+} from '@safe-global/safe-gateway-typescript-sdk'
 
 import { hashTypedData } from '@/utils/web3'
 import { isValidAddress } from './validation'
+import { hasFeature } from './chains'
 
 /*
  * From v1.3.0, EIP-1271 support was moved to the CompatibilityFallbackHandler.
@@ -12,6 +19,8 @@ import { isValidAddress } from './validation'
 const EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION = '1.3.0'
 
 const EIP1271_SUPPORTED_SAFE_VERSION = '1.0.0'
+
+const EIP1271_OFFCHAIN_SUPPORTED_SAFE_APPS_SDK_VERSION = '7.11.0'
 
 export const generateSafeMessageMessage = (message: SafeMessage['message']): string => {
   return typeof message === 'string' ? hashMessage(message) : hashTypedData(message)
@@ -54,16 +63,32 @@ export const generateSafeMessageHash = (safe: SafeInfo, message: SafeMessage['me
   return hashTypedData(typedData)
 }
 
-export const supportsEIP1271 = ({ version, fallbackHandler }: SafeInfo): boolean => {
+export const isOffchainEIP1271Supported = (
+  { version, fallbackHandler }: SafeInfo,
+  chain: ChainInfo | undefined,
+  sdkVersion: string,
+): boolean => {
   if (!version) {
     return false
   }
 
+  // check feature toggle
+  if (!chain || !hasFeature(chain, FEATURES.EIP1271)) {
+    return false
+  }
+
+  // If the Safe apps sdk does not support off-chain signing yet
+  if (!gte(sdkVersion, EIP1271_OFFCHAIN_SUPPORTED_SAFE_APPS_SDK_VERSION)) {
+    return false
+  }
+
+  // Check if Safe has fallback handler
   const isHandledByFallbackHandler = gte(version, EIP1271_FALLBACK_HANDLER_SUPPORTED_SAFE_VERSION)
   if (isHandledByFallbackHandler) {
     // We only check if any fallback Handler is set as we expect / assume that users who overwrite the fallback handler by a custom one know what they are doing
     return fallbackHandler !== null && isValidAddress(fallbackHandler.value)
   }
 
+  // check if Safe version supports EIP-1271
   return gte(version, EIP1271_SUPPORTED_SAFE_VERSION)
 }
