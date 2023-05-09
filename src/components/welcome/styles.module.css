@@ -20,12 +20,8 @@
 }
 
 .sidebar {
-  gap: 20px;
-}
-
-.sidebar :global .MuiPaper-root {
-  max-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--import-export-widget-height) - 24px);
-  overflow: auto;
+  max-height: calc(100vh - var(--header-height) - var(--footer-height) - 8px);
+  overflow-y: auto;
 }
 
 .content {

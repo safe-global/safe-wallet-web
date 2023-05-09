@@ -9,6 +9,7 @@ import {
   AccordionDetails,
   Accordion,
   useMediaQuery,
+  Box,
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
@@ -21,12 +22,14 @@ import LoadSafeIcon from '@/public/images/welcome/load-safe.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useTheme } from '@mui/material/styles'
 import { DataWidget } from '@/components/welcome/DataWidget'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const NewSafe = () => {
   const [expanded, setExpanded] = useState(true)
   const router = useRouter()
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const wallet = useWallet()
 
   useEffect(() => {
     setExpanded(!isSmallScreen)
@@ -38,33 +41,26 @@ const NewSafe = () => {
 
   return (
     <Grid container spacing={3} p={3} pb={0} flex={1}>
-      <Grid
-        container
-        item
-        xs={12}
-        md={4}
-        lg={3.5}
-        minWidth={{ md: 480 }}
-        className={css.sidebar}
-        flexDirection="column"
-      >
-        <Grid item lg width={1}>
-          <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h4" display="inline" fontWeight={700}>
-                My Safe Accounts
-              </Typography>
-            </AccordionSummary>
+      <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 480 }} className={css.sidebar}>
+        <Box display="flex" flexDirection="column" height="100%">
+          <Box flex={1}>
+            <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="h4" display="inline" fontWeight={700}>
+                  My Safe Accounts
+                </Typography>
+              </AccordionSummary>
 
-            <AccordionDetails sx={{ padding: 0 }} onClick={(event) => event.stopPropagation()}>
-              <SafeList />
-            </AccordionDetails>
-          </Accordion>
-        </Grid>
+              <AccordionDetails sx={{ padding: 0 }} onClick={(event) => event.stopPropagation()}>
+                <SafeList />
+              </AccordionDetails>
+            </Accordion>
+          </Box>
 
-        <Grid item>
-          <DataWidget />
-        </Grid>
+          <Box mt={2}>
+            <DataWidget />
+          </Box>
+        </Box>
       </Grid>
 
       <Grid item flex={1}>
@@ -98,7 +94,10 @@ const NewSafe = () => {
 
                 <span style={{ flex: 1 }} />
                 <Track {...CREATE_SAFE_EVENTS.CREATE_BUTTON}>
-                  <Button variant="contained" onClick={() => router.push(AppRoutes.newSafe.create)}>
+                  <Button
+                    variant={wallet ? 'contained' : 'outlined'}
+                    onClick={() => router.push(AppRoutes.newSafe.create)}
+                  >
                     + Create new Account
                   </Button>
                 </Track>
@@ -109,11 +108,11 @@ const NewSafe = () => {
               <Paper className={css.createAddCard}>
                 <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                  Add existing Safe Account
+                  Add existing Account
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  Already have an Account? Add it via its address.
+                  Already have a Safe Account? Add it via its address.
                 </Typography>
 
                 <span style={{ flex: 1 }} />
