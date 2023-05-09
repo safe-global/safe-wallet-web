@@ -7,6 +7,7 @@ import NftCollections from '@/components/nfts/NftCollections'
 import SafeAppCard from '@/components/safe-apps/SafeAppCard'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 // `React.memo` requires a `displayName`
 const NftApps = memo(function NftApps(): ReactElement | null {
@@ -40,6 +41,8 @@ const NftApps = memo(function NftApps(): ReactElement | null {
 })
 
 const NFTs: NextPage = () => {
+  const { safe, safeAddress } = useSafeInfo()
+
   return (
     <>
       <Head>
@@ -53,7 +56,7 @@ const NFTs: NextPage = () => {
           <NftApps />
 
           <Grid item xs>
-            <NftCollections />
+            <NftCollections key={safe.chainId + safeAddress} />
           </Grid>
         </Grid>
       </main>
