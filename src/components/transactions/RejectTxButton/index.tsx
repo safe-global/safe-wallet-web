@@ -11,6 +11,7 @@ import ErrorIcon from '@/public/images/notifications/error.svg'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
+import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
 const NewTxModal = dynamic(() => import('@/components/tx/modals/NewTxModal'))
 
@@ -23,7 +24,16 @@ const RejectTxButton = ({
 }): ReactElement | null => {
   const [open, setOpen] = useState<boolean>(false)
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
-  const isDisabled = useIsPending(txSummary.id)
+  const isPending = useIsPending(txSummary.id)
+  const safeSDK = getSafeSDK()
+  const isDisabled = isPending || !safeSDK
+
+  const tooltipTitle =
+    isDisabled && isPending
+      ? `There's a pending transaction`
+      : !safeSDK
+      ? 'Waiting for the SDK to initialize'
+      : 'Replace'
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -36,7 +46,7 @@ const RejectTxButton = ({
         {(isOk) => (
           <Track {...TX_LIST_EVENTS.REJECT}>
             {compact ? (
-              <Tooltip title="Replace" arrow placement="top">
+              <Tooltip title={tooltipTitle} arrow placement="top">
                 <span>
                   <IconButton onClick={onClick} color="error" size="small" disabled={!isOk || isDisabled}>
                     <SvgIcon component={ErrorIcon} inheritViewBox fontSize="small" />
