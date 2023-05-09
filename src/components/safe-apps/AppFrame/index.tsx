@@ -65,7 +65,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe, safeLoaded, safeAddress } = useSafeInfo()
   const tokenlist = useAppSelector(selectTokenList)
-  const useOnChainSigning = useAppSelector(selectOnChainSigning)
+  const onChainSigning = useAppSelector(selectOnChainSigning)
 
   const addressBook = useAddressBook()
   const chain = useCurrentChain()
@@ -96,7 +96,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       sdkVersion: string,
     ) => {
       const isOffChainSigningSupported = isOffchainEIP1271Supported(safe, chain, sdkVersion)
-      const signOffChain = isOffChainSigningSupported && !useOnChainSigning
+      const signOffChain = isOffChainSigningSupported && !onChainSigning
       openSignMessageModal(message, requestId, method, signOffChain && !!settings.offChainSigning)
     },
     onGetPermissions: getPermissions,
