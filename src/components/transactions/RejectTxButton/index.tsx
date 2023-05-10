@@ -30,7 +30,7 @@ const RejectTxButton = ({
 
   const tooltipTitle =
     isDisabled && isPending
-      ? `There's a pending transaction`
+      ? 'Pending transaction must first succeed'
       : !safeSDK
       ? 'Waiting for the SDK to initialize'
       : 'Replace'

@@ -36,7 +36,7 @@ const ExecuteTxButton = ({
     isDisabled && !isNext
       ? `Transaction ${safe.nonce} must be executed first`
       : isPending
-      ? `There's a pending transaction`
+      ? 'Pending transaction must first succeed'
       : !safeSDK
       ? 'Waiting for the SDK to initialize'
       : 'Execute'
