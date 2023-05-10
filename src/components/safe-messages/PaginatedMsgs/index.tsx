@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { Typography, Link, SvgIcon } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -12,7 +12,6 @@ import PagePlaceholder from '@/components/common/PagePlaceholder'
 import MsgList from '@/components/safe-messages/MsgList'
 import SkeletonTxList from '@/components/common/PaginatedTxns/SkeletonTxList'
 import { HelpCenterArticle } from '@/config/constants'
-import useSafeInfo from '@/hooks/useSafeInfo'
 
 const NoMessages = (): ReactElement => {
   return (
@@ -63,12 +62,6 @@ const MsgPage = ({
 
 const PaginatedMsgs = (): ReactElement => {
   const [pages, setPages] = useState<string[]>([''])
-  const { safeAddress, safe } = useSafeInfo()
-
-  // Reset the pages when the Safe changes
-  useEffect(() => {
-    setPages([''])
-  }, [safeAddress, safe.chainId])
 
   // Trigger the next page load
   const onNextPage = (pageUrl: string) => {
