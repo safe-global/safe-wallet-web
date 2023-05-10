@@ -1,5 +1,13 @@
 import { hashMessage } from 'ethers/lib/utils'
 import { gte } from 'semver'
+import { adjustVInSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
+import { ethers } from 'ethers'
+import type { providers, TypedDataDomain } from 'ethers'
+
+import { hashTypedData } from '@/utils/web3'
+import { isValidAddress } from './validation'
+import { isWalletRejection } from '@/utils/wallets'
+import { getSupportedSigningMethods } from '@/services/tx/tx-sender/sdk'
 import {
   type SafeInfo,
   type SafeMessage,
@@ -8,8 +16,6 @@ import {
   FEATURES,
 } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { hashTypedData } from '@/utils/web3'
-import { isValidAddress } from './validation'
 import { hasFeature } from './chains'
 
 /*
@@ -91,4 +97,39 @@ export const isOffchainEIP1271Supported = (
 
   // check if Safe version supports EIP-1271
   return gte(version, EIP1271_SUPPORTED_SAFE_VERSION)
+}
+
+export const tryOffChainMsgSigning = async (
+  signer: providers.JsonRpcSigner,
+  safe: SafeInfo,
+  message: SafeMessage['message'],
+): Promise<string> => {
+  const signingMethods = getSupportedSigningMethods(safe.version)
+
+  for await (const [i, signingMethod] of signingMethods.entries()) {
+    try {
+      if (signingMethod === 'eth_signTypedData') {
+        const typedData = generateSafeMessageTypedData(safe, message)
+        return await signer._signTypedData(typedData.domain as TypedDataDomain, typedData.types, typedData.message)
+      }
+
+      if (signingMethod === 'eth_sign') {
+        const signerAddress = await signer.getAddress()
+
+        const messageHash = generateSafeMessageHash(safe, message)
+        const signature = await signer.signMessage(ethers.utils.arrayify(messageHash))
+
+        return adjustVInSignature(signingMethod, signature, messageHash, signerAddress)
+      }
+    } catch (error) {
+      const isLastSigningMethod = i === signingMethods.length - 1
+
+      if (isWalletRejection(error as Error) || isLastSigningMethod) {
+        throw error
+      }
+    }
+  }
+
+  // Won't be reached, but TS otherwise complains
+  throw new Error('No supported signing methods')
 }
