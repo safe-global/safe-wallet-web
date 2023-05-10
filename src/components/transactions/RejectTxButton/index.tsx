@@ -12,6 +12,7 @@ import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { getTxButtonTooltip } from '@/components/transactions/utils'
 
 const NewTxModal = dynamic(() => import('@/components/tx/modals/NewTxModal'))
 
@@ -28,12 +29,7 @@ const RejectTxButton = ({
   const safeSDK = useSafeSDK()
   const isDisabled = isPending || !safeSDK
 
-  const tooltipTitle =
-    isDisabled && isPending
-      ? 'Pending transaction must first succeed'
-      : !safeSDK
-      ? 'Waiting for the SDK to initialize'
-      : 'Replace'
+  const tooltipTitle = getTxButtonTooltip('Replace', { isPending, hasSafeSDK: !!safeSDK })
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()

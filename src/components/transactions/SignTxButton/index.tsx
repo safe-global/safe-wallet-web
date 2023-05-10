@@ -13,6 +13,7 @@ import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { getTxButtonTooltip } from '@/components/transactions/utils'
 
 const SignTxButton = ({
   txSummary,
@@ -29,12 +30,7 @@ const SignTxButton = ({
 
   const isDisabled = !isSignable || isPending || !safeSDK
 
-  const tooltipTitle =
-    isDisabled && isPending
-      ? 'Pending transaction must first succeed'
-      : !safeSDK
-      ? 'Waiting for the SDK to initialize'
-      : 'Confirm'
+  const tooltipTitle = getTxButtonTooltip('Confirm', { isPending, hasSafeSDK: !!safeSDK })
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
