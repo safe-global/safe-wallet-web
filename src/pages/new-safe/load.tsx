@@ -15,7 +15,7 @@ const Load: NextPage = () => {
       </Head>
 
       {safeAddress ? (
-        <LoadSafe key={safeAddress} initialData={{ ...loadSafeDefaultData, address: safeAddress }} />
+        <LoadSafe initialData={{ ...loadSafeDefaultData, address: safeAddress }} />
       ) : (
         <LoadSafe initialData={loadSafeDefaultData} />
       )}
