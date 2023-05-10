@@ -12,7 +12,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
-import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
 const SignTxButton = ({
   txSummary,
@@ -25,7 +25,7 @@ const SignTxButton = ({
   const wallet = useWallet()
   const isSignable = isSignableBy(txSummary, wallet?.address || '')
   const isPending = useIsPending(txSummary.id)
-  const safeSDK = getSafeSDK()
+  const safeSDK = useSafeSDK()
 
   const isDisabled = !isSignable || isPending || !safeSDK
 

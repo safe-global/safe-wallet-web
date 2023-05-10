@@ -11,7 +11,7 @@ import ErrorIcon from '@/public/images/notifications/error.svg'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
-import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
 const NewTxModal = dynamic(() => import('@/components/tx/modals/NewTxModal'))
 
@@ -25,7 +25,7 @@ const RejectTxButton = ({
   const [open, setOpen] = useState<boolean>(false)
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const isPending = useIsPending(txSummary.id)
-  const safeSDK = getSafeSDK()
+  const safeSDK = useSafeSDK()
   const isDisabled = isPending || !safeSDK
 
   const tooltipTitle =
