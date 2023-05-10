@@ -15,6 +15,8 @@ import { ApprovalEditor } from '../../tx/ApprovalEditor'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { Box, Typography } from '@mui/material'
+import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -66,7 +68,18 @@ const ReviewSafeAppsTx = ({
 
         <SendFromBlock />
 
-        {safeTx && <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />}
+        {safeTx && (
+          <>
+            <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
+
+            <Box pb={2}>
+              <Typography mt={2} color="primary.light">
+                Data (hex encoded)
+              </Typography>
+              {generateDataRowValue(safeTx.data.data, 'rawData')}
+            </Box>
+          </>
+        )}
       </>
     </SignOrExecuteForm>
   )
