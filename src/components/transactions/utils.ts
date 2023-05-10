@@ -1,16 +1,9 @@
-type DisabledPropsType =
-  | {
-      isNext: false
-      nonce: number
-      isPending: boolean
-      hasSafeSDK: boolean
-    }
-  | {
-      isNext?: boolean
-      nonce?: number
-      isPending: boolean
-      hasSafeSDK: boolean
-    }
+type DisabledPropsType = {
+  isNext?: boolean
+  nonce?: number
+  isPending: boolean
+  hasSafeSDK: boolean
+}
 
 type EnabledTitleType = 'Execute' | 'Replace' | 'Confirm'
 

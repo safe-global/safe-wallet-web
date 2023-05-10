@@ -8,7 +8,6 @@ describe('transactions utils', () => {
       const enabledTitle = 'Execute'
 
       expect(getTxButtonTooltip(enabledTitle, disabledPropsBase)).toBe('Execute')
-      expect(true).toBe(true)
     })
 
     it('should return the not isNext message', () => {
@@ -24,7 +23,6 @@ describe('transactions utils', () => {
       const disabledProps = { ...disabledPropsBase, isPending: true }
 
       expect(getTxButtonTooltip(enabledTitle, disabledProps)).toBe('Pending transaction must first succeed')
-      expect(true).toBe(true)
     })
 
     it('should return the Safe SDK not initialized message', () => {
@@ -32,7 +30,6 @@ describe('transactions utils', () => {
       const disabledProps = { ...disabledPropsBase, hasSafeSDK: false }
 
       expect(getTxButtonTooltip(enabledTitle, disabledProps)).toBe('Waiting for the SDK to initialize')
-      expect(true).toBe(true)
     })
   })
 })
