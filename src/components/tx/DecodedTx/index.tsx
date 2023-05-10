@@ -58,13 +58,22 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
         </ErrorBoundary>
       )}
 
-      <Accordion
-        elevation={0}
-        onChange={onChangeExpand}
-        sx={!tx ? { pointerEvents: 'none' } : undefined}
-        defaultExpanded={isMultisend}
-        key={isMultisend.toString()}
-      >
+      {isMultisend && (
+        <Box my={2}>
+          <Multisend
+            txData={{
+              dataDecoded: decodedData,
+              to: { value: tx?.data.to || '' },
+              value: tx?.data.value,
+              operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
+              trustedDelegateCallTarget: false,
+            }}
+            compact
+          />
+        </Box>
+      )}
+
+      <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
         <AccordionSummary>Transaction details</AccordionSummary>
 
         <AccordionDetails>
@@ -84,22 +93,6 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
             <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
           ) : (
             decodedDataLoading && <Skeleton />
-          )}
-
-          {isMultisend && (
-            <Box mt={2}>
-              <Multisend
-                txData={{
-                  dataDecoded: decodedData,
-                  to: { value: tx?.data.to || '' },
-                  value: tx?.data.value,
-                  operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
-                  trustedDelegateCallTarget: false,
-                }}
-                variant="outlined"
-                noHeader
-              />
-            </Box>
           )}
         </AccordionDetails>
       </Accordion>
