@@ -69,7 +69,7 @@ const PaginatedMsgs = (): ReactElement => {
   }
 
   return (
-    <Box position="relative">
+    <Box mb={4} position="relative">
       {pages.map((pageUrl, index) => (
         <MsgPage key={pageUrl} pageUrl={pageUrl} onNextPage={index === pages.length - 1 ? onNextPage : undefined} />
       ))}

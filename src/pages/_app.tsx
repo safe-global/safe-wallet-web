@@ -94,8 +94,6 @@ const WebCoreApp = ({
   router,
   emotionCache = clientSideEmotionCache,
 }: WebCoreAppProps): ReactElement => {
-  const safe = Array.isArray(router.query.safe) ? router.query.safe[0] : router.query.safe
-
   return (
     <StoreHydrator>
       <Head>
@@ -110,7 +108,7 @@ const WebCoreApp = ({
           <InitApp />
 
           <PageLayout pathname={router.pathname}>
-            <Component {...pageProps} key={safe} />
+            <Component {...pageProps} key={router.query.safe?.toString()} />
           </PageLayout>
 
           <CookieBanner />

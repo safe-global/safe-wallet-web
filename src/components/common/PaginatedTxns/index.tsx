@@ -69,7 +69,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   const [pages, setPages] = useState<string[]>([''])
   const [filter] = useTxFilter()
 
-  // Reset the pages when the filter/Safe changes
+  // Reset the pages when the filter changes
   useEffect(() => {
     setPages([''])
   }, [filter, useTxns])
