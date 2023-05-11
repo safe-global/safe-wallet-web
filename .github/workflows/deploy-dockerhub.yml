@@ -25,14 +25,14 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: bash scripts/github/deploy_docker.sh staging
       env:
-        DOCKERHUB_PROJECT: web-core
+        DOCKERHUB_PROJECT: ${{ secrets.DOCKER_PROJECT }}
     - name: Deploy Dockerhub dev
       if: github.ref == 'refs/heads/dev'
       run: bash scripts/github/deploy_docker.sh dev
       env:
-        DOCKERHUB_PROJECT: web-core
+        DOCKERHUB_PROJECT: ${{ secrets.DOCKER_PROJECT }}
     - name: Deploy Dockerhub tag
       if: startsWith(github.ref, 'refs/tags/')
       run: bash scripts/github/deploy_docker.sh ${GITHUB_REF##*/}
       env:
-        DOCKERHUB_PROJECT: web-core
+        DOCKERHUB_PROJECT: ${{ secrets.DOCKER_PROJECT }}
