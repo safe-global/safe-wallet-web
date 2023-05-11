@@ -52,7 +52,7 @@ export const initSafeSDK = async (provider: JsonRpcProvider, safe: SafeInfo): Pr
   const chainId = safe.chainId
   const safeAddress = safe.address.value
   const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, provider).VERSION())
-
+  console.log('1 test', safe)
   let isL1SafeMasterCopy = chainId === chains.eth
 
   // If it is an official deployment we should still initiate the safeSDK
@@ -64,7 +64,7 @@ export const initSafeSDK = async (provider: JsonRpcProvider, safe: SafeInfo): Pr
 
     isL1SafeMasterCopy = masterCopy === safeL1Deployment?.defaultAddress
     const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.defaultAddress
-
+    console.log('2 test')
     // Unknown deployment, which we do not want to support
     if (!isL1SafeMasterCopy && !isL2SafeMasterCopy) {
       return Promise.resolve(undefined)
@@ -73,9 +73,10 @@ export const initSafeSDK = async (provider: JsonRpcProvider, safe: SafeInfo): Pr
 
   // Legacy Safe contracts
   if (isLegacyVersion(safeVersion)) {
+    console.log('3 test')
     isL1SafeMasterCopy = true
   }
-
+  console.log('4 test')
   return Safe.create({
     ethAdapter: createReadOnlyEthersAdapter(provider),
     safeAddress,

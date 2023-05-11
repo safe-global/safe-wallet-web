@@ -23,6 +23,7 @@ import ModeNightIcon from '@mui/icons-material/ModeNight'
 import SettingsIcon from '@mui/icons-material/Settings'
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
 import WbSunnyIcon from '@mui/icons-material/WbSunny'
+import WalletConnect from '@/components/chat/WalletConnect'
 import {
   Avatar,
   Box,
@@ -371,9 +372,8 @@ const Chat = () => {
                       gap: '16px',
                     }}
                   >
-                    <Avatar sx={{ height: 36, width: 36 }} alt="Daniel from Decentra" />
                     <Box>
-                      <Typography sx={{ fontWeight: 600 }}>{ellipsisAddress(`${wallet.address}`)}</Typography>
+                      <WalletConnect wallet={wallet} />
                     </Box>
                   </Box>
                   {/* <Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} /> */}
