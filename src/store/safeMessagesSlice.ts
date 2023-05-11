@@ -1,4 +1,5 @@
 import type { SafeMessageListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import { isAllOf } from '@reduxjs/toolkit'
 import type { Middleware } from '@reduxjs/toolkit'
 
 import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
@@ -15,25 +16,18 @@ export const selectSafeMessages = selector
 export const safeMessagesMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
   const result = next(action)
 
-  switch (action.type) {
-    case safeMessagesSlice.actions.set.type: {
-      const state = store.getState()
-      const pendingMsgs = selectPendingSafeMessages(state)
-      const { payload } = action as ReturnType<typeof safeMessagesSlice.actions.set>
+  if (isAllOf(safeMessagesSlice.actions.set)(action) && action.payload.data) {
+    const state = store.getState()
+    const pendingMsgs = selectPendingSafeMessages(state)
 
-      if (!payload.data) {
-        return
+    for (const result of action.payload.data.results) {
+      if (!isSafeMessageListItem(result)) {
+        continue
       }
 
-      for (const result of payload.data.results) {
-        if (!isSafeMessageListItem(result)) {
-          continue
-        }
-
-        const { messageHash } = result
-        if (pendingMsgs[messageHash]) {
-          safeMsgDispatch(SafeMsgEvent.UPDATED, { messageHash })
-        }
+      const { messageHash } = result
+      if (pendingMsgs[messageHash]) {
+        safeMsgDispatch(SafeMsgEvent.UPDATED, { messageHash })
       }
     }
   }

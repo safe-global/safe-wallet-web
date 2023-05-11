@@ -6,7 +6,7 @@ import type { RootState } from '.'
 import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { safeFormatUnits } from '@/utils/formatters'
-import type { Loadable } from './common'
+import { isAllOf } from '@reduxjs/toolkit'
 import { migrateAddedSafesOwners } from '@/services/ls-migration/addedSafes'
 
 export type AddedSafesOnChain = {
@@ -102,8 +102,7 @@ export const addedSafesSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    // @ts-ignore TODO: introduced with RTK 1.9.0 need to migrate
-    builder.addCase(safeInfoSlice.actions.set.type, (state, { payload }: PayloadAction<Loadable<SafeInfo>>) => {
+    builder.addCase(safeInfoSlice.actions.set, (state, { payload }) => {
       if (!payload.data) {
         return
       }
@@ -142,19 +141,16 @@ export const selectAddedSafes = createSelector(
 export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
   const result = next(action)
 
-  const state = store.getState()
+  // Update added Safe balances when balance polling occurs
+  if (isAllOf(balancesSlice.actions.set)(action) && action.payload.data) {
+    const state = store.getState()
+    const { data } = selectSafeInfo(state)
 
-  switch (action.type) {
-    // Update added Safe balances when balance polling occurs
-    case balancesSlice.actions.set.type: {
-      const { data } = selectSafeInfo(state)
+    const chainId = data?.chainId
+    const address = data?.address.value
 
-      const chainId = data?.chainId
-      const address = data?.address.value
-
-      if (chainId && address && action.payload.data) {
-        store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
-      }
+    if (chainId && address) {
+      store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
     }
   }
 
