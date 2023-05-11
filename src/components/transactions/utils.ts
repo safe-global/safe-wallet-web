@@ -15,6 +15,6 @@ export const getTxButtonTooltip = (enabledTitle: EnabledTitleType, disabledProps
     : isPending
     ? 'Pending transaction must first succeed'
     : !hasSafeSDK
-    ? 'Waiting for the SDK to initialize'
+    ? 'Loading'
     : enabledTitle
 }

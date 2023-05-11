@@ -25,11 +25,11 @@ describe('transactions utils', () => {
       expect(getTxButtonTooltip(enabledTitle, disabledProps)).toBe('Pending transaction must first succeed')
     })
 
-    it('should return the Safe SDK not initialized message', () => {
+    it('should return the SDK not initialized message', () => {
       const enabledTitle = 'Execute'
       const disabledProps = { ...disabledPropsBase, hasSafeSDK: false }
 
-      expect(getTxButtonTooltip(enabledTitle, disabledProps)).toBe('Waiting for the SDK to initialize')
+      expect(getTxButtonTooltip(enabledTitle, disabledProps)).toBe('Loading')
     })
   })
 })
