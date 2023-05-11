@@ -10,8 +10,7 @@ import { AdvancedField, type AdvancedParameters } from './types.d'
 import GasLimitInput from './GasLimitInput'
 import ExternalLink from '@/components/common/ExternalLink'
 import NumberField from '@/components/common/NumberField'
-
-const HELP_LINK = 'https://help.safe.global/en/articles/4738445-advanced-transaction-parameters'
+import { HelpCenterArticle } from '@/config/constants'
 
 type AdvancedParamsFormProps = {
   params: AdvancedParameters
@@ -183,7 +182,9 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
 
             {/* Help link */}
             <Typography mt={2}>
-              <ExternalLink href={HELP_LINK}>How can I configure these parameters manually?</ExternalLink>
+              <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS}>
+                How can I configure these parameters manually?
+              </ExternalLink>
             </Typography>
           </DialogContent>
 

@@ -5,6 +5,7 @@ import type { AlertColor } from '@mui/material'
 import InfoOutlinedIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 const Warning = ({
   title,
@@ -29,9 +30,6 @@ const Warning = ({
   )
 }
 
-const UNEXPECTED_DELEGATE_ARTICLE =
-  'https://help.safe.global/en/articles/6302452-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction'
-
 export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): ReactElement => {
   const severity = showWarning ? 'warning' : 'success'
   return (
@@ -42,7 +40,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
           {showWarning && (
             <>
               <br />
-              <ExternalLink href={UNEXPECTED_DELEGATE_ARTICLE}>Learn more</ExternalLink>
+              <ExternalLink href={HelpCenterArticle.UNEXPECTED_DELEGATE_CALL}>Learn more</ExternalLink>
             </>
           )}
         </>

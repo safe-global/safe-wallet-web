@@ -9,6 +9,7 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
 import Track from '@/components/common/Track'
 import { ASSETS_EVENTS, trackEvent } from '@/services/analytics'
+import { HelpCenterArticle } from '@/config/constants'
 
 const LS_TOKENLIST_ONBOARDING = 'tokenlist_onboarding'
 
@@ -64,10 +65,7 @@ const TokenListSelect = () => {
                   arrow
                   title={
                     <Typography>
-                      Learn more about{' '}
-                      <ExternalLink href="https://help.safe.global/en/articles/6951406-default-token-list-local-hiding-of-spam-tokens">
-                        default tokens
-                      </ExternalLink>
+                      Learn more about <ExternalLink href={HelpCenterArticle.SPAM_TOKENS}>default tokens</ExternalLink>
                     </Typography>
                   }
                 >

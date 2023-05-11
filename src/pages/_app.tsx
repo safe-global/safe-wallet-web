@@ -108,7 +108,7 @@ const WebCoreApp = ({
           <InitApp />
 
           <PageLayout pathname={router.pathname}>
-            <Component {...pageProps} />
+            <Component {...pageProps} key={router.query.safe?.toString()} />
           </PageLayout>
 
           <CookieBanner />
