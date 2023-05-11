@@ -59,7 +59,7 @@ const SafeImprint = () => {
       </Typography>
       <Typography>
         This website and their contents are subject to copyright laws.{' '}
-        <Link href="https://github.com/safe-global/web-core/blob/dev/LICENSE" passHref>
+        <Link href="https://github.com/safe-global/safe-wallet-web/blob/dev/LICENSE" passHref>
           <MUILink target="_blank" rel="noreferrer">
             The code is open-source, released under GPL-3.0.
           </MUILink>

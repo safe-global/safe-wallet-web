@@ -106,11 +106,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       origin: document.location.origin,
     }),
     onGetSafeInfo: useGetSafeInfo(),
-    onGetSafeBalances: (currency) =>
-      getBalances(chainId, safeAddress, currency, {
+    onGetSafeBalances: (currency) => {
+      const isDefaultTokenlistSupported = chain && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
+      return getBalances(chainId, safeAddress, currency, {
         exclude_spam: true,
-        trusted: TOKEN_LISTS.TRUSTED === tokenlist,
-      }),
+        trusted: isDefaultTokenlistSupported && TOKEN_LISTS.TRUSTED === tokenlist,
+      })
+    },
     onGetChainInfo: () => {
       if (!chain) return
 

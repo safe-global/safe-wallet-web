@@ -3,7 +3,7 @@ const SAFE = encodeURIComponent('gor:0xCD4FddB8FfA90012DFE11eD4bf258861204FeEAE'
 describe('Dashboard', () => {
   before(() => {
     // Go to the test Safe home page
-    cy.visit(`/home?safe=${SAFE}`, { failOnStatusCode: false })
+    cy.visit(`/home?safe=${SAFE}`)
     cy.contains('button', 'Accept selection').click()
 
     // Wait for dashboard to initialize

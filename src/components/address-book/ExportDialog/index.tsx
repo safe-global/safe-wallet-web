@@ -11,6 +11,7 @@ import { type AddressBookState, selectAllAddressBooks } from '@/store/addressBoo
 import { useAppSelector } from '@/store'
 import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 const COL_1 = 'address'
 const COL_2 = 'name'
@@ -66,7 +67,7 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
         <Typography mt={1}>
           <ExternalLink
-            href="https://help.safe.global/en/articles/5299068-address-book-export-and-import"
+            href={HelpCenterArticle.ADDRESS_BOOK_DATA}
             title="Learn about the address book import and export"
           >
             Learn about the address book import and export

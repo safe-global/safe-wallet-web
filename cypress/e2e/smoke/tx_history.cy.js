@@ -1,13 +1,13 @@
 const SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 
-const INCOMING = '/images/transactions/incoming.svg'
-const OUTGOING = '/images/transactions/outgoing.svg'
-const CONTRACT_INTERACTION = '/images/transactions/custom.svg'
+const INCOMING = 'Received'
+const OUTGOING = 'Sent'
+const CONTRACT_INTERACTION = 'Contract interaction'
 
 describe('Transaction history', () => {
   before(() => {
     // Go to the test Safe transaction history
-    cy.visit(`/${SAFE}/transactions/history`, { failOnStatusCode: false })
+    cy.visit(`/transactions/history?safe=${SAFE}`)
     cy.contains('button', 'Accept selection').click()
   })
 
@@ -31,7 +31,7 @@ describe('Transaction history', () => {
       .last()
       .within(() => {
         // Type
-        cy.get('img').should('have.attr', 'src', INCOMING)
+        cy.get('iframe').should('have.attr', 'title', INCOMING)
         cy.contains('div', 'Received').should('exist')
 
         // Info
@@ -103,7 +103,7 @@ describe('Transaction history', () => {
       .prev()
       .within(() => {
         // Type
-        cy.get('img').should('have.attr', 'src', OUTGOING)
+        cy.get('iframe').should('have.attr', 'title', OUTGOING)
         cy.contains('div', 'Sent').should('exist')
 
         // Info

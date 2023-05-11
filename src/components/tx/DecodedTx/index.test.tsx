@@ -82,8 +82,6 @@ describe('DecodedTx', () => {
       return Promise.resolve()
     })
 
-    result.debug()
-
     expect(result.queryByText('transfer')).toBeInTheDocument()
     expect(result.queryByText('to(address):')).toBeInTheDocument()
     expect(result.queryByText('0x474e...78C8')).toBeInTheDocument()
@@ -186,5 +184,43 @@ describe('DecodedTx', () => {
     expect(result.queryByText('transactions(bytes):')).toBeInTheDocument()
     expect(result.queryByText('Action 1')).toBeInTheDocument()
     expect(result.queryByText('Action 2')).toBeInTheDocument()
+  })
+
+  it('should render a function call without parameters', async () => {
+    // Wrapped token deposit function
+    jest.spyOn(gatewayMethods, 'getDecodedData').mockReturnValue(
+      Promise.resolve({
+        method: 'deposit',
+        parameters: [],
+      }),
+    )
+
+    const result = render(
+      <DecodedTx
+        tx={
+          {
+            data: {
+              to: '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d',
+              value: '5000000000000',
+              data: '0xd0e30db0',
+              operation: 0,
+              baseGas: 0,
+              gasPrice: 0,
+              gasToken: '0x0000000000000000000000000000000000000000',
+              refundReceiver: '0x0000000000000000000000000000000000000000',
+              nonce: 58,
+              safeTxGas: 0,
+            },
+          } as SafeTransaction
+        }
+      />,
+    )
+
+    await act(() => {
+      fireEvent.click(result.getByText('Transaction details'))
+      return Promise.resolve()
+    })
+
+    expect(result.queryByText('deposit')).toBeInTheDocument()
   })
 })
