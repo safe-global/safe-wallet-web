@@ -1,25 +1,35 @@
 import { AppRoutes } from '@/config/routes'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ellipsisAddress from '@/utils/ellipsisAddress'
-import { Box, Button, Divider, Typography, SvgIcon } from '@mui/material'
+import { Box, Button, Divider, SvgIcon, Typography } from '@mui/material'
 import { grey } from '@mui/material/colors'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import Members from '../common/Members'
 import TransactionHistory from '../common/TransactionHistory'
 import TransactionQueue from '../common/TransactionQueue'
 
-import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import NftIcon from '@/public/images/common/nft.svg'
+import AssetsIcon from '@/public/images/sidebar/assets.svg'
 
 import css from '@/components/chat/styles.module.css'
+import TokenTransferModal from '../tx/modals/TokenTransferModal'
 
 export const ChatOverview: React.FC<{
   owners: any[]
 }> = ({ owners }) => {
   const { safe, safeAddress } = useSafeInfo()
+  const [tokenTransfer, toggleTokenTransfer] = useState<boolean>(false)
   return (
     <>
+      {tokenTransfer ? (
+        <TokenTransferModal
+          onClose={() => toggleTokenTransfer(!tokenTransfer)}
+          initialData={[{ disableSpendingLimit: false }]}
+        />
+      ) : (
+        ''
+      )}
       <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 2, px: 3 }}>
         <Typography sx={{ color: grey[600] }}>Network</Typography>
         <Typography>
@@ -86,16 +96,27 @@ export const ChatOverview: React.FC<{
           flexDirection: 'column',
           gap: 2,
           bgcolor: 'background.paper',
-          borderTop: '1px solid var(--color-border-light)'
+          borderTop: '1px solid var(--color-border-light)',
         }}
       >
-        <Link href={{ pathname: AppRoutes.balances.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" className={css.buttonstyled} startIcon={<SvgIcon component={AssetsIcon} inheritViewBox />} fullWidth>
-            Send tokens
-          </Button>
-        </Link>
+        {/* <Link href={{ pathname: AppRoutes.balances.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref> */}
+        <Button
+          variant="outlined"
+          className={css.buttonstyled}
+          onClick={() => toggleTokenTransfer(!tokenTransfer)}
+          startIcon={<SvgIcon component={AssetsIcon} inheritViewBox />}
+          fullWidth
+        >
+          Send tokens
+        </Button>
+        {/* </Link> */}
         <Link href={{ pathname: AppRoutes.balances.nfts, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" className={css.buttonstyled} startIcon={<SvgIcon component={NftIcon} inheritViewBox />} fullWidth>
+          <Button
+            variant="outlined"
+            className={css.buttonstyled}
+            startIcon={<SvgIcon component={NftIcon} inheritViewBox />}
+            fullWidth
+          >
             Send NFTs
           </Button>
         </Link>
