@@ -1,42 +1,27 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { MutableRefObject } from 'react'
 
 // A hook to detect when an element is visible in the viewport for the first time
 const useOnceVisible = (element: MutableRefObject<HTMLElement | null>): boolean => {
   const [onceVisible, setOnceVisible] = useState<boolean>(false)
 
-  // Create and memoize an instance of IntersectionObserver
-  const observer = useMemo(() => {
-    return new IntersectionObserver((entries) => {
+  useEffect(() => {
+    if (!element.current) return
+
+    const observer = new IntersectionObserver((entries) => {
       const intersectingEntry = entries.find((entry) => entry.isIntersecting)
       if (intersectingEntry) {
         setOnceVisible(true)
         observer.unobserve(intersectingEntry.target)
       }
     })
-  }, [])
 
-  // Disconnect the observer on unmount
-  useEffect(() => {
+    observer.observe(element.current)
+
     return () => {
       observer.disconnect()
     }
-  }, [observer])
-
-  // Observe the target element
-  useEffect(() => {
-    const target = element.current
-
-    if (target) {
-      observer.observe(target)
-    }
-
-    return () => {
-      if (target) {
-        observer.unobserve(target)
-      }
-    }
-  }, [observer, element])
+  }, [element])
 
   return onceVisible
 }
