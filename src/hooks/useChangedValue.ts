@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-// Return the value only when if it was previously set to a non-falsy value
+// Return the value only if it has been previously set to a non-falsy value
 const useChangedValue = <T>(value: T): T | undefined => {
   const [_, setPrevValue] = useState<T>(value)
   const [newValue, setNewValue] = useState<T>()
