@@ -117,7 +117,7 @@ const DataManagement = () => {
       </Paper>
 
       <Paper sx={{ p: 4 }}>
-        <Grid container spacing={3} mt={2}>
+        <Grid container spacing={3}>
           <Grid item sm={4} xs={12}>
             <Typography variant="h4" fontWeight={700}>
               Data import
