@@ -54,11 +54,10 @@ export const formatPrefixedAddress = (address: string, prefix?: string): string 
 }
 
 export const cleanInputValue = (value: string): string => {
-  const regex = new RegExp('(?:([a-z0-9]+):)?(0x[a-f0-9]{40})\\b', 'i')
-
+  const regex = /(?:([a-z0-9]+):)?(0x[a-f0-9]{40})\b/i
   const match = value.match(regex)
   // if match, return the address with optional prefix
-  if (match?.length) return match[0]
+  if (match) return match[0]
 
   // if no match, return the original value
   return value
