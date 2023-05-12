@@ -7,7 +7,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from './useNameResolver'
 import ScanQRButton from '../ScanQRModal/ScanQRButton'
 import { FEATURES, hasFeature } from '@/utils/chains'
-import { parsePrefixedAddress } from '@/utils/addresses'
+import { cleanInputValue, parsePrefixedAddress } from '@/utils/addresses'
 import useDebounce from '@/hooks/useDebounce'
 
 export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string>; deps?: string | string[] }
@@ -90,9 +90,11 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
             required,
 
             setValueAs: (value: string): string => {
-              rawValueRef.current = value
+              // Clean the input value
+              const cleanValue = cleanInputValue(value)
+              rawValueRef.current = cleanValue
               // This also checksums the address
-              return parsePrefixedAddress(value).address
+              return parsePrefixedAddress(cleanValue).address
             },
 
             validate: async () => {
