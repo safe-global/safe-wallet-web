@@ -10,6 +10,7 @@ import packageJson from '../../../../package.json'
 import AppstoreButton from '../AppStoreButton'
 import ExternalLink from '../ExternalLink'
 import MUILink from '@mui/material/Link'
+import { IS_OFFICIAL_HOST } from '@/config/constants'
 
 const footerPages = [
   AppRoutes.welcome,
@@ -37,38 +38,45 @@ const Footer = (): ReactElement | null => {
   return (
     <footer className={css.container}>
       <ul>
-        <li>
-          <Typography variant="caption">&copy;2022–{new Date().getFullYear()} Core Contributors GmbH</Typography>
-        </li>
-        <li>
-          <Link href={AppRoutes.terms} passHref>
-            <MUILink>Terms</MUILink>
-          </Link>
-        </li>
-        <li>
-          <Link href={AppRoutes.privacy} passHref>
-            <MUILink>Privacy</MUILink>
-          </Link>
-        </li>
-        <li>
-          <Link href={AppRoutes.licenses} passHref>
-            <MUILink>Licenses</MUILink>
-          </Link>
-        </li>
-        <li>
-          <Link href={AppRoutes.imprint} passHref>
-            <MUILink>Imprint</MUILink>
-          </Link>
-        </li>
-        <li>
-          <Link href={AppRoutes.cookie} passHref>
-            <MUILink>Cookie Policy</MUILink>
-          </Link>
-          &nbsp;&mdash;&nbsp;
-          <Link href={`${router.pathname}#`} passHref>
-            <MUILink onClick={onCookieClick}>Preferences</MUILink>
-          </Link>
-        </li>
+        {IS_OFFICIAL_HOST ? (
+          <>
+            <li>
+              <Typography variant="caption">&copy;2022–{new Date().getFullYear()} Core Contributors GmbH</Typography>
+            </li>
+            <li>
+              <Link href={AppRoutes.terms} passHref>
+                <MUILink>Terms</MUILink>
+              </Link>
+            </li>
+            <li>
+              <Link href={AppRoutes.privacy} passHref>
+                <MUILink>Privacy</MUILink>
+              </Link>
+            </li>
+            <li>
+              <Link href={AppRoutes.licenses} passHref>
+                <MUILink>Licenses</MUILink>
+              </Link>
+            </li>
+            <li>
+              <Link href={AppRoutes.imprint} passHref>
+                <MUILink>Imprint</MUILink>
+              </Link>
+            </li>
+            <li>
+              <Link href={AppRoutes.cookie} passHref>
+                <MUILink>Cookie Policy</MUILink>
+              </Link>
+              &nbsp;&mdash;&nbsp;
+              <Link href={`${router.pathname}#cookie-preferences`} passHref>
+                <MUILink onClick={onCookieClick}>Preferences</MUILink>
+              </Link>
+            </li>
+          </>
+        ) : (
+          <li>{'This is an unofficial distribution of Safe{Wallet}'}</li>
+        )}
+
         <li>
           <ExternalLink noIcon href={`${packageJson.homepage}/releases/tag/v${packageJson.version}`}>
             v{packageJson.version}
