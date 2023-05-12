@@ -22,6 +22,7 @@ import { ApprovalEditor } from '../../tx/ApprovalEditor'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { TransactionInsightProvider } from '@/components/tx/TransactionInsightContext'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -74,7 +75,9 @@ const ReviewSafeAppsTx = ({
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
       <>
-        <ApprovalEditor txs={txList} updateTxs={setTxList} />
+        <TransactionInsightProvider updateTransaction={setTxList} safeTransaction={safeTx}>
+          <ApprovalEditor />
+        </TransactionInsightProvider>
         <SendFromBlock />
         {safeTx && (
           <>

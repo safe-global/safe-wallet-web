@@ -1,25 +1,19 @@
 import TokenIcon from '@/components/common/TokenIcon'
-import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Skeleton, Typography } from '@mui/material'
-import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { groupBy } from 'lodash'
 import css from './styles.module.css'
 import { UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
-import { useMemo } from 'react'
-import {
-  type ApprovalInfo,
-  APPROVAL_SIGNATURE_HASH,
-  extractTxs,
-  updateApprovalTxs,
-  PSEUDO_APPROVAL_VALUES,
-} from './utils/approvals'
+import { useContext } from 'react'
+import { type ApprovalInfo, updateApprovalTxs, PSEUDO_APPROVAL_VALUES } from './utils/approvals'
 import { useApprovalInfos } from './hooks/useApprovalInfos'
+import { TransactionInsightContext } from '../TransactionInsightContext'
+import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
 
-const Summary = ({ approvalInfos, approvalTxs }: { approvalInfos: ApprovalInfo[]; approvalTxs: BaseTransaction[] }) => {
-  const uniqueTokens = groupBy(approvalTxs, (tx) => tx.to)
+const Summary = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
+  const uniqueTokens = groupBy(approvalInfos, (approvalInfo) => approvalInfo.tokenAddress)
   const uniqueTokenCount = Object.keys(uniqueTokens).length
 
   if (approvalInfos.length === 1) {
@@ -53,32 +47,26 @@ const Summary = ({ approvalInfos, approvalTxs }: { approvalInfos: ApprovalInfo[]
   )
 }
 
-export const ApprovalEditor = ({
-  txs,
-  updateTxs,
-}: {
-  txs: BaseTransaction[] | (DecodedDataResponse & { to: string })
-  updateTxs?: (txs: BaseTransaction[]) => void
-}) => {
-  const extractedTxs = useMemo(() => extractTxs(txs), [txs])
-  const approvalTxs = useMemo(
-    () => extractedTxs.filter((tx) => tx.data.startsWith(APPROVAL_SIGNATURE_HASH)),
-    [extractedTxs],
-  )
+export const ApprovalEditor = () => {
+  const { approvalData, updateTransaction, safeTransaction } = useContext(TransactionInsightContext)
 
-  const [approvalInfos, error, loading] = useApprovalInfos(approvalTxs)
+  const [readableApprovals, error, loading] = useApprovalInfos(approvalData)
 
-  if (approvalTxs.length === 0) {
+  if (!readableApprovals || readableApprovals.length === 0 || !safeTransaction) {
     return null
   }
 
+  console.log('Rendering editor')
+
+  const extractedTxs = decodeSafeTxToBaseTransactions(safeTransaction)
+
   // If a callback is handed in, we update the txs on change, otherwise a `undefined` callback will change the form to readonly
   const updateApprovals =
-    updateTxs === undefined
+    updateTransaction === undefined
       ? undefined
       : (approvals: string[]) => {
-          const updatedTxs = updateApprovalTxs(approvals, approvalInfos, extractedTxs)
-          updateTxs(updatedTxs)
+          const updatedTxs = updateApprovalTxs(approvals, readableApprovals, extractedTxs)
+          updateTransaction(updatedTxs)
         }
 
   return (
@@ -93,19 +81,19 @@ export const ApprovalEditor = ({
         {' '}
         {error ? (
           <Typography>Error while decoding approval transactions.</Typography>
-        ) : loading || !approvalInfos ? (
+        ) : loading || !readableApprovals ? (
           <Skeleton />
         ) : (
-          <Summary approvalInfos={approvalInfos} approvalTxs={approvalTxs} />
+          <Summary approvalInfos={readableApprovals} />
         )}
       </AccordionSummary>
       <AccordionDetails>
-        {loading || !approvalInfos ? null : (
+        {loading || !readableApprovals ? null : (
           <>
             <Typography fontSize="14px">
               This allows contracts to spend the selected amounts of your asset balance.
             </Typography>
-            <ApprovalEditorForm approvalInfos={approvalInfos} updateApprovals={updateApprovals} />
+            <ApprovalEditorForm approvalInfos={readableApprovals} updateApprovals={updateApprovals} />
           </>
         )}
       </AccordionDetails>
