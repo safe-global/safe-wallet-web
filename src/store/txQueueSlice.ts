@@ -1,5 +1,4 @@
-import { isAllOf } from '@reduxjs/toolkit'
-import type { Middleware } from '@reduxjs/toolkit'
+import { createListenerMiddleware } from '@reduxjs/toolkit'
 import { createSelector } from '@reduxjs/toolkit'
 import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '@/store'
@@ -28,21 +27,25 @@ export const selectQueuedTransactionsByNonce = createSelector(
   },
 )
 
-export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
-  const result = next(action)
+export const txQueueMiddleware = createListenerMiddleware<RootState>()
 
-  if (isAllOf(txQueueSlice.actions.set)(action) && action.payload.data) {
-    // Update proposed txs if signature was added successfully
-    const state = store.getState()
-    const pendingTxs = selectPendingTxs(state)
+txQueueMiddleware.startListening({
+  actionCreator: txQueueSlice.actions.set,
+  effect: (action, listenerApi) => {
+    if (!action.payload.data) {
+      return
+    }
+
+    const pendingTxs = selectPendingTxs(listenerApi.getState())
 
     for (const result of action.payload.data.results) {
       if (!isTransactionListItem(result)) {
         continue
       }
-      const id = result.transaction.id
 
-      const pendingTx = pendingTxs[id]
+      const txId = result.transaction.id
+
+      const pendingTx = pendingTxs[txId]
       if (!pendingTx || pendingTx.status !== PendingStatus.SIGNING) {
         continue
       }
@@ -57,10 +60,8 @@ export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) =>
         isMultisigExecutionInfo(result.transaction.executionInfo) &&
         !result.transaction.executionInfo.missingSigners?.some((address) => sameAddress(address.value, awaitingSigner))
       ) {
-        txDispatch(TxEvent.SIGNATURE_INDEXED, { txId: id })
+        txDispatch(TxEvent.SIGNATURE_INDEXED, { txId: txId })
       }
     }
-  }
-
-  return result
-}
+  },
+})

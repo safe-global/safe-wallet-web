@@ -1,6 +1,5 @@
 import type { SafeMessageListPage } from '@safe-global/safe-gateway-typescript-sdk'
-import { isAllOf } from '@reduxjs/toolkit'
-import type { Middleware } from '@reduxjs/toolkit'
+import { createListenerMiddleware } from '@reduxjs/toolkit'
 
 import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
@@ -13,12 +12,16 @@ const { slice, selector } = makeLoadableSlice('safeMessages', undefined as SafeM
 export const safeMessagesSlice = slice
 export const selectSafeMessages = selector
 
-export const safeMessagesMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
-  const result = next(action)
+export const safeMessagesMiddleware = createListenerMiddleware<RootState>()
 
-  if (isAllOf(safeMessagesSlice.actions.set)(action) && action.payload.data) {
-    const state = store.getState()
-    const pendingMsgs = selectPendingSafeMessages(state)
+safeMessagesMiddleware.startListening({
+  actionCreator: safeMessagesSlice.actions.set,
+  effect: (action, listenerApi) => {
+    if (!action.payload.data) {
+      return
+    }
+
+    const pendingMsgs = selectPendingSafeMessages(listenerApi.getState())
 
     for (const result of action.payload.data.results) {
       if (!isSafeMessageListItem(result)) {
@@ -30,7 +33,5 @@ export const safeMessagesMiddleware: Middleware<{}, RootState> = (store) => (nex
         safeMsgDispatch(SafeMsgEvent.UPDATED, { messageHash })
       }
     }
-  }
-
-  return result
-}
+  },
+})

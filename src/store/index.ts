@@ -61,10 +61,10 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
 
 const middleware = [
   persistState(persistedSlices),
-  txHistoryMiddleware,
-  txQueueMiddleware,
-  addedSafesMiddleware,
-  safeMessagesMiddleware,
+  txHistoryMiddleware.middleware,
+  txQueueMiddleware.middleware,
+  addedSafesMiddleware.middleware,
+  safeMessagesMiddleware.middleware,
 ]
 
 export const getPersistedState = () => {

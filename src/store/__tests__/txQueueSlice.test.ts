@@ -1,104 +1,210 @@
-import { txQueueMiddleware, txQueueSlice } from '../txQueueSlice'
+import {
+  LabelValue,
+  TransactionListItemType,
+  DetailedExecutionInfoType,
+} from '@safe-global/safe-gateway-typescript-sdk'
+import type {
+  TransactionListItem,
+  Label,
+  ConflictHeader,
+  DateLabel,
+  TransactionListPage,
+} from '@safe-global/safe-gateway-typescript-sdk'
+
 import * as txEvents from '@/services/tx/txEvents'
-
-import * as mockPendingTxs from '../pendingTxsSlice'
+import { txQueueMiddleware, txQueueSlice } from '../txQueueSlice'
+import type { PendingTxsState } from '../pendingTxsSlice'
 import { PendingStatus } from '../pendingTxsSlice'
-import { DetailedExecutionInfoType, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
-import { TxEvent } from '@/services/tx/txEvents'
-
-const create = () => {
-  const store: any = {
-    getState: jest.fn(() => ({})),
-    dispatch: jest.fn(),
-  }
-  const next = jest.fn()
-
-  const invoke = (action: any) => txQueueMiddleware(store)(next)(action)
-
-  return { store, next, invoke }
-}
-
-jest.mock('@/store/common', () => ({
-  makeLoadableSlice: jest.fn(() => ({
-    slice: {
-      actions: {
-        set: {
-          type: 'SET_QUEUE',
-        },
-      },
-    },
-    selector: jest.fn(() => ({ data: undefined })),
-  })),
-}))
+import type { RootState } from '..'
 
 describe('txQueueSlice', () => {
-  let txDispatchSpy: jest.SpyInstance
+  const txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
+
   beforeEach(() => {
-    txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
-    txDispatchSpy.mockImplementation(() => {})
-    jest.spyOn(mockPendingTxs, 'selectPendingTxs').mockImplementation(() => ({
-      ['0x123']: {
-        chainId: '5',
-        safeAddress: '0x0000000000000000000000000000000000000000',
-        status: PendingStatus.SIGNING,
-        signerAddress: '0x456',
-      },
-    }))
+    jest.clearAllMocks()
   })
 
-  it('should not dispatch event if signature is still missing', () => {
-    const { next, invoke } = create()
-    const action = {
-      type: txQueueSlice.actions.set.type,
-      payload: {
-        data: {
-          results: [
-            {
-              type: TransactionListItemType.TRANSACTION,
-              transaction: {
-                id: '0x123',
-                executionInfo: {
-                  type: DetailedExecutionInfoType.MULTISIG,
-                  missingSigners: [
-                    {
-                      value: '0x456',
-                    },
-                  ],
-                },
-              },
-            },
-          ],
+  it('should dispatch SIGNATURE_INDEXED event for added signatures', () => {
+    const state = {
+      pendingTxs: {
+        '0x123': {
+          chainId: '5',
+          safeAddress: '0x0000000000000000000000000000000000000000',
+          status: PendingStatus.SIGNING,
+          signerAddress: '0x456',
+        },
+      } as PendingTxsState,
+    } as RootState
+
+    const listenerApi = {
+      getState: jest.fn(() => state),
+      dispatch: jest.fn(),
+    }
+
+    const transaction = {
+      type: TransactionListItemType.TRANSACTION,
+      transaction: {
+        id: '0x123',
+        executionInfo: {
+          type: DetailedExecutionInfoType.MULTISIG,
+          missingSigners: [],
         },
       },
+    } as unknown as TransactionListItem
+
+    const action = txQueueSlice.actions.set({
+      loading: false,
+      data: {
+        results: [transaction],
+      },
+    })
+
+    txQueueMiddleware.middleware(listenerApi)(jest.fn())(action)
+
+    expect(txDispatchSpy).toHaveBeenCalledWith(txEvents.TxEvent.SIGNATURE_INDEXED, { txId: '0x123' })
+  })
+
+  it('should not dispatch an event if the queue slice is cleared', () => {
+    const state = {
+      pendingTxs: {
+        '0x123': {
+          chainId: '5',
+          safeAddress: '0x0000000000000000000000000000000000000000',
+          status: PendingStatus.SIGNING,
+          signerAddress: '0x456',
+        },
+      } as PendingTxsState,
+    } as RootState
+
+    const listenerApi = {
+      getState: jest.fn(() => state),
+      dispatch: jest.fn(),
     }
-    invoke(action)
-    expect(next).toHaveBeenCalledWith(action)
+
+    const action = txQueueSlice.actions.set({
+      loading: false,
+      data: undefined, // Cleared
+    })
+
+    txQueueMiddleware.middleware(listenerApi)(jest.fn())(action)
+
     expect(txDispatchSpy).not.toHaveBeenCalled()
   })
 
-  it('should dispatch SIGNATURE_INDEXED event for added signature', () => {
-    const { next, invoke } = create()
-    const action = {
-      type: txQueueSlice.actions.set.type,
-      payload: {
-        data: {
-          results: [
+  it('should not dispatch an event for date labels, labels or conflict headers', () => {
+    const state = {
+      pendingTxs: {
+        '0x123': {
+          chainId: '5',
+          safeAddress: '0x0000000000000000000000000000000000000000',
+          status: PendingStatus.SIGNING,
+          signerAddress: '0x456',
+        },
+      } as PendingTxsState,
+    } as RootState
+
+    const listenerApi = {
+      getState: jest.fn(() => state),
+      dispatch: jest.fn(),
+    }
+
+    const dateLabel: DateLabel = {
+      type: TransactionListItemType.DATE_LABEL,
+      timestamp: 0,
+    }
+
+    const label: Label = {
+      label: LabelValue.Queued,
+      type: TransactionListItemType.LABEL,
+    }
+
+    const conflictHeader: ConflictHeader = {
+      nonce: 0,
+      type: TransactionListItemType.CONFLICT_HEADER,
+    }
+
+    const action = txQueueSlice.actions.set({
+      loading: false,
+      data: {
+        results: [dateLabel, label, conflictHeader],
+      },
+    })
+
+    txQueueMiddleware.middleware(listenerApi)(jest.fn())(action)
+
+    expect(txDispatchSpy).not.toHaveBeenCalled()
+  })
+
+  it('should not dispatch an event if tx is not signing', () => {
+    const state = {
+      pendingTxs: {
+        '0x123': {
+          chainId: '5',
+          safeAddress: '0x0000000000000000000000000000000000000000',
+          status: PendingStatus.SIGNING,
+          signerAddress: '0x456',
+        },
+      } as PendingTxsState,
+    } as RootState
+
+    const listenerApi = {
+      getState: jest.fn(() => state),
+      dispatch: jest.fn(),
+    }
+
+    const transaction = {
+      type: TransactionListItemType.TRANSACTION,
+      transaction: {
+        id: '0x456',
+      },
+    } as TransactionListItem
+
+    const action = txQueueSlice.actions.set({
+      loading: false,
+      data: {
+        results: [transaction],
+      },
+    })
+
+    txQueueMiddleware.middleware(listenerApi)(jest.fn())(action)
+
+    expect(txDispatchSpy).not.toHaveBeenCalled()
+  })
+
+  it('should not dispatch event if signature is still missing', () => {
+    const listenerApi = {
+      getState: jest.fn(() => ({} as RootState)),
+      dispatch: jest.fn(),
+    }
+
+    const next = jest.fn()
+
+    const transaction = {
+      type: TransactionListItemType.TRANSACTION,
+      transaction: {
+        id: '0x123',
+        executionInfo: {
+          type: DetailedExecutionInfoType.MULTISIG,
+          missingSigners: [
             {
-              type: TransactionListItemType.TRANSACTION,
-              transaction: {
-                id: '0x123',
-                executionInfo: {
-                  type: DetailedExecutionInfoType.MULTISIG,
-                  missingSigners: [],
-                },
-              },
+              value: '0x456',
             },
           ],
         },
       },
+    } as TransactionListItem
+
+    const payload: TransactionListPage = {
+      results: [transaction],
     }
-    invoke(action)
-    expect(next).toHaveBeenCalledWith(action)
-    expect(txDispatchSpy).toHaveBeenCalledWith(TxEvent.SIGNATURE_INDEXED, { txId: '0x123' })
+
+    const action = txQueueSlice.actions.set({
+      loading: false,
+      data: payload,
+    })
+
+    txQueueMiddleware.middleware(listenerApi)(next)(action)
+
+    expect(txDispatchSpy).not.toHaveBeenCalled()
   })
 })

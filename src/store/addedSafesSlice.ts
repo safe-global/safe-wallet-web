@@ -1,4 +1,4 @@
-import type { Middleware } from '@reduxjs/toolkit'
+import { createListenerMiddleware } from '@reduxjs/toolkit'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { AddressEx, SafeBalanceResponse, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -6,7 +6,6 @@ import type { RootState } from '.'
 import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { safeFormatUnits } from '@/utils/formatters'
-import { isAllOf } from '@reduxjs/toolkit'
 import { migrateAddedSafesOwners } from '@/services/ls-migration/addedSafes'
 
 export type AddedSafesOnChain = {
@@ -138,21 +137,22 @@ export const selectAddedSafes = createSelector(
   },
 )
 
-export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
-  const result = next(action)
+export const addedSafesMiddleware = createListenerMiddleware<RootState>()
 
-  // Update added Safe balances when balance polling occurs
-  if (isAllOf(balancesSlice.actions.set)(action) && action.payload.data) {
-    const state = store.getState()
-    const { data } = selectSafeInfo(state)
+addedSafesMiddleware.startListening({
+  actionCreator: balancesSlice.actions.set,
+  effect: (action, listenerApi) => {
+    if (!action.payload.data) {
+      return
+    }
 
-    const chainId = data?.chainId
-    const address = data?.address.value
+    const safeInfo = selectSafeInfo(listenerApi.getState())
+
+    const chainId = safeInfo.data?.chainId
+    const address = safeInfo.data?.address.value
 
     if (chainId && address) {
-      store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
+      listenerApi.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
     }
-  }
-
-  return result
-}
+  },
+})

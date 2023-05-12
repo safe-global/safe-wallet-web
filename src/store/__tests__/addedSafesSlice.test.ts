@@ -1,7 +1,16 @@
 import type { SafeBalanceResponse, SafeInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
+import type { RootState } from '..'
 import type { AddedSafesState } from '../addedSafesSlice'
-import { addOrUpdateSafe, removeSafe, addedSafesSlice, updateAddedSafeBalance } from '../addedSafesSlice'
+import {
+  addOrUpdateSafe,
+  removeSafe,
+  addedSafesSlice,
+  updateAddedSafeBalance,
+  addedSafesMiddleware,
+} from '../addedSafesSlice'
+import { balancesSlice } from '../balancesSlice'
+import { defaultSafeInfo } from '../safeInfoSlice'
 
 describe('addedSafesSlice', () => {
   describe('addOrUpdateSafe', () => {
@@ -358,5 +367,97 @@ describe('addedSafesSlice', () => {
 
       expect(state).toEqual({})
     })
+  })
+
+  describe('addedSafesMiddleware', () => {
+    it('should update the balance of an added Safe if a Safe is loaded', () => {
+      const state = {
+        safeInfo: {
+          data: {
+            chainId: '5',
+            address: {
+              value: '0x123',
+            },
+          },
+        },
+      } as RootState
+
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
+      }
+
+      const payload: SafeBalanceResponse = {
+        items: [],
+        fiatTotal: '',
+      }
+
+      const action = balancesSlice.actions.set({
+        loading: false,
+        data: payload,
+      })
+
+      addedSafesMiddleware.middleware(listenerApi)(jest.fn())(action)
+
+      expect(listenerApi.dispatch).toHaveBeenCalledWith(
+        updateAddedSafeBalance({
+          chainId: '5',
+          address: '0x123',
+          balances: payload,
+        }),
+      )
+    })
+
+    it('should not update the balance of an added Safe if a balance is cleared', () => {
+      const state = {
+        safeInfo: {
+          data: {
+            chainId: '5',
+            address: {
+              value: '0x123',
+            },
+          },
+        },
+      } as RootState
+
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
+      }
+
+      const action = balancesSlice.actions.set({
+        loading: false,
+        data: undefined, // Cleared
+      })
+
+      addedSafesMiddleware.middleware(listenerApi)(jest.fn())(action)
+
+      expect(listenerApi.dispatch).not.toHaveBeenCalled()
+    })
+  })
+
+  it('should not update the balance of an added Safe if a Safe is reset', () => {
+    const state = {
+      safeInfo: {
+        data: defaultSafeInfo, // Reset
+      },
+    } as RootState
+
+    const listenerApi = {
+      getState: jest.fn(() => state),
+      dispatch: jest.fn(),
+    }
+
+    const action = balancesSlice.actions.set({
+      loading: false,
+      data: {
+        items: [],
+        fiatTotal: '',
+      },
+    })
+
+    addedSafesMiddleware.middleware(listenerApi)(jest.fn())(action)
+
+    expect(listenerApi.dispatch).not.toHaveBeenCalled()
   })
 })
