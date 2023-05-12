@@ -30,7 +30,7 @@ const SignTxButton = ({
 
   const isDisabled = !isSignable || isPending || !safeSDK
 
-  const tooltipTitle = getTxButtonTooltip('Confirm', { isPending, hasSafeSDK: !!safeSDK })
+  const tooltipTitle = getTxButtonTooltip('Confirm', { hasSafeSDK: !!safeSDK })
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()

@@ -2,7 +2,7 @@ import { getTxButtonTooltip } from '../utils'
 
 describe('transactions utils', () => {
   describe('getTooltipTitle', () => {
-    const disabledPropsBase = { isPending: false, hasSafeSDK: true }
+    const disabledPropsBase = { hasSafeSDK: true }
 
     it('should return the enabledTitle if no disabled conditions', () => {
       const enabledTitle = 'Execute'
@@ -16,13 +16,6 @@ describe('transactions utils', () => {
       const disabledProps = { ...disabledPropsBase, isNext: false, nonce }
 
       expect(getTxButtonTooltip(enabledTitle, disabledProps)).toBe('Transaction 2 must be executed first')
-    })
-
-    it('should return the "is tx pending" message', () => {
-      const enabledTitle = 'Execute'
-      const disabledProps = { ...disabledPropsBase, isPending: true }
-
-      expect(getTxButtonTooltip(enabledTitle, disabledProps)).toBe('Pending transaction must first succeed')
     })
 
     it('should return the SDK not initialized message', () => {

@@ -29,7 +29,7 @@ const RejectTxButton = ({
   const safeSDK = useSafeSDK()
   const isDisabled = isPending || !safeSDK
 
-  const tooltipTitle = getTxButtonTooltip('Replace', { isPending, hasSafeSDK: !!safeSDK })
+  const tooltipTitle = getTxButtonTooltip('Replace', { hasSafeSDK: !!safeSDK })
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()

@@ -33,7 +33,7 @@ const ExecuteTxButton = ({
   const isNext = txNonce !== undefined && txNonce === safe.nonce
   const isDisabled = !isNext || isPending || !safeSDK
 
-  const tooltipTitle = getTxButtonTooltip('Execute', { isNext, nonce: safe.nonce, isPending, hasSafeSDK: !!safeSDK })
+  const tooltipTitle = getTxButtonTooltip('Execute', { isNext, nonce: safe.nonce, hasSafeSDK: !!safeSDK })
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
