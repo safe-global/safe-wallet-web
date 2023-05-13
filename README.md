@@ -26,7 +26,7 @@ Here's the list of all the required and optional variables:
 | `NEXT_PUBLIC_IS_PRODUCTION`                            | optional     | Set to `true` to build a minified production app                                                                                    |
 | `NEXT_PUBLIC_GATEWAY_URL_PRODUCTION`                   | optional     | The base URL for the [Safe Client Gateway](https://github.com/safe-global/safe-client-gateway)                                      |
 | `NEXT_PUBLIC_GATEWAY_URL_STAGING`                      | optional     | The base CGW URL on staging                                                                                                         |
-| `NEXT_PUBLIC_SAFE_VERSION`                             | optional     | The latest version of the Safe contract, defaults to 1.3.0                                                                          |                |
+| `NEXT_PUBLIC_SAFE_VERSION`                             | optional     | The latest version of the Safe contract, defaults to 1.3.0                                                                          |      |
 | `NEXT_PUBLIC_WC_BRIDGE`                                | optional     | [WalletConnect](https://docs.walletconnect.com/1.0/bridge-server) bridge URL, falls back to the public WC bridge                    |
 | `NEXT_PUBLIC_TENDERLY_ORG_NAME`                        | optional     | [Tenderly](https://tenderly.co) org name for Transaction Simulation                                                                 |
 | `NEXT_PUBLIC_TENDERLY_PROJECT_NAME`                    | optional     | Tenderly project name                                                                                                               |
@@ -39,6 +39,7 @@ Here's the list of all the required and optional variables:
 | `NEXT_PUBLIC_SENTRY_DSN`                               | optional     | [Sentry](https://sentry.io) id for tracking runtime errors                                                                          |
 | `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION` | optional     | [Safe Gelato Relay Service](https://github.com/safe-global/safe-gelato-relay-service) URL to allow relaying transactions via Gelato |
 | `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING`    | optional     | Relay URL on staging                                                                                                                |
+| `NEXT_PUBLIC_IS_OFFICIAL_HOST`                         | optional     | Whether it's the official distribution of the app, or a fork; has legal implications. Set to true only if you also update the legal pages like Imprint and Terms of use |
 
 If you don't provide some of the optional vars, the corresponding features will be disabled in the UI.
 

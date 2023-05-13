@@ -69,72 +69,76 @@ const DataManagement = () => {
   }, [])
 
   return (
-    <Paper sx={{ p: 4, mb: 2 }}>
-      <Grid container spacing={3}>
-        <Grid item sm={4} xs={12}>
-          <Typography variant="h4" fontWeight={700}>
-            Data export
-          </Typography>
-        </Grid>
+    <>
+      <Paper sx={{ p: 4, mb: 2 }}>
+        <Grid container spacing={3}>
+          <Grid item sm={4} xs={12}>
+            <Typography variant="h4" fontWeight={700}>
+              Data export
+            </Typography>
+          </Grid>
 
-        <Grid item container xs>
-          <Typography>Download your local data with your added Safe Accounts, address book and settings.</Typography>
+          <Grid item container xs>
+            <Typography>Download your local data with your added Safe Accounts, address book and settings.</Typography>
 
-          <FileListCard
-            avatar={
-              <Box className={css.fileIcon} sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
-                <SvgIcon component={FileIcon} inheritViewBox fontSize="small" sx={{ fill: 'none' }} />
-              </Box>
-            }
-            title={<b>{exportFileName}</b>}
-            action={
-              <Button variant="contained" className={css.exportIcon} onClick={exportAppData}>
-                <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
-              </Button>
-            }
-            addedSafes={addedSafes}
-            addressBook={addressBook}
-            settings={settings}
-            safeApps={safeApps}
-          />
-          <Typography>
-            <SvgIcon
-              component={InfoIcon}
-              inheritViewBox
-              fontSize="small"
-              color="border"
-              sx={{
-                verticalAlign: 'middle',
-                mr: 0.5,
-              }}
+            <FileListCard
+              avatar={
+                <Box className={css.fileIcon} sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
+                  <SvgIcon component={FileIcon} inheritViewBox fontSize="small" sx={{ fill: 'none' }} />
+                </Box>
+              }
+              title={<b>{exportFileName}</b>}
+              action={
+                <Button variant="contained" className={css.exportIcon} onClick={exportAppData}>
+                  <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
+                </Button>
+              }
+              addedSafes={addedSafes}
+              addressBook={addressBook}
+              settings={settings}
+              safeApps={safeApps}
             />
-            You can also export your data from the{' '}
-            <ExternalLink href="https://gnosis-safe.io/app/export">old app</ExternalLink>
-          </Typography>
+            <Typography>
+              <SvgIcon
+                component={InfoIcon}
+                inheritViewBox
+                fontSize="small"
+                color="border"
+                sx={{
+                  verticalAlign: 'middle',
+                  mr: 0.5,
+                }}
+              />
+              You can also export your data from the{' '}
+              <ExternalLink href="https://gnosis-safe.io/app/export">old app</ExternalLink>
+            </Typography>
+          </Grid>
         </Grid>
-      </Grid>
+      </Paper>
 
-      <Grid container spacing={3} mt={2}>
-        <Grid item sm={4} xs={12}>
-          <Typography variant="h4" fontWeight={700}>
-            Data import
-          </Typography>
+      <Paper sx={{ p: 4 }}>
+        <Grid container spacing={3}>
+          <Grid item sm={4} xs={12}>
+            <Typography variant="h4" fontWeight={700}>
+              Data import
+            </Typography>
+          </Grid>
+
+          <Grid item xs>
+            <ImportFileUpload setFileName={setImportFileName} setJsonData={setJsonData} />
+          </Grid>
+
+          {jsonData && (
+            <ImportDialog
+              jsonData={jsonData}
+              fileName={importFileName}
+              setJsonData={setJsonData}
+              setFileName={setImportFileName}
+            />
+          )}
         </Grid>
-
-        <Grid item xs>
-          <ImportFileUpload setFileName={setImportFileName} setJsonData={setJsonData} />
-        </Grid>
-
-        {jsonData && (
-          <ImportDialog
-            jsonData={jsonData}
-            fileName={importFileName}
-            setJsonData={setJsonData}
-            setFileName={setImportFileName}
-          />
-        )}
-      </Grid>
-    </Paper>
+      </Paper>
+    </>
   )
 }
 
