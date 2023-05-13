@@ -97,14 +97,6 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
           ) : (
             txDetailsLoading && <Skeleton />
           )}
-
-          {decodedData ? (
-            <MethodDetails data={decodedData} />
-          ) : decodedDataError ? (
-            <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
-          ) : (
-            decodedDataLoading && <Skeleton />
-          )}
         </AccordionDetails>
       </Accordion>
     </Box>
