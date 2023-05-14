@@ -1,15 +1,6 @@
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
-import {
-  Avatar,
-  Box,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, TextField, Typography } from '@mui/material'
 import { grey } from '@mui/material/colors'
 import dynamic from 'next/dynamic'
 import React from 'react'
@@ -18,8 +9,6 @@ import TxListItem from '../transactions/TxListItem'
 const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
 const LoginButton = dynamic(() => import('@/components/chat/LoginButton'), { ssr: false })
 const JoinButton = dynamic(() => import('@/components/chat/JoinButton'), { ssr: false })
-
-
 
 export const ChatSection: React.FC<{
   currentUser: any
@@ -32,7 +21,18 @@ export const ChatSection: React.FC<{
   setMessage: any
   setMessages: any
   bottom: any
-}> = ({ currentUser, setCurrentUser, group, setGroup, chatData, message, setMessage, messages, setMessages, bottom }) => {
+}> = ({
+  currentUser,
+  setCurrentUser,
+  group,
+  setGroup,
+  chatData,
+  message,
+  setMessage,
+  messages,
+  setMessages,
+  bottom,
+}) => {
   const wallet = useWallet()
   const safeAddress = useSafeAddress()
   return (
@@ -75,10 +75,7 @@ export const ChatSection: React.FC<{
                       <ListItemText
                         primary={
                           <React.Fragment>
-                            <Typography
-                              sx={{ display: 'inline', pr: '12px', fontWeight: 600 }}
-                              component="span"
-                            >
+                            <Typography sx={{ display: 'inline', pr: '12px', fontWeight: 600 }} component="span">
                               {chat.data.sender.name === wallet?.address ? 'You' : chat?.data?.sender.uid}
                             </Typography>
                             <Typography sx={{ display: 'inline' }} component="span" variant="body2">
@@ -87,37 +84,39 @@ export const ChatSection: React.FC<{
                           </React.Fragment>
                         }
                         secondary={
-                            <Typography
-                              sx={{ display: 'inline' }}
-                              component="span"
-                            >
-                              {chat.data.text}
-                            </Typography>
-                        }   
+                          <Typography sx={{ display: 'inline' }} component="span">
+                            {chat.data.text}
+                          </Typography>
+                        }
                       />
                     </ListItem>
                   )
                 } else if (chat?.type) {
                   return (
-                    <ListItem key={index} sx={{ mb: 1 }} alignItems="flex-start" disableGutters>
+                    <ListItem
+                      key={index}
+                      sx={{ mb: 1, width: { sm: '100%', lg: 'calc(100vw - 768px)' } }}
+                      alignItems="flex-start"
+                      disableGutters
+                    >
                       <TxListItem key={`${index}-tx`} item={chat?.data} />
                       <ListItemText
-                         primary={
-                           <React.Fragment>
-                             <Typography
-                               sx={{ display: 'inline', pr: '8px', fontWeight: 600 }}
-                               component="span"
-                               variant="subtitle2"
-                             >
-                               {chat.name}
-                             </Typography>
-                             <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                               {chat.timeAgo}
-                             </Typography>
-                           </React.Fragment>
-                         }
-                         secondary={chat.message}
-                    />
+                        primary={
+                          <React.Fragment>
+                            <Typography
+                              sx={{ display: 'inline', pr: '8px', fontWeight: 600 }}
+                              component="span"
+                              variant="subtitle2"
+                            >
+                              {chat.name}
+                            </Typography>
+                            <Typography sx={{ display: 'inline' }} component="span" variant="body2">
+                              {chat.timeAgo}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                        secondary={chat.message}
+                      />
                     </ListItem>
                   )
                 }
@@ -136,34 +135,47 @@ export const ChatSection: React.FC<{
           p: 2,
           borderTop: '1px solid',
           borderColor: grey[800],
-          pt: 3
+          pt: 3,
         }}
       >
         {currentUser && group ? (
-        <Box sx={{ width: '100%', display: 'flex', gap: '16px', p: 3, pt: 0 }}>
-          <TextField
-            sx={{ flexGrow: 1 }}
-            label="Type Something"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <SendMessage
-            message={message}
-            safeAddress={safeAddress}
-            setMessages={setMessages}
-            setMessage={setMessage}
-            prevState={messages}
-          />
-        </Box>
+          <Box sx={{ width: '100%', display: 'flex', gap: '16px', p: 3, pt: 0 }}>
+            <TextField
+              sx={{ flexGrow: 1 }}
+              label="Type Something"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <SendMessage
+              message={message}
+              safeAddress={safeAddress}
+              setMessages={setMessages}
+              setMessage={setMessage}
+              prevState={messages}
+            />
+          </Box>
         ) : (
-          <Box sx={{ border: '1px solid var(--color-border-light)', borderRadius: '6px', p: 3}}>
+          <Box
+            sx={{
+              width: { sm: '100%', lg: 'calc(100vw - 768px)' },
+              border: '1px solid var(--color-border-light)',
+              borderRadius: '6px',
+              p: 3,
+            }}
+          >
             <Typography pb={1} fontSize="sm" fontWeight={600}>
-             Join the chat
+              Join the chat
             </Typography>
             <Typography paragraph fontSize="xs">
-             To view messages, click the button below
+              To view messages, click the button below
             </Typography>
-            {!currentUser ? <LoginButton setCurrentUser={setCurrentUser} /> : currentUser && !group ? <JoinButton user={currentUser} setGroup={setGroup} setMessages={setMessages} /> : ''}
+            {!currentUser ? (
+              <LoginButton setCurrentUser={setCurrentUser} />
+            ) : currentUser && !group ? (
+              <JoinButton user={currentUser} setGroup={setGroup} setMessages={setMessages} />
+            ) : (
+              ''
+            )}
           </Box>
         )}
       </Box>
