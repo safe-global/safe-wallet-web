@@ -1,13 +1,10 @@
 import useSafeAddress from '@/hooks/useSafeAddress'
-import NewChatIcon from '@/public/images/chat/chat.svg'
-import LogoGreen from '@/public/images/logo-green.svg'
-import { Box, Button, Grid, Paper, Stack, SvgIcon, Typography } from '@mui/material'
-import { Container } from '@mui/system'
+import { Button, Stack } from '@mui/material'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { createNewGroup, getGroup, getMessages, joinGroup, listenForMessage } from '../../services/chat'
 
-const Join: React.FC<{
+const JoinButton: React.FC<{
   user: any
   setGroup: any
   setMessages: any
@@ -114,57 +111,12 @@ const Join: React.FC<{
   }
 
   return (
-    <Container fixed sx={{ height: '100vh', width: '100vw' }}>
-      <Box
-        sx={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Grid container spacing={1}>
-          <Grid item xs lg={4} order={{ xs: 2, sm: 1 }}>
-            <Paper sx={{ padding: 4, height: 1, maxWidth: '400px', background: 'transparent', border: '2px solid' }}>
-              <SvgIcon component={NewChatIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
-              <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                Chat with your safe members now
-              </Typography>
-
-              <Typography variant="body2" mb={3}>
-                Online messaging and signing transactions made easy.
-              </Typography>
-
-              <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2}>
-                <Button variant="contained" onClick={handleGetGroup}>
-                  Get Group
-                </Button>
-                {/* <Button variant="text" onClick={handleSignup}>
-                  Sign up <ChevronRightIcon />
-                </Button> */}
-              </Stack>
-            </Paper>
-          </Grid>
-          <Grid item xs order={{ xs: 1, sm: 2 }}>
-            <Box
-              sx={{
-                height: '100%',
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <SvgIcon component={LogoGreen} inheritViewBox sx={{ width: '300px', height: '300px' }} />
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    </Container>
+        <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2}>
+          <Button variant="outlined" onClick={handleGetGroup}>
+            Get Group
+          </Button>
+        </Stack>
   )
 }
 
-export default Join
+export default JoinButton

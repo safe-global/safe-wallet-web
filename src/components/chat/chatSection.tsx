@@ -10,20 +10,29 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { grey } from '@mui/material/colors'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import TxListItem from '../transactions/TxListItem'
 
 const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
+const LoginButton = dynamic(() => import('@/components/chat/LoginButton'), { ssr: false })
+const JoinButton = dynamic(() => import('@/components/chat/JoinButton'), { ssr: false })
+
+
 
 export const ChatSection: React.FC<{
+  currentUser: any
+  setCurrentUser: any
+  group: any
+  setGroup: any
   chatData: any[]
   message: string
   messages: string[]
   setMessage: any
   setMessages: any
   bottom: any
-}> = ({ chatData, message, setMessage, messages, setMessages, bottom }) => {
+}> = ({ currentUser, setCurrentUser, group, setGroup, chatData, message, setMessage, messages, setMessages, bottom }) => {
   const wallet = useWallet()
   const safeAddress = useSafeAddress()
   return (
@@ -33,7 +42,7 @@ export const ChatSection: React.FC<{
           sx={{
             flex: '1 0 auto',
             display: 'flex',
-            height: '100%',
+            minHeight: '100vh',
             flexDirection: 'column',
             justifyContent: 'start',
             alignItems: 'start',
@@ -88,7 +97,7 @@ export const ChatSection: React.FC<{
                       />
                     </ListItem>
                   )
-                } else {
+                } else if (chat?.type) {
                   return (
                     <ListItem key={index} sx={{ mb: 1 }} alignItems="flex-start" disableGutters>
                       <TxListItem key={`${index}-tx`} item={chat?.data} />
@@ -124,8 +133,13 @@ export const ChatSection: React.FC<{
           bgcolor: 'background.paper',
           position: 'sticky',
           bottom: 0,
+          p: 2,
+          borderTop: '1px solid',
+          borderColor: grey[800],
+          pt: 3
         }}
       >
+        {currentUser && group ? (
         <Box sx={{ width: '100%', display: 'flex', gap: '16px', p: 3, pt: 0 }}>
           <TextField
             sx={{ flexGrow: 1 }}
@@ -141,6 +155,17 @@ export const ChatSection: React.FC<{
             prevState={messages}
           />
         </Box>
+        ) : (
+          <Box sx={{ border: '1px solid var(--color-border-light)', borderRadius: '6px', p: 3}}>
+            <Typography pb={1} fontSize="sm" fontWeight={600}>
+             Join the chat
+            </Typography>
+            <Typography paragraph fontSize="xs">
+             To view messages, click the button below
+            </Typography>
+            {!currentUser ? <LoginButton setCurrentUser={setCurrentUser} /> : currentUser && !group ? <JoinButton user={currentUser} setGroup={setGroup} setMessages={setMessages} /> : ''}
+          </Box>
+        )}
       </Box>
     </Box>
   )

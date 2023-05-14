@@ -1,21 +1,26 @@
 import { Hidden } from '@mui/material'
-import dynamic from 'next/dynamic'
 import React from 'react'
 import { ChatSection } from './chatSection'
-
-const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
 
 export const DesktopChat: React.FC<{
   chatData: any[]
   message: string
   messages: string[]
+  currentUser: any
+  setCurrentUser: any
+  setGroup: any
   setMessage: any
   setMessages: any
   bottom: any
-}> = ({ chatData, message, setMessage, messages, setMessages, bottom }) => {
+  group: any
+}> = ({ chatData, message, setMessage, messages, setMessages, bottom, setCurrentUser, currentUser, setGroup, group}) => {
   return (
     <Hidden mdDown>
       <ChatSection
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+        group={group}
+        setGroup={setGroup}
         message={message}
         setMessage={setMessage}
         messages={messages}

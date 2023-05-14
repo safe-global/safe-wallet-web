@@ -1,12 +1,7 @@
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet from '@/hooks/wallets/useWallet'
 import { Box, Hidden, Tab, Tabs, Typography } from '@mui/material'
-import dynamic from 'next/dynamic'
 import React from 'react'
 import { ChatOverview } from './chatOverview'
 import { ChatSection } from './chatSection'
-
-const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -45,13 +40,15 @@ export const MobileChat: React.FC<{
   chatData: any[]
   message: string
   messages: string[]
+  currentUser: any
   setMessage: any
   setMessages: any
   bottom: any
+  setCurrentUser: any
+  setGroup: any
+  group: any
   owners: any[]
-}> = ({ chatData, message, setMessage, messages, setMessages, bottom, owners }) => {
-  const wallet = useWallet()
-  const { safe, safeAddress } = useSafeInfo()
+}> = ({ chatData, message, setMessage, messages, setMessages, bottom, owners, currentUser, setCurrentUser, setGroup, group }) => {
   const [mobileValue, setMobileValue] = React.useState(0)
 
   const handleMobileChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -67,6 +64,10 @@ export const MobileChat: React.FC<{
         </Tabs>
         <TabPanel value={mobileValue} index={0}>
           <ChatSection
+            group={group}
+            setCurrentUser={setCurrentUser}
+            setGroup={setGroup}
+            currentUser={currentUser}
             message={message}
             setMessage={setMessage}
             messages={messages}

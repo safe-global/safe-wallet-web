@@ -23,6 +23,7 @@ import ModeNightIcon from '@mui/icons-material/ModeNight'
 import SettingsIcon from '@mui/icons-material/Settings'
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
 import WbSunnyIcon from '@mui/icons-material/WbSunny'
+import WalletConnect from '@/components/chat/WalletConnect'
 import {
   Avatar,
   Box,
@@ -40,14 +41,13 @@ import {
 } from '@mui/material'
 import { grey } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
-import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import Link from 'next/link'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false })
+// const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false })
 
-const CometChatLoginNoSSR = dynamic(() => import('@/components/chat/login'), { ssr: false })
+// const CometChatLoginNoSSR = dynamic(() => import('@/components/chat/login'), { ssr: false })
 
 const drawerWidth = 360
 
@@ -286,15 +286,6 @@ const Chat = () => {
       </Container>
     )
 
-  if (!currentUser) {
-    return <CometChatLoginNoSSR setCurrentUser={setCurrentUser} />
-  }
-
-  //WHY TF is he not re-rendering?
-  if (!group) {
-    return <JoinNoSSR user={currentUser} setGroup={setGroup} setMessages={setMessages} />
-  }
-
   return (
     <>
       {popup ? <AddFolder open={popup} onClose={() => togglePopup(!popup)} /> : ''}
@@ -371,9 +362,8 @@ const Chat = () => {
                       gap: '16px',
                     }}
                   >
-                    <Avatar sx={{ height: 36, width: 36 }} alt="Daniel from Decentra" />
                     <Box>
-                      <Typography sx={{ fontWeight: 600 }}>{ellipsisAddress(`${wallet.address}`)}</Typography>
+                      <WalletConnect wallet={wallet} />
                     </Box>
                   </Box>
                   {/* <Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} /> */}
@@ -434,13 +424,21 @@ const Chat = () => {
                 setMessages={setMessages}
                 bottom={bottom}
                 chatData={chatData}
+                group={group}
                 owners={owners}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                setGroup={setGroup}
               />
               <DesktopChat
+                setGroup={setGroup}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
                 message={message}
                 setMessage={setMessage}
                 messages={messages}
                 setMessages={setMessages}
+                group={group}
                 bottom={bottom}
                 chatData={chatData}
               />
