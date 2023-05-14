@@ -23,7 +23,8 @@ const TransactionQueue = () => {
       <List sx={{ p: 3, pt: 2 }}>
         {queue ? (
           queue.map((transaction: any, i: number) => {
-            return <PendingTxListItem transaction={transaction.transaction} key={transaction.transaction.id} />
+            if (!transaction.transaction) return
+            return <PendingTxListItem transaction={transaction?.transaction} key={transaction.transaction.id} />
           })
         ) : (
           <Box sx={{ border: '1px solid var(--color-border-light)', borderRadius: '6px', pt: 2, pb: 2, pl: 2 }}>

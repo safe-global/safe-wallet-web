@@ -41,14 +41,13 @@ import {
 } from '@mui/material'
 import { grey } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
-import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import Link from 'next/link'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false })
+// const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false })
 
-const CometChatLoginNoSSR = dynamic(() => import('@/components/chat/login'), { ssr: false })
+// const CometChatLoginNoSSR = dynamic(() => import('@/components/chat/login'), { ssr: false })
 
 const drawerWidth = 360
 
@@ -287,15 +286,6 @@ const Chat = () => {
       </Container>
     )
 
-  if (!currentUser) {
-    return <CometChatLoginNoSSR setCurrentUser={setCurrentUser} />
-  }
-
-  //WHY TF is he not re-rendering?
-  if (!group) {
-    return <JoinNoSSR user={currentUser} setGroup={setGroup} setMessages={setMessages} />
-  }
-
   return (
     <>
       {popup ? <AddFolder open={popup} onClose={() => togglePopup(!popup)} /> : ''}
@@ -434,13 +424,21 @@ const Chat = () => {
                 setMessages={setMessages}
                 bottom={bottom}
                 chatData={chatData}
+                group={group}
                 owners={owners}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                setGroup={setGroup}
               />
               <DesktopChat
+                setGroup={setGroup}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
                 message={message}
                 setMessage={setMessage}
                 messages={messages}
                 setMessages={setMessages}
+                group={group}
                 bottom={bottom}
                 chatData={chatData}
               />

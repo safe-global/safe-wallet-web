@@ -1,6 +1,5 @@
 import useSafeAddress from '@/hooks/useSafeAddress'
-import { Box, Button, Stack } from '@mui/material'
-import { Container } from '@mui/system'
+import { Button, Stack } from '@mui/material'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { createNewGroup, getGroup, getMessages, joinGroup, listenForMessage } from '../../services/chat'
@@ -112,27 +111,11 @@ const JoinButton: React.FC<{
   }
 
   return (
-    <Container>
-      <Box
-        sx={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
         <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2}>
-          <Button variant="contained" onClick={handleGetGroup}>
+          <Button variant="outlined" onClick={handleGetGroup}>
             Get Group
           </Button>
-          {/* <Button variant="text" onClick={handleSignup}>
-            Sign up <ChevronRightIcon />
-          </Button> */}
         </Stack>
-      </Box>
-    </Container>
   )
 }
 

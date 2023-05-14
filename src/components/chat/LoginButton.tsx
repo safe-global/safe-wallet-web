@@ -1,14 +1,15 @@
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { Box, Button, Container, Stack } from '@mui/material'
-import React, { useEffect } from 'react'
+import { Button, Stack } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { initCometChat, loginWithCometChat, signUpWithCometChat } from '../../services/chat'
 
 const LoginButton: React.FC<{
   setCurrentUser: any
 }> = ({ setCurrentUser }) => {
+  const [signedUp, setSignedUp] = useState<boolean>(false)
   const wallet = useWallet()
   const safeAddress = useSafeAddress()
 
@@ -17,7 +18,7 @@ const LoginButton: React.FC<{
       return
     }
     initCometChat()
-    handleSignup()
+    handleSignup().then(() => setSignedUp(true)).catch()
     if (!wallet?.address) return
     //handleLogin()
   }, [safeAddress])
@@ -67,27 +68,17 @@ const LoginButton: React.FC<{
   }
 
   return (
-    <Container>
-      <Box
-        sx={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
         <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2}>
-          <Button variant="contained" onClick={handleLogin}>
+          <Button variant="outlined" onClick={handleLogin}>
             Log in
           </Button>
-          <Button variant="text" onClick={handleSignup}>
-            Sign up <ChevronRightIcon />
-          </Button>
+          {
+            !signedUp || <Button variant="text" onClick={handleSignup}>
+              Sign up <ChevronRightIcon />
+            </Button>
+          }
+          
         </Stack>
-      </Box>
-    </Container>
   )
 }
 
