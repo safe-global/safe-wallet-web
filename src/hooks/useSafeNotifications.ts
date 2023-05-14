@@ -133,7 +133,7 @@ const useSafeNotifications = (): void => {
    */
 
   useEffect(() => {
-    if (isValidMasterCopy(safe)) return
+    if (isValidMasterCopy(safe.implementationVersionState)) return
 
     const id = dispatch(
       showNotification({
@@ -149,7 +149,7 @@ const useSafeNotifications = (): void => {
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, safe])
+  }, [dispatch, safe.implementationVersionState])
 }
 
 export default useSafeNotifications

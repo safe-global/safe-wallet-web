@@ -4,7 +4,7 @@ describe('Assets > NFTs', () => {
   before(() => {
     cy.connectE2EWallet()
 
-    cy.visit(`/${TEST_SAFE}/balances/nfts`, { failOnStatusCode: false })
+    cy.visit(`/balances/nfts?safe=${TEST_SAFE}`)
     cy.contains('button', 'Accept selection').click()
     cy.contains('E2E Wallet @ Görli')
   })

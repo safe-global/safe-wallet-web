@@ -20,7 +20,7 @@ const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
     <Box className={css.container}>
       <Box className={css.imageContainer}>
         <Suspense>
-          <WalletIcon provider={wallet.label} />
+          <WalletIcon provider={wallet.label} icon={wallet.icon} />
         </Suspense>
       </Box>
       <Box>
