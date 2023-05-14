@@ -21,7 +21,7 @@ const IdenticonContainer = styled.div`
   margin-bottom: var(--space-2);
 `
 
-const StyledText = styled(Typography)`
+const StyledText = styled(Typography)<any>`
   margin-top: 8px;
   font-size: 24px;
   font-weight: bold;
