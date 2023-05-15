@@ -158,7 +158,7 @@ const CookieBanner = (): ReactElement | null => {
     }
   }, [dispatch, shouldOpen])
 
-  return cookiePopup?.open ? <CookieBannerPopup warningKey={cookiePopup.warningKey} /> : null
+  return cookiePopup?.open ? null : null
 }
 
 export default CookieBanner
