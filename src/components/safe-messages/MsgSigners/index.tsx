@@ -64,7 +64,7 @@ export const MsgSigners = ({
 
   const { confirmations, confirmationsRequired, confirmationsSubmitted } = msg
 
-  const missingConfirmations = [...new Array(confirmationsRequired - confirmationsSubmitted)]
+  const missingConfirmations = [...new Array(Math.max(0, confirmationsRequired - confirmationsSubmitted))]
 
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
 
