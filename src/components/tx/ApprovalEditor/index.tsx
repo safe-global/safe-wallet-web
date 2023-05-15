@@ -56,8 +56,6 @@ export const ApprovalEditor = () => {
     return null
   }
 
-  console.log('Rendering editor')
-
   const extractedTxs = decodeSafeTxToBaseTransactions(safeTransaction)
 
   // If a callback is handed in, we update the txs on change, otherwise a `undefined` callback will change the form to readonly

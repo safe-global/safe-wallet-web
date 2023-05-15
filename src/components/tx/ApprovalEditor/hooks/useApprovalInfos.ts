@@ -1,7 +1,6 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
 import { type Approval } from '@/security/modules/ApprovalModule'
-import { ERC20__factory } from '@/types/contracts'
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
@@ -14,8 +13,6 @@ export type ApprovalInfo = {
   amount: any
   amountFormatted: string
 }
-
-const ERC20_INTERFACE = ERC20__factory.createInterface()
 
 export const useApprovalInfos = (approvals: Approval[]) => {
   const { balances } = useBalances()
