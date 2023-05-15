@@ -40,7 +40,7 @@ export type SettingsState = {
   env: EnvState
 }
 
-const initialState: SettingsState = {
+export const initialState: SettingsState = {
   currency: 'usd',
 
   tokenList: TOKEN_LISTS.TRUSTED,
@@ -88,8 +88,16 @@ export const settingsSlice = createSlice({
     setTokenList: (state, { payload }: PayloadAction<SettingsState['tokenList']>) => {
       state.tokenList = payload
     },
-    setEnv: (state, { payload }: PayloadAction<EnvState>) => {
-      state.env = payload
+    setRpc: (state, { payload }: PayloadAction<{ chainId: string; rpc: string }>) => {
+      const { chainId, rpc } = payload
+      if (rpc) {
+        state.env.rpc[chainId] = rpc
+      } else {
+        delete state.env.rpc[chainId]
+      }
+    },
+    setTenderly: (state, { payload }: PayloadAction<EnvState['tenderly']>) => {
+      state.env.tenderly = merge({}, state.env.tenderly, payload)
     },
     setSettings: (_, { payload }: PayloadAction<SettingsState>) => {
       // We must return as we are overwriting the entire state
@@ -107,7 +115,8 @@ export const {
   setDarkMode,
   setHiddenTokensForChain,
   setTokenList,
-  setEnv,
+  setRpc,
+  setTenderly,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
@@ -128,4 +137,6 @@ export const selectRpc = createSelector(selectSettings, (settings) => settings.e
 
 export const selectTenderly = createSelector(selectSettings, (settings) => settings.env.tenderly)
 
-export const isEnvInitialState = createSelector(selectSettings, (settings) => isEqual(settings.env, initialState.env))
+export const isEnvInitialState = createSelector([selectSettings, (_, chainId) => chainId], (settings, chainId) => {
+  return isEqual(settings.env.tenderly, initialState.env.tenderly) && !settings.env.rpc[chainId]
+})
