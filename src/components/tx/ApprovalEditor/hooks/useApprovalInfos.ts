@@ -1,9 +1,12 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
 import { type Approval } from '@/security/modules/ApprovalModule'
+import { dispatchTxScan, InsightModuleNames } from '@/security/service'
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
+import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
+import { useState, useEffect } from 'react'
 import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 
 export type ApprovalInfo = {
@@ -14,12 +17,42 @@ export type ApprovalInfo = {
   amountFormatted: string
 }
 
-export const useApprovalInfos = (approvals: Approval[]) => {
+const useApprovalData = (safeTransaction: SafeTransaction | undefined) => {
+  const [approvalData, setApprovalData] = useState<Approval[]>([])
+
+  useEffect(() => {
+    if (!safeTransaction) {
+      return
+    }
+
+    const unsubscribe = dispatchTxScan({
+      type: InsightModuleNames.APPROVAL,
+      request: {
+        safeTransaction,
+      },
+      callback: (response) => {
+        setApprovalData(response.payload)
+      },
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [safeTransaction])
+
+  return approvalData
+}
+
+export const useApprovalInfos = (safeTransaction: SafeTransaction | undefined) => {
+  const approvals = useApprovalData(safeTransaction)
+
   const { balances } = useBalances()
 
   return useAsync<ApprovalInfo[]>(
-    async () =>
-      Promise.all(
+    async () => {
+      if (approvals.length === 0) return Promise.resolve([])
+
+      return Promise.all(
         approvals.map(async (approval) => {
           let tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> | undefined = balances.items.find(
             (item) => item.tokenInfo.address === approval.tokenAddress,
@@ -34,7 +67,8 @@ export const useApprovalInfos = (approvals: Approval[]) => {
 
           return { ...approval, tokenInfo: tokenInfo, amountFormatted }
         }),
-      ),
+      )
+    },
     [balances.items.length, approvals],
     false, // Do not clear data on balance updates
   )

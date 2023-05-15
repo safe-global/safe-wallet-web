@@ -16,7 +16,6 @@ import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { isEmptyHexData } from '@/utils/hex'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { TransactionInsightProvider } from '../TransactionInsightContext'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -48,9 +47,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
 
   return (
     <Box mb={2}>
-      <TransactionInsightProvider safeTransaction={tx}>
-        {decodedData && txDetails?.txData && <ApprovalEditor />}
-      </TransactionInsightProvider>
+      {decodedData && txDetails?.txData && <ApprovalEditor safeTransaction={tx} />}
       <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>Transaction details</AccordionSummary>
 

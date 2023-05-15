@@ -5,9 +5,13 @@ import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { id } from 'ethers/lib/utils'
 import { type TransactionInsightModule } from '..'
 
-export type ApprovalInfosResponse = {
+export type ApprovalModuleResponse = {
   type: 'APPROVAL_INFOS'
   payload: Approval[]
+}
+
+export type ApprovalModuleRequest = {
+  safeTransaction: SafeTransaction
 }
 
 export type Approval = {
@@ -19,8 +23,8 @@ export type Approval = {
 const MULTISEND_SIGNATURE_HASH = id('multiSend(bytes)').slice(0, 10)
 const ERC20_INTERFACE = ERC20__factory.createInterface()
 
-export class ApprovalModule implements TransactionInsightModule {
-  private scanTransaction(txPartial: { to: string; data: string }): Approval[] {
+export class ApprovalModule implements TransactionInsightModule<ApprovalModuleRequest, ApprovalModuleResponse> {
+  private scanInnerTransaction(txPartial: { to: string; data: string }): Approval[] {
     if (txPartial.data.startsWith(APPROVAL_SIGNATURE_HASH)) {
       const [spender, amount] = ERC20_INTERFACE.decodeFunctionData('approve', txPartial.data)
       return [
@@ -34,15 +38,16 @@ export class ApprovalModule implements TransactionInsightModule {
     return []
   }
 
-  scanTransactions(safeTx: SafeTransaction, callback: (response: ApprovalInfosResponse) => void): void {
-    const safeTxData = safeTx.data.data
+  scanTransaction(request: ApprovalModuleRequest, callback: (response: ApprovalModuleResponse) => void): void {
+    const { safeTransaction } = request
+    const safeTxData = safeTransaction.data.data
     const approvalInfos: Approval[] = []
 
     if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
       const innerTxs = decodeMultiSendTxs(safeTxData)
-      approvalInfos.push(...innerTxs.flatMap((tx) => this.scanTransaction(tx)))
+      approvalInfos.push(...innerTxs.flatMap((tx) => this.scanInnerTransaction(tx)))
     } else {
-      approvalInfos.push(...this.scanTransaction({ to: safeTx.data.to, data: safeTxData }))
+      approvalInfos.push(...this.scanInnerTransaction({ to: safeTransaction.data.to, data: safeTxData }))
     }
 
     if (approvalInfos.length > 0) {

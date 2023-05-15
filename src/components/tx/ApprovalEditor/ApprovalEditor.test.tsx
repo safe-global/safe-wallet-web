@@ -11,17 +11,15 @@ import {
 import ApprovalEditor from '.'
 import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexlify, hexZeroPad, Interface } from 'ethers/lib/utils'
-import { ERC20__factory, Multi_send_call_only__factory, Multi_send__factory } from '@/types/contracts'
+import { ERC20__factory, Multi_send_call_only__factory } from '@/types/contracts'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { parseUnits } from '@ethersproject/units'
-import { TransactionInsightProvider } from '../TransactionInsightContext'
 import { getMultiSendCallOnlyContractAddress } from '@/services/contracts/safeContracts'
 import { type SafeSignature, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 const PREFIX_TEXT = 'Approve access to'
 const ERC20_INTERFACE = ERC20__factory.createInterface()
-const MULTISEND_INTERFACE = Multi_send__factory.createInterface()
 
 const createApproveCallData = (spender: string, value: string) => {
   return ERC20_INTERFACE.encodeFunctionData('approve', [spender, value])
@@ -40,11 +38,7 @@ const getApprovalSummaryElement = (text: string, result: RenderResult): HTMLElem
 const renderEditor = async (txs: BaseTransaction[], updateTxs?: (newTxs: BaseTransaction[]) => void) => {
   if (txs.length === 0) {
     // eslint-disable-next-line react/display-name
-    return () => (
-      <TransactionInsightProvider safeTransaction={undefined} updateTransaction={updateTxs}>
-        <ApprovalEditor />
-      </TransactionInsightProvider>
-    )
+    return () => <ApprovalEditor safeTransaction={undefined} updateTransaction={updateTxs} />
   }
 
   let txData: string
@@ -80,11 +74,7 @@ const renderEditor = async (txs: BaseTransaction[], updateTxs?: (newTxs: BaseTra
     },
   }
   // eslint-disable-next-line react/display-name
-  return () => (
-    <TransactionInsightProvider safeTransaction={safeTx} updateTransaction={updateTxs}>
-      <ApprovalEditor />
-    </TransactionInsightProvider>
-  )
+  return () => <ApprovalEditor safeTransaction={safeTx} updateTransaction={updateTxs} />
 }
 
 describe('ApprovalEditor', () => {

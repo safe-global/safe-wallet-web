@@ -6,11 +6,24 @@ import { groupBy } from 'lodash'
 import css from './styles.module.css'
 import { UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
-import { useContext } from 'react'
+import { type ReactNode } from 'react'
 import { type ApprovalInfo, updateApprovalTxs, PSEUDO_APPROVAL_VALUES } from './utils/approvals'
 import { useApprovalInfos } from './hooks/useApprovalInfos'
-import { TransactionInsightContext } from '../TransactionInsightContext'
 import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
+import { type MetaTransactionData, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+
+const SummaryWrapper = ({ children }: { children: ReactNode | ReactNode[] }) => {
+  return (
+    <Box display="flex" flexDirection="row" justifyContent="space-between" width="100%">
+      <Typography fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
+        Approve access to
+      </Typography>
+      <Typography display="inline-flex" alignItems="center" gap={1} color="warning.main">
+        {children}
+      </Typography>
+    </Box>
+  )
+}
 
 const Summary = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
   const uniqueTokens = groupBy(approvalInfos, (approvalInfo) => approvalInfo.tokenAddress)
@@ -22,35 +35,29 @@ const Summary = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
       ? PSEUDO_APPROVAL_VALUES.UNLIMITED
       : approval.amountFormatted
     return (
-      <Box display="flex" flexDirection="row" justifyContent="space-between" width="100%">
-        <Typography fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
-          Approve access to
-        </Typography>
-        <Typography display="inline-flex" alignItems="center" gap={1} color="warning.main">
-          {amount}
-          <TokenIcon logoUri={approval.tokenInfo?.logoUri} tokenSymbol={approval.tokenInfo?.symbol} />
-          {approval.tokenInfo?.symbol}
-        </Typography>
-      </Box>
+      <SummaryWrapper>
+        {amount}
+        <TokenIcon logoUri={approval.tokenInfo?.logoUri} tokenSymbol={approval.tokenInfo?.symbol} />
+        {approval.tokenInfo?.symbol}
+      </SummaryWrapper>
     )
   }
 
   return (
-    <Box display="flex" flexDirection="row" justifyContent="space-between" width="100%">
-      <Typography fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
-        Approve access to
-      </Typography>
-      <Typography display="inline-flex" alignItems="center" gap={1} color="warning.main">
-        {uniqueTokenCount} Token{uniqueTokenCount > 1 ? 's' : ''}
-      </Typography>
-    </Box>
+    <SummaryWrapper>
+      {uniqueTokenCount} Token{uniqueTokenCount > 1 ? 's' : ''}
+    </SummaryWrapper>
   )
 }
 
-export const ApprovalEditor = () => {
-  const { approvalData, updateTransaction, safeTransaction } = useContext(TransactionInsightContext)
-
-  const [readableApprovals, error, loading] = useApprovalInfos(approvalData)
+export const ApprovalEditor = ({
+  safeTransaction,
+  updateTransaction,
+}: {
+  safeTransaction: SafeTransaction | undefined
+  updateTransaction?: (txs: MetaTransactionData[]) => void
+}) => {
+  const [readableApprovals, error, loading] = useApprovalInfos(safeTransaction)
 
   if (!readableApprovals || readableApprovals.length === 0 || !safeTransaction) {
     return null
