@@ -14,15 +14,17 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const currency = useAppSelector(selectCurrency)
   const settings = useAppSelector(selectSettings)
   const chain = useCurrentChain()
+
   const isTrustedTokenList = useMemo(() => {
-    const hasTrustedList = chain !== undefined && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
+    if (chain === undefined) return
+    const hasTrustedList = hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
     return hasTrustedList && (!settings.tokenList || settings.tokenList === TOKEN_LISTS.TRUSTED)
   }, [chain, settings.tokenList])
 
   // Re-fetch assets when the entire SafeInfo updates
   const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(
-    async () => {
-      if (!safe) return
+    () => {
+      if (!safe || isTrustedTokenList === undefined) return
       return getBalances(safe.chainId, safe.address.value, currency, {
         trusted: isTrustedTokenList,
       })
