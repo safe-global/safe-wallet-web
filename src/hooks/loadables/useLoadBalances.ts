@@ -7,9 +7,8 @@ import { selectCurrency, selectSettings, TOKEN_LISTS } from '@/store/settingsSli
 import { useCurrentChain } from '../useChains'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { POLLING_INTERVAL } from '@/config/constants'
-import useSafeAddress from '../useSafeAddress'
 import useIntervalCounter from '../useIntervalCounter'
-import useChainId from '../useChainId'
+import useSafeInfo from '../useSafeInfo'
 
 const useTokenListSetting = (): boolean | undefined => {
   const chain = useCurrentChain()
@@ -26,9 +25,9 @@ const useTokenListSetting = (): boolean | undefined => {
 export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const [pollCount, resetPolling] = useIntervalCounter(POLLING_INTERVAL)
   const currency = useAppSelector(selectCurrency)
-  const chainId = useChainId()
-  const safeAddress = useSafeAddress()
   const isTrustedTokenList = useTokenListSetting()
+  const { safe, safeAddress } = useSafeInfo()
+  const chainId = safe.chainId
 
   // Re-fetch assets when the entire SafeInfo updates
   const [data, error, loading] = useAsync<SafeBalanceResponse>(
