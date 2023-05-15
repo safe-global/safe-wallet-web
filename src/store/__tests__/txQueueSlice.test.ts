@@ -1,3 +1,4 @@
+import { createListenerMiddleware } from '@reduxjs/toolkit'
 import {
   LabelValue,
   TransactionListItemType,
@@ -12,15 +13,20 @@ import type {
 } from '@safe-global/safe-gateway-typescript-sdk'
 
 import * as txEvents from '@/services/tx/txEvents'
-import { txQueueMiddleware, txQueueSlice } from '../txQueueSlice'
+import { txQueueListener, txQueueSlice } from '../txQueueSlice'
 import type { PendingTxsState } from '../pendingTxsSlice'
 import { PendingStatus } from '../pendingTxsSlice'
 import type { RootState } from '..'
 
 describe('txQueueSlice', () => {
+  const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
+
   const txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
 
   beforeEach(() => {
+    listenerMiddlewareInstance.clearListeners()
+    txQueueListener(listenerMiddlewareInstance)
+
     jest.clearAllMocks()
   })
 
@@ -59,7 +65,7 @@ describe('txQueueSlice', () => {
       },
     })
 
-    txQueueMiddleware.middleware(listenerApi)(jest.fn())(action)
+    listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
     expect(txDispatchSpy).toHaveBeenCalledWith(txEvents.TxEvent.SIGNATURE_INDEXED, { txId: '0x123' })
   })
@@ -86,7 +92,7 @@ describe('txQueueSlice', () => {
       data: undefined, // Cleared
     })
 
-    txQueueMiddleware.middleware(listenerApi)(jest.fn())(action)
+    listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
     expect(txDispatchSpy).not.toHaveBeenCalled()
   })
@@ -130,7 +136,7 @@ describe('txQueueSlice', () => {
       },
     })
 
-    txQueueMiddleware.middleware(listenerApi)(jest.fn())(action)
+    listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
     expect(txDispatchSpy).not.toHaveBeenCalled()
   })
@@ -166,7 +172,7 @@ describe('txQueueSlice', () => {
       },
     })
 
-    txQueueMiddleware.middleware(listenerApi)(jest.fn())(action)
+    listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
     expect(txDispatchSpy).not.toHaveBeenCalled()
   })
@@ -203,7 +209,7 @@ describe('txQueueSlice', () => {
       data: payload,
     })
 
-    txQueueMiddleware.middleware(listenerApi)(next)(action)
+    listenerMiddlewareInstance.middleware(listenerApi)(next)(action)
 
     expect(txDispatchSpy).not.toHaveBeenCalled()
   })

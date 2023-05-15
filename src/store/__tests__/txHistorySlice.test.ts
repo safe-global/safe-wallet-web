@@ -1,17 +1,23 @@
+import { createListenerMiddleware } from '@reduxjs/toolkit'
 import { LabelValue, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionListItem, Label, ConflictHeader, DateLabel } from '@safe-global/safe-gateway-typescript-sdk'
 
 import * as txEvents from '@/services/tx/txEvents'
-import { txHistoryMiddleware, txHistorySlice } from '../txHistorySlice'
+import { txHistoryListener, txHistorySlice } from '../txHistorySlice'
 import type { PendingTxsState } from '../pendingTxsSlice'
 import { PendingStatus } from '../pendingTxsSlice'
 import type { RootState } from '..'
 
 describe('txHistorySlice', () => {
-  describe('txHistoryMiddleware', () => {
+  describe('txHistoryListener', () => {
+    const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
+
     const txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
 
     beforeEach(() => {
+      listenerMiddlewareInstance.clearListeners()
+      txHistoryListener(listenerMiddlewareInstance)
+
       jest.clearAllMocks()
     })
 
@@ -46,7 +52,7 @@ describe('txHistorySlice', () => {
         },
       })
 
-      txHistoryMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(txDispatchSpy).toHaveBeenCalledWith(txEvents.TxEvent.SUCCESS, {
         txId: '0x123',
@@ -83,7 +89,7 @@ describe('txHistorySlice', () => {
         data: undefined, // Cleared
       })
 
-      txHistoryMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(txDispatchSpy).not.toHaveBeenCalled()
     })
@@ -127,7 +133,7 @@ describe('txHistorySlice', () => {
         },
       })
 
-      txHistoryMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(txDispatchSpy).not.toHaveBeenCalled()
     })
@@ -163,7 +169,7 @@ describe('txHistorySlice', () => {
         },
       })
 
-      txHistoryMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(txDispatchSpy).not.toHaveBeenCalled()
     })

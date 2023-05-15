@@ -1,37 +1,36 @@
 import type { SafeMessageListPage } from '@safe-global/safe-gateway-typescript-sdk'
-import { createListenerMiddleware } from '@reduxjs/toolkit'
+import type { listenerMiddlewareInstance } from '.'
 
 import { safeMsgDispatch, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import { makeLoadableSlice } from '@/store/common'
 import { selectPendingSafeMessages } from '@/store/pendingSafeMessagesSlice'
-import type { RootState } from '@/store'
 
 const { slice, selector } = makeLoadableSlice('safeMessages', undefined as SafeMessageListPage | undefined)
 
 export const safeMessagesSlice = slice
 export const selectSafeMessages = selector
 
-export const safeMessagesMiddleware = createListenerMiddleware<RootState>()
-
-safeMessagesMiddleware.startListening({
-  actionCreator: safeMessagesSlice.actions.set,
-  effect: (action, listenerApi) => {
-    if (!action.payload.data) {
-      return
-    }
-
-    const pendingMsgs = selectPendingSafeMessages(listenerApi.getState())
-
-    for (const result of action.payload.data.results) {
-      if (!isSafeMessageListItem(result)) {
-        continue
+export const safeMessagesListener = (listenerMiddleware: typeof listenerMiddlewareInstance) => {
+  listenerMiddleware.startListening({
+    actionCreator: safeMessagesSlice.actions.set,
+    effect: (action, listenerApi) => {
+      if (!action.payload.data) {
+        return
       }
 
-      const { messageHash } = result
-      if (pendingMsgs[messageHash]) {
-        safeMsgDispatch(SafeMsgEvent.UPDATED, { messageHash })
+      const pendingMsgs = selectPendingSafeMessages(listenerApi.getState())
+
+      for (const result of action.payload.data.results) {
+        if (!isSafeMessageListItem(result)) {
+          continue
+        }
+
+        const { messageHash } = result
+        if (pendingMsgs[messageHash]) {
+          safeMsgDispatch(SafeMsgEvent.UPDATED, { messageHash })
+        }
       }
-    }
-  },
-})
+    },
+  })
+}

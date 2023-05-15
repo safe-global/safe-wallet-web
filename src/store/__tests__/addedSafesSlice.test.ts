@@ -1,3 +1,4 @@
+import { createListenerMiddleware } from '@reduxjs/toolkit'
 import type { SafeBalanceResponse, SafeInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
 import type { RootState } from '..'
@@ -7,7 +8,7 @@ import {
   removeSafe,
   addedSafesSlice,
   updateAddedSafeBalance,
-  addedSafesMiddleware,
+  addedSafesListener,
 } from '../addedSafesSlice'
 import { balancesSlice } from '../balancesSlice'
 import { defaultSafeInfo } from '../safeInfoSlice'
@@ -369,7 +370,14 @@ describe('addedSafesSlice', () => {
     })
   })
 
-  describe('addedSafesMiddleware', () => {
+  describe('addedSafesListener', () => {
+    const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
+
+    beforeEach(() => {
+      listenerMiddlewareInstance.clearListeners()
+      addedSafesListener(listenerMiddlewareInstance)
+    })
+
     it('should update the balance of an added Safe if a Safe is loaded', () => {
       const state = {
         safeInfo: {
@@ -397,7 +405,7 @@ describe('addedSafesSlice', () => {
         data: payload,
       })
 
-      addedSafesMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(listenerApi.dispatch).toHaveBeenCalledWith(
         updateAddedSafeBalance({
@@ -430,34 +438,34 @@ describe('addedSafesSlice', () => {
         data: undefined, // Cleared
       })
 
-      addedSafesMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(listenerApi.dispatch).not.toHaveBeenCalled()
     })
-  })
 
-  it('should not update the balance of an added Safe if a Safe is reset', () => {
-    const state = {
-      safeInfo: {
-        data: defaultSafeInfo, // Reset
-      },
-    } as RootState
+    it('should not update the balance of an added Safe if a Safe is reset', () => {
+      const state = {
+        safeInfo: {
+          data: defaultSafeInfo, // Reset
+        },
+      } as RootState
 
-    const listenerApi = {
-      getState: jest.fn(() => state),
-      dispatch: jest.fn(),
-    }
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
+      }
 
-    const action = balancesSlice.actions.set({
-      loading: false,
-      data: {
-        items: [],
-        fiatTotal: '',
-      },
+      const action = balancesSlice.actions.set({
+        loading: false,
+        data: {
+          items: [],
+          fiatTotal: '',
+        },
+      })
+
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
+      expect(listenerApi.dispatch).not.toHaveBeenCalled()
     })
-
-    addedSafesMiddleware.middleware(listenerApi)(jest.fn())(action)
-
-    expect(listenerApi.dispatch).not.toHaveBeenCalled()
   })
 })

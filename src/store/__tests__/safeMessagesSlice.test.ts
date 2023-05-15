@@ -1,16 +1,22 @@
+import { createListenerMiddleware } from '@reduxjs/toolkit'
 import { SafeMessageListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessage, SafeMessageDateLabel } from '@safe-global/safe-gateway-typescript-sdk'
 
 import * as safeMsgEvents from '@/services/safe-messages/safeMsgEvents'
-import { safeMessagesMiddleware, safeMessagesSlice } from '../safeMessagesSlice'
+import { safeMessagesListener, safeMessagesSlice } from '../safeMessagesSlice'
 import type { RootState } from '..'
 import type { PendingSafeMessagesState } from '../pendingSafeMessagesSlice'
 
 describe('safeMessagesSlice', () => {
-  describe('safeMessagesMiddleware', () => {
+  describe('safeMessagesListener', () => {
+    const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
+
     const safeMsgDispatchSpy = jest.spyOn(safeMsgEvents, 'safeMsgDispatch')
 
     beforeEach(() => {
+      listenerMiddlewareInstance.clearListeners()
+      safeMessagesListener(listenerMiddlewareInstance)
+
       jest.clearAllMocks()
     })
 
@@ -38,7 +44,7 @@ describe('safeMessagesSlice', () => {
         },
       })
 
-      safeMessagesMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(safeMsgDispatchSpy).toHaveBeenCalledWith(safeMsgEvents.SafeMsgEvent.UPDATED, {
         messageHash: '0x123',
@@ -62,7 +68,7 @@ describe('safeMessagesSlice', () => {
         data: undefined, // Cleared
       })
 
-      safeMessagesMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(safeMsgDispatchSpy).not.toHaveBeenCalled()
     })
@@ -91,7 +97,7 @@ describe('safeMessagesSlice', () => {
         },
       })
 
-      safeMessagesMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(safeMsgDispatchSpy).not.toHaveBeenCalled()
     })
@@ -120,7 +126,7 @@ describe('safeMessagesSlice', () => {
         },
       })
 
-      safeMessagesMiddleware.middleware(listenerApi)(jest.fn())(action)
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(safeMsgDispatchSpy).not.toHaveBeenCalled()
     })
