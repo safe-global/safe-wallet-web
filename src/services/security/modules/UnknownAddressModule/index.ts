@@ -1,5 +1,5 @@
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { type SecurityModule } from '..'
+import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '..'
 import { type JsonRpcProvider } from '@ethersproject/providers'
 import { createReadOnlyEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { sameAddress } from '@/utils/addresses'
@@ -19,7 +19,7 @@ export type UnknownAddressModuleRequest = {
 export class UnknownAddressModule implements SecurityModule<UnknownAddressModuleRequest, UnknownAddressModuleResponse> {
   async scanTransaction(
     request: UnknownAddressModuleRequest,
-    callback: (response: UnknownAddressModuleResponse) => void,
+    callback: (response: SecurityResponse<UnknownAddressModuleResponse>) => void,
   ): Promise<void> {
     const { safeTransaction, provider, knownAddresses } = request
     const ethAdapter = createReadOnlyEthersAdapter(provider)
@@ -28,13 +28,16 @@ export class UnknownAddressModule implements SecurityModule<UnknownAddressModule
     const nonZeroValue = safeTransaction.data.value !== '0'
 
     if (!isKnownAddress && !isSmartContract && nonZeroValue) {
-      callback([
-        {
-          receiver: safeTransaction.data.to,
-          token: null,
-          type: 'NATIVE',
-        },
-      ])
+      callback({
+        severity: SecuritySeverity.LOW,
+        payload: [
+          {
+            receiver: safeTransaction.data.to,
+            token: null,
+            type: 'NATIVE',
+          },
+        ],
+      })
     }
   }
 }

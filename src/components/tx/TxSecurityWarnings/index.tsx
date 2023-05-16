@@ -19,7 +19,9 @@ const useRedefine = (safeTx: SafeTransaction | undefined) => {
 
     const unsubscribe = dispatchTxScan({
       type: SecurityModuleNames.REDEFINE,
-      callback: setRedefineScanResult,
+      callback: ({ payload }) => {
+        setRedefineScanResult(payload)
+      },
       request: {
         chainId: Number(safe.chainId),
         safeTransaction: safeTx,

@@ -1,4 +1,4 @@
-import { type SecurityModule } from './modules'
+import { type SecurityResponse, type SecurityModule } from './modules'
 import { ApprovalModule } from './modules/ApprovalModule'
 import { RedefineModule } from './modules/RedefineModule'
 import { UnknownAddressModule } from './modules/UnknownAddressModule'
@@ -24,12 +24,12 @@ export function dispatchTxScan<
   Type extends SecurityModuleNames,
   Request extends Req<Type>,
   Response extends Res<Type>,
->({ type, request, callback }: { type: Type; request: Request; callback: (res: Response) => void }) {
+>({ type, request, callback }: { type: Type; request: Request; callback: (res: SecurityResponse<Response>) => void }) {
   let isSubscribed = true
 
   const InsightModule = SecurityModules[type] as unknown as SecurityModule<Request, Response>
 
-  InsightModule.scanTransaction(request, (res: Response) => {
+  InsightModule.scanTransaction(request, (res: SecurityResponse<Response>) => {
     if (isSubscribed) {
       callback(res)
     }

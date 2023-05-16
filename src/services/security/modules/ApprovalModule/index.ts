@@ -3,7 +3,7 @@ import { ERC20__factory } from '@/types/contracts'
 import { decodeMultiSendTxs } from '@/utils/transactions'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { id } from 'ethers/lib/utils'
-import { type SecurityModule } from '..'
+import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '..'
 
 export type ApprovalModuleResponse = Approval[]
 
@@ -35,7 +35,10 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     return []
   }
 
-  scanTransaction(request: ApprovalModuleRequest, callback: (response: ApprovalModuleResponse) => void): void {
+  scanTransaction(
+    request: ApprovalModuleRequest,
+    callback: (response: SecurityResponse<ApprovalModuleResponse>) => void,
+  ): void {
     const { safeTransaction } = request
     const safeTxData = safeTransaction.data.data
     const approvalInfos: Approval[] = []
@@ -48,7 +51,10 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     }
 
     if (approvalInfos.length > 0) {
-      callback(approvalInfos)
+      callback({
+        severity: SecuritySeverity.LOW,
+        payload: approvalInfos,
+      })
     }
   }
 }

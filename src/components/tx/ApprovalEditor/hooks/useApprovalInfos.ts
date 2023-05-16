@@ -30,7 +30,9 @@ const useApprovalData = (safeTransaction: SafeTransaction | undefined) => {
       request: {
         safeTransaction,
       },
-      callback: setApprovalData,
+      callback: ({ payload }) => {
+        setApprovalData(payload)
+      },
     })
 
     return () => {

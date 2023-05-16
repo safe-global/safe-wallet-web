@@ -1,7 +1,7 @@
 import { REDEFINE_API_KEY } from '@/config/constants'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
-import { type SecurityModule } from '..'
+import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '..'
 
 const REDEFINE_URL = 'https://api.redefine.net/v2/risk-analysis/messages'
 
@@ -45,7 +45,10 @@ type RedefineResponse = {
 }
 
 export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefinedModuleResponse> {
-  async scanTransaction(request: RedefineModuleRequest, callback: (res: RedefinedModuleResponse) => void) {
+  async scanTransaction(
+    request: RedefineModuleRequest,
+    callback: (res: SecurityResponse<RedefinedModuleResponse>) => void,
+  ) {
     const { chainId, safeAddress } = request
 
     const txTypedData = generateTypedData({
@@ -78,6 +81,9 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
 
     const result = (await res.json()) as RedefineResponse
 
-    callback(result.data.insights)
+    callback({
+      severity: SecuritySeverity.LOW,
+      payload: result.data.insights,
+    })
   }
 }
