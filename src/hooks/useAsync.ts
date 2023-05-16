@@ -15,18 +15,19 @@ const useAsync = <T>(
   const callback = useCallback(asyncCall, dependencies)
 
   useEffect(() => {
-    clearData && setData(undefined)
     setError(undefined)
 
     const promise = callback()
 
     // Not a promise, exit early
     if (!promise) {
+      setData(undefined)
       setLoading(false)
       return
     }
 
     let isCurrent = true
+    clearData && setData(undefined)
     setLoading(true)
 
     promise
