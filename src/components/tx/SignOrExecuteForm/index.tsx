@@ -1,5 +1,5 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
-import { Button, DialogContent, Typography } from '@mui/material'
+import { Box, Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import useGasLimit from '@/hooks/useGasLimit'
@@ -20,13 +20,9 @@ import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidate
 import UnknownContractError from './UnknownContractError'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
-import useSafeInfo from '@/hooks/useSafeInfo'
+import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
+import { hasRemainingRelays } from '@/utils/relaying'
 import { TxSecurityWarnings } from '../TxSecurityWarnings'
-
-enum ExecutionType {
-  RELAYER = 'Via relayer',
-  CONNECTED_WALLET = 'With connected wallet',
-}
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -66,7 +62,6 @@ const SignOrExecuteForm = ({
   const currentChain = useCurrentChain()
   const { signTx, executeTx } = useTxActions()
   const [relays] = useRelaysBySafe()
-  const { safeAddress, safe } = useSafeInfo()
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -78,11 +73,15 @@ const SignOrExecuteForm = ({
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
 
+  // We default to relay, but the option is only shown if we canRelay
+  const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
+
   // SC wallets can relay fully signed transactions
   const [walletCanRelay] = useWalletCanRelay(tx)
 
-  // The transaction will be executed through relaying
-  const willRelay = willExecute && relays && relays.remaining > 0 && walletCanRelay
+  // The transaction can/will be relayed
+  const canRelay = hasRemainingRelays(relays) && !!walletCanRelay && willExecute
+  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
@@ -109,13 +108,13 @@ const SignOrExecuteForm = ({
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
-    return await signTx(tx, txId)
+    return await signTx(tx, txId, origin)
   }
 
   // Execute transaction
   const onExecute = async (): Promise<string | undefined> => {
     const txOptions = getTxOptions(advancedParams, currentChain)
-    return await executeTx(txOptions, tx, txId, willRelay)
+    return await executeTx(txOptions, tx, txId, origin, willRelay)
   }
 
   // On modal submit
@@ -184,6 +183,24 @@ const SignOrExecuteForm = ({
           gasLimitError={gasLimitError}
           willRelay={willRelay}
         />
+
+        {canRelay && (
+          <Box
+            sx={{
+              '& > div': {
+                marginTop: '-1px',
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+              },
+            }}
+          >
+            <ExecutionMethodSelector
+              executionMethod={executionMethod}
+              setExecutionMethod={setExecutionMethod}
+              relays={relays}
+            />
+          </Box>
+        )}
 
         <TxSimulation
           gasLimit={advancedParams.gasLimit?.toNumber()}

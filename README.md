@@ -1,9 +1,9 @@
-# <img src="https://user-images.githubusercontent.com/381895/186411381-e05075ff-7565-4b4e-925e-bb1e85cb165b.png" height="60" width="60" valign="middle" /> Safe Web Core
+# <img src="/public/images/logo.svg" height="60" valign="middle" alt="Safe{Wallet}" />
 
-[![License](https://img.shields.io/github/license/safe-global/web-core)](https://github.com/safe-global/web-core/blob/main/LICENSE)
-![Tests](https://img.shields.io/github/actions/workflow/status/safe-global/web-core/test.yml?branch=main&label=tests)
-![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/safe-global/web-core)
-[![GitPOAP Badge](https://public-api.gitpoap.io/v1/repo/safe-global/web-core/badge)](https://www.gitpoap.io/gh/safe-global/web-core)
+[![License](https://img.shields.io/github/license/safe-global/safe-wallet-web)](https://github.com/safe-global/safe-wallet-web/blob/main/LICENSE)
+![Tests](https://img.shields.io/github/actions/workflow/status/safe-global/safe-wallet-web/test.yml?branch=main&label=tests)
+![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/safe-global/safe-wallet-web)
+[![GitPOAP Badge](https://public-api.gitpoap.io/v1/repo/safe-global/safe-wallet-web/badge)](https://www.gitpoap.io/gh/safe-global/safe-wallet-web)
 
 The default Safe web interface.
 
@@ -21,12 +21,12 @@ Here's the list of all the required and optional variables:
 
 | Env variable                                           |              | Description                                                                                                                         |
 | ------------------------------------------------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_INFURA_TOKEN`                             | **required** | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token                          |
+| `NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN`                   | optional     | Infura token for Safe Apps, falls back to `NEXT_PUBLIC_INFURA_TOKEN`                                                                |
 | `NEXT_PUBLIC_IS_PRODUCTION`                            | optional     | Set to `true` to build a minified production app                                                                                    |
 | `NEXT_PUBLIC_GATEWAY_URL_PRODUCTION`                   | optional     | The base URL for the [Safe Client Gateway](https://github.com/safe-global/safe-client-gateway)                                      |
 | `NEXT_PUBLIC_GATEWAY_URL_STAGING`                      | optional     | The base CGW URL on staging                                                                                                         |
-| `NEXT_PUBLIC_SAFE_VERSION`                             | optional     | The latest version of the Safe contract, defaults to 1.3.0                                                                          |
-| `NEXT_PUBLIC_INFURA_TOKEN`                             | **required** | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token                          |
-| `NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN`                   | optional     | Infura token for Safe Apps, falls back to `NEXT_PUBLIC_INFURA_TOKEN`                                                                |
+| `NEXT_PUBLIC_SAFE_VERSION`                             | optional     | The latest version of the Safe contract, defaults to 1.3.0                                                                          |      |
 | `NEXT_PUBLIC_WC_BRIDGE`                                | optional     | [WalletConnect](https://docs.walletconnect.com/1.0/bridge-server) bridge URL, falls back to the public WC bridge                    |
 | `NEXT_PUBLIC_TENDERLY_ORG_NAME`                        | optional     | [Tenderly](https://tenderly.co) org name for Transaction Simulation                                                                 |
 | `NEXT_PUBLIC_TENDERLY_PROJECT_NAME`                    | optional     | Tenderly project name                                                                                                               |
@@ -39,6 +39,7 @@ Here's the list of all the required and optional variables:
 | `NEXT_PUBLIC_SENTRY_DSN`                               | optional     | [Sentry](https://sentry.io) id for tracking runtime errors                                                                          |
 | `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION` | optional     | [Safe Gelato Relay Service](https://github.com/safe-global/safe-gelato-relay-service) URL to allow relaying transactions via Gelato |
 | `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING`    | optional     | Relay URL on staging                                                                                                                |
+| `NEXT_PUBLIC_IS_OFFICIAL_HOST`                         | optional     | Whether it's the official distribution of the app, or a fork; has legal implications. Set to true only if you also update the legal pages like Imprint and Terms of use |
 
 If you don't provide some of the optional vars, the corresponding features will be disabled in the UI.
 
@@ -120,3 +121,4 @@ yarn cmp MyNewComponent
 - MUI
 - ethers.js
 - web3-onboard
+

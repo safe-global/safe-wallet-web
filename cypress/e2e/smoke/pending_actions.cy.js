@@ -4,12 +4,8 @@ describe('Pending actions', () => {
   before(() => {
     cy.connectE2EWallet()
 
-    cy.visit('/welcome')
-
-    // Close cookie banner
-    cy.contains('button', 'Accept all').click()
-
-    // Ensure wallet is connected to correct chain via header
+    cy.visit(`/welcome`)
+    cy.contains('button', 'Accept selection').click()
     cy.contains('E2E Wallet @ Görli')
   })
 
@@ -25,7 +21,7 @@ describe('Pending actions', () => {
 
   it('should add the Safe with the pending actions', () => {
     // Enters Loading Safe form
-    cy.contains('button', 'Add existing Safe').click()
+    cy.contains('button', 'Add').click()
     cy.contains('Connect wallet & select network')
 
     // Inputs the Safe address

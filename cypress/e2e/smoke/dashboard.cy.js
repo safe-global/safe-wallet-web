@@ -3,7 +3,7 @@ const SAFE = encodeURIComponent('gor:0xCD4FddB8FfA90012DFE11eD4bf258861204FeEAE'
 describe('Dashboard', () => {
   before(() => {
     // Go to the test Safe home page
-    cy.visit(`/home?safe=${SAFE}`, { failOnStatusCode: false })
+    cy.visit(`/home?safe=${SAFE}`)
     cy.contains('button', 'Accept selection').click()
 
     // Wait for dashboard to initialize
@@ -65,9 +65,9 @@ describe('Dashboard', () => {
 
   it('should show the Safe Apps Section', () => {
     // Create an alias for the Safe Apps section
-    cy.contains('h2', 'Safe{Apps}').parents('section').as('safeAppsSection')
+    cy.contains('h2', 'Safe Apps').parents('section').as('safeAppsSection')
 
-    cy.get('@safeAppsSection').contains('Explore Safe{Apps}')
+    cy.get('@safeAppsSection').contains('Explore Safe Apps')
 
     // Regular safe apps
     cy.get('@safeAppsSection').within(() => {

@@ -1,27 +1,22 @@
 import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
-import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { getDecodedData, Operation } from '@safe-global/safe-gateway-typescript-sdk'
+import { ErrorBoundary } from '@sentry/react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { Box, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
-import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import SendToBlock from '@/components/tx/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useAsync from '@/hooks/useAsync'
-import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getInteractionTitle } from '../utils'
 import type { SafeAppsTxParams } from '.'
-import { isEmptyHexData } from '@/utils/hex'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
 import { ApprovalEditor } from '../../tx/ApprovalEditor'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { Box, Typography } from '@mui/material'
+import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -30,7 +25,6 @@ type ReviewSafeAppsTxProps = {
 const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
 }: ReviewSafeAppsTxProps): ReactElement => {
-  const chainId = useChainId()
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const chain = useCurrentChain()
@@ -51,12 +45,6 @@ const ReviewSafeAppsTx = ({
     return tx
   }, [txList])
 
-  const [decodedData] = useAsync<DecodedDataResponse | undefined>(async () => {
-    if (!safeTx || isEmptyHexData(safeTx.data.data)) return
-
-    return getDecodedData(chainId, safeTx.data.data)
-  }, [safeTx, chainId])
-
   const handleSubmit = async () => {
     setSubmitError(undefined)
     if (!safeTx || !onboard) return
@@ -74,8 +62,12 @@ const ReviewSafeAppsTx = ({
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
       <>
-        <ApprovalEditor safeTransaction={safeTx} updateTransaction={setTxList} />
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor safeTransaction={safeTx} updateTransaction={setTxList} />
+        </ErrorBoundary>
+
         <SendFromBlock />
+
         {safeTx && (
           <>
             <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
@@ -86,21 +78,6 @@ const ReviewSafeAppsTx = ({
               </Typography>
               {generateDataRowValue(safeTx.data.data, 'rawData')}
             </Box>
-
-            {isMultiSend && (
-              <Box mb={2} display="flex" flexDirection="column" gap={1}>
-                <Multisend
-                  txData={{
-                    dataDecoded: decodedData,
-                    to: { value: safeTx.data.to },
-                    value: safeTx.data.value,
-                    operation: safeTx.data.operation === OperationType.Call ? Operation.CALL : Operation.DELEGATE,
-                    trustedDelegateCallTarget: false,
-                  }}
-                  variant="outlined"
-                />
-              </Box>
-            )}
           </>
         )}
       </>

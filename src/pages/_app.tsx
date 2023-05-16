@@ -34,12 +34,12 @@ import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
 import useAdjustUrl from '@/hooks/useAdjustUrl'
+import useSafeMessageNotifications from '@/hooks/useSafeMessageNotifications'
+import useSafeMessagePendingStatuses from '@/hooks/useSafeMessagePendingStatuses'
+import useChangedValue from '@/hooks/useChangedValue'
 
 // Importing it dynamically to prevent hydration errors because we read the local storage
 const TermsBanner = dynamic(() => import('@/components/common/TermsBanner'), { ssr: false })
-
-import useSafeMessageNotifications from '@/hooks/useSafeMessageNotifications'
-import useSafeMessagePendingStatuses from '@/hooks/useSafeMessagePendingStatuses'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -94,10 +94,12 @@ const WebCoreApp = ({
   router,
   emotionCache = clientSideEmotionCache,
 }: WebCoreAppProps): ReactElement => {
+  const safeKey = useChangedValue(router.query.safe?.toString())
+
   return (
     <StoreHydrator>
       <Head>
-        <title key="default-title">Safe{'{Wallet}'}</title>
+        <title key="default-title">{'Safe{Wallet}'}</title>
         <MetaTags prefetchUrl={GATEWAY_URL} />
       </Head>
 
@@ -108,7 +110,7 @@ const WebCoreApp = ({
           <InitApp />
 
           <PageLayout pathname={router.pathname}>
-            <Component {...pageProps} />
+            <Component {...pageProps} key={safeKey} />
           </PageLayout>
 
           <CookieBanner />

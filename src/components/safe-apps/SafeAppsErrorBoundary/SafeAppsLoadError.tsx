@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import SvgIcon from '@mui/material/SvgIcon'
-import { SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
+import { DISCORD_URL } from '@/config/constants'
 import NetworkError from '@/public/images/apps/network-error.svg'
 
 import css from './styles.module.css'
@@ -15,19 +15,19 @@ const SafeAppsLoadError = ({ onBackToApps }: SafeAppsLoadErrorProps): React.Reac
   return (
     <div className={css.wrapper}>
       <div className={css.content}>
-        <Typography variant="h1">Safe{'{App}'} could not be loaded</Typography>
+        <Typography variant="h1">Safe App could not be loaded</Typography>
 
         <SvgIcon component={NetworkError} inheritViewBox className={css.image} />
 
         <div>
           <Typography component="span">In case the problem persists, please reach out to us via </Typography>
-          <ExternalLink href={SAFE_APPS_SUPPORT_CHAT_URL} fontSize="medium">
+          <ExternalLink href={DISCORD_URL} fontSize="medium">
             Discord
           </ExternalLink>
         </div>
 
         <Button href="#back" color="primary" onClick={onBackToApps}>
-          Go back to the Safe{'{Apps}'} list
+          Go back to the Safe Apps list
         </Button>
       </div>
     </div>

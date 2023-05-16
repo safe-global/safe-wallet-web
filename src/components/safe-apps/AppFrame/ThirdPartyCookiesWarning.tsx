@@ -1,13 +1,11 @@
 import React from 'react'
 import { Alert, AlertTitle } from '@mui/material'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 type ThirdPartyCookiesWarningProps = {
   onClose: () => void
 }
-
-const HELP_LINK =
-  'https://help.safe.global/en/articles/5955031-why-do-i-need-to-enable-third-party-cookies-for-safe-apps'
 
 export const ThirdPartyCookiesWarning = ({ onClose }: ThirdPartyCookiesWarningProps): React.ReactElement => {
   return (
@@ -22,9 +20,9 @@ export const ThirdPartyCookiesWarning = ({ onClose }: ThirdPartyCookiesWarningPr
       })}
     >
       <AlertTitle>
-        Third party cookies are disabled. Safe{'{Apps}'} may therefore not work properly. You can find out more
-        information about this{' '}
-        <ExternalLink href={HELP_LINK} fontSize="inherit">
+        Third party cookies are disabled. Safe Apps may therefore not work properly. You can find out more information
+        about this{' '}
+        <ExternalLink href={HelpCenterArticle.COOKIES} fontSize="inherit">
           here
         </ExternalLink>
       </AlertTitle>

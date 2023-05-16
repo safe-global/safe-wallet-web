@@ -17,7 +17,7 @@ const AddCustomSafeAppCard = ({ onSave, safeAppList }: Props) => {
       <Card>
         <Box padding="48px 12px" display="flex" flexDirection="column" alignItems="center">
           {/* Add Custom Safe App Icon */}
-          <AddCustomAppIcon alt="Add Custom Safe{App} card" />
+          <AddCustomAppIcon alt="Add Custom Safe App card" />
 
           {/*  Add Custom Safe App Button */}
           <Button
@@ -28,7 +28,7 @@ const AddCustomSafeAppCard = ({ onSave, safeAppList }: Props) => {
               mt: 3,
             }}
           >
-            Add custom Safe{'{App}'}
+            Add custom Safe App
           </Button>
         </Box>
       </Card>

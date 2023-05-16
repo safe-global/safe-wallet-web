@@ -19,6 +19,7 @@ import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafe
 import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 export type NewSafeFormData = {
   name: string
@@ -65,10 +66,7 @@ const staticHints: Record<
           <>
             Not sure how many owners and confirmations you need for your Safe Account?
             <br />
-            <ExternalLink
-              href="https://help.safe.global/en/articles/4772567-what-safe-setup-should-i-use"
-              fontWeight="bold"
-            >
+            <ExternalLink href={HelpCenterArticle.SAFE_SETUP} fontWeight="bold">
               Learn more about setting up your Safe Account.
             </ExternalLink>
           </>
@@ -92,7 +90,7 @@ const staticHints: Record<
     steps: [
       {
         title: 'Connect your Safe Account',
-        text: 'In our Safe{Apps} section you can connect your Safe Account to over 70 dApps directly or via Wallet Connect to interact with any application.',
+        text: 'In our Safe Apps section you can connect your Safe Account to over 70 dApps directly or via Wallet Connect to interact with any application.',
       },
     ],
   },

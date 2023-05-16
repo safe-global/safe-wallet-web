@@ -5,6 +5,7 @@ import * as router from 'next/router'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as coreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { act } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
 import type { JsonRpcProvider } from '@ethersproject/providers'
@@ -19,6 +20,10 @@ describe('useInitSafeCoreSDK hook', () => {
         value: mockSafeAddress,
       },
       version: '1.3.0',
+      implementation: {
+        value: '0x1',
+      },
+      implementationVersionState: ImplementationVersionState.UP_TO_DATE,
     } as SafeInfo,
     safeAddress: mockSafeAddress,
     safeLoaded: true,
@@ -44,9 +49,16 @@ describe('useInitSafeCoreSDK hook', () => {
     const initMock = jest.spyOn(coreSDK, 'initSafeSDK').mockReturnValue(Promise.resolve(mockSafe))
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
+    jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce(mockSafeInfo)
+
     renderHook(() => useInitSafeCoreSDK())
 
-    expect(initMock).toHaveBeenCalledWith(mockProvider, mockSafeInfo.safe)
+    expect(initMock).toHaveBeenCalledWith({
+      ...mockSafeInfo.safe,
+      provider: mockProvider,
+      address: mockSafeInfo.safe.address.value,
+      implementation: mockSafeInfo.safe.implementation.value,
+    })
 
     await act(() => Promise.resolve())
 

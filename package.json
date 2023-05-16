@@ -1,9 +1,9 @@
 {
-  "name": "web-core",
-  "homepage": "https://github.com/safe-global/web-core",
+  "name": "safe-wallet-web",
+  "homepage": "https://github.com/safe-global/safe-wallet-web",
   "license": "GPL-3.0",
   "type": "module",
-  "version": "1.8.1",
+  "version": "1.9.1",
   "scripts": {
     "dev": "next dev",
     "start": "next dev",
@@ -25,8 +25,8 @@
     "cypress:open": "cross-env TZ=UTC cypress open",
     "cypress:run": "cypress run",
     "cypress:ci": "yarn cypress:run --config baseUrl=http://localhost:8080 --spec cypress/e2e/smoke/*.cy.js",
-    "static-serve": "yarn build && yarn export && yarn serve",
-    "serve": "npx -y http-server out"
+    "serve": "npx -y serve -p 8080 out",
+    "static-serve": "yarn build && yarn export && yarn serve"
   },
   "pre-commit": [
     "lint"
@@ -42,11 +42,11 @@
     "@mui/x-date-pickers": "^5.0.12",
     "@reduxjs/toolkit": "^1.8.2",
     "@safe-global/safe-apps-sdk": "^7.10.1",
-    "@safe-global/safe-core-sdk": "^3.3.2",
-    "@safe-global/safe-core-sdk-utils": "^1.7.2",
-    "@safe-global/safe-deployments": "^1.20.2",
-    "@safe-global/safe-ethers-lib": "^1.9.2",
-    "@safe-global/safe-gateway-typescript-sdk": "^3.7.0",
+    "@safe-global/safe-core-sdk": "^3.3.3",
+    "@safe-global/safe-core-sdk-utils": "^1.7.3",
+    "@safe-global/safe-deployments": "^1.22.0",
+    "@safe-global/safe-ethers-lib": "^1.9.3",
+    "@safe-global/safe-gateway-typescript-sdk": "^3.7.3",
     "@safe-global/safe-modules-deployments": "^1.0.0",
     "@safe-global/safe-react-components": "^2.0.5",
     "@sentry/react": "^7.28.1",
@@ -84,8 +84,8 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^13.1.1",
-    "@openzeppelin/contracts": "^4.8.2",
-    "@safe-global/safe-core-sdk-types": "^1.9.0",
+    "@openzeppelin/contracts": "^4.8.3",
+    "@safe-global/safe-core-sdk-types": "^1.9.1",
     "@sentry/types": "^7.28.1",
     "@svgr/webpack": "^6.3.1",
     "@testing-library/cypress": "^8.0.7",

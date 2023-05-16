@@ -27,6 +27,10 @@ export const WalletNames = {
 export const isWalletUnlocked = async (walletName: string): Promise<boolean> => {
   if (typeof window === 'undefined') return false
 
+  if (window.ethereum?.isConnected?.()) {
+    return true
+  }
+
   // Only MetaMask exposes a method to check if the wallet is unlocked
   if (walletName === WalletNames.METAMASK) {
     return window.ethereum?._metamask?.isUnlocked?.() || false

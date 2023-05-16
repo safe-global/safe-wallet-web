@@ -1,17 +1,16 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import SafeImprint from '@/components/imprint'
+import { IS_OFFICIAL_HOST } from '@/config/constants'
 
 const Imprint: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe{'{Wallet}'} – Imprint</title>
+        <title>{'Safe{Wallet} – Imprint'}</title>
       </Head>
 
-      <main>
-        <SafeImprint />
-      </main>
+      <main>{IS_OFFICIAL_HOST && <SafeImprint />}</main>
     </>
   )
 }

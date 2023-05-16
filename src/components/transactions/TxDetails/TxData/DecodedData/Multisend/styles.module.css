@@ -1,0 +1,16 @@
+.summary {
+  border-bottom: 1px solid var(--color-border-light);
+  cursor: auto !important;
+  padding-right: 0;
+}
+
+.summary button {
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.divider {
+  margin-top: 14px;
+  margin-bottom: 14px;
+  border-color: var(--color-border-light);
+}

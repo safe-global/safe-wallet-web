@@ -7,7 +7,7 @@ import css from './styles.module.css'
 import { UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
 import { type ReactNode } from 'react'
-import { type ApprovalInfo, updateApprovalTxs, PSEUDO_APPROVAL_VALUES } from './utils/approvals'
+import { type ApprovalInfo, updateApprovalTxs } from './utils/approvals'
 import { useApprovalInfos } from './hooks/useApprovalInfos'
 import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
 import { type MetaTransactionData, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -31,9 +31,7 @@ const Summary = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
 
   if (approvalInfos.length === 1) {
     const approval = approvalInfos[0]
-    const amount = UNLIMITED_APPROVAL_AMOUNT.eq(approval.amount)
-      ? PSEUDO_APPROVAL_VALUES.UNLIMITED
-      : approval.amountFormatted
+    const amount = UNLIMITED_APPROVAL_AMOUNT.eq(approval.amount) ? 'unlimited' : approval.amountFormatted
     return (
       <SummaryWrapper>
         {amount}
@@ -92,7 +90,7 @@ export const ApprovalEditor = ({
           <Summary approvalInfos={readableApprovals} />
         )}
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails sx={{ pb: 0 }}>
         {loading || !readableApprovals ? null : (
           <>
             <Typography fontSize="14px">

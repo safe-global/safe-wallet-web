@@ -5,7 +5,7 @@ export default defineConfig({
   trashAssetsBeforeRuns: true,
 
   retries: {
-    runMode: 2,
+    runMode: 3,
     openMode: 0,
   },
 
