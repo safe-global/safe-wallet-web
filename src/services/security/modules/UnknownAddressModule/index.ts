@@ -1,5 +1,5 @@
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '..'
+import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 import { type JsonRpcProvider } from '@ethersproject/providers'
 import { createReadOnlyEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { sameAddress } from '@/utils/addresses'

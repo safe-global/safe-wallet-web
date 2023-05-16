@@ -1,4 +1,4 @@
-import { type SecurityResponse, type SecurityModule } from './modules'
+import { type SecurityResponse, type SecurityModule } from './modules/types'
 import { ApprovalModule } from './modules/ApprovalModule'
 import { RedefineModule } from './modules/RedefineModule'
 import { UnknownAddressModule } from './modules/UnknownAddressModule'

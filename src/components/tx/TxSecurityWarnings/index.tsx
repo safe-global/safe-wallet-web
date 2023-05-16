@@ -43,32 +43,30 @@ export const TxSecurityWarnings = ({ safeTx }: { safeTx: SafeTransaction | undef
   const redefineScanResult = useRedefine(safeTx)
 
   return (
-    <>
-      <List>
-        {redefineScanResult?.issues.map((warning) => (
-          <ListItem key={warning.category} alignItems="flex-start">
-            <ListItemAvatar>
-              <Chip sx={{ minWidth: '72px' }} label={warning.severity.label} />
-            </ListItemAvatar>
-            <ListItemText inset>
-              <Grid container direction="row" gap={1}>
-                <Grid item xs={3}>
-                  <Typography variant="caption">Description</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <Typography variant="body2">{warning.description.short}</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography variant="caption">Advice</Typography>
-                </Grid>
-                <Grid item xs={8}>
-                  <Typography variant="body2">{warning.description.long}</Typography>
-                </Grid>
+    <List>
+      {redefineScanResult?.issues.map((warning) => (
+        <ListItem key={warning.category} alignItems="flex-start">
+          <ListItemAvatar>
+            <Chip sx={{ minWidth: '72px' }} label={warning.severity.label} />
+          </ListItemAvatar>
+          <ListItemText inset>
+            <Grid container direction="row" gap={1}>
+              <Grid item xs={3}>
+                <Typography variant="caption">Description</Typography>
               </Grid>
-            </ListItemText>
-          </ListItem>
-        ))}
-      </List>
-    </>
+              <Grid item xs={8}>
+                <Typography variant="body2">{warning.description.short}</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography variant="caption">Advice</Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <Typography variant="body2">{warning.description.long}</Typography>
+              </Grid>
+            </Grid>
+          </ListItemText>
+        </ListItem>
+      ))}
+    </List>
   )
 }

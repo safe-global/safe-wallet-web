@@ -3,7 +3,7 @@ import { ERC20__factory } from '@/types/contracts'
 import { decodeMultiSendTxs } from '@/utils/transactions'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { id } from 'ethers/lib/utils'
-import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '..'
+import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
 export type ApprovalModuleResponse = Approval[]
 
@@ -52,7 +52,7 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
 
     if (approvalInfos.length > 0) {
       callback({
-        severity: SecuritySeverity.LOW,
+        severity: SecuritySeverity.NONE,
         payload: approvalInfos,
       })
     }

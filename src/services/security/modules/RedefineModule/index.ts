@@ -1,7 +1,7 @@
 import { REDEFINE_API_KEY } from '@/config/constants'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
-import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '..'
+import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
 const REDEFINE_URL = 'https://api.redefine.net/v2/risk-analysis/messages'
 
@@ -44,6 +44,18 @@ type RedefineResponse = {
   }
 }
 
+const mapSeverity = ({ label }: RedefineSeverity): SecuritySeverity => {
+  if (label === 'CRITICAL') {
+    return SecuritySeverity.HIGH
+  }
+
+  if (label === 'LOW') {
+    return SecuritySeverity.LOW
+  }
+
+  return SecuritySeverity.NONE
+}
+
 export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefinedModuleResponse> {
   async scanTransaction(
     request: RedefineModuleRequest,
@@ -82,7 +94,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
     const result = (await res.json()) as RedefineResponse
 
     callback({
-      severity: SecuritySeverity.LOW,
+      severity: mapSeverity(result.data.insights.verdict),
       payload: result.data.insights,
     })
   }
