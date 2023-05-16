@@ -218,6 +218,7 @@ export const decodeSafeTxToBaseTransactions = (safeTx: SafeTransaction): BaseTra
 }
 
 /**
+ * TODO: Use core-sdk
  * Decodes the transactions contained in `multiSend` call data
  *
  * @param encodedMultiSendData `multiSend` call data

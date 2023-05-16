@@ -1,7 +1,7 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
-import { type Approval } from '@/security/modules/ApprovalModule'
-import { dispatchTxScan, InsightModuleNames } from '@/security/service'
+import { type Approval } from '@/services/security/modules/ApprovalModule'
+import { dispatchTxScan, SecurityModuleNames } from '@/services/security/service'
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -26,13 +26,11 @@ const useApprovalData = (safeTransaction: SafeTransaction | undefined) => {
     }
 
     const unsubscribe = dispatchTxScan({
-      type: InsightModuleNames.APPROVAL,
+      type: SecurityModuleNames.APPROVAL,
       request: {
         safeTransaction,
       },
-      callback: (response) => {
-        setApprovalData(response.payload)
-      },
+      callback: setApprovalData,
     })
 
     return () => {

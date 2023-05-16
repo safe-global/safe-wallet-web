@@ -3,12 +3,9 @@ import { ERC20__factory } from '@/types/contracts'
 import { decodeMultiSendTxs } from '@/utils/transactions'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { id } from 'ethers/lib/utils'
-import { type TransactionInsightModule } from '..'
+import { type SecurityModule } from '..'
 
-export type ApprovalModuleResponse = {
-  type: 'APPROVAL_INFOS'
-  payload: Approval[]
-}
+export type ApprovalModuleResponse = Approval[]
 
 export type ApprovalModuleRequest = {
   safeTransaction: SafeTransaction
@@ -23,7 +20,7 @@ export type Approval = {
 const MULTISEND_SIGNATURE_HASH = id('multiSend(bytes)').slice(0, 10)
 const ERC20_INTERFACE = ERC20__factory.createInterface()
 
-export class ApprovalModule implements TransactionInsightModule<ApprovalModuleRequest, ApprovalModuleResponse> {
+export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, ApprovalModuleResponse> {
   private scanInnerTransaction(txPartial: { to: string; data: string }): Approval[] {
     if (txPartial.data.startsWith(APPROVAL_SIGNATURE_HASH)) {
       const [spender, amount] = ERC20_INTERFACE.decodeFunctionData('approve', txPartial.data)
@@ -51,10 +48,7 @@ export class ApprovalModule implements TransactionInsightModule<ApprovalModuleRe
     }
 
     if (approvalInfos.length > 0) {
-      callback({
-        type: 'APPROVAL_INFOS',
-        payload: approvalInfos,
-      })
+      callback(approvalInfos)
     }
   }
 }
