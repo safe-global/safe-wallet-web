@@ -35,10 +35,7 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     return []
   }
 
-  scanTransaction(
-    request: ApprovalModuleRequest,
-    callback: (response: SecurityResponse<ApprovalModuleResponse>) => void,
-  ): void {
+  async scanTransaction(request: ApprovalModuleRequest): Promise<SecurityResponse<ApprovalModuleResponse>> {
     const { safeTransaction } = request
     const safeTxData = safeTransaction.data.data
     const approvalInfos: Approval[] = []
@@ -51,10 +48,14 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     }
 
     if (approvalInfos.length > 0) {
-      callback({
+      return {
         severity: SecuritySeverity.NONE,
         payload: approvalInfos,
-      })
+      }
+    }
+
+    return {
+      severity: SecuritySeverity.NONE,
     }
   }
 }

@@ -1,72 +1,86 @@
+import useAddressBook from '@/hooks/useAddressBook'
+import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type RedefinedModuleResponse } from '@/services/security/modules/RedefineModule'
+import type { SecurityResponse } from '@/services/security/modules/types'
+import type { UnknownAddressModuleResponse } from '@/services/security/modules/UnknownAddressModule'
 import { dispatchTxScan, SecurityModuleNames } from '@/services/security/service'
-import { List, ListItem, ListItemAvatar, Chip, ListItemText, Grid, Typography } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
+import { SecurityWarning, SecurityHint } from '../SecurityWarnings'
 
-const useRedefine = (safeTx: SafeTransaction | undefined) => {
-  const { safe, safeAddress } = useSafeInfo()
-  const wallet = useWallet()
+const useUnknownAddress = (safeTransaction: SafeTransaction | undefined) => {
+  const addressBook = useAddressBook()
+  const addressBookAddresses = useMemo(() => Object.keys(addressBook), [addressBook])
+  const web3Provider = useWeb3ReadOnly()
 
-  const [redefineScanResult, setRedefineScanResult] = useState<RedefinedModuleResponse | undefined>()
-
-  useEffect(() => {
-    if (!safeTx || !wallet?.address) {
+  return useAsync<SecurityResponse<UnknownAddressModuleResponse>>(() => {
+    if (!safeTransaction || !web3Provider) {
       return
     }
 
-    const unsubscribe = dispatchTxScan({
-      type: SecurityModuleNames.REDEFINE,
-      callback: ({ payload }) => {
-        setRedefineScanResult(payload)
+    return dispatchTxScan({
+      type: SecurityModuleNames.UNKNOWN_ADDRESS,
+      request: {
+        knownAddresses: addressBookAddresses,
+        provider: web3Provider,
+        safeTransaction,
       },
+    })
+  }, [safeTransaction, web3Provider, addressBookAddresses])
+}
+
+const useRedefine = (safeTransaction: SafeTransaction | undefined) => {
+  const { safe, safeAddress } = useSafeInfo()
+  const wallet = useWallet()
+
+  return useAsync<SecurityResponse<RedefinedModuleResponse>>(() => {
+    if (!safeTransaction || !wallet?.address) {
+      return
+    }
+    return dispatchTxScan({
+      type: SecurityModuleNames.REDEFINE,
       request: {
         chainId: Number(safe.chainId),
-        safeTransaction: safeTx,
+        safeTransaction,
         safeAddress,
         walletAddress: wallet.address,
         threshold: safe.threshold,
       },
     })
-
-    return () => {
-      unsubscribe()
-    }
-  }, [safe.chainId, safe.threshold, safeAddress, safeTx, wallet?.address])
-
-  return redefineScanResult
+  }, [safe.chainId, safe.threshold, safeAddress, safeTransaction, wallet?.address])
 }
 
 export const TxSecurityWarnings = ({ safeTx }: { safeTx: SafeTransaction | undefined }) => {
-  const redefineScanResult = useRedefine(safeTx)
+  // const [redefineScanResult] = useRedefine(safeTx)
+  const [unknownAddressScanResult] = useUnknownAddress(safeTx)
+
+  if (!unknownAddressScanResult) {
+    return <CircularProgress />
+  }
 
   return (
-    <List>
-      {redefineScanResult?.issues.map((warning) => (
-        <ListItem key={warning.category} alignItems="flex-start">
-          <ListItemAvatar>
-            <Chip sx={{ minWidth: '72px' }} label={warning.severity.label} />
-          </ListItemAvatar>
-          <ListItemText inset>
-            <Grid container direction="row" gap={1}>
-              <Grid item xs={3}>
-                <Typography variant="caption">Description</Typography>
-              </Grid>
-              <Grid item xs={8}>
-                <Typography variant="body2">{warning.description.short}</Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="caption">Advice</Typography>
-              </Grid>
-              <Grid item xs={8}>
-                <Typography variant="body2">{warning.description.long}</Typography>
-              </Grid>
-            </Grid>
-          </ListItemText>
-        </ListItem>
-      ))}
-    </List>
+    <>
+      {/* Redefine:
+      {redefineScanResult.payload && (
+        <SecurityHint
+        severity={redefineScanResult.severity}
+        text={redefineScanResult.payload?.issues.map((issue) => issue.description).join('\n')}
+        />
+        )}
+        <SecurityWarning severity={redefineScanResult.severity} />
+      */}
+      Unknown Address:
+      {unknownAddressScanResult.payload && (
+        <SecurityHint
+          severity={unknownAddressScanResult.severity}
+          text={`${unknownAddressScanResult.payload[0].address} is not present in your address book.`}
+        />
+      )}
+      <SecurityWarning severity={unknownAddressScanResult.severity} />
+    </>
   )
 }

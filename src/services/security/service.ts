@@ -1,4 +1,4 @@
-import { type SecurityResponse, type SecurityModule } from './modules/types'
+import { type SecurityModule } from './modules/types'
 import { ApprovalModule } from './modules/ApprovalModule'
 import { RedefineModule } from './modules/RedefineModule'
 import { UnknownAddressModule } from './modules/UnknownAddressModule'
@@ -20,22 +20,12 @@ type Modules = typeof SecurityModules
 type Req<T extends SecurityModuleNames> = Modules[T] extends SecurityModule<infer R, unknown> ? R : never
 type Res<T extends SecurityModuleNames> = Modules[T] extends SecurityModule<unknown, infer R> ? R : never
 
-export function dispatchTxScan<
+export async function dispatchTxScan<
   Type extends SecurityModuleNames,
   Request extends Req<Type>,
   Response extends Res<Type>,
->({ type, request, callback }: { type: Type; request: Request; callback: (res: SecurityResponse<Response>) => void }) {
-  let isSubscribed = true
-
+>({ type, request }: { type: Type; request: Request }) {
   const InsightModule = SecurityModules[type] as unknown as SecurityModule<Request, Response>
 
-  InsightModule.scanTransaction(request, (res: SecurityResponse<Response>) => {
-    if (isSubscribed) {
-      callback(res)
-    }
-  })
-
-  return () => {
-    isSubscribed = false
-  }
+  return InsightModule.scanTransaction(request)
 }

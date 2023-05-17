@@ -4,11 +4,16 @@ export const enum SecuritySeverity {
   NONE = 'NONE',
 }
 
-export type SecurityResponse<Res> = {
-  severity: SecuritySeverity
-  payload: Res
-}
+export type SecurityResponse<Res> =
+  | {
+      severity: SecuritySeverity
+      payload: Res
+    }
+  | {
+      severity: SecuritySeverity.NONE
+      payload?: never
+    }
 
 export interface SecurityModule<Req, Res> {
-  scanTransaction(request: Req, callback: (response: SecurityResponse<Res>) => void): void
+  scanTransaction(request: Req): Promise<SecurityResponse<Res>>
 }

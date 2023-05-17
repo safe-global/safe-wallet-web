@@ -57,10 +57,7 @@ const mapSeverity = ({ label }: RedefineSeverity): SecuritySeverity => {
 }
 
 export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefinedModuleResponse> {
-  async scanTransaction(
-    request: RedefineModuleRequest,
-    callback: (res: SecurityResponse<RedefinedModuleResponse>) => void,
-  ) {
+  async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefinedModuleResponse>> {
     const { chainId, safeAddress } = request
 
     const txTypedData = generateTypedData({
@@ -93,9 +90,9 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
 
     const result = (await res.json()) as RedefineResponse
 
-    callback({
+    return {
       severity: mapSeverity(result.data.insights.verdict),
       payload: result.data.insights,
-    })
+    }
   }
 }

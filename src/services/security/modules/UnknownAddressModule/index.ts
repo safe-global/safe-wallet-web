@@ -5,9 +5,7 @@ import { createReadOnlyEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import { sameAddress } from '@/utils/addresses'
 
 export type UnknownAddressModuleResponse = Array<{
-  type: 'ERC20' | 'NATIVE'
-  receiver: string
-  token: null | string
+  address: string
 }>
 
 export type UnknownAddressModuleRequest = {
@@ -17,10 +15,7 @@ export type UnknownAddressModuleRequest = {
 }
 
 export class UnknownAddressModule implements SecurityModule<UnknownAddressModuleRequest, UnknownAddressModuleResponse> {
-  async scanTransaction(
-    request: UnknownAddressModuleRequest,
-    callback: (response: SecurityResponse<UnknownAddressModuleResponse>) => void,
-  ): Promise<void> {
+  async scanTransaction(request: UnknownAddressModuleRequest): Promise<SecurityResponse<UnknownAddressModuleResponse>> {
     const { safeTransaction, provider, knownAddresses } = request
     const ethAdapter = createReadOnlyEthersAdapter(provider)
     const isSmartContract = await ethAdapter.isContractDeployed(safeTransaction.data.to)
@@ -28,16 +23,21 @@ export class UnknownAddressModule implements SecurityModule<UnknownAddressModule
     const nonZeroValue = safeTransaction.data.value !== '0'
 
     if (!isKnownAddress && !isSmartContract && nonZeroValue) {
-      callback({
+      return {
         severity: SecuritySeverity.LOW,
+
+        // TODO: Decode multiSend
+        // TODO: Support ERC20 and NFT transfers
         payload: [
           {
-            receiver: safeTransaction.data.to,
-            token: null,
-            type: 'NATIVE',
+            address: safeTransaction.data.to,
           },
         ],
-      })
+      }
+    }
+
+    return {
+      severity: SecuritySeverity.NONE,
     }
   }
 }

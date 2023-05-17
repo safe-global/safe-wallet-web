@@ -1,12 +1,12 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
-import { type Approval } from '@/services/security/modules/ApprovalModule'
+import type { ApprovalModuleResponse } from '@/services/security/modules/ApprovalModule'
+import type { SecurityResponse } from '@/services/security/modules/types'
 import { dispatchTxScan, SecurityModuleNames } from '@/services/security/service'
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
-import { useState, useEffect } from 'react'
 import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 
 export type ApprovalInfo = {
@@ -18,42 +18,30 @@ export type ApprovalInfo = {
 }
 
 const useApprovalData = (safeTransaction: SafeTransaction | undefined) => {
-  const [approvalData, setApprovalData] = useState<Approval[]>([])
-
-  useEffect(() => {
+  return useAsync<SecurityResponse<ApprovalModuleResponse>>(() => {
     if (!safeTransaction) {
       return
     }
-
-    const unsubscribe = dispatchTxScan({
+    return dispatchTxScan({
       type: SecurityModuleNames.APPROVAL,
       request: {
         safeTransaction,
       },
-      callback: ({ payload }) => {
-        setApprovalData(payload)
-      },
     })
-
-    return () => {
-      unsubscribe()
-    }
   }, [safeTransaction])
-
-  return approvalData
 }
 
 export const useApprovalInfos = (safeTransaction: SafeTransaction | undefined) => {
-  const approvals = useApprovalData(safeTransaction)
+  const [approvals] = useApprovalData(safeTransaction)
 
   const { balances } = useBalances()
 
   return useAsync<ApprovalInfo[]>(
     async () => {
-      if (approvals.length === 0) return Promise.resolve([])
+      if (!approvals || !approvals.payload || approvals.payload.length === 0) return Promise.resolve([])
 
       return Promise.all(
-        approvals.map(async (approval) => {
+        approvals.payload.map(async (approval) => {
           let tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> | undefined = balances.items.find(
             (item) => item.tokenInfo.address === approval.tokenAddress,
           )?.tokenInfo
