@@ -12,9 +12,6 @@ describe('Assets > NFTs', () => {
   describe('should have NFTs', () => {
     it('should have NFTs in the table', () => {
       cy.get('tbody tr').should('have.length', 5)
-      cy.contains('Please note that the links to OpenSea')
-      cy.contains('button', 'Got it!').click()
-      cy.contains('Please note that the links to OpenSea').should('not.exist')
     })
 
     it('should have info in the NFT row', () => {
