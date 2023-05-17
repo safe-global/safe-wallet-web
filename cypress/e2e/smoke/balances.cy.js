@@ -152,7 +152,8 @@ describe('Assets > Coins', () => {
     })
   })
 
-  describe('fiat currency can be changed', () => {
+  // The staging endpoint https://safe-client.staging.5afe.dev/v1/balances/supported-fiat-codes is returning error
+  describe.skip('fiat currency can be changed', () => {
     it('should have USD as default currency', () => {
       // First row Fiat balance should not contain EUR
       cy.get(balanceSingleRow).first().find('td').eq(FIAT_AMOUNT_COLUMN).should('not.contain', 'EUR')
