@@ -1,0 +1,22 @@
+.container {
+  background-color: var(--color-success-background);
+  padding: var(--space-2);
+  margin: var(--space-2) 0;
+  border-radius: 4px;
+}
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.message svg {
+  margin-top: 4px;
+}
+
+.details {
+  margin-top: var(--space-1);
+  color: var(--color-primary-light);
+  word-break: break-word;
+}

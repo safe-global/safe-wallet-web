@@ -38,6 +38,9 @@ export type SettingsState = {
     darkMode?: boolean
   }
   env: EnvState
+  signing: {
+    onChainSigning: boolean
+  }
 }
 
 export const initialState: SettingsState = {
@@ -59,6 +62,9 @@ export const initialState: SettingsState = {
       url: '',
       accessToken: '',
     },
+  },
+  signing: {
+    onChainSigning: false,
   },
 }
 
@@ -99,6 +105,9 @@ export const settingsSlice = createSlice({
     setTenderly: (state, { payload }: PayloadAction<EnvState['tenderly']>) => {
       state.env.tenderly = merge({}, state.env.tenderly, payload)
     },
+    setOnChainSigning: (state, { payload }: PayloadAction<boolean>) => {
+      state.signing.onChainSigning = payload
+    },
     setSettings: (_, { payload }: PayloadAction<SettingsState>) => {
       // We must return as we are overwriting the entire state
       // Preserve default nested settings if importing without
@@ -117,6 +126,7 @@ export const {
   setTokenList,
   setRpc,
   setTenderly,
+  setOnChainSigning,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
@@ -140,3 +150,5 @@ export const selectTenderly = createSelector(selectSettings, (settings) => setti
 export const isEnvInitialState = createSelector([selectSettings, (_, chainId) => chainId], (settings, chainId) => {
   return isEqual(settings.env.tenderly, initialState.env.tenderly) && !settings.env.rpc[chainId]
 })
+
+export const selectOnChainSigning = createSelector(selectSettings, (settings) => settings.signing.onChainSigning)

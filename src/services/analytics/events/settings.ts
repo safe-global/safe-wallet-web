@@ -106,4 +106,10 @@ export const SETTINGS_EVENTS = {
       category: SETTINGS_CATEGORY,
     },
   },
+  SAFE_APPS: {
+    CHANGE_SIGNING_METHOD: {
+      action: 'Safe apps signing method changed',
+      category: SETTINGS_CATEGORY,
+    },
+  },
 }

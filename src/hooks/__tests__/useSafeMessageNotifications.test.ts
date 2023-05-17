@@ -105,7 +105,7 @@ describe('useSafeMessageNotifications', () => {
   it('should show a notification when a message is created', () => {
     renderHook(() => useSafeMessageNotifications())
 
-    safeMsgDispatch(SafeMsgEvent.PROPOSE, { messageHash: '0x123', requestId: '123' })
+    safeMsgDispatch(SafeMsgEvent.PROPOSE, { messageHash: '0x123' })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'You successfully signed the message.',
@@ -161,7 +161,7 @@ describe('useSafeMessageNotifications', () => {
   it('should show a notification when a message fully is confirmed', () => {
     renderHook(() => useSafeMessageNotifications())
 
-    safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, { messageHash: '0x012' })
+    safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, { messageHash: '0x012', requestId: 'test-id', signature: '0x456' })
 
     expect(showNotification).toHaveBeenCalledWith({
       message: 'The message was successfully confirmed.',

@@ -1,4 +1,4 @@
-import type { Middleware } from '@reduxjs/toolkit'
+import type { listenerMiddlewareInstance } from '.'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { AddressEx, SafeBalanceResponse, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -6,7 +6,6 @@ import type { RootState } from '.'
 import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { safeFormatUnits } from '@/utils/formatters'
-import type { Loadable } from './common'
 import { migrateAddedSafesOwners } from '@/services/ls-migration/addedSafes'
 
 export type AddedSafesOnChain = {
@@ -102,8 +101,7 @@ export const addedSafesSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    // @ts-ignore TODO: introduced with RTK 1.9.0 need to migrate
-    builder.addCase(safeInfoSlice.actions.set.type, (state, { payload }: PayloadAction<Loadable<SafeInfo>>) => {
+    builder.addCase(safeInfoSlice.actions.set, (state, { payload }) => {
       if (!payload.data) {
         return
       }
@@ -139,24 +137,22 @@ export const selectAddedSafes = createSelector(
   },
 )
 
-export const addedSafesMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
-  const result = next(action)
-
-  const state = store.getState()
-
-  switch (action.type) {
-    // Update added Safe balances when balance polling occurs
-    case balancesSlice.actions.set.type: {
-      const { data } = selectSafeInfo(state)
-
-      const chainId = data?.chainId
-      const address = data?.address.value
-
-      if (chainId && address && action.payload.data) {
-        store.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
+export const addedSafesListener = (listenerMiddleware: typeof listenerMiddlewareInstance) => {
+  listenerMiddleware.startListening({
+    actionCreator: balancesSlice.actions.set,
+    effect: (action, listenerApi) => {
+      if (!action.payload.data) {
+        return
       }
-    }
-  }
 
-  return result
+      const safeInfo = selectSafeInfo(listenerApi.getState())
+
+      const chainId = safeInfo.data?.chainId
+      const address = safeInfo.data?.address.value
+
+      if (chainId && address) {
+        listenerApi.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
+      }
+    },
+  })
 }
