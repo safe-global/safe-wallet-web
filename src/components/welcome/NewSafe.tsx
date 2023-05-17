@@ -47,7 +47,7 @@ const NewSafe = () => {
             <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="h4" display="inline" fontWeight={700}>
-                  My Safe Accounts
+                  My Safes
                 </Typography>
               </AccordionSummary>
 
@@ -73,7 +73,7 @@ const NewSafe = () => {
             color="static.main"
             mb={1}
           >
-            Welcome to {'Safe{Wallet}'}
+            Welcome to {'Safe'}
           </Typography>
 
           <Typography mb={5} color="static.main">
@@ -85,11 +85,11 @@ const NewSafe = () => {
               <Paper className={css.createAddCard}>
                 <SvgIcon component={NewSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                  Create Safe Account
+                  Create Safe
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  A new Account that is controlled by one or multiple owners.
+                  A new Safe that is controlled by one or multiple owners.
                 </Typography>
 
                 <span style={{ flex: 1 }} />
@@ -98,7 +98,7 @@ const NewSafe = () => {
                     variant={wallet ? 'contained' : 'outlined'}
                     onClick={() => router.push(AppRoutes.newSafe.create)}
                   >
-                    + Create new Account
+                    + Create new Safe
                   </Button>
                 </Track>
               </Paper>
@@ -108,17 +108,17 @@ const NewSafe = () => {
               <Paper className={css.createAddCard}>
                 <SvgIcon component={LoadSafeIcon} inheritViewBox sx={{ width: '42px', height: '42px' }} />
                 <Typography variant="h3" fontWeight={700} mb={1} mt={3}>
-                  Add existing Account
+                  Add existing Safe
                 </Typography>
 
                 <Typography variant="body2" mb={3}>
-                  Already have a Safe Account? Add it via its address.
+                  Already have a Safe? Add it via its address.
                 </Typography>
 
                 <span style={{ flex: 1 }} />
                 <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
                   <Button variant="outlined" onClick={() => router.push(AppRoutes.newSafe.load)}>
-                    Add existing Account
+                    Add existing Safe
                   </Button>
                 </Track>
               </Paper>

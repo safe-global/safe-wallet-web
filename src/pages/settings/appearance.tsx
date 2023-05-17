@@ -35,7 +35,7 @@ const Appearance: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Appearance'}</title>
+        <title>{'Safe – Settings – Appearance'}</title>
       </Head>
 
       <SettingsHeader />
@@ -53,7 +53,7 @@ const Appearance: NextPage = () => {
               <Typography mb={2}>
                 Choose whether to prepend{' '}
                 <ExternalLink href="https://eips.ethereum.org/EIPS/eip-3770">EIP-3770</ExternalLink> address prefixes
-                across all Safe Accounts.
+                across all Safes.
               </Typography>
               <FormGroup>
                 <FormControlLabel
