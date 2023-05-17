@@ -77,7 +77,9 @@ export const TxSecurityWarnings = ({ safeTx }: { safeTx: SafeTransaction | undef
       {unknownAddressScanResult.payload && (
         <SecurityHint
           severity={unknownAddressScanResult.severity}
-          text={`${unknownAddressScanResult.payload[0].address} is not present in your address book.`}
+          text={`${unknownAddressScanResult.payload
+            .map((recipient) => recipient.address)
+            .join(', ')} is not present in your address book.`}
         />
       )}
       <SecurityWarning severity={unknownAddressScanResult.severity} />
