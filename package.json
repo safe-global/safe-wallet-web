@@ -3,7 +3,7 @@
   "homepage": "https://github.com/safe-global/safe-wallet-web",
   "license": "GPL-3.0",
   "type": "module",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "scripts": {
     "dev": "next dev",
     "start": "next dev",
@@ -41,7 +41,7 @@
     "@mui/material": "^5.11.10",
     "@mui/x-date-pickers": "^5.0.12",
     "@reduxjs/toolkit": "^1.9.5",
-    "@safe-global/safe-apps-sdk": "^7.10.1",
+    "@safe-global/safe-apps-sdk": "7.11.0",
     "@safe-global/safe-core-sdk": "^3.3.3",
     "@safe-global/safe-core-sdk-utils": "^1.7.3",
     "@safe-global/safe-deployments": "^1.22.0",

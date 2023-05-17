@@ -123,7 +123,7 @@ export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInf
 
 type SigningMethods = Parameters<Safe['signTransaction']>[1]
 
-export const _getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethods[] => {
+export const getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethods[] => {
   const ETH_SIGN_TYPED_DATA: SigningMethods = 'eth_signTypedData'
   const ETH_SIGN: SigningMethods = 'eth_sign'
 
@@ -134,12 +134,12 @@ export const _getSupportedSigningMethods = (safeVersion: SafeInfo['version']): S
   return [ETH_SIGN_TYPED_DATA, ETH_SIGN]
 }
 
-export const tryOffChainSigning = async (
+export const tryOffChainTxSigning = async (
   safeTx: SafeTransaction,
   safeVersion: SafeInfo['version'],
   sdk: Safe,
 ): Promise<SafeTransaction> => {
-  const signingMethods = _getSupportedSigningMethods(safeVersion)
+  const signingMethods = getSupportedSigningMethods(safeVersion)
 
   for await (const [i, signingMethod] of signingMethods.entries()) {
     try {

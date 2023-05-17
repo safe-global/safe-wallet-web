@@ -1,8 +1,9 @@
 import { ethers } from 'ethers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { generateSafeMessageTypedData, supportsEIP1271 } from '../safe-messages'
+import { generateSafeMessageTypedData, isOffchainEIP1271Supported } from '../safe-messages'
 import { hexZeroPad } from 'ethers/lib/utils'
+import { FEATURES } from '../chains'
 
 const MOCK_ADDRESS = ethers.utils.hexZeroPad('0x123', 20)
 
@@ -244,49 +245,95 @@ describe('safe-messages', () => {
   describe('supportsEIP1271', () => {
     it('false for 1.3.0 Safes without fallback handler', () => {
       expect(
-        supportsEIP1271({
-          chainId: '5',
-          version: '1.3.0',
-          fallbackHandler: null,
-        } as any),
+        isOffchainEIP1271Supported(
+          {
+            chainId: '5',
+            version: '1.3.0',
+            fallbackHandler: null,
+          } as any,
+          {
+            features: [FEATURES.EIP1271],
+          } as any,
+          '7.11.0',
+        ),
       ).toBeFalsy()
     })
 
     it('false for 1.3.0 Safes with invalid fallback handler', () => {
       expect(
-        supportsEIP1271({
-          chainId: '5',
-          version: '0.0.1',
-          fallbackHandler: { value: 'this is not an address' },
-        } as any),
+        isOffchainEIP1271Supported(
+          {
+            chainId: '5',
+            version: '0.0.1',
+            fallbackHandler: { value: 'this is not an address' },
+          } as any,
+          {
+            features: [FEATURES.EIP1271],
+          } as any,
+          '7.11.0',
+        ),
       ).toBeFalsy()
     })
 
     it('true for 1.3.0 Safes with fallback handler', () => {
       expect(
-        supportsEIP1271({
-          chainId: '5',
-          version: '1.3.0',
-          fallbackHandler: { value: hexZeroPad('0x2222', 20) },
-        } as any),
+        isOffchainEIP1271Supported(
+          {
+            chainId: '5',
+            version: '1.3.0',
+            fallbackHandler: { value: hexZeroPad('0x2222', 20) },
+          } as any,
+          {
+            features: [FEATURES.EIP1271],
+          } as any,
+          '7.11.0',
+        ),
       ).toBeTruthy()
     })
 
     it('true for 1.1.0 Safes', () => {
       expect(
-        supportsEIP1271({
-          chainId: '5',
-          version: '1.0.0',
-        } as any),
+        isOffchainEIP1271Supported(
+          {
+            chainId: '5',
+            version: '1.0.0',
+          } as any,
+          {
+            features: [FEATURES.EIP1271],
+          } as any,
+          '7.11.0',
+        ),
       ).toBeTruthy()
     })
 
     it('false for 0.0.1 Safes', () => {
       expect(
-        supportsEIP1271({
-          chainId: '5',
-          version: '0.0.1',
-        } as any),
+        isOffchainEIP1271Supported(
+          {
+            chainId: '5',
+            version: '0.0.1',
+          } as any,
+          {
+            features: [FEATURES.EIP1271],
+          } as any,
+          '7.11.0',
+        ),
+      ).toBeFalsy()
+    })
+
+    it('false for unsupported safeAppsSdk version', () => {
+      expect(
+        isOffchainEIP1271Supported(
+          {
+            chainId: '5',
+            version: '1.3.0',
+            fallbackHandler: { value: hexZeroPad('0x2222', 20) },
+          } as any,
+          {
+            features: [FEATURES.EIP1271],
+          } as any,
+          '7.10.0',
+        ),
       ).toBeFalsy()
     })
   })

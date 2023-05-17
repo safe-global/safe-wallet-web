@@ -13,6 +13,8 @@ import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvider'
 import CheckWallet from '@/components/common/CheckWallet'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { getTxButtonTooltip } from '@/components/transactions/utils'
 
 const ExecuteTxButton = ({
   txSummary,
@@ -26,9 +28,12 @@ const ExecuteTxButton = ({
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const isPending = useIsPending(txSummary.id)
   const { setSelectedTxId } = useContext(ReplaceTxHoverContext)
+  const safeSDK = useSafeSDK()
 
   const isNext = txNonce !== undefined && txNonce === safe.nonce
-  const isDisabled = !isNext || isPending
+  const isDisabled = !isNext || isPending || !safeSDK
+
+  const tooltipTitle = getTxButtonTooltip('Execute', { isNext, nonce: safe.nonce, hasSafeSDK: !!safeSDK })
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -49,7 +54,7 @@ const ExecuteTxButton = ({
         {(isOk) => (
           <Track {...TX_LIST_EVENTS.EXECUTE}>
             {compact ? (
-              <Tooltip title="Execute" arrow placement="top">
+              <Tooltip title={tooltipTitle} arrow placement="top">
                 <span>
                   <IconButton
                     onClick={onClick}

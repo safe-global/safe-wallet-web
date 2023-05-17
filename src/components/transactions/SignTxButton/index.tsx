@@ -12,6 +12,8 @@ import CheckIcon from '@mui/icons-material/Check'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { getTxButtonTooltip } from '@/components/transactions/utils'
 
 const SignTxButton = ({
   txSummary,
@@ -24,13 +26,16 @@ const SignTxButton = ({
   const wallet = useWallet()
   const isSignable = isSignableBy(txSummary, wallet?.address || '')
   const isPending = useIsPending(txSummary.id)
+  const safeSDK = useSafeSDK()
+
+  const isDisabled = !isSignable || isPending || !safeSDK
+
+  const tooltipTitle = getTxButtonTooltip('Confirm', { hasSafeSDK: !!safeSDK })
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
     setOpen(true)
   }
-
-  const isDisabled = !isSignable || isPending
 
   return (
     <>
@@ -38,7 +43,7 @@ const SignTxButton = ({
         {(isOk) => (
           <Track {...TX_LIST_EVENTS.CONFIRM}>
             {compact ? (
-              <Tooltip title="Confirm" arrow placement="top">
+              <Tooltip title={tooltipTitle} arrow placement="top">
                 <span>
                   <IconButton onClick={onClick} color="primary" disabled={!isOk || isDisabled} size="small">
                     <CheckIcon fontSize="small" />
