@@ -22,12 +22,12 @@ export enum SafeMsgEvent {
 type SafeMessageHash = { messageHash: string }
 
 interface SignedMessageEvents {
-  [SafeMsgEvent.PROPOSE]: SafeMessageHash & { requestId: RequestId }
+  [SafeMsgEvent.PROPOSE]: SafeMessageHash
   [SafeMsgEvent.PROPOSE_FAILED]: SafeMessageHash & { error: Error }
-  [SafeMsgEvent.CONFIRM_PROPOSE]: SafeMessageHash & { requestId?: RequestId }
+  [SafeMsgEvent.CONFIRM_PROPOSE]: SafeMessageHash
   [SafeMsgEvent.CONFIRM_PROPOSE_FAILED]: SafeMessageHash & { error: Error }
   [SafeMsgEvent.UPDATED]: SafeMessageHash
-  [SafeMsgEvent.SIGNATURE_PREPARED]: SafeMessageHash
+  [SafeMsgEvent.SIGNATURE_PREPARED]: SafeMessageHash & { requestId?: RequestId; signature: string }
 }
 
 const safeMsgEventBus = new EventBus<SignedMessageEvents>()
