@@ -46,7 +46,7 @@ const BatchExecuteButton = () => {
         arrow
         title={
           isDisabled
-            ? 'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe Account nonce.'
+            ? 'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe nonce.'
             : 'All transactions highlighted in light green will be included in the batch execution.'
         }
       >

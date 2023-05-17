@@ -407,7 +407,7 @@ describe('MsgModal', () => {
     )
 
     expect(
-      getByText("You are currently not an owner of this Safe Account and won't be able to confirm this message."),
+      getByText("You are currently not an owner of this Safe and won't be able to confirm this message."),
     ).toBeInTheDocument()
 
     expect(getByText('Sign')).toBeDisabled()

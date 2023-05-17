@@ -13,7 +13,7 @@ describe('Create Safe form', () => {
     // Ensure wallet is connected to correct chain via header
     cy.contains('E2E Wallet @ Görli')
 
-    cy.contains('Create new Account').click()
+    cy.contains('Create new Safe').click()
   })
 
   it('should allow setting a name', () => {

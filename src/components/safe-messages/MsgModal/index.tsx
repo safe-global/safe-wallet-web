@@ -212,7 +212,7 @@ const MsgModal = ({
               Confirm message
             </Typography>
             <Typography variant="body1" textAlign="center" mb={2}>
-              To sign this message, you need to collect <b>{safe.threshold} owner signatures</b> of your Safe Account.
+              To sign this message, you need to collect <b>{safe.threshold} owner signatures</b> of your Safe.
             </Typography>
             <Typography fontWeight={700} mb={1}>
               Message:{' '}
@@ -272,7 +272,7 @@ const MsgModal = ({
               <ErrorMessage>No wallet is connected.</ErrorMessage>
             ) : !isOwner ? (
               <ErrorMessage>
-                You are currently not an owner of this Safe Account and won&apos;t be able to confirm this message.
+                You are currently not an owner of this Safe and won&apos;t be able to confirm this message.
               </ErrorMessage>
             ) : submitError ? (
               <ErrorMessage error={submitError}>Error confirming the message. Please try again.</ErrorMessage>

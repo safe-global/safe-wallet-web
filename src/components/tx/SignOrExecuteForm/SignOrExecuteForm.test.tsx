@@ -245,9 +245,7 @@ describe('SignOrExecuteForm', () => {
     const result = render(<SignOrExecuteForm isExecutable={false} onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(
-      result.getByText(
-        "You are currently not an owner of this Safe Account and won't be able to submit this transaction.",
-      ),
+      result.getByText("You are currently not an owner of this Safe and won't be able to submit this transaction."),
     ).toBeInTheDocument()
     expect(result.getByText('Submit')).toBeDisabled()
   })
@@ -278,9 +276,7 @@ describe('SignOrExecuteForm', () => {
     const result = render(<SignOrExecuteForm isExecutable onlyExecute onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(
-      result.getByText(
-        'Cannot execute a transaction from the Safe Account itself, please connect a different account.',
-      ),
+      result.getByText('Cannot execute a transaction from the Safe itself, please connect a different account.'),
     ).toBeInTheDocument()
     expect(result.getByText('Submit')).toBeDisabled()
   })
@@ -344,9 +340,7 @@ describe('SignOrExecuteForm', () => {
     const result = render(<SignOrExecuteForm isExecutable onlyExecute onSubmit={jest.fn} safeTx={mockTx} />)
 
     expect(
-      result.queryByText(
-        "You are currently not an owner of this Safe Account and won't be able to submit this transaction.",
-      ),
+      result.queryByText("You are currently not an owner of this Safe and won't be able to submit this transaction."),
     ).not.toBeInTheDocument()
     expect(result.getByText('Submit')).not.toBeDisabled()
   })
