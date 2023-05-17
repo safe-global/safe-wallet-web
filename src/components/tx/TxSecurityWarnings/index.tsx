@@ -6,6 +6,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type RedefinedModuleResponse } from '@/services/security/modules/RedefineModule'
 import type { SecurityResponse } from '@/services/security/modules/types'
 import type { UnknownAddressModuleResponse } from '@/services/security/modules/UnknownAddressModule'
+import type { UnusedAddressModuleResponse } from '@/services/security/modules/UnusedAddressModule'
 import { dispatchTxScan, SecurityModuleNames } from '@/services/security/service'
 import CircularProgress from '@mui/material/CircularProgress'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -33,6 +34,24 @@ const useUnknownAddress = (safeTransaction: SafeTransaction | undefined) => {
   }, [safeTransaction, web3Provider, addressBookAddresses])
 }
 
+const useUnusedAddress = (safeTransaction: SafeTransaction | undefined) => {
+  const provider = useWeb3ReadOnly()
+
+  return useAsync<SecurityResponse<UnusedAddressModuleResponse>>(() => {
+    if (!safeTransaction || !provider) {
+      return
+    }
+
+    return dispatchTxScan({
+      type: SecurityModuleNames.UNUSED_ADDRESS,
+      request: {
+        provider,
+        safeTransaction,
+      },
+    })
+  }, [provider, safeTransaction])
+}
+
 const useRedefine = (safeTransaction: SafeTransaction | undefined) => {
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
@@ -57,8 +76,9 @@ const useRedefine = (safeTransaction: SafeTransaction | undefined) => {
 export const TxSecurityWarnings = ({ safeTx }: { safeTx: SafeTransaction | undefined }) => {
   // const [redefineScanResult] = useRedefine(safeTx)
   const [unknownAddressScanResult] = useUnknownAddress(safeTx)
+  const [unusedAddressScanResult] = useUnusedAddress(safeTx)
 
-  if (!unknownAddressScanResult) {
+  if (!unknownAddressScanResult || !unusedAddressScanResult) {
     return <CircularProgress />
   }
 
@@ -83,6 +103,16 @@ export const TxSecurityWarnings = ({ safeTx }: { safeTx: SafeTransaction | undef
         />
       )}
       <SecurityWarning severity={unknownAddressScanResult.severity} />
+      Unused Address:
+      {unusedAddressScanResult.payload && (
+        <SecurityHint
+          severity={unusedAddressScanResult.severity}
+          text={`${unusedAddressScanResult.payload
+            .map((recipient) => recipient.address)
+            .join(', ')} is has no code or balance.`}
+        />
+      )}
+      <SecurityWarning severity={unusedAddressScanResult.severity} />
     </>
   )
 }

@@ -2,17 +2,20 @@ import { type SecurityModule } from './modules/types'
 import { ApprovalModule } from './modules/ApprovalModule'
 import { RedefineModule } from './modules/RedefineModule'
 import { UnknownAddressModule } from './modules/UnknownAddressModule'
+import { UnusedAddressModule } from './modules/UnusedAddressModule'
 
 export const enum SecurityModuleNames {
   APPROVAL = 'APPROVAL',
   REDEFINE = 'REDEFINE',
   UNKNOWN_ADDRESS = 'UNKNOWN_ADDRESS',
+  UNUSED_ADDRESS = 'UNUSED_ADDRESS',
 }
 
 const SecurityModules = {
   [SecurityModuleNames.APPROVAL]: new ApprovalModule(),
   [SecurityModuleNames.REDEFINE]: new RedefineModule(),
   [SecurityModuleNames.UNKNOWN_ADDRESS]: new UnknownAddressModule(),
+  [SecurityModuleNames.UNUSED_ADDRESS]: new UnusedAddressModule(),
 } as const
 
 type Modules = typeof SecurityModules
