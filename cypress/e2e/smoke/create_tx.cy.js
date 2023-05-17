@@ -84,7 +84,7 @@ describe('Queue a transaction on 1/N', () => {
     // Changes nonce to next one
     cy.contains('Signing the transaction with nonce').click()
     cy.contains('button', 'Edit').click()
-    cy.get('label').contains('Safe transaction nonce').next().clear().type(currentNonce)
+    cy.get('label').contains('Safe Account transaction nonce').next().clear().type(currentNonce)
     cy.contains('Confirm').click()
 
     // Asserts the execute checkbox exists

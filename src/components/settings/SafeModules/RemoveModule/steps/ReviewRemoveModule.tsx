@@ -30,8 +30,8 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
     <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
       <SendToBlock address={data.address} title="Module" />
       <Typography my={2}>
-        After removing this module, any feature or app that uses this module might no longer work. If this Safe requires
-        more then one signature, the module removal will have to be confirmed by other owners as well.
+        After removing this module, any feature or app that uses this module might no longer work. If this Safe Account
+        requires more then one signature, the module removal will have to be confirmed by other owners as well.
       </Typography>
     </SignOrExecuteForm>
   )

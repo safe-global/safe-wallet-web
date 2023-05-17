@@ -52,7 +52,7 @@ export const OwnerList = () => {
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
-            Manage Safe owners
+            Manage Safe Account owners
           </Typography>
         </Grid>
 

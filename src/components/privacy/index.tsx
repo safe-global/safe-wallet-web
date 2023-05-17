@@ -139,8 +139,8 @@ const SafePrivacyPolicy = () => {
           Transaction and should only be known by the legal owner of the Wallet.
         </li>
         <li>
-          &ldquo;Safe&rdquo; is a modular, self-custodial (i.e. not supervised by us) smart contract-based
-          multi-signature Wallet. Safes are{' '}
+          &ldquo;Safe Account&rdquo; is a modular, self-custodial (i.e. not supervised by us) smart contract-based
+          multi-signature Wallet. Safe Accounts are{' '}
           <Link href="https://github.com/safe-global/safe-contracts/" passHref>
             <MUILink target="_blank" rel="noreferrer">
               open-source
@@ -149,11 +149,12 @@ const SafePrivacyPolicy = () => {
           &nbsp;released under LGPL-3.0.
         </li>
         <li>
-          &ldquo;{'Safe'}&rdquo; refers to a web-based graphical user interface for Safes as well as a mobile
-          application on Android and iOS.
+          &ldquo;{'Safe{Wallet}'}&rdquo; refers to a web-based graphical user interface for Safe Accounts as well as a
+          mobile application on Android and iOS.
         </li>
         <li>
-          &ldquo;Safe Transaction&rdquo; is a Transaction of a Safe, authorized by a user, typically via their Wallet.{' '}
+          &ldquo;Safe Account Transaction&rdquo; is a Transaction of a Safe Account, authorized by a user, typically via
+          their Wallet.{' '}
         </li>
         <li>
           &ldquo;Profile&rdquo; means the Public Key and user provided, human readable label stored locally on the
@@ -193,10 +194,10 @@ const SafePrivacyPolicy = () => {
         BLOCKCHAIN WILL BECOME PUBLICLY AVAILABLE
       </p>
       <h3 id="4">4. How We Use Personal Data</h3>
-      <h4>4.1. When visiting our website and using {'Safe'}</h4>
+      <h4>4.1. When visiting our website and using {'Safe{Wallet}'}</h4>
       <p>
-        When visiting our website or using {'Safe'}, we may collect and process personal data. The data will be stored
-        in different instances
+        When visiting our website or using {'Safe{Wallet}'}, we may collect and process personal data. The data will be
+        stored in different instances
       </p>
       <ol start={1} className={css.alphaList}>
         <li>
@@ -210,12 +211,12 @@ const SafePrivacyPolicy = () => {
       </ol>
       <ol start={2} className={css.alphaList}>
         <li>
-          When you create a new Safe we process the following data to compose a Transaction based on your entered data
-          to be approved by your Wallet:
+          When you create a new Safe Account we process the following data to compose a Transaction based on your
+          entered data to be approved by your Wallet:
           <ol start={1} className={css.romanList}>
             <li>your public Wallet address, </li>
             <li>account balance, </li>
-            <li>smart contract address of the Safe,</li>
+            <li>smart contract address of the Safe Account,</li>
             <li>addresses of externally owned accounts&nbsp;and </li>
             <li>user activity</li>
           </ol>
@@ -223,8 +224,8 @@ const SafePrivacyPolicy = () => {
       </ol>
       <ol start={3} className={css.alphaList}>
         <li>
-          When you create a Profile for a new Safe we process the following data for the purpose of enabling you to view
-          your Safe after creation as well as enabling you to view all co-owned Safes:
+          When you create a Profile for a new Safe Account we process the following data for the purpose of enabling you
+          to view your Safe Account after creation as well as enabling you to view all co-owned Safe Accounts:
           <ol start={1} className={css.romanList}>
             <li>your public Wallet address and </li>
             <li>account balance</li>
@@ -233,34 +234,34 @@ const SafePrivacyPolicy = () => {
       </ol>
       <ol start={4} className={css.alphaList}>
         <li>
-          When you create a Profile for an existing Safe for the purpose of allowing you to view and use them in the{' '}
-          {'Safe'}, we process your
+          When you create a Profile for an existing Safe Account for the purpose of allowing you to view and use them in
+          the {'Safe{Wallet}'}, we process your
           <ol start={1} className={css.romanList}>
             <li>public Wallet address, </li>
-            <li>Safe balance, </li>
-            <li>smart contract address of the Safe and</li>
-            <li>Safe owner&apos;s public Wallet addresses</li>
+            <li>Safe Account balance, </li>
+            <li>smart contract address of the Safe Account and</li>
+            <li>Safe Account owner&apos;s public Wallet addresses</li>
           </ol>
         </li>
       </ol>
       <ol start={5} className={css.alphaList}>
         <li>
-          When you initiate a Safe Transaction&nbsp;we process the following data to compose the Transaction for you
-          based on your entered data:{' '}
+          When you initiate a Safe Account Transaction&nbsp;we process the following data to compose the Transaction for
+          you based on your entered data:{' '}
           <ol start={1} className={css.romanList}>
             <li>your public Wallet address and </li>
-            <li>smart contract address of the Safe</li>
+            <li>smart contract address of the Safe Account</li>
           </ol>
         </li>
       </ol>
       <ol start={6} className={css.alphaList}>
         <li>
-          When you sign a Safe Transaction&nbsp;we process the following data to enable you to sign the Transaction
-          using your Wallet:
+          When you sign a Safe Account Transaction&nbsp;we process the following data to enable you to sign the
+          Transaction using your Wallet:
           <ol start={1} className={css.romanList}>
-            <li>Safe balance, </li>
-            <li>smart contract address of Safe and</li>
-            <li>Safe owner&apos;s public Wallet addresses</li>
+            <li>Safe Account balance, </li>
+            <li>smart contract address of Safe Account and</li>
+            <li>Safe Account owner&apos;s public Wallet addresses</li>
           </ol>
         </li>
       </ol>
@@ -269,23 +270,23 @@ const SafePrivacyPolicy = () => {
           To enable you to execute The transaction on the Blockchain we process:
           <ol start={1} className={css.romanList}>
             <li>your public Wallet address, </li>
-            <li>Safe balance, </li>
-            <li>smart contract address of the Safe, </li>
-            <li>Safe owner&apos;s public Wallet addresses and </li>
-            <li>Transactions signed by all Safe owners</li>
+            <li>Safe Account balance, </li>
+            <li>smart contract address of the Safe Account, </li>
+            <li>Safe Account owner&apos;s public Wallet addresses and </li>
+            <li>Transactions signed by all Safe Account owners</li>
           </ol>
         </li>
       </ol>
       <ol start={8} className={css.alphaList}>
         <li>
           When we collect relevant&nbsp;data&nbsp;from the Blockchain to display context information in the
-          {`Safe`}
+          {`Safe{Wallet}`}
           we process:
           <ol start={1} className={css.romanList}>
             <li>your public Wallet address, </li>
             <li>account balance,</li>
             <li>account activity and</li>
-            <li>Safe owner&apos;s Public wallet addresses</li>
+            <li>Safe Account owner&apos;s Public wallet addresses</li>
           </ol>
         </li>
       </ol>
@@ -307,8 +308,8 @@ const SafePrivacyPolicy = () => {
           <ol start={1} className={css.romanList}>
             <li>your public Wallet address, </li>
             <li>label, </li>
-            <li>smart contract address of the Safe, </li>
-            <li>Safe owner&apos;s public wallet addresses, </li>
+            <li>smart contract address of the Safe Account, </li>
+            <li>Safe Account owner&apos;s public wallet addresses, </li>
             <li>last used Wallet (for automatic reconnect), </li>
             <li>last used chain id, </li>
             <li>selected currency, </li>
@@ -367,8 +368,9 @@ const SafePrivacyPolicy = () => {
         <li>range of managed funds</li>
       </ol>
       <p>
-        In addition, we may take a recording of you while testing {'Safe'} for internal and external use. The basis for
-        this collection and processing is our legitimate business interest in monitoring and improving our services.
+        In addition, we may take a recording of you while testing {'Safe{Wallet}'} for internal and external use. The
+        basis for this collection and processing is our legitimate business interest in monitoring and improving our
+        services.
       </p>
       <p>
         The lawful basis for this processing is your consent as provided before participating in user experience
@@ -442,7 +444,7 @@ const SafePrivacyPolicy = () => {
       <p>4.5.5 Finally, to report errors and improve user experience we process your:</p>
       <ol start={1}>
         <li>User agent info (Browser, OS, device), </li>
-        <li>URL that you were on (Can contain Safe address) and </li>
+        <li>URL that you were on (Can contain Safe Account address) and </li>
         <li>Error info: Time, stacktrace</li>
       </ol>
       <p>We rely on our legitimate interest (GDPR Art.6.1f) of ensuring product quality. </p>
@@ -460,8 +462,8 @@ const SafePrivacyPolicy = () => {
       <h3 id="5">5. Use of Third Party Applications</h3>
       <h4>5.1. Blockchain</h4>
       <p>
-        When using the Safe your smart contract address, Safe Transactions, addresses of signer accounts and ETH
-        balances and token balances will be stored on the Blockchain. See section 2 of this Policy
+        When using the Safe Account your smart contract address, Safe Account Transactions, addresses of signer accounts
+        and ETH balances and token balances will be stored on the Blockchain. See section 2 of this Policy
       </p>
       <p>
         THE INFORMATION WILL BE DISPLAYED PERMANENTLY AND PUBLIC, THIS IS PART OF THE NATURE OF THE BLOCKCHAIN. IF YOU
@@ -490,7 +492,7 @@ const SafePrivacyPolicy = () => {
       </p>
       <h4>5.4. Mobile app stores</h4>
       <p>
-        {'Safe'} mobile apps are distributed via{' '}
+        {'Safe{Wallet}'} mobile apps are distributed via{' '}
         <Link href="https://www.apple.com/app-store/" passHref>
           <MUILink target="_blank" rel="noreferrer">
             Apple AppStore
@@ -508,10 +510,10 @@ const SafePrivacyPolicy = () => {
       </p>
       <h4>5.5. Fingerprint/Touch ID/ Face ID</h4>
       <p>
-        We enable the user to unlock the {'Safe'} mobile app via biometrics information (touch ID or face ID). This is a
-        feature of the operating system. We do not store any of this data. Instead, the API of the operating system is
-        used to validate the user input. If you have any further questions you should consult with your preferred mobile
-        device provider or manufacturer.
+        We enable the user to unlock the {'Safe{Wallet}'} mobile app via biometrics information (touch ID or face ID).
+        This is a feature of the operating system. We do not store any of this data. Instead, the API of the operating
+        system is used to validate the user input. If you have any further questions you should consult with your
+        preferred mobile device provider or manufacturer.
       </p>
       <h4>5.6. Google Firebase</h4>
       <p>
@@ -586,8 +588,8 @@ const SafePrivacyPolicy = () => {
             Nodereal
           </MUILink>
         </Link>
-        &nbsp;to query public blockchain data from our backend services. All Safes are monitored, no personalization is
-        happening and no user IP addresses are forwarded. Personal data processed are:
+        &nbsp;to query public blockchain data from our backend services. All Safe Accounts are monitored, no
+        personalization is happening and no user IP addresses are forwarded. Personal data processed are:
       </p>
       <ul>
         <li>Your smart contract address of the Safe;</li>
@@ -603,7 +605,7 @@ const SafePrivacyPolicy = () => {
           </MUILink>
         </Link>
         &nbsp;to simulate blockchain transactions before they are executed. For that we send your smart contract address
-        of your Safe and transaction data to Tenderly.
+        of your Safe Account and transaction data to Tenderly.
       </p>
       <h4>5.12. Internal communication</h4>
       <p>We use the following tools for internal communication. </p>
