@@ -138,7 +138,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
               setExecutionMethod={setExecutionMethod}
               relays={relays}
               tooltip="You can only relay multisend transactions containing
-executions from the same Safe."
+executions from the same Safe Account."
             />
           </>
         ) : null}

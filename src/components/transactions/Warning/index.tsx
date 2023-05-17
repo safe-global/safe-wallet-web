@@ -36,7 +36,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
     <Warning
       title={
         <>
-          This transaction calls a smart contract that will be able to modify your Safe.
+          This transaction calls a smart contract that will be able to modify your Safe Account.
           {showWarning && (
             <>
               <br />

@@ -12,7 +12,7 @@ export const ReviewSelectedOwnerStep = ({
   return (
     <form onSubmit={() => onSubmit(data)}>
       <DialogContent>
-        <Typography mb={2}>Review the owner you want to remove from the active Safe:</Typography>
+        <Typography mb={2}>Review the owner you want to remove from the active Safe Account:</Typography>
         <EthHashInfo
           address={data.removedOwner.address}
           name={data.removedOwner.name}

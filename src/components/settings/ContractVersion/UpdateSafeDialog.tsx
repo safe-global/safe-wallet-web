@@ -20,7 +20,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 
 const UpdateSafeSteps: TxStepperProps['steps'] = [
   {
-    label: 'Update Safe version',
+    label: 'Update Safe Account version',
     render: (_, onSubmit) => <ReviewUpdateSafeStep onSubmit={onSubmit} />,
   },
 ]
@@ -64,13 +64,13 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: () => void }) => {
       <Typography mb={2}>
         To check details about updates added by this smart contract version please visit{' '}
         <ExternalLink href={`https://github.com/safe-global/safe-contracts/releases/tag/v${LATEST_SAFE_VERSION}`}>
-          latest Safe contracts changelog
+          latest Safe Account contracts changelog
         </ExternalLink>
       </Typography>
 
       <Typography mb={2}>
         You will need to confirm this update just like any other transaction. This means other owners will have to
-        confirm the update in case more than one confirmation is required for this Safe.
+        confirm the update in case more than one confirmation is required for this Safe Account.
       </Typography>
 
       <Typography mb={2}>

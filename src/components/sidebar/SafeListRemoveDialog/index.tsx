@@ -32,7 +32,7 @@ const SafeListRemoveDialog = ({
     <ModalDialog open onClose={handleClose} dialogTitle="Delete entry">
       <DialogContent sx={{ p: '24px !important' }}>
         <Typography>
-          Are you sure you want to remove <b>{safe}</b> from your list of added Safes?
+          Are you sure you want to remove <b>{safe}</b> from your list of added Safe Accounts?
         </Typography>
       </DialogContent>
 

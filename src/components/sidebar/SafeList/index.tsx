@@ -61,8 +61,8 @@ export const _shouldExpandSafeList = ({
 }
 
 const MAX_EXPANDED_SAFES = 3
-const NO_WALLET_MESSAGE = 'Connect a wallet to view your Safe\n or to create a new one'
-const NO_SAFE_MESSAGE = 'Create a new Safe or add'
+const NO_WALLET_MESSAGE = 'Connect a wallet to view your Safe Accounts\n or to create a new one'
+const NO_SAFE_MESSAGE = 'Create a new Safe Account or add'
 
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
@@ -103,7 +103,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     <div className={css.container}>
       <div className={css.header}>
         <Typography variant="h4" display="inline" fontWeight={700}>
-          My Safes
+          My Safe Accounts
         </Typography>
 
         {!isWelcomePage && (
@@ -238,7 +238,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                 <>
                   <div onClick={() => toggleOpen(chain.chainId, !isOpen)} className={css.ownedLabelWrapper}>
                     <Typography variant="body2" display="inline" className={css.ownedLabel}>
-                      Safes owned on {chain.chainName} ({ownedSafesOnChain.length})
+                      Safe Accounts owned on {chain.chainName} ({ownedSafesOnChain.length})
                       <IconButton disableRipple>{isOpen ? <ExpandLess /> : <ExpandMore />}</IconButton>
                     </Typography>
                   </div>

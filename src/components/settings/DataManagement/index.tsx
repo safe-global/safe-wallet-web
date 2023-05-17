@@ -79,7 +79,7 @@ const DataManagement = () => {
           </Grid>
 
           <Grid item container xs>
-            <Typography>Download your local data with your added Safes, address book and settings.</Typography>
+            <Typography>Download your local data with your added Safe Accounts, address book and settings.</Typography>
 
             <FileListCard
               avatar={
