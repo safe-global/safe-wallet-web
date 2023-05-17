@@ -1,0 +1,29 @@
+.hint {
+  padding: var(--space-2);
+  border: unset;
+}
+
+.hint :global .MuiAlert-icon {
+  padding: 0;
+}
+
+.hint :global .MuiAlert-message {
+  padding: 0;
+}
+
+.warning {
+  padding: var(--space-2) var(--space-4);
+  background-color: unset;
+}
+
+.warning :global .MuiAlert-message {
+  padding: 0;
+}
+
+.checkbox {
+  margin: var(--space-2) 0;
+}
+
+.checkbox :global .MuiCheckbox-root {
+  padding: 0 12px;
+}
