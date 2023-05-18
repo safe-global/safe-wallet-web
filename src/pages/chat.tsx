@@ -1,8 +1,10 @@
-import { AddFolder } from '@/components/chat/addFolder'
 import ChatNotifications from '@/components/chat/chatNotifications'
 import { ChatOverview } from '@/components/chat/chatOverview'
 import { DesktopChat } from '@/components/chat/desktopChat'
 import { MobileChat } from '@/components/chat/mobileChat'
+import { AddFolderModal } from '@/components/chat/modals/AddFolderModal'
+import ViewSettingsModal from '@/components/chat/modals/ViewSettingsModal'
+import WalletConnect from '@/components/chat/WalletConnect'
 import ConnectionCenter from '@/components/common/ConnectWallet/ConnectionCenter'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import { FolderList } from '@/components/folder-list'
@@ -23,7 +25,6 @@ import ModeNightIcon from '@mui/icons-material/ModeNight'
 import SettingsIcon from '@mui/icons-material/Settings'
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
 import WbSunnyIcon from '@mui/icons-material/WbSunny'
-import WalletConnect from '@/components/chat/WalletConnect'
 import {
   Avatar,
   Box,
@@ -107,6 +108,7 @@ const Chat = () => {
   const isDarkMode = useDarkMode()
   const [folders, setFolders] = useState([])
   const [popup, togglePopup] = useState<boolean>(false)
+  const [settings, toggleSettings] = useState<boolean>(false)
   const [open, setOpen] = useState(true)
   const [value, setValue] = React.useState(0)
   const wallet = useWallet()
@@ -288,7 +290,8 @@ const Chat = () => {
 
   return (
     <>
-      {popup ? <AddFolder open={popup} onClose={() => togglePopup(!popup)} /> : ''}
+      {popup && <AddFolderModal open={popup} onClose={() => togglePopup(!popup)} />}
+      {settings && <ViewSettingsModal open={settings} onClose={() => toggleSettings(!settings)} />}
       <Head>
         <title>Safe &mdash; Chat</title>
       </Head>
@@ -313,11 +316,11 @@ const Chat = () => {
                 <IconButton aria-label="add folder" onClick={() => togglePopup(!popup)}>
                   <AddIcon />
                 </IconButton>
-                <Link href={{ pathname: AppRoutes.settings.index, query: { safe: `${safeAddress}` } }}>
-                  <IconButton>
-                    <SettingsIcon />
-                  </IconButton>
-                </Link>
+                {/* <Link href={{ pathname: AppRoutes.settings.index, query: { safe: `${safeAddress}` } }}> */}
+                <IconButton aria-label="settings" onClick={() => toggleSettings(!settings)}>
+                  <SettingsIcon />
+                </IconButton>
+                {/* </Link> */}
               </Box>
             </Toolbar>
             <Divider />
