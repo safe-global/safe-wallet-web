@@ -25,6 +25,6 @@ COPY package.json .
 ENV NODE_ENV production
 EXPOSE 8080
 ENV NODE_PORT 8080
+RUN npm install --global serve
 
-ENTRYPOINT [ "npx", "-y", "serve", "-p", ${NODE_PORT}, "out" ]
-#ENTRYPOINT ["npm", "run", "serve" ]
+ENTRYPOINT [ "npx", "serve", "-p", ${NODE_PORT}, "out" ]
