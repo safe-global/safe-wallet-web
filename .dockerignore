@@ -9,3 +9,4 @@ coverage
 .DS_Store
 .idea
 dist
+charts

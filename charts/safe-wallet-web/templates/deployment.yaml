@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "safe-wallet-web.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "safe-wallet-web.labels" . | nindent 4 }}
+    {{- if .Values.commonLabels }}
+    {{- .Values.commonLabels | toYaml | nindent 4 }}
+    {{- end }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+    {{- .Values.commonAnnotations | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.replicas }}
+  strategy:
+    type: {{ .Values.strategy }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ include "safe-wallet-web.name" . }}
+      app.kubernetes.io/name: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ include "safe-wallet-web.name" . }}
+        app.kubernetes.io/name: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: web
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.resources }}
+        resources: {{- toYaml .Values.resources | nindent 12 }}
+        {{- else }}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        {{- end }}
+        env:
+          - name: NODE_PORT
+            value: {{ .Values.service.ports.number }}
+        envFrom:
+          - configMapRef:
+              name: {{ include "safe-wallet-web.fullname" . }}
+        {{- if .Values.config.secretReferenceKey }}
+          - secretRef:
+              name: {{ .Values.config.secretReferenceKey }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.service.ports.number }}
+          name: {{ .Values.service.ports.name }}
+          protocol: TCP
+      serviceAccountName: {{ include "safe-wallet-web.fullname" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+

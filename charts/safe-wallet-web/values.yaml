@@ -1,0 +1,119 @@
+## @section Common parameters
+##
+
+## @param nameOverride String to partially override common.names.fullname
+##
+nameOverride: ""
+## @param fullnameOverride String to fully override common.names.fullname
+##
+fullnameOverride: ""
+
+## @section Installation Parameters
+##
+
+## @param replicas Replicas for deployment
+##
+replicas: 1
+
+## @param strategy Strategy for deployment
+##
+strategy: "RollingUpdate"
+
+## @param commonLabels [object] Labels to add to all related objects
+##
+commonLabels: {}
+
+## @param commonAnnotations [object] Annotations to to all related objects
+##
+commonAnnotations: {}
+
+## @param nodeSelector Object containing node selection constraint to deployment
+## https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+##
+nodeSelector: {}
+
+## @param resources Resource specification to deployment
+##
+resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+## @param tolerations Tolerations specifications to deployment
+##
+tolerations: []
+
+## @param affinity Affinity specifications to deployment
+##
+affinity: {}
+
+image:
+  ## @param image.registry Docker registry to deployment
+  ##
+  registry: gcr.io
+
+  ## @param image.repository Docker image repository to deployment
+  ##
+  repository: hoprassociation/safe-wallet
+
+  ## @param image.tag Docker image tag to deployment
+  ##
+  tag: ""
+
+  ## @param image.pullPolicy Pull policy to deployment as deinfed in 
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+
+service:
+  ## @param service.type service type
+  ##
+  type: ClusterIP
+  ports:
+    ## @param service.ports.number service port number
+    ##  
+    number: 8080
+    ## @param service.ports.name service port name
+    ##
+    name: web
+  ## @param service.sessionAffinity Control where client requests go, to the same pod or round-robin
+  ## Values: ClientIP or None
+  ## ref: https://kubernetes.io/docs/user-guide/services/
+  ##
+  sessionAffinity: None
+
+
+ingress:
+  ## @param ingress.ingressClassName Name of the ingress class name to be used
+  ##
+  ingressClassName: ""
+
+  ## @param ingress.hostname Default host for the ingress record
+  ##
+  hostname: safe-wallet.cluster.local
+
+  ## @param ingress.annotations Annotations to be added to ingress resources
+  ## @skipingress.annotations
+  ##
+  annotations: {}
+
+## @section Config Service Parameters
+
+config:
+
+  ## @param config.extraEnvVars Add additional extra environment vairables to the configMap
+  ##
+  extraEnvVars: {}
+
+  ## @param config.gatewayUrl The Client Gateway URL. This is for triggering webhooks to invalidate its cache for example
+  gatewayUrl: "http://safe-client-gateway.safe.svc.cluster.local"
+
+  ## @param config.secretReferenceKey Reference to an existing secret containing the following entries: SECRET_KEY, CGW_FLUSH_TOKEN
+  secretReferenceKey: ""

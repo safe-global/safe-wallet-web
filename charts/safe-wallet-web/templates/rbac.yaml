@@ -1,0 +1,53 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "safe-wallet-web.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "safe-wallet-web.labels" . | nindent 4 }}
+    {{- if .Values.commonLabels }}
+    {{- .Values.commonLabels | toYaml | nindent 4 }}
+    {{- end }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+    {{- .Values.commonAnnotations | toYaml | nindent 4 }}
+{{- end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "safe-wallet-web.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "safe-wallet-web.labels" . | nindent 4 }}
+    {{- if .Values.commonLabels }}
+    {{- .Values.commonLabels | toYaml | nindent 4 }}
+    {{- end }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+    {{- .Values.commonAnnotations | toYaml | nindent 4 }}
+{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "safe-wallet-web.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "safe-wallet-web.labels" . | nindent 4 }}
+    {{- if .Values.commonLabels }}
+    {{- .Values.commonLabels | toYaml | nindent 4 }}
+    {{- end }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+    {{- .Values.commonAnnotations | toYaml | nindent 4 }}
+{{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "safe-wallet-web.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "safe-wallet-web.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}

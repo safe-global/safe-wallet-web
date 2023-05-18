@@ -1,0 +1,109 @@
+---
+
+name: 'Package Helm chart'
+
+on:
+  pull_request:
+    paths:
+      - "charts/safe-wallet-web/**"
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+jobs:
+  bump_version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Bump Chart version
+        run: |
+          helm_chart_version=$(grep '^version:' Chart.yaml | sed 's/.*: //')
+          git_tag=$(git tag -l helm-${helm_chart_version})
+          echo "Workspace version is helm-${helm_chart_version} while tagged is ${git_tag}"
+          if [ "${git_tag}" = "helm-${helm_chart_version}" ]; then
+            patch_number=$(echo $helm_chart_version | sed 's/.*\.//')
+            release_number=$(echo $helm_chart_version | sed "s/\.${patch_number}//")
+            bump_version=${release_number}.$((patch_number + 1))
+            echo "The helm chart version ${git_tag} already exists, bumping to version helm-${bump_version}";
+            sed -i "s/^version: ${helm_chart_version}/version: ${bump_version}/" Chart.yaml
+            echo "version_bumped=true" >> $GITHUB_ENV
+          fi
+        working-directory: 'charts/safe-wallet-web/'
+      - name: Commit and push
+        if: ${{ env.version_bumped }}
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Bump Helm chart version
+          repository: .
+          commit_user_name: CI robot
+          commit_user_email: noreply@safe.global
+          commit_author: CI robot <noreply@safe.global>
+          skip_fetch: false
+          skip_checkout: false
+          create_branch: false
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Lint
+        run: |
+          helm dependency update
+          helm lint
+        working-directory: 'charts/safe-wallet-web/'
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get Helm chart version
+        run: |
+          HELM_CHART_VERSION=$(grep '^version:' Chart.yaml | sed 's/.*: //')
+          echo "HELM_CHART_VERSION=${HELM_CHART_VERSION}" >> $GITHUB_ENV
+        working-directory: 'charts/safe-wallet-web/'
+
+      - name: Helm Package
+        run: helm package . --version ${{ env.HELM_CHART_VERSION }}
+        working-directory: 'charts/safe-wallet-web/'
+  generate-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Install readme-generator-for-helm
+        run: npm install -g @bitnami/readme-generator-for-helm@2.5.0
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+          fetch-depth: 0
+
+      - name: Execute readme-generator-for-helm
+        run: |
+          readme-generator --values "charts/safe-wallet-web/values.yaml" --readme "charts/safe-wallet-web/README.md" --schema "/tmp/schema.json"
+          if git status -s | grep charts; then
+            echo "readme_updated=true" >>  $GITHUB_ENV
+          fi
+
+      - name: Commit and push
+        if: ${{ env.readme_updated }}
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update parameters README.md
+          repository: .
+          commit_user_name: CI robot
+          commit_user_email: noreply@safe.global
+          commit_author: CI robot <noreply@safe.global>

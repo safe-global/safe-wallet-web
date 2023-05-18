@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "safe-wallet-web.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "safe-wallet-web.labels" . | nindent 4 }}
+    {{- if .Values.commonLabels }}
+    {{- .Values.commonLabels | toYaml | nindent 4 }}
+    {{- end }}
+{{- if .Values.commonAnnotations }}
+  annotations:
+    {{- .Values.commonAnnotations | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  {{- if .Values.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.service.sessionAffinity }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.service.ports.number }}
+      name: {{ .Values.service.ports.name }}
+      targetPort: {{ .Values.service.ports.name }}
+      nodePort: null
+  selector:
+      app.kubernetes.io/instance: {{ include "safe-wallet-web.name" . }}
+      app.kubernetes.io/name: {{ .Release.Name }}

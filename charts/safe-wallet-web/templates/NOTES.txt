@@ -1,0 +1,2 @@
+[INFO] Safe Wallet Web Helm chart deployed successfully
+[INFO] Access to https://{{ .Values.ingress.hostname }}
