@@ -1,5 +1,8 @@
+import css from '@/components/chat/styles.module.css'
 import { AppRoutes } from '@/config/routes'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import NftIcon from '@/public/images/common/nft.svg'
+import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import ellipsisAddress from '@/utils/ellipsisAddress'
 import { Box, Button, Divider, SvgIcon, Typography } from '@mui/material'
 import { grey } from '@mui/material/colors'
@@ -8,28 +11,28 @@ import React, { useState } from 'react'
 import Members from '../common/Members'
 import TransactionHistory from '../common/TransactionHistory'
 import TransactionQueue from '../common/TransactionQueue'
-
-import NftIcon from '@/public/images/common/nft.svg'
-import AssetsIcon from '@/public/images/sidebar/assets.svg'
-
-import css from '@/components/chat/styles.module.css'
 import TokenTransferModal from '../tx/modals/TokenTransferModal'
+import ViewAppsModal from './modals/ViewAppsModal'
+import ViewAssetsModal from './modals/ViewAssetsModal'
 
 export const ChatOverview: React.FC<{
   owners: any[]
 }> = ({ owners }) => {
   const { safe, safeAddress } = useSafeInfo()
   const [tokenTransfer, toggleTokenTransfer] = useState<boolean>(false)
+  const [assetsOpen, toggleAssetsOpen] = useState<boolean>(false)
+  const [appsOpen, toggleAppsOpen] = useState<boolean>(false)
+
   return (
     <>
-      {tokenTransfer ? (
+      {tokenTransfer && (
         <TokenTransferModal
           onClose={() => toggleTokenTransfer(!tokenTransfer)}
           initialData={[{ disableSpendingLimit: false }]}
         />
-      ) : (
-        ''
       )}
+      {assetsOpen && <ViewAssetsModal open={assetsOpen} onClose={() => toggleAssetsOpen(!assetsOpen)} />}
+      {appsOpen && <ViewAppsModal open={appsOpen} onClose={() => toggleAppsOpen(!appsOpen)} />}
       <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 2, px: 3 }}>
         <Typography sx={{ color: grey[600] }}>Network</Typography>
         <Typography>
@@ -64,11 +67,16 @@ export const ChatOverview: React.FC<{
           Assets
         </Typography>
         <Typography paragraph>View all tokens and NFTs the Safe holds.</Typography>
-        <Link href={{ pathname: AppRoutes.balances.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" className={css.buttonstyled} size="small">
-            View Assets
-          </Button>
-        </Link>
+        {/* <Link href={{ pathname: AppRoutes.balances.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref> */}
+        <Button
+          variant="outlined"
+          className={css.buttonstyled}
+          onClick={() => toggleAssetsOpen(!assetsOpen)}
+          size="small"
+        >
+          View Assets
+        </Button>
+        {/* </Link> */}
       </Box>
       <Divider />
       <Box sx={{ p: 3 }}>
@@ -79,11 +87,11 @@ export const ChatOverview: React.FC<{
           Explore the Safe Apps ecosystem &mdash; connect to your favourite web3 applications with your Safe wallet,
           securely and efficiently
         </Typography>
-        <Link href={{ pathname: AppRoutes.apps.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref>
-          <Button variant="outlined" className={css.buttonstyled} size="small">
-            Explore Apps
-          </Button>
-        </Link>
+        {/* <Link href={{ pathname: AppRoutes.apps.index, query: { safe: `${safeAddress}` } }} key={`${safe}`} passHref> */}
+        <Button variant="outlined" className={css.buttonstyled} size="small" onClick={() => toggleAppsOpen(!appsOpen)}>
+          Explore Apps
+        </Button>
+        {/* </Link> */}
       </Box>
       <Box
         sx={{

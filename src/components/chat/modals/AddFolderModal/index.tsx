@@ -1,8 +1,8 @@
+import ModalDialog from '@/components/common/ModalDialog'
 import { Box, Button, DialogContent, TextField } from '@mui/material'
 import React, { useState } from 'react'
-import ModalDialog from '../common/ModalDialog'
 
-export const AddFolder: React.FC<{
+export const AddFolderModal: React.FC<{
   open: boolean
   onClose: () => void
 }> = ({ open, onClose }) => {
