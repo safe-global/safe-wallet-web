@@ -61,7 +61,7 @@ image:
 
   ## @param image.repository Docker image repository to deployment
   ##
-  repository: hoprassociation/safe-wallet
+  repository: hoprassociation/safe-wallet-web
 
   ## @param image.tag Docker image tag to deployment
   ##
