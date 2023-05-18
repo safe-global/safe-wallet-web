@@ -44,7 +44,7 @@ spec:
         {{- end }}
         env:
           - name: NODE_PORT
-            value: {{ .Values.service.ports.number }}
+            value: "{{ .Values.service.ports.number }}"
         envFrom:
           - configMapRef:
               name: {{ include "safe-wallet-web.fullname" . }}
