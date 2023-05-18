@@ -13,27 +13,27 @@ This chart packages the Safe wallet web resources.
 
 ### Installation Parameters
 
-| Name                       | Description                                                      | Value                         |
-| -------------------------- | ---------------------------------------------------------------- | ----------------------------- |
-| `replicas`                 | Replicas for deployment                                          | `1`                           |
-| `strategy`                 | Strategy for deployment                                          | `RollingUpdate`               |
-| `commonLabels`             | Labels to add to all related objects                             | `{}`                          |
-| `commonAnnotations`        | Annotations to to all related objects                            | `{}`                          |
-| `nodeSelector`             | Object containing node selection constraint to deployment        | `{}`                          |
-| `resources`                | Resource specification to deployment                             | `{}`                          |
-| `tolerations`              | Tolerations specifications to deployment                         | `[]`                          |
-| `affinity`                 | Affinity specifications to deployment                            | `{}`                          |
-| `image.registry`           | Docker registry to deployment                                    | `gcr.io`                      |
-| `image.repository`         | Docker image repository to deployment                            | `hoprassociation/safe-wallet` |
-| `image.tag`                | Docker image tag to deployment                                   | `""`                          |
-| `image.pullPolicy`         | Pull policy to deployment as deinfed in                          | `IfNotPresent`                |
-| `service.type`             | service type                                                     | `ClusterIP`                   |
-| `service.ports.number`     | service port number                                              | `8080`                        |
-| `service.ports.name`       | service port name                                                | `web`                         |
-| `service.sessionAffinity`  | Control where client requests go, to the same pod or round-robin | `None`                        |
-| `ingress.ingressClassName` | Name of the ingress class name to be used                        | `""`                          |
-| `ingress.hostname`         | Default host for the ingress record                              | `safe-wallet.cluster.local`   |
-| `ingress.annotations`      | Annotations to be added to ingress resources                     | `{}`                          |
+| Name                       | Description                                                      | Value                             |
+| -------------------------- | ---------------------------------------------------------------- | --------------------------------- |
+| `replicas`                 | Replicas for deployment                                          | `1`                               |
+| `strategy`                 | Strategy for deployment                                          | `RollingUpdate`                   |
+| `commonLabels`             | Labels to add to all related objects                             | `{}`                              |
+| `commonAnnotations`        | Annotations to to all related objects                            | `{}`                              |
+| `nodeSelector`             | Object containing node selection constraint to deployment        | `{}`                              |
+| `resources`                | Resource specification to deployment                             | `{}`                              |
+| `tolerations`              | Tolerations specifications to deployment                         | `[]`                              |
+| `affinity`                 | Affinity specifications to deployment                            | `{}`                              |
+| `image.registry`           | Docker registry to deployment                                    | `gcr.io`                          |
+| `image.repository`         | Docker image repository to deployment                            | `hoprassociation/safe-wallet-web` |
+| `image.tag`                | Docker image tag to deployment                                   | `""`                              |
+| `image.pullPolicy`         | Pull policy to deployment as deinfed in                          | `IfNotPresent`                    |
+| `service.type`             | service type                                                     | `ClusterIP`                       |
+| `service.ports.number`     | service port number                                              | `8080`                            |
+| `service.ports.name`       | service port name                                                | `web`                             |
+| `service.sessionAffinity`  | Control where client requests go, to the same pod or round-robin | `None`                            |
+| `ingress.ingressClassName` | Name of the ingress class name to be used                        | `""`                              |
+| `ingress.hostname`         | Default host for the ingress record                              | `safe-wallet.cluster.local`       |
+| `ingress.annotations`      | Annotations to be added to ingress resources                     | `{}`                              |
 
 ### Config Service Parameters
 
