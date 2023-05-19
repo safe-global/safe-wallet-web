@@ -6,6 +6,7 @@ import { useAuthRequestChallengeEvm } from '@moralisweb3/next'
 import { useState } from 'react'
 
 const Auth = () => {
+  const router = useRouter()
   const { connectAsync } = useConnect()
   const { disconnectAsync } = useDisconnect()
   const { isConnected } = useAccount()
@@ -22,6 +23,7 @@ const Auth = () => {
     const { account, chain } = await connectAsync({
       connector: new MetaMaskConnector(),
     })
+    //TO-DO: fix this type pls
     //@ts-ignore
     const { message } = await requestChallengeAsync({
       address: account,
@@ -29,20 +31,18 @@ const Auth = () => {
     })
 
     const signature = await signMessageAsync({ message })
-
     // redirect user after success authentication to '/user' page
     //@ts-ignore
     const { url } = await signIn('moralis-auth', {
       message,
       signature,
       redirect: false,
-      callbackUrl: '/chat',
+      callbackUrl: `/chat?safe=${router.query.safe}`,
     })
     /**
      * instead of using signIn(..., redirect: "/user")
      * we get the url from callback and push it to the router to avoid page refreshing
      */
-    console.log(url)
     setAuth(url)
     push(url)
   }

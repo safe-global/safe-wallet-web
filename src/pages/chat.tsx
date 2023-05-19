@@ -106,12 +106,12 @@ function a11yProps(index: number) {
 
 export async function getServerSideProps(context: any) {
   const session = await getSession(context)
-
+  const path = context.req.url.split('?')
   // redirect if not authenticated
   if (!session) {
     return {
       redirect: {
-        destination: '/auth',
+        destination: `/auth?${path[1]}`,
         permanent: false,
       },
     }
@@ -233,9 +233,10 @@ const Chat: React.FC<{
       })
     })
     queueItems?.forEach((tx: any) => {
-      if (tx.type === 'LABEL') {
+      if (tx.type === 'LABEL' || tx.type === 'CONFLICT_HEADER') {
         return
       }
+      console.log(tx, 'tester');
       allData.push({
         data: tx,
         timestamp: tx.transaction.timestamp,
