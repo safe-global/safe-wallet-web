@@ -10,7 +10,7 @@ describe('Queue a transaction on 1/N', () => {
   before(() => {
     cy.connectE2EWallet()
 
-    cy.visit(`/${SAFE}/home`, { failOnStatusCode: false })
+    cy.visit(`/home?safe=${SAFE}`)
 
     cy.contains('Accept selection').click()
   })
@@ -102,7 +102,6 @@ describe('Queue a transaction on 1/N', () => {
 
     // Asserting the sponsored info is present
     cy.contains('Sponsored by').should('be.visible')
-    cy.contains('Gnosis Chain').should('be.visible')
 
     cy.get('span').contains('Estimated fee').next().should('have.css', 'text-decoration-line', 'line-through')
     cy.contains('Transactions per hour')

@@ -363,11 +363,7 @@ describe('MsgModal', () => {
       />,
     )
 
-    expect(
-      getByText(
-        'Your wallet is connected to the wrong chain. When you submit, you will first be asked to connect to Goerli.',
-      ),
-    ).toBeInTheDocument()
+    expect(getByText('Wallet network switch')).toBeInTheDocument()
 
     expect(getByText('Sign')).not.toBeDisabled()
   })

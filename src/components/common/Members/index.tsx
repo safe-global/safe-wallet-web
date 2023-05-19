@@ -1,6 +1,7 @@
+import { AddOwner } from '@/components/chat/AddOwner'
+import ellipsisAddress from '@/utils/ellipsisAddress'
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
 import React from 'react'
-import ellipsisAddress from '@/utils/ellipsisAddress'
 
 interface TypeMembers {
   members: any[]
@@ -9,8 +10,9 @@ interface TypeMembers {
 const Members: React.FC<TypeMembers> = ({ members }) => {
   return (
     <>
-      <Box sx={{ pt: 3, pl: 3 }}>
-        <Typography sx={{ fontWeight: 500 }}>Members</Typography>
+      <Box sx={{ pt: 2, px: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography sx={{ fontWeight: 600 }}>Members</Typography>
+        <AddOwner />
       </Box>
       <List sx={{ pl: 1 }}>
         {members.map((member, index) => (

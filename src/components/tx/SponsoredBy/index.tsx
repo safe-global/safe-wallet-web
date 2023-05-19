@@ -6,8 +6,9 @@ import chains from '@/config/chains'
 import { useCurrentChain } from '@/hooks/useChains'
 import type { RelayResponse } from '@/services/tx/relaying'
 
-const LOGOS = {
+export const SPONSOR_LOGOS = {
   [chains.gno]: '/images/common/gnosis-chain-logo.png',
+  [chains.gor]: '/images/common/token-placeholder.svg',
 }
 
 const SponsoredBy = ({ relays, tooltip }: { relays: RelayResponse; tooltip?: string }) => {
@@ -21,7 +22,7 @@ const SponsoredBy = ({ relays, tooltip }: { relays: RelayResponse; tooltip?: str
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
             Sponsored by
           </Typography>
-          <img src={LOGOS[chain?.chainId || '']} alt={chain?.chainName} className={css.logo} />
+          <img src={SPONSOR_LOGOS[chain?.chainId || '']} alt={chain?.chainName} className={css.logo} />
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
             {chain?.chainName}
           </Typography>

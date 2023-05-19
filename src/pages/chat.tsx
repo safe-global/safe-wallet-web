@@ -1,66 +1,59 @@
-import BadgeAvatar from '@/components/badge-avatar'
-import Members from '@/components/common/Members'
-import TransactionHistory from '@/components/common/TransactionHistory'
-import TransactionQueue from '@/components/common/TransactionQueue'
-import FolderList from '@/components/folder-list'
+import ChatNotifications from '@/components/chat/chatNotifications'
+import { ChatOverview } from '@/components/chat/chatOverview'
+import { DesktopChat } from '@/components/chat/desktopChat'
+import { MobileChat } from '@/components/chat/mobileChat'
+import { AddFolderModal } from '@/components/chat/modals/AddFolderModal'
+import ViewSettingsModal from '@/components/chat/modals/ViewSettingsModal'
+import WalletConnect from '@/components/chat/WalletConnect'
+import ConnectionCenter from '@/components/common/ConnectWallet/ConnectionCenter'
+import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
+import { FolderList } from '@/components/folder-list'
+import { AppRoutes } from '@/config/routes'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useTxQueue from '@/hooks/useTxQueue'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useAppDispatch } from '@/store'
+import { setDarkMode } from '@/store/settingsSlice'
 import ellipsisAddress from '@/utils/ellipsisAddress'
+import { ArrowBackIos } from '@mui/icons-material'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
+import ModeNightIcon from '@mui/icons-material/ModeNight'
+import SettingsIcon from '@mui/icons-material/Settings'
 import ViewSidebarIcon from '@mui/icons-material/ViewSidebar'
-import useWallet from '@/hooks/wallets/useWallet'
-import AddFolder from '@/components/chat/addFolder'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
-import useSafeInfo from '@/hooks/useSafeInfo'
+import WbSunnyIcon from '@mui/icons-material/WbSunny'
 import {
-  Alert,
   Avatar,
   Box,
   Button,
+  Container,
   Divider,
   Drawer,
+  FormControlLabel,
   Hidden,
   IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemIcon,
-  ListItemText,
   Tab,
   Tabs,
-  TextField,
   Toolbar,
-  Tooltip,
-  Typography,
+  Typography
 } from '@mui/material'
 import { grey } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
 import Head from 'next/head'
-import React, { useState, useEffect } from 'react'
-import css from './styles.module.css'
-import useTxQueue from '@/hooks/useTxQueue'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import useTxHistory from '@/hooks/useTxHistory'
-import dynamic from 'next/dynamic'
-import TxListItem from '@/components/transactions/TxListItem'
 import FolderGroup from '@/components/folder-list/folderGroups'
-import NewTxButton from '@/components/sidebar/NewTxButton'
 import { getSession, signOut } from 'next-auth/react'
+import Link from 'next/link'
 
-const SendMessage = dynamic(() => import('@/components/chat/sendMessage'), { ssr: false })
+// const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false })
 
-const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false })
+// const CometChatLoginNoSSR = dynamic(() => import('@/components/chat/login'), { ssr: false })
 
-const CometChatLoginNoSSR = dynamic(() => import('@/components/chat/login'), { ssr: false })
+const drawerWidth = 360
 
-interface TabPanelProps {
-  children?: React.ReactNode
-  index: number
-  value: number
-}
-
-const drawerWidth = 340
-
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+const Main = styled('div', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean
 }>(({ theme, open }) => ({
   flexGrow: 1,
@@ -78,15 +71,11 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   }),
 }))
 
-const StyledAlert = styled(Alert)(() => ({
-  backgroundColor: 'hsla(231, 17%, 76%, 0.33)',
-}))
-
-const summary = [
-  { name: 'Kristen', message: 'Requests $50 from you 🤔' },
-  { name: 'Magnus', message: 'Challenges you to play Chess for $5' },
-  { name: 'Decentra', badge: true, message: 'You need to sign a tx ✏' },
-]
+interface TabPanelProps {
+  children?: React.ReactNode
+  index: number
+  value: number
+}
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props
@@ -133,13 +122,16 @@ export async function getServerSideProps(context: any) {
   }
 }
 
-//@ts-ignore
-const Chat = ({ user }) => {
+const Chat: React.FC<{
+  user: any
+}> = ({ user }) => {
+  const dispatch = useAppDispatch()
+  const isDarkMode = useDarkMode()
   const [folders, setFolders] = useState([])
   const [popup, togglePopup] = useState<boolean>(false)
+  const [settings, toggleSettings] = useState<boolean>(false)
   const [open, setOpen] = useState(true)
   const [value, setValue] = React.useState(0)
-  const [mobileValue, setMobileValue] = React.useState(0)
   const wallet = useWallet()
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([''])
@@ -151,10 +143,23 @@ const Chat = ({ user }) => {
   const [currentUser, setCurrentUser] = useState<any>()
   const { safe, safeAddress } = useSafeInfo()
   const [ownerStatus, setOwnerStatus] = useState<boolean>()
-  const [send, setSend] = useState(false)
-
+  const bottom = useRef<HTMLDivElement>(null)
   const owners = safe?.owners || ['']
   const ownerArray = owners.map((owner) => owner.value)
+
+  const resetGroup = () => {
+    setGroup('')
+  }
+
+  const scrollToBottom = useCallback(() => {
+    if (!bottom.current) return
+    const { current: bottomOfChat } = bottom
+    const rect = bottomOfChat.getBoundingClientRect()
+    if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+      return
+    }
+    bottomOfChat.scrollIntoView({ behavior: 'smooth' })
+  }, [])
 
   useEffect(() => {
     const userAuth = JSON.stringify(user, null, 2)
@@ -194,9 +199,7 @@ const Chat = ({ user }) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
-  const handleMobileChange = (event: React.SyntheticEvent, newValue: number) => {
-    setMobileValue(newValue)
-  }
+
   const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
       event.type === 'keydown' &&
@@ -208,9 +211,18 @@ const Chat = ({ user }) => {
     setOpen(open)
   }
 
-  useEffect(() => {
+  const getLast5Items = (arr: any) => {
+    if (arr) {
+      return arr.length > 5 ? arr.slice(Math.max(arr.length - 5, 0)) : arr
+    }
+    return arr
+  }
+
+  const getChat = useCallback(() => {
     let allData: any[] = []
-    txHistory.page?.results.forEach((tx: any) => {
+    const historyItems = getLast5Items(txHistory.page?.results)
+    const queueItems = getLast5Items(txQueue?.page?.results)
+    historyItems?.forEach((tx: any) => {
       if (tx.type === 'DATE_LABEL') {
         return
       }
@@ -220,7 +232,7 @@ const Chat = ({ user }) => {
         type: 'tx',
       })
     })
-    txQueue.page?.results.forEach((tx: any) => {
+    queueItems?.forEach((tx: any) => {
       if (tx.type === 'LABEL') {
         return
       }
@@ -251,23 +263,64 @@ const Chat = ({ user }) => {
       }
     })
     setChatData(allData)
-    console.log(allData)
-  }, [messages, txHistory?.page?.results])
+  }, [messages, txHistory?.page?.results, txQueue?.page?.results])
 
-  if (!ownerArray.includes(wallet?.address!)) return <>Not Safe owner</>
+  useEffect(() => {
+    if (safeAddress) {
+      getChat()
+    }
+  }, [safeAddress, messages, txHistory?.page?.results, txQueue?.page?.results])
 
-  if (!currentUser) {
-    return <CometChatLoginNoSSR setCurrentUser={setCurrentUser} />
-  }
+  useEffect(() => {
+    scrollToBottom()
+  }, [chatData])
 
-  if (!group) {
-    return <JoinNoSSR user={currentUser} setGroup={setGroup} setMessages={setMessages} />
-  }
+  if (!wallet?.address)
+    return (
+      <Container fixed sx={{ height: '100vh', width: '100vw' }}>
+        <Box
+          sx={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 3,
+          }}
+        >
+          <Typography variant="h4">You are not connected.</Typography>
+          <ConnectionCenter />
+        </Box>
+      </Container>
+    )
+
+  if (!ownerArray.includes(wallet?.address!))
+    return (
+      <Container fixed sx={{ height: '100vh', width: '100vw' }}>
+        <Box
+          sx={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 3,
+          }}
+        >
+          <Typography variant="h4">You are not a signer on this safe.</Typography>
+          <Link href={{ pathname: AppRoutes.home, query: { safe: `${safeAddress}` } }}>
+            <Button variant="contained">Go Back</Button>
+          </Link>
+        </Box>
+      </Container>
+    )
 
   return (
     <>
-      {/*Pop up, TODO: fix this shit to use real styled stuff*/}
-      {popup ? <AddFolder /> : ''}
+      {popup && <AddFolderModal open={popup} onClose={() => togglePopup(!popup)} />}
+      {settings && <ViewSettingsModal open={settings} onClose={() => toggleSettings(!settings)} />}
       <Head>
         <title>Safe &mdash; Chat</title>
       </Head>
@@ -279,46 +332,28 @@ const Chat = ({ user }) => {
               flexShrink: 0,
               '& .MuiDrawer-paper': {
                 width: drawerWidth,
-                bgcolor: 'background.paper',
+                bgcolor: 'background.default',
                 boxSizing: 'border-box',
               },
             }}
             variant="permanent"
             anchor="left"
           >
-            <Toolbar sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <IconButton aria-label="add folder" onClick={() => togglePopup(!popup)}>
-                <AddIcon />
-              </IconButton>
+            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography sx={{ fontWeight: 600 }}>Decentra</Typography>
+              <Box display="flex" alignItems="center" gap="10px">
+                <IconButton aria-label="add folder" onClick={() => togglePopup(!popup)}>
+                  <AddIcon />
+                </IconButton>
+                {/* <Link href={{ pathname: AppRoutes.settings.index, query: { safe: `${safeAddress}` } }}> */}
+                <IconButton aria-label="settings" onClick={() => toggleSettings(!settings)}>
+                  <SettingsIcon />
+                </IconButton>
+                {/* </Link> */}
+              </Box>
             </Toolbar>
             <Divider />
-            <List sx={{ display: 'flex' }}>
-              {summary.map((info, index) => (
-                <Tooltip
-                  title={
-                    <Typography sx={{ width: 80 }} noWrap>
-                      {info.message}
-                    </Typography>
-                  }
-                  placement="top"
-                  arrow
-                  key={info.name}
-                >
-                  <ListItem sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <ListItemAvatar sx={{ minWidth: 35 }}>
-                      {info.badge ? <BadgeAvatar name={info.name} /> : <Avatar alt={info.name} />}
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <Typography sx={{ fontSize: '14px' }} variant="body2" component="span">
-                          {info.name}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                </Tooltip>
-              ))}
-            </List>
+            <ChatNotifications />
             <Box sx={{ width: '100%', height: '100%' }}>
               {/*@ts-ignore*/}
               <Tabs value={value} onChange={handleChange} aria-label="folder tabs">
@@ -330,7 +365,7 @@ const Chat = ({ user }) => {
                 <Tab label="Company multisigs" {...a11yProps(2)} /> */}
               </Tabs>
               <TabPanel value={value} index={0}>
-                <FolderList />
+                <FolderList resetGroup={resetGroup} />
               </TabPanel>
               {folders.map((folder, i) => {
                 return (
@@ -341,17 +376,38 @@ const Chat = ({ user }) => {
               })}
             </Box>
             <Divider />
-            <Box sx={{ width: '100%', display: 'flex', gap: '16px', pt: 2, px: 3 }}>
+            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
               {wallet ? (
-                <>
-                  <Avatar alt="Daniel from Decentra" />
-                  <Box>
-                    <Typography sx={{ fontWeight: 500 }}>From {ellipsisAddress(`${safeAddress}`)}</Typography>
-                    <Typography sx={{ color: grey[600] }} paragraph>
-                      {ellipsisAddress(`${wallet.address}`)}
-                    </Typography>
+                <Box
+                  sx={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '16px',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                    }}
+                  >
+                    <Box>
+                      <WalletConnect wallet={wallet} />
+                    </Box>
                   </Box>
-                </>
+                  {/* <Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} /> */}
+                  <FormControlLabel
+                    control={
+                      <IconButton onClick={() => dispatch(setDarkMode(!isDarkMode))}>
+                        {isDarkMode ? <WbSunnyIcon /> : <ModeNightIcon />}
+                      </IconButton>
+                    }
+                    label=""
+                  />
+                </Box>
               ) : (
                 <Button onClick={connectWallet}>
                   <Typography sx={{ color: grey[600] }} paragraph>
@@ -359,323 +415,67 @@ const Chat = ({ user }) => {
                   </Typography>
                 </Button>
               )}
-            </Box>
+            </Toolbar>
           </Drawer>
         </Hidden>
-        <Main open={open} sx={{ flexGrow: 1, bgcolor: 'background.default' }} className={css.mainview}>
-          <Toolbar
-            sx={{
-              display: 'flex',
-              position: 'sticky',
-              zIndex: '1000',
-              top: 0,
-              justifyContent: 'space-between',
-              alignContent: 'center',
-              bgcolor: 'background.default',
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
-              <Avatar alt="Decentra" />
-              <Typography variant="h6" component="h6">
-                Decentra
-              </Typography>
-            </Box>
-            <Hidden mdDown>
-              <IconButton onClick={toggleDrawer(!open)}>
-                {open ? <CloseIcon aria-label="close sidebar" /> : <ViewSidebarIcon aria-label="show sidebar" />}
-              </IconButton>
-            </Hidden>
-          </Toolbar>
-          <Divider />
-          <Hidden mdUp>
-            <Box sx={{ width: '100%', height: '100%' }}>
-              <Tabs variant="fullWidth" value={mobileValue} onChange={handleMobileChange} aria-label="responsive tabs">
-                <Tab label="Timeline" {...a11yProps(0)} />
-                <Tab label="Overview" {...a11yProps(1)} />
-              </Tabs>
-              <TabPanel value={mobileValue} index={0}>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Box
-                    sx={{
-                      flex: '1 0 auto',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'start',
-                      alignItems: 'start',
-                      gap: '16px',
-                    }}
-                  >
-                    <StyledAlert icon={false}>
-                      <Typography paragraph>This is the beginning of the timeline from this Safe</Typography>
-                      <Typography paragraph>
-                        The timeline shows all your chat, transactions and events in one place. Only members of this
-                        group can see the chat. Say hi!
-                      </Typography>
-                      <Typography sx={{ fontStyle: 'italic', fontSize: '12px' }} paragraph>
-                        Safe created on 5 March 2023 at 19:34:53 CET
-                      </Typography>
-                    </StyledAlert>
-                    <Typography sx={{ fontWeight: 500 }}>Thursday, 9 March 2023</Typography>
-                    <List>
-                      {chatData.map((chat, index) => {
-                        if (chat.type === 'message') {
-                          return (
-                            <ListItem key={index} alignItems="flex-start">
-                              <ListItemIcon>
-                                <Avatar sx={{ width: 32, height: 32 }} alt={chat?.data?.sender.uid || ''} />
-                              </ListItemIcon>
-                              <ListItemText
-                                disableTypography
-                                sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
-                                primary={
-                                  <React.Fragment>
-                                    <Box
-                                      sx={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-start',
-                                        alignItems: 'center',
-                                        gap: '10px',
-                                      }}
-                                    >
-                                      <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                        {chat.data.sender.name === wallet?.address ? 'You' : chat?.data?.sender.uid}
-                                      </Typography>
-                                      <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                        {chat.timeStamp}
-                                      </Typography>
-                                    </Box>
-                                  </React.Fragment>
-                                }
-                                secondary={chat.data.text}
-                              />
-                            </ListItem>
-                          )
-                        } else {
-                          return (
-                            <ListItem key={index} alignItems="flex-start">
-                              <ListItemAvatar sx={{ minWidth: 35, pr: '10px' }}>
-                                <Avatar sx={{ width: 32, height: 32 }} alt={chat.name} />
-                              </ListItemAvatar>
-                              <ListItemText
-                                primary={
-                                  <React.Fragment>
-                                    <Typography
-                                      sx={{ display: 'inline', pr: '8px', fontWeight: 600 }}
-                                      component="span"
-                                      variant="subtitle2"
-                                    >
-                                      {chat.name}
-                                    </Typography>
-                                    <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                      {chat.timeAgo}
-                                    </Typography>
-                                  </React.Fragment>
-                                }
-                                secondary={chat.data.text}
-                              />
-                              <TxListItem key={`${index}-tx`} item={chat?.data} />
-                            </ListItem>
-                          )
-                        }
-                      })}
-                    </List>
-                  </Box>
-                  <Box sx={{ flexShrink: 0, position: 'sticky', bottom: 0, bgcolor: 'background.default' }}>
-                    <Divider />
-                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px', py: 2, px: 1 }}>
-                      <TextField
-                        sx={{ flexGrow: 1 }}
-                        label="Type Something"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                      />
-                      <SendMessage
-                        message={message}
-                        safeAddress={safeAddress}
-                        setMessages={setMessages}
-                        setMessage={setMessage}
-                        prevState={messages}
-                      />
-                    </Box>
-                  </Box>
-                </Box>
-              </TabPanel>
-              <TabPanel value={mobileValue} index={1}>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Box
-                    sx={{
-                      flex: '1 0 auto',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        gap: '40px',
-                        pt: 3,
-                        px: 3,
-                      }}
-                    >
-                      <Typography sx={{ color: grey[500] }}>Network</Typography>
-                      <Typography>
-                        {safe?.chainId === '137'
-                          ? 'Matic'
-                          : safe?.chainId === '1'
-                          ? 'Ethereum'
-                          : safe?.chainId === '10'
-                          ? 'Optimism'
-                          : safe?.chainId === '80001'
-                          ? 'Mumbai'
-                          : ''}
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        gap: '40px',
-                        pt: 3,
-                        px: 3,
-                      }}
-                    >
-                      <Typography sx={{ color: grey[500] }} paragraph>
-                        Address
-                      </Typography>
-                      <Typography paragraph noWrap>
-                        {ellipsisAddress(`${safeAddress}`)}
-                      </Typography>
-                    </Box>
-                    <Divider />
-                    <Members members={owners} />
-                    <Divider />
-                    <TransactionQueue />
-                    <Divider />
-                    <TransactionHistory />
-                    <Divider />
-                    <Box sx={{ p: 3 }}>
-                      <Typography sx={{ fontWeight: 500 }} paragraph>
-                        Apps
-                      </Typography>
-                      <Typography paragraph>
-                        In Plain you can show any information about the customer you want here without having to sync
-                        anything. You can do this by building a very simple API endpoint that Plain will then query when
-                        you load this page.
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box sx={{ flexShrink: 0, position: 'sticky', bottom: 0, bgcolor: 'background.default' }}>
-                    <NewTxButton />
-                  </Box>
-                </Box>
-              </TabPanel>
-            </Box>
-          </Hidden>
-          <Hidden mdDown>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box
+        <Main open={open} sx={{ flexGrow: 1, bgcolor: 'background.paper' }}>
+          <Box display="flex">
+            <Box flexGrow={1}>
+              <Toolbar
                 sx={{
-                  flex: '1 0 auto',
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'start',
-                  alignItems: 'start',
-                  gap: '16px',
-                  p: 3,
-                  bgcolor: 'background.default',
+                  position: 'sticky',
+                  zIndex: 1,
+                  top: 0,
+                  px: 3,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  bgcolor: 'background.paper',
                 }}
               >
-                <StyledAlert icon={false}>
-                  <Typography paragraph>This is the beginning of the timeline from this Safe</Typography>
-                  <Typography paragraph>
-                    The timeline shows all your chat, transactions and events in one place. Only members of this group
-                    can see the chat. Say hi!
-                  </Typography>
-                  <Typography sx={{ fontStyle: 'italic', fontSize: '12px' }} paragraph>
-                    Safe created on 5 March 2023 at 19:34:53 CET
-                  </Typography>
-                </StyledAlert>
-                <Typography sx={{ fontWeight: 500 }}>Thursday, 9 March 2023</Typography>
-                <List>
-                  {chatData &&
-                    chatData.map((chat, index) => {
-                      if (chat.type === 'message' && chat?.data?.sender) {
-                        return (
-                          <ListItem key={index} alignItems="flex-start">
-                            <ListItemAvatar sx={{ minWidth: 35, pr: '10px' }}>
-                              <Avatar sx={{ width: 32, height: 32 }} alt={chat?.data?.sender.uid || ''} />
-                            </ListItemAvatar>
-                            <ListItemText
-                              primary={
-                                <React.Fragment>
-                                  <Typography
-                                    sx={{ display: 'inline', pr: '12px', fontWeight: 600 }}
-                                    component="span"
-                                    variant="subtitle2"
-                                  >
-                                    {chat.data.sender.name === wallet?.address ? 'You' : chat?.data?.sender.uid}
-                                  </Typography>
-                                  <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                    {chat.timeStamp}
-                                  </Typography>
-                                </React.Fragment>
-                              }
-                              secondary={chat.data.text}
-                            />
-                          </ListItem>
-                        )
-                      } else {
-                        return (
-                          <ListItem key={index} alignItems="flex-start">
-                            <ListItemAvatar sx={{ minWidth: 35, pr: '10px' }}>
-                              <Avatar sx={{ width: 32, height: 32 }} alt={chat.name} />
-                            </ListItemAvatar>
-                            <TxListItem key={`${index}-tx`} item={chat?.data} />
-                            <ListItemText
-                              primary={
-                                <React.Fragment>
-                                  <Typography
-                                    sx={{ display: 'inline', pr: '8px', fontWeight: 600 }}
-                                    component="span"
-                                    variant="subtitle2"
-                                  >
-                                    {chat.name}
-                                  </Typography>
-                                  <Typography sx={{ display: 'inline' }} component="span" variant="body2">
-                                    {chat.timeAgo}
-                                  </Typography>
-                                </React.Fragment>
-                              }
-                              secondary={chat.message}
-                            />
-                          </ListItem>
-                        )
-                      }
-                    })}
-                  {!chatData ? <ListItem>No Chat</ListItem> : ''}
-                </List>
-              </Box>
-              <Box sx={{ flexShrink: 0, position: 'sticky', bottom: 0, bgcolor: 'background.default' }}>
-                <Divider />
-                <Box sx={{ width: '100%', display: 'flex', gap: '16px', p: 3 }}>
-                  <TextField
-                    sx={{ flexGrow: 1 }}
-                    label="Type Something"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                  />
-                  <SendMessage
-                    message={message}
-                    safeAddress={safeAddress}
-                    setMessages={setMessages}
-                    setMessage={setMessage}
-                    prevState={messages}
-                  />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '14px' }}>
+                  <Link href={{ pathname: AppRoutes.home, query: { safe: `${safeAddress}` } }}>
+                    <IconButton aria-label="back">
+                      <ArrowBackIos />
+                    </IconButton>
+                  </Link>
+                  <Avatar sx={{ height: 36, width: 36, borderRadius: '6px' }} alt="Decentra" />
+                  <Typography sx={{ fontWeight: 600 }}>{ellipsisAddress(`${safeAddress}`)}</Typography>
                 </Box>
-              </Box>
+                <Hidden mdDown>
+                  <IconButton onClick={toggleDrawer(!open)}>
+                    {open ? <CloseIcon aria-label="close sidebar" /> : <ViewSidebarIcon aria-label="show sidebar" />}
+                  </IconButton>
+                </Hidden>
+              </Toolbar>
+              <Divider />
+              <MobileChat
+                message={message}
+                setMessage={setMessage}
+                messages={messages}
+                setMessages={setMessages}
+                bottom={bottom}
+                chatData={chatData}
+                group={group}
+                owners={owners}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                setGroup={setGroup}
+              />
+              <DesktopChat
+                setGroup={setGroup}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                message={message}
+                setMessage={setMessage}
+                messages={messages}
+                setMessages={setMessages}
+                group={group}
+                bottom={bottom}
+                chatData={chatData}
+              />
             </Box>
-          </Hidden>
+          </Box>
         </Main>
         <Hidden mdDown>
           <Drawer
@@ -684,7 +484,7 @@ const Chat = ({ user }) => {
               flexShrink: 0,
               '& .MuiDrawer-paper': {
                 width: drawerWidth,
-                bgcolor: 'background.default',
+                bgcolor: 'background.paper',
                 boxSizing: 'border-box',
               },
             }}
@@ -692,64 +492,20 @@ const Chat = ({ user }) => {
             anchor="right"
             open={open}
           >
-            <Toolbar>
-              <Typography sx={{ fontWeight: 500 }}>Overview</Typography>
+            <Toolbar
+              sx={{
+                position: 'sticky',
+                zIndex: 1,
+                top: 0,
+                bgcolor: 'background.paper',
+              }}
+            >
+              <Typography sx={{ fontWeight: 600 }}>Overview</Typography>
             </Toolbar>
             <Divider />
-            <Box
-              sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 3, px: 3 }}
-            >
-              <Typography sx={{ color: grey[500] }}>Network</Typography>
-              <Typography>
-                {safe?.chainId === '137'
-                  ? 'Matic'
-                  : safe?.chainId === '1'
-                  ? 'Ethereum'
-                  : safe?.chainId === '10'
-                  ? 'Optimism'
-                  : safe?.chainId === '80001'
-                  ? 'Mumbai'
-                  : ''}
-              </Typography>
-            </Box>
-            <Box
-              sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '40px', pt: 3, px: 3 }}
-            >
-              <Typography sx={{ color: grey[500] }} paragraph>
-                Address
-              </Typography>
-              <Typography paragraph noWrap>
-                {ellipsisAddress(`${safeAddress}`)}
-              </Typography>
-            </Box>
-            <Divider />
-            <Members members={owners} />
-            <Divider />
-            <TransactionQueue />
-            <Divider />
-            <TransactionHistory />
-            <Divider />
-            <Box sx={{ p: 3 }}>
-              <Typography sx={{ fontWeight: 500 }} paragraph>
-                Apps
-              </Typography>
-              <Typography paragraph>
-                In Plain you can show any information about the customer you want here without having to sync anything.
-                You can do this by building a very simple API endpoint that Plain will then query when you load this
-                page.
-              </Typography>
-              <Box sx={{ position: 'fixed', bottom: 0, bgcolor: 'background.default' }}>
-                <NewTxButton />
-              </Box>
-            </Box>
+            <ChatOverview owners={owners} />
           </Drawer>
         </Hidden>
-        {send ?? (
-          <TokenTransferModal
-            onClose={() => setSend(false)}
-            initialData={[{ tokenAddress: '0xcaa7349cea390f89641fe306d93591f87595dc1f' }]}
-          />
-        )}
       </Box>
     </>
   )

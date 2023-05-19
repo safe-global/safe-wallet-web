@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
-import { Chip } from '@mui/material'
 import { MenuItem, Select, Skeleton } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
@@ -13,22 +12,7 @@ import { useCallback } from 'react'
 import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 
-/**
- * The dates when the chain was added to the app
- * Show a "New!" label for two weeks after the chain was added
- */
-const networkAddedDates: Record<string, string> = {
-  'base-gor': '2023-02-24',
-}
-const maxNewDays = 14
-
-const isNetworkNew = (network: string): boolean => {
-  const addedDate = networkAddedDates[network]
-  if (!addedDate) return false
-  const added = new Date(addedDate).getTime()
-  const elapsed = Date.now() - added
-  return elapsed < maxNewDays * 24 * 60 * 60 * 1000
-}
+const keepPathRoutes = [AppRoutes.welcome, AppRoutes.newSafe.create, AppRoutes.newSafe.load]
 
 const NetworkSelector = (): ReactElement => {
   const { configs } = useChains()
@@ -36,7 +20,7 @@ const NetworkSelector = (): ReactElement => {
   const router = useRouter()
   const getNetworkLink = useCallback(
     (shortName: string) => {
-      const shouldKeepPath = [AppRoutes.newSafe.create, AppRoutes.newSafe.load].includes(router.pathname)
+      const shouldKeepPath = keepPathRoutes.includes(router.pathname)
 
       const route = {
         pathname: shouldKeepPath ? router.pathname : '/',
@@ -99,10 +83,6 @@ const NetworkSelector = (): ReactElement => {
             <Link href={getNetworkLink(chain.shortName)} passHref>
               <a>
                 <ChainIndicator chainId={chain.chainId} inline />
-
-                {isNetworkNew(chain.shortName) && (
-                  <Chip label="New!" size="small" color="secondary" component="span" className={css.newChip} />
-                )}
               </a>
             </Link>
           </MenuItem>

@@ -47,24 +47,37 @@ export const createReadOnlyEthersAdapter = (provider = getWeb3ReadOnly()) => {
   })
 }
 
-// Safe Core SDK
-export const initSafeSDK = async (provider: JsonRpcProvider, safe: SafeInfo): Promise<Safe | undefined> => {
-  const chainId = safe.chainId
-  const safeAddress = safe.address.value
-  const safeVersion = safe.version ?? (await Gnosis_safe__factory.connect(safeAddress, provider).VERSION())
+type SafeCoreSDKProps = {
+  provider: JsonRpcProvider
+  chainId: SafeInfo['chainId']
+  address: SafeInfo['address']['value']
+  version: SafeInfo['version']
+  implementationVersionState: SafeInfo['implementationVersionState']
+  implementation: SafeInfo['implementation']['value']
+}
 
+// Safe Core SDK
+export const initSafeSDK = async ({
+  provider,
+  chainId,
+  address,
+  version,
+  implementationVersionState,
+  implementation,
+}: SafeCoreSDKProps): Promise<Safe | undefined> => {
+  const safeVersion = version ?? (await Gnosis_safe__factory.connect(address, provider).VERSION())
   let isL1SafeMasterCopy = chainId === chains.eth
 
   // If it is an official deployment we should still initiate the safeSDK
-  if (!isValidMasterCopy(safe)) {
-    const masterCopy = safe.implementation.value
+  if (!isValidMasterCopy(implementationVersionState)) {
+    const masterCopy = implementation
 
     const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
     const safeL2Deployment = getSafeL2SingletonDeployment({ network: chainId, version: safeVersion })
 
     isL1SafeMasterCopy = masterCopy === safeL1Deployment?.defaultAddress
     const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.defaultAddress
-
+    console.log('2 test')
     // Unknown deployment, which we do not want to support
     if (!isL1SafeMasterCopy && !isL2SafeMasterCopy) {
       return Promise.resolve(undefined)
@@ -73,12 +86,13 @@ export const initSafeSDK = async (provider: JsonRpcProvider, safe: SafeInfo): Pr
 
   // Legacy Safe contracts
   if (isLegacyVersion(safeVersion)) {
+    console.log('3 test')
     isL1SafeMasterCopy = true
   }
-
+  console.log('4 test')
   return Safe.create({
     ethAdapter: createReadOnlyEthersAdapter(provider),
-    safeAddress,
+    safeAddress: address,
     isL1SafeMasterCopy,
   })
 }

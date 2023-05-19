@@ -120,11 +120,9 @@ const WebCoreApp = ({
               <CssBaseline />
 
               <InitApp />
-
-              <PageLayout pathname={router.pathname}>
-                <Component {...pageProps} />
-              </PageLayout>
-
+                <PageLayout pathname={router.pathname}>
+                  <Component {...pageProps} key={router.query.safe?.toString()} />
+                </PageLayout>
               <CookieBanner />
               <TermsBanner />
 

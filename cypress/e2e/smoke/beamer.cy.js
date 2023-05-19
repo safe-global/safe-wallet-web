@@ -3,7 +3,7 @@ const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 describe('Beamer', () => {
   it('should require accept "Updates" cookies to display Beamer', () => {
     // Disable PWA, otherwise it will throw a security error
-    cy.visit(`/${TEST_SAFE}/address-book`, { failOnStatusCode: false })
+    cy.visit(`/address-book?safe=${TEST_SAFE}`)
 
     // Way to select the cookies banner without an id
     cy.contains('Accept selection').click()

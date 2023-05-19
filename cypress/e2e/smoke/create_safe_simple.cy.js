@@ -8,7 +8,7 @@ describe('Create Safe form', () => {
     cy.visit('/welcome')
 
     // Close cookie banner
-    cy.contains('button', 'Accept all').click()
+    cy.contains('button', 'Accept selection').click()
 
     // Ensure wallet is connected to correct chain via header
     cy.contains('E2E Wallet @ Görli')

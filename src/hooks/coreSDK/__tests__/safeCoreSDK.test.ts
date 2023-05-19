@@ -4,10 +4,10 @@ import {
   getProxyFactoryContract,
   getSafeContract,
 } from '@safe-global/safe-core-sdk/dist/src/contracts/safeDeploymentContracts'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 
-import { isValidSafeVersion, initSafeSDK } from '../safeCoreSDK'
+import { initSafeSDK, isValidSafeVersion } from '../safeCoreSDK'
 
 jest.mock('@/services/contracts/safeContracts', () => {
   return {
@@ -112,13 +112,14 @@ describe('safeCoreSDK', () => {
 
         const mockProvider = getMockProvider(chainId, version)
 
-        const sdk = await initSafeSDK(mockProvider, {
+        const sdk = await initSafeSDK({
+          provider: mockProvider,
           chainId,
-          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
+          address: ethers.utils.hexZeroPad('0x1', 20),
           version,
-          implementation: { value: MAINNET_MASTER_COPY },
-          implementationVersionState: 'UP_TO_DATE',
-        } as SafeInfo)
+          implementation: MAINNET_MASTER_COPY,
+          implementationVersionState: ImplementationVersionState.UP_TO_DATE,
+        })
 
         expect(sdk).toBeInstanceOf(Safe)
       })
@@ -129,13 +130,14 @@ describe('safeCoreSDK', () => {
 
         const mockProvider = getMockProvider(chainId, version)
 
-        const sdk = await initSafeSDK(mockProvider, {
+        const sdk = await initSafeSDK({
+          provider: mockProvider,
           chainId,
-          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
+          address: ethers.utils.hexZeroPad('0x1', 20),
           version,
-          implementation: { value: MAINNET_MASTER_COPY },
-          implementationVersionState: 'UP_TO_DATE',
-        } as SafeInfo)
+          implementation: MAINNET_MASTER_COPY,
+          implementationVersionState: ImplementationVersionState.UP_TO_DATE,
+        })
 
         expect(sdk).toBeInstanceOf(Safe)
         expect(sdk?.getContractManager().isL1SafeMasterCopy).toBe(true)
@@ -147,13 +149,14 @@ describe('safeCoreSDK', () => {
 
         const mockProvider = getMockProvider(chainId, version)
 
-        const sdk = await initSafeSDK(mockProvider, {
+        const sdk = await initSafeSDK({
+          provider: mockProvider,
           chainId,
-          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
+          address: ethers.utils.hexZeroPad('0x1', 20),
           version: `${version}+L2`,
-          implementation: { value: POLYGON_MASTER_COPY },
-          implementationVersionState: 'UP_TO_DATE',
-        } as SafeInfo)
+          implementation: POLYGON_MASTER_COPY,
+          implementationVersionState: ImplementationVersionState.UP_TO_DATE,
+        })
 
         expect(sdk).toBeInstanceOf(Safe)
         expect(sdk?.getContractManager().isL1SafeMasterCopy).toBe(false)
@@ -165,13 +168,14 @@ describe('safeCoreSDK', () => {
 
         const mockProvider = getMockProvider(chainId, version)
 
-        const sdk = await initSafeSDK(mockProvider, {
+        const sdk = await initSafeSDK({
+          provider: mockProvider,
           chainId,
-          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
+          address: ethers.utils.hexZeroPad('0x1', 20),
           version,
-          implementation: { value: POLYGON_MASTER_COPY },
-          implementationVersionState: 'OUTDATED',
-        } as SafeInfo)
+          implementation: POLYGON_MASTER_COPY,
+          implementationVersionState: ImplementationVersionState.OUTDATED,
+        })
 
         expect(sdk).toBeInstanceOf(Safe)
         expect(sdk?.getContractManager().isL1SafeMasterCopy).toBe(true)
@@ -186,13 +190,14 @@ describe('safeCoreSDK', () => {
 
         const mockProvider = getMockProvider(chainId, version)
 
-        const sdk = await initSafeSDK(mockProvider, {
+        const sdk = await initSafeSDK({
+          provider: mockProvider,
           chainId: '1',
-          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
+          address: ethers.utils.hexZeroPad('0x1', 20),
           version: null, // Indexer returns null if unsupported contract version
-          implementation: { value: MAINNET_MASTER_COPY },
-          implementationVersionState: 'UNKNOWN',
-        } as SafeInfo)
+          implementation: MAINNET_MASTER_COPY,
+          implementationVersionState: ImplementationVersionState.UNKNOWN,
+        })
 
         expect(sdk).toBeInstanceOf(Safe)
       })
@@ -203,13 +208,14 @@ describe('safeCoreSDK', () => {
 
         const mockProvider = getMockProvider(chainId, version)
 
-        const sdk = await initSafeSDK(mockProvider, {
+        const sdk = await initSafeSDK({
+          provider: mockProvider,
           chainId,
-          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
+          address: ethers.utils.hexZeroPad('0x1', 20),
           version: null,
-          implementation: { value: MAINNET_MASTER_COPY },
-          implementationVersionState: 'UNKNOWN',
-        } as SafeInfo)
+          implementation: MAINNET_MASTER_COPY,
+          implementationVersionState: ImplementationVersionState.UNKNOWN,
+        })
 
         expect(sdk).toBeInstanceOf(Safe)
         expect(sdk?.getContractManager().isL1SafeMasterCopy).toBe(true)
@@ -221,13 +227,14 @@ describe('safeCoreSDK', () => {
 
         const mockProvider = getMockProvider(chainId, version)
 
-        const sdk = await initSafeSDK(mockProvider, {
+        const sdk = await initSafeSDK({
+          provider: mockProvider,
           chainId,
-          address: { value: ethers.utils.hexZeroPad('0x1', 20) },
+          address: ethers.utils.hexZeroPad('0x1', 20),
           version: null,
-          implementation: { value: '0xinvalid' },
-          implementationVersionState: 'UNKNOWN',
-        } as SafeInfo)
+          implementation: '0xinvalid',
+          implementationVersionState: ImplementationVersionState.UNKNOWN,
+        })
 
         expect(sdk).toBeUndefined()
       })

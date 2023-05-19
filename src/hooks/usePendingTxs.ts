@@ -31,10 +31,14 @@ export const usePendingTxsQueue = (): {
   const { chainId } = safe
   const pendingIds = usePendingTxIds()
 
-  const [untrustedQueue, error, loading] = useAsync<TransactionListPage>(() => {
-    if (!pendingIds.length) return
-    return getTransactionQueue(chainId, safeAddress, undefined, false)
-  }, [chainId, safeAddress, pendingIds])
+  const [untrustedQueue, error, loading] = useAsync<TransactionListPage>(
+    () => {
+      if (!pendingIds.length) return
+      return getTransactionQueue(chainId, safeAddress, undefined, false)
+    },
+    [chainId, safeAddress, pendingIds],
+    false,
+  )
 
   const pendingTxPage = useMemo(() => {
     if (!untrustedQueue || !pendingIds.length) return

@@ -11,19 +11,27 @@ import useOwnedSafes from '@/hooks/useOwnedSafes'
 import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-export default function FolderList() {
+export const FolderList: React.FC<{
+  resetGroup: () => void
+}> = ({ resetGroup }) => {
   const ownedSafes = useOwnedSafes()
   const history = useRouter()
   const [safeFolder, setSafeFolder] = useState([''])
   const [selectedIndex, setSelectedIndex] = useState<any>()
   const { safe, safeAddress } = useSafeInfo()
 
+  //TODO: can be signficantly refactored
   useEffect(() => {
     if (ownedSafes) {
-      let folderList: any[] = []
+      let folderList: string[] = []
+      console.log(ownedSafes, 'see')
       const polygonSafes = ownedSafes[137]
       const optimismSafes = ownedSafes[5]
       const ethSafes = ownedSafes[1]
+      const gnosisSafes = ownedSafes[100]
+      if (gnosisSafes) {
+        gnosisSafes.forEach((safe) => folderList.push(`gno:${safe}`))
+      }
       if (polygonSafes) {
         polygonSafes.forEach((safe) => folderList.push(`matic:${safe}`))
       }
@@ -41,30 +49,33 @@ export default function FolderList() {
   }, [ownedSafes])
 
   const handleListItemClick = (folder: string, index: number) => {
-    console.log(folder, safeAddress, safe.address, 'filter')
+    resetGroup()
     setSelectedIndex(folder)
     history.push(`${folder}/new-chat`)
   }
-  //TODO
+
+  const matchSafe = (safe: string) => {
+    return safe.slice(safe.lastIndexOf(':') + 1) === safeAddress
+  }
   return (
     <List>
-      {safeFolder.map((folder, index) => (
-        <Link href={{ pathname: AppRoutes.home, query: { safe: `${folder}` } }} key={`${folder}-${index}`} passHref>
+      {safeFolder.map((safe, index) => (
+        <Link href={{ pathname: AppRoutes.chat, query: { safe: `${safe}` } }} key={`${safe}-${index}`} passHref>
           <ListItemButton
             sx={{ borderRadius: '6px' }}
             //key={folder.name}
-            key={folder}
-            selected={folder === safeAddress}
-            onClick={() => handleListItemClick(folder, index)}
+            key={safe}
+            selected={matchSafe(safe)}
+            onClick={() => handleListItemClick(safe, index)}
           >
             {/* <ListItemAvatar>
               {folder.badge ? <BadgeAvatar name={folder.name} /> : <Avatar alt={folder.name} />}
             </ListItemAvatar> */}
             <ListItemAvatar>
-              <Avatar alt={folder} />
+              <Avatar sx={{ height: 32, width: 32 }} alt={safe} />
             </ListItemAvatar>
             <ListItemText
-              primary={<Typography sx={{ fontWeight: 500 }}>{ellipsisAddress(folder)}</Typography>}
+              primary={<Typography sx={{ fontWeight: 500 }}>{ellipsisAddress(safe)}</Typography>}
               //secondary={<Typography sx={{ color: grey[600] }}>{ellipsisAddress(folder.address)}</Typography>}
             />
           </ListItemButton>

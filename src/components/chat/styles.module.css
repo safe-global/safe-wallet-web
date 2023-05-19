@@ -4,12 +4,6 @@
   overflow-y: scroll;
 }
 
-.loginwindowelement {
-  background: transparent;
-  border: 2px solid #fff;
-  color: #fff;
-}
-
 .messagecontainer {
   background: #8080801f;
   padding: 14px;
@@ -76,4 +70,17 @@
   border: 1px solid white;
   padding: 1em;
   margin-top: 1em;
+}
+
+/* styling various buttons wip*/
+.buttonstyled {
+  border: 1px solid var(--color-border-light);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: inherit;
+}
+
+.buttonstyled:hover {
+  border: 1px solid var(--color-border-light);
+  background: transparent;
 }
