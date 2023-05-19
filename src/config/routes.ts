@@ -1,5 +1,6 @@
 export const AppRoutes = {
   '404': '/404',
+  auth: '/auth',
   welcome: '/welcome',
   chat: '/chat',
   terms: '/terms',

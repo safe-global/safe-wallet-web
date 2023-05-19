@@ -8,11 +8,9 @@ import WalletConnect from '@/components/chat/WalletConnect'
 import ConnectionCenter from '@/components/common/ConnectWallet/ConnectionCenter'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import { FolderList } from '@/components/folder-list'
-import FolderGroup from '@/components/folder-list/folderGroups'
 import { AppRoutes } from '@/config/routes'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useTxHistory from '@/hooks/useTxHistory'
 import useTxQueue from '@/hooks/useTxQueue'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useAppDispatch } from '@/store'
@@ -43,8 +41,11 @@ import {
 import { grey } from '@mui/material/colors'
 import { styled } from '@mui/material/styles'
 import Head from 'next/head'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
+import useTxHistory from '@/hooks/useTxHistory'
+import FolderGroup from '@/components/folder-list/folderGroups'
+import { getSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 // const JoinNoSSR = dynamic(() => import('@/components/chat/join'), { ssr: false })
 
@@ -76,13 +77,6 @@ interface TabPanelProps {
   value: number
 }
 
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  }
-}
-
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props
 
@@ -103,7 +97,34 @@ function TabPanel(props: TabPanelProps) {
   )
 }
 
-const Chat = () => {
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  }
+}
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context)
+  const path = context.req.url.split('?')
+  // redirect if not authenticated
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/auth?${path[1]}`,
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: { user: session.user },
+  }
+}
+
+const Chat: React.FC<{
+  user: any
+}> = ({ user }) => {
   const dispatch = useAppDispatch()
   const isDarkMode = useDarkMode()
   const [folders, setFolders] = useState([])
@@ -138,6 +159,14 @@ const Chat = () => {
       return
     }
     bottomOfChat.scrollIntoView({ behavior: 'smooth' })
+  }, [])
+
+  useEffect(() => {
+    const userAuth = JSON.stringify(user, null, 2)
+    if (user.address !== wallet?.address) {
+      //@ts-ignore
+      signOut({ redirect: '/auth' })
+    }
   }, [])
 
   useEffect(() => {
@@ -204,9 +233,10 @@ const Chat = () => {
       })
     })
     queueItems?.forEach((tx: any) => {
-      if (tx.type === 'LABEL') {
+      if (tx.type === 'LABEL' || tx.type === 'CONFLICT_HEADER') {
         return
       }
+      console.log(tx, 'tester');
       allData.push({
         data: tx,
         timestamp: tx.transaction.timestamp,
