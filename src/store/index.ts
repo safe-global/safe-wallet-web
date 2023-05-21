@@ -1,6 +1,7 @@
 import {
   configureStore,
   combineReducers,
+  createListenerMiddleware,
   type ThunkAction,
   type PreloadedState,
   type AnyAction,
@@ -13,19 +14,19 @@ import { chainsSlice } from './chainsSlice'
 import { safeInfoSlice } from './safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { sessionSlice } from './sessionSlice'
-import { txHistorySlice, txHistoryMiddleware } from './txHistorySlice'
-import { txQueueSlice, txQueueMiddleware } from './txQueueSlice'
+import { txHistoryListener, txHistorySlice } from './txHistorySlice'
+import { txQueueListener, txQueueSlice } from './txQueueSlice'
 import { addressBookSlice } from './addressBookSlice'
 import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
 import { pendingTxsSlice } from './pendingTxsSlice'
-import { addedSafesMiddleware, addedSafesSlice } from './addedSafesSlice'
+import { addedSafesListener, addedSafesSlice } from './addedSafesSlice'
 import { settingsSlice } from './settingsSlice'
 import { cookiesSlice } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
 import { spendingLimitSlice } from './spendingLimitsSlice'
 import { safeAppsSlice } from './safeAppsSlice'
-import { safeMessagesMiddleware, safeMessagesSlice } from './safeMessagesSlice'
+import { safeMessagesListener, safeMessagesSlice } from './safeMessagesSlice'
 import { pendingSafeMessagesSlice } from './pendingSafeMessagesSlice'
 
 const rootReducer = combineReducers({
@@ -59,17 +60,14 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   pendingSafeMessagesSlice.name,
 ]
 
-const middleware = [
-  persistState(persistedSlices),
-  txHistoryMiddleware,
-  txQueueMiddleware,
-  addedSafesMiddleware,
-  safeMessagesMiddleware,
-]
-
 export const getPersistedState = () => {
   return getPreloadedState(persistedSlices)
 }
+
+export const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
+
+const middleware = [persistState(persistedSlices), listenerMiddlewareInstance.middleware]
+const listeners = [addedSafesListener, safeMessagesListener, txHistoryListener, txQueueListener]
 
 export const _hydrationReducer: typeof rootReducer = (state, action) => {
   if (action.type === HYDRATE_ACTION) {
@@ -90,7 +88,10 @@ export const _hydrationReducer: typeof rootReducer = (state, action) => {
 const makeStore = (initialState?: Record<string, any>) => {
   return configureStore({
     reducer: _hydrationReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(middleware),
+    middleware: (getDefaultMiddleware) => {
+      listeners.forEach((listener) => listener(listenerMiddlewareInstance))
+      return getDefaultMiddleware({ serializableCheck: false }).concat(middleware)
+    },
     devTools: !IS_PRODUCTION,
     preloadedState: initialState,
   })

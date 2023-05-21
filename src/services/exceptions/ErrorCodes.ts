@@ -28,6 +28,7 @@ enum ErrorCodes {
   _610 = '610: Error fetching safes by owner',
   _611 = '611: Error fetching gasPrice',
   _612 = '612: Error estimating gas',
+  _613 = '613: Error fetching Safe message by message hash',
   _616 = '616: Failed to retrieve recommended nonce',
   _619 = '619: Error fetching data from master-copies',
   _620 = '620: Error loading chains',
