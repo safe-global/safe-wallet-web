@@ -38,7 +38,7 @@ const Footer = (): ReactElement | null => {
   }
 
   const getHref = (path: string): string => {
-    return router.pathname.startsWith(path) ? '' : path
+    return router.pathname === path ? '' : path
   }
 
   return (
