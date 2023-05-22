@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import { Typography } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -20,11 +20,25 @@ const footerPages = [
   AppRoutes.licenses,
 ]
 
+const FooterLink = ({ children, href }: { children: ReactNode; href: string }): ReactElement => {
+  return href ? (
+    <Link href={href} passHref>
+      <MUILink>{children}</MUILink>
+    </Link>
+  ) : (
+    <MUILink>{children}</MUILink>
+  )
+}
+
 const Footer = (): ReactElement | null => {
   const router = useRouter()
 
   if (!footerPages.some((path) => router.pathname.startsWith(path))) {
     return null
+  }
+
+  const getHref = (path: string): string => {
+    return router.pathname.startsWith(path) ? '' : path
   }
 
   return (
@@ -36,34 +50,22 @@ const Footer = (): ReactElement | null => {
               <Typography variant="caption">&copy;2022–{new Date().getFullYear()} Core Contributors GmbH</Typography>
             </li>
             <li>
-              <Link href={AppRoutes.terms} passHref>
-                <MUILink>Terms</MUILink>
-              </Link>
+              <FooterLink href={getHref(AppRoutes.terms)}>Terms</FooterLink>
             </li>
             <li>
-              <Link href={AppRoutes.privacy} passHref>
-                <MUILink>Privacy</MUILink>
-              </Link>
+              <FooterLink href={getHref(AppRoutes.privacy)}>Privacy</FooterLink>
             </li>
             <li>
-              <Link href={AppRoutes.licenses} passHref>
-                <MUILink>Licenses</MUILink>
-              </Link>
+              <FooterLink href={getHref(AppRoutes.licenses)}>Licenses</FooterLink>
             </li>
             <li>
-              <Link href={AppRoutes.imprint} passHref>
-                <MUILink>Imprint</MUILink>
-              </Link>
+              <FooterLink href={getHref(AppRoutes.imprint)}>Imprint</FooterLink>
             </li>
             <li>
-              <Link href={AppRoutes.cookie} passHref>
-                <MUILink>Cookie policy</MUILink>
-              </Link>
+              <FooterLink href={getHref(AppRoutes.cookie)}>Cookie policy</FooterLink>
             </li>
             <li>
-              <Link href={AppRoutes.settings.index} passHref>
-                <MUILink>Settings</MUILink>
-              </Link>
+              <FooterLink href={getHref(AppRoutes.settings.index)}>Preferences</FooterLink>
             </li>
           </>
         ) : (
@@ -71,7 +73,7 @@ const Footer = (): ReactElement | null => {
         )}
 
         <li>
-          <ExternalLink noIcon href={`${packageJson.homepage}/releases/tag/v${packageJson.version}`}>
+          <ExternalLink href={`${packageJson.homepage}/releases/tag/v${packageJson.version}`}>
             v{packageJson.version}
           </ExternalLink>
         </li>

@@ -11,7 +11,7 @@ const SettingsHeader = (): ReactElement => {
 
   return (
     <PageHeader
-      title="Settings"
+      title={safeAddress ? 'Settings' : 'Preferences'}
       action={
         <div className={css.navWrapper}>
           <NavTabs tabs={safeAddress ? settingsNavItems : generalSettingsNavItems} />

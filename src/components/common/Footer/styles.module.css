@@ -25,6 +25,11 @@
   margin-left: var(--space-2);
 }
 
+.container li a:not([href]) {
+  text-decoration: none;
+  pointer-events: none;
+}
+
 @media (max-width: 600px) {
   .container li:not(:last-of-type):after {
     visibility: hidden;
