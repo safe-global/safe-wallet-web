@@ -9,8 +9,14 @@
   padding-right: 18px;
 }
 
+.summary :global .MuiAccordionSummary-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .divider {
   margin-top: 14px;
   margin-bottom: 14px;
-  border-color: var(--color-border-light);
+  border: 1px solid var(--color-border-light);
 }
