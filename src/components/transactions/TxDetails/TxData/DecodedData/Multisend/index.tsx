@@ -26,7 +26,7 @@ const MultisendActionsHeader = ({
   }
 
   return (
-    <div className={css.summary}>
+    <div className={css.actionsHeader}>
       All actions
       <Stack direction="row" divider={<Divider className={css.divider} />}>
         <Button onClick={onClickAll(true)} variant="text">
