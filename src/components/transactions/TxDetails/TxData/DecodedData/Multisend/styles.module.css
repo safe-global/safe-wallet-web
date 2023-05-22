@@ -1,18 +1,16 @@
 .summary {
   border-bottom: 1px solid var(--color-border-light);
   cursor: auto !important;
+  padding-left: 16px;
   padding-right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .summary button {
   padding-left: 18px;
   padding-right: 18px;
-}
-
-.summary :global .MuiAccordionSummary-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .divider {

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
-import { AccordionSummary, Box, Button, Divider, Stack } from '@mui/material'
+import { Box, Button, Divider, Stack } from '@mui/material'
 import css from './styles.module.css'
 
 type MultisendProps = {
@@ -26,7 +26,7 @@ const MultisendActionsHeader = ({
   }
 
   return (
-    <AccordionSummary className={css.summary}>
+    <div className={css.summary}>
       All actions
       <Stack direction="row" divider={<Divider className={css.divider} />}>
         <Button onClick={onClickAll(true)} variant="text">
@@ -36,7 +36,7 @@ const MultisendActionsHeader = ({
           Collapse all
         </Button>
       </Stack>
-    </AccordionSummary>
+    </div>
   )
 }
 
