@@ -159,7 +159,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
       )}
 
       {!hasNoSafes &&
-        hasWallet &&
         configs.map((chain) => {
           const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
           const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
