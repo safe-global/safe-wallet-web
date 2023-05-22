@@ -8,7 +8,7 @@ import keystoneModule from '@web3-onboard/keystone/dist/index'
 import ledgerModule from '@web3-onboard/ledger'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
-import tallyhoModule from '@web3-onboard/tallyho'
+import tahoModule from '@web3-onboard/taho'
 
 import pairingModule from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
@@ -24,7 +24,7 @@ export const enum WALLET_KEYS {
   PAIRING = 'PAIRING',
   TREZOR = 'TREZOR',
   WALLETCONNECT = 'WALLETCONNECT',
-  TALLYHO = 'TALLYHO',
+  TAHO = 'TAHO',
 }
 
 export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
@@ -35,17 +35,17 @@ export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.PAIRING]: 'safeMobile',
   [WALLET_KEYS.TREZOR]: 'trezor',
   [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
-  [WALLET_KEYS.TALLYHO]: 'tally',
+  [WALLET_KEYS.TAHO]: 'tally',
 }
 
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.INJECTED]: injectedWalletModule,
   [WALLET_KEYS.PAIRING]: pairingModule,
-  [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ bridge: WC_BRIDGE }),
+  [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ version: 1, bridge: WC_BRIDGE }),
   [WALLET_KEYS.LEDGER]: ledgerModule,
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
   [WALLET_KEYS.KEYSTONE]: keystoneModule,
-  [WALLET_KEYS.TALLYHO]: tallyhoModule,
+  [WALLET_KEYS.TAHO]: tahoModule,
   [WALLET_KEYS.COINBASE]: () =>
     coinbaseModule({ darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches }),
 }

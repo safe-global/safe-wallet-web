@@ -41,12 +41,18 @@ export const createOnboard = (chainConfigs: ChainInfo[], rpcConfig: EnvState['rp
       desktop: { enabled: false },
     },
 
+    notify: {
+      enabled: false,
+    },
+
     appMetadata: {
       name: 'Safe{Wallet}',
       icon: '/images/safe-logo-green.png',
       description: 'Please select a wallet to connect to Safe{Wallet}',
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
+
+    // TODO: Investigate using `autoConnectLastWallet` instead of our `lastWalletStorage`
   })
 
   return onboard
