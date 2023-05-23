@@ -184,7 +184,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -224,7 +224,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -263,7 +263,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -302,7 +302,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -345,7 +345,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient1,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -354,7 +354,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient2,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -391,7 +391,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -432,7 +432,7 @@ describe('RecipientAddressModule', () => {
           severity: 1,
           address: recipient,
           description: {
-            short: 'Address not in address book',
+            short: 'Address is not known',
             long: 'The address is not an owner or present in your address book and is not a smart contract',
           },
           type: 'UNKNOWN_ADDRESS',
@@ -479,7 +479,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -528,7 +528,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -576,7 +576,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -624,7 +624,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -676,7 +676,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient1,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -694,7 +694,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient2,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -740,7 +740,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -790,7 +790,7 @@ describe('RecipientAddressModule', () => {
           severity: 1,
           address: recipient,
           description: {
-            short: 'Address not in address book',
+            short: 'Address is not known',
             long: 'The address is not an owner or present in your address book and is not a smart contract',
           },
           type: 'UNKNOWN_ADDRESS',
@@ -836,7 +836,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -884,7 +884,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -931,7 +931,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -978,7 +978,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -1029,7 +1029,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient1,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -1047,7 +1047,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient2,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
@@ -1092,7 +1092,7 @@ describe('RecipientAddressModule', () => {
             severity: 1,
             address: recipient,
             description: {
-              short: 'Address not in address book',
+              short: 'Address is not known',
               long: 'The address is not an owner or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
