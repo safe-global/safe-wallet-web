@@ -8,9 +8,11 @@ import css from './styles.module.css'
 
 export const _mapSeverity = (severity: SecuritySeverity): NonNullable<AlertProps['severity']> => {
   switch (severity) {
+    case SecuritySeverity.CRITICAL:
     case SecuritySeverity.HIGH:
       return 'error'
 
+    case SecuritySeverity.MEDIUM:
     case SecuritySeverity.LOW:
       return 'warning'
 
@@ -21,8 +23,14 @@ export const _mapSeverity = (severity: SecuritySeverity): NonNullable<AlertProps
 
 export const _mapRisk = (severity: SecuritySeverity): string => {
   switch (severity) {
-    case SecuritySeverity.HIGH:
+    case SecuritySeverity.CRITICAL:
       return 'Critical risk'
+
+    case SecuritySeverity.HIGH:
+      return 'High risk'
+
+    case SecuritySeverity.MEDIUM:
+      return 'Medium risk'
 
     case SecuritySeverity.LOW:
       return 'Low risk'
@@ -64,9 +72,11 @@ export const SecurityHint = (props: { severity: SecuritySeverity; text: string }
 
 export const _mapAction = (severity: SecuritySeverity): string => {
   switch (severity) {
+    case SecuritySeverity.CRITICAL:
     case SecuritySeverity.HIGH:
       return 'Reject this transaction'
 
+    case SecuritySeverity.MEDIUM:
     case SecuritySeverity.LOW:
       return 'Review before processing'
 
@@ -92,7 +102,7 @@ export const SecurityWarning = (props: { severity: SecuritySeverity }) => {
         </Typography>
         <Typography variant="h5">{action}</Typography>
       </Alert>
-      {props.severity !== SecuritySeverity.NONE && (
+      {(props.severity === SecuritySeverity.CRITICAL || props.severity === SecuritySeverity.HIGH) && (
         <FormControlLabel
           className={css.checkbox}
           control={<Checkbox />}

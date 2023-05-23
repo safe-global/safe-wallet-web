@@ -1,37 +1,13 @@
-import useAddressBook from '@/hooks/useAddressBook'
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { type RedefinedModuleResponse } from '@/services/security/modules/RedefineModule'
+import { mapSeverity, type RedefinedModuleResponse } from '@/services/security/modules/RedefineModule'
 import type { SecurityResponse } from '@/services/security/modules/types'
-import type { UnknownAddressModuleResponse } from '@/services/security/modules/UnknownAddressModule'
 import { dispatchTxScan, SecurityModuleNames } from '@/services/security/service'
-import CircularProgress from '@mui/material/CircularProgress'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { useMemo } from 'react'
 import { SecurityWarning, SecurityHint } from '../SecurityWarnings'
-
-const useUnknownAddress = (safeTransaction: SafeTransaction | undefined) => {
-  const addressBook = useAddressBook()
-  const addressBookAddresses = useMemo(() => Object.keys(addressBook), [addressBook])
-  const web3Provider = useWeb3ReadOnly()
-
-  return useAsync<SecurityResponse<UnknownAddressModuleResponse>>(() => {
-    if (!safeTransaction || !web3Provider) {
-      return
-    }
-
-    return dispatchTxScan({
-      type: SecurityModuleNames.UNKNOWN_ADDRESS,
-      request: {
-        knownAddresses: addressBookAddresses,
-        provider: web3Provider,
-        safeTransaction,
-      },
-    })
-  }, [safeTransaction, web3Provider, addressBookAddresses])
-}
+import CircularProgress from '@mui/material/CircularProgress'
+import { BalanceChanges } from '../BalanceChange'
 
 const useRedefine = (safeTransaction: SafeTransaction | undefined) => {
   const { safe, safeAddress } = useSafeInfo()
@@ -55,34 +31,28 @@ const useRedefine = (safeTransaction: SafeTransaction | undefined) => {
 }
 
 export const TxSecurityWarnings = ({ safeTx }: { safeTx: SafeTransaction | undefined }) => {
-  // const [redefineScanResult] = useRedefine(safeTx)
-  const [unknownAddressScanResult] = useUnknownAddress(safeTx)
-
-  if (!unknownAddressScanResult) {
-    return <CircularProgress />
-  }
+  const [redefineScanResult, , redefineLoading] = useRedefine(safeTx)
 
   return (
     <>
-      {/* Redefine:
-      {redefineScanResult.payload && (
-        <SecurityHint
-        severity={redefineScanResult.severity}
-        text={redefineScanResult.payload?.issues.map((issue) => issue.description).join('\n')}
-        />
-        )}
-        <SecurityWarning severity={redefineScanResult.severity} />
-      */}
-      Unknown Address:
-      {unknownAddressScanResult.payload && (
-        <SecurityHint
-          severity={unknownAddressScanResult.severity}
-          text={`${unknownAddressScanResult.payload
-            .map((recipient) => recipient.address)
-            .join(', ')} is not present in your address book.`}
-        />
+      {redefineLoading ? (
+        <CircularProgress />
+      ) : (
+        redefineScanResult && (
+          <>
+            <BalanceChanges balanceChange={redefineScanResult.payload?.balanceChange} />
+            {redefineScanResult?.payload &&
+              redefineScanResult.payload.insights.issues.map((issue) => (
+                <SecurityHint
+                  key={issue.category}
+                  severity={mapSeverity(issue.severity)}
+                  text={issue.description.short}
+                />
+              ))}
+            <SecurityWarning severity={redefineScanResult?.severity} />
+          </>
+        )
       )}
-      <SecurityWarning severity={unknownAddressScanResult.severity} />
     </>
   )
 }

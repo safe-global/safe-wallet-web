@@ -13,7 +13,10 @@ export type RedefineModuleRequest = {
   threshold: number
 }
 
-export type RedefinedModuleResponse = RedefineResponse['data']['insights']
+export type RedefinedModuleResponse = {
+  insights: RedefineResponse['data']['insights']
+  balanceChange: RedefineResponse['data']['balanceChange']
+}
 
 type RedefinePayload = {
   chainId: number
@@ -25,11 +28,38 @@ type RedefinePayload = {
 
 type RedefineSeverity = {
   code: number
-  label: 'CRITICAL' | 'LOW' | 'NO_ISSUES'
+  label: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'NO_ISSUES'
 }
+
+type RedefineBalanceChange =
+  | {
+      address: string
+      amount: {
+        value: string
+        normalizedValue: string
+      }
+      type: 'ERC20'
+      symbol: string
+      decimals: number
+      name: string
+    }
+  | {
+      amount: {
+        value: string
+        normalizedValue: string
+      }
+      type: 'NATIVE'
+      symbol: string
+      decimals: number
+      name: string
+    }
 
 type RedefineResponse = {
   data: {
+    balanceChange?: {
+      in: RedefineBalanceChange[]
+      out: RedefineBalanceChange[]
+    }
     insights: {
       issues: {
         description: {
@@ -44,9 +74,17 @@ type RedefineResponse = {
   }
 }
 
-const mapSeverity = ({ label }: RedefineSeverity): SecuritySeverity => {
+export const mapSeverity = ({ label }: RedefineSeverity): SecuritySeverity => {
   if (label === 'CRITICAL') {
+    return SecuritySeverity.CRITICAL
+  }
+
+  if (label === 'HIGH') {
     return SecuritySeverity.HIGH
+  }
+
+  if (label === 'MEDIUM') {
+    return SecuritySeverity.MEDIUM
   }
 
   if (label === 'LOW') {
@@ -92,7 +130,10 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
 
     return {
       severity: mapSeverity(result.data.insights.verdict),
-      payload: result.data.insights,
+      payload: {
+        insights: result.data.insights,
+        balanceChange: result.data.balanceChange,
+      },
     }
   }
 }
