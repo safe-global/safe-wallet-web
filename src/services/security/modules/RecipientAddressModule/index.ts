@@ -76,8 +76,8 @@ export class RecipientAddressModule
       severity: SecuritySeverity.LOW,
       address,
       description: {
-        short: 'Address not in address book',
-        long: 'The address is not in your address book and is not a smart contract',
+        short: 'Address is not known',
+        long: 'The address is not an owner or present in your address book and is not a smart contract',
       },
       type: RecipietAddressIssueType.UNKNOWN_ADDRESS,
     })
