@@ -1,9 +1,12 @@
-import { REDEFINE_API_KEY } from '@/config/constants'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
-const REDEFINE_URL = 'https://api.redefine.net/v2/risk-analysis/messages'
+const REDEFINE_URL = 'https://risk-analysis.safe.global/messages'
+
+export const enum REDEFINE_ERROR_CODES {
+  ANALYSIS_IN_PROGRESS = 1000,
+}
 
 const redefineSeverityMap: Record<RedefineSeverity['label'], SecuritySeverity> = {
   CRITICAL: SecuritySeverity.CRITICAL,
@@ -26,6 +29,7 @@ export type RedefinedModuleResponse = {
     Omit<RedefineResponse['data']['insights']['issues'][number], 'severity'> & { severity: SecuritySeverity }
   >
   balanceChange: RedefineResponse['data']['balanceChange']
+  errors: RedefineResponse['errors']
 }
 
 type RedefinePayload = {
@@ -64,7 +68,7 @@ type RedefineBalanceChange =
       name: string
     }
 
-type RedefineResponse = {
+export type RedefineResponse = {
   data: {
     balanceChange?: {
       in: RedefineBalanceChange[]
@@ -82,6 +86,11 @@ type RedefineResponse = {
       verdict: RedefineSeverity
     }
   }
+  errors: {
+    code: number
+    message: string
+    extendedInfo?: Record<string, unknown>
+  }[]
 }
 
 export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefinedModuleResponse> {
@@ -107,7 +116,6 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
       method: 'POST',
       headers: {
         'content-type': 'application/JSON',
-        'X-Api-Key': REDEFINE_API_KEY,
       },
       body: JSON.stringify(payload),
     })
@@ -126,6 +134,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
           severity: redefineSeverityMap[issue.severity.label],
         })),
         balanceChange: result.data.balanceChange,
+        errors: result.errors,
       },
     }
   }

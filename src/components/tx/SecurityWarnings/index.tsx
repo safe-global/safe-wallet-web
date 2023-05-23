@@ -15,27 +15,27 @@ const ACTION_REJECT = 'Reject this transaction'
 const ACTION_REVIEW = 'Review before processing'
 
 export const mapSeverityComponentProps: Record<SecuritySeverity, SecurityWarningProps> = {
-  CRITICAL: {
+  [SecuritySeverity.CRITICAL]: {
     action: ACTION_REJECT,
     color: 'error',
     label: 'Critical risk',
   },
-  HIGH: {
+  [SecuritySeverity.HIGH]: {
     action: ACTION_REJECT,
     color: 'error',
     label: 'High risk',
   },
-  MEDIUM: {
+  [SecuritySeverity.MEDIUM]: {
     action: ACTION_REVIEW,
     color: 'warning',
     label: 'Medium risk',
   },
-  LOW: {
+  [SecuritySeverity.LOW]: {
     action: ACTION_REVIEW,
     color: 'warning',
     label: 'Low risk',
   },
-  NONE: {
+  [SecuritySeverity.NONE]: {
     color: 'info',
     label: 'No issues found',
   },
@@ -81,10 +81,14 @@ export const SecurityWarning = ({ severity }: { severity: SecuritySeverity }) =>
         severity={severityProps.color}
         icon={false}
       >
-        <Typography sx={{ color: ({ palette }) => palette[severityProps.color].main }} variant="body2">
-          Recommended action
-        </Typography>
-        <Typography variant="h5">{severityProps.action}</Typography>
+        {severityProps.action && (
+          <>
+            <Typography sx={{ color: ({ palette }) => palette[severityProps.color].main }} variant="body2">
+              Recommended action
+            </Typography>
+            <Typography variant="h5">{severityProps.action}</Typography>
+          </>
+        )}
       </Alert>
       {(severity === SecuritySeverity.CRITICAL || severity === SecuritySeverity.HIGH) && (
         <FormControlLabel

@@ -21,7 +21,7 @@ const SingleBalanceChange = ({
   })?.tokenInfo.logoUri
   return (
     <>
-      <Grid item xs={2} display="inline-flex" alignItems="center" gap={1}>
+      <Grid item xs={2} display="inline-flex" alignItems="center" gap={1} textOverflow="ellipsis" overflow="hidden">
         <TokenIcon size={32} logoUri={logoUri} tokenSymbol={change.symbol} />
         <Typography fontWeight={700} display="inline">
           {change.symbol}

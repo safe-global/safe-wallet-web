@@ -1,8 +1,7 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
-import type { ApprovalModuleResponse } from '@/services/security/modules/ApprovalModule'
+import { ApprovalModule, type ApprovalModuleResponse } from '@/services/security/modules/ApprovalModule'
 import type { SecurityResponse } from '@/services/security/modules/types'
-import { dispatchTxScan, SecurityModuleNames } from '@/services/security/service'
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -17,17 +16,15 @@ export type ApprovalInfo = {
   amountFormatted: string
 }
 
+const ApprovalModuleInstance = new ApprovalModule()
+
 const useApprovalData = (safeTransaction: SafeTransaction | undefined) => {
   return useAsync<SecurityResponse<ApprovalModuleResponse>>(() => {
     if (!safeTransaction) {
       return
     }
-    return dispatchTxScan({
-      type: SecurityModuleNames.APPROVAL,
-      request: {
-        safeTransaction,
-      },
-    })
+
+    return ApprovalModuleInstance.scanTransaction({ safeTransaction })
   }, [safeTransaction])
 }
 
