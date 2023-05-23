@@ -5,6 +5,14 @@ import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '..
 
 const REDEFINE_URL = 'https://api.redefine.net/v2/risk-analysis/messages'
 
+const redefineSeverityMap: Record<RedefineSeverity['label'], SecuritySeverity> = {
+  CRITICAL: SecuritySeverity.CRITICAL,
+  HIGH: SecuritySeverity.HIGH,
+  MEDIUM: SecuritySeverity.MEDIUM,
+  LOW: SecuritySeverity.LOW,
+  NO_ISSUES: SecuritySeverity.NONE,
+}
+
 export type RedefineModuleRequest = {
   chainId: number
   safeAddress: string
@@ -14,7 +22,9 @@ export type RedefineModuleRequest = {
 }
 
 export type RedefinedModuleResponse = {
-  insights: RedefineResponse['data']['insights']
+  issues: Array<
+    Omit<RedefineResponse['data']['insights']['issues'][number], 'severity'> & { severity: SecuritySeverity }
+  >
   balanceChange: RedefineResponse['data']['balanceChange']
 }
 
@@ -74,26 +84,6 @@ type RedefineResponse = {
   }
 }
 
-export const mapSeverity = ({ label }: RedefineSeverity): SecuritySeverity => {
-  if (label === 'CRITICAL') {
-    return SecuritySeverity.CRITICAL
-  }
-
-  if (label === 'HIGH') {
-    return SecuritySeverity.HIGH
-  }
-
-  if (label === 'MEDIUM') {
-    return SecuritySeverity.MEDIUM
-  }
-
-  if (label === 'LOW') {
-    return SecuritySeverity.LOW
-  }
-
-  return SecuritySeverity.NONE
-}
-
 export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefinedModuleResponse> {
   async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefinedModuleResponse>> {
     const { chainId, safeAddress } = request
@@ -129,9 +119,12 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
     const result = (await res.json()) as RedefineResponse
 
     return {
-      severity: mapSeverity(result.data.insights.verdict),
+      severity: redefineSeverityMap[result.data.insights.verdict.label],
       payload: {
-        insights: result.data.insights,
+        issues: result.data.insights.issues.map((issue) => ({
+          ...issue,
+          severity: redefineSeverityMap[issue.severity.label],
+        })),
         balanceChange: result.data.balanceChange,
       },
     }

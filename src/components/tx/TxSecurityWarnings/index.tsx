@@ -1,13 +1,13 @@
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
-import { mapSeverity, type RedefinedModuleResponse } from '@/services/security/modules/RedefineModule'
 import type { SecurityResponse } from '@/services/security/modules/types'
 import { dispatchTxScan, SecurityModuleNames } from '@/services/security/service'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { SecurityWarning, SecurityHint } from '../SecurityWarnings'
 import CircularProgress from '@mui/material/CircularProgress'
 import { BalanceChanges } from '../BalanceChange'
+import { type RedefinedModuleResponse } from '@/services/security/modules/RedefineModule'
 
 const useRedefine = (safeTransaction: SafeTransaction | undefined) => {
   const { safe, safeAddress } = useSafeInfo()
@@ -42,12 +42,8 @@ export const TxSecurityWarnings = ({ safeTx }: { safeTx: SafeTransaction | undef
           <>
             <BalanceChanges balanceChange={redefineScanResult.payload?.balanceChange} />
             {redefineScanResult?.payload &&
-              redefineScanResult.payload.insights.issues.map((issue) => (
-                <SecurityHint
-                  key={issue.category}
-                  severity={mapSeverity(issue.severity)}
-                  text={issue.description.short}
-                />
+              redefineScanResult.payload.issues.map((issue) => (
+                <SecurityHint key={issue.category} severity={issue.severity} text={issue.description.short} />
               ))}
             <SecurityWarning severity={redefineScanResult?.severity} />
           </>
