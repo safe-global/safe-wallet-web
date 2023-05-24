@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
-// TODO: change to a favicon with a red dot
-const ALT_FAVICON = '/favicons/safari-pinned-tab.svg'
+const ALT_FAVICON = '/favicons/favicon-dot.ico'
 
 const setFavicon = (favicon: HTMLLinkElement | null, href: string) => {
   if (favicon) favicon.href = href
@@ -15,7 +14,7 @@ const blinkFavicon = (
   return setInterval(() => {
     setFavicon(favicon, isBlinking ? ALT_FAVICON : originalHref)
     isBlinking = !isBlinking
-  }, 600)
+  }, 300)
 }
 
 const useHighlightHiddenTab = () => {
