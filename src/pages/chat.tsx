@@ -4,6 +4,8 @@ import { DesktopChat } from '@/components/chat/desktopChat'
 import { MobileChat } from '@/components/chat/mobileChat'
 import { AddFolderModal } from '@/components/chat/modals/AddFolderModal'
 import ViewSettingsModal from '@/components/chat/modals/ViewSettingsModal'
+import ViewCreateSafe from '@/components/chat/modals/CreateSafe'
+import ViewLoadSafe from '@/components/chat/modals/LoadSafe'
 import WalletConnect from '@/components/chat/WalletConnect'
 import ConnectionCenter from '@/components/common/ConnectWallet/ConnectionCenter'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
@@ -129,6 +131,8 @@ const Chat: React.FC<{
   const isDarkMode = useDarkMode()
   const [folders, setFolders] = useState([])
   const [popup, togglePopup] = useState<boolean>(false)
+  const [loadSafe, setLoadSafe] = useState<boolean>(false)
+  const [createSafe, setCreateSafe] = useState<boolean>(false)
   const [settings, toggleSettings] = useState<boolean>(false)
   const [open, setOpen] = useState(true)
   const [value, setValue] = React.useState(0)
@@ -322,6 +326,9 @@ const Chat: React.FC<{
     <>
       {popup && <AddFolderModal open={popup} onClose={() => togglePopup(!popup)} />}
       {settings && <ViewSettingsModal open={settings} onClose={() => toggleSettings(!settings)} />}
+      {createSafe && <ViewCreateSafe open={createSafe} onClose={() => setCreateSafe(!createSafe)} />}
+      {loadSafe && <ViewLoadSafe open={loadSafe} onClose={() => setCreateSafe(!loadSafe)} />}
+      <ViewCreateSafe open={true} onClose={() => toggleSettings(!settings)} />
       <Head>
         <title>Safe &mdash; Chat</title>
       </Head>
