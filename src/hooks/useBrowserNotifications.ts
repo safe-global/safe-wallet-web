@@ -1,23 +1,22 @@
 import { useEffect } from 'react'
 
+const blinkTitle = (originalTitle: string, isBlinking = false): ReturnType<typeof setTimeout> => {
+  document.title = (isBlinking ? '❕' : '❗️') + originalTitle
+  return setTimeout(() => blinkTitle(originalTitle, !isBlinking), 600)
+}
+
 const useBrowserNotifications = () => {
   useEffect(() => {
     // If the tab is not active, blink the title
     const originalTitle = document.title
-    let interval: ReturnType<typeof setInterval>
     let timeout: ReturnType<typeof setTimeout>
-    let isBlinking = false
 
     const handleVisibilityChange = () => {
       clearTimeout(timeout)
 
       if (document.hidden) {
-        interval = setInterval(() => {
-          document.title = (isBlinking ? '❗️' : '❕') + originalTitle
-          isBlinking = !isBlinking
-        }, 600)
+        timeout = blinkTitle(originalTitle)
       } else {
-        clearInterval(interval)
         timeout = setTimeout(() => {
           document.title = originalTitle
         }, 1000)
@@ -32,7 +31,6 @@ const useBrowserNotifications = () => {
       document.title = originalTitle
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       clearTimeout(timeout)
-      clearInterval(interval)
     }
   }, [])
 }
