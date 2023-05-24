@@ -24,7 +24,7 @@ import { getDecodedMessage } from '@/components/safe-apps/utils'
 import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useBrowserNotifications from '@/hooks/useBrowserNotifications'
+import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams
@@ -39,7 +39,7 @@ const ReviewSafeAppsSignMessage = ({
   const [submitError, setSubmitError] = useState<Error>()
 
   // Notify the user that the app is trying to send a transaction
-  useBrowserNotifications()
+  useHighlightHiddenTab()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)

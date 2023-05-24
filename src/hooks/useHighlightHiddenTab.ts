@@ -18,7 +18,7 @@ const blinkFavicon = (
   }, 600)
 }
 
-const useBrowserNotifications = () => {
+const useHighlightHiddenTab = () => {
   useEffect(() => {
     const favicon = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
     const originalHref = favicon?.href || ''
@@ -46,4 +46,4 @@ const useBrowserNotifications = () => {
   }, [])
 }
 
-export default useBrowserNotifications
+export default useHighlightHiddenTab
