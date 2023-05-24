@@ -1,25 +1,36 @@
 import { useEffect } from 'react'
 
-const blinkTitle = (originalTitle: string, isBlinking = false): ReturnType<typeof setTimeout> => {
-  document.title = (isBlinking ? '❕' : '❗️') + originalTitle
-  return setTimeout(() => blinkTitle(originalTitle, !isBlinking), 600)
+// TODO: change to a favicon with a red dot
+const ALT_FAVICON = '/favicons/safari-pinned-tab.svg'
+
+const setFavicon = (favicon: HTMLLinkElement | null, href: string) => {
+  if (favicon) favicon.href = href
+}
+
+const blinkFavicon = (
+  favicon: HTMLLinkElement | null,
+  originalHref: string,
+  isBlinking = false,
+): ReturnType<typeof setInterval> => {
+  return setInterval(() => {
+    setFavicon(favicon, isBlinking ? ALT_FAVICON : originalHref)
+    isBlinking = !isBlinking
+  }, 600)
 }
 
 const useBrowserNotifications = () => {
   useEffect(() => {
-    // If the tab is not active, blink the title
-    const originalTitle = document.title
-    let timeout: ReturnType<typeof setTimeout>
+    const favicon = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
+    const originalHref = favicon?.href || ''
+    let interval: ReturnType<typeof setInterval>
 
     const handleVisibilityChange = () => {
-      clearTimeout(timeout)
-
       if (document.hidden) {
-        timeout = blinkTitle(originalTitle)
+        interval = blinkFavicon(favicon, originalHref)
+        setFavicon(favicon, ALT_FAVICON)
       } else {
-        timeout = setTimeout(() => {
-          document.title = originalTitle
-        }, 1000)
+        clearInterval(interval)
+        setFavicon(favicon, originalHref)
       }
     }
 
@@ -28,9 +39,9 @@ const useBrowserNotifications = () => {
     handleVisibilityChange()
 
     return () => {
-      document.title = originalTitle
+      clearInterval(interval)
+      setFavicon(favicon, originalHref)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
-      clearTimeout(timeout)
     }
   }, [])
 }
