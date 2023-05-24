@@ -1,4 +1,3 @@
-// TODO: Upgrade onboard/core once https://github.com/blocknative/web3-onboard/issues/1385 is fixed
 import Onboard, { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexValue } from '@ethersproject/bytes'
@@ -47,7 +46,7 @@ export const createOnboard = (chainConfigs: ChainInfo[], rpcConfig: EnvState['rp
 
     appMetadata: {
       name: 'Safe{Wallet}',
-      icon: '/images/safe-logo-green.png',
+      icon: '<svg><image href="/images/safe-logo-green.png" width="56" height="56" /></svg>',
       description: 'Please select a wallet to connect to Safe{Wallet}',
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
