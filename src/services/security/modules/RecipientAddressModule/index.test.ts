@@ -53,7 +53,6 @@ describe('RecipientAddressModule', () => {
 
     expect(result).toEqual({
       severity: 0,
-      payload: [],
     })
 
     // Don't check further if the recipient is known

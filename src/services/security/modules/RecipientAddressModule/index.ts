@@ -4,7 +4,7 @@ import type { JsonRpcProvider } from '@ethersproject/providers'
 import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { isSmartContract } from '@/hooks/wallets/web3'
 import { sameAddress } from '@/utils/addresses'
-import { getTransactionRecipients } from './utils'
+import { getTransactionRecipients } from '@/utils/transaction-calldata'
 import { SecuritySeverity } from '../types'
 import type { SecurityResponse, SecurityModule } from '../types'
 
@@ -125,7 +125,13 @@ export class RecipientAddressModule
       await Promise.all(uniqueRecients.map((address) => this.checkAddress(chainId, knownAddresses, address, provider)))
     ).flat()
 
-    const severity = Math.max(SecuritySeverity.NONE, ...warnings.map((warning) => warning.severity))
+    if (warnings.length === 0) {
+      return {
+        severity: SecuritySeverity.NONE,
+      }
+    }
+
+    const severity = Math.max(...warnings.map((warning) => warning.severity))
 
     return {
       severity,
