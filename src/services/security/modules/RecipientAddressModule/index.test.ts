@@ -1,106 +1,20 @@
 import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { ethers } from 'ethers'
 import { hexZeroPad } from 'ethers/lib/utils'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import * as web3 from '@/hooks/wallets/web3'
-import { ERC20__factory, ERC721__factory, Multi_send__factory } from '@/types/contracts'
 import { RecipientAddressModule } from '.'
-
-const getMockErc20TransferCalldata = (to: string) => {
-  const erc20Interface = ERC20__factory.createInterface()
-  return erc20Interface.encodeFunctionData('transfer', [
-    to,
-    0, // value
-  ])
-}
-
-const getMockErc721TransferFromCalldata = (to: string) => {
-  const erc721Interface = ERC721__factory.createInterface()
-  return erc721Interface.encodeFunctionData('transferFrom', [
-    ZERO_ADDRESS, // from
-    to,
-    0, // value
-  ])
-}
-
-const getMockErc721SafeTransferFromCalldata = (to: string) => {
-  const erc721Interface = ERC721__factory.createInterface()
-  return erc721Interface.encodeFunctionData('safeTransferFrom(address,address,uint256)', [
-    ZERO_ADDRESS, // from
-    to,
-    0, // value
-  ])
-}
-
-const getMockErc721SafeTransferFromWithBytesCalldata = (to: string) => {
-  const erc721Interface = ERC721__factory.createInterface()
-  return erc721Interface.encodeFunctionData('safeTransferFrom(address,address,uint256,bytes)', [
-    ZERO_ADDRESS, // from
-    to,
-    0, // value
-    '0x', // bytes
-  ])
-}
-
-const getMockMultiSendCalldata = (recipients: Array<string>): string => {
-  // MultiSendCallOnly
-  const OPERATION = 0
-
-  const data = '0x'
-
-  const internalTransactions = recipients.map((recipient) => {
-    return ethers.utils.solidityPack(
-      ['uint8', 'address', 'uint256', 'uint256', 'bytes'],
-      [
-        OPERATION,
-        recipient,
-        0, // value
-        data.length, // dataLength
-        data, // data
-      ],
-    )
-  })
-
-  const multiSendInterface = Multi_send__factory.createInterface()
-  return multiSendInterface.encodeFunctionData('multiSend', [ethers.utils.concat(internalTransactions)])
-}
-
-const createSafeTransaction = ({
-  to,
-  data,
-  operation = OperationType.Call,
-}: {
-  to: string
-  data: string
-  operation?: OperationType
-}): SafeTransaction => {
-  return {
-    data: {
-      to,
-      data,
-      baseGas: 0,
-      gasPrice: 0,
-      gasToken: ZERO_ADDRESS,
-      nonce: 1,
-      operation,
-      refundReceiver: ZERO_ADDRESS,
-      safeTxGas: 0,
-      value: '0x0',
-    },
-    signatures: new Map(),
-    addSignature: () => {
-      throw new Error('Function not implemented.')
-    },
-    encodedSignatures: () => {
-      throw new Error('Function not implemented.')
-    },
-  }
-}
+import {
+  createMockSafeTransaction,
+  getMockErc20TransferCalldata,
+  getMockErc721TransferFromCalldata,
+  getMockErc721SafeTransferFromCalldata,
+  getMockErc721SafeTransferFromWithBytesCalldata,
+  getMockMultiSendCalldata,
+} from '@/tests/transactions'
 
 describe('RecipientAddressModule', () => {
   const isSmartContractSpy = jest.spyOn(web3, 'isSmartContract')
@@ -125,7 +39,7 @@ describe('RecipientAddressModule', () => {
 
     const recipient = hexZeroPad('0x1', 20)
 
-    const safeTransaction = createSafeTransaction({
+    const safeTransaction = createMockSafeTransaction({
       to: recipient,
       data: '0x',
     })
@@ -160,7 +74,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc20TransferCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc20,
         data,
       })
@@ -200,7 +114,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc721TransferFromCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc721,
         data,
       })
@@ -239,7 +153,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc721SafeTransferFromCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc721,
         data,
       })
@@ -278,7 +192,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc721SafeTransferFromWithBytesCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc721,
         data,
       })
@@ -320,7 +234,7 @@ describe('RecipientAddressModule', () => {
 
       const data = getMockMultiSendCalldata([recipient1, recipient2])
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: multiSend,
         data,
         operation: OperationType.DelegateCall,
@@ -364,51 +278,17 @@ describe('RecipientAddressModule', () => {
     })
 
     // Other
-    it('should warn about recipient of native transfer recipients', async () => {
-      const recipient = hexZeroPad('0x1', 20)
-
-      const safeTransaction = createSafeTransaction({
-        to: recipient,
-        data: '0x',
-      })
-
-      const result = await RecipientAddressModuleInstance.scanTransaction({
-        safeTransaction,
-        provider: mockProvider,
-        chainId: '1',
-        knownAddresses: [],
-      })
-
-      expect(isSmartContractSpy).toHaveBeenCalledTimes(1)
-      expect(mockGetBalance).toHaveBeenCalledTimes(1)
-      // Don't check as on mainnet
-      expect(mockGetSafeInfo).not.toHaveBeenCalled()
-
-      expect(result).toEqual({
-        severity: 1,
-        payload: [
-          {
-            severity: 1,
-            address: recipient,
-            description: {
-              short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
-            },
-            type: 'UNKNOWN_ADDRESS',
-          },
-        ],
-      })
-    })
+    // Covered in test below: "should warn about recipient of native transfer recipients / should not warn if the address(es) is/are used"
   })
 
-  it('should not warn if the address(es) is/are used', async () => {
+  it('should warn about recipient of native transfer recipients / should not warn if the address(es) is/are used', async () => {
     isSmartContractSpy.mockImplementation(() => Promise.resolve(false))
     mockGetBalance.mockImplementation(() => Promise.resolve(ethers.BigNumber.from(1)))
     mockGetSafeInfo.mockImplementation(() => Promise.reject('Safe not found'))
 
     const recipient = hexZeroPad('0x1', 20)
 
-    const safeTransaction = createSafeTransaction({
+    const safeTransaction = createMockSafeTransaction({
       to: recipient,
       data: '0x',
     })
@@ -455,7 +335,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc20TransferCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc20,
         data,
       })
@@ -504,7 +384,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc721TransferFromCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc721,
         data,
       })
@@ -552,7 +432,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc721SafeTransferFromCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc721,
         data,
       })
@@ -600,7 +480,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc721SafeTransferFromWithBytesCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc721,
         data,
       })
@@ -651,7 +531,7 @@ describe('RecipientAddressModule', () => {
 
       const data = getMockMultiSendCalldata([recipient1, recipient2])
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: multiSend,
         data,
         operation: OperationType.DelegateCall,
@@ -716,7 +596,7 @@ describe('RecipientAddressModule', () => {
     it('should warn about recipient of native transfer recipients', async () => {
       const recipient = hexZeroPad('0x1', 20)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: recipient,
         data: '0x',
       })
@@ -766,7 +646,7 @@ describe('RecipientAddressModule', () => {
 
     const recipient = hexZeroPad('0x1', 20)
 
-    const safeTransaction = createSafeTransaction({
+    const safeTransaction = createMockSafeTransaction({
       to: recipient,
       data: '0x',
     })
@@ -813,7 +693,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc20TransferCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc20,
         data,
       })
@@ -861,7 +741,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc721TransferFromCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc721,
         data,
       })
@@ -908,7 +788,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc721SafeTransferFromCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc721,
         data,
       })
@@ -955,7 +835,7 @@ describe('RecipientAddressModule', () => {
       const recipient = hexZeroPad('0x2', 20)
       const data = getMockErc721SafeTransferFromWithBytesCalldata(recipient)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: erc721,
         data,
       })
@@ -1005,7 +885,7 @@ describe('RecipientAddressModule', () => {
 
       const data = getMockMultiSendCalldata([recipient1, recipient2])
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: multiSend,
         data,
         operation: OperationType.DelegateCall,
@@ -1069,7 +949,7 @@ describe('RecipientAddressModule', () => {
     it('should warn about recipient of native transfer recipients', async () => {
       const recipient = hexZeroPad('0x1', 20)
 
-      const safeTransaction = createSafeTransaction({
+      const safeTransaction = createMockSafeTransaction({
         to: recipient,
         data: '0x',
       })
