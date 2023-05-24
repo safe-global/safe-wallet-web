@@ -48,4 +48,7 @@ export const AppRoutes = {
     index: '/transactions',
     history: '/transactions/history',
   },
+  newTx: {
+    index: '/new-tx',
+  },
 }

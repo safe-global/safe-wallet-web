@@ -1,7 +1,7 @@
 import { useState, type ReactElement } from 'react'
 import classnames from 'classnames'
 
-import Header from '@/components/common//Header'
+import Header from '@/components/common/Header'
 import css from './styles.module.css'
 import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'

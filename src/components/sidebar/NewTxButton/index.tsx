@@ -1,45 +1,30 @@
-import { Suspense, useState, type ReactElement } from 'react'
-import dynamic from 'next/dynamic'
+import { type ReactElement } from 'react'
 import Button from '@mui/material/Button'
 import css from './styles.module.css'
-import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
-
-const NewTxModal = dynamic(() => import('@/components/tx/modals/NewTxModal'))
+import type { UrlObject } from 'url'
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const NewTxButton = (): ReactElement => {
-  const [txOpen, setTxOpen] = useState<boolean>(false)
+  const router = useRouter()
 
-  const onClick = () => {
-    setTxOpen(true)
-
-    trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
+  const newTxLink: UrlObject = {
+    pathname: AppRoutes.newTx.index,
+    query: { safe: router.query.safe },
   }
 
   return (
-    <>
-      <CheckWallet allowSpendingLimit>
-        {(isOk) => (
-          <Button
-            onClick={onClick}
-            variant="contained"
-            size="small"
-            disabled={!isOk}
-            fullWidth
-            className={css.button}
-            disableElevation
-          >
+    <CheckWallet allowSpendingLimit>
+      {(isOk) => (
+        <Link href={newTxLink} passHref>
+          <Button variant="contained" size="small" disabled={!isOk} fullWidth className={css.button} disableElevation>
             New transaction
           </Button>
-        )}
-      </CheckWallet>
-
-      {txOpen && (
-        <Suspense>
-          <NewTxModal onClose={() => setTxOpen(false)} />
-        </Suspense>
+        </Link>
       )}
-    </>
+    </CheckWallet>
   )
 }
 
