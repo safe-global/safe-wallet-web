@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 
-import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters'
 import SafeAppCard, { GRID_VIEW_MODE } from '@/components/safe-apps/SafeAppCard'
 import type { SafeAppsViewMode } from '@/components/safe-apps/SafeAppCard'
 import AddCustomSafeAppCard from '@/components/safe-apps/AddCustomSafeAppCard'
@@ -58,7 +57,7 @@ const SafeAppList = ({
   return (
     <>
       {/* Safe Apps Filters */}
-      {showFilters && (
+{/*       {showFilters && (
         <SafeAppsFilters
           onChangeQuery={setQuery}
           onChangeFilterCategory={setSelectedCategories}
@@ -66,7 +65,7 @@ const SafeAppList = ({
           selectedCategories={selectedCategories}
           safeAppsList={safeAppsList}
         />
-      )}
+      )} */}
 
       {/* Safe Apps List Header */}
       <SafeAppsListHeader

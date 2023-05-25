@@ -5,7 +5,6 @@ import { useEffect } from 'react'
 
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import SafeAppsSDKLink from '@/components/safe-apps/SafeAppsSDKLink'
-import SafeAppsHeader from '@/components/safe-apps/SafeAppsHeader'
 import SafeAppList from '@/components/safe-apps/SafeAppList'
 import { AppRoutes } from '@/config/routes'
 
@@ -34,8 +33,6 @@ const SafeApps: NextPage = () => {
       </Head>
 
       <SafeAppsSDKLink />
-
-      <SafeAppsHeader />
 
       <main>
         <SafeAppList
