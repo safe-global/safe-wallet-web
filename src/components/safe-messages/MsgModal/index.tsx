@@ -41,6 +41,7 @@ import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 import SuccessMessage from '@/components/tx/SuccessMessage'
 import InfoBox from '../InfoBox'
+import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -101,6 +102,8 @@ const MsgModal = ({
   const isOwner = useIsSafeOwner()
   const wallet = useWallet()
   const messages = useSafeMessages()
+
+  useHighlightHiddenTab()
 
   const handleSwitchWallet = () => {
     if (onboard) {

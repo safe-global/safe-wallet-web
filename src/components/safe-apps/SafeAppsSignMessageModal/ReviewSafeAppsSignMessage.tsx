@@ -25,6 +25,7 @@ import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { asError } from '@/services/exceptions/utils'
+import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams
@@ -37,6 +38,8 @@ const ReviewSafeAppsSignMessage = ({
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const [submitError, setSubmitError] = useState<Error>()
+
+  useHighlightHiddenTab()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)

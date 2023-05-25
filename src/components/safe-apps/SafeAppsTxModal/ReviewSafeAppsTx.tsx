@@ -18,6 +18,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Typography } from '@mui/material'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { asError } from '@/services/exceptions/utils'
+import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -31,8 +32,9 @@ const ReviewSafeAppsTx = ({
   const chain = useCurrentChain()
   const [txList, setTxList] = useState(txs)
   const [submitError, setSubmitError] = useState<Error>()
-
   const isMultiSend = txList.length > 1
+
+  useHighlightHiddenTab()
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
     const tx = isMultiSend ? await createMultiSendCallOnlyTx(txList) : await createTx(txList[0])
