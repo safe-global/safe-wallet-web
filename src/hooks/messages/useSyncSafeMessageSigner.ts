@@ -5,7 +5,7 @@ import { useEffect, useCallback, useState } from 'react'
 import useSafeInfo from '../useSafeInfo'
 import useOnboard from '../wallets/useOnboard'
 
-const useSynchronousSafeMessageSigner = (
+const useSyncSafeMessageSigner = (
   message: SafeMessage | undefined,
   decodedMessage: string | EIP712TypedData,
   safeMessageHash: string,
@@ -63,4 +63,4 @@ const useSynchronousSafeMessageSigner = (
   return { submitError, onSign }
 }
 
-export default useSynchronousSafeMessageSigner
+export default useSyncSafeMessageSigner

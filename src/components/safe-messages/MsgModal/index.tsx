@@ -25,7 +25,7 @@ import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
 import { ConfirmationDialog } from './ConfirmationDialog'
 import useDecodedSafeMessage from '@/hooks/messages/useDecodedSafeMessage'
-import useSynchronousSafeMessageSigner from '@/hooks/messages/useSynchronousSafeMessageSigner'
+import useSyncSafeMessageSigner from '@/hooks/messages/useSyncSafeMessageSigner'
 import SuccessMessage from '@/components/tx/SuccessMessage'
 import InfoBox from '../InfoBox'
 
@@ -190,7 +190,7 @@ const MsgModal = ({
 
   const isDisabled = !isOwner || hasSigned
 
-  const { onSign, submitError } = useSynchronousSafeMessageSigner(
+  const { onSign, submitError } = useSyncSafeMessageSigner(
     ongoingMessage,
     decodedMessage,
     safeMessageHash,

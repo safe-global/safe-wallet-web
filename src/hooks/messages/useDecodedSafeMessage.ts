@@ -15,7 +15,10 @@ import { useMemo } from 'react'
  *   safeMessageHash
  * }`
  */
-const useDecodedSafeMessage = (message: string | EIP712TypedData, safe: SafeInfo) => {
+const useDecodedSafeMessage = (
+  message: string | EIP712TypedData,
+  safe: SafeInfo,
+): { decodedMessage: string | EIP712TypedData; safeMessageMessage: string; safeMessageHash: string } => {
   // Decode message if UTF-8 encoded
   const decodedMessage = useMemo(() => {
     return typeof message === 'string' ? getDecodedMessage(message) : message
