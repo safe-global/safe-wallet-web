@@ -38,7 +38,6 @@ const ReviewSafeAppsSignMessage = ({
   const onboard = useOnboard()
   const [submitError, setSubmitError] = useState<Error>()
 
-  // Notify the user that the app is trying to send a transaction
   useHighlightHiddenTab()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'

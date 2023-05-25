@@ -33,7 +33,6 @@ const ReviewSafeAppsTx = ({
   const [submitError, setSubmitError] = useState<Error>()
   const isMultiSend = txList.length > 1
 
-  // Notify the user that the app is trying to send a transaction
   useHighlightHiddenTab()
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {

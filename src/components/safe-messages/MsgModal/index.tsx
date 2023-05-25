@@ -102,7 +102,6 @@ const MsgModal = ({
   const wallet = useWallet()
   const messages = useSafeMessages()
 
-  // Notify the user that the app is trying to send a transaction
   useHighlightHiddenTab()
 
   const handleSwitchWallet = () => {

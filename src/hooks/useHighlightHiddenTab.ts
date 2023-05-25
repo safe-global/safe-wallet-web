@@ -17,6 +17,9 @@ const blinkFavicon = (
   }, 300)
 }
 
+/**
+ * Blink favicon when the tab is hidden
+ */
 const useHighlightHiddenTab = () => {
   useEffect(() => {
     const favicon = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
