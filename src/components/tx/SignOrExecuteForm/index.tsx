@@ -22,7 +22,7 @@ import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { TxSecurityWarnings } from '../TxSecurityWarnings'
+import { DemoSecurityWarnings } from '../security/DemoSecurityWarnings'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -169,7 +169,7 @@ const SignOrExecuteForm = ({
 
         <DecodedTx tx={tx} txId={txId} />
 
-        <TxSecurityWarnings safeTx={tx} />
+        <DemoSecurityWarnings safeTx={tx} />
 
         {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
 

@@ -3,7 +3,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import {
   RedefineModule,
-  type RedefinedModuleResponse,
+  type RedefineModuleResponse,
   REDEFINE_ERROR_CODES,
 } from '@/services/security/modules/RedefineModule'
 import type { SecurityResponse } from '@/services/security/modules/types'
@@ -18,7 +18,7 @@ export const useRedefine = (safeTransaction: SafeTransaction | undefined) => {
   const wallet = useWallet()
   const [retryCounter, setRetryCounter] = useState(0)
 
-  const redefineResponse = useAsync<SecurityResponse<RedefinedModuleResponse>>(
+  const redefineResponse = useAsync<SecurityResponse<RedefineModuleResponse>>(
     () => {
       if (!safeTransaction || !wallet?.address) {
         return

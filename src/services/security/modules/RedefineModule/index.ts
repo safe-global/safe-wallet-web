@@ -24,7 +24,7 @@ export type RedefineModuleRequest = {
   threshold: number
 }
 
-export type RedefinedModuleResponse = {
+export type RedefineModuleResponse = {
   issues: Array<
     Omit<RedefineResponse['data']['insights']['issues'][number], 'severity'> & { severity: SecuritySeverity }
   >
@@ -93,8 +93,8 @@ export type RedefineResponse = {
   }[]
 }
 
-export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefinedModuleResponse> {
-  async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefinedModuleResponse>> {
+export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefineModuleResponse> {
+  async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
     const { chainId, safeAddress } = request
 
     const txTypedData = generateTypedData({

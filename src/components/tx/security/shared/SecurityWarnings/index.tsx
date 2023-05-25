@@ -1,4 +1,4 @@
-import { Alert, type AlertColor, Checkbox, FormControlLabel, SvgIcon, Typography } from '@mui/material'
+import { Alert, type AlertColor, SvgIcon, Typography, Box, Grid, CircularProgress } from '@mui/material'
 
 import { SecuritySeverity } from '@/services/security/modules/types'
 import AlertIcon from '@/public/images/notifications/alert.svg'
@@ -70,34 +70,49 @@ export const SecurityHint = ({ severity, text }: { severity: SecuritySeverity; t
   )
 }
 
-export const SecurityWarning = ({ severity }: { severity: SecuritySeverity }) => {
-  const severityProps = mapSeverityComponentProps[severity]
+const LoadingLabel = () => {
+  return (
+    <Typography variant="body2" color="text.secondary" display="flex" alignItems="center" gap={1}>
+      <CircularProgress
+        thickness={2}
+        size={24}
+        sx={{
+          color: ({ palette }) => palette.text.secondary,
+        }}
+      />
+      Calculating
+    </Typography>
+  )
+}
+
+export const SecurityWarning = ({
+  severity,
+  isLoading,
+}: {
+  severity: SecuritySeverity | undefined
+  isLoading: boolean
+}) => {
+  const severityProps = severity ? mapSeverityComponentProps[severity] : undefined
 
   return (
-    <>
-      <Alert
-        className={css.warning}
-        sx={{ borderLeft: ({ palette }) => `8px solid ${palette[severityProps.color].main} !important` }}
-        severity={severityProps.color}
-        icon={false}
-      >
-        {severityProps.action && (
-          <>
-            <Typography sx={{ color: ({ palette }) => palette[severityProps.color].main }} variant="body2">
-              Recommended action
+    <Box className={css.verdictBox}>
+      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+        <Grid item direction="column">
+          <Typography fontWeight={700} variant="subtitle1">
+            Scan for risks
+          </Typography>
+          <Typography color="text.secondary">Powered by REDEFINE</Typography>
+        </Grid>
+        {isLoading ? (
+          <LoadingLabel />
+        ) : (
+          severityProps && (
+            <Typography variant="body2" fontWeight={700} color={severityProps.color}>
+              {severityProps.label}
             </Typography>
-            <Typography variant="h5">{severityProps.action}</Typography>
-          </>
+          )
         )}
-      </Alert>
-      {(severity === SecuritySeverity.CRITICAL || severity === SecuritySeverity.HIGH) && (
-        <FormControlLabel
-          className={css.checkbox}
-          control={<Checkbox />}
-          label="I understand the risks and would like to continue this 
-transaction."
-        />
-      )}
-    </>
+      </Grid>
+    </Box>
   )
 }
