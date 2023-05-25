@@ -1,7 +1,6 @@
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { Errors, logError } from '@/services/exceptions'
-import { asError } from '@/services/exceptions/utils'
 import type { MasterCopyReponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { getMasterCopies } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -37,7 +36,7 @@ export const useMasterCopies = () => {
       const res = await getMasterCopies(chainId)
       return res.map(extractMasterCopyInfo)
     } catch (error) {
-      logError(Errors._619, asError(error).message)
+      logError(Errors._619, error)
     }
   }
   return useAsync(fetchMasterCopies, [chainId])

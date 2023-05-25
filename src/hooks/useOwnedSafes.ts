@@ -39,7 +39,7 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
             },
           })),
       )
-      .catch((error: Error) => logError(Errors._610, error.message))
+      .catch((error) => logError(Errors._610, error))
 
     return () => {
       isCurrent = false

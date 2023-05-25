@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/react'
 import type { CaptureContext } from '@sentry/types'
 import { IS_PRODUCTION } from '@/config/constants'
 import ErrorCodes from './ErrorCodes'
+import { asError } from './utils'
 
 export class CodedException extends Error {
   public readonly code: number
@@ -20,10 +21,10 @@ export class CodedException extends Error {
     return code
   }
 
-  constructor(content: ErrorCodes, extraMessage?: string, context?: CaptureContext) {
+  constructor(content: ErrorCodes, thrown?: unknown, context?: CaptureContext) {
     super()
 
-    const extraInfo = extraMessage ? ` (${extraMessage})` : ''
+    const extraInfo = thrown ? ` (${asError(thrown).message})` : ''
     this.message = `Code ${content}${extraInfo}`
     this.code = this.getCode(content)
     this.content = content
@@ -55,7 +56,7 @@ export class CodedException extends Error {
   }
 }
 
-type ErrorHandler = (content: ErrorCodes, extraMessage?: string, context?: CaptureContext) => CodedException
+type ErrorHandler = (content: ErrorCodes, thrown?: unknown, context?: CaptureContext) => CodedException
 
 export const logError: ErrorHandler = function logError(...args) {
   const error = new CodedException(...args)

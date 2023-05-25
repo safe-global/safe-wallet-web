@@ -144,7 +144,7 @@ const SignOrExecuteForm = ({
       try {
         setTx(await createTx({ ...tx.data, safeTxGas: data.safeTxGas }, data.nonce))
       } catch (err) {
-        logError(Errors._103, asError(err).message)
+        logError(Errors._103, err)
         return
       }
     }

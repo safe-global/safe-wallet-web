@@ -20,7 +20,7 @@ const useWalletCanRelay = (tx: SafeTransaction | undefined) => {
         return hasEnoughSignatures(tx, safe)
       })
       .catch((err) => {
-        logError(Errors._106, err.message)
+        logError(Errors._106, err)
         return false
       })
   }, [tx, wallet, safe.threshold])

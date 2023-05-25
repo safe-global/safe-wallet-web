@@ -82,7 +82,7 @@ const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStat
       })
     })
   } catch (error) {
-    logError(Errors._632, asError(error).message)
+    logError(Errors._632, error)
     return
   }
 
