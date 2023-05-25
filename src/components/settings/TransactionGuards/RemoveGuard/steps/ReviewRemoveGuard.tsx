@@ -17,7 +17,7 @@ export const ReviewRemoveGuard = ({ data, onSubmit }: { data: RemoveGuardData; o
 
   useEffect(() => {
     if (safeTxError) {
-      logError(Errors._807, safeTxError.message)
+      logError(Errors._807, safeTxError)
     }
   }, [safeTxError])
 

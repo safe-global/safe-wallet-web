@@ -33,7 +33,7 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   // Log errors
   useEffect(() => {
     if (!error) return
-    logError(Errors._603, error.message)
+    logError(Errors._603, error)
   }, [error])
 
   return [data, error, loading]

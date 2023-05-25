@@ -109,7 +109,7 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
 
   useEffect(() => {
     if (error) {
-      logError(Errors._609, error.message)
+      logError(Errors._609, error)
     }
   }, [error])
 

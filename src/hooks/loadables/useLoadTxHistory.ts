@@ -21,7 +21,7 @@ export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
   // Log errors
   useEffect(() => {
     if (!error) return
-    logError(Errors._602, error.message)
+    logError(Errors._602, error)
   }, [error])
 
   return [data, error, loading]

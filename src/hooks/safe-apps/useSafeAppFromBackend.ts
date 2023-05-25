@@ -23,7 +23,7 @@ const useSafeAppFromBackend = (url: string, chainId: string): AsyncResult<SafeAp
 
   useEffect(() => {
     if (error) {
-      logError(Errors._900, error.message)
+      logError(Errors._900, error)
     }
   }, [error])
 

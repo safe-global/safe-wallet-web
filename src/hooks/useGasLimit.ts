@@ -91,7 +91,7 @@ const useGasLimit = (
 
   useEffect(() => {
     if (gasLimitError) {
-      logError(Errors._612, gasLimitError.message)
+      logError(Errors._612, gasLimitError)
     }
   }, [gasLimitError])
 

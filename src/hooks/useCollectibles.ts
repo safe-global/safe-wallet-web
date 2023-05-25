@@ -15,7 +15,7 @@ export const useCollectibles = (pageUrl?: string): AsyncResult<SafeCollectiblesP
   // Log errors
   useEffect(() => {
     if (error) {
-      logError(Errors._604, error.message)
+      logError(Errors._604, error)
     }
   }, [error])
 

@@ -28,7 +28,7 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   // Log errors
   useEffect(() => {
     if (error) {
-      logError(Errors._600, error.message)
+      logError(Errors._600, error)
     }
   }, [error])
 

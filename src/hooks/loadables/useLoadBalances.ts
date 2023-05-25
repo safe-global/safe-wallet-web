@@ -50,7 +50,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   // Log errors
   useEffect(() => {
     if (error) {
-      logError(Errors._601, error.message)
+      logError(Errors._601, error)
     }
   }, [error])
 

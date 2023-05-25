@@ -35,7 +35,7 @@ const useRemoteSafeApps = (tag?: SafeAppsTag): AsyncResult<SafeAppsResponse> => 
 
   useEffect(() => {
     if (error) {
-      logError(Errors._902, error.message)
+      logError(Errors._902, error)
     }
   }, [error])
 

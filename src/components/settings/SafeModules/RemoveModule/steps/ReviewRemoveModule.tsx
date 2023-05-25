@@ -16,7 +16,7 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
 
   useEffect(() => {
     if (safeTxError) {
-      logError(Errors._806, safeTxError.message)
+      logError(Errors._806, safeTxError)
     }
   }, [safeTxError])
 

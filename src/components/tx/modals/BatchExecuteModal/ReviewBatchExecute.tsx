@@ -93,12 +93,10 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
 
     try {
       await (willRelay ? onRelay() : onExecute())
-    } catch (_err) {
-      const err = asError(_err)
-
-      logError(Errors._804, err.message)
+    } catch (err) {
+      logError(Errors._804, err)
       setIsSubmittable(true)
-      setSubmitError(err)
+      setSubmitError(asError(err))
       return
     }
   }

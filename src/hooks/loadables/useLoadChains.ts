@@ -14,7 +14,7 @@ export const useLoadChains = (): AsyncResult<ChainInfo[]> => {
   // Log errors
   useEffect(() => {
     if (error) {
-      logError(Errors._620, error.message)
+      logError(Errors._620, error)
     }
   }, [error])
 

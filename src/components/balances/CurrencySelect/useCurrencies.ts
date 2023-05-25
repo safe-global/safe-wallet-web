@@ -11,7 +11,7 @@ const useCurrencies = (): FiatCurrencies | undefined => {
   // Log errors
   useEffect(() => {
     if (!error) return
-    logError(Errors._607, error.message)
+    logError(Errors._607, error)
   }, [error])
 
   return data

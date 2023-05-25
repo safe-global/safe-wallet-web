@@ -167,7 +167,7 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
 }
 
 export const handleSafeCreationError = (error: EthersError) => {
-  logError(Errors._800, error.message)
+  logError(Errors._800, error)
 
   if (isWalletRejection(error)) {
     return SafeCreationStatus.WALLET_REJECTED

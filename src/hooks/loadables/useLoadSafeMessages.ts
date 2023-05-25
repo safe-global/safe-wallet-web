@@ -39,7 +39,7 @@ export const useLoadSafeMessages = (): AsyncResult<SafeMessageListPage> => {
 
   useEffect(() => {
     if (error) {
-      logError(Errors._608, error.message)
+      logError(Errors._608, error)
     }
   }, [error])
 
