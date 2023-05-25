@@ -6,6 +6,7 @@ import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
 import { logError, Errors } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { useInitPairing } from '@/services/pairing/hooks'
@@ -58,7 +59,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
       icon: primaryWallet.icon,
     }
   } catch (e) {
-    logError(Errors._106, (e as Error).message)
+    logError(Errors._106, asError(e).message)
     return null
   }
 }
@@ -123,7 +124,7 @@ export const connectWallet = async (
   try {
     wallets = await onboard.connectWallet(options)
   } catch (e) {
-    logError(Errors._302, (e as Error).message)
+    logError(Errors._302, asError(e).message)
 
     isConnecting = false
     return

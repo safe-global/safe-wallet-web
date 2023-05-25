@@ -24,6 +24,7 @@ import { getDecodedMessage } from '@/components/safe-apps/utils'
 import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { asError } from '@/services/exceptions/utils'
 
 type ReviewSafeAppsSignMessageProps = {
   safeAppsSignMessage: SafeAppsSignMessageParams
@@ -85,7 +86,7 @@ const ReviewSafeAppsSignMessage = ({
     try {
       await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
-      setSubmitError(error as Error)
+      setSubmitError(asError(error))
     }
   }
 

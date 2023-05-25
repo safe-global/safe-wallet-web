@@ -8,6 +8,7 @@ import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import extractTxInfo from '../extractTxInfo'
 import { getAndValidateSafeSDK } from './sdk'
 import type Safe from '@safe-global/safe-core-sdk'
+import { asError } from '@/services/exceptions/utils'
 
 const estimateSafeTxGas = async (
   chainId: string,
@@ -43,7 +44,7 @@ const getRecommendedTxParams = async (
       const cancellationTxParams = { ...txParams, data: EMPTY_DATA, to: safeAddress, value: '0' }
       estimation = await estimateSafeTxGas(String(chainId), safeAddress, cancellationTxParams)
     } catch (e) {
-      logError(Errors._616, (e as Error).message)
+      logError(Errors._616, asError(e).message)
       return
     }
   }

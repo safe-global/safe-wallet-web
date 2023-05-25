@@ -5,6 +5,7 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
@@ -33,7 +34,7 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
   } catch (error) {
     txDispatch(TxEvent.FAILED, {
       txId,
-      error: error as Error,
+      error: asError(error),
     })
   }
 }
@@ -81,7 +82,7 @@ const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStat
       })
     })
   } catch (error) {
-    logError(Errors._632, (error as Error).message)
+    logError(Errors._632, asError(error).message)
     return
   }
 

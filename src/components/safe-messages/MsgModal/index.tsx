@@ -30,6 +30,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeMessages from '@/hooks/useSafeMessages'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
+import { asError } from '@/services/exceptions/utils'
 
 import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
 import { DecodedMsg } from '../DecodedMsg'
@@ -169,7 +170,7 @@ const MsgModal = ({
         }
       }
     } catch (e) {
-      setSubmitError(e as Error)
+      setSubmitError(asError(e))
     }
   }, [onboard, requestId, ongoingMessage, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
 

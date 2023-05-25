@@ -8,6 +8,7 @@ import { hashTypedData } from '@/utils/web3'
 import { isValidAddress } from './validation'
 import { isWalletRejection } from '@/utils/wallets'
 import { getSupportedSigningMethods } from '@/services/tx/tx-sender/sdk'
+import { asError } from '@/services/exceptions/utils'
 import {
   type SafeInfo,
   type SafeMessage,
@@ -121,10 +122,12 @@ export const tryOffChainMsgSigning = async (
 
         return adjustVInSignature(signingMethod, signature, messageHash, signerAddress)
       }
-    } catch (error) {
+    } catch (_err) {
+      const error = asError(_err)
+
       const isLastSigningMethod = i === signingMethods.length - 1
 
-      if (isWalletRejection(error as Error) || isLastSigningMethod) {
+      if (isWalletRejection(error) || isLastSigningMethod) {
         throw error
       }
     }

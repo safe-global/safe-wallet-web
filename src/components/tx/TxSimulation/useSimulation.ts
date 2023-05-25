@@ -5,6 +5,7 @@ import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/TxSimulat
 import { getSimulationPayload, type SimulationTxParams } from '@/components/tx/TxSimulation/utils'
 import { useAppSelector } from '@/store'
 import { selectTenderly } from '@/store/settingsSlice'
+import { asError } from '@/services/exceptions/utils'
 
 type UseSimulationReturn =
   | {
@@ -50,10 +51,12 @@ export const useSimulation = (): UseSimulationReturn => {
 
         setSimulation(data)
         setSimulationRequestStatus(FETCH_STATUS.SUCCESS)
-      } catch (error) {
+      } catch (_err) {
+        const error = asError(_err)
+
         console.error(error)
 
-        setRequestError((error as Error).message)
+        setRequestError(error.message)
         setSimulationRequestStatus(FETCH_STATUS.ERROR)
       }
     },

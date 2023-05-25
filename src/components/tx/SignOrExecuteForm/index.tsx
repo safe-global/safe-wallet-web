@@ -8,6 +8,7 @@ import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/co
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import { TxSimulation } from '@/components/tx/TxSimulation'
@@ -124,10 +125,12 @@ const SignOrExecuteForm = ({
 
     try {
       await (willExecute ? onExecute() : onSign())
-    } catch (err) {
-      logError(Errors._804, (err as Error).message)
+    } catch (_err) {
+      const err = asError(_err)
+
+      logError(Errors._804, err.message)
       setIsSubmittable(true)
-      setSubmitError(err as Error)
+      setSubmitError(err)
       return
     }
 
@@ -141,7 +144,7 @@ const SignOrExecuteForm = ({
       try {
         setTx(await createTx({ ...tx.data, safeTxGas: data.safeTxGas }, data.nonce))
       } catch (err) {
-        logError(Errors._103, (err as Error).message)
+        logError(Errors._103, asError(err).message)
         return
       }
     }

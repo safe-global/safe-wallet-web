@@ -7,6 +7,7 @@ import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
 import { generateSafeMessageHash, tryOffChainMsgSigning } from '@/utils/safe-messages'
 import { normalizeTypedData } from '@/utils/web3'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
+import { asError } from '@/services/exceptions/utils'
 
 export const dispatchSafeMsgProposal = async ({
   onboard,
@@ -35,10 +36,12 @@ export const dispatchSafeMsgProposal = async ({
       signature,
       safeAppId,
     })
-  } catch (error) {
+  } catch (_err) {
+    const error = asError(_err)
+
     safeMsgDispatch(SafeMsgEvent.PROPOSE_FAILED, {
       messageHash,
-      error: error as Error,
+      error,
     })
 
     throw error
@@ -67,10 +70,12 @@ export const dispatchSafeMsgConfirmation = async ({
     await confirmSafeMessage(safe.chainId, messageHash, {
       signature,
     })
-  } catch (error) {
+  } catch (_err) {
+    const error = asError(_err)
+
     safeMsgDispatch(SafeMsgEvent.CONFIRM_PROPOSE_FAILED, {
       messageHash,
-      error: error as Error,
+      error,
     })
 
     throw error

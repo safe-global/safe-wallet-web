@@ -1,5 +1,6 @@
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import { asError } from '@/services/exceptions/utils'
 import { migrateAddedSafes } from '@/services/ls-migration/addedSafes'
 import { migrateAddressBook } from '@/services/ls-migration/addressBook'
 import { isChecksummedAddress } from '@/utils/addresses'
@@ -92,7 +93,7 @@ export const useGlobalImportJsonParser = (jsonData: string | undefined): Data =>
     try {
       parsedFile = JSON.parse(jsonData)
     } catch (err) {
-      logError(ErrorCodes._704, (err as Error).message)
+      logError(ErrorCodes._704, asError(err).message)
 
       data.error = ImportErrors.INVALID_JSON_FORMAT
       return data

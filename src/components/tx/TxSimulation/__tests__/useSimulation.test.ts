@@ -46,7 +46,7 @@ describe('useSimulation()', () => {
 
     const mockFetch = jest.spyOn(global, 'fetch')
 
-    mockFetch.mockImplementation(() => Promise.reject({ message: '404 not found' }))
+    mockFetch.mockImplementation(() => Promise.reject(new Error('404 not found')))
 
     jest.spyOn(utils, 'getSimulationPayload').mockImplementation(() =>
       Promise.resolve({

@@ -14,6 +14,7 @@ import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/services/onboard'
 import type { JsonRpcSigner } from '@ethersproject/providers'
+import { asError } from '@/services/exceptions/utils'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -144,10 +145,12 @@ export const tryOffChainTxSigning = async (
   for await (const [i, signingMethod] of signingMethods.entries()) {
     try {
       return await sdk.signTransaction(safeTx, signingMethod)
-    } catch (error) {
+    } catch (_err) {
+      const error = asError(_err)
+
       const isLastSigningMethod = i === signingMethods.length - 1
 
-      if (isWalletRejection(error as Error) || isLastSigningMethod) {
+      if (isWalletRejection(error) || isLastSigningMethod) {
         throw error
       }
     }

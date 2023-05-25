@@ -17,6 +17,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Typography } from '@mui/material'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
+import { asError } from '@/services/exceptions/utils'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -53,7 +54,7 @@ const ReviewSafeAppsTx = ({
     try {
       await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
-      setSubmitError(error as Error)
+      setSubmitError(asError(error))
     }
   }
 

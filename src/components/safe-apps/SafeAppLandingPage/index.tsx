@@ -12,6 +12,7 @@ import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_DEMO_SAFE_MAINNET } from '@/config/constants'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { Errors, logError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 type Props = {
@@ -42,7 +43,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
 
     trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
 
-    onboard.connectWallet().catch((e) => logError(Errors._302, (e as Error).message))
+    onboard.connectWallet().catch((e) => logError(Errors._302, asError(e).message))
   }
 
   const handleDemoClick = () => {

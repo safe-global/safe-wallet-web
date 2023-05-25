@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { asError } from '@/services/exceptions/utils'
+
 export type AsyncResult<T> = [result: T | undefined, error: Error | undefined, loading: boolean]
 
 const useAsync = <T>(
@@ -35,7 +37,7 @@ const useAsync = <T>(
         isCurrent && setData(val)
       })
       .catch((err) => {
-        isCurrent && setError(err)
+        isCurrent && setError(asError(err))
       })
       .finally(() => {
         isCurrent && setLoading(false)

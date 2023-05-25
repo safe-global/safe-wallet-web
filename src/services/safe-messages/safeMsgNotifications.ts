@@ -1,5 +1,6 @@
 import { getSafeMessage, SafeMessageListItemType, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import { logError, Errors } from '../exceptions'
+import { asError } from '../exceptions/utils'
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
 
 const isMessageFullySigned = (message: SafeMessage): message is SafeMessage & { preparedSignature: string } => {
@@ -27,8 +28,10 @@ export const dispatchPreparedSignature = async (
     // fetchedMessage does not have a type because it is explicitly a message
     message = { ...fetchedMessage, type: SafeMessageListItemType.MESSAGE }
   } catch (err) {
-    logError(Errors._613, (err as Error).message)
-    throw err
+    const error = asError(err)
+
+    logError(Errors._613, error.message)
+    throw error
   }
 
   if (isMessageFullySigned(message)) {

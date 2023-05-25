@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 
 const SHOW_ALERT_TIMEOUT = 10000
 
@@ -37,7 +38,7 @@ const useThirdPartyCookies = (): ThirdPartyCookiesType => {
         document.body.removeChild(iframeRef.current as Node)
       }
     } catch (error) {
-      logError(Errors._905, (error as Error).message)
+      logError(Errors._905, asError(error).message)
     }
   }, [])
 

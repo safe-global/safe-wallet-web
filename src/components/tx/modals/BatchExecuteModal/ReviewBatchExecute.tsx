@@ -9,6 +9,7 @@ import SendToBlock from '@/components/tx/SendToBlock'
 import { type SyntheticEvent, useMemo, useState } from 'react'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { Errors, logError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import type { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/index'
 import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
@@ -92,10 +93,12 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
 
     try {
       await (willRelay ? onRelay() : onExecute())
-    } catch (err) {
-      logError(Errors._804, (err as Error).message)
+    } catch (_err) {
+      const err = asError(_err)
+
+      logError(Errors._804, err.message)
       setIsSubmittable(true)
-      setSubmitError(err as Error)
+      setSubmitError(err)
       return
     }
   }

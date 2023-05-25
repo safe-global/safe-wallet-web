@@ -26,6 +26,7 @@ import type { TransactionOptions, SafeTransaction } from '@safe-global/safe-core
 import { FEATURES, hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -184,7 +185,7 @@ export const getTxOrigin = (app?: SafeAppData): string | undefined => {
   try {
     origin = JSON.stringify({ name: app.name, url: app.url })
   } catch (e) {
-    logError(Errors._808, (e as Error).message)
+    logError(Errors._808, asError(e).message)
   }
 
   return origin

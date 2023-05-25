@@ -1,6 +1,7 @@
 import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
 import type { EthersError } from '@/utils/ethers-utils'
+import { asError } from '@/services/exceptions/utils'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
 import type MultiSendCallOnlyEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
 import type { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
@@ -47,11 +48,13 @@ export const dispatchTxProposal = async ({
   let proposedTx: TransactionDetails | undefined
   try {
     proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash, origin)
-  } catch (error) {
+  } catch (_err) {
+    const error = asError(_err)
+
     if (txId) {
-      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: error as Error })
+      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error })
     } else {
-      txDispatch(TxEvent.PROPOSE_FAILED, { error: error as Error })
+      txDispatch(TxEvent.PROPOSE_FAILED, { error })
     }
     throw error
   }
@@ -79,8 +82,10 @@ export const dispatchTxSigning = async (
   let signedTx: SafeTransaction | undefined
   try {
     signedTx = await tryOffChainTxSigning(safeTx, safeVersion, sdk)
-  } catch (error) {
-    txDispatch(TxEvent.SIGN_FAILED, { txId, error: error as Error })
+  } catch (_err) {
+    const error = asError(_err)
+
+    txDispatch(TxEvent.SIGN_FAILED, { txId, error })
     throw error
   }
 
@@ -107,8 +112,10 @@ export const dispatchOnChainSigning = async (
     // has been submitted in the wallet not when it has been executed
     await sdkUnchecked.approveTransactionHash(safeTxHash)
     txDispatch(TxEvent.ONCHAIN_SIGNATURE_REQUESTED, eventParams)
-  } catch (err) {
-    txDispatch(TxEvent.FAILED, { ...eventParams, error: err as Error })
+  } catch (_err) {
+    const err = asError(_err)
+
+    txDispatch(TxEvent.FAILED, { ...eventParams, error: err })
     throw err
   }
 
@@ -137,8 +144,10 @@ export const dispatchTxExecution = async (
   try {
     result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
     txDispatch(TxEvent.EXECUTING, eventParams)
-  } catch (error) {
-    txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
+  } catch (_err) {
+    const error = asError(_err)
+
+    txDispatch(TxEvent.FAILED, { ...eventParams, error })
     throw error
   }
 
@@ -155,12 +164,10 @@ export const dispatchTxExecution = async (
       }
     })
     .catch((err) => {
-      const error = err as EthersError
-
-      if (didReprice(error)) {
+      if (didReprice(err as EthersError)) {
         txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
       } else {
-        txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
+        txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(err) })
       }
     })
 
@@ -187,11 +194,13 @@ export const dispatchBatchExecution = async (
     txs.forEach(({ txId }) => {
       txDispatch(TxEvent.EXECUTING, { txId, groupKey })
     })
-  } catch (err) {
+  } catch (_err) {
+    const error = asError(_err)
+
     txs.forEach(({ txId }) => {
-      txDispatch(TxEvent.FAILED, { txId, error: err as Error, groupKey })
+      txDispatch(TxEvent.FAILED, { txId, error, groupKey })
     })
-    throw err
+    throw error
   }
 
   txs.forEach(({ txId }) => {
@@ -220,9 +229,7 @@ export const dispatchBatchExecution = async (
       }
     })
     .catch((err) => {
-      const error = err as EthersError
-
-      if (didReprice(error)) {
+      if (didReprice(err as EthersError)) {
         txs.forEach(({ txId }) => {
           txDispatch(TxEvent.PROCESSED, { txId, safeAddress })
         })
@@ -230,7 +237,7 @@ export const dispatchBatchExecution = async (
         txs.forEach(({ txId }) => {
           txDispatch(TxEvent.FAILED, {
             txId,
-            error: err as Error,
+            error: asError(err),
             groupKey,
           })
         })
@@ -267,8 +274,10 @@ export const dispatchSpendingLimitTxExecution = async (
       txOptions,
     )
     txDispatch(TxEvent.EXECUTING, { groupKey: id })
-  } catch (error) {
-    txDispatch(TxEvent.FAILED, { groupKey: id, error: error as Error })
+  } catch (_err) {
+    const error = asError(_err)
+
+    txDispatch(TxEvent.FAILED, { groupKey: id, error })
     throw error
   }
 
@@ -287,7 +296,7 @@ export const dispatchSpendingLimitTxExecution = async (
       }
     })
     .catch((error) => {
-      txDispatch(TxEvent.FAILED, { groupKey: id, error: error as Error })
+      txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
     })
 
   return result?.hash
@@ -338,8 +347,10 @@ export const dispatchTxRelay = async (
 
     // Monitor relay tx
     waitForRelayedTx(taskId, [txId], safe.address.value)
-  } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+  } catch (_err) {
+    const error = asError(_err)
+
+    txDispatch(TxEvent.FAILED, { txId, error })
     throw error
   }
 }
@@ -362,11 +373,13 @@ export const dispatchBatchExecutionRelay = async (
       to,
       data,
     })
-  } catch (error) {
+  } catch (_err) {
+    const error = asError(_err)
+
     txs.forEach(({ txId }) => {
       txDispatch(TxEvent.FAILED, {
         txId,
-        error: error as Error,
+        error,
         groupKey,
       })
     })

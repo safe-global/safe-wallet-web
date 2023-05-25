@@ -14,6 +14,7 @@ import { parseUnits } from '@ethersproject/units'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useCurrentChain } from '@/hooks/useChains'
 import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
@@ -86,10 +87,12 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
       await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress)
 
       onSubmit()
-    } catch (err) {
-      logError(Errors._801, (err as Error).message)
+    } catch (_err) {
+      const err = asError(_err)
+
+      logError(Errors._801, err.message)
       setIsSubmittable(true)
-      setSubmitError(err as Error)
+      setSubmitError(err)
     }
   }
 

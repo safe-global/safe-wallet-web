@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useCurrentChain } from '@/hooks/useChains'
 import useOnboard, { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 import {
   getClientMeta,
   PAIRING_MODULE_STORAGE_ID,
@@ -59,7 +60,7 @@ export const useInitPairing = () => {
       .then(() => {
         isConnecting = false
       })
-      .catch((e) => logError(Errors._303, (e as Error).message))
+      .catch((e) => logError(Errors._303, asError(e).message))
   }, [canConnect, chain, isSupported, onboard, connector])
 
   useEffect(() => {
