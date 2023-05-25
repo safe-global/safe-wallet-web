@@ -2,7 +2,7 @@ import NavTabs from '@/components/common/NavTabs'
 import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from '@/hooks/useChains'
-import useSafeMessages from '@/hooks/useSafeMessages'
+import useSafeMessages from '@/hooks/messages/useSafeMessages'
 import { hasFeature, FEATURES } from '@/utils/chains'
 
 const TxNavigation = () => {
