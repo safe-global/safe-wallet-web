@@ -6,7 +6,6 @@ export const AppRoutes = {
   licenses: '/licenses',
   index: '/',
   imprint: '/imprint',
-  import: '/import',
   home: '/home',
   environmentVariables: '/environment-variables',
   cookie: '/cookie',
@@ -25,6 +24,12 @@ export const AppRoutes = {
   newSafe: {
     load: '/new-safe/load',
     create: '/new-safe/create',
+  },
+  newTx: {
+    sendTokens: '/new-tx/send-tokens',
+    replace: '/new-tx/replace',
+    reject: '/new-tx/reject',
+    index: '/new-tx',
   },
   settings: {
     spendingLimits: '/settings/spending-limits',
@@ -47,8 +52,5 @@ export const AppRoutes = {
     messages: '/transactions/messages',
     index: '/transactions',
     history: '/transactions/history',
-  },
-  newTx: {
-    index: '/new-tx',
   },
 }

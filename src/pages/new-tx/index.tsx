@@ -1,4 +1,4 @@
-import NewTxMenu from '@/components/tx/TxFlow/NewTxMenu'
+import NewTxMenu from '@/components/new-tx'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 
