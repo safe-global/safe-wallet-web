@@ -5,10 +5,12 @@ import { BalanceChanges } from '../BalanceChange'
 import { useRedefine } from './useRedefine'
 import { useRecipientModule } from './useRecipientModule'
 import { shortenAddress } from '@/utils/formatters'
+import { useDelegateCallModule } from './useDelegateCallModule'
 
 export const TxSecurityWarnings = ({ safeTx }: { safeTx: SafeTransaction | undefined }) => {
   const [redefineScanResult, , redefineLoading] = useRedefine(safeTx)
   const [recipientScanResult, , recipientLoading] = useRecipientModule(safeTx)
+  const [delegateCallScanResult, , delegateCallLoading] = useDelegateCallModule(safeTx)
 
   return (
     <>
@@ -38,6 +40,19 @@ export const TxSecurityWarnings = ({ safeTx }: { safeTx: SafeTransaction | undef
               />
             ))}
             <SecurityWarning severity={recipientScanResult.severity} />
+          </>
+        )
+      )}
+      {delegateCallLoading ? (
+        <CircularProgress />
+      ) : (
+        delegateCallScanResult?.payload && (
+          <>
+            <SecurityHint
+              severity={delegateCallScanResult.severity}
+              text={delegateCallScanResult.payload.description.short}
+            />
+            <SecurityWarning severity={delegateCallScanResult.severity} />
           </>
         )
       )}
