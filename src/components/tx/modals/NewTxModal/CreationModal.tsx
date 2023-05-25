@@ -5,6 +5,8 @@ import ModalDialog from '@/components/common/ModalDialog'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import TxButton, { SendNFTsButton, SendTokensButton } from './TxButton'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
+import { ModalContext, ModalType } from '@/services/ModalProvider'
+import { useContext } from 'react'
 
 const CreationModal = ({
   open,
@@ -21,6 +23,7 @@ const CreationModal = ({
   onContractInteraction: () => void
   shouldShowTxBuilder: boolean
 }) => {
+  const { setVisibleModal } = useContext(ModalContext)
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const txBuilder = useTxBuilderApp()
 
@@ -28,7 +31,7 @@ const CreationModal = ({
     <ModalDialog open={open} dialogTitle="New transaction" onClose={onClose}>
       <DialogContent>
         <Box display="flex" flexDirection="column" alignItems="center" gap={2} pt={7} pb={4} width={240} m="auto">
-          <SendTokensButton onClick={onTokenModalOpen} />
+          <SendTokensButton onClick={() => setVisibleModal({ type: ModalType.SendTokens, props: {} })} />
 
           {!isOnlySpendingLimitBeneficiary && (
             <>

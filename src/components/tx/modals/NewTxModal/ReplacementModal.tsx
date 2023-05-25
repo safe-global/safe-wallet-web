@@ -1,14 +1,14 @@
 import {
   Button,
+  DialogActions,
   DialogContent,
+  Grid,
+  Step,
+  StepLabel,
+  Stepper,
   SvgIcon,
   Tooltip,
   Typography,
-  Stepper,
-  Step,
-  StepLabel,
-  DialogActions,
-  Grid,
 } from '@mui/material'
 
 import ModalDialog from '@/components/common/ModalDialog'
@@ -21,6 +21,8 @@ import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
+import { useContext } from 'react'
+import { ModalContext, ModalType } from '@/services/ModalProvider'
 
 const wrapIcon = (icon: React.ReactNode) => <div className={css.circle}>{icon}</div>
 
@@ -63,6 +65,7 @@ const ReplacementModal = ({
   onTokenModalOpen: () => void
   onRejectModalOpen: () => void
 }) => {
+  const { setVisibleModal } = useContext(ModalContext)
   const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
   const canCancel = !queuedTxsByNonce?.some(
     (item) => isCustomTxInfo(item.transaction.txInfo) && item.transaction.txInfo.isCancellation,
@@ -124,7 +127,7 @@ const ReplacementModal = ({
             >
               <span style={{ width: '100%' }}>
                 <Button
-                  onClick={onRejectModalOpen}
+                  onClick={() => setVisibleModal({ type: ModalType.RejectTx, props: { txNonce } })}
                   variant="outlined"
                   fullWidth
                   sx={{ mb: 1, ...btnWidth }}

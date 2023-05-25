@@ -4,11 +4,13 @@ import { Box, Typography } from '@mui/material'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import { type UrlObject } from 'url'
-import Link from 'next/link'
+import { ModalContext, ModalType } from '@/services/ModalProvider'
+import { useContext } from 'react'
 
 const BUTTONS_HEIGHT = '91px'
 
 const NewTxMenu = () => {
+  const { setVisibleModal } = useContext(ModalContext)
   const txBuilder = useTxBuilderApp()
   const router = useRouter()
 
@@ -22,9 +24,10 @@ const NewTxMenu = () => {
       <Typography variant="h6" fontWeight={700}>
         New transaction
       </Typography>
-      <Link href={sendTokensLink} passHref>
-        <SendTokensButton sx={{ height: BUTTONS_HEIGHT }} />
-      </Link>
+      <SendTokensButton
+        onClick={() => setVisibleModal({ type: ModalType.SendTokens, props: {} })}
+        sx={{ height: BUTTONS_HEIGHT }}
+      />
 
       <SendNFTsButton onClick={() => console.log('open send NFTs flow')} sx={{ height: BUTTONS_HEIGHT }} />
 
