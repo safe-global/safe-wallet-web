@@ -86,6 +86,7 @@
     "react-redux": "^8.0.2",
     "react-toastify": "^9.1.2",
     "semver": "^7.3.7",
+    "siwe": "^2.1.4",
     "wagmi": "^0.12.12"
   },
   "devDependencies": {
