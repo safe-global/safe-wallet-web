@@ -82,7 +82,7 @@ const getItems = ({
     const addedSafesPreview: ListItemTextProps = {
       primary: (
         <>
-          <b>Added Safes Accounts</b> on {addedSafeChainAmount} {addedSafeChainAmount === 1 ? 'chain' : 'chains'}
+          <b>Added Safe Accounts</b> on {addedSafeChainAmount} {addedSafeChainAmount === 1 ? 'chain' : 'chains'}
         </>
       ),
       secondary: showPreview ? getItemSecondaryText(chains, addedSafes, 'Safe', 'Safes') : undefined,

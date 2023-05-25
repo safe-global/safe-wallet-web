@@ -28,6 +28,7 @@ import useDecodedSafeMessage from '@/hooks/messages/useDecodedSafeMessage'
 import useSyncSafeMessageSigner from '@/hooks/messages/useSyncSafeMessageSigner'
 import SuccessMessage from '@/components/tx/SuccessMessage'
 import InfoBox from '../InfoBox'
+import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
@@ -182,6 +183,7 @@ const MsgModal = ({
 
   const { decodedMessage, safeMessageMessage, safeMessageHash } = useDecodedSafeMessage(message, safe)
   const ongoingMessage = useSafeMessage(safeMessageHash)
+  useHighlightHiddenTab()
 
   const decodedMessageAsString =
     typeof decodedMessage === 'string' ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
