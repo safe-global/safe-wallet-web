@@ -14,6 +14,7 @@ const JoinButton: React.FC<{
   useEffect(() => {
     handleCreateGroup()
     handleJoin()
+    handleGetGroup()
   }, [])
 
   useEffect(() => {
