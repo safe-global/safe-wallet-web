@@ -67,6 +67,7 @@ type RedefineBalanceChange =
       decimals: number
       name: string
     }
+  | { type: 'ERC721'; address: string; tokenId: string; name?: string; symbol?: string }
 
 export type RedefineResponse = {
   data: {

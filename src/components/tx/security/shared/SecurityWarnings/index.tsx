@@ -1,9 +1,10 @@
-import { Alert, type AlertColor, SvgIcon, Typography, Box, Grid, CircularProgress } from '@mui/material'
+import { Alert, type AlertColor, SvgIcon, Typography, Box, Grid } from '@mui/material'
 
 import { SecuritySeverity } from '@/services/security/modules/types'
 import AlertIcon from '@/public/images/notifications/alert.svg'
 
 import css from './styles.module.css'
+import { LoadingLabel } from '../LoadingLabel'
 
 type SecurityWarningProps = {
   color: AlertColor
@@ -70,21 +71,6 @@ export const SecurityHint = ({ severity, text }: { severity: SecuritySeverity; t
   )
 }
 
-const LoadingLabel = () => {
-  return (
-    <Typography variant="body2" color="text.secondary" display="flex" alignItems="center" gap={1}>
-      <CircularProgress
-        thickness={2}
-        size={24}
-        sx={{
-          color: ({ palette }) => palette.text.secondary,
-        }}
-      />
-      Calculating
-    </Typography>
-  )
-}
-
 export const SecurityWarning = ({
   severity,
   isLoading,
@@ -107,7 +93,7 @@ export const SecurityWarning = ({
           <LoadingLabel />
         ) : (
           severityProps && (
-            <Typography variant="body2" fontWeight={700} color={severityProps.color}>
+            <Typography variant="body2" fontWeight={700} color={`${severityProps.color}.main`}>
               {severityProps.label}
             </Typography>
           )

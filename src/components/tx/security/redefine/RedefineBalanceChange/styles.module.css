@@ -1,0 +1,15 @@
+.balanceChange {
+  display: flex;
+  gap: var(--space-1);
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+  padding: var(--space-1);
+  align-items: center;
+}
+
+.nftId {
+  font-family: 'monospace';
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

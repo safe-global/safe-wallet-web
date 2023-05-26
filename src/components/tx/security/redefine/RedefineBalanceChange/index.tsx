@@ -1,34 +1,22 @@
+import EthHashInfo from '@/components/common/EthHashInfo'
 import TokenIcon from '@/components/common/TokenIcon'
 import useBalances from '@/hooks/useBalances'
+import useChainId from '@/hooks/useChainId'
 import { type RedefineModuleResponse } from '@/services/security/modules/RedefineModule'
 import { sameAddress } from '@/utils/addresses'
-import { Box, Grid, Paper, Skeleton, Typography } from '@mui/material'
+import { formatVisualAmount } from '@/utils/formatters'
+import { Box, Chip, Grid, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { useContext } from 'react'
+import { LoadingLabel } from '../../shared/LoadingLabel'
 import { TransactionSecurityContext } from '../../TransactionSecurityContext'
+import css from './styles.module.css'
 
-const BalanceChangeSkeleton = () => {
-  return (
-    <>
-      <Grid item xs={2} display="inline-flex" alignItems="center" gap={1}>
-        <Skeleton variant="circular" width={32} height={32} />
-        <Typography fontWeight={700} display="inline">
-          <Skeleton />
-        </Typography>
-      </Grid>
-      <Grid item xs={10}>
-        <Typography>
-          <Skeleton />
-        </Typography>
-      </Grid>
-    </>
-  )
-}
-const SingleBalanceChange = ({
+const SingleFungibleBalanceChange = ({
   change,
   positive = false,
 }: {
-  change: NonNullable<RedefineModuleResponse['balanceChange']>['in' | 'out'][number]
+  change: NonNullable<RedefineModuleResponse['balanceChange']>['in' | 'out'][number] & { type: 'ERC20' | 'NATIVE' }
   positive?: boolean
 }) => {
   const { balances } = useBalances()
@@ -40,45 +28,105 @@ const SingleBalanceChange = ({
   })?.tokenInfo.logoUri
   return (
     <>
-      <Grid item xs={2} display="inline-flex" alignItems="center" gap={1} textOverflow="ellipsis" overflow="hidden">
-        <TokenIcon size={32} logoUri={logoUri} tokenSymbol={change.symbol} />
-        <Typography fontWeight={700} display="inline">
-          {change.symbol}
-        </Typography>
-      </Grid>
-      <Grid item xs={10}>
-        <Typography color={positive ? 'success.main' : 'error.main'}>
-          {positive ? '+' : ''}
-          {change.amount.normalizedValue}
-        </Typography>
-      </Grid>
+      <Typography>
+        {positive && '+'}
+        {formatVisualAmount(change.amount.value, change.decimals)}
+      </Typography>
+      <TokenIcon size={24} logoUri={logoUri} tokenSymbol={change.symbol} />
+      <Typography fontWeight={700} display="inline">
+        {change.symbol}
+      </Typography>
+      <Chip label={change.type} />
     </>
   )
 }
 
-export const BalanceChanges = () => {
-  const { balanceChange, isLoading } = useContext(TransactionSecurityContext)
+const SingleNFTBalanceChange = ({
+  change,
+  positive = false,
+}: {
+  change: NonNullable<RedefineModuleResponse['balanceChange']>['in' | 'out'][number] & { type: 'ERC721' }
+  positive?: boolean
+}) => {
+  const chainId = useChainId()
+
   return (
-    <Paper elevation={2} sx={{ padding: 2 }}>
-      <Box display="flex" justifyContent="space-between">
-        <Typography>Balance change</Typography> <Typography color="text.secondary">Powered by REDEFINE</Typography>
-      </Box>
-      <Grid container direction="row" alignItems="center">
-        {isLoading && !balanceChange ? (
-          <BalanceChangeSkeleton />
-        ) : balanceChange ? (
-          <>
-            {balanceChange?.in?.map((change, idx) => (
-              <SingleBalanceChange change={change} key={idx} positive />
-            ))}
-            {balanceChange?.out?.map((change, idx) => (
-              <SingleBalanceChange change={change} key={idx} />
-            ))}
-          </>
+    <>
+      <Typography mr={-1}>{positive ? '+' : '-'}</Typography>
+      {change.symbol ? (
+        <Typography fontWeight={700} display="inline">
+          {change.symbol}
+        </Typography>
+      ) : (
+        <EthHashInfo
+          name={change.symbol ?? 'NFT'}
+          address={change.address}
+          chainId={chainId}
+          showCopyButton={false}
+          showPrefix={false}
+          hasExplorer
+          showAvatar={false}
+          shortAddress
+        />
+      )}
+      <Typography className={css.nftId}>#{change.tokenId}</Typography>
+      <Chip label="NFT" />
+    </>
+  )
+}
+
+const SingleBalanceChange = ({
+  change,
+  positive = false,
+}: {
+  change: NonNullable<RedefineModuleResponse['balanceChange']>['in' | 'out'][number]
+  positive?: boolean
+}) => {
+  return (
+    <Grid item xs={12} md={6}>
+      <Box
+        className={css.balanceChange}
+        sx={{ borderColor: ({ palette }) => `${positive ? palette.success.light : palette.warning.light} !important` }}
+      >
+        {change.type === 'ERC721' ? (
+          <SingleNFTBalanceChange change={change} positive={positive} />
         ) : (
-          <Typography color="text.secondary">None</Typography>
+          <SingleFungibleBalanceChange change={change} positive={positive} />
         )}
-      </Grid>
-    </Paper>
+      </Box>
+    </Grid>
+  )
+}
+
+export const RedefineBalanceChanges = () => {
+  const { balanceChange, isLoading } = useContext(TransactionSecurityContext)
+
+  return (
+    <Box>
+      <Box display="flex" flexDirection="column">
+        <Typography variant="body2">Balance change</Typography>
+        {isLoading && !balanceChange ? (
+          <LoadingLabel />
+        ) : (
+          <Grid container direction="row" alignItems="center" spacing={1}>
+            {balanceChange ? (
+              <>
+                {balanceChange?.in?.map((change, idx) => (
+                  <SingleBalanceChange change={change} key={idx} positive />
+                ))}
+                {balanceChange?.out?.map((change, idx) => (
+                  <SingleBalanceChange change={change} key={idx} />
+                ))}
+              </>
+            ) : (
+              <Typography color="text.secondary">None</Typography>
+            )}
+          </Grid>
+        )}
+      </Box>
+      <Typography mt={1} color="text.secondary">
+        Powered by REDEFINE
+      </Typography>
+    </Box>
   )
 }
