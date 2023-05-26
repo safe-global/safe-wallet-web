@@ -2,7 +2,7 @@ import { addDays, isAfter } from 'date-fns'
 import type { IWalletConnectSession } from '@walletconnect/types'
 import type WalletConnect from '@walletconnect/client'
 
-import { CGW_NAMES, WALLET_KEYS } from '@/hooks/wallets/wallets'
+import { CGW_NAMES, WALLET_KEYS } from '@/hooks/wallets/consts'
 import local from '@/services/local-storage/local'
 import { PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'
 
