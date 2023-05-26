@@ -37,7 +37,7 @@ import useAdjustUrl from '@/hooks/useAdjustUrl'
 import useSafeMessageNotifications from '@/hooks/useSafeMessageNotifications'
 import useSafeMessagePendingStatuses from '@/hooks/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
-import { ModalProvider } from '@/services/ModalProvider'
+import { ModalProvider } from '@/components/TxFlow/ModalProvider'
 
 // Importing it dynamically to prevent hydration errors because we read the local storage
 const TermsBanner = dynamic(() => import('@/components/common/TermsBanner'), { ssr: false })

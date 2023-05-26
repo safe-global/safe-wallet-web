@@ -25,12 +25,6 @@ export const AppRoutes = {
     load: '/new-safe/load',
     create: '/new-safe/create',
   },
-  newTx: {
-    sendTokens: '/new-tx/send-tokens',
-    replace: '/new-tx/replace',
-    reject: '/new-tx/reject',
-    index: '/new-tx',
-  },
   settings: {
     spendingLimits: '/settings/spending-limits',
     setup: '/settings/setup',

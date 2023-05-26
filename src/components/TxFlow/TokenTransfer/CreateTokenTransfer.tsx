@@ -1,5 +1,5 @@
-import { useTokenTransferStepper } from '@/components/new-tx/TokenTransfer/index'
-import { type ReactElement, useCallback, useMemo } from 'react'
+import { TokenTransferStepper } from '@/components/TxFlow/TokenTransfer/index'
+import { type ReactElement, useCallback, useContext, useMemo } from 'react'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
@@ -42,7 +42,7 @@ import {
 } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 
 const CreateTokenTransfer = ({ disableSpendingLimit }: { disableSpendingLimit?: boolean }): ReactElement => {
-  const { mergedValues, onSubmit, onBack } = useTokenTransferStepper()
+  const { mergedValues, onSubmit, onBack } = useContext(TokenTransferStepper.Context)
   const { balances } = useVisibleBalances()
   const addressBook = useAddressBook()
   const chainId = useChainId()

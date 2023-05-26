@@ -8,20 +8,23 @@ import {
   type ComponentProps,
 } from 'react'
 import ModalDialog from '@/components/common/ModalDialog'
-import TokenTransferFlow from '@/components/new-tx/TokenTransfer/TokenTransferFlow'
-import RejectTx from '@/components/new-tx/RejectTx'
-import ReplacementModal from '@/components/tx/modals/NewTxModal/ReplacementModal'
+import TokenTransferFlow from '@/components/TxFlow/TokenTransfer/TokenTransferFlow'
+import RejectTx from '@/components/TxFlow/RejectTx'
+import NewTxMenu from '@/components/TxFlow/NewTx'
+import ReplaceTxMenu from '@/components/TxFlow/ReplaceTx'
 
 export enum ModalType {
   SendTokens = 'sendTokens',
   RejectTx = 'rejectTx',
   ReplaceTx = 'replaceTx',
+  NewTx = 'newTx',
 }
 
 const ModalTypes = {
   [ModalType.SendTokens]: TokenTransferFlow,
   [ModalType.RejectTx]: RejectTx,
-  [ModalType.ReplaceTx]: ReplacementModal,
+  [ModalType.ReplaceTx]: ReplaceTxMenu,
+  [ModalType.NewTx]: NewTxMenu,
 }
 
 type VisibleModalState<T extends ModalType> = {
@@ -49,8 +52,8 @@ export const ModalProvider = ({ children }: { children: ReactNode }): ReactEleme
     <ModalContext.Provider value={{ visibleModal, setVisibleModal }}>
       {children}
       <ModalDialog open={!!visibleModal}>
-        {/* @ts-ignore */}
-        <Component {...props} />
+        {/* @ts-ignore TODO: Fix this somehow */}
+        {visibleModal && <Component {...props} />}
       </ModalDialog>
     </ModalContext.Provider>
   )

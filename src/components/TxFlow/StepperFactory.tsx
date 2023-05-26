@@ -16,7 +16,7 @@ type ContextProps<T extends Array<Object>> = {
   activeStep: number
   setActiveStep: Dispatch<SetStateAction<number>>
   progress: number
-  values: Object
+  stepValues: Object
   defaultValues: T[number]
   mergedValues: Expand<MergeObjects<T>>
   onBack: () => void
@@ -31,7 +31,7 @@ export const createStepper = <T extends Array<Object>>() => {
     activeStep: DEFAULT_ACTIVE_STEP,
     setActiveStep: () => {},
     progress: 0,
-    values: {},
+    stepValues: {},
     defaultValues: {} as T[number],
     mergedValues: {} as Expand<MergeObjects<T>>,
     onBack: () => {},
@@ -66,7 +66,6 @@ export const createStepper = <T extends Array<Object>>() => {
     }, [activeStep, onClose])
 
     const onSubmit = (stepValues: T[number]) => {
-      console.log(stepValues)
       const isLastStep = activeStep === steps.length - 1
       if (isLastStep) {
         onClose?.()
@@ -89,7 +88,7 @@ export const createStepper = <T extends Array<Object>>() => {
       activeStep,
       setActiveStep,
       progress,
-      values: values[activeStep],
+      stepValues: values[activeStep],
       defaultValues: defaultValues[activeStep],
       mergedValues,
       onBack,
@@ -115,6 +114,6 @@ export const createStepper = <T extends Array<Object>>() => {
 
   return {
     Provider,
-    useStepper,
+    Context,
   }
 }

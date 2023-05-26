@@ -1,4 +1,4 @@
-import { useTokenTransferStepper } from '@/components/new-tx/TokenTransfer/index'
+import { TokenTransferStepper } from '@/components/TxFlow/TokenTransfer/index'
 import useBalances from '@/hooks/useBalances'
 import useAsync from '@/hooks/useAsync'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -8,9 +8,10 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import SendToBlock from '@/components/tx/SendToBlock'
+import { useContext } from 'react'
 
 const ReviewTokenTransfer = ({ txNonce }: { txNonce?: number }) => {
-  const { onSubmit, mergedValues, values } = useTokenTransferStepper()
+  const { onSubmit, mergedValues } = useContext(TokenTransferStepper.Context)
   const { balances } = useBalances()
 
   const token = balances.items.find((item) => item.tokenInfo.address === mergedValues.tokenAddress)
@@ -22,8 +23,6 @@ const ReviewTokenTransfer = ({ txNonce }: { txNonce?: number }) => {
     const txParams = createTokenTransferParams(mergedValues.recipient, mergedValues.amount, decimals, address)
     return createTx(txParams, txNonce)
   }, [mergedValues, decimals, address])
-
-  console.log(mergedValues, values)
 
   return (
     <SignOrExecuteForm safeTx={safeTx} onSubmit={() => onSubmit(mergedValues)} error={safeTxError}>

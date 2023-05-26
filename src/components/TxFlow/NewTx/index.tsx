@@ -1,10 +1,7 @@
-import TxButton, { SendNFTsButton, SendTokensButton } from '@/components/tx/modals/NewTxModal/TxButton'
+import TxButton, { SendNFTsButton, SendTokensButton } from '@/components/TxFlow/common/TxButton'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import { Box, Typography } from '@mui/material'
-import { AppRoutes } from '@/config/routes'
-import { useRouter } from 'next/router'
-import { type UrlObject } from 'url'
-import { ModalContext, ModalType } from '@/services/ModalProvider'
+import { ModalContext, ModalType } from '@/components/TxFlow/ModalProvider'
 import { useContext } from 'react'
 
 const BUTTONS_HEIGHT = '91px'
@@ -12,12 +9,6 @@ const BUTTONS_HEIGHT = '91px'
 const NewTxMenu = () => {
   const { setVisibleModal } = useContext(ModalContext)
   const txBuilder = useTxBuilderApp()
-  const router = useRouter()
-
-  const sendTokensLink: UrlObject = {
-    pathname: AppRoutes.newTx.sendTokens,
-    query: { safe: router.query.safe },
-  }
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={2} width={452} m="auto">
