@@ -2,7 +2,6 @@ import Sentry from '@/services/sentry' // needs to be imported first
 import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
-import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import CssBaseline from '@mui/material/CssBaseline'
 import type { Theme } from '@mui/material/styles'
@@ -27,19 +26,16 @@ import CookieBanner from '@/components/common/CookieBanner'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
-import { useSafeMsgTracking } from '@/hooks/useSafeMsgTracking'
+import { useSafeMsgTracking } from '@/hooks/messages/useSafeMsgTracking'
 import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
 import useAdjustUrl from '@/hooks/useAdjustUrl'
-import useSafeMessageNotifications from '@/hooks/useSafeMessageNotifications'
-import useSafeMessagePendingStatuses from '@/hooks/useSafeMessagePendingStatuses'
+import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifications'
+import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
-
-// Importing it dynamically to prevent hydration errors because we read the local storage
-const TermsBanner = dynamic(() => import('@/components/common/TermsBanner'), { ssr: false })
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -114,7 +110,6 @@ const WebCoreApp = ({
           </PageLayout>
 
           <CookieBanner />
-          <TermsBanner />
 
           <Notifications />
         </AppProviders>

@@ -9,12 +9,13 @@ import * as useWalletHook from '@/hooks/wallets/useWallet'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useAsyncHook from '@/hooks/useAsync'
 import * as useChainsHook from '@/hooks/useChains'
-import * as useSafeMessages from '@/hooks/useSafeMessages'
+import * as useSafeMessages from '@/hooks/messages/useSafeMessages'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
 import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { EIP1193Provider, WalletState, AppState, OnboardAPI } from '@web3-onboard/core'
+import { generateSafeMessageHash } from '@/utils/safe-messages'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
@@ -86,20 +87,6 @@ describe('MsgModal', () => {
     }))
 
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
-  })
-
-  it('renders the message hash', () => {
-    const { getByText } = render(
-      <MsgModal
-        logoUri="www.fake.com/test.png"
-        name="Test App"
-        message="Hello world!"
-        messageHash="0x123"
-        onClose={jest.fn}
-      />,
-    )
-
-    expect(getByText('0x123')).toBeInTheDocument()
   })
 
   describe('EIP-191 messages', () => {
@@ -285,38 +272,38 @@ describe('MsgModal', () => {
         } as ConnectedWallet),
     )
 
-    const msgPage = {
-      error: undefined,
-      loading: false,
-      page: {
-        next: undefined,
-        previous: undefined,
-        results: [
-          {
-            type: SafeMessageListItemType.MESSAGE,
-            messageHash: '0x123',
-            confirmations: [
-              {
-                owner: {
-                  value: hexZeroPad('0x2', 20),
-                },
-              },
-            ],
-            confirmationsRequired: 2,
-            confirmationsSubmitted: 1,
-          } as unknown as SafeMessage,
-        ],
-      },
-    }
+    const messageText = 'Hello world!'
+    const messageHash = generateSafeMessageHash(
+      {
+        version: '1.3.0',
+        address: {
+          value: hexZeroPad('0x1', 20),
+        },
+        chainId: '5',
+      } as SafeInfo,
+      messageText,
+    )
+    const msg = {
+      type: SafeMessageListItemType.MESSAGE,
+      messageHash,
+      confirmations: [
+        {
+          owner: {
+            value: hexZeroPad('0x2', 20),
+          },
+        },
+      ],
+      confirmationsRequired: 2,
+      confirmationsSubmitted: 1,
+    } as unknown as SafeMessage
 
-    jest.spyOn(useSafeMessages, 'default').mockReturnValue(msgPage)
+    jest.spyOn(useSafeMessages, 'useSafeMessage').mockReturnValue(msg)
 
     const { getByText } = render(
       <MsgModal
         logoUri="www.fake.com/test.png"
         name="Test App"
-        message="Hello world!"
-        messageHash="0x123"
+        message={messageText}
         requestId="123"
         onClose={jest.fn}
       />,
@@ -352,7 +339,8 @@ describe('MsgModal', () => {
   })
 
   it('displays an error if no wallet is connected', () => {
-    jest.spyOn(onboard, 'default').mockReturnValue(undefined)
+    jest.spyOn(useWalletHook, 'default').mockReturnValue(null)
+    jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => false)
 
     const { getByText } = render(
       <MsgModal
@@ -372,6 +360,7 @@ describe('MsgModal', () => {
 
   it('displays an error if connected to the wrong chain', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
+    jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => true)
     jest.spyOn(useChainsHook, 'useCurrentChain').mockReturnValue({ chainName: 'Goerli' } as ChainInfo)
 
@@ -393,6 +382,12 @@ describe('MsgModal', () => {
 
   it('displays an error if not an owner', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
+    jest.spyOn(useWalletHook, 'default').mockImplementation(
+      () =>
+        ({
+          address: hexZeroPad('0x7', 20),
+        } as ConnectedWallet),
+    )
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => false)
 
     const { getByText } = render(
@@ -422,39 +417,38 @@ describe('MsgModal', () => {
           address: hexZeroPad('0x2', 20),
         } as ConnectedWallet),
     )
+    const messageText = 'Hello world!'
+    const messageHash = generateSafeMessageHash(
+      {
+        version: '1.3.0',
+        address: {
+          value: hexZeroPad('0x1', 20),
+        },
+        chainId: '5',
+      } as SafeInfo,
+      messageText,
+    )
+    const msg = {
+      type: SafeMessageListItemType.MESSAGE,
+      messageHash,
+      confirmations: [
+        {
+          owner: {
+            value: hexZeroPad('0x2', 20),
+          },
+        },
+      ],
+      confirmationsRequired: 2,
+      confirmationsSubmitted: 1,
+    } as unknown as SafeMessage
 
-    const msgPage = {
-      error: undefined,
-      loading: false,
-      page: {
-        next: undefined,
-        previous: undefined,
-        results: [
-          {
-            type: SafeMessageListItemType.MESSAGE,
-            messageHash: '0x123',
-            confirmations: [
-              {
-                owner: {
-                  value: hexZeroPad('0x2', 20),
-                },
-              },
-            ],
-            confirmationsRequired: 2,
-            confirmationsSubmitted: 1,
-          } as SafeMessage,
-        ],
-      },
-    }
-
-    jest.spyOn(useSafeMessages, 'default').mockReturnValue(msgPage)
+    jest.spyOn(useSafeMessages, 'useSafeMessage').mockReturnValue(msg)
 
     const { getByText } = render(
       <MsgModal
         logoUri="www.fake.com/test.png"
         name="Test App"
-        message="Hello world!"
-        messageHash="0x123"
+        message={messageText}
         requestId="123"
         onClose={jest.fn}
       />,
@@ -469,6 +463,13 @@ describe('MsgModal', () => {
 
   it('displays an error if the message could not be proposed', async () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
+    jest.spyOn(useWalletHook, 'default').mockImplementation(
+      () =>
+        ({
+          address: hexZeroPad('0x3', 20),
+        } as ConnectedWallet),
+    )
+    jest.spyOn(useSafeMessages, 'useSafeMessage').mockReturnValue(undefined)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
 
     jest.spyOn(useAsyncHook, 'default').mockReturnValue([undefined, new Error('SafeMessage not found'), false])
@@ -489,14 +490,14 @@ describe('MsgModal', () => {
     )
 
     const button = getByText('Sign')
+    expect(button).not.toBeDisabled()
 
     await act(() => {
       fireEvent.click(button)
     })
 
-    expect(proposalSpy).toHaveBeenCalled()
-
     await waitFor(() => {
+      expect(proposalSpy).toHaveBeenCalled()
       expect(getByText('Error confirming the message. Please try again.')).toBeInTheDocument()
     })
   })
@@ -504,6 +505,8 @@ describe('MsgModal', () => {
   it('displays an error if the message could not be confirmed', async () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
+
+    jest.spyOn(useSafeMessages, 'useSafeMessage').mockReturnValue(undefined)
 
     jest
       .spyOn(useAsyncHook, 'default')

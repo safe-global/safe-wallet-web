@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 import classnames from 'classnames'
 
 import Header from '@/components/common//Header'
@@ -8,6 +8,7 @@ import Footer from '../Footer'
 import SideDrawer from './SideDrawer'
 import { AppRoutes } from '@/config/routes'
 import useDebounce from '@/hooks/useDebounce'
+import { useRouter } from 'next/router'
 
 const isNoSidebarRoute = (pathname: string): boolean => {
   return [
@@ -16,8 +17,6 @@ const isNoSidebarRoute = (pathname: string): boolean => {
     AppRoutes.newSafe.load,
     AppRoutes.welcome,
     AppRoutes.index,
-    AppRoutes.import,
-    AppRoutes.environmentVariables,
     AppRoutes.imprint,
     AppRoutes.privacy,
     AppRoutes.cookie,
@@ -27,10 +26,16 @@ const isNoSidebarRoute = (pathname: string): boolean => {
 }
 
 const PageLayout = ({ pathname, children }: { pathname: string; children: ReactElement }): ReactElement => {
-  const noSidebar = isNoSidebarRoute(pathname)
+  const router = useRouter()
+  const [noSidebar, setNoSidebar] = useState<boolean>(isNoSidebarRoute(pathname))
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
   let isAnimated = useDebounce(!noSidebar, 300)
   if (noSidebar) isAnimated = false
+
+  useEffect(() => {
+    const noSafeAddress = router.isReady && !router.query.safe
+    setNoSidebar(isNoSidebarRoute(pathname) || noSafeAddress)
+  }, [pathname, router])
 
   return (
     <>
