@@ -93,7 +93,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
               )}
 
               {/* Safe nonce */}
-              {params.nonce !== undefined && (
+              {params.nonce !== undefined && params.nonce !== -1 && (
                 <Grid item xs={6}>
                   <FormControl fullWidth>
                     <NonceForm

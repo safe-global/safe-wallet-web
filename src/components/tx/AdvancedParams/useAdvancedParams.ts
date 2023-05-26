@@ -3,11 +3,11 @@ import useGasPrice from '@/hooks/useGasPrice'
 import { type AdvancedParameters } from './types'
 import useUserNonce from './useUserNonce'
 
-export const useAdvancedParams = ({
-  nonce,
-  gasLimit,
-  safeTxGas,
-}: AdvancedParameters): [AdvancedParameters, (params: AdvancedParameters) => void] => {
+export const useAdvancedParams = (
+  gasLimit?: AdvancedParameters['gasLimit'],
+  nonce?: AdvancedParameters['nonce'],
+  safeTxGas?: AdvancedParameters['safeTxGas'],
+): [AdvancedParameters, (params: AdvancedParameters) => void] => {
   const [manualParams, setManualParams] = useState<AdvancedParameters>()
   const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
   const userNonce = useUserNonce()

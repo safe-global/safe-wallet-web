@@ -4,7 +4,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import useGasLimit from '@/hooks/useGasLimit'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
+import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { logError, Errors } from '@/services/exceptions'
@@ -16,7 +16,13 @@ import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { createTx } from '@/services/tx/tx-sender'
 import CheckWallet from '@/components/common/CheckWallet'
 import { WrongChainWarning } from '../WrongChainWarning'
-import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
+import {
+  useImmediatelyExecutable,
+  useIsExecutionLoop,
+  useRecommendedNonce,
+  useTxActions,
+  useValidateNonce,
+} from './hooks'
 import UnknownContractError from './UnknownContractError'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
@@ -55,6 +61,7 @@ const SignOrExecuteForm = ({
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const recommendedParams = useRecommendedNonce(tx)
 
   // Hooks
   const isOwner = useIsSafeOwner()
@@ -88,11 +95,14 @@ const SignOrExecuteForm = ({
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
 
-  const [advancedParams, setAdvancedParams] = useAdvancedParams({
-    nonce: tx?.data.nonce,
+  // Advanced params
+  const [advancedParams, setAdvancedParams] = useAdvancedParams(
     gasLimit,
-    safeTxGas: tx?.data.safeTxGas,
-  })
+    // Initial nonce or a recommended one
+    (safeTx && safeTx.data.nonce !== -1) || !recommendedParams ? safeTx?.data.nonce : recommendedParams?.nonce,
+    // Initial safeTxGas or a recommended one
+    safeTx?.data.safeTxGas ?? recommendedParams?.safeTxGas,
+  )
 
   // Check if transaction will fail
   const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(
@@ -134,21 +144,6 @@ const SignOrExecuteForm = ({
     onSubmit()
   }
 
-  // On advanced params submit (nonce, gas limit, price, etc), recreate the transaction
-  const onAdvancedSubmit = async (data: AdvancedParameters) => {
-    // If nonce was edited, create a new tx with that nonce
-    if (tx && (data.nonce !== tx.data.nonce || data.safeTxGas !== tx.data.safeTxGas)) {
-      try {
-        setTx(await createTx({ ...tx.data, safeTxGas: data.safeTxGas }, data.nonce))
-      } catch (err) {
-        logError(Errors._103, (err as Error).message)
-        return
-      }
-    }
-
-    setAdvancedParams(data)
-  }
-
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled =
     !isSubmittable ||
@@ -160,6 +155,16 @@ const SignOrExecuteForm = ({
     (willExecute && isExecutionLoop)
 
   const error = props.error || (willExecute ? gasLimitError || executionValidationError : undefined)
+
+  // Update the tx when the advancedParams change
+  useEffect(() => {
+    if (!isCreation || !tx?.data || advancedParams.nonce === undefined) return
+    if (tx.data.nonce === advancedParams.nonce && tx.data.safeTxGas === advancedParams.safeTxGas) return
+
+    createTx({ ...tx.data, safeTxGas: advancedParams.safeTxGas }, advancedParams.nonce)
+      .then(setTx)
+      .catch((err) => logError(Errors._103, (err as Error).message))
+  }, [isCreation, tx?.data, advancedParams.nonce, advancedParams.safeTxGas])
 
   return (
     <form onSubmit={handleSubmit}>
@@ -173,10 +178,10 @@ const SignOrExecuteForm = ({
         <AdvancedParams
           params={advancedParams}
           recommendedGasLimit={gasLimit}
-          recommendedNonce={safeTx?.data.nonce}
+          recommendedNonce={recommendedParams?.nonce}
           willExecute={willExecute}
           nonceReadonly={nonceReadonly}
-          onFormSubmit={onAdvancedSubmit}
+          onFormSubmit={setAdvancedParams}
           gasLimitError={gasLimitError}
           willRelay={willRelay}
         />

@@ -3,12 +3,12 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSmartContractWallet } from '@/hooks/wallets/wallets'
 import { Errors, logError } from '@/services/exceptions'
-import { hasEnoughSignatures } from '@/utils/transactions'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 const useWalletCanRelay = (tx: SafeTransaction | undefined) => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
+  const hasEnoughSignatures = tx && tx.signatures.size >= safe.threshold
 
   return useAsync(() => {
     if (!tx || !wallet) return
@@ -17,13 +17,13 @@ const useWalletCanRelay = (tx: SafeTransaction | undefined) => {
       .then((isSCWallet) => {
         if (!isSCWallet) return true
 
-        return hasEnoughSignatures(tx, safe)
+        return hasEnoughSignatures
       })
       .catch((err) => {
         logError(Errors._106, err.message)
         return false
       })
-  }, [tx, wallet, safe.threshold])
+  }, [hasEnoughSignatures, wallet, safe.threshold])
 }
 
 export default useWalletCanRelay

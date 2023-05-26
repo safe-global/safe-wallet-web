@@ -2,10 +2,10 @@ import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/safe-core-sdk'
 import { type TransactionResult } from '@safe-global/safe-core-sdk-types'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { getTransactionDetails, postSafeGasEstimation } from '@safe-global/safe-gateway-typescript-sdk'
-import extractTxInfo from '../extractTxInfo'
-import proposeTx from '../proposeTransaction'
-import * as txEvents from '../txEvents'
+import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import extractTxInfo from '../../extractTxInfo'
+import proposeTx from '../../proposeTransaction'
+import * as txEvents from '../../txEvents'
 import {
   createExistingTx,
   createRejectTx,
@@ -14,7 +14,7 @@ import {
   dispatchTxProposal,
   dispatchTxSigning,
   dispatchBatchExecutionRelay,
-} from '.'
+} from '..'
 import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
 import { ethers } from 'ethers'
@@ -41,7 +41,7 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
 }))
 
 // Mock extractTxInfo
-jest.mock('../extractTxInfo', () => ({
+jest.mock('../../extractTxInfo', () => ({
   __esModule: true,
   default: jest.fn(() => ({
     txParams: {},
@@ -50,7 +50,7 @@ jest.mock('../extractTxInfo', () => ({
 }))
 
 // Mock proposeTx
-jest.mock('../proposeTransaction', () => ({
+jest.mock('../../proposeTransaction', () => ({
   __esModule: true,
   default: jest.fn(() => Promise.resolve({ txId: '123' })),
 }))
@@ -141,6 +141,7 @@ describe('txSender', () => {
         to: '0x123',
         value: '1',
         data: '0x0',
+        safeTxGas: 60000,
       }
       await createTx(txParams)
 
@@ -148,7 +149,7 @@ describe('txSender', () => {
         to: '0x123',
         value: '1',
         data: '0x0',
-        nonce: 17,
+        nonce: -1,
         safeTxGas: 60000,
       }
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })
@@ -169,26 +170,6 @@ describe('txSender', () => {
         data: '0x0',
         nonce: 18,
       }
-      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })
-    })
-
-    it('should create a tx with initial txParams if gas estimation fails', async () => {
-      // override postSafeGasEstimation default implementation
-      ;(postSafeGasEstimation as jest.Mock)
-        .mockImplementationOnce(() => Promise.reject(new Error('Failed to retrieve recommended nonce #1')))
-        .mockImplementationOnce(() => Promise.reject(new Error('Failed to retrieve recommended nonce #2')))
-
-      const txParams = {
-        to: '0x123',
-        value: '1',
-        data: '0x0',
-      }
-      await createTx(txParams)
-
-      // Shallow copy of txParams
-      const safeTransactionData = Object.assign({}, txParams)
-
-      // calls SDK createTransaction withouth recommended nonce
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })
     })
   })
