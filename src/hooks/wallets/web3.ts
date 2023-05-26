@@ -3,6 +3,7 @@ import { INFURA_TOKEN, SAFE_APPS_INFURA_TOKEN } from '@/config/constants'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import ExternalStore from '@/services/ExternalStore'
+import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 
 // RPC helpers
 const formatRpcServiceUrl = ({ authentication, value }: RpcUri, TOKEN: string): string => {
@@ -45,4 +46,10 @@ export const getUserNonce = async (userAddress: string): Promise<number> => {
   } catch (error) {
     return Promise.reject(error)
   }
+}
+
+export const isSmartContract = async (provider: JsonRpcProvider, address: string): Promise<boolean> => {
+  const code = await provider.getCode(address)
+
+  return code !== EMPTY_DATA
 }
