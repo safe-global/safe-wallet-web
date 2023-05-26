@@ -45,8 +45,8 @@ import Head from 'next/head'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import useTxHistory from '@/hooks/useTxHistory'
 import FolderGroup from '@/components/folder-list/folderGroups'
+import { getSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
-import { signOut, getSession } from 'next-auth/react'
 
 const drawerWidth = 360
 
