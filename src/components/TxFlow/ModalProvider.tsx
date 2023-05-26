@@ -6,12 +6,14 @@ import {
   type SetStateAction,
   useState,
   type ComponentProps,
+  useEffect,
 } from 'react'
 import ModalDialog from '@/components/common/ModalDialog'
 import TokenTransferFlow from '@/components/TxFlow/TokenTransfer/TokenTransferFlow'
 import RejectTx from '@/components/TxFlow/RejectTx'
 import NewTxMenu from '@/components/TxFlow/NewTx'
 import ReplaceTxMenu from '@/components/TxFlow/ReplaceTx'
+import { useRouter } from 'next/router'
 
 export enum ModalType {
   SendTokens = 'sendTokens',
@@ -44,9 +46,17 @@ export const ModalContext = createContext<ContextProps<ModalType>>({
 
 export const ModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [visibleModal, setVisibleModal] = useState<VisibleModalState<ModalType>>()
+  const router = useRouter()
 
   const Component = visibleModal ? ModalTypes[visibleModal.type] : null
   const props = visibleModal ? visibleModal.props : {}
+
+  // Close the modal if user navigates
+  useEffect(() => {
+    router.events.on('routeChangeComplete', () => {
+      setVisibleModal(undefined)
+    })
+  }, [router])
 
   return (
     <ModalContext.Provider value={{ visibleModal, setVisibleModal }}>
