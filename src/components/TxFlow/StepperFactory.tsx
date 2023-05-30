@@ -1,5 +1,5 @@
 import merge from 'lodash/merge'
-import { createContext, Suspense, useCallback, useContext, useState } from 'react'
+import { createContext, Suspense, useCallback, useState } from 'react'
 import type { JSXElementConstructor, ReactElement, Dispatch, SetStateAction } from 'react'
 
 type Object = Record<string, unknown>
@@ -100,16 +100,6 @@ export const createStepper = <T extends Array<Object>>() => {
         <Suspense>{children ? children(Step, providerValues) : Step}</Suspense>
       </Context.Provider>
     )
-  }
-
-  const useStepper = () => {
-    const stepperContext = useContext(Context)
-
-    if (!stepperContext) {
-      throw new Error('useStepper must be used within a Stepper')
-    }
-
-    return stepperContext
   }
 
   return {
