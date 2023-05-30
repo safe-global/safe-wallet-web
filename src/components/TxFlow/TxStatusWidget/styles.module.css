@@ -10,32 +10,36 @@
   padding: var(--space-3);
 }
 
-.signers {
+.status {
   padding: 0;
 }
 
-/* Todo: fix the Step connector */
-.signers::before {
+.status::before {
   content: '';
   position: absolute;
   border-left: 2px solid var(--color-border-light);
   left: 15px;
-  top: 30px;
-  height: 20px;
+  top: 20px;
+  height: calc(100% - 40px);
 }
 
-.signers :global .MuiListItem-root:first-of-type {
+.status :global .MuiListItem-root:first-of-type {
   padding-top: 0;
 }
 
-.signers :global .MuiListItem-root {
+.status :global .MuiListItem-root {
   padding-left: 0;
   padding-right: 0;
 }
 
-.signers :global .MuiListItemIcon-root {
+.status :global .MuiListItemIcon-root {
   color: var(--color-primary-main);
   justify-content: center;
   min-width: 32px;
   padding: var(--space-1);
+  background-color: var(--color-background-paper);
+}
+
+.incomplete > * {
+  color: var(--color-text-secondary) !important;
 }

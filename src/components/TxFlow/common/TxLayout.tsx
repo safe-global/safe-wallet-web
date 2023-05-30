@@ -3,7 +3,7 @@ import { Container, Grid, Paper, Typography } from '@mui/material'
 import TxStatusWidget from '@/components/TxFlow/TxStatusWidget'
 import css from '@/components/TxFlow/TokenTransfer/styles.module.css'
 
-const TxLayout = ({ title, children }: { title: string; children: ReactElement }) => {
+const TxLayout = ({ title, children, step = 0 }: { title: string; children: ReactElement; step?: number }) => {
   return (
     <Container>
       <Grid container className={css.wrapper} alignItems="center" justifyContent="center">
@@ -17,7 +17,7 @@ const TxLayout = ({ title, children }: { title: string; children: ReactElement }
             {children}
           </Grid>
           <Grid item xs={4}>
-            <TxStatusWidget />
+            <TxStatusWidget step={step} />
           </Grid>
         </Grid>
       </Grid>
