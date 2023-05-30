@@ -6,7 +6,6 @@ export const AppRoutes = {
   licenses: '/licenses',
   index: '/',
   imprint: '/imprint',
-  import: '/import',
   home: '/home',
   environmentVariables: '/environment-variables',
   cookie: '/cookie',
@@ -47,8 +46,5 @@ export const AppRoutes = {
     messages: '/transactions/messages',
     index: '/transactions',
     history: '/transactions/history',
-  },
-  newTx: {
-    index: '/new-tx',
   },
 }

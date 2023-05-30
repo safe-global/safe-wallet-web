@@ -1,28 +1,33 @@
-import { type ReactElement } from 'react'
+import { type ReactElement, useContext } from 'react'
 import Button from '@mui/material/Button'
 import css from './styles.module.css'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
-import type { UrlObject } from 'url'
-import { AppRoutes } from '@/config/routes'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
+import { ModalContext, ModalType } from '@/components/TxFlow/ModalProvider'
 
 const NewTxButton = (): ReactElement => {
-  const router = useRouter()
+  const { setVisibleModal } = useContext(ModalContext)
 
-  const newTxLink: UrlObject = {
-    pathname: AppRoutes.newTx.index,
-    query: { safe: router.query.safe },
+  const onClick = () => {
+    setVisibleModal({ type: ModalType.NewTx, props: {} })
+
+    trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 
   return (
     <CheckWallet allowSpendingLimit>
       {(isOk) => (
-        <Link href={newTxLink} passHref>
-          <Button variant="contained" size="small" disabled={!isOk} fullWidth className={css.button} disableElevation>
-            New transaction
-          </Button>
-        </Link>
+        <Button
+          onClick={onClick}
+          variant="contained"
+          size="small"
+          disabled={!isOk}
+          fullWidth
+          className={css.button}
+          disableElevation
+        >
+          New transaction
+        </Button>
       )}
     </CheckWallet>
   )
