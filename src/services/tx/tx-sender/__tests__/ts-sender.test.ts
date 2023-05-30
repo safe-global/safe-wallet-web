@@ -149,7 +149,6 @@ describe('txSender', () => {
         to: '0x123',
         value: '1',
         data: '0x0',
-        nonce: -1,
         safeTxGas: 60000,
       }
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })

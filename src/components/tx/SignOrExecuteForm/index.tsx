@@ -76,6 +76,9 @@ const SignOrExecuteForm = ({
   const isExecutionLoop = useIsExecutionLoop()
   const canExecute = isCorrectNonce && (isExecutable || isNewExecutableTx)
 
+  // Nonce cannot be edited if the tx is already proposed, or signed, or it's a rejection
+  const nonceReadonly = !isCreation || !!tx?.signatures.size || isRejection
+
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const willExecute = (onlyExecute || shouldExecute) && canExecute
 
@@ -99,7 +102,7 @@ const SignOrExecuteForm = ({
   const [advancedParams, setAdvancedParams] = useAdvancedParams(
     gasLimit,
     // Initial nonce or a recommended one
-    (safeTx && safeTx.data.nonce !== -1) || !recommendedParams ? safeTx?.data.nonce : recommendedParams?.nonce,
+    nonceReadonly ? safeTx?.data.nonce : recommendedParams?.nonce,
     // Initial safeTxGas or a recommended one
     safeTx?.data.safeTxGas ?? recommendedParams?.safeTxGas,
   )
@@ -112,8 +115,6 @@ const SignOrExecuteForm = ({
 
   // Estimating gas
   const isEstimating = willExecute && gasLimitLoading
-  // Nonce cannot be edited if the tx is already proposed, or signed, or it's a rejection
-  const nonceReadonly = !isCreation || !!tx?.signatures.size || isRejection
 
   // Sign transaction
   const onSign = async (): Promise<string | undefined> => {
@@ -158,13 +159,13 @@ const SignOrExecuteForm = ({
 
   // Update the tx when the advancedParams change
   useEffect(() => {
-    if (!isCreation || !tx?.data || advancedParams.nonce === undefined) return
+    if (nonceReadonly || !tx?.data || advancedParams.nonce === undefined) return
     if (tx.data.nonce === advancedParams.nonce && tx.data.safeTxGas === advancedParams.safeTxGas) return
 
     createTx({ ...tx.data, safeTxGas: advancedParams.safeTxGas }, advancedParams.nonce)
       .then(setTx)
       .catch((err) => logError(Errors._103, (err as Error).message))
-  }, [isCreation, tx?.data, advancedParams.nonce, advancedParams.safeTxGas])
+  }, [nonceReadonly, tx?.data, advancedParams.nonce, advancedParams.safeTxGas])
 
   return (
     <form onSubmit={handleSubmit}>

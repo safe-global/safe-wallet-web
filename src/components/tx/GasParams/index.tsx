@@ -83,7 +83,7 @@ const GasParams = ({
         ) : (
           <Typography>
             Signing the transaction with nonce&nbsp;
-            {nonce !== undefined && nonce !== -1 ? (
+            {nonce !== undefined ? (
               nonce
             ) : (
               <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />
