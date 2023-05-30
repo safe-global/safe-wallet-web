@@ -8,7 +8,7 @@ import {
   type ComponentProps,
   useEffect,
 } from 'react'
-import ModalDialog from '@/components/common/ModalDialog'
+import NewModalDialog from '@/components/common/NewModalDialog'
 import { ReplaceTxMenu, NewTxMenu, RejectTx, TokenTransferFlow } from '@/components/TxFlow'
 import { useRouter } from 'next/router'
 
@@ -58,10 +58,10 @@ export const ModalProvider = ({ children }: { children: ReactNode }): ReactEleme
   return (
     <ModalContext.Provider value={{ visibleModal, setVisibleModal }}>
       {children}
-      <ModalDialog open={!!visibleModal}>
+      <NewModalDialog open={!!visibleModal}>
         {/* @ts-ignore TODO: Fix this somehow */}
         {visibleModal && <Component {...props} />}
-      </ModalDialog>
+      </NewModalDialog>
     </ModalContext.Provider>
   )
 }
