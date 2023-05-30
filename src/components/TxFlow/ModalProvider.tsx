@@ -9,10 +9,7 @@ import {
   useEffect,
 } from 'react'
 import ModalDialog from '@/components/common/ModalDialog'
-import TokenTransferFlow from '@/components/TxFlow/TokenTransfer/TokenTransferFlow'
-import RejectTx from '@/components/TxFlow/RejectTx'
-import NewTxMenu from '@/components/TxFlow/NewTx'
-import ReplaceTxMenu from '@/components/TxFlow/ReplaceTx'
+import { ReplaceTxMenu, NewTxMenu, RejectTx, TokenTransferFlow } from '@/components/TxFlow'
 import { useRouter } from 'next/router'
 
 export enum ModalType {
