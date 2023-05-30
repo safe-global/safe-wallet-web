@@ -1,0 +1,41 @@
+.header {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.content {
+  padding: var(--space-3);
+}
+
+.signers {
+  padding: 0;
+}
+
+/* Todo: fix the Step connector */
+.signers::before {
+  content: '';
+  position: absolute;
+  border-left: 2px solid var(--color-border-light);
+  left: 15px;
+  top: 30px;
+  height: 20px;
+}
+
+.signers :global .MuiListItem-root:first-of-type {
+  padding-top: 0;
+}
+
+.signers :global .MuiListItem-root {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.signers :global .MuiListItemIcon-root {
+  color: var(--color-primary-main);
+  justify-content: center;
+  min-width: 32px;
+  padding: var(--space-1);
+}
