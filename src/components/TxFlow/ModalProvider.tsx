@@ -9,7 +9,7 @@ import {
   useEffect,
 } from 'react'
 import NewModalDialog from '@/components/common/NewModalDialog'
-import { ReplaceTxMenu, NewTxMenu, RejectTx, TokenTransferFlow } from '@/components/TxFlow'
+import { ReplaceTxMenu, NewTxMenu, RejectTx, TokenTransferFlow, ConfirmProposedTx } from '@/components/TxFlow'
 import { useRouter } from 'next/router'
 
 export enum ModalType {
@@ -17,6 +17,7 @@ export enum ModalType {
   RejectTx = 'rejectTx',
   ReplaceTx = 'replaceTx',
   NewTx = 'newTx',
+  ConfirmTx = 'confirmTx',
 }
 
 const ModalTypes = {
@@ -24,6 +25,7 @@ const ModalTypes = {
   [ModalType.RejectTx]: RejectTx,
   [ModalType.ReplaceTx]: ReplaceTxMenu,
   [ModalType.NewTx]: NewTxMenu,
+  [ModalType.ConfirmTx]: ConfirmProposedTx,
 }
 
 type VisibleModalState<T extends ModalType> = {
@@ -55,6 +57,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }): ReactEleme
     })
   }, [router])
 
+  console.log('render', visibleModal, props)
   return (
     <ModalContext.Provider value={{ visibleModal, setVisibleModal }}>
       {children}

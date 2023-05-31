@@ -4,7 +4,7 @@ import type { TxModalProps } from '@/components/tx/TxModal'
 import TxModal from '@/components/tx/TxModal'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TxStepperProps } from '@/components/tx/TxStepper/useTxStepper'
-import ConfirmProposedTx from '@/components/tx/modals/ConfirmTxModal/ConfirmProposedTx'
+import ConfirmProposedTx from '@/components/TxFlow/ConfirmTx'
 
 export const ExecuteTxSteps: TxStepperProps['steps'] = [
   {

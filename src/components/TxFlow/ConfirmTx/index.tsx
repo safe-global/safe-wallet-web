@@ -10,6 +10,7 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
 import { Skeleton, Typography } from '@mui/material'
 import { createExistingTx } from '@/services/tx/tx-sender'
+import TxLayout from '@/components/TxFlow/common/TxLayout'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -36,25 +37,27 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 
   return (
-    <SignOrExecuteForm
-      safeTx={safeTx}
-      txId={txId}
-      onSubmit={onSubmit}
-      isExecutable={canExecute}
-      onlyExecute={!canSign}
-      error={safeTxError}
-    >
-      <Typography mb={2}>{text}</Typography>
+    <TxLayout title="Confirm transaction">
+      <SignOrExecuteForm
+        safeTx={safeTx}
+        txId={txId}
+        onSubmit={onSubmit}
+        isExecutable={canExecute}
+        onlyExecute={!canSign}
+        error={safeTxError}
+      >
+        <Typography mb={2}>{text}</Typography>
 
-      <Typography mb={3}>
-        Transaction nonce:&nbsp;
-        {safeTx ? (
-          <b>{safeTx?.data.nonce}</b>
-        ) : (
-          <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />
-        )}
-      </Typography>
-    </SignOrExecuteForm>
+        <Typography mb={3}>
+          Transaction nonce:&nbsp;
+          {safeTx ? (
+            <b>{safeTx?.data.nonce}</b>
+          ) : (
+            <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />
+          )}
+        </Typography>
+      </SignOrExecuteForm>
+    </TxLayout>
   )
 }
 
