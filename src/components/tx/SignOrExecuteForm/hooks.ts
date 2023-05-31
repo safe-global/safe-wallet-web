@@ -15,7 +15,8 @@ import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import type { ConnectedWallet } from '@/services/onboard'
 import type { OnboardAPI } from '@web3-onboard/core'
-import { hasEnoughSignatures } from '@/utils/transactions'
+import { getRecommendedTxParams } from '@/services/tx/tx-sender/recommendedNonce'
+import useAsync from '@/hooks/useAsync'
 
 type TxActions = {
   signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string) => Promise<string>
@@ -97,7 +98,7 @@ export const useTxActions = (): TxActions => {
       assertOnboard(onboard)
 
       // Relayed transactions must be fully signed, so request a final signature if needed
-      if (isRelayed && !hasEnoughSignatures(safeTx, safe)) {
+      if (isRelayed && safeTx.signatures.size < safe.threshold) {
         safeTx = await signRelayedTx(safeTx)
         txId = await proposeTx(wallet.address, safeTx, txId, origin)
       }
@@ -137,4 +138,37 @@ export const useIsExecutionLoop = (): boolean => {
   const wallet = useWallet()
   const { safeAddress } = useSafeInfo()
   return wallet ? sameString(wallet.address, safeAddress) : false
+}
+
+export const useRecommendedNonce = (
+  safeTx?: SafeTransaction,
+):
+  | {
+      nonce: number
+      safeTxGas: number
+    }
+  | undefined => {
+  const { safe } = useSafeInfo()
+  const safeTxData = safeTx?.data
+
+  // Memoize only the necessary params, so that it doesn't change every time safeTx is changed
+  const safeTxParams = useMemo(
+    () =>
+      safeTxData?.to
+        ? {
+            to: safeTxData.to,
+            value: safeTxData.value,
+            data: safeTxData.data,
+            operation: safeTxData.operation,
+          }
+        : undefined,
+    [safeTxData?.to, safeTxData?.value, safeTxData?.data, safeTxData?.operation],
+  )
+
+  const [recommendedParams] = useAsync(() => {
+    if (!safeTxParams) return
+    return getRecommendedTxParams(safeTxParams)
+  }, [safeTxParams, safe?.txQueuedTag])
+
+  return recommendedParams
 }
