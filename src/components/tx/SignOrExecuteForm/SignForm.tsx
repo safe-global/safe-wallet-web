@@ -7,17 +7,19 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useTxActions } from './hooks'
 import type { SignOrExecuteProps } from '.'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 const SignForm = ({
   safeTx,
+  error,
   txId,
   onSubmit,
-  children,
-  isRejection = false,
   disableSubmit = false,
   origin,
-  ...props
-}: SignOrExecuteProps): ReactElement => {
+}: SignOrExecuteProps & {
+  safeTx?: SafeTransaction
+  error?: Error
+}): ReactElement => {
   //
   // Hooks & variables
   //
@@ -59,8 +61,8 @@ const SignForm = ({
         <ErrorMessage>
           You are currently not an owner of this Safe Account and won&apos;t be able to submit this transaction.
         </ErrorMessage>
-      ) : props.error ? (
-        <ErrorMessage error={props.error}>
+      ) : error ? (
+        <ErrorMessage error={error}>
           This transaction will most likely fail.{' '}
           {isCreation
             ? 'To save gas costs, avoid creating the transaction.'

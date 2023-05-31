@@ -150,6 +150,7 @@ export const useRecommendedNonce = (
   | undefined => {
   const { safe } = useSafeInfo()
   const safeTxData = safeTx?.data
+  const alreadySigned = safeTx && safeTx.signatures?.size > 0
 
   // Memoize only the necessary params, so that it doesn't change every time safeTx is changed
   const safeTxParams = useMemo(
@@ -166,7 +167,7 @@ export const useRecommendedNonce = (
   )
 
   const [recommendedParams] = useAsync(() => {
-    if (!safeTxParams) return
+    if (!safeTxParams || alreadySigned) return
     return getRecommendedTxParams(safeTxParams)
   }, [safeTxParams, safe?.txQueuedTag])
 

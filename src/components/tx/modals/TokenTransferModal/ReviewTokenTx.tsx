@@ -33,6 +33,7 @@ export const TokenTransferReview = ({
   )
 }
 
+// OLD
 const ReviewTokenTx = ({ params, onSubmit }: TokenTransferModalProps): ReactElement => {
   const isSpendingLimitTx = params.type === SendTxType.spendingLimit
 
