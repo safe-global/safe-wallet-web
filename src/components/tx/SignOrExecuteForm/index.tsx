@@ -14,7 +14,7 @@ import SignForm from './SignForm'
 
 export type SignOrExecuteProps = {
   txId?: string
-  onSubmit: () => void
+  onSubmit: () => void // Should go to the success screen onSubmit
   children?: ReactNode
   isExecutable?: boolean
   isRejection?: boolean

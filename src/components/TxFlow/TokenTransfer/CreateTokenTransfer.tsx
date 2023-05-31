@@ -143,9 +143,7 @@ const CreateTokenTransfer = ({ txNonce }: { txNonce?: number }): ReactElement =>
 
     createTx(txParams, txNonce)
       .then(setSafeTx)
-      .then(() => {
-        onSubmit(formData)
-      })
+      .then(() => onSubmit(formData))
       .catch(setSafeTxError)
   })
 
