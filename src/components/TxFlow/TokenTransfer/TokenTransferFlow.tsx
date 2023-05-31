@@ -22,7 +22,7 @@ const TokenTransferFlow = ({ txNonce }: { txNonce?: number }) => {
     <TokenTransferStepper.Provider steps={steps} defaultValues={[initialData, {}]}>
       {(Step, values) => {
         return (
-          <TxLayout title="Send Tokens">
+          <TxLayout title="Send Tokens" step={values.activeStep}>
             <>
               <ProgressBar value={values.progress} />
               {Step}

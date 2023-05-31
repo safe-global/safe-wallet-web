@@ -1,0 +1,45 @@
+.header {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.content {
+  padding: var(--space-3);
+}
+
+.status {
+  padding: 0;
+}
+
+.status::before {
+  content: '';
+  position: absolute;
+  border-left: 2px solid var(--color-border-light);
+  left: 15px;
+  top: 20px;
+  height: calc(100% - 40px);
+}
+
+.status :global .MuiListItem-root:first-of-type {
+  padding-top: 0;
+}
+
+.status :global .MuiListItem-root {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.status :global .MuiListItemIcon-root {
+  color: var(--color-primary-main);
+  justify-content: center;
+  min-width: 32px;
+  padding: var(--space-1);
+  background-color: var(--color-background-paper);
+}
+
+.incomplete > * {
+  color: var(--color-text-secondary) !important;
+}

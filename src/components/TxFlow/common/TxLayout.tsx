@@ -1,8 +1,20 @@
 import { type ReactElement } from 'react'
 import { Container, Grid, Paper, Typography } from '@mui/material'
+import TxStatusWidget from '@/components/TxFlow/TxStatusWidget'
+import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import css from '@/components/TxFlow/TokenTransfer/styles.module.css'
 
-const TxLayout = ({ title, children }: { title: string; children: ReactElement }) => {
+const TxLayout = ({
+  title,
+  children,
+  step = 0,
+  txSummary,
+}: {
+  title: string
+  children: ReactElement
+  step?: number
+  txSummary?: TransactionSummary
+}) => {
   return (
     <Container>
       <Grid container className={css.wrapper} alignItems="center" justifyContent="center">
@@ -16,7 +28,7 @@ const TxLayout = ({ title, children }: { title: string; children: ReactElement }
             {children}
           </Grid>
           <Grid item xs={4}>
-            Side area
+            <TxStatusWidget step={step} txSummary={txSummary} />
           </Grid>
         </Grid>
       </Grid>
