@@ -15,19 +15,21 @@ import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSele
 import { hasRemainingRelays } from '@/utils/relaying'
 import type { SignOrExecuteProps } from '.'
 import type { AdvancedParameters } from '../AdvancedParams'
+import { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 const ExecuteForm = ({
   safeTx,
+  error,
   txId,
   onSubmit,
-  children,
-  isExecutable = false,
-  isRejection = false,
   disableSubmit = false,
   origin,
   advancedParams,
-  ...props
-}: SignOrExecuteProps & { advancedParams: AdvancedParameters }): ReactElement => {
+}: SignOrExecuteProps & {
+  safeTx?: SafeTransaction
+  error?: Error
+  advancedParams: AdvancedParameters
+}): ReactElement => {
   //
   // Hooks & variables
   //
@@ -79,7 +81,7 @@ const ExecuteForm = ({
 
   const submitDisabled = !safeTx || !isSubmittable || disableSubmit || isValidExecutionLoading || isExecutionLoop
 
-  const error = props.error || executionValidationError
+  const displayedError = error || executionValidationError
 
   return (
     <form onSubmit={handleSubmit}>
@@ -98,8 +100,8 @@ const ExecuteForm = ({
         <ErrorMessage>
           Cannot execute a transaction from the Safe Account itself, please connect a different account.
         </ErrorMessage>
-      ) : error ? (
-        <ErrorMessage error={error}>
+      ) : displayedError ? (
+        <ErrorMessage error={displayedError}>
           This transaction will most likely fail.{' '}
           {isNewExecutableTx
             ? 'To save gas costs, avoid creating the transaction.'

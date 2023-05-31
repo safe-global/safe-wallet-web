@@ -13,10 +13,7 @@ const initialData = {
 }
 
 const TokenTransferFlow = ({ txNonce }: { txNonce?: number }) => {
-  const steps = [
-    <CreateTokenTransfer key={0} disableSpendingLimit={txNonce !== undefined} />,
-    <ReviewTokenTransfer key={1} txNonce={txNonce} />,
-  ]
+  const steps = [<CreateTokenTransfer key={0} txNonce={txNonce} />, <ReviewTokenTransfer key={1} />]
 
   return (
     <TokenTransferStepper.Provider steps={steps} defaultValues={[initialData, {}]}>

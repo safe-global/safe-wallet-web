@@ -11,6 +11,7 @@ import {
 import NewModalDialog from '@/components/common/NewModalDialog'
 import { ReplaceTxMenu, NewTxMenu, RejectTx, TokenTransferFlow, ConfirmProposedTx } from '@/components/TxFlow'
 import { useRouter } from 'next/router'
+import SafeTxProvider from '@/components/TxFlow/SafeTxProvider'
 
 export enum ModalType {
   SendTokens = 'sendTokens',
@@ -61,8 +62,12 @@ export const ModalProvider = ({ children }: { children: ReactNode }): ReactEleme
     <ModalContext.Provider value={{ visibleModal, setVisibleModal }}>
       {children}
       <NewModalDialog open={!!visibleModal}>
-        {/* @ts-ignore TODO: Fix this somehow */}
-        {visibleModal && <Component {...props} />}
+        {visibleModal && (
+          <SafeTxProvider>
+            {/* @ts-ignore TODO: Fix this somehow */}
+            <Component {...props} />
+          </SafeTxProvider>
+        )}
       </NewModalDialog>
     </ModalContext.Provider>
   )

@@ -40,8 +40,12 @@ import {
   type SendAssetsFormData,
   SendTxType,
 } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
+import { createTx } from '@/services/tx/tx-sender'
+import { SafeTxContext } from '../SafeTxProvider'
 
-const CreateTokenTransfer = ({ disableSpendingLimit }: { disableSpendingLimit?: boolean }): ReactElement => {
+const CreateTokenTransfer = ({ txNonce }: { txNonce?: number }): ReactElement => {
+  const disableSpendingLimit = txNonce !== undefined
   const { mergedValues, onSubmit, onBack } = useContext(TokenTransferStepper.Context)
   const { balances } = useVisibleBalances()
   const addressBook = useAddressBook()
@@ -51,6 +55,7 @@ const CreateTokenTransfer = ({ disableSpendingLimit }: { disableSpendingLimit?: 
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
+  const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: {
@@ -122,9 +127,29 @@ const CreateTokenTransfer = ({ disableSpendingLimit }: { disableSpendingLimit?: 
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
 
+  // Create SafeTx on submit and pass it to the SafeTxContext
+  const onFormSubmit = handleSubmit((formData) => {
+    if (!selectedToken) return
+
+    const txParams = createTokenTransferParams(
+      formData.recipient,
+      formData.amount,
+      selectedToken.tokenInfo.decimals,
+      selectedToken.tokenInfo.address,
+    )
+
+    // Set the nonce passed from outside (replacement tx)
+    setNonce(txNonce)
+
+    createTx(txParams, txNonce)
+      .then(setSafeTx)
+      .then(() => onSubmit(formData))
+      .catch(setSafeTxError)
+  })
+
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onFormSubmit}>
         <DialogContent>
           <SendFromBlock />
 
