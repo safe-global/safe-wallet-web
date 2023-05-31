@@ -57,7 +57,6 @@ export const ModalProvider = ({ children }: { children: ReactNode }): ReactEleme
     })
   }, [router])
 
-  console.log('render', visibleModal, props)
   return (
     <ModalContext.Provider value={{ visibleModal, setVisibleModal }}>
       {children}

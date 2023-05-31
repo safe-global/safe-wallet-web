@@ -37,7 +37,7 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 
   return (
-    <TxLayout title="Confirm transaction">
+    <TxLayout title="Confirm transaction" txSummary={txSummary}>
       <SignOrExecuteForm
         safeTx={safeTx}
         txId={txId}

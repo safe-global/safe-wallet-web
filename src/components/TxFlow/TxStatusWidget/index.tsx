@@ -1,28 +1,28 @@
 import { Divider, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material'
 import CreatedIcon from '@/public/images/messages/created.svg'
 import SignedIcon from '@/public/images/messages/signed.svg'
-import css from './styles.module.css'
-import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import classnames from 'classnames'
+import css from './styles.module.css'
 
-const confirmedMessage = (threshold: number, confirmations?: number) => {
-  const confirmationCount = confirmations ?? 0
-
+const confirmedMessage = (threshold: number, confirmations: number) => {
   return (
     <>
-      Confirmed ({confirmationCount} of {threshold})
+      Confirmed ({confirmations} of {threshold})
     </>
   )
 }
 
-const TxStatusWidget = ({ step, txDetails }: { step: number; txDetails?: TransactionDetails }) => {
+const TxStatusWidget = ({ step, txSummary }: { step: number; txSummary?: TransactionSummary }) => {
   const { safe } = useSafeInfo()
   const { threshold } = safe
 
-  const { detailedExecutionInfo = undefined } = txDetails || {}
-  const { confirmations = [] } = isMultisigDetailedExecutionInfo(detailedExecutionInfo) ? detailedExecutionInfo : {}
+  const { executionInfo = undefined } = txSummary || {}
+  const { confirmationsSubmitted = 0 } = isMultisigExecutionInfo(executionInfo) ? executionInfo : {}
+
+  const isConfirmedStepIncomplete = step < 1 && !confirmationsSubmitted
 
   return (
     <Paper>
@@ -41,12 +41,12 @@ const TxStatusWidget = ({ step, txDetails }: { step: number; txDetails?: Transac
             </ListItemIcon>
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
           </ListItem>
-          <ListItem className={classnames({ [css.incomplete]: step < 1 })}>
+          <ListItem className={classnames({ [css.incomplete]: isConfirmedStepIncomplete })}>
             <ListItemIcon>
               <SignedIcon />
             </ListItemIcon>
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
-              {confirmedMessage(threshold, confirmations.length)}
+              {confirmedMessage(threshold, confirmationsSubmitted)}
             </ListItemText>
           </ListItem>
           <ListItem className={classnames({ [css.incomplete]: step < 2 })}>
