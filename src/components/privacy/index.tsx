@@ -6,7 +6,7 @@ const SafePrivacyPolicy = () => {
   return (
     <div>
       <h1>Privacy Policy</h1>
-      <p>Last updated on March&nbsp;2023.</p>
+      <p>Last updated on May&nbsp;2023.</p>
       <p>
         Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
         regulation regarding any personal information we may collect about you, including across our website,{' '}
@@ -462,7 +462,7 @@ const SafePrivacyPolicy = () => {
       <h3 id="5">5. Use of Third Party Applications</h3>
       <h4>5.1. Blockchain</h4>
       <p>
-        When using the Safe Account your smart contract address, Safe Account Transactions, addresses of signer accounts
+        When using Safe Accounts your smart contract address, Safe Account Transactions, addresses of signer accounts
         and ETH balances and token balances will be stored on the Blockchain. See section 2 of this Policy
       </p>
       <p>
