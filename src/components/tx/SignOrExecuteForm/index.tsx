@@ -36,10 +36,10 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
 
   // Estimate gas limit
   const { gasLimit, gasLimitError } = useGasLimit(safeTx)
-
-  const error = safeTxError || gasLimitError
-
   const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
+
+  // Error
+  const error = safeTxError || gasLimitError
 
   return (
     <DialogContent>

@@ -31,30 +31,25 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
   const [nonce, setNonce] = useState<number>()
   const [safeTxGas, setSafeTxGas] = useState<number>()
 
+  // Signed txs cannot be updated
+  const isSigned = safeTx && safeTx.signatures.size > 0
+
   // Recommended nonce and safeTxGas
   const recommendedParams = useRecommendedNonce(safeTx)
-  const nonceReadonly = !safeTx || safeTx.signatures.size > 0 || nonce !== undefined
 
-  // Update the tx when the recommended nonce/safeTx change
+  // Priority to external nonce, then to the recommended one
+  const finalNonce = nonce ?? recommendedParams?.nonce ?? safeTx?.data.nonce
+  const finalSafeTxGas = safeTxGas ?? recommendedParams?.safeTxGas ?? safeTx?.data.safeTxGas
+
+  // Update the tx when the nonce or safeTxGas change
   useEffect(() => {
-    if (nonceReadonly || !safeTx?.data) return
-    if (!recommendedParams?.nonce || !recommendedParams?.safeTxGas) return
-    if (safeTx.data.nonce === recommendedParams?.nonce && safeTx.data.safeTxGas === recommendedParams?.safeTxGas) return
+    if (isSigned || !safeTx?.data) return
+    if (safeTx.data.nonce === finalNonce && safeTx.data.safeTxGas === finalSafeTxGas) return
 
-    createTx({ ...safeTx.data, safeTxGas: recommendedParams.safeTxGas }, recommendedParams.nonce)
+    createTx({ ...safeTx.data, safeTxGas: finalSafeTxGas }, finalNonce)
       .then(setSafeTx)
       .catch(setSafeTxError)
-  }, [nonceReadonly, safeTx?.data, recommendedParams?.nonce, recommendedParams?.safeTxGas])
-
-  // Update the tx when the nonce/safeTxGas change from outside
-  useEffect(() => {
-    if (!safeTx?.data) return
-    if (safeTx.data.nonce === nonce && safeTx.data.safeTxGas === safeTxGas) return
-
-    createTx({ ...safeTx.data, safeTxGas }, nonce)
-      .then(setSafeTx)
-      .catch(setSafeTxError)
-  }, [safeTx?.data, nonce, safeTxGas])
+  }, [isSigned, finalNonce, finalSafeTxGas, safeTx?.data])
 
   return (
     <SafeTxContext.Provider
