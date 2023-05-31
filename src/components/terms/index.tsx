@@ -10,7 +10,7 @@ const SafeTerms = () => {
       <Typography variant="h1" mb={2}>
         Terms and Conditions
       </Typography>
-      <p>Last updated: March, 2023</p>
+      <p>Last updated: May, 2023</p>
       <h3>1. What is the scope of the Terms?</h3>
       <ol start={1}>
         <li>
@@ -87,8 +87,8 @@ const SafeTerms = () => {
         <li>&ldquo;Safe Account&rdquo; </li>
       </ol>
       <p>
-        The Safe Account (&ldquo;<i>Safe</i>&rdquo;) is a modular, self-custodial (i.e. not supervised by us) smart
-        contract-based wallet not provided by CC. Safe Accounts are{' '}
+        A Safe Account is a modular, self-custodial (i.e. not supervised by us) smart contract-based wallet not provided
+        by CC. Safe Accounts are{' '}
         <Link href="https://github.com/safe-global/safe-contracts/" passHref>
           <MUILink target="_blank" rel="noreferrer">
             open-source
@@ -103,23 +103,24 @@ const SafeTerms = () => {
         Transaction can be configured in code.{' '}
       </p>
       <p>
-        Owners need to connect a signing wallet with the Safe.&nbsp;Safe is compatible inter alia with standard private
-        key Wallets such as hardware wallets, browser extension wallets and mobile wallets that support WalletConnect.
+        Owners need to connect a signing wallet with a Safe Account. Safe Accounts are compatible inter alia with
+        standard private key Wallets such as hardware wallets, browser extension wallets and mobile wallets that support
+        WalletConnect.
       </p>
       <ol start={2}>
         <li>&ldquo;Safe App&rdquo;</li>
       </ol>
       <p>
-        You may access the Safe Account using the {'Safe{Wallet}'} web app, mobile app for iOS and android, or the
-        browser extension&nbsp;(each a &ldquo;Safe App&rdquo;). The Safe App may be used to manage your personal digital
-        assets on Ethereum and other common EVM chains when you connect the Safe Account with third-party&nbsp;services
-        (as defined below). The Safe App provides certain features that may be amended from time to time.{' '}
+        You may access Safe Accounts using the {'Safe{Wallet}'} web app, mobile app for iOS and android, or the browser
+        extension&nbsp;(each a &ldquo;Safe App&rdquo;). The Safe App may be used to manage your personal digital assets
+        on Ethereum and other common EVM chains when you connect a Safe Account with third-party&nbsp;services (as
+        defined below). The Safe App provides certain features that may be amended from time to time.{' '}
       </p>
       <ol start={3}>
         <li>&ldquo;Third-Party&nbsp;Safe Apps&rdquo;</li>
       </ol>
       <p>
-        The Safe App allows you to connect the Safe Account to third-party decentralized applications
+        The Safe App allows you to connect Safe Accounts to third-party decentralized applications
         (&ldquo;Third-Party&nbsp;Safe Apps&rdquo;) and use third-party&nbsp;services such as from the decentralized
         finance sector, DAO Tools or services related to NFTs (&ldquo;Third-Party&nbsp;Services&quot;). The
         Third-Party&nbsp;Safe Apps are integrated in the user interface of the Safe App via inline framing. The provider
@@ -142,7 +143,7 @@ const SafeTerms = () => {
         </li>
         <li>coverage underwritten by any regulatory agency&rsquo;s compensation scheme;</li>
         <li>
-          custody of your Recovery Phrase, Private Keys, Tokens or the ability to remove or freeze your Tokens, i.e.
+          custody of your Recovery Phrase, Private Keys, Tokens or the ability to remove or freeze your Tokens, i.e. a
           Safe Account is a self-custodial wallet;
         </li>
         <li>the storage or transmission of fiat currencies;</li>
@@ -279,10 +280,10 @@ const SafeTerms = () => {
       <h3>10. What licenses and access do we grant to you?</h3>
       <ol start={1}>
         <li>
-          All intellectual property rights in the Safe Account and the Services throughout the world belong to us as
-          owner or our licensors. Nothing in these Terms gives you any rights in respect of any intellectual property
-          owned by us or our licensors and you acknowledge that you do not acquire any ownership rights by downloading
-          the Safe App or any content from the Safe App.
+          All intellectual property rights in Safe Accounts and the Services throughout the world belong to us as owner
+          or our licensors. Nothing in these Terms gives you any rights in respect of any intellectual property owned by
+          us or our licensors and you acknowledge that you do not acquire any ownership rights by downloading the Safe
+          App or any content from the Safe App.
         </li>
         <li>
           If you are a consumer we grant you a simple, limited license, but do not sell, to you the Services you
@@ -524,9 +525,9 @@ const SafeTerms = () => {
         is domiciled shall also apply, provided that these are more advantageous for the consumer than the provisions of
         the German law.
       </p>
-      <h3>24. How can you get support for the Safe Account and tell us about any problems?</h3>
+      <h3>24. How can you get support for Safe Accounts and tell us about any problems?</h3>
       <p>
-        If you want to learn more about the Safe Account or the Service or have any problems using them or have any
+        If you want to learn more about Safe Accounts or the Service or have any problems using them or have any
         complaints please get in touch via any of the following channels:
       </p>
       <ol start={1}>
