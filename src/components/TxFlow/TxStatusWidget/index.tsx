@@ -32,7 +32,9 @@ const TxStatusWidget = ({ step, txSummary }: { step: number; txSummary?: Transac
           Transaction status
         </Typography>
       </div>
+
       <Divider />
+
       <div className={css.content}>
         <List className={css.status}>
           <ListItem>
@@ -41,6 +43,7 @@ const TxStatusWidget = ({ step, txSummary }: { step: number; txSummary?: Transac
             </ListItemIcon>
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
           </ListItem>
+
           <ListItem className={classnames({ [css.incomplete]: isConfirmedStepIncomplete })}>
             <ListItemIcon>
               <SignedIcon />
@@ -49,6 +52,7 @@ const TxStatusWidget = ({ step, txSummary }: { step: number; txSummary?: Transac
               {confirmedMessage(threshold, confirmationsSubmitted)}
             </ListItemText>
           </ListItem>
+
           <ListItem className={classnames({ [css.incomplete]: step < 2 })}>
             <ListItemIcon>
               <SignedIcon />
