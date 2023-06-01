@@ -1,14 +1,44 @@
 import { renderHook } from '@/tests/test-utils'
 import { ethers } from 'ethers'
-import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { TransactionListPage, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/services/onboard'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as walletHooks from '@/hooks/wallets/wallets'
 import * as pending from '@/hooks/usePendingTxs'
 import * as txSender from '@/services/tx/tx-sender'
-import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
-import { createSafeTx } from './SignOrExecuteForm.test'
+import * as queueHook from '@/hooks/useTxQueue'
+import {
+  useImmediatelyExecutable,
+  useIsExecutionLoop,
+  useRecommendedNonce,
+  useTxActions,
+  useValidateNonce,
+} from './hooks'
+
+const createSafeTx = (data = '0x'): SafeTransaction => {
+  return {
+    data: {
+      to: '0x0000000000000000000000000000000000000000',
+      value: '0x0',
+      data,
+      operation: 0,
+      nonce: 100,
+    },
+    signatures: new Map([]),
+    addSignature: function (sig: SafeSignature): void {
+      this.signatures.set(sig.signer, sig)
+    },
+    encodedSignatures: function (): string {
+      return Array.from(this.signatures)
+        .map(([, sig]) => {
+          return [sig.signer, sig.data].join(' = ')
+        })
+        .join('; ')
+    },
+  } as SafeTransaction
+}
 
 describe('SignOrExecute hooks', () => {
   beforeEach(() => {
@@ -473,6 +503,73 @@ describe('SignOrExecute hooks', () => {
       expect(proposeSpy).not.toHaveBeenCalled()
       expect(signSpy).not.toHaveBeenCalled()
       expect(relaySpy).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('useRecommendedNonce', () => {
+    it('should get the recommended nonce', async () => {
+      jest.spyOn(queueHook, 'default').mockImplementation(
+        () =>
+          ({
+            loading: false,
+            page: {
+              results: [
+                {
+                  type: 'DATE_LABEL',
+                  timestamp: 0,
+                },
+                {
+                  type: 'TRANSACTION',
+                  transaction: {
+                    executionInfo: {
+                      type: 'MULTISIG',
+                      nonce: 10,
+                    },
+                  },
+                },
+              ],
+            },
+          } as { loading: boolean; page: TransactionListPage }),
+      )
+
+      const { result } = renderHook(() => useRecommendedNonce())
+
+      expect(result.current).toEqual(11)
+    })
+
+    it('should return the Safe nonce if the queue is empty', async () => {
+      jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
+        safe: {
+          version: '1.3.0',
+          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          nonce: 100,
+          threshold: 2,
+          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+        } as SafeInfo,
+        safeAddress: ethers.utils.hexZeroPad('0x000', 20),
+        safeError: undefined,
+        safeLoading: false,
+        safeLoaded: true,
+      }))
+
+      jest.spyOn(queueHook, 'default').mockImplementation(
+        () =>
+          ({
+            loading: false,
+            page: {
+              results: [
+                {
+                  type: 'DATE_LABEL',
+                  timestamp: 0,
+                },
+              ],
+            },
+          } as { loading: boolean; page: TransactionListPage }),
+      )
+
+      const { result } = renderHook(() => useRecommendedNonce())
+
+      expect(result.current).toEqual(100)
     })
   })
 })

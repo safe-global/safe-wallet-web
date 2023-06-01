@@ -17,6 +17,8 @@ import type { ConnectedWallet } from '@/services/onboard'
 import type { OnboardAPI } from '@web3-onboard/core'
 import { getRecommendedTxParams } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
+import useTxQueue from '@/hooks/useTxQueue'
+import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 
 type TxActions = {
   signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string) => Promise<string>
@@ -29,13 +31,13 @@ type TxActions = {
   ) => Promise<string>
 }
 
-function assertTx(safeTx?: SafeTransaction): asserts safeTx {
+function assertTx(safeTx: SafeTransaction | undefined): asserts safeTx {
   if (!safeTx) throw new Error('Transaction not provided')
 }
 function assertWallet(wallet: ConnectedWallet | null): asserts wallet {
   if (!wallet) throw new Error('Wallet not connected')
 }
-function assertOnboard(onboard?: OnboardAPI): asserts onboard {
+function assertOnboard(onboard: OnboardAPI | undefined): asserts onboard {
   if (!onboard) throw new Error('Onboard not connected')
 }
 
@@ -122,7 +124,7 @@ export const useTxActions = (): TxActions => {
   }, [safe, onboard, wallet])
 }
 
-export const useValidateNonce = (safeTx?: SafeTransaction): boolean => {
+export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {
   const { safe } = useSafeInfo()
   return !!safeTx && safeTx?.data.nonce === safe.nonce
 }
@@ -140,36 +142,34 @@ export const useIsExecutionLoop = (): boolean => {
   return wallet ? sameString(wallet.address, safeAddress) : false
 }
 
-export const useRecommendedNonce = (
-  safeTx?: SafeTransaction,
-):
-  | {
-      nonce: number
-      safeTxGas: number
+export const useRecommendedNonce = (): number | undefined => {
+  const queue = useTxQueue()
+  const txList = queue.page?.results || []
+  const { safe, safeLoaded } = useSafeInfo()
+
+  for (const tx of txList) {
+    if (isTransactionListItem(tx) && isMultisigExecutionInfo(tx.transaction.executionInfo)) {
+      return tx.transaction.executionInfo.nonce + 1
     }
-  | undefined => {
-  const { safe } = useSafeInfo()
+  }
+
+  return safeLoaded ? safe.nonce : undefined
+}
+
+export const useSafeTxGas = (safeTx: SafeTransaction | undefined): number | undefined => {
   const safeTxData = safeTx?.data
-  const alreadySigned = safeTx && safeTx.signatures?.size > 0
 
-  // Memoize only the necessary params, so that it doesn't change every time safeTx is changed
-  const safeTxParams = useMemo(
-    () =>
-      safeTxData?.to
-        ? {
-            to: safeTxData.to,
-            value: safeTxData.value,
-            data: safeTxData.data,
-            operation: safeTxData.operation,
-          }
-        : undefined,
-    [safeTxData?.to, safeTxData?.value, safeTxData?.data, safeTxData?.operation],
-  )
-
+  // Pass only the necessary params, so that it doesn't change every time safeTx is changed
   const [recommendedParams] = useAsync(() => {
-    if (!safeTxParams || alreadySigned) return
-    return getRecommendedTxParams(safeTxParams)
-  }, [safeTxParams, safe?.txQueuedTag])
+    if (!safeTxData?.to) return
 
-  return recommendedParams
+    return getRecommendedTxParams({
+      to: safeTxData.to,
+      value: safeTxData.value,
+      data: safeTxData.data,
+      operation: safeTxData.operation,
+    })
+  }, [safeTxData?.to, safeTxData?.value, safeTxData?.data, safeTxData?.operation])
+
+  return recommendedParams?.safeTxGas
 }
