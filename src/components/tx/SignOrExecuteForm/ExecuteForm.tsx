@@ -1,4 +1,4 @@
-import { type ReactElement, type SyntheticEvent, useState } from 'react'
+import { type ReactElement, type SyntheticEvent, useState, useContext } from 'react'
 import { Box, Button } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -15,6 +15,7 @@ import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSele
 import { hasRemainingRelays } from '@/utils/relaying'
 import type { SignOrExecuteProps } from '.'
 import type { AdvancedParameters } from '../AdvancedParams'
+import { ModalContext, ModalType } from '@/components/TxFlow/ModalProvider'
 
 const ExecuteForm = ({
   safeTx,
@@ -57,6 +58,8 @@ const ExecuteForm = ({
   // Check if transaction will fail
   const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(safeTx, advancedParams.gasLimit)
 
+  const { setVisibleModal } = useContext(ModalContext)
+
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
@@ -66,7 +69,9 @@ const ExecuteForm = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await executeTx(txOptions, safeTx, txId, origin, willRelay)
+      const realTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
+
+      setVisibleModal({ type: ModalType.SuccessScreen, props: { txId: realTxId } })
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)

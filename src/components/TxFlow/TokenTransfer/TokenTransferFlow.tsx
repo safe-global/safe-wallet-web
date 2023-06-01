@@ -4,7 +4,6 @@ import CreateTokenTransfer from '@/components/TxFlow/TokenTransfer/CreateTokenTr
 import ReviewTokenTransfer from '@/components/TxFlow/TokenTransfer/ReviewTokenTransfer'
 import TxLayout from '@/components/TxFlow/common/TxLayout'
 import { ProgressBar } from '@/components/common/ProgressBar'
-import { SuccessScreen } from '@/components/TxFlow/SuccessScreen'
 
 const initialData = {
   recipient: '',
@@ -17,7 +16,6 @@ const TokenTransferFlow = ({ txNonce }: { txNonce?: number }) => {
   const steps = [
     <CreateTokenTransfer key={0} disableSpendingLimit={txNonce !== undefined} />,
     <ReviewTokenTransfer key={1} txNonce={txNonce} />,
-    <SuccessScreen key={2} />,
   ]
 
   return (

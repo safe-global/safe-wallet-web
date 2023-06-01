@@ -11,6 +11,7 @@ import {
 import NewModalDialog from '@/components/common/NewModalDialog'
 import { ReplaceTxMenu, NewTxMenu, RejectTx, TokenTransferFlow, ConfirmProposedTx } from '@/components/TxFlow'
 import { useRouter } from 'next/router'
+import { SuccessScreen } from '@/components/TxFlow/SuccessScreen'
 
 export enum ModalType {
   SendTokens = 'sendTokens',
@@ -18,6 +19,7 @@ export enum ModalType {
   ReplaceTx = 'replaceTx',
   NewTx = 'newTx',
   ConfirmTx = 'confirmTx',
+  SuccessScreen = 'successScreen',
 }
 
 const ModalTypes = {
@@ -26,6 +28,7 @@ const ModalTypes = {
   [ModalType.ReplaceTx]: ReplaceTxMenu,
   [ModalType.NewTx]: NewTxMenu,
   [ModalType.ConfirmTx]: ConfirmProposedTx,
+  [ModalType.SuccessScreen]: SuccessScreen,
 }
 
 type VisibleModalState<T extends ModalType> = {

@@ -1,13 +1,17 @@
-import StatusMessage, { TransactionStatus } from '@/components/TxFlow/SuccessScreen/StatusMessage'
+import StatusMessage from '@/components/TxFlow/SuccessScreen/StatusMessage'
+import StatusStepper from '@/components/TxFlow/SuccessScreen/StatusStepper'
 import { AppRoutes } from '@/config/routes'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import useTxStatus from '@/hooks/useTxStatus'
+import { TxEvent } from '@/services/tx/txEvents'
 import { Button, Divider, Paper } from '@mui/material'
 import classnames from 'classnames'
 import Link from 'next/link'
 import { type UrlObject } from 'url'
 import css from './styles.module.css'
 
-export const SuccessScreen = () => {
+export const SuccessScreen = ({ txId }: { txId: string }) => {
+  const { status } = useTxStatus()
   const safeAddress = useSafeAddress()
 
   const homeLink: UrlObject = {
@@ -22,13 +26,13 @@ export const SuccessScreen = () => {
       }}
     >
       <div className={css.row}>
-        {/* TODO: replace hardcoded values  */}
-        <StatusMessage status={TransactionStatus.PROCESSING} isError={false} />
+        {/* TODO: improve conditions  */}
+        <StatusMessage status={status} isError={status !== TxEvent.FAILED} />
       </div>
 
       <Divider />
       <div className={css.row}>
-        <h3>placeholder</h3>
+        <StatusStepper status={status} txId={txId} />
       </div>
 
       <Divider />
