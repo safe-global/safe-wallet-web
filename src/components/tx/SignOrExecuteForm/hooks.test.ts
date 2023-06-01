@@ -1,7 +1,7 @@
 import { renderHook } from '@/tests/test-utils'
 import { ethers } from 'ethers'
 import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { TransactionListPage, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionListPage, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/services/onboard'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as wallet from '@/hooks/wallets/useWallet'
