@@ -3,17 +3,20 @@ import { Container, Grid, Paper, Typography } from '@mui/material'
 import TxStatusWidget from '@/components/TxFlow/TxStatusWidget'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import css from '@/components/TxFlow/TokenTransfer/styles.module.css'
+import { ProgressBar } from '@/components/common/ProgressBar'
 
 const TxLayout = ({
   title,
   children,
   step = 0,
   txSummary,
+  progress,
 }: {
   title: string
   children: ReactElement
   step?: number
   txSummary?: TransactionSummary
+  progress?: number
 }) => {
   return (
     <Container>
@@ -23,10 +26,14 @@ const TxLayout = ({
             {title}
           </Typography>
         </Grid>
+
         <Grid item container xs={12} gap={3}>
           <Grid item xs={7} component={Paper}>
+            {progress !== undefined && <ProgressBar value={progress} />}
+
             {children}
           </Grid>
+
           <Grid item xs={4}>
             <TxStatusWidget step={step} txSummary={txSummary} />
           </Grid>

@@ -3,7 +3,6 @@ import { SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssets
 import CreateTokenTransfer from '@/components/TxFlow/TokenTransfer/CreateTokenTransfer'
 import ReviewTokenTransfer from '@/components/TxFlow/TokenTransfer/ReviewTokenTransfer'
 import TxLayout from '@/components/TxFlow/common/TxLayout'
-import { ProgressBar } from '@/components/common/ProgressBar'
 
 const initialData = {
   recipient: '',
@@ -19,11 +18,8 @@ const TokenTransferFlow = ({ txNonce }: { txNonce?: number }) => {
     <TokenTransferStepper.Provider steps={steps} defaultValues={[initialData, {}]}>
       {(Step, values) => {
         return (
-          <TxLayout title="Send Tokens" step={values.activeStep}>
-            <>
-              <ProgressBar value={values.progress} />
-              {Step}
-            </>
+          <TxLayout title="Send Tokens" step={values.activeStep} progress={values.progress}>
+            <>{Step}</>
           </TxLayout>
         )
       }}
