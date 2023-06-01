@@ -2,17 +2,26 @@ import StatusMessage from '@/components/TxFlow/SuccessScreen/StatusMessage'
 import StatusStepper from '@/components/TxFlow/SuccessScreen/StatusStepper'
 import { AppRoutes } from '@/config/routes'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import useTxStatus from '@/hooks/useTxStatus'
-import { TxEvent } from '@/services/tx/txEvents'
 import { Button, Divider, Paper } from '@mui/material'
 import classnames from 'classnames'
 import Link from 'next/link'
 import { type UrlObject } from 'url'
 import css from './styles.module.css'
+import { useAppSelector } from '@/store'
+import { selectPendingTxById } from '@/store/pendingTxsSlice'
+import { useEffect, useState } from 'react'
 
 export const SuccessScreen = ({ txId }: { txId: string }) => {
-  const { status } = useTxStatus()
+  const [localTxHash, setLocalTxHash] = useState<string>('')
   const safeAddress = useSafeAddress()
+  const pendingTx = useAppSelector((state) => selectPendingTxById(state, txId))
+  const { txHash = '', status } = pendingTx || {}
+
+  useEffect(() => {
+    if (!txHash) return
+
+    setLocalTxHash(txHash)
+  }, [txHash])
 
   const homeLink: UrlObject = {
     pathname: AppRoutes.home,
@@ -27,12 +36,12 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
     >
       <div className={css.row}>
         {/* TODO: improve conditions  */}
-        <StatusMessage status={status} isError={status !== TxEvent.FAILED} />
+        <StatusMessage status={status} isError={false} />
       </div>
 
       <Divider />
       <div className={css.row}>
-        <StatusStepper status={status} txId={txId} />
+        <StatusStepper status={status} txHash={localTxHash} />
       </div>
 
       <Divider />

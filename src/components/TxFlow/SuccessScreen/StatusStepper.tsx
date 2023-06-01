@@ -2,19 +2,15 @@ import { Box, Step, StepConnector, Stepper, Typography } from '@mui/material'
 import css from '@/components/new-safe/create/steps/StatusStep/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import StatusStep from '@/components/new-safe/create/steps/StatusStep/StatusStep'
-import { TxEvent } from '@/services/tx/txEvents'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { useAppSelector } from '@/store'
-import { selectPendingTxById } from '@/store/pendingTxsSlice'
+import { PendingStatus } from '@/store/pendingTxsSlice'
 
-const StatusStepper = ({ status, txId }: { status: TxEvent; txId: string }) => {
+const StatusStepper = ({ status, txHash }: { status: PendingStatus; txHash: string }) => {
   const { safeAddress } = useSafeInfo()
-  const pendingTx = useAppSelector((state) => selectPendingTxById(state, txId))
-  const { txHash = '' } = pendingTx || {}
 
-  const isProcessing = status === TxEvent.PROCESSING || status === TxEvent.PROCESSED || status === TxEvent.SUCCESS
-  const isProcessed = status === TxEvent.PROCESSED || status === TxEvent.SUCCESS
-  const isSuccess = status === TxEvent.SUCCESS
+  const isProcessing = status === PendingStatus.PROCESSING || status === PendingStatus.INDEXING || status === undefined
+  const isProcessed = status === PendingStatus.INDEXING || status === undefined
+  const isSuccess = status === undefined
 
   return (
     <Stepper orientation="vertical" nonLinear connector={<StepConnector className={css.connector} />}>

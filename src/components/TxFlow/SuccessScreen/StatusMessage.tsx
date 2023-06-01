@@ -1,33 +1,28 @@
 import { Box, Typography } from '@mui/material'
 import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
-import { TxEvent } from '@/services/tx/txEvents'
+import { PendingStatus } from '@/store/pendingTxsSlice'
 
-const getStep = (status: TxEvent) => {
+const getStep = (status: PendingStatus) => {
   switch (status) {
-    case TxEvent.PROCESSING:
+    case PendingStatus.PROCESSING:
       return {
         description: 'Transaction is now processing.',
         instruction: 'The transaction was confirmed and is now being processed.',
       }
-    case TxEvent.PROCESSED:
+    case PendingStatus.INDEXING:
       return {
         description: 'Transaction was processed.',
         instruction: 'It is now being indexed.',
       }
-    case TxEvent.SUCCESS:
+    default:
       return {
         description: 'Transaction was successful.',
         instruction: '',
       }
-    default:
-      return {
-        description: 'Transaction failed.',
-        instruction: 'Please try again.',
-      }
   }
 }
 
-const StatusMessage = ({ status, isError }: { status: TxEvent; isError: boolean }) => {
+const StatusMessage = ({ status, isError }: { status: PendingStatus; isError: boolean }) => {
   const stepInfo = getStep(status)
 
   const color = isError ? 'error' : 'info'
