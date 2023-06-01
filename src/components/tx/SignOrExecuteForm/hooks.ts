@@ -15,10 +15,8 @@ import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import type { ConnectedWallet } from '@/services/onboard'
 import type { OnboardAPI } from '@web3-onboard/core'
-import { getRecommendedTxParams } from '@/services/tx/tx-sender/recommendedNonce'
+import { getSafeTxGas, getRecommendedNonce } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
-import useTxQueue from '@/hooks/useTxQueue'
-import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
 
 type TxActions = {
   signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string) => Promise<string>
@@ -143,33 +141,37 @@ export const useIsExecutionLoop = (): boolean => {
 }
 
 export const useRecommendedNonce = (): number | undefined => {
-  const queue = useTxQueue()
-  const txList = queue.page?.results || []
-  const { safe, safeLoaded } = useSafeInfo()
+  const { safeAddress, safe } = useSafeInfo()
 
-  for (const tx of txList) {
-    if (isTransactionListItem(tx) && isMultisigExecutionInfo(tx.transaction.executionInfo)) {
-      return tx.transaction.executionInfo.nonce + 1
-    }
-  }
+  const [recommendedNonce] = useAsync(() => {
+    if (!safe.chainId || !safeAddress) return
 
-  return safeLoaded ? safe.nonce : undefined
+    return getRecommendedNonce(safe.chainId, safeAddress)
+  }, [safeAddress, safe.chainId, safe.txQueuedTag]) // update when tx queue changes
+
+  return recommendedNonce
 }
 
 export const useSafeTxGas = (safeTx: SafeTransaction | undefined): number | undefined => {
-  const safeTxData = safeTx?.data
+  const { safeAddress, safe } = useSafeInfo()
 
-  // Pass only the necessary params, so that it doesn't change every time safeTx is changed
-  const [recommendedParams] = useAsync(() => {
-    if (!safeTxData?.to) return
+  // Memoize only the necessary params so that the useAsync hook is not called every time safeTx changes
+  const safeTxParams = useMemo(() => {
+    return !safeTx?.data?.to
+      ? undefined
+      : {
+          to: safeTx?.data.to,
+          value: safeTx?.data?.value,
+          data: safeTx?.data?.data,
+          operation: safeTx?.data?.operation,
+        }
+  }, [safeTx?.data.to, safeTx?.data.value, safeTx?.data.data, safeTx?.data.operation])
 
-    return getRecommendedTxParams({
-      to: safeTxData.to,
-      value: safeTxData.value,
-      data: safeTxData.data,
-      operation: safeTxData.operation,
-    })
-  }, [safeTxData?.to, safeTxData?.value, safeTxData?.data, safeTxData?.operation])
+  const [safeTxGas] = useAsync(() => {
+    if (!safe.chainId || !safeAddress || !safeTxParams) return
 
-  return recommendedParams?.safeTxGas
+    return getSafeTxGas(safe.chainId, safeAddress, safeTxParams)
+  }, [safeAddress, safe.chainId, safeTxParams])
+
+  return safeTxGas
 }

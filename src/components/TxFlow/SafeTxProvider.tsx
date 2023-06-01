@@ -16,6 +16,8 @@ export const SafeTxContext = createContext<{
 
   safeTxGas?: number
   setSafeTxGas: Dispatch<SetStateAction<number | undefined>>
+
+  recommendedNonce?: number
 }>({
   setSafeTx: () => {},
   setSafeTxError: () => {},
@@ -63,6 +65,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
         setNonce,
         safeTxGas,
         setSafeTxGas,
+        recommendedNonce,
       }}
     >
       {children}
