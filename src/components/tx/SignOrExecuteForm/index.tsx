@@ -6,9 +6,9 @@ import { useImmediatelyExecutable, useValidateNonce } from './hooks'
 import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
 import { TxSimulation } from '../TxSimulation'
 import useGasLimit from '@/hooks/useGasLimit'
-import { SafeTxContext } from '@/components/TxFlow/SafeTxProvider'
 import ExecuteForm from './ExecuteForm'
 import SignForm from './SignForm'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 export type SignOrExecuteProps = {
   txId?: string

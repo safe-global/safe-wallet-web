@@ -13,7 +13,8 @@ import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getTxButtonTooltip } from '@/components/transactions/utils'
-import { ModalContext, ModalType } from '@/components/TxFlow'
+import { TxModalContext } from '@/components/tx-flow'
+import ConfirmProposedTx from '@/components/tx-flow/flows/ConfirmTx'
 
 const SignTxButton = ({
   txSummary,
@@ -22,11 +23,11 @@ const SignTxButton = ({
   txSummary: TransactionSummary
   compact?: boolean
 }): ReactElement => {
+  const { setTxFlow } = useContext(TxModalContext)
   const wallet = useWallet()
   const isSignable = isSignableBy(txSummary, wallet?.address || '')
   const isPending = useIsPending(txSummary.id)
   const safeSDK = useSafeSDK()
-  const { setVisibleModal } = useContext(ModalContext)
 
   const isDisabled = !isSignable || isPending || !safeSDK
 
@@ -34,7 +35,7 @@ const SignTxButton = ({
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
-    setVisibleModal({ type: ModalType.ConfirmTx, props: { txSummary } })
+    setTxFlow(<ConfirmProposedTx txSummary={txSummary} />)
   }
 
   return (

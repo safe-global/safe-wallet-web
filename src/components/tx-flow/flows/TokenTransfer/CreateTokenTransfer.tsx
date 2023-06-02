@@ -1,5 +1,4 @@
-import { TokenTransferStepper } from '@/components/TxFlow/TokenTransfer/index'
-import { type ReactElement, useCallback, useContext, useMemo } from 'react'
+import { type ReactElement, useCallback, useMemo } from 'react'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
@@ -40,13 +39,18 @@ import {
   type SendAssetsFormData,
   SendTxType,
 } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
-import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
-import { createTx } from '@/services/tx/tx-sender'
-import { SafeTxContext } from '../SafeTxProvider'
+import type { TokenTransferParams } from '.'
 
-const CreateTokenTransfer = ({ txNonce }: { txNonce?: number }): ReactElement => {
-  const disableSpendingLimit = txNonce !== undefined
-  const { mergedValues, onSubmit, onBack } = useContext(TokenTransferStepper.Context)
+const CreateTokenTransfer = ({
+  params,
+  onSubmit,
+  onBack,
+}: {
+  params: TokenTransferParams
+  onSubmit: (data: TokenTransferParams) => void
+  onBack: () => void
+}): ReactElement => {
+  const disableSpendingLimit = params.txNonce !== undefined
   const { balances } = useVisibleBalances()
   const addressBook = useAddressBook()
   const chainId = useChainId()
@@ -55,18 +59,17 @@ const CreateTokenTransfer = ({ txNonce }: { txNonce?: number }): ReactElement =>
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
-  const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
 
   const formMethods = useForm<SendAssetsFormData>({
     defaultValues: {
-      [SendAssetsField.recipient]: mergedValues?.[SendAssetsField.recipient] || '',
-      [SendAssetsField.tokenAddress]: mergedValues?.[SendAssetsField.tokenAddress] || '',
-      [SendAssetsField.amount]: mergedValues?.[SendAssetsField.amount] || '',
+      [SendAssetsField.recipient]: params.recipient || '',
+      [SendAssetsField.tokenAddress]: params.tokenAddress || '',
+      [SendAssetsField.amount]: params.amount || '',
       [SendAssetsField.type]: disableSpendingLimit
         ? SendTxType.multiSig
         : isOnlySpendingLimitBeneficiary
         ? SendTxType.spendingLimit
-        : mergedValues?.[SendAssetsField.type] || SendTxType.multiSig,
+        : params.type,
     },
     mode: 'onChange',
     delayError: 500,
@@ -127,29 +130,9 @@ const CreateTokenTransfer = ({ txNonce }: { txNonce?: number }): ReactElement =>
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
 
-  // Create SafeTx on submit and pass it to the SafeTxContext
-  const onFormSubmit = handleSubmit((formData) => {
-    if (!selectedToken) return
-
-    const txParams = createTokenTransferParams(
-      formData.recipient,
-      formData.amount,
-      selectedToken.tokenInfo.decimals,
-      selectedToken.tokenInfo.address,
-    )
-
-    // Set the nonce passed from outside (replacement tx)
-    setNonce(txNonce)
-
-    createTx(txParams, txNonce)
-      .then(setSafeTx)
-      .then(() => onSubmit(formData))
-      .catch(setSafeTxError)
-  })
-
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={onFormSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <SendFromBlock />
 
@@ -240,6 +223,7 @@ const CreateTokenTransfer = ({ txNonce }: { txNonce?: number }): ReactElement =>
           <Button variant="outlined" onClick={onBack}>
             Back
           </Button>
+
           <Button variant="contained" type="submit" disabled={isDisabled}>
             Next
           </Button>

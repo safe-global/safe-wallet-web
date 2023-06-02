@@ -3,14 +3,14 @@ import Button from '@mui/material/Button'
 import css from './styles.module.css'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
-import { ModalContext, ModalType } from '@/components/TxFlow'
+import { TxModalContext } from '@/components/tx-flow'
+import NewTxMenu from '@/components/tx-flow/flows/NewTx'
 
 const NewTxButton = (): ReactElement => {
-  const { setVisibleModal } = useContext(ModalContext)
+  const { setTxFlow } = useContext(TxModalContext)
 
   const onClick = () => {
-    setVisibleModal({ type: ModalType.NewTx, props: {} })
-
+    setTxFlow(<NewTxMenu />)
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 

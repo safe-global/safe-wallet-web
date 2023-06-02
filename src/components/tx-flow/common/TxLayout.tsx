@@ -1,29 +1,26 @@
 import type { ReactNode } from 'react'
 import { Box, Container, Grid, Paper, Typography } from '@mui/material'
-import TxStatusWidget from '@/components/TxFlow/TxStatusWidget'
-import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import css from '@/components/TxFlow/TokenTransfer/styles.module.css'
+import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import SafeTxProvider from '../SafeTxProvider'
 import TxNonce from './TxNonce'
+import TxStatusWidget from './TxStatusWidget'
 
-const TxLayout = ({
-  title,
-  children,
-  step = 0,
-  txSummary,
-  progress,
-}: {
+type TxLayoutProps = {
   title: string
   children: ReactNode
   step?: number
   txSummary?: TransactionSummary
-  progress?: number
-}) => {
+}
+
+const TxLayout = ({ title, children, step = 0, txSummary }: TxLayoutProps) => {
+  const steps = Array.isArray(children) ? children : [children]
+  const progress = Math.round(((step + 1) / steps.length) * 100)
+
   return (
     <SafeTxProvider>
       <Container>
-        <Grid container className={css.wrapper} alignItems="center" justifyContent="center">
+        <Grid container alignItems="center" justifyContent="center">
           <Grid item xs={12}>
             <Typography variant="h3" component="div" fontWeight="700" mb={2}>
               {title}
@@ -32,13 +29,17 @@ const TxLayout = ({
 
           <Grid item container xs={12} gap={3}>
             <Grid item xs={7} component={Paper}>
-              {progress !== undefined && <ProgressBar value={progress} />}
+              {<ProgressBar value={progress} />}
 
               <Box display="flex" justifyContent="flex-end" py={2} px={3}>
                 <TxNonce />
               </Box>
 
-              {children}
+              {steps.map((children, index) => (
+                <div key={index} style={{ display: index === step ? '' : 'none' }}>
+                  {children}
+                </div>
+              ))}
             </Grid>
 
             <Grid item xs={4}>
