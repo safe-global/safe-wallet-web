@@ -10,7 +10,7 @@ import { isCustomTxInfo } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
 import { useContext } from 'react'
-import { ModalContext, ModalType } from '@/components/TxFlow/ModalProvider'
+import { ModalContext, ModalType } from '@/components/TxFlow'
 
 const wrapIcon = (icon: React.ReactNode) => <div className={css.circle}>{icon}</div>
 

@@ -36,7 +36,7 @@ import useAdjustUrl from '@/hooks/useAdjustUrl'
 import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifications'
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
-import { ModalProvider } from '@/components/TxFlow/ModalProvider'
+import { ModalProvider } from '@/components/TxFlow'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 

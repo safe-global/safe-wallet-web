@@ -14,7 +14,7 @@ import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvi
 import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getTxButtonTooltip } from '@/components/transactions/utils'
-import { ModalContext, ModalType } from '@/components/TxFlow/ModalProvider'
+import { ModalContext, ModalType } from '@/components/TxFlow'
 
 const ExecuteTxButton = ({
   txSummary,

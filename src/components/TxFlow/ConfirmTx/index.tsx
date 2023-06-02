@@ -40,7 +40,7 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   useEffect(() => {
     setSafeTx(safeTx)
     setSafeTxError(safeTxError)
-  }, [safeTx, safeTxError])
+  }, [safeTx, safeTxError, setSafeTx, setSafeTxError])
 
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 

@@ -7,8 +7,10 @@ import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as walletHooks from '@/utils/wallets'
 import * as pending from '@/hooks/usePendingTxs'
-import * as txSender from '@/services/tx/tx-sender'
+import * as txSenderFunctions from '@/services/tx/tx-sender'
 import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
+
+const txSender = { ...txSenderFunctions }
 
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {

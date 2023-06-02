@@ -15,7 +15,7 @@ import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSele
 import { hasRemainingRelays } from '@/utils/relaying'
 import type { SignOrExecuteProps } from '.'
 import type { AdvancedParameters } from '../AdvancedParams'
-import { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 const ExecuteForm = ({
   safeTx,

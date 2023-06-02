@@ -13,7 +13,7 @@ import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getTxButtonTooltip } from '@/components/transactions/utils'
-import { ModalContext, ModalType } from '@/components/TxFlow/ModalProvider'
+import { ModalContext, ModalType } from '@/components/TxFlow'
 
 const SignTxButton = ({
   txSummary,
