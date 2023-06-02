@@ -1,6 +1,4 @@
 import { type ReactElement, type ReactNode, useState, useContext } from 'react'
-import { DialogContent } from '@mui/material'
-
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { WrongChainWarning } from '../WrongChainWarning'
