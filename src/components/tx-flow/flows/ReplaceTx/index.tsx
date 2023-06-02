@@ -4,13 +4,15 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import RocketIcon from '@/public/images/transactions/rocket.svg'
 import CheckIcon from '@mui/icons-material/Check'
 import DeleteIcon from '@/public/images/common/delete.svg'
-import { SendTokensButton } from '@/components/TxFlow/common/TxButton'
+import { SendTokensButton } from '@/components/tx-flow/common/TxButton'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
 import { useContext } from 'react'
-import { ModalContext, ModalType } from '@/components/TxFlow'
+import { TxModalContext } from '../..'
+import TokenTransferFlow from '../TokenTransfer'
+import RejectTx from '../RejectTx'
 
 const wrapIcon = (icon: React.ReactNode) => <div className={css.circle}>{icon}</div>
 
@@ -41,7 +43,7 @@ const btnWidth = {
 }
 
 const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
-  const { setVisibleModal } = useContext(ModalContext)
+  const { setTxFlow } = useContext(TxModalContext)
   const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
   const canCancel = !queuedTxsByNonce?.some(
     (item) => isCustomTxInfo(item.transaction.txInfo) && item.transaction.txInfo.isCancellation,
@@ -78,10 +80,7 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
                 </Typography>
               </Grid>
               <Grid item container justifyContent="center" alignItems="center" gap={1} xs={12} sm flexDirection="row">
-                <SendTokensButton
-                  onClick={() => setVisibleModal({ type: ModalType.SendTokens, props: { txNonce } })}
-                  sx={btnWidth}
-                />
+                <SendTokensButton onClick={() => setTxFlow(<TokenTransferFlow txNonce={txNonce} />)} sx={btnWidth} />
               </Grid>
               <Grid item>
                 <Typography variant="body2" className={css.or}>
@@ -108,7 +107,7 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
                 >
                   <span style={{ width: '100%' }}>
                     <Button
-                      onClick={() => setVisibleModal({ type: ModalType.RejectTx, props: { txNonce } })}
+                      onClick={() => setTxFlow(<RejectTx txNonce={txNonce} />)}
                       variant="outlined"
                       fullWidth
                       sx={{ mb: 1, ...btnWidth }}

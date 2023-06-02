@@ -1,13 +1,14 @@
-import TxButton, { SendNFTsButton, SendTokensButton } from '@/components/TxFlow/common/TxButton'
+import TxButton, { SendNFTsButton, SendTokensButton } from '@/components/tx-flow/common/TxButton'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import { Box, Typography } from '@mui/material'
-import { ModalContext, ModalType } from '@/components/TxFlow'
+import { TxModalContext } from '../../'
 import { useContext } from 'react'
+import TokenTransferFlow from '../TokenTransfer'
 
 const BUTTONS_HEIGHT = '91px'
 
 const NewTxMenu = () => {
-  const { setVisibleModal } = useContext(ModalContext)
+  const { setTxFlow } = useContext(TxModalContext)
   const txBuilder = useTxBuilderApp()
 
   return (
@@ -15,12 +16,10 @@ const NewTxMenu = () => {
       <Typography variant="h6" fontWeight={700}>
         New transaction
       </Typography>
-      <SendTokensButton
-        onClick={() => setVisibleModal({ type: ModalType.SendTokens, props: {} })}
-        sx={{ height: BUTTONS_HEIGHT }}
-      />
 
-      <SendNFTsButton onClick={() => console.log('open send NFTs flow')} sx={{ height: BUTTONS_HEIGHT }} />
+      <SendTokensButton onClick={() => setTxFlow(<TokenTransferFlow />)} sx={{ height: BUTTONS_HEIGHT }} />
+
+      <SendNFTsButton onClick={() => console.log('Route to NFTs')} sx={{ height: BUTTONS_HEIGHT }} />
 
       {txBuilder && txBuilder.app && (
         <TxButton

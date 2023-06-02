@@ -10,19 +10,18 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
 import { DialogContent, Typography } from '@mui/material'
 import { createExistingTx } from '@/services/tx/tx-sender'
-import TxLayout from '@/components/TxFlow/common/TxLayout'
-import { SafeTxContext } from '../SafeTxProvider'
+import TxLayout from '@/components/tx-flow/common/TxLayout'
+import { SafeTxContext } from '../../SafeTxProvider'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
-  onSubmit: () => void
 }
 
 const SIGN_TEXT = 'Sign this transaction.'
 const EXECUTE_TEXT = 'Submit the form to execute this transaction.'
 const SIGN_EXECUTE_TEXT = 'Sign or immediately execute this transaction.'
 
-const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): ReactElement => {
+const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement => {
   const wallet = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
@@ -45,11 +44,11 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 
   return (
-    <TxLayout title="Confirm transaction" txSummary={txSummary}>
+    <TxLayout title="Confirm transaction" step={0} txSummary={txSummary}>
       <DialogContent>
         <Typography mb={2}>{text}</Typography>
 
-        <SignOrExecuteForm txId={txId} onSubmit={onSubmit} isExecutable={canExecute} onlyExecute={!canSign} />
+        <SignOrExecuteForm txId={txId} onSubmit={() => {}} isExecutable={canExecute} onlyExecute={!canSign} />
       </DialogContent>
     </TxLayout>
   )

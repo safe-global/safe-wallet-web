@@ -12,7 +12,8 @@ import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getTxButtonTooltip } from '@/components/transactions/utils'
-import { ModalContext, ModalType } from '@/components/TxFlow'
+import { TxModalContext } from '@/components/tx-flow'
+import ReplaceTxMenu from '@/components/tx-flow/flows/ReplaceTx'
 
 const RejectTxButton = ({
   txSummary,
@@ -21,7 +22,8 @@ const RejectTxButton = ({
   txSummary: TransactionSummary
   compact?: boolean
 }): ReactElement | null => {
-  const { setVisibleModal } = useContext(ModalContext)
+  const { setTxFlow } = useContext(TxModalContext)
+
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const isPending = useIsPending(txSummary.id)
   const safeSDK = useSafeSDK()
@@ -30,7 +32,8 @@ const RejectTxButton = ({
   const tooltipTitle = getTxButtonTooltip('Replace', { hasSafeSDK: !!safeSDK })
 
   const openReplacementModal = () => {
-    setVisibleModal({ type: ModalType.ReplaceTx, props: { txNonce } })
+    if (!txNonce) return
+    setTxFlow(<ReplaceTxMenu txNonce={txNonce} />)
   }
 
   return (

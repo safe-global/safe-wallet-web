@@ -14,7 +14,8 @@ import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvi
 import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getTxButtonTooltip } from '@/components/transactions/utils'
-import { ModalContext, ModalType } from '@/components/TxFlow'
+import { TxModalContext } from '@/components/tx-flow'
+import ConfirmProposedTx from '@/components/tx-flow/flows/ConfirmTx'
 
 const ExecuteTxButton = ({
   txSummary,
@@ -23,7 +24,7 @@ const ExecuteTxButton = ({
   txSummary: TransactionSummary
   compact?: boolean
 }): ReactElement => {
-  const { setVisibleModal } = useContext(ModalContext)
+  const { setTxFlow } = useContext(TxModalContext)
   const { safe } = useSafeInfo()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const isPending = useIsPending(txSummary.id)
@@ -37,7 +38,7 @@ const ExecuteTxButton = ({
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
-    setVisibleModal({ type: ModalType.ConfirmTx, props: { txSummary } })
+    setTxFlow(<ConfirmProposedTx txSummary={txSummary} />)
   }
 
   const onMouseEnter = () => {

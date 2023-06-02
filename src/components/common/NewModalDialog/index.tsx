@@ -4,9 +4,8 @@ import { Dialog, DialogTitle, type DialogProps, useMediaQuery } from '@mui/mater
 import { useTheme } from '@mui/material/styles'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import CloseIcon from '@mui/icons-material/Close'
-
 import css from './styles.module.css'
-import { ModalContext } from '@/components/TxFlow'
+import { TxModalContext } from '@/components/tx-flow'
 
 interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode
@@ -53,7 +52,7 @@ const NewModalDialog = ({
 }: ModalDialogProps): ReactElement => {
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const { setVisibleModal } = useContext(ModalContext)
+  const { setTxFlow } = useContext(TxModalContext)
 
   return (
     <Dialog
@@ -86,7 +85,7 @@ const NewModalDialog = ({
         <span style={{ flex: 1 }} />
         <IconButton
           aria-label="close"
-          onClick={() => setVisibleModal(undefined)}
+          onClick={() => setTxFlow(undefined)}
           size="small"
           sx={{
             ml: 2,
