@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import type { ReactNode } from 'react'
 import { Box, Container, Grid, Paper, Typography } from '@mui/material'
 import TxStatusWidget from '@/components/TxFlow/TxStatusWidget'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
@@ -14,7 +14,7 @@ const TxLayout = ({
   progress,
 }: {
   title: string
-  children: ReactElement
+  children: ReactNode
   step?: number
   txSummary?: TransactionSummary
   progress?: number

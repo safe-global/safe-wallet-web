@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import { type ReactElement, useContext, useEffect } from 'react'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
@@ -8,9 +8,10 @@ import useAsync from '@/hooks/useAsync'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
-import { Skeleton, Typography } from '@mui/material'
+import { DialogContent, Typography } from '@mui/material'
 import { createExistingTx } from '@/services/tx/tx-sender'
 import TxLayout from '@/components/TxFlow/common/TxLayout'
+import { SafeTxContext } from '../SafeTxProvider'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -25,6 +26,7 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
   const wallet = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
+  const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
   const txId = txSummary.id
   const canExecute = isExecutable(txSummary, wallet?.address || '', safe)
@@ -34,29 +36,21 @@ const ConfirmProposedTx = ({ txSummary, onSubmit }: ConfirmProposedTxProps): Rea
     return createExistingTx(chainId, safeAddress, txId)
   }, [txId, safeAddress, chainId])
 
+  // Update the SafeTxContext with the SafeTransaction
+  useEffect(() => {
+    setSafeTx(safeTx)
+    setSafeTxError(safeTxError)
+  }, [safeTx, safeTxError])
+
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 
   return (
     <TxLayout title="Confirm transaction" txSummary={txSummary}>
-      <SignOrExecuteForm
-        safeTx={safeTx}
-        txId={txId}
-        onSubmit={onSubmit}
-        isExecutable={canExecute}
-        onlyExecute={!canSign}
-        error={safeTxError}
-      >
+      <DialogContent>
         <Typography mb={2}>{text}</Typography>
 
-        <Typography mb={3}>
-          Transaction nonce:&nbsp;
-          {safeTx ? (
-            <b>{safeTx?.data.nonce}</b>
-          ) : (
-            <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em' }} />
-          )}
-        </Typography>
-      </SignOrExecuteForm>
+        <SignOrExecuteForm txId={txId} onSubmit={onSubmit} isExecutable={canExecute} onlyExecute={!canSign} />
+      </DialogContent>
     </TxLayout>
   )
 }

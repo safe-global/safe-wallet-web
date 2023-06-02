@@ -42,7 +42,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const error = safeTxError || gasLimitError
 
   return (
-    <DialogContent>
+    <>
       {props.children}
 
       <TxSimulation
@@ -77,7 +77,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
       ) : (
         <SignForm {...props} safeTx={safeTx} error={error} />
       )}
-    </DialogContent>
+    </>
   )
 }
 
