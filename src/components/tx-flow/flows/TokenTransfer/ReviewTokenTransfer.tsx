@@ -13,16 +13,22 @@ import { SafeTxContext } from '../../SafeTxProvider'
 const ReviewTokenTransfer = ({
   params,
   onSubmit,
+  txNonce,
 }: {
   params: TokenTransferParams
   onSubmit: () => void
   onBack: () => void
+  txNonce?: number
 }) => {
   const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
 
   useEffect(() => {
+    if (txNonce !== undefined) {
+      setNonce(txNonce)
+    }
+
     if (!token) return
 
     const txParams = createTokenTransferParams(
@@ -32,12 +38,8 @@ const ReviewTokenTransfer = ({
       token.tokenInfo.address,
     )
 
-    if (params.txNonce) {
-      setNonce(params.txNonce)
-    }
-
-    createTx(txParams, params.txNonce).then(setSafeTx).catch(setSafeTxError)
-  }, [params, token, setNonce, setSafeTx, setSafeTxError])
+    createTx(txParams, txNonce).then(setSafeTx).catch(setSafeTxError)
+  }, [params, txNonce, token, setNonce, setSafeTx, setSafeTxError])
 
   return (
     <DialogContent>

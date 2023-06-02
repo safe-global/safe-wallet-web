@@ -3,9 +3,7 @@ import { useContext } from 'react'
 import { SafeTxContext } from '../SafeTxProvider'
 
 const TxNonce = () => {
-  const { safeTx, recommendedNonce } = useContext(SafeTxContext)
-
-  const nonce = safeTx?.data.nonce ?? recommendedNonce
+  const { nonce } = useContext(SafeTxContext)
 
   if (nonce === undefined) return null
 

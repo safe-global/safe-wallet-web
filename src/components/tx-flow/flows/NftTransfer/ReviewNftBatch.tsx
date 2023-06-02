@@ -13,18 +13,21 @@ type ReviewNftBatchProps = {
   params: SubmittedNftTransferParams
   onSubmit: () => void
   onBack: () => void
+  txNonce?: number
 }
 
-const ReviewNftBatch = ({ params, onSubmit }: ReviewNftBatchProps): ReactElement => {
+const ReviewNftBatch = ({ params, onSubmit, txNonce }: ReviewNftBatchProps): ReactElement => {
   const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
   const safeAddress = useSafeAddress()
   const { tokens } = params
 
   useEffect(() => {
-    if (params.txNonce !== undefined) {
-      setNonce(params.txNonce)
+    if (txNonce !== undefined) {
+      setNonce(txNonce)
     }
+  }, [txNonce, setNonce])
 
+  useEffect(() => {
     if (!safeAddress) return
 
     const calls = params.tokens.map((token) => {
@@ -34,7 +37,7 @@ const ReviewNftBatch = ({ params, onSubmit }: ReviewNftBatchProps): ReactElement
     const promise = calls.length > 1 ? createMultiSendCallOnlyTx(calls) : createTx(calls[0])
 
     promise.then(setSafeTx).catch(setSafeTxError)
-  }, [safeAddress, params, setSafeTx, setSafeTxError, setNonce])
+  }, [safeAddress, params, setSafeTx, setSafeTxError])
 
   return (
     <DialogContent>

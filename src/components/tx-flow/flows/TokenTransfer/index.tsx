@@ -9,25 +9,23 @@ export enum SendTxType {
 }
 
 export type TokenTransferParams = {
-  txNonce?: number
   recipient?: string
   tokenAddress?: string
   amount?: string
   type?: SendTxType
 }
 
-const TokenTransferFlow = (props: TokenTransferParams) => {
-  const { data, step, nextStep, prevStep } = useTxStepper<[TokenTransferParams, TokenTransferParams]>([props, props])
+type TokenTransferFlowProps = TokenTransferParams & {
+  txNonce?: number
+}
+
+const TokenTransferFlow = ({ txNonce, ...params }: TokenTransferFlowProps) => {
+  const { data, step, nextStep, prevStep } = useTxStepper<[TokenTransferParams, TokenTransferParams]>([params, params])
 
   const steps = [
-    <CreateTokenTransfer
-      key={0}
-      params={data[0]}
-      onSubmit={(formData) => nextStep<1>(formData)}
-      onBack={() => /* close modal */ null}
-    />,
+    <CreateTokenTransfer key={0} params={data[0]} txNonce={txNonce} onSubmit={(formData) => nextStep<1>(formData)} />,
 
-    <ReviewTokenTransfer key={1} params={data[1]} onSubmit={() => undefined} onBack={prevStep} />,
+    <ReviewTokenTransfer key={1} txNonce={txNonce} params={data[1]} onSubmit={() => null} onBack={prevStep} />,
   ]
 
   return (
