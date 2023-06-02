@@ -17,17 +17,17 @@ export type TokenTransferParams = {
 }
 
 const TokenTransferFlow = (props: TokenTransferParams) => {
-  const { data, step, nextStep, prevStep } = useTxStepper<TokenTransferParams>(props)
+  const { data, step, nextStep, prevStep } = useTxStepper<[TokenTransferParams, TokenTransferParams]>([props, props])
 
   const steps = [
     <CreateTokenTransfer
       key={0}
-      params={data}
-      onSubmit={(formData) => nextStep(formData)}
-      onBack={() => prevStep(data)}
+      params={data[0]}
+      onSubmit={(formData) => nextStep<1>(formData)}
+      onBack={() => /* close modal */ null}
     />,
 
-    <ReviewTokenTransfer key={1} params={data} onSubmit={() => undefined} />,
+    <ReviewTokenTransfer key={1} params={data[1]} onSubmit={() => undefined} onBack={prevStep} />,
   ]
 
   return (

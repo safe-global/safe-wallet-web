@@ -10,7 +10,14 @@ import { createTx } from '@/services/tx/tx-sender'
 import type { TokenTransferParams } from '.'
 import { SafeTxContext } from '../../SafeTxProvider'
 
-const ReviewTokenTransfer = ({ params, onSubmit }: { params: TokenTransferParams; onSubmit: () => void }) => {
+const ReviewTokenTransfer = ({
+  params,
+  onSubmit,
+}: {
+  params: TokenTransferParams
+  onSubmit: () => void
+  onBack: () => void
+}) => {
   const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)

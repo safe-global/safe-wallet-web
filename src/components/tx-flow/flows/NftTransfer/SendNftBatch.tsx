@@ -2,7 +2,7 @@ import { Box, Button, DialogActions, DialogContent, FormControl, Grid, SvgIcon, 
 import { FormProvider, useForm } from 'react-hook-form'
 import NftIcon from '@/public/images/common/nft.svg'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import { type NftTransferParams } from '.'
+import { SubmittedNftTransferParams, type NftTransferParams } from '.'
 import ImageFallback from '@/components/common/ImageFallback'
 import useAddressBook from '@/hooks/useAddressBook'
 import SendToBlock from '@/components/tx/SendToBlock'
@@ -17,7 +17,7 @@ type FormData = {
 }
 
 export type SendNftBatchProps = {
-  onSubmit: (data: NftTransferParams) => void
+  onSubmit: (data: SubmittedNftTransferParams) => void
   onBack: () => void
   params: NftTransferParams
 }

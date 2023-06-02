@@ -10,13 +10,21 @@ export type NftTransferParams = {
   tokens?: SafeCollectibleResponse[]
 }
 
+export type SubmittedNftTransferParams = NftTransferParams & {
+  recipient: string
+  tokens: SafeCollectibleResponse[]
+}
+
 const NftTransferFlow = (props: NftTransferParams) => {
-  const { data, step, nextStep, prevStep } = useTxStepper<NftTransferParams>(props)
+  const { data, step, nextStep, prevStep } = useTxStepper<[NftTransferParams, SubmittedNftTransferParams | undefined]>([
+    props,
+    undefined,
+  ])
 
   const steps = [
-    <SendNftBatch key={0} params={data} onSubmit={(formData) => nextStep(formData)} onBack={() => prevStep(data)} />,
+    <SendNftBatch key={0} params={data[0]} onSubmit={(formData) => nextStep<1>(formData)} onBack={() => null} />,
 
-    <ReviewNftBatch key={1} params={data} onSubmit={() => {}} />,
+    data[1] && <ReviewNftBatch key={1} params={data[1]} onSubmit={() => {}} onBack={prevStep} />,
   ]
 
   return (
