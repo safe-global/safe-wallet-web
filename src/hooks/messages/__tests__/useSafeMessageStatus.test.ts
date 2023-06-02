@@ -1,7 +1,7 @@
 import type { SafeMessage, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { renderHook } from '@/tests/test-utils'
-import * as useIsSafeMessagePendingHook from '@/hooks/useIsSafeMessagePending'
+import * as useIsSafeMessagePendingHook from '@/hooks/messages/useIsSafeMessagePending'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
 import useSafeMessageStatus from '../useSafeMessageStatus'
 import type { ConnectedWallet } from '@/services/onboard'

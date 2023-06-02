@@ -1,12 +1,14 @@
-.container {
-  padding: var(--space-2);
+.popup {
   position: fixed;
   z-index: 1300;
   bottom: var(--space-2);
   right: var(--space-2);
   max-width: 400px;
+}
+
+.container {
+  padding: var(--space-2);
   border-radius: 0 !important;
-  background-color: var(--color-text-primary);
 }
 
 .container label,

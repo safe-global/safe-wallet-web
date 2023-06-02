@@ -12,31 +12,7 @@ import tallyhoModule from '@web3-onboard/tallyho'
 
 import pairingModule from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
-import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-
-export const enum WALLET_KEYS {
-  COINBASE = 'COINBASE',
-  INJECTED = 'INJECTED',
-  KEYSTONE = 'KEYSTONE',
-  LEDGER = 'LEDGER',
-  PAIRING = 'PAIRING',
-  TREZOR = 'TREZOR',
-  WALLETCONNECT = 'WALLETCONNECT',
-  TALLYHO = 'TALLYHO',
-}
-
-export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
-  [WALLET_KEYS.COINBASE]: 'coinbase',
-  [WALLET_KEYS.INJECTED]: 'detectedwallet',
-  [WALLET_KEYS.KEYSTONE]: 'keystone',
-  [WALLET_KEYS.LEDGER]: 'ledger',
-  [WALLET_KEYS.PAIRING]: 'safeMobile',
-  [WALLET_KEYS.TREZOR]: 'trezor',
-  [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
-  [WALLET_KEYS.TALLYHO]: 'tally',
-}
+import { CGW_NAMES, WALLET_KEYS } from './consts'
 
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.INJECTED]: injectedWalletModule,
@@ -74,22 +50,4 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   }
 
   return enabledWallets.map(([, module]) => module())
-}
-
-export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
-  return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE].includes(
-    wallet.label.toUpperCase() as WALLET_KEYS,
-  )
-}
-
-export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
-  const provider = getWeb3ReadOnly()
-
-  if (!provider) {
-    throw new Error('Provider not found')
-  }
-
-  const code = await provider.getCode(wallet.address)
-
-  return code !== EMPTY_DATA
 }
