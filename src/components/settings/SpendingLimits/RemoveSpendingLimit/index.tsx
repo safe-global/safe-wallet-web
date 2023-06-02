@@ -41,8 +41,9 @@ export const RemoveSpendingLimit = ({ data, onSubmit }: { data: SpendingLimitSta
     onSubmit()
   }
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
+    <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && (
         <TokenTransferReview
           amount={safeFormatUnits(data.amount, token.tokenInfo.decimals)}

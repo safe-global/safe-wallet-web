@@ -55,8 +55,9 @@ const ReviewUpdateSafeStep = ({ onSubmit }: { onSubmit: () => void }) => {
     return createMultiSendCallOnlyTx(txs)
   }, [chain, safe, safeLoaded])
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm onSubmit={onSubmit}>
       <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>

@@ -27,8 +27,9 @@ export const ReviewRemoveGuard = ({ data, onSubmit }: { data: RemoveGuardData; o
     onSubmit()
   }
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
+    <SignOrExecuteForm onSubmit={onFormSubmit}>
       <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Transaction guard</Typography>
       <EthHashInfo address={data.address} showCopyButton hasExplorer shortAddress={false} />
       <Typography my={2}>

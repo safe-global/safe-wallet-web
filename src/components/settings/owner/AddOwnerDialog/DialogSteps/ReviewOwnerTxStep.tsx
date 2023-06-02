@@ -54,8 +54,9 @@ export const ReviewOwnerTxStep = ({ data, onSubmit }: { data: ChangeOwnerData; o
     onSubmit()
   }
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={addAddressBookEntryAndSubmit} error={safeTxError}>
+    <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit}>
       <Grid
         container
         mt={-3}

@@ -109,12 +109,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
 
         <SendToBlock address={params.recipient} />
 
-        <AdvancedParams
-          params={advancedParams}
-          willExecute={true}
-          nonceReadonly={false}
-          onFormSubmit={setManualParams}
-        />
+        <AdvancedParams params={advancedParams} willExecute={true} onFormSubmit={setManualParams} />
 
         <WrongChainWarning />
 
