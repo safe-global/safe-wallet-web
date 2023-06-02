@@ -3,7 +3,7 @@ import Button from '@mui/material/Button'
 import css from './styles.module.css'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
-import { ModalContext, ModalType } from '@/components/TxFlow/ModalProvider'
+import { ModalContext, ModalType } from '@/components/TxFlow'
 
 const NewTxButton = (): ReactElement => {
   const { setVisibleModal } = useContext(ModalContext)

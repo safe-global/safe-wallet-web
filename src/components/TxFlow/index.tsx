@@ -9,46 +9,51 @@ import {
   useEffect,
 } from 'react'
 import NewModalDialog from '@/components/common/NewModalDialog'
-import { ReplaceTxMenu, NewTxMenu, RejectTx, TokenTransferFlow, ConfirmProposedTx } from '@/components/TxFlow'
 import { useRouter } from 'next/router'
-import SafeTxProvider from '@/components/TxFlow/SafeTxProvider'
 
-export enum ModalType {
-  SendTokens = 'sendTokens',
-  RejectTx = 'rejectTx',
-  ReplaceTx = 'replaceTx',
-  NewTx = 'newTx',
-  ConfirmTx = 'confirmTx',
+// Flows
+import NewTx from '@/components/TxFlow/NewTx'
+import SendTokens from '@/components/TxFlow/TokenTransfer/TokenTransferFlow'
+import RejectTx from '@/components/TxFlow/RejectTx'
+import ReplaceTx from '@/components/TxFlow/ReplaceTx'
+import ConfirmTx from '@/components/TxFlow/ConfirmTx'
+
+// Add new tx flows here
+const ModalTxFlows = {
+  NewTx,
+  SendTokens,
+  RejectTx,
+  ReplaceTx,
+  ConfirmTx,
 }
 
-const ModalTypes = {
-  [ModalType.SendTokens]: TokenTransferFlow,
-  [ModalType.RejectTx]: RejectTx,
-  [ModalType.ReplaceTx]: ReplaceTxMenu,
-  [ModalType.NewTx]: NewTxMenu,
-  [ModalType.ConfirmTx]: ConfirmProposedTx,
-}
+type ModalName = keyof typeof ModalTxFlows
 
-type VisibleModalState<T extends ModalType> = {
+export const ModalType = Object.keys(ModalTxFlows).reduce((acc, key) => {
+  acc[key as ModalName] = key as ModalName
+  return acc
+}, {} as Record<ModalName, ModalName>)
+
+type VisibleModalState<T extends ModalName> = {
   type: T
-  props: ComponentProps<typeof ModalTypes[T]>
+  props: ComponentProps<typeof ModalTxFlows[T]>
 }
 
-type ContextProps<T extends ModalType> = {
+type ContextProps<T extends ModalName> = {
   visibleModal: VisibleModalState<T> | undefined
   setVisibleModal: Dispatch<SetStateAction<VisibleModalState<T> | undefined>>
 }
 
-export const ModalContext = createContext<ContextProps<ModalType>>({
+export const ModalContext = createContext<ContextProps<ModalName>>({
   visibleModal: undefined,
   setVisibleModal: () => {},
 })
 
 export const ModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [visibleModal, setVisibleModal] = useState<VisibleModalState<ModalType>>()
+  const [visibleModal, setVisibleModal] = useState<VisibleModalState<ModalName>>()
   const router = useRouter()
 
-  const Component = visibleModal ? ModalTypes[visibleModal.type] : null
+  const Component = visibleModal ? ModalTxFlows[visibleModal.type] : null
   const props = visibleModal ? visibleModal.props : {}
 
   // Close the modal if user navigates
@@ -63,10 +68,10 @@ export const ModalProvider = ({ children }: { children: ReactNode }): ReactEleme
       {children}
       <NewModalDialog open={!!visibleModal}>
         {visibleModal && (
-          <SafeTxProvider>
+          <>
             {/* @ts-ignore TODO: Fix this somehow */}
             <Component {...props} />
-          </SafeTxProvider>
+          </>
         )}
       </NewModalDialog>
     </ModalContext.Provider>

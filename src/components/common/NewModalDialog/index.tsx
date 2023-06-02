@@ -6,7 +6,7 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import CloseIcon from '@mui/icons-material/Close'
 
 import css from './styles.module.css'
-import { ModalContext } from '@/components/TxFlow/ModalProvider'
+import { ModalContext } from '@/components/TxFlow'
 
 interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode

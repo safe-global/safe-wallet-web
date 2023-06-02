@@ -1,7 +1,7 @@
 import TxButton, { SendNFTsButton, SendTokensButton } from '@/components/TxFlow/common/TxButton'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import { Box, Typography } from '@mui/material'
-import { ModalContext, ModalType } from '@/components/TxFlow/ModalProvider'
+import { ModalContext, ModalType } from '@/components/TxFlow'
 import { useContext } from 'react'
 
 const BUTTONS_HEIGHT = '91px'
