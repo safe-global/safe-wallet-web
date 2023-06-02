@@ -27,10 +27,13 @@ const StatusMessage = ({ status, isError }: { status: PendingStatus; isError: bo
 
   const color = isError ? 'error' : 'info'
 
+  const isSuccess = status === undefined
+  const spinnerStatus = isSuccess ? SpinnerStatus.SUCCESS : SpinnerStatus.PROCESSING
+
   return (
     <>
       <Box paddingX={3} mt={3}>
-        <LoadingSpinner status={SpinnerStatus.PROCESSING} />
+        <LoadingSpinner status={spinnerStatus} />
         <Typography variant="h6" marginTop={2} fontWeight={700}>
           {stepInfo.description}
         </Typography>

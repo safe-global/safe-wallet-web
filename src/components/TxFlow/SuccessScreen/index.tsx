@@ -34,36 +34,37 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
   const txLink = chain ? getBlockExplorerLink(chain, localTxHash) : undefined
 
   return (
-    <Container>
-      <Paper
-        sx={{
-          textAlign: 'center',
-        }}
-      >
-        <div className={css.row}>
-          {/* TODO: improve conditions  */}
-          <StatusMessage status={status} isError={false} />
-        </div>
+    <Container
+      component={Paper}
+      disableGutters
+      sx={{
+        textAlign: 'center',
+      }}
+      maxWidth="md"
+    >
+      <div className={css.row}>
+        {/* TODO: figure out the isError logic */}
+        <StatusMessage status={status} isError={false} />
+      </div>
 
-        <Divider />
-        <div className={css.row}>
-          <StatusStepper status={status} txHash={localTxHash} />
-        </div>
+      <Divider />
+      <div className={css.row}>
+        <StatusStepper status={status} txHash={localTxHash} />
+      </div>
 
-        <Divider />
-        <div className={classnames(css.row, css.buttons)}>
-          <Link href={homeLink} passHref>
-            <Button variant="outlined" size="small">
-              Back to dashboard
-            </Button>
-          </Link>
-          {txLink && (
-            <Button href={txLink.href} target="_blank" rel="noreferrer" variant="outlined" size="small">
-              View transaction
-            </Button>
-          )}
-        </div>
-      </Paper>
+      <Divider />
+      <div className={classnames(css.row, css.buttons)}>
+        <Link href={homeLink} passHref>
+          <Button variant="outlined" size="small">
+            Back to dashboard
+          </Button>
+        </Link>
+        {txLink && (
+          <Button href={txLink.href} target="_blank" rel="noreferrer" variant="outlined" size="small">
+            View transaction
+          </Button>
+        )}
+      </div>
     </Container>
   )
 }

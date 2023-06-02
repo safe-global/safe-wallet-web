@@ -36,6 +36,7 @@ export enum SpinnerStatus {
 }
 
 const LoadingSpinner = ({ status }: { status: SpinnerStatus }) => {
+  // TODO: only monitoring the PendingTxs we can't determine the transaction's result
   const isError = status === SpinnerStatus.ERROR
   const isSuccess = status === SpinnerStatus.SUCCESS
 

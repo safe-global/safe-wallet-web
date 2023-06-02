@@ -69,9 +69,9 @@ const ExecuteForm = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      const realTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
+      const executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
 
-      setVisibleModal({ type: ModalType.SuccessScreen, props: { txId: realTxId } })
+      setVisibleModal({ type: ModalType.SuccessScreen, props: { txId: executedTxId } })
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
