@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from 'react'
 import type { Dispatch, ReactNode, SetStateAction, ReactElement } from 'react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { createTx } from '@/services/tx/tx-sender'
-import { useRecommendedNonce } from '../tx/SignOrExecuteForm/hooks'
+import { useRecommendedNonce, useSafeTxGas } from '../tx/SignOrExecuteForm/hooks'
 
 export const SafeTxContext = createContext<{
   safeTx?: SafeTransaction
@@ -16,6 +16,8 @@ export const SafeTxContext = createContext<{
 
   safeTxGas?: number
   setSafeTxGas: Dispatch<SetStateAction<number | undefined>>
+
+  recommendedNonce?: number
 }>({
   setSafeTx: () => {},
   setSafeTxError: () => {},
@@ -35,11 +37,12 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
   const isSigned = safeTx && safeTx.signatures.size > 0
 
   // Recommended nonce and safeTxGas
-  const recommendedParams = useRecommendedNonce(safeTx)
+  const recommendedNonce = useRecommendedNonce()
+  const recommendedSafeTxGas = useSafeTxGas(safeTx)
 
   // Priority to external nonce, then to the recommended one
-  const finalNonce = nonce ?? recommendedParams?.nonce ?? safeTx?.data.nonce
-  const finalSafeTxGas = safeTxGas ?? recommendedParams?.safeTxGas ?? safeTx?.data.safeTxGas
+  const finalNonce = nonce ?? recommendedNonce ?? safeTx?.data.nonce
+  const finalSafeTxGas = safeTxGas ?? recommendedSafeTxGas ?? safeTx?.data.safeTxGas
 
   // Update the tx when the nonce or safeTxGas change
   useEffect(() => {
@@ -62,6 +65,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
         setNonce,
         safeTxGas,
         setSafeTxGas,
+        recommendedNonce,
       }}
     >
       {children}

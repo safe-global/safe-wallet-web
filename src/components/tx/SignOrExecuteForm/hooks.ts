@@ -15,7 +15,7 @@ import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import type { ConnectedWallet } from '@/services/onboard'
 import type { OnboardAPI } from '@web3-onboard/core'
-import { getRecommendedTxParams } from '@/services/tx/tx-sender/recommendedNonce'
+import { getSafeTxGas, getRecommendedNonce } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
 
 type TxActions = {
@@ -29,13 +29,13 @@ type TxActions = {
   ) => Promise<string>
 }
 
-function assertTx(safeTx?: SafeTransaction): asserts safeTx {
+function assertTx(safeTx: SafeTransaction | undefined): asserts safeTx {
   if (!safeTx) throw new Error('Transaction not provided')
 }
 function assertWallet(wallet: ConnectedWallet | null): asserts wallet {
   if (!wallet) throw new Error('Wallet not connected')
 }
-function assertOnboard(onboard?: OnboardAPI): asserts onboard {
+function assertOnboard(onboard: OnboardAPI | undefined): asserts onboard {
   if (!onboard) throw new Error('Onboard not connected')
 }
 
@@ -122,7 +122,7 @@ export const useTxActions = (): TxActions => {
   }, [safe, onboard, wallet])
 }
 
-export const useValidateNonce = (safeTx?: SafeTransaction): boolean => {
+export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {
   const { safe } = useSafeInfo()
   return !!safeTx && safeTx?.data.nonce === safe.nonce
 }
@@ -140,36 +140,38 @@ export const useIsExecutionLoop = (): boolean => {
   return wallet ? sameString(wallet.address, safeAddress) : false
 }
 
-export const useRecommendedNonce = (
-  safeTx?: SafeTransaction,
-):
-  | {
-      nonce: number
-      safeTxGas: number
-    }
-  | undefined => {
-  const { safe } = useSafeInfo()
-  const safeTxData = safeTx?.data
-  const alreadySigned = safeTx && safeTx.signatures?.size > 0
+export const useRecommendedNonce = (): number | undefined => {
+  const { safeAddress, safe } = useSafeInfo()
 
-  // Memoize only the necessary params, so that it doesn't change every time safeTx is changed
-  const safeTxParams = useMemo(
-    () =>
-      safeTxData?.to
-        ? {
-            to: safeTxData.to,
-            value: safeTxData.value,
-            data: safeTxData.data,
-            operation: safeTxData.operation,
-          }
-        : undefined,
-    [safeTxData?.to, safeTxData?.value, safeTxData?.data, safeTxData?.operation],
-  )
+  const [recommendedNonce] = useAsync(() => {
+    if (!safe.chainId || !safeAddress) return
 
-  const [recommendedParams] = useAsync(() => {
-    if (!safeTxParams || alreadySigned) return
-    return getRecommendedTxParams(safeTxParams)
-  }, [safeTxParams, safe?.txQueuedTag])
+    return getRecommendedNonce(safe.chainId, safeAddress)
+  }, [safeAddress, safe.chainId, safe.txQueuedTag]) // update when tx queue changes
 
-  return recommendedParams
+  return recommendedNonce
+}
+
+export const useSafeTxGas = (safeTx: SafeTransaction | undefined): number | undefined => {
+  const { safeAddress, safe } = useSafeInfo()
+
+  // Memoize only the necessary params so that the useAsync hook is not called every time safeTx changes
+  const safeTxParams = useMemo(() => {
+    return !safeTx?.data?.to
+      ? undefined
+      : {
+          to: safeTx?.data.to,
+          value: safeTx?.data?.value,
+          data: safeTx?.data?.data,
+          operation: safeTx?.data?.operation,
+        }
+  }, [safeTx?.data.to, safeTx?.data.value, safeTx?.data.data, safeTx?.data.operation])
+
+  const [safeTxGas] = useAsync(() => {
+    if (!safe.chainId || !safeAddress || !safeTxParams) return
+
+    return getSafeTxGas(safe.chainId, safeAddress, safeTxParams)
+  }, [safeAddress, safe.chainId, safeTxParams])
+
+  return safeTxGas
 }
