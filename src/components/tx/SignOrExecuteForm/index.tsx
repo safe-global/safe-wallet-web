@@ -9,6 +9,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import ExecuteForm from './ExecuteForm'
 import SignForm from './SignForm'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import { Box } from '@mui/material'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -70,11 +71,13 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
         />
       )}
 
-      {willExecute ? (
-        <ExecuteForm {...props} safeTx={safeTx} error={error} advancedParams={advancedParams} />
-      ) : (
-        <SignForm {...props} safeTx={safeTx} error={error} />
-      )}
+      <Box mt={4}>
+        {willExecute ? (
+          <ExecuteForm {...props} safeTx={safeTx} error={error} advancedParams={advancedParams} />
+        ) : (
+          <SignForm {...props} safeTx={safeTx} error={error} />
+        )}
+      </Box>
     </>
   )
 }

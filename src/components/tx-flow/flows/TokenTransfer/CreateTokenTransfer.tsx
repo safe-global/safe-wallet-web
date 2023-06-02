@@ -44,13 +44,13 @@ import type { TokenTransferParams } from '.'
 const CreateTokenTransfer = ({
   params,
   onSubmit,
-  onBack,
+  txNonce,
 }: {
   params: TokenTransferParams
   onSubmit: (data: TokenTransferParams) => void
-  onBack: () => void
+  txNonce?: number
 }): ReactElement => {
-  const disableSpendingLimit = params.txNonce !== undefined
+  const disableSpendingLimit = txNonce !== undefined
   const { balances } = useVisibleBalances()
   const addressBook = useAddressBook()
   const chainId = useChainId()
@@ -220,10 +220,6 @@ const CreateTokenTransfer = ({
         </DialogContent>
 
         <DialogActions>
-          <Button variant="outlined" onClick={onBack}>
-            Back
-          </Button>
-
           <Button variant="contained" type="submit" disabled={isDisabled}>
             Next
           </Button>
