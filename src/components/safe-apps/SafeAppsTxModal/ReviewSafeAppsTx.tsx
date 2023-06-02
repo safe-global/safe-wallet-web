@@ -61,8 +61,9 @@ const ReviewSafeAppsTx = ({
 
   const origin = useMemo(() => getTxOrigin(app), [app])
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
+    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin}>
       <>
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor txs={txList} updateTxs={setTxList} />

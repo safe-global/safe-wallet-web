@@ -16,8 +16,9 @@ const RejectTx = ({ txNonce, onSubmit }: RejectTxProps): ReactElement => {
     return createRejectTx(txNonce)
   }, [txNonce])
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={rejectTx} isRejection onSubmit={onSubmit} error={rejectError}>
+    <SignOrExecuteForm isRejection onSubmit={onSubmit}>
       <Typography mb={2}>
         To reject the transaction, a separate rejection transaction will be created to replace the original one.
       </Typography>

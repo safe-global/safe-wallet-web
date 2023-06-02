@@ -24,8 +24,9 @@ const ReviewMultisigTx = ({ params, onSubmit }: TokenTransferModalProps): ReactE
     return createTx(txParams, params.txNonce)
   }, [params, decimals, address])
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm onSubmit={onSubmit}>
       {token && <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo} />}
 
       <SendFromBlock />

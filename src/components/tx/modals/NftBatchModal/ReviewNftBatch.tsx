@@ -25,8 +25,9 @@ const ReviewNftBatch = ({ params, onSubmit }: ReviewNftBatchProps): ReactElement
     return calls.length > 1 ? createMultiSendCallOnlyTx(calls) : createTx(calls[0])
   }, [safeAddress, params])
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onSubmit} error={safeTxError}>
+    <SignOrExecuteForm onSubmit={onSubmit}>
       <SendFromBlock title={`Sending ${tokens.length} NFT${tokens.length > 1 ? 's' : ''} from`} />
 
       <SendToBlock address={params.recipient} title="To" />

@@ -92,8 +92,9 @@ const ReviewSafeAppsSignMessage = ({
     }
   }
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError}>
+    <SignOrExecuteForm onSubmit={handleSubmit}>
       <>
         <SendFromBlock />
 

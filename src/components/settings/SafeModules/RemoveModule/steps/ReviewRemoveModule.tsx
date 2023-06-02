@@ -26,8 +26,9 @@ export const ReviewRemoveModule = ({ data, onSubmit }: { data: RemoveModuleData;
     onSubmit()
   }
 
+  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={onFormSubmit} error={safeTxError}>
+    <SignOrExecuteForm onSubmit={onFormSubmit}>
       <SendToBlock address={data.address} title="Module" />
       <Typography my={2}>
         After removing this module, any feature or app that uses this module might no longer work. If this Safe Account
