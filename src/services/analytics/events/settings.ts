@@ -48,6 +48,10 @@ export const SETTINGS_EVENTS = {
       action: 'Dark mode',
       category: SETTINGS_CATEGORY,
     },
+    TRANSACTION_EXECUTION: {
+      action: 'Transaction execution',
+      category: SETTINGS_CATEGORY,
+    },
   },
   MODULES: {
     REMOVE_MODULE: {

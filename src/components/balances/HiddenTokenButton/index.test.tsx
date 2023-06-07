@@ -86,6 +86,7 @@ describe('HiddenTokenToggle', () => {
           signing: {
             onChainSigning: false,
           },
+          transactionExecution: true,
         },
       },
     })

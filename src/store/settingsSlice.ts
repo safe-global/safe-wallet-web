@@ -41,6 +41,8 @@ export type SettingsState = {
   signing: {
     onChainSigning: boolean
   }
+
+  transactionExecution: boolean
 }
 
 export const initialState: SettingsState = {
@@ -66,6 +68,7 @@ export const initialState: SettingsState = {
   signing: {
     onChainSigning: false,
   },
+  transactionExecution: true,
 }
 
 export const settingsSlice = createSlice({
@@ -74,6 +77,9 @@ export const settingsSlice = createSlice({
   reducers: {
     setCurrency: (state, { payload }: PayloadAction<SettingsState['currency']>) => {
       state.currency = payload
+    },
+    setTransactionExecution: (state, { payload }: PayloadAction<SettingsState['transactionExecution']>) => {
+      state.transactionExecution = payload
     },
     setShowShortName: (state, { payload }: PayloadAction<SettingsState['shortName']['show']>) => {
       state.shortName.show = payload
@@ -127,6 +133,7 @@ export const {
   setRpc,
   setTenderly,
   setOnChainSigning,
+  setTransactionExecution,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]

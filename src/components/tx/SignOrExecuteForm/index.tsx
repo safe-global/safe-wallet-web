@@ -22,6 +22,8 @@ import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
 import { hasRemainingRelays } from '@/utils/relaying'
+import { useAppSelector } from '@/store'
+import { selectSettings } from '@/store/settingsSlice'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -48,10 +50,12 @@ const SignOrExecuteForm = ({
   origin,
   ...props
 }: SignOrExecuteProps): ReactElement => {
+  const settings = useAppSelector(selectSettings)
+
   //
   // Hooks & variables
   //
-  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [shouldExecute, setShouldExecute] = useState<boolean>(settings.transactionExecution)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
