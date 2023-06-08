@@ -154,7 +154,7 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
-  const hangleExecuteCheckboxChange = (checked: boolean) => {
+  const handleExecuteCheckboxChange = (checked: boolean) => {
     setShouldExecute(checked)
     dispatch(setTransactionExecution(checked))
   }
@@ -179,7 +179,7 @@ const SignOrExecuteForm = ({
         <DecodedTx tx={tx} txId={txId} />
 
         {canExecute && (
-          <ExecuteCheckbox checked={shouldExecute} onChange={hangleExecuteCheckboxChange} disabled={onlyExecute} />
+          <ExecuteCheckbox checked={shouldExecute} onChange={handleExecuteCheckboxChange} disabled={onlyExecute} />
         )}
 
         <AdvancedParams
