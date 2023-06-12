@@ -46,7 +46,8 @@ export const createOnboard = (chainConfigs: ChainInfo[], rpcConfig: EnvState['rp
 
     appMetadata: {
       name: 'Safe{Wallet}',
-      icon: '<svg><image href="/images/safe-logo-green.png" width="56" height="56" /></svg>',
+      // Both heights need be set to correctly size the image in the connecting screen/modal
+      icon: '<svg height="100%"><image href="/images/safe-logo-green.png" height="100%" /></svg>',
       description: 'Please select a wallet to connect to Safe{Wallet}',
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
