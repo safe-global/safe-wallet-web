@@ -29,17 +29,13 @@ const TxLayout = ({ title, children, step = 0, txSummary }: TxLayoutProps) => {
 
           <Grid item container xs={12} gap={3}>
             <Grid item xs={7} component={Paper}>
-              {<ProgressBar value={progress} />}
+              <ProgressBar value={progress} />
 
               <Box display="flex" justifyContent="flex-end" py={2} px={3}>
                 <TxNonce />
               </Box>
 
-              {steps.map((children, index) => (
-                <div key={index} style={{ display: index === step ? '' : 'none' }}>
-                  {children}
-                </div>
-              ))}
+              <div>{steps[step]}</div>
             </Grid>
 
             <Grid item xs={4}>

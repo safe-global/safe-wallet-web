@@ -33,13 +33,8 @@ import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import NumberField from '@/components/common/NumberField'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
-import {
-  AutocompleteItem,
-  SendAssetsField,
-  type SendAssetsFormData,
-  SendTxType,
-} from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
-import type { TokenTransferParams } from '.'
+import { AutocompleteItem, SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { type TokenTransferParams, TokenTransferFields } from '.'
 
 const CreateTokenTransfer = ({
   params,
@@ -60,12 +55,10 @@ const CreateTokenTransfer = ({
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
 
-  const formMethods = useForm<SendAssetsFormData>({
+  const formMethods = useForm<TokenTransferParams>({
     defaultValues: {
-      [SendAssetsField.recipient]: params.recipient || '',
-      [SendAssetsField.tokenAddress]: params.tokenAddress || '',
-      [SendAssetsField.amount]: params.amount || '',
-      [SendAssetsField.type]: disableSpendingLimit
+      ...params,
+      [TokenTransferFields.type]: disableSpendingLimit
         ? SendTxType.multiSig
         : isOnlySpendingLimitBeneficiary
         ? SendTxType.spendingLimit
@@ -85,15 +78,20 @@ const CreateTokenTransfer = ({
     control,
   } = formMethods
 
-  const recipient = watch(SendAssetsField.recipient)
+  const doSubmit = handleSubmit((data) => {
+    console.log(data)
+    onSubmit(data)
+  })
+
+  const recipient = watch(TokenTransferFields.recipient)
 
   // Selected token
-  const tokenAddress = watch(SendAssetsField.tokenAddress)
+  const tokenAddress = watch(TokenTransferFields.tokenAddress)
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
-  const type = watch(SendAssetsField.type)
+  const type = watch(TokenTransferFields.type)
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
   const isSpendingLimitType = type === SendTxType.spendingLimit
   const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
@@ -122,7 +120,7 @@ const CreateTokenTransfer = ({
         ? spendingLimitAmount.toString()
         : selectedToken.balance
 
-    setValue(SendAssetsField.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
+    setValue(TokenTransferFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
       shouldValidate: true,
     })
   }, [isSpendingLimitType, selectedToken, setValue, spendingLimitAmount])
@@ -132,22 +130,22 @@ const CreateTokenTransfer = ({
 
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={doSubmit}>
         <DialogContent>
           <SendFromBlock />
 
           <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
             {addressBook[recipient] ? (
-              <Box onClick={() => setValue(SendAssetsField.recipient, '')}>
+              <Box onClick={() => setValue(TokenTransferFields.recipient, '')}>
                 <SendToBlock address={recipient} />
               </Box>
             ) : (
-              <AddressBookInput name={SendAssetsField.recipient} label="Recipient" />
+              <AddressBookInput name={TokenTransferFields.recipient} label="Recipient" />
             )}
           </FormControl>
 
           <Controller
-            name={SendAssetsField.tokenAddress}
+            name={TokenTransferFields.tokenAddress}
             control={control}
             rules={{ required: true }}
             render={({ fieldState, field }) => (
@@ -162,7 +160,7 @@ const CreateTokenTransfer = ({
                   {...field}
                   onChange={(e) => {
                     field.onChange(e)
-                    resetField(SendAssetsField.amount)
+                    resetField(TokenTransferFields.amount)
                   }}
                 >
                   {balancesItems.map((item) => (
@@ -203,10 +201,10 @@ const CreateTokenTransfer = ({
               }}
               // @see https://github.com/react-hook-form/react-hook-form/issues/220
               InputLabelProps={{
-                shrink: !!watch(SendAssetsField.amount),
+                shrink: !!watch(TokenTransferFields.amount),
               }}
               required
-              {...register(SendAssetsField.amount, {
+              {...register(TokenTransferFields.amount, {
                 required: true,
                 validate: (val) => {
                   const decimals = selectedToken?.tokenInfo.decimals

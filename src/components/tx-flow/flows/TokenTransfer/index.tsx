@@ -1,3 +1,4 @@
+import merge from 'lodash/merge'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import CreateTokenTransfer from './CreateTokenTransfer'
@@ -8,24 +9,42 @@ export enum SendTxType {
   spendingLimit = 'spendingLimit',
 }
 
-export type TokenTransferParams = {
-  recipient?: string
-  tokenAddress?: string
-  amount?: string
-  type?: SendTxType
+export enum TokenTransferFields {
+  recipient = 'recipient',
+  tokenAddress = 'tokenAddress',
+  amount = 'amount',
+  type = 'type',
 }
 
-type TokenTransferFlowProps = TokenTransferParams & {
+export type TokenTransferParams = {
+  [TokenTransferFields.recipient]: string
+  [TokenTransferFields.tokenAddress]: string
+  [TokenTransferFields.amount]: string
+  [TokenTransferFields.type]: SendTxType
+}
+
+type TokenTransferFlowProps = Partial<TokenTransferParams> & {
   txNonce?: number
 }
 
+const defaultData: TokenTransferParams = {
+  recipient: '',
+  tokenAddress: '',
+  amount: '',
+  type: SendTxType.multiSig,
+}
+
 const TokenTransferFlow = ({ txNonce, ...params }: TokenTransferFlowProps) => {
-  const { data, step, nextStep, prevStep } = useTxStepper<[TokenTransferParams, TokenTransferParams]>([params, params])
+  const initialData = merge({}, defaultData, params)
+  const { data, step, nextStep, prevStep } = useTxStepper<[TokenTransferParams, TokenTransferParams]>([
+    initialData,
+    initialData,
+  ])
 
   const steps = [
-    <CreateTokenTransfer key={0} params={data[0]} txNonce={txNonce} onSubmit={(formData) => nextStep<1>(formData)} />,
+    <CreateTokenTransfer key={0} params={data[0]} txNonce={txNonce} onSubmit={nextStep} />,
 
-    <ReviewTokenTransfer key={1} txNonce={txNonce} params={data[1]} onSubmit={() => null} onBack={prevStep} />,
+    <ReviewTokenTransfer key={1} params={data[1]} txNonce={txNonce} onSubmit={() => null} onBack={prevStep} />,
   ]
 
   return (
