@@ -78,11 +78,6 @@ const CreateTokenTransfer = ({
     control,
   } = formMethods
 
-  const doSubmit = handleSubmit((data) => {
-    console.log(data)
-    onSubmit(data)
-  })
-
   const recipient = watch(TokenTransferFields.recipient)
 
   // Selected token
@@ -130,7 +125,7 @@ const CreateTokenTransfer = ({
 
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={doSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <SendFromBlock />
 
