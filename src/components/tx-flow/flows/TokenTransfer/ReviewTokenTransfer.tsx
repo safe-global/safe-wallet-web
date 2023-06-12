@@ -17,7 +17,6 @@ const ReviewTokenTransfer = ({
 }: {
   params: TokenTransferParams
   onSubmit: () => void
-  onBack: () => void
   txNonce?: number
 }) => {
   const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)

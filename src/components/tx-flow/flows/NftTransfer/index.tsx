@@ -26,13 +26,13 @@ const NftTransferFlow = ({ txNonce, ...params }: NftTransferFlowProps) => {
   ])
 
   const steps = [
-    <SendNftBatch key={0} params={data[0]} onSubmit={(formData) => nextStep<1>(formData)} />,
+    <SendNftBatch key={0} params={data[0]} onSubmit={(formData) => nextStep([formData, formData])} />,
 
-    data[1] && <ReviewNftBatch key={1} params={data[1]} txNonce={txNonce} onSubmit={() => null} onBack={prevStep} />,
+    data[1] && <ReviewNftBatch key={1} params={data[1]} txNonce={txNonce} onSubmit={() => null} />,
   ]
 
   return (
-    <TxLayout title="Send tokens" step={step}>
+    <TxLayout title="Send tokens" step={step} onBack={prevStep}>
       {steps}
     </TxLayout>
   )
