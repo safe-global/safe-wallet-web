@@ -1,0 +1,14 @@
+.input {
+  white-space: nowrap;
+  width: 200px;
+  overflow: hidden;
+}
+
+.input br {
+  display: none;
+}
+
+.input * {
+  display: inline;
+  white-space: nowrap;
+}
