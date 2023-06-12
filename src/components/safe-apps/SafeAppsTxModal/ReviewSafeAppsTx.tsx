@@ -1,11 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import { ErrorBoundary } from '@sentry/react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import SendToBlock from '@/components/tx/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getInteractionTitle } from '../utils'
 import type { SafeAppsTxParams } from '.'
@@ -15,9 +14,10 @@ import { ApprovalEditor } from '../../tx/ApprovalEditor'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Typography } from '@mui/material'
+import { Box, DialogContent, Typography } from '@mui/material'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -30,41 +30,43 @@ const ReviewSafeAppsTx = ({
   const onboard = useOnboard()
   const chain = useCurrentChain()
   const [txList, setTxList] = useState(txs)
-  const [submitError, setSubmitError] = useState<Error>()
-  const isMultiSend = txList.length > 1
+  const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
   useHighlightHiddenTab()
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
-    const tx = isMultiSend ? await createMultiSendCallOnlyTx(txList) : await createTx(txList[0])
+  useEffect(() => {
+    const createSafeTx = async (): Promise<SafeTransaction> => {
+      const isMultiSend = txList.length > 1
+      const tx = isMultiSend ? await createMultiSendCallOnlyTx(txList) : await createTx(txList[0])
 
-    if (params?.safeTxGas) {
-      // FIXME: do it properly via the Core SDK
-      // @ts-expect-error safeTxGas readonly
-      tx.data.safeTxGas = params.safeTxGas
+      if (params?.safeTxGas) {
+        // FIXME: do it properly via the Core SDK
+        // @ts-expect-error safeTxGas readonly
+        tx.data.safeTxGas = params.safeTxGas
+      }
+
+      return tx
     }
 
-    return tx
-  }, [txList])
+    createSafeTx().then(setSafeTx).catch(setSafeTxError)
+  }, [txList, setSafeTx, setSafeTxError, params])
 
   const handleSubmit = async () => {
-    setSubmitError(undefined)
     if (!safeTx || !onboard) return
     trackSafeAppTxCount(Number(appId))
 
     try {
       await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
-      setSubmitError(error as Error)
+      setSafeTxError(error as Error)
     }
   }
 
   const origin = useMemo(() => getTxOrigin(app), [app])
 
-  // TODO: Need to use the SafeTxProvider here
   return (
-    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin}>
-      <>
+    <DialogContent>
+      <SignOrExecuteForm onSubmit={handleSubmit} origin={origin}>
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor txs={txList} updateTxs={setTxList} />
         </ErrorBoundary>
@@ -83,8 +85,8 @@ const ReviewSafeAppsTx = ({
             </Box>
           </>
         )}
-      </>
-    </SignOrExecuteForm>
+      </SignOrExecuteForm>
+    </DialogContent>
   )
 }
 

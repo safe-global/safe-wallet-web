@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import { useCallback, useEffect } from 'react'
@@ -6,7 +6,14 @@ import { CircularProgress, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { getBalances, getTransactionDetails, getSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import type { AddressBookItem, EIP712TypedData, RequestId, SafeSettings } from '@safe-global/safe-apps-sdk'
+import type {
+  AddressBookItem,
+  BaseTransaction,
+  EIP712TypedData,
+  RequestId,
+  SafeSettings,
+  SendTransactionRequestParams,
+} from '@safe-global/safe-apps-sdk'
 import { Methods } from '@safe-global/safe-apps-sdk'
 
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
@@ -27,12 +34,7 @@ import useAnalyticsFromSafeApp from './useFromAppAnalytics'
 import useAppIsLoading from './useAppIsLoading'
 import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
 import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
-import SafeAppsTxModal from '@/components/safe-apps/SafeAppsTxModal'
-import useTxModal from '@/components/safe-apps/SafeAppsTxModal/useTxModal'
-import SafeAppsSignMessageModal from '@/components/safe-apps/SafeAppsSignMessageModal'
-import useSignMessageModal from '@/components/safe-apps/SignMessageModal/useSignMessageModal'
 import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
-import MsgModal from '@/components/safe-messages/MsgModal'
 import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import { useAppSelector } from '@/store'
 import { selectSafeMessages } from '@/store/safeMessagesSlice'
@@ -46,6 +48,8 @@ import SafeAppIframe from './SafeAppIframe'
 import useGetSafeInfo from './useGetSafeInfo'
 import { hasFeature, FEATURES } from '@/utils/chains'
 import { selectTokenList, selectOnChainSigning, TOKEN_LISTS } from '@/store/settingsSlice'
+import { TxModalContext } from '@/components/tx-flow'
+import SafeAppsTxFlow from '@/components/tx-flow/flows/SafeAppsTx'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -56,13 +60,12 @@ type AppFrameProps = {
 
 const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
-  const [txModalState, openTxModal, closeTxModal] = useTxModal()
   // We use offChainSigning by default
   const [settings, setSettings] = useState<SafeSettings>({
     offChainSigning: true,
   })
+  const [currentRequestId, setCurrentRequestId] = useState<RequestId | undefined>()
   const safeMessages = useAppSelector(selectSafeMessages)
-  const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const { safe, safeLoaded, safeAddress } = useSafeInfo()
   const tokenlist = useAppSelector(selectTokenList)
   const onChainSigning = useAppSelector(selectOnChainSigning)
@@ -86,9 +89,46 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
     useSafePermissions()
   const appName = useMemo(() => (remoteApp ? remoteApp.name : appUrl), [appUrl, remoteApp])
+  const { setTxFlow } = useContext(TxModalContext)
+
+  const onSafeAppsModalClose = () => {
+    if (currentRequestId) {
+      communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, currentRequestId, true)
+      setTxFlow(undefined)
+      setCurrentRequestId(undefined)
+    }
+
+    trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_REJECTED, appName)
+  }
+
+  const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
+    const permissions = confirmPermissionRequest(PermissionStatus.GRANTED)
+    communicator?.send(permissions, requestId as string)
+  }
+
+  const onRejectPermissionRequest = (requestId?: RequestId) => {
+    if (requestId) {
+      confirmPermissionRequest(PermissionStatus.DENIED)
+      communicator?.send('Permissions were rejected', requestId as string, true)
+    } else {
+      setPermissionsRequest(undefined)
+    }
+  }
 
   const communicator = useAppCommunicator(iframeRef, remoteApp || safeAppFromManifest, chain, {
-    onConfirmTransactions: openTxModal,
+    onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => {
+      const data = {
+        app: safeAppFromManifest,
+        appId: remoteApp ? String(remoteApp.id) : undefined,
+        requestId: requestId,
+        txs: txs,
+        params: params,
+      }
+
+      setCurrentRequestId(requestId)
+
+      setTxFlow(<SafeAppsTxFlow data={data} />)
+    },
     onSignMessage: (
       message: string | EIP712TypedData,
       requestId: string,
@@ -97,7 +137,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     ) => {
       const isOffChainSigningSupported = isOffchainEIP1271Supported(safe, chain, sdkVersion)
       const signOffChain = isOffChainSigningSupported && !onChainSigning
-      openSignMessageModal(message, requestId, method, signOffChain && !!settings.offChainSigning)
+      //openSignMessageModal(message, requestId, method, signOffChain && !!settings.offChainSigning)
     },
     onGetPermissions: getPermissions,
     onSetPermissions: setPermissionsRequest,
@@ -190,55 +230,30 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash }) => {
-      const currentSafeAppRequestId = signMessageModalState.requestId || txModalState.requestId
+      const currentSafeAppRequestId = currentRequestId
 
       if (currentSafeAppRequestId === safeAppRequestId) {
         trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION, appName)
 
         communicator?.send({ safeTxHash }, safeAppRequestId)
 
-        txModalState.isOpen ? closeTxModal() : closeSignMessageModal()
+        setTxFlow(undefined)
+        setCurrentRequestId(undefined)
       }
     })
 
     return unsubscribe
-  }, [appName, chainId, closeSignMessageModal, closeTxModal, communicator, signMessageModalState, txModalState])
+  }, [appName, chainId, communicator, currentRequestId, setTxFlow])
 
   useEffect(() => {
     const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ messageHash, requestId, signature }) => {
-      if (signMessageModalState.requestId === requestId) {
+      if (requestId && currentRequestId === requestId) {
         communicator?.send({ messageHash, signature }, requestId)
       }
     })
 
     return unsubscribe
-  }, [communicator, signMessageModalState.requestId])
-
-  const onSafeAppsModalClose = () => {
-    if (txModalState.isOpen) {
-      communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, txModalState.requestId, true)
-      closeTxModal()
-    } else {
-      communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, signMessageModalState.requestId, true)
-      closeSignMessageModal()
-    }
-
-    trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_REJECTED, appName)
-  }
-
-  const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
-    const permissions = confirmPermissionRequest(PermissionStatus.GRANTED)
-    communicator?.send(permissions, requestId as string)
-  }
-
-  const onRejectPermissionRequest = (requestId?: RequestId) => {
-    if (requestId) {
-      confirmPermissionRequest(PermissionStatus.DENIED)
-      communicator?.send('Permissions were rejected', requestId as string, true)
-    } else {
-      setPermissionsRequest(undefined)
-    }
-  }
+  }, [communicator, currentRequestId])
 
   if (!safeLoaded) {
     return <div />
@@ -287,46 +302,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           onDismiss={dismissQueueBar}
           transactions={transactions}
         />
-
-        {txModalState.isOpen && (
-          <SafeAppsTxModal
-            onClose={onSafeAppsModalClose}
-            initialData={[
-              {
-                app: safeAppFromManifest,
-                appId: remoteApp?.id,
-                requestId: txModalState.requestId,
-                txs: txModalState.txs,
-                params: txModalState.params,
-              },
-            ]}
-          />
-        )}
-
-        {signMessageModalState.isOpen &&
-          (signMessageModalState.isOffChain ? (
-            <MsgModal
-              onClose={onSafeAppsModalClose}
-              logoUri={safeAppFromManifest?.iconUrl || ''}
-              name={safeAppFromManifest?.name || ''}
-              message={signMessageModalState.message}
-              safeAppId={remoteApp?.id}
-              requestId={signMessageModalState.requestId}
-            />
-          ) : (
-            <SafeAppsSignMessageModal
-              onClose={onSafeAppsModalClose}
-              initialData={[
-                {
-                  app: safeAppFromManifest,
-                  appId: remoteApp?.id,
-                  requestId: signMessageModalState.requestId,
-                  message: signMessageModalState.message,
-                  method: signMessageModalState.method as Methods.signMessage | Methods.signTypedMessage,
-                },
-              ]}
-            />
-          ))}
 
         {permissionsRequest && (
           <PermissionsPrompt
