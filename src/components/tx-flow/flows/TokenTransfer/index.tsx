@@ -3,8 +3,9 @@ import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import CreateTokenTransfer from './CreateTokenTransfer'
 import ReviewTokenTransfer from './ReviewTokenTransfer'
+import { useMemo } from 'react'
 
-export enum SendTxType {
+export enum TokenTransferType {
   multiSig = 'multiSig',
   spendingLimit = 'spendingLimit',
 }
@@ -20,7 +21,7 @@ export type TokenTransferParams = {
   [TokenTransferFields.recipient]: string
   [TokenTransferFields.tokenAddress]: string
   [TokenTransferFields.amount]: string
-  [TokenTransferFields.type]: SendTxType
+  [TokenTransferFields.type]: TokenTransferType
 }
 
 type TokenTransferFlowProps = Partial<TokenTransferParams> & {
@@ -31,24 +32,30 @@ const defaultData: TokenTransferParams = {
   recipient: '',
   tokenAddress: '',
   amount: '',
-  type: SendTxType.multiSig,
+  type: TokenTransferType.multiSig,
 }
 
 const TokenTransferFlow = ({ txNonce, ...params }: TokenTransferFlowProps) => {
-  const initialData = merge({}, defaultData, params)
-  const { data, step, nextStep, prevStep } = useTxStepper<[TokenTransferParams, TokenTransferParams]>([
+  const initialData = useMemo(() => merge({}, defaultData, params), [params])
+
+  const { data, step, nextStep, prevStep } = useTxStepper<[TokenTransferParams, TokenTransferParams | undefined]>([
     initialData,
-    initialData,
+    undefined,
   ])
 
   const steps = [
-    <CreateTokenTransfer key={0} params={data[0]} txNonce={txNonce} onSubmit={nextStep} />,
+    <CreateTokenTransfer
+      key={0}
+      params={data[0]}
+      txNonce={txNonce}
+      onSubmit={(formData) => nextStep([formData, formData])}
+    />,
 
-    <ReviewTokenTransfer key={1} params={data[1]} txNonce={txNonce} onSubmit={() => null} onBack={prevStep} />,
+    data[1] && <ReviewTokenTransfer key={1} params={data[1]} txNonce={txNonce} onSubmit={() => null} />,
   ]
 
   return (
-    <TxLayout title="Send tokens" step={step}>
+    <TxLayout title="Send tokens" step={step} onBack={prevStep}>
       {steps}
     </TxLayout>
   )

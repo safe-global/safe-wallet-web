@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Box, Container, Grid, Paper, Typography } from '@mui/material'
+import { Box, Container, Grid, Paper, Typography, Button } from '@mui/material'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import SafeTxProvider from '../SafeTxProvider'
@@ -11,9 +11,10 @@ type TxLayoutProps = {
   children: ReactNode
   step?: number
   txSummary?: TransactionSummary
+  onBack?: () => void
 }
 
-const TxLayout = ({ title, children, step = 0, txSummary }: TxLayoutProps) => {
+const TxLayout = ({ title, children, step = 0, txSummary, onBack }: TxLayoutProps) => {
   const steps = Array.isArray(children) ? children : [children]
   const progress = Math.round(((step + 1) / steps.length) * 100)
 
@@ -35,7 +36,14 @@ const TxLayout = ({ title, children, step = 0, txSummary }: TxLayoutProps) => {
                 <TxNonce />
               </Box>
 
-              <div>{steps[step]}</div>
+              <div>
+                {steps[step]}
+                {onBack && step > 0 && (
+                  <Button variant="contained" onClick={onBack}>
+                    Back
+                  </Button>
+                )}
+              </div>
             </Grid>
 
             <Grid item xs={4}>

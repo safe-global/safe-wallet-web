@@ -33,8 +33,8 @@ import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import NumberField from '@/components/common/NumberField'
 import InputValueHelper from '@/components/common/InputValueHelper'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
-import { AutocompleteItem, SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
-import { type TokenTransferParams, TokenTransferFields } from '.'
+import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { type TokenTransferParams, TokenTransferFields, TokenTransferType } from '.'
 
 const CreateTokenTransfer = ({
   params,
@@ -59,9 +59,9 @@ const CreateTokenTransfer = ({
     defaultValues: {
       ...params,
       [TokenTransferFields.type]: disableSpendingLimit
-        ? SendTxType.multiSig
+        ? TokenTransferType.multiSig
         : isOnlySpendingLimitBeneficiary
-        ? SendTxType.spendingLimit
+        ? TokenTransferType.spendingLimit
         : params.type,
     },
     mode: 'onChange',
@@ -93,7 +93,7 @@ const CreateTokenTransfer = ({
 
   const type = watch(TokenTransferFields.type)
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
-  const isSpendingLimitType = type === SendTxType.spendingLimit
+  const isSpendingLimitType = type === TokenTransferType.spendingLimit
   const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
   const totalAmount = BigNumber.from(selectedToken?.balance || 0)
   const maxAmount = isSpendingLimitType

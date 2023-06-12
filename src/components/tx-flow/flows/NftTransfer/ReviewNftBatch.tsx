@@ -12,7 +12,6 @@ import { SafeTxContext } from '../../SafeTxProvider'
 type ReviewNftBatchProps = {
   params: SubmittedNftTransferParams
   onSubmit: () => void
-  onBack: () => void
   txNonce?: number
 }
 
