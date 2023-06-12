@@ -78,7 +78,7 @@ export const SecurityWarning = ({
   severity: SecuritySeverity | undefined
   isLoading: boolean
 }) => {
-  const severityProps = severity ? mapSeverityComponentProps[severity] : undefined
+  const severityProps = severity !== undefined ? mapSeverityComponentProps[severity] : undefined
 
   return (
     <Box className={css.verdictBox}>

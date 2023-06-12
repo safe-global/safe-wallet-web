@@ -36,7 +36,7 @@ const SingleFungibleBalanceChange = ({
       <Typography fontWeight={700} display="inline">
         {change.symbol}
       </Typography>
-      <Chip label={change.type} />
+      <Chip sx={{ borderRadius: '4px' }} label={change.type} />
     </>
   )
 }
@@ -69,8 +69,10 @@ const SingleNFTBalanceChange = ({
           shortAddress
         />
       )}
-      <Typography className={css.nftId}>#{change.tokenId}</Typography>
-      <Chip label="NFT" />
+      <Typography variant="subtitle2" fontWeight={700} className={css.nftId}>
+        #{change.tokenId}
+      </Typography>
+      <Chip sx={{ borderRadius: '4px' }} label="NFT" />
     </>
   )
 }
@@ -102,31 +104,33 @@ export const RedefineBalanceChanges = () => {
   const { balanceChange, isLoading } = useContext(TransactionSecurityContext)
 
   return (
-    <Box>
-      <Box display="flex" flexDirection="column">
-        <Typography variant="body2">Balance change</Typography>
-        {isLoading && !balanceChange ? (
-          <LoadingLabel />
-        ) : (
-          <Grid container direction="row" alignItems="center" spacing={1}>
-            {balanceChange ? (
-              <>
-                {balanceChange?.in?.map((change, idx) => (
-                  <SingleBalanceChange change={change} key={idx} positive />
-                ))}
-                {balanceChange?.out?.map((change, idx) => (
-                  <SingleBalanceChange change={change} key={idx} />
-                ))}
-              </>
-            ) : (
-              <Typography color="text.secondary">None</Typography>
-            )}
-          </Grid>
-        )}
+    <Box className={css.box}>
+      <Box className={css.head}>
+        <Grid container direction="row">
+          <Typography variant="subtitle2" fontWeight={700}>
+            Balance change
+          </Typography>
+        </Grid>
       </Box>
-      <Typography mt={1} color="text.secondary">
-        Powered by REDEFINE
-      </Typography>
+
+      {isLoading && !balanceChange ? (
+        <LoadingLabel />
+      ) : (
+        <Grid container direction="row" alignItems="center" spacing={1}>
+          {balanceChange ? (
+            <>
+              {balanceChange?.in?.map((change, idx) => (
+                <SingleBalanceChange change={change} key={idx} positive />
+              ))}
+              {balanceChange?.out?.map((change, idx) => (
+                <SingleBalanceChange change={change} key={idx} />
+              ))}
+            </>
+          ) : (
+            <Typography color="text.secondary">None</Typography>
+          )}
+        </Grid>
+      )}
     </Box>
   )
 }
