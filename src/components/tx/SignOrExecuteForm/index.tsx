@@ -53,9 +53,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
 
       <DecodedTx tx={safeTx} txId={props.txId} />
 
-      {canExecute && (
-        <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={props.onlyExecute} />
-      )}
+      {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
 
       {/* Warning message and switch button */}
       <WrongChainWarning />

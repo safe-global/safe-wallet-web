@@ -2,18 +2,23 @@ import type { ChangeEvent, ReactElement } from 'react'
 import { Checkbox, FormControlLabel, SvgIcon, Tooltip } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectSettings, setTransactionExecution } from '@/store/settingsSlice'
 
 const ExecuteCheckbox = ({
-  checked,
   onChange,
   disabled = false,
 }: {
-  checked: boolean
   onChange: (checked: boolean) => void
   disabled?: boolean
 }): ReactElement => {
+  const settings = useAppSelector(selectSettings)
+  const defaultChecked = settings.transactionExecution
+  const dispatch = useAppDispatch()
+
   const handleChange = (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
     trackEvent({ ...MODALS_EVENTS.EXECUTE_TX, label: checked })
+    dispatch(setTransactionExecution(checked))
     onChange(checked)
   }
 
@@ -39,7 +44,7 @@ const ExecuteCheckbox = ({
 
   return (
     <FormControlLabel
-      control={<Checkbox checked={checked} onChange={handleChange} disabled={disabled} />}
+      control={<Checkbox defaultChecked={defaultChecked} onChange={handleChange} disabled={disabled} />}
       label={<>Execute transaction {infoIcon}</>}
       sx={{ mb: 1 }}
     />
