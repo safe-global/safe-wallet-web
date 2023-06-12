@@ -45,7 +45,7 @@ const NftCollections = (): ReactElement => {
         trackEvent({ ...NFT_EVENTS.SEND, label: selectedNfts.length })
       }
     },
-    [selectedNfts],
+    [selectedNfts, setTxFlow],
   )
 
   // Add new NFTs to the accumulated list
