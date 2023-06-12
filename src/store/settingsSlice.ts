@@ -41,6 +41,7 @@ export type SettingsState = {
   signing: {
     onChainSigning: boolean
   }
+  transactionExecution: boolean
 }
 
 export const initialState: SettingsState = {
@@ -66,6 +67,7 @@ export const initialState: SettingsState = {
   signing: {
     onChainSigning: false,
   },
+  transactionExecution: true,
 }
 
 export const settingsSlice = createSlice({
@@ -83,6 +85,9 @@ export const settingsSlice = createSlice({
     },
     setQrShortName: (state, { payload }: PayloadAction<SettingsState['shortName']['qr']>) => {
       state.shortName.qr = payload
+    },
+    setTransactionExecution: (state, { payload }: PayloadAction<SettingsState['transactionExecution']>) => {
+      state.transactionExecution = payload
     },
     setDarkMode: (state, { payload }: PayloadAction<SettingsState['theme']['darkMode']>) => {
       state.theme.darkMode = payload
@@ -127,6 +132,7 @@ export const {
   setRpc,
   setTenderly,
   setOnChainSigning,
+  setTransactionExecution,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]

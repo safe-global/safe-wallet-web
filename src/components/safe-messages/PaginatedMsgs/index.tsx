@@ -4,7 +4,7 @@ import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import useSafeMessages from '@/hooks/useSafeMessages'
+import useSafeMessages from '@/hooks/messages/useSafeMessages'
 import LinkIcon from '@/public/images/common/link.svg'
 import NoMessagesIcon from '@/public/images/messages/no-messages.svg'
 import InfiniteScroll from '@/components/common/InfiniteScroll'

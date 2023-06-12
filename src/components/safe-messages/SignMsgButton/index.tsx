@@ -7,8 +7,8 @@ import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import useWallet from '@/hooks/wallets/useWallet'
 import Track from '@/components/common/Track'
 import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
-import useIsSafeMessageSignableBy from '@/hooks/useIsSafeMessageSignableBy'
-import useIsSafeMessagePending from '@/hooks/useIsSafeMessagePending'
+import useIsSafeMessageSignableBy from '@/hooks/messages/useIsSafeMessageSignableBy'
+import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
 import MsgModal from '@/components/safe-messages/MsgModal'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: boolean }): ReactElement => {
