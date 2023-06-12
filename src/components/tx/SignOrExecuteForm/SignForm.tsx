@@ -1,4 +1,4 @@
-import { type ReactElement, type SyntheticEvent, useState } from 'react'
+import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { Button, Typography } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -8,6 +8,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { useTxActions } from './hooks'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { TxModalContext } from '@/components/tx-flow'
 
 const SignForm = ({
   safeTx,
@@ -29,6 +30,7 @@ const SignForm = ({
   // Hooks
   const isOwner = useIsSafeOwner()
   const { signTx } = useTxActions()
+  const { setTxFlow } = useContext(TxModalContext)
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -41,6 +43,7 @@ const SignForm = ({
 
     try {
       await signTx(safeTx, txId, origin)
+      setTxFlow(undefined)
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)

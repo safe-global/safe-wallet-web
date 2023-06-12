@@ -1,14 +1,19 @@
 import { useCallback, useState } from 'react'
+import merge from 'lodash/merge'
 
-const useTxStepper = <T extends Array<any>>(initialData: T) => {
+const useTxStepper = <T extends Array<unknown>>(initialData: T) => {
   const [step, setStep] = useState(0)
   const [data, setData] = useState<T>(initialData)
 
   const nextStep = useCallback(<S extends keyof T>(stepData: T[S]) => {
     setStep((prevStep) => {
-      const newStep = prevStep + 1
-      setData((prevData) => ({ ...prevData, [newStep]: stepData }))
-      return newStep
+      const nextStep = prevStep + 1
+      setData((prevData) => {
+        prevData[prevStep] = stepData
+        prevData[nextStep] = merge({}, prevData[nextStep], stepData)
+        return prevData
+      })
+      return prevStep + 1
     })
   }, [])
 
