@@ -1,4 +1,4 @@
-import { type ReactElement, type SyntheticEvent, useState } from 'react'
+import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { Box, Button } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -16,6 +16,8 @@ import { hasRemainingRelays } from '@/utils/relaying'
 import type { SignOrExecuteProps } from '.'
 import type { AdvancedParameters } from '../AdvancedParams'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { TxModalContext } from '@/components/tx-flow'
+import { SuccessScreen } from '@/components/tx-flow/flows/SuccessScreen'
 
 const ExecuteForm = ({
   safeTx,
@@ -40,6 +42,7 @@ const ExecuteForm = ({
   const currentChain = useCurrentChain()
   const { executeTx } = useTxActions()
   const [relays] = useRelaysBySafe()
+  const { setTxFlow } = useContext(TxModalContext)
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -68,7 +71,8 @@ const ExecuteForm = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await executeTx(txOptions, safeTx, txId, origin, willRelay)
+      const executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
+      setTxFlow(<SuccessScreen txId={executedTxId} />)
     } catch (err) {
       logError(Errors._804, (err as Error).message)
       setIsSubmittable(true)
