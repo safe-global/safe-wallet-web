@@ -89,31 +89,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
     useSafePermissions()
   const appName = useMemo(() => (remoteApp ? remoteApp.name : appUrl), [appUrl, remoteApp])
-  const { setTxFlow } = useContext(TxModalContext)
-
-  const onSafeAppsModalClose = () => {
-    if (currentRequestId) {
-      communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, currentRequestId, true)
-      setTxFlow(undefined)
-      setCurrentRequestId(undefined)
-    }
-
-    trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_REJECTED, appName)
-  }
-
-  const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
-    const permissions = confirmPermissionRequest(PermissionStatus.GRANTED)
-    communicator?.send(permissions, requestId as string)
-  }
-
-  const onRejectPermissionRequest = (requestId?: RequestId) => {
-    if (requestId) {
-      confirmPermissionRequest(PermissionStatus.DENIED)
-      communicator?.send('Permissions were rejected', requestId as string, true)
-    } else {
-      setPermissionsRequest(undefined)
-    }
-  }
+  const { setTxFlow, setOnClose } = useContext(TxModalContext)
 
   const communicator = useAppCommunicator(iframeRef, remoteApp || safeAppFromManifest, chain, {
     onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => {
@@ -128,6 +104,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       setCurrentRequestId(requestId)
 
       setTxFlow(<SafeAppsTxFlow data={data} />)
+      setOnClose(onSafeAppsModalClose)
     },
     onSignMessage: (
       message: string | EIP712TypedData,
@@ -200,6 +177,30 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       }
     },
   })
+
+  const onSafeAppsModalClose = () => {
+    setCurrentRequestId((prevId) => {
+      if (prevId) {
+        communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, prevId, true)
+        trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_REJECTED, appName)
+      }
+      return undefined
+    })
+  }
+
+  const onAcceptPermissionRequest = (origin: string, requestId: RequestId) => {
+    const permissions = confirmPermissionRequest(PermissionStatus.GRANTED)
+    communicator?.send(permissions, requestId as string)
+  }
+
+  const onRejectPermissionRequest = (requestId?: RequestId) => {
+    if (requestId) {
+      confirmPermissionRequest(PermissionStatus.DENIED)
+      communicator?.send('Permissions were rejected', requestId as string, true)
+    } else {
+      setPermissionsRequest(undefined)
+    }
+  }
 
   useEffect(() => {
     if (!remoteApp) return
