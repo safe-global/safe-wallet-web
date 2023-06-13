@@ -26,28 +26,28 @@ type TokenTransferFlowProps = Partial<TokenTransferParams> & {
   txNonce?: number
 }
 
-const defaultData: TokenTransferParams = {
+const defaultParams: TokenTransferParams = {
   recipient: '',
   tokenAddress: '',
   amount: '',
   type: TokenTransferType.multiSig,
 }
 
-const TokenTransferFlow = (props: TokenTransferFlowProps) => {
+const TokenTransferFlow = ({ txNonce, ...params }: TokenTransferFlowProps) => {
   const { data, step, nextStep, prevStep } = useTxStepper<TokenTransferParams>({
-    ...props,
-    ...defaultData,
+    ...params,
+    ...defaultParams,
   })
 
   const steps = [
     <CreateTokenTransfer
       key={0}
       params={data}
-      txNonce={props.txNonce}
+      txNonce={txNonce}
       onSubmit={(formData) => nextStep({ ...data, ...formData })}
     />,
 
-    <ReviewTokenTransfer key={1} params={data} txNonce={props.txNonce} onSubmit={() => null} />,
+    <ReviewTokenTransfer key={1} params={data} txNonce={txNonce} onSubmit={() => null} />,
   ]
 
   return (

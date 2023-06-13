@@ -4,15 +4,13 @@ import useTxStepper from '../../useTxStepper'
 import SendNftBatch from './SendNftBatch'
 import ReviewNftBatch from './ReviewNftBatch'
 
-type NftTransferFlowProps = {
-  txNonce?: number
-  recipient?: string
-  tokens?: SafeCollectibleResponse[]
-}
-
 export type NftTransferParams = {
   recipient: string
   tokens: SafeCollectibleResponse[]
+}
+
+type NftTransferFlowProps = Partial<NftTransferParams> & {
+  txNonce?: number
 }
 
 const defaultParams: NftTransferParams = {
