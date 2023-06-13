@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-const useTxStepper = <T extends Array<unknown>>(initialData: T) => {
+const useTxStepper = <T extends unknown>(initialData: T) => {
   const [step, setStep] = useState(0)
   const [data, setData] = useState<T>(initialData)
 
