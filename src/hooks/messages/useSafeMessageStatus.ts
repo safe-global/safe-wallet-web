@@ -2,7 +2,7 @@ import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useIsSafeMessagePending from './useIsSafeMessagePending'
-import useWallet from './wallets/useWallet'
+import useWallet from '../wallets/useWallet'
 
 const ConfirmingStatus = 'CONFIRMING'
 const AwaitingConfirmationsStatus = 'AWAITING_CONFIRMATIONS'

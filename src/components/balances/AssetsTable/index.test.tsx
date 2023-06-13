@@ -105,6 +105,10 @@ describe('AssetsTable', () => {
             },
             rpc: {},
           },
+          signing: {
+            onChainSigning: false,
+          },
+          transactionExecution: true,
         },
       },
     })
@@ -207,6 +211,10 @@ describe('AssetsTable', () => {
             },
             rpc: {},
           },
+          signing: {
+            onChainSigning: false,
+          },
+          transactionExecution: true,
         },
       },
     })
@@ -305,6 +313,10 @@ describe('AssetsTable', () => {
             },
             rpc: {},
           },
+          signing: {
+            onChainSigning: false,
+          },
+          transactionExecution: true,
         },
       },
     })
@@ -400,6 +412,10 @@ describe('AssetsTable', () => {
             },
             rpc: {},
           },
+          signing: {
+            onChainSigning: false,
+          },
+          transactionExecution: true,
         },
       },
     })

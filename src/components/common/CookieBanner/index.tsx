@@ -22,10 +22,12 @@ const CookieCheckbox = ({
   checkboxProps,
   label,
   checked,
+  color,
 }: {
   label: string
   checked: boolean
   checkboxProps: CheckboxProps
+  color?: string
 }) => (
   <FormControlLabel
     label={label}
@@ -33,15 +35,21 @@ const CookieCheckbox = ({
     control={<Checkbox {...checkboxProps} />}
     sx={{
       mt: '-9px',
-      color: (theme) => theme.palette.background.paper,
+      color,
       '.MuiCheckbox-root': {
-        color: (theme) => theme.palette.background.paper + '!important',
+        color,
       },
     }}
   />
 )
 
-const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactElement => {
+export const CookieBanner = ({
+  warningKey,
+  inverted,
+}: {
+  warningKey?: CookieType
+  inverted?: boolean
+}): ReactElement => {
   const warning = warningKey ? COOKIE_WARNING[warningKey] : undefined
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
@@ -66,8 +74,10 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
     setTimeout(handleAccept, 300)
   }
 
+  const color = inverted ? 'background.paper' : undefined
+
   return (
-    <Paper className={css.container} elevation={3}>
+    <Paper sx={inverted ? { backgroundColor: 'text.primary' } : undefined} className={css.container}>
       {warning && (
         <Typography align="center" mb={2} color="warning.background" variant="body2">
           <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" color="error" sx={{ mb: -0.4 }} /> {warning}
@@ -77,10 +87,10 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
       <form>
         <Grid container alignItems="center">
           <Grid item xs>
-            <Typography variant="body2" color="background.paper" mb={2}>
+            <Typography variant="body2" color={color} mb={2}>
               By clicking &quot;Accept all&quot; you agree to the use of the tools listed below and their corresponding{' '}
               <span style={{ whiteSpace: 'nowrap' }}>3rd-party</span> cookies.{' '}
-              <ExternalLink href={AppRoutes.cookie} color="background.paper">
+              <ExternalLink href={AppRoutes.cookie} color={color}>
                 Cookie policy
               </ExternalLink>
             </Typography>
@@ -88,9 +98,14 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
             <Grid container alignItems="center" gap={4}>
               <Grid item xs={12} sm>
                 <Box mb={2}>
-                  <CookieCheckbox checkboxProps={{ id: 'necessary', disabled: true }} label="Necessary" checked />
+                  <CookieCheckbox
+                    checkboxProps={{ id: 'necessary', disabled: true }}
+                    label="Necessary"
+                    checked
+                    color={color}
+                  />
                   <br />
-                  <Typography variant="body2" color="background.paper">
+                  <Typography variant="body2" color={color}>
                     Locally stored data for core functionality
                   </Typography>
                 </Box>
@@ -99,9 +114,10 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
                     checkboxProps={{ ...register(CookieType.UPDATES), id: 'beamer' }}
                     label="Beamer"
                     checked={watch(CookieType.UPDATES)}
+                    color={color}
                   />
                   <br />
-                  <Typography variant="body2" color="background.paper">
+                  <Typography variant="body2" color={color}>
                     New features and product announcements
                   </Typography>
                 </Box>
@@ -110,9 +126,10 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
                     checkboxProps={{ ...register(CookieType.ANALYTICS), id: 'ga' }}
                     label="Google Analytics"
                     checked={watch(CookieType.ANALYTICS)}
+                    color={color}
                   />
                   <br />
-                  <Typography variant="body2" color="background.paper">
+                  <Typography variant="body2" color={color}>
                     Help us make the app better. We never track your Safe Account address or wallet addresses, or any
                     transaction data.
                   </Typography>
@@ -122,7 +139,7 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
 
             <Grid container alignItems="center" justifyContent="center" mt={4} gap={2}>
               <Grid item>
-                <Typography color="background.paper">
+                <Typography color={color}>
                   <Button onClick={handleAccept} variant="text" size="small" color="inherit" disableElevation>
                     Accept selection
                   </Button>
@@ -142,7 +159,7 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
   )
 }
 
-const CookieBanner = (): ReactElement | null => {
+const CookieBannerPopup = (): ReactElement | null => {
   const cookiePopup = useAppSelector(selectCookieBanner)
   const cookies = useAppSelector(selectCookies)
   const dispatch = useAppDispatch()
@@ -158,7 +175,11 @@ const CookieBanner = (): ReactElement | null => {
     }
   }, [dispatch, shouldOpen])
 
-  return cookiePopup?.open ? <CookieBannerPopup warningKey={cookiePopup.warningKey} /> : null
+  return cookiePopup?.open ? (
+    <div className={css.popup}>
+      <CookieBanner warningKey={cookiePopup.warningKey} inverted />
+    </div>
+  ) : null
 }
 
-export default CookieBanner
+export default CookieBannerPopup

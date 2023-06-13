@@ -1,5 +1,5 @@
-import type { SyntheticEvent, ReactElement } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
+import { type SyntheticEvent, type ReactElement, useMemo } from 'react'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Typography } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import {
   type DecodedDataResponse,
@@ -44,6 +44,13 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
     return getTransactionDetails(chainId, txId)
   }, [])
 
+  const approvalEditorTx = useMemo(() => {
+    if (!decodedData || !txDetails?.txData) {
+      return undefined
+    }
+    return { ...decodedData, to: txDetails?.txData?.to.value }
+  }, [decodedData, txDetails?.txData])
+
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
@@ -52,9 +59,9 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
 
   return (
     <Box mb={2}>
-      {decodedData && txDetails?.txData && (
+      {approvalEditorTx && (
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor txs={{ ...decodedData, to: txDetails.txData.to.value }} />
+          <ApprovalEditor txs={approvalEditorTx} />
         </ErrorBoundary>
       )}
 
@@ -77,22 +84,25 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
         <AccordionSummary>Transaction details</AccordionSummary>
 
         <AccordionDetails>
-          {txDetails ? (
-            <Box mb={1}>
-              <Summary txDetails={txDetails} defaultExpanded />
-            </Box>
-          ) : txDetailsError ? (
-            <ErrorMessage error={txDetailsError}>Failed loading transaction details</ErrorMessage>
-          ) : (
-            txDetailsLoading && <Skeleton />
-          )}
-
           {decodedData ? (
             <MethodDetails data={decodedData} />
           ) : decodedDataError ? (
             <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
           ) : (
             decodedDataLoading && <Skeleton />
+          )}
+
+          {txDetails ? (
+            <Box mt={2}>
+              <Typography variant="overline" fontWeight="bold" color="border.main">
+                Advanced details
+              </Typography>
+              <Summary txDetails={txDetails} defaultExpanded />
+            </Box>
+          ) : txDetailsError ? (
+            <ErrorMessage error={txDetailsError}>Failed loading transaction details</ErrorMessage>
+          ) : (
+            txDetailsLoading && <Skeleton />
           )}
         </AccordionDetails>
       </Accordion>
