@@ -1,31 +1,29 @@
-import EthHashInfo from '@/components/common/EthHashInfo'
-import { Button, DialogContent, Typography } from '@mui/material'
-import type { RemoveOwnerData } from '..'
+import { DialogContent, Typography, Button, DialogActions } from '@mui/material'
 
-export const ReviewSelectedOwnerStep = ({
-  data,
-  onSubmit,
-}: {
-  data: RemoveOwnerData
-  onSubmit: (data: RemoveOwnerData) => void
-}) => {
+import EthHashInfo from '@/components/common/EthHashInfo'
+import type { RemoveOwnerFlowProps } from '.'
+
+export const ReviewSelectedOwner = ({ params, onSubmit }: { params: RemoveOwnerFlowProps; onSubmit: () => void }) => {
   return (
-    <form onSubmit={() => onSubmit(data)}>
+    <form onSubmit={onSubmit}>
       <DialogContent>
         <Typography mb={2}>Review the owner you want to remove from the active Safe Account:</Typography>
         <EthHashInfo
-          address={data.removedOwner.address}
-          name={data.removedOwner.name}
+          address={params.removedOwner.address}
+          name={params.removedOwner.name}
           showName
           shortAddress={false}
           showCopyButton
           hasExplorer
           showAvatar
         />
+      </DialogContent>
+
+      <DialogActions>
         <Button variant="contained" type="submit">
           Next
         </Button>
-      </DialogContent>
+      </DialogActions>
     </form>
   )
 }

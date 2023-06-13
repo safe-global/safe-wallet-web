@@ -1,19 +1,19 @@
-import type { SelectChangeEvent } from '@mui/material'
-import { Button, DialogContent, Grid, MenuItem, Select, Typography } from '@mui/material'
-import type { SyntheticEvent } from 'react'
+import { Button, DialogContent, Grid, MenuItem, Select, Typography, DialogActions } from '@mui/material'
 import { useState } from 'react'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import type { RemoveOwnerData } from '..'
+import type { SyntheticEvent } from 'react'
+import type { SelectChangeEvent } from '@mui/material'
+import type { RemoveOwnerFlowProps } from '.'
 
-export const SetThresholdStep = ({
-  data,
+export const SetThreshold = ({
+  params,
   onSubmit,
 }: {
-  data: RemoveOwnerData
-  onSubmit: (data: RemoveOwnerData) => void
+  params: RemoveOwnerFlowProps
+  onSubmit: (data: RemoveOwnerFlowProps) => void
 }) => {
   const { safe } = useSafeInfo()
-  const [selectedThreshold, setSelectedThreshold] = useState<number>(data.threshold ?? 1)
+  const [selectedThreshold, setSelectedThreshold] = useState<number>(params.threshold || 1)
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))
@@ -21,7 +21,7 @@ export const SetThresholdStep = ({
 
   const onSubmitHandler = (e: SyntheticEvent) => {
     e.preventDefault()
-    onSubmit({ ...data, threshold: selectedThreshold })
+    onSubmit({ ...params, threshold: selectedThreshold })
   }
 
   const newNumberOfOwners = safe ? safe.owners.length - 1 : 1
@@ -49,9 +49,11 @@ export const SetThresholdStep = ({
         </Grid>
       </DialogContent>
 
-      <Button variant="contained" type="submit">
-        Next
-      </Button>
+      <DialogActions>
+        <Button variant="contained" type="submit">
+          Next
+        </Button>
+      </DialogActions>
     </form>
   )
 }

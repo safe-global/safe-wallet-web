@@ -2,10 +2,10 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import AddOwnerFlow from '@/components/tx-flow/flows/AddOwner'
 import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Grid, Typography, Button, SvgIcon } from '@mui/material'
+import { Box, Grid, Typography, Button, SvgIcon, IconButton, Tooltip } from '@mui/material'
 import { useContext, useMemo } from 'react'
 import { EditOwnerDialog } from '../EditOwnerDialog'
-import { RemoveOwnerDialog } from '../RemoveOwnerDialog'
+import RemoveOwnerFlow from '@/components/tx-flow/flows/RemoveOwner'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import AddIcon from '@/public/images/common/add.svg'
@@ -13,6 +13,7 @@ import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
+import DeleteIcon from '@/public/images/common/delete.svg'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -44,14 +45,28 @@ export const OwnerList = () => {
               <div className={tableCss.actions}>
                 <ReplaceOwnerDialog address={address} />
                 <EditOwnerDialog address={address} name={name} chainId={safe.chainId} />
-                <RemoveOwnerDialog owner={{ address, name }} />
+                <CheckWallet>
+                  {(isOk) => (
+                    <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
+                      <Tooltip title="Remove owner">
+                        <IconButton
+                          onClick={() => setTxFlow(<RemoveOwnerFlow name={name} address={address} />)}
+                          size="small"
+                          disabled={!isOk}
+                        >
+                          <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Track>
+                  )}
+                </CheckWallet>
               </div>
             ),
           },
         },
       }
     })
-  }, [safe, addressBook])
+  }, [safe.owners, safe.chainId, addressBook, setTxFlow])
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
