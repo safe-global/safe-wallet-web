@@ -6,6 +6,9 @@ const REDEFINE_URL = 'https://risk-analysis.safe.global/messages'
 
 export const enum REDEFINE_ERROR_CODES {
   ANALYSIS_IN_PROGRESS = 1000,
+  SIMULATION_FAILED = 1001,
+  INPUT_VALIDATION = 2000,
+  BAD_REQUEST = 3000,
 }
 
 const redefineSeverityMap: Record<RedefineSeverity['label'], SecuritySeverity> = {
@@ -25,10 +28,12 @@ export type RedefineModuleRequest = {
 }
 
 export type RedefineModuleResponse = {
-  issues: Array<
-    Omit<RedefineResponse['data']['insights']['issues'][number], 'severity'> & { severity: SecuritySeverity }
+  issues?: Array<
+    Omit<NonNullable<RedefineResponse['data']>['insights']['issues'][number], 'severity'> & {
+      severity: SecuritySeverity
+    }
   >
-  balanceChange: RedefineResponse['data']['balanceChange']
+  balanceChange?: NonNullable<RedefineResponse['data']>['balanceChange']
   errors: RedefineResponse['errors']
 }
 
@@ -70,7 +75,7 @@ type RedefineBalanceChange =
   | { type: 'ERC721'; address: string; tokenId: string; name?: string; symbol?: string }
 
 export type RedefineResponse = {
-  data: {
+  data?: {
     balanceChange?: {
       in: RedefineBalanceChange[]
       out: RedefineBalanceChange[]
@@ -128,13 +133,13 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
     const result = (await res.json()) as RedefineResponse
 
     return {
-      severity: redefineSeverityMap[result.data.insights.verdict.label],
+      severity: result.data ? redefineSeverityMap[result.data.insights.verdict.label] : SecuritySeverity.NONE,
       payload: {
-        issues: result.data.insights.issues.map((issue) => ({
+        issues: result.data?.insights.issues.map((issue) => ({
           ...issue,
           severity: redefineSeverityMap[issue.severity.label],
         })),
-        balanceChange: result.data.balanceChange,
+        balanceChange: result.data?.balanceChange,
         errors: result.errors,
       },
     }

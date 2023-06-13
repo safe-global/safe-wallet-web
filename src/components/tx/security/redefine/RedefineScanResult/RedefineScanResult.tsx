@@ -7,10 +7,12 @@ import { groupBy } from 'lodash'
 const MAX_SHOWN_WARNINGS = 3
 
 export const RedefineScanResult = () => {
-  const { warnings, verdict, isLoading } = useContext(TransactionSecurityContext)
+  const { warnings, verdict, isLoading, error } = useContext(TransactionSecurityContext)
   const relevantWarnings = warnings.filter((warning) => warning.severity !== SecuritySeverity.NONE)
   const shownWarnings =
-    relevantWarnings.length > MAX_SHOWN_WARNINGS ? relevantWarnings.slice(0, MAX_SHOWN_WARNINGS) : relevantWarnings
+    relevantWarnings && relevantWarnings.length > MAX_SHOWN_WARNINGS
+      ? relevantWarnings.slice(0, MAX_SHOWN_WARNINGS)
+      : relevantWarnings
   const hiddenWarningCount = warnings.length - shownWarnings.length
   const hiddenMaxSeverity = hiddenWarningCount > 0 ? relevantWarnings[MAX_SHOWN_WARNINGS]?.severity : 0
 
@@ -19,7 +21,7 @@ export const RedefineScanResult = () => {
 
   return (
     <>
-      <SecurityWarning severity={verdict} isLoading={isLoading} />
+      <SecurityWarning severity={verdict} isLoading={isLoading} error={error} />
       {sortedSeverities.map((key) => (
         <SecurityHint
           key={key}

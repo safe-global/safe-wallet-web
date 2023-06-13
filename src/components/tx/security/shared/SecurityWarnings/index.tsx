@@ -80,9 +80,11 @@ export const SecurityHint = ({ severity, warnings }: { severity: SecuritySeverit
 export const SecurityWarning = ({
   severity,
   isLoading,
+  error,
 }: {
   severity: SecuritySeverity | undefined
   isLoading: boolean
+  error: Error | undefined
 }) => {
   const severityProps = severity !== undefined ? mapSeverityComponentProps[severity] : undefined
 
@@ -98,6 +100,10 @@ export const SecurityWarning = ({
           </Grid>
           {isLoading ? (
             <LoadingLabel />
+          ) : error ? (
+            <Typography variant="body2" color="error">
+              {error.message}
+            </Typography>
           ) : (
             severityProps && (
               <Typography variant="body2" fontWeight={700} color={`${severityProps.color}.main`}>

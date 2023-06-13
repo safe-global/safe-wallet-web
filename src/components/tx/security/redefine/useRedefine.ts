@@ -1,4 +1,4 @@
-import useAsync from '@/hooks/useAsync'
+import useAsync, { type AsyncResult } from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import {
@@ -13,7 +13,15 @@ import { useState, useEffect } from 'react'
 export const REDEFINE_RETRY_TIMEOUT = 2_000
 const RedefineModuleInstance = new RedefineModule()
 
-export const useRedefine = (safeTransaction: SafeTransaction | undefined) => {
+const CRITICAL_ERRORS: Record<number, string> = {
+  [1001]: 'Simulation failed',
+  [2000]: 'Invalid simulation input',
+  [3000]: 'Bad request',
+}
+
+export const useRedefine = (
+  safeTransaction: SafeTransaction | undefined,
+): AsyncResult<SecurityResponse<RedefineModuleResponse>> => {
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const [retryCounter, setRetryCounter] = useState(0)
@@ -38,17 +46,25 @@ export const useRedefine = (safeTransaction: SafeTransaction | undefined) => {
 
   const redefinePayload = redefineResponse[0]
 
+  const isAnalyzing = !!redefinePayload?.payload?.errors.some(
+    (error) => error.code === REDEFINE_ERROR_CODES.ANALYSIS_IN_PROGRESS,
+  )
+
+  const loading = redefineResponse[2] || isAnalyzing
+
+  const simulationErrors = redefinePayload?.payload?.errors.filter((error) => CRITICAL_ERRORS[error.code] !== undefined)
+  const error =
+    redefineResponse[1] ||
+    (simulationErrors && simulationErrors.length > 0 ? new Error(CRITICAL_ERRORS[simulationErrors[0].code]) : undefined)
+
   useEffect(() => {
-    const isAnalyzing = redefinePayload?.payload?.errors.some(
-      (error) => error.code === REDEFINE_ERROR_CODES.ANALYSIS_IN_PROGRESS,
-    )
     if (!isAnalyzing) {
       return
     }
 
     let timeoutId = setTimeout(() => setRetryCounter((prev) => prev + 1), REDEFINE_RETRY_TIMEOUT)
     return () => clearTimeout(timeoutId)
-  }, [redefinePayload])
+  }, [redefinePayload, isAnalyzing])
 
-  return redefineResponse
+  return [redefinePayload, error, loading]
 }

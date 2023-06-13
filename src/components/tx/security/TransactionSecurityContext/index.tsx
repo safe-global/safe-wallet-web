@@ -5,7 +5,7 @@ import { createContext } from 'react'
 import { useRedefine } from '../redefine/useRedefine'
 
 export const TransactionSecurityContext = createContext<{
-  warnings: RedefineModuleResponse['issues']
+  warnings: NonNullable<RedefineModuleResponse['issues']>
   balanceChange: RedefineModuleResponse['balanceChange']
   verdict: SecuritySeverity | undefined
   isLoading: boolean
