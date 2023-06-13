@@ -1,9 +1,7 @@
-import merge from 'lodash/merge'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import CreateTokenTransfer from './CreateTokenTransfer'
 import ReviewTokenTransfer from './ReviewTokenTransfer'
-import { useMemo } from 'react'
 
 export enum TokenTransferType {
   multiSig = 'multiSig',
@@ -28,7 +26,7 @@ type TokenTransferFlowProps = Partial<TokenTransferParams> & {
   txNonce?: number
 }
 
-const defaultData: TokenTransferParams = {
+const defaultParams: TokenTransferParams = {
   recipient: '',
   tokenAddress: '',
   amount: '',
@@ -36,22 +34,20 @@ const defaultData: TokenTransferParams = {
 }
 
 const TokenTransferFlow = ({ txNonce, ...params }: TokenTransferFlowProps) => {
-  const initialData = useMemo(() => merge({}, defaultData, params), [params])
-
-  const { data, step, nextStep, prevStep } = useTxStepper<[TokenTransferParams, TokenTransferParams | undefined]>([
-    initialData,
-    undefined,
-  ])
+  const { data, step, nextStep, prevStep } = useTxStepper<TokenTransferParams>({
+    ...params,
+    ...defaultParams,
+  })
 
   const steps = [
     <CreateTokenTransfer
       key={0}
-      params={data[0]}
+      params={data}
       txNonce={txNonce}
-      onSubmit={(formData) => nextStep([formData, formData])}
+      onSubmit={(formData) => nextStep({ ...data, ...formData })}
     />,
 
-    data[1] && <ReviewTokenTransfer key={1} params={data[1]} txNonce={txNonce} onSubmit={() => null} />,
+    <ReviewTokenTransfer key={1} params={data} txNonce={txNonce} onSubmit={() => null} />,
   ]
 
   return (

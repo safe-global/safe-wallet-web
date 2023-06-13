@@ -31,8 +31,8 @@ const ReviewTokenTransfer = ({
     if (!token) return
 
     const txParams = createTokenTransferParams(
-      params.recipient || '',
-      params.amount || '',
+      params.recipient,
+      params.amount,
       token.tokenInfo.decimals,
       token.tokenInfo.address,
     )
@@ -42,11 +42,11 @@ const ReviewTokenTransfer = ({
 
   return (
     <DialogContent>
-      {token && <TokenTransferReview amount={params.amount || ''} tokenInfo={token.tokenInfo} />}
+      {token && <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo} />}
 
       <SendFromBlock />
 
-      <SendToBlock address={params.recipient || ''} />
+      <SendToBlock address={params.recipient} />
 
       <SignOrExecuteForm onSubmit={onSubmit} />
     </DialogContent>

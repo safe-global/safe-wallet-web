@@ -2,7 +2,7 @@ import { type ReactElement, useEffect, useContext } from 'react'
 import { DialogContent } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
-import type { SubmittedNftTransferParams } from '.'
+import type { NftTransferParams } from '.'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -10,7 +10,7 @@ import SendFromBlock from '@/components/tx/SendFromBlock'
 import { SafeTxContext } from '../../SafeTxProvider'
 
 type ReviewNftBatchProps = {
-  params: SubmittedNftTransferParams
+  params: NftTransferParams
   onSubmit: () => void
   txNonce?: number
 }

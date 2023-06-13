@@ -5,30 +5,29 @@ import SendNftBatch from './SendNftBatch'
 import ReviewNftBatch from './ReviewNftBatch'
 
 export type NftTransferParams = {
-  txNonce?: number
-  recipient?: string
-  tokens?: SafeCollectibleResponse[]
-}
-
-export type SubmittedNftTransferParams = NftTransferParams & {
   recipient: string
   tokens: SafeCollectibleResponse[]
 }
 
-type NftTransferFlowProps = NftTransferParams & {
+type NftTransferFlowProps = Partial<NftTransferParams> & {
   txNonce?: number
 }
 
+const defaultParams: NftTransferParams = {
+  recipient: '',
+  tokens: [],
+}
+
 const NftTransferFlow = ({ txNonce, ...params }: NftTransferFlowProps) => {
-  const { data, step, nextStep, prevStep } = useTxStepper<[NftTransferParams, SubmittedNftTransferParams | undefined]>([
-    params,
-    undefined,
-  ])
+  const { data, step, nextStep, prevStep } = useTxStepper<NftTransferParams>({
+    ...defaultParams,
+    ...params,
+  })
 
   const steps = [
-    <SendNftBatch key={0} params={data[0]} onSubmit={(formData) => nextStep([formData, formData])} />,
+    <SendNftBatch key={0} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
 
-    data[1] && <ReviewNftBatch key={1} params={data[1]} txNonce={txNonce} onSubmit={() => null} />,
+    <ReviewNftBatch key={1} params={data} txNonce={txNonce} onSubmit={() => null} />,
   ]
 
   return (
