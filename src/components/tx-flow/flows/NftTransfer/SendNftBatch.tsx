@@ -12,11 +12,9 @@ enum Field {
   recipient = 'recipient',
 }
 
-type FormData = {
-  [Field.recipient]: string
-}
+type FormData = Pick<NftTransferParams, Field.recipient>
 
-export type SendNftBatchProps = {
+type SendNftBatchProps = {
   onSubmit: (data: NftTransferParams) => void
   params: NftTransferParams
 }
