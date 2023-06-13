@@ -1,6 +1,6 @@
 import type { SelectChangeEvent } from '@mui/material'
 import { Box, Button, DialogContent, Grid, MenuItem, Select, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import TxModal from '@/components/tx/TxModal'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -14,6 +14,8 @@ import Track from '@/components/common/Track'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createUpdateThresholdTx } from '@/services/tx/tx-sender'
 import CheckWallet from '@/components/common/CheckWallet'
+import { TxModalContext } from '@/components/tx-flow'
+import ChangeThresholdFlow from '@/components/tx-flow/flows/ChangeThreshold'
 
 interface ChangeThresholdData {
   threshold: number
@@ -30,6 +32,7 @@ export const ChangeThresholdDialog = () => {
   const [open, setOpen] = useState(false)
 
   const { safe } = useSafeInfo()
+  const { setTxFlow } = useContext(TxModalContext)
 
   const handleClose = () => setOpen(false)
 
@@ -40,7 +43,7 @@ export const ChangeThresholdDialog = () => {
       <CheckWallet>
         {(isOk) => (
           <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD}>
-            <Button onClick={() => setOpen(true)} variant="contained" disabled={!isOk}>
+            <Button onClick={() => setTxFlow(<ChangeThresholdFlow />)} variant="contained" disabled={!isOk}>
               Change
             </Button>
           </Track>
@@ -52,7 +55,7 @@ export const ChangeThresholdDialog = () => {
   )
 }
 
-const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: () => void }) => {
+export const ChangeThresholdStep = ({ data, onSubmit }: { data: ChangeThresholdData; onSubmit: () => void }) => {
   const { safe } = useSafeInfo()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(safe.threshold)
   const [isChanged, setChanged] = useState<boolean>(false)
