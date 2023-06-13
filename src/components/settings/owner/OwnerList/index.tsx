@@ -1,13 +1,18 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { AddOwnerDialog } from '@/components/settings/owner/AddOwnerDialog'
+import AddOwnerFlow from '@/components/tx-flow/flows/AddOwner'
 import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Grid, Typography } from '@mui/material'
-import { useMemo } from 'react'
+import { Box, Grid, Typography, Button, SvgIcon } from '@mui/material'
+import { useContext, useMemo } from 'react'
 import { EditOwnerDialog } from '../EditOwnerDialog'
 import { RemoveOwnerDialog } from '../RemoveOwnerDialog'
 import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import EnhancedTable from '@/components/common/EnhancedTable'
+import AddIcon from '@/public/images/common/add.svg'
+import Track from '@/components/common/Track'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import CheckWallet from '@/components/common/CheckWallet'
+import { TxModalContext } from '@/components/tx-flow'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -19,6 +24,7 @@ const headCells = [
 export const OwnerList = () => {
   const addressBook = useAddressBook()
   const { safe } = useSafeInfo()
+  const { setTxFlow } = useContext(TxModalContext)
 
   const rows = useMemo(() => {
     return safe.owners.map((owner) => {
@@ -63,7 +69,23 @@ export const OwnerList = () => {
           </Typography>
 
           <EnhancedTable rows={rows} headCells={headCells} />
-          <AddOwnerDialog />
+
+          <Box pt={2}>
+            <CheckWallet>
+              {(isOk) => (
+                <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
+                  <Button
+                    onClick={() => setTxFlow(<AddOwnerFlow />)}
+                    variant="text"
+                    startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+                    disabled={!isOk}
+                  >
+                    Add new owner
+                  </Button>
+                </Track>
+              )}
+            </CheckWallet>
+          </Box>
         </Grid>
       </Grid>
     </Box>

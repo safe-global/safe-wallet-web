@@ -1,39 +1,42 @@
-import AddressBookInput from '@/components/common/AddressBookInput'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import NameInput from '@/components/common/NameInput'
-import type { ChangeOwnerData, OwnerData } from '@/components/settings/owner/AddOwnerDialog/DialogSteps/types'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { addressIsNotCurrentSafe, uniqueAddress } from '@/utils/validation'
-import { Box, Button, CircularProgress, DialogContent, FormControl, InputAdornment, Typography } from '@mui/material'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useAddressResolver } from '@/hooks/useAddressResolver'
+import { EthHashInfo } from '@safe-global/safe-react-components'
+import {
+  DialogContent,
+  Box,
+  Typography,
+  FormControl,
+  InputAdornment,
+  CircularProgress,
+  Button,
+  DialogActions,
+} from '@mui/material'
+import { useForm, FormProvider } from 'react-hook-form'
 
-export const ChooseOwnerStep = ({
-  data,
+import AddressBookInput from '@/components/common/AddressBookInput'
+import NameInput from '@/components/common/NameInput'
+import { useAddressResolver } from '@/hooks/useAddressResolver'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { uniqueAddress, addressIsNotCurrentSafe } from '@/utils/validation'
+import type { AddOwnerFlowProps } from '.'
+
+type FormData = AddOwnerFlowProps['newOwner']
+
+export const ChooseOwner = ({
+  params,
   onSubmit,
 }: {
-  data: ChangeOwnerData
-  onSubmit: (data: ChangeOwnerData) => void
+  params: AddOwnerFlowProps
+  onSubmit: (data: Pick<AddOwnerFlowProps, 'newOwner'>) => void
 }) => {
   const { safe, safeAddress } = useSafeInfo()
-  const { removedOwner, newOwner } = data
-  const owners = safe.owners
 
-  const isReplace = Boolean(removedOwner)
-
-  const defaultValues: OwnerData = {
-    address: newOwner?.address,
-    name: newOwner?.name,
-  }
-
-  const formMethods = useForm<OwnerData>({
-    defaultValues,
+  const formMethods = useForm<FormData>({
+    defaultValues: params.newOwner,
     mode: 'onChange',
   })
   const { handleSubmit, formState, watch } = formMethods
   const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
-  const notAlreadyOwner = uniqueAddress(owners?.map((owner) => owner.value))
+  const notAlreadyOwner = uniqueAddress(safe.owners.map((owner) => owner.value))
   const notCurrentSafe = addressIsNotCurrentSafe(safeAddress)
   const combinedValidate = (address: string) => notAlreadyOwner(address) || notCurrentSafe(address)
 
@@ -44,9 +47,8 @@ export const ChooseOwnerStep = ({
   // Address book, ENS
   const fallbackName = name || ens
 
-  const onFormSubmit = handleSubmit((formData: OwnerData) => {
+  const onFormSubmit = handleSubmit((formData: FormData) => {
     onSubmit({
-      ...data,
       newOwner: {
         ...formData,
         name: formData.name || fallbackName,
@@ -59,15 +61,15 @@ export const ChooseOwnerStep = ({
       <form onSubmit={onFormSubmit}>
         <DialogContent>
           <Box mb={1}>
-            {isReplace
+            {params.removedOwner
               ? 'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'
               : 'Add a new owner to the active Safe Account.'}
           </Box>
 
-          {removedOwner && (
+          {params.removedOwner && (
             <Box my={2}>
               <Typography mb={1}>Current owner</Typography>
-              <EthHashInfo address={removedOwner.address} showCopyButton shortAddress={false} hasExplorer />
+              <EthHashInfo address={params.removedOwner.address} showCopyButton shortAddress={false} hasExplorer />
             </Box>
           )}
 
@@ -93,11 +95,13 @@ export const ChooseOwnerStep = ({
               <AddressBookInput name="address" label="Owner" validate={combinedValidate} />
             </FormControl>
           </Box>
+        </DialogContent>
 
+        <DialogActions>
           <Button variant="contained" type="submit" disabled={!isValid || resolving}>
             Next
           </Button>
-        </DialogContent>
+        </DialogActions>
       </form>
     </FormProvider>
   )
