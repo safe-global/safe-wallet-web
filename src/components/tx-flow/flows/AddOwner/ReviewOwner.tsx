@@ -12,10 +12,11 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { sameAddress } from '@/utils/addresses'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { AddOwnerFlowProps } from '.'
+import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
 
 import css from './styles.module.css'
 
-export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps }) => {
+export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()
   const addressBook = useAddressBook()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)

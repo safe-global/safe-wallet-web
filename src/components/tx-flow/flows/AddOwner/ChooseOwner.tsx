@@ -17,15 +17,16 @@ import { useAddressResolver } from '@/hooks/useAddressResolver'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { uniqueAddress, addressIsNotCurrentSafe } from '@/utils/validation'
 import type { AddOwnerFlowProps } from '.'
+import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
 
-type FormData = AddOwnerFlowProps['newOwner']
+type FormData = (AddOwnerFlowProps | ReplaceOwnerFlowProps)['newOwner']
 
 export const ChooseOwner = ({
   params,
   onSubmit,
 }: {
-  params: AddOwnerFlowProps
-  onSubmit: (data: Pick<AddOwnerFlowProps, 'newOwner'>) => void
+  params: AddOwnerFlowProps | ReplaceOwnerFlowProps
+  onSubmit: (data: Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner'>) => void
 }) => {
   const { safe, safeAddress } = useSafeInfo()
 
