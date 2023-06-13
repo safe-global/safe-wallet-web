@@ -1,10 +1,14 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Paper, Grid, Typography, Box } from '@mui/material'
+import { Paper, Grid, Typography, Box, IconButton, SvgIcon } from '@mui/material'
 
 import css from './styles.module.css'
-import { RemoveModule } from '@/components/settings/SafeModules/RemoveModule'
 import ExternalLink from '@/components/common/ExternalLink'
+import RemoveModuleFlow from '@/components/tx-flow/flows/RemoveModule'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import CheckWallet from '@/components/common/CheckWallet'
+import { useContext } from 'react'
+import { TxModalContext } from '@/components/tx-flow'
 
 const NoModules = () => {
   return (
@@ -15,6 +19,8 @@ const NoModules = () => {
 }
 
 const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name?: string }) => {
+  const { setTxFlow } = useContext(TxModalContext)
+
   return (
     <Box className={css.container}>
       <EthHashInfo
@@ -25,7 +31,18 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
         chainId={chainId}
         hasExplorer
       />
-      <RemoveModule address={moduleAddress} />
+      <CheckWallet>
+        {(isOk) => (
+          <IconButton
+            onClick={() => setTxFlow(<RemoveModuleFlow address={moduleAddress} />)}
+            color="error"
+            size="small"
+            disabled={!isOk}
+          >
+            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+          </IconButton>
+        )}
+      </CheckWallet>
     </Box>
   )
 }
