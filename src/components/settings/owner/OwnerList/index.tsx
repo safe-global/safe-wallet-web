@@ -2,17 +2,18 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import AddOwnerFlow from '@/components/tx-flow/flows/AddOwner'
 import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Grid, Typography, Button, SvgIcon, IconButton, Tooltip } from '@mui/material'
+import { Box, Grid, Typography, Button, SvgIcon, Tooltip, IconButton } from '@mui/material'
 import { useContext, useMemo } from 'react'
 import { EditOwnerDialog } from '../EditOwnerDialog'
+import ReplaceOwnerFlow from '@/components/tx-flow/flows/ReplaceOwner'
 import RemoveOwnerFlow from '@/components/tx-flow/flows/RemoveOwner'
-import { ReplaceOwnerDialog } from '../ReplaceOwnerDialog'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import AddIcon from '@/public/images/common/add.svg'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
+import ReplaceOwnerIcon from '@/public/images/settings/setup/replace-owner.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
@@ -43,8 +44,24 @@ export const OwnerList = () => {
             sticky: true,
             content: (
               <div className={tableCss.actions}>
-                <ReplaceOwnerDialog address={address} />
+                <CheckWallet>
+                  {(isOk) => (
+                    <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
+                      <Tooltip title="Replace owner">
+                        <IconButton
+                          onClick={() => setTxFlow(<ReplaceOwnerFlow address={address} />)}
+                          size="small"
+                          disabled={!isOk}
+                        >
+                          <SvgIcon component={ReplaceOwnerIcon} inheritViewBox color="border" fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Track>
+                  )}
+                </CheckWallet>
+
                 <EditOwnerDialog address={address} name={name} chainId={safe.chainId} />
+
                 <CheckWallet>
                   {(isOk) => (
                     <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>

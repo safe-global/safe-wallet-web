@@ -5,13 +5,14 @@ import type { SelectChangeEvent } from '@mui/material'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import type { AddOwnerFlowProps } from '.'
+import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
 
 export const SetThreshold = ({
   params,
   onSubmit,
 }: {
-  params: AddOwnerFlowProps
-  onSubmit: (data: Pick<AddOwnerFlowProps, 'threshold'>) => void
+  params: AddOwnerFlowProps | ReplaceOwnerFlowProps
+  onSubmit: (data: Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'threshold'>) => void
 }) => {
   const { safe } = useSafeInfo()
   const [selectedThreshold, setSelectedThreshold] = useState<number>(params.threshold || 1)
