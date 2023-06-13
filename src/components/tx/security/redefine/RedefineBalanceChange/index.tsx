@@ -127,7 +127,9 @@ export const RedefineBalanceChanges = () => {
               ))}
             </>
           ) : (
-            <Typography color="text.secondary">None</Typography>
+            <Typography color="text.secondary" padding={1}>
+              None
+            </Typography>
           )}
         </Grid>
       )}

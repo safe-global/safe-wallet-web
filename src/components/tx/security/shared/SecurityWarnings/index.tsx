@@ -1,4 +1,4 @@
-import { Alert, type AlertColor, SvgIcon, Typography, Box, Grid } from '@mui/material'
+import { Alert, type AlertColor, SvgIcon, Typography, Box, Grid, Checkbox } from '@mui/material'
 
 import { SecuritySeverity } from '@/services/security/modules/types'
 import AlertIcon from '@/public/images/notifications/alert.svg'
@@ -19,22 +19,22 @@ export const mapSeverityComponentProps: Record<SecuritySeverity, SecurityWarning
   [SecuritySeverity.CRITICAL]: {
     action: ACTION_REJECT,
     color: 'error',
-    label: 'Critical risk',
+    label: 'Critical issues',
   },
   [SecuritySeverity.HIGH]: {
     action: ACTION_REJECT,
     color: 'error',
-    label: 'High risk',
+    label: 'High issues',
   },
   [SecuritySeverity.MEDIUM]: {
     action: ACTION_REVIEW,
     color: 'warning',
-    label: 'Medium risk',
+    label: 'Medium issues',
   },
   [SecuritySeverity.LOW]: {
     action: ACTION_REVIEW,
     color: 'warning',
-    label: 'Low risk',
+    label: 'Low issues',
   },
   [SecuritySeverity.NONE]: {
     color: 'info',
@@ -42,7 +42,7 @@ export const mapSeverityComponentProps: Record<SecuritySeverity, SecurityWarning
   },
 }
 
-export const SecurityHint = ({ severity, text }: { severity: SecuritySeverity; text: string }) => {
+export const SecurityHint = ({ severity, warnings }: { severity: SecuritySeverity; warnings: string[] }) => {
   const severityProps = mapSeverityComponentProps[severity]
 
   return (
@@ -64,8 +64,14 @@ export const SecurityHint = ({ severity, text }: { severity: SecuritySeverity; t
           />
         }
       >
-        <Typography variant="h5">{severityProps.label}</Typography>
-        {severity !== SecuritySeverity.NONE && <Typography variant="body2">{text}</Typography>}
+        {severity !== SecuritySeverity.NONE && <Typography variant="h5">{severityProps.label}</Typography>}
+        <Box display="flex" flexDirection="column" gap={2}>
+          {warnings.map((warning) => (
+            <Typography key={warning} variant="body2">
+              {warning}
+            </Typography>
+          ))}
+        </Box>
       </Alert>
     </>
   )
@@ -81,24 +87,32 @@ export const SecurityWarning = ({
   const severityProps = severity !== undefined ? mapSeverityComponentProps[severity] : undefined
 
   return (
-    <Box className={css.verdictBox}>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item direction="column">
-          <Typography fontWeight={700} variant="subtitle1">
-            Scan for risks
-          </Typography>
-          <Typography color="text.secondary">Powered by REDEFINE</Typography>
-        </Grid>
-        {isLoading ? (
-          <LoadingLabel />
-        ) : (
-          severityProps && (
-            <Typography variant="body2" fontWeight={700} color={`${severityProps.color}.main`}>
-              {severityProps.label}
+    <Box className={css.wrapperBox}>
+      <Box className={css.verdictBox}>
+        <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          <Grid item direction="column">
+            <Typography fontWeight={700} variant="subtitle1">
+              Scan for risks
             </Typography>
-          )
-        )}
-      </Grid>
+            <Typography color="text.secondary">Powered by REDEFINE</Typography>
+          </Grid>
+          {isLoading ? (
+            <LoadingLabel />
+          ) : (
+            severityProps && (
+              <Typography variant="body2" fontWeight={700} color={`${severityProps.color}.main`}>
+                {severityProps.label}
+              </Typography>
+            )
+          )}
+        </Grid>
+      </Box>
+      {severityProps?.action === ACTION_REJECT && (
+        <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+          <Checkbox></Checkbox>
+          <Typography>I understand the risks and would like to continue this transaction.</Typography>
+        </Box>
+      )}
     </Box>
   )
 }
