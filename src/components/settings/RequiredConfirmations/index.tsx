@@ -1,7 +1,14 @@
-import { ChangeThresholdDialog } from '@/components/settings/owner/ChangeThresholdDialog'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography } from '@mui/material'
+import Track from '@/components/common/Track'
+import { SETTINGS_EVENTS } from '@/services/analytics'
+import ChangeThresholdFlow from '@/components/tx-flow/flows/ChangeThreshold'
+import CheckWallet from '@/components/common/CheckWallet'
+import { useContext } from 'react'
+import { TxModalContext } from '@/components/tx-flow'
 
 export const RequiredConfirmation = ({ threshold, owners }: { threshold: number; owners: number }) => {
+  const { setTxFlow } = useContext(TxModalContext)
+
   return (
     <Box marginTop={6}>
       <Grid container spacing={3}>
@@ -17,7 +24,19 @@ export const RequiredConfirmation = ({ threshold, owners }: { threshold: number;
             <b>{threshold}</b> out of <b>{owners}</b> owners.
           </Typography>
 
-          {owners > 1 && <ChangeThresholdDialog />}
+          {owners > 1 && (
+            <Box pt={2}>
+              <CheckWallet>
+                {(isOk) => (
+                  <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD}>
+                    <Button onClick={() => setTxFlow(<ChangeThresholdFlow />)} variant="contained" disabled={!isOk}>
+                      Change
+                    </Button>
+                  </Track>
+                )}
+              </CheckWallet>
+            </Box>
+          )}
         </Grid>
       </Grid>
     </Box>
