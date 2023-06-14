@@ -1,11 +1,10 @@
-import { type ReactElement, type ReactNode, useContext } from 'react'
+import { type ReactElement, type ReactNode } from 'react'
 import { IconButton, type ModalProps } from '@mui/material'
 import { Dialog, DialogTitle, type DialogProps, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import CloseIcon from '@mui/icons-material/Close'
 import css from './styles.module.css'
-import { TxModalContext } from '@/components/tx-flow'
 
 interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode
@@ -47,12 +46,12 @@ const NewModalDialog = ({
   dialogTitle,
   hideChainIndicator,
   children,
+  onClose,
   fullScreen = false,
   ...restProps
 }: ModalDialogProps): ReactElement => {
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const { setTxFlow } = useContext(TxModalContext)
 
   return (
     <Dialog
@@ -85,7 +84,7 @@ const NewModalDialog = ({
         <span style={{ flex: 1 }} />
         <IconButton
           aria-label="close"
-          onClick={() => setTxFlow(undefined)}
+          onClick={(e) => onClose?.(e, 'backdropClick')}
           size="small"
           sx={{
             ml: 2,

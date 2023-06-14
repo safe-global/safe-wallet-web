@@ -1,33 +1,41 @@
-import {
-  createContext,
-  type Dispatch,
-  type ReactElement,
-  type ReactNode,
-  type SetStateAction,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react'
+import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback } from 'react'
 import NewModalDialog from '@/components/common/NewModalDialog'
 import { useRouter } from 'next/router'
 
 const noop = () => {}
 
-export const TxModalContext = createContext<{
+type TxModalContextType = {
   txFlow: ReactNode | undefined
-  setTxFlow: Dispatch<SetStateAction<ReactNode | undefined>>
-}>({
+  setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void) => void
+  onClose: () => void
+}
+
+export const TxModalContext = createContext<TxModalContextType>({
   txFlow: undefined,
   setTxFlow: noop,
+  onClose: noop,
 })
 
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [txFlow, setTxFlow] = useState<ReactNode | undefined>()
+  const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
+  const [onClose, setOnClose] = useState<TxModalContextType['onClose']>(noop)
   const router = useRouter()
 
   const handleModalClose = useCallback(() => {
-    setTxFlow(undefined)
-  }, [setTxFlow])
+    setOnClose((prevOnClose) => {
+      prevOnClose?.()
+      return noop
+    })
+    setFlow(undefined)
+  }, [setFlow, setOnClose])
+
+  const setTxFlow = useCallback(
+    (txFlow: TxModalContextType['txFlow'], onClose?: () => void) => {
+      setFlow(txFlow)
+      setOnClose(() => onClose ?? noop)
+    },
+    [setFlow, setOnClose],
+  )
 
   // Close the modal if user navigates
   useEffect(() => {
@@ -36,7 +44,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   }, [router, handleModalClose])
 
   return (
-    <TxModalContext.Provider value={{ txFlow, setTxFlow }}>
+    <TxModalContext.Provider value={{ txFlow, setTxFlow, onClose }}>
       {children}
 
       <NewModalDialog open={!!txFlow} onClose={handleModalClose}>
