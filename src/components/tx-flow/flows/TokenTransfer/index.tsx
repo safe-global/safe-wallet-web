@@ -35,8 +35,8 @@ const defaultParams: TokenTransferParams = {
 
 const TokenTransferFlow = ({ txNonce, ...params }: TokenTransferFlowProps) => {
   const { data, step, nextStep, prevStep } = useTxStepper<TokenTransferParams>({
-    ...params,
     ...defaultParams,
+    ...params,
   })
 
   const steps = [
