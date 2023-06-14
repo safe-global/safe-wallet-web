@@ -93,8 +93,27 @@ export const settingsNavItems = [
     href: AppRoutes.settings.spendingLimits,
   },
   {
-    label: 'Safe Apps permissions',
+    label: 'Safe Apps',
     href: AppRoutes.settings.safeApps.index,
+  },
+  {
+    label: 'Data',
+    href: AppRoutes.settings.data,
+  },
+  {
+    label: 'Environment variables',
+    href: AppRoutes.settings.environmentVariables,
+  },
+]
+
+export const generalSettingsNavItems = [
+  {
+    label: 'Cookies',
+    href: AppRoutes.settings.cookies,
+  },
+  {
+    label: 'Appearance',
+    href: AppRoutes.settings.appearance,
   },
   {
     label: 'Data',

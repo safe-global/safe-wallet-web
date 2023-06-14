@@ -6,10 +6,12 @@ import { useAppSelector } from '@/store'
 import { isEnvInitialState } from '@/store/settingsSlice'
 import css from './styles.module.css'
 import AlertIcon from '@/public/images/common/alert.svg'
+import useChainId from '@/hooks/useChainId'
 
 const EnvHintButton = () => {
   const router = useRouter()
-  const isInitialState = useAppSelector(isEnvInitialState)
+  const chainId = useChainId()
+  const isInitialState = useAppSelector((state) => isEnvInitialState(state, chainId))
 
   if (isInitialState) {
     return null

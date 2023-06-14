@@ -13,8 +13,8 @@ type MethodDetailsProps = {
 export const MethodDetails = ({ data }: MethodDetailsProps): ReactElement => {
   return (
     <Box>
-      <Typography variant="overline" color="text.secondary">
-        <b>{camelCaseToSpaces(data.method)}</b>
+      <Typography variant="overline" fontWeight="bold" color="border.main">
+        {camelCaseToSpaces(data.method)}
       </Typography>
 
       {data.parameters?.map((param, index) => {

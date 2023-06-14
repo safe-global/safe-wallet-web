@@ -1,6 +1,7 @@
 .msg :global .MuiInputBase-input {
-  white-space: pre;
-  font-family: monospace;
+  font-family: Menlo, 'Cascadia Code', monospace;
   font-size: 0.85rem;
   -webkit-text-fill-color: var(--color-text-primary);
+  overflow: auto !important;
+  white-space: pre-line;
 }

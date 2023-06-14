@@ -26,7 +26,6 @@ import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescri
 import ExternalLink from '@/components/common/ExternalLink'
 import useChainId from '@/hooks/useChainId'
 import { nftPlatforms } from '../config'
-import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 interface NftsTableProps {
@@ -80,16 +79,6 @@ const inactiveNftIcon = (
       <NftIndicator color="border" />
     </span>
   </Tooltip>
-)
-
-const linksHeader = (
-  <OnboardingTooltip
-    text="Please note that the links to OpenSea and Blur are provided only for viewing NFTs. Both these apps do not support Safe Accounts right now."
-    widgetLocalStorageId="tooltip_nft_links"
-    placement="top"
-  >
-    <span>Links</span>
-  </OnboardingTooltip>
 )
 
 const NftGrid = ({
@@ -180,7 +169,7 @@ const NftGrid = ({
                     </Box>
                   ) : headCell.id === 'links' ? (
                     linkTemplates ? (
-                      linksHeader
+                      <>Links</>
                     ) : null
                   ) : headCell.id === 'checkbox' ? (
                     <Checkbox

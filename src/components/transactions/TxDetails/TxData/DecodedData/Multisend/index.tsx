@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
-import { AccordionSummary, Box, Button, Divider } from '@mui/material'
+import { Box, Button, Divider, Stack } from '@mui/material'
 import css from './styles.module.css'
 
 type MultisendProps = {
@@ -13,8 +13,6 @@ type MultisendProps = {
   showDelegateCallWarning?: boolean
   compact?: boolean
 }
-
-const MIN_SCROLL_TXS = 4
 
 const MultisendActionsHeader = ({
   setOpen,
@@ -28,22 +26,17 @@ const MultisendActionsHeader = ({
   }
 
   return (
-    <AccordionSummary
-      className={css.summary}
-      expandIcon={
-        <>
-          <Button onClick={onClickAll(true)} variant="text">
-            Expand all
-          </Button>
-          <Divider className={css.divider} />
-          <Button onClick={onClickAll(false)} variant="text">
-            Collapse all
-          </Button>
-        </>
-      }
-    >
+    <div className={css.actionsHeader}>
       All actions
-    </AccordionSummary>
+      <Stack direction="row" divider={<Divider className={css.divider} />}>
+        <Button onClick={onClickAll(true)} variant="text">
+          Expand all
+        </Button>
+        <Button onClick={onClickAll(false)} variant="text">
+          Collapse all
+        </Button>
+      </Stack>
+    </div>
   )
 }
 

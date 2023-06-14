@@ -3,7 +3,7 @@ import { Paper, Grid, Typography, TextField, Button, Tooltip, IconButton, SvgIco
 import InputAdornment from '@mui/material/InputAdornment'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSettings, setEnv } from '@/store/settingsSlice'
+import { selectSettings, setRpc, setTenderly } from '@/store/settingsSlice'
 import { TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -46,15 +46,21 @@ const EnvironmentVariables = () => {
 
   const onSubmit = handleSubmit((data) => {
     trackEvent({ ...SETTINGS_EVENTS.ENV_VARIABLES.SAVE })
+
     dispatch(
-      setEnv({
-        rpc: data[EnvVariablesField.rpc] ? { [chainId]: data[EnvVariablesField.rpc] } : {},
-        tenderly: {
-          url: data[EnvVariablesField.tenderlyURL],
-          accessToken: data[EnvVariablesField.tenderlyToken],
-        },
+      setRpc({
+        chainId,
+        rpc: data[EnvVariablesField.rpc],
       }),
     )
+
+    dispatch(
+      setTenderly({
+        url: data[EnvVariablesField.tenderlyURL],
+        accessToken: data[EnvVariablesField.tenderlyToken],
+      }),
+    )
+
     location.reload()
   })
 
