@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, Typography } from '@mui/material'
+import { Button, DialogActions, Typography } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -82,14 +82,16 @@ const SignForm = ({
         sign a transaction and will need to confirm it with your currently connected wallet.
       </Typography>
 
-      {/* Submit button */}
-      <CheckWallet>
-        {(isOk) => (
-          <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-            Submit
-          </Button>
-        )}
-      </CheckWallet>
+      <DialogActions>
+        {/* Submit button */}
+        <CheckWallet>
+          {(isOk) => (
+            <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+              Submit
+            </Button>
+          )}
+        </CheckWallet>
+      </DialogActions>
     </form>
   )
 }

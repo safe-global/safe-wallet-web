@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button } from '@mui/material'
+import { Box, Button, DialogActions } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -117,14 +117,16 @@ const ExecuteForm = ({
         <UnknownContractError />
       )}
 
-      {/* Submit button */}
-      <CheckWallet allowNonOwner={true}>
-        {(isOk) => (
-          <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-            Submit
-          </Button>
-        )}
-      </CheckWallet>
+      <DialogActions>
+        {/* Submit button */}
+        <CheckWallet allowNonOwner={true}>
+          {(isOk) => (
+            <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+              Submit
+            </Button>
+          )}
+        </CheckWallet>
+      </DialogActions>
     </form>
   )
 }
