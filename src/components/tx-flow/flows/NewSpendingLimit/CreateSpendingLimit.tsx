@@ -1,40 +1,30 @@
-import { useMemo, useState } from 'react'
-import { FormProvider, useForm, Controller } from 'react-hook-form'
+import { useState, useMemo } from 'react'
+import { useForm, FormProvider, Controller } from 'react-hook-form'
 import {
-  Button,
   DialogContent,
   FormControl,
   InputLabel,
-  MenuItem,
   Select,
-  Switch,
+  MenuItem,
   Typography,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   FormGroup,
+  FormControlLabel,
+  Switch,
+  RadioGroup,
+  Radio,
+  Button,
+  DialogActions,
 } from '@mui/material'
+import { parseUnits, defaultAbiCoder } from 'ethers/lib/utils'
+
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import useChainId from '@/hooks/useChainId'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { parseUnits } from 'ethers/lib/utils'
 import NumberField from '@/components/common/NumberField'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
-
-export type NewSpendingLimitData = {
-  beneficiary: string
-  tokenAddress: string
-  amount: string
-  resetTime: string
-}
-
-type Props = {
-  data?: NewSpendingLimitData
-  onSubmit: (data: NewSpendingLimitData) => void
-}
+import type { NewSpendingLimitFlowProps } from '.'
 
 export const _validateSpendingLimit = (val: string, decimals?: number) => {
   // Allowance amount is uint96 https://github.com/safe-global/safe-modules/blob/master/allowances/contracts/AlowanceModule.sol#L52
@@ -46,15 +36,22 @@ export const _validateSpendingLimit = (val: string, decimals?: number) => {
   }
 }
 
-export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
+export const CreateSpendingLimit = ({
+  params,
+  onSubmit,
+}: {
+  params: NewSpendingLimitFlowProps
+  onSubmit: (data: NewSpendingLimitFlowProps) => void
+}) => {
   const chainId = useChainId()
-  const [showResetTime, setShowResetTime] = useState<boolean>(false)
+  const [showResetTime, setShowResetTime] = useState<boolean>(params.resetTime !== '0')
   const { balances } = useVisibleBalances()
 
   const resetTimeOptions = useMemo(() => getResetTimeOptions(chainId), [chainId])
+  const defaultResetTime = resetTimeOptions[0].value
 
-  const formMethods = useForm<NewSpendingLimitData>({
-    defaultValues: { ...data, resetTime: '0' },
+  const formMethods = useForm<NewSpendingLimitFlowProps>({
+    defaultValues: params,
     mode: 'onChange',
   })
   const {
@@ -72,7 +69,7 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
     : undefined
 
   const toggleResetTime = () => {
-    setValue('resetTime', showResetTime ? '0' : resetTimeOptions[0].value)
+    setValue('resetTime', showResetTime ? '0' : defaultResetTime)
     setShowResetTime((prev) => !prev)
   }
 
@@ -91,12 +88,13 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
             <Select
               labelId="asset-label"
               label={errors.tokenAddress?.message || 'Select an asset'}
-              defaultValue={data?.tokenAddress || ''}
               error={!!errors.tokenAddress}
               {...register('tokenAddress', {
                 required: true,
                 onChange: () => setValue('amount', ''),
               })}
+              // TODO: Check when updating react-hook-form as `register` does not seem to return the value here
+              value={tokenAddress}
             >
               {balances.items.map((item) => (
                 <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
@@ -142,7 +140,7 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
                 control={control}
                 name="resetTime"
                 render={({ field }) => (
-                  <RadioGroup {...field} defaultValue={resetTimeOptions[0].value} name="radio-buttons-group">
+                  <RadioGroup {...field}>
                     {resetTimeOptions.map((resetTime) => (
                       <FormControlLabel
                         key={resetTime.value}
@@ -158,9 +156,11 @@ export const SpendingLimitForm = ({ data, onSubmit }: Props) => {
           )}
         </DialogContent>
 
-        <Button variant="contained" type="submit">
-          Next
-        </Button>
+        <DialogActions>
+          <Button variant="contained" type="submit">
+            Next
+          </Button>
+        </DialogActions>
       </form>
     </FormProvider>
   )
