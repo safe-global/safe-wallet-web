@@ -1,5 +1,5 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
-import { Box, Button, DialogContent, Typography } from '@mui/material'
+import { Box, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import useGasLimit from '@/hooks/useGasLimit'
@@ -14,7 +14,6 @@ import { TxSimulation } from '@/components/tx/TxSimulation'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import { createTx } from '@/services/tx/tx-sender'
-import CheckWallet from '@/components/common/CheckWallet'
 import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
 import UnknownContractError from './UnknownContractError'
@@ -22,7 +21,10 @@ import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { DemoSecurityWarnings } from '../security/DemoSecurityWarnings'
+import { TransactionSecurityProvider } from '../security/TransactionSecurityContext'
+import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
+import { RedefineScanResult } from '../security/redefine/RedefineScanResult/RedefineScanResult'
+import SubmitButton from './SubmitButton'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -167,88 +169,88 @@ const SignOrExecuteForm = ({
       <DialogContent>
         {children}
 
-        <DecodedTx tx={tx} txId={txId} />
+        <TransactionSecurityProvider safeTx={safeTx}>
+          <>
+            <RedefineBalanceChanges />
+            <DecodedTx tx={tx} txId={txId} />
 
-        <DemoSecurityWarnings safeTx={tx} />
+            {canExecute && (
+              <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />
+            )}
 
-        {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
-
-        <AdvancedParams
-          params={advancedParams}
-          recommendedGasLimit={gasLimit}
-          recommendedNonce={safeTx?.data.nonce}
-          willExecute={willExecute}
-          nonceReadonly={nonceReadonly}
-          onFormSubmit={onAdvancedSubmit}
-          gasLimitError={gasLimitError}
-          willRelay={willRelay}
-        />
-
-        {canRelay && (
-          <Box
-            sx={{
-              '& > div': {
-                marginTop: '-1px',
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
-              },
-            }}
-          >
-            <ExecutionMethodSelector
-              executionMethod={executionMethod}
-              setExecutionMethod={setExecutionMethod}
-              relays={relays}
+            <AdvancedParams
+              params={advancedParams}
+              recommendedGasLimit={gasLimit}
+              recommendedNonce={safeTx?.data.nonce}
+              willExecute={willExecute}
+              nonceReadonly={nonceReadonly}
+              onFormSubmit={onAdvancedSubmit}
+              gasLimitError={gasLimitError}
+              willRelay={willRelay}
             />
-          </Box>
-        )}
 
-        <TxSimulation
-          gasLimit={advancedParams.gasLimit?.toNumber()}
-          transactions={tx}
-          canExecute={canExecute}
-          disabled={submitDisabled}
-        />
+            {canRelay && (
+              <Box
+                sx={{
+                  '& > div': {
+                    marginTop: '-1px',
+                    borderTopLeftRadius: 0,
+                    borderTopRightRadius: 0,
+                  },
+                }}
+              >
+                <ExecutionMethodSelector
+                  executionMethod={executionMethod}
+                  setExecutionMethod={setExecutionMethod}
+                  relays={relays}
+                />
+              </Box>
+            )}
 
-        {/* Warning message and switch button */}
-        <WrongChainWarning />
+            <TxSimulation
+              gasLimit={advancedParams.gasLimit?.toNumber()}
+              transactions={tx}
+              canExecute={canExecute}
+              disabled={submitDisabled}
+            />
 
-        {/* Error messages */}
-        {isSubmittable && cannotPropose ? (
-          <ErrorMessage>
-            You are currently not an owner of this Safe Account and won&apos;t be able to submit this transaction.
-          </ErrorMessage>
-        ) : willExecute && isExecutionLoop ? (
-          <ErrorMessage>
-            Cannot execute a transaction from the Safe Account itself, please connect a different account.
-          </ErrorMessage>
-        ) : error ? (
-          <ErrorMessage error={error}>
-            This transaction will most likely fail.{' '}
-            {isNewExecutableTx
-              ? 'To save gas costs, avoid creating the transaction.'
-              : 'To save gas costs, reject this transaction.'}
-          </ErrorMessage>
-        ) : submitError ? (
-          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-        ) : (
-          willExecute && <UnknownContractError />
-        )}
+            <RedefineScanResult />
 
-        {/* Info text */}
-        <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
-          You&apos;re about to {txId ? '' : 'create and '}
-          {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
-          wallet.
-        </Typography>
+            {/* Warning message and switch button */}
+            <WrongChainWarning />
 
-        {/* Submit button */}
-        <CheckWallet allowNonOwner={willExecute}>
-          {(isOk) => (
-            <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-              {isEstimating ? 'Estimating...' : 'Submit'}
-            </Button>
-          )}
-        </CheckWallet>
+            {/* Error messages */}
+            {isSubmittable && cannotPropose ? (
+              <ErrorMessage>
+                You are currently not an owner of this Safe Account and won&apos;t be able to submit this transaction.
+              </ErrorMessage>
+            ) : willExecute && isExecutionLoop ? (
+              <ErrorMessage>
+                Cannot execute a transaction from the Safe Account itself, please connect a different account.
+              </ErrorMessage>
+            ) : error ? (
+              <ErrorMessage error={error}>
+                This transaction will most likely fail.{' '}
+                {isNewExecutableTx
+                  ? 'To save gas costs, avoid creating the transaction.'
+                  : 'To save gas costs, reject this transaction.'}
+              </ErrorMessage>
+            ) : submitError ? (
+              <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+            ) : (
+              willExecute && <UnknownContractError />
+            )}
+
+            {/* Info text */}
+            <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
+              You&apos;re about to {txId ? '' : 'create and '}
+              {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
+              wallet.
+            </Typography>
+
+            <SubmitButton isEstimating={isEstimating} submitDisabled={submitDisabled} willExecute={willExecute} />
+          </>
+        </TransactionSecurityProvider>
       </DialogContent>
     </form>
   )

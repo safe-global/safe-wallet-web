@@ -144,6 +144,11 @@ describe('useRedefine', () => {
             },
           ],
         },
+        simulation: {
+          block: '123',
+          time: '2023-01-01-23:00',
+          uuid: '123-456-789',
+        },
         balanceChange: {
           in: [
             {
@@ -188,7 +193,7 @@ describe('useRedefine', () => {
     })
 
     // Should not poll again without error 1000
-    act(() => {
+    await act(() => {
       jest.advanceTimersByTime(REDEFINE_RETRY_TIMEOUT)
     })
 
@@ -236,6 +241,11 @@ describe('useRedefine', () => {
             },
           ],
         },
+        simulation: {
+          block: '123',
+          time: '2023-01-01-23:00',
+          uuid: '123-456-789',
+        },
       },
       errors: [
         {
@@ -262,6 +272,11 @@ describe('useRedefine', () => {
             },
           ],
           out: [],
+        },
+        simulation: {
+          block: '123',
+          time: '2023-01-01-23:00',
+          uuid: '123-456-789',
         },
         insights: {
           verdict: {
@@ -315,7 +330,7 @@ describe('useRedefine', () => {
     mockFetch = jest.spyOn(global, 'fetch')
 
     // Should poll again on error 1000
-    act(() => {
+    await act(() => {
       jest.advanceTimersByTime(REDEFINE_RETRY_TIMEOUT)
     })
 
@@ -333,7 +348,7 @@ describe('useRedefine', () => {
 
     // Should not poll again after full result without error 1000
     // Should not poll again without error 1000
-    act(() => {
+    await act(() => {
       jest.advanceTimersByTime(REDEFINE_RETRY_TIMEOUT)
     })
     expect(mockFetch).toHaveBeenCalledTimes(1)

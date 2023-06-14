@@ -2,8 +2,10 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import TokenIcon from '@/components/common/TokenIcon'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
+import { useHasFeature } from '@/hooks/useChains'
 import { type RedefineModuleResponse } from '@/services/security/modules/RedefineModule'
 import { sameAddress } from '@/utils/addresses'
+import { FEATURES } from '@/utils/chains'
 import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Chip, Grid, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -102,6 +104,11 @@ const SingleBalanceChange = ({
 
 export const RedefineBalanceChanges = () => {
   const { balanceChange, isLoading } = useContext(TransactionSecurityContext)
+  const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
+
+  if (!isFeatureEnabled) {
+    return null
+  }
 
   return (
     <Box className={css.box}>
@@ -127,7 +134,7 @@ export const RedefineBalanceChanges = () => {
               ))}
             </>
           ) : (
-            <Typography color="text.secondary" padding={1}>
+            <Typography color="text.secondary" pl={1}>
               None
             </Typography>
           )}

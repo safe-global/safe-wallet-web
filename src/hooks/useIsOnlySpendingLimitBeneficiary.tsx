@@ -1,13 +1,12 @@
-import { useCurrentChain } from '@/hooks/useChains'
-import { FEATURES, hasFeature } from '@/utils/chains'
+import { FEATURES } from '@/utils/chains'
 import { useAppSelector } from '@/store'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { useHasFeature } from './useChains'
 
 const useIsOnlySpendingLimitBeneficiary = (): boolean => {
-  const currentChain = useCurrentChain()
-  const isEnabled = currentChain && hasFeature(currentChain, FEATURES.SPENDING_LIMIT)
+  const isEnabled = useHasFeature(FEATURES.SPENDING_LIMIT)
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
   const isSafeOwner = useIsSafeOwner()

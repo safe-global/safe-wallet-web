@@ -34,6 +34,7 @@ export type RedefineModuleResponse = {
     }
   >
   balanceChange?: NonNullable<RedefineResponse['data']>['balanceChange']
+  simulation?: NonNullable<RedefineResponse['data']>['simulation']
   errors: RedefineResponse['errors']
 }
 
@@ -91,6 +92,11 @@ export type RedefineResponse = {
       }[]
       verdict: RedefineSeverity
     }
+    simulation: {
+      uuid: string
+      time: string
+      block: string
+    }
   }
   errors: {
     code: number
@@ -140,6 +146,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
           severity: redefineSeverityMap[issue.severity.label],
         })),
         balanceChange: result.data?.balanceChange,
+        simulation: result.data?.simulation,
         errors: result.errors,
       },
     }
