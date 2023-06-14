@@ -16,18 +16,13 @@ const noop = () => {}
 export const TxModalContext = createContext<{
   txFlow: ReactNode | undefined
   setTxFlow: Dispatch<SetStateAction<ReactNode | undefined>>
-  onClose: () => void
-  setOnClose: Dispatch<SetStateAction<() => void>>
 }>({
   txFlow: undefined,
   setTxFlow: noop,
-  onClose: noop,
-  setOnClose: noop,
 })
 
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [txFlow, setTxFlow] = useState<ReactNode | undefined>()
-  const [onClose, setOnClose] = useState<() => void>(noop)
   const router = useRouter()
 
   const handleModalClose = useCallback(() => {
@@ -40,18 +35,8 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     return () => router.events.off('routeChangeComplete', handleModalClose)
   }, [router, handleModalClose])
 
-  // On close callback
-  useEffect(() => {
-    if (!txFlow) {
-      setOnClose((prevOnClose) => {
-        prevOnClose?.()
-        return noop
-      })
-    }
-  }, [txFlow])
-
   return (
-    <TxModalContext.Provider value={{ txFlow, setTxFlow, onClose, setOnClose }}>
+    <TxModalContext.Provider value={{ txFlow, setTxFlow }}>
       {children}
 
       <NewModalDialog open={!!txFlow} onClose={handleModalClose}>

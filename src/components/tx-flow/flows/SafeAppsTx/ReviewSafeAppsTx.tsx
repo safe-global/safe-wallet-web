@@ -6,11 +6,9 @@ import SendFromBlock from '@/components/tx/SendFromBlock'
 import SendToBlock from '@/components/tx/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { useCurrentChain } from '@/hooks/useChains'
-import { getInteractionTitle } from '../utils'
 import type { SafeAppsTxParams } from '.'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
-import { ApprovalEditor } from '../../tx/ApprovalEditor'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -18,6 +16,9 @@ import { Box, DialogContent, Typography } from '@mui/material'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import ApprovalEditor from '@/components/tx/ApprovalEditor'
+import { getInteractionTitle } from '@/components/safe-apps/utils'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -30,7 +31,7 @@ const ReviewSafeAppsTx = ({
   const onboard = useOnboard()
   const chain = useCurrentChain()
   const [txList, setTxList] = useState(txs)
-  const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
+  const { safeTx, setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
 
   useHighlightHiddenTab()
 
@@ -66,26 +67,31 @@ const ReviewSafeAppsTx = ({
 
   return (
     <DialogContent>
-      <SignOrExecuteForm onSubmit={handleSubmit} origin={origin}>
-        <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor txs={txList} updateTxs={setTxList} />
-        </ErrorBoundary>
+      <ErrorBoundary fallback={<div>Error parsing data</div>}>
+        <ApprovalEditor txs={txList} updateTxs={setTxList} />
+      </ErrorBoundary>
 
-        <SendFromBlock />
+      <SendFromBlock />
 
-        {safeTx && (
-          <>
-            <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
+      {safeTx ? (
+        <>
+          <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
 
-            <Box pb={2}>
-              <Typography mt={2} color="primary.light">
-                Data (hex encoded)
-              </Typography>
-              {generateDataRowValue(safeTx.data.data, 'rawData')}
-            </Box>
-          </>
-        )}
-      </SignOrExecuteForm>
+          <Box pb={2}>
+            <Typography mt={2} color="primary.light">
+              Data (hex encoded)
+            </Typography>
+            {generateDataRowValue(safeTx.data.data, 'rawData')}
+          </Box>
+        </>
+      ) : safeTxError ? (
+        <ErrorMessage error={safeTxError}>
+          This Safe App initiated a transaction which cannot be processed. Please get in touch with the developer of
+          this Safe App for more information.
+        </ErrorMessage>
+      ) : null}
+
+      <SignOrExecuteForm onSubmit={handleSubmit} origin={origin} />
     </DialogContent>
   )
 }

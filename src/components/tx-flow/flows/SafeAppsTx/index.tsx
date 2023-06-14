@@ -1,8 +1,8 @@
 import type { BaseTransaction, RequestId, SendTransactionRequestParams } from '@safe-global/safe-apps-sdk'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import SafeAppsTxModalLabel from '@/components/safe-apps/SafeAppsModalLabel'
-import ReviewSafeAppsTx from '@/components/safe-apps/SafeAppsTxModal/ReviewSafeAppsTx'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import ReviewSafeAppsTx from './ReviewSafeAppsTx'
 
 export type SafeAppsTxParams = {
   appId?: string
