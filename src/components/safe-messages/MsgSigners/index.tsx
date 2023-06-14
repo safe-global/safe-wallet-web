@@ -1,7 +1,8 @@
 import { useState, type ReactElement } from 'react'
-import { Box, Link, List, ListItem, ListItemIcon, ListItemText, SvgIcon } from '@mui/material'
+import { Box, Link, List, ListItem, ListItemIcon, ListItemText, Skeleton, SvgIcon, Typography } from '@mui/material'
 import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
 
 import CreatedIcon from '@/public/images/messages/created.svg'
 import SignedIcon from '@/public/images/messages/signed.svg'
@@ -44,7 +45,17 @@ const shouldHideConfirmations = (msg: SafeMessage): boolean => {
   return isConfirmed || msg.confirmations.length > 3
 }
 
-export const MsgSigners = ({ msg }: { msg: SafeMessage }): ReactElement => {
+export const MsgSigners = ({
+  msg,
+  showOnlyConfirmations = false,
+  showMissingSignatures = false,
+  backgroundColor,
+}: {
+  msg: SafeMessage
+  showOnlyConfirmations?: boolean
+  showMissingSignatures?: boolean
+  backgroundColor?: string
+}): ReactElement => {
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(msg))
 
   const toggleHide = () => {
@@ -53,16 +64,20 @@ export const MsgSigners = ({ msg }: { msg: SafeMessage }): ReactElement => {
 
   const { confirmations, confirmationsRequired, confirmationsSubmitted } = msg
 
+  const missingConfirmations = [...new Array(Math.max(0, confirmationsRequired - confirmationsSubmitted))]
+
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
 
   return (
     <List className={css.signers}>
-      <ListItem>
-        <ListItemIcon>
-          <Created />
-        </ListItemIcon>
-        <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
-      </ListItem>
+      {!showOnlyConfirmations && (
+        <ListItem>
+          <ListItemIcon>
+            <Created />
+          </ListItemIcon>
+          <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
+        </ListItem>
+      )}
       <ListItem>
         <ListItemIcon>
           <Signed />
@@ -77,7 +92,7 @@ export const MsgSigners = ({ msg }: { msg: SafeMessage }): ReactElement => {
       {!hideConfirmations &&
         confirmations.map(({ owner }) => (
           <ListItem key={owner.value} sx={{ py: 0 }}>
-            <ListItemIcon>
+            <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
               <Dot />
             </ListItemIcon>
             <ListItemText>
@@ -85,9 +100,9 @@ export const MsgSigners = ({ msg }: { msg: SafeMessage }): ReactElement => {
             </ListItemText>
           </ListItem>
         ))}
-      {confirmations.length > 0 && (
+      {!showOnlyConfirmations && confirmations.length > 0 && (
         <ListItem>
-          <ListItemIcon>
+          <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
             <Dot />
           </ListItemIcon>
           <ListItemText>
@@ -97,9 +112,25 @@ export const MsgSigners = ({ msg }: { msg: SafeMessage }): ReactElement => {
           </ListItemText>
         </ListItem>
       )}
+      {showMissingSignatures &&
+        missingConfirmations.map((_, idx) => (
+          <ListItem key={`skeleton${idx}`} sx={{ py: 0 }}>
+            <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
+              <SvgIcon component={CircleOutlinedIcon} className={css.dot} color="border" fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>
+              <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+                <Skeleton variant="circular" width={36} height={36} />
+                <Typography variant="body2" color={'text.secondary'}>
+                  Confirmation #{idx + 1 + confirmationsSubmitted}
+                </Typography>
+              </Box>
+            </ListItemText>
+          </ListItem>
+        ))}
       {isConfirmed && (
         <ListItem>
-          <ListItemIcon>
+          <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
             <Dot />
           </ListItemIcon>
           <ListItemText>Confirmed</ListItemText>

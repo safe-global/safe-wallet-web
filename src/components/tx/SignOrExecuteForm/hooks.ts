@@ -3,7 +3,7 @@ import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { isSmartContractWallet } from '@/hooks/wallets/wallets'
+import { isSmartContractWallet } from '@/utils/wallets'
 import {
   dispatchOnChainSigning,
   dispatchTxExecution,

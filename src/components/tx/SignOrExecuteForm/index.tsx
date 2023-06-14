@@ -25,6 +25,8 @@ import { TransactionSecurityProvider } from '../security/TransactionSecurityCont
 import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 import { RedefineScanResult } from '../security/redefine/RedefineScanResult/RedefineScanResult'
 import SubmitButton from './SubmitButton'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectSettings, setTransactionExecution } from '@/store/settingsSlice'
 
 type SignOrExecuteProps = {
   safeTx?: SafeTransaction
@@ -51,10 +53,12 @@ const SignOrExecuteForm = ({
   origin,
   ...props
 }: SignOrExecuteProps): ReactElement => {
+  const settings = useAppSelector(selectSettings)
+
   //
   // Hooks & variables
   //
-  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [shouldExecute, setShouldExecute] = useState<boolean>(settings.transactionExecution)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
@@ -64,6 +68,7 @@ const SignOrExecuteForm = ({
   const currentChain = useCurrentChain()
   const { signTx, executeTx } = useTxActions()
   const [relays] = useRelaysBySafe()
+  const dispatch = useAppDispatch()
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -152,6 +157,11 @@ const SignOrExecuteForm = ({
     setAdvancedParams(data)
   }
 
+  const handleExecuteCheckboxChange = (checked: boolean) => {
+    setShouldExecute(checked)
+    dispatch(setTransactionExecution(checked))
+  }
+
   const cannotPropose = !isOwner && !onlyExecute // Can't sign or create a tx if not an owner
   const submitDisabled =
     !isSubmittable ||
@@ -175,7 +185,7 @@ const SignOrExecuteForm = ({
             <DecodedTx tx={tx} txId={txId} />
 
             {canExecute && (
-              <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />
+              <ExecuteCheckbox checked={shouldExecute} onChange={handleExecuteCheckboxChange} disabled={onlyExecute} />
             )}
 
             <AdvancedParams

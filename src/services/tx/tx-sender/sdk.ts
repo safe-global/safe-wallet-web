@@ -2,7 +2,7 @@ import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/safe-core-sdk'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
 import { ethers } from 'ethers'
-import { isWalletRejection } from '@/utils/wallets'
+import { isWalletRejection, isHardwareWallet } from '@/utils/wallets'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
@@ -10,7 +10,6 @@ import { hasSafeFeature } from '@/utils/safe-versions'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { hexValue } from 'ethers/lib/utils'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { isHardwareWallet } from '@/hooks/wallets/wallets'
 import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/services/onboard'
 import type { JsonRpcSigner } from '@ethersproject/providers'
@@ -123,7 +122,7 @@ export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInf
 
 type SigningMethods = Parameters<Safe['signTransaction']>[1]
 
-export const _getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethods[] => {
+export const getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethods[] => {
   const ETH_SIGN_TYPED_DATA: SigningMethods = 'eth_signTypedData'
   const ETH_SIGN: SigningMethods = 'eth_sign'
 
@@ -134,12 +133,12 @@ export const _getSupportedSigningMethods = (safeVersion: SafeInfo['version']): S
   return [ETH_SIGN_TYPED_DATA, ETH_SIGN]
 }
 
-export const tryOffChainSigning = async (
+export const tryOffChainTxSigning = async (
   safeTx: SafeTransaction,
   safeVersion: SafeInfo['version'],
   sdk: Safe,
 ): Promise<SafeTransaction> => {
-  const signingMethods = _getSupportedSigningMethods(safeVersion)
+  const signingMethods = getSupportedSigningMethods(safeVersion)
 
   for await (const [i, signingMethod] of signingMethods.entries()) {
     try {

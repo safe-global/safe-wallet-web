@@ -7,11 +7,11 @@ import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
 import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
-import { WALLET_KEYS } from '@/hooks/wallets/wallets'
 import { useInitPairing } from '@/services/pairing/hooks'
 import { isWalletUnlocked, WalletNames } from '@/utils/wallets'
 import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
+import { WALLET_KEYS } from './consts'
 
 export type ConnectedWallet = {
   label: string
