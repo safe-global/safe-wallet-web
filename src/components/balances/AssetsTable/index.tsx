@@ -1,4 +1,4 @@
-import { useState, type ReactElement, useMemo } from 'react'
+import { type ReactElement, useMemo, useContext } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -8,7 +8,6 @@ import TokenAmount from '@/components/common/TokenAmount'
 import TokenIcon from '@/components/common/TokenIcon'
 import EnhancedTable, { type EnhancedTableProps } from '@/components/common/EnhancedTable'
 import TokenExplorerLink from '@/components/common/TokenExplorerLink'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
 import Track from '@/components/common/Track'
 import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -19,6 +18,8 @@ import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { useHideAssets } from './useHideAssets'
 import CheckWallet from '@/components/common/CheckWallet'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
+import { TxModalContext } from '@/components/tx-flow'
+import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -120,9 +121,9 @@ const AssetsTable = ({
   showHiddenAssets: boolean
   setShowHiddenAssets: (hidden: boolean) => void
 }): ReactElement => {
-  const [selectedAsset, setSelectedAsset] = useState<string | undefined>()
   const hiddenAssets = useHiddenTokens()
   const { balances, loading } = useBalances()
+  const { setTxFlow } = useContext(TxModalContext)
 
   const { isAssetSelected, toggleAsset, hidingAsset, hideAsset, cancel, deselectAll, saveChanges } = useHideAssets(() =>
     setShowHiddenAssets(false),
@@ -137,6 +138,10 @@ const AssetsTable = ({
   )
 
   const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
+
+  const onSendClick = (tokenAddress: string) => {
+    setTxFlow(<TokenTransferFlow tokenAddress={tokenAddress} />)
+  }
 
   const rows = loading
     ? skeletonRows
@@ -203,7 +208,7 @@ const AssetsTable = ({
               content: (
                 <Box display="flex" flexDirection="row" gap={1} alignItems="center">
                   <>
-                    <SendButton tokenInfo={item.tokenInfo} onClick={setSelectedAsset} />
+                    <SendButton tokenInfo={item.tokenInfo} onClick={() => onSendClick(item.tokenInfo.address)} />
 
                     {showHiddenAssets ? (
                       <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
@@ -240,12 +245,6 @@ const AssetsTable = ({
 
       <div className={css.container}>
         <EnhancedTable rows={rows} headCells={headCells} />
-        {selectedAsset && (
-          <TokenTransferModal
-            onClose={() => setSelectedAsset(undefined)}
-            initialData={[{ tokenAddress: selectedAsset }]}
-          />
-        )}
       </div>
     </>
   )
