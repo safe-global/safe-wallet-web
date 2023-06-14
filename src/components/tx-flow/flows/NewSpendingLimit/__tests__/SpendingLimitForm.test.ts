@@ -1,6 +1,6 @@
-import { _validateSpendingLimit } from '../steps/SpendingLimitForm'
+import { _validateSpendingLimit } from '../CreateSpendingLimit'
 
-describe('SpendingLimitForm', () => {
+describe('CreateSpendingLimit', () => {
   describe('validateSpendingLimit', () => {
     it('should return no error if the amount is valid', () => {
       const result1 = _validateSpendingLimit('9999999999.999999999999999999')
