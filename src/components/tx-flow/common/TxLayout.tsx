@@ -7,7 +7,7 @@ import TxNonce from './TxNonce'
 import TxStatusWidget from './TxStatusWidget'
 
 type TxLayoutProps = {
-  title: string
+  title: ReactNode
   children: ReactNode
   step?: number
   txSummary?: TransactionSummary
