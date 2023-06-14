@@ -9,12 +9,13 @@ import TxStatusWidget from './TxStatusWidget'
 type TxLayoutProps = {
   title: ReactNode
   children: ReactNode
+  subtitle?: ReactNode
   step?: number
   txSummary?: TransactionSummary
   onBack?: () => void
 }
 
-const TxLayout = ({ title, children, step = 0, txSummary, onBack }: TxLayoutProps) => {
+const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack }: TxLayoutProps) => {
   const steps = Array.isArray(children) ? children : [children]
   const progress = Math.round(((step + 1) / steps.length) * 100)
 
@@ -32,7 +33,8 @@ const TxLayout = ({ title, children, step = 0, txSummary, onBack }: TxLayoutProp
             <Grid item xs={7} component={Paper}>
               <ProgressBar value={progress} />
 
-              <Box display="flex" justifyContent="flex-end" py={2} px={3}>
+              <Box display="flex" justifyContent="space-between" py={2} px={3}>
+                <span>{subtitle}</span>
                 <TxNonce />
               </Box>
 
