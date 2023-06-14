@@ -89,7 +89,17 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
     useSafePermissions()
   const appName = useMemo(() => (remoteApp ? remoteApp.name : appUrl), [appUrl, remoteApp])
-  const { txFlow, setTxFlow } = useContext(TxModalContext)
+  const { setTxFlow } = useContext(TxModalContext)
+
+  const onTxFlowClose = () => {
+    setCurrentRequestId((prevId) => {
+      if (prevId) {
+        communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, prevId, true)
+        trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_REJECTED, appName)
+      }
+      return undefined
+    })
+  }
 
   const communicator = useAppCommunicator(iframeRef, remoteApp || safeAppFromManifest, chain, {
     onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => {
@@ -102,8 +112,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       }
 
       setCurrentRequestId(requestId)
-
-      setTxFlow(<SafeAppsTxFlow data={data} />)
+      setTxFlow(<SafeAppsTxFlow data={data} />, onTxFlowClose)
     },
     onSignMessage: (
       message: string | EIP712TypedData,
@@ -176,14 +185,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       }
     },
   })
-
-  // @TODO: figure out how to handle this
-  const onSafeAppsModalClose = () => {
-    if (currentRequestId) {
-      communicator?.send(CommunicatorMessages.REJECT_TRANSACTION_MESSAGE, currentRequestId, true)
-      trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION_REJECTED, appName)
-    }
-  }
 
   const onAcceptPermissionRequest = (_origin: string, requestId: RequestId) => {
     const permissions = confirmPermissionRequest(PermissionStatus.GRANTED)
