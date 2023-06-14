@@ -44,7 +44,7 @@ export const CreateSpendingLimit = ({
   onSubmit: (data: NewSpendingLimitFlowProps) => void
 }) => {
   const chainId = useChainId()
-  const [showResetTime, setShowResetTime] = useState<boolean>(false)
+  const [showResetTime, setShowResetTime] = useState<boolean>(params.resetTime !== '0')
   const { balances } = useVisibleBalances()
 
   const resetTimeOptions = useMemo(() => getResetTimeOptions(chainId), [chainId])
@@ -93,6 +93,8 @@ export const CreateSpendingLimit = ({
                 required: true,
                 onChange: () => setValue('amount', ''),
               })}
+              // TODO: Check when updating react-hook-form as `register` does not seem to return the value here
+              value={tokenAddress}
             >
               {balances.items.map((item) => (
                 <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
@@ -138,7 +140,7 @@ export const CreateSpendingLimit = ({
                 control={control}
                 name="resetTime"
                 render={({ field }) => (
-                  <RadioGroup {...field} defaultValue={defaultResetTime}>
+                  <RadioGroup {...field}>
                     {resetTimeOptions.map((resetTime) => (
                       <FormControlLabel
                         key={resetTime.value}
