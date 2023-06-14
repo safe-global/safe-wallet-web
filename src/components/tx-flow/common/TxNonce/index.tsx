@@ -20,7 +20,7 @@ const TxNonce = () => {
   return (
     <Typography variant="h4" fontWeight={700}>
       #
-      <span className={css.input} contentEditable={isEditable} onBlur={onChange}>
+      <span className={css.input} contentEditable={isEditable} onBlur={onChange} suppressContentEditableWarning>
         {nonce}
       </span>
     </Typography>
