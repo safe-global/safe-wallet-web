@@ -33,8 +33,8 @@ const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack }: Tx
             <Grid item xs={7} component={Paper}>
               <ProgressBar value={progress} />
 
-              <Box display="flex" justifyContent="space-between" py={2} px={3}>
-                <span>{subtitle}</span>
+              <Box display="flex" justifyContent={subtitle ? 'space-between' : 'flex-end'} py={2} px={3}>
+                {subtitle}
                 <TxNonce />
               </Box>
 
