@@ -16,19 +16,12 @@ import { CGW_NAMES, WALLET_KEYS } from './consts'
 
 // We need to modify the module name as onboard dedupes modules with the same label and the WC v1 and v2 modules have the same
 // @see https://github.com/blocknative/web3-onboard/blob/d399e0b76daf7b363d6a74b100b2c96ccb14536c/packages/core/src/store/actions.ts#L419
-const walletConnectV2 = (): WalletInit => {
+// TODO: When removing this, also remove the associated CSS in `onboard.css`
+const walletConnectv1 = (): WalletInit => {
   return (helpers) => {
-    const MODULE_LABEL = 'WalletConnect v2'
+    const MODULE_LABEL = 'WalletConnect v1'
 
-    const walletConnectModule = walletConnect({
-      version: 2,
-      projectId: WC_PROJECT_ID,
-      qrModalOptions: {
-        themeVariables: {
-          '--w3m-z-index': '1302',
-        },
-      },
-    })(helpers) as WalletModule
+    const walletConnectModule = walletConnect({ version: 1, bridge: WC_BRIDGE })(helpers) as WalletModule
 
     walletConnectModule.label = MODULE_LABEL
 
@@ -39,8 +32,17 @@ const walletConnectV2 = (): WalletInit => {
 const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
   [WALLET_KEYS.INJECTED]: injectedWalletModule,
   [WALLET_KEYS.PAIRING]: pairingModule,
-  [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ version: 1, bridge: WC_BRIDGE }),
-  [WALLET_KEYS.WALLETCONNECT_V2]: walletConnectV2,
+  [WALLET_KEYS.WALLETCONNECT]: walletConnectv1,
+  [WALLET_KEYS.WALLETCONNECT_V2]: () =>
+    walletConnect({
+      version: 2,
+      projectId: WC_PROJECT_ID,
+      qrModalOptions: {
+        themeVariables: {
+          '--w3m-z-index': '1302',
+        },
+      },
+    }),
   [WALLET_KEYS.LEDGER]: ledgerModule,
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
   [WALLET_KEYS.KEYSTONE]: keystoneModule,
