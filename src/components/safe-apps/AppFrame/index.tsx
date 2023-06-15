@@ -50,6 +50,7 @@ import { hasFeature, FEATURES } from '@/utils/chains'
 import { selectTokenList, selectOnChainSigning, TOKEN_LISTS } from '@/store/settingsSlice'
 import { TxModalContext } from '@/components/tx-flow'
 import SafeAppsTxFlow from '@/components/tx-flow/flows/SafeAppsTx'
+import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -122,7 +123,25 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     ) => {
       const isOffChainSigningSupported = isOffchainEIP1271Supported(safe, chain, sdkVersion)
       const signOffChain = isOffChainSigningSupported && !onChainSigning
-      //openSignMessageModal(message, requestId, method, signOffChain && !!settings.offChainSigning)
+
+      setCurrentRequestId(requestId)
+
+      if (signOffChain) {
+        setTxFlow(
+          <SignMessageFlow
+            onClose={() => setTxFlow(undefined)}
+            logoUri={safeAppFromManifest?.iconUrl || ''}
+            name={safeAppFromManifest?.name || ''}
+            message={message}
+            safeAppId={remoteApp?.id}
+            requestId={requestId}
+          />,
+          onTxFlowClose,
+        )
+      } else {
+        // TODO: setTxFlow(<SafeAppsSignMessageModal ... />)
+        // Use the method as well or remove it here
+      }
     },
     onGetPermissions: getPermissions,
     onSetPermissions: setPermissionsRequest,
@@ -229,11 +248,10 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash }) => {
-      const currentSafeAppRequestId = currentRequestId
-
-      if (currentSafeAppRequestId === safeAppRequestId) {
+      if (safeAppRequestId && currentRequestId === safeAppRequestId) {
         trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION, appName)
         communicator?.send({ safeTxHash }, safeAppRequestId)
+        setTxFlow(undefined)
       }
     })
 
@@ -244,11 +262,12 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ messageHash, requestId, signature }) => {
       if (requestId && currentRequestId === requestId) {
         communicator?.send({ messageHash, signature }, requestId)
+        setTxFlow(undefined)
       }
     })
 
     return unsubscribe
-  }, [communicator, currentRequestId])
+  }, [communicator, currentRequestId, setTxFlow])
 
   if (!safeLoaded) {
     return <div />

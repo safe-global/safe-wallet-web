@@ -2,7 +2,7 @@ import { hexlify, hexZeroPad, toUtf8Bytes } from 'ethers/lib/utils'
 import type { ChainInfo, SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeMessageListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 
-import MsgModal from '@/components/safe-messages/MsgModal'
+import SignMessage from './SignMessage'
 import * as useIsWrongChainHook from '@/hooks/useIsWrongChain'
 import * as useIsSafeOwnerHook from '@/hooks/useIsSafeOwner'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
@@ -67,7 +67,7 @@ const mockOnboard = {
   },
 } as unknown as OnboardAPI
 
-describe('MsgModal', () => {
+describe('SignMessage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
@@ -94,7 +94,7 @@ describe('MsgModal', () => {
 
     it('renders the (decoded) message', () => {
       const { getByText } = render(
-        <MsgModal
+        <SignMessage
           requestId="123"
           logoUri="www.fake.com/test.png"
           name="Test App"
@@ -108,7 +108,7 @@ describe('MsgModal', () => {
 
     it('displays the SafeMessage message', () => {
       const { getByText } = render(
-        <MsgModal
+        <SignMessage
           logoUri="www.fake.com/test.png"
           name="Test App"
           message={EXAMPLE_MESSAGE}
@@ -122,7 +122,7 @@ describe('MsgModal', () => {
 
     it('generates the SafeMessage hash if not provided', () => {
       const { getByText } = render(
-        <MsgModal
+        <SignMessage
           logoUri="www.fake.com/test.png"
           name="Test App"
           message={EXAMPLE_MESSAGE}
@@ -176,7 +176,7 @@ describe('MsgModal', () => {
 
     it('renders the message', () => {
       const { getByText } = render(
-        <MsgModal
+        <SignMessage
           requestId="123"
           logoUri="www.fake.com/test.png"
           name="Test App"
@@ -194,7 +194,7 @@ describe('MsgModal', () => {
 
     it('displays the SafeMessage message', () => {
       const { getByText } = render(
-        <MsgModal
+        <SignMessage
           logoUri="www.fake.com/test.png"
           name="Test App"
           message={EXAMPLE_MESSAGE}
@@ -208,7 +208,7 @@ describe('MsgModal', () => {
 
     it('generates the SafeMessage hash if not provided', () => {
       const { getByText } = render(
-        <MsgModal
+        <SignMessage
           logoUri="www.fake.com/test.png"
           name="Test App"
           message={EXAMPLE_MESSAGE}
@@ -228,7 +228,7 @@ describe('MsgModal', () => {
     jest.spyOn(useAsyncHook, 'default').mockReturnValue([undefined, new Error('SafeMessage not found'), false])
 
     const { getByText } = render(
-      <MsgModal
+      <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
         message="Hello world!"
@@ -300,7 +300,7 @@ describe('MsgModal', () => {
     jest.spyOn(useSafeMessages, 'useSafeMessage').mockReturnValue(msg)
 
     const { getByText } = render(
-      <MsgModal
+      <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
         message={messageText}
@@ -343,7 +343,7 @@ describe('MsgModal', () => {
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => false)
 
     const { getByText } = render(
-      <MsgModal
+      <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
         message="Hello world!"
@@ -365,7 +365,7 @@ describe('MsgModal', () => {
     jest.spyOn(useChainsHook, 'useCurrentChain').mockReturnValue({ chainName: 'Goerli' } as ChainInfo)
 
     const { getByText } = render(
-      <MsgModal
+      <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
         message="Hello world!"
@@ -391,7 +391,7 @@ describe('MsgModal', () => {
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => false)
 
     const { getByText } = render(
-      <MsgModal
+      <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
         message="Hello world!"
@@ -445,7 +445,7 @@ describe('MsgModal', () => {
     jest.spyOn(useSafeMessages, 'useSafeMessage').mockReturnValue(msg)
 
     const { getByText } = render(
-      <MsgModal
+      <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
         message={messageText}
@@ -479,7 +479,7 @@ describe('MsgModal', () => {
       .mockImplementation(() => Promise.reject(new Error('Test error')))
 
     const { getByText } = render(
-      <MsgModal
+      <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
         message="Hello world!"
@@ -521,7 +521,7 @@ describe('MsgModal', () => {
       .mockImplementation(() => Promise.reject(new Error('Test error')))
 
     const { getByText } = render(
-      <MsgModal
+      <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
         message="Hello world!"
