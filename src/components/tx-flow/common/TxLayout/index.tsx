@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
-import { Box, Container, Grid, Typography, Button, Paper } from '@mui/material'
+import type { ComponentType, ReactElement, ReactNode } from 'react'
+import { Box, Container, Grid, Typography, Button, Paper, SvgIcon } from '@mui/material'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import SafeTxProvider from '../../SafeTxProvider'
@@ -11,13 +11,23 @@ type TxLayoutProps = {
   title: ReactNode
   children: ReactNode
   subtitle?: ReactNode
+  icon?: ComponentType
   step?: number
   txSummary?: TransactionSummary
   onBack?: () => void
   hideNonce?: boolean
 }
 
-const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack, hideNonce = false }: TxLayoutProps) => {
+const TxLayout = ({
+  title,
+  subtitle,
+  icon,
+  children,
+  step = 0,
+  txSummary,
+  onBack,
+  hideNonce = false,
+}: TxLayoutProps): ReactElement => {
   const steps = Array.isArray(children) ? children : [children]
   const progress = Math.round(((step + 1) / steps.length) * 100)
 
@@ -36,8 +46,17 @@ const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack, hide
               <Paper className={css.header}>
                 <ProgressBar value={progress} />
 
-                <Box display="flex" justifyContent={subtitle ? 'space-between' : 'flex-end'} py={2} px={3}>
-                  {subtitle}
+                <Box display="flex" justifyContent="space-between" py={2} px={3}>
+                  <Box display="flex" alignItems="center">
+                    {icon && (
+                      <div className={css.icon}>
+                        <SvgIcon component={icon} inheritViewBox />
+                      </div>
+                    )}
+
+                    {subtitle}
+                  </Box>
+
                   {!hideNonce && <TxNonce />}
                 </Box>
               </Paper>
