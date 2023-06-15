@@ -145,31 +145,8 @@ export const connectWallet = async (
   return wallets
 }
 
-// A workaround for an onboard "feature" that shows a defunct account select popup
-// See https://github.com/blocknative/web3-onboard/issues/888
-const closeAccountSelectionModal = () => {
-  const maxTries = 100
-  const modalText = 'Please switch the active account'
-  let tries = 0
-
-  const timer = setInterval(() => {
-    const onboardModal = document.querySelector('onboard-v2')?.shadowRoot
-    const isActionRequired = onboardModal?.textContent?.includes(modalText)
-
-    if (isActionRequired) {
-      // Dismiss the modal
-      ;(onboardModal?.querySelector('.background') as HTMLElement)?.click()
-      tries = maxTries
-    }
-
-    tries += 1
-    if (tries >= maxTries) clearInterval(timer)
-  }, 100)
-}
-
 export const switchWallet = (onboard: OnboardAPI) => {
   connectWallet(onboard)
-  closeAccountSelectionModal()
 }
 
 // Disable/enable wallets according to chain and cache the last used wallet
