@@ -25,7 +25,7 @@ import {
   SvgIcon,
   Typography,
 } from '@mui/material'
-import AddressBookInputNew from '@/components/common/AddressBookInputNew'
+import AddressBookInput from '@/components/common/AddressBookInput'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -138,7 +138,7 @@ const CreateTokenTransfer = ({
                 <AddressInputReadOnly label="Sending to" address={recipient} />
               </Box>
             ) : (
-              <AddressBookInput name={TokenTransferFields.recipient} label="Recipient" />
+              <AddressBookInput name={TokenTransferFields.recipient} label="Sending to" />
             )}
           </FormControl>
 

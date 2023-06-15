@@ -25,6 +25,7 @@ const AddressBookInput = ({ name, ...props }: AddressInputProps): ReactElement =
 
   return (
     <Autocomplete
+      disableClearable
       value={addressValue || ''}
       disabled={props.disabled}
       readOnly={props.InputProps?.readOnly}

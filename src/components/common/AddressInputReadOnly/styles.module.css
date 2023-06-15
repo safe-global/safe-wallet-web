@@ -3,6 +3,7 @@
 }
 
 .input {
+  width: 100%;
   padding: 12px var(--space-2);
 }
 
