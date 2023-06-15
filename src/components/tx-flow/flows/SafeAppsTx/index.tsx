@@ -16,7 +16,7 @@ const SafeAppsTxFlow = ({ data }: { data: SafeAppsTxParams }) => {
   const title = <SafeAppsTxModalLabel app={data.app} />
 
   return (
-    <TxLayout title={title} step={0}>
+    <TxLayout title="Confirm transaction" subtitle={title} step={0}>
       <ReviewSafeAppsTx safeAppsTx={data} />
     </TxLayout>
   )
