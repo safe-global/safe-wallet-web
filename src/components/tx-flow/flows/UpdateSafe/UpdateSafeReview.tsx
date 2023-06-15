@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { DialogContent, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 
 import ExternalLink from '@/components/common/ExternalLink'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
@@ -25,7 +25,7 @@ export const UpdateSafeReview = () => {
   }, [chain, safe, safeLoaded, setNonce, setSafeTx, setSafeTxError])
 
   return (
-    <DialogContent>
+    <SignOrExecuteForm onSubmit={() => null}>
       <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>
@@ -47,8 +47,6 @@ export const UpdateSafeReview = () => {
         access or execute them after the upgrade. Please make sure to execute any remaining transactions before
         upgrading.
       </Typography>
-
-      <SignOrExecuteForm onSubmit={() => null} />
-    </DialogContent>
+    </SignOrExecuteForm>
   )
 }

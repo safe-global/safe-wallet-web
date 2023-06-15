@@ -13,18 +13,7 @@ import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { BigNumber } from '@ethersproject/bignumber'
 import { sameAddress } from '@/utils/addresses'
 import { safeFormatUnits } from '@/utils/formatters'
-import {
-  Box,
-  Button,
-  DialogActions,
-  DialogContent,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SvgIcon,
-  Typography,
-} from '@mui/material'
+import { Box, Button, CardActions, FormControl, InputLabel, MenuItem, Select, SvgIcon, Typography } from '@mui/material'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
@@ -35,6 +24,7 @@ import InputValueHelper from '@/components/common/InputValueHelper'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import { type TokenTransferParams, TokenTransferFields, TokenTransferType } from '.'
+import TxCard from '../../common/TxCard'
 
 const CreateTokenTransfer = ({
   params,
@@ -125,9 +115,9 @@ const CreateTokenTransfer = ({
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
 
   return (
-    <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent>
+    <TxCard>
+      <FormProvider {...formMethods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth sx={{ mb: '28px' }}>
             <AddressInputReadOnly label="Sending from" address={safeAddress} />
           </FormControl>
@@ -180,12 +170,6 @@ const CreateTokenTransfer = ({
             </Box>
           )}
 
-          {!disableSpendingLimit && !!spendingLimitAmount && (
-            <FormControl fullWidth sx={{ mt: 2 }}>
-              <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
-            </FormControl>
-          )}
-
           <FormControl fullWidth sx={{ mt: 2 }}>
             <NumberField
               label={errors.amount?.message || 'Amount'}
@@ -213,15 +197,21 @@ const CreateTokenTransfer = ({
               })}
             />
           </FormControl>
-        </DialogContent>
 
-        <DialogActions>
-          <Button variant="contained" type="submit" disabled={isDisabled}>
-            Next
-          </Button>
-        </DialogActions>
-      </form>
-    </FormProvider>
+          {!disableSpendingLimit && !!spendingLimitAmount && (
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
+            </FormControl>
+          )}
+
+          <CardActions>
+            <Button variant="contained" type="submit" disabled={isDisabled}>
+              Next
+            </Button>
+          </CardActions>
+        </form>
+      </FormProvider>
+    </TxCard>
   )
 }
 

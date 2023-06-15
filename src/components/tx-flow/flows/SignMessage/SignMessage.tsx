@@ -1,13 +1,23 @@
-import { Grid, DialogActions, Button, Box, Typography, DialogContent, SvgIcon } from '@mui/material'
+import {
+  Grid,
+  DialogActions,
+  Button,
+  Box,
+  Typography,
+  DialogContent,
+  SvgIcon,
+  Dialog,
+  DialogTitle,
+  DialogContentText,
+  CardContent,
+  CardActions,
+} from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useCallback, useState } from 'react'
 import { SafeMessageListItemType, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
-
-import ModalDialog, { ModalDialogTitle } from '@/components/common/ModalDialog'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import RequiredIcon from '@/public/images/messages/required.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -18,20 +28,16 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useSafeMessage } from '@/hooks/messages/useSafeMessages'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
 
-import txStepperCss from '@/components/tx/TxStepper/styles.module.css'
-import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
-import { ConfirmationDialog } from './ConfirmationDialog'
 import useDecodedSafeMessage from '@/hooks/messages/useDecodedSafeMessage'
 import useSyncSafeMessageSigner from '@/hooks/messages/useSyncSafeMessageSigner'
 import SuccessMessage from '@/components/tx/SuccessMessage'
-import InfoBox from '../InfoBox'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
-
-const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
-const APP_NAME_FALLBACK = 'Sign message off-chain'
+import InfoBox from '@/components/safe-messages/InfoBox'
+import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
+import TxCard from '@/components/tx-flow/common/TxCard'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -65,7 +71,7 @@ const MessageHashField = ({ label, hashValue }: { label: string; hashValue: stri
 
 const DialogHeader = ({ threshold }: { threshold: number }) => (
   <>
-    <Box textAlign="center" mt={4} mb={2}>
+    <Box textAlign="center" mb={2}>
       <SvgIcon component={RequiredIcon} viewBox="0 0 32 32" fontSize="large" />
     </Box>
     <Typography variant="h4" textAlign="center" gutterBottom>
@@ -76,33 +82,6 @@ const DialogHeader = ({ threshold }: { threshold: number }) => (
     </Typography>
   </>
 )
-
-const DialogTitle = ({
-  onClose,
-  name,
-  logoUri,
-}: {
-  onClose: () => void
-  name: string | null
-  logoUri: string | null
-}) => {
-  const appName = name || APP_NAME_FALLBACK
-  const appLogo = logoUri || APP_LOGO_FALLBACK_IMAGE
-  return (
-    <ModalDialogTitle onClose={onClose}>
-      <Grid container px={1} alignItems="center" gap={2}>
-        <Grid item>
-          <Box display="flex" alignItems="center">
-            <SafeAppIconCard src={appLogo} alt={name || 'The icon of the application'} width={24} height={24} />
-            <Typography variant="h4" pl={1}>
-              {appName}
-            </Typography>
-          </Box>
-        </Grid>
-      </Grid>
-    </ModalDialogTitle>
-  )
-}
 
 const MessageDialogError = ({ isOwner, submitError }: { isOwner: boolean; submitError: Error | undefined }) => {
   const wallet = useWallet()
@@ -150,30 +129,53 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   )
 }
 
+const ConfirmationDialog = ({
+  open,
+  onCancel,
+  onClose,
+}: {
+  open: boolean
+  onCancel: () => void
+  onClose: () => void
+}) => (
+  <Dialog
+    open={open}
+    onClose={onClose}
+    aria-labelledby="alert-dialog-title"
+    aria-describedby="alert-dialog-description"
+  >
+    <DialogTitle id="alert-dialog-title">Cancel message signing request</DialogTitle>
+    <DialogContent>
+      <DialogContentText id="alert-dialog-description">
+        <Typography variant="body2">If you close this modal, the signing request will be aborted.</Typography>
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={onCancel}>Cancel</Button>
+      <Button variant="contained" onClick={onClose} autoFocus>
+        Abort signing
+      </Button>
+    </DialogActions>
+  </Dialog>
+)
+
 type BaseProps = {
   onClose: () => void
 } & Pick<SafeMessage, 'logoUri' | 'name' | 'message'>
 
 // Custom Safe Apps do not have a `safeAppId`
-type ProposeProps = BaseProps & {
+export type ProposeProps = BaseProps & {
   safeAppId?: number
   requestId: RequestId
 }
 
 // A proposed message does not return the `safeAppId` but the `logoUri` and `name` of the Safe App that proposed it
-type ConfirmProps = BaseProps & {
+export type ConfirmProps = BaseProps & {
   safeAppId?: never
   requestId?: RequestId
 }
 
-const MsgModal = ({
-  onClose,
-  logoUri,
-  name,
-  message,
-  safeAppId,
-  requestId,
-}: ProposeProps | ConfirmProps): ReactElement => {
+const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | ConfirmProps): ReactElement => {
   // Hooks & variables
   const [showCloseTooltip, setShowCloseTooltip] = useState<boolean>(false)
   const { palette } = useTheme()
@@ -211,55 +213,50 @@ const MsgModal = ({
   }, [onClose, ongoingMessage, requestId])
 
   return (
-    <>
-      <ModalDialog open maxWidth="sm" fullWidth>
-        <div className={txStepperCss.container}>
-          <DialogTitle onClose={handleClose} logoUri={logoUri} name={name} />
+    <TxCard>
+      <CardContent>
+        <DialogHeader threshold={safe.threshold} />
 
-          <DialogContent>
-            <DialogHeader threshold={safe.threshold} />
+        <Typography fontWeight={700} mb={1}>
+          Message: <CopyButton text={decodedMessageAsString} />
+        </Typography>
+        <DecodedMsg message={decodedMessage} isInModal />
 
-            <Typography fontWeight={700} mb={1}>
-              Message: <CopyButton text={decodedMessageAsString} />
-            </Typography>
-            <DecodedMsg message={decodedMessage} isInModal />
+        <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
+        <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
 
-            <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
-            <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
+        <AlreadySignedByOwnerMessage hasSigned={hasSigned} />
 
-            <AlreadySignedByOwnerMessage hasSigned={hasSigned} />
+        <InfoBox
+          message={
+            requestId
+              ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
+              : 'The signature will be submitted to the Safe App when the message is fully signed.'
+          }
+        >
+          <MsgSigners
+            msg={ongoingMessage || createSkeletonMessage(safe.threshold)}
+            showOnlyConfirmations
+            showMissingSignatures
+            backgroundColor={palette.info.background}
+          />
+        </InfoBox>
 
-            <InfoBox
-              message={
-                requestId
-                  ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
-                  : 'The signature will be submitted to the Safe App when the message is fully signed.'
-              }
-            >
-              <MsgSigners
-                msg={ongoingMessage || createSkeletonMessage(safe.threshold)}
-                showOnlyConfirmations
-                showMissingSignatures
-                backgroundColor={palette.info.background}
-              />
-            </InfoBox>
+        <WrongChainWarning />
 
-            <WrongChainWarning />
+        <MessageDialogError isOwner={isOwner} submitError={submitError} />
+      </CardContent>
 
-            <MessageDialogError isOwner={isOwner} submitError={submitError} />
-          </DialogContent>
-
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
-              Sign
-            </Button>
-          </DialogActions>
-        </div>
-      </ModalDialog>
+      <CardActions>
+        {/* TODO: Remove this Cancel button once we can figure out how to move the logic outside */}
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
+          Sign
+        </Button>
+      </CardActions>
       <ConfirmationDialog open={showCloseTooltip} onCancel={() => setShowCloseTooltip(false)} onClose={onClose} />
-    </>
+    </TxCard>
   )
 }
 
-export default MsgModal
+export default SignMessage

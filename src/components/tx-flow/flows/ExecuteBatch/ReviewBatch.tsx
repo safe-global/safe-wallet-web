@@ -1,28 +1,32 @@
-import useAsync from '@/hooks/useAsync'
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
-import { useCurrentChain } from '@/hooks/useChains'
-import useSafeInfo from '@/hooks/useSafeInfo'
+import { Typography, Button, CardActions } from '@mui/material'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
-import { Button, DialogContent, Typography } from '@mui/material'
-import SendToBlock from '@/components/tx/SendToBlock'
-import { type SyntheticEvent, useMemo, useState } from 'react'
-import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import { Errors, logError } from '@/services/exceptions'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import type { BatchExecuteData } from '@/components/tx/modals/BatchExecuteModal/index'
-import DecodedTxs from '@/components/tx/modals/BatchExecuteModal/DecodedTxs'
-import { getMultiSendTxs, getTxsWithDetails } from '@/utils/transactions'
-import { TxSimulation } from '@/components/tx/TxSimulation'
-import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
-import { ExecutionMethod, ExecutionMethodSelector } from '../../ExecutionMethodSelector'
-import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
-import { useWeb3 } from '@/hooks/wallets/web3'
-import { hasRemainingRelays } from '@/utils/relaying'
+import { useState, useMemo } from 'react'
+import type { SyntheticEvent } from 'react'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
-const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
+import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
+import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
+import SendToBlock from '@/components/tx/SendToBlock'
+import { TxSimulation } from '@/components/tx/TxSimulation'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import useAsync from '@/hooks/useAsync'
+import { useCurrentChain } from '@/hooks/useChains'
+import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import { logError, Errors } from '@/services/exceptions'
+import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
+import { hasRemainingRelays } from '@/utils/relaying'
+import { getTxsWithDetails, getMultiSendTxs } from '@/utils/transactions'
+import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
+import TxCard from '../../common/TxCard'
+import CheckWallet from '@/components/common/CheckWallet'
+import type { ExecuteBatchFlowProps } from '.'
+
+export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
@@ -38,9 +42,8 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
-
-    return getTxsWithDetails(data.txs, chain.chainId)
-  }, [data.txs, chain?.chainId])
+    return getTxsWithDetails(params.txs, chain.chainId)
+  }, [params.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
     if (!chain?.chainId || !safe.version || !web3) return
@@ -68,7 +71,6 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
       safe.chainId,
       safe.address.value,
     )
-    onSubmit(null)
   }
 
   const onRelay = async () => {
@@ -81,8 +83,6 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
       safe.chainId,
       safe.address.value,
     )
-
-    onSubmit(null)
   }
 
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -103,10 +103,10 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const submitDisabled = loading || !isSubmittable
 
   return (
-    <div>
-      <DialogContent>
+    <>
+      <TxCard>
         <Typography variant="body2" mb={2}>
-          This transaction batches a total of {data.txs.length} transactions from your queue into a single Ethereum
+          This transaction batches a total of {params.txs.length} transactions from your queue into a single Ethereum
           transaction. Please check every included transaction carefully, especially if you have rejection transactions,
           and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
           over the execute button.
@@ -142,9 +142,17 @@ executions from the same Safe Account."
             />
           </>
         ) : null}
+      </TxCard>
 
-        {multiSendTxs && <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />}
+      {multiSendTxs && (
+        <TxCard>
+          <Typography variant="h5">Transaction checks</Typography>
 
+          <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />
+        </TxCard>
+      )}
+
+      <TxCard>
         <WrongChainWarning />
 
         <Typography variant="body2" mt={2} textAlign="center">
@@ -162,17 +170,16 @@ executions from the same Safe Account."
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <Button
-          onClick={handleSubmit}
-          disabled={submitDisabled}
-          variant="contained"
-          sx={{ position: 'absolute', bottom: '24px', right: '24px', zIndex: 1 }}
-        >
-          Send
-        </Button>
-      </DialogContent>
-    </div>
+        <CardActions>
+          <CheckWallet allowNonOwner={true}>
+            {(isOk) => (
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} onClick={handleSubmit}>
+                Send
+              </Button>
+            )}
+          </CheckWallet>
+        </CardActions>
+      </TxCard>
+    </>
   )
 }
-
-export default ReviewBatchExecute

@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button } from '@mui/material'
+import { Box, Button, CardActions, Typography } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -14,27 +14,22 @@ import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
 import { hasRemainingRelays } from '@/utils/relaying'
 import type { SignOrExecuteProps } from '.'
-import type { AdvancedParameters } from '../AdvancedParams'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import { SuccessScreen } from '@/components/tx-flow/flows/SuccessScreen'
+import useGasLimit from '@/hooks/useGasLimit'
+import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
 
 const ExecuteForm = ({
   safeTx,
-  error,
   txId,
   onSubmit,
   disableSubmit = false,
   origin,
-  advancedParams,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
-  error?: Error
-  advancedParams: AdvancedParameters
 }): ReactElement => {
-  //
-  // Hooks & variables
-  //
+  // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
@@ -58,6 +53,10 @@ const ExecuteForm = ({
   // The transaction can/will be relayed
   const canRelay = walletCanRelay && hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
+
+  // Estimate gas limit
+  const { gasLimit, gasLimitError } = useGasLimit(safeTx)
+  const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
 
   // Check if transaction will fail
   const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(safeTx, advancedParams.gasLimit)
@@ -85,47 +84,62 @@ const ExecuteForm = ({
 
   const submitDisabled = !safeTx || !isSubmittable || disableSubmit || isValidExecutionLoading || isExecutionLoop
 
-  const displayedError = error || executionValidationError
-
   return (
-    <form onSubmit={handleSubmit}>
-      {canRelay && (
-        <Box mb={2}>
-          <ExecutionMethodSelector
-            executionMethod={executionMethod}
-            setExecutionMethod={setExecutionMethod}
-            relays={relays}
-          />
-        </Box>
-      )}
+    <>
+      <Typography variant="h5" mb={2}>
+        Execution
+      </Typography>
 
-      {/* Error messages */}
-      {isExecutionLoop ? (
-        <ErrorMessage>
-          Cannot execute a transaction from the Safe Account itself, please connect a different account.
-        </ErrorMessage>
-      ) : displayedError ? (
-        <ErrorMessage error={displayedError}>
-          This transaction will most likely fail.{' '}
-          {isNewExecutableTx
-            ? 'To save gas costs, avoid creating the transaction.'
-            : 'To save gas costs, reject this transaction.'}
-        </ErrorMessage>
-      ) : submitError ? (
-        <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-      ) : (
-        <UnknownContractError />
-      )}
+      <AdvancedParams
+        willExecute
+        params={advancedParams}
+        recommendedGasLimit={gasLimit}
+        onFormSubmit={setAdvancedParams}
+        gasLimitError={gasLimitError}
+        willRelay={willRelay}
+      />
 
-      {/* Submit button */}
-      <CheckWallet allowNonOwner={true}>
-        {(isOk) => (
-          <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-            Submit
-          </Button>
+      <form onSubmit={handleSubmit}>
+        {canRelay && (
+          <Box mb={2}>
+            <ExecutionMethodSelector
+              executionMethod={executionMethod}
+              setExecutionMethod={setExecutionMethod}
+              relays={relays}
+            />
+          </Box>
         )}
-      </CheckWallet>
-    </form>
+
+        {/* Error messages */}
+        {isExecutionLoop ? (
+          <ErrorMessage>
+            Cannot execute a transaction from the Safe Account itself, please connect a different account.
+          </ErrorMessage>
+        ) : executionValidationError || gasLimitError ? (
+          <ErrorMessage error={executionValidationError || gasLimitError}>
+            This transaction will most likely fail.{' '}
+            {isNewExecutableTx
+              ? 'To save gas costs, avoid creating the transaction.'
+              : 'To save gas costs, reject this transaction.'}
+          </ErrorMessage>
+        ) : submitError ? (
+          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        ) : (
+          <UnknownContractError />
+        )}
+
+        <CardActions>
+          {/* Submit button */}
+          <CheckWallet allowNonOwner={true}>
+            {(isOk) => (
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+                Submit
+              </Button>
+            )}
+          </CheckWallet>
+        </CardActions>
+      </form>
+    </>
   )
 }
 

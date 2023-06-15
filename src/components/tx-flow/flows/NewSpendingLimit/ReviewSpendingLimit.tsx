@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { BigNumber } from 'ethers'
-import { Typography, Box, DialogContent } from '@mui/material'
+import { Typography, Box } from '@mui/material'
 
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
@@ -57,67 +57,60 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   }
 
   return (
-    <DialogContent>
-      <SignOrExecuteForm onSubmit={onFormSubmit}>
-        {token && (
-          <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo}>
-            {!!existingSpendingLimit && (
-              <>
-                <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span" fontSize={20}>
-                  {formatVisualAmount(BigNumber.from(existingSpendingLimit.amount), decimals)} {symbol}
-                </Typography>
-                {' → '}
-              </>
-            )}
-          </TokenTransferReview>
-        )}
-        <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-          Beneficiary
-        </Typography>
+    <SignOrExecuteForm onSubmit={onFormSubmit}>
+      {token && (
+        <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo}>
+          {!!existingSpendingLimit && (
+            <>
+              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span" fontSize={20}>
+                {formatVisualAmount(BigNumber.from(existingSpendingLimit.amount), decimals)} {symbol}
+              </Typography>
+              {' → '}
+            </>
+          )}
+        </TokenTransferReview>
+      )}
+      <Typography color={({ palette }) => palette.text.secondary} pb={1}>
+        Beneficiary
+      </Typography>
 
-        <Box mb={3}>
-          <EthHashInfo address={params.beneficiary} shortAddress={false} hasExplorer showCopyButton />
-        </Box>
+      <Box mb={3}>
+        <EthHashInfo address={params.beneficiary} shortAddress={false} hasExplorer showCopyButton />
+      </Box>
 
-        <Typography color={({ palette }) => palette.text.secondary}>Reset time</Typography>
-        {existingSpendingLimit ? (
-          <>
-            <SpendingLimitLabel
-              label={
-                <>
-                  {existingSpendingLimit.resetTimeMin !== params.resetTime && (
-                    <>
-                      <Typography
-                        color="error"
-                        sx={{ textDecoration: 'line-through' }}
-                        display="inline"
-                        component="span"
-                      >
-                        {relativeTime(existingSpendingLimit.lastResetMin, existingSpendingLimit.resetTimeMin)}
-                      </Typography>
-                      {' → '}
-                    </>
-                  )}
-                  <Typography display="inline" component="span">
-                    {resetTime}
-                  </Typography>
-                </>
-              }
-              isOneTime={existingSpendingLimit.resetTimeMin === '0'}
-              mb={2}
-            />
-            <Typography color="error" mb={2}>
-              You are about to replace an existent spending limit
-            </Typography>
-          </>
-        ) : (
+      <Typography color={({ palette }) => palette.text.secondary}>Reset time</Typography>
+      {existingSpendingLimit ? (
+        <>
           <SpendingLimitLabel
-            label={resetTime || 'One-time spending limit'}
+            label={
+              <>
+                {existingSpendingLimit.resetTimeMin !== params.resetTime && (
+                  <>
+                    <Typography color="error" sx={{ textDecoration: 'line-through' }} display="inline" component="span">
+                      {relativeTime(existingSpendingLimit.lastResetMin, existingSpendingLimit.resetTimeMin)}
+                    </Typography>
+                    {' → '}
+                  </>
+                )}
+                <Typography display="inline" component="span">
+                  {resetTime}
+                </Typography>
+              </>
+            }
+            isOneTime={existingSpendingLimit.resetTimeMin === '0'}
             mb={2}
-            isOneTime={!!resetTime && isOneTime}
           />
-        )}
-      </SignOrExecuteForm>
-    </DialogContent>
+          <Typography color="error" mb={2}>
+            You are about to replace an existent spending limit
+          </Typography>
+        </>
+      ) : (
+        <SpendingLimitLabel
+          label={resetTime || 'One-time spending limit'}
+          mb={2}
+          isOneTime={!!resetTime && isOneTime}
+        />
+      )}
+    </SignOrExecuteForm>
   )
 }

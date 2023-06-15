@@ -1,5 +1,5 @@
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { DialogContent, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { useContext, useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
@@ -26,13 +26,12 @@ export const ReviewRemoveModule = ({ params }: { params: RemoveModuleFlowProps }
   }
 
   return (
-    <DialogContent>
+    <SignOrExecuteForm onSubmit={onFormSubmit}>
       <SendToBlock address={params.address} title="Module" />
       <Typography my={2}>
         After removing this module, any feature or app that uses this module might no longer work. If this Safe Account
         requires more then one signature, the module removal will have to be confirmed by other owners as well.
       </Typography>
-      <SignOrExecuteForm onSubmit={onFormSubmit} />
-    </DialogContent>
+    </SignOrExecuteForm>
   )
 }

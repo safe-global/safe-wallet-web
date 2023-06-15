@@ -2,6 +2,7 @@ import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import CreateTokenTransfer from './CreateTokenTransfer'
 import ReviewTokenTransfer from './ReviewTokenTransfer'
+import AssetsIcon from '@/public/images/sidebar/assets.svg'
 
 export enum TokenTransferType {
   multiSig = 'multiSig',
@@ -51,7 +52,7 @@ const TokenTransferFlow = ({ txNonce, ...params }: TokenTransferFlowProps) => {
   ]
 
   return (
-    <TxLayout title="Send tokens" step={step} onBack={prevStep}>
+    <TxLayout title="New transaction" subtitle="Send tokens" icon={AssetsIcon} step={step} onBack={prevStep}>
       {steps}
     </TxLayout>
   )

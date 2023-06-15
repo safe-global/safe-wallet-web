@@ -1,12 +1,11 @@
 import type { ReactElement } from 'react'
-import { useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { useMemo } from 'react'
 import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
 import { Box } from '@mui/system'
 import { Typography, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
-import { isObjectEIP712TypedData, Methods } from '@safe-global/safe-apps-sdk'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type EIP712TypedData, isObjectEIP712TypedData, Methods, type RequestId } from '@safe-global/safe-apps-sdk'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 
 import SendFromBlock from '@/components/tx/SendFromBlock'
@@ -14,9 +13,7 @@ import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import type { SafeAppsSignMessageParams } from '@/components/safe-apps/SafeAppsSignMessageModal'
 import useChainId from '@/hooks/useChainId'
-import useAsync from '@/hooks/useAsync'
 import { getReadOnlySignMessageLibContract } from '@/services/contracts/safeContracts'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
@@ -25,18 +22,22 @@ import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
+import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
-type ReviewSafeAppsSignMessageProps = {
-  safeAppsSignMessage: SafeAppsSignMessageParams
+export type SignMessageOnChainProps = {
+  appId?: number
+  app?: SafeAppData
+  requestId: RequestId
+  message: string | EIP712TypedData
+  method: Methods.signMessage | Methods.signTypedMessage
 }
 
-const ReviewSafeAppsSignMessage = ({
-  safeAppsSignMessage: { message, method, requestId },
-}: ReviewSafeAppsSignMessageProps): ReactElement => {
+const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnChainProps): ReactElement => {
   const chainId = useChainId()
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
-  const [submitError, setSubmitError] = useState<Error>()
+  const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
   useHighlightHiddenTab()
 
@@ -56,7 +57,7 @@ const ReviewSafeAppsSignMessage = ({
     return []
   }, [isTextMessage, isTypedMessage, message])
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
+  useEffect(() => {
     let txData
 
     if (isTextMessage) {
@@ -74,61 +75,66 @@ const ReviewSafeAppsSignMessage = ({
       ])
     }
 
-    return createTx({
+    const params = {
       to: signMessageAddress,
       value: '0',
       data: txData || '0x',
       operation: OperationType.DelegateCall,
-    })
-  }, [message])
+    }
+    createTx(params).then(setSafeTx).catch(setSafeTxError)
+  }, [
+    isTextMessage,
+    isTypedMessage,
+    message,
+    readOnlySignMessageLibContract,
+    setSafeTx,
+    setSafeTxError,
+    signMessageAddress,
+  ])
 
   const handleSubmit = async () => {
-    setSubmitError(undefined)
     if (!safeTx || !onboard) return
     try {
       await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
-      setSubmitError(error as Error)
+      setSafeTxError(error as Error)
     }
   }
 
-  // TODO: Need to use the SafeTxProvider here
   return (
     <SignOrExecuteForm onSubmit={handleSubmit}>
-      <>
-        <SendFromBlock />
+      <SendFromBlock />
 
-        <InfoDetails title="Interact with SignMessageLib">
-          <EthHashInfo address={signMessageAddress} shortAddress={false} showCopyButton hasExplorer />
-        </InfoDetails>
+      <InfoDetails title="Interact with SignMessageLib">
+        <EthHashInfo address={signMessageAddress} shortAddress={false} showCopyButton hasExplorer />
+      </InfoDetails>
 
-        {safeTx && (
-          <Box pb={1}>
-            <Typography mt={2} color="primary.light">
-              Data (hex encoded)
-            </Typography>
-            {generateDataRowValue(safeTx.data.data, 'rawData')}
-          </Box>
-        )}
-
-        <Typography my={1}>
-          <b>Signing method:</b> <code>{method}</code>
-        </Typography>
-
-        <Typography my={2}>
-          <b>Signing message:</b> {readableMessage && <CopyButton text={readableMessage} />}
-        </Typography>
-        <DecodedMsg message={decodedMessage} isInModal />
-
-        <Box display="flex" alignItems="center" my={2}>
-          <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
-          <Typography ml={1}>
-            Signing a message with your Safe Account requires a transaction on the blockchain
+      {safeTx && (
+        <Box pb={1}>
+          <Typography mt={2} color="primary.light">
+            Data (hex encoded)
           </Typography>
+          {generateDataRowValue(safeTx.data.data, 'rawData')}
         </Box>
-      </>
+      )}
+
+      <Typography my={1}>
+        <b>Signing method:</b> <code>{method}</code>
+      </Typography>
+
+      <Typography my={2}>
+        <b>Signing message:</b> {readableMessage && <CopyButton text={readableMessage} />}
+      </Typography>
+      <DecodedMsg message={decodedMessage} isInModal />
+
+      <Box display="flex" alignItems="center" my={2}>
+        <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
+        <Typography ml={1}>
+          Signing a message with your Safe Account requires a transaction on the blockchain
+        </Typography>
+      </Box>
     </SignOrExecuteForm>
   )
 }
 
-export default ReviewSafeAppsSignMessage
+export default ReviewSignMessageOnChain

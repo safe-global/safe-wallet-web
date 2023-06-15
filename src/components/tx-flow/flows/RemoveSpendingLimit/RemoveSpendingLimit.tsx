@@ -1,8 +1,8 @@
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { getSpendingLimitInterface, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import useChainId from '@/hooks/useChainId'
-import useAsync from '@/hooks/useAsync'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { useContext, useEffect } from 'react'
+import { SafeTxContext } from '../../SafeTxProvider'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Typography } from '@mui/material'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
@@ -14,17 +14,24 @@ import { safeFormatUnits } from '@/utils/formatters'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { createTx } from '@/services/tx/tx-sender'
 
-export const RemoveSpendingLimit = ({ data, onSubmit }: { data: SpendingLimitState; onSubmit: () => void }) => {
+export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) => {
+  const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const chainId = useChainId()
   const { balances } = useBalances()
-  const token = balances.items.find((item) => item.tokenInfo.address === data.token.address)
+  const token = balances.items.find((item) => item.tokenInfo.address === params.token.address)
 
-  const [safeTx, safeTxError] = useAsync<SafeTransaction>(() => {
+  useEffect(() => {
     const spendingLimitAddress = getSpendingLimitModuleAddress(chainId)
-    if (!spendingLimitAddress) return
+
+    if (!spendingLimitAddress) {
+      return
+    }
 
     const spendingLimitInterface = getSpendingLimitInterface()
-    const txData = spendingLimitInterface.encodeFunctionData('deleteAllowance', [data.beneficiary, data.token.address])
+    const txData = spendingLimitInterface.encodeFunctionData('deleteAllowance', [
+      params.beneficiary,
+      params.token.address,
+    ])
 
     const txParams = {
       to: spendingLimitAddress,
@@ -32,33 +39,30 @@ export const RemoveSpendingLimit = ({ data, onSubmit }: { data: SpendingLimitSta
       data: txData,
     }
 
-    return createTx(txParams)
-  }, [chainId, data.beneficiary, data.token])
+    createTx(txParams).then(setSafeTx).catch(setSafeTxError)
+  }, [chainId, params.beneficiary, params.token, setSafeTx, setSafeTxError])
 
   const onFormSubmit = () => {
     trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
-
-    onSubmit()
   }
 
-  // TODO: Need to use the SafeTxProvider here
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && (
         <TokenTransferReview
-          amount={safeFormatUnits(data.amount, token.tokenInfo.decimals)}
+          amount={safeFormatUnits(params.amount, token.tokenInfo.decimals)}
           tokenInfo={token.tokenInfo}
         />
       )}
       <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Beneficiary</Typography>
-      <EthHashInfo address={data.beneficiary} showCopyButton hasExplorer shortAddress={false} />
+      <EthHashInfo address={params.beneficiary} showCopyButton hasExplorer shortAddress={false} />
       <Typography mt={2} sx={({ palette }) => ({ color: palette.primary.light })}>
         Reset time
       </Typography>
       <SpendingLimitLabel
-        label={relativeTime(data.lastResetMin, data.resetTimeMin)}
+        label={relativeTime(params.lastResetMin, params.resetTimeMin)}
         mb={2}
-        isOneTime={data.resetTimeMin === '0'}
+        isOneTime={params.resetTimeMin === '0'}
       />
     </SignOrExecuteForm>
   )

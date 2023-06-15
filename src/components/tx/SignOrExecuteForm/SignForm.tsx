@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, Typography } from '@mui/material'
+import { Button, CardActions, Typography } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -12,18 +12,14 @@ import { TxModalContext } from '@/components/tx-flow'
 
 const SignForm = ({
   safeTx,
-  error,
   txId,
   onSubmit,
   disableSubmit = false,
   origin,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
-  error?: Error
 }): ReactElement => {
-  //
-  // Hooks & variables
-  //
+  // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
@@ -59,17 +55,14 @@ const SignForm = ({
 
   return (
     <form onSubmit={handleSubmit}>
+      <Typography variant="h5" mb={2}>
+        Confirmation
+      </Typography>
+
       {/* Error messages */}
       {isSubmittable && cannotPropose ? (
         <ErrorMessage>
           You are currently not an owner of this Safe Account and won&apos;t be able to submit this transaction.
-        </ErrorMessage>
-      ) : error ? (
-        <ErrorMessage error={error}>
-          This transaction will most likely fail.{' '}
-          {isCreation
-            ? 'To save gas costs, avoid creating the transaction.'
-            : 'To save gas costs, reject this transaction.'}
         </ErrorMessage>
       ) : (
         submitError && (
@@ -82,14 +75,16 @@ const SignForm = ({
         sign a transaction and will need to confirm it with your currently connected wallet.
       </Typography>
 
-      {/* Submit button */}
-      <CheckWallet>
-        {(isOk) => (
-          <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-            Submit
-          </Button>
-        )}
-      </CheckWallet>
+      <CardActions>
+        {/* Submit button */}
+        <CheckWallet>
+          {(isOk) => (
+            <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+              Submit
+            </Button>
+          )}
+        </CheckWallet>
+      </CardActions>
     </form>
   )
 }
