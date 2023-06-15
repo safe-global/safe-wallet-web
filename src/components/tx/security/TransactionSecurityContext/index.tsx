@@ -8,7 +8,7 @@ export const TransactionSecurityContext = createContext<{
   warnings: NonNullable<RedefineModuleResponse['issues']>
   simulationUuid: string | undefined
   balanceChange: RedefineModuleResponse['balanceChange']
-  verdict: SecuritySeverity | undefined
+  severity: SecuritySeverity | undefined
   isLoading: boolean
   error: Error | undefined
   needsRiskConfirmation: boolean
@@ -18,7 +18,7 @@ export const TransactionSecurityContext = createContext<{
   warnings: [],
   simulationUuid: undefined,
   balanceChange: undefined,
-  verdict: SecuritySeverity.NONE,
+  severity: SecuritySeverity.NONE,
   isLoading: false,
   error: undefined,
   needsRiskConfirmation: false,
@@ -38,7 +38,7 @@ export const TransactionSecurityProvider = ({
 
   const providedValue = useMemo(
     () => ({
-      verdict: redefineResponse?.severity,
+      severity: redefineResponse?.severity,
       simulationUuid: redefineResponse?.payload?.simulation?.uuid,
       warnings: redefineResponse?.payload?.issues || [],
       balanceChange: redefineResponse?.payload?.balanceChange,

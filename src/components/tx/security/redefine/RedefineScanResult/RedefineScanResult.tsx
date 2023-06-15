@@ -16,7 +16,7 @@ const ScanWarnings = () => {
   /* Hooks */
   const {
     warnings,
-    verdict,
+    severity,
     isLoading,
     error,
     simulationUuid,
@@ -36,7 +36,7 @@ const ScanWarnings = () => {
 
   return (
     <SecurityWarning
-      severity={verdict}
+      severity={severity}
       isLoading={isLoading}
       error={error}
       isConfirmed={isRiskConfirmed}
