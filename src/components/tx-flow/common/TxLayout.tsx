@@ -13,9 +13,10 @@ type TxLayoutProps = {
   step?: number
   txSummary?: TransactionSummary
   onBack?: () => void
+  hideNonce?: boolean
 }
 
-const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack }: TxLayoutProps) => {
+const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack, hideNonce = false }: TxLayoutProps) => {
   const steps = Array.isArray(children) ? children : [children]
   const progress = Math.round(((step + 1) / steps.length) * 100)
 
@@ -35,7 +36,7 @@ const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack }: Tx
 
               <Box display="flex" justifyContent={subtitle ? 'space-between' : 'flex-end'} py={2} px={3}>
                 {subtitle}
-                <TxNonce />
+                {!hideNonce && <TxNonce />}
               </Box>
 
               <div>

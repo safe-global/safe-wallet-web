@@ -21,7 +21,12 @@ const AppTitle = ({ name, logoUri }: { name: string | null; logoUri: string | nu
 
 const SignMessageFlow = ({ ...props }: ProposeProps | ConfirmProps) => {
   return (
-    <TxLayout title="Confirm message" subtitle={<AppTitle name={props.name} logoUri={props.logoUri} />} step={0}>
+    <TxLayout
+      title="Confirm message"
+      subtitle={<AppTitle name={props.name} logoUri={props.logoUri} />}
+      step={0}
+      hideNonce
+    >
       <SignMessage {...props} />
     </TxLayout>
   )
