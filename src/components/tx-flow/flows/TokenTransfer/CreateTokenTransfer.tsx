@@ -128,7 +128,7 @@ const CreateTokenTransfer = ({
                 <AddressInputReadOnly label="Sending to" address={recipient} />
               </Box>
             ) : (
-              <AddressBookInput name={TokenTransferFields.recipient} label="Sending to" />
+              <AddressBookInput name={TokenTransferFields.recipient} label="Sending to" canAdd={!!recipient} />
             )}
           </FormControl>
 

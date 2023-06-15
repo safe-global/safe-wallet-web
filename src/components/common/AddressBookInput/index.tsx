@@ -15,7 +15,7 @@ const abFilterOptions = createFilterOptions({
 /**
  *  Temporary component until revamped safe components are done
  */
-const AddressBookInput = ({ name, canAdd = false, ...props }: AddressInputProps): ReactElement => {
+const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps): ReactElement => {
   const addressBook = useAddressBook()
   const { setValue, control } = useFormContext()
   const addressValue = useWatch({ name, control })
@@ -71,7 +71,7 @@ const AddressBookInput = ({ name, canAdd = false, ...props }: AddressInputProps)
       />
       {canAdd ? (
         <Typography variant="body2" className={css.unknownAddress}>
-          <SvgIcon component={InfoIcon} fontSize="small" sx={{ display: 'flex', alignItems: 'center' }} />
+          <SvgIcon component={InfoIcon} fontSize="small" />
           <span>You are sending tokens to an unknown address. Add it to address book.</span>
         </Typography>
       ) : null}
