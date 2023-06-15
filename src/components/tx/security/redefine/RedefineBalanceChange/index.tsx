@@ -7,12 +7,13 @@ import { type RedefineModuleResponse } from '@/services/security/modules/Redefin
 import { sameAddress } from '@/utils/addresses'
 import { FEATURES } from '@/utils/chains'
 import { formatVisualAmount } from '@/utils/formatters'
-import { Box, Chip, Grid, Typography } from '@mui/material'
+import { Box, Chip, Grid, SvgIcon, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ErrorBoundary } from '@sentry/react'
 import { useContext } from 'react'
 import { LoadingLabel } from '../../shared/LoadingLabel'
 import { TransactionSecurityContext } from '../../TransactionSecurityContext'
+import RedefineLogo from '@/public/images/transactions/redefine.svg'
 import css from './styles.module.css'
 
 const FungibleBalanceChange = ({
@@ -144,11 +145,10 @@ export const RedefineBalanceChanges = () => {
   return (
     <Box className={css.box}>
       <Box className={css.head}>
-        <Grid container direction="row">
-          <Typography variant="subtitle2" fontWeight={700}>
-            Balance change
-          </Typography>
-        </Grid>
+        <Typography variant="subtitle2" fontWeight={700}>
+          Balance change
+        </Typography>
+        <SvgIcon inheritViewBox sx={{ height: '40px', width: '52px' }} component={RedefineLogo} />
       </Box>
       <ErrorBoundary fallback={<div>Error showing balance changes</div>}>
         <BalanceChanges />

@@ -9,6 +9,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  FormControlLabel,
 } from '@mui/material'
 
 import { SecuritySeverity } from '@/services/security/modules/types'
@@ -151,11 +152,14 @@ export const SecurityWarning = ({
         <AccordionDetails>{children}</AccordionDetails>
       </Accordion>
       {needsConfirmation && (
-        <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+        <Box pl={2}>
           <Track {...MODALS_EVENTS.ACCEPT_RISK}>
-            <Checkbox checked={isConfirmed} onChange={() => setIsConfirmed(!isConfirmed)} />
+            <FormControlLabel
+              label="I understand the risks and would like to continue this transaction"
+              control={<Checkbox checked={isConfirmed} onChange={() => setIsConfirmed(!isConfirmed)} />}
+            />
           </Track>
-          <Typography>I understand the risks and would like to continue this transaction.</Typography>
+          <Typography></Typography>
         </Box>
       )}
     </Box>

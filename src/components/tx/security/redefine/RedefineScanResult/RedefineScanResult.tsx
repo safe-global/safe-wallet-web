@@ -3,7 +3,7 @@ import { SecurityHint, SecurityWarning } from '../../shared/SecurityWarnings'
 import { TransactionSecurityContext } from '../../TransactionSecurityContext'
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { groupBy } from 'lodash'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import ExternalLink from '@/components/common/ExternalLink'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
@@ -56,7 +56,12 @@ const ScanWarnings = () => {
         )}
 
         {simulationUuid && (
-          <ExternalLink href={`${REDEFINE_SIMULATION_URL}${simulationUuid}`}>View full report</ExternalLink>
+          <Typography>
+            For detailed data and a comprehensive risk report,{' '}
+            <ExternalLink href={`${REDEFINE_SIMULATION_URL}${simulationUuid}`}>
+              explore the full report on Redefine
+            </ExternalLink>
+          </Typography>
         )}
       </Box>
     </SecurityWarning>
