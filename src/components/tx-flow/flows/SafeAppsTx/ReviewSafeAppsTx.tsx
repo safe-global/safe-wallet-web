@@ -12,7 +12,7 @@ import { getTxOrigin } from '@/utils/transactions'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, DialogContent, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
@@ -66,7 +66,7 @@ const ReviewSafeAppsTx = ({
   const origin = useMemo(() => getTxOrigin(app), [app])
 
   return (
-    <DialogContent>
+    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin}>
       <ErrorBoundary fallback={<div>Error parsing data</div>}>
         <ApprovalEditor txs={txList} updateTxs={setTxList} />
       </ErrorBoundary>
@@ -90,9 +90,7 @@ const ReviewSafeAppsTx = ({
           this Safe App for more information.
         </ErrorMessage>
       ) : null}
-
-      <SignOrExecuteForm onSubmit={handleSubmit} origin={origin} />
-    </DialogContent>
+    </SignOrExecuteForm>
   )
 }
 

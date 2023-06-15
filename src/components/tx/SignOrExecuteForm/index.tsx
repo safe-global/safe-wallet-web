@@ -3,12 +3,12 @@ import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useValidateNonce } from './hooks'
-import { TxSimulation } from '../TxSimulation'
 import ExecuteForm from './ExecuteForm'
 import SignForm from './SignForm'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { Box } from '@mui/material'
 import ErrorMessage from '../ErrorMessage'
+import TxChecks from './TxChecks'
+import TxCard from '@/components/tx-flow/common/TxCard'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -34,26 +34,30 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
 
   return (
     <>
-      {props.children}
+      <TxCard>
+        {props.children}
 
-      <DecodedTx tx={safeTx} txId={props.txId} />
+        <DecodedTx tx={safeTx} txId={props.txId} />
+      </TxCard>
 
-      <TxSimulation canExecute={canExecute} disabled={false} transactions={safeTx} />
+      <TxCard>
+        <TxChecks />
+      </TxCard>
 
-      {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
+      <TxCard>
+        {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
 
-      {/* Warning message and switch button */}
-      <WrongChainWarning />
+        {/* Warning message and switch button */}
+        <WrongChainWarning />
 
-      {safeTxError && (
-        <ErrorMessage error={safeTxError}>
-          This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
-        </ErrorMessage>
-      )}
+        {safeTxError && (
+          <ErrorMessage error={safeTxError}>
+            This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
+          </ErrorMessage>
+        )}
 
-      <Box mt={4}>
         {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
-      </Box>
+      </TxCard>
     </>
   )
 }

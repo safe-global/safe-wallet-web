@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { DialogContent, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { createRejectTx } from '@/services/tx/tx-sender'
 import { useContext, useEffect } from 'react'
@@ -19,7 +19,7 @@ const RejectTx = ({ txNonce }: RejectTxProps): ReactElement => {
   }, [txNonce, setNonce, setSafeTx, setSafeTxError])
 
   return (
-    <DialogContent>
+    <SignOrExecuteForm onSubmit={() => {}}>
       <Typography mb={2}>
         To reject the transaction, a separate rejection transaction will be created to replace the original one.
       </Typography>
@@ -31,9 +31,7 @@ const RejectTx = ({ txNonce }: RejectTxProps): ReactElement => {
       <Typography mb={2}>
         You will need to confirm the rejection transaction with your currently connected wallet.
       </Typography>
-
-      <SignOrExecuteForm onSubmit={() => {}} />
-    </DialogContent>
+    </SignOrExecuteForm>
   )
 }
 
