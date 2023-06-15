@@ -1,4 +1,4 @@
-import { Box, Button, DialogActions, DialogContent, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
+import { Box, Button, CardActions, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import NftIcon from '@/public/images/common/nft.svg'
 import AddressBookInput from '@/components/common/AddressBookInput'
@@ -7,6 +7,7 @@ import ImageFallback from '@/components/common/ImageFallback'
 import useAddressBook from '@/hooks/useAddressBook'
 import SendToBlock from '@/components/tx/SendToBlock'
 import SendFromBlock from '@/components/tx/SendFromBlock'
+import TxCard from '../../common/TxCard'
 
 enum Field {
   recipient = 'recipient',
@@ -68,9 +69,9 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
   }
 
   return (
-    <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onFormSubmit)}>
-        <DialogContent>
+    <TxCard>
+      <FormProvider {...formMethods}>
+        <form onSubmit={handleSubmit(onFormSubmit)}>
           <SendFromBlock title={`Sending ${tokens.length} NFT${tokens.length > 1 ? 's' : ''} from`} />
 
           <FormControl fullWidth sx={{ mb: 2 }}>
@@ -103,15 +104,15 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
               />
             ))}
           </Box>
-        </DialogContent>
 
-        <DialogActions>
-          <Button variant="contained" type="submit">
-            Next
-          </Button>
-        </DialogActions>
-      </form>
-    </FormProvider>
+          <CardActions>
+            <Button variant="contained" type="submit">
+              Next
+            </Button>
+          </CardActions>
+        </form>
+      </FormProvider>
+    </TxCard>
   )
 }
 

@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, DialogActions, Typography } from '@mui/material'
+import { Button, CardActions, Typography } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -55,6 +55,10 @@ const SignForm = ({
 
   return (
     <form onSubmit={handleSubmit}>
+      <Typography variant="h5" mb={2}>
+        Confirmation
+      </Typography>
+
       {/* Error messages */}
       {isSubmittable && cannotPropose ? (
         <ErrorMessage>
@@ -71,7 +75,7 @@ const SignForm = ({
         sign a transaction and will need to confirm it with your currently connected wallet.
       </Typography>
 
-      <DialogActions>
+      <CardActions>
         {/* Submit button */}
         <CheckWallet>
           {(isOk) => (
@@ -80,7 +84,7 @@ const SignForm = ({
             </Button>
           )}
         </CheckWallet>
-      </DialogActions>
+      </CardActions>
     </form>
   )
 }

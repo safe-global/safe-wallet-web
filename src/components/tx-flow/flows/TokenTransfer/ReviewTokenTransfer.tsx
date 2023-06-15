@@ -4,7 +4,6 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import SendToBlock from '@/components/tx/SendToBlock'
-import { DialogContent } from '@mui/material'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import { createTx } from '@/services/tx/tx-sender'
 import type { TokenTransferParams } from '.'
@@ -41,15 +40,13 @@ const ReviewTokenTransfer = ({
   }, [params, txNonce, token, setNonce, setSafeTx, setSafeTxError])
 
   return (
-    <DialogContent>
+    <SignOrExecuteForm onSubmit={onSubmit}>
       {token && <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo} />}
 
       <SendFromBlock />
 
       <SendToBlock address={params.recipient} />
-
-      <SignOrExecuteForm onSubmit={onSubmit} />
-    </DialogContent>
+    </SignOrExecuteForm>
   )
 }
 

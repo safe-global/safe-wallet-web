@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
 import {
-  DialogContent,
   FormControl,
   InputLabel,
   Select,
@@ -13,7 +12,7 @@ import {
   RadioGroup,
   Radio,
   Button,
-  DialogActions,
+  CardActions,
 } from '@mui/material'
 import { parseUnits, defaultAbiCoder } from 'ethers/lib/utils'
 
@@ -25,6 +24,7 @@ import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/
 import NumberField from '@/components/common/NumberField'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import type { NewSpendingLimitFlowProps } from '.'
+import TxCard from '../../common/TxCard'
 
 export const _validateSpendingLimit = (val: string, decimals?: number) => {
   // Allowance amount is uint96 https://github.com/safe-global/safe-modules/blob/master/allowances/contracts/AlowanceModule.sol#L52
@@ -74,9 +74,9 @@ export const CreateSpendingLimit = ({
   }
 
   return (
-    <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent>
+    <TxCard>
+      <FormProvider {...formMethods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth sx={{ mb: 2 }}>
             <AddressBookInput name="beneficiary" label="Beneficiary" />
           </FormControl>
@@ -154,14 +154,14 @@ export const CreateSpendingLimit = ({
               />
             </FormControl>
           )}
-        </DialogContent>
 
-        <DialogActions>
-          <Button variant="contained" type="submit">
-            Next
-          </Button>
-        </DialogActions>
-      </form>
-    </FormProvider>
+          <CardActions>
+            <Button variant="contained" type="submit">
+              Next
+            </Button>
+          </CardActions>
+        </form>
+      </FormProvider>
+    </TxCard>
   )
 }

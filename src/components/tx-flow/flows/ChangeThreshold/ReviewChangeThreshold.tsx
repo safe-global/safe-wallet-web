@@ -1,6 +1,6 @@
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useContext, useEffect, useState } from 'react'
-import { DialogContent, Grid, MenuItem, Select, type SelectChangeEvent, Typography } from '@mui/material'
+import { Grid, MenuItem, Select, type SelectChangeEvent, Typography } from '@mui/material'
 import { createUpdateThresholdTx } from '@/services/tx/tx-sender'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -32,42 +32,39 @@ const ReviewChangeThreshold = () => {
   }
 
   return (
-    <>
-      <DialogContent>
-        <Typography mb={2}>Any transaction will require the confirmation of:</Typography>
+    <SignOrExecuteForm onSubmit={onChangeThreshold} disableSubmit={isSameThreshold}>
+      <Typography mb={2}>Any transaction will require the confirmation of:</Typography>
 
-        <Grid container direction="row" gap={1} alignItems="center" mb={2}>
-          <Grid item xs={2}>
-            <Select value={selectedThreshold} onChange={handleChange} fullWidth>
-              {safe.owners.map((_, idx) => (
-                <MenuItem key={idx + 1} value={idx + 1}>
-                  {idx + 1}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
-
-          <Grid item>
-            <Typography>out of {safe.owners.length} owner(s)</Typography>
-          </Grid>
+      <Grid container direction="row" gap={1} alignItems="center" mb={2}>
+        <Grid item xs={2}>
+          <Select value={selectedThreshold} onChange={handleChange} fullWidth>
+            {safe.owners.map((_, idx) => (
+              <MenuItem key={idx + 1} value={idx + 1}>
+                {idx + 1}
+              </MenuItem>
+            ))}
+          </Select>
         </Grid>
 
-        {isChanged && isSameThreshold ? (
-          <Typography color="error" mb={2}>
-            Current policy is already set to {safe.threshold}
-          </Typography>
-        ) : (
-          <Typography mb={2}>
-            {isChanged ? 'Previous policy was ' : 'Current policy is '}
-            <b>
-              {safe.threshold} out of {safe.owners.length}
-            </b>
-            .
-          </Typography>
-        )}
-        <SignOrExecuteForm onSubmit={onChangeThreshold} disableSubmit={isSameThreshold} />
-      </DialogContent>
-    </>
+        <Grid item>
+          <Typography>out of {safe.owners.length} owner(s)</Typography>
+        </Grid>
+      </Grid>
+
+      {isChanged && isSameThreshold ? (
+        <Typography color="error" mb={2}>
+          Current policy is already set to {safe.threshold}
+        </Typography>
+      ) : (
+        <Typography mb={2}>
+          {isChanged ? 'Previous policy was ' : 'Current policy is '}
+          <b>
+            {safe.threshold} out of {safe.owners.length}
+          </b>
+          .
+        </Typography>
+      )}
+    </SignOrExecuteForm>
   )
 }
 

@@ -13,18 +13,7 @@ import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { BigNumber } from '@ethersproject/bignumber'
 import { sameAddress } from '@/utils/addresses'
 import { safeFormatUnits } from '@/utils/formatters'
-import {
-  Box,
-  Button,
-  DialogActions,
-  DialogContent,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SvgIcon,
-  Typography,
-} from '@mui/material'
+import { Box, Button, CardActions, FormControl, InputLabel, MenuItem, Select, SvgIcon, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import SendToBlock from '@/components/tx/SendToBlock'
 import AddressBookInput from '@/components/common/AddressBookInput'
@@ -35,6 +24,7 @@ import InputValueHelper from '@/components/common/InputValueHelper'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
 import { type TokenTransferParams, TokenTransferFields, TokenTransferType } from '.'
+import TxCard from '../../common/TxCard'
 
 const CreateTokenTransfer = ({
   params,
@@ -124,9 +114,9 @@ const CreateTokenTransfer = ({
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
 
   return (
-    <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent>
+    <TxCard>
+      <FormProvider {...formMethods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <SendFromBlock />
 
           <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
@@ -210,15 +200,15 @@ const CreateTokenTransfer = ({
               <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
             </FormControl>
           )}
-        </DialogContent>
 
-        <DialogActions>
-          <Button variant="contained" type="submit" disabled={isDisabled}>
-            Next
-          </Button>
-        </DialogActions>
-      </form>
-    </FormProvider>
+          <CardActions>
+            <Button variant="contained" type="submit" disabled={isDisabled}>
+              Next
+            </Button>
+          </CardActions>
+        </form>
+      </FormProvider>
+    </TxCard>
   )
 }
 

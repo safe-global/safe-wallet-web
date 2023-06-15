@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Box, Container, Grid, Paper, Typography, Button } from '@mui/material'
+import { Box, Container, Grid, Typography, Button, Paper } from '@mui/material'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import SafeTxProvider from '../../SafeTxProvider'
@@ -32,13 +32,15 @@ const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack, hide
           </Grid>
 
           <Grid item container xs={12} gap={3}>
-            <Grid item xs={7} component={Paper}>
-              <ProgressBar value={progress} />
+            <Grid item xs={7}>
+              <Paper className={css.header}>
+                <ProgressBar value={progress} />
 
-              <Box display="flex" justifyContent={subtitle ? 'space-between' : 'flex-end'} py={2} px={3}>
-                {subtitle}
-                {!hideNonce && <TxNonce />}
-              </Box>
+                <Box display="flex" justifyContent={subtitle ? 'space-between' : 'flex-end'} py={2} px={3}>
+                  {subtitle}
+                  {!hideNonce && <TxNonce />}
+                </Box>
+              </Paper>
 
               <div className={css.step}>
                 {steps[step]}
