@@ -1,4 +1,5 @@
 import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import NftIcon from '@/public/images/common/nft.svg'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import SendNftBatch from './SendNftBatch'
@@ -31,7 +32,7 @@ const NftTransferFlow = ({ txNonce, ...params }: NftTransferFlowProps) => {
   ]
 
   return (
-    <TxLayout title="New transaction" subtitle="Send NFTs" step={step} onBack={prevStep}>
+    <TxLayout title="New transaction" subtitle="Send NFTs" icon={NftIcon} step={step} onBack={prevStep}>
       {steps}
     </TxLayout>
   )

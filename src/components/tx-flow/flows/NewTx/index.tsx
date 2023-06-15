@@ -1,15 +1,26 @@
+import { useCallback, useContext } from 'react'
+import { useRouter } from 'next/router'
 import TxButton, { SendNFTsButton, SendTokensButton } from '@/components/tx-flow/common/TxButton'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import { Box, Typography } from '@mui/material'
 import { TxModalContext } from '../../'
-import { useContext } from 'react'
 import TokenTransferFlow from '../TokenTransfer'
+import { AppRoutes } from '@/config/routes'
 
 const BUTTONS_HEIGHT = '91px'
 
 const NewTxMenu = () => {
+  const router = useRouter()
   const { setTxFlow } = useContext(TxModalContext)
   const txBuilder = useTxBuilderApp()
+
+  const onNftsClick = useCallback(() => {
+    router.push(AppRoutes.balances.nfts, { query: { safe: router.query.safe } })
+  }, [router])
+
+  const onTokensClick = useCallback(() => {
+    setTxFlow(<TokenTransferFlow />)
+  }, [setTxFlow])
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={2} width={452} m="auto">
@@ -17,9 +28,9 @@ const NewTxMenu = () => {
         New transaction
       </Typography>
 
-      <SendTokensButton onClick={() => setTxFlow(<TokenTransferFlow />)} sx={{ height: BUTTONS_HEIGHT }} />
+      <SendTokensButton onClick={onTokensClick} sx={{ height: BUTTONS_HEIGHT }} />
 
-      <SendNFTsButton onClick={() => console.log('Route to NFTs')} sx={{ height: BUTTONS_HEIGHT }} />
+      <SendNFTsButton onClick={onNftsClick} sx={{ height: BUTTONS_HEIGHT }} />
 
       {txBuilder && txBuilder.app && (
         <TxButton
