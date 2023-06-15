@@ -15,7 +15,7 @@
 }
 
 .select :global(.MuiSelect-select) {
-  padding: 16px 0 16px 16px;
+  padding: var(--space-2) 0 var(--space-2) var(--space-2);
   display: flex;
 }
 
@@ -26,6 +26,6 @@
 }
 
 .amount :global(.MuiInput-input) {
-  padding: 16px;
+  padding: var(--space-2);
   text-align: right;
 }
