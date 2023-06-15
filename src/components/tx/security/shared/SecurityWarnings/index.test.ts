@@ -18,11 +18,11 @@ describe('SecurityWarnings', () => {
 
   describe('mapRisk', () => {
     it('should return "Critical risk" when the severity is "HIGH', () => {
-      expect(mapSeverityComponentProps[SecuritySeverity.HIGH].label).toBe('High risk')
+      expect(mapSeverityComponentProps[SecuritySeverity.HIGH].label).toBe('High issue')
     })
 
     it('should return "Low risk" when the severity is "LOW', () => {
-      expect(mapSeverityComponentProps[SecuritySeverity.LOW].label).toBe('Low risk')
+      expect(mapSeverityComponentProps[SecuritySeverity.LOW].label).toBe('Low issue')
     })
 
     it('should return "No issues found" when the severity is "NONE', () => {

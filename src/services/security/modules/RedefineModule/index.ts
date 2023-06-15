@@ -1,11 +1,13 @@
+import { REDEFINE_REQUEST_URL } from '@/config/constants'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
-const REDEFINE_URL = 'https://risk-analysis.safe.global/messages'
-
 export const enum REDEFINE_ERROR_CODES {
   ANALYSIS_IN_PROGRESS = 1000,
+  SIMULATION_FAILED = 1001,
+  INPUT_VALIDATION = 2000,
+  BAD_REQUEST = 3000,
 }
 
 const redefineSeverityMap: Record<RedefineSeverity['label'], SecuritySeverity> = {
@@ -24,16 +26,20 @@ export type RedefineModuleRequest = {
   threshold: number
 }
 
-export type RedefinedModuleResponse = {
-  issues: Array<
-    Omit<RedefineResponse['data']['insights']['issues'][number], 'severity'> & { severity: SecuritySeverity }
+export type RedefineModuleResponse = {
+  issues?: Array<
+    Omit<NonNullable<RedefineResponse['data']>['insights']['issues'][number], 'severity'> & {
+      severity: SecuritySeverity
+    }
   >
-  balanceChange: RedefineResponse['data']['balanceChange']
+  balanceChange?: NonNullable<RedefineResponse['data']>['balanceChange']
+  simulation?: NonNullable<RedefineResponse['data']>['simulation']
   errors: RedefineResponse['errors']
 }
 
 type RedefinePayload = {
   chainId: number
+  domain?: string
   payload: {
     method: 'eth_signTypedData_v4'
     params: [string, string]
@@ -67,9 +73,10 @@ type RedefineBalanceChange =
       decimals: number
       name: string
     }
+  | { type: 'ERC721'; address: string; tokenId: string; name?: string; symbol?: string }
 
 export type RedefineResponse = {
-  data: {
+  data?: {
     balanceChange?: {
       in: RedefineBalanceChange[]
       out: RedefineBalanceChange[]
@@ -85,6 +92,11 @@ export type RedefineResponse = {
       }[]
       verdict: RedefineSeverity
     }
+    simulation: {
+      uuid: string
+      time: string
+      block: string
+    }
   }
   errors: {
     code: number
@@ -93,8 +105,8 @@ export type RedefineResponse = {
   }[]
 }
 
-export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefinedModuleResponse> {
-  async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefinedModuleResponse>> {
+export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefineModuleResponse> {
+  async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
     const { chainId, safeAddress } = request
 
     const txTypedData = generateTypedData({
@@ -112,7 +124,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
       },
     }
 
-    const res = await fetch(REDEFINE_URL, {
+    const res = await fetch(REDEFINE_REQUEST_URL, {
       method: 'POST',
       headers: {
         'content-type': 'application/JSON',
@@ -127,13 +139,14 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
     const result = (await res.json()) as RedefineResponse
 
     return {
-      severity: redefineSeverityMap[result.data.insights.verdict.label],
+      severity: result.data ? redefineSeverityMap[result.data.insights.verdict.label] : SecuritySeverity.NONE,
       payload: {
-        issues: result.data.insights.issues.map((issue) => ({
+        issues: result.data?.insights.issues.map((issue) => ({
           ...issue,
           severity: redefineSeverityMap[issue.severity.label],
         })),
-        balanceChange: result.data.balanceChange,
+        balanceChange: result.data?.balanceChange,
+        simulation: result.data?.simulation,
         errors: result.errors,
       },
     }
