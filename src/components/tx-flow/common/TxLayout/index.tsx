@@ -2,9 +2,10 @@ import type { ReactNode } from 'react'
 import { Box, Container, Grid, Paper, Typography, Button } from '@mui/material'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { ProgressBar } from '@/components/common/ProgressBar'
-import SafeTxProvider from '../SafeTxProvider'
-import TxNonce from './TxNonce'
-import TxStatusWidget from './TxStatusWidget'
+import SafeTxProvider from '../../SafeTxProvider'
+import TxNonce from '../TxNonce'
+import TxStatusWidget from '../TxStatusWidget'
+import css from './styles.module.css'
 
 type TxLayoutProps = {
   title: ReactNode
@@ -39,10 +40,11 @@ const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack, hide
                 {!hideNonce && <TxNonce />}
               </Box>
 
-              <div>
+              <div className={css.step}>
                 {steps[step]}
+
                 {onBack && step > 0 && (
-                  <Button variant="contained" onClick={onBack}>
+                  <Button variant="contained" onClick={onBack} className={css.backButton}>
                     Back
                   </Button>
                 )}

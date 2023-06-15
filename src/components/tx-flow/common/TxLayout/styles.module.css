@@ -1,0 +1,25 @@
+.step {
+  position: relative;
+}
+
+.step :global(.MuiDialogActions-root) {
+  display: flex;
+  flex-direction: column;
+}
+
+.step :global(.MuiDialogContent-root .MuiDialogActions-root) {
+  margin: calc(var(--space-3) * -1);
+  margin-top: var(--space-3);
+}
+
+/* Submit button */
+.step button[type='submit'] {
+  align-self: flex-end;
+}
+
+/* Back button */
+.backButton {
+  position: absolute;
+  left: var(--space-3);
+  bottom: var(--space-3);
+}

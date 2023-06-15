@@ -3,13 +3,12 @@ import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useValidateNonce } from './hooks'
-import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
 import { TxSimulation } from '../TxSimulation'
-import useGasLimit from '@/hooks/useGasLimit'
 import ExecuteForm from './ExecuteForm'
 import SignForm from './SignForm'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { Box } from '@mui/material'
+import ErrorMessage from '../ErrorMessage'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -33,48 +32,27 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
   const willExecute = (props.onlyExecute || shouldExecute) && canExecute
 
-  // Estimate gas limit
-  const { gasLimit, gasLimitError } = useGasLimit(willExecute ? safeTx : undefined)
-  const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
-
-  // Error
-  const error = safeTxError || gasLimitError
-
   return (
     <>
       {props.children}
 
-      <TxSimulation
-        canExecute
-        gasLimit={advancedParams.gasLimit?.toNumber()}
-        transactions={safeTx}
-        disabled={!!gasLimitError}
-      />
-
       <DecodedTx tx={safeTx} txId={props.txId} />
+
+      <TxSimulation canExecute={canExecute} disabled={false} transactions={safeTx} />
 
       {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
 
       {/* Warning message and switch button */}
       <WrongChainWarning />
 
-      {willExecute && (
-        <AdvancedParams
-          params={advancedParams}
-          recommendedGasLimit={gasLimit}
-          willExecute={willExecute}
-          onFormSubmit={setAdvancedParams}
-          gasLimitError={gasLimitError}
-          willRelay={false /* FIXME */}
-        />
+      {safeTxError && (
+        <ErrorMessage error={safeTxError}>
+          This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
+        </ErrorMessage>
       )}
 
       <Box mt={4}>
-        {willExecute ? (
-          <ExecuteForm {...props} safeTx={safeTx} error={error} advancedParams={advancedParams} />
-        ) : (
-          <SignForm {...props} safeTx={safeTx} error={error} />
-        )}
+        {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
       </Box>
     </>
   )
