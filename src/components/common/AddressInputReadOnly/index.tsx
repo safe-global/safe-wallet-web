@@ -4,8 +4,10 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
 import css from './styles.module.css'
 import EntryDialog from '@/components/address-book/EntryDialog'
+import useAddressBook from '@/hooks/useAddressBook'
 
 const AddressInputReadOnly = ({ label, address }: { label: string; address: string }): ReactElement => {
+  const addressBook = useAddressBook()
   const [open, setOpen] = useState(false)
 
   return (
@@ -22,11 +24,13 @@ const AddressInputReadOnly = ({ label, address }: { label: string; address: stri
             </InputAdornment>
           }
           endAdornment={
-            <InputAdornment position="end">
-              <IconButton onClick={() => setOpen(true)}>
-                <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" />
-              </IconButton>
-            </InputAdornment>
+            !addressBook[address] ? (
+              <InputAdornment position="end">
+                <IconButton onClick={() => setOpen(true)}>
+                  <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            ) : null
           }
           label={label}
           readOnly
