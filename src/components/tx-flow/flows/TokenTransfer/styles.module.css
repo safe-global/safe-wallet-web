@@ -3,9 +3,24 @@
 }
 
 .outline {
-  border-width: 1px;
-  border-style: solid;
+  border: 1px solid var(--color-border-main);
   border-radius: 4px;
+  margin-top: var(--space-3);
+}
+
+.error {
+  border-color: var(--color-error-main);
+}
+
+.error :global(.MuiFormLabel-root) {
+  color: var(--color-error-main);
+}
+
+.label {
+  background-color: var(--color-background-paper);
+  padding-left: 6px;
+  padding-right: 6px;
+  margin-left: -6px;
 }
 
 .inputs {

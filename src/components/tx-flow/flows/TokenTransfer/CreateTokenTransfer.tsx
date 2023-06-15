@@ -9,6 +9,7 @@ import { useAppSelector } from '@/store'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { FormProvider, useForm } from 'react-hook-form'
+import classNames from 'classnames'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { BigNumber } from '@ethersproject/bignumber'
 import { sameAddress } from '@/utils/addresses'
@@ -126,24 +127,8 @@ const CreateTokenTransfer = ({
             )}
           </FormControl>
 
-          <FormControl
-            className={css.outline}
-            fullWidth
-            sx={{
-              mt: 3,
-              borderColor: isAmountError ? 'error.main' : 'border.main',
-            }}
-          >
-            <InputLabel
-              shrink
-              required
-              sx={{
-                backgroundColor: 'background.paper',
-                px: '6px',
-                mx: '-6px',
-                color: isAmountError ? 'error.main' : undefined,
-              }}
-            >
+          <FormControl className={classNames(css.outline, { [css.error]: isAmountError })} fullWidth>
+            <InputLabel shrink required className={css.label}>
               {errors[TokenTransferFields.tokenAddress]?.message ||
                 errors[TokenTransferFields.amount]?.message ||
                 'Amount'}
