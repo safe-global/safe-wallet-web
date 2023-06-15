@@ -15,10 +15,10 @@ export const TransactionSecurityContext = createContext<{
   isRiskConfirmed: boolean
   setIsRiskConfirmed: (value: boolean) => void
 }>({
-  verdict: SecuritySeverity.NONE,
-  simulationUuid: undefined,
   warnings: [],
+  simulationUuid: undefined,
   balanceChange: undefined,
+  verdict: SecuritySeverity.NONE,
   isLoading: false,
   error: undefined,
   needsRiskConfirmation: false,

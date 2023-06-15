@@ -7,12 +7,12 @@ import { Box } from '@mui/material'
 import ExternalLink from '@/components/common/ExternalLink'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
+import { ErrorBoundary } from '@sentry/react'
+import { REDEFINE_SIMULATION_URL } from '@/config/constants'
 
 const MAX_SHOWN_WARNINGS = 3
 
-const REDEFINE_SIMULATION_URL = 'https://app.redefine.net/defirewall-tx/'
-
-export const RedefineScanResult = () => {
+const ScanWarnings = () => {
   /* Hooks */
   const {
     warnings,
@@ -24,23 +24,15 @@ export const RedefineScanResult = () => {
     isRiskConfirmed,
     setIsRiskConfirmed,
   } = useContext(TransactionSecurityContext)
-  const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 
   /* Evaluate security warnings */
   const relevantWarnings = warnings.filter((warning) => warning.severity !== SecuritySeverity.NONE)
-  const shownWarnings =
-    relevantWarnings && relevantWarnings.length > MAX_SHOWN_WARNINGS
-      ? relevantWarnings.slice(0, MAX_SHOWN_WARNINGS)
-      : relevantWarnings
+  const shownWarnings = relevantWarnings.slice(0, MAX_SHOWN_WARNINGS)
   const hiddenWarningCount = warnings.length - shownWarnings.length
   const hiddenMaxSeverity = hiddenWarningCount > 0 ? relevantWarnings[MAX_SHOWN_WARNINGS]?.severity : 0
 
   const groupedShownWarnings = groupBy(shownWarnings, (warning) => warning.severity)
   const sortedSeverities = Object.keys(groupedShownWarnings).sort((a, b) => (Number(a) < Number(b) ? 1 : -1))
-
-  if (!isFeatureEnabled) {
-    return null
-  }
 
   return (
     <SecurityWarning
@@ -68,5 +60,19 @@ export const RedefineScanResult = () => {
         )}
       </Box>
     </SecurityWarning>
+  )
+}
+
+export const RedefineScanResult = () => {
+  const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
+
+  if (!isFeatureEnabled) {
+    return null
+  }
+
+  return (
+    <ErrorBoundary fallback={<div>Error showing scan result</div>}>
+      <ScanWarnings />
+    </ErrorBoundary>
   )
 }

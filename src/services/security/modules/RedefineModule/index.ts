@@ -1,8 +1,7 @@
+import { REDEFINE_REQUEST_URL } from '@/config/constants'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
-
-const REDEFINE_URL = 'https://risk-analysis.safe.global/messages'
 
 export const enum REDEFINE_ERROR_CODES {
   ANALYSIS_IN_PROGRESS = 1000,
@@ -40,6 +39,7 @@ export type RedefineModuleResponse = {
 
 type RedefinePayload = {
   chainId: number
+  domain?: string
   payload: {
     method: 'eth_signTypedData_v4'
     params: [string, string]
@@ -124,7 +124,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
       },
     }
 
-    const res = await fetch(REDEFINE_URL, {
+    const res = await fetch(REDEFINE_REQUEST_URL, {
       method: 'POST',
       headers: {
         'content-type': 'application/JSON',

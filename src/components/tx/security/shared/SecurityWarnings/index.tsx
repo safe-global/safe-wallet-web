@@ -35,22 +35,22 @@ export const mapSeverityComponentProps: Record<SecuritySeverity, SecurityWarning
   [SecuritySeverity.CRITICAL]: {
     action: ACTION_REJECT,
     color: 'error',
-    label: 'Critical issues',
+    label: 'Critical issue',
   },
   [SecuritySeverity.HIGH]: {
     action: ACTION_REJECT,
     color: 'error',
-    label: 'High issues',
+    label: 'High issue',
   },
   [SecuritySeverity.MEDIUM]: {
     action: ACTION_REVIEW,
     color: 'warning',
-    label: 'Medium issues',
+    label: 'Medium issue',
   },
   [SecuritySeverity.LOW]: {
     action: ACTION_REVIEW,
     color: 'warning',
-    label: 'Low issues',
+    label: 'Low issue',
   },
   [SecuritySeverity.NONE]: {
     color: 'info',
@@ -60,7 +60,7 @@ export const mapSeverityComponentProps: Record<SecuritySeverity, SecurityWarning
 
 export const SecurityHint = ({ severity, warnings }: { severity: SecuritySeverity; warnings: string[] }) => {
   const severityProps = mapSeverityComponentProps[severity]
-
+  const pluralizedLabel = `${severityProps.label}${warnings.length > 1 ? 's' : ''}`
   return (
     <>
       <Alert
@@ -80,7 +80,7 @@ export const SecurityHint = ({ severity, warnings }: { severity: SecuritySeverit
           />
         }
       >
-        {severity !== SecuritySeverity.NONE && <Typography variant="h5">{severityProps.label}</Typography>}
+        {severity !== SecuritySeverity.NONE && <Typography variant="h5">{pluralizedLabel}</Typography>}
         <Box display="flex" flexDirection="column" gap={2}>
           {warnings.map((warning) => (
             <Typography key={warning} variant="body2">
@@ -115,20 +115,28 @@ export const SecurityWarning = ({
   return (
     <Box className={css.wrapperBox}>
       <Accordion className={css.verdictBox}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary sx={{ mb: 0 }} expandIcon={<ExpandMoreIcon />}>
           <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item>
               <Typography fontWeight={700} variant="subtitle1">
                 Scan for risks
               </Typography>
-              <Typography color="text.secondary">
-                Powered by <SvgIcon inheritViewBox sx={{ height: '10px', width: '68px' }} component={RedefineLogo} />
+              <Typography
+                color="text.secondary"
+                fontSize="12px"
+                display="flex"
+                flexDirection="row"
+                gap={1}
+                alignItems="center"
+                mt={-1}
+              >
+                Powered by <SvgIcon inheritViewBox sx={{ height: '40px', width: '52px' }} component={RedefineLogo} />
               </Typography>
             </Grid>
             {isLoading ? (
               <LoadingLabel />
             ) : error ? (
-              <Typography variant="body2" color="error">
+              <Typography variant="body2" fontWeight={700} color="error">
                 {error.message}
               </Typography>
             ) : (

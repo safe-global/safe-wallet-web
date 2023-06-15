@@ -28,7 +28,7 @@ const AdvancedParams = ({
   willRelay,
 }: Props) => {
   const [isEditing, setIsEditing] = useState<boolean>(false)
-  const isEIP1559 = !!useHasFeature(FEATURES.EIP1559)
+  const isEIP1559 = useHasFeature(FEATURES.EIP1559)
 
   const onEditOpen = () => {
     setIsEditing(true)

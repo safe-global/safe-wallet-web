@@ -9,12 +9,13 @@ import { FEATURES } from '@/utils/chains'
 import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Chip, Grid, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import { ErrorBoundary } from '@sentry/react'
 import { useContext } from 'react'
 import { LoadingLabel } from '../../shared/LoadingLabel'
 import { TransactionSecurityContext } from '../../TransactionSecurityContext'
 import css from './styles.module.css'
 
-const SingleFungibleBalanceChange = ({
+const FungibleBalanceChange = ({
   change,
   positive = false,
 }: {
@@ -28,6 +29,7 @@ const SingleFungibleBalanceChange = ({
       ? item.tokenInfo.type === TokenType.NATIVE_TOKEN
       : sameAddress(item.tokenInfo.address, change.address)
   })?.tokenInfo.logoUri
+
   return (
     <>
       <Typography>
@@ -43,7 +45,7 @@ const SingleFungibleBalanceChange = ({
   )
 }
 
-const SingleNFTBalanceChange = ({
+const NFTBalanceChange = ({
   change,
   positive = false,
 }: {
@@ -79,7 +81,7 @@ const SingleNFTBalanceChange = ({
   )
 }
 
-const SingleBalanceChange = ({
+const BalanceChange = ({
   change,
   positive = false,
 }: {
@@ -93,17 +95,46 @@ const SingleBalanceChange = ({
         sx={{ borderColor: ({ palette }) => `${positive ? palette.success.light : palette.warning.light} !important` }}
       >
         {change.type === 'ERC721' ? (
-          <SingleNFTBalanceChange change={change} positive={positive} />
+          <NFTBalanceChange change={change} positive={positive} />
         ) : (
-          <SingleFungibleBalanceChange change={change} positive={positive} />
+          <FungibleBalanceChange change={change} positive={positive} />
         )}
       </Box>
     </Grid>
   )
 }
 
-export const RedefineBalanceChanges = () => {
+const BalanceChanges = () => {
   const { balanceChange, isLoading } = useContext(TransactionSecurityContext)
+  const totalBalanceChanges = balanceChange ? balanceChange.in.length + balanceChange.out.length : 0
+
+  if (isLoading && !balanceChange) {
+    return <LoadingLabel />
+  }
+
+  if (totalBalanceChanges === 0) {
+    return (
+      <Typography color="text.secondary" pl={1}>
+        None
+      </Typography>
+    )
+  }
+
+  return (
+    <Grid container direction="row" alignItems="center" spacing={1}>
+      <>
+        {balanceChange?.in.map((change, idx) => (
+          <BalanceChange change={change} key={idx} positive />
+        ))}
+        {balanceChange?.out.map((change, idx) => (
+          <BalanceChange change={change} key={idx} />
+        ))}
+      </>
+    </Grid>
+  )
+}
+
+export const RedefineBalanceChanges = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 
   if (!isFeatureEnabled) {
@@ -119,27 +150,9 @@ export const RedefineBalanceChanges = () => {
           </Typography>
         </Grid>
       </Box>
-
-      {isLoading && !balanceChange ? (
-        <LoadingLabel />
-      ) : (
-        <Grid container direction="row" alignItems="center" spacing={1}>
-          {balanceChange ? (
-            <>
-              {balanceChange?.in?.map((change, idx) => (
-                <SingleBalanceChange change={change} key={idx} positive />
-              ))}
-              {balanceChange?.out?.map((change, idx) => (
-                <SingleBalanceChange change={change} key={idx} />
-              ))}
-            </>
-          ) : (
-            <Typography color="text.secondary" pl={1}>
-              None
-            </Typography>
-          )}
-        </Grid>
-      )}
+      <ErrorBoundary fallback={<div>Error showing balance changes</div>}>
+        <BalanceChanges />
+      </ErrorBoundary>
     </Box>
   )
 }

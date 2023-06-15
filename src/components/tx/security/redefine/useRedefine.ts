@@ -16,10 +16,12 @@ import { useState, useEffect, useMemo } from 'react'
 export const REDEFINE_RETRY_TIMEOUT = 2_000
 const RedefineModuleInstance = new RedefineModule()
 
+const DEFAULT_ERROR_MESSAGE = 'Unavailable'
+
 const CRITICAL_ERRORS: Record<number, string> = {
   [1001]: 'Simulation failed',
-  [2000]: 'Invalid simulation input',
-  [3000]: 'Bad request',
+  [2000]: DEFAULT_ERROR_MESSAGE,
+  [3000]: DEFAULT_ERROR_MESSAGE,
 }
 
 export const useRedefine = (
@@ -30,7 +32,7 @@ export const useRedefine = (
   const [retryCounter, setRetryCounter] = useState(0)
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 
-  const redefineResponse = useAsync<SecurityResponse<RedefineModuleResponse>>(
+  const [redefinePayload, redefineErrors, redefineLoading] = useAsync<SecurityResponse<RedefineModuleResponse>>(
     () => {
       if (!isFeatureEnabled || !safeTransaction || !wallet?.address) {
         return
@@ -48,23 +50,22 @@ export const useRedefine = (
     false,
   )
 
-  const redefinePayload = redefineResponse[0]
-
   const isAnalyzing = !!redefinePayload?.payload?.errors.some(
     (error) => error.code === REDEFINE_ERROR_CODES.ANALYSIS_IN_PROGRESS,
   )
 
-  const loading = redefineResponse[2] || isAnalyzing
+  const loading = redefineLoading || isAnalyzing
 
-  const simulationErrors = redefinePayload?.payload?.errors.filter((error) => CRITICAL_ERRORS[error.code] !== undefined)
-  const error = useMemo(
-    () =>
-      redefineResponse[1] ??
-      (simulationErrors && simulationErrors.length > 0
-        ? new Error(CRITICAL_ERRORS[simulationErrors[0].code])
-        : undefined),
-    [redefineResponse, simulationErrors],
-  )
+  const error = useMemo(() => {
+    const simulationErrors =
+      redefinePayload?.payload?.errors.filter((error) => CRITICAL_ERRORS[error.code] !== undefined) ?? []
+    const errorMessage = redefineErrors
+      ? DEFAULT_ERROR_MESSAGE
+      : simulationErrors.length > 0
+      ? CRITICAL_ERRORS[simulationErrors[0].code]
+      : undefined
+    return errorMessage ? new Error(errorMessage) : undefined
+  }, [redefineErrors, redefinePayload?.payload?.errors])
 
   useEffect(() => {
     if (!isAnalyzing) {
