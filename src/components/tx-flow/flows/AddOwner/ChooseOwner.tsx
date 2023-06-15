@@ -1,14 +1,5 @@
 import { EthHashInfo } from '@safe-global/safe-react-components'
-import {
-  DialogContent,
-  Box,
-  Typography,
-  FormControl,
-  InputAdornment,
-  CircularProgress,
-  Button,
-  DialogActions,
-} from '@mui/material'
+import { Box, Typography, FormControl, InputAdornment, CircularProgress, Button, CardActions } from '@mui/material'
 import { useForm, FormProvider } from 'react-hook-form'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
@@ -18,6 +9,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { uniqueAddress, addressIsNotCurrentSafe } from '@/utils/validation'
 import type { AddOwnerFlowProps } from '.'
 import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
+import TxCard from '../../common/TxCard'
 
 type FormData = (AddOwnerFlowProps | ReplaceOwnerFlowProps)['newOwner']
 
@@ -58,9 +50,9 @@ export const ChooseOwner = ({
   })
 
   return (
-    <FormProvider {...formMethods}>
-      <form onSubmit={onFormSubmit}>
-        <DialogContent>
+    <TxCard>
+      <FormProvider {...formMethods}>
+        <form onSubmit={onFormSubmit}>
           <Box mb={1}>
             {params.removedOwner
               ? 'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'
@@ -96,14 +88,14 @@ export const ChooseOwner = ({
               <AddressBookInput name="address" label="Owner" validate={combinedValidate} />
             </FormControl>
           </Box>
-        </DialogContent>
 
-        <DialogActions>
-          <Button variant="contained" type="submit" disabled={!isValid || resolving}>
-            Next
-          </Button>
-        </DialogActions>
-      </form>
-    </FormProvider>
+          <CardActions>
+            <Button variant="contained" type="submit" disabled={!isValid || resolving}>
+              Next
+            </Button>
+          </CardActions>
+        </form>
+      </FormProvider>
+    </TxCard>
   )
 }

@@ -1,5 +1,4 @@
 import { type ReactElement, useEffect, useContext } from 'react'
-import { DialogContent } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import type { NftTransferParams } from '.'
@@ -39,13 +38,11 @@ const ReviewNftBatch = ({ params, onSubmit, txNonce }: ReviewNftBatchProps): Rea
   }, [safeAddress, params, setSafeTx, setSafeTxError])
 
   return (
-    <DialogContent>
-      <SignOrExecuteForm onSubmit={onSubmit}>
-        <SendFromBlock title={`Sending ${tokens.length} NFT${tokens.length > 1 ? 's' : ''} from`} />
+    <SignOrExecuteForm onSubmit={onSubmit}>
+      <SendFromBlock title={`Sending ${tokens.length} NFT${tokens.length > 1 ? 's' : ''} from`} />
 
-        <SendToBlock address={params.recipient || ''} title="To" />
-      </SignOrExecuteForm>
-    </DialogContent>
+      <SendToBlock address={params.recipient || ''} title="To" />
+    </SignOrExecuteForm>
   )
 }
 

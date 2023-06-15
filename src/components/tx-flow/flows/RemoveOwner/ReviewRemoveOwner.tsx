@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { Grid, Typography, Divider, Box, DialogContent } from '@mui/material'
+import { Grid, Typography, Divider, Box } from '@mui/material'
 import { EthHashInfo } from '@safe-global/safe-react-components'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -31,64 +31,62 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }) 
   }
 
   return (
-    <DialogContent>
-      <SignOrExecuteForm onSubmit={onFormSubmit}>
-        <Grid
-          container
-          mt={-3}
-          mb={2}
-          mx={-3}
-          width="auto"
-          borderBottom={({ palette }) => `1px solid ${palette.border.light}`}
-        >
-          <Grid item md={4} pt={3} pl={3}>
-            <Typography mb={3}>Details</Typography>
-            <Typography variant="caption" color="text.secondary">
-              Name of the Safe Account:
-            </Typography>
-            <Typography mb={3}>{addressBook[safeAddress] || 'No name'}</Typography>
-            <Typography variant="caption" color="text.secondary">
-              Any transaction requires the confirmation of:
-            </Typography>
-            <Typography mb={3}>
-              <b>{threshold}</b> out of <b>{newOwnerLength}</b> owners
-            </Typography>
-          </Grid>
+    <SignOrExecuteForm onSubmit={onFormSubmit}>
+      <Grid
+        container
+        mt={-3}
+        mb={2}
+        mx={-3}
+        width="auto"
+        borderBottom={({ palette }) => `1px solid ${palette.border.light}`}
+      >
+        <Grid item md={4} pt={3} pl={3}>
+          <Typography mb={3}>Details</Typography>
+          <Typography variant="caption" color="text.secondary">
+            Name of the Safe Account:
+          </Typography>
+          <Typography mb={3}>{addressBook[safeAddress] || 'No name'}</Typography>
+          <Typography variant="caption" color="text.secondary">
+            Any transaction requires the confirmation of:
+          </Typography>
+          <Typography mb={3}>
+            <b>{threshold}</b> out of <b>{newOwnerLength}</b> owners
+          </Typography>
+        </Grid>
 
-          <Grid
-            item
-            xs={12}
-            md={8}
-            borderLeft={({ palette }) => [undefined, undefined, `1px solid ${palette.border.light}`]}
-            borderTop={({ palette }) => [`1px solid ${palette.border.light}`, undefined, 'none']}
-          >
-            <Typography p={3}>{newOwnerLength} Safe Account owner(s)</Typography>
-            <Divider />
-            {safe.owners
-              .filter((owner) => !sameAddress(owner.value, removedOwner.address))
-              .map((owner) => (
-                <div key={owner.value}>
-                  <Box padding={2} key={owner.value}>
-                    <EthHashInfo address={owner.value} shortAddress={false} showCopyButton hasExplorer />
-                  </Box>
-                  <Divider />
-                </div>
-              ))}
-            {
-              <>
-                <div className={css.info}>
-                  <Typography variant="overline">Removing owner &darr;</Typography>
-                </div>
-                <Divider />
-                <Box bgcolor="error.light" padding={2}>
-                  <EthHashInfo address={removedOwner.address} shortAddress={false} showCopyButton hasExplorer />
+        <Grid
+          item
+          xs={12}
+          md={8}
+          borderLeft={({ palette }) => [undefined, undefined, `1px solid ${palette.border.light}`]}
+          borderTop={({ palette }) => [`1px solid ${palette.border.light}`, undefined, 'none']}
+        >
+          <Typography p={3}>{newOwnerLength} Safe Account owner(s)</Typography>
+          <Divider />
+          {safe.owners
+            .filter((owner) => !sameAddress(owner.value, removedOwner.address))
+            .map((owner) => (
+              <div key={owner.value}>
+                <Box padding={2} key={owner.value}>
+                  <EthHashInfo address={owner.value} shortAddress={false} showCopyButton hasExplorer />
                 </Box>
                 <Divider />
-              </>
-            }
-          </Grid>
+              </div>
+            ))}
+          {
+            <>
+              <div className={css.info}>
+                <Typography variant="overline">Removing owner &darr;</Typography>
+              </div>
+              <Divider />
+              <Box bgcolor="error.light" padding={2}>
+                <EthHashInfo address={removedOwner.address} shortAddress={false} showCopyButton hasExplorer />
+              </Box>
+              <Divider />
+            </>
+          }
         </Grid>
-      </SignOrExecuteForm>
-    </DialogContent>
+      </Grid>
+    </SignOrExecuteForm>
   )
 }

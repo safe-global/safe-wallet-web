@@ -1,9 +1,10 @@
-import { Button, DialogContent, Grid, MenuItem, Select, Typography, DialogActions } from '@mui/material'
+import { Button, Grid, MenuItem, Select, Typography, CardActions } from '@mui/material'
 import { useState } from 'react'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import type { SyntheticEvent } from 'react'
 import type { SelectChangeEvent } from '@mui/material'
 import type { RemoveOwnerFlowProps } from '.'
+import TxCard from '../../common/TxCard'
 
 export const SetThreshold = ({
   params,
@@ -27,8 +28,8 @@ export const SetThreshold = ({
   const newNumberOfOwners = safe ? safe.owners.length - 1 : 1
 
   return (
-    <form onSubmit={onSubmitHandler}>
-      <DialogContent>
+    <TxCard>
+      <form onSubmit={onSubmitHandler}>
         <Typography mb={3}>Set the required owner confirmations:</Typography>
 
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
@@ -47,13 +48,13 @@ export const SetThreshold = ({
             <Typography>out of {newNumberOfOwners} owner(s)</Typography>
           </Grid>
         </Grid>
-      </DialogContent>
 
-      <DialogActions>
-        <Button variant="contained" type="submit">
-          Next
-        </Button>
-      </DialogActions>
-    </form>
+        <CardActions>
+          <Button variant="contained" type="submit">
+            Next
+          </Button>
+        </CardActions>
+      </form>
+    </TxCard>
   )
 }

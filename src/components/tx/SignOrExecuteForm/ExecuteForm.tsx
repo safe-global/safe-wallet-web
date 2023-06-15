@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, DialogActions } from '@mui/material'
+import { Box, Button, CardActions, Typography } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -86,6 +86,10 @@ const ExecuteForm = ({
 
   return (
     <>
+      <Typography variant="h5" mb={2}>
+        Execution
+      </Typography>
+
       <AdvancedParams
         willExecute
         params={advancedParams}
@@ -124,7 +128,7 @@ const ExecuteForm = ({
           <UnknownContractError />
         )}
 
-        <DialogActions>
+        <CardActions>
           {/* Submit button */}
           <CheckWallet allowNonOwner={true}>
             {(isOk) => (
@@ -133,7 +137,7 @@ const ExecuteForm = ({
               </Button>
             )}
           </CheckWallet>
-        </DialogActions>
+        </CardActions>
       </form>
     </>
   )

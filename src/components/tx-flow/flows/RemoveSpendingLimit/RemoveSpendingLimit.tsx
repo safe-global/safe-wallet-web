@@ -4,7 +4,7 @@ import useChainId from '@/hooks/useChainId'
 import { useContext, useEffect } from 'react'
 import { SafeTxContext } from '../../SafeTxProvider'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { DialogContent, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { relativeTime } from '@/utils/date'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
@@ -47,25 +47,23 @@ export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) 
   }
 
   return (
-    <DialogContent>
-      <SignOrExecuteForm onSubmit={onFormSubmit}>
-        {token && (
-          <TokenTransferReview
-            amount={safeFormatUnits(params.amount, token.tokenInfo.decimals)}
-            tokenInfo={token.tokenInfo}
-          />
-        )}
-        <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Beneficiary</Typography>
-        <EthHashInfo address={params.beneficiary} showCopyButton hasExplorer shortAddress={false} />
-        <Typography mt={2} sx={({ palette }) => ({ color: palette.primary.light })}>
-          Reset time
-        </Typography>
-        <SpendingLimitLabel
-          label={relativeTime(params.lastResetMin, params.resetTimeMin)}
-          mb={2}
-          isOneTime={params.resetTimeMin === '0'}
+    <SignOrExecuteForm onSubmit={onFormSubmit}>
+      {token && (
+        <TokenTransferReview
+          amount={safeFormatUnits(params.amount, token.tokenInfo.decimals)}
+          tokenInfo={token.tokenInfo}
         />
-      </SignOrExecuteForm>
-    </DialogContent>
+      )}
+      <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Beneficiary</Typography>
+      <EthHashInfo address={params.beneficiary} showCopyButton hasExplorer shortAddress={false} />
+      <Typography mt={2} sx={({ palette }) => ({ color: palette.primary.light })}>
+        Reset time
+      </Typography>
+      <SpendingLimitLabel
+        label={relativeTime(params.lastResetMin, params.resetTimeMin)}
+        mb={2}
+        isOneTime={params.resetTimeMin === '0'}
+      />
+    </SignOrExecuteForm>
   )
 }
