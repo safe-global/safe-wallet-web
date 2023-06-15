@@ -1,3 +1,31 @@
 .wrapper {
   margin-top: var(--space-8);
 }
+
+.outline {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 4px;
+}
+
+.inputs {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.select :global(.MuiSelect-select) {
+  padding: 16px 0 16px 16px;
+  display: flex;
+}
+
+.item {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.amount :global(.MuiInput-input) {
+  padding: 16px;
+  text-align: right;
+}
