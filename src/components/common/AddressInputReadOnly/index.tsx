@@ -30,6 +30,7 @@ const AddressInputReadOnly = ({ label, address }: { label: string; address: stri
           </InputAdornment>
         }
         label={label}
+        readOnly
       />
     </div>
   )
