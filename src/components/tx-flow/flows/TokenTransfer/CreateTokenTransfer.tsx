@@ -167,12 +167,6 @@ const CreateTokenTransfer = ({
             </Box>
           )}
 
-          {!disableSpendingLimit && !!spendingLimitAmount && (
-            <FormControl fullWidth sx={{ mt: 2 }}>
-              <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
-            </FormControl>
-          )}
-
           <FormControl fullWidth sx={{ mt: 2 }}>
             <NumberField
               label={errors.amount?.message || 'Amount'}
@@ -200,6 +194,12 @@ const CreateTokenTransfer = ({
               })}
             />
           </FormControl>
+
+          {!disableSpendingLimit && !!spendingLimitAmount && (
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
+            </FormControl>
+          )}
 
           <CardActions>
             <Button variant="contained" type="submit" disabled={isDisabled}>
