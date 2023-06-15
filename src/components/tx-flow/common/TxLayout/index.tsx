@@ -10,12 +10,14 @@ import css from './styles.module.css'
 type TxLayoutProps = {
   title: ReactNode
   children: ReactNode
+  subtitle?: ReactNode
   step?: number
   txSummary?: TransactionSummary
   onBack?: () => void
+  hideNonce?: boolean
 }
 
-const TxLayout = ({ title, children, step = 0, txSummary, onBack }: TxLayoutProps) => {
+const TxLayout = ({ title, subtitle, children, step = 0, txSummary, onBack, hideNonce = false }: TxLayoutProps) => {
   const steps = Array.isArray(children) ? children : [children]
   const progress = Math.round(((step + 1) / steps.length) * 100)
 
@@ -34,8 +36,9 @@ const TxLayout = ({ title, children, step = 0, txSummary, onBack }: TxLayoutProp
               <Paper className={css.header}>
                 <ProgressBar value={progress} />
 
-                <Box display="flex" justifyContent="flex-end" py={2} px={3}>
-                  <TxNonce />
+                <Box display="flex" justifyContent={subtitle ? 'space-between' : 'flex-end'} py={2} px={3}>
+                  {subtitle}
+                  {!hideNonce && <TxNonce />}
                 </Box>
               </Paper>
 
