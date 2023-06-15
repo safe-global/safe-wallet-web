@@ -12,18 +12,14 @@ import { TxModalContext } from '@/components/tx-flow'
 
 const SignForm = ({
   safeTx,
-  error,
   txId,
   onSubmit,
   disableSubmit = false,
   origin,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
-  error?: Error
 }): ReactElement => {
-  //
-  // Hooks & variables
-  //
+  // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
@@ -63,13 +59,6 @@ const SignForm = ({
       {isSubmittable && cannotPropose ? (
         <ErrorMessage>
           You are currently not an owner of this Safe Account and won&apos;t be able to submit this transaction.
-        </ErrorMessage>
-      ) : error ? (
-        <ErrorMessage error={error}>
-          This transaction will most likely fail.{' '}
-          {isCreation
-            ? 'To save gas costs, avoid creating the transaction.'
-            : 'To save gas costs, reject this transaction.'}
         </ErrorMessage>
       ) : (
         submitError && (
