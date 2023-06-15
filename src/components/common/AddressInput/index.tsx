@@ -83,15 +83,18 @@ const AddressInput = ({
       ) : !props.disabled ? (
         <>
           <IconButton onClick={() => setOpen(true)}>
-            <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" />
+            <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" color="primary" />
           </IconButton>
           <ScanQRButton onScan={setAddressValue} />
-          <IconButton
-            onClick={onOpenListClick}
-            className={classnames(css.openButton, { [css.rotated]: isAutocompleteOpen })}
-          >
-            <SvgIcon component={CaretDownIcon} inheritViewBox fontSize="small" />
-          </IconButton>
+          {onOpenListClick && (
+            <IconButton
+              onClick={onOpenListClick}
+              className={classnames(css.openButton, { [css.rotated]: isAutocompleteOpen })}
+              color="primary"
+            >
+              <SvgIcon component={CaretDownIcon} inheritViewBox fontSize="small" />
+            </IconButton>
+          )}
         </>
       ) : null}
     </InputAdornment>

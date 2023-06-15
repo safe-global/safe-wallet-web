@@ -22,5 +22,5 @@
 
 .input [title] {
   font-weight: bold;
-  color: black;
+  color: var(--color-text-primary);
 }

@@ -4,6 +4,10 @@
   height: 66px;
 }
 
+.wrapper :global .MuiInputLabel-root.Mui-error[data-shrink='false'] {
+  padding: 5px 4px;
+}
+
 .openButton svg {
   transition: transform 0.3s ease-in-out;
 }

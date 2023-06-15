@@ -1,4 +1,4 @@
-import { type ReactElement, useState } from 'react'
+import { type ReactElement, useState, useMemo } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { SvgIcon, Typography } from '@mui/material'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
@@ -25,6 +25,11 @@ const AddressBookInput = ({ name, canAdd = false, ...props }: AddressInputProps)
     label: address,
     name,
   }))
+
+  const hasVisibleOptions = useMemo(
+    () => !!addressBookEntries.filter((entry) => entry.label.includes(addressValue)).length,
+    [addressBookEntries, addressValue],
+  )
 
   const handleOpenAutocomplete = () => {
     setOpen((value) => !value)
@@ -59,7 +64,7 @@ const AddressBookInput = ({ name, canAdd = false, ...props }: AddressInputProps)
             {...params}
             {...props}
             name={name}
-            onOpenListClick={handleOpenAutocomplete}
+            onOpenListClick={hasVisibleOptions ? handleOpenAutocomplete : undefined}
             isAutocompleteOpen={open}
           />
         )}
