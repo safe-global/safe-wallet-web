@@ -1,0 +1,7 @@
+.openButton svg {
+  transition: transform 0.3s ease-in-out;
+}
+
+.rotated svg {
+  transform: rotate(180deg);
+}

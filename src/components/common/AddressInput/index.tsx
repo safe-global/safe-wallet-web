@@ -12,16 +12,28 @@ import useDebounce from '@/hooks/useDebounce'
 import CaretDownIcon from '@/public/images/common/caret-down.svg'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
 import EntryDialog from '@/components/address-book/EntryDialog'
+import classnames from 'classnames'
+import css from './styles.module.css'
 
 export type AddressInputProps = TextFieldProps & {
   name: string
   address?: string
   canAdd?: boolean
+  onOpenListClick?: () => void
+  isAutocompleteOpen?: boolean
   validate?: Validate<string>
   deps?: string | string[]
 }
 
-const AddressInput = ({ name, validate, required = true, deps, ...props }: AddressInputProps): ReactElement => {
+const AddressInput = ({
+  name,
+  validate,
+  required = true,
+  onOpenListClick,
+  isAutocompleteOpen,
+  deps,
+  ...props
+}: AddressInputProps): ReactElement => {
   const {
     register,
     setValue,
@@ -74,7 +86,10 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
             <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" />
           </IconButton>
           <ScanQRButton onScan={setAddressValue} />
-          <IconButton>
+          <IconButton
+            onClick={onOpenListClick}
+            className={classnames(css.openButton, { [css.rotated]: isAutocompleteOpen })}
+          >
             <SvgIcon component={CaretDownIcon} inheritViewBox fontSize="small" />
           </IconButton>
         </>

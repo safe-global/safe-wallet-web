@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import { type ReactElement, useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { SvgIcon, Typography } from '@mui/material'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
@@ -19,15 +19,23 @@ const AddressBookInput = ({ name, canAdd = false, ...props }: AddressInputProps)
   const addressBook = useAddressBook()
   const { setValue, control } = useFormContext()
   const addressValue = useWatch({ name, control })
+  const [open, setOpen] = useState(false)
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
     label: address,
     name,
   }))
 
+  const handleOpenAutocomplete = () => {
+    setOpen((value) => !value)
+  }
+
   return (
     <>
       <Autocomplete
+        open={open}
+        onOpen={() => setOpen(true)}
+        onClose={() => setOpen(false)}
         disableClearable
         value={addressValue || ''}
         disabled={props.disabled}
@@ -46,7 +54,15 @@ const AddressBookInput = ({ name, canAdd = false, ...props }: AddressInputProps)
             <EthHashInfo address={option.label} name={option.name} shortAddress={false} />
           </Typography>
         )}
-        renderInput={(params) => <AddressInput {...params} {...props} name={name} />}
+        renderInput={(params) => (
+          <AddressInput
+            {...params}
+            {...props}
+            name={name}
+            onOpenListClick={handleOpenAutocomplete}
+            isAutocompleteOpen={open}
+          />
+        )}
       />
       {canAdd ? (
         <Typography variant="body2" className={css.unknownAddress}>
