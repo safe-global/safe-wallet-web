@@ -9,6 +9,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContentText,
+  CardContent,
+  CardActions,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useCallback, useState } from 'react'
@@ -35,6 +37,7 @@ import SuccessMessage from '@/components/tx/SuccessMessage'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import InfoBox from '@/components/safe-messages/InfoBox'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
+import TxCard from '@/components/tx-flow/common/TxCard'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -210,8 +213,8 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
   }, [onClose, ongoingMessage, requestId])
 
   return (
-    <>
-      <DialogContent>
+    <TxCard>
+      <CardContent>
         <DialogHeader threshold={safe.threshold} />
 
         <Typography fontWeight={700} mb={1}>
@@ -242,16 +245,17 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
         <WrongChainWarning />
 
         <MessageDialogError isOwner={isOwner} submitError={submitError} />
-      </DialogContent>
+      </CardContent>
 
-      <DialogActions>
+      <CardActions>
+        {/* TODO: Remove this Cancel button once we can figure out how to move the logic outside */}
         <Button onClick={handleClose}>Cancel</Button>
         <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
           Sign
         </Button>
-      </DialogActions>
+      </CardActions>
       <ConfirmationDialog open={showCloseTooltip} onCancel={() => setShowCloseTooltip(false)} onClose={onClose} />
-    </>
+    </TxCard>
   )
 }
 

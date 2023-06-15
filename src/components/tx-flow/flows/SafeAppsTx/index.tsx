@@ -1,8 +1,8 @@
 import type { BaseTransaction, RequestId, SendTransactionRequestParams } from '@safe-global/safe-apps-sdk'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
-import SafeAppsTxModalLabel from '@/components/safe-apps/SafeAppsModalLabel'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import ReviewSafeAppsTx from './ReviewSafeAppsTx'
+import { AppTitle } from '@/components/tx-flow/flows/SignMessage'
 
 export type SafeAppsTxParams = {
   appId?: string
@@ -13,10 +13,12 @@ export type SafeAppsTxParams = {
 }
 
 const SafeAppsTxFlow = ({ data }: { data: SafeAppsTxParams }) => {
-  const title = <SafeAppsTxModalLabel app={data.app} />
-
   return (
-    <TxLayout title="Confirm transaction" subtitle={title} step={0}>
+    <TxLayout
+      title="Confirm transaction"
+      subtitle={<AppTitle name={data.app?.name} logoUri={data.app?.iconUrl} />}
+      step={0}
+    >
       <ReviewSafeAppsTx safeAppsTx={data} />
     </TxLayout>
   )
