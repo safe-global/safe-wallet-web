@@ -1,0 +1,21 @@
+.wrapper :global input[text] {
+  padding: 0;
+}
+
+.input {
+  padding: 12px var(--space-2);
+}
+
+.input :global .MuiInputBase-input {
+  padding: var(--space-1) var(--space-2);
+}
+
+.input input[type='text'] {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.input [title] {
+  font-weight: bold;
+  color: black;
+}

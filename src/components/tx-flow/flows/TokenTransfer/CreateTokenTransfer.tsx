@@ -25,9 +25,9 @@ import {
   SvgIcon,
   Typography,
 } from '@mui/material'
-import SendFromBlock from '@/components/tx/SendFromBlock'
-import SendToBlock from '@/components/tx/SendToBlock'
-import AddressBookInput from '@/components/common/AddressBookInput'
+import AddressBookInputNew from '@/components/common/AddressBookInputNew'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import NumberField from '@/components/common/NumberField'
@@ -54,6 +54,7 @@ const CreateTokenTransfer = ({
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
+  const safeAddress = useSafeAddress()
 
   const formMethods = useForm<TokenTransferParams>({
     defaultValues: {
@@ -127,12 +128,14 @@ const CreateTokenTransfer = ({
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
-          <SendFromBlock />
+          <FormControl fullWidth sx={{ mb: '28px' }}>
+            <AddressInputReadOnly label="Sending from" address={safeAddress} />
+          </FormControl>
 
-          <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
+          <FormControl fullWidth sx={{ mb: '28px' }}>
             {addressBook[recipient] ? (
               <Box onClick={() => setValue(TokenTransferFields.recipient, '')}>
-                <SendToBlock address={recipient} />
+                <AddressInputReadOnly label="Sending to" address={recipient} />
               </Box>
             ) : (
               <AddressBookInput name={TokenTransferFields.recipient} label="Recipient" />
