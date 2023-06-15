@@ -51,6 +51,7 @@ import { selectTokenList, selectOnChainSigning, TOKEN_LISTS } from '@/store/sett
 import { TxModalContext } from '@/components/tx-flow'
 import SafeAppsTxFlow from '@/components/tx-flow/flows/SafeAppsTx'
 import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
+import SignMessageOnChainFlow from '@/components/tx-flow/flows/SignMessageOnChain'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -139,8 +140,17 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
           onTxFlowClose,
         )
       } else {
-        // TODO: setTxFlow(<SafeAppsSignMessageModal ... />)
-        // Use the method as well or remove it here
+        setTxFlow(
+          <SignMessageOnChainFlow
+            props={{
+              app: safeAppFromManifest,
+              appId: remoteApp?.id,
+              requestId,
+              message,
+              method,
+            }}
+          />,
+        )
       }
     },
     onGetPermissions: getPermissions,

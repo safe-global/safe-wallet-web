@@ -6,7 +6,7 @@ import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message off-chain'
 
-const AppTitle = ({ name, logoUri }: { name: string | null; logoUri: string | null }) => {
+export const AppTitle = ({ name, logoUri }: { name?: string | null; logoUri?: string | null }) => {
   const appName = name || APP_NAME_FALLBACK
   const appLogo = logoUri || APP_LOGO_FALLBACK_IMAGE
   return (
