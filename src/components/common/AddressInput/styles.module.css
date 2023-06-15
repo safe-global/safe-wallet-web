@@ -1,3 +1,9 @@
+.wrapper :global .MuiInputBase-root {
+  background-color: var(--color-background-paper);
+  border-radius: 6px;
+  height: 66px;
+}
+
 .openButton svg {
   transition: transform 0.3s ease-in-out;
 }

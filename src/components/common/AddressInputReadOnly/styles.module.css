@@ -1,3 +1,7 @@
+.wrapper :global .MuiInputBase-root {
+  height: 66px;
+}
+
 .wrapper :global input[text] {
   padding: 0;
 }

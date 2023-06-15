@@ -101,6 +101,7 @@ const AddressInput = ({
     <>
       <TextField
         {...props}
+        className={css.wrapper}
         autoComplete="off"
         label={<>{error?.message || props.label}</>}
         error={!!error}
@@ -149,10 +150,6 @@ const AddressInput = ({
         // Workaround for a bug in react-hook-form when `register().value` is cached after `setValueAs`
         // Only seems to occur on the `/load` route
         value={watchedValue}
-        sx={{
-          backgroundColor: (theme) => theme.palette.background.paper,
-          borderRadius: ({ shape }) => `${shape.borderRadius}px`,
-        }}
       />
       {open && <EntryDialog handleClose={() => setOpen(false)} defaultValues={{ name: '', address: watchedValue }} />}
     </>
