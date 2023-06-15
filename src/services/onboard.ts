@@ -18,7 +18,7 @@ let onboard: OnboardAPI | null = null
 export const createOnboard = (chainConfigs: ChainInfo[], rpcConfig: EnvState['rpc'] | undefined): OnboardAPI => {
   if (onboard) return onboard
 
-  const wallets = getAllWallets()
+  const wallets = getAllWallets(chainConfigs)
 
   const chains = chainConfigs.map((cfg) => ({
     id: hexValue(parseInt(cfg.chainId)),

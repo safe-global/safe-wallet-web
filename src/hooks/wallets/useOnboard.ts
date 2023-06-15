@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { type EIP1193Provider, type WalletState, type OnboardAPI } from '@web3-onboard/core'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getAddress } from 'ethers/lib/utils'
+import { getAddress, isAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
@@ -44,7 +44,8 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   const primaryWallet = wallets[0]
   if (!primaryWallet) return null
 
-  const account = primaryWallet?.accounts[0]
+  // WalletConnect v2 returns an account with address `0` at the first index
+  const account = primaryWallet?.accounts.filter((account) => isAddress(account.address))[0]
   if (!account) return null
 
   try {
@@ -193,12 +194,12 @@ export const useInitOnboard = () => {
 
     const enableWallets = async () => {
       const { getSupportedWallets } = await import('@/hooks/wallets/wallets')
-      const supportedWallets = getSupportedWallets(chain)
+      const supportedWallets = getSupportedWallets(chain, configs)
       onboard.state.actions.setWalletModules(supportedWallets)
     }
 
     enableWallets()
-  }, [chain, onboard])
+  }, [chain, configs, onboard])
 
   // Connect to the last connected wallet
   useEffect(() => {
