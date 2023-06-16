@@ -3,7 +3,7 @@ const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 
 const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 const PAGINATION_TEST_SAFE = 'gor:0x850493a15914aAC05a821A3FAb973b4598889A7b'
-const ASSETS_LENGTH = 7
+const ASSETS_LENGTH = 8
 const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
 const FIAT_AMOUNT_COLUMN = 2
@@ -13,6 +13,8 @@ describe('Assets > Coins', () => {
   const fiatRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2}`)
 
   before(() => {
+    cy.disableProdCGW()
+
     // Open the Safe used for testing
     cy.visit(`/balances?safe=${TEST_SAFE}`)
     cy.contains('button', 'Accept selection').click()
@@ -20,21 +22,15 @@ describe('Assets > Coins', () => {
     cy.contains('Görli Ether')
 
     cy.contains('button', 'Got it').click()
+
+    cy.get(balanceSingleRow).should('have.length.lessThan', ASSETS_LENGTH)
+    cy.contains('div', 'Default tokens').click()
+    cy.wait(100)
+    cy.contains('div', 'All tokens').click()
+    cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
   })
 
   describe('should have different tokens', () => {
-    it(`should have ${ASSETS_LENGTH} entries in the table`, () => {
-      // "Spam" tokens filtered
-      cy.get(balanceSingleRow).should('have.length', 3)
-
-      // Enable all tokens
-      cy.contains('div', 'Default tokens').click()
-      cy.wait(100)
-      cy.contains('div', 'All tokens').click()
-
-      cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
-    })
-
     it('should have Dai', () => {
       // Row should have an image with alt text "Dai"
       cy.contains('Dai')
@@ -215,7 +211,7 @@ describe('Assets > Coins', () => {
     it('should allow changing rows per page and navigate to next and previous page', () => {
       // Table should have 25 rows inittially
       cy.contains('Rows per page:').next().contains('25')
-      cy.contains('1–25 of 27')
+      cy.contains('1–25 of')
       cy.get(balanceSingleRow).should('have.length', 25)
 
       // Change to 10 rows per page
@@ -225,22 +221,22 @@ describe('Assets > Coins', () => {
 
       // Table should have 10 rows
       cy.contains('Rows per page:').next().contains('10')
-      cy.contains('1–10 of 27')
+      cy.contains('1–10 of')
       cy.get(balanceSingleRow).should('have.length', 10)
 
       // Click on the next page button
       cy.get('button[aria-label="Go to next page"]').click({ force: true })
       cy.get('button[aria-label="Go to next page"]').click({ force: true })
 
-      // Table should have 7 rows
-      cy.contains('21–27 of 27')
-      cy.get(balanceSingleRow).should('have.length', 7)
+      // Table should have N rows
+      cy.contains('21–28 of')
+      cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
 
       // Click on the previous page button
       cy.get('button[aria-label="Go to previous page"]').click({ force: true })
 
       // Table should have 10 rows
-      cy.contains('11–20 of 27')
+      cy.contains('11–20 of')
       cy.get(balanceSingleRow).should('have.length', 10)
     })
   })

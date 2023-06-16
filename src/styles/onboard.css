@@ -104,3 +104,8 @@
 #kv_sdk_container + .ReactModalPortal > div {
   z-index: 1301 !important;
 }
+
+/* Ledger modal */
+.ledger-ck-modal > div#ModalWrapper {
+  z-index: 9999999 !important;
+}
