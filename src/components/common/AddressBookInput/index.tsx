@@ -72,7 +72,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps): ReactE
       {canAdd ? (
         <Typography variant="body2" className={css.unknownAddress}>
           <SvgIcon component={InfoIcon} fontSize="small" />
-          <span>You are sending tokens to an unknown address. Add it to address book.</span>
+          <span>You&apos;ve input an unknown address. Add it to your address book.</span>
         </Typography>
       ) : null}
     </>
