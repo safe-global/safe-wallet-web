@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, Typography } from '@mui/material'
+import { Box, Button, CardActions } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -19,6 +19,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { SuccessScreen } from '@/components/tx-flow/flows/SuccessScreen'
 import useGasLimit from '@/hooks/useGasLimit'
 import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
+import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 
 const ExecuteForm = ({
   safeTx,
@@ -86,9 +87,7 @@ const ExecuteForm = ({
 
   return (
     <>
-      <Typography variant="h5" mb={2}>
-        Execution
-      </Typography>
+      <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />
 
       <AdvancedParams
         willExecute

@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, CardActions, Typography } from '@mui/material'
+import { Button, CardActions } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -9,6 +9,7 @@ import { useTxActions } from './hooks'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
+import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 
 const SignForm = ({
   safeTx,
@@ -55,10 +56,6 @@ const SignForm = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <Typography variant="h5" mb={2}>
-        Confirmation
-      </Typography>
-
       {/* Error messages */}
       {isSubmittable && cannotPropose ? (
         <ErrorMessage>
@@ -70,10 +67,7 @@ const SignForm = ({
         )
       )}
 
-      <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
-        You&apos;re about to {isCreation ? 'create and ' : ''}
-        sign a transaction and will need to confirm it with your currently connected wallet.
-      </Typography>
+      <ConfirmationTitle variant={ConfirmationTitleTypes.sign} isCreation={isCreation} />
 
       <CardActions>
         {/* Submit button */}
