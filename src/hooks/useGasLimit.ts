@@ -25,7 +25,7 @@ const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string)
       safeTx.data.data,
       safeTx.data.operation,
       safeTx.data.safeTxGas,
-      0,
+      safeTx.data.baseGas,
       safeTx.data.gasPrice,
       safeTx.data.gasToken,
       safeTx.data.refundReceiver,

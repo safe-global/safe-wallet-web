@@ -5,6 +5,18 @@ Cypress.Commands.add('connectE2EWallet', () => {
   })
 })
 
+Cypress.Commands.add('useProdCGW', () => {
+  cy.on('window:before:load', (window) => {
+    window.localStorage.setItem('SAFE_v2__debugProdCgw', JSON.stringify(true))
+  })
+})
+
+Cypress.Commands.add('disableProdCGW', () => {
+  cy.on('window:before:load', (window) => {
+    window.localStorage.setItem('SAFE_v2__debugProdCgw', JSON.stringify(false))
+  })
+})
+
 let LOCAL_STORAGE_MEMORY = {}
 
 Cypress.Commands.add('saveLocalStorageCache', () => {
