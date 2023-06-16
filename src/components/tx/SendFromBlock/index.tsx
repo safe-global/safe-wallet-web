@@ -5,6 +5,7 @@ import css from './styles.module.css'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
+// TODO: Remove this file after replacing in all tx flow components
 const SendFromBlock = ({ title }: { title?: string }): ReactElement => {
   const address = useSafeAddress()
 

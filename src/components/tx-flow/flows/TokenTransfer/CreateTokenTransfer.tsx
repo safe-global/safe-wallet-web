@@ -1,4 +1,4 @@
-import { type ReactElement, useMemo } from 'react'
+import { type ReactElement, useMemo, useState } from 'react'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
@@ -13,7 +13,6 @@ import classNames from 'classnames'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { BigNumber } from '@ethersproject/bignumber'
 import { sameAddress } from '@/utils/addresses'
-import TokenIcon from '@/components/common/TokenIcon'
 import {
   Box,
   Button,
@@ -25,9 +24,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import SendFromBlock from '@/components/tx/SendFromBlock'
-import SendToBlock from '@/components/tx/SendToBlock'
+import TokenIcon from '@/components/common/TokenIcon'
 import AddressBookInput from '@/components/common/AddressBookInput'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import NumberField from '@/components/common/NumberField'
@@ -55,6 +55,8 @@ const CreateTokenTransfer = ({
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
+  const safeAddress = useSafeAddress()
+  const [recipientFocus, setRecipientFocus] = useState(false)
 
   const formMethods = useForm<TokenTransferParams>({
     defaultValues: {
@@ -110,20 +112,33 @@ const CreateTokenTransfer = ({
   const isAmountError = !!errors[TokenTransferFields.tokenAddress] || !!errors[TokenTransferFields.amount]
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
+  const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   return (
     <TxCard>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <SendFromBlock />
+          <FormControl fullWidth sx={{ mb: '28px' }}>
+            <AddressInputReadOnly label="Sending from" address={safeAddress} />
+          </FormControl>
 
-          <FormControl fullWidth sx={{ mt: 1 }}>
+          <FormControl fullWidth sx={{ mb: '28px' }}>
             {addressBook[recipient] ? (
-              <Box onClick={() => setValue(TokenTransferFields.recipient, '')}>
-                <SendToBlock address={recipient} />
+              <Box
+                onClick={() => {
+                  setValue(TokenTransferFields.recipient, '')
+                  setRecipientFocus(true)
+                }}
+              >
+                <AddressInputReadOnly label="Sending to" address={recipient} />
               </Box>
             ) : (
-              <AddressBookInput name={TokenTransferFields.recipient} label="Recipient" />
+              <AddressBookInput
+                name={TokenTransferFields.recipient}
+                label="Sending to"
+                canAdd={isAddressValid}
+                focused={recipientFocus}
+              />
             )}
           </FormControl>
 

@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
+// TODO: Remove this file after replacing in all tx flow components
 const SendToBlock = ({ address, title = 'Recipient' }: { address: string; title?: string }) => {
   return (
     <Box mb={3}>
