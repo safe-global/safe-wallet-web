@@ -199,6 +199,8 @@ export const useInitOnboard = () => {
 
     // Connect to the last connected wallet
     enableWallets().then(() => {
+      if (onboard.state.get().wallets.length > 0) return
+
       const label = lastWalletStorage.get()
       if (!label) return
 
