@@ -1,6 +1,5 @@
 import { Stack, SvgIcon, Typography } from '@mui/material'
 import EditIcon from '@/public/images/common/edit.svg'
-import classnames from 'classnames'
 import css from './styles.module.css'
 
 export enum ConfirmationTitleTypes {
@@ -11,12 +10,7 @@ export enum ConfirmationTitleTypes {
 const ConfirmationTitle = ({ isCreation, variant }: { isCreation?: boolean; variant: ConfirmationTitleTypes }) => {
   return (
     <div className={css.wrapper}>
-      <div
-        className={classnames(css.icon, {
-          [css.sign]: variant === ConfirmationTitleTypes.sign,
-          [css.execute]: variant === ConfirmationTitleTypes.execute,
-        })}
-      >
+      <div className={`${css.icon} ${variant === ConfirmationTitleTypes.sign ? css.sign : css.execute}`}>
         <SvgIcon component={EditIcon} inheritViewBox fontSize="small" color="primary" />
       </div>
       <Stack direction="column">

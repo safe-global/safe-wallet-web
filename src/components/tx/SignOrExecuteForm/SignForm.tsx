@@ -9,7 +9,6 @@ import { useTxActions } from './hooks'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
-import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 
 const SignForm = ({
   safeTx,
@@ -28,9 +27,6 @@ const SignForm = ({
   const isOwner = useIsSafeOwner()
   const { signTx } = useTxActions()
   const { setTxFlow } = useContext(TxModalContext)
-
-  // Check that the transaction is executable
-  const isCreation = !txId
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -66,8 +62,6 @@ const SignForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )
       )}
-
-      <ConfirmationTitle variant={ConfirmationTitleTypes.sign} isCreation={isCreation} />
 
       <CardActions>
         {/* Submit button */}

@@ -19,7 +19,6 @@ import { TxModalContext } from '@/components/tx-flow'
 import { SuccessScreen } from '@/components/tx-flow/flows/SuccessScreen'
 import useGasLimit from '@/hooks/useGasLimit'
 import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
-import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 
 const ExecuteForm = ({
   safeTx,
@@ -87,8 +86,6 @@ const ExecuteForm = ({
 
   return (
     <>
-      <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />
-
       <AdvancedParams
         willExecute
         params={advancedParams}
