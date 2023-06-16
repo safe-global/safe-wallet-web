@@ -66,13 +66,14 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps): ReactE
             name={name}
             onOpenListClick={hasVisibleOptions ? handleOpenAutocomplete : undefined}
             isAutocompleteOpen={open}
+            canAdd={canAdd}
           />
         )}
       />
       {canAdd ? (
         <Typography variant="body2" className={css.unknownAddress}>
           <SvgIcon component={InfoIcon} fontSize="small" />
-          <span>You&apos;ve input an unknown address. Add it to your address book.</span>
+          <span>This is an unknown address. Consider adding it to your address book.</span>
         </Typography>
       ) : null}
     </>

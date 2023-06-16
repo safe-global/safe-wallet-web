@@ -112,6 +112,7 @@ const CreateTokenTransfer = ({
   const isAmountError = !!errors[TokenTransferFields.tokenAddress] || !!errors[TokenTransferFields.amount]
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
+  const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   return (
     <TxCard>
@@ -135,7 +136,7 @@ const CreateTokenTransfer = ({
               <AddressBookInput
                 name={TokenTransferFields.recipient}
                 label="Sending to"
-                canAdd={!!recipient}
+                canAdd={isAddressValid}
                 focused={recipientFocus}
               />
             )}

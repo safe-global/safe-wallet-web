@@ -31,6 +31,7 @@ const AddressInput = ({
   required = true,
   onOpenListClick,
   isAutocompleteOpen,
+  canAdd,
   deps,
   ...props
 }: AddressInputProps): ReactElement => {
@@ -82,9 +83,11 @@ const AddressInput = ({
         <CircularProgress size={20} />
       ) : !props.disabled ? (
         <>
-          <IconButton onClick={() => setOpen(true)}>
-            <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" color="primary" />
-          </IconButton>
+          {canAdd && (
+            <IconButton onClick={() => setOpen(true)}>
+              <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" color="primary" />
+            </IconButton>
+          )}
           <ScanQRButton onScan={setAddressValue} />
           {onOpenListClick && (
             <IconButton
