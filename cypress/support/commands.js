@@ -11,6 +11,12 @@ Cypress.Commands.add('useProdCGW', () => {
   })
 })
 
+Cypress.Commands.add('disableProdCGW', () => {
+  cy.on('window:before:load', (window) => {
+    window.localStorage.setItem('SAFE_v2__debugProdCgw', JSON.stringify(false))
+  })
+})
+
 let LOCAL_STORAGE_MEMORY = {}
 
 Cypress.Commands.add('saveLocalStorageCache', () => {

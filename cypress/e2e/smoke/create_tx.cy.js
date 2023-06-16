@@ -168,7 +168,7 @@ describe('Queue a transaction on 1/N', () => {
     // Click on the notification
     cy.contains('View transaction').click()
 
-    cy.contains('Queue').click()
+    //cy.contains('Queue').click()
 
     // Single Tx page
     cy.contains('h3', 'Transaction details').should('be.visible')
