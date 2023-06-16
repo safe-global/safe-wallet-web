@@ -1,3 +1,13 @@
+.wrapper :global .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline,
+.wrapper :global .MuiInputBase-root .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-text-secondary);
+  border-width: 1px;
+}
+
+.wrapper :global .MuiInputLabel-root {
+  color: var(--color-text-secondary);
+}
+
 .wrapper :global .MuiInputBase-root {
   height: 66px;
 }
