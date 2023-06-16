@@ -197,12 +197,10 @@ export const useInitOnboard = () => {
       onboard.state.actions.setWalletModules(supportedWallets)
     }
 
-    enableWallets()
-  }, [chain, onboard])
+    // Connect to the last connected wallet
+    enableWallets().then(() => {
+      if (onboard.state.get().wallets.length > 0) return
 
-  // Connect to the last connected wallet
-  useEffect(() => {
-    if (onboard && onboard.state.get().wallets.length === 0) {
       const label = lastWalletStorage.get()
       if (!label) return
 
@@ -212,8 +210,8 @@ export const useInitOnboard = () => {
             autoSelect: { label, disableModals: true },
           })
       })
-    }
-  }, [onboard])
+    })
+  }, [chain, onboard])
 }
 
 export default useStore
