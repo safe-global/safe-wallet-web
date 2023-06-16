@@ -110,7 +110,14 @@ export const tryOffChainMsgSigning = async (
     try {
       if (signingMethod === 'eth_signTypedData') {
         const typedData = generateSafeMessageTypedData(safe, message)
-        return await signer._signTypedData(typedData.domain as TypedDataDomain, typedData.types, typedData.message)
+        const signature = await signer._signTypedData(
+          typedData.domain as TypedDataDomain,
+          typedData.types,
+          typedData.message,
+        )
+
+        // V needs adjustment when signing with ledger / trezor through metamask
+        return adjustVInSignature(signingMethod, signature)
       }
 
       if (signingMethod === 'eth_sign') {

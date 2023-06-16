@@ -59,6 +59,9 @@ const mockOnboard = {
   },
 } as unknown as OnboardAPI
 
+const mockValidSignature = `${hexZeroPad('0x456', 64)}1c`
+const mockSignatureWithInvalidV = `${hexZeroPad('0x456', 64)}01`
+
 describe('safeMsgSender', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -66,7 +69,7 @@ describe('safeMsgSender', () => {
     jest.spyOn(utils, 'generateSafeMessageHash').mockImplementation(() => '0x123')
 
     jest.spyOn(sdk, 'getAssertedChainSigner').mockResolvedValue({
-      _signTypedData: jest.fn().mockImplementation(() => Promise.resolve('0x456')),
+      _signTypedData: jest.fn().mockImplementation(() => Promise.resolve(mockValidSignature)),
     } as unknown as JsonRpcSigner)
   })
 
@@ -91,7 +94,7 @@ describe('safeMsgSender', () => {
 
       expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', hexZeroPad('0x789', 20), {
         message,
-        signature: '0x456',
+        signature: mockValidSignature,
         safeAppId,
       })
 
@@ -144,8 +147,42 @@ describe('safeMsgSender', () => {
 
       expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', hexZeroPad('0x789', 20), {
         message,
-        signature: '0x456',
+        signature: mockValidSignature,
         safeAppId,
+      })
+    })
+
+    it('should adjust hardware wallet signatures', async () => {
+      jest.spyOn(sdk, 'getAssertedChainSigner').mockResolvedValue({
+        _signTypedData: jest.fn().mockImplementation(() => Promise.resolve(mockSignatureWithInvalidV)),
+      } as unknown as JsonRpcSigner)
+
+      const proposeSafeMessageSpy = jest.spyOn(gateway, 'proposeSafeMessage')
+      proposeSafeMessageSpy.mockImplementation(() => Promise.resolve())
+
+      const safeMsgDispatchSpy = jest.spyOn(events, 'safeMsgDispatch')
+
+      const safe = {
+        version: '1.3.0',
+        chainId: '5',
+        address: {
+          value: hexZeroPad('0x789', 20),
+        },
+      } as unknown as gateway.SafeInfo
+      const message = 'Hello world'
+      const safeAppId = 1
+
+      await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
+
+      expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', hexZeroPad('0x789', 20), {
+        message,
+        // Even though the mock returns the signature with invalid V, the valid signature should get dispatched as we adjust invalid Vs
+        signature: mockValidSignature,
+        safeAppId,
+      })
+
+      expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.PROPOSE, {
+        messageHash: '0x123',
       })
     })
 
@@ -172,7 +209,7 @@ describe('safeMsgSender', () => {
 
         expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', hexZeroPad('0x789', 20), {
           message,
-          signature: '0x456',
+          signature: mockValidSignature,
           safeAppId,
         })
 
@@ -203,7 +240,7 @@ describe('safeMsgSender', () => {
       await dispatchSafeMsgConfirmation({ onboard: mockOnboard, safe, message })
 
       expect(confirmSafeMessageSpy).toHaveBeenCalledWith('5', '0x123', {
-        signature: '0x456',
+        signature: mockValidSignature,
       })
 
       expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.CONFIRM_PROPOSE, {
@@ -232,7 +269,7 @@ describe('safeMsgSender', () => {
         expect((e as Error).message).toBe('Example error')
 
         expect(confirmSafeMessageSpy).toHaveBeenCalledWith('5', '0x123', {
-          signature: '0x456',
+          signature: mockValidSignature,
         })
 
         expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.CONFIRM_PROPOSE_FAILED, {

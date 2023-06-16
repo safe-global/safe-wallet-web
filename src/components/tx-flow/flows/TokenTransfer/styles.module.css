@@ -1,3 +1,46 @@
 .wrapper {
   margin-top: var(--space-8);
 }
+
+.outline {
+  border: 1px solid var(--color-border-main);
+  border-radius: 4px;
+  margin-top: var(--space-3);
+}
+
+.error {
+  border-color: var(--color-error-main);
+}
+
+.error :global(.MuiFormLabel-root) {
+  color: var(--color-error-main);
+}
+
+.label {
+  background-color: var(--color-background-paper);
+  padding-left: 6px;
+  padding-right: 6px;
+  margin-left: -6px;
+}
+
+.inputs {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.select :global(.MuiSelect-select) {
+  padding: var(--space-2) 0 var(--space-2) var(--space-2);
+  display: flex;
+}
+
+.item {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.amount :global(.MuiInput-input) {
+  padding: var(--space-2);
+  text-align: right;
+}

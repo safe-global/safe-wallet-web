@@ -3,6 +3,7 @@ import useTxStepper from '../../useTxStepper'
 import CreateTokenTransfer from './CreateTokenTransfer'
 import ReviewTokenTransfer from './ReviewTokenTransfer'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
+import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 
 export enum TokenTransferType {
   multiSig = 'multiSig',
@@ -29,8 +30,8 @@ type TokenTransferFlowProps = Partial<TokenTransferParams> & {
 
 const defaultParams: TokenTransferParams = {
   recipient: '',
-  tokenAddress: '',
-  amount: '',
+  tokenAddress: ZERO_ADDRESS,
+  amount: '0',
   type: TokenTransferType.multiSig,
 }
 
