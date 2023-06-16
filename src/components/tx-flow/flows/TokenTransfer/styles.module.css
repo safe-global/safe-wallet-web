@@ -25,7 +25,6 @@
 
 .inputs {
   display: inline-flex;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -38,6 +37,10 @@
   display: inline-flex;
   gap: 6px;
   align-items: center;
+}
+
+.amount {
+  flex-grow: 1;
 }
 
 .amount :global(.MuiInput-input) {
