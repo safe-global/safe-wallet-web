@@ -1,4 +1,4 @@
-import { type ReactElement, useCallback, useMemo } from 'react'
+import { type ReactElement, useCallback, useMemo, useState } from 'react'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
@@ -45,6 +45,7 @@ const CreateTokenTransfer = ({
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
   const safeAddress = useSafeAddress()
+  const [recipientFocus, setRecipientFocus] = useState(false)
 
   const formMethods = useForm<TokenTransferParams>({
     defaultValues: {
@@ -124,11 +125,21 @@ const CreateTokenTransfer = ({
 
           <FormControl fullWidth sx={{ mb: '28px' }}>
             {addressBook[recipient] ? (
-              <Box onClick={() => setValue(TokenTransferFields.recipient, '')}>
+              <Box
+                onClick={() => {
+                  setValue(TokenTransferFields.recipient, '')
+                  setRecipientFocus(true)
+                }}
+              >
                 <AddressInputReadOnly label="Sending to" address={recipient} />
               </Box>
             ) : (
-              <AddressBookInput name={TokenTransferFields.recipient} label="Sending to" canAdd={!!recipient} />
+              <AddressBookInput
+                name={TokenTransferFields.recipient}
+                label="Sending to"
+                canAdd={!!recipient}
+                focused={recipientFocus}
+              />
             )}
           </FormControl>
 

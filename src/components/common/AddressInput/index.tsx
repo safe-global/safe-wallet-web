@@ -106,6 +106,7 @@ const AddressInput = ({
         {...props}
         className={css.wrapper}
         autoComplete="off"
+        autoFocus={props.focused}
         label={<>{error?.message || props.label}</>}
         error={!!error}
         fullWidth
@@ -122,7 +123,7 @@ const AddressInput = ({
         }}
         InputLabelProps={{
           ...(props.InputLabelProps || {}),
-          shrink: !!watchedValue || props.focused,
+          shrink: true,
         }}
         {...register(name, {
           deps,
