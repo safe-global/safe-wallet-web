@@ -9,6 +9,9 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import ErrorMessage from '../ErrorMessage'
 import TxChecks from './TxChecks'
 import TxCard from '@/components/tx-flow/common/TxCard'
+import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
+import { useAppSelector } from '@/store'
+import { selectSettings } from '@/store/settingsSlice'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -22,7 +25,8 @@ export type SignOrExecuteProps = {
 }
 
 const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
-  const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const { transactionExecution } = useAppSelector(selectSettings)
+  const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
   const isCreation = !props.txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const { safeTx, safeTxError } = useContext(SafeTxContext)
@@ -45,6 +49,11 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
       </TxCard>
 
       <TxCard>
+        <ConfirmationTitle
+          variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
+          isCreation={isCreation}
+        />
+
         {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
 
         {/* Warning message and switch button */}

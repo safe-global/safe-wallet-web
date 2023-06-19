@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, Typography } from '@mui/material'
+import { Box, Button, CardActions } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -86,10 +86,6 @@ const ExecuteForm = ({
 
   return (
     <>
-      <Typography variant="h5" mb={2}>
-        Execution
-      </Typography>
-
       <AdvancedParams
         willExecute
         params={advancedParams}
