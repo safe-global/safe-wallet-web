@@ -36,16 +36,17 @@ export const useInitSafeCoreSDK = () => {
       implementation: safe.implementation.value,
     })
       .then(setSafeSDK)
-      .catch((e) => {
+      .catch((_e) => {
+        const e = asError(_e)
         dispatch(
           showNotification({
             message: 'Please try connecting your wallet again.',
             groupKey: 'core-sdk-init-error',
             variant: 'error',
-            detailedMessage: asError(e).message,
+            detailedMessage: e.message,
           }),
         )
-        trackError(ErrorCodes._105, e)
+        trackError(ErrorCodes._105, e.message)
       })
   }, [
     address,
