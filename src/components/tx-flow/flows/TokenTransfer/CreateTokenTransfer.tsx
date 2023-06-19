@@ -118,11 +118,7 @@ const CreateTokenTransfer = ({
     <TxCard>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl fullWidth sx={{ mb: '28px' }}>
-            <AddressInputReadOnly label="Sending from" address={safeAddress} />
-          </FormControl>
-
-          <FormControl fullWidth sx={{ mb: '28px' }}>
+          <FormControl fullWidth>
             {addressBook[recipient] ? (
               <Box
                 onClick={() => {
