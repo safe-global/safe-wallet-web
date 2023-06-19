@@ -18,7 +18,7 @@ const SponsoredBy = ({ relays, tooltip }: { relays: RelayResponse; tooltip?: str
     <Box className={css.sponsoredBy}>
       <SvgIcon component={GasStationIcon} inheritViewBox className={css.icon} />
       <Stack direction="column">
-        <Stack direction="row" spacing={0.5} alignItems="center" mb={1}>
+        <Stack direction="row" spacing={0.5} alignItems="center" mb={0.2}>
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
             Sponsored by
           </Typography>
@@ -40,14 +40,13 @@ const SponsoredBy = ({ relays, tooltip }: { relays: RelayResponse; tooltip?: str
             </Tooltip>
           ) : null}
         </Stack>
-        <div>
-          <Typography color="primary.light">
-            Transactions per hour:{' '}
-            <Box component="span" sx={{ fontWeight: '700', color: 'text.primary' }}>
-              {relays.remaining} of {relays.limit}
-            </Box>
-          </Typography>
-        </div>
+
+        <Typography variant="body2" color="primary.light">
+          Transactions per hour:{' '}
+          <Box component="span" sx={{ fontWeight: '700', color: 'text.primary' }}>
+            {relays.remaining} of {relays.limit}
+          </Box>
+        </Typography>
       </Stack>
     </Box>
   )
