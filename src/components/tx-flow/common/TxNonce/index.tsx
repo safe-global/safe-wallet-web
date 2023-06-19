@@ -1,4 +1,4 @@
-import { memo, type ReactElement, type SyntheticEvent, useCallback, useContext, useMemo } from 'react'
+import { memo, type ReactElement, type SyntheticEvent, useCallback, useContext, useMemo, useState } from 'react'
 
 import {
   Autocomplete,
@@ -16,14 +16,13 @@ import {
 import { SafeTxContext } from '../../SafeTxProvider'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import NumberField from '@/components/common/NumberField'
-import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
-import { uniqBy } from 'lodash'
-import useTxQueue, { useQueuedTxByNonce } from '@/hooks/useTxQueue'
+import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import css from './styles.module.css'
 import useAddressBook from '@/hooks/useAddressBook'
 import { getLatestTransactions } from '@/utils/tx-list'
 import { getTransactionType } from '@/hooks/useTransactionType'
+import usePreviousNonces from '@/hooks/usePreviousNonces'
 
 const CustomPopper = function (props: PopperProps) {
   return <Popper {...props} sx={{ width: '300px !important' }} placement="bottom-start" />
@@ -52,48 +51,34 @@ const NonceFormOption = memo(function NonceFormOption({
 })
 
 const TxNonce = () => {
-  const { page } = useTxQueue()
+  const [error, setError] = useState<boolean>(false)
   const { safe } = useSafeInfo()
-  const safeNonce = safe.nonce || 0
+  const previousNonces = usePreviousNonces()
   const { nonce, setNonce, safeTx, recommendedNonce } = useContext(SafeTxContext)
   const isEditable = !safeTx || safeTx?.signatures.size === 0
   const readonly = !isEditable
 
-  const queuedTxs = useMemo(() => {
-    if (!page || page.results.length === 0) {
-      return []
-    }
-
-    const txs = page.results.filter(isTransactionListItem).map((item) => item.transaction)
-
-    return uniqBy(txs, (tx) => {
-      return isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : ''
-    })
-  }, [page])
-
-  const options = useMemo(() => {
-    return queuedTxs
-      .map((tx) => (isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined))
-      .filter((nonce) => nonce !== undefined) as number[]
-  }, [queuedTxs])
-
-  // TODO: Add error/warning somewhere
-  const validateInput = (value: string) => {
-    if (!Number.isInteger(value)) {
-      return false
-    } else if (Number(value) < safeNonce) {
-      return false
-    }
-  }
+  const isValidInput = useCallback(
+    (value: string | AutocompleteValue<unknown, false, false, false>) => {
+      return Number(value) >= safe.nonce
+    },
+    [safe.nonce],
+  )
 
   const handleChange = useCallback(
     (e: SyntheticEvent, value: string | AutocompleteValue<unknown, false, false, false>) => {
       const nonce = Number(value)
       if (isNaN(nonce)) return
+      setError(!isValidInput(value))
       setNonce(nonce)
     },
-    [setNonce],
+    [isValidInput, setNonce],
   )
+
+  const resetNonce = useCallback(() => {
+    setError(false)
+    setNonce(recommendedNonce)
+  }, [recommendedNonce, setNonce])
 
   if (nonce === undefined) return <Skeleton variant="rounded" width={40} height={26} />
 
@@ -106,7 +91,7 @@ const TxNonce = () => {
         freeSolo
         onChange={handleChange}
         onInputChange={handleChange}
-        options={options}
+        options={previousNonces}
         disabled={readonly}
         getOptionLabel={(option) => option.toString()}
         renderOption={(props, option: number) => <NonceFormOption menuItemProps={props} nonce={option} />}
@@ -119,12 +104,13 @@ const TxNonce = () => {
         renderInput={(params) => (
           <NumberField
             {...params}
+            error={error}
             InputProps={{
               ...params.InputProps,
-              endAdornment: recommendedNonce !== undefined && recommendedNonce !== nonce && (
+              endAdornment: !readonly && recommendedNonce !== undefined && recommendedNonce !== nonce && (
                 <InputAdornment position="end" className={css.adornment}>
                   <Tooltip title="Reset to recommended nonce">
-                    <IconButton onClick={() => setNonce(recommendedNonce)} size="small" color="primary">
+                    <IconButton onClick={resetNonce} size="small" color="primary">
                       <RotateLeftIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
