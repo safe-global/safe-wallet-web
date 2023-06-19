@@ -1,4 +1,4 @@
-import { type ReactElement, useMemo, useState } from 'react'
+import { type ReactElement, useMemo, useState, useCallback } from 'react'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
@@ -17,6 +17,7 @@ import {
   Box,
   Button,
   CardActions,
+  Divider,
   FormControl,
   InputLabel,
   MenuItem,
@@ -34,6 +35,7 @@ import NumberField from '@/components/common/NumberField'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import { type TokenTransferParams, TokenTransferFields, TokenTransferType } from '.'
 import TxCard from '../../common/TxCard'
+import { safeFormatUnits } from '@/utils/formatters'
 
 import css from './styles.module.css'
 
@@ -109,6 +111,19 @@ const CreateTokenTransfer = ({
       : balances.items
   }, [balances.items, isOnlySpendingLimitBeneficiary, spendingLimits, wallet?.address])
 
+  const onMaxAmountClick = useCallback(() => {
+    if (!selectedToken) return
+
+    const amount =
+      isSpendingLimitType && spendingLimitAmount && spendingLimitAmount.lte(selectedToken.balance)
+        ? spendingLimitAmount.toString()
+        : selectedToken.balance
+
+    setValue(TokenTransferFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
+      shouldValidate: true,
+    })
+  }, [isSpendingLimitType, selectedToken, setValue, spendingLimitAmount])
+
   const isAmountError = !!errors[TokenTransferFields.tokenAddress] || !!errors[TokenTransferFields.amount]
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
@@ -149,6 +164,29 @@ const CreateTokenTransfer = ({
                 'Amount'}
             </InputLabel>
             <div className={css.inputs}>
+              <NumberField
+                variant="standard"
+                InputProps={{
+                  disableUnderline: true,
+                  endAdornment: (
+                    <Button className={css.max} onClick={onMaxAmountClick}>
+                      MAX
+                    </Button>
+                  ),
+                }}
+                className={css.amount}
+                required
+                {...register(TokenTransferFields.amount, {
+                  required: true,
+                  validate: (val) => {
+                    const decimals = selectedToken?.tokenInfo.decimals
+                    return (
+                      validateLimitedAmount(val, decimals, maxAmount.toString()) || validateDecimalLength(val, decimals)
+                    )
+                  },
+                })}
+              />
+              <Divider orientation="vertical" flexItem />
               <TextField
                 select
                 variant="standard"
@@ -176,23 +214,6 @@ const CreateTokenTransfer = ({
                   </MenuItem>
                 ))}
               </TextField>
-              <NumberField
-                variant="standard"
-                InputProps={{
-                  disableUnderline: true,
-                }}
-                className={css.amount}
-                required
-                {...register(TokenTransferFields.amount, {
-                  required: true,
-                  validate: (val) => {
-                    const decimals = selectedToken?.tokenInfo.decimals
-                    return (
-                      validateLimitedAmount(val, decimals, maxAmount.toString()) || validateDecimalLength(val, decimals)
-                    )
-                  },
-                })}
-              />
             </div>
           </FormControl>
 
