@@ -90,5 +90,5 @@ export const TWITTER_URL = 'https://twitter.com/safe'
 export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST || false
 
 // Risk mitigation (Redefine)
-export const REDEFINE_SIMULATION_URL = 'https://app.redefine.net/defirewall-tx/'
+export const REDEFINE_SIMULATION_URL = 'https://dashboard.redefine.net/reports/'
 export const REDEFINE_REQUEST_URL = 'https://risk-analysis.safe.global/messages'
