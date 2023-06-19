@@ -2,6 +2,7 @@
   background-color: var(--color-background-paper);
   border-radius: 6px;
   height: 66px;
+  padding: 12px var(--space-2);
 }
 
 .wrapper :global .MuiInputLabel-root.Mui-error[data-shrink='false'] {
