@@ -514,7 +514,7 @@ describe('txSender', () => {
       await waitFor(() =>
         expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', {
           txId: 'tx_id_123',
-          error: { code: ErrorCode.TRANSACTION_REPLACED, reason: 'cancelled' },
+          error: new Error(JSON.stringify({ code: ErrorCode.TRANSACTION_REPLACED, reason: 'cancelled' })),
         }),
       )
     })

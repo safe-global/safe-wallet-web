@@ -25,6 +25,7 @@ import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts
 import TxCard from '../../common/TxCard'
 import CheckWallet from '@/components/common/CheckWallet'
 import type { ExecuteBatchFlowProps } from '.'
+import { asError } from '@/services/exceptions/utils'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -92,10 +93,11 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
     try {
       await (willRelay ? onRelay() : onExecute())
-    } catch (err) {
-      logError(Errors._804, (err as Error).message)
+    } catch (_err) {
+      const err = asError(_err)
+      logError(Errors._804, err)
       setIsSubmittable(true)
-      setSubmitError(err as Error)
+      setSubmitError(err)
       return
     }
   }

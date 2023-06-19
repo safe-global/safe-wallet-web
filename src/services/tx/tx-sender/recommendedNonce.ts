@@ -35,7 +35,7 @@ export const getSafeTxGas = async (
     const estimation = await fetchRecommendedParams(chainId, safeAddress, safeTxData)
     return Number(estimation.safeTxGas)
   } catch (e) {
-    logError(Errors._616, (e as Error).message)
+    logError(Errors._616, e)
   }
 }
 
@@ -45,6 +45,6 @@ export const getRecommendedNonce = async (chainId: string, safeAddress: string):
     const estimation = await fetchRecommendedParams(chainId, safeAddress, blankTxParams)
     return Number(estimation.recommendedNonce)
   } catch (e) {
-    logError(Errors._616, (e as Error).message)
+    logError(Errors._616, e)
   }
 }

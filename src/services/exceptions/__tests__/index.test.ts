@@ -1,4 +1,4 @@
-import { Errors, logError, trackError, CodedException } from '.'
+import { Errors, logError, trackError, CodedException } from '..'
 import * as constants from '@/config/constants'
 import * as Sentry from '@sentry/react'
 
@@ -37,9 +37,23 @@ describe('CodedException', () => {
     expect(err.content).toBe(Errors._100)
   })
 
-  it('creates an error with an extra message', () => {
+  it('creates an error with an extra message from a string', () => {
     const err = new CodedException(Errors._100, '0x123')
     expect(err.message).toBe('Code 100: Invalid input in the address field (0x123)')
+    expect(err.code).toBe(100)
+    expect(err.content).toBe(Errors._100)
+  })
+
+  it('creates an error with an extra message from an Error instance', () => {
+    const err = new CodedException(Errors._100, new Error('0x123'))
+    expect(err.message).toBe('Code 100: Invalid input in the address field (0x123)')
+    expect(err.code).toBe(100)
+    expect(err.content).toBe(Errors._100)
+  })
+
+  it('creates an error with an extra message from an object', () => {
+    const err = new CodedException(Errors._100, { address: '0x123' })
+    expect(err.message).toBe('Code 100: Invalid input in the address field ({"address":"0x123"})')
     expect(err.code).toBe(100)
     expect(err.content).toBe(Errors._100)
   })

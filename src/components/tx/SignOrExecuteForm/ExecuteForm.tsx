@@ -19,6 +19,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { SuccessScreen } from '@/components/tx-flow/flows/SuccessScreen'
 import useGasLimit from '@/hooks/useGasLimit'
 import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
+import { asError } from '@/services/exceptions/utils'
 
 const ExecuteForm = ({
   safeTx,
@@ -72,10 +73,11 @@ const ExecuteForm = ({
     try {
       const executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
       setTxFlow(<SuccessScreen txId={executedTxId} />)
-    } catch (err) {
-      logError(Errors._804, (err as Error).message)
+    } catch (_err) {
+      const err = asError(_err)
+      logError(Errors._804, err)
       setIsSubmittable(true)
-      setSubmitError(err as Error)
+      setSubmitError(err)
       return
     }
 
