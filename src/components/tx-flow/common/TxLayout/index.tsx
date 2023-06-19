@@ -1,5 +1,5 @@
 import type { ComponentType, ReactElement, ReactNode } from 'react'
-import { Box, Container, Grid, Typography, Button, Paper, SvgIcon } from '@mui/material'
+import { Box, Container, Grid, Typography, Button, Paper, SvgIcon, Divider } from '@mui/material'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import SafeTxProvider from '../../SafeTxProvider'
@@ -59,6 +59,8 @@ const TxLayout = ({
 
                   {!hideNonce && <TxNonce />}
                 </Box>
+
+                <Divider sx={{ position: 'relative', zIndex: '1' }} />
               </Paper>
 
               <div className={css.step}>

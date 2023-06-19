@@ -1,3 +1,7 @@
+.stepFirstCard {
+  padding-top: var(--space-3);
+}
+
 .cardContent {
   display: flex;
   flex-direction: column;

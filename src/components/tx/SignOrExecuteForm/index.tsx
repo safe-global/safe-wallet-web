@@ -12,6 +12,9 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
+import { Divider } from '@mui/material'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
+import css from './styles.module.css'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -38,7 +41,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
 
   return (
     <>
-      <TxCard>
+      <TxCard className={commonCss.stepFirstCard}>
         {props.children}
 
         <DecodedTx tx={safeTx} txId={props.txId} />
@@ -65,7 +68,10 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
           </ErrorMessage>
         )}
 
-        {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
+        <div>
+          <Divider className={css.nestedDivider} />
+          {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
+        </div>
       </TxCard>
     </>
   )

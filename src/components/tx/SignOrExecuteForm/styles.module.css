@@ -30,3 +30,7 @@
 .execute svg {
   color: var(--color-secondary-dark);
 }
+
+.nestedDivider {
+  margin: 0 calc(-1 * var(--space-2));
+}
