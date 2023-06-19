@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { type EIP1193Provider, type WalletState, type OnboardAPI } from '@web3-onboard/core'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getAddress, isAddress } from 'ethers/lib/utils'
+import { getAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { localItem } from '@/services/local-storage/local'
@@ -44,8 +44,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   const primaryWallet = wallets[0]
   if (!primaryWallet) return null
 
-  // WalletConnect v2 returns an account with address `0` at the first index
-  const account = primaryWallet?.accounts.filter((account) => isAddress(account.address))[0]
+  const account = primaryWallet.accounts[0]
   if (!account) return null
 
   try {
