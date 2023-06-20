@@ -115,8 +115,8 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   }
   return (
     <SuccessMessage>
-      <Grid container direction="row">
-        <Grid item xs>
+      <Grid container direction="row" justifyContent="space-between">
+        <Grid item xs={7}>
           Your connected wallet has already signed this message.
         </Grid>
         <Grid item xs={4}>
@@ -228,6 +228,7 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
         <AlreadySignedByOwnerMessage hasSigned={hasSigned} />
 
         <InfoBox
+          title="Collect all the confirmations"
           message={
             requestId
               ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
