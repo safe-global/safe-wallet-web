@@ -1,4 +1,4 @@
-import { memo, type ReactElement, type SyntheticEvent, useCallback, useContext, useMemo, useState } from 'react'
+import { memo, type ReactElement, type SyntheticEvent, useCallback, useContext, useMemo, useRef, useState } from 'react'
 
 import {
   Autocomplete,
@@ -55,6 +55,7 @@ const TxNonce = () => {
   const { safe } = useSafeInfo()
   const previousNonces = usePreviousNonces()
   const { nonce, setNonce, safeTx, recommendedNonce } = useContext(SafeTxContext)
+  const isEmpty = useRef<boolean>(false)
   const isEditable = !safeTx || safeTx?.signatures.size === 0
   const readonly = !isEditable
 
@@ -67,6 +68,7 @@ const TxNonce = () => {
 
   const handleChange = useCallback(
     (e: SyntheticEvent, value: string | AutocompleteValue<unknown, false, false, false>) => {
+      isEmpty.current = value === ''
       const nonce = Number(value)
       if (isNaN(nonce)) return
       setError(!isValidInput(value))
@@ -77,6 +79,7 @@ const TxNonce = () => {
 
   const resetNonce = useCallback(() => {
     setError(false)
+    isEmpty.current = false
     setNonce(recommendedNonce)
   }, [recommendedNonce, setNonce])
 
@@ -86,8 +89,8 @@ const TxNonce = () => {
     <Box display="flex" alignItems="center" gap={1}>
       Nonce
       <Autocomplete
-        value={nonce}
-        inputValue={nonce.toString()}
+        value={isEmpty.current ? '' : nonce}
+        inputValue={isEmpty.current ? '' : nonce.toString()}
         freeSolo
         onChange={handleChange}
         onInputChange={handleChange}
