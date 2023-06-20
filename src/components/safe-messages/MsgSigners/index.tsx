@@ -79,7 +79,7 @@ export const MsgSigners = ({
         </ListItem>
       )}
       <ListItem>
-        <ListItemIcon>
+        <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
           <Signed />
         </ListItemIcon>
         <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
