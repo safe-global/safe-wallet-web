@@ -30,6 +30,11 @@
   padding-right: 0;
 }
 
+.signers :global .MuiListItemText-root {
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-1);
+}
+
 .signers :global .MuiListItemIcon-root {
   color: var(--color-primary-main);
   justify-content: center;

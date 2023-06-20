@@ -115,8 +115,8 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   }
   return (
     <SuccessMessage>
-      <Grid container direction="row">
-        <Grid item xs>
+      <Grid container direction="row" justifyContent="space-between">
+        <Grid item xs={7}>
           Your connected wallet has already signed this message.
         </Grid>
         <Grid item xs={4}>
@@ -213,21 +213,26 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
   }, [onClose, ongoingMessage, requestId])
 
   return (
-    <TxCard>
-      <CardContent>
-        <DialogHeader threshold={safe.threshold} />
+    <>
+      <TxCard>
+        <CardContent>
+          <DialogHeader threshold={safe.threshold} />
 
-        <Typography fontWeight={700} mb={1}>
-          Message: <CopyButton text={decodedMessageAsString} />
-        </Typography>
-        <DecodedMsg message={decodedMessage} isInModal />
+          <Typography fontWeight={700} mb={1}>
+            Message: <CopyButton text={decodedMessageAsString} />
+          </Typography>
+          <DecodedMsg message={decodedMessage} isInModal />
 
-        <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
-        <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
+          <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
+          <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
+        </CardContent>
+      </TxCard>
 
+      <TxCard>
         <AlreadySignedByOwnerMessage hasSigned={hasSigned} />
 
         <InfoBox
+          title="Collect all the confirmations"
           message={
             requestId
               ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
@@ -245,17 +250,19 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
         <WrongChainWarning />
 
         <MessageDialogError isOwner={isOwner} submitError={submitError} />
-      </CardContent>
+      </TxCard>
 
-      <CardActions>
-        {/* TODO: Remove this Cancel button once we can figure out how to move the logic outside */}
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
-          Sign
-        </Button>
-      </CardActions>
-      <ConfirmationDialog open={showCloseTooltip} onCancel={() => setShowCloseTooltip(false)} onClose={onClose} />
-    </TxCard>
+      <TxCard>
+        <CardActions>
+          {/* TODO: Remove this Cancel button once we can figure out how to move the logic outside */}
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
+            Sign
+          </Button>
+        </CardActions>
+        <ConfirmationDialog open={showCloseTooltip} onCancel={() => setShowCloseTooltip(false)} onClose={onClose} />
+      </TxCard>
+    </>
   )
 }
 

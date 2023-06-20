@@ -1,14 +1,8 @@
-.input {
-  white-space: nowrap;
-  width: 200px;
-  overflow: hidden;
+.input :global .MuiOutlinedInput-root {
+  padding: 0;
 }
 
-.input br {
-  display: none;
-}
-
-.input * {
-  display: inline;
-  white-space: nowrap;
+.adornment {
+  margin-left: 0;
+  margin-right: 4px;
 }

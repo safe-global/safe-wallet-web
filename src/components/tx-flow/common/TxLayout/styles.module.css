@@ -4,6 +4,14 @@
   border-bottom-right-radius: 0;
 }
 
+.headerInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
 .step {
   position: relative;
 }
@@ -13,6 +21,12 @@
   position: absolute;
   left: var(--space-3);
   bottom: var(--space-3);
+}
+
+.step :global(.MuiCard-root:first-child) {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  margin-top: 0;
 }
 
 .step :global(.MuiCardContent-root:last-child) {

@@ -1,67 +1,7 @@
-import type {
-  AddressEx,
-  MultisigExecutionInfo,
-  Transaction,
-  TransactionInfo,
-  TransactionListItem,
-  TransactionSummary,
-  TransferInfo,
-} from '@safe-global/safe-gateway-typescript-sdk'
-import {
-  ConflictType,
-  DetailedExecutionInfoType,
-  TransactionInfoType,
-  TransactionListItemType,
-  TransactionStatus,
-  TransactionTokenType,
-  TransferDirection,
-} from '@safe-global/safe-gateway-typescript-sdk'
+import type { MultisigExecutionInfo, Transaction, TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
+import { ConflictType, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 import { getBatchableTransactions } from '@/hooks/useBatchedTxs'
-
-const mockAddressEx: AddressEx = {
-  value: 'string',
-}
-
-const mockTransferInfo: TransferInfo = {
-  type: TransactionTokenType.ERC20,
-  tokenAddress: 'string',
-  value: 'string',
-}
-
-const mockTxInfo: TransactionInfo = {
-  type: TransactionInfoType.TRANSFER,
-  sender: mockAddressEx,
-  recipient: mockAddressEx,
-  direction: TransferDirection.OUTGOING,
-  transferInfo: mockTransferInfo,
-}
-
-const defaultTx: TransactionSummary = {
-  id: '',
-  timestamp: 0,
-  txInfo: mockTxInfo,
-  txStatus: TransactionStatus.AWAITING_CONFIRMATIONS,
-  executionInfo: {
-    type: DetailedExecutionInfoType.MULTISIG,
-    nonce: 1,
-    confirmationsRequired: 2,
-    confirmationsSubmitted: 2,
-  },
-}
-
-const getMockTx = ({ nonce }: { nonce?: number }): Transaction => {
-  return {
-    transaction: {
-      ...defaultTx,
-      executionInfo: {
-        ...defaultTx.executionInfo,
-        nonce: nonce ?? (defaultTx.executionInfo as MultisigExecutionInfo).nonce,
-      } as MultisigExecutionInfo,
-    },
-    type: TransactionListItemType.TRANSACTION,
-    conflictType: ConflictType.NONE,
-  }
-}
+import { defaultTx, getMockTx } from '@/tests/mocks/transactions'
 
 describe('getBatchableTransactions', () => {
   it('should return an empty array if no transactions are passed', () => {

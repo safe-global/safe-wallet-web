@@ -12,7 +12,7 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import ErrorMessage from '../ErrorMessage'
-import Summary from '@/components/transactions/TxDetails/Summary'
+import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { isEmptyHexData } from '@/utils/hex'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
@@ -92,18 +92,19 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
             decodedDataLoading && <Skeleton />
           )}
 
-          {txDetails ? (
-            <Box mt={2}>
-              <Typography variant="overline" fontWeight="bold" color="border.main">
-                Advanced details
-              </Typography>
-              <Summary txDetails={txDetails} defaultExpanded />
-            </Box>
-          ) : txDetailsError ? (
-            <ErrorMessage error={txDetailsError}>Failed loading transaction details</ErrorMessage>
-          ) : (
-            txDetailsLoading && <Skeleton />
-          )}
+          <Box mt={2}>
+            <Typography variant="overline" fontWeight="bold" color="border.main">
+              Advanced details
+            </Typography>
+
+            {txDetails ? <Summary txDetails={txDetails} defaultExpanded /> : tx && <PartialSummary safeTx={tx} />}
+
+            {txDetailsLoading && <Skeleton />}
+
+            {txDetailsError && (
+              <ErrorMessage error={txDetailsError}>Failed loading all transaction details</ErrorMessage>
+            )}
+          </Box>
         </AccordionDetails>
       </Accordion>
     </Box>

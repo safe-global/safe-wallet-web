@@ -46,7 +46,7 @@ const TxLayout = ({
               <Paper className={css.header}>
                 <ProgressBar value={progress} />
 
-                <Box display="flex" justifyContent="space-between" py={2} px={3}>
+                <Box className={css.headerInner}>
                   <Box display="flex" alignItems="center">
                     {icon && (
                       <div className={css.icon}>
@@ -54,7 +54,9 @@ const TxLayout = ({
                       </div>
                     )}
 
-                    {subtitle}
+                    <Typography variant="h4" component="div" fontWeight="bold">
+                      {subtitle}
+                    </Typography>
                   </Box>
 
                   {!hideNonce && <TxNonce />}
