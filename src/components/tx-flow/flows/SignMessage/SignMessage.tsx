@@ -213,18 +213,22 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
   }, [onClose, ongoingMessage, requestId])
 
   return (
-    <TxCard>
-      <CardContent>
-        <DialogHeader threshold={safe.threshold} />
+    <>
+      <TxCard>
+        <CardContent>
+          <DialogHeader threshold={safe.threshold} />
 
-        <Typography fontWeight={700} mb={1}>
-          Message: <CopyButton text={decodedMessageAsString} />
-        </Typography>
-        <DecodedMsg message={decodedMessage} isInModal />
+          <Typography fontWeight={700} mb={1}>
+            Message: <CopyButton text={decodedMessageAsString} />
+          </Typography>
+          <DecodedMsg message={decodedMessage} isInModal />
 
-        <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
-        <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
+          <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
+          <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
+        </CardContent>
+      </TxCard>
 
+      <TxCard>
         <AlreadySignedByOwnerMessage hasSigned={hasSigned} />
 
         <InfoBox
@@ -246,17 +250,19 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
         <WrongChainWarning />
 
         <MessageDialogError isOwner={isOwner} submitError={submitError} />
-      </CardContent>
+      </TxCard>
 
-      <CardActions>
-        {/* TODO: Remove this Cancel button once we can figure out how to move the logic outside */}
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
-          Sign
-        </Button>
-      </CardActions>
-      <ConfirmationDialog open={showCloseTooltip} onCancel={() => setShowCloseTooltip(false)} onClose={onClose} />
-    </TxCard>
+      <TxCard>
+        <CardActions>
+          {/* TODO: Remove this Cancel button once we can figure out how to move the logic outside */}
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
+            Sign
+          </Button>
+        </CardActions>
+        <ConfirmationDialog open={showCloseTooltip} onCancel={() => setShowCloseTooltip(false)} onClose={onClose} />
+      </TxCard>
+    </>
   )
 }
 
