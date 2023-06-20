@@ -131,7 +131,7 @@ const CreateTokenTransfer = ({
     <TxCard>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
-          <FormControl fullWidth>
+          <FormControl fullWidth sx={{ mt: 1 }}>
             {addressBook[recipient] ? (
               <Box
                 onClick={() => {
