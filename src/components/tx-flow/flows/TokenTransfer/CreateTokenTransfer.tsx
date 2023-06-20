@@ -27,7 +27,6 @@ import {
 } from '@mui/material'
 import TokenIcon from '@/components/common/TokenIcon'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import useSafeAddress from '@/hooks/useSafeAddress'
 import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
@@ -36,7 +35,7 @@ import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation
 import { type TokenTransferParams, TokenTransferFields, TokenTransferType } from '.'
 import TxCard from '../../common/TxCard'
 import { safeFormatUnits } from '@/utils/formatters'
-
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 
 const CreateTokenTransfer = ({
@@ -57,7 +56,6 @@ const CreateTokenTransfer = ({
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
-  const safeAddress = useSafeAddress()
   const [recipientFocus, setRecipientFocus] = useState(false)
 
   const formMethods = useForm<TokenTransferParams>({
@@ -130,14 +128,10 @@ const CreateTokenTransfer = ({
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   return (
-    <TxCard>
+    <TxCard className={commonCss.stepFirstCard}>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl fullWidth sx={{ mb: '28px' }}>
-            <AddressInputReadOnly label="Sending from" address={safeAddress} />
-          </FormControl>
-
-          <FormControl fullWidth sx={{ mb: '28px' }}>
+        <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
+          <FormControl fullWidth>
             {addressBook[recipient] ? (
               <Box
                 onClick={() => {
@@ -232,6 +226,7 @@ const CreateTokenTransfer = ({
             </FormControl>
           )}
 
+          <Divider className={commonCss.nestedDivider} />
           <CardActions>
             <Button variant="contained" type="submit" disabled={isDisabled}>
               Next

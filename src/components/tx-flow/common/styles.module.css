@@ -1,6 +1,14 @@
+.stepFirstCard {
+  padding-top: var(--space-3);
+}
+
 .cardContent {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-3);
+}
+
+.nestedDivider {
+  margin: 0 calc(-1 * var(--space-2));
 }

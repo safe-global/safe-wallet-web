@@ -1,5 +1,5 @@
-.wrapper {
-  margin-top: var(--space-8);
+.form > :global(.MuiFormControl-root) {
+  margin-bottom: 28px;
 }
 
 .outline {

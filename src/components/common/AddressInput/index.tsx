@@ -1,6 +1,14 @@
 import type { ReactElement } from 'react'
 import { useEffect, useCallback, useRef, useMemo, useState } from 'react'
-import { InputAdornment, TextField, type TextFieldProps, CircularProgress, IconButton, SvgIcon } from '@mui/material'
+import {
+  InputAdornment,
+  TextField,
+  type TextFieldProps,
+  CircularProgress,
+  IconButton,
+  SvgIcon,
+  Skeleton,
+} from '@mui/material'
 import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -118,8 +126,11 @@ const AddressInput = ({
           ...(props.InputProps || {}),
 
           // Display the current short name in the adornment, unless the value contains the same prefix
-          startAdornment: !error && !rawValueRef.current.startsWith(`${currentShortName}:`) && (
-            <InputAdornment position="end">{currentShortName}:</InputAdornment>
+          startAdornment: (
+            <InputAdornment position="end">
+              <Skeleton variant="circular" width={32} height={32} animation={false} sx={{ marginRight: '0.5em' }} />
+              {!rawValueRef.current.startsWith(`${currentShortName}:`) && <>{currentShortName}:</>}
+            </InputAdornment>
           ),
 
           endAdornment,
