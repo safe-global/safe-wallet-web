@@ -1,5 +1,6 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions } from '@mui/material'
+import { Button, CardActions } from '@mui/material'
+import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -20,6 +21,8 @@ import { SuccessScreen } from '@/components/tx-flow/flows/SuccessScreen'
 import useGasLimit from '@/hooks/useGasLimit'
 import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
+
+import css from './styles.module.css'
 
 const ExecuteForm = ({
   safeTx,
@@ -88,24 +91,26 @@ const ExecuteForm = ({
 
   return (
     <>
-      <AdvancedParams
-        willExecute
-        params={advancedParams}
-        recommendedGasLimit={gasLimit}
-        onFormSubmit={setAdvancedParams}
-        gasLimitError={gasLimitError}
-        willRelay={willRelay}
-      />
-
       <form onSubmit={handleSubmit}>
+        <div className={classNames({ [css.noBottomBorderRadius]: canRelay })}>
+          <AdvancedParams
+            willExecute
+            params={advancedParams}
+            recommendedGasLimit={gasLimit}
+            onFormSubmit={setAdvancedParams}
+            gasLimitError={gasLimitError}
+            willRelay={willRelay}
+          />
+        </div>
+
         {canRelay && (
-          <Box mb={2}>
+          <div className={css.noTopBorder}>
             <ExecutionMethodSelector
               executionMethod={executionMethod}
               setExecutionMethod={setExecutionMethod}
               relays={relays}
             />
-          </Box>
+          </div>
         )}
 
         {/* Error messages */}
