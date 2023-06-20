@@ -40,7 +40,7 @@ const ReviewTokenTransfer = ({
 
   return (
     <SignOrExecuteForm onSubmit={onSubmit}>
-      <SendAmountBlock amount={params.amount} tokenInfo={token?.tokenInfo} />
+      {token && <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} />}
 
       <SendToBlock address={params.recipient} />
     </SignOrExecuteForm>
