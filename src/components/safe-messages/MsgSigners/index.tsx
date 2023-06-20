@@ -79,7 +79,7 @@ export const MsgSigners = ({
         </ListItem>
       )}
       <ListItem>
-        <ListItemIcon>
+        <ListItemIcon sx={{ backgroundColor }}>
           <Signed />
         </ListItemIcon>
         <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
@@ -92,7 +92,7 @@ export const MsgSigners = ({
       {!hideConfirmations &&
         confirmations.map(({ owner }) => (
           <ListItem key={owner.value} sx={{ py: 0 }}>
-            <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
+            <ListItemIcon sx={{ backgroundColor }}>
               <Dot />
             </ListItemIcon>
             <ListItemText>
@@ -115,7 +115,7 @@ export const MsgSigners = ({
       {showMissingSignatures &&
         missingConfirmations.map((_, idx) => (
           <ListItem key={`skeleton${idx}`} sx={{ py: 0 }}>
-            <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
+            <ListItemIcon sx={{ backgroundColor }}>
               <SvgIcon component={CircleOutlinedIcon} className={css.dot} color="border" fontSize="small" />
             </ListItemIcon>
             <ListItemText>
@@ -130,7 +130,7 @@ export const MsgSigners = ({
         ))}
       {isConfirmed && (
         <ListItem>
-          <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
+          <ListItemIcon sx={{ backgroundColor }}>
             <Dot />
           </ListItemIcon>
           <ListItemText>Confirmed</ListItemText>
