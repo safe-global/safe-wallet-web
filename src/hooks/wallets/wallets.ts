@@ -29,11 +29,7 @@ const walletConnectV1 = (): WalletInit => {
   }
 }
 
-const walletConnectV2 = (chains: ChainInfo[]): WalletInit => {
-  const requiredChains = chains
-    .filter((chain) => isWalletSupported(chain.disabledWallets, WALLET_KEYS.WALLETCONNECT_V2))
-    .map((chain) => parseInt(chain.chainId))
-
+const walletConnectV2 = (chain: ChainInfo): WalletInit => {
   return walletConnect({
     version: 2,
     projectId: WC_PROJECT_ID,
@@ -42,15 +38,15 @@ const walletConnectV2 = (chains: ChainInfo[]): WalletInit => {
         '--w3m-z-index': '1302',
       },
     },
-    requiredChains,
+    requiredChains: [parseInt(chain.chainId)],
   })
 }
 
-const WALLET_MODULES: { [key in WALLET_KEYS]: (chains: ChainInfo[]) => WalletInit } = {
+const WALLET_MODULES: { [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit } = {
   [WALLET_KEYS.INJECTED]: () => injectedWalletModule(),
   [WALLET_KEYS.PAIRING]: () => pairingModule(),
   [WALLET_KEYS.WALLETCONNECT]: () => walletConnectV1(),
-  [WALLET_KEYS.WALLETCONNECT_V2]: (chains) => walletConnectV2(chains),
+  [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain),
   [WALLET_KEYS.LEDGER]: () => ledgerModule(),
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
   [WALLET_KEYS.KEYSTONE]: () => keystoneModule(),
@@ -59,7 +55,7 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: (chains: ChainInfo[]) => WalletIni
     coinbaseModule({ darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches }),
 }
 
-export const getAllWallets = (chains: ChainInfo[]): WalletInit[] => {
+export const getAllWallets = (chains: ChainInfo): WalletInit[] => {
   return Object.values(WALLET_MODULES).map((module) => module(chains))
 }
 
@@ -72,15 +68,15 @@ export const isWalletSupported = (disabledWallets: string[], walletLabel: string
   return !disabledWallets.includes(legacyWalletName || walletLabel)
 }
 
-export const getSupportedWallets = (chain: ChainInfo, chains: ChainInfo[]): WalletInit[] => {
+export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   if (window.Cypress && CYPRESS_MNEMONIC) {
     return [e2eWalletModule(chain.rpcUri)]
   }
   const enabledWallets = Object.entries(WALLET_MODULES).filter(([key]) => isWalletSupported(chain.disabledWallets, key))
 
   if (enabledWallets.length === 0) {
-    return [WALLET_MODULES.INJECTED(chains)]
+    return [WALLET_MODULES.INJECTED(chain)]
   }
 
-  return enabledWallets.map(([, module]) => module(chains))
+  return enabledWallets.map(([, module]) => module(chain))
 }

@@ -30,10 +30,14 @@ export const forgetLastWallet = () => {
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
-export const initOnboard = async (chainConfigs: ChainInfo[], rpcConfig: EnvState['rpc'] | undefined) => {
+export const initOnboard = async (
+  chainConfigs: ChainInfo[],
+  currentChain: ChainInfo,
+  rpcConfig: EnvState['rpc'] | undefined,
+) => {
   const { createOnboard } = await import('@/services/onboard')
   if (!getStore()) {
-    setStore(createOnboard(chainConfigs, rpcConfig))
+    setStore(createOnboard(chainConfigs, currentChain, rpcConfig))
   }
 }
 
@@ -159,10 +163,10 @@ export const useInitOnboard = () => {
   useInitPairing()
 
   useEffect(() => {
-    if (configs.length > 0) {
-      void initOnboard(configs, customRpc)
+    if (configs.length > 0 && chain) {
+      void initOnboard(configs, chain, customRpc)
     }
-  }, [configs, customRpc])
+  }, [configs, chain, customRpc])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
@@ -170,7 +174,7 @@ export const useInitOnboard = () => {
 
     const enableWallets = async () => {
       const { getSupportedWallets } = await import('@/hooks/wallets/wallets')
-      const supportedWallets = getSupportedWallets(chain, configs)
+      const supportedWallets = getSupportedWallets(chain)
       onboard.state.actions.setWalletModules(supportedWallets)
     }
 
@@ -188,7 +192,7 @@ export const useInitOnboard = () => {
           })
       })
     })
-  }, [chain, configs, onboard])
+  }, [chain, onboard])
 }
 
 export default useStore
