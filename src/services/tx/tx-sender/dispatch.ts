@@ -21,6 +21,7 @@ import {
 } from './sdk'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
+import { asError } from '@/services/exceptions/utils'
 
 /**
  * Propose a transaction
@@ -49,9 +50,9 @@ export const dispatchTxProposal = async ({
     proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash, origin)
   } catch (error) {
     if (txId) {
-      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: error as Error })
+      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: asError(error) })
     } else {
-      txDispatch(TxEvent.PROPOSE_FAILED, { error: error as Error })
+      txDispatch(TxEvent.PROPOSE_FAILED, { error: asError(error) })
     }
     throw error
   }
@@ -80,7 +81,7 @@ export const dispatchTxSigning = async (
   try {
     signedTx = await tryOffChainTxSigning(safeTx, safeVersion, sdk)
   } catch (error) {
-    txDispatch(TxEvent.SIGN_FAILED, { txId, error: error as Error })
+    txDispatch(TxEvent.SIGN_FAILED, { txId, error: asError(error) })
     throw error
   }
 
@@ -108,7 +109,7 @@ export const dispatchOnChainSigning = async (
     await sdkUnchecked.approveTransactionHash(safeTxHash)
     txDispatch(TxEvent.ONCHAIN_SIGNATURE_REQUESTED, eventParams)
   } catch (err) {
-    txDispatch(TxEvent.FAILED, { ...eventParams, error: err as Error })
+    txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(err) })
     throw err
   }
 
@@ -138,7 +139,7 @@ export const dispatchTxExecution = async (
     result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
     txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
+    txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
     throw error
   }
 
@@ -160,7 +161,7 @@ export const dispatchTxExecution = async (
       if (didReprice(error)) {
         txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
       } else {
-        txDispatch(TxEvent.FAILED, { ...eventParams, error: error as Error })
+        txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
       }
     })
 
@@ -189,7 +190,7 @@ export const dispatchBatchExecution = async (
     })
   } catch (err) {
     txs.forEach(({ txId }) => {
-      txDispatch(TxEvent.FAILED, { txId, error: err as Error, groupKey })
+      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey })
     })
     throw err
   }
@@ -230,7 +231,7 @@ export const dispatchBatchExecution = async (
         txs.forEach(({ txId }) => {
           txDispatch(TxEvent.FAILED, {
             txId,
-            error: err as Error,
+            error: asError(err),
             groupKey,
           })
         })
@@ -268,7 +269,7 @@ export const dispatchSpendingLimitTxExecution = async (
     )
     txDispatch(TxEvent.EXECUTING, { groupKey: id })
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { groupKey: id, error: error as Error })
+    txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
     throw error
   }
 
@@ -287,7 +288,7 @@ export const dispatchSpendingLimitTxExecution = async (
       }
     })
     .catch((error) => {
-      txDispatch(TxEvent.FAILED, { groupKey: id, error: error as Error })
+      txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
     })
 
   return result?.hash
@@ -339,7 +340,7 @@ export const dispatchTxRelay = async (
     // Monitor relay tx
     waitForRelayedTx(taskId, [txId], safe.address.value)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: error as Error })
+    txDispatch(TxEvent.FAILED, { txId, error: asError(error) })
     throw error
   }
 }
@@ -366,7 +367,7 @@ export const dispatchBatchExecutionRelay = async (
     txs.forEach(({ txId }) => {
       txDispatch(TxEvent.FAILED, {
         txId,
-        error: error as Error,
+        error: asError(error),
         groupKey,
       })
     })

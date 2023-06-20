@@ -1,10 +1,24 @@
 :root {
+  --w3o-background-color: var(--color-background-paper);
+  --w3o-foreground-color: var(--color-border-light);
+  --w3o-text-color: var(--color-text-primary);
+  --w3o-border-color: var(--color-border-light);
+  --w3o-action-color: var(--color-primary-main);
+  --w3o-border-radius: 6px;
+  --w3o-font-family: DM Sans, sans-serif;
+
+  --onboard-border-radius-1: var(--w3o-border-radius);
+  --onboard-border-radius-2: var(--w3o-border-radius);
+  --onboard-border-radius-3: var(--w3o-border-radius);
+
+  /* Palette */
   --onboard-white: var(--color-background-paper);
   --onboard-black: var(--color-text-primary);
 
   --onboard-primary-1: var(--color-secondary-main);
   --onboard-primary-100: var(--color-secondary-background);
   --onboard-primary-200: var(--color-primary-light);
+  --onboard-primary-300: var(--color-primary-light);
   --onboard-primary-400: var(--color-primary-light);
   --onboard-primary-500: var(--color-primary-main);
   --onboard-primary-600: var(--color-primary-main);
@@ -32,47 +46,44 @@
   --onboard-warning-600: var(--color-error-main);
   --onboard-warning-700: var(--color-error-dark);
 
-  /* var(--color-backdrop-main) + opacity */
+  /* Connect modal */
+  --onboard-modal-z-index: 1301;
+
   --onboard-modal-backdrop: rgba(99, 102, 105, 0.75);
 
-  --account-select-modal-white: var(--color-background-paper);
-  --account-select-modal-black: var(--color-primary-main);
-  --account-select-modal-primary-100: var(--color-secondary-background);
-  --account-select-modal-primary-200: var(--color-background-light);
-  --account-select-modal-primary-300: var(--color-secondary-background);
-  --account-select-modal-primary-500: var(--color-secondary-background);
-  --account-select-modal-primary-600: var(--color-secondary-light);
+  --onboard-modal-border-radius: var(--w3o-border-radius);
 
-  --account-select-primary-300: var(--color-primary-main);
-  --account-select-primary-500: var(--color-primary-main);
+  --onboard-connect-sidebar-progress-background: var(--color-border-main);
 
-  --onboard-connect-sidebar-color: var(--color-text-primary);
-  --onboard-wallet-button-color: var(--color-text-primary);
+  --onboard-link-color: var(--color-primary-main);
+
   --onboard-wallet-app-icon-border-color: var(--color-border-light);
   --onboard-wallet-app-icon-background-white: #fff;
   --onboard-wallet-app-icon-background-transparent: #fff;
   --onboard-wallet-app-icon-background-light-gray: rgba(255, 255, 255, 0.5);
-  --onboard-wallet-button-border-color: var(--color-border-light);
-  --onboard-wallet-button-border-radius: 8px;
+
+  --onboard-wallet-button-border-radius: var(--w3o-border-radius);
   --onboard-wallet-button-background-hover: var(--color-background-light);
-  --onboard-wallet-button-background-active: var(--color-background-light);
-  /* Needs to be brighter than var(--color-primary-main) to compensate for shadow blur */
-  --onboard-wallet-button-box-shadow-hover: 0 0 2px #00fd00;
 
-  /* Fonts */
-  --onboard-font-family-normal: DM Sans, sans-serif;
-  --onboard-font-family-semibold: DM Sans, sans-serif;
-  --onboard-font-family-light: DM Sans, sans-serif;
-  --account-select-modal-font-family-normal: DM Sans, sans-serif;
-  --account-select-modal-font-family-light: DM Sans, sans-serif;
+  /* Account select (modal) */
 
-  --onboard-modal-border-radius: 8px;
-  --onboard-border-radius-1: 8px;
-  --onboard-border-radius-2: 8px;
-  --onboard-border-radius-3: 8px;
+  --account-select-white: var(--onboard-white);
+  --account-select-black: var(--onboard-black);
 
-  /* Z-index */
-  --onboard-modal-z-index: 1301;
+  --account-select-primary-100: var(--onboard-primary-100);
+  --account-select-primary-200: var(--onboard-primary-200);
+  --account-select-primary-300: var(--onboard-primary-300);
+  --account-select-primary-500: var(--onboard-primary-500);
+  --account-select-primary-600: var(--onboard-primary-600);
+
+  --account-select-gray-100: var(--onboard-gray-100);
+  --account-select-gray-200: var(--onboard-gray-200);
+  --account-select-gray-300: var(--onboard-gray-300);
+  --account-select-gray-500: var(--onboard-gray-500);
+  --account-select-gray-700: var(--onboard-gray-700);
+
+  --account-select-danger-500: var(--onboard-danger-500);
+
   --onboard-account-select-modal-z-index: 1301;
 }
 
@@ -92,4 +103,9 @@
 /* Keystone modal */
 #kv_sdk_container + .ReactModalPortal > div {
   z-index: 1301 !important;
+}
+
+/* Ledger modal */
+.ledger-ck-modal > div#ModalWrapper {
+  z-index: 9999999 !important;
 }

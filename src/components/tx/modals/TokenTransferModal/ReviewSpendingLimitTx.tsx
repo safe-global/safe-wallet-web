@@ -21,6 +21,7 @@ import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import { asError } from '@/services/exceptions/utils'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -86,10 +87,11 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
       await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress)
 
       onSubmit()
-    } catch (err) {
-      logError(Errors._801, (err as Error).message)
+    } catch (_err) {
+      const err = asError(_err)
+      logError(Errors._801, err)
       setIsSubmittable(true)
-      setSubmitError(err as Error)
+      setSubmitError(err)
     }
   }
 

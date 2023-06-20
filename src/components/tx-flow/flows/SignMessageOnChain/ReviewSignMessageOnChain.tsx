@@ -24,6 +24,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import { asError } from '@/services/exceptions/utils'
 
 export type SignMessageOnChainProps = {
   appId?: number
@@ -97,7 +98,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
     try {
       await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
-      setSafeTxError(error as Error)
+      setSafeTxError(asError(error))
     }
   }
 

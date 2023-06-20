@@ -25,7 +25,7 @@ export const SafeTxContext = createContext<{
   setSafeTxGas: () => {},
 })
 
-// (err) => logError(Errors._103, (err as Error).message)
+// (err) => logError(Errors._103, err)
 
 const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [safeTx, setSafeTx] = useState<SafeTransaction>()
