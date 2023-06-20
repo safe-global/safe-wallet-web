@@ -15,7 +15,7 @@ const useSafeInfo = (): {
 
   return useMemo(
     () => ({
-      safe: data || defaultSafeInfo,
+      safe: data ? { ...data, version: data.version || '1.3.0' } : defaultSafeInfo,
       safeAddress: data?.address.value || '',
       safeLoaded: !!data,
       safeError: error,
