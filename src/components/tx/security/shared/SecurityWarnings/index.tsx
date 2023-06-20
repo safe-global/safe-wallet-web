@@ -19,9 +19,12 @@ import css from './styles.module.css'
 import { LoadingLabel } from '../LoadingLabel'
 import { type ReactElement } from 'react'
 import RedefineLogo from '@/public/images/transactions/redefine.svg'
+import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
+
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 type SecurityWarningProps = {
   color: AlertColor
@@ -111,6 +114,7 @@ export const SecurityWarning = ({
   isConfirmed: boolean
   setIsConfirmed: (value: boolean) => void
 }) => {
+  const isDarkMode = useDarkMode()
   const severityProps = severity !== undefined ? mapSeverityComponentProps[severity] : undefined
 
   return (
@@ -131,7 +135,12 @@ export const SecurityWarning = ({
                 alignItems="center"
                 mt={-1}
               >
-                Powered by <SvgIcon inheritViewBox sx={{ height: '40px', width: '52px' }} component={RedefineLogo} />
+                Powered by{' '}
+                <SvgIcon
+                  inheritViewBox
+                  sx={{ height: '40px', width: '52px' }}
+                  component={isDarkMode ? RedefineLogoDark : RedefineLogo}
+                />
               </Typography>
             </Grid>
             {isLoading ? (

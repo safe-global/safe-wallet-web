@@ -14,7 +14,10 @@ import { useContext } from 'react'
 import { LoadingLabel } from '../../shared/LoadingLabel'
 import { TransactionSecurityContext } from '../../TransactionSecurityContext'
 import RedefineLogo from '@/public/images/transactions/redefine.svg'
+import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
+
 import css from './styles.module.css'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const FungibleBalanceChange = ({
   change,
@@ -41,7 +44,7 @@ const FungibleBalanceChange = ({
       <Typography fontWeight={700} display="inline">
         {change.symbol}
       </Typography>
-      <Chip sx={{ borderRadius: '4px' }} label={change.type} />
+      <Chip className={css.categoryChip} label={change.type} />
     </>
   )
 }
@@ -77,7 +80,7 @@ const NFTBalanceChange = ({
       <Typography variant="subtitle2" fontWeight={700} className={css.nftId}>
         #{change.tokenId}
       </Typography>
-      <Chip sx={{ borderRadius: '4px' }} label="NFT" />
+      <Chip className={css.categoryChip} label="NFT" />
     </>
   )
 }
@@ -137,6 +140,7 @@ const BalanceChanges = () => {
 
 export const RedefineBalanceChanges = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
+  const isDarkMode = useDarkMode()
 
   if (!isFeatureEnabled) {
     return null
@@ -148,7 +152,11 @@ export const RedefineBalanceChanges = () => {
         <Typography variant="subtitle2" fontWeight={700}>
           Balance change
         </Typography>
-        <SvgIcon inheritViewBox sx={{ height: '40px', width: '52px' }} component={RedefineLogo} />
+        <SvgIcon
+          inheritViewBox
+          sx={{ height: '40px', width: '52px' }}
+          component={isDarkMode ? RedefineLogoDark : RedefineLogo}
+        />
       </Box>
       <ErrorBoundary fallback={<div>Error showing balance changes</div>}>
         <BalanceChanges />
