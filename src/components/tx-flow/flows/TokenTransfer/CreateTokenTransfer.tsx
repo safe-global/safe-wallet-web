@@ -34,9 +34,8 @@ import NumberField from '@/components/common/NumberField'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import { type TokenTransferParams, TokenTransferFields, TokenTransferType } from '.'
 import TxCard from '../../common/TxCard'
-import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { safeFormatUnits } from '@/utils/formatters'
-
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 
 const CreateTokenTransfer = ({
@@ -131,7 +130,7 @@ const CreateTokenTransfer = ({
   return (
     <TxCard className={commonCss.stepFirstCard}>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
           <FormControl fullWidth>
             {addressBook[recipient] ? (
               <Box
@@ -227,6 +226,7 @@ const CreateTokenTransfer = ({
             </FormControl>
           )}
 
+          <Divider className={commonCss.nestedDivider} />
           <CardActions>
             <Button variant="contained" type="submit" disabled={isDisabled}>
               Next

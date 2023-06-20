@@ -1,3 +1,7 @@
+.form > :global(.MuiFormControl-root) {
+  margin-bottom: 28px;
+}
+
 .outline {
   border: 1px solid var(--color-border-main);
   border-radius: 4px;
