@@ -37,7 +37,7 @@ export const ExecutionMethodSelector = ({
 
   return (
     <Box className={css.container} sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
-      <Box className={css.method}>
+      <div className={css.method}>
         <FormControl sx={{ display: 'flex' }}>
           {!noLabel ? (
             <Typography variant="body2" className={css.label}>
@@ -69,7 +69,7 @@ export const ExecutionMethodSelector = ({
             />
           </RadioGroup>
         </FormControl>
-      </Box>
+      </div>
 
       {shouldRelay && relays ? <SponsoredBy relays={relays} tooltip={tooltip} /> : null}
     </Box>
