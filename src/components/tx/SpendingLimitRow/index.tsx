@@ -49,7 +49,7 @@ const SpendingLimitRow = ({
               <FormControlLabel
                 value={SendTxType.multiSig}
                 // TODO: Add tooltip when we have the text
-                label="Multisig transaction"
+                label="Standard transaction"
                 control={<Radio />}
                 componentsProps={{ typography: { variant: 'body2' } }}
                 className={css.label}

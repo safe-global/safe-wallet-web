@@ -8,6 +8,7 @@ import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { parsePrefixedAddress, sameAddress } from '@/utils/addresses'
+import { asError } from '@/services/exceptions/utils'
 
 export const useInitSafeCoreSDK = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -35,16 +36,17 @@ export const useInitSafeCoreSDK = () => {
       implementation: safe.implementation.value,
     })
       .then(setSafeSDK)
-      .catch((e) => {
+      .catch((_e) => {
+        const e = asError(_e)
         dispatch(
           showNotification({
             message: 'Please try connecting your wallet again.',
             groupKey: 'core-sdk-init-error',
             variant: 'error',
-            detailedMessage: (e as Error).message,
+            detailedMessage: e.message,
           }),
         )
-        trackError(ErrorCodes._105, (e as Error).message)
+        trackError(ErrorCodes._105, e.message)
       })
   }, [
     address,

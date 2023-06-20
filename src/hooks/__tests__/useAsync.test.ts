@@ -38,7 +38,7 @@ describe('useAsync hook', () => {
       await Promise.resolve()
     })
 
-    expect(result.current).toEqual([undefined, 'test', false])
+    expect(result.current).toEqual([undefined, new Error('test'), false])
   })
 
   it('should clear the data between reloads', async () => {
