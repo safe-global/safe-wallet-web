@@ -4,9 +4,9 @@ import css from '../styles.module.css'
 
 const sx = { my: 2, border: 0 }
 
-const TxCard = ({ children, className }: { children: ReactNode; className?: string }) => {
+const TxCard = ({ children }: { children: ReactNode }) => {
   return (
-    <Card sx={sx} className={className}>
+    <Card sx={sx}>
       <CardContent className={css.cardContent}>{children}</CardContent>
     </Card>
   )

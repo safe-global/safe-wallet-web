@@ -40,7 +40,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
 
   return (
     <>
-      <TxCard className={commonCss.stepFirstCard}>
+      <TxCard>
         {props.children}
 
         <DecodedTx tx={safeTx} txId={props.txId} />

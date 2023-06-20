@@ -128,7 +128,7 @@ const CreateTokenTransfer = ({
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   return (
-    <TxCard className={commonCss.stepFirstCard}>
+    <TxCard>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
           <FormControl fullWidth>

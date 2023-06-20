@@ -1,7 +1,3 @@
-.stepFirstCard {
-  padding-top: var(--space-3);
-}
-
 .cardContent {
   display: flex;
   flex-direction: column;
@@ -10,5 +6,5 @@
 }
 
 .nestedDivider {
-  margin: 0 calc(-1 * var(--space-2));
+  margin: 0 calc(-1 * var(--space-3));
 }
