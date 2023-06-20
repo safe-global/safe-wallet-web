@@ -19,7 +19,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: 'https://apps-portal.safe.global/tx-builder/',
           chain: 'eth',
         },
       },
@@ -38,7 +38,7 @@ describe('Share Safe App Page', () => {
         expect(
           screen.getByText('Compose custom contract interactions and batch them into a single transaction'),
         ).toBeInTheDocument()
-        expect(screen.getByText('https://apps.gnosis-safe.io/tx-builder')).toBeInTheDocument()
+        expect(screen.getByText('https://apps-portal.safe.global/tx-builder')).toBeInTheDocument()
       },
       { timeout: FETCH_TIMEOUT },
     )
@@ -48,7 +48,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: 'https://apps-portal.safe.global/tx-builder/',
           chain: 'eth',
         },
       },
@@ -73,7 +73,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: 'https://apps-portal.safe.global/tx-builder/',
           chain: 'eth',
         },
       },
@@ -107,7 +107,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: 'https://apps-portal.safe.global/tx-builder/',
           chain: 'rin',
         },
       },
@@ -145,7 +145,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: 'https://apps-portal.safe.global/tx-builder/',
           chain: 'eth',
         },
       },
