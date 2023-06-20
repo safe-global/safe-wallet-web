@@ -5,7 +5,6 @@
 .outline {
   border: 1px solid var(--color-border-main);
   border-radius: 4px;
-  margin-top: var(--space-3);
 }
 
 .error {
@@ -28,22 +27,39 @@
   align-items: center;
 }
 
+.amount {
+  flex-grow: 1;
+}
+
+.amount :global(.MuiInput-input) {
+  padding-left: var(--space-3);
+}
+
+.max {
+  background-color: var(--color-background-main);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  margin-right: var(--space-1);
+  min-height: 50px;
+  padding: var(--space-2);
+}
+
 .select :global(.MuiSelect-select) {
-  padding: var(--space-2) 0 var(--space-2) var(--space-2);
+  margin: var(--space-1);
   display: flex;
+  background-color: var(--color-background-main);
+  border-radius: 6px;
+  padding: 10px var(--space-5) 10px var(--space-2) !important;
+}
+
+.select :global(.MuiSelect-icon) {
+  margin-right: var(--space-2);
 }
 
 .item {
   display: inline-flex;
   gap: 6px;
   align-items: center;
-}
-
-.amount {
-  flex-grow: 1;
-}
-
-.amount :global(.MuiInput-input) {
-  padding: var(--space-2);
-  text-align: right;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
