@@ -127,7 +127,7 @@ const AddressInput = ({
 
           // Display the current short name in the adornment, unless the value contains the same prefix
           startAdornment: (
-            <InputAdornment position="start">
+            <InputAdornment position="end">
               <Skeleton variant="circular" width={32} height={32} animation={false} sx={{ marginRight: '0.5em' }} />
               {!rawValueRef.current.startsWith(`${currentShortName}:`) && <>{currentShortName}:</>}
             </InputAdornment>
