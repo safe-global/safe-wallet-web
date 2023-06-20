@@ -37,7 +37,7 @@ const useThirdPartyCookies = (): ThirdPartyCookiesType => {
         document.body.removeChild(iframeRef.current as Node)
       }
     } catch (error) {
-      logError(Errors._905, (error as Error).message)
+      logError(Errors._905, error)
     }
   }, [])
 

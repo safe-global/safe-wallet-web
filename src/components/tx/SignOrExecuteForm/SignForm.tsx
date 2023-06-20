@@ -9,6 +9,7 @@ import { useTxActions } from './hooks'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
+import { asError } from '@/services/exceptions/utils'
 
 const SignForm = ({
   safeTx,
@@ -37,10 +38,11 @@ const SignForm = ({
     try {
       await signTx(safeTx, txId, origin)
       setTxFlow(undefined)
-    } catch (err) {
-      logError(Errors._804, (err as Error).message)
+    } catch (_err) {
+      const err = asError(_err)
+      logError(Errors._804, err)
       setIsSubmittable(true)
-      setSubmitError(err as Error)
+      setSubmitError(err)
       return
     }
 

@@ -58,7 +58,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
       icon: primaryWallet.icon,
     }
   } catch (e) {
-    logError(Errors._106, (e as Error).message)
+    logError(Errors._106, e)
     return null
   }
 }
@@ -123,7 +123,7 @@ export const connectWallet = async (
   try {
     wallets = await onboard.connectWallet(options)
   } catch (e) {
-    logError(Errors._302, (e as Error).message)
+    logError(Errors._302, e)
 
     isConnecting = false
     return

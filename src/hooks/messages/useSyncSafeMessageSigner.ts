@@ -1,3 +1,4 @@
+import { asError } from '@/services/exceptions/utils'
 import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 import { dispatchSafeMsgProposal, dispatchSafeMsgConfirmation } from '@/services/safe-messages/safeMsgSender'
 import { type EIP712TypedData, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -56,7 +57,7 @@ const useSyncSafeMessageSigner = (
         }
       }
     } catch (e) {
-      setSubmitError(e as Error)
+      setSubmitError(asError(e))
     }
   }, [onboard, requestId, message, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
 

@@ -19,6 +19,7 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { getInteractionTitle } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { asError } from '@/services/exceptions/utils'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -59,7 +60,7 @@ const ReviewSafeAppsTx = ({
     try {
       await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
-      setSafeTxError(error as Error)
+      setSafeTxError(asError(error))
     }
   }
 
