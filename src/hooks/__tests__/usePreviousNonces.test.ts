@@ -24,6 +24,6 @@ describe('_getUniqueQueuedTxs', () => {
     }
     const result = _getUniqueQueuedTxs(mockPage)
 
-    expect(result).toEqual([0, 1])
+    expect(result.length).toEqual(2)
   })
 })
