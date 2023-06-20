@@ -17,7 +17,7 @@ const SponsoredBy = ({ relays, tooltip }: { relays: RelayResponse; tooltip?: str
   return (
     <Box className={css.sponsoredBy}>
       <SvgIcon component={GasStationIcon} inheritViewBox className={css.icon} />
-      <Stack direction="column">
+      <div>
         <Stack direction="row" spacing={0.5} alignItems="center" mb={0.2}>
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
             Sponsored by
@@ -47,7 +47,7 @@ const SponsoredBy = ({ relays, tooltip }: { relays: RelayResponse; tooltip?: str
             {relays.remaining} of {relays.limit}
           </Box>
         </Typography>
-      </Stack>
+      </div>
     </Box>
   )
 }
