@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, CardActions, Typography } from '@mui/material'
+import { Button, CardActions } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -28,9 +28,6 @@ const SignForm = ({
   const { signTx } = useTxActions()
   const { setTxFlow } = useContext(TxModalContext)
 
-  // Check that the transaction is executable
-  const isCreation = !txId
-
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
@@ -55,10 +52,6 @@ const SignForm = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <Typography variant="h5" mb={2}>
-        Confirmation
-      </Typography>
-
       {/* Error messages */}
       {isSubmittable && cannotPropose ? (
         <ErrorMessage>
@@ -69,11 +62,6 @@ const SignForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )
       )}
-
-      <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
-        You&apos;re about to {isCreation ? 'create and ' : ''}
-        sign a transaction and will need to confirm it with your currently connected wallet.
-      </Typography>
 
       <CardActions>
         {/* Submit button */}
