@@ -55,8 +55,8 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }
     coinbaseModule({ darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches }),
 }
 
-export const getAllWallets = (chains: ChainInfo): WalletInit[] => {
-  return Object.values(WALLET_MODULES).map((module) => module(chains))
+export const getAllWallets = (chain: ChainInfo): WalletInit[] => {
+  return Object.values(WALLET_MODULES).map((module) => module(chain))
 }
 
 export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] => {
