@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { EthHashInfo } from '@safe-global/safe-react-components'
 import {
   Box,
@@ -10,12 +9,11 @@ import {
   CardActions,
   Divider,
   Grid,
-  type SelectChangeEvent,
-  Select,
+  TextField,
   MenuItem,
   SvgIcon,
 } from '@mui/material'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm, FormProvider, Controller } from 'react-hook-form'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
 import NameInput from '@/components/common/NameInput'
@@ -28,48 +26,43 @@ import TxCard from '../../common/TxCard'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
-type FormData = (AddOwnerFlowProps | ReplaceOwnerFlowProps)['newOwner']
+type FormData = Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner' | 'threshold'>
 
 export const ChooseOwner = ({
   params,
   onSubmit,
 }: {
   params: AddOwnerFlowProps | ReplaceOwnerFlowProps
-  onSubmit: (data: Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner' | 'threshold'>) => void
+  onSubmit: (data: FormData) => void
 }) => {
   const { safe, safeAddress } = useSafeInfo()
 
   const formMethods = useForm<FormData>({
-    defaultValues: params.newOwner,
+    defaultValues: params,
     mode: 'onChange',
   })
-  const { handleSubmit, formState, watch } = formMethods
+  const { handleSubmit, formState, watch, control } = formMethods
   const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
   const notAlreadyOwner = uniqueAddress(safe.owners.map((owner) => owner.value))
   const notCurrentSafe = addressIsNotCurrentSafe(safeAddress)
   const combinedValidate = (address: string) => notAlreadyOwner(address) || notCurrentSafe(address)
 
-  const address = watch('address')
+  const address = watch('newOwner.address')
 
   const { name, ens, resolving } = useAddressResolver(address)
-
-  const [selectedThreshold, setSelectedThreshold] = useState<number>(params.threshold || 1)
-
-  const handleChange = (event: SelectChangeEvent<number>) => {
-    setSelectedThreshold(parseInt(event.target.value.toString()))
-  }
 
   // Address book, ENS
   const fallbackName = name || ens
 
   const onFormSubmit = handleSubmit((formData: FormData) => {
     onSubmit({
+      ...formData,
       newOwner: {
-        ...formData,
-        name: formData.name || fallbackName,
+        ...formData.newOwner,
+        name: formData.newOwner.name || fallbackName,
       },
-      threshold: selectedThreshold,
+      threshold: formData.threshold,
     })
   })
 
@@ -94,7 +87,7 @@ export const ChooseOwner = ({
           <FormControl fullWidth>
             <NameInput
               label="New owner"
-              name="name"
+              name="newOwner.name"
               placeholder={fallbackName || 'Owner name'}
               InputLabelProps={{ shrink: true }}
               InputProps={{
@@ -108,7 +101,12 @@ export const ChooseOwner = ({
           </FormControl>
 
           <FormControl fullWidth>
-            <AddressBookInput name="address" label="Owner address or ENS" validate={combinedValidate} required />
+            <AddressBookInput
+              name="newOwner.address"
+              label="Owner address or ENS"
+              validate={combinedValidate}
+              required
+            />
           </FormControl>
 
           <Divider className={commonCss.nestedDivider} />
@@ -127,16 +125,22 @@ export const ChooseOwner = ({
 
             <Grid container direction="row" alignItems="center" gap={1} pt={1}>
               <Grid item xs={1.5}>
-                <Select value={selectedThreshold} onChange={handleChange} fullWidth>
-                  {safe.owners.map((_, idx) => (
-                    <MenuItem key={idx + 1} value={idx + 1}>
-                      {idx + 1}
-                    </MenuItem>
-                  ))}
-                  <MenuItem key={newNumberOfOwners} value={newNumberOfOwners}>
-                    {newNumberOfOwners}
-                  </MenuItem>
-                </Select>
+                <Controller
+                  control={control}
+                  name="threshold"
+                  render={({ field }) => (
+                    <TextField select {...field}>
+                      {safe.owners.map((_, idx) => (
+                        <MenuItem key={idx + 1} value={idx + 1}>
+                          {idx + 1}
+                        </MenuItem>
+                      ))}
+                      <MenuItem key={newNumberOfOwners} value={newNumberOfOwners}>
+                        {newNumberOfOwners}
+                      </MenuItem>
+                    </TextField>
+                  )}
+                />
               </Grid>
               <Grid item>
                 <Typography>out of {newNumberOfOwners} owner(s)</Typography>

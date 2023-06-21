@@ -1,5 +1,5 @@
 import { type ReactNode, useContext, useEffect } from 'react'
-import { Typography, Divider, Box, SvgIcon } from '@mui/material'
+import { Typography, Divider, Box, SvgIcon, Paper } from '@mui/material'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -14,7 +14,6 @@ import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
 import AddIcon from '@/public/images/common/add.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import css from './styles.module.css'
 
 export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()
@@ -87,7 +86,12 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
 
 // TODO: to be expanded when more cases are added
 const AddressWrapper = ({ variant = 'default', children }: { variant?: 'default' | 'info'; children: ReactNode }) => (
-  <Box className={variant === 'info' ? css.bgInfo : css.bgDefault} sx={{ borderRadius: '6px', p: '12px' }}>
+  <Paper
+    sx={{
+      backgroundColor: ({ palette }) => (variant === 'info' ? palette.info.background : palette.background.main),
+      p: '12px',
+    }}
+  >
     {children}
-  </Box>
+  </Paper>
 )
