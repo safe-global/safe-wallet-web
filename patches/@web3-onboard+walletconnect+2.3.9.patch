@@ -1,0 +1,14 @@
+diff --git a/node_modules/@web3-onboard/walletconnect/dist/v2.js b/node_modules/@web3-onboard/walletconnect/dist/v2.js
+index 867c4cd..439b599 100644
+--- a/node_modules/@web3-onboard/walletconnect/dist/v2.js
++++ b/node_modules/@web3-onboard/walletconnect/dist/v2.js
+@@ -77,7 +77,8 @@ function walletConnect(options) {
+                         fromEvent(this.connector, 'accountsChanged', payload => payload)
+                             .pipe(takeUntil(this.disconnected$))
+                             .subscribe({
+-                            next: accounts => {
++                            next: payload => {
++                                const accounts = Array.isArray(payload) ? payload : [payload]
+                                 this.emit('accountsChanged', accounts);
+                             },
+                             error: console.warn

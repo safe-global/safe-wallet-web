@@ -6,7 +6,7 @@ import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as coreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
-import { act } from '@testing-library/react'
+import { waitFor } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
@@ -60,9 +60,9 @@ describe('useInitSafeCoreSDK hook', () => {
       implementation: mockSafeInfo.safe.implementation.value,
     })
 
-    await act(() => Promise.resolve())
-
-    expect(setSDKMock).toHaveBeenCalledWith(mockSafe)
+    await waitFor(() => {
+      expect(setSDKMock).toHaveBeenCalledWith(mockSafe)
+    })
   })
 
   it('does not initialize a Core SDK instance if the safe info is not loaded', async () => {

@@ -10,16 +10,17 @@ import {
   act,
 } from '@/tests/test-utils'
 import ApprovalEditor from '.'
-import { type DecodedDataResponse, type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexlify, hexZeroPad, Interface } from 'ethers/lib/utils'
-import { ERC20__factory, Multi_send__factory } from '@/types/contracts'
+import { ERC20__factory, Multi_send_call_only__factory } from '@/types/contracts'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { parseUnits } from '@ethersproject/units'
+import { getMultiSendCallOnlyContractAddress } from '@/services/contracts/safeContracts'
+import { type SafeSignature, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 const PREFIX_TEXT = 'Approve access to'
 const ERC20_INTERFACE = ERC20__factory.createInterface()
-const MULTISEND_INTERFACE = Multi_send__factory.createInterface()
 
 const createApproveCallData = (spender: string, value: string) => {
   return ERC20_INTERFACE.encodeFunctionData('approve', [spender, value])
@@ -29,14 +30,52 @@ const createNonApproveCallData = (to: string, value: string) => {
   return ERC20_INTERFACE.encodeFunctionData('transfer', [to, value])
 }
 
-const createMultiSendData = (txs: BaseTransaction[]) => {
-  return MULTISEND_INTERFACE.encodeFunctionData('multiSend', [encodeMultiSendData(txs)])
-}
-
 const getApprovalSummaryElement = (text: string, result: RenderResult): HTMLElement => {
   const accordionSummary = result.getByText(PREFIX_TEXT, { exact: false })
   expect(accordionSummary.parentElement).not.toBeNull()
   return accordionSummary.parentElement!
+}
+
+const renderEditor = async (txs: BaseTransaction[], updateTxs?: (newTxs: BaseTransaction[]) => void) => {
+  if (txs.length === 0) {
+    // eslint-disable-next-line react/display-name
+    return () => <ApprovalEditor safeTransaction={undefined} updateTransaction={updateTxs} />
+  }
+
+  let txData: string
+  let to: string
+  if (txs.length > 1) {
+    const multiSendCallData = encodeMultiSendData(txs.map((tx) => ({ ...tx, operation: 0 })))
+    txData = Multi_send_call_only__factory.createInterface().encodeFunctionData('multiSend', [multiSendCallData])
+    to = getMultiSendCallOnlyContractAddress('1') || '0x1'
+  } else {
+    txData = txs[0].data
+    to = txs[0].to
+  }
+
+  const safeTx: SafeTransaction = {
+    data: {
+      to,
+      data: txData,
+      baseGas: 0,
+      gasPrice: 0,
+      gasToken: '0x0',
+      nonce: 1,
+      operation: txs.length > 1 ? 1 : 0,
+      refundReceiver: '0x0',
+      safeTxGas: 0,
+      value: '0x0',
+    },
+    signatures: new Map(),
+    addSignature: function (signature: SafeSignature): void {
+      throw new Error('Function not implemented.')
+    },
+    encodedSignatures: function (): string {
+      throw new Error('Function not implemented.')
+    },
+  }
+  // eslint-disable-next-line react/display-name
+  return () => <ApprovalEditor safeTransaction={safeTx} updateTransaction={updateTxs} />
 }
 
 describe('ApprovalEditor', () => {
@@ -51,12 +90,13 @@ describe('ApprovalEditor', () => {
     const updateCallback = jest.fn()
 
     describe('should render null', () => {
-      it('for empty txs', () => {
-        const result = render(<ApprovalEditor txs={[]} updateTxs={updateCallback} />)
+      it('for empty txs', async () => {
+        const Editor = await renderEditor([], updateCallback)
+        const result = render(<Editor />)
         expect(result.container).toBeEmptyDOMElement()
       })
 
-      it('for a single tx containing an approve call with wrong params', () => {
+      it('for a single tx containing an approve call with wrong params', async () => {
         const testInterface = new Interface(['function approve(address, uint256, uint8)'])
         const txs = [
           {
@@ -65,11 +105,12 @@ describe('ApprovalEditor', () => {
             value: '0',
           },
         ]
-        const result = render(<ApprovalEditor txs={txs} updateTxs={updateCallback} />)
+        const Editor = await renderEditor(txs, updateCallback)
+        const result = render(<Editor />)
         expect(result.container).toBeEmptyDOMElement()
       })
 
-      it('for multiple non approve txs', () => {
+      it('for multiple non approve txs', async () => {
         const txs = [
           {
             to: hexZeroPad('0x123', 20),
@@ -82,7 +123,9 @@ describe('ApprovalEditor', () => {
             value: '0',
           },
         ]
-        const result = render(<ApprovalEditor txs={txs} updateTxs={updateCallback} />)
+        const Editor = await renderEditor(txs, updateCallback)
+
+        const result = render(<Editor />)
         expect(result.container).toBeEmptyDOMElement()
       })
     })
@@ -139,7 +182,9 @@ describe('ApprovalEditor', () => {
           value: '0',
         },
       ]
-      const result = render(<ApprovalEditor txs={txs} updateTxs={updateCallback} />, {
+      const Editor = await renderEditor(txs, updateCallback)
+
+      const result = render(<Editor />, {
         initialReduxState: {
           balances: { data: mockBalances, loading: false },
         },
@@ -277,7 +322,10 @@ describe('ApprovalEditor', () => {
           value: '0',
         },
       ]
-      const result = render(<ApprovalEditor txs={txs} updateTxs={updateCallback} />, {
+
+      const Editor = await renderEditor(txs, updateCallback)
+
+      const result = render(<Editor />, {
         initialReduxState: {
           balances: { data: mockBalances, loading: false },
         },
@@ -329,232 +377,63 @@ describe('ApprovalEditor', () => {
   // It passes decodedTxData and txDetails instead of an array of base transactions and no update function
   describe('in readonly mode', () => {
     describe('should render null', () => {
-      it('for a single tx containing no approve call', () => {
-        const txs: DecodedDataResponse & { to: string } = {
-          method: 'transfer',
-          to: hexZeroPad('0x123', 20),
-          parameters: [
-            { name: 'to', type: 'address', value: hexZeroPad('0x2', 20) },
-            { name: 'value', type: 'uint256', value: '420' },
-          ],
-        }
-        const result = render(<ApprovalEditor txs={txs} />)
+      it('for a single tx containing no approve call', async () => {
+        const txs: BaseTransaction[] = [
+          {
+            to: hexZeroPad('0x123', 20),
+            data: createNonApproveCallData(hexZeroPad('0x2', 20), '20'),
+            value: '420',
+          },
+        ]
+        const Editor = await renderEditor(txs)
+        const result = render(<Editor />)
         expect(result.container).toBeEmptyDOMElement()
       })
 
-      it('for a single tx containing an approve call with wrong params', () => {
-        const txs: DecodedDataResponse & { to: string } = {
-          method: 'approve',
-          to: hexZeroPad('0x123', 20),
-          parameters: [
-            { name: 'value1', type: 'uint256', value: '123' },
-            { name: 'value2', type: 'uint256', value: '456' },
-          ],
-        }
-        const result = render(<ApprovalEditor txs={txs} />)
-        expect(result.container).toBeEmptyDOMElement()
-      })
-
-      it('for a single tx containing approve call with too many params', () => {
-        const txs: DecodedDataResponse & { to: string } = {
-          method: 'approve',
-          to: hexZeroPad('0x123', 20),
-          parameters: [
-            { name: 'spender', type: 'address', value: hexZeroPad('0x2', 20) },
-            { name: 'value', type: 'uint256', value: '420' },
-            { name: 'id', type: 'uint256', value: '1' },
-          ],
-        }
-        const result = render(<ApprovalEditor txs={txs} />)
-        expect(result.container).toBeEmptyDOMElement()
-      })
-
-      it('for multisend txs with a wrong number of parameters', () => {
-        const approvalTx = {
-          data: createApproveCallData(hexZeroPad('0x2', 20), '10'),
-          to: hexZeroPad('0x3', 20),
-          operation: 0,
-          value: '0',
-        } as const
-
-        const txs: DecodedDataResponse & { to: string } = {
-          method: 'multiSend',
-          to: hexZeroPad('0x123', 20),
-          parameters: [
+      describe('should render approval(s)', () => {
+        it('for single approval tx of token in balances', async () => {
+          const tokenAddress = hexZeroPad('0x123', 20)
+          const mockBalance: SafeBalanceResponse = {
+            fiatTotal: '100',
+            items: [
+              {
+                balance: '100',
+                fiatBalance: '100',
+                fiatConversion: '1',
+                tokenInfo: {
+                  address: tokenAddress,
+                  decimals: 18,
+                  logoUri: '',
+                  name: 'Test',
+                  symbol: 'TST',
+                  type: TokenType.ERC20,
+                },
+              },
+            ],
+          }
+          const txs: BaseTransaction[] = [
             {
-              name: 'transactions',
-              type: 'bytes',
-              value: createMultiSendData([approvalTx]),
-              valueDecoded: [approvalTx],
+              to: tokenAddress,
+              data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('420', 18))),
+              value: '0',
             },
-            { name: 'unexpectedSecondParam', type: 'uint256', value: '420' },
-          ],
-        }
-        const result = render(<ApprovalEditor txs={txs} />)
-        expect(result.container).toBeEmptyDOMElement()
-      })
+          ]
 
-      it('for multisend txs contains without approvals', () => {
-        const innerTx = {
-          data: createNonApproveCallData(hexZeroPad('0x2', 20), '10'),
-          to: hexZeroPad('0x3', 20),
-          operation: 0,
-          value: '0',
-        } as const
+          const Editor = await renderEditor(txs)
 
-        const txs: DecodedDataResponse & { to: string } = {
-          method: 'multiSend',
-          to: hexZeroPad('0x123', 20),
-          parameters: [
-            {
-              name: 'transactions',
-              type: 'bytes',
-              value: createMultiSendData([innerTx]),
-              valueDecoded: [innerTx],
-            },
-          ],
-        }
-        const result = render(<ApprovalEditor txs={txs} />)
-        expect(result.container).toBeEmptyDOMElement()
-      })
-    })
-
-    describe('should render approval(s)', () => {
-      it('for single approval tx of token in balances', async () => {
-        const tokenAddress = hexZeroPad('0x123', 20)
-        const mockBalance: SafeBalanceResponse = {
-          fiatTotal: '100',
-          items: [
-            {
-              balance: '100',
-              fiatBalance: '100',
-              fiatConversion: '1',
-              tokenInfo: {
-                address: tokenAddress,
-                decimals: 18,
-                logoUri: '',
-                name: 'Test',
-                symbol: 'TST',
-                type: TokenType.ERC20,
+          const result = render(<Editor />, {
+            initialReduxState: {
+              balances: {
+                loading: false,
+                data: mockBalance,
               },
             },
-          ],
-        }
-        const txs: DecodedDataResponse & { to: string } = {
-          method: 'approve',
-          to: tokenAddress,
-          parameters: [
-            { name: 'spender', type: 'address', value: hexZeroPad('0x2', 20) },
-            { name: 'value', type: 'uint256', value: hexlify(parseUnits('420', 18)) },
-          ],
-        }
-        const result = render(<ApprovalEditor txs={txs} />, {
-          initialReduxState: {
-            balances: {
-              loading: false,
-              data: mockBalance,
-            },
-          },
-        })
-        await waitFor(() => {
-          const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
-          getByText(accordionSummary, '420', { exact: false })
-          getByText(accordionSummary, 'TST', { exact: false })
-        })
-      })
-
-      it('for single approval tx of token outside of balances', async () => {
-        mockWeb3Provider([
-          {
-            returnType: 'uint8',
-            returnValue: '8',
-            signature: 'decimals()',
-          },
-          {
-            returnType: 'string',
-            returnValue: 'TST',
-            signature: 'symbol()',
-          },
-        ])
-        const tokenAddress = hexZeroPad('0x123', 20)
-        const mockBalance: SafeBalanceResponse = {
-          fiatTotal: '0',
-          items: [],
-        }
-        const txs: DecodedDataResponse & { to: string } = {
-          method: 'approve',
-          to: tokenAddress,
-          parameters: [
-            { name: 'spender', type: 'address', value: hexZeroPad('0x2', 20) },
-            { name: 'value', type: 'uint256', value: hexlify(parseUnits('420', 8)) },
-          ],
-        }
-        const result = render(<ApprovalEditor txs={txs} />, {
-          initialReduxState: {
-            balances: {
-              loading: false,
-              data: mockBalance,
-            },
-          },
-        })
-        await waitFor(() => {
-          const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
-          getByText(accordionSummary, '420', { exact: false })
-          getByText(accordionSummary, 'TST', { exact: false })
-        })
-      })
-
-      it('for multisend tx with one approval of token in balances', async () => {
-        const tokenAddress = hexZeroPad('0x123', 20)
-        const mockBalance: SafeBalanceResponse = {
-          fiatTotal: '100',
-          items: [
-            {
-              balance: '100',
-              fiatBalance: '100',
-              fiatConversion: '1',
-              tokenInfo: {
-                address: tokenAddress,
-                decimals: 18,
-                logoUri: '',
-                name: 'Test',
-                symbol: 'TST',
-                type: TokenType.ERC20,
-              },
-            },
-          ],
-        }
-        const approvalTx = {
-          data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('69', 18))),
-          to: tokenAddress,
-          operation: 0,
-          value: '0',
-        } as const
-
-        const txs: DecodedDataResponse & { to: string } = {
-          method: 'multiSend',
-          to: hexZeroPad('0x456', 20),
-          parameters: [
-            {
-              name: 'transactions',
-              type: 'bytes',
-              value: createMultiSendData([approvalTx]),
-              valueDecoded: [approvalTx],
-            },
-          ],
-        }
-        const result = render(<ApprovalEditor txs={txs} />, {
-          initialReduxState: {
-            balances: {
-              loading: false,
-              data: mockBalance,
-            },
-          },
-        })
-        await waitFor(() => {
-          const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
-          getByText(accordionSummary, '69', { exact: false })
-          getByText(accordionSummary, 'TST', { exact: false })
+          })
+          await waitFor(() => {
+            const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
+            getByText(accordionSummary, '420', { exact: false })
+            getByText(accordionSummary, 'TST', { exact: false })
+          })
         })
       })
     })
