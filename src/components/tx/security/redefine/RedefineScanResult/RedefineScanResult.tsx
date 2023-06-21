@@ -52,7 +52,10 @@ const ScanWarnings = () => {
           />
         ))}
         {hiddenWarningCount > 0 && (
-          <SecurityHint severity={hiddenMaxSeverity} warnings={[`${hiddenWarningCount} more issues`]} />
+          <SecurityHint
+            severity={hiddenMaxSeverity}
+            warnings={[`${hiddenWarningCount} more issue${hiddenWarningCount > 1 ? 's' : ''}`]}
+          />
         )}
 
         {simulationUuid && (

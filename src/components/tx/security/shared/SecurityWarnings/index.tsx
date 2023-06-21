@@ -123,7 +123,7 @@ export const SecurityWarning = ({
 
   const toggleConfirmation = useCallback(() => {
     setIsConfirmed((prev) => !prev)
-  }, [])
+  }, [setIsConfirmed])
 
   return (
     <Box className={css.wrapperBox}>
