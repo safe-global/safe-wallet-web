@@ -22,19 +22,19 @@ const nextConfig = {
     images: {
       unoptimized: true,
     },
-  },
-  modularizeImports: {
-    '@mui/material': {
-      transform: '@mui/material/{{member}}',
-    },
-    '@mui/icons-material/?(((\\w*)?/?)*)': {
-      transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
-    },
-    lodash: {
-      transform: 'lodash/{{member}}',
-    },
-    'date-fns': {
-      transform: 'date-fns/{{member}}',
+    modularizeImports: {
+      '@mui/material': {
+        transform: '@mui/material/{{member}}',
+      },
+      '@mui/icons-material/?(((\\w*)?/?)*)': {
+        transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
+      },
+      lodash: {
+        transform: 'lodash/{{member}}',
+      },
+      'date-fns': {
+        transform: 'date-fns/{{member}}',
+      },
     },
   },
   async rewrites() {
