@@ -15,10 +15,14 @@ export type ConnectedWallet = {
 
 let onboard: OnboardAPI | null = null
 
-export const createOnboard = (chainConfigs: ChainInfo[], rpcConfig: EnvState['rpc'] | undefined): OnboardAPI => {
+export const createOnboard = (
+  chainConfigs: ChainInfo[],
+  currentChain: ChainInfo,
+  rpcConfig: EnvState['rpc'] | undefined,
+): OnboardAPI => {
   if (onboard) return onboard
 
-  const wallets = getAllWallets()
+  const wallets = getAllWallets(currentChain)
 
   const chains = chainConfigs.map((cfg) => ({
     id: hexValue(parseInt(cfg.chainId)),
