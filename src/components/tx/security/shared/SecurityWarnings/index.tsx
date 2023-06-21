@@ -127,35 +127,33 @@ export const SecurityWarning = ({
                 Scan for risks
               </Typography>
               <Typography
+                variant="caption"
                 color="text.secondary"
-                fontSize="12px"
                 display="flex"
                 flexDirection="row"
                 gap={1}
                 alignItems="center"
-                mt={-1}
+                position="relative"
               >
                 Powered by{' '}
                 <SvgIcon
                   inheritViewBox
-                  sx={{ height: '40px', width: '52px' }}
+                  sx={{ height: '40px', width: '52px', position: 'absolute', right: '-20px' }}
                   component={isDarkMode ? RedefineLogoDark : RedefineLogo}
                 />
               </Typography>
             </Grid>
             {isLoading ? (
               <LoadingLabel />
+            ) : severityProps ? (
+              <Typography variant="body2" fontWeight={700} color={`${severityProps.color}.main`}>
+                {severityProps.label}
+              </Typography>
             ) : error ? (
               <Typography variant="body2" fontWeight={700} color="error">
                 {error.message}
               </Typography>
-            ) : (
-              severityProps && (
-                <Typography variant="body2" fontWeight={700} color={`${severityProps.color}.main`}>
-                  {severityProps.label}
-                </Typography>
-              )
-            )}
+            ) : null}
           </Grid>
         </AccordionSummary>
         <AccordionDetails>{children}</AccordionDetails>
@@ -168,7 +166,6 @@ export const SecurityWarning = ({
               control={<Checkbox checked={isConfirmed} onChange={() => setIsConfirmed(!isConfirmed)} />}
             />
           </Track>
-          <Typography></Typography>
         </Box>
       )}
     </Box>
