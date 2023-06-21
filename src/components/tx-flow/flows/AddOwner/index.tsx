@@ -1,7 +1,6 @@
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import { ChooseOwner } from './ChooseOwner'
-import { SetThreshold } from './SetThreshold'
 import { ReviewOwner } from './ReviewOwner'
 
 type Owner = {
@@ -27,8 +26,7 @@ const AddOwnerFlow = () => {
 
   const steps = [
     <ChooseOwner key={0} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
-    <SetThreshold key={1} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
-    <ReviewOwner key={2} params={data} />,
+    <ReviewOwner key={1} params={data} />,
   ]
 
   return (

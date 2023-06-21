@@ -26,6 +26,7 @@ const NameInput = ({
       error={Boolean(fieldError)}
       fullWidth
       required={required}
+      sx={{ '& .MuiInputBase-input': { p: 3, px: 2 } }}
       {...register(name, { maxLength: 50, required })}
     />
   )
