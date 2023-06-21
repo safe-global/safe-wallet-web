@@ -31,7 +31,7 @@ type TokenTransferFlowProps = Partial<TokenTransferParams> & {
 const defaultParams: TokenTransferParams = {
   recipient: '',
   tokenAddress: ZERO_ADDRESS,
-  amount: '0',
+  amount: '',
   type: TokenTransferType.multiSig,
 }
 
