@@ -119,10 +119,12 @@ export class RecipientAddressModule
   ): Promise<SecurityResponse<RecipientAddressModuleResponse>> {
     const { safeTransaction, provider, chainId, knownAddresses } = request
 
-    const uniqueRecients = Array.from(new Set(getTransactionRecipients(safeTransaction.data)))
+    const uniqueRecipients = Array.from(new Set(getTransactionRecipients(safeTransaction.data)))
 
     const warnings = (
-      await Promise.all(uniqueRecients.map((address) => this.checkAddress(chainId, knownAddresses, address, provider)))
+      await Promise.all(
+        uniqueRecipients.map((address) => this.checkAddress(chainId, knownAddresses, address, provider)),
+      )
     ).flat()
 
     if (warnings.length === 0) {

@@ -5,8 +5,7 @@ import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 import type { EthersError } from '@/utils/ethers-utils'
 import { ErrorCode } from '@ethersproject/logger'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { getWeb3ReadOnly, isSmartContract } from '@/hooks/wallets/web3'
 import { WALLET_KEYS } from '@/hooks/wallets/consts'
 
 const isWCRejection = (err: Error): boolean => {
@@ -70,7 +69,5 @@ export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
     throw new Error('Provider not found')
   }
 
-  const code = await provider.getCode(wallet.address)
-
-  return code !== EMPTY_DATA
+  return isSmartContract(provider, wallet.address)
 }
