@@ -1,8 +1,9 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
-import { ERC20__factory } from '@/types/contracts'
+import { ApprovalModule, type ApprovalModuleResponse } from '@/services/security/modules/ApprovalModule'
+import type { SecurityResponse } from '@/services/security/modules/types'
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
-import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
+import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
 import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
@@ -15,37 +16,45 @@ export type ApprovalInfo = {
   amountFormatted: string
 }
 
-const ERC20_INTERFACE = ERC20__factory.createInterface()
+const ApprovalModuleInstance = new ApprovalModule()
 
-export const useApprovalInfos = (approvalTxs: BaseTransaction[]) => {
+const useApprovalData = (safeTransaction: SafeTransaction | undefined) => {
+  return useAsync<SecurityResponse<ApprovalModuleResponse>>(() => {
+    if (!safeTransaction) {
+      return
+    }
+
+    return ApprovalModuleInstance.scanTransaction({ safeTransaction })
+  }, [safeTransaction])
+}
+
+export const useApprovalInfos = (safeTransaction: SafeTransaction | undefined) => {
+  const [approvals] = useApprovalData(safeTransaction)
+
   const { balances } = useBalances()
 
   return useAsync<ApprovalInfo[]>(
-    async () =>
-      Promise.all(
-        approvalTxs.map(async (tx) => {
-          const [spender, amount] = ERC20_INTERFACE.decodeFunctionData('approve', tx.data)
+    async () => {
+      if (!approvals || !approvals.payload || approvals.payload.length === 0) return Promise.resolve([])
+
+      return Promise.all(
+        approvals.payload.map(async (approval) => {
           let tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> | undefined = balances.items.find(
-            (item) => item.tokenInfo.address === tx.to,
+            (item) => item.tokenInfo.address === approval.tokenAddress,
           )?.tokenInfo
           if (!tokenInfo) {
-            tokenInfo = await getERC20TokenInfoOnChain(tx.to)
+            tokenInfo = await getERC20TokenInfoOnChain(approval.tokenAddress)
           }
 
-          const amountFormatted = UNLIMITED_APPROVAL_AMOUNT.eq(amount)
+          const amountFormatted = UNLIMITED_APPROVAL_AMOUNT.eq(approval.amount)
             ? PSEUDO_APPROVAL_VALUES.UNLIMITED
-            : ethers.utils.formatUnits(amount, tokenInfo?.decimals)
+            : ethers.utils.formatUnits(approval.amount, tokenInfo?.decimals)
 
-          return {
-            tokenInfo: tokenInfo,
-            tokenAddress: tx.to,
-            spender: spender,
-            amount: amount,
-            amountFormatted,
-          }
+          return { ...approval, tokenInfo: tokenInfo, amountFormatted }
         }),
-      ),
-    [balances.items.length, approvalTxs],
+      )
+    },
+    [balances.items.length, approvals],
     false, // Do not clear data on balance updates
   )
 }

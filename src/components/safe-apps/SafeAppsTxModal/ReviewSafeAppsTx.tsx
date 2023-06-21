@@ -65,7 +65,7 @@ const ReviewSafeAppsTx = ({
     <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
       <>
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor txs={txList} updateTxs={setTxList} />
+          <ApprovalEditor safeTransaction={safeTx} updateTransaction={setTxList} />
         </ErrorBoundary>
 
         <SendFromBlock />

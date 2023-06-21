@@ -26,6 +26,10 @@ import type { TransactionOptions, SafeTransaction } from '@safe-global/safe-core
 import { FEATURES, hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
+import { Multi_send__factory } from '@/types/contracts'
+import { ethers } from 'ethers'
+import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
+import { id } from 'ethers/lib/utils'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -191,3 +195,74 @@ export const getTxOrigin = (app?: SafeAppData): string | undefined => {
 }
 
 export const hasEnoughSignatures = (tx: SafeTransaction, safe: SafeInfo) => tx.signatures.size >= safe.threshold
+
+const multiSendInterface = Multi_send__factory.createInterface()
+
+const multiSendFragment = multiSendInterface.getFunction('multiSend')
+
+const MULTISEND_SIGNATURE_HASH = id('multiSend(bytes)').slice(0, 10)
+
+export const decodeSafeTxToBaseTransactions = (safeTx: SafeTransaction): BaseTransaction[] => {
+  const txs: BaseTransaction[] = []
+  const safeTxData = safeTx.data.data
+  if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
+    txs.push(...decodeMultiSendTxs(safeTxData))
+  } else {
+    txs.push({
+      data: safeTxData,
+      value: safeTx.data.value,
+      to: safeTx.data.to,
+    })
+  }
+  return txs
+}
+
+/**
+ * TODO: Use core-sdk
+ * Decodes the transactions contained in `multiSend` call data
+ *
+ * @param encodedMultiSendData `multiSend` call data
+ * @returns array of individual transaction data
+ */
+export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransaction[] => {
+  // uint8 operation, address to, uint256 value, uint256 dataLength
+  const INDIVIDUAL_TX_DATA_LENGTH = 2 + 40 + 64 + 64
+
+  const [decodedMultiSendData] = multiSendInterface.decodeFunctionData(multiSendFragment, encodedMultiSendData)
+
+  const txs: BaseTransaction[] = []
+
+  // Decode after 0x
+  let index = 2
+
+  while (index < decodedMultiSendData.length) {
+    const txDataEncoded = `0x${decodedMultiSendData.slice(
+      index,
+      // Traverse next transaction
+      (index += INDIVIDUAL_TX_DATA_LENGTH),
+    )}`
+
+    // Decode operation, to, value, dataLength
+    const [, txTo, txValue, txDataBytesLength] = ethers.utils.defaultAbiCoder.decode(
+      ['uint8', 'address', 'uint256', 'uint256'],
+      ethers.utils.hexZeroPad(txDataEncoded, 32 * 4),
+    )
+
+    // Each byte is represented by two characters
+    const dataLength = Number(txDataBytesLength) * 2
+
+    const txData = `0x${decodedMultiSendData.slice(
+      index,
+      // Traverse data length
+      (index += dataLength),
+    )}`
+
+    txs.push({
+      to: txTo,
+      value: txValue.toString(),
+      data: txData,
+    })
+  }
+
+  return txs
+}

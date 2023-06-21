@@ -1,7 +1,6 @@
-import { useCurrentChain } from '@/hooks/useChains'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setTokenList, TOKEN_LISTS } from '@/store/settingsSlice'
-import { FEATURES, hasFeature } from '@/utils/chains'
+import { FEATURES } from '@/utils/chains'
 import type { SelectChangeEvent } from '@mui/material'
 import { Box, SvgIcon, Tooltip, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -10,6 +9,7 @@ import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
 import Track from '@/components/common/Track'
 import { ASSETS_EVENTS, trackEvent } from '@/services/analytics'
 import { HelpCenterArticle } from '@/config/constants'
+import { useHasFeature } from '@/hooks/useChains'
 
 const LS_TOKENLIST_ONBOARDING = 'tokenlist_onboarding'
 
@@ -21,8 +21,7 @@ const TokenListLabel = {
 const TokenListSelect = () => {
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
-  const chain = useCurrentChain()
-  const hasDefaultTokenlist = chain && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
+  const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
 
   const handleSelectTokenList = (event: SelectChangeEvent<TOKEN_LISTS>) => {
     const selectedString = event.target.value as TOKEN_LISTS

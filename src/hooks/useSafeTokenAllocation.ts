@@ -8,7 +8,7 @@ import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { getWeb3ReadOnly } from './wallets/web3'
 
-export const VESTING_URL = 'https://safe-claiming-app-data.gnosis-safe.io/allocations/'
+export const VESTING_URL = 'https://safe-claiming-app-data.safe.global/allocations/'
 
 type VestingData = {
   tag: 'user' | 'ecosystem' | 'investor'
