@@ -1,7 +1,8 @@
-import { act, fireEvent, render } from '@/tests/test-utils'
+import { fireEvent, render } from '@/tests/test-utils'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import * as gatewayMethods from '@safe-global/safe-gateway-typescript-sdk'
 import DecodedTx from '.'
+import { waitFor } from '@testing-library/react'
 
 describe('DecodedTx', () => {
   it('should render a native transfer', async () => {
@@ -26,9 +27,7 @@ describe('DecodedTx', () => {
       />,
     )
 
-    act(() => {
-      fireEvent.click(result.getByText('Transaction details'))
-    })
+    fireEvent.click(result.getByText('Transaction details'))
 
     expect(result.queryByText('Native token transfer')).toBeInTheDocument()
     expect(result.queryByText('to(address):')).toBeInTheDocument()
@@ -77,16 +76,15 @@ describe('DecodedTx', () => {
       />,
     )
 
-    await act(() => {
-      fireEvent.click(result.getByText('Transaction details'))
-      return Promise.resolve()
-    })
+    fireEvent.click(result.getByText('Transaction details'))
 
-    expect(result.queryByText('transfer')).toBeInTheDocument()
-    expect(result.queryByText('to(address):')).toBeInTheDocument()
-    expect(result.queryByText('0x474e...78C8')).toBeInTheDocument()
-    expect(result.queryByText('value(uint256):')).toBeInTheDocument()
-    expect(result.queryByText('16745726664999765048')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(result.queryByText('transfer')).toBeInTheDocument()
+      expect(result.queryByText('to(address):')).toBeInTheDocument()
+      expect(result.queryByText('0x474e...78C8')).toBeInTheDocument()
+      expect(result.queryByText('value(uint256):')).toBeInTheDocument()
+      expect(result.queryByText('16745726664999765048')).toBeInTheDocument()
+    })
   })
 
   it('should render a multisend transaction', async () => {
@@ -178,12 +176,12 @@ describe('DecodedTx', () => {
       />,
     )
 
-    await act(() => Promise.resolve())
-
-    expect(result.queryByText('multi Send')).toBeInTheDocument()
-    expect(result.queryByText('transactions(bytes):')).toBeInTheDocument()
-    expect(result.queryByText('Action 1')).toBeInTheDocument()
-    expect(result.queryByText('Action 2')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(result.queryByText('multi Send')).toBeInTheDocument()
+      expect(result.queryByText('transactions(bytes):')).toBeInTheDocument()
+      expect(result.queryByText('Action 1')).toBeInTheDocument()
+      expect(result.queryByText('Action 2')).toBeInTheDocument()
+    })
   })
 
   it('should render a function call without parameters', async () => {
@@ -216,11 +214,8 @@ describe('DecodedTx', () => {
       />,
     )
 
-    await act(() => {
-      fireEvent.click(result.getByText('Transaction details'))
-      return Promise.resolve()
-    })
+    fireEvent.click(result.getByText('Transaction details'))
 
-    expect(result.queryByText('deposit')).toBeInTheDocument()
+    expect(await result.findByText('deposit')).toBeInTheDocument()
   })
 })

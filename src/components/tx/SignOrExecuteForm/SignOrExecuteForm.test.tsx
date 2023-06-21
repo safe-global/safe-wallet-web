@@ -1,4 +1,4 @@
-import { act, fireEvent, render } from '@/tests/test-utils'
+import { fireEvent, render } from '@/tests/test-utils'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm/index'
 import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
@@ -9,6 +9,7 @@ import * as wallet from '@/hooks/wallets/useWallet'
 import * as onboard from '@/hooks/wallets/useOnboard'
 import * as walletUtils from '@/utils/wallets'
 import * as web3 from '@/hooks/wallets/web3'
+import * as canRelay from '@/hooks/useWalletCanRelay'
 import type { ChainInfo, SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { waitFor } from '@testing-library/react'
 import type { ConnectedWallet } from '@/services/onboard'
@@ -104,6 +105,7 @@ describe('SignOrExecuteForm', () => {
     } as unknown as ChainInfo)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(false)
     jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 5, limit: 5 }, undefined, false])
+    jest.spyOn(canRelay, 'default').mockReturnValue([false, undefined, false])
   })
 
   it('displays decoded data if there is a tx', () => {
@@ -190,9 +192,7 @@ describe('SignOrExecuteForm', () => {
         result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
       ).toBeInTheDocument()
 
-      act(() => {
-        fireEvent.click(result.getByText('Execute transaction'))
-      })
+      fireEvent.click(result.getByText('Execute transaction'))
 
       expect(
         result.queryByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
@@ -213,9 +213,7 @@ describe('SignOrExecuteForm', () => {
         result.getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
       ).toBeInTheDocument()
 
-      act(() => {
-        fireEvent.click(result.getByText('Execute transaction'))
-      })
+      fireEvent.click(result.getByText('Execute transaction'))
 
       expect(
         result.queryByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
@@ -377,11 +375,8 @@ describe('SignOrExecuteForm', () => {
     )
 
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      expect(submitButton).not.toBeDisabled()
-      fireEvent.click(submitButton)
-    })
+    expect(submitButton).not.toBeDisabled()
+    fireEvent.click(submitButton)
 
     await waitFor(() => expect(submitButton).toBeDisabled())
   })
@@ -414,6 +409,7 @@ describe('SignOrExecuteForm', () => {
     jest.spyOn(txSenderDispatch, 'dispatchTxSigning').mockImplementation(signSpy as any)
     jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(proposeSpy as any)
     jest.spyOn(txSenderDispatch, 'dispatchTxRelay').mockImplementation(relaySpy)
+    jest.spyOn(canRelay, 'default').mockReturnValue([true, undefined, false])
 
     const mockTx = createSafeTx()
 
@@ -432,13 +428,8 @@ describe('SignOrExecuteForm', () => {
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="0xdead" />)
 
-    await act(() => Promise.resolve())
-
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => {
       expect(signSpy).not.toHaveBeenCalledTimes(1)
@@ -451,6 +442,7 @@ describe('SignOrExecuteForm', () => {
     const relaySpy = jest.fn()
     jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(jest.fn(() => Promise.resolve({})) as any)
     jest.spyOn(txSenderDispatch, 'dispatchTxRelay').mockImplementation(relaySpy)
+    jest.spyOn(canRelay, 'default').mockReturnValue([true, undefined, false])
 
     // SC wallet connected
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(true)
@@ -466,13 +458,8 @@ describe('SignOrExecuteForm', () => {
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="0xdead" />)
 
-    await act(() => Promise.resolve())
-
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => expect(relaySpy).toHaveBeenCalledTimes(0))
   })
@@ -481,6 +468,7 @@ describe('SignOrExecuteForm', () => {
     const relaySpy = jest.fn()
     jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(jest.fn(() => Promise.resolve({})) as any)
     jest.spyOn(txSenderDispatch, 'dispatchTxRelay').mockImplementation(relaySpy)
+    jest.spyOn(canRelay, 'default').mockReturnValue([true, undefined, false])
 
     // SC wallet connected
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(true)
@@ -503,13 +491,8 @@ describe('SignOrExecuteForm', () => {
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="0xdead" />)
 
-    await act(() => Promise.resolve())
-
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => expect(relaySpy).toHaveBeenCalledTimes(1))
   })
@@ -518,6 +501,7 @@ describe('SignOrExecuteForm', () => {
     const relaySpy = jest.fn()
     jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(jest.fn(() => Promise.resolve({})) as any)
     jest.spyOn(txSenderDispatch, 'dispatchTxRelay').mockImplementation(relaySpy)
+    jest.spyOn(canRelay, 'default').mockReturnValue([true, undefined, false])
 
     const mockTx = createSafeTx()
 
@@ -537,19 +521,15 @@ describe('SignOrExecuteForm', () => {
 
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} txId="0xdead" />)
 
-    await act(() => Promise.resolve())
-
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => expect(relaySpy).toHaveBeenCalledTimes(1))
   })
 
   it('executes a transaction with the connected wallet if chosen instead of relaying', async () => {
     jest.spyOn(useRelaysBySafe, 'useRelaysBySafe').mockReturnValue([{ remaining: 5, limit: 5 }, undefined, false])
+    jest.spyOn(canRelay, 'default').mockReturnValue([true, undefined, false])
 
     const executionSpy = jest.fn()
     jest
@@ -561,21 +541,12 @@ describe('SignOrExecuteForm', () => {
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-    await act(() => Promise.resolve())
-
-    const walletOptionRadio = result.getByText('Connected wallet')
-
+    const walletOptionRadio = await result.findByText('Connected wallet')
     expect(walletOptionRadio).toBeInTheDocument()
-
-    act(() => {
-      fireEvent.click(walletOptionRadio)
-    })
+    fireEvent.click(walletOptionRadio)
 
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => expect(executionSpy).toHaveBeenCalledTimes(1))
   })
@@ -592,8 +563,6 @@ describe('SignOrExecuteForm', () => {
 
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
-
-    await act(() => Promise.resolve())
 
     const walletOptionRadio = result.queryByText('Connected wallet')
 
@@ -613,13 +582,8 @@ describe('SignOrExecuteForm', () => {
     const mockTx = createSafeTx()
     const result = render(<SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} />)
 
-    await act(() => Promise.resolve())
-
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => expect(executionSpy).toHaveBeenCalledTimes(1))
   })
@@ -637,10 +601,7 @@ describe('SignOrExecuteForm', () => {
     const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
 
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => expect(signSpy).toHaveBeenCalledTimes(1))
     expect(proposeSpy).toHaveBeenCalledTimes(1)
@@ -659,10 +620,7 @@ describe('SignOrExecuteForm', () => {
     const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
 
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
     expect(proposeSpy).toHaveBeenCalled()
@@ -681,10 +639,7 @@ describe('SignOrExecuteForm', () => {
     const result = render(<SignOrExecuteForm txId="0x123" onSubmit={jest.fn} safeTx={mockTx} />)
 
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => expect(onChainSignSpy).toHaveBeenCalledTimes(1))
     expect(proposeSpy).not.toHaveBeenCalled()
@@ -706,13 +661,8 @@ describe('SignOrExecuteForm', () => {
       <SignOrExecuteForm isExecutable={true} onSubmit={jest.fn} safeTx={mockTx} onlyExecute={true} txId="123" />,
     )
 
-    await act(() => Promise.resolve())
-
     const submitButton = result.getByText('Submit')
-
-    act(() => {
-      fireEvent.click(submitButton)
-    })
+    fireEvent.click(submitButton)
 
     await waitFor(() => {
       expect(result.getByText('Error submitting the transaction. Please try again.')).toBeInTheDocument()
