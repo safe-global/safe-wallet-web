@@ -30,7 +30,7 @@ describe('DecodedTx', () => {
       fireEvent.click(result.getByText('Transaction details'))
     })
 
-    expect(result.queryByText('Native token transfer')).toBeInTheDocument()
+    expect(result.queryAllByText('Native token transfer').length).toBe(2)
     expect(result.queryByText('to(address):')).toBeInTheDocument()
     expect(result.queryByText('0x3430...7600')).toBeInTheDocument()
     expect(result.queryByText('value(uint256):')).toBeInTheDocument()
@@ -82,7 +82,7 @@ describe('DecodedTx', () => {
       return Promise.resolve()
     })
 
-    expect(result.queryByText('transfer')).toBeInTheDocument()
+    expect(result.queryAllByText('transfer').length).toBe(2)
     expect(result.queryByText('to(address):')).toBeInTheDocument()
     expect(result.queryByText('0x474e...78C8')).toBeInTheDocument()
     expect(result.queryByText('value(uint256):')).toBeInTheDocument()
@@ -221,6 +221,6 @@ describe('DecodedTx', () => {
       return Promise.resolve()
     })
 
-    expect(result.queryByText('deposit')).toBeInTheDocument()
+    expect(result.queryAllByText('deposit').length).toBe(2)
   })
 })
