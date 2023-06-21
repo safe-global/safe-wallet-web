@@ -61,7 +61,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
     <Box mb={2}>
       {approvalEditorTx && (
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor txs={approvalEditorTx} />
+          <ApprovalEditor safeTransaction={tx} />
         </ErrorBoundary>
       )}
 

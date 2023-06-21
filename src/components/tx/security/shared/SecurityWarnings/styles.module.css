@@ -1,0 +1,60 @@
+.hint {
+  padding: var(--space-2);
+  border: unset;
+}
+
+.hint :global .MuiAlert-icon {
+  padding: 0;
+}
+
+.hint :global .MuiAlert-message {
+  padding: 0;
+}
+
+.warning {
+  padding: var(--space-2) var(--space-4);
+  background-color: unset;
+}
+
+.warning :global .MuiAlert-message {
+  padding: 0;
+}
+
+.checkbox {
+  margin: var(--space-2) 0;
+}
+
+.checkbox :global .MuiCheckbox-root {
+  padding: 0 12px;
+}
+
+.verdictBox {
+  border: none;
+  border-radius: 6px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.verdictBox :global .Mui-expanded.MuiAccordionSummary-root {
+  background-color: var(--color-background-paper);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.verdictBox :global .MuiAccordionSummary-root:hover {
+  background-color: var(--color-background-paper);
+}
+
+.verdictBox:hover {
+  border-color: var(--color-border-light);
+}
+
+.wrapperBox :global .MuiAccordion-root.Mui-expanded {
+  border-color: var(--color-border-light) !important;
+}
+
+.wrapperBox {
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+  padding: 0;
+  margin-top: var(--space-2);
+  background-color: var(--color-background-main);
+}

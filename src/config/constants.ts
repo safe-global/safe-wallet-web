@@ -19,6 +19,7 @@ export const BEAMER_ID = process.env.NEXT_PUBLIC_BEAMER_ID || ''
 
 // Wallets
 export const WC_BRIDGE = process.env.NEXT_PUBLIC_WC_BRIDGE || 'https://bridge.walletconnect.org'
+export const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WC_PROJECT_ID || ''
 export const TREZOR_APP_URL = 'app.safe.global'
 export const TREZOR_EMAIL = 'support@safe.global'
 
@@ -88,3 +89,7 @@ export const TWITTER_URL = 'https://twitter.com/safe'
 
 // Legal
 export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST || false
+
+// Risk mitigation (Redefine)
+export const REDEFINE_SIMULATION_URL = 'https://dashboard.redefine.net/reports/'
+export const REDEFINE_REQUEST_URL = 'https://risk-analysis.safe.global/messages'
