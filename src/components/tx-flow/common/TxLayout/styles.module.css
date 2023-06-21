@@ -57,3 +57,9 @@
   height: 16px;
   width: auto;
 }
+
+.step :global(.MuiAccordionSummary-content),
+.step :global(.MuiAccordionSummary-content) p {
+  font-weight: bold;
+  font-size: 14px;
+}

@@ -67,7 +67,7 @@ const TxNonce = () => {
   )
 
   const handleChange = useCallback(
-    (e: SyntheticEvent, value: string | AutocompleteValue<unknown, false, false, false>) => {
+    (_e: SyntheticEvent, value: string | AutocompleteValue<unknown, false, false, false>) => {
       isEmpty.current = value === ''
       const nonce = Number(value)
       if (isNaN(nonce)) return
@@ -87,7 +87,7 @@ const TxNonce = () => {
 
   return (
     <Box display="flex" alignItems="center" gap={1}>
-      Nonce
+      Nonce #
       <Autocomplete
         value={isEmpty.current ? '' : nonce}
         inputValue={isEmpty.current ? '' : nonce.toString()}
@@ -122,6 +122,7 @@ const TxNonce = () => {
               readOnly: readonly,
             }}
             className={css.input}
+            sx={{ minWidth: `${nonce.toString().length + 0.5}em` }}
           />
         )}
         PopperComponent={CustomPopper}

@@ -81,7 +81,11 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
       )}
 
       <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
-        <AccordionSummary>Transaction details</AccordionSummary>
+        <AccordionSummary>
+          <span style={{ flex: 1 }}>Transaction details</span>
+
+          {decodedData ? decodedData.method : tx?.data.operation === OperationType.DelegateCall ? 'Delegate call' : ''}
+        </AccordionSummary>
 
         <AccordionDetails>
           {decodedData ? (

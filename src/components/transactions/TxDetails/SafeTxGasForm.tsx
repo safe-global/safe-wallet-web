@@ -9,7 +9,7 @@ type FormFields = {
 }
 
 const SafeTxGasForm = () => {
-  const { safeTx, safeTxGas, setSafeTxGas } = useContext(SafeTxContext)
+  const { safeTx, safeTxGas = 0, setSafeTxGas } = useContext(SafeTxContext)
   const isEditable = safeTx?.signatures.size === 0
   const [editing, setEditing] = useState(false)
 
@@ -23,6 +23,13 @@ const SafeTxGasForm = () => {
   const onSubmit = (values: FormFields) => {
     setSafeTxGas(values.safeTxGas || 0)
     setEditing(false)
+  }
+
+  const onBlur = () => {
+    setTimeout(() => {
+      setEditing(false)
+      formMethods.setValue('safeTxGas', safeTxGas)
+    }, 100)
   }
 
   return (
@@ -50,6 +57,7 @@ const SafeTxGasForm = () => {
                 valueAsNumber: true,
                 min: 0,
                 setValueAs: Math.round,
+                onBlur,
               })}
             />
             <Button type="submit" size="small" variant="contained" sx={{ ml: 1 }}>
