@@ -10,6 +10,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   FormControlLabel,
+  List,
+  ListItem,
 } from '@mui/material'
 
 import { SecuritySeverity } from '@/services/security/modules/types'
@@ -17,7 +19,7 @@ import AlertIcon from '@/public/images/notifications/alert.svg'
 
 import css from './styles.module.css'
 import { LoadingLabel } from '../LoadingLabel'
-import { type ReactElement } from 'react'
+import { type Dispatch, type ReactElement, type SetStateAction, useCallback } from 'react'
 import RedefineLogo from '@/public/images/transactions/redefine.svg'
 import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
 
@@ -86,11 +88,13 @@ export const SecurityHint = ({ severity, warnings }: { severity: SecuritySeverit
       >
         {severity !== SecuritySeverity.NONE && <Typography variant="h5">{pluralizedLabel}</Typography>}
         <Box display="flex" flexDirection="column" gap={2}>
-          {warnings.map((warning) => (
-            <Typography key={warning} variant="body2">
-              {warning}
-            </Typography>
-          ))}
+          <List sx={{ listStyle: 'disc', pl: 2, '& li:last-child': { m: 0 } }}>
+            {warnings.map((warning) => (
+              <ListItem key={warning} disablePadding sx={{ display: 'list-item', mb: 1 }}>
+                <Typography variant="body2">{warning}</Typography>
+              </ListItem>
+            ))}
+          </List>
         </Box>
       </Alert>
     </>
@@ -112,10 +116,14 @@ export const SecurityWarning = ({
   children: ReactElement
   needsConfirmation: boolean
   isConfirmed: boolean
-  setIsConfirmed: (value: boolean) => void
+  setIsConfirmed: Dispatch<SetStateAction<boolean>>
 }) => {
   const isDarkMode = useDarkMode()
   const severityProps = severity !== undefined ? mapSeverityComponentProps[severity] : undefined
+
+  const toggleConfirmation = useCallback(() => {
+    setIsConfirmed((prev) => !prev)
+  }, [])
 
   return (
     <Box className={css.wrapperBox}>
@@ -126,6 +134,7 @@ export const SecurityWarning = ({
               <Typography fontWeight={700} variant="subtitle1">
                 Scan for risks
               </Typography>
+
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -143,6 +152,7 @@ export const SecurityWarning = ({
                 />
               </Typography>
             </Grid>
+
             {isLoading ? (
               <LoadingLabel />
             ) : severityProps ? (
@@ -156,14 +166,16 @@ export const SecurityWarning = ({
             ) : null}
           </Grid>
         </AccordionSummary>
+
         <AccordionDetails>{children}</AccordionDetails>
       </Accordion>
+
       {needsConfirmation && (
         <Box pl={2}>
           <Track {...MODALS_EVENTS.ACCEPT_RISK}>
             <FormControlLabel
               label="I understand the risks and would like to continue this transaction"
-              control={<Checkbox checked={isConfirmed} onChange={() => setIsConfirmed(!isConfirmed)} />}
+              control={<Checkbox checked={isConfirmed} onChange={toggleConfirmation} />}
             />
           </Track>
         </Box>

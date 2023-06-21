@@ -1,7 +1,7 @@
 import { type RedefineModuleResponse } from '@/services/security/modules/RedefineModule'
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { createContext, useMemo, useState } from 'react'
+import { createContext, type Dispatch, type SetStateAction, useMemo, useState } from 'react'
 import { useRedefine } from '../redefine/useRedefine'
 
 export const TransactionSecurityContext = createContext<{
@@ -13,7 +13,7 @@ export const TransactionSecurityContext = createContext<{
   error: Error | undefined
   needsRiskConfirmation: boolean
   isRiskConfirmed: boolean
-  setIsRiskConfirmed: (value: boolean) => void
+  setIsRiskConfirmed: Dispatch<SetStateAction<boolean>>
 }>({
   warnings: [],
   simulationUuid: undefined,

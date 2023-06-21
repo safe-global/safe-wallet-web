@@ -10,7 +10,7 @@ export const LoadingLabel = () => {
           color: ({ palette }) => palette.text.secondary,
         }}
       />
-      Calculating
+      Calculating...
     </Typography>
   )
 }
