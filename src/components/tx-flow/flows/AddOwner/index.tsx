@@ -1,8 +1,9 @@
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import { ChooseOwner } from './ChooseOwner'
-import { SetThreshold } from './SetThreshold'
 import { ReviewOwner } from './ReviewOwner'
+import SaveAddressIcon from '@/public/images/common/save-address.svg'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type Owner = {
   address: string
@@ -12,27 +13,29 @@ type Owner = {
 export type AddOwnerFlowProps = {
   newOwner: Owner
   removedOwner?: Owner
-  threshold?: number
-}
-
-const defaultValues: AddOwnerFlowProps = {
-  newOwner: {
-    address: '',
-    name: '',
-  },
+  threshold: number
 }
 
 const AddOwnerFlow = () => {
+  const { safe } = useSafeInfo()
+
+  const defaultValues: AddOwnerFlowProps = {
+    newOwner: {
+      address: '',
+      name: '',
+    },
+    threshold: safe.threshold,
+  }
+
   const { data, step, nextStep, prevStep } = useTxStepper<AddOwnerFlowProps>(defaultValues)
 
   const steps = [
     <ChooseOwner key={0} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
-    <SetThreshold key={1} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
-    <ReviewOwner key={2} params={data} />,
+    <ReviewOwner key={1} params={data} />,
   ]
 
   return (
-    <TxLayout title="Add new owner" step={step} onBack={prevStep}>
+    <TxLayout title="New transaction" subtitle="Add owner" icon={SaveAddressIcon} step={step} onBack={prevStep}>
       {steps}
     </TxLayout>
   )

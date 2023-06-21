@@ -130,7 +130,7 @@ const CreateTokenTransfer = ({
   return (
     <TxCard>
       <FormProvider {...formMethods}>
-        <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
+        <form onSubmit={handleSubmit(onSubmit)} className={commonCss.form}>
           <FormControl fullWidth sx={{ mt: 1 }}>
             {addressBook[recipient] ? (
               <Box
@@ -228,6 +228,7 @@ const CreateTokenTransfer = ({
           )}
 
           <Divider className={commonCss.nestedDivider} />
+
           <CardActions>
             <Button variant="contained" type="submit" disabled={isDisabled}>
               Next

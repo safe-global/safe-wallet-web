@@ -1,6 +1,19 @@
 import { EthHashInfo } from '@safe-global/safe-react-components'
-import { Box, Typography, FormControl, InputAdornment, CircularProgress, Button, CardActions } from '@mui/material'
-import { useForm, FormProvider } from 'react-hook-form'
+import {
+  Box,
+  Typography,
+  FormControl,
+  InputAdornment,
+  CircularProgress,
+  Button,
+  CardActions,
+  Divider,
+  Grid,
+  TextField,
+  MenuItem,
+  SvgIcon,
+} from '@mui/material'
+import { useForm, FormProvider, Controller } from 'react-hook-form'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
 import NameInput from '@/components/common/NameInput'
@@ -10,30 +23,32 @@ import { uniqueAddress, addressIsNotCurrentSafe } from '@/utils/validation'
 import type { AddOwnerFlowProps } from '.'
 import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
 import TxCard from '../../common/TxCard'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 
-type FormData = (AddOwnerFlowProps | ReplaceOwnerFlowProps)['newOwner']
+type FormData = Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner' | 'threshold'>
 
 export const ChooseOwner = ({
   params,
   onSubmit,
 }: {
   params: AddOwnerFlowProps | ReplaceOwnerFlowProps
-  onSubmit: (data: Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner'>) => void
+  onSubmit: (data: FormData) => void
 }) => {
   const { safe, safeAddress } = useSafeInfo()
 
   const formMethods = useForm<FormData>({
-    defaultValues: params.newOwner,
+    defaultValues: params,
     mode: 'onChange',
   })
-  const { handleSubmit, formState, watch } = formMethods
+  const { handleSubmit, formState, watch, control } = formMethods
   const isValid = Object.keys(formState.errors).length === 0 // do not use formState.isValid because names can be empty
 
   const notAlreadyOwner = uniqueAddress(safe.owners.map((owner) => owner.value))
   const notCurrentSafe = addressIsNotCurrentSafe(safeAddress)
   const combinedValidate = (address: string) => notAlreadyOwner(address) || notCurrentSafe(address)
 
-  const address = watch('address')
+  const address = watch('newOwner.address')
 
   const { name, ens, resolving } = useAddressResolver(address)
 
@@ -42,21 +57,24 @@ export const ChooseOwner = ({
 
   const onFormSubmit = handleSubmit((formData: FormData) => {
     onSubmit({
+      ...formData,
       newOwner: {
-        ...formData,
-        name: formData.name || fallbackName,
+        ...formData.newOwner,
+        name: formData.newOwner.name || fallbackName,
       },
+      threshold: formData.threshold,
     })
   })
+
+  const newNumberOfOwners = safe.owners.length + 1
 
   return (
     <TxCard>
       <FormProvider {...formMethods}>
-        <form onSubmit={onFormSubmit}>
+        <form onSubmit={onFormSubmit} className={commonCss.form}>
           <Box mb={1}>
-            {params.removedOwner
-              ? 'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'
-              : 'Add a new owner to the active Safe Account.'}
+            {params.removedOwner &&
+              'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'}
           </Box>
 
           {params.removedOwner && (
@@ -66,28 +84,71 @@ export const ChooseOwner = ({
             </Box>
           )}
 
-          <Box display="flex" flexDirection="column" gap={2} paddingTop={2}>
-            <Typography>New owner</Typography>
-            <FormControl>
-              <NameInput
-                label="Owner name"
-                name="name"
-                placeholder={fallbackName || 'New owner'}
-                InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  endAdornment: resolving && (
-                    <InputAdornment position="end">
-                      <CircularProgress size={20} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </FormControl>
+          <FormControl fullWidth>
+            <NameInput
+              label="New owner"
+              name="newOwner.name"
+              placeholder={fallbackName || 'Owner name'}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{
+                endAdornment: resolving && (
+                  <InputAdornment position="end">
+                    <CircularProgress size={20} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormControl>
 
-            <FormControl>
-              <AddressBookInput name="address" label="Owner" validate={combinedValidate} />
-            </FormControl>
-          </Box>
+          <FormControl fullWidth>
+            <AddressBookInput
+              name="newOwner.address"
+              label="Owner address or ENS"
+              validate={combinedValidate}
+              required
+            />
+          </FormControl>
+
+          <Divider className={commonCss.nestedDivider} />
+
+          <FormControl fullWidth>
+            <Box display="flex" flexDirection="row" alignItems="center" gap={1} mt={3}>
+              <Typography variant="h6" fontWeight="bold">
+                Threshold
+              </Typography>
+              <SvgIcon component={InfoIcon} color="disabled" inheritViewBox fontSize="small" />
+            </Box>
+
+            <Typography variant="body2" mb={1}>
+              Any transaction requires the confirmation of:
+            </Typography>
+
+            <Grid container direction="row" alignItems="center" gap={1} pt={1}>
+              <Grid item xs={1.5}>
+                <Controller
+                  control={control}
+                  name="threshold"
+                  render={({ field }) => (
+                    <TextField select {...field}>
+                      {safe.owners.map((_, idx) => (
+                        <MenuItem key={idx + 1} value={idx + 1}>
+                          {idx + 1}
+                        </MenuItem>
+                      ))}
+                      <MenuItem key={newNumberOfOwners} value={newNumberOfOwners}>
+                        {newNumberOfOwners}
+                      </MenuItem>
+                    </TextField>
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Typography>out of {newNumberOfOwners} owner(s)</Typography>
+              </Grid>
+            </Grid>
+          </FormControl>
+
+          <Divider className={commonCss.nestedDivider} />
 
           <CardActions>
             <Button variant="contained" type="submit" disabled={!isValid || resolving}>

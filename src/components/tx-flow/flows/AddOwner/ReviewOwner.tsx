@@ -1,6 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { Grid, Typography, Divider, Box } from '@mui/material'
-import { EthHashInfo } from '@safe-global/safe-react-components'
+import { Typography, Divider, Box, SvgIcon, Paper } from '@mui/material'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -9,12 +8,12 @@ import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createSwapOwnerTx, createAddOwnerTx } from '@/services/tx/tx-sender'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { sameAddress } from '@/utils/addresses'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { AddOwnerFlowProps } from '.'
 import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
-
-import css from './styles.module.css'
+import AddIcon from '@/public/images/common/add.svg'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()
@@ -55,79 +54,24 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
 
   return (
     <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit}>
-      <Grid
-        container
-        mt={-3}
-        mb={3}
-        mx={-3}
-        width="auto"
-        borderBottom={({ palette }) => `1px solid ${palette.border.light}`}
-      >
-        <Grid item md={4} pt={3} pl={3}>
-          <Typography mb={3}>Details</Typography>
-          <Typography variant="caption" color="text.secondary">
-            Name of the Safe Account:
-          </Typography>
-          <Typography mb={3}>{addressBook[safeAddress] || 'No name'}</Typography>
-          <Typography variant="caption" color="text.secondary">
-            Any transaction requires the confirmation of:
-          </Typography>
-          <Typography mb={3}>
-            <b>{threshold}</b> out of <b>{safe.owners.length + (removedOwner ? 0 : 1)}</b> owners
-          </Typography>
-        </Grid>
-
-        <Grid
-          item
-          xs={12}
-          md={8}
-          borderLeft={({ palette }) => [undefined, undefined, `1px solid ${palette.border.light}`]}
-          borderTop={({ palette }) => [`1px solid ${palette.border.light}`, undefined, 'none']}
-        >
-          <Typography padding={3}>{safe.owners.length} Safe Account owner(s)</Typography>
-          <Divider />
-          <Box display="flex" flexDirection="column" gap={2} padding={3}>
-            {safe.owners
-              .filter((owner) => !removedOwner || !sameAddress(owner.value, removedOwner.address))
-              .map((owner) => {
-                return (
-                  <EthHashInfo
-                    key={owner.value}
-                    address={owner.value}
-                    shortAddress={false}
-                    showCopyButton
-                    hasExplorer
-                  />
-                )
-              })}
-          </Box>
-          {removedOwner && (
-            <>
-              <div className={css.info}>
-                <Typography variant="overline">Removing owner &darr;</Typography>
-              </div>
-              <Divider />
-              <Box bgcolor="error.light" padding={2}>
-                <EthHashInfo address={removedOwner.address} shortAddress={false} showCopyButton hasExplorer />
-              </Box>
-              <Divider />
-            </>
-          )}
-          <div className={css.info}>
-            <Typography className={css.overline}>Adding new owner &darr;</Typography>
-          </div>
-          <Divider />
-          <Box padding={2}>
-            <EthHashInfo
-              name={newOwner.name}
-              address={newOwner.address}
-              shortAddress={false}
-              showCopyButton
-              hasExplorer
-            />
-          </Box>
-        </Grid>
-      </Grid>
+      <Paper sx={{ backgroundColor: ({ palette }) => palette.background.main, p: '12px' }}>
+        <EthHashInfo name={addressBook[safeAddress]} address={safeAddress} shortAddress={false} />
+      </Paper>
+      <Box display="flex" alignItems="center" gap={2} mx="auto">
+        <SvgIcon component={AddIcon} inheritViewBox fontSize="small" />
+        Add new owner
+      </Box>
+      <Paper sx={{ backgroundColor: ({ palette }) => palette.info.background, p: '12px' }}>
+        <EthHashInfo name={newOwner.name} address={newOwner.address} shortAddress={false} showCopyButton hasExplorer />
+      </Paper>
+      <Divider className={commonCss.nestedDivider} />
+      <Box>
+        <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
+        <Typography>
+          <b>{threshold}</b> out of <b>{safe.owners.length + (removedOwner ? 0 : 1)} owners</b>
+        </Typography>
+      </Box>
+      <Divider className={commonCss.nestedDivider} />
     </SignOrExecuteForm>
   )
 }
