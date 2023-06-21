@@ -1,4 +1,4 @@
-import { type ReactNode, useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { Typography, Divider, Box, SvgIcon, Paper } from '@mui/material'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -54,24 +54,16 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
 
   return (
     <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit}>
-      <AddressWrapper>
+      <Paper sx={{ backgroundColor: ({ palette }) => palette.background.main, p: '12px' }}>
         <EthHashInfo name={addressBook[safeAddress]} address={safeAddress} shortAddress={false} />
-      </AddressWrapper>
+      </Paper>
       <Box display="flex" alignItems="center" gap={2} mx="auto">
         <SvgIcon component={AddIcon} inheritViewBox fontSize="small" />
         Add new owner
       </Box>
-      <AddressWrapper variant="info">
-        <Box sx={{ backgroundColor: ({ palette }) => palette.info.background, borderRadius: '6px', p: '12px' }}>
-          <EthHashInfo
-            name={newOwner.name}
-            address={newOwner.address}
-            shortAddress={false}
-            showCopyButton
-            hasExplorer
-          />
-        </Box>
-      </AddressWrapper>
+      <Paper sx={{ backgroundColor: ({ palette }) => palette.info.background, p: '12px' }}>
+        <EthHashInfo name={newOwner.name} address={newOwner.address} shortAddress={false} showCopyButton hasExplorer />
+      </Paper>
       <Divider className={commonCss.nestedDivider} />
       <Box>
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
@@ -83,15 +75,3 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
     </SignOrExecuteForm>
   )
 }
-
-// TODO: to be expanded when more cases are added
-const AddressWrapper = ({ variant = 'default', children }: { variant?: 'default' | 'info'; children: ReactNode }) => (
-  <Paper
-    sx={{
-      backgroundColor: ({ palette }) => (variant === 'info' ? palette.info.background : palette.background.main),
-      p: '12px',
-    }}
-  >
-    {children}
-  </Paper>
-)
