@@ -128,10 +128,10 @@ const CreateTokenTransfer = ({
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   return (
-    <TxCard className={commonCss.stepFirstCard}>
+    <TxCard>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
-          <FormControl fullWidth>
+          <FormControl fullWidth sx={{ mt: 1 }}>
             {addressBook[recipient] ? (
               <Box
                 onClick={() => {
