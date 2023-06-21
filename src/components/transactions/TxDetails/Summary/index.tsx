@@ -9,6 +9,8 @@ import { dateString } from '@/utils/formatters'
 import css from './styles.module.css'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import SafeTxGasForm from '../SafeTxGasForm'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { isLegacyVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 interface Props {
   txDetails: TransactionDetails
@@ -73,10 +75,11 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
 export default Summary
 
 export const PartialSummary = ({ safeTx }: { safeTx: SafeTransaction }) => {
+  const { safe } = useSafeInfo()
   const txData = safeTx.data
   return (
     <>
-      {!!txData.safeTxGas && (
+      {safe.version && isLegacyVersion(safe.version) && (
         <TxDataRow title="safeTxGas:">
           <SafeTxGasForm />
         </TxDataRow>
