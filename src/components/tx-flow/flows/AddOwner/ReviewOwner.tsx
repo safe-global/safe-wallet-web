@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { type ReactNode, useContext, useEffect } from 'react'
 import { Typography, Divider, Box, SvgIcon } from '@mui/material'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -14,6 +14,7 @@ import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
 import AddIcon from '@/public/images/common/add.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import css from './styles.module.css'
 
 export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()
@@ -54,28 +55,39 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
 
   return (
     <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit}>
-      {/* TODO: improve passing bg color */}
-      <Box sx={{ backgroundColor: '#F4F4F4', borderRadius: '6px', p: '12px' }}>
+      <AddressWrapper>
         <EthHashInfo name={addressBook[safeAddress]} address={safeAddress} shortAddress={false} />
-      </Box>
+      </AddressWrapper>
       <Box display="flex" alignItems="center" gap={2} mx="auto">
         <SvgIcon component={AddIcon} inheritViewBox fontSize="small" />
         Add new owner
       </Box>
-      <Box sx={{ backgroundColor: '#EFFCFF', borderRadius: '6px', p: '12px' }}>
-        <EthHashInfo name={newOwner.name} address={newOwner.address} shortAddress={false} showCopyButton hasExplorer />
-      </Box>
-
+      <AddressWrapper variant="info">
+        <Box sx={{ backgroundColor: ({ palette }) => palette.info.background, borderRadius: '6px', p: '12px' }}>
+          <EthHashInfo
+            name={newOwner.name}
+            address={newOwner.address}
+            shortAddress={false}
+            showCopyButton
+            hasExplorer
+          />
+        </Box>
+      </AddressWrapper>
       <Divider className={commonCss.nestedDivider} />
-
       <Box>
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
         <Typography>
           <b>{threshold}</b> out of <b>{safe.owners.length + (removedOwner ? 0 : 1)} owners</b>
         </Typography>
       </Box>
-
       <Divider className={commonCss.nestedDivider} />
     </SignOrExecuteForm>
   )
 }
+
+// TODO: to be expanded when more cases are added
+const AddressWrapper = ({ variant = 'default', children }: { variant?: 'default' | 'info'; children: ReactNode }) => (
+  <Box className={variant === 'info' ? css.bgInfo : css.bgDefault} sx={{ borderRadius: '6px', p: '12px' }}>
+    {children}
+  </Box>
+)

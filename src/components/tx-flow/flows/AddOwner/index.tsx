@@ -2,6 +2,7 @@ import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import { ChooseOwner } from './ChooseOwner'
 import { ReviewOwner } from './ReviewOwner'
+import SaveAddressIcon from '@/public/images/common/save-address.svg'
 
 type Owner = {
   address: string
@@ -30,7 +31,7 @@ const AddOwnerFlow = () => {
   ]
 
   return (
-    <TxLayout title="Add new owner" step={step} onBack={prevStep}>
+    <TxLayout title="New transaction" subtitle="Add owner" icon={SaveAddressIcon} step={step} onBack={prevStep}>
       {steps}
     </TxLayout>
   )

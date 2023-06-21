@@ -13,3 +13,11 @@
   align-self: center;
   text-transform: uppercase;
 }
+
+.bgDefault {
+  background-color: var(--color-background-main);
+}
+
+.bgInfo {
+  background-color: var(--color-info-background);
+}
