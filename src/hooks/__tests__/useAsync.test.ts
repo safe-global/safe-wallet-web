@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { act, renderHook } from '@/tests/test-utils'
 import useAsync from '@/hooks/useAsync'
+import { waitFor } from '@testing-library/react'
 
 // Jest tests for the useAsync hook
 describe('useAsync hook', () => {
@@ -13,9 +14,9 @@ describe('useAsync hook', () => {
 
     expect(result.current).toEqual([undefined, undefined, false])
 
-    await act(() => Promise.resolve())
-
-    expect(result.current).toEqual([undefined, undefined, false])
+    await waitFor(() => {
+      expect(result.current).toEqual([undefined, undefined, false])
+    })
   })
 
   it('should return the correct state when the promise resolves', async () => {
@@ -23,9 +24,9 @@ describe('useAsync hook', () => {
 
     expect(result.current).toEqual([undefined, undefined, true])
 
-    await act(() => Promise.resolve())
-
-    expect(result.current).toEqual(['foo', undefined, false])
+    await waitFor(() => {
+      expect(result.current).toEqual(['foo', undefined, false])
+    })
   })
 
   it('should return the correct state when the promise rejects', async () => {
@@ -33,12 +34,9 @@ describe('useAsync hook', () => {
 
     expect(result.current).toEqual([undefined, undefined, true])
 
-    // Wait for the promise to resolve
-    await act(async () => {
-      await Promise.resolve()
+    await waitFor(() => {
+      expect(result.current).toEqual([undefined, 'test', false])
     })
-
-    expect(result.current).toEqual([undefined, 'test', false])
   })
 
   it('should clear the data between reloads', async () => {
