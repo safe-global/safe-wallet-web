@@ -170,6 +170,7 @@ const CreateTokenTransfer = ({
                 }}
                 className={css.amount}
                 required
+                placeholder="0"
                 {...register(TokenTransferFields.amount, {
                   required: true,
                   validate: (val) => {
