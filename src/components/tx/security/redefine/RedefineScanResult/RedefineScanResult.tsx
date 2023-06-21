@@ -57,9 +57,9 @@ const ScanWarnings = () => {
 
         {simulationUuid && (
           <Typography>
-            For detailed data and a comprehensive risk report,{' '}
+            For a comprehensive risk overview,{' '}
             <ExternalLink href={`${REDEFINE_SIMULATION_URL}${simulationUuid}`}>
-              explore the full report on Redefine
+              see the full report on Redefine
             </ExternalLink>
           </Typography>
         )}
