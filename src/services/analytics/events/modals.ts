@@ -56,4 +56,13 @@ export const MODALS_EVENTS = {
     action: 'Propose transaction',
     category: MODALS_CATEGORY,
   },
+  ACCEPT_RISK: {
+    action: 'Accept transaction risk',
+    category: MODALS_CATEGORY,
+  },
+  REDEFINE_RESULT: {
+    action: 'Redefine scan result',
+    category: MODALS_CATEGORY,
+    event: EventType.META,
+  },
 }

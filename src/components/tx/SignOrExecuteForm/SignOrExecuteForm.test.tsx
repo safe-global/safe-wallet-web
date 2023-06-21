@@ -20,8 +20,10 @@ import * as wrongChain from '@/hooks/useIsWrongChain'
 import * as useIsValidExecutionHook from '@/hooks/useIsValidExecution'
 import * as useChains from '@/hooks/useChains'
 import * as useRelaysBySafe from '@/hooks/useRemainingRelays'
+import * as useRedefine from '@/components/tx/security/redefine/useRedefine'
 import { FEATURES } from '@/utils/chains'
 import { type OnboardAPI } from '@web3-onboard/core'
+import { SecuritySeverity } from '@/services/security/modules/types'
 
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
@@ -99,7 +101,7 @@ describe('SignOrExecuteForm', () => {
       .spyOn(txSenderDispatch, 'dispatchTxProposal')
       .mockImplementation(jest.fn(() => Promise.resolve({ txId: '0x12' } as TransactionDetails)))
     jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({
-      features: [FEATURES.RELAYING],
+      features: [FEATURES.RELAYING, FEATURES.RISK_MITIGATION],
       chainId: '5',
     } as unknown as ChainInfo)
     jest.spyOn(walletUtils, 'isSmartContractWallet').mockResolvedValue(false)
@@ -624,7 +626,7 @@ describe('SignOrExecuteForm', () => {
     await waitFor(() => expect(executionSpy).toHaveBeenCalledTimes(1))
   })
 
-  it('signs a transactions', async () => {
+  it('signs a transaction', async () => {
     const mockTx = createSafeTx()
 
     const signSpy = jest.fn(() => Promise.resolve({} as SafeTransaction))
@@ -716,6 +718,119 @@ describe('SignOrExecuteForm', () => {
 
     await waitFor(() => {
       expect(result.getByText('Error submitting the transaction. Please try again.')).toBeInTheDocument()
+    })
+  })
+
+  it('requires a confirmation for high risk transactions', async () => {
+    const mockTx = createSafeTx()
+
+    const signSpy = jest.fn(() => Promise.resolve({} as SafeTransaction))
+    const proposeSpy = jest.fn(() => Promise.resolve({} as TransactionDetails))
+
+    jest.spyOn(txSenderDispatch, 'dispatchTxSigning').mockImplementation(signSpy)
+    jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(proposeSpy)
+    jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(false))
+    jest.spyOn(useChains, 'useHasFeature').mockImplementation((feature: FEATURES) => {
+      return feature === FEATURES.RISK_MITIGATION
+    })
+    jest.spyOn(useRedefine, 'useRedefine').mockReturnValue([
+      {
+        severity: SecuritySeverity.HIGH,
+        payload: {
+          errors: [],
+          issues: [
+            {
+              category: 'TEST_CATEGORY',
+              description: {
+                short: 'High test issue',
+                long: 'This is just a test',
+              },
+              severity: SecuritySeverity.HIGH,
+            },
+          ],
+        },
+      },
+      undefined,
+      false,
+    ])
+
+    const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
+
+    await act(() => Promise.resolve())
+
+    const submitButton = result.getByText('Submit')
+    expect(submitButton).toBeDisabled()
+
+    expect(result.baseElement).toHaveTextContent('High issue')
+    expect(result.baseElement).toHaveTextContent('High test issue')
+    expect(result.baseElement).toHaveTextContent('I understand the risks and would like to continue this transaction')
+
+    await act(() => {
+      const confirmationBox = result.getByText('I understand the risks and would like to continue this transaction')
+      fireEvent.click(confirmationBox)
+      expect(submitButton).toBeEnabled()
+      fireEvent.click(submitButton)
+    })
+
+    await waitFor(() => {
+      expect(signSpy).toHaveBeenCalledTimes(1)
+      expect(proposeSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  it('requires no confirmation for low / no risk transactions', async () => {
+    const mockTx = createSafeTx()
+
+    const signSpy = jest.fn(() => Promise.resolve({} as SafeTransaction))
+    const proposeSpy = jest.fn(() => Promise.resolve({} as TransactionDetails))
+
+    jest.spyOn(txSenderDispatch, 'dispatchTxSigning').mockImplementation(signSpy)
+    jest.spyOn(txSenderDispatch, 'dispatchTxProposal').mockImplementation(proposeSpy)
+    jest.spyOn(walletUtils, 'isSmartContractWallet').mockImplementation(() => Promise.resolve(false))
+    jest.spyOn(useChains, 'useHasFeature').mockImplementation((feature: FEATURES) => {
+      return feature === FEATURES.RISK_MITIGATION
+    })
+    jest.spyOn(useRedefine, 'useRedefine').mockReturnValue([
+      {
+        severity: SecuritySeverity.LOW,
+        payload: {
+          errors: [],
+          issues: [
+            {
+              category: 'TEST_CATEGORY',
+              description: {
+                short: 'Low test issue',
+                long: 'This is just a test',
+              },
+              severity: SecuritySeverity.LOW,
+            },
+          ],
+        },
+      },
+      undefined,
+      false,
+    ])
+
+    const result = render(<SignOrExecuteForm onSubmit={jest.fn} safeTx={mockTx} />)
+
+    await act(() => Promise.resolve())
+
+    const submitButton = result.getByText('Submit')
+    expect(submitButton).toBeEnabled()
+
+    expect(result.baseElement).toHaveTextContent('Low issue')
+    expect(result.baseElement).toHaveTextContent('Low test issue')
+    expect(result.baseElement).not.toHaveTextContent(
+      'I understand the risks and would like to continue this transaction',
+    )
+
+    await act(() => {
+      fireEvent.click(submitButton)
+    })
+
+    await waitFor(() => {
+      expect(signSpy).toHaveBeenCalledTimes(1)
+      expect(proposeSpy).toHaveBeenCalledTimes(1)
     })
   })
 })

@@ -8,13 +8,12 @@ import GovernanceSection from '@/components/dashboard/GovernanceSection/Governan
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
 import Relaying from '@/components/dashboard/Relaying'
-import { useCurrentChain } from '@/hooks/useChains'
-import { FEATURES, hasFeature } from '@/utils/chains'
+import { FEATURES } from '@/utils/chains'
+import { useHasFeature } from '@/hooks/useChains'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
-  const currentChain = useCurrentChain()
-  const supportsRelaying = currentChain && hasFeature(currentChain, FEATURES.RELAYING)
+  const supportsRelaying = useHasFeature(FEATURES.RELAYING)
   const { showCreationModal = '' } = router.query
 
   return (
