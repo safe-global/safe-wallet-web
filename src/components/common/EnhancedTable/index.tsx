@@ -33,6 +33,7 @@ type EnhancedRow = {
 type EnhancedHeadCell = {
   id: string
   label: string
+  content?: ReactNode
   width?: string
   sticky?: boolean
 }
@@ -78,6 +79,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
             sx={headCell.width ? { width: headCell.width } : undefined}
             className={classNames({ sticky: headCell.sticky })}
           >
+            {headCell.content}
             {headCell.label && (
               <>
                 <TableSortLabel
@@ -138,6 +140,7 @@ function EnhancedTable({ rows, headCells, mobileVariant }: EnhancedTableProps) {
       <TableContainer component={Paper} sx={{ width: '100%', mb: 2 }}>
         <Table aria-labelledby="tableTitle" className={mobileVariant ? css.mobileColumn : undefined}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
+
           <TableBody>
             {pagedRows.length > 0 ? (
               pagedRows.map((row, index) => (
