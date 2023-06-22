@@ -34,7 +34,7 @@
   white-space: normal;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .columnWrap {
     word-break: break-word;
   }

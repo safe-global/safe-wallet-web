@@ -23,7 +23,7 @@
   margin-bottom: 8px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .container td:last-of-type button {
     opacity: 1;
   }
