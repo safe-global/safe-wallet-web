@@ -1,5 +1,5 @@
 import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback } from 'react'
-import NewModalDialog from '@/components/common/NewModalDialog'
+import TxModalDialog from '@/components/common/TxModalDialog'
 import { useRouter } from 'next/router'
 
 const noop = () => {}
@@ -47,9 +47,9 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     <TxModalContext.Provider value={{ txFlow, setTxFlow, onClose }}>
       {children}
 
-      <NewModalDialog open={!!txFlow} onClose={handleModalClose}>
+      <TxModalDialog open={!!txFlow} onClose={handleModalClose}>
         {txFlow}
-      </NewModalDialog>
+      </TxModalDialog>
     </TxModalContext.Provider>
   )
 }

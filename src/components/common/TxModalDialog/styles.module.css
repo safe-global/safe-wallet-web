@@ -1,0 +1,70 @@
+.dialog {
+  top: 52px;
+  left: 230px;
+  z-index: 1300;
+}
+
+.dialog :global .MuiDialogActions-root {
+  border-top: 2px solid var(--color-border-light);
+  padding: var(--space-3);
+}
+
+.dialog :global .MuiDialogActions-root > :last-of-type:not(:first-of-type) {
+  order: 2;
+}
+
+.dialog :global .MuiDialogActions-root:after {
+  content: '';
+  order: 1;
+  flex: 1;
+}
+
+.dialog :global .MuiDialogTitle-root {
+  border-bottom: 2px solid var(--color-border-light);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-background-paper);
+  padding: 0;
+  margin-bottom: var(--space-8);
+}
+
+.buttons {
+  margin-left: auto;
+}
+
+.close {
+  color: var(--color-border-main);
+  padding: var(--space-2);
+  border-left: 1px solid var(--color-border-light);
+  border-radius: 0;
+}
+
+.paper {
+  padding-bottom: var(--space-8);
+  background-color: var(--color-border-background);
+}
+
+@media (min-width: 600px) {
+  .dialog :global .MuiDialog-paper {
+    min-width: 600px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 899.95px) {
+  .dialog {
+    left: 0;
+    top: 0;
+  }
+
+  .dialog :global .MuiDialogActions-root {
+    padding: 0;
+  }
+
+  .title {
+    margin-bottom: var(--space-3);
+  }
+}
