@@ -72,18 +72,19 @@ export const ChooseOwner = ({
     <TxCard>
       <FormProvider {...formMethods}>
         <form onSubmit={onFormSubmit} className={commonCss.form}>
-          <Typography variant="body2" mb={1}>
-            {params.removedOwner &&
-              'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'}
-          </Typography>
-
           {params.removedOwner && (
-            <Box my={2}>
-              <Typography variant="body2" color="text.secondary" mb={1}>
-                Current owner
+            <>
+              <Typography variant="body2" mb={1}>
+                {params.removedOwner &&
+                  'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'}
               </Typography>
-              <EthHashInfo address={params.removedOwner.address} showCopyButton shortAddress={false} hasExplorer />
-            </Box>
+              <Box my={2}>
+                <Typography variant="body2" color="text.secondary" mb={1}>
+                  Current owner
+                </Typography>
+                <EthHashInfo address={params.removedOwner.address} showCopyButton shortAddress={false} hasExplorer />
+              </Box>
+            </>
           )}
 
           <FormControl fullWidth>

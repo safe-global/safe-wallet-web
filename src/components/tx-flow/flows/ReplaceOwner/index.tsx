@@ -33,7 +33,13 @@ const ReplaceOwnerFlow = ({ address }: { address: string }) => {
   ]
 
   return (
-    <TxLayout title="New transaction" subtitle="Replace owner" icon={SaveAddressIcon} step={step} onBack={prevStep}>
+    <TxLayout
+      title={step === 0 ? 'New transaction' : 'Confirm transaction'}
+      subtitle="Replace owner"
+      icon={SaveAddressIcon}
+      step={step}
+      onBack={prevStep}
+    >
       {steps}
     </TxLayout>
   )
