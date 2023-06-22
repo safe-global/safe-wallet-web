@@ -1,5 +1,14 @@
 import { type SyntheticEvent, type ReactElement, useMemo } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Typography } from '@mui/material'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Skeleton,
+  SvgIcon,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import {
   type DecodedDataResponse,
@@ -19,6 +28,9 @@ import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { ErrorBoundary } from '@sentry/react'
 import { getNativeTransferData } from '@/services/tx/tokenTransferParams'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -97,8 +109,34 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
           )}
 
           <Box mt={2}>
-            <Typography variant="overline" fontWeight="bold" color="border.main">
+            <Typography variant="overline" fontWeight="bold" color="border.main" display="flex" alignItems="center">
               Advanced details
+              <Tooltip
+                title={
+                  <>
+                    We recommend not changing the default values unless necessary.{' '}
+                    <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS} title="Learn more about advanced details">
+                      Learn more about advanced details
+                    </ExternalLink>
+                    .
+                  </>
+                }
+                arrow
+                placement="top"
+              >
+                <span>
+                  <SvgIcon
+                    component={InfoIcon}
+                    inheritViewBox
+                    color="border"
+                    fontSize="small"
+                    sx={{
+                      verticalAlign: 'middle',
+                      ml: 0.5,
+                    }}
+                  />
+                </span>
+              </Tooltip>
             </Typography>
 
             {txDetails ? <Summary txDetails={txDetails} defaultExpanded /> : tx && <PartialSummary safeTx={tx} />}
