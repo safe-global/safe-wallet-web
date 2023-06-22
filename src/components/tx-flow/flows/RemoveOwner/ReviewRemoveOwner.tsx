@@ -35,28 +35,38 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       <div className={css.addresses}>
-        <Paper sx={{ backgroundColor: ({ palette }) => palette.background.main }} className={css.address}>
-          <EthHashInfo
-            address={safeAddress}
-            name={addressBook[safeAddress]}
-            shortAddress={false}
-            showCopyButton
-            hasExplorer
-          />
-        </Paper>
+        <div>
+          <Typography variant="body2" color="text.secondary" mb={0.5}>
+            Selected Safe Account
+          </Typography>
+          <Paper sx={{ backgroundColor: ({ palette }) => palette.background.main }} className={css.address}>
+            <EthHashInfo
+              address={safeAddress}
+              name={addressBook[safeAddress]}
+              shortAddress={false}
+              showCopyButton
+              hasExplorer
+            />
+          </Paper>
+        </div>
         <div className={css.action}>
           <SvgIcon component={RectangleIcon} inheritViewBox fontSize="small" />
           Remove the owner
         </div>
-        <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background }} className={css.address}>
-          <EthHashInfo
-            address={removedOwner.address}
-            name={addressBook[removedOwner.address]}
-            shortAddress={false}
-            showCopyButton
-            hasExplorer
-          />
-        </Paper>
+        <div>
+          <Typography variant="body2" color="text.secondary" mb={0.5}>
+            Selected owner
+          </Typography>
+          <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background }} className={css.address}>
+            <EthHashInfo
+              address={removedOwner.address}
+              name={addressBook[removedOwner.address]}
+              shortAddress={false}
+              showCopyButton
+              hasExplorer
+            />
+          </Paper>
+        </div>
       </div>
       <Divider className={commonCss.nestedDivider} />
       <Box m={1}>
