@@ -18,7 +18,7 @@ const SendButton = ({ tokenAddresses }: { tokenAddresses: string[] }): ReactElem
             variant="contained"
             color="primary"
             size="small"
-            sx={{ ml: 2, py: '11.25px' }}
+            sx={{ ml: 2, py: '11.25px', minWidth: '10.5em' }}
             onClick={(e) => {
               e.preventDefault()
 
@@ -29,6 +29,8 @@ const SendButton = ({ tokenAddresses }: { tokenAddresses: string[] }): ReactElem
             disabled={!isOk || tokenAddresses.length === 0}
           >
             Send
+            {tokenAddresses.length > 0 ? ' ' + tokenAddresses.length : ''}
+            {' token' + (tokenAddresses.length === 1 ? '' : 's')}
           </Button>
         </Track>
       )}
