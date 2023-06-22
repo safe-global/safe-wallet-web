@@ -11,7 +11,8 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { AddOwnerFlowProps } from '.'
 import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
-import AddIcon from '@/public/images/common/add.svg'
+import PlusIcon from '@/public/images/common/plus.svg'
+import MinusIcon from '@/public/images/common/minus.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -54,16 +55,55 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
 
   return (
     <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit}>
-      <Paper sx={{ backgroundColor: ({ palette }) => palette.background.main, p: '12px' }}>
-        <EthHashInfo name={addressBook[safeAddress]} address={safeAddress} shortAddress={false} />
-      </Paper>
+      <div>
+        <Typography variant="body2" color="text.secondary" mb={0.5}>
+          Selected Safe Account
+        </Typography>
+        <Paper sx={{ backgroundColor: ({ palette }) => palette.background.main, p: '12px' }}>
+          <EthHashInfo name={addressBook[safeAddress]} address={safeAddress} shortAddress={false} />
+        </Paper>
+      </div>
+      {params.removedOwner && (
+        <>
+          <Box display="flex" alignItems="center" gap={2} mx="auto">
+            <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" />
+            Remove owner
+          </Box>
+
+          <div>
+            <Typography variant="body2" color="text.secondary" mb={0.5}>
+              Previous owner
+            </Typography>
+            <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background, p: '12px' }}>
+              <EthHashInfo
+                name={params.removedOwner.name}
+                address={params.removedOwner.address}
+                shortAddress={false}
+                showCopyButton
+                hasExplorer
+              />
+            </Paper>
+          </div>
+        </>
+      )}
       <Box display="flex" alignItems="center" gap={2} mx="auto">
-        <SvgIcon component={AddIcon} inheritViewBox fontSize="small" />
+        <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" />
         Add new owner
       </Box>
-      <Paper sx={{ backgroundColor: ({ palette }) => palette.info.background, p: '12px' }}>
-        <EthHashInfo name={newOwner.name} address={newOwner.address} shortAddress={false} showCopyButton hasExplorer />
-      </Paper>
+      <div>
+        <Typography variant="body2" color="text.secondary" mb={0.5}>
+          New owner
+        </Typography>
+        <Paper sx={{ backgroundColor: ({ palette }) => palette.info.background, p: '12px' }}>
+          <EthHashInfo
+            name={newOwner.name}
+            address={newOwner.address}
+            shortAddress={false}
+            showCopyButton
+            hasExplorer
+          />
+        </Paper>
+      </div>
       <Divider className={commonCss.nestedDivider} />
       <Box>
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
