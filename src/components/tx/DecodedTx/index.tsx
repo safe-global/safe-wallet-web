@@ -114,7 +114,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
               <Tooltip
                 title={
                   <>
-                    If you are unsure, don&apos;t edit these values.
+                    We recommend not changing the default values unless necessary.{' '}
                     <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS} title="Learn more about advanced details">
                       Learn more about advanced details
                     </ExternalLink>
