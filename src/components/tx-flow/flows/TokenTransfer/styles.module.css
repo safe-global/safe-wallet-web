@@ -50,7 +50,7 @@
   display: flex;
   background-color: var(--color-background-main);
   border-radius: 6px;
-  padding: 10px var(--space-5) 10px var(--space-2) !important;
+  padding: var(--space-1) var(--space-5) var(--space-1) var(--space-2) !important;
 }
 
 .select :global(.MuiSelect-icon) {

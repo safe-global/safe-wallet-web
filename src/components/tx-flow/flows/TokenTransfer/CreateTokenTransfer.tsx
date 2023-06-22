@@ -205,7 +205,9 @@ const CreateTokenTransfer = ({
                       <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
 
                       <Grid item xs>
-                        <Typography variant="body2">{item.tokenInfo.name}</Typography>
+                        <Typography variant="body2" lineHeight="18px">
+                          {item.tokenInfo.name}
+                        </Typography>
 
                         <Typography variant="caption" component="p">
                           {formatVisualAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
