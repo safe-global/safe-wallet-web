@@ -1,8 +1,5 @@
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import type { ReactElement } from 'react'
+import type { ReactElement, BaseSyntheticEvent } from 'react'
+import { Box, Button, DialogActions, DialogContent } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import AddressInput from '@/components/common/AddressInput'
@@ -41,16 +38,20 @@ const EntryDialog = ({
 
   const { handleSubmit, formState } = methods
 
-  const onSubmit = (data: AddressEntry) => {
+  const submitCallback = handleSubmit((data: AddressEntry) => {
     dispatch(upsertAddressBookEntry({ ...data, chainId: chainId || currentChainId }))
-
     handleClose()
+  })
+
+  const onSubmit = (e: BaseSyntheticEvent) => {
+    e.stopPropagation()
+    submitCallback(e)
   }
 
   return (
     <ModalDialog open onClose={handleClose} dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
           <DialogContent>
             <Box mb={2}>
               <NameInput label="Name" autoFocus name="name" required />

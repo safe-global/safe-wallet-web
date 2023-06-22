@@ -19,18 +19,17 @@ import { cleanInputValue, parsePrefixedAddress } from '@/utils/addresses'
 import useDebounce from '@/hooks/useDebounce'
 import CaretDownIcon from '@/public/images/common/caret-down.svg'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
-import EntryDialog from '@/components/address-book/EntryDialog'
 import classnames from 'classnames'
 import css from './styles.module.css'
 
 export type AddressInputProps = TextFieldProps & {
   name: string
   address?: string
-  canAdd?: boolean
   onOpenListClick?: () => void
   isAutocompleteOpen?: boolean
   validate?: Validate<string>
   deps?: string | string[]
+  onAddressBookClick?: () => void
 }
 
 const AddressInput = ({
@@ -39,7 +38,7 @@ const AddressInput = ({
   required = true,
   onOpenListClick,
   isAutocompleteOpen,
-  canAdd,
+  onAddressBookClick,
   deps,
   ...props
 }: AddressInputProps): ReactElement => {
@@ -55,7 +54,6 @@ const AddressInput = ({
   const watchedValue = useWatch({ name, control })
   const currentShortName = currentChain?.shortName || ''
   const [isValidating, setIsValidating] = useState<boolean>(false)
-  const [open, setOpen] = useState<boolean>(false)
 
   // Fetch an ENS resolution for the current address
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
@@ -91,12 +89,14 @@ const AddressInput = ({
         <CircularProgress size={20} />
       ) : !props.disabled ? (
         <>
-          {canAdd && (
-            <IconButton onClick={() => setOpen(true)}>
+          {onAddressBookClick && (
+            <IconButton onClick={onAddressBookClick}>
               <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" color="primary" />
             </IconButton>
           )}
+
           <ScanQRButton onScan={setAddressValue} />
+
           {onOpenListClick && (
             <IconButton
               onClick={onOpenListClick}
@@ -169,7 +169,6 @@ const AddressInput = ({
         // Only seems to occur on the `/load` route
         value={watchedValue}
       />
-      {open && <EntryDialog handleClose={() => setOpen(false)} defaultValues={{ name: '', address: watchedValue }} />}
     </>
   )
 }

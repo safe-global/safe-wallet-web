@@ -12,3 +12,9 @@
 .unknownAddress svg {
   height: auto;
 }
+
+.unknownAddress a {
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
