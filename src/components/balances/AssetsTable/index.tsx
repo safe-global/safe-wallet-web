@@ -1,4 +1,4 @@
-import { type ReactElement, Dispatch, SetStateAction, useCallback } from 'react'
+import { type ReactElement, type Dispatch, type SetStateAction, useCallback, useMemo } from 'react'
 import { Tooltip, Typography, SvgIcon, Box, Skeleton, Checkbox } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -59,7 +59,7 @@ type AssetsTableProps = {
 
 const AssetsTable = ({ selectedTokens, setSelectedTokens }: AssetsTableProps): ReactElement => {
   const { balances, loading } = useBalances()
-  const allAssets = balances.items || []
+  const allAssets = useMemo(() => balances.items || [], [balances.items])
 
   const onCheckboxClick = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, item: string) => {
@@ -74,7 +74,7 @@ const AssetsTable = ({ selectedTokens, setSelectedTokens }: AssetsTableProps): R
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSelectedTokens(e.target.checked ? allAssets.map((item) => item.tokenInfo.address) : [])
     },
-    [allAssets],
+    [allAssets, setSelectedTokens],
   )
 
   const headCells = [

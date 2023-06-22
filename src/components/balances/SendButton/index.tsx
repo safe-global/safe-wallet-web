@@ -1,4 +1,4 @@
-import { ReactElement, useContext } from 'react'
+import { type ReactElement, useContext } from 'react'
 import { Button } from '@mui/material'
 import CheckWallet from '@/components/common/CheckWallet'
 import Track from '@/components/common/Track'
