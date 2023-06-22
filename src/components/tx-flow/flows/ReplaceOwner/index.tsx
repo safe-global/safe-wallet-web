@@ -1,8 +1,9 @@
 import TxLayout from '@/components/tx-flow/common/TxLayout'
-import useTxStepper from '../../useTxStepper'
+import useTxStepper from '@/components/tx-flow/useTxStepper'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { ReviewOwner } from '../AddOwner/ReviewOwner'
 import { ChooseOwner } from '../AddOwner/ChooseOwner'
+import SaveAddressIcon from '@/public/images/common/save-address.svg'
 
 type Owner = {
   address: string
@@ -32,7 +33,7 @@ const ReplaceOwnerFlow = ({ address }: { address: string }) => {
   ]
 
   return (
-    <TxLayout title="Replace owner" step={step} onBack={prevStep}>
+    <TxLayout title="New transaction" subtitle="Replace owner" icon={SaveAddressIcon} step={step} onBack={prevStep}>
       {steps}
     </TxLayout>
   )

@@ -66,20 +66,22 @@ export const ChooseOwner = ({
     })
   })
 
-  const newNumberOfOwners = safe.owners.length + 1
+  const newNumberOfOwners = safe.owners.length + (!params.removedOwner ? 1 : 0)
 
   return (
     <TxCard>
       <FormProvider {...formMethods}>
         <form onSubmit={onFormSubmit} className={commonCss.form}>
-          <Box mb={1}>
+          <Typography variant="body2" mb={1}>
             {params.removedOwner &&
               'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'}
-          </Box>
+          </Typography>
 
           {params.removedOwner && (
             <Box my={2}>
-              <Typography mb={1}>Current owner</Typography>
+              <Typography variant="body2" color="text.secondary" mb={1}>
+                Current owner
+              </Typography>
               <EthHashInfo address={params.removedOwner.address} showCopyButton shortAddress={false} hasExplorer />
             </Box>
           )}
@@ -135,9 +137,11 @@ export const ChooseOwner = ({
                           {idx + 1}
                         </MenuItem>
                       ))}
-                      <MenuItem key={newNumberOfOwners} value={newNumberOfOwners}>
-                        {newNumberOfOwners}
-                      </MenuItem>
+                      {!params.removedOwner && (
+                        <MenuItem key={newNumberOfOwners} value={newNumberOfOwners}>
+                          {newNumberOfOwners}
+                        </MenuItem>
+                      )}
                     </TextField>
                   )}
                 />

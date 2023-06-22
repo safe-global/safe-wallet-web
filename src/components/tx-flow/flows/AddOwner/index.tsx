@@ -1,7 +1,7 @@
 import TxLayout from '@/components/tx-flow/common/TxLayout'
-import useTxStepper from '../../useTxStepper'
-import { ChooseOwner } from './ChooseOwner'
-import { ReviewOwner } from './ReviewOwner'
+import useTxStepper from '@/components/tx-flow/useTxStepper'
+import { ChooseOwner } from '@/components/tx-flow/flows/AddOwner/ChooseOwner'
+import { ReviewOwner } from '@/components/tx-flow/flows/AddOwner/ReviewOwner'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
