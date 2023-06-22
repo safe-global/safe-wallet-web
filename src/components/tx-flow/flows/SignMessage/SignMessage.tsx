@@ -254,11 +254,14 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
 
       <TxCard>
         <CardActions>
-          {/* TODO: Remove this Cancel button once we can figure out how to move the logic outside */}
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
-            Sign
-          </Button>
+          <Box display="flex" justifyContent="space-between" width="100%">
+            {/* TODO: Remove this Cancel button once we can figure out how to move the logic outside */}
+            <Button onClick={handleClose}>Cancel</Button>
+
+            <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
+              Sign
+            </Button>
+          </Box>
         </CardActions>
         <ConfirmationDialog open={showCloseTooltip} onCancel={() => setShowCloseTooltip(false)} onClose={onClose} />
       </TxCard>
