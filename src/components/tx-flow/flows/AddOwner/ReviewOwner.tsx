@@ -67,7 +67,7 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
         <>
           <Box display="flex" alignItems="center" gap={2} mx="auto">
             <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" />
-            Remove the owner
+            Remove owner
           </Box>
 
           <div>
