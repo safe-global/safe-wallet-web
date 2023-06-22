@@ -19,6 +19,7 @@ import {
   CardActions,
   Divider,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   SvgIcon,
@@ -34,7 +35,7 @@ import NumberField from '@/components/common/NumberField'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import { type TokenTransferParams, TokenTransferFields, TokenTransferType } from '.'
 import TxCard from '../../common/TxCard'
-import { safeFormatUnits } from '@/utils/formatters'
+import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 
@@ -200,12 +201,19 @@ const CreateTokenTransfer = ({
               >
                 {balancesItems.map((item) => (
                   <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
-                    <div className={css.item}>
+                    <Grid container alignItems="center" gap={1}>
                       <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
-                      <Typography>
-                        <b>{item.tokenInfo.symbol}</b>
-                      </Typography>
-                    </div>
+
+                      <Grid item xs>
+                        <Typography variant="body2" lineHeight="18px">
+                          {item.tokenInfo.name}
+                        </Typography>
+
+                        <Typography variant="caption" component="p">
+                          {formatVisualAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </MenuItem>
                 ))}
               </TextField>
