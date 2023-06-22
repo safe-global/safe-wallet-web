@@ -24,11 +24,12 @@
 }
 
 .amount {
+  min-width: 130px;
   flex-grow: 1;
 }
 
 .amount :global(.MuiInput-input) {
-  padding-left: var(--space-3);
+  padding-left: var(--space-2);
 }
 
 .max {
@@ -38,6 +39,10 @@
   margin-right: var(--space-1);
   min-height: 50px;
   padding: var(--space-2);
+}
+
+.select {
+  flex-shrink: 0;
 }
 
 .select :global(.MuiSelect-select) {
@@ -50,14 +55,6 @@
 
 .select :global(.MuiSelect-icon) {
   margin-right: var(--space-2);
-}
-
-.item {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-  padding-top: 2px;
-  padding-bottom: 2px;
 }
 
 .token {
