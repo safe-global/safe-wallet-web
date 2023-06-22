@@ -1,5 +1,5 @@
 import { type ReactElement, useContext } from 'react'
-import { TxSimulation } from '../TxSimulation'
+import { TxSimulation } from '../NewTxSimulation'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { Typography } from '@mui/material'
 
