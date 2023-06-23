@@ -67,7 +67,6 @@ type SingleTransactionSimulationParams = {
   executionOwner: string
   transactions: SafeTransaction
   gasLimit?: number
-  canExecute: boolean
 }
 
 type MultiSendTransactionSimulationParams = {
@@ -75,7 +74,6 @@ type MultiSendTransactionSimulationParams = {
   executionOwner: string
   transactions: MetaTransactionData[]
   gasLimit?: number
-  canExecute: boolean
 }
 
 export type SimulationTxParams = SingleTransactionSimulationParams | MultiSendTransactionSimulationParams

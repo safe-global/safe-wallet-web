@@ -10,7 +10,7 @@ const TxChecks = (): ReactElement => {
     <>
       <Typography variant="h5">Transaction checks</Typography>
 
-      <TxSimulation canExecute disabled={false} transactions={safeTx} />
+      <TxSimulation disabled={false} transactions={safeTx} />
     </>
   )
 }

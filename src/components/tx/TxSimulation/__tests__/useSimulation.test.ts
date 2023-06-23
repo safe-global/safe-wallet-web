@@ -80,7 +80,6 @@ describe('useSimulation()', () => {
           chainId,
         } as SafeInfo,
         executionOwner: safeAddress,
-        canExecute: true,
       }),
     )
 
@@ -150,7 +149,6 @@ describe('useSimulation()', () => {
           chainId,
         } as SafeInfo,
         executionOwner: safeAddress,
-        canExecute: true,
       }),
     )
 
@@ -221,7 +219,6 @@ describe('useSimulation()', () => {
           chainId,
         } as SafeInfo,
         executionOwner: safeAddress,
-        canExecute: false,
       }),
     )
 
