@@ -2,8 +2,7 @@ import type { ReactElement, SyntheticEvent } from 'react'
 import { useMemo, useState } from 'react'
 import type { BigNumberish, BytesLike } from 'ethers'
 import { Button, CardActions, Typography } from '@mui/material'
-import SendFromBlock from '@/components/tx/SendFromBlock'
-import SendToBlock from '@/components/tx/SendToBlock'
+import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
 import { type TokenTransferParams } from '@/components/tx-flow/flows/TokenTransfer/index'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import useBalances from '@/hooks/useBalances'
@@ -102,16 +101,15 @@ const ReviewSpendingLimitTx = ({
   const submitDisabled = !isSubmittable || gasLimitLoading
 
   return (
-    <TxCard>
-      <form onSubmit={handleSubmit}>
-        <Typography variant="body2" mb={4}>
+    <form onSubmit={handleSubmit}>
+      <TxCard>
+        <Typography variant="body2">
           Spending limit transactions only appear in the interface once they are successfully processed and indexed.
           Pending transactions can only be viewed in your signer wallet application or under your wallet address on a
           Blockchain Explorer.
         </Typography>
-        {token && <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} />}
 
-        <SendFromBlock />
+        {token && <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} />}
 
         <SendToBlock address={params.recipient} />
 
@@ -123,7 +121,7 @@ const ReviewSpendingLimitTx = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
+        <Typography variant="body2" color="primary.light" textAlign="center">
           You&apos;re about to create a transaction and will need to confirm it with your currently connected wallet.
         </Typography>
 
@@ -132,8 +130,8 @@ const ReviewSpendingLimitTx = ({
             Submit
           </Button>
         </CardActions>
-      </form>
-    </TxCard>
+      </TxCard>
+    </form>
   )
 }
 
