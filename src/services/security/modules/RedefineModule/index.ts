@@ -107,6 +107,10 @@ export type RedefineResponse = {
 
 export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefineModuleResponse> {
   async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
+    if (!REDEFINE_REQUEST_URL) {
+      throw new Error('Redefine API URL is not set')
+    }
+
     const { chainId, safeAddress } = request
 
     const txTypedData = generateTypedData({
