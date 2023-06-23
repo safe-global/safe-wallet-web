@@ -92,4 +92,4 @@ export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST || fals
 
 // Risk mitigation (Redefine)
 export const REDEFINE_SIMULATION_URL = 'https://dashboard.redefine.net/reports/'
-export const REDEFINE_REQUEST_URL = process.env.NEXT_PUBLIC_REDEFINE_REQUEST_URL
+export const REDEFINE_API = process.env.NEXT_PUBLIC_REDEFINE_API
