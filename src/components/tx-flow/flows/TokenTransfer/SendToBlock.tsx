@@ -3,7 +3,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 
 const SendToBlock = ({ address }: { address: string; title?: string }) => {
   return (
-    <Grid container gap={1}>
+    <Grid container gap={1} alignItems="center">
       <Grid item xs={2}>
         To
       </Grid>

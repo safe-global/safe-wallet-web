@@ -34,7 +34,7 @@ const SendAmountBlock = ({
   children?: ReactNode
 }) => {
   return (
-    <Grid container gap={1}>
+    <Grid container gap={1} alignItems="center">
       <Grid item xs={2}>
         Send
       </Grid>

@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, CardActions } from '@mui/material'
+import { Button, CardActions, Divider } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -23,6 +23,7 @@ import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
 
 import css from './styles.module.css'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 const ExecuteForm = ({
   safeTx,
@@ -130,6 +131,8 @@ const ExecuteForm = ({
         ) : (
           <UnknownContractError />
         )}
+
+        <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
 
         <CardActions>
           {/* Submit button */}

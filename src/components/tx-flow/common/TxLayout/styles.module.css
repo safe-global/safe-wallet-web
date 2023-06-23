@@ -64,6 +64,10 @@
   font-size: 14px;
 }
 
+.step :global(.MuiAccordionSummary-expandIconWrapper) {
+  margin-left: var(--space-2);
+}
+
 .statusButton {
   position: absolute;
   top: 0;
