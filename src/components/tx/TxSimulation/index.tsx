@@ -54,7 +54,7 @@ const TxSimulationBlock = ({ transactions, canExecute, disabled, gasLimit }: TxS
   const isSimulationLoading = simulationRequestStatus === FETCH_STATUS.LOADING
 
   return (
-    <Accordion expanded={isSimulationFinished} elevation={0} sx={{ mt: '16px !important' }}>
+    <Accordion expanded={isSimulationFinished} elevation={0}>
       {!isSimulationFinished ? (
         <AccordionSummary className={css.simulateAccordion}>
           <Typography>Transaction validity</Typography>

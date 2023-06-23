@@ -83,7 +83,7 @@ const TxNonce = () => {
     setNonce(recommendedNonce)
   }, [recommendedNonce, setNonce])
 
-  if (nonce === undefined) return <Skeleton variant="rounded" width={40} height={26} />
+  if (nonce === undefined) return <Skeleton variant="rounded" width={40} height={38} />
 
   return (
     <Box display="flex" alignItems="center" gap={1}>

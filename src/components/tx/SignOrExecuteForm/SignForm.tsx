@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, CardActions } from '@mui/material'
+import { Button, CardActions, Divider } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -10,6 +10,7 @@ import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import { asError } from '@/services/exceptions/utils'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 const SignForm = ({
   safeTx,
@@ -64,6 +65,8 @@ const SignForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )
       )}
+
+      <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
 
       <CardActions>
         {/* Submit button */}

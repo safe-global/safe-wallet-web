@@ -1,8 +1,8 @@
 .wrapper {
-  padding: 8px 0px 8px;
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  margin-bottom: var(--space-1);
 }
 
 .icon {
