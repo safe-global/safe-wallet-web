@@ -1,9 +1,10 @@
 import { type ReactElement, useMemo, useState, useCallback } from 'react'
+import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
-import useIsSafeTokenPaused from '@/components/tx/modals/TokenTransferModal/useIsSafeTokenPaused'
+import useIsSafeTokenPaused from '@/hooks/useIsSafeTokenPaused'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import { useAppSelector } from '@/store'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
@@ -38,6 +39,20 @@ import TxCard from '../../common/TxCard'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
+
+export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
+  <Grid container alignItems="center" gap={1}>
+    <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
+
+    <Grid item xs>
+      <Typography variant="body2">{item.tokenInfo.name}</Typography>
+
+      <Typography variant="caption" component="p">
+        {formatVisualAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
+      </Typography>
+    </Grid>
+  </Grid>
+)
 
 const CreateTokenTransfer = ({
   params,
@@ -201,19 +216,7 @@ const CreateTokenTransfer = ({
               >
                 {balancesItems.map((item) => (
                   <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
-                    <Grid container alignItems="center" gap={1}>
-                      <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
-
-                      <Grid item xs>
-                        <Typography variant="body2" lineHeight="18px">
-                          {item.tokenInfo.name}
-                        </Typography>
-
-                        <Typography variant="caption" component="p">
-                          {formatVisualAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
-                        </Typography>
-                      </Grid>
-                    </Grid>
+                    <AutocompleteItem {...item} />
                   </MenuItem>
                 ))}
               </TextField>

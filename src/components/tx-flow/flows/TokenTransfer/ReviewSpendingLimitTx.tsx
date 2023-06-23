@@ -1,11 +1,11 @@
 import type { ReactElement, SyntheticEvent } from 'react'
 import { useMemo, useState } from 'react'
 import type { BigNumberish, BytesLike } from 'ethers'
-import { Button, DialogContent, Typography } from '@mui/material'
+import { Button, CardActions, Typography } from '@mui/material'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import SendToBlock from '@/components/tx/SendToBlock'
-import type { TokenTransferModalProps } from '.'
-import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import { type TokenTransferParams } from '@/components/tx-flow/flows/TokenTransfer/index'
+import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import useBalances from '@/hooks/useBalances'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import useSpendingLimitGas from '@/hooks/useSpendingLimitGas'
@@ -22,6 +22,7 @@ import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { asError } from '@/services/exceptions/utils'
+import TxCard from '@/components/tx-flow/common/TxCard'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -34,7 +35,13 @@ export type SpendingLimitTxParams = {
   signature: BytesLike
 }
 
-const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): ReactElement => {
+const ReviewSpendingLimitTx = ({
+  params,
+  onSubmit,
+}: {
+  params: TokenTransferParams
+  onSubmit: () => void
+}): ReactElement => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const currentChain = useCurrentChain()
@@ -67,10 +74,7 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
 
   const { gasLimit, gasLimitLoading } = useSpendingLimitGas(txParams)
 
-  const [advancedParams, setManualParams] = useAdvancedParams({
-    gasLimit,
-    nonce: params.txNonce,
-  })
+  const [advancedParams, setManualParams] = useAdvancedParams(gasLimit)
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
@@ -98,14 +102,14 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
   const submitDisabled = !isSubmittable || gasLimitLoading
 
   return (
-    <form onSubmit={handleSubmit}>
-      <DialogContent>
+    <TxCard>
+      <form onSubmit={handleSubmit}>
         <Typography variant="body2" mb={4}>
           Spending limit transactions only appear in the interface once they are successfully processed and indexed.
           Pending transactions can only be viewed in your signer wallet application or under your wallet address on a
           Blockchain Explorer.
         </Typography>
-        {token && <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo} />}
+        {token && <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} />}
 
         <SendFromBlock />
 
@@ -123,11 +127,13 @@ const ReviewSpendingLimitTx = ({ params, onSubmit }: TokenTransferModalProps): R
           You&apos;re about to create a transaction and will need to confirm it with your currently connected wallet.
         </Typography>
 
-        <Button variant="contained" type="submit" disabled={submitDisabled}>
-          Submit
-        </Button>
-      </DialogContent>
-    </form>
+        <CardActions>
+          <Button variant="contained" type="submit" disabled={submitDisabled}>
+            Submit
+          </Button>
+        </CardActions>
+      </form>
+    </TxCard>
   )
 }
 

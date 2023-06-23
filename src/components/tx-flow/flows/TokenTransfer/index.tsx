@@ -1,7 +1,7 @@
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import CreateTokenTransfer from './CreateTokenTransfer'
-import ReviewTokenTransfer from './ReviewTokenTransfer'
+import ReviewTokenTx from '@/components/tx-flow/flows/TokenTransfer/ReviewTokenTx'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 
@@ -49,7 +49,7 @@ const TokenTransferFlow = ({ txNonce, ...params }: TokenTransferFlowProps) => {
       onSubmit={(formData) => nextStep({ ...data, ...formData })}
     />,
 
-    <ReviewTokenTransfer key={1} params={data} txNonce={txNonce} onSubmit={() => null} />,
+    <ReviewTokenTx key={1} params={data} txNonce={txNonce} onSubmit={() => null} />,
   ]
 
   return (

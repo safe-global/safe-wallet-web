@@ -4,7 +4,7 @@ import type { BigNumber } from '@ethersproject/bignumber'
 import classNames from 'classnames'
 import { safeFormatUnits } from '@/utils/formatters'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { SendAssetsField, SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { TokenTransferFields, TokenTransferType } from '@/components/tx-flow/flows/TokenTransfer'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 
 import css from './styles.module.css'
@@ -29,7 +29,7 @@ const SpendingLimitRow = ({
       <Controller
         rules={{ required: true }}
         control={control}
-        name={SendAssetsField.type}
+        name={TokenTransferFields.type}
         render={({ field: { onChange, ...field } }) => (
           <RadioGroup
             row
@@ -38,16 +38,16 @@ const SpendingLimitRow = ({
 
               // Validate only after the field is changed
               setTimeout(() => {
-                trigger(SendAssetsField.amount)
+                trigger(TokenTransferFields.amount)
               }, 10)
             }}
             {...field}
-            defaultValue={SendTxType.multiSig}
+            defaultValue={TokenTransferType.multiSig}
             className={css.group}
           >
             {!isOnlySpendLimitBeneficiary && (
               <FormControlLabel
-                value={SendTxType.multiSig}
+                value={TokenTransferType.multiSig}
                 // TODO: Add tooltip when we have the text
                 label="Standard transaction"
                 control={<Radio />}
@@ -56,7 +56,7 @@ const SpendingLimitRow = ({
               />
             )}
             <FormControlLabel
-              value={SendTxType.spendingLimit}
+              value={TokenTransferType.spendingLimit}
               // TODO: Add tooltip when we have the text
               label={
                 <>
