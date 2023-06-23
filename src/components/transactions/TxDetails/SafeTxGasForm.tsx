@@ -25,11 +25,9 @@ const Form = ({ onSubmit }: { onSubmit: () => void }) => {
     onSubmit()
   }
 
+  // Close the form w/o submitting if the user clicks outside of it
   const onBlur = () => {
-    setTimeout(() => {
-      formMethods.setValue('safeTxGas', safeTxGas)
-      onSubmit()
-    }, 100)
+    setTimeout(onSubmit, 100)
   }
 
   return (
