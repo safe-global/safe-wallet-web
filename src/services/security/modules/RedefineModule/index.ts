@@ -1,4 +1,4 @@
-import { REDEFINE_REQUEST_URL } from '@/config/constants'
+import { REDEFINE_API } from '@/config/constants'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
@@ -107,6 +107,10 @@ export type RedefineResponse = {
 
 export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefineModuleResponse> {
   async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
+    if (!REDEFINE_API) {
+      throw new Error('Redefine API URL is not set')
+    }
+
     const { chainId, safeAddress } = request
 
     const txTypedData = generateTypedData({
@@ -124,7 +128,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
       },
     }
 
-    const res = await fetch(REDEFINE_REQUEST_URL, {
+    const res = await fetch(REDEFINE_API, {
       method: 'POST',
       headers: {
         'content-type': 'application/JSON',
