@@ -18,7 +18,7 @@ import { parseUnits, defaultAbiCoder } from 'ethers/lib/utils'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
-import { AutocompleteItem } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { AutocompleteItem } from '@/components/tx-flow/flows/TokenTransfer/CreateTokenTransfer'
 import useChainId from '@/hooks/useChainId'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import NumberField from '@/components/common/NumberField'

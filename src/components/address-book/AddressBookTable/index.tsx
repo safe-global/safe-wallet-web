@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { Box } from '@mui/material'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import type { AddressEntry } from '@/components/address-book/EntryDialog'
@@ -21,8 +21,8 @@ import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoEntriesIcon from '@/public/images/address-book/no-entries.svg'
 import { useCurrentChain } from '@/hooks/useChains'
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
-import { SendAssetsField } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { TxModalContext } from '@/components/tx-flow'
+import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
 import CheckWallet from '@/components/common/CheckWallet'
 
 const headCells = [
@@ -47,10 +47,11 @@ const defaultOpen = {
 
 const AddressBookTable = () => {
   const chain = useCurrentChain()
+  const { setTxFlow } = useContext(TxModalContext)
+
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [searchQuery, setSearchQuery] = useState('')
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
-  const [selectedAddress, setSelectedAddress] = useState<string | undefined>()
 
   const handleOpenModal = (type: keyof typeof open) => () => {
     setOpen((prev) => ({ ...prev, [type]: true }))
@@ -117,7 +118,7 @@ const AddressBookTable = () => {
                     variant="contained"
                     color="primary"
                     size="small"
-                    onClick={() => setSelectedAddress(address)}
+                    onClick={() => setTxFlow(<TokenTransferFlow recipient={address} />)}
                     disabled={!isOk}
                   >
                     Send
@@ -165,14 +166,6 @@ const AddressBookTable = () => {
       )}
 
       {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
-
-      {/* Send funds modal */}
-      {selectedAddress && (
-        <TokenTransferModal
-          onClose={() => setSelectedAddress(undefined)}
-          initialData={[{ [SendAssetsField.recipient]: selectedAddress }]}
-        />
-      )}
     </>
   )
 }
