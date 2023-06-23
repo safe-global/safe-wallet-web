@@ -1,16 +1,6 @@
 import { type ComponentType, type ReactElement, type ReactNode, useEffect, useState } from 'react'
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  Button,
-  Paper,
-  SvgIcon,
-  IconButton,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material'
+import { Box, Container, Grid, Typography, Button, Paper, SvgIcon, IconButton, useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import SafeTxProvider from '../../SafeTxProvider'

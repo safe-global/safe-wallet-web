@@ -39,7 +39,7 @@
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.11.10",
+    "@mui/material": "^5.13.5",
     "@mui/x-date-pickers": "^5.0.12",
     "@reduxjs/toolkit": "^1.9.5",
     "@safe-global/safe-apps-sdk": "7.11.0",
