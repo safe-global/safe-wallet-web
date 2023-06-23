@@ -18,7 +18,7 @@
   gap: var(--space-1);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899.95px) {
   .mobileColumn thead th {
     display: none;
   }

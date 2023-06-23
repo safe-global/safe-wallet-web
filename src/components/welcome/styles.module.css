@@ -63,7 +63,7 @@
   padding: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899.95px) {
   .sidebar :global .MuiPaper-root {
     height: 100%;
   }
@@ -85,7 +85,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .content {
     padding: var(--space-4);
   }

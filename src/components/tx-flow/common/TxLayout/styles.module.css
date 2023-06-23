@@ -63,3 +63,56 @@
   font-weight: bold;
   font-size: 14px;
 }
+
+.statusButton {
+  position: absolute;
+  top: 0;
+  right: 57px;
+  color: var(--color-text-primary);
+  padding: var(--space-2);
+  border-left: 1px solid var(--color-border-light);
+  border-radius: 0;
+  width: 24px;
+  height: 24px;
+  box-sizing: content-box;
+  display: none;
+}
+
+@media (max-width: 899.95px) {
+  .widget {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .widget :global .MuiPaper-root {
+    height: 100%;
+  }
+
+  .title {
+    font-size: 16px;
+    position: absolute;
+    top: 12px;
+    left: var(--space-3);
+  }
+
+  .container {
+    padding: 0;
+  }
+
+  .progressBar {
+    display: none;
+  }
+
+  .step :global(.MuiCard-root),
+  .header {
+    border-radius: 0;
+  }
+
+  .statusButton {
+    display: inline-flex;
+  }
+}

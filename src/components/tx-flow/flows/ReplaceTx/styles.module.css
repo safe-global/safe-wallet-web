@@ -48,7 +48,7 @@
   padding: var(--space-2) var(--space-3);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .container {
     padding: var(--space-3) !important;
   }

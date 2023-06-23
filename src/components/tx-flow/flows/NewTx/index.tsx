@@ -6,6 +6,7 @@ import { Box, Typography } from '@mui/material'
 import { TxModalContext } from '../../'
 import TokenTransferFlow from '../TokenTransfer'
 import { AppRoutes } from '@/config/routes'
+import css from './styles.module.css'
 
 const BUTTONS_HEIGHT = '91px'
 
@@ -23,7 +24,7 @@ const NewTxMenu = () => {
   }, [setTxFlow])
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" gap={2} width={452} m="auto">
+    <Box className={css.wrapper}>
       <Typography variant="h6" fontWeight={700}>
         New transaction
       </Typography>

@@ -1,4 +1,4 @@
-import { Divider, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material'
+import { Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material'
 import CreatedIcon from '@/public/images/messages/created.svg'
 import SignedIcon from '@/public/images/messages/signed.svg'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
@@ -6,6 +6,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import classnames from 'classnames'
 import css from './styles.module.css'
+import CloseIcon from '@mui/icons-material/Close'
 
 const confirmedMessage = (threshold: number, confirmations: number) => {
   return (
@@ -15,7 +16,15 @@ const confirmedMessage = (threshold: number, confirmations: number) => {
   )
 }
 
-const TxStatusWidget = ({ step, txSummary }: { step: number; txSummary?: TransactionSummary }) => {
+const TxStatusWidget = ({
+  step,
+  txSummary,
+  handleClose,
+}: {
+  step: number
+  txSummary?: TransactionSummary
+  handleClose: () => void
+}) => {
   const { safe } = useSafeInfo()
   const { threshold } = safe
 
@@ -27,10 +36,13 @@ const TxStatusWidget = ({ step, txSummary }: { step: number; txSummary?: Transac
   return (
     <Paper>
       <div className={css.header}>
-        <img src="/images/logo-no-text.svg" alt="Safe logo" width="32px" />
-        <Typography variant="h6" fontWeight="700">
+        <img src="/images/logo-no-text.svg" alt="Safe logo" className={css.logo} />
+        <Typography variant="h6" fontWeight="700" className={css.title}>
           Transaction status
         </Typography>
+        <IconButton className={css.close} aria-label="close" onClick={handleClose} size="small">
+          <CloseIcon />
+        </IconButton>
       </div>
 
       <Divider />

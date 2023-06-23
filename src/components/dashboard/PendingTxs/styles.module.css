@@ -37,7 +37,7 @@
   word-break: break-word;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .confirmationsCount {
     padding: 4px var(--space-1);
   }
