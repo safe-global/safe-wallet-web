@@ -27,7 +27,7 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner }: CheckWalle
     ? Message.WalletNotConnected
     : !isSafeOwner && !isSpendingLimit && !allowNonOwner
     ? Message.NotSafeOwner
-    : isSpendingLimit && !allowSpendingLimit
+    : isSpendingLimit && !allowSpendingLimit && !allowNonOwner
     ? Message.OnlySpendingLimitBeneficiary
     : ''
 
