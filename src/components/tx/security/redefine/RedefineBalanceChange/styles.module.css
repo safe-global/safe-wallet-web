@@ -3,6 +3,7 @@
   max-height: 300px;
   overflow-y: auto;
   align-items: center;
+  gap: 1px;
 }
 
 .balanceChange {
@@ -14,6 +15,10 @@
 
 .balanceChange:last-child {
   margin-bottom: 0;
+}
+
+.balanceChange svg {
+  flex-shrink: 0;
 }
 
 .nftId {
