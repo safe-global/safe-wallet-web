@@ -71,6 +71,7 @@ const ScanWarnings = () => {
   )
 }
 
+// TODO: Remove this one NewRedefineScanResult is done
 export const RedefineScanResult = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 

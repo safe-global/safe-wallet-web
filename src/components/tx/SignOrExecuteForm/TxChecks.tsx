@@ -2,7 +2,7 @@ import { type ReactElement, useContext } from 'react'
 import { TxSimulation } from '../NewTxSimulation'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { Typography } from '@mui/material'
-import { RedefineScanResult } from '@/components/tx/security/redefine/RedefineScanResult/RedefineScanResult'
+import { NewRedefine } from '@/components/tx/security/redefine/NewRedefineScanResult/RedefineScanResult'
 
 const TxChecks = (): ReactElement => {
   const { safeTx } = useContext(SafeTxContext)
@@ -13,7 +13,7 @@ const TxChecks = (): ReactElement => {
 
       <TxSimulation disabled={false} transactions={safeTx} />
 
-      <RedefineScanResult />
+      <NewRedefine />
     </>
   )
 }

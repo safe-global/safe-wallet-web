@@ -37,6 +37,7 @@ type SecurityWarningProps = {
 const ACTION_REJECT = 'Reject this transaction'
 const ACTION_REVIEW = 'Review before processing'
 
+// TODO: Remove this once NewSecurityWarnings is done
 export const mapSeverityComponentProps: Record<SecuritySeverity, SecurityWarningProps> = {
   [SecuritySeverity.CRITICAL]: {
     action: ACTION_REJECT,
@@ -64,6 +65,7 @@ export const mapSeverityComponentProps: Record<SecuritySeverity, SecurityWarning
   },
 }
 
+// TODO: Remove this once NewSecurityWarnings is done
 export const SecurityHint = ({ severity, warnings }: { severity: SecuritySeverity; warnings: string[] }) => {
   const severityProps = mapSeverityComponentProps[severity]
   const pluralizedLabel = `${severityProps.label}${warnings.length > 1 ? 's' : ''}`
@@ -101,6 +103,7 @@ export const SecurityHint = ({ severity, warnings }: { severity: SecuritySeverit
   )
 }
 
+// TODO: Remove this once NewSecurityWarnings is done
 export const SecurityWarning = ({
   severity,
   isLoading,

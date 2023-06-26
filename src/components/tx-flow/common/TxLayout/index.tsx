@@ -10,6 +10,8 @@ import TxStatusWidget from '../TxStatusWidget'
 import css from './styles.module.css'
 import { TxSimulationMessage } from '@/components/tx/NewTxSimulation'
 import SafeLogo from '@/public/images/logo-no-text.svg'
+import { RedefineMessage } from '@/components/tx/security/redefine/NewRedefineScanResult/RedefineScanResult'
+import { TransactionSecurityProvider } from '@/components/tx/security/TransactionSecurityContext'
 
 type TxLayoutProps = {
   title: ReactNode
@@ -51,68 +53,73 @@ const TxLayout = ({
   return (
     <SafeTxProvider>
       <TxInfoProvider>
-        <Container className={css.container}>
-          <Grid container alignItems="center" justifyContent="center">
-            <Grid item xs={12}>
-              <Typography variant="h3" component="div" fontWeight="700" mb={2} className={css.title}>
-                {title}
-              </Typography>
-              <IconButton
-                className={css.statusButton}
-                aria-label="Transaction status"
-                size="large"
-                onClick={toggleStatus}
-              >
-                <SafeLogo width={16} height={16} />
-              </IconButton>
-            </Grid>
+        <TransactionSecurityProvider>
+          <Container className={css.container}>
+            <Grid container alignItems="center" justifyContent="center">
+              <Grid item xs={12}>
+                <Typography variant="h3" component="div" fontWeight="700" mb={2} className={css.title}>
+                  {title}
+                </Typography>
+                <IconButton
+                  className={css.statusButton}
+                  aria-label="Transaction status"
+                  size="large"
+                  onClick={toggleStatus}
+                >
+                  <SafeLogo width={16} height={16} />
+                </IconButton>
+              </Grid>
 
-            <Grid item container xs={12} gap={3}>
-              <Grid item xs={12} md={7}>
-                <Paper className={css.header}>
-                  <Box className={css.progressBar}>
-                    <ProgressBar value={progress} />
-                  </Box>
-
-                  <Box className={css.headerInner}>
-                    <Box display="flex" alignItems="center">
-                      {icon && (
-                        <div className={css.icon}>
-                          <SvgIcon component={icon} inheritViewBox />
-                        </div>
-                      )}
-
-                      <Typography variant="h4" component="div" fontWeight="bold">
-                        {subtitle}
-                      </Typography>
+              <Grid item container xs={12} gap={3}>
+                <Grid item xs={12} md={7}>
+                  <Paper className={css.header}>
+                    <Box className={css.progressBar}>
+                      <ProgressBar value={progress} />
                     </Box>
 
-                    {!hideNonce && <TxNonce />}
-                  </Box>
-                </Paper>
+                    <Box className={css.headerInner}>
+                      <Box display="flex" alignItems="center">
+                        {icon && (
+                          <div className={css.icon}>
+                            <SvgIcon component={icon} inheritViewBox />
+                          </div>
+                        )}
 
-                <div className={css.step}>
-                  {steps[step]}
+                        <Typography variant="h4" component="div" fontWeight="bold">
+                          {subtitle}
+                        </Typography>
+                      </Box>
 
-                  {onBack && step > 0 && (
-                    <Button variant="contained" onClick={onBack} className={css.backButton}>
-                      Back
-                    </Button>
+                      {!hideNonce && <TxNonce />}
+                    </Box>
+                  </Paper>
+
+                  <div className={css.step}>
+                    {steps[step]}
+
+                    {onBack && step > 0 && (
+                      <Button variant="contained" onClick={onBack} className={css.backButton}>
+                        Back
+                      </Button>
+                    )}
+                  </div>
+                </Grid>
+
+                <Grid item xs={12} md={4} className={css.widget}>
+                  {statusVisible && (
+                    <TxStatusWidget step={step} txSummary={txSummary} handleClose={() => setStatusVisible(false)} />
                   )}
-                </div>
-              </Grid>
-
-              <Grid item xs={12} md={4} className={css.widget}>
-                {statusVisible && (
-                  <TxStatusWidget step={step} txSummary={txSummary} handleClose={() => setStatusVisible(false)} />
-                )}
-                <Box mt={2}>
-                  <TxSimulationMessage />
-                </Box>
+                  <Box mt={2}>
+                    <TxSimulationMessage />
+                  </Box>
+                  <Box mt={2}>
+                    <RedefineMessage />
+                  </Box>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Container>
+          </Container>
+        </TransactionSecurityProvider>
       </TxInfoProvider>
     </SafeTxProvider>
   )
