@@ -17,6 +17,7 @@ import type { TenderlySimulation } from '../TxSimulation/types'
 
 import css from './styles.module.css'
 import { TxInfoContext } from '@/components/tx-flow/TxInfoProvider'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 export type TxSimulationProps = {
   transactions?: SimulationTxParams['transactions']
@@ -32,11 +33,16 @@ const getCallTraceErrors = (simulation?: TenderlySimulation) => {
   return simulation.transaction.call_trace.filter((call) => call.error)
 }
 
+// TODO: Investigate resetting on gasLimit change as we are not simulating with the gasLimit of the tx
+// otherwise remove all usage of gasLimit in simulation. Note: this was previously being done.
 const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const isDarkMode = useDarkMode()
-  const { simulateTransaction, simulationRequestStatus, resetSimulation } = useContext(TxInfoContext)
+  const { safeTx } = useContext(SafeTxContext)
+  const {
+    simulation: { simulateTransaction, simulationRequestStatus, resetSimulation },
+  } = useContext(TxInfoContext)
 
   const isLoading = simulationRequestStatus === FETCH_STATUS.LOADING
   const isSuccess = simulationRequestStatus === FETCH_STATUS.SUCCESS
@@ -55,11 +61,10 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
     } as SimulationTxParams)
   }
 
-  // Reset simulation if gas limit changes
-  // TODO: Remove since we are not passing gasLimit anymore
+  // Reset simulation if safeTx changes
   useEffect(() => {
     resetSimulation()
-  }, [gasLimit, resetSimulation])
+  }, [safeTx, resetSimulation])
 
   return (
     <Paper variant="outlined" className={css.wrapper}>
@@ -117,8 +122,10 @@ export const TxSimulation = (props: TxSimulationProps): ReactElement | null => {
   return <TxSimulationBlock {...props} />
 }
 
-export const SimulationMessage = () => {
-  const { simulationRequestStatus, simulationLink, simulation, requestError } = useContext(TxInfoContext)
+export const TxSimulationMessage = () => {
+  const {
+    simulation: { simulationRequestStatus, simulationLink, simulation, requestError },
+  } = useContext(TxInfoContext)
 
   const isSuccess = simulationRequestStatus === FETCH_STATUS.SUCCESS
   const isError = simulationRequestStatus === FETCH_STATUS.ERROR
@@ -127,7 +134,9 @@ export const SimulationMessage = () => {
   // Safe can emit failure event even though Tenderly simulation succeeds
   const isCallTraceError = getCallTraceErrors(simulation).length > 0
 
-  if (!isFinished) return null
+  if (!isFinished) {
+    return null
+  }
 
   return (
     <div>

@@ -7,7 +7,7 @@ import { TxInfoProvider } from '@/components/tx-flow/TxInfoProvider'
 import TxNonce from '../TxNonce'
 import TxStatusWidget from '../TxStatusWidget'
 import css from './styles.module.css'
-import { SimulationMessage } from '@/components/tx/NewTxSimulation'
+import { TxSimulationMessage } from '@/components/tx/NewTxSimulation'
 
 type TxLayoutProps = {
   title: ReactNode
@@ -80,7 +80,7 @@ const TxLayout = ({
               <Grid item xs={4}>
                 <TxStatusWidget step={step} txSummary={txSummary} />
                 <Box mt={2}>
-                  <SimulationMessage />
+                  <TxSimulationMessage />
                 </Box>
               </Grid>
             </Grid>
