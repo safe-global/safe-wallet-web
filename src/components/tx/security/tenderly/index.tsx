@@ -86,7 +86,12 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
 
       <div className={sharedCss.result}>
         {isLoading ? (
-          <CircularProgress size={30} />
+          <CircularProgress
+            size={30}
+            sx={{
+              color: ({ palette }) => palette.text.secondary,
+            }}
+          />
         ) : isSuccess ? (
           <Typography variant="body2" color="success.main" className={sharedCss.result}>
             <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
