@@ -4,9 +4,11 @@ import { useTheme } from '@mui/material/styles'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import SafeTxProvider from '../../SafeTxProvider'
+import { TxInfoProvider } from '@/components/tx-flow/TxInfoProvider'
 import TxNonce from '../TxNonce'
 import TxStatusWidget from '../TxStatusWidget'
 import css from './styles.module.css'
+import { TxSimulationMessage } from '@/components/tx/NewTxSimulation'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 
 type TxLayoutProps = {
@@ -48,65 +50,70 @@ const TxLayout = ({
 
   return (
     <SafeTxProvider>
-      <Container className={css.container}>
-        <Grid container alignItems="center" justifyContent="center">
-          <Grid item xs={12}>
-            <Typography variant="h3" component="div" fontWeight="700" mb={2} className={css.title}>
-              {title}
-            </Typography>
-            <IconButton
-              className={css.statusButton}
-              aria-label="Transaction status"
-              size="large"
-              onClick={toggleStatus}
-            >
-              <SafeLogo width={16} height={16} />
-            </IconButton>
-          </Grid>
-
-          <Grid item container xs={12} gap={3}>
-            <Grid item xs={12} md={7}>
-              <Paper className={css.header}>
-                <Box className={css.progressBar}>
-                  <ProgressBar value={progress} />
-                </Box>
-
-                <Box className={css.headerInner}>
-                  <Box display="flex" alignItems="center">
-                    {icon && (
-                      <div className={css.icon}>
-                        <SvgIcon component={icon} inheritViewBox />
-                      </div>
-                    )}
-
-                    <Typography variant="h4" component="div" fontWeight="bold">
-                      {subtitle}
-                    </Typography>
-                  </Box>
-
-                  {!hideNonce && <TxNonce />}
-                </Box>
-              </Paper>
-
-              <div className={css.step}>
-                {steps[step]}
-
-                {onBack && step > 0 && (
-                  <Button variant="contained" onClick={onBack} className={css.backButton}>
-                    Back
-                  </Button>
-                )}
-              </div>
+      <TxInfoProvider>
+        <Container className={css.container}>
+          <Grid container alignItems="center" justifyContent="center">
+            <Grid item xs={12}>
+              <Typography variant="h3" component="div" fontWeight="700" mb={2} className={css.title}>
+                {title}
+              </Typography>
+              <IconButton
+                className={css.statusButton}
+                aria-label="Transaction status"
+                size="large"
+                onClick={toggleStatus}
+              >
+                <SafeLogo width={16} height={16} />
+              </IconButton>
             </Grid>
 
-            {statusVisible && (
-              <Grid item xs={12} md={4} className={css.widget}>
-                <TxStatusWidget step={step} txSummary={txSummary} handleClose={() => setStatusVisible(false)} />
+            <Grid item container xs={12} gap={3}>
+              <Grid item xs={12} md={7}>
+                <Paper className={css.header}>
+                  <Box className={css.progressBar}>
+                    <ProgressBar value={progress} />
+                  </Box>
+
+                  <Box className={css.headerInner}>
+                    <Box display="flex" alignItems="center">
+                      {icon && (
+                        <div className={css.icon}>
+                          <SvgIcon component={icon} inheritViewBox />
+                        </div>
+                      )}
+
+                      <Typography variant="h4" component="div" fontWeight="bold">
+                        {subtitle}
+                      </Typography>
+                    </Box>
+
+                    {!hideNonce && <TxNonce />}
+                  </Box>
+                </Paper>
+
+                <div className={css.step}>
+                  {steps[step]}
+
+                  {onBack && step > 0 && (
+                    <Button variant="contained" onClick={onBack} className={css.backButton}>
+                      Back
+                    </Button>
+                  )}
+                </div>
               </Grid>
-            )}
+
+              <Grid item xs={12} md={4} className={css.widget}>
+                {statusVisible && (
+                  <TxStatusWidget step={step} txSummary={txSummary} handleClose={() => setStatusVisible(false)} />
+                )}
+                <Box mt={2}>
+                  <TxSimulationMessage />
+                </Box>
+              </Grid>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </TxInfoProvider>
     </SafeTxProvider>
   )
 }

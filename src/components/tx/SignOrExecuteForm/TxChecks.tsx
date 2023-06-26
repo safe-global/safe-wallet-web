@@ -1,5 +1,5 @@
 import { type ReactElement, useContext } from 'react'
-import { TxSimulation } from '../TxSimulation'
+import { TxSimulation } from '../NewTxSimulation'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { Typography } from '@mui/material'
 import { RedefineScanResult } from '@/components/tx/security/redefine/RedefineScanResult/RedefineScanResult'
@@ -11,7 +11,7 @@ const TxChecks = (): ReactElement => {
     <>
       <Typography variant="h5">Transaction checks</Typography>
 
-      <TxSimulation canExecute disabled={false} transactions={safeTx} />
+      <TxSimulation disabled={false} transactions={safeTx} />
 
       <RedefineScanResult />
     </>

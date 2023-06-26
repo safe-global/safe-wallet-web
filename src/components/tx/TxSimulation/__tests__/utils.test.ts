@@ -71,7 +71,6 @@ describe('simulation utils', () => {
       })
 
       const tenderlyPayload = await getSimulationPayload({
-        canExecute: true,
         executionOwner: ownerAddress,
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
@@ -140,7 +139,6 @@ describe('simulation utils', () => {
       mockTx.addSignature(generatePreValidatedSignature(otherOwnerAddress2))
 
       const tenderlyPayload = await getSimulationPayload({
-        canExecute: true,
         executionOwner: ownerAddress,
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
@@ -181,7 +179,6 @@ describe('simulation utils', () => {
       mockTx.addSignature(generatePreValidatedSignature(otherOwnerAddress1))
 
       const tenderlyPayload = await getSimulationPayload({
-        canExecute: false,
         executionOwner: ownerAddress,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
@@ -226,7 +223,6 @@ describe('simulation utils', () => {
       mockTx.addSignature(generatePreValidatedSignature(otherOwnerAddress1))
 
       const tenderlyPayload = await getSimulationPayload({
-        canExecute: true,
         executionOwner: ownerAddress,
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
@@ -265,7 +261,6 @@ describe('simulation utils', () => {
       })
 
       const tenderlyPayload = await getSimulationPayload({
-        canExecute: false,
         executionOwner: ownerAddress,
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
@@ -315,7 +310,6 @@ describe('simulation utils', () => {
       ]
 
       const tenderlyPayload = await getSimulationPayload({
-        canExecute: true,
         executionOwner: ownerAddress,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTxs,

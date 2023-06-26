@@ -7,7 +7,7 @@ import { useAppSelector } from '@/store'
 import { selectTenderly } from '@/store/settingsSlice'
 import { asError } from '@/services/exceptions/utils'
 
-type UseSimulationReturn =
+export type UseSimulationReturn =
   | {
       simulationRequestStatus: FETCH_STATUS.NOT_ASKED | FETCH_STATUS.ERROR | FETCH_STATUS.LOADING
       simulation: undefined

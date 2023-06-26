@@ -9,7 +9,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
 import SendToBlock from '@/components/tx/SendToBlock'
-import { TxSimulation } from '@/components/tx/TxSimulation'
+import { TxSimulation } from '@/components/tx/NewTxSimulation'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -150,7 +150,7 @@ executions from the same Safe Account."
         <TxCard>
           <Typography variant="h5">Transaction checks</Typography>
 
-          <TxSimulation canExecute transactions={multiSendTxs} disabled={submitDisabled} />
+          <TxSimulation transactions={multiSendTxs} disabled={submitDisabled} />
         </TxCard>
       )}
 
