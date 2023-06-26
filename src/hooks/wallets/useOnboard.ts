@@ -104,32 +104,6 @@ const hasInjectedWallet = () => typeof window !== 'undefined' && !!window?.ether
 // This re-entrant lock prevents multiple `connectWallet`/tracking calls that would otherwise occur for pairing module
 let isConnecting = false
 
-// const hideWheresMyWallet = () => {
-//   const MAX_TRIES = 10
-
-//   let tries = 0
-
-//   const timer = setInterval(() => {
-//     const onboardModal = document.querySelector('onboard-v2')?.shadowRoot
-//     const warning = onboardModal?.querySelector('.wallets-container .notice-container')
-
-//     if (warning) {
-//       // Remove element
-//       warning.remove()
-//       tries = MAX_TRIES
-//     } else {
-//       clearInterval(timer)
-//       return
-//     }
-
-//     tries += 1
-
-//     if (tries >= MAX_TRIES) {
-//       clearInterval(timer)
-//     }
-//   }, 100)
-// }
-
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = async (
   onboard: OnboardAPI,
