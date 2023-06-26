@@ -40,11 +40,11 @@
   --onboard-danger-600: var(--color-error-main);
   --onboard-danger-700: var(--color-error-dark);
 
-  --onboard-warning-100: var(--color-warning-background);
-  --onboard-warning-400: var(--color-warning-light);
-  --onboard-warning-500: var(--color-warning-light);
-  --onboard-warning-600: var(--color-warning-main);
-  --onboard-warning-700: var(--color-warning-dark);
+  --onboard-warning-100: var(--color-error-background);
+  --onboard-warning-400: var(--color-error-light);
+  --onboard-warning-500: var(--color-error-light);
+  --onboard-warning-600: var(--color-error-main);
+  --onboard-warning-700: var(--color-error-dark);
 
   /* Connect modal */
   --onboard-modal-z-index: 1301;
