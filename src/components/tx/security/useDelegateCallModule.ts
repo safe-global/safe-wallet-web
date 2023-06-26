@@ -8,6 +8,7 @@ import type { SecurityResponse } from '@/services/security/modules/types'
 
 const DelegateCallModuleInstance = new DelegateCallModule()
 
+// TODO: Not being used right now
 export const useDelegateCallModule = (safeTransaction: SafeTransaction | undefined) => {
   const { safe, safeLoaded } = useSafeInfo()
 

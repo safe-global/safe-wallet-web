@@ -12,7 +12,6 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import { TransactionSecurityProvider } from '../security/TransactionSecurityContext'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -38,38 +37,36 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const willExecute = (props.onlyExecute || shouldExecute) && canExecute
 
   return (
-    <TransactionSecurityProvider safeTx={safeTx}>
-      <>
-        <TxCard>
-          {props.children}
+    <>
+      <TxCard>
+        {props.children}
 
-          <DecodedTx tx={safeTx} txId={props.txId} />
-        </TxCard>
+        <DecodedTx tx={safeTx} txId={props.txId} />
+      </TxCard>
 
-        <TxCard>
-          <TxChecks />
-        </TxCard>
+      <TxCard>
+        <TxChecks />
+      </TxCard>
 
-        <TxCard>
-          <ConfirmationTitle
-            variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
-            isCreation={isCreation}
-          />
+      <TxCard>
+        <ConfirmationTitle
+          variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
+          isCreation={isCreation}
+        />
 
-          {safeTxError && (
-            <ErrorMessage error={safeTxError}>
-              This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
-            </ErrorMessage>
-          )}
+        {safeTxError && (
+          <ErrorMessage error={safeTxError}>
+            This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
+          </ErrorMessage>
+        )}
 
-          {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
+        {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
 
-          <WrongChainWarning />
+        <WrongChainWarning />
 
-          {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
-        </TxCard>
-      </>
-    </TransactionSecurityProvider>
+        {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
+      </TxCard>
+    </>
   )
 }
 

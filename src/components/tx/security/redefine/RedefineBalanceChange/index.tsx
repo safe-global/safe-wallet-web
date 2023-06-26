@@ -11,8 +11,8 @@ import { Box, Chip, Grid, SvgIcon, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ErrorBoundary } from '@sentry/react'
 import { useContext } from 'react'
-import { LoadingLabel } from '../../shared/LoadingLabel'
-import { TransactionSecurityContext } from '../../TransactionSecurityContext'
+import { LoadingLabel } from './LoadingLabel'
+import { TxSecurityContext } from '../../shared/TxSecurityContext'
 import RedefineLogo from '@/public/images/transactions/redefine.svg'
 import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
 import ArrowOutwardIcon from '@/public/images/transactions/outgoing.svg'
@@ -100,7 +100,7 @@ const BalanceChange = ({
 }
 
 const BalanceChanges = () => {
-  const { balanceChange, isLoading } = useContext(TransactionSecurityContext)
+  const { balanceChange, isLoading } = useContext(TxSecurityContext)
   const totalBalanceChanges = balanceChange ? balanceChange.in.length + balanceChange.out.length : 0
 
   if (isLoading && !balanceChange) {

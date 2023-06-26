@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
-import { useSimulation, type UseSimulationReturn } from '@/components/tx/TxSimulation/useSimulation'
-import { FETCH_STATUS } from '@/components/tx/TxSimulation/types'
+import { useSimulation, type UseSimulationReturn } from '@/components/tx/security/tenderly/useSimulation'
+import { FETCH_STATUS } from '@/components/tx/security/tenderly/types'
 
 export const TxInfoContext = createContext<{
   simulation: UseSimulationReturn
