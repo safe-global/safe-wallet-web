@@ -1,7 +1,7 @@
 .dialog {
   top: 52px;
   left: 230px;
-  z-index: 1300;
+  z-index: 1200;
 }
 
 .dialog :global .MuiDialogActions-root {
