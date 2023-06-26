@@ -17,13 +17,12 @@ import { CGW_NAMES, WALLET_KEYS } from './consts'
 // We need to modify the module name as onboard dedupes modules with the same label and the WC v1 and v2 modules have the same
 // @see https://github.com/blocknative/web3-onboard/blob/d399e0b76daf7b363d6a74b100b2c96ccb14536c/packages/core/src/store/actions.ts#L419
 // TODO: When removing this, also remove the associated CSS in `onboard.css`
+export const WALLET_CONNECT_V1_MODULE_NAME = 'WalletConnect v1'
 const walletConnectV1 = (): WalletInit => {
   return (helpers) => {
-    const MODULE_LABEL = 'WalletConnect v1'
-
     const walletConnectModule = walletConnect({ version: 1, bridge: WC_BRIDGE })(helpers) as WalletModule
 
-    walletConnectModule.label = MODULE_LABEL
+    walletConnectModule.label = WALLET_CONNECT_V1_MODULE_NAME
 
     return walletConnectModule
   }
