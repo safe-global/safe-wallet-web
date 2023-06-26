@@ -40,8 +40,25 @@
 
 .or {
   text-align: center;
-  font-weight: 700;
   padding: var(--space-2) var(--space-3);
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rejectButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rejectHint {
+  position: absolute;
+  right: calc(-1 * var(--space-3));
+  z-index: 1;
 }
 
 @media (max-width: 599.95px) {
@@ -74,5 +91,9 @@
 
   .or {
     padding: var(--space-1) var(--space-2);
+  }
+
+  .buttons {
+    flex-direction: column;
   }
 }

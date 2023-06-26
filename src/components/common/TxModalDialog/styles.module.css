@@ -58,6 +58,7 @@
   .dialog {
     left: 0;
     top: 0;
+    z-index: 1300;
   }
 
   .dialog :global .MuiDialogActions-root {

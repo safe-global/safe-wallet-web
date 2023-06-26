@@ -1,6 +1,7 @@
-import { Button, Grid, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
 
 import InfoIcon from '@/public/images/notifications/info.svg'
+import ReplaceTxIcon from '@/public/images/transactions/replace-tx.svg'
 import { SendTokensButton } from '@/components/tx-flow/common/TxButton'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
@@ -54,38 +55,26 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
   return (
     <TxLayout title="Replace transaction" step={0} hideNonce>
       <TxCard>
-        <Typography variant="h4" fontWeight="700">
+        <Box my={4} textAlign="center">
+          <ReplaceTxIcon />
+        </Box>
+        <Typography variant="h4" fontWeight="700" textAlign="center">
           Select how you would like to replace this transaction
         </Typography>
-        <Typography variant="body1">
+        <Typography variant="body1" textAlign="center">
           A signed transaction cannot be removed but it can be replaced with a new transaction with the same nonce.
         </Typography>
 
-        <Grid container alignItems="center" justifyContent="center" flexDirection="row">
-          <Grid item container justifyContent="center" alignItems="center" gap={1} xs={12} sm flexDirection="row">
+        <div className={css.buttons}>
+          <div>
             <SendTokensButton onClick={() => setTxFlow(<TokenTransferFlow txNonce={txNonce} />)} sx={btnWidth} />
-          </Grid>
+          </div>
 
-          <Grid item>
-            <Typography variant="body2" className={css.or}>
-              or
-            </Typography>
-          </Grid>
+          <Typography variant="body2" className={css.or}>
+            or
+          </Typography>
 
-          <Grid
-            item
-            container
-            xs={12}
-            sm
-            justifyContent={{
-              xs: 'center',
-              sm: 'flex-start',
-            }}
-            alignItems="center"
-            textAlign="center"
-            flexDirection="row"
-            flexWrap="nowrap"
-          >
+          <div className={css.rejectButton}>
             <Tooltip
               arrow
               placement="top"
@@ -108,18 +97,18 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
               title={`An on-chain rejection doesn't send any funds. Executing an on-chain rejection will replace all currently awaiting transactions with nonce ${txNonce}.`}
               arrow
             >
-              <span>
+              <span className={css.rejectHint}>
                 <SvgIcon
                   component={InfoIcon}
                   inheritViewBox
                   fontSize="small"
                   color="border"
-                  sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                  sx={{ display: 'block' }}
                 />
               </span>
             </Tooltip>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </TxCard>
     </TxLayout>
   )
