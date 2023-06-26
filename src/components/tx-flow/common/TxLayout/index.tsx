@@ -8,10 +8,10 @@ import { TxInfoProvider } from '@/components/tx-flow/TxInfoProvider'
 import TxNonce from '../TxNonce'
 import TxStatusWidget from '../TxStatusWidget'
 import css from './styles.module.css'
-import { TxSimulationMessage } from '@/components/tx/NewTxSimulation'
+import { TxSimulationMessage } from '@/components/tx/security/tenderly'
 import SafeLogo from '@/public/images/logo-no-text.svg'
-import { RedefineMessage } from '@/components/tx/security/redefine/NewRedefineScanResult/RedefineScanResult'
-import { TransactionSecurityProvider } from '@/components/tx/security/TransactionSecurityContext'
+import { RedefineMessage } from '@/components/tx/security/redefine'
+import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
 
 type TxLayoutProps = {
   title: ReactNode
@@ -53,7 +53,7 @@ const TxLayout = ({
   return (
     <SafeTxProvider>
       <TxInfoProvider>
-        <TransactionSecurityProvider>
+        <TxSecurityProvider>
           <Container className={css.container}>
             <Grid container alignItems="center" justifyContent="center">
               <Grid item xs={12}>
@@ -109,17 +109,19 @@ const TxLayout = ({
                   {statusVisible && (
                     <TxStatusWidget step={step} txSummary={txSummary} handleClose={() => setStatusVisible(false)} />
                   )}
-                  <Box mt={2}>
-                    <TxSimulationMessage />
-                  </Box>
+
                   <Box mt={2}>
                     <RedefineMessage />
+                  </Box>
+
+                  <Box mt={2}>
+                    <TxSimulationMessage />
                   </Box>
                 </Grid>
               </Grid>
             </Grid>
           </Container>
-        </TransactionSecurityProvider>
+        </TxSecurityProvider>
       </TxInfoProvider>
     </SafeTxProvider>
   )

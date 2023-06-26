@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { getSimulation, getSimulationLink } from '@/components/tx/TxSimulation/utils'
-import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/TxSimulation/types'
-import { getSimulationPayload, type SimulationTxParams } from '@/components/tx/TxSimulation/utils'
+import { getSimulation, getSimulationLink } from '@/components/tx/security/tenderly/utils'
+import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/security/tenderly/types'
+import { getSimulationPayload, type SimulationTxParams } from '@/components/tx/security/tenderly/utils'
 import { useAppSelector } from '@/store'
 import { selectTenderly } from '@/store/settingsSlice'
 import { asError } from '@/services/exceptions/utils'

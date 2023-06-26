@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Button, Paper, SvgIcon, Typography } from '@mui/material'
+import { Alert, Button, Paper, SvgIcon, Typography } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
 
@@ -10,12 +10,13 @@ import { useDarkMode } from '@/hooks/useDarkMode'
 import CircularProgress from '@mui/material/CircularProgress'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useCurrentChain } from '@/hooks/useChains'
-import { FETCH_STATUS } from '../TxSimulation/types'
-import { isTxSimulationEnabled } from '../TxSimulation/utils'
-import type { SimulationTxParams } from '../TxSimulation/utils'
-import type { TenderlySimulation } from '../TxSimulation/types'
+import { FETCH_STATUS } from '@/components/tx/security/tenderly/types'
+import { isTxSimulationEnabled } from '@/components/tx/security/tenderly/utils'
+import type { SimulationTxParams } from '@/components/tx/security/tenderly/utils'
+import type { TenderlySimulation } from '@/components/tx/security/tenderly/types'
 
 import css from './styles.module.css'
+import sharedCss from '@/components/tx/security/shared/styles.module.css'
 import { TxInfoContext } from '@/components/tx-flow/TxInfoProvider'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
@@ -67,12 +68,12 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
   }, [safeTx, resetSimulation])
 
   return (
-    <Paper variant="outlined" className={css.wrapper}>
+    <Paper variant="outlined" className={sharedCss.wrapper}>
       <div>
         <Typography variant="body2" fontWeight={700}>
           Simulate transaction
         </Typography>
-        <Typography variant="caption" className={css.poweredBy}>
+        <Typography variant="caption" className={sharedCss.poweredBy}>
           Powered by{' '}
           <img
             src={isDarkMode ? '/images/transactions/tenderly-light.svg' : '/images/transactions/tenderly-dark.svg'}
@@ -83,16 +84,16 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
         </Typography>
       </div>
 
-      <div className={css.result}>
+      <div className={sharedCss.result}>
         {isLoading ? (
           <CircularProgress size={30} />
         ) : isSuccess ? (
-          <Typography variant="body2" color="success.main" className={css.result}>
+          <Typography variant="body2" color="success.main" className={sharedCss.result}>
             <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
             Success
           </Typography>
         ) : isError ? (
-          <Typography variant="body2" color="error.main" className={css.result}>
+          <Typography variant="body2" color="error.main" className={sharedCss.result}>
             <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
             Error
           </Typography>
@@ -141,13 +142,17 @@ export const TxSimulationMessage = () => {
   return (
     <div>
       {isSuccess ? (
-        <Alert severity="info">
-          <AlertTitle>Simulation successful</AlertTitle>
+        <Alert severity="info" sx={{ border: 'unset' }}>
+          <Typography variant="body2" fontWeight={700}>
+            Simulation successful
+          </Typography>
           Full simulation report is available <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
         </Alert>
       ) : isError ? (
-        <Alert severity="error">
-          <AlertTitle>Simulation failed</AlertTitle>
+        <Alert severity="error" sx={{ border: 'unset' }}>
+          <Typography variant="body2" fontWeight={700}>
+            Simulation failed
+          </Typography>
           {requestError ? (
             <>
               An unexpected error occurred during simulation: <b>{requestError}</b>.

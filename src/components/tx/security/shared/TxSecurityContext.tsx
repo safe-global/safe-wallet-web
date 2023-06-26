@@ -4,7 +4,7 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { createContext, type Dispatch, type SetStateAction, useContext, useMemo, useState } from 'react'
 import { useRedefine } from '../redefine/useRedefine'
 
-export const TransactionSecurityContext = createContext<{
+export const TxSecurityContext = createContext<{
   warnings: NonNullable<RedefineModuleResponse['issues']>
   simulationUuid: string | undefined
   balanceChange: RedefineModuleResponse['balanceChange']
@@ -26,7 +26,7 @@ export const TransactionSecurityContext = createContext<{
   setIsRiskConfirmed: () => {},
 })
 
-export const TransactionSecurityProvider = ({ children }: { children: JSX.Element }) => {
+export const TxSecurityProvider = ({ children }: { children: JSX.Element }) => {
   const { safeTx } = useContext(SafeTxContext)
   const [redefineResponse, redefineError, redefineLoading] = useRedefine(safeTx)
   const [isRiskConfirmed, setIsRiskConfirmed] = useState(false)
@@ -46,5 +46,5 @@ export const TransactionSecurityProvider = ({ children }: { children: JSX.Elemen
     [isRiskConfirmed, redefineError, redefineLoading, redefineResponse],
   )
 
-  return <TransactionSecurityContext.Provider value={providedValue}>{children}</TransactionSecurityContext.Provider>
+  return <TxSecurityContext.Provider value={providedValue}>{children}</TxSecurityContext.Provider>
 }

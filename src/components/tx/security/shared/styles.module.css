@@ -16,8 +16,3 @@
   display: inline-flex;
   align-items: center;
 }
-
-.simulate {
-  margin: 0;
-  padding: calc(var(--space-1) / 2) var(--space-2);
-}

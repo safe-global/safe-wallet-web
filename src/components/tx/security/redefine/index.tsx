@@ -1,32 +1,32 @@
 import { useContext } from 'react'
-import { NewSecurityHint, mapSeverityComponentProps } from '@/components/tx/security/shared/NewSecurityWarnings'
-import { TransactionSecurityContext } from '../../TransactionSecurityContext'
+import { mapRedefineSeverity } from '@/components/tx/security/redefine/useRedefine'
+import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { groupBy } from 'lodash'
-import { Box, Checkbox, FormControlLabel, SvgIcon, Typography, Paper } from '@mui/material'
+import { Alert, Box, Checkbox, FormControlLabel, Paper, SvgIcon, Typography } from '@mui/material'
 import ExternalLink from '@/components/common/ExternalLink'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import { ErrorBoundary } from '@sentry/react'
 import { REDEFINE_SIMULATION_URL } from '@/config/constants'
-import css from '@/components/tx/security/shared/SecurityWarnings/styles.module.css'
-// TODO: Refactor this so both modules can use the same styles
-import tenderlyCss from '@/components/tx/NewTxSimulation/styles.module.css'
+import css from 'src/components/tx/security/redefine/styles.module.css'
+import sharedCss from '@/components/tx/security/shared/styles.module.css'
 import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
 import RedefineLogo from '@/public/images/transactions/redefine.svg'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import CircularProgress from '@mui/material/CircularProgress'
+import { RedefineHint } from '@/components/tx/security/redefine/RedefineHint'
 
 const MAX_SHOWN_WARNINGS = 3
 
 const RedefineBlock = () => {
   const { severity, isLoading, error, needsRiskConfirmation, isRiskConfirmed, setIsRiskConfirmed } =
-    useContext(TransactionSecurityContext)
+    useContext(TxSecurityContext)
 
   const isDarkMode = useDarkMode()
-  const severityProps = severity !== undefined ? mapSeverityComponentProps[severity] : undefined
+  const severityProps = severity !== undefined ? mapRedefineSeverity[severity] : undefined
 
   const toggleConfirmation = () => {
     setIsRiskConfirmed((prev) => !prev)
@@ -36,7 +36,7 @@ const RedefineBlock = () => {
     <div className={css.wrapperBox}>
       <Paper
         variant="outlined"
-        className={tenderlyCss.wrapper}
+        className={sharedCss.wrapper}
         sx={{ borderTop: 'none', borderLeft: 'none', borderRight: 'none' }}
       >
         <div>
@@ -44,7 +44,7 @@ const RedefineBlock = () => {
             Scan for risks
           </Typography>
 
-          <Typography variant="caption" className={tenderlyCss.poweredBy} position="relative">
+          <Typography variant="caption" className={sharedCss.poweredBy} position="relative">
             Powered by{' '}
             <SvgIcon
               inheritViewBox
@@ -54,11 +54,11 @@ const RedefineBlock = () => {
           </Typography>
         </div>
 
-        <div className={tenderlyCss.result}>
+        <div className={sharedCss.result}>
           {isLoading ? (
             <CircularProgress size={30} />
           ) : severityProps ? (
-            <Typography variant="body2" color={`${severityProps.color}.main`} className={tenderlyCss.result}>
+            <Typography variant="body2" color={`${severityProps.color}.main`} className={sharedCss.result}>
               <SvgIcon
                 component={severityProps.icon}
                 inheritViewBox
@@ -68,7 +68,7 @@ const RedefineBlock = () => {
               {severityProps.label}
             </Typography>
           ) : error ? (
-            <Typography variant="body2" color="error" className={tenderlyCss.result}>
+            <Typography variant="body2" color="error" className={sharedCss.result}>
               {error.message}
             </Typography>
           ) : null}
@@ -90,7 +90,7 @@ const RedefineBlock = () => {
   )
 }
 
-export const NewRedefine = () => {
+export const Redefine = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 
   if (!isFeatureEnabled) {
@@ -105,40 +105,49 @@ export const NewRedefine = () => {
 }
 
 export const RedefineMessage = () => {
-  const { warnings, simulationUuid } = useContext(TransactionSecurityContext)
+  const { severity, warnings, simulationUuid } = useContext(TxSecurityContext)
 
   /* Evaluate security warnings */
   const relevantWarnings = warnings.filter((warning) => warning.severity !== SecuritySeverity.NONE)
   const shownWarnings = relevantWarnings.slice(0, MAX_SHOWN_WARNINGS)
   const hiddenWarningCount = warnings.length - shownWarnings.length
-  const hiddenMaxSeverity = hiddenWarningCount > 0 ? relevantWarnings[MAX_SHOWN_WARNINGS]?.severity : 0
+  const hiddenMaxSeverity =
+    hiddenWarningCount > 0 ? relevantWarnings[MAX_SHOWN_WARNINGS]?.severity : SecuritySeverity.NONE
 
   const groupedShownWarnings = groupBy(shownWarnings, (warning) => warning.severity)
   const sortedSeverities = Object.keys(groupedShownWarnings).sort((a, b) => (Number(a) < Number(b) ? 1 : -1))
 
+  const linkColor =
+    sortedSeverities.length > 0 ? mapRedefineSeverity[Number(sortedSeverities[0]) as SecuritySeverity].color : 'success'
+
   return (
     <Box display="flex" flexDirection="column" gap={1}>
       {sortedSeverities.map((key) => (
-        <NewSecurityHint
+        <RedefineHint
           key={key}
           severity={Number(key)}
           warnings={groupedShownWarnings[key].map((warning) => warning.description.short)}
         />
       ))}
       {hiddenWarningCount > 0 && (
-        <NewSecurityHint
+        <RedefineHint
           severity={hiddenMaxSeverity}
           warnings={[`${hiddenWarningCount} more issue${hiddenWarningCount > 1 ? 's' : ''}`]}
         />
       )}
 
       {simulationUuid && (
-        <Typography>
+        <Alert severity={linkColor} sx={{ border: 'unset', bgcolor: ({ palette }) => palette[linkColor].background }}>
+          {severity === SecuritySeverity.NONE && (
+            <Typography variant="body2" fontWeight={700}>
+              {mapRedefineSeverity[severity].label}
+            </Typography>
+          )}
           For a comprehensive risk overview,{' '}
           <ExternalLink href={`${REDEFINE_SIMULATION_URL}${simulationUuid}`}>
             see the full report on Redefine
           </ExternalLink>
-        </Typography>
+        </Alert>
       )}
     </Box>
   )

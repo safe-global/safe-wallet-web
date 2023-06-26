@@ -11,6 +11,7 @@ import type { SecurityResponse } from '@/services/security/modules/types'
 
 const RecipientAddressModuleInstance = new RecipientAddressModule()
 
+// TODO: Not being used right now
 export const useRecipientModule = (safeTransaction: SafeTransaction | undefined) => {
   const { safe, safeLoaded } = useSafeInfo()
   const web3ReadOnly = useWeb3ReadOnly()
