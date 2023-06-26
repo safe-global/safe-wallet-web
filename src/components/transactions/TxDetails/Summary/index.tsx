@@ -79,6 +79,8 @@ export const PartialSummary = ({ safeTx }: { safeTx: SafeTransaction }) => {
       <TxDataRow title="safeTxGas:">
         <SafeTxGasForm />
       </TxDataRow>
+      <TxDataRow title="baseGas:">{txData.baseGas}</TxDataRow>
+      <TxDataRow title="refundReceiver:">{generateDataRowValue(txData.refundReceiver, 'hash', true)}</TxDataRow>
       <TxDataRow title="Raw data:">{generateDataRowValue(txData.data, 'rawData')}</TxDataRow>
     </>
   )
