@@ -6,6 +6,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import AddressInput, { type AddressInputProps } from '../AddressInput'
 import EthHashInfo from '../EthHashInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import EntryDialog from '@/components/address-book/EntryDialog'
 import css from './styles.module.css'
 
 const abFilterOptions = createFilterOptions({
@@ -15,11 +16,12 @@ const abFilterOptions = createFilterOptions({
 /**
  *  Temporary component until revamped safe components are done
  */
-const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps): ReactElement => {
+const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canAdd?: boolean }): ReactElement => {
   const addressBook = useAddressBook()
   const { setValue, control } = useFormContext()
   const addressValue = useWatch({ name, control })
   const [open, setOpen] = useState(false)
+  const [openAddressBook, setOpenAddressBook] = useState<boolean>(false)
 
   const addressBookEntries = Object.entries(addressBook).map(([address, name]) => ({
     label: address,
@@ -34,6 +36,12 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps): ReactE
   const handleOpenAutocomplete = () => {
     setOpen((value) => !value)
   }
+
+  const onAddressBookClick = canAdd
+    ? () => {
+        setOpenAddressBook(true)
+      }
+    : undefined
 
   return (
     <>
@@ -66,16 +74,29 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps): ReactE
             name={name}
             onOpenListClick={hasVisibleOptions ? handleOpenAutocomplete : undefined}
             isAutocompleteOpen={open}
-            canAdd={canAdd}
+            onAddressBookClick={onAddressBookClick}
           />
         )}
       />
       {canAdd ? (
         <Typography variant="body2" className={css.unknownAddress}>
           <SvgIcon component={InfoIcon} fontSize="small" />
-          <span>This is an unknown address. Consider adding it to your address book.</span>
+          <span>
+            This is an unknown address. You can{' '}
+            <a role="button" onClick={onAddressBookClick}>
+              add it to your address book
+            </a>
+            .
+          </span>
         </Typography>
       ) : null}
+
+      {openAddressBook && (
+        <EntryDialog
+          handleClose={() => setOpenAddressBook(false)}
+          defaultValues={{ name: '', address: addressValue }}
+        />
+      )}
     </>
   )
 }

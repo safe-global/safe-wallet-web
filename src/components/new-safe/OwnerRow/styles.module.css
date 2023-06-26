@@ -3,7 +3,7 @@
   bottom: -20px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899.95px) {
   .name :global .MuiFormHelperText-root {
     position: relative;
     bottom: 0;

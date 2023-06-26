@@ -3,7 +3,7 @@
   padding: var(--space-4) var(--space-7);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .row {
     padding: var(--space-2);
   }

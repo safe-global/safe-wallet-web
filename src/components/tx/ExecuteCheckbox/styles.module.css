@@ -6,7 +6,7 @@
 
 .radio {
   margin: 0;
-  border: 1px solid var(--color-border-main);
-  border-radius: 4px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
   padding: 9px 3px;
 }

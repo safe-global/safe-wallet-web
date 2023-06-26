@@ -51,7 +51,7 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899.95px) {
   .logo {
     display: none;
   }
@@ -61,7 +61,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .element {
     padding: 0 var(--space-1);
   }

@@ -12,10 +12,7 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import { Divider } from '@mui/material'
-import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TransactionSecurityProvider } from '../security/TransactionSecurityContext'
-import { RedefineScanResult } from '@/components/tx/security/redefine/RedefineScanResult/RedefineScanResult'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -59,23 +56,17 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
             isCreation={isCreation}
           />
 
-          {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
-
-          <RedefineScanResult />
-
-          {/* Warning message and switch button */}
-          <WrongChainWarning />
-
           {safeTxError && (
             <ErrorMessage error={safeTxError}>
               This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
             </ErrorMessage>
           )}
 
-          <div>
-            <Divider className={commonCss.nestedDivider} />
-            {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
-          </div>
+          {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
+
+          <WrongChainWarning />
+
+          {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
         </TxCard>
       </>
     </TransactionSecurityProvider>

@@ -9,7 +9,7 @@ import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { relativeTime } from '@/utils/date'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import useBalances from '@/hooks/useBalances'
-import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import { AmountBlock } from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import { safeFormatUnits } from '@/utils/formatters'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { createTx } from '@/services/tx/tx-sender'
@@ -49,10 +49,7 @@ export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) 
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && (
-        <TokenTransferReview
-          amount={safeFormatUnits(params.amount, token.tokenInfo.decimals)}
-          tokenInfo={token.tokenInfo}
-        />
+        <AmountBlock amount={safeFormatUnits(params.amount, token.tokenInfo.decimals)} tokenInfo={token.tokenInfo} />
       )}
       <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Beneficiary</Typography>
       <EthHashInfo address={params.beneficiary} showCopyButton hasExplorer shortAddress={false} />

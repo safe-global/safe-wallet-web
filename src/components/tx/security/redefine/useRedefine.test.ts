@@ -17,6 +17,12 @@ const setupFetchStub = (data: any) => (_url: string) => {
   })
 }
 
+// Mock REDEFINE_API
+jest.mock('@/config/constants', () => ({
+  ...jest.requireActual('@/config/constants'),
+  REDEFINE_API: 'https://redefine-api.test',
+}))
+
 describe('useRedefine', () => {
   let mockUseWallet: jest.SpyInstance<ConnectedWallet | null, []>
 

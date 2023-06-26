@@ -5,7 +5,7 @@ import { Typography, Box } from '@mui/material'
 
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
-import { TokenTransferReview } from '@/components/tx/modals/TokenTransferModal/ReviewTokenTx'
+import { AmountBlock } from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
@@ -59,16 +59,16 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && (
-        <TokenTransferReview amount={params.amount} tokenInfo={token.tokenInfo}>
+        <AmountBlock amount={params.amount} tokenInfo={token.tokenInfo}>
           {!!existingSpendingLimit && (
             <>
-              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span" fontSize={20}>
-                {formatVisualAmount(BigNumber.from(existingSpendingLimit.amount), decimals)} {symbol}
+              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span">
+                {formatVisualAmount(BigNumber.from(existingSpendingLimit.amount), decimals)}
               </Typography>
-              {' → '}
+              {'→'}
             </>
           )}
-        </TokenTransferReview>
+        </AmountBlock>
       )}
       <Typography color={({ palette }) => palette.text.secondary} pb={1}>
         Beneficiary

@@ -30,7 +30,7 @@
   pointer-events: none;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .container li:not(:last-of-type):after {
     visibility: hidden;
   }

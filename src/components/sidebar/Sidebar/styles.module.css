@@ -64,7 +64,7 @@
   transform: translateX(-25%);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899.95px) {
   .container {
     padding-top: var(--header-height);
   }
