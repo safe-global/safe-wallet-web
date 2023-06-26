@@ -104,6 +104,32 @@ const hasInjectedWallet = () => typeof window !== 'undefined' && !!window?.ether
 // This re-entrant lock prevents multiple `connectWallet`/tracking calls that would otherwise occur for pairing module
 let isConnecting = false
 
+// const hideWheresMyWallet = () => {
+//   const MAX_TRIES = 10
+
+//   let tries = 0
+
+//   const timer = setInterval(() => {
+//     const onboardModal = document.querySelector('onboard-v2')?.shadowRoot
+//     const warning = onboardModal?.querySelector('.wallets-container .notice-container')
+
+//     if (warning) {
+//       // Remove element
+//       warning.remove()
+//       tries = MAX_TRIES
+//     } else {
+//       clearInterval(timer)
+//       return
+//     }
+
+//     tries += 1
+
+//     if (tries >= MAX_TRIES) {
+//       clearInterval(timer)
+//     }
+//   }, 100)
+// }
+
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = async (
   onboard: OnboardAPI,
@@ -125,7 +151,23 @@ export const connectWallet = async (
   let wallets: WalletState[] | undefined
 
   try {
-    wallets = await onboard.connectWallet(options)
+    // Mount the onboard modal
+    const promise = onboard.connectWallet(options)
+
+    // Remove "Where's my wallet?" element if not auto-selecting a wallet
+    if (!options?.autoSelect) {
+      setTimeout(() => {
+        const onboardModal = document.querySelector('onboard-v2')?.shadowRoot
+        const wheresMyWallet = onboardModal?.querySelector('.wallets-container .notice-container')
+
+        if (wheresMyWallet) {
+          wheresMyWallet.remove()
+        }
+      }, 100)
+    }
+
+    // Wait for successful connection
+    wallets = await promise
   } catch (e) {
     logError(Errors._302, (e as Error).message)
 
