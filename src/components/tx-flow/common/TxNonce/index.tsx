@@ -51,7 +51,7 @@ const NonceFormOption = memo(function NonceFormOption({
 })
 
 const TxNonce = () => {
-  const [error, setError] = useState<boolean>(false)
+  const [error, setError] = useState<string>()
   const { safe } = useSafeInfo()
   const previousNonces = usePreviousNonces()
   const { nonce, setNonce, safeTx, recommendedNonce } = useContext(SafeTxContext)
@@ -59,9 +59,11 @@ const TxNonce = () => {
   const isEditable = !safeTx || safeTx?.signatures.size === 0
   const readonly = !isEditable
 
-  const isValidInput = useCallback(
+  const validateInput = useCallback(
     (value: string | AutocompleteValue<unknown, false, false, false>) => {
-      return Number(value) >= safe.nonce
+      if (Number(value) < safe.nonce) {
+        return `Nonce can't be lower than ${safe.nonce}`
+      }
     },
     [safe.nonce],
   )
@@ -71,14 +73,14 @@ const TxNonce = () => {
       isEmpty.current = value === ''
       const nonce = Number(value)
       if (isNaN(nonce)) return
-      setError(!isValidInput(value))
+      setError(validateInput(value))
       setNonce(nonce)
     },
-    [isValidInput, setNonce],
+    [validateInput, setNonce],
   )
 
   const resetNonce = useCallback(() => {
-    setError(false)
+    setError(undefined)
     isEmpty.current = false
     setNonce(recommendedNonce)
   }, [recommendedNonce, setNonce])
@@ -105,25 +107,32 @@ const TxNonce = () => {
           },
         }}
         renderInput={(params) => (
-          <NumberField
-            {...params}
-            error={error}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: !readonly && recommendedNonce !== undefined && recommendedNonce !== nonce && (
-                <InputAdornment position="end" className={css.adornment}>
-                  <Tooltip title="Reset to recommended nonce">
-                    <IconButton onClick={resetNonce} size="small" color="primary">
-                      <RotateLeftIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </InputAdornment>
-              ),
-              readOnly: readonly,
-            }}
-            className={css.input}
-            sx={{ minWidth: `${nonce.toString().length + 0.5}em` }}
-          />
+          <Tooltip title={error} open arrow placement="top">
+            <NumberField
+              {...params}
+              error={!!error}
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <InputAdornment position="end" className={css.adornment}>
+                    <Tooltip title="Reset to recommended nonce">
+                      <IconButton
+                        onClick={resetNonce}
+                        size="small"
+                        color="primary"
+                        disabled={readonly || recommendedNonce === undefined || recommendedNonce === nonce}
+                      >
+                        <RotateLeftIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                ),
+                readOnly: readonly,
+              }}
+              className={css.input}
+              sx={{ minWidth: `${nonce.toString().length + 0.5}em` }}
+            />
+          </Tooltip>
         )}
         PopperComponent={CustomPopper}
       />

@@ -224,7 +224,7 @@ const CreateTokenTransfer = ({
           </FormControl>
 
           {isDisabled && (
-            <Box mt={1} display="flex" alignItems="center">
+            <Box display="flex" alignItems="center" mt={-2} mb={3}>
               <SvgIcon component={InfoIcon} color="error" fontSize="small" />
               <Typography variant="body2" color="error" ml={0.5}>
                 $SAFE is currently non-transferable.
