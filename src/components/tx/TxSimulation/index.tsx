@@ -23,6 +23,8 @@ export type TxSimulationProps = {
   disabled: boolean
 }
 
+// TODO: Remove this and move associated files/types to new component when old modals are removed
+
 const TxSimulationBlock = ({ transactions, canExecute, disabled, gasLimit }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()

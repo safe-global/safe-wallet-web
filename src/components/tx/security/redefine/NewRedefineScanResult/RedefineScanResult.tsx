@@ -59,7 +59,12 @@ const RedefineBlock = () => {
             <CircularProgress size={30} />
           ) : severityProps ? (
             <Typography variant="body2" color={`${severityProps.color}.main`} className={tenderlyCss.result}>
-              {severityProps.icon}
+              <SvgIcon
+                component={severityProps.icon}
+                inheritViewBox
+                fontSize="small"
+                sx={{ verticalAlign: 'middle', mr: 1 }}
+              />
               {severityProps.label}
             </Typography>
           ) : error ? (

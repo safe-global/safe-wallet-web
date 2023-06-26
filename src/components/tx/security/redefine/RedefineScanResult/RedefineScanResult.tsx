@@ -71,7 +71,7 @@ const ScanWarnings = () => {
   )
 }
 
-// TODO: Remove this one NewRedefineScanResult is done
+// TODO: Remove this when old modals are removed
 export const RedefineScanResult = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 

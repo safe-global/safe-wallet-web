@@ -1,4 +1,4 @@
-import { Alert, type AlertColor, Box, List, ListItem, SvgIcon, Typography } from '@mui/material'
+import { Alert, type AlertColor, Box, List, ListItem, SvgIcon, Typography, type SvgIconProps } from '@mui/material'
 
 import { SecuritySeverity } from '@/services/security/modules/types'
 import AlertIcon from '@/public/images/notifications/alert.svg'
@@ -10,7 +10,8 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 
 type SecurityWarningProps = {
   color: AlertColor
-  icon: JSX.Element
+  // @ts-expect-error - Use any to avoid conflicts with @svgr/webpack plugin or babel-plugin-inline-react-svg plugin.
+  icon: SvgIconProps['component']
   label: string
   action?: string
 }
@@ -22,30 +23,30 @@ export const mapSeverityComponentProps: Record<SecuritySeverity, SecurityWarning
   [SecuritySeverity.CRITICAL]: {
     action: ACTION_REJECT,
     color: 'error',
-    icon: <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />,
+    icon: CloseIcon,
     label: 'Critical issue',
   },
   [SecuritySeverity.HIGH]: {
     action: ACTION_REJECT,
     color: 'error',
-    icon: <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />,
+    icon: CloseIcon,
     label: 'High issue',
   },
   [SecuritySeverity.MEDIUM]: {
     action: ACTION_REVIEW,
     color: 'warning',
-    icon: <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />,
+    icon: InfoIcon,
     label: 'Medium issue',
   },
   [SecuritySeverity.LOW]: {
     action: ACTION_REVIEW,
     color: 'warning',
-    icon: <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />,
+    icon: InfoIcon,
     label: 'Low issue',
   },
   [SecuritySeverity.NONE]: {
     color: 'info',
-    icon: <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />,
+    icon: CheckIcon,
     label: 'No issues found',
   },
 }
