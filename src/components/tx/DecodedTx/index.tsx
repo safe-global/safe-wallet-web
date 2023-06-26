@@ -71,7 +71,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   if (isRejection) return null
 
   return (
-    <Box mb={2}>
+    <div>
       {approvalEditorTx && (
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor safeTransaction={tx} />
@@ -150,7 +150,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
           </Box>
         </AccordionDetails>
       </Accordion>
-    </Box>
+    </div>
   )
 }
 

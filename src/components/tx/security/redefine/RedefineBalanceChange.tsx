@@ -7,18 +7,18 @@ import { type RedefineModuleResponse } from '@/services/security/modules/Redefin
 import { sameAddress } from '@/utils/addresses'
 import { FEATURES } from '@/utils/chains'
 import { formatVisualAmount } from '@/utils/formatters'
-import { Box, Chip, Grid, SvgIcon, Typography } from '@mui/material'
+import { Box, Chip, CircularProgress, Grid, SvgIcon, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ErrorBoundary } from '@sentry/react'
 import { useContext } from 'react'
-import { LoadingLabel } from './LoadingLabel'
-import { TxSecurityContext } from '../../shared/TxSecurityContext'
+import { TxSecurityContext } from '../shared/TxSecurityContext'
 import RedefineLogo from '@/public/images/transactions/redefine.svg'
 import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
 import ArrowOutwardIcon from '@/public/images/transactions/outgoing.svg'
 import ArrowDownwardIcon from '@/public/images/transactions/incoming.svg'
 
 import css from './styles.module.css'
+import sharedCss from '@/components/tx/security/shared/styles.module.css'
 import { useDarkMode } from '@/hooks/useDarkMode'
 
 const FungibleBalanceChange = ({
@@ -104,12 +104,24 @@ const BalanceChanges = () => {
   const totalBalanceChanges = balanceChange ? balanceChange.in.length + balanceChange.out.length : 0
 
   if (isLoading && !balanceChange) {
-    return <LoadingLabel />
+    return (
+      <div className={css.loader}>
+        <CircularProgress
+          size={30}
+          sx={{
+            color: ({ palette }) => palette.text.secondary,
+          }}
+        />
+        <Typography variant="body2" color="text.secondary" display="flex" alignItems="center" gap={1} p={2}>
+          Calculating...
+        </Typography>
+      </div>
+    )
   }
 
   if (totalBalanceChanges === 0) {
     return (
-      <Typography color="text.secondary" p={2}>
+      <Typography variant="body2" color="text.secondary" p={2}>
         None
       </Typography>
     )
@@ -143,11 +155,14 @@ export const RedefineBalanceChanges = () => {
         <Typography variant="subtitle2" fontWeight={700}>
           Balance change
         </Typography>
-        <SvgIcon
-          inheritViewBox
-          sx={{ height: '40px', width: '52px' }}
-          component={isDarkMode ? RedefineLogoDark : RedefineLogo}
-        />
+        <Typography variant="caption" className={sharedCss.poweredBy}>
+          Powered by{' '}
+          <SvgIcon
+            inheritViewBox
+            sx={{ height: '40px', width: '52px' }}
+            component={isDarkMode ? RedefineLogoDark : RedefineLogo}
+          />
+        </Typography>
       </Box>
       <ErrorBoundary fallback={<div>Error showing balance changes</div>}>
         <BalanceChanges />

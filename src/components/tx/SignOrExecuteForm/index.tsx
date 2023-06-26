@@ -12,6 +12,7 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
+import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -42,6 +43,8 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
         {props.children}
 
         <DecodedTx tx={safeTx} txId={props.txId} />
+
+        <RedefineBalanceChanges />
       </TxCard>
 
       <TxCard>

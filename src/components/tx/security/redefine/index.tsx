@@ -37,7 +37,7 @@ const RedefineBlock = () => {
       <Paper
         variant="outlined"
         className={sharedCss.wrapper}
-        sx={{ borderTop: 'none', borderLeft: 'none', borderRight: 'none' }}
+        sx={needsRiskConfirmation ? { borderTop: 'none', borderLeft: 'none', borderRight: 'none' } : { border: 'none' }}
       >
         <div>
           <Typography variant="body2" fontWeight={700}>
@@ -56,7 +56,12 @@ const RedefineBlock = () => {
 
         <div className={sharedCss.result}>
           {isLoading ? (
-            <CircularProgress size={30} />
+            <CircularProgress
+              size={30}
+              sx={{
+                color: ({ palette }) => palette.text.secondary,
+              }}
+            />
           ) : severityProps ? (
             <Typography variant="body2" color={`${severityProps.color}.main`} className={sharedCss.result}>
               <SvgIcon
@@ -117,9 +122,6 @@ export const RedefineMessage = () => {
   const groupedShownWarnings = groupBy(shownWarnings, (warning) => warning.severity)
   const sortedSeverities = Object.keys(groupedShownWarnings).sort((a, b) => (Number(a) < Number(b) ? 1 : -1))
 
-  const linkColor =
-    sortedSeverities.length > 0 ? mapRedefineSeverity[Number(sortedSeverities[0]) as SecuritySeverity].color : 'success'
-
   return (
     <Box display="flex" flexDirection="column" gap={1}>
       {sortedSeverities.map((key) => (
@@ -137,7 +139,7 @@ export const RedefineMessage = () => {
       )}
 
       {simulationUuid && (
-        <Alert severity={linkColor} sx={{ border: 'unset', bgcolor: ({ palette }) => palette[linkColor].background }}>
+        <Alert severity="info" sx={{ border: 'unset' }}>
           {severity === SecuritySeverity.NONE && (
             <Typography variant="body2" fontWeight={700}>
               {mapRedefineSeverity[severity].label}
