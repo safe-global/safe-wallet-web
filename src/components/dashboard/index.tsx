@@ -10,11 +10,12 @@ import { useRouter } from 'next/router'
 import Relaying from '@/components/dashboard/Relaying'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
+import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
   const supportsRelaying = useHasFeature(FEATURES.RELAYING)
-  const { showCreationModal = '' } = router.query
+  const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
 
   return (
     <>
