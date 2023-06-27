@@ -25,21 +25,20 @@
 .loader {
   display: flex;
   align-items: center;
-  padding-left: var(--space-2);
+  gap: var(--space-1);
+  padding-right: 12px;
+  justify-self: flex-end;
 }
 
 .balanceChanges {
-  padding: var(--space-2);
   max-height: 300px;
   overflow-y: auto;
   align-items: center;
-  gap: 1px;
+  gap: var(--space-1);
 }
 
 .balanceChange {
   display: flex;
-  border-radius: 6px;
-  align-items: center;
   margin-bottom: 6px;
 }
 
@@ -59,23 +58,13 @@
 
 .categoryChip {
   border-radius: 4px;
-  margin-left: auto;
   height: auto;
-}
-
-.head {
-  border-bottom: 1px solid var(--color-border-light);
-  padding: var(--space-1) var(--space-2);
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .box {
   border-radius: 6px;
   border: 1px solid var(--color-border-light);
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 35% auto;
+  padding: var(--space-2) 12px;
 }
