@@ -1,17 +1,6 @@
-.addresses {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: var(--space-1);
-}
-
 .action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 20px;
-}
-
-.address {
-  padding: 13px var(--space-2);
 }

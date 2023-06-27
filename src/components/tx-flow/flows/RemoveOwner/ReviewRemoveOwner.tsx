@@ -8,12 +8,11 @@ import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createRemoveOwnerTx } from '@/services/tx/tx-sender'
-import RectangleIcon from '@/public/images/settings/setup/rectangle.svg'
+import MinusIcon from '@/public/images/common/minus.svg'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { RemoveOwnerFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import css from './styles.module.css'
 
 export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }): ReactElement => {
   const addressBook = useAddressBook()
@@ -34,40 +33,19 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
 
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
-      <div className={css.addresses}>
-        <div>
-          <Typography variant="body2" color="text.secondary" mb={0.5}>
-            Selected Safe Account
-          </Typography>
-          <Paper sx={{ backgroundColor: ({ palette }) => palette.background.main }} className={css.address}>
-            <EthHashInfo
-              address={safeAddress}
-              name={addressBook[safeAddress]}
-              shortAddress={false}
-              showCopyButton
-              hasExplorer
-            />
-          </Paper>
-        </div>
-        <div className={css.action}>
-          <SvgIcon component={RectangleIcon} inheritViewBox fontSize="small" />
-          Remove the owner
-        </div>
-        <div>
-          <Typography variant="body2" color="text.secondary" mb={0.5}>
-            Selected owner
-          </Typography>
-          <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background }} className={css.address}>
-            <EthHashInfo
-              address={removedOwner.address}
-              name={addressBook[removedOwner.address]}
-              shortAddress={false}
-              showCopyButton
-              hasExplorer
-            />
-          </Paper>
-        </div>
-      </div>
+      <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background, p: 2 }}>
+        <Typography color="text.secondary" mb={2} display="flex" alignItems="center">
+          <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
+          Selected owner
+        </Typography>
+        <EthHashInfo
+          address={removedOwner.address}
+          name={addressBook[removedOwner.address]}
+          shortAddress={false}
+          showCopyButton
+          hasExplorer
+        />
+      </Paper>
       <Divider className={commonCss.nestedDivider} />
       <Box m={1}>
         <Typography variant="body2" color="text.secondary" mb={0.5}>
