@@ -34,7 +34,7 @@ export const TxFlowExitWarning = ({
     >
       <DialogContent sx={{ p: 'var(--space-3) !important' }}>
         <DialogContentText color={isDarkMode ? undefined : 'primary'}>
-          Leaving this page will result in the loss of all progress.
+          Closing this window will discard your current progress.
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ padding: 'var(--space-2) var(--space-3) !important' }}>
