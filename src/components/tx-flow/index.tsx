@@ -53,8 +53,13 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     if (!txFlow) {
       return
     }
-    router.events.on('routeChangeStart', handleShowWarning)
-    return () => router.events.off('routeChangeStart', handleShowWarning)
+
+    router.events.on('beforeHistoryChange', handleShowWarning) // Back button
+    router.events.on('routeChangeStart', handleShowWarning) // Navigation
+    return () => {
+      router.events.off('beforeHistoryChange', handleShowWarning)
+      router.events.off('routeChangeStart', handleShowWarning)
+    }
   }, [txFlow, router, handleShowWarning])
 
   return (
