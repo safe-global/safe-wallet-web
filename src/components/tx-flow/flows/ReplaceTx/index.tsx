@@ -53,7 +53,7 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
   )
 
   return (
-    <TxLayout title="Replace transaction" step={0} hideNonce>
+    <TxLayout title="Replace transaction" step={0} hideNonce isReplacement>
       <TxCard>
         <Box my={4} textAlign="center">
           <ReplaceTxIcon />

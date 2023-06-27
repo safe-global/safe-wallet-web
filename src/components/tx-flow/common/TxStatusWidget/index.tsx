@@ -20,10 +20,12 @@ const TxStatusWidget = ({
   step,
   txSummary,
   handleClose,
+  isReplacement = false,
 }: {
   step: number
   txSummary?: TransactionSummary
   handleClose: () => void
+  isReplacement?: boolean
 }) => {
   const { safe } = useSafeInfo()
   const { threshold } = safe
@@ -53,7 +55,9 @@ const TxStatusWidget = ({
             <ListItemIcon>
               <CreatedIcon />
             </ListItemIcon>
-            <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
+            <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
+              {isReplacement ? 'Create replacement transaction' : 'Create'}
+            </ListItemText>
           </ListItem>
 
           <ListItem className={classnames({ [css.incomplete]: isConfirmedStepIncomplete })}>
@@ -71,6 +75,15 @@ const TxStatusWidget = ({
             </ListItemIcon>
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Execute</ListItemText>
           </ListItem>
+
+          {isReplacement && (
+            <ListItem className={css.incomplete}>
+              <ListItemIcon>
+                <SignedIcon />
+              </ListItemIcon>
+              <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Transaction is replaced</ListItemText>
+            </ListItem>
+          )}
         </List>
       </div>
     </Paper>
