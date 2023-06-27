@@ -34,7 +34,7 @@ const TxStatusWidget = ({
   const { confirmationsSubmitted = 0 } = isMultisigExecutionInfo(executionInfo) ? executionInfo : {}
 
   const isConfirmedStepIncomplete = step < 1 && !confirmationsSubmitted
-  const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : false
+  const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : true
 
   return (
     <Paper>
