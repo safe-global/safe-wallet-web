@@ -61,14 +61,12 @@
 .badge {
   margin-left: var(--space-1);
   padding-right: 2px;
-  background-color: var(--color-secondary-main);
   border-radius: 50%;
   width: var(--space-3);
   height: var(--space-3);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-primary);
 }
 
 @media (max-width: 899.95px) {
