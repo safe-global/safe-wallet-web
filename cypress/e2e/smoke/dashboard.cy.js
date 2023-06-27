@@ -23,7 +23,7 @@ describe('Dashboard', () => {
       cy.contains('2/3')
       cy.get(`a[href="/balances?safe=${SAFE}"]`).contains('View assets')
       // Text next to Tokens contains a number greater than 0
-      cy.contains('p', 'Tokens').next().contains('3')
+      cy.contains('p', 'Tokens').next().contains('4')
       cy.contains('p', 'NFTs').next().contains('0')
     })
   })
