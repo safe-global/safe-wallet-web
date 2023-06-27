@@ -34,7 +34,7 @@
   max-height: 300px;
   overflow-y: auto;
   align-items: center;
-  gap: 1px;
+  gap: var(--space-1);
 }
 
 .balanceChange {
