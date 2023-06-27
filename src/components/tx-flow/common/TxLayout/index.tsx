@@ -23,6 +23,7 @@ type TxLayoutProps = {
   txSummary?: TransactionSummary
   onBack?: () => void
   hideNonce?: boolean
+  isReplacement?: boolean
 }
 
 const TxLayout = ({
@@ -34,6 +35,7 @@ const TxLayout = ({
   txSummary,
   onBack,
   hideNonce = false,
+  isReplacement = false,
 }: TxLayoutProps): ReactElement => {
   const [statusVisible, setStatusVisible] = useState<boolean>(true)
 
@@ -110,7 +112,12 @@ const TxLayout = ({
 
                 <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
                   {statusVisible && (
-                    <TxStatusWidget step={step} txSummary={txSummary} handleClose={() => setStatusVisible(false)} />
+                    <TxStatusWidget
+                      step={step}
+                      txSummary={txSummary}
+                      handleClose={() => setStatusVisible(false)}
+                      isReplacement={isReplacement}
+                    />
                   )}
 
                   <Box mt={2}>
