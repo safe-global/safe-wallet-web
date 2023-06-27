@@ -3,6 +3,7 @@ import type { ReactElement } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
 import AlertIcon from '@/public/images/notifications/alert.svg'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 export const TxFlowExitWarning = ({
   open,
@@ -13,6 +14,7 @@ export const TxFlowExitWarning = ({
   onCancel: () => void
   onClose: () => void
 }): ReactElement => {
+  const isDarkMode = useDarkMode()
   return (
     <ModalDialog
       open={open}
@@ -31,7 +33,7 @@ export const TxFlowExitWarning = ({
       }
     >
       <DialogContent sx={{ p: 'var(--space-3) !important' }}>
-        <DialogContentText color="primary">
+        <DialogContentText color={isDarkMode ? undefined : 'primary'}>
           If you leave this page, the current progress will be lost.
         </DialogContentText>
       </DialogContent>
