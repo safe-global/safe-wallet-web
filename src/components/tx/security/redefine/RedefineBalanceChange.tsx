@@ -7,19 +7,15 @@ import { type RedefineModuleResponse } from '@/services/security/modules/Redefin
 import { sameAddress } from '@/utils/addresses'
 import { FEATURES } from '@/utils/chains'
 import { formatVisualAmount } from '@/utils/formatters'
-import { Box, Chip, CircularProgress, Grid, SvgIcon, Typography } from '@mui/material'
+import { Box, Chip, CircularProgress, Grid, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ErrorBoundary } from '@sentry/react'
 import { useContext } from 'react'
 import { TxSecurityContext } from '../shared/TxSecurityContext'
-import RedefineLogo from '@/public/images/transactions/redefine.svg'
-import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
 import ArrowOutwardIcon from '@/public/images/transactions/outgoing.svg'
 import ArrowDownwardIcon from '@/public/images/transactions/incoming.svg'
 
 import css from './styles.module.css'
-import sharedCss from '@/components/tx/security/shared/styles.module.css'
-import { useDarkMode } from '@/hooks/useDarkMode'
 
 const FungibleBalanceChange = ({
   change,
@@ -143,7 +139,6 @@ const BalanceChanges = () => {
 
 export const RedefineBalanceChanges = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
-  const isDarkMode = useDarkMode()
 
   if (!isFeatureEnabled) {
     return null
@@ -154,14 +149,6 @@ export const RedefineBalanceChanges = () => {
       <Box className={css.head}>
         <Typography variant="subtitle2" fontWeight={700}>
           Balance change
-        </Typography>
-        <Typography variant="caption" className={sharedCss.poweredBy}>
-          Powered by{' '}
-          <SvgIcon
-            inheritViewBox
-            sx={{ height: '40px', width: '52px' }}
-            component={isDarkMode ? RedefineLogoDark : RedefineLogo}
-          />
         </Typography>
       </Box>
       <ErrorBoundary fallback={<div>Error showing balance changes</div>}>
