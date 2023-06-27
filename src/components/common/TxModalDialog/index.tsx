@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import { Fragment, type ReactElement } from 'react'
 import { IconButton } from '@mui/material'
 import { Dialog, DialogTitle, type DialogProps } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
@@ -24,7 +24,8 @@ const TxModalDialog = ({
       scroll={fullScreen ? 'paper' : 'body'}
       className={css.dialog}
       onClick={(e) => e.stopPropagation()}
-      slots={{ backdrop: 'div' }}
+      TransitionComponent={Fragment}
+      slots={{ backdrop: Fragment }}
       PaperProps={{
         className: css.paper,
       }}
