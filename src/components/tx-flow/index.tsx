@@ -1,6 +1,7 @@
 import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback } from 'react'
 import TxModalDialog from '@/components/common/TxModalDialog'
 import { useRouter } from 'next/router'
+import { TxFlowExitWarning } from '@/components/tx-flow/common/TxFlowExitWarning'
 
 const noop = () => {}
 
@@ -18,16 +19,26 @@ export const TxModalContext = createContext<TxModalContextType>({
 
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
+  const [showWarning, setShowWarning] = useState(false)
   const [onClose, setOnClose] = useState<TxModalContextType['onClose']>(noop)
   const router = useRouter()
 
-  const handleModalClose = useCallback(() => {
+  const handleShowWarning = useCallback(() => {
+    setShowWarning(true)
+  }, [setShowWarning])
+
+  const handleCloseWarning = useCallback(() => {
+    setShowWarning(false)
+  }, [setShowWarning])
+
+  const handleExitFlow = useCallback(() => {
     setOnClose((prevOnClose) => {
       prevOnClose?.()
       return noop
     })
+    handleCloseWarning()
     setFlow(undefined)
-  }, [setFlow, setOnClose])
+  }, [handleCloseWarning, setFlow, setOnClose])
 
   const setTxFlow = useCallback(
     (txFlow: TxModalContextType['txFlow'], onClose?: () => void) => {
@@ -37,19 +48,26 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     [setFlow, setOnClose],
   )
 
-  // Close the modal if user navigates
+  // Show the modal if user navigates
   useEffect(() => {
-    router.events.on('routeChangeComplete', handleModalClose)
-    return () => router.events.off('routeChangeComplete', handleModalClose)
-  }, [router, handleModalClose])
+    if (!txFlow) {
+      return
+    }
+    router.events.on('routeChangeStart', handleShowWarning)
+    return () => router.events.off('routeChangeStart', handleShowWarning)
+  }, [txFlow, router, handleShowWarning])
 
   return (
-    <TxModalContext.Provider value={{ txFlow, setTxFlow, onClose }}>
-      {children}
+    <>
+      <TxModalContext.Provider value={{ txFlow, setTxFlow, onClose }}>
+        {children}
 
-      <TxModalDialog open={!!txFlow} onClose={handleModalClose}>
-        {txFlow}
-      </TxModalDialog>
-    </TxModalContext.Provider>
+        <TxModalDialog open={!!txFlow} onClose={handleShowWarning}>
+          {txFlow}
+        </TxModalDialog>
+      </TxModalContext.Provider>
+
+      <TxFlowExitWarning open={showWarning} onCancel={handleCloseWarning} onClose={handleExitFlow} />
+    </>
   )
 }

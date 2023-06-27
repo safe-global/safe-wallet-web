@@ -1,19 +1,6 @@
-import {
-  Grid,
-  DialogActions,
-  Button,
-  Box,
-  Typography,
-  DialogContent,
-  SvgIcon,
-  Dialog,
-  DialogTitle,
-  DialogContentText,
-  CardContent,
-  CardActions,
-} from '@mui/material'
+import { Grid, Button, Box, Typography, SvgIcon, CardContent, CardActions } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { useCallback, useState } from 'react'
+import { useContext } from 'react'
 import { SafeMessageListItemType, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -27,7 +14,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useSafeMessage } from '@/hooks/messages/useSafeMessages'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
-
+import { TxModalContext } from '@/components/tx-flow'
 import CopyButton from '@/components/common/CopyButton'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
@@ -129,39 +116,7 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   )
 }
 
-const ConfirmationDialog = ({
-  open,
-  onCancel,
-  onClose,
-}: {
-  open: boolean
-  onCancel: () => void
-  onClose: () => void
-}) => (
-  <Dialog
-    open={open}
-    onClose={onClose}
-    aria-labelledby="alert-dialog-title"
-    aria-describedby="alert-dialog-description"
-  >
-    <DialogTitle id="alert-dialog-title">Cancel message signing request</DialogTitle>
-    <DialogContent>
-      <DialogContentText id="alert-dialog-description">
-        <Typography variant="body2">If you close this modal, the signing request will be aborted.</Typography>
-      </DialogContentText>
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={onCancel}>Cancel</Button>
-      <Button variant="contained" onClick={onClose} autoFocus>
-        Abort signing
-      </Button>
-    </DialogActions>
-  </Dialog>
-)
-
-type BaseProps = {
-  onClose: () => void
-} & Pick<SafeMessage, 'logoUri' | 'name' | 'message'>
+type BaseProps = Pick<SafeMessage, 'logoUri' | 'name' | 'message'>
 
 // Custom Safe Apps do not have a `safeAppId`
 export type ProposeProps = BaseProps & {
@@ -175,9 +130,9 @@ export type ConfirmProps = BaseProps & {
   requestId?: RequestId
 }
 
-const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | ConfirmProps): ReactElement => {
+const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmProps): ReactElement => {
   // Hooks & variables
-  const [showCloseTooltip, setShowCloseTooltip] = useState<boolean>(false)
+  const { onClose } = useContext(TxModalContext)
   const { palette } = useTheme()
   const { safe } = useSafeInfo()
   const isOwner = useIsSafeOwner()
@@ -202,15 +157,6 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
     safeAppId,
     onClose,
   )
-
-  const handleClose = useCallback(() => {
-    if (requestId && (!ongoingMessage || ongoingMessage.status === SafeMessageStatus.NEEDS_CONFIRMATION)) {
-      // If we are in a Safe app modal we want to keep the modal open
-      setShowCloseTooltip(true)
-    } else {
-      onClose()
-    }
-  }, [onClose, ongoingMessage, requestId])
 
   return (
     <>
@@ -255,15 +201,11 @@ const SignMessage = ({ onClose, message, safeAppId, requestId }: ProposeProps | 
       <TxCard>
         <CardActions>
           <Box display="flex" justifyContent="space-between" width="100%">
-            {/* TODO: Remove this Cancel button once we can figure out how to move the logic outside */}
-            <Button onClick={handleClose}>Cancel</Button>
-
             <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
               Sign
             </Button>
           </Box>
         </CardActions>
-        <ConfirmationDialog open={showCloseTooltip} onCancel={() => setShowCloseTooltip(false)} onClose={onClose} />
       </TxCard>
     </>
   )
