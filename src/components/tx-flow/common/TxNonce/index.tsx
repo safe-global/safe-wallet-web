@@ -61,8 +61,18 @@ const TxNonce = () => {
 
   const validateInput = useCallback(
     (value: string | AutocompleteValue<unknown, false, false, false>) => {
-      if (Number(value) < safe.nonce) {
+      const nonce = Number(value)
+
+      if (isNaN(nonce)) {
+        return 'Nonce must be a number'
+      }
+
+      if (nonce < safe.nonce) {
         return `Nonce can't be lower than ${safe.nonce}`
+      }
+
+      if (nonce >= Number.MAX_SAFE_INTEGER) {
+        return 'Nonce is too big'
       }
     },
     [safe.nonce],
@@ -70,14 +80,24 @@ const TxNonce = () => {
 
   const handleChange = useCallback(
     (_e: SyntheticEvent, value: string | AutocompleteValue<unknown, false, false, false>) => {
+      const isNotValid = validateInput(value)
+
+      if (isNotValid) {
+        setError(validateInput(value))
+        isEmpty.current = false
+        return
+      }
+
+      setError(undefined)
       isEmpty.current = value === ''
-      const nonce = Number(value)
-      if (isNaN(nonce)) return
-      setError(validateInput(value))
-      setNonce(nonce)
+      setNonce(Number(value))
     },
     [validateInput, setNonce],
   )
+
+  const handleBlur = useCallback(() => {
+    setError(undefined)
+  }, [])
 
   const resetNonce = useCallback(() => {
     setError(undefined)
@@ -96,6 +116,7 @@ const TxNonce = () => {
         freeSolo
         onChange={handleChange}
         onInputChange={handleChange}
+        onBlur={handleBlur}
         options={previousNonces}
         disabled={readonly}
         getOptionLabel={(option) => option.toString()}
