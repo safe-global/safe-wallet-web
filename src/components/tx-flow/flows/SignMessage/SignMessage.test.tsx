@@ -99,7 +99,6 @@ describe('SignMessage', () => {
           logoUri="www.fake.com/test.png"
           name="Test App"
           message={hexlify(toUtf8Bytes(EXAMPLE_MESSAGE))}
-          onClose={jest.fn}
         />,
       )
 
@@ -108,13 +107,7 @@ describe('SignMessage', () => {
 
     it('displays the SafeMessage message', () => {
       const { getByText } = render(
-        <SignMessage
-          logoUri="www.fake.com/test.png"
-          name="Test App"
-          message={EXAMPLE_MESSAGE}
-          requestId="123"
-          onClose={jest.fn}
-        />,
+        <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={EXAMPLE_MESSAGE} requestId="123" />,
       )
 
       expect(getByText('0xaa05af77f274774b8bdc7b61d98bc40da523dc2821fdea555f4d6aa413199bcc')).toBeInTheDocument()
@@ -122,13 +115,7 @@ describe('SignMessage', () => {
 
     it('generates the SafeMessage hash if not provided', () => {
       const { getByText } = render(
-        <SignMessage
-          logoUri="www.fake.com/test.png"
-          name="Test App"
-          message={EXAMPLE_MESSAGE}
-          requestId="123"
-          onClose={jest.fn}
-        />,
+        <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={EXAMPLE_MESSAGE} requestId="123" />,
       )
 
       expect(getByText('0x73d0948ac608c5d00a6dd26dd396cce79b459307ea365f5a5bd5d3119c2d9708')).toBeInTheDocument()
@@ -176,13 +163,7 @@ describe('SignMessage', () => {
 
     it('renders the message', () => {
       const { getByText } = render(
-        <SignMessage
-          requestId="123"
-          logoUri="www.fake.com/test.png"
-          name="Test App"
-          message={EXAMPLE_MESSAGE}
-          onClose={jest.fn}
-        />,
+        <SignMessage requestId="123" logoUri="www.fake.com/test.png" name="Test App" message={EXAMPLE_MESSAGE} />,
       )
 
       Object.keys(EXAMPLE_MESSAGE.message).forEach((key) => {
@@ -194,13 +175,7 @@ describe('SignMessage', () => {
 
     it('displays the SafeMessage message', () => {
       const { getByText } = render(
-        <SignMessage
-          logoUri="www.fake.com/test.png"
-          name="Test App"
-          message={EXAMPLE_MESSAGE}
-          requestId="123"
-          onClose={jest.fn}
-        />,
+        <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={EXAMPLE_MESSAGE} requestId="123" />,
       )
 
       expect(getByText('0xd5ffe9f6faa9cc9294673fb161b1c7b3e0c98241e90a38fc6c451941f577fb19')).toBeInTheDocument()
@@ -208,13 +183,7 @@ describe('SignMessage', () => {
 
     it('generates the SafeMessage hash if not provided', () => {
       const { getByText } = render(
-        <SignMessage
-          logoUri="www.fake.com/test.png"
-          name="Test App"
-          message={EXAMPLE_MESSAGE}
-          requestId="123"
-          onClose={jest.fn}
-        />,
+        <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={EXAMPLE_MESSAGE} requestId="123" />,
       )
 
       expect(getByText('0x10c926c4f417e445de3fddc7ad8c864f81b9c81881b88eba646015de10d21613')).toBeInTheDocument()
@@ -233,7 +202,6 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        onClose={jest.fn}
         safeAppId={25}
       />,
     )
@@ -300,13 +268,7 @@ describe('SignMessage', () => {
     jest.spyOn(useSafeMessages, 'useSafeMessage').mockReturnValue(msg)
 
     const { getByText } = render(
-      <SignMessage
-        logoUri="www.fake.com/test.png"
-        name="Test App"
-        message={messageText}
-        requestId="123"
-        onClose={jest.fn}
-      />,
+      <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={messageText} requestId="123" />,
     )
 
     await act(async () => {
@@ -348,7 +310,6 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        onClose={jest.fn}
         safeAppId={25}
       />,
     )
@@ -370,7 +331,6 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        onClose={jest.fn}
         safeAppId={25}
       />,
     )
@@ -396,7 +356,6 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        onClose={jest.fn}
         safeAppId={25}
       />,
     )
@@ -445,13 +404,7 @@ describe('SignMessage', () => {
     jest.spyOn(useSafeMessages, 'useSafeMessage').mockReturnValue(msg)
 
     const { getByText } = render(
-      <SignMessage
-        logoUri="www.fake.com/test.png"
-        name="Test App"
-        message={messageText}
-        requestId="123"
-        onClose={jest.fn}
-      />,
+      <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={messageText} requestId="123" />,
     )
 
     await waitFor(() => {
@@ -484,7 +437,6 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        onClose={jest.fn}
         safeAppId={25}
       />,
     )
@@ -526,7 +478,6 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        onClose={jest.fn}
         safeAppId={25}
       />,
     )

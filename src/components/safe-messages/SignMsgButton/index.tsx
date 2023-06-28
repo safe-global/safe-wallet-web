@@ -20,7 +20,7 @@ const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: b
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
-    setTxFlow(<SignMessageFlow onClose={() => setTxFlow(undefined)} {...msg} />)
+    setTxFlow(<SignMessageFlow {...msg} />)
   }
 
   const isDisabled = !isSignable || isPending

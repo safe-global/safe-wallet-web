@@ -130,7 +130,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       if (signOffChain) {
         setTxFlow(
           <SignMessageFlow
-            onClose={() => setTxFlow(undefined)}
             logoUri={safeAppFromManifest?.iconUrl || ''}
             name={safeAppFromManifest?.name || ''}
             message={message}
