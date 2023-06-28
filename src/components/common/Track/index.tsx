@@ -1,15 +1,16 @@
-import { cloneElement, type ReactElement } from 'react'
+import { ReactElement } from 'react'
 import { Fragment, useEffect, useRef } from 'react'
 import { trackEvent, type EventLabel } from '@/services/analytics'
 
 type Props = {
   children: ReactElement
+  as?: 'span' | 'div'
   category: string
   action: string
   label?: EventLabel
 }
 
-const Track = ({ children, ...trackData }: Props): typeof children => {
+const Track = ({ children, as: Wrapper = 'span', ...trackData }: Props): typeof children => {
   const el = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -34,7 +35,11 @@ const Track = ({ children, ...trackData }: Props): typeof children => {
     throw new Error('Fragments cannot be tracked.')
   }
 
-  return cloneElement(children, { 'data-track': `${trackData.category}: ${trackData.action}`, ref: el })
+  return (
+    <Wrapper data-track={`${trackData.category}: ${trackData.action}`} ref={el}>
+      {children}
+    </Wrapper>
+  )
 }
 
 export default Track
