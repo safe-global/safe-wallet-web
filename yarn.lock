@@ -4728,10 +4728,10 @@
     ethers "5.5.4"
     joi "17.9.1"
 
-"@web3-onboard/core@2.20.1":
-  version "2.20.1"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/core/-/core-2.20.1.tgz#ad3a15aa6c1083d6da83fd9d06d5fe250e750b5a"
-  integrity sha512-OlNQUYBsbvy389AQD5VggqCRGvmiE7/w0LeLt6yyUwAksGnRPSpLjiPaOOjMAJFq0d3TnSX5yXbAoG1SRJM7ww==
+"@web3-onboard/core@2.20.3":
+  version "2.20.3"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/core/-/core-2.20.3.tgz#e123979f9360057cd184d715fdedc9f0bbf45941"
+  integrity sha512-2fm8kJ4T4DXvPNU7rjWCAxFFEZXx2Xz7LiUCg+qXvhiHzJBBxGOBbL81HwZk9hR3eZzWwQt9tLmbFx0G2uREow==
   dependencies:
     "@web3-onboard/common" "^2.3.3"
     bignumber.js "^9.0.0"
