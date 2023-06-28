@@ -1,18 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
-import {
-  Button,
-  CardActions,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  Typography,
-} from '@mui/material'
+import { Button, CardActions, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
 import { defaultAbiCoder, parseUnits } from 'ethers/lib/utils'
 
@@ -46,11 +34,9 @@ export const CreateSpendingLimit = ({
   onSubmit: (data: NewSpendingLimitFlowProps) => void
 }) => {
   const chainId = useChainId()
-  const [showResetTime, setShowResetTime] = useState<boolean>(params.resetTime !== '0')
   const { balances } = useVisibleBalances()
 
   const resetTimeOptions = useMemo(() => getResetTimeOptions(chainId), [chainId])
-  const defaultResetTime = resetTimeOptions[0].value
 
   const formMethods = useForm<NewSpendingLimitFlowProps>({
     defaultValues: params,
@@ -65,11 +51,6 @@ export const CreateSpendingLimit = ({
     : undefined
 
   const totalAmount = BigNumber.from(selectedToken?.balance || 0)
-
-  const toggleResetTime = () => {
-    setValue(SpendingLimitFields.resetTime, showResetTime ? '0' : defaultResetTime)
-    setShowResetTime((prev) => !prev)
-  }
 
   const onMaxAmountClick = () => {
     if (!selectedToken) return
@@ -99,36 +80,26 @@ export const CreateSpendingLimit = ({
           <Typography variant="h4" fontWeight={700} mt={3}>
             Reset Timer
           </Typography>
-          <Typography mb={3}>
+          <Typography>
             Set a reset time so the allowance automatically refills after the defined time period.
           </Typography>
-          <FormControl fullWidth>
-            <FormGroup>
-              <RadioGroup row value={!showResetTime} onChange={toggleResetTime} className={css.group}>
-                <FormControlLabel value="true" label="One Time" control={<Radio />} className={css.radio} />
-                <FormControlLabel value="false" label="Reset Time Period" control={<Radio />} className={css.radio} />
-              </RadioGroup>
-            </FormGroup>
+          <FormControl fullWidth className={css.select}>
+            <InputLabel shrink={false}>Time Period</InputLabel>
+            <Controller
+              rules={{ required: true }}
+              control={control}
+              name={SpendingLimitFields.resetTime}
+              render={({ field }) => (
+                <Select {...field} sx={{ textAlign: 'right', fontWeight: 700 }} IconComponent={ExpandMoreRoundedIcon}>
+                  {resetTimeOptions.map((resetTime) => (
+                    <MenuItem key={resetTime.value} value={resetTime.value} sx={{ overflow: 'hidden' }}>
+                      {resetTime.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
           </FormControl>
-          {showResetTime && (
-            <FormControl fullWidth className={css.select}>
-              <InputLabel shrink={false}>Time Period</InputLabel>
-              <Controller
-                rules={{ required: true }}
-                control={control}
-                name={SpendingLimitFields.resetTime}
-                render={({ field }) => (
-                  <Select {...field} sx={{ textAlign: 'right', fontWeight: 700 }} IconComponent={ExpandMoreRoundedIcon}>
-                    {resetTimeOptions.map((resetTime) => (
-                      <MenuItem key={resetTime.value} value={resetTime.value} sx={{ overflow: 'hidden' }}>
-                        {resetTime.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
-              />
-            </FormControl>
-          )}
 
           <CardActions>
             <Button variant="contained" type="submit">
