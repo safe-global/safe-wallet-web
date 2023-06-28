@@ -23,7 +23,7 @@ import { TokenTransferFields, type TokenTransferParams, TokenTransferType } from
 import TxCard from '../../common/TxCard'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import TokenAmountInput from '@/components/common/TokenAmountInput'
+import TokenAmountInput, { TokenAmountFields } from '@/components/common/TokenAmountInput'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -82,7 +82,7 @@ const CreateTokenTransfer = ({
   const recipient = watch(TokenTransferFields.recipient)
 
   // Selected token
-  const tokenAddress = watch(TokenTransferFields.tokenAddress)
+  const tokenAddress = watch(TokenAmountFields.tokenAddress)
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
@@ -116,7 +116,7 @@ const CreateTokenTransfer = ({
         ? spendingLimitAmount.toString()
         : selectedToken.balance
 
-    setValue(TokenTransferFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
+    setValue(TokenAmountFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
       shouldValidate: true,
     })
   }, [isSpendingLimitType, selectedToken, setValue, spendingLimitAmount])

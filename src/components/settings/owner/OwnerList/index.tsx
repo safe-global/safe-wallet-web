@@ -28,9 +28,9 @@ export const OwnerList = () => {
   const { safe } = useSafeInfo()
   const { setTxFlow } = useContext(TxModalContext)
 
-  const showRemoveOwnerButton = safe.owners.length > 1
-
   const rows = useMemo(() => {
+    const showRemoveOwnerButton = safe.owners.length > 1
+
     return safe.owners.map((owner) => {
       const address = owner.value
       const name = addressBook[address]

@@ -1,4 +1,5 @@
 import { Button, Divider, FormControl, InputLabel, MenuItem, TextField } from '@mui/material'
+import { type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import NumberField from '@/components/common/NumberField'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
@@ -7,7 +8,7 @@ import { useFormContext } from 'react-hook-form'
 import { type BigNumber } from '@ethersproject/bignumber'
 import classNames from 'classnames'
 
-enum TokenAmountFields {
+export enum TokenAmountFields {
   tokenAddress = 'tokenAddress',
   amount = 'amount',
 }
@@ -18,8 +19,8 @@ const TokenAmountInput = ({
   onMaxAmountClick,
   maxAmount,
 }: {
-  balances: any[]
-  selectedToken: any
+  balances: SafeBalanceResponse['items']
+  selectedToken: SafeBalanceResponse['items'][number] | undefined
   onMaxAmountClick: () => void
   maxAmount: BigNumber
 }) => {

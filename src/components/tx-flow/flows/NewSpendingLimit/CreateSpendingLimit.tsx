@@ -23,9 +23,10 @@ import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import type { NewSpendingLimitFlowProps } from '.'
 import TxCard from '../../common/TxCard'
 import css from '@/components/tx/ExecuteCheckbox/styles.module.css'
-import TokenAmountInput from '@/components/common/TokenAmountInput'
+import TokenAmountInput, { TokenAmountFields } from '@/components/common/TokenAmountInput'
 import { BigNumber } from '@ethersproject/bignumber'
 import { safeFormatUnits } from '@/utils/formatters'
+import { SpendingLimitFields } from '.'
 
 export const _validateSpendingLimit = (val: string, decimals?: number) => {
   // Allowance amount is uint96 https://github.com/safe-global/safe-modules/blob/master/allowances/contracts/AlowanceModule.sol#L52
@@ -58,7 +59,7 @@ export const CreateSpendingLimit = ({
 
   const { handleSubmit, setValue, watch, control } = formMethods
 
-  const tokenAddress = watch('tokenAddress')
+  const tokenAddress = watch(TokenAmountFields.tokenAddress)
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
@@ -66,7 +67,7 @@ export const CreateSpendingLimit = ({
   const totalAmount = BigNumber.from(selectedToken?.balance || 0)
 
   const toggleResetTime = () => {
-    setValue('resetTime', showResetTime ? '0' : defaultResetTime)
+    setValue(SpendingLimitFields.resetTime, showResetTime ? '0' : defaultResetTime)
     setShowResetTime((prev) => !prev)
   }
 
@@ -75,7 +76,7 @@ export const CreateSpendingLimit = ({
 
     const amount = selectedToken.balance
 
-    setValue('amount', safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
+    setValue(TokenAmountFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
       shouldValidate: true,
     })
   }
@@ -85,7 +86,7 @@ export const CreateSpendingLimit = ({
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth sx={{ mb: 3 }}>
-            <AddressBookInput name="beneficiary" label="Beneficiary" />
+            <AddressBookInput name={SpendingLimitFields.beneficiary} label="Beneficiary" />
           </FormControl>
 
           <TokenAmountInput
@@ -115,7 +116,7 @@ export const CreateSpendingLimit = ({
               <Controller
                 rules={{ required: true }}
                 control={control}
-                name="resetTime"
+                name={SpendingLimitFields.resetTime}
                 render={({ field }) => (
                   <Select {...field} sx={{ textAlign: 'right', fontWeight: 700 }} IconComponent={ExpandMoreRoundedIcon}>
                     {resetTimeOptions.map((resetTime) => (

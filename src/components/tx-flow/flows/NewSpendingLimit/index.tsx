@@ -4,12 +4,18 @@ import { CreateSpendingLimit } from './CreateSpendingLimit'
 import { ReviewSpendingLimit } from './ReviewSpendingLimit'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { type TokenAmountFields } from '@/components/common/TokenAmountInput'
+
+export enum SpendingLimitFields {
+  beneficiary = 'beneficiary',
+  resetTime = 'resetTime',
+}
 
 export type NewSpendingLimitFlowProps = {
-  beneficiary: string
-  tokenAddress: string
-  amount: string
-  resetTime: string
+  [SpendingLimitFields.beneficiary]: string
+  [TokenAmountFields.tokenAddress]: string
+  [TokenAmountFields.amount]: string
+  [SpendingLimitFields.resetTime]: string
 }
 
 const defaultValues: NewSpendingLimitFlowProps = {
