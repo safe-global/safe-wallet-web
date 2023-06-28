@@ -26,7 +26,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   const { balances } = useBalances()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
-  const { decimals, symbol } = token?.tokenInfo || {}
+  const { decimals } = token?.tokenInfo || {}
 
   useEffect(() => {
     const existingSpendingLimit = spendingLimits.find(

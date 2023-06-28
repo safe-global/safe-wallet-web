@@ -11,7 +11,7 @@ import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import type { NewSpendingLimitFlowProps } from '.'
 import TxCard from '../../common/TxCard'
 import css from '@/components/tx/ExecuteCheckbox/styles.module.css'
-import TokenAmountInput, { TokenAmountFields } from '@/components/common/TokenAmountInput'
+import TokenAmountInput from '@/components/common/TokenAmountInput'
 import { BigNumber } from '@ethersproject/bignumber'
 import { safeFormatUnits } from '@/utils/formatters'
 import { SpendingLimitFields } from '.'
@@ -45,7 +45,7 @@ export const CreateSpendingLimit = ({
 
   const { handleSubmit, setValue, watch, control } = formMethods
 
-  const tokenAddress = watch(TokenAmountFields.tokenAddress)
+  const tokenAddress = watch(SpendingLimitFields.tokenAddress)
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
@@ -57,7 +57,7 @@ export const CreateSpendingLimit = ({
 
     const amount = selectedToken.balance
 
-    setValue(TokenAmountFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
+    setValue(SpendingLimitFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
       shouldValidate: true,
     })
   }

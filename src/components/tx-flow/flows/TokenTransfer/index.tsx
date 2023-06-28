@@ -4,22 +4,24 @@ import CreateTokenTransfer from './CreateTokenTransfer'
 import ReviewTokenTx from '@/components/tx-flow/flows/TokenTransfer/ReviewTokenTx'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { type TokenAmountFields } from '@/components/common/TokenAmountInput'
+import { TokenAmountFields } from '@/components/common/TokenAmountInput'
 
 export enum TokenTransferType {
   multiSig = 'multiSig',
   spendingLimit = 'spendingLimit',
 }
 
-export enum TokenTransferFields {
+enum Fields {
   recipient = 'recipient',
   type = 'type',
 }
 
+export const TokenTransferFields = { ...Fields, ...TokenAmountFields }
+
 export type TokenTransferParams = {
   [TokenTransferFields.recipient]: string
-  [TokenAmountFields.tokenAddress]: string
-  [TokenAmountFields.amount]: string
+  [TokenTransferFields.tokenAddress]: string
+  [TokenTransferFields.amount]: string
   [TokenTransferFields.type]: TokenTransferType
 }
 
