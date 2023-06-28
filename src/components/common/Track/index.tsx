@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { Fragment, useEffect, useRef } from 'react'
 import { trackEvent, type EventLabel } from '@/services/analytics'
 
