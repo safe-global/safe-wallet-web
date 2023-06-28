@@ -8,17 +8,20 @@ const noop = () => {}
 type TxModalContextType = {
   txFlow: ReactNode | undefined
   setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void) => void
+  setFullWidth: (fullWidth: boolean) => void
 }
 
 export const TxModalContext = createContext<TxModalContextType>({
   txFlow: undefined,
   setTxFlow: noop,
+  setFullWidth: noop,
 })
 
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
   const [showWarning, setShowWarning] = useState(false)
   const [, setOnClose] = useState<Parameters<TxModalContextType['setTxFlow']>[1]>(noop)
+  const [fullWidth, setFullWidth] = useState<boolean>(false)
   const router = useRouter()
 
   const handleShowWarning = useCallback(() => {
@@ -65,10 +68,10 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   return (
     <>
-      <TxModalContext.Provider value={{ txFlow, setTxFlow }}>
+      <TxModalContext.Provider value={{ txFlow, setTxFlow, setFullWidth }}>
         {children}
 
-        <TxModalDialog open={!!txFlow} onClose={handleShowWarning}>
+        <TxModalDialog open={!!txFlow} onClose={handleShowWarning} fullWidth={fullWidth}>
           {txFlow}
         </TxModalDialog>
       </TxModalContext.Provider>
