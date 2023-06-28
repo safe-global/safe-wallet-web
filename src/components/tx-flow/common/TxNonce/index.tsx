@@ -73,7 +73,7 @@ const TxNonce = () => {
       }
 
       if (nonce >= Number.MAX_SAFE_INTEGER) {
-        return 'Nonce is too big'
+        return 'Nonce is too high'
       }
     },
     [safe.nonce],
