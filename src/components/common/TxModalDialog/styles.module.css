@@ -1,7 +1,12 @@
 .dialog {
   top: 52px;
   left: 230px;
-  z-index: 1200;
+  z-index: 1;
+  transition: left 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+.dialog.fullWidth {
+  left: 0;
 }
 
 .dialog :global .MuiDialogActions-root {
@@ -58,6 +63,7 @@
   .dialog {
     left: 0;
     top: 0;
+    z-index: 1300;
   }
 
   .dialog :global .MuiDialogActions-root {

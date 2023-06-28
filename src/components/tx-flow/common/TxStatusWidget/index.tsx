@@ -3,10 +3,12 @@ import CreatedIcon from '@/public/images/messages/created.svg'
 import SignedIcon from '@/public/images/messages/signed.svg'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isMultisigExecutionInfo, isSignableBy } from '@/utils/transaction-guards'
 import classnames from 'classnames'
 import css from './styles.module.css'
 import CloseIcon from '@mui/icons-material/Close'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const confirmedMessage = (threshold: number, confirmations: number) => {
   return (
@@ -20,11 +22,15 @@ const TxStatusWidget = ({
   step,
   txSummary,
   handleClose,
+  isReplacement = false,
 }: {
   step: number
   txSummary?: TransactionSummary
   handleClose: () => void
+  isReplacement?: boolean
 }) => {
+  const isDarkMode = useDarkMode()
+  const wallet = useWallet()
   const { safe } = useSafeInfo()
   const { threshold } = safe
 
@@ -32,6 +38,7 @@ const TxStatusWidget = ({
   const { confirmationsSubmitted = 0 } = isMultisigExecutionInfo(executionInfo) ? executionInfo : {}
 
   const isConfirmedStepIncomplete = step < 1 && !confirmationsSubmitted
+  const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : true
 
   return (
     <Paper>
@@ -53,7 +60,9 @@ const TxStatusWidget = ({
             <ListItemIcon>
               <CreatedIcon />
             </ListItemIcon>
-            <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
+            <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
+              {isReplacement ? 'Create replacement transaction' : 'Create'}
+            </ListItemText>
           </ListItem>
 
           <ListItem className={classnames({ [css.incomplete]: isConfirmedStepIncomplete })}>
@@ -62,6 +71,19 @@ const TxStatusWidget = ({
             </ListItemIcon>
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
               {confirmedMessage(threshold, confirmationsSubmitted)}
+              {canSign && (
+                <Typography
+                  variant="body2"
+                  component="span"
+                  className={css.badge}
+                  sx={({ palette }) => ({
+                    bgcolor: isDarkMode ? `${palette.primary.main}` : `${palette.secondary.main}`,
+                    color: isDarkMode ? `${palette.text.secondary}` : `${palette.text.primary}`,
+                  })}
+                >
+                  +1
+                </Typography>
+              )}
             </ListItemText>
           </ListItem>
 
@@ -71,6 +93,15 @@ const TxStatusWidget = ({
             </ListItemIcon>
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Execute</ListItemText>
           </ListItem>
+
+          {isReplacement && (
+            <ListItem className={css.incomplete}>
+              <ListItemIcon>
+                <SignedIcon />
+              </ListItemIcon>
+              <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Transaction is replaced</ListItemText>
+            </ListItem>
+          )}
         </List>
       </div>
     </Paper>

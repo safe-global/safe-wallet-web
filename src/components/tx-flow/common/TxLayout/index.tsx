@@ -2,6 +2,7 @@ import { type ComponentType, type ReactElement, type ReactNode, useEffect, useSt
 import { Box, Container, Grid, Typography, Button, Paper, SvgIcon, IconButton, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import classnames from 'classnames'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import SafeTxProvider from '../../SafeTxProvider'
 import { TxInfoProvider } from '@/components/tx-flow/TxInfoProvider'
@@ -22,6 +23,7 @@ type TxLayoutProps = {
   txSummary?: TransactionSummary
   onBack?: () => void
   hideNonce?: boolean
+  isReplacement?: boolean
 }
 
 const TxLayout = ({
@@ -33,6 +35,7 @@ const TxLayout = ({
   txSummary,
   onBack,
   hideNonce = false,
+  isReplacement = false,
 }: TxLayoutProps): ReactElement => {
   const [statusVisible, setStatusVisible] = useState<boolean>(true)
 
@@ -77,21 +80,23 @@ const TxLayout = ({
                       <ProgressBar value={progress} />
                     </Box>
 
-                    <Box className={css.headerInner}>
-                      <Box display="flex" alignItems="center">
-                        {icon && (
-                          <div className={css.icon}>
-                            <SvgIcon component={icon} inheritViewBox />
-                          </div>
-                        )}
+                    {!hideNonce || icon || subtitle ? (
+                      <Box className={css.headerInner}>
+                        <Box display="flex" alignItems="center">
+                          {icon && (
+                            <div className={css.icon}>
+                              <SvgIcon component={icon} inheritViewBox />
+                            </div>
+                          )}
 
-                        <Typography variant="h4" component="div" fontWeight="bold">
-                          {subtitle}
-                        </Typography>
+                          <Typography variant="h4" component="div" fontWeight="bold">
+                            {subtitle}
+                          </Typography>
+                        </Box>
+
+                        {!hideNonce && <TxNonce />}
                       </Box>
-
-                      {!hideNonce && <TxNonce />}
-                    </Box>
+                    ) : null}
                   </Paper>
 
                   <div className={css.step}>
@@ -105,9 +110,14 @@ const TxLayout = ({
                   </div>
                 </Grid>
 
-                <Grid item xs={12} md={4} className={css.widget}>
+                <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
                   {statusVisible && (
-                    <TxStatusWidget step={step} txSummary={txSummary} handleClose={() => setStatusVisible(false)} />
+                    <TxStatusWidget
+                      step={step}
+                      txSummary={txSummary}
+                      handleClose={() => setStatusVisible(false)}
+                      isReplacement={isReplacement}
+                    />
                   )}
 
                   <Box mt={2}>

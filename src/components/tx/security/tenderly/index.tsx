@@ -87,7 +87,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
       <div className={sharedCss.result}>
         {isLoading ? (
           <CircularProgress
-            size={30}
+            size={22}
             sx={{
               color: ({ palette }) => palette.text.secondary,
             }}

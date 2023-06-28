@@ -7,19 +7,15 @@ import { type RedefineModuleResponse } from '@/services/security/modules/Redefin
 import { sameAddress } from '@/utils/addresses'
 import { FEATURES } from '@/utils/chains'
 import { formatVisualAmount } from '@/utils/formatters'
-import { Box, Chip, CircularProgress, Grid, SvgIcon, Typography } from '@mui/material'
+import { Box, Chip, CircularProgress, Grid, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ErrorBoundary } from '@sentry/react'
 import { useContext } from 'react'
 import { TxSecurityContext } from '../shared/TxSecurityContext'
-import RedefineLogo from '@/public/images/transactions/redefine.svg'
-import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
 import ArrowOutwardIcon from '@/public/images/transactions/outgoing.svg'
 import ArrowDownwardIcon from '@/public/images/transactions/incoming.svg'
 
 import css from './styles.module.css'
-import sharedCss from '@/components/tx/security/shared/styles.module.css'
-import { useDarkMode } from '@/hooks/useDarkMode'
 
 const FungibleBalanceChange = ({
   change,
@@ -43,6 +39,7 @@ const FungibleBalanceChange = ({
       <Typography variant="body2" fontWeight={700} display="inline" ml={0.5}>
         {change.symbol}
       </Typography>
+      <span style={{ margin: 'auto' }} />
       <Chip className={css.categoryChip} label={change.type} />
     </>
   )
@@ -77,6 +74,7 @@ const NFTBalanceChange = ({
       <Typography variant="subtitle2" className={css.nftId} ml={1}>
         #{change.tokenId}
       </Typography>
+      <span style={{ margin: 'auto' }} />
       <Chip className={css.categoryChip} label="NFT" />
     </>
   )
@@ -101,28 +99,28 @@ const BalanceChange = ({
 
 const BalanceChanges = () => {
   const { balanceChange, isLoading } = useContext(TxSecurityContext)
-  const totalBalanceChanges = balanceChange ? balanceChange.in.length + balanceChange.out.length : 0
+  const totalBalanceChanges = balanceChange ? balanceChange.in.length + balanceChange.out.length : undefined
 
   if (isLoading && !balanceChange) {
     return (
       <div className={css.loader}>
         <CircularProgress
-          size={30}
+          size={22}
           sx={{
             color: ({ palette }) => palette.text.secondary,
           }}
         />
-        <Typography variant="body2" color="text.secondary" display="flex" alignItems="center" gap={1} p={2}>
+        <Typography variant="body2" color="text.secondary">
           Calculating...
         </Typography>
       </div>
     )
   }
 
-  if (totalBalanceChanges === 0) {
+  if (totalBalanceChanges && totalBalanceChanges === 0) {
     return (
-      <Typography variant="body2" color="text.secondary" p={2}>
-        None
+      <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
+        No balance change detected
       </Typography>
     )
   }
@@ -143,30 +141,19 @@ const BalanceChanges = () => {
 
 export const RedefineBalanceChanges = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
-  const isDarkMode = useDarkMode()
 
   if (!isFeatureEnabled) {
     return null
   }
 
   return (
-    <Box className={css.box}>
-      <Box className={css.head}>
-        <Typography variant="subtitle2" fontWeight={700}>
-          Balance change
-        </Typography>
-        <Typography variant="caption" className={sharedCss.poweredBy}>
-          Powered by{' '}
-          <SvgIcon
-            inheritViewBox
-            sx={{ height: '40px', width: '52px' }}
-            component={isDarkMode ? RedefineLogoDark : RedefineLogo}
-          />
-        </Typography>
-      </Box>
+    <div className={css.box}>
+      <Typography variant="subtitle2" fontWeight={700} flexShrink={0}>
+        Balance change
+      </Typography>
       <ErrorBoundary fallback={<div>Error showing balance changes</div>}>
         <BalanceChanges />
       </ErrorBoundary>
-    </Box>
+    </div>
   )
 }
