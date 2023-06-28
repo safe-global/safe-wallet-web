@@ -8,19 +8,17 @@ const noop = () => {}
 type TxModalContextType = {
   txFlow: ReactNode | undefined
   setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void) => void
-  onClose: () => void
 }
 
 export const TxModalContext = createContext<TxModalContextType>({
   txFlow: undefined,
   setTxFlow: noop,
-  onClose: noop,
 })
 
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
   const [showWarning, setShowWarning] = useState(false)
-  const [onClose, setOnClose] = useState<TxModalContextType['onClose']>(noop)
+  const [, setOnClose] = useState<Parameters<TxModalContextType['setTxFlow']>[1]>(noop)
   const router = useRouter()
 
   const handleShowWarning = useCallback(() => {
@@ -31,7 +29,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     setShowWarning(false)
   }, [setShowWarning])
 
-  const handleExitFlow = useCallback(() => {
+  const handleModalClose = useCallback(() => {
     setOnClose((prevOnClose) => {
       prevOnClose?.()
       return noop
@@ -42,10 +40,13 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   const setTxFlow = useCallback(
     (txFlow: TxModalContextType['txFlow'], onClose?: () => void) => {
+      if (!txFlow) {
+        handleCloseWarning()
+      }
       setFlow(txFlow)
       setOnClose(() => onClose ?? noop)
     },
-    [setFlow, setOnClose],
+    [setFlow, setOnClose, handleCloseWarning],
   )
 
   // Show the modal if user navigates
@@ -64,7 +65,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   return (
     <>
-      <TxModalContext.Provider value={{ txFlow, setTxFlow, onClose }}>
+      <TxModalContext.Provider value={{ txFlow, setTxFlow }}>
         {children}
 
         <TxModalDialog open={!!txFlow} onClose={handleShowWarning}>
@@ -72,7 +73,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
         </TxModalDialog>
       </TxModalContext.Provider>
 
-      <TxFlowExitWarning open={showWarning} onCancel={handleCloseWarning} onClose={handleExitFlow} />
+      <TxFlowExitWarning open={showWarning} onCancel={handleCloseWarning} onClose={handleModalClose} />
     </>
   )
 }

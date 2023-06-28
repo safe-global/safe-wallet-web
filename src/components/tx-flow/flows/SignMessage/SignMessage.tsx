@@ -132,7 +132,7 @@ export type ConfirmProps = BaseProps & {
 
 const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmProps): ReactElement => {
   // Hooks & variables
-  const { onClose } = useContext(TxModalContext)
+  const { setTxFlow } = useContext(TxModalContext)
   const { palette } = useTheme()
   const { safe } = useSafeInfo()
   const isOwner = useIsSafeOwner()
@@ -155,7 +155,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
     safeMessageHash,
     requestId,
     safeAppId,
-    onClose,
+    () => setTxFlow(undefined),
   )
 
   return (
