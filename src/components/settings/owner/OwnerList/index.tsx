@@ -28,6 +28,8 @@ export const OwnerList = () => {
   const { safe } = useSafeInfo()
   const { setTxFlow } = useContext(TxModalContext)
 
+  const showRemoveOwnerButton = safe.owners.length > 1
+
   const rows = useMemo(() => {
     return safe.owners.map((owner) => {
       const address = owner.value
@@ -62,21 +64,23 @@ export const OwnerList = () => {
 
                 <EditOwnerDialog address={address} name={name} chainId={safe.chainId} />
 
-                <CheckWallet>
-                  {(isOk) => (
-                    <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
-                      <Tooltip title="Remove owner">
-                        <IconButton
-                          onClick={() => setTxFlow(<RemoveOwnerFlow name={name} address={address} />)}
-                          size="small"
-                          disabled={!isOk}
-                        >
-                          <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Track>
-                  )}
-                </CheckWallet>
+                {showRemoveOwnerButton && (
+                  <CheckWallet>
+                    {(isOk) => (
+                      <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
+                        <Tooltip title="Remove owner">
+                          <IconButton
+                            onClick={() => setTxFlow(<RemoveOwnerFlow name={name} address={address} />)}
+                            size="small"
+                            disabled={!isOk}
+                          >
+                            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Track>
+                    )}
+                  </CheckWallet>
+                )}
               </div>
             ),
           },

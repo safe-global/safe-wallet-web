@@ -5,7 +5,7 @@ import SaveAddressIcon from '@/public/images/common/save-address.svg'
 
 const RemoveSpendingLimitFlow = ({ spendingLimit }: { spendingLimit: SpendingLimitState }) => {
   return (
-    <TxLayout title="Confirm Transaction" subtitle="Remove Spending Limit" icon={SaveAddressIcon}>
+    <TxLayout title="Confirm transaction" subtitle="Remove spending limit" icon={SaveAddressIcon}>
       <RemoveSpendingLimit params={spendingLimit} />
     </TxLayout>
   )

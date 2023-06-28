@@ -29,8 +29,8 @@ const NewSpendingLimitFlow = () => {
 
   return (
     <TxLayout
-      title={step === 0 ? 'New Transaction' : 'Confirm Transaction'}
-      subtitle="Spending Limit"
+      title={step === 0 ? 'New transaction' : 'Confirm transaction'}
+      subtitle="Spending limit"
       icon={SaveAddressIcon}
       step={step}
       onBack={prevStep}
