@@ -10,8 +10,8 @@ const SpendingLimitLabel = ({
 }: { label: string | ReactElement; isOneTime?: boolean } & BoxProps) => {
   return (
     <Box display="flex" alignItems="center" gap="4px" {...rest}>
-      {!isOneTime && <SvgIcon component={SpeedIcon} inheritViewBox color="border" fontSize="small" />}
-      {typeof label === 'string' ? <Typography variant="body2">{label}</Typography> : label}
+      {!isOneTime && <SvgIcon component={SpeedIcon} inheritViewBox color="border" fontSize="medium" />}
+      {typeof label === 'string' ? <Typography>{label}</Typography> : label}
     </Box>
   )
 }

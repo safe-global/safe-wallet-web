@@ -8,6 +8,7 @@ import { TokenTransferFields, TokenTransferType } from '@/components/tx-flow/flo
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 
 import css from './styles.module.css'
+import { TokenAmountFields } from '@/components/common/TokenAmountInput'
 
 const SpendingLimitRow = ({
   availableAmount,
@@ -38,7 +39,7 @@ const SpendingLimitRow = ({
 
               // Validate only after the field is changed
               setTimeout(() => {
-                trigger(TokenTransferFields.amount)
+                trigger(TokenAmountFields.amount)
               }, 10)
             }}
             {...field}

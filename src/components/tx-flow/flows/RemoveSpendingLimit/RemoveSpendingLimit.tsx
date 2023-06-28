@@ -4,7 +4,7 @@ import useChainId from '@/hooks/useChainId'
 import { useContext, useEffect } from 'react'
 import { SafeTxContext } from '../../SafeTxProvider'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { Typography } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { relativeTime } from '@/utils/date'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
@@ -49,18 +49,36 @@ export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) 
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && (
-        <AmountBlock amount={safeFormatUnits(params.amount, token.tokenInfo.decimals)} tokenInfo={token.tokenInfo} />
+        <Grid container gap={1} alignItems="center">
+          <Grid item xs={4} md={2}>
+            <Typography variant="body2" color="text.secondary">
+              Amount
+            </Typography>
+          </Grid>
+          <AmountBlock amount={safeFormatUnits(params.amount, token.tokenInfo.decimals)} tokenInfo={token.tokenInfo} />
+        </Grid>
       )}
-      <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Beneficiary</Typography>
-      <EthHashInfo address={params.beneficiary} showCopyButton hasExplorer shortAddress={false} />
-      <Typography mt={2} sx={({ palette }) => ({ color: palette.primary.light })}>
-        Reset time
-      </Typography>
-      <SpendingLimitLabel
-        label={relativeTime(params.lastResetMin, params.resetTimeMin)}
-        mb={2}
-        isOneTime={params.resetTimeMin === '0'}
-      />
+
+      <Grid container gap={1} alignItems="center">
+        <Grid item xs={4} md={2}>
+          <Typography variant="body2" color="text.secondary">
+            Beneficiary
+          </Typography>
+        </Grid>
+        <EthHashInfo address={params.beneficiary} showCopyButton hasExplorer shortAddress={false} showAvatar={false} />
+      </Grid>
+
+      <Grid container gap={1} alignItems="center">
+        <Grid item xs={4} md={2}>
+          <Typography variant="body2" color="text.secondary">
+            Reset time
+          </Typography>
+        </Grid>
+        <SpendingLimitLabel
+          label={relativeTime(params.lastResetMin, params.resetTimeMin)}
+          isOneTime={params.resetTimeMin === '0'}
+        />
+      </Grid>
     </SignOrExecuteForm>
   )
 }
