@@ -2,6 +2,8 @@ import TxLayout from '../../common/TxLayout'
 import useTxStepper from '../../useTxStepper'
 import { CreateSpendingLimit } from './CreateSpendingLimit'
 import { ReviewSpendingLimit } from './ReviewSpendingLimit'
+import SaveAddressIcon from '@/public/images/common/save-address.svg'
+import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 
 export type NewSpendingLimitFlowProps = {
   beneficiary: string
@@ -12,7 +14,7 @@ export type NewSpendingLimitFlowProps = {
 
 const defaultValues: NewSpendingLimitFlowProps = {
   beneficiary: '',
-  tokenAddress: '',
+  tokenAddress: ZERO_ADDRESS,
   amount: '',
   resetTime: '0',
 }
@@ -26,7 +28,13 @@ const NewSpendingLimitFlow = () => {
   ]
 
   return (
-    <TxLayout title="New spending limit" step={step} onBack={prevStep}>
+    <TxLayout
+      title={step === 0 ? 'New Transaction' : 'Confirm Transaction'}
+      subtitle="Spending Limit"
+      icon={SaveAddressIcon}
+      step={step}
+      onBack={prevStep}
+    >
       {steps}
     </TxLayout>
   )

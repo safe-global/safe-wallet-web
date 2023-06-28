@@ -19,7 +19,7 @@ export const AmountBlock = ({
       <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
       <Typography fontWeight="bold">{tokenInfo.symbol}</Typography>
       {children}
-      <Typography ml={1}>{formatAmountPrecise(amount, tokenInfo.decimals)}</Typography>
+      <Typography>{formatAmountPrecise(amount, tokenInfo.decimals)}</Typography>
     </Grid>
   )
 }

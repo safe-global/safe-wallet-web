@@ -34,3 +34,7 @@
   font-weight: bold;
   color: var(--color-text-primary);
 }
+
+.input fieldset {
+  border-color: var(--color-border-light) !important;
+}
