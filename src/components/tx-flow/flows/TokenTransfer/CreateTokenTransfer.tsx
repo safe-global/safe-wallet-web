@@ -1,4 +1,4 @@
-import { type ReactElement, useMemo, useState, useCallback } from 'react'
+import { type ReactElement, useMemo, useState, useCallback, useContext, useEffect } from 'react'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -39,6 +39,7 @@ import TxCard from '../../common/TxCard'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -72,7 +73,14 @@ const CreateTokenTransfer = ({
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
+  const { setNonce } = useContext(SafeTxContext)
   const [recipientFocus, setRecipientFocus] = useState(false)
+
+  useEffect(() => {
+    if (txNonce) {
+      setNonce(txNonce)
+    }
+  }, [setNonce, txNonce])
 
   const formMethods = useForm<TokenTransferParams>({
     defaultValues: {

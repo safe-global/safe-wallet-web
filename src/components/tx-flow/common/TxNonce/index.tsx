@@ -23,6 +23,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import { getLatestTransactions } from '@/utils/tx-list'
 import { getTransactionType } from '@/hooks/useTransactionType'
 import usePreviousNonces from '@/hooks/usePreviousNonces'
+import { isRejectionTx } from '@/utils/transactions'
 
 const CustomPopper = function (props: PopperProps) {
   return <Popper {...props} sx={{ width: '300px !important' }} placement="bottom-start" />
@@ -57,7 +58,7 @@ const TxNonce = () => {
   const { nonce, setNonce, safeTx, recommendedNonce } = useContext(SafeTxContext)
   const isEmpty = useRef<boolean>(false)
   const isEditable = !safeTx || safeTx?.signatures.size === 0
-  const readonly = !isEditable
+  const readonly = !isEditable || isRejectionTx(safeTx)
 
   const validateInput = useCallback(
     (value: string | AutocompleteValue<unknown, false, false, false>) => {
@@ -80,9 +81,9 @@ const TxNonce = () => {
 
   const handleChange = useCallback(
     (_e: SyntheticEvent, value: string | AutocompleteValue<unknown, false, false, false>) => {
-      const isNotValid = validateInput(value)
+      const error = validateInput(value)
 
-      if (isNotValid) {
+      if (error) {
         setError(validateInput(value))
         isEmpty.current = false
         return
