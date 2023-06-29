@@ -18,8 +18,6 @@ export const TxModalContext = createContext<TxModalContextType>({
   setFullWidth: noop,
 })
 
-const newTxMenu = <NewTxMenu />
-
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
   const [showWarning, setShowWarning] = useState(false)
@@ -57,7 +55,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   // Show the modal if user navigates
   useEffect(() => {
-    const shouldWarn = txFlow && txFlow.type !== newTxMenu.type
+    const shouldWarn = txFlow && !(txFlow.type instanceof NewTxMenu)
     if (!shouldWarn) {
       return
     }
