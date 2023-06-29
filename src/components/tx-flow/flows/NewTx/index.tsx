@@ -1,31 +1,71 @@
 import { useCallback, useContext } from 'react'
 import { SendNFTsButton, SendTokensButton, TxBuilderButton } from '@/components/tx-flow/common/TxButton'
-import { Box, Typography } from '@mui/material'
+import { Container, Grid, Paper, SvgIcon, Typography } from '@mui/material'
 import { TxModalContext } from '../../'
 import TokenTransferFlow from '../TokenTransfer'
+import AssetsIcon from '@/public/images/sidebar/assets.svg'
+import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
+import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
+import { ProgressBar } from '@/components/common/ProgressBar'
+
 import css from './styles.module.css'
 
-const buttonSx = { height: '91px' }
+const buttonSx = { height: '58px' }
 
 const NewTxMenu = () => {
+  const txBuilder = useTxBuilderApp()
   const { setTxFlow } = useContext(TxModalContext)
 
   const onTokensClick = useCallback(() => {
     setTxFlow(<TokenTransferFlow />)
   }, [setTxFlow])
 
+  const progress = 10
+
   return (
-    <Box className={css.wrapper}>
-      <Typography variant="h6" fontWeight={700}>
-        New transaction
-      </Typography>
+    <Container className={css.container}>
+      <Grid container>
+        {/* Alignment of `TxLayout` */}
+        <Grid item xs={12} md={11}>
+          <Grid container component={Paper}>
+            <Grid item xs={12} className={css.progressBar}>
+              <ProgressBar value={progress} />
+            </Grid>
+            <Grid item xs={12} md={6} className={css.pane} gap={3}>
+              <div className={css.globs}>
+                <LoadingSpinner status={SpinnerStatus.PROCESSING} />
+              </div>
 
-      <SendTokensButton onClick={onTokensClick} sx={buttonSx} />
+              <Typography variant="h1" className={css.title}>
+                New transaction
+              </Typography>
+            </Grid>
 
-      <SendNFTsButton sx={buttonSx} />
+            <Grid item xs={12} md={5} className={css.pane} gap={2}>
+              <Typography variant="h4" className={css.type}>
+                <SvgIcon component={AssetsIcon} inheritViewBox />
+                Assets
+              </Typography>
 
-      <TxBuilderButton sx={buttonSx} />
-    </Box>
+              <SendTokensButton onClick={onTokensClick} sx={buttonSx} />
+
+              <SendNFTsButton sx={buttonSx} />
+
+              {txBuilder?.app && (
+                <>
+                  <Typography variant="h4" className={css.type} mt={3}>
+                    <img src={txBuilder.app.iconUrl} height={24} width="auto" alt={txBuilder.app.name} /> Contract
+                    interaction
+                  </Typography>
+
+                  <TxBuilderButton sx={buttonSx} />
+                </>
+              )}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Container>
   )
 }
 
