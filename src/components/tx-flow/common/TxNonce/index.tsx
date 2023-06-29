@@ -135,6 +135,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
                     error={!!fieldState.error}
                     InputProps={{
                       ...params.InputProps,
+                      name: field.name,
                       endAdornment: (
                         <InputAdornment position="end" className={css.adornment}>
                           <Tooltip title="Reset to recommended nonce">
