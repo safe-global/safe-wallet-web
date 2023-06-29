@@ -2,11 +2,12 @@ import { createContext, type ReactElement, type ReactNode, useState, useEffect, 
 import TxModalDialog from '@/components/common/TxModalDialog'
 import { useRouter } from 'next/router'
 import { TxFlowExitWarning } from '@/components/tx-flow/common/TxFlowExitWarning'
+import NewTxMenu from './flows/NewTx'
 
 const noop = () => {}
 
 type TxModalContextType = {
-  txFlow: ReactNode | undefined
+  txFlow: JSX.Element | undefined
   setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void) => void
   setFullWidth: (fullWidth: boolean) => void
 }
@@ -54,14 +55,13 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   // Show the modal if user navigates
   useEffect(() => {
-    if (!txFlow) {
+    const shouldWarn = txFlow && !(txFlow.type instanceof NewTxMenu)
+    if (!shouldWarn) {
       return
     }
 
-    router.events.on('beforeHistoryChange', handleShowWarning) // Back button
-    router.events.on('routeChangeStart', handleShowWarning) // Navigation
+    router.events.on('routeChangeStart', handleShowWarning)
     return () => {
-      router.events.off('beforeHistoryChange', handleShowWarning)
       router.events.off('routeChangeStart', handleShowWarning)
     }
   }, [txFlow, router, handleShowWarning])

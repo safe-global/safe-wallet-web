@@ -11,15 +11,13 @@ const TxButton = ({ sx, ...props }: ButtonProps) => (
   <Button variant="contained" sx={{ '& svg path': { fill: 'currentColor' }, ...sx }} fullWidth {...props} />
 )
 
-export const SendTokensButton = ({ onClick, ...props }: ButtonProps) => (
+export const SendTokensButton = (props: ButtonProps) => (
   <Track {...MODALS_EVENTS.SEND_FUNDS}>
-    <TxButton onClick={onClick} {...props}>
-      Send tokens
-    </TxButton>
+    <TxButton {...props}>Send tokens</TxButton>
   </Track>
 )
 
-export const SendNFTsButton = ({ onClick, ...props }: ButtonProps) => {
+export const SendNFTsButton = (props: ButtonProps) => {
   const router = useRouter()
 
   return (
@@ -31,7 +29,7 @@ export const SendNFTsButton = ({ onClick, ...props }: ButtonProps) => {
   )
 }
 
-export const TxBuilderButton = ({ ...props }: ButtonProps) => {
+export const TxBuilderButton = (props: ButtonProps) => {
   const txBuilder = useTxBuilderApp()
   if (!txBuilder?.app) return null
 
