@@ -152,7 +152,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
                       readOnly,
                     }}
                     className={css.input}
-                    sx={{ minWidth: `${field.value.length + 0.5}em` }}
+                    sx={{ width: `${field.value.length}em`, minWidth: '5em', maxWidth: '200px' }}
                   />
                 </Tooltip>
               )
