@@ -30,6 +30,7 @@ import { Multi_send__factory } from '@/types/contracts'
 import { ethers } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { id } from 'ethers/lib/utils'
+import { isEmptyHexData } from '@/utils/hex'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -265,4 +266,8 @@ export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransactio
   }
 
   return txs
+}
+
+export const isRejectionTx = (tx?: SafeTransaction) => {
+  return !!tx && !!tx.data.data && !!isEmptyHexData(tx.data.data) && tx.data.value === '0'
 }

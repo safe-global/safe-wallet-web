@@ -1,4 +1,4 @@
-import { type ReactElement, useCallback, useMemo, useState } from 'react'
+import { type ReactElement, useMemo, useState, useCallback, useContext, useEffect } from 'react'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -24,6 +24,7 @@ import TxCard from '../../common/TxCard'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import TokenAmountInput, { TokenAmountFields } from '@/components/common/TokenAmountInput'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -57,7 +58,14 @@ const CreateTokenTransfer = ({
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
+  const { setNonce } = useContext(SafeTxContext)
   const [recipientFocus, setRecipientFocus] = useState(!params.recipient)
+
+  useEffect(() => {
+    if (txNonce) {
+      setNonce(txNonce)
+    }
+  }, [setNonce, txNonce])
 
   const formMethods = useForm<TokenTransferParams>({
     defaultValues: {
@@ -157,7 +165,7 @@ const CreateTokenTransfer = ({
           />
 
           {isDisabled && (
-            <Box mt={1} display="flex" alignItems="center">
+            <Box display="flex" alignItems="center" mt={-2} mb={3}>
               <SvgIcon component={InfoIcon} color="error" fontSize="small" />
               <Typography variant="body2" color="error" ml={0.5}>
                 $SAFE is currently non-transferable.
