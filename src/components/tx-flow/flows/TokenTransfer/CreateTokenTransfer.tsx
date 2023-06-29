@@ -10,35 +10,20 @@ import { useAppSelector } from '@/store'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { FormProvider, useForm } from 'react-hook-form'
-import classNames from 'classnames'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { BigNumber } from '@ethersproject/bignumber'
 import { sameAddress } from '@/utils/addresses'
-import {
-  Box,
-  Button,
-  CardActions,
-  Divider,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  SvgIcon,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Box, Button, CardActions, Divider, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
 import TokenIcon from '@/components/common/TokenIcon'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
-import NumberField from '@/components/common/NumberField'
-import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
-import { type TokenTransferParams, TokenTransferFields, TokenTransferType } from '.'
+import { TokenTransferFields, type TokenTransferParams, TokenTransferType } from '.'
 import TxCard from '../../common/TxCard'
 import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import css from './styles.module.css'
+import TokenAmountInput, { TokenAmountFields } from '@/components/common/TokenAmountInput'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
@@ -74,7 +59,7 @@ const CreateTokenTransfer = ({
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
   const { setNonce } = useContext(SafeTxContext)
-  const [recipientFocus, setRecipientFocus] = useState(false)
+  const [recipientFocus, setRecipientFocus] = useState(!params.recipient)
 
   useEffect(() => {
     if (txNonce) {
@@ -96,10 +81,8 @@ const CreateTokenTransfer = ({
   })
 
   const {
-    register,
     handleSubmit,
     setValue,
-    resetField,
     watch,
     formState: { errors },
   } = formMethods
@@ -107,7 +90,7 @@ const CreateTokenTransfer = ({
   const recipient = watch(TokenTransferFields.recipient)
 
   // Selected token
-  const tokenAddress = watch(TokenTransferFields.tokenAddress)
+  const tokenAddress = watch(TokenAmountFields.tokenAddress)
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
@@ -141,12 +124,11 @@ const CreateTokenTransfer = ({
         ? spendingLimitAmount.toString()
         : selectedToken.balance
 
-    setValue(TokenTransferFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
+    setValue(TokenAmountFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
       shouldValidate: true,
     })
   }, [isSpendingLimitType, selectedToken, setValue, spendingLimitAmount])
 
-  const isAmountError = !!errors[TokenTransferFields.tokenAddress] || !!errors[TokenTransferFields.amount]
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
@@ -168,68 +150,19 @@ const CreateTokenTransfer = ({
             ) : (
               <AddressBookInput
                 name={TokenTransferFields.recipient}
-                label="Sending to"
+                label="Recipient address or ENS"
                 canAdd={isAddressValid}
                 focused={recipientFocus}
               />
             )}
           </FormControl>
 
-          <FormControl className={classNames(css.outline, { [css.error]: isAmountError })} fullWidth>
-            <InputLabel shrink required className={css.label}>
-              {errors[TokenTransferFields.tokenAddress]?.message ||
-                errors[TokenTransferFields.amount]?.message ||
-                'Amount'}
-            </InputLabel>
-            <div className={css.inputs}>
-              <NumberField
-                variant="standard"
-                InputProps={{
-                  disableUnderline: true,
-                  endAdornment: (
-                    <Button className={css.max} onClick={onMaxAmountClick}>
-                      MAX
-                    </Button>
-                  ),
-                }}
-                className={css.amount}
-                required
-                placeholder="0"
-                {...register(TokenTransferFields.amount, {
-                  required: true,
-                  validate: (val) => {
-                    const decimals = selectedToken?.tokenInfo.decimals
-                    return (
-                      validateLimitedAmount(val, decimals, maxAmount.toString()) || validateDecimalLength(val, decimals)
-                    )
-                  },
-                })}
-              />
-              <Divider orientation="vertical" flexItem />
-              <TextField
-                select
-                variant="standard"
-                InputProps={{
-                  disableUnderline: true,
-                }}
-                className={css.select}
-                {...register(TokenTransferFields.tokenAddress, {
-                  required: true,
-                  onChange: () => {
-                    resetField(TokenTransferFields.amount)
-                  },
-                })}
-                value={tokenAddress}
-                required
-              >
-                {balancesItems.map((item) => (
-                  <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
-                    <AutocompleteItem {...item} />
-                  </MenuItem>
-                ))}
-              </TextField>
-            </div>
-          </FormControl>
+          <TokenAmountInput
+            balances={balancesItems}
+            selectedToken={selectedToken}
+            maxAmount={maxAmount}
+            onMaxAmountClick={onMaxAmountClick}
+          />
 
           {isDisabled && (
             <Box display="flex" alignItems="center" mt={-2} mb={3}>

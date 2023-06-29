@@ -49,6 +49,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
         open={open}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
+        className={css.input}
         disableClearable
         value={addressValue || ''}
         disabled={props.disabled}

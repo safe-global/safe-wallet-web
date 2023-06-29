@@ -5,7 +5,9 @@ const SendToBlock = ({ address }: { address: string; title?: string }) => {
   return (
     <Grid container gap={1} alignItems="center">
       <Grid item xs={2}>
-        To
+        <Typography variant="body2" color="text.secondary">
+          To
+        </Typography>
       </Grid>
       <Grid item>
         <Typography variant="body2" component="div">

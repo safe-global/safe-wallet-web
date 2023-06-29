@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { BigNumber } from 'ethers'
-import { Typography, Box } from '@mui/material'
+import { Typography, Grid, Alert } from '@mui/material'
 
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
@@ -26,7 +26,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   const { balances } = useBalances()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
-  const { decimals, symbol } = token?.tokenInfo || {}
+  const { decimals } = token?.tokenInfo || {}
 
   useEffect(() => {
     const existingSpendingLimit = spendingLimits.find(
@@ -59,57 +59,85 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && (
-        <AmountBlock amount={params.amount} tokenInfo={token.tokenInfo}>
-          {!!existingSpendingLimit && (
-            <>
-              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span">
-                {formatVisualAmount(BigNumber.from(existingSpendingLimit.amount), decimals)}
-              </Typography>
-              {'→'}
-            </>
-          )}
-        </AmountBlock>
-      )}
-      <Typography color={({ palette }) => palette.text.secondary} pb={1}>
-        Beneficiary
-      </Typography>
-
-      <Box mb={3}>
-        <EthHashInfo address={params.beneficiary} shortAddress={false} hasExplorer showCopyButton />
-      </Box>
-
-      <Typography color={({ palette }) => palette.text.secondary}>Reset time</Typography>
-      {existingSpendingLimit ? (
-        <>
-          <SpendingLimitLabel
-            label={
+        <Grid container gap={1} alignItems="center">
+          <Grid item xs={4} md={2}>
+            <Typography variant="body2" color="text.secondary">
+              Amount
+            </Typography>
+          </Grid>
+          <AmountBlock amount={params.amount} tokenInfo={token.tokenInfo}>
+            {!!existingSpendingLimit && (
               <>
-                {existingSpendingLimit.resetTimeMin !== params.resetTime && (
-                  <>
-                    <Typography color="error" sx={{ textDecoration: 'line-through' }} display="inline" component="span">
-                      {relativeTime(existingSpendingLimit.lastResetMin, existingSpendingLimit.resetTimeMin)}
-                    </Typography>
-                    {' → '}
-                  </>
-                )}
-                <Typography display="inline" component="span">
-                  {resetTime}
+                <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span">
+                  {formatVisualAmount(BigNumber.from(existingSpendingLimit.amount), decimals)}
                 </Typography>
+                {'→'}
               </>
-            }
-            isOneTime={existingSpendingLimit.resetTimeMin === '0'}
-            mb={2}
-          />
-          <Typography color="error" mb={2}>
-            You are about to replace an existent spending limit
+            )}
+          </AmountBlock>
+        </Grid>
+      )}
+
+      <Grid container gap={1} alignItems="center">
+        <Grid item xs={4} md={2}>
+          <Typography variant="body2" color="text.secondary">
+            Beneficiary
           </Typography>
-        </>
-      ) : (
-        <SpendingLimitLabel
-          label={resetTime || 'One-time spending limit'}
-          mb={2}
-          isOneTime={!!resetTime && isOneTime}
-        />
+        </Grid>
+
+        <Grid item>
+          <EthHashInfo
+            address={params.beneficiary}
+            shortAddress={false}
+            hasExplorer
+            showCopyButton
+            showAvatar={false}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid container gap={1} alignItems="center">
+        <Grid item xs={4} md={2}>
+          <Typography variant="body2" color="text.secondary">
+            Reset time
+          </Typography>
+        </Grid>
+        <Grid item>
+          {existingSpendingLimit ? (
+            <>
+              <SpendingLimitLabel
+                label={
+                  <>
+                    {existingSpendingLimit.resetTimeMin !== params.resetTime && (
+                      <>
+                        <Typography
+                          color="error"
+                          sx={{ textDecoration: 'line-through' }}
+                          display="inline"
+                          component="span"
+                        >
+                          {relativeTime(existingSpendingLimit.lastResetMin, existingSpendingLimit.resetTimeMin)}
+                        </Typography>
+                        {' → '}
+                      </>
+                    )}
+                    <Typography display="inline" component="span">
+                      {resetTime}
+                    </Typography>
+                  </>
+                }
+                isOneTime={existingSpendingLimit.resetTimeMin === '0'}
+              />
+            </>
+          ) : (
+            <SpendingLimitLabel label={resetTime || 'One-time spending limit'} isOneTime={!!resetTime && isOneTime} />
+          )}
+        </Grid>
+      </Grid>
+      {existingSpendingLimit && (
+        <Alert severity="warning" sx={{ border: 'unset' }}>
+          <Typography fontWeight={700}>You are about to replace an existing spending limit</Typography>
+        </Alert>
       )}
     </SignOrExecuteForm>
   )
