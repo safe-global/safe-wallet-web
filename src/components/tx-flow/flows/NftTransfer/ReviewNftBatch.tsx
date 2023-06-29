@@ -1,12 +1,13 @@
 import { type ReactElement, useEffect, useContext } from 'react'
-import SendToBlock from '@/components/tx/SendToBlock'
+import { Grid, Typography } from '@mui/material'
+import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import type { NftTransferParams } from '.'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import SendFromBlock from '@/components/tx/SendFromBlock'
 import { SafeTxContext } from '../../SafeTxProvider'
+import { NftItems } from '@/components/tx-flow/flows/NftTransfer/SendNftBatch'
 
 type ReviewNftBatchProps = {
   params: NftTransferParams
@@ -39,9 +40,17 @@ const ReviewNftBatch = ({ params, onSubmit, txNonce }: ReviewNftBatchProps): Rea
 
   return (
     <SignOrExecuteForm onSubmit={onSubmit}>
-      <SendFromBlock title={`Sending ${tokens.length} NFT${tokens.length > 1 ? 's' : ''} from`} />
+      <Grid container gap={1} flexWrap="nowrap" mb={2}>
+        <Grid item xs={2} flexShrink={0}>
+          <Typography variant="body2" color="text.secondary">
+            Send
+          </Typography>
+        </Grid>
 
-      <SendToBlock address={params.recipient || ''} title="To" />
+        <NftItems tokens={tokens} />
+      </Grid>
+
+      <SendToBlock address={params.recipient} />
     </SignOrExecuteForm>
   )
 }

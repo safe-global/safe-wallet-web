@@ -7,7 +7,7 @@ export type RemoveModuleFlowProps = {
 
 const RemoveModuleFlow = ({ address }: RemoveModuleFlowProps) => {
   return (
-    <TxLayout title="Remove module">
+    <TxLayout title="Confirm transaction" subtitle="Remove module">
       <ReviewRemoveModule params={{ address }} />
     </TxLayout>
   )

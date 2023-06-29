@@ -57,7 +57,7 @@ const CreateTokenTransfer = ({
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
-  const [recipientFocus, setRecipientFocus] = useState(false)
+  const [recipientFocus, setRecipientFocus] = useState(!params.recipient)
 
   const formMethods = useForm<TokenTransferParams>({
     defaultValues: {
@@ -142,7 +142,7 @@ const CreateTokenTransfer = ({
             ) : (
               <AddressBookInput
                 name={TokenTransferFields.recipient}
-                label="Sending to"
+                label="Recipient address or ENS"
                 canAdd={isAddressValid}
                 focused={recipientFocus}
               />

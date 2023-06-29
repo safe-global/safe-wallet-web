@@ -1,13 +1,15 @@
-import { Box, Button, CardActions, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
+import { useState } from 'react'
+import { Box, Button, CardActions, Divider, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
+import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { FormProvider, useForm } from 'react-hook-form'
 import NftIcon from '@/public/images/common/nft.svg'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import type { NftTransferParams } from '.'
 import ImageFallback from '@/components/common/ImageFallback'
 import useAddressBook from '@/hooks/useAddressBook'
-import SendToBlock from '@/components/tx/SendToBlock'
-import SendFromBlock from '@/components/tx/SendFromBlock'
 import TxCard from '../../common/TxCard'
+import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 enum Field {
   recipient = 'recipient',
@@ -21,26 +23,33 @@ type SendNftBatchProps = {
 }
 
 const NftItem = ({ image, name, description }: { image: string; name: string; description?: string }) => (
-  <Grid container spacing={1} alignItems="center" wrap="nowrap" mb={2}>
+  <Grid container gap={2} alignItems="center" wrap="nowrap">
     <Grid item>
-      <Box width={20} height={20}>
+      <Box width={40} height={40}>
         <ImageFallback
           src={image}
           fallbackSrc=""
-          fallbackComponent={<SvgIcon component={NftIcon} inheritViewBox width={20} height={20} />}
+          fallbackComponent={<SvgIcon component={NftIcon} inheritViewBox sx={{ width: 1, height: 1 }} />}
           alt={name}
-          height={20}
+          height={40}
         />
       </Box>
     </Grid>
 
     <Grid item overflow="hidden">
-      <Typography overflow="hidden" textOverflow="ellipsis">
+      <Typography variant="body2" fontWeight={700} whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
         {name}
       </Typography>
 
       {description && (
-        <Typography variant="caption" color="primary.light" display="block" overflow="hidden" textOverflow="ellipsis">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          whiteSpace="nowrap"
+          display="block"
+          overflow="hidden"
+          textOverflow="ellipsis"
+        >
           {description}
         </Typography>
       )}
@@ -48,7 +57,23 @@ const NftItem = ({ image, name, description }: { image: string; name: string; de
   </Grid>
 )
 
+export const NftItems = ({ tokens }: { tokens: SafeCollectibleResponse[] }) => {
+  return (
+    <Box display="flex" flexDirection="column" gap={2} overflow="auto" maxHeight="20vh" minHeight="40px">
+      {tokens.map((token) => (
+        <NftItem
+          key={`${token.address}-${token.id}`}
+          image={token.imageUri || token.logoUri}
+          name={`${token.tokenName || token.tokenSymbol || ''} #${token.id}`}
+          description={`Token ID: ${token.id}${token.name ? ` - ${token.name}` : ''}`}
+        />
+      ))}
+    </Box>
+  )
+}
+
 const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
+  const [recipientFocus, setRecipientFocus] = useState(false)
   const addressBook = useAddressBook()
   const { tokens } = params
 
@@ -57,9 +82,15 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
       [Field.recipient]: params.recipient,
     },
   })
-  const { handleSubmit, watch, setValue } = formMethods
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = formMethods
 
   const recipient = watch(Field.recipient)
+  const isAddressValid = !!recipient && !errors[Field.recipient]
 
   const onFormSubmit = (data: FormData) => {
     onSubmit({
@@ -72,38 +103,34 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
     <TxCard>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onFormSubmit)}>
-          <SendFromBlock title={`Sending ${tokens.length} NFT${tokens.length > 1 ? 's' : ''} from`} />
-
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth sx={{ mb: 3, mt: 1 }}>
+            {/* TODO: Extract this */}
             {addressBook[recipient] ? (
-              <Box onClick={() => setValue(Field.recipient, '')} mb={-1.5}>
-                <SendToBlock address={recipient} />
+              <Box
+                onClick={() => {
+                  setValue(Field.recipient, '')
+                  setRecipientFocus(true)
+                }}
+              >
+                <AddressInputReadOnly label="Sending to" address={recipient} />
               </Box>
             ) : (
-              <>
-                <Typography color="text.secondary" pb={1}>
-                  To
-                </Typography>
-
-                <AddressBookInput name={Field.recipient} label="Recipient" />
-              </>
+              <AddressBookInput
+                name={Field.recipient}
+                label="Recipient address or ENS"
+                canAdd={isAddressValid}
+                focused={recipientFocus}
+              />
             )}
           </FormControl>
 
-          <Typography color="text.secondary" mb={1}>
+          <Typography variant="body2" color="text.secondary" mb={2}>
             Selected NFTs
           </Typography>
 
-          <Box overflow="auto" maxHeight="20vh" minHeight="54px" pr={1}>
-            {tokens.map((token) => (
-              <NftItem
-                key={`${token.address}-${token.id}`}
-                image={token.imageUri || token.logoUri}
-                name={`${token.tokenName || token.tokenSymbol || ''} #${token.id}`}
-                description={`Token ID: ${token.id}${token.name ? ` - ${token.name}` : ''}`}
-              />
-            ))}
-          </Box>
+          <NftItems tokens={tokens} />
+
+          <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
 
           <CardActions>
             <Button variant="contained" type="submit">
