@@ -1,5 +1,4 @@
-import { memo, type ReactElement, type SyntheticEvent, useCallback, useContext, useMemo, useRef, useState } from 'react'
-
+import { memo, type ReactElement, useContext, useMemo } from 'react'
 import {
   Autocomplete,
   Box,
@@ -9,21 +8,23 @@ import {
   Tooltip,
   Popper,
   type PopperProps,
-  type AutocompleteValue,
   type MenuItemProps,
   MenuItem,
 } from '@mui/material'
-import { SafeTxContext } from '../../SafeTxProvider'
+import { Controller, useForm } from 'react-hook-form'
+
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import NumberField from '@/components/common/NumberField'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import css from './styles.module.css'
 import useAddressBook from '@/hooks/useAddressBook'
 import { getLatestTransactions } from '@/utils/tx-list'
 import { getTransactionType } from '@/hooks/useTransactionType'
 import usePreviousNonces from '@/hooks/usePreviousNonces'
 import { isRejectionTx } from '@/utils/transactions'
+
+import css from './styles.module.css'
 
 const CustomPopper = function (props: PopperProps) {
   return <Popper {...props} sx={{ width: '300px !important' }} placement="bottom-start" />
@@ -51,113 +52,130 @@ const NonceFormOption = memo(function NonceFormOption({
   )
 })
 
-const TxNonce = () => {
-  const [error, setError] = useState<string>()
-  const { safe } = useSafeInfo()
+enum TxNonceFormFieldNames {
+  NONCE = 'nonce',
+}
+
+const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNonce: number }) => {
+  const { safeTx, setNonce } = useContext(SafeTxContext)
   const previousNonces = usePreviousNonces()
-  const { nonce, setNonce, safeTx, recommendedNonce } = useContext(SafeTxContext)
-  const isEmpty = useRef<boolean>(false)
+  const { safe } = useSafeInfo()
+
   const isEditable = !safeTx || safeTx?.signatures.size === 0
-  const readonly = !isEditable || isRejectionTx(safeTx)
+  const readOnly = !isEditable || isRejectionTx(safeTx)
 
-  const validateInput = useCallback(
-    (value: string | AutocompleteValue<unknown, false, false, false>) => {
-      const nonce = Number(value)
-
-      if (isNaN(nonce)) {
-        return 'Nonce must be a number'
-      }
-
-      if (nonce < safe.nonce) {
-        return `Nonce can't be lower than ${safe.nonce}`
-      }
-
-      if (nonce >= Number.MAX_SAFE_INTEGER) {
-        return 'Nonce is too high'
-      }
+  const formMethods = useForm({
+    defaultValues: {
+      [TxNonceFormFieldNames.NONCE]: nonce.toString(),
     },
-    [safe.nonce],
+    mode: 'all',
+  })
+
+  const resetNonce = () => {
+    formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce.toString())
+  }
+
+  return (
+    <Controller
+      name={TxNonceFormFieldNames.NONCE}
+      control={formMethods.control}
+      rules={{
+        required: 'Nonce is required',
+        // Validation must be async to allow resetting invalid values onBlur
+        validate: async (value) => {
+          const newNonce = Number(value)
+
+          if (isNaN(newNonce)) {
+            return 'Nonce must be a number'
+          }
+
+          if (newNonce < safe.nonce) {
+            return `Nonce can't be lower than ${safe.nonce}`
+          }
+
+          if (newNonce >= Number.MAX_SAFE_INTEGER) {
+            return 'Nonce is too high'
+          }
+
+          // Update contect with valid nonce
+          setNonce(newNonce)
+        },
+      }}
+      render={({ field, fieldState }) => {
+        return (
+          <Autocomplete
+            value={field.value}
+            freeSolo
+            onChange={(_, value) => field.onChange(value)}
+            onInputChange={(_, value) => field.onChange(value)}
+            onBlur={() => {
+              field.onBlur()
+
+              if (fieldState.error) {
+                formMethods.setValue(field.name, recommendedNonce.toString())
+              }
+            }}
+            options={previousNonces}
+            disabled={readOnly}
+            getOptionLabel={(option) => option.toString()}
+            renderOption={(props, option) => {
+              return <NonceFormOption menuItemProps={props} nonce={option} />
+            }}
+            disableClearable
+            componentsProps={{
+              paper: {
+                elevation: 2,
+              },
+            }}
+            renderInput={(params) => {
+              return (
+                <Tooltip title={fieldState.error?.message} open arrow placement="top">
+                  <NumberField
+                    {...params}
+                    error={!!fieldState.error}
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <InputAdornment position="end" className={css.adornment}>
+                          <Tooltip title="Reset to recommended nonce">
+                            <IconButton
+                              onClick={resetNonce}
+                              size="small"
+                              color="primary"
+                              disabled={readOnly || recommendedNonce.toString() === field.value}
+                            >
+                              <RotateLeftIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
+                      readOnly,
+                    }}
+                    className={css.input}
+                    sx={{ minWidth: `${field.value.length + 0.5}em` }}
+                  />
+                </Tooltip>
+              )
+            }}
+            PopperComponent={CustomPopper}
+          />
+        )
+      }}
+    />
   )
+}
 
-  const handleChange = useCallback(
-    (_e: SyntheticEvent, value: string | AutocompleteValue<unknown, false, false, false>) => {
-      const error = validateInput(value)
-
-      if (error) {
-        setError(validateInput(value))
-        isEmpty.current = false
-        return
-      }
-
-      setError(undefined)
-      isEmpty.current = value === ''
-      setNonce(Number(value))
-    },
-    [validateInput, setNonce],
-  )
-
-  const handleBlur = useCallback(() => {
-    setError(undefined)
-  }, [])
-
-  const resetNonce = useCallback(() => {
-    setError(undefined)
-    isEmpty.current = false
-    setNonce(recommendedNonce)
-  }, [recommendedNonce, setNonce])
-
-  if (nonce === undefined) return <Skeleton variant="rounded" width={40} height={38} />
+const TxNonce = () => {
+  const { nonce, recommendedNonce } = useContext(SafeTxContext)
 
   return (
     <Box display="flex" alignItems="center" gap={1}>
       Nonce #
-      <Autocomplete
-        value={isEmpty.current ? '' : nonce}
-        inputValue={isEmpty.current ? '' : nonce.toString()}
-        freeSolo
-        onChange={handleChange}
-        onInputChange={handleChange}
-        onBlur={handleBlur}
-        options={previousNonces}
-        disabled={readonly}
-        getOptionLabel={(option) => option.toString()}
-        renderOption={(props, option: number) => <NonceFormOption menuItemProps={props} nonce={option} />}
-        disableClearable
-        componentsProps={{
-          paper: {
-            elevation: 2,
-          },
-        }}
-        renderInput={(params) => (
-          <Tooltip title={error} open arrow placement="top">
-            <NumberField
-              {...params}
-              error={!!error}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <InputAdornment position="end" className={css.adornment}>
-                    <Tooltip title="Reset to recommended nonce">
-                      <IconButton
-                        onClick={resetNonce}
-                        size="small"
-                        color="primary"
-                        disabled={readonly || recommendedNonce === undefined || recommendedNonce === nonce}
-                      >
-                        <RotateLeftIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </InputAdornment>
-                ),
-                readOnly: readonly,
-              }}
-              className={css.input}
-              sx={{ minWidth: `${nonce.toString().length + 0.5}em` }}
-            />
-          </Tooltip>
-        )}
-        PopperComponent={CustomPopper}
-      />
+      {nonce === undefined || recommendedNonce === undefined ? (
+        <Skeleton width="70px" height="38px" />
+      ) : (
+        <TxNonceForm nonce={nonce} recommendedNonce={recommendedNonce} />
+      )}
     </Box>
   )
 }
