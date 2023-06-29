@@ -40,7 +40,7 @@ const ReviewNftBatch = ({ params, onSubmit, txNonce }: ReviewNftBatchProps): Rea
 
   return (
     <SignOrExecuteForm onSubmit={onSubmit}>
-      <Grid container gap={1} flexWrap="nowrap">
+      <Grid container gap={1} flexWrap="nowrap" mb={2}>
         <Grid item xs={2} flexShrink={0}>
           <Typography variant="body2" color="text.secondary">
             Send

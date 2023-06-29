@@ -21,7 +21,7 @@ describe('The transaction modal', () => {
   describe('When sending a transaction from an app', () => {
     it('should show the transaction popup', { defaultCommandTimeout: 12000 }, () => {
       cy.findByRole('dialog').within(() => {
-        cy.findByText(/sending from/i)
+        cy.findByText(/interact with/i)
 
         const testSafeParts = TEST_SAFE.split(':')
 

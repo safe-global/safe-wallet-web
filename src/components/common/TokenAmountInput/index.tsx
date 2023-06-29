@@ -46,7 +46,7 @@ const TokenAmountInput = ({
             disableUnderline: true,
             endAdornment: (
               <Button className={css.max} onClick={onMaxAmountClick}>
-                MAX
+                Max
               </Button>
             ),
           }}
