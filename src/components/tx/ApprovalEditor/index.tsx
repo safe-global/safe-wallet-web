@@ -1,4 +1,4 @@
-import { Alert, Box, Skeleton, SvgIcon, Typography } from '@mui/material'
+import { Alert, Box, Divider, Skeleton, SvgIcon, Typography } from '@mui/material'
 import { type MetaTransactionData, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import css from './styles.module.css'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
@@ -6,6 +6,7 @@ import { updateApprovalTxs } from './utils/approvals'
 import { useApprovalInfos } from './hooks/useApprovalInfos'
 import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
 import EditIcon from '@/public/images/common/edit.svg'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 const Title = () => {
   return (
@@ -49,7 +50,7 @@ export const ApprovalEditor = ({
         }
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} mb={2}>
+    <Box display="flex" flexDirection="column" gap={2} mb={3}>
       <Title />
       {error ? (
         <Alert severity="error">Error while decoding approval transactions.</Alert>
@@ -58,6 +59,10 @@ export const ApprovalEditor = ({
       ) : (
         <ApprovalEditorForm approvalInfos={readableApprovals} updateApprovals={updateApprovals} />
       )}
+
+      <Box mt={2}>
+        <Divider className={commonCss.nestedDivider} />
+      </Box>
     </Box>
   )
 }

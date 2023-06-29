@@ -11,14 +11,12 @@ import { getTxOrigin } from '@/utils/transactions'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Divider } from '@mui/material'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
-import { getInteractionTitle } from '@/components/safe-apps/utils'
+import { getInteractionTitle, isTxValid } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
-import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -64,6 +62,7 @@ const ReviewSafeAppsTx = ({
   }
 
   const origin = useMemo(() => getTxOrigin(app), [app])
+  const error = !isTxValid(txs)
 
   return (
     <SignOrExecuteForm onSubmit={handleSubmit} origin={origin}>
@@ -71,13 +70,9 @@ const ReviewSafeAppsTx = ({
         <ApprovalEditor safeTransaction={safeTx} updateTransaction={setTxList} />
       </ErrorBoundary>
 
-      <Box mb={1} mt={-1}>
-        <Divider className={commonCss.nestedDivider} />
-      </Box>
-
       {safeTx ? (
         <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
-      ) : safeTxError ? (
+      ) : error ? (
         <ErrorMessage error={safeTxError}>
           This Safe App initiated a transaction which cannot be processed. Please get in touch with the developer of
           this Safe App for more information.
