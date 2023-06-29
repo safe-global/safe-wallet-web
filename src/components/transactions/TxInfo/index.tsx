@@ -97,7 +97,7 @@ const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   return <></>
 }
 
-const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => {
+const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; withLogo?: boolean }): ReactElement => {
   const chainId = useChainId()
 
   if (isSettingsChangeTxInfo(info)) {
@@ -109,7 +109,7 @@ const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => {
   }
 
   if (isTransferTxInfo(info)) {
-    return <TransferTx info={info} />
+    return <TransferTx info={info} {...rest} />
   }
 
   if (isCustomTxInfo(info)) {
