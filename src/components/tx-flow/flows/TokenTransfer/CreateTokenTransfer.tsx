@@ -142,7 +142,7 @@ const CreateTokenTransfer = ({
             ) : (
               <AddressBookInput
                 name={TokenTransferFields.recipient}
-                label="Sending to"
+                label="Recipient address or ENS"
                 canAdd={isAddressValid}
                 focused={recipientFocus}
               />

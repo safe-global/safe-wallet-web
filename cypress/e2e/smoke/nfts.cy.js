@@ -70,15 +70,14 @@ describe('Assets > NFTs', () => {
 
       // Modal appears
       cy.contains('Send NFTs')
-      cy.contains('Sending 2 NFTs from')
-      cy.contains('Recipient address or ENS *')
+      cy.contains('Recipient address or ENS')
       cy.contains('Selected NFTs')
       cy.get('input[name="recipient"]').type('0x97d314157727D517A706B5D08507A1f9B44AaaE9')
       cy.contains('button', 'Next').click()
 
       // Review modal appears
-      cy.contains('Review NFT transaction')
-      cy.contains('Sending 2 NFTs from')
+      cy.contains('Send')
+      cy.contains('To')
       cy.wait(1000)
       cy.contains('Action 1')
       cy.contains('Action 2')

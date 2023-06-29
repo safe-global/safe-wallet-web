@@ -117,7 +117,7 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
             ) : (
               <AddressBookInput
                 name={Field.recipient}
-                label="Recipient"
+                label="Recipient address or ENS"
                 canAdd={isAddressValid}
                 focused={recipientFocus}
               />
