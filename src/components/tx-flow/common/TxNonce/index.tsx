@@ -110,6 +110,7 @@ const TxNonce = () => {
             error={error}
             InputProps={{
               ...params.InputProps,
+              name: 'nonce',
               endAdornment: !readonly && recommendedNonce !== undefined && recommendedNonce !== nonce && (
                 <InputAdornment position="end" className={css.adornment}>
                   <Tooltip title="Reset to recommended nonce">
