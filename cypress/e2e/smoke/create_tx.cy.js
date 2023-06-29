@@ -26,7 +26,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('New transaction').click()
 
     // Modal is open
-    cy.contains('h6', 'New transaction').should('be.visible')
+    cy.contains('h1', 'New transaction').should('be.visible')
     cy.contains('Send tokens').click()
 
     // Fill transaction data
