@@ -28,15 +28,19 @@ const SendAmountBlock = ({
   amount,
   tokenInfo,
   children,
+  title = 'Send',
 }: {
   amount: number | string
   tokenInfo: TokenInfo
   children?: ReactNode
+  title?: string
 }) => {
   return (
     <Grid container gap={1} alignItems="center">
       <Grid item xs={2}>
-        Send
+        <Typography variant="body2" color="text.secondary">
+          {title}
+        </Typography>
       </Grid>
       <AmountBlock amount={amount} tokenInfo={tokenInfo}>
         {children}

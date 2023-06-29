@@ -2,8 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import { ErrorBoundary } from '@sentry/react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import SendFromBlock from '@/components/tx/SendFromBlock'
-import SendToBlock from '@/components/tx/SendToBlock'
+import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { useCurrentChain } from '@/hooks/useChains'
 import type { SafeAppsTxParams } from '.'
@@ -12,14 +11,14 @@ import { getTxOrigin } from '@/utils/transactions'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Typography } from '@mui/material'
-import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
+import { Box, Divider } from '@mui/material'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { getInteractionTitle } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -72,19 +71,12 @@ const ReviewSafeAppsTx = ({
         <ApprovalEditor safeTransaction={safeTx} updateTransaction={setTxList} />
       </ErrorBoundary>
 
-      <SendFromBlock />
+      <Box mb={1} mt={-1}>
+        <Divider className={commonCss.nestedDivider} />
+      </Box>
 
       {safeTx ? (
-        <>
-          <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
-
-          <Box pb={2}>
-            <Typography mt={2} color="primary.light">
-              Data (hex encoded)
-            </Typography>
-            {generateDataRowValue(safeTx.data.data, 'rawData')}
-          </Box>
-        </>
+        <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
       ) : safeTxError ? (
         <ErrorMessage error={safeTxError}>
           This Safe App initiated a transaction which cannot be processed. Please get in touch with the developer of

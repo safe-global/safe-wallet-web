@@ -1,5 +1,5 @@
 import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
-import { Grid, Typography, IconButton, SvgIcon, Divider, List, ListItem } from '@mui/material'
+import { Grid, Typography, IconButton, SvgIcon, List, ListItem, Alert } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import css from './styles.module.css'
 import CheckIcon from '@mui/icons-material/Check'
@@ -8,6 +8,8 @@ import { ApprovalValueField } from './ApprovalValueField'
 import { MODALS_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 import { useMemo } from 'react'
+import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
+import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 export type ApprovalEditorFormData = {
   approvals: string[]
@@ -44,46 +46,54 @@ export const ApprovalEditorForm = ({
   }
 
   return (
-    <List className={css.approvalsList}>
-      <FormProvider {...formMethods}>
+    <FormProvider {...formMethods}>
+      <List className={css.approvalsList}>
         {approvalInfos.map((tx, idx) => (
-          <div key={tx.tokenAddress + tx.spender}>
-            {idx > 0 && <Divider component="li" variant="middle" />}
-            <ListItem disableGutters>
-              <Grid container className={css.approval} gap={1} justifyContent="space-between">
+          <ListItem key={tx.tokenAddress + tx.spender} disablePadding data-testid="approval-item">
+            <Alert icon={false} variant="outlined" severity="warning" className={css.alert}>
+              <Grid container gap={1} justifyContent="space-between">
                 <Grid item display="flex" xs={12} flexDirection="row" alignItems="center" gap={1}>
-                  {/* Input */}
-                  <ApprovalValueField name={`approvals.${idx}`} tx={tx} readonly={isReadonly} />
-
-                  {/* Save button */}
-                  {!isReadonly && (
-                    <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
-                      <IconButton
-                        className={css.iconButton}
-                        onClick={onSave}
-                        disabled={!!errors.approvals || !dirtyFields.approvals?.[idx]}
-                        title="Save"
-                      >
-                        <SvgIcon component={CheckIcon} />
-                      </IconButton>
-                    </Track>
+                  {isReadonly ? (
+                    <SendAmountBlock
+                      amount={initialApprovals[idx]}
+                      tokenInfo={tx.tokenInfo as TokenInfo}
+                      title="Token"
+                    />
+                  ) : (
+                    <>
+                      <ApprovalValueField name={`approvals.${idx}`} tx={tx} readonly={isReadonly} />
+                      <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
+                        <IconButton
+                          className={css.iconButton}
+                          onClick={onSave}
+                          disabled={!!errors.approvals || !dirtyFields.approvals?.[idx]}
+                          title="Save"
+                        >
+                          <SvgIcon component={CheckIcon} />
+                        </IconButton>
+                      </Track>
+                    </>
                   )}
                 </Grid>
 
-                <Grid item display="flex" xs={12} flexDirection="column">
-                  <Typography color="text.secondary" variant="body2">
-                    Spender
-                  </Typography>
+                <Grid item container display="flex" xs={12} alignItems="center" gap={1}>
+                  <Grid item xs={2}>
+                    <Typography color="text.secondary" variant="body2">
+                      Spender
+                    </Typography>
+                  </Grid>
 
-                  <Typography fontSize="14px">
-                    <PrefixedEthHashInfo address={tx.spender} hasExplorer showAvatar={false} />{' '}
-                  </Typography>
+                  <Grid item>
+                    <Typography fontSize="14px">
+                      <PrefixedEthHashInfo address={tx.spender} hasExplorer showAvatar={false} shortAddress={false} />
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Grid>
-            </ListItem>
-          </div>
+            </Alert>
+          </ListItem>
         ))}
-      </FormProvider>
-    </List>
+      </List>
+    </FormProvider>
   )
 }

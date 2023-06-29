@@ -1,39 +1,19 @@
-import {
-  fireEvent,
-  getAllByRole,
-  getByRole,
-  getByText,
-  mockWeb3Provider,
-  render,
-  type RenderResult,
-  waitFor,
-  act,
-} from '@/tests/test-utils'
+import { fireEvent, getAllByRole, render, waitFor } from '@/tests/test-utils'
 import ApprovalEditor from '.'
-import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
-import { hexlify, hexZeroPad, Interface } from 'ethers/lib/utils'
+import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import { hexZeroPad, Interface } from 'ethers/lib/utils'
 import { ERC20__factory, Multi_send_call_only__factory } from '@/types/contracts'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
-import { parseUnits } from '@ethersproject/units'
 import { getMultiSendCallOnlyContractAddress } from '@/services/contracts/safeContracts'
 import { type SafeSignature, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { getAllByTestId } from '@testing-library/dom'
+import { ApprovalEditorForm } from '@/components/tx/ApprovalEditor/ApprovalEditorForm'
 
-const PREFIX_TEXT = 'Approve access to'
 const ERC20_INTERFACE = ERC20__factory.createInterface()
-
-const createApproveCallData = (spender: string, value: string) => {
-  return ERC20_INTERFACE.encodeFunctionData('approve', [spender, value])
-}
 
 const createNonApproveCallData = (to: string, value: string) => {
   return ERC20_INTERFACE.encodeFunctionData('transfer', [to, value])
-}
-
-const getApprovalSummaryElement = (text: string, result: RenderResult): HTMLElement => {
-  const accordionSummary = result.getByText(PREFIX_TEXT, { exact: false })
-  expect(accordionSummary.parentElement).not.toBeNull()
-  return accordionSummary.parentElement!
 }
 
 const renderEditor = async (txs: BaseTransaction[], updateTxs?: (newTxs: BaseTransaction[]) => void) => {
@@ -130,246 +110,101 @@ describe('ApprovalEditor', () => {
       })
     })
 
-    it('should render and edit multiple txs with partly missing token info', async () => {
+    it('should render and edit multiple txs', async () => {
       const tokenAddress1 = hexZeroPad('0x123', 20)
       const tokenAddress2 = hexZeroPad('0x234', 20)
 
-      // tokenAddress2 gets its infos from the web3 provider
-      mockWeb3Provider([
+      const mockApprovalInfos = [
         {
-          returnType: 'uint8',
-          returnValue: '12',
-          signature: 'decimals()',
+          tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress1, type: TokenType.ERC20 },
+          tokenAddress: '0x1',
+          spender: '0x2',
+          amount: '4200000',
+          amountFormatted: '420.0',
         },
         {
-          returnType: 'string',
-          returnValue: 'OTHER',
-          signature: 'symbol()',
-        },
-      ])
-      const mockBalances: SafeBalanceResponse = {
-        fiatTotal: '100',
-        items: [
-          {
-            balance: '100',
-            fiatBalance: '100',
-            fiatConversion: '1',
-            tokenInfo: {
-              address: tokenAddress1,
-              decimals: 18,
-              logoUri: '',
-              name: 'Test',
-              symbol: 'TST',
-              type: TokenType.ERC20,
-            },
-          },
-        ],
-      }
-      const txs = [
-        {
-          to: tokenAddress1,
-          data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('100', 18))),
-          value: '0',
-        },
-        {
-          to: tokenAddress1,
-          data: createNonApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('200', 18))),
-          value: '0',
-        },
-        {
-          to: tokenAddress2,
-          data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('300', 12))),
-          value: '0',
-        },
-      ]
-      const Editor = await renderEditor(txs, updateCallback)
-
-      const result = render(<Editor />, {
-        initialReduxState: {
-          balances: { data: mockBalances, loading: false },
-        },
-      })
-      await waitFor(() => {
-        const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
-        getByText(accordionSummary, '2', { exact: false })
-        getByText(accordionSummary, 'Tokens', { exact: false })
-      })
-
-      // Edit first approval
-      {
-        const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
-        const parentContainer = accordionSummary.closest('.MuiPaper-root')
-        const accordionDetails = parentContainer?.querySelector('.MuiAccordionDetails-root')
-        expect(accordionDetails).not.toBeNull()
-
-        // toggle edit row
-        const buttons = getAllByRole(accordionDetails as HTMLElement, 'button')
-        // 2 rows with one button each
-        expect(buttons).toHaveLength(2)
-
-        await waitFor(() => {
-          const amountInput = accordionDetails?.querySelector('input[name="approvals.0"]') as HTMLInputElement
-          expect(amountInput).not.toBeNull()
-          expect(amountInput).toHaveValue('100.0')
-          expect(amountInput).toBeEnabled()
-        })
-
-        const amountInput = accordionDetails?.querySelector('input[name="approvals.0"]') as HTMLInputElement
-
-        await act(() => {
-          fireEvent.change(amountInput!, { target: { value: '123' } })
-        })
-
-        await act(() => {
-          buttons[0].click()
-        })
-
-        await waitFor(() => {
-          expect(updateCallback).toHaveBeenCalledWith([
-            {
-              to: tokenAddress1,
-              data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('123', 18))),
-              value: '0',
-            },
-            {
-              to: tokenAddress1,
-              data: createNonApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('200', 18))),
-              value: '0',
-            },
-            {
-              to: tokenAddress2,
-              data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('300', 12))),
-              value: '0',
-            },
-          ])
-        })
-      }
-
-      // Edit second approval
-      {
-        const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
-        const parentContainer = accordionSummary.closest('.MuiPaper-root')
-        const accordionDetails = parentContainer?.querySelector('.MuiAccordionDetails-root')
-        expect(accordionDetails).not.toBeNull()
-
-        // toggle edit row
-        const buttons = getAllByRole(accordionDetails as HTMLElement, 'button')
-        // 2 rows with one button each
-        expect(buttons).toHaveLength(2)
-        await waitFor(() => {
-          const amountInput = accordionDetails?.querySelector('input[name="approvals.1"]') as HTMLInputElement
-          expect(amountInput).not.toBeNull()
-          expect(amountInput).toHaveValue('300.0')
-          expect(amountInput).toBeEnabled()
-        })
-
-        const amountInput = accordionDetails?.querySelector('input[name="approvals.1"]') as HTMLInputElement
-
-        await act(() => {
-          fireEvent.change(amountInput!, { target: { value: '456' } })
-        })
-
-        await act(() => {
-          buttons[1].click()
-        })
-
-        await waitFor(() => {
-          expect(updateCallback).toHaveBeenCalledWith([
-            {
-              to: tokenAddress1,
-              data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('123', 18))),
-              value: '0',
-            },
-            {
-              to: tokenAddress1,
-              data: createNonApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('200', 18))),
-              value: '0',
-            },
-            {
-              to: tokenAddress2,
-              data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('456', 12))),
-              value: '0',
-            },
-          ])
-        })
-      }
-    })
-
-    it('should render and edit single tx', async () => {
-      const tokenAddress = hexZeroPad('0x123', 20)
-      const mockBalances: SafeBalanceResponse = {
-        fiatTotal: '100',
-        items: [
-          {
-            balance: '100',
-            fiatBalance: '100',
-            fiatConversion: '1',
-            tokenInfo: {
-              address: tokenAddress,
-              decimals: 18,
-              logoUri: '',
-              name: 'Test',
-              symbol: 'TST',
-              type: TokenType.ERC20,
-            },
-          },
-        ],
-      }
-      const txs = [
-        {
-          to: tokenAddress,
-          data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('420', 18))),
-          value: '0',
+          tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress2, type: TokenType.ERC20 },
+          tokenAddress: '0x1',
+          spender: '0x2',
+          amount: '6900000',
+          amountFormatted: '69.0',
         },
       ]
 
-      const Editor = await renderEditor(txs, updateCallback)
+      const result = render(<ApprovalEditorForm approvalInfos={mockApprovalInfos} updateApprovals={updateCallback} />)
 
-      const result = render(<Editor />, {
-        initialReduxState: {
-          balances: { data: mockBalances, loading: false },
-        },
-      })
+      // All approvals are rendered
+      const approvalItems = getAllByTestId(result.container, 'approval-item')
+      expect(approvalItems).toHaveLength(2)
+
+      // One button for each approval
+      const buttons = getAllByRole(result.container, 'button')
+      expect(buttons).toHaveLength(2)
+
+      // First approval value is rendered
       await waitFor(() => {
-        const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
-        getByText(accordionSummary, '420', { exact: false })
-        getByText(accordionSummary, 'TST', { exact: false })
-      })
-
-      // Edit tx
-      const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
-
-      const parentContainer = accordionSummary.closest('.MuiPaper-root')
-      const accordionDetails = parentContainer?.querySelector('.MuiAccordionDetails-root')
-      expect(accordionDetails).not.toBeNull()
-
-      // toggle edit row
-      await waitFor(() => {
-        const amountInput = accordionDetails?.querySelector('input[name="approvals.0"]') as HTMLInputElement
+        const amountInput = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
         expect(amountInput).not.toBeNull()
         expect(amountInput).toHaveValue('420.0')
         expect(amountInput).toBeEnabled()
       })
 
-      const amountInput = accordionDetails?.querySelector('input[name="approvals.0"]') as HTMLInputElement
+      // Change value of first approval
+      const amountInput1 = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
+      fireEvent.change(amountInput1!, { target: { value: '123' } })
+      fireEvent.click(buttons[0])
 
-      await act(() => {
-        fireEvent.change(amountInput!, { target: { value: '100' } })
-      })
+      expect(updateCallback).toHaveBeenCalledWith(['123', '69.0'])
 
-      await act(() => {
-        getByRole(accordionDetails as HTMLElement, 'button').click()
-      })
-
+      // Second approval value is rendered
       await waitFor(() => {
-        expect(updateCallback).toHaveBeenCalledWith([
-          {
-            to: tokenAddress,
-            data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('100', 18))),
-            value: '0',
-          },
-        ])
+        const amountInput = result.container.querySelector('input[name="approvals.1"]') as HTMLInputElement
+        expect(amountInput).not.toBeNull()
+        expect(amountInput).toHaveValue('69.0')
+        expect(amountInput).toBeEnabled()
       })
+
+      // Change value of second approval
+      const amountInput2 = result.container.querySelector('input[name="approvals.1"]') as HTMLInputElement
+      fireEvent.change(amountInput2!, { target: { value: '456' } })
+      fireEvent.click(buttons[1])
+
+      expect(updateCallback).toHaveBeenCalledWith(['123', '456'])
+    })
+
+    it('should render and edit single tx', async () => {
+      const tokenAddress = hexZeroPad('0x123', 20)
+
+      const mockApprovalInfo = {
+        tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress, type: TokenType.ERC20 },
+        tokenAddress: '0x1',
+        spender: '0x2',
+        amount: '4200000',
+        amountFormatted: '420.0',
+      }
+
+      const result = render(<ApprovalEditorForm approvalInfos={[mockApprovalInfo]} updateApprovals={updateCallback} />)
+
+      // Approval item is rendered
+      const approvalItem = result.getByTestId('approval-item')
+      expect(approvalItem).not.toBeNull()
+
+      // Input with correct value is rendered
+      await waitFor(() => {
+        const amountInput = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
+        expect(amountInput).not.toBeNull()
+        expect(amountInput).toHaveValue('420.0')
+        expect(amountInput).toBeEnabled()
+      })
+
+      // Change value and save
+      const amountInput = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
+      const saveButton = result.getByRole('button')
+
+      fireEvent.change(amountInput!, { target: { value: '100' } })
+      fireEvent.click(saveButton)
+
+      expect(updateCallback).toHaveBeenCalledWith(['100'])
     })
   })
 
@@ -393,47 +228,23 @@ describe('ApprovalEditor', () => {
       describe('should render approval(s)', () => {
         it('for single approval tx of token in balances', async () => {
           const tokenAddress = hexZeroPad('0x123', 20)
-          const mockBalance: SafeBalanceResponse = {
-            fiatTotal: '100',
-            items: [
-              {
-                balance: '100',
-                fiatBalance: '100',
-                fiatConversion: '1',
-                tokenInfo: {
-                  address: tokenAddress,
-                  decimals: 18,
-                  logoUri: '',
-                  name: 'Test',
-                  symbol: 'TST',
-                  type: TokenType.ERC20,
-                },
-              },
-            ],
+
+          const mockApprovalInfo = {
+            tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress, type: TokenType.ERC20 },
+            tokenAddress: '0x1',
+            spender: '0x2',
+            amount: '100',
+            amountFormatted: '0.1',
           }
-          const txs: BaseTransaction[] = [
-            {
-              to: tokenAddress,
-              data: createApproveCallData(hexZeroPad('0x2', 20), hexlify(parseUnits('420', 18))),
-              value: '0',
-            },
-          ]
 
-          const Editor = await renderEditor(txs)
+          const result = render(<ApprovalEditorForm approvalInfos={[mockApprovalInfo]} />)
 
-          const result = render(<Editor />, {
-            initialReduxState: {
-              balances: {
-                loading: false,
-                data: mockBalance,
-              },
-            },
-          })
-          await waitFor(() => {
-            const accordionSummary = getApprovalSummaryElement(PREFIX_TEXT, result)
-            getByText(accordionSummary, '420', { exact: false })
-            getByText(accordionSummary, 'TST', { exact: false })
-          })
+          const approvalItem = result.getByTestId('approval-item')
+
+          expect(approvalItem).toBeInTheDocument()
+          expect(approvalItem).toHaveTextContent('Token')
+          expect(approvalItem).toHaveTextContent('TST')
+          expect(approvalItem).toHaveTextContent('0.1')
         })
       })
     })
