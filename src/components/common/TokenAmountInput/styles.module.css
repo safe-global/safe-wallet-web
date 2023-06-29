@@ -33,6 +33,7 @@
 }
 
 .max {
+  text-transform: uppercase;
   background-color: var(--color-background-main);
   color: var(--color-text-primary);
   font-size: 12px;
