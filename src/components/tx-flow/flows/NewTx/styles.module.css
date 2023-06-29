@@ -22,6 +22,11 @@
   gap: var(--space-1);
 }
 
+.globs > div {
+  padding: 0;
+  margin: 0 0 var(--space-3) 0;
+}
+
 @media (max-width: 899.95px) {
   .container {
     margin-top: var(--space-3);
