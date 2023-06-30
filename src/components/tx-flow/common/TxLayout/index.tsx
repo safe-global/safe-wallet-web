@@ -120,11 +120,9 @@ const TxLayout = ({
                     />
                   )}
 
-                  <Box mt={2}>
+                  <Box className={css.sticky}>
                     <RedefineMessage />
-                  </Box>
 
-                  <Box mt={2}>
                     <TxSimulationMessage />
                   </Box>
                 </Grid>
