@@ -122,6 +122,8 @@ export const RedefineMessage = () => {
   const groupedShownWarnings = groupBy(shownWarnings, (warning) => warning.severity)
   const sortedSeverities = Object.keys(groupedShownWarnings).sort((a, b) => (Number(a) < Number(b) ? 1 : -1))
 
+  if (sortedSeverities.length === 0 && hiddenWarningCount === 0 && !simulationUuid) return null
+
   return (
     <Box display="flex" flexDirection="column" gap={1}>
       {sortedSeverities.map((key) => (
@@ -131,6 +133,7 @@ export const RedefineMessage = () => {
           warnings={groupedShownWarnings[key].map((warning) => warning.description.short)}
         />
       ))}
+
       {hiddenWarningCount > 0 && (
         <RedefineHint
           severity={hiddenMaxSeverity}

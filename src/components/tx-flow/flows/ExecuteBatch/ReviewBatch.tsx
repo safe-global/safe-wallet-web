@@ -1,4 +1,4 @@
-import { Typography, Button, CardActions } from '@mui/material'
+import { Typography, Button, CardActions, Divider } from '@mui/material'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { useState, useMemo } from 'react'
 import type { SyntheticEvent } from 'react'
@@ -8,7 +8,6 @@ import { generateDataRowValue } from '@/components/transactions/TxDetails/Summar
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
-import SendToBlock from '@/components/tx/SendToBlock'
 import { TxSimulation } from '@/components/tx/security/tenderly'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import useAsync from '@/hooks/useAsync'
@@ -26,6 +25,9 @@ import TxCard from '../../common/TxCard'
 import CheckWallet from '@/components/common/CheckWallet'
 import type { ExecuteBatchFlowProps } from '.'
 import { asError } from '@/services/exceptions/utils'
+import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
+import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -107,7 +109,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   return (
     <>
       <TxCard>
-        <Typography variant="body2" mb={2}>
+        <Typography variant="body2">
           This transaction batches a total of {params.txs.length} transactions from your queue into a single Ethereum
           transaction. Please check every included transaction carefully, especially if you have rejection transactions,
           and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
@@ -117,33 +119,20 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with:" />}
 
         {multiSendTxData && (
-          <>
-            <Typography mt={2} color="primary.light">
+          <div>
+            <Typography variant="body2" color="text.secondary">
               Data (hex encoded)
             </Typography>
             {generateDataRowValue(multiSendTxData, 'rawData')}
-          </>
+          </div>
         )}
 
-        <Typography mt={2} color="primary.light">
-          Batched transactions:
-        </Typography>
-        <DecodedTxs txs={txsWithDetails} />
-
-        {canRelay ? (
-          <>
-            <Typography mt={2} mb={1} color="primary.light">
-              Gas fees:
-            </Typography>
-            <ExecutionMethodSelector
-              executionMethod={executionMethod}
-              setExecutionMethod={setExecutionMethod}
-              relays={relays}
-              tooltip="You can only relay multisend transactions containing
-executions from the same Safe Account."
-            />
-          </>
-        ) : null}
+        <div>
+          <Typography variant="body2" color="text.secondary">
+            Batched transactions:
+          </Typography>
+          <DecodedTxs txs={txsWithDetails} />
+        </div>
       </TxCard>
 
       {multiSendTxs && (
@@ -155,9 +144,22 @@ executions from the same Safe Account."
       )}
 
       <TxCard>
+        <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />
+
         <WrongChainWarning />
 
-        <Typography variant="body2" mt={2} textAlign="center">
+        {canRelay ? (
+          <>
+            <ExecutionMethodSelector
+              executionMethod={executionMethod}
+              setExecutionMethod={setExecutionMethod}
+              relays={relays}
+              tooltip="You can only relay multisend transactions containing executions from the same Safe Account."
+            />
+          </>
+        ) : null}
+
+        <Typography>
           Be aware that if any of the included transactions revert, none of them will be executed. This will result in
           the loss of the allocated transaction fees.
         </Typography>
@@ -172,15 +174,19 @@ executions from the same Safe Account."
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        <CardActions>
-          <CheckWallet allowNonOwner={true}>
-            {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} onClick={handleSubmit}>
-                Send
-              </Button>
-            )}
-          </CheckWallet>
-        </CardActions>
+        <div>
+          <Divider className={commonCss.nestedDivider} sx={{ pt: 2 }} />
+
+          <CardActions>
+            <CheckWallet allowNonOwner={true}>
+              {(isOk) => (
+                <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} onClick={handleSubmit}>
+                  Send
+                </Button>
+              )}
+            </CheckWallet>
+          </CardActions>
+        </div>
       </TxCard>
     </>
   )
