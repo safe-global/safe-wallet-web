@@ -56,6 +56,10 @@ export const createOnboard = (
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
 
+    connect: {
+      removeWhereIsMyWalletWarning: true,
+    },
+
     // TODO: Investigate using `autoConnectLastWallet` instead of our `lastWalletStorage`
   })
 
