@@ -28,7 +28,7 @@ const ChangeThresholdFlow = () => {
   return (
     <TxLayout
       title={step === 0 ? 'New transaction' : 'Confirm transaction'}
-      subtitle="Add owner"
+      subtitle="Change threshold"
       icon={SaveAddressIcon}
       step={step}
       onBack={prevStep}
