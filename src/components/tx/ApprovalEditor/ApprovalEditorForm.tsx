@@ -9,7 +9,6 @@ import { MODALS_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 import { useMemo } from 'react'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
-import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 export type ApprovalEditorFormData = {
   approvals: string[]
@@ -54,11 +53,9 @@ export const ApprovalEditorForm = ({
               <Grid container gap={1} justifyContent="space-between">
                 <Grid item display="flex" xs={12} flexDirection="row" alignItems="center" gap={1}>
                   {isReadonly ? (
-                    <SendAmountBlock
-                      amount={initialApprovals[idx]}
-                      tokenInfo={tx.tokenInfo as TokenInfo}
-                      title="Token"
-                    />
+                    tx.tokenInfo && (
+                      <SendAmountBlock amount={initialApprovals[idx]} tokenInfo={tx.tokenInfo} title="Token" />
+                    )
                   ) : (
                     <>
                       <ApprovalValueField name={`approvals.${idx}`} tx={tx} readonly={isReadonly} />

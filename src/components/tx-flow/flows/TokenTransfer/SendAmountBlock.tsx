@@ -11,7 +11,7 @@ export const AmountBlock = ({
   children,
 }: {
   amount: number | string
-  tokenInfo: TokenInfo
+  tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> & { logoUri?: string }
   children?: ReactNode
 }) => {
   return (
@@ -31,7 +31,7 @@ const SendAmountBlock = ({
   title = 'Send',
 }: {
   amount: number | string
-  tokenInfo: TokenInfo
+  tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> & { logoUri?: string }
   children?: ReactNode
   title?: string
 }) => {
