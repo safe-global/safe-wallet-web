@@ -9,6 +9,7 @@ import css from './styles.module.css'
 import CloseIcon from '@mui/icons-material/Close'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import SafeLogo from '@/public/images/logo-no-text.svg'
 
 const confirmedMessage = (threshold: number, confirmations: number) => {
   return (
@@ -43,7 +44,7 @@ const TxStatusWidget = ({
   return (
     <Paper>
       <div className={css.header}>
-        <img src="/images/logo-no-text.svg" alt="Safe logo" className={css.logo} />
+        <SafeLogo width={32} height={32} />
         <Typography variant="h6" fontWeight="700" className={css.title}>
           Transaction status
         </Typography>

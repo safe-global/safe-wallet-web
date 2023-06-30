@@ -53,11 +53,6 @@
   display: none;
 }
 
-.logo {
-  width: 32px;
-  height: 32px;
-}
-
 .badge {
   margin-left: var(--space-1);
   padding-right: 2px;
