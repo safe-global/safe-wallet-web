@@ -54,7 +54,13 @@ const TokenTransferFlow = ({ txNonce, ...params }: TokenTransferFlowProps) => {
   ]
 
   return (
-    <TxLayout title="New transaction" subtitle="Send tokens" icon={AssetsIcon} step={step} onBack={prevStep}>
+    <TxLayout
+      title={step === 0 ? 'New transaction' : 'Confirm transaction'}
+      subtitle="Send tokens"
+      icon={AssetsIcon}
+      step={step}
+      onBack={prevStep}
+    >
       {steps}
     </TxLayout>
   )

@@ -32,7 +32,13 @@ const NftTransferFlow = ({ txNonce, ...params }: NftTransferFlowProps) => {
   ]
 
   return (
-    <TxLayout title="New transaction" subtitle="Send NFTs" icon={NftIcon} step={step} onBack={prevStep}>
+    <TxLayout
+      title={step === 0 ? 'New transaction' : 'Confirm transaction'}
+      subtitle="Send NFTs"
+      icon={NftIcon}
+      step={step}
+      onBack={prevStep}
+    >
       {steps}
     </TxLayout>
   )

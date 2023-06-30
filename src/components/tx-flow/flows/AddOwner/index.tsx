@@ -35,7 +35,13 @@ const AddOwnerFlow = () => {
   ]
 
   return (
-    <TxLayout title="New transaction" subtitle="Add owner" icon={SaveAddressIcon} step={step} onBack={prevStep}>
+    <TxLayout
+      title={step === 0 ? 'New transaction' : 'Confirm transaction'}
+      subtitle="Add owner"
+      icon={SaveAddressIcon}
+      step={step}
+      onBack={prevStep}
+    >
       {steps}
     </TxLayout>
   )
