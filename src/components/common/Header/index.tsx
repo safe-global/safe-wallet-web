@@ -14,6 +14,7 @@ import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/images/logo.svg'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import { WalletConnect } from '@/components/common/WalletConnect'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -57,6 +58,10 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
           <SafeTokenWidget />
         </div>
       )}
+
+      <div className={classnames(css.element, css.hideMobile)}>
+        <WalletConnect />
+      </div>
 
       <div className={classnames(css.element, css.hideMobile)}>
         <NotificationCenter />
