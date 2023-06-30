@@ -11,7 +11,7 @@ export const AmountBlock = ({
   children,
 }: {
   amount: number | string
-  tokenInfo: TokenInfo
+  tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> & { logoUri?: string }
   children?: ReactNode
 }) => {
   return (
@@ -28,15 +28,19 @@ const SendAmountBlock = ({
   amount,
   tokenInfo,
   children,
+  title = 'Send',
 }: {
   amount: number | string
-  tokenInfo: TokenInfo
+  tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> & { logoUri?: string }
   children?: ReactNode
+  title?: string
 }) => {
   return (
     <Grid container gap={1} alignItems="center">
       <Grid item xs={2}>
-        Send
+        <Typography variant="body2" color="text.secondary">
+          {title}
+        </Typography>
       </Grid>
       <AmountBlock amount={amount} tokenInfo={tokenInfo}>
         {children}

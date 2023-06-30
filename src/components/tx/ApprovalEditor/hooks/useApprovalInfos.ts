@@ -28,6 +28,7 @@ const useApprovalData = (safeTransaction: SafeTransaction | undefined) => {
   }, [safeTransaction])
 }
 
+// TODO: Write tests for this hook
 export const useApprovalInfos = (safeTransaction: SafeTransaction | undefined) => {
   const [approvals] = useApprovalData(safeTransaction)
 

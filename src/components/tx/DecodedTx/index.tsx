@@ -1,4 +1,4 @@
-import { type SyntheticEvent, type ReactElement, useMemo } from 'react'
+import { type SyntheticEvent, type ReactElement, useMemo, memo } from 'react'
 import {
   Accordion,
   AccordionDetails,
@@ -154,4 +154,4 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   )
 }
 
-export default DecodedTx
+export default memo(DecodedTx)
