@@ -133,46 +133,51 @@ export const TxSimulationMessage = () => {
     simulation: { simulationRequestStatus, simulationLink, simulation, requestError },
   } = useContext(TxInfoContext)
 
-  const isSuccess = simulationRequestStatus === FETCH_STATUS.SUCCESS
-  const isError = simulationRequestStatus === FETCH_STATUS.ERROR
-  const isFinished = isSuccess || isError
-
-  // Safe can emit failure event even though Tenderly simulation succeeds
-  const isCallTraceError = getCallTraceErrors(simulation).length > 0
+  const isFinished = simulationRequestStatus === FETCH_STATUS.SUCCESS || simulationRequestStatus === FETCH_STATUS.ERROR
 
   if (!isFinished) {
     return null
   }
 
+  const isSuccess = simulation?.simulation.status
+  // Safe can emit failure event even though Tenderly simulation succeeds
+  const isCallTraceError = isSuccess && getCallTraceErrors(simulation).length > 0
+  const isError = simulationRequestStatus === FETCH_STATUS.ERROR
+
+  if (!isSuccess || isError || isCallTraceError) {
+    return (
+      <Alert severity="error" sx={{ border: 'unset' }}>
+        <Typography variant="body2" fontWeight={700}>
+          Simulation failed
+        </Typography>
+        {requestError ? (
+          <Typography color="error">
+            An unexpected error occurred during simulation: <b>{requestError}</b>.
+          </Typography>
+        ) : (
+          <Typography>
+            {isCallTraceError ? (
+              <>The transaction failed during the simulation.</>
+            ) : (
+              <>
+                The transaction failed during the simulation throwing error{' '}
+                <b>{simulation?.transaction.error_message}</b> in the contract at{' '}
+                <b>{simulation?.transaction.error_info?.address}</b>.
+              </>
+            )}{' '}
+            Full simulation report is available <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
+          </Typography>
+        )}
+      </Alert>
+    )
+  }
+
   return (
-    <div>
-      {isSuccess ? (
-        <Alert severity="info" sx={{ border: 'unset' }}>
-          <Typography variant="body2" fontWeight={700}>
-            Simulation successful
-          </Typography>
-          Full simulation report is available <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
-        </Alert>
-      ) : isError ? (
-        <Alert severity="error" sx={{ border: 'unset' }}>
-          <Typography variant="body2" fontWeight={700}>
-            Simulation failed
-          </Typography>
-          {requestError ? (
-            <>
-              An unexpected error occurred during simulation: <b>{requestError}</b>.
-            </>
-          ) : isCallTraceError ? (
-            'The transaction failed during the simulation.'
-          ) : (
-            <>
-              The transaction failed during the simulation throwing error <b>{simulation?.transaction.error_message}</b>{' '}
-              in the contract at <b>{simulation?.transaction.error_info?.address}</b>.
-            </>
-          )}{' '}
-          Full simulation report is available <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
-        </Alert>
-      ) : null}
-    </div>
+    <Alert severity="info" sx={{ border: 'unset' }}>
+      <Typography variant="body2" fontWeight={700}>
+        Simulation successful
+      </Typography>
+      Full simulation report is available <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.
+    </Alert>
   )
 }
