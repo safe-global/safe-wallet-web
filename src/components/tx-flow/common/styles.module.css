@@ -5,6 +5,10 @@
   padding: var(--space-3);
 }
 
+.cardContent :global .errorMessage {
+  margin: 0;
+}
+
 .nestedDivider {
   margin: 0 calc(-1 * var(--space-3));
 }

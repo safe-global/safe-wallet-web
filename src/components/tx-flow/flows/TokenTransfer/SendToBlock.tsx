@@ -4,7 +4,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 const SendToBlock = ({ address, title = 'To' }: { address: string; title?: string }) => {
   return (
     <Grid container gap={1} alignItems="center">
-      <Grid item xs={2}>
+      <Grid item xs={4} md={2}>
         <Typography variant="body2" color="text.secondary">
           {title}
         </Typography>
