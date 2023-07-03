@@ -9,7 +9,6 @@ import { getTxOptions } from '@/utils/transactions'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions } from './hooks'
-import UnknownContractError from './UnknownContractError'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
@@ -24,6 +23,7 @@ import { asError } from '@/services/exceptions/utils'
 
 import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import RiskConfirmationError from './RiskConfirmationError'
 
 const ExecuteForm = ({
   safeTx,
@@ -31,12 +31,14 @@ const ExecuteForm = ({
   onSubmit,
   disableSubmit = false,
   origin,
+  risk,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [submitRisk, setSubmitRisk] = useState<boolean>(false)
 
   // Hooks
   const currentChain = useCurrentChain()
@@ -69,6 +71,13 @@ const ExecuteForm = ({
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
+
+    if (risk) {
+      setSubmitRisk(true)
+      return
+    }
+
+    setSubmitRisk(false)
     setIsSubmittable(false)
     setSubmitError(undefined)
 
@@ -126,10 +135,12 @@ const ExecuteForm = ({
               ? 'To save gas costs, avoid creating the transaction.'
               : 'To save gas costs, reject this transaction.'}
           </ErrorMessage>
-        ) : submitError ? (
-          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        ) : submitRisk ? (
+          <RiskConfirmationError />
         ) : (
-          <UnknownContractError />
+          submitError && (
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          )
         )}
 
         <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
