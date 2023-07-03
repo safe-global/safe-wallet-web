@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { mapRedefineSeverity } from '@/components/tx/security/redefine/useRedefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import { SecuritySeverity } from '@/services/security/modules/types'
@@ -22,17 +22,10 @@ import { RedefineHint } from '@/components/tx/security/redefine/RedefineHint'
 const MAX_SHOWN_WARNINGS = 3
 
 const RedefineBlock = () => {
-  const {
-    severity,
-    isLoading,
-    error,
-    needsRiskConfirmation,
-    isRiskConfirmed,
-    setIsRiskConfirmed,
-    isRiskIgnored,
-    setIsRiskIgnored,
-  } = useContext(TxSecurityContext)
+  const { severity, isLoading, error, needsRiskConfirmation, isRiskConfirmed, setIsRiskConfirmed, isRiskIgnored } =
+    useContext(TxSecurityContext)
   const checkboxRef = useRef<HTMLElement>(null)
+  const [highlightCheckbox, setHighlightCheckbox] = useState(false)
 
   const isDarkMode = useDarkMode()
   const severityProps = severity !== undefined ? mapRedefineSeverity[severity] : undefined
@@ -43,12 +36,12 @@ const RedefineBlock = () => {
 
   // Highlight checkbox if user tries to submit transaction without confirming risks
   useEffect(() => {
-    if (isRiskIgnored && checkboxRef.current) {
-      checkboxRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      const timeout = setTimeout(() => setIsRiskIgnored(false), 3000)
-      return () => clearTimeout(timeout)
+    setHighlightCheckbox(false)
+    if (isRiskIgnored) {
+      setTimeout(() => setHighlightCheckbox(true), 100)
+      checkboxRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
-  }, [isRiskIgnored, setIsRiskIgnored, checkboxRef])
+  }, [isRiskIgnored, checkboxRef])
 
   return (
     <div className={css.wrapperBox}>
@@ -104,7 +97,7 @@ const RedefineBlock = () => {
               <FormControlLabel
                 label="I understand the risks and would like to continue this transaction"
                 control={<Checkbox checked={isRiskConfirmed} onChange={toggleConfirmation} />}
-                className={isRiskIgnored ? css.checkboxError : ''}
+                className={highlightCheckbox ? css.checkboxError : ''}
               />
             </Track>
           </Box>
