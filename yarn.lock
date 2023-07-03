@@ -3021,24 +3021,35 @@
     web3-core "^1.8.1"
     web3-utils "^1.8.1"
 
-"@safe-global/safe-core-sdk-utils@^1.7.3":
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-utils/-/safe-core-sdk-utils-1.7.3.tgz#40eeefeafa1cf4dad18d77cad50ac005b2b7f6fe"
-  integrity sha512-QbUTwV8Pmc4dpDW0icfl02hcg41eTJomB0jtyhXQ79RIVCnFUIq1+P6FZL+/1gXcur4XWQTX7kShOWqfvd+BZA==
+"@safe-global/safe-core-sdk-types@^1.9.2":
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-1.9.2.tgz#c8ae3500f5f16a9380f0270ab543f7f0718c9848"
+  integrity sha512-TVBoCf3bry3y6vmJXACDNOaQnHWTh8Q9G8P3wZCgUBxMc676hP9HEvF1Xrvwe0wMxevMIKyBnEV4FpZUJGSefg==
   dependencies:
-    "@safe-global/safe-core-sdk-types" "^1.9.1"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@safe-global/safe-deployments" "^1.25.0"
+    web3-core "^1.8.1"
+    web3-utils "^1.8.1"
+
+"@safe-global/safe-core-sdk-utils@^1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-utils/-/safe-core-sdk-utils-1.7.4.tgz#810d36cf9629129a28eb1b9c6e690b163834b572"
+  integrity sha512-ITocwSWlFUA1K9VMP/eJiMfgbP/I9qDxAaFz7ukj5N5NZD3ihVQZkmqML6hjse5UhrfjCnfIEcLkNZhtB2XC2Q==
+  dependencies:
+    "@safe-global/safe-core-sdk-types" "^1.9.2"
     semver "^7.3.8"
     web3-utils "^1.8.1"
 
-"@safe-global/safe-core-sdk@^3.3.3":
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk/-/safe-core-sdk-3.3.3.tgz#5074ebdc954655e53e1a96b7e6013b18ddc54e8f"
-  integrity sha512-f7k/L8eGINrjAgN5DQuHY101gxntVTwS/VO14w1Qh+2+AuZmyWn0WekAAU0icAc1jVy0lhgNqCvbMQHc7rkfUg==
+"@safe-global/safe-core-sdk@^3.3.4":
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk/-/safe-core-sdk-3.3.4.tgz#d404287f9b910feab3e692243aaf62494ff2d2a9"
+  integrity sha512-tgcK7VWo66Z8632xaYDzUHQ8InPOaI10ELk1wCrO/C3QjPwxjIozbMGOMzF4RZPCSJX2YAHowAvOgmEukgSkxA==
   dependencies:
     "@ethersproject/solidity" "^5.7.0"
-    "@safe-global/safe-core-sdk-types" "^1.9.1"
-    "@safe-global/safe-core-sdk-utils" "^1.7.3"
-    "@safe-global/safe-deployments" "^1.22.0"
+    "@safe-global/safe-core-sdk-types" "^1.9.2"
+    "@safe-global/safe-core-sdk-utils" "^1.7.4"
+    "@safe-global/safe-deployments" "^1.25.0"
     ethereumjs-util "^7.1.5"
     semver "^7.3.8"
     web3-utils "^1.8.1"
@@ -3050,13 +3061,20 @@
   dependencies:
     semver "^7.3.7"
 
-"@safe-global/safe-ethers-lib@^1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-ethers-lib/-/safe-ethers-lib-1.9.3.tgz#bdff0ea52a9bd976f0325aa22571e0daeca22961"
-  integrity sha512-+c6I55nyyh7dheyUch9claRBUK/i+KwbHPb4Yvk4/oWthEESKZRkR8p7hioOGys4zC6eglfSqm2QjlDDU0SbAQ==
+"@safe-global/safe-deployments@^1.25.0":
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.25.0.tgz#882f0703cd4dd86cc19238319d77459ded09ec88"
+  integrity sha512-j7Ml1MVZw73XMTLbyIjo+Gvohwg5HYi8WM6b3vo+AkYEO/X4TNY8eJ0T0Awip5PO9MNyZymF3QY065uccQP53A==
   dependencies:
-    "@safe-global/safe-core-sdk-types" "^1.9.1"
-    "@safe-global/safe-core-sdk-utils" "^1.7.3"
+    semver "^7.3.7"
+
+"@safe-global/safe-ethers-lib@^1.9.4":
+  version "1.9.4"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-ethers-lib/-/safe-ethers-lib-1.9.4.tgz#049989a302c6f2010c574cf3a834b0cfb9cf67c5"
+  integrity sha512-WhzcmNun0s0VxeVQKRqaapV0vEpdm76zZBR2Du+S+58u1r57OjZkOSL2Gru0tdwkt3FIZZtE3OhDu09M70pVkA==
+  dependencies:
+    "@safe-global/safe-core-sdk-types" "^1.9.2"
+    "@safe-global/safe-core-sdk-utils" "^1.7.4"
     ethers "5.7.2"
 
 "@safe-global/safe-gateway-typescript-sdk@^3.5.3":
