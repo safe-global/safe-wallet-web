@@ -22,3 +22,11 @@
     bottom: 0;
   }
 }
+
+.container :global(.Mui-checked) {
+  color: var(--color-background-paper);
+}
+
+.container :global(.Mui-checked.Mui-disabled) {
+  opacity: 0.5;
+}

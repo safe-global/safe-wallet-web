@@ -54,7 +54,7 @@
     "@sentry/tracing": "^7.28.1",
     "@truffle/hdwallet-provider": "^2.1.4",
     "@web3-onboard/coinbase": "^2.2.4",
-    "@web3-onboard/core": "2.20.1",
+    "@web3-onboard/core": "2.20.3",
     "@web3-onboard/injected-wallets": "^2.10.0",
     "@web3-onboard/keystone": "^2.3.7",
     "@web3-onboard/ledger": "^2.4.6",
