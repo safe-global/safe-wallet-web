@@ -11,7 +11,7 @@ import { getWeb3ReadOnly } from './wallets/web3'
 export const VESTING_URL = 'https://safe-claiming-app-data.safe.global/allocations/'
 
 type VestingData = {
-  tag: 'user' | 'ecosystem' | 'investor'
+  tag: 'user' | 'ecosystem' | 'investor' | 'user_v2' // SEP #5
   account: string
   chainId: number
   contract: string
