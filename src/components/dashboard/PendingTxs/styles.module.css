@@ -1,9 +1,14 @@
 .gridContainer {
   width: 100%;
-  display: grid;
+  /* display: grid; */
+  display: flex;
+  justify-content: space-between;
+  /* align-items: start; */
+  align-items: flex-start; 
+  flex-wrap: wrap;
   grid-gap: 4px;
-  align-items: center;
-  padding: 8px 16px;
+  /* align-items: center; */
+  padding: 8px 18px;
   background-color: var(--color-background-paper);
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
