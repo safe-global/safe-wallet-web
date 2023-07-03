@@ -125,21 +125,7 @@ export const connectWallet = async (
   let wallets: WalletState[] | undefined
 
   try {
-    // Mount the onboard modal
-    const promise = onboard.connectWallet(options)
-
-    // Remove "Where's my wallet?" element if not auto-selecting a wallet
-    setTimeout(() => {
-      const onboardModal = document.querySelector('onboard-v2')?.shadowRoot
-      const wheresMyWallet = onboardModal?.querySelector('.wallets-container .notice-container')
-
-      if (wheresMyWallet) {
-        wheresMyWallet.remove()
-      }
-    }, 100)
-
-    // Wait for successful connection
-    wallets = await promise
+    wallets = await onboard.connectWallet(options)
   } catch (e) {
     logError(Errors._302, e)
 

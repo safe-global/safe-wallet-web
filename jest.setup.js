@@ -9,7 +9,7 @@ import 'whatwg-fetch'
 jest.mock('@web3-onboard/coinbase', () => jest.fn())
 jest.mock('@web3-onboard/injected-wallets', () => ({ ProviderLabel: { MetaMask: 'MetaMask' } }))
 jest.mock('@web3-onboard/keystone/dist/index', () => jest.fn())
-jest.mock('@web3-onboard/ledger', () => jest.fn())
+jest.mock('@web3-onboard/ledger/dist/index', () => jest.fn())
 jest.mock('@web3-onboard/trezor', () => jest.fn())
 jest.mock('@web3-onboard/walletconnect', () => jest.fn())
 jest.mock('@web3-onboard/taho', () => jest.fn())
