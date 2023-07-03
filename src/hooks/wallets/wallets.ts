@@ -51,8 +51,7 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }
   [WALLET_KEYS.PAIRING]: () => pairingModule(),
   [WALLET_KEYS.WALLETCONNECT]: () => walletConnectV1(),
   [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain),
-  [WALLET_KEYS.LEDGER]: (chain) =>
-    ledgerModule({ walletConnectVersion: 2, projectId: WC_PROJECT_ID, requiredChains: [parseInt(chain.chainId)] }),
+  [WALLET_KEYS.LEDGER]: () => ledgerModule(),
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
   [WALLET_KEYS.KEYSTONE]: () => keystoneModule(),
   [WALLET_KEYS.TAHO]: () => tahoModule(),
