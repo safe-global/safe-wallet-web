@@ -23,7 +23,7 @@ import { asError } from '@/services/exceptions/utils'
 
 import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import RiskConfirmationError from './RiskConfirmationError'
+import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 
 const ExecuteForm = ({
   safeTx,
@@ -31,20 +31,19 @@ const ExecuteForm = ({
   onSubmit,
   disableSubmit = false,
   origin,
-  risk,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
-  const [submitRisk, setSubmitRisk] = useState<boolean>(false)
 
   // Hooks
   const currentChain = useCurrentChain()
   const { executeTx } = useTxActions()
   const [relays] = useRelaysBySafe()
   const { setTxFlow } = useContext(TxModalContext)
+  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -72,12 +71,11 @@ const ExecuteForm = ({
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
 
-    if (risk) {
-      setSubmitRisk(true)
+    if (needsRiskConfirmation && !isRiskConfirmed) {
+      setIsRiskIgnored(true)
       return
     }
 
-    setSubmitRisk(false)
     setIsSubmittable(false)
     setSubmitError(undefined)
 
@@ -135,8 +133,6 @@ const ExecuteForm = ({
               ? 'To save gas costs, avoid creating the transaction.'
               : 'To save gas costs, reject this transaction.'}
           </ErrorMessage>
-        ) : submitRisk ? (
-          <RiskConfirmationError />
         ) : (
           submitError && (
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>

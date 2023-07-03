@@ -68,3 +68,24 @@
   grid-template-columns: 35% auto;
   padding: var(--space-2) 12px;
 }
+
+@keyframes popup {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.checkboxError {
+  color: var(--color-error-main);
+  animation: popup 0.5s ease-in-out;
+}
+
+.checkboxError svg {
+  color: var(--color-error-main) !important;
+}

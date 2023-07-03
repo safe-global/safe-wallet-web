@@ -13,8 +13,8 @@ import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignO
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
-import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import UnknownContractError from './UnknownContractError'
+import RiskConfirmationError from './RiskConfirmationError'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -25,7 +25,6 @@ export type SignOrExecuteProps = {
   onlyExecute?: boolean
   disableSubmit?: boolean
   origin?: string
-  risk?: boolean
 }
 
 const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
@@ -34,13 +33,11 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const isCreation = !props.txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const { safeTx, safeTxError } = useContext(SafeTxContext)
-  const { needsRiskConfirmation, isRiskConfirmed } = useContext(TxSecurityContext)
   const isCorrectNonce = useValidateNonce(safeTx)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
   const willExecute = (props.onlyExecute || shouldExecute) && canExecute
-  const isRisky = needsRiskConfirmation && !isRiskConfirmed
 
   return (
     <>
@@ -74,11 +71,9 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
 
         <UnknownContractError />
 
-        {willExecute ? (
-          <ExecuteForm {...props} safeTx={safeTx} risk={isRisky} />
-        ) : (
-          <SignForm {...props} safeTx={safeTx} risk={isRisky} />
-        )}
+        <RiskConfirmationError />
+
+        {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
       </TxCard>
     </>
   )
