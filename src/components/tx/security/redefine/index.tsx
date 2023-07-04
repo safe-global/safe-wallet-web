@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { mapRedefineSeverity } from '@/components/tx/security/redefine/useRedefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import { SecuritySeverity } from '@/services/security/modules/types'
@@ -25,7 +25,6 @@ const RedefineBlock = () => {
   const { severity, isLoading, error, needsRiskConfirmation, isRiskConfirmed, setIsRiskConfirmed, isRiskIgnored } =
     useContext(TxSecurityContext)
   const checkboxRef = useRef<HTMLElement>(null)
-  const [highlightCheckbox, setHighlightCheckbox] = useState(false)
 
   const isDarkMode = useDarkMode()
   const severityProps = severity !== undefined ? mapRedefineSeverity[severity] : undefined
@@ -36,9 +35,7 @@ const RedefineBlock = () => {
 
   // Highlight checkbox if user tries to submit transaction without confirming risks
   useEffect(() => {
-    setHighlightCheckbox(false)
     if (isRiskIgnored) {
-      setTimeout(() => setHighlightCheckbox(true), 100)
       checkboxRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   }, [isRiskIgnored, checkboxRef])
@@ -97,7 +94,7 @@ const RedefineBlock = () => {
               <FormControlLabel
                 label="I understand the risks and would like to continue this transaction"
                 control={<Checkbox checked={isRiskConfirmed} onChange={toggleConfirmation} />}
-                className={highlightCheckbox ? css.checkboxError : ''}
+                className={isRiskIgnored ? css.checkboxError : ''}
               />
             </Track>
           </Box>
