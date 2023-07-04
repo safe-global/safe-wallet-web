@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { mapRedefineSeverity } from '@/components/tx/security/redefine/useRedefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import { SecuritySeverity } from '@/services/security/modules/types'
@@ -22,8 +22,9 @@ import { RedefineHint } from '@/components/tx/security/redefine/RedefineHint'
 const MAX_SHOWN_WARNINGS = 3
 
 const RedefineBlock = () => {
-  const { severity, isLoading, error, needsRiskConfirmation, isRiskConfirmed, setIsRiskConfirmed } =
+  const { severity, isLoading, error, needsRiskConfirmation, isRiskConfirmed, setIsRiskConfirmed, isRiskIgnored } =
     useContext(TxSecurityContext)
+  const checkboxRef = useRef<HTMLElement>(null)
 
   const isDarkMode = useDarkMode()
   const severityProps = severity !== undefined ? mapRedefineSeverity[severity] : undefined
@@ -31,6 +32,13 @@ const RedefineBlock = () => {
   const toggleConfirmation = () => {
     setIsRiskConfirmed((prev) => !prev)
   }
+
+  // Highlight checkbox if user tries to submit transaction without confirming risks
+  useEffect(() => {
+    if (isRiskIgnored) {
+      checkboxRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [isRiskIgnored, checkboxRef])
 
   return (
     <div className={css.wrapperBox}>
@@ -81,11 +89,12 @@ const RedefineBlock = () => {
       </Paper>
       <div>
         {needsRiskConfirmation && (
-          <Box pl={2}>
+          <Box pl={2} ref={checkboxRef}>
             <Track {...MODALS_EVENTS.ACCEPT_RISK}>
               <FormControlLabel
                 label="I understand the risks and would like to continue this transaction"
                 control={<Checkbox checked={isRiskConfirmed} onChange={toggleConfirmation} />}
+                className={isRiskIgnored ? css.checkboxError : ''}
               />
             </Track>
           </Box>

@@ -11,6 +11,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import { asError } from '@/services/exceptions/utils'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 
 const SignForm = ({
   safeTx,
@@ -29,10 +30,17 @@ const SignForm = ({
   const isOwner = useIsSafeOwner()
   const { signTx } = useTxActions()
   const { setTxFlow } = useContext(TxModalContext)
+  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
+
+    if (needsRiskConfirmation && !isRiskConfirmed) {
+      setIsRiskIgnored(true)
+      return
+    }
+
     setIsSubmittable(false)
     setSubmitError(undefined)
 

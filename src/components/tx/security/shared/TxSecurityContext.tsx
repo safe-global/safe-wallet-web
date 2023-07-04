@@ -14,6 +14,8 @@ export const TxSecurityContext = createContext<{
   needsRiskConfirmation: boolean
   isRiskConfirmed: boolean
   setIsRiskConfirmed: Dispatch<SetStateAction<boolean>>
+  isRiskIgnored: boolean
+  setIsRiskIgnored: Dispatch<SetStateAction<boolean>>
 }>({
   warnings: [],
   simulationUuid: undefined,
@@ -24,12 +26,15 @@ export const TxSecurityContext = createContext<{
   needsRiskConfirmation: false,
   isRiskConfirmed: false,
   setIsRiskConfirmed: () => {},
+  isRiskIgnored: false,
+  setIsRiskIgnored: () => {},
 })
 
 export const TxSecurityProvider = ({ children }: { children: JSX.Element }) => {
   const { safeTx } = useContext(SafeTxContext)
   const [redefineResponse, redefineError, redefineLoading] = useRedefine(safeTx)
   const [isRiskConfirmed, setIsRiskConfirmed] = useState(false)
+  const [isRiskIgnored, setIsRiskIgnored] = useState(false)
 
   const providedValue = useMemo(
     () => ({
@@ -42,8 +47,10 @@ export const TxSecurityProvider = ({ children }: { children: JSX.Element }) => {
       needsRiskConfirmation: !!redefineResponse && redefineResponse.severity >= SecuritySeverity.HIGH,
       isRiskConfirmed,
       setIsRiskConfirmed,
+      isRiskIgnored: isRiskIgnored && !isRiskConfirmed,
+      setIsRiskIgnored,
     }),
-    [isRiskConfirmed, redefineError, redefineLoading, redefineResponse],
+    [isRiskConfirmed, isRiskIgnored, redefineError, redefineLoading, redefineResponse],
   )
 
   return <TxSecurityContext.Provider value={providedValue}>{children}</TxSecurityContext.Provider>

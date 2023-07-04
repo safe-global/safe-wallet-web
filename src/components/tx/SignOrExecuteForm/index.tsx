@@ -13,6 +13,8 @@ import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignO
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
+import UnknownContractError from './UnknownContractError'
+import RiskConfirmationError from './RiskConfirmationError'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -66,6 +68,10 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
         {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
 
         <WrongChainWarning />
+
+        <UnknownContractError />
+
+        <RiskConfirmationError />
 
         {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
       </TxCard>

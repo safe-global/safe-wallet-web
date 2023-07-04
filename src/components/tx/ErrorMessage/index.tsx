@@ -14,7 +14,7 @@ const ErrorMessage = ({
   children: ReactNode
   error?: Error & { reason?: string }
   className?: string
-  level?: 'error' | 'info'
+  level?: 'error' | 'warning' | 'info'
 }): ReactElement => {
   const [showDetails, setShowDetails] = useState<boolean>(false)
 

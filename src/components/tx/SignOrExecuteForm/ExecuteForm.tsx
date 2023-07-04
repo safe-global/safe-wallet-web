@@ -9,7 +9,6 @@ import { getTxOptions } from '@/utils/transactions'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions } from './hooks'
-import UnknownContractError from './UnknownContractError'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
@@ -24,6 +23,7 @@ import { asError } from '@/services/exceptions/utils'
 
 import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 
 const ExecuteForm = ({
   safeTx,
@@ -43,6 +43,7 @@ const ExecuteForm = ({
   const { executeTx } = useTxActions()
   const [relays] = useRelaysBySafe()
   const { setTxFlow } = useContext(TxModalContext)
+  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -69,6 +70,12 @@ const ExecuteForm = ({
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
+
+    if (needsRiskConfirmation && !isRiskConfirmed) {
+      setIsRiskIgnored(true)
+      return
+    }
+
     setIsSubmittable(false)
     setSubmitError(undefined)
 
@@ -126,10 +133,10 @@ const ExecuteForm = ({
               ? 'To save gas costs, avoid creating the transaction.'
               : 'To save gas costs, reject this transaction.'}
           </ErrorMessage>
-        ) : submitError ? (
-          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         ) : (
-          <UnknownContractError />
+          submitError && (
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          )
         )}
 
         <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
