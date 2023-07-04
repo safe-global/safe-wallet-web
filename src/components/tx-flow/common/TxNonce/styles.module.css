@@ -4,10 +4,12 @@
 
 .input input {
   font-weight: bold;
-  padding-right: 6px !important;
+  padding-right: 30px !important;
 }
 
 .adornment {
   margin-left: 0;
   margin-right: 4px;
+  position: absolute;
+  right: 0;
 }

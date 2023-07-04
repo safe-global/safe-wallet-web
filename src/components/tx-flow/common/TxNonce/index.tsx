@@ -136,24 +136,23 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
                     InputProps={{
                       ...params.InputProps,
                       name: field.name,
-                      endAdornment: (
-                        <InputAdornment position="end" className={css.adornment}>
-                          <Tooltip title="Reset to recommended nonce">
-                            <IconButton
-                              onClick={resetNonce}
-                              size="small"
-                              color="primary"
-                              disabled={readOnly || recommendedNonce.toString() === field.value}
-                            >
-                              <RotateLeftIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </InputAdornment>
-                      ),
+                      endAdornment:
+                        !readOnly && recommendedNonce.toString() !== field.value ? (
+                          <InputAdornment position="end" className={css.adornment}>
+                            <Tooltip title="Reset to recommended nonce">
+                              <IconButton onClick={resetNonce} size="small" color="primary">
+                                <RotateLeftIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </InputAdornment>
+                        ) : null,
                       readOnly,
                     }}
                     className={css.input}
-                    sx={{ width: `${field.value.length}em`, minWidth: '5em', maxWidth: '200px' }}
+                    title={field.value}
+                    sx={{
+                      minWidth: `clamp(1ch, ${field.value.length}ch, 200px)`,
+                    }}
                   />
                 </Tooltip>
               )
