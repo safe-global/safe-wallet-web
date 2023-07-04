@@ -16,7 +16,6 @@ import { hasRemainingRelays } from '@/utils/relaying'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
-import { SuccessScreen } from '@/components/tx-flow/flows/SuccessScreen'
 import useGasLimit from '@/hooks/useGasLimit'
 import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
@@ -83,7 +82,7 @@ const ExecuteForm = ({
 
     try {
       const executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
-      setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
+      setTxFlow({ component: 'SuccessScreen', props: { txId: executedTxId } }, undefined, false)
     } catch (_err) {
       const err = asError(_err)
       logError(Errors._804, err)

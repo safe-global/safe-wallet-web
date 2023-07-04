@@ -1,11 +1,41 @@
 import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback } from 'react'
-import TxModalDialog from '@/components/common/TxModalDialog'
 import { useRouter } from 'next/router'
+import TxModalDialog from '@/components/common/TxModalDialog'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectNewTxById, setNewTx, clearNewTx } from '@/store/newTxsSlice'
+
+const Flows = {
+  NewTxMenu: require('@/components/tx-flow/flows/NewTx').default,
+  RemoveModuleFlow: require('@/components/tx-flow/flows/RemoveModule').default,
+  RemoveGuardFlow: require('@/components/tx-flow/flows/RemoveGuard').default,
+  ReplaceOwnerFlow: require('@/components/tx-flow/flows/ReplaceOwner').default,
+  RemoveOwnerFlow: require('@/components/tx-flow/flows/RemoveOwner').default,
+  AddOwnerFlow: require('@/components/tx-flow/flows/AddOwner').default,
+  UpdateSafeFlow: require('@/components/tx-flow/flows/UpdateSafe').default,
+  NewSpendingLimitFlow: require('@/components/tx-flow/flows/NewSpendingLimit').default,
+  RemoveSpendingLimitFlow: require('@/components/tx-flow/flows/RemoveSpendingLimit').default,
+  ChangeThresholdFlow: require('@/components/tx-flow/flows/ChangeThreshold').default,
+  TokenTransferFlow: require('@/components/tx-flow/flows/TokenTransfer').default,
+  RejectTx: require('@/components/tx-flow/flows/RejectTx').default,
+  SuccessScreen: require('@/components/tx-flow/flows/SuccessScreen').default,
+  SafeAppsTxFlow: require('@/components/tx-flow/flows/SafeAppsTx').default,
+  SignMessageFlow: require('@/components/tx-flow/flows/SignMessage').default,
+  SignMessageOnChainFlow: require('@/components/tx-flow/flows/SignMessageOnChain').default,
+  ExecuteBatchFlow: require('@/components/tx-flow/flows/ExecuteBatch').default,
+  ConfirmTxFlow: require('@/components/tx-flow/flows/ConfirmTx').default,
+  ReplaceTxMenu: require('@/components/tx-flow/flows/ReplaceTx').default,
+  NftTransferFlow: require('@/components/tx-flow/flows/NftTransfer').default,
+}
 
 const noop = () => {}
 
+export type TxFlow = {
+  component: keyof typeof Flows
+  props?: any
+}
+
 type TxModalContextType = {
-  txFlow: JSX.Element | undefined
+  txFlow?: TxFlow
   setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => void
   setFullWidth: (fullWidth: boolean) => void
 }
@@ -17,19 +47,22 @@ export const TxModalContext = createContext<TxModalContextType>({
 })
 
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
   const [shouldWarn, setShouldWarn] = useState<boolean>(true)
   const [, setOnClose] = useState<Parameters<TxModalContextType['setTxFlow']>[1]>(noop)
   const [fullWidth, setFullWidth] = useState<boolean>(false)
   const router = useRouter()
+  const { pathname } = router
+  const dispatch = useAppDispatch()
+  const txFlow = useAppSelector((state) => selectNewTxById(state, pathname))
+  const FlowComponent = txFlow ? Flows[txFlow.component] : null
 
   const handleModalClose = useCallback(() => {
     setOnClose((prevOnClose) => {
       prevOnClose?.()
       return noop
     })
-    setFlow(undefined)
-  }, [setFlow, setOnClose])
+    dispatch(clearNewTx(pathname))
+  }, [dispatch, pathname, setOnClose])
 
   const handleShowWarning = useCallback(() => {
     if (!shouldWarn) {
@@ -48,11 +81,11 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   const setTxFlow = useCallback(
     (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
-      setFlow(txFlow)
+      dispatch(txFlow ? setNewTx({ txFlow, id: pathname }) : clearNewTx(pathname))
       setOnClose(() => onClose ?? noop)
       setShouldWarn(shouldWarn ?? true)
     },
-    [setFlow, setOnClose],
+    [dispatch, pathname, setOnClose],
   )
 
   // Show the confirmation dialog if user navigates
@@ -70,7 +103,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
       {children}
 
       <TxModalDialog open={!!txFlow} onClose={handleShowWarning} fullWidth={fullWidth}>
-        {txFlow}
+        {txFlow && <FlowComponent {...txFlow.props} />}
       </TxModalDialog>
     </TxModalContext.Provider>
   )

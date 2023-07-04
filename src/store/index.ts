@@ -20,6 +20,7 @@ import { addressBookSlice } from './addressBookSlice'
 import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
 import { pendingTxsSlice } from './pendingTxsSlice'
+import { newTxsSlice } from './newTxsSlice'
 import { addedSafesListener, addedSafesSlice } from './addedSafesSlice'
 import { settingsSlice } from './settingsSlice'
 import { cookiesSlice } from './cookiesSlice'
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
   [addressBookSlice.name]: addressBookSlice.reducer,
   [notificationsSlice.name]: notificationsSlice.reducer,
   [pendingTxsSlice.name]: pendingTxsSlice.reducer,
+  [newTxsSlice.name]: newTxsSlice.reducer,
   [addedSafesSlice.name]: addedSafesSlice.reducer,
   [settingsSlice.name]: settingsSlice.reducer,
   [cookiesSlice.name]: cookiesSlice.reducer,
@@ -53,6 +55,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   sessionSlice.name,
   addressBookSlice.name,
   pendingTxsSlice.name,
+  newTxsSlice.name,
   addedSafesSlice.name,
   settingsSlice.name,
   cookiesSlice.name,

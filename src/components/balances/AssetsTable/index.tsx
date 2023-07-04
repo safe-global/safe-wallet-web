@@ -19,7 +19,6 @@ import { useHideAssets } from './useHideAssets'
 import CheckWallet from '@/components/common/CheckWallet'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
-import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -140,7 +139,7 @@ const AssetsTable = ({
   const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
 
   const onSendClick = (tokenAddress: string) => {
-    setTxFlow(<TokenTransferFlow tokenAddress={tokenAddress} />)
+    setTxFlow({ component: 'TokenTransferFlow', props: { tokenAddress } })
   }
 
   const rows = loading

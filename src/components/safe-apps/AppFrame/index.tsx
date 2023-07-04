@@ -49,9 +49,6 @@ import useGetSafeInfo from './useGetSafeInfo'
 import { hasFeature, FEATURES } from '@/utils/chains'
 import { selectTokenList, selectOnChainSigning, TOKEN_LISTS } from '@/store/settingsSlice'
 import { TxModalContext } from '@/components/tx-flow'
-import SafeAppsTxFlow from '@/components/tx-flow/flows/SafeAppsTx'
-import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
-import SignMessageOnChainFlow from '@/components/tx-flow/flows/SignMessageOnChain'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -114,7 +111,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       }
 
       setCurrentRequestId(requestId)
-      setTxFlow(<SafeAppsTxFlow data={data} />, onTxFlowClose)
+      setTxFlow({ component: 'SafeAppsTxFlow', props: { data } }, onTxFlowClose)
     },
     onSignMessage: (
       message: string | EIP712TypedData,
@@ -129,27 +126,29 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
 
       if (signOffChain) {
         setTxFlow(
-          <SignMessageFlow
-            logoUri={safeAppFromManifest?.iconUrl || ''}
-            name={safeAppFromManifest?.name || ''}
-            message={message}
-            safeAppId={remoteApp?.id}
-            requestId={requestId}
-          />,
+          {
+            component: 'SignMessageFlow',
+            props: {
+              logoUri: safeAppFromManifest?.iconUrl || '',
+              name: safeAppFromManifest?.name || '',
+              message,
+              safeAppId: remoteApp?.id,
+              requestId,
+            },
+          },
           onTxFlowClose,
         )
       } else {
-        setTxFlow(
-          <SignMessageOnChainFlow
-            props={{
-              app: safeAppFromManifest,
-              appId: remoteApp?.id,
-              requestId,
-              message,
-              method,
-            }}
-          />,
-        )
+        setTxFlow({
+          component: 'SignMessageOnChainFlow',
+          props: {
+            app: safeAppFromManifest,
+            appId: remoteApp?.id,
+            requestId,
+            message,
+            method,
+          },
+        })
       }
     },
     onGetPermissions: getPermissions,

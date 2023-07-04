@@ -11,7 +11,6 @@ import NftGrid from '../NftGrid'
 import NftSendForm from '../NftSendForm'
 import NftPreviewModal from '../NftPreviewModal'
 import { TxModalContext } from '@/components/tx-flow'
-import NftTransferFlow from '@/components/tx-flow/flows/NftTransfer'
 
 const NftCollections = (): ReactElement => {
   // Track the current NFT page url
@@ -39,7 +38,7 @@ const NftCollections = (): ReactElement => {
 
       if (selectedNfts.length) {
         // Show the NFT transfer modal
-        setTxFlow(<NftTransferFlow tokens={selectedNfts} />)
+        setTxFlow({ component: 'NftTransferFlow', props: { tokens: selectedNfts } })
 
         // Track how many NFTs are being sent
         trackEvent({ ...NFT_EVENTS.SEND, label: selectedNfts.length })

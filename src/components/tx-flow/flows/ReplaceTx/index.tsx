@@ -9,8 +9,6 @@ import { isCustomTxInfo } from '@/utils/transaction-guards'
 import css from './styles.module.css'
 import { useContext } from 'react'
 import { TxModalContext } from '../..'
-import TokenTransferFlow from '../TokenTransfer'
-import RejectTx from '../RejectTx'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import TxCard from '@/components/tx-flow/common/TxCard'
 
@@ -67,7 +65,10 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
 
         <div className={css.buttons}>
           <div>
-            <SendTokensButton onClick={() => setTxFlow(<TokenTransferFlow txNonce={txNonce} />)} sx={btnWidth} />
+            <SendTokensButton
+              onClick={() => setTxFlow({ component: 'TokenTransferFlow', props: { txNonce } })}
+              sx={btnWidth}
+            />
           </div>
 
           <Typography variant="body2" className={css.or}>
@@ -82,7 +83,7 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
             >
               <span style={{ width: '100%' }}>
                 <Button
-                  onClick={() => setTxFlow(<RejectTx txNonce={txNonce} />)}
+                  onClick={() => setTxFlow({ component: 'RejectTx', props: { txNonce } })}
                   variant="outlined"
                   fullWidth
                   sx={btnWidth}

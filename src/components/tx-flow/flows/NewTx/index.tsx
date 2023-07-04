@@ -2,7 +2,6 @@ import { useCallback, useContext } from 'react'
 import { SendNFTsButton, SendTokensButton, TxBuilderButton } from '@/components/tx-flow/common/TxButton'
 import { Container, Grid, Paper, SvgIcon, Typography } from '@mui/material'
 import { TxModalContext } from '../../'
-import TokenTransferFlow from '../TokenTransfer'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
@@ -17,7 +16,7 @@ const NewTxMenu = () => {
   const { setTxFlow } = useContext(TxModalContext)
 
   const onTokensClick = useCallback(() => {
-    setTxFlow(<TokenTransferFlow />)
+    setTxFlow({ component: 'TokenTransferFlow' })
   }, [setTxFlow])
 
   const progress = 10

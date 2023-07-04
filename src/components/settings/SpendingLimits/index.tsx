@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 import { selectSpendingLimits, selectSpendingLimitsLoading } from '@/store/spendingLimitsSlice'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
-import NewSpendingLimitFlow from '@/components/tx-flow/flows/NewSpendingLimit'
 import { SETTINGS_EVENTS } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
 import Track from '@/components/common/Track'
@@ -39,7 +38,7 @@ const SpendingLimits = () => {
                 {(isOk) => (
                   <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.NEW_LIMIT}>
                     <Button
-                      onClick={() => setTxFlow(<NewSpendingLimitFlow />)}
+                      onClick={() => setTxFlow({ component: 'NewSpendingLimitFlow' })}
                       sx={{ mt: 2 }}
                       variant="contained"
                       disabled={!isOk}

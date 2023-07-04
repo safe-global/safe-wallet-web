@@ -1,12 +1,9 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
-import AddOwnerFlow from '@/components/tx-flow/flows/AddOwner'
 import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Grid, Typography, Button, SvgIcon, Tooltip, IconButton } from '@mui/material'
 import { useContext, useMemo } from 'react'
 import { EditOwnerDialog } from '../EditOwnerDialog'
-import ReplaceOwnerFlow from '@/components/tx-flow/flows/ReplaceOwner'
-import RemoveOwnerFlow from '@/components/tx-flow/flows/RemoveOwner'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import AddIcon from '@/public/images/common/add.svg'
 import Track from '@/components/common/Track'
@@ -51,7 +48,7 @@ export const OwnerList = () => {
                     <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
                       <Tooltip title="Replace owner">
                         <IconButton
-                          onClick={() => setTxFlow(<ReplaceOwnerFlow address={address} />)}
+                          onClick={() => setTxFlow({ component: 'ReplaceOwnerFlow', props: { address } })}
                           size="small"
                           disabled={!isOk}
                         >
@@ -70,7 +67,7 @@ export const OwnerList = () => {
                       <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
                         <Tooltip title="Remove owner">
                           <IconButton
-                            onClick={() => setTxFlow(<RemoveOwnerFlow name={name} address={address} />)}
+                            onClick={() => setTxFlow({ component: 'RemoveOwnerFlow', props: { name, address } })}
                             size="small"
                             disabled={!isOk}
                           >
@@ -111,7 +108,7 @@ export const OwnerList = () => {
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
                   <Button
-                    onClick={() => setTxFlow(<AddOwnerFlow />)}
+                    onClick={() => setTxFlow({ component: 'AddOwnerFlow' })}
                     variant="text"
                     startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
                     disabled={!isOk}

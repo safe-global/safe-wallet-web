@@ -4,7 +4,6 @@ import { Paper, Grid, Typography, Box, IconButton, SvgIcon } from '@mui/material
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
-import RemoveModuleFlow from '@/components/tx-flow/flows/RemoveModule'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useContext } from 'react'
@@ -34,7 +33,7 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
       <CheckWallet>
         {(isOk) => (
           <IconButton
-            onClick={() => setTxFlow(<RemoveModuleFlow address={moduleAddress} />)}
+            onClick={() => setTxFlow({ component: 'RemoveModuleFlow', props: { address: moduleAddress } })}
             color="error"
             size="small"
             disabled={!isOk}

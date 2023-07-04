@@ -22,7 +22,6 @@ import NoEntriesIcon from '@/public/images/address-book/no-entries.svg'
 import { useCurrentChain } from '@/hooks/useChains'
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 import { TxModalContext } from '@/components/tx-flow'
-import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
 import CheckWallet from '@/components/common/CheckWallet'
 
 const headCells = [
@@ -118,7 +117,7 @@ const AddressBookTable = () => {
                     variant="contained"
                     color="primary"
                     size="small"
-                    onClick={() => setTxFlow(<TokenTransferFlow recipient={address} />)}
+                    onClick={() => setTxFlow({ component: 'TokenTransferFlow', props: { recipient: address } })}
                     disabled={!isOk}
                   >
                     Send

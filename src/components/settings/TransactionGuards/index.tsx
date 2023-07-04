@@ -11,7 +11,6 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useContext } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
-import RemoveGuardFlow from '@/components/tx-flow/flows/RemoveGuard'
 
 const NoTransactionGuard = () => {
   return (
@@ -30,7 +29,7 @@ const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId
       <CheckWallet>
         {(isOk) => (
           <IconButton
-            onClick={() => setTxFlow(<RemoveGuardFlow address={guardAddress} />)}
+            onClick={() => setTxFlow({ component: 'RemoveGuardFlow', props: { address: guardAddress } })}
             color="error"
             size="small"
             disabled={!isOk}

@@ -7,7 +7,6 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { useContext, useMemo } from 'react'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { BigNumber } from '@ethersproject/bignumber'
-import RemoveSpendingLimitFlow from '@/components/tx-flow/flows/RemoveSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
@@ -121,7 +120,9 @@ export const SpendingLimitsTable = ({
                       {(isOk) => (
                         <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
                           <IconButton
-                            onClick={() => setTxFlow(<RemoveSpendingLimitFlow spendingLimit={spendingLimit} />)}
+                            onClick={() =>
+                              setTxFlow({ component: 'RemoveSpendingLimitFlow', props: { spendingLimit } })
+                            }
                             color="error"
                             size="small"
                             disabled={!isOk}

@@ -8,7 +8,6 @@ import ListItemText from '@mui/material/ListItemText'
 import useAddressBook from '@/hooks/useAddressBook'
 import EntryDialog from '@/components/address-book/EntryDialog'
 import ContextMenu from '@/components/common/ContextMenu'
-import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
 import type { Transfer } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
@@ -80,7 +79,14 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
               <MenuItem
                 onClick={() => {
                   handleCloseContextMenu()
-                  setTxFlow(<TokenTransferFlow recipient={recipient} tokenAddress={tokenAddress} amount={amount} />)
+                  setTxFlow({
+                    component: 'TokenTransferFlow',
+                    props: {
+                      recipient,
+                      tokenAddress,
+                      amount,
+                    },
+                  })
                 }}
                 disabled={!isOk}
               >

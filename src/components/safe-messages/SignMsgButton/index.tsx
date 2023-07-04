@@ -10,7 +10,6 @@ import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
 import useIsSafeMessageSignableBy from '@/hooks/messages/useIsSafeMessageSignableBy'
 import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
 import { TxModalContext } from '@/components/tx-flow'
-import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: boolean }): ReactElement => {
   const wallet = useWallet()
@@ -20,7 +19,7 @@ const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: b
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
-    setTxFlow(<SignMessageFlow {...msg} />)
+    setTxFlow({ component: 'SignMessageFlow', props: msg })
   }
 
   const isDisabled = !isSignable || isPending

@@ -13,7 +13,6 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getTxButtonTooltip } from '@/components/transactions/utils'
 import { TxModalContext } from '@/components/tx-flow'
-import ReplaceTxMenu from '@/components/tx-flow/flows/ReplaceTx'
 
 const RejectTxButton = ({
   txSummary,
@@ -33,7 +32,7 @@ const RejectTxButton = ({
 
   const openReplacementModal = () => {
     if (!txNonce) return
-    setTxFlow(<ReplaceTxMenu txNonce={txNonce} />)
+    setTxFlow({ component: 'ReplaceTxMenu', props: { txNonce } })
   }
 
   return (
