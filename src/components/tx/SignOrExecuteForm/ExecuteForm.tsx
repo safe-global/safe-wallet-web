@@ -96,6 +96,7 @@ const ExecuteForm = ({
   }
 
   const submitDisabled = !safeTx || !isSubmittable || disableSubmit || isValidExecutionLoading || isExecutionLoop
+  const hasError = isExecutionLoop || executionValidationError || gasLimitError || submitError
 
   return (
     <>
@@ -122,21 +123,25 @@ const ExecuteForm = ({
         )}
 
         {/* Error messages */}
-        {isExecutionLoop ? (
-          <ErrorMessage>
-            Cannot execute a transaction from the Safe Account itself, please connect a different account.
-          </ErrorMessage>
-        ) : executionValidationError || gasLimitError ? (
-          <ErrorMessage error={executionValidationError || gasLimitError}>
-            This transaction will most likely fail.{' '}
-            {isNewExecutableTx
-              ? 'To save gas costs, avoid creating the transaction.'
-              : 'To save gas costs, reject this transaction.'}
-          </ErrorMessage>
-        ) : (
-          submitError && (
-            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-          )
+        {hasError && (
+          <div className={css.errorWrapper}>
+            {isExecutionLoop ? (
+              <ErrorMessage>
+                Cannot execute a transaction from the Safe Account itself, please connect a different account.
+              </ErrorMessage>
+            ) : executionValidationError || gasLimitError ? (
+              <ErrorMessage error={executionValidationError || gasLimitError}>
+                This transaction will most likely fail.{' '}
+                {isNewExecutableTx
+                  ? 'To save gas costs, avoid creating the transaction.'
+                  : 'To save gas costs, reject this transaction.'}
+              </ErrorMessage>
+            ) : (
+              submitError && (
+                <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+              )
+            )}
+          </div>
         )}
 
         <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
