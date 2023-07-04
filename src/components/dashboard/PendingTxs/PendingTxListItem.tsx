@@ -61,7 +61,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
             )}
           </Box>
 
-          <Box gridArea="icon" marginLeft="12px">
+          <Box gridArea="icon" marginLeft="0px">
             <ChevronRight color="border" />
           </Box>
         </Box>

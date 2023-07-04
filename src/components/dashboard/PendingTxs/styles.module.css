@@ -1,7 +1,9 @@
 .gridContainer {
   width: 100%;
-  display: grid;
-  grid-gap: 4px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 3px;
   align-items: center;
   padding: 8px 16px;
   background-color: var(--color-background-paper);
