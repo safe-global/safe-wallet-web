@@ -15,15 +15,7 @@ const ApprovalOption = ({ menuItemProps, value }: { menuItemProps: MenuItemProps
   )
 }
 
-export const ApprovalValueField = ({
-  name,
-  readonly = false,
-  tx,
-}: {
-  name: string
-  readonly?: boolean
-  tx: ApprovalInfo
-}) => {
+export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInfo }) => {
   const { control } = useFormContext()
   const selectValues = Object.values(PSEUDO_APPROVAL_VALUES)
 
@@ -59,8 +51,6 @@ export const ApprovalValueField = ({
       onInputChange={(_, value) => {
         onChange(value)
       }}
-      readOnly={readonly}
-      disabled={readonly}
       disableClearable
       selectOnFocus
       componentsProps={{
@@ -87,7 +77,6 @@ export const ApprovalValueField = ({
                 paddingLeft: 1,
                 flexWrap: 'nowrap !important',
               },
-              readOnly: readonly,
               startAdornment: (
                 <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
                   <TokenIcon size={32} logoUri={tx.tokenInfo?.logoUri} tokenSymbol={tx.tokenInfo?.symbol} />

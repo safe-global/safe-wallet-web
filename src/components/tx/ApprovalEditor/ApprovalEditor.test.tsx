@@ -9,6 +9,7 @@ import { getMultiSendCallOnlyContractAddress } from '@/services/contracts/safeCo
 import { type SafeSignature, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { getAllByTestId } from '@testing-library/dom'
 import { ApprovalEditorForm } from '@/components/tx/ApprovalEditor/ApprovalEditorForm'
+import Approvals from '@/components/tx/ApprovalEditor/Approvals'
 
 const ERC20_INTERFACE = ERC20__factory.createInterface()
 
@@ -237,7 +238,7 @@ describe('ApprovalEditor', () => {
             amountFormatted: '0.1',
           }
 
-          const result = render(<ApprovalEditorForm approvalInfos={[mockApprovalInfo]} />)
+          const result = render(<Approvals approvalInfos={[mockApprovalInfo]} />)
 
           const approvalItem = result.getByTestId('approval-item')
 

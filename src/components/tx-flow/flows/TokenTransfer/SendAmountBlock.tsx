@@ -4,6 +4,7 @@ import { Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import TokenIcon from '@/components/common/TokenIcon'
 import { formatAmountPrecise } from '@/utils/formatNumber'
+import { PSEUDO_APPROVAL_VALUES } from '@/components/tx/ApprovalEditor/utils/approvals'
 
 export const AmountBlock = ({
   amount,
@@ -19,7 +20,11 @@ export const AmountBlock = ({
       <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
       <Typography fontWeight="bold">{tokenInfo.symbol}</Typography>
       {children}
-      <Typography>{formatAmountPrecise(amount, tokenInfo.decimals)}</Typography>
+      {amount === PSEUDO_APPROVAL_VALUES.UNLIMITED ? (
+        <Typography>{PSEUDO_APPROVAL_VALUES.UNLIMITED}</Typography>
+      ) : (
+        <Typography>{formatAmountPrecise(amount, tokenInfo.decimals)}</Typography>
+      )}
     </Grid>
   )
 }
