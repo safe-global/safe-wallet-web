@@ -45,3 +45,13 @@
 .errorWrapper {
   margin-top: var(--space-2) !important;
 }
+
+.mobileRedefineMessages {
+  display: none;
+}
+
+@media (max-width: 899.95px) {
+  .mobileRedefineMessages {
+    display: block;
+  }
+}
