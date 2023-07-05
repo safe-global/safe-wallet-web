@@ -21,6 +21,7 @@ import CaretDownIcon from '@/public/images/common/caret-down.svg'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
 import classnames from 'classnames'
 import css from './styles.module.css'
+import inputCss from '@/styles/inputs.module.css'
 
 export type AddressInputProps = TextFieldProps & {
   name: string
@@ -115,7 +116,7 @@ const AddressInput = ({
     <>
       <TextField
         {...props}
-        className={css.wrapper}
+        className={inputCss.input}
         autoComplete="off"
         autoFocus={props.focused}
         label={<>{error?.message || props.label}</>}

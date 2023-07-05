@@ -2,7 +2,7 @@ import type { TextFieldProps } from '@mui/material'
 import { TextField } from '@mui/material'
 import get from 'lodash/get'
 import { type FieldError, type Validate, useFormContext } from 'react-hook-form'
-import css from './styles.module.css'
+import inputCss from '@/styles/inputs.module.css'
 
 const NameInput = ({
   name,
@@ -26,7 +26,7 @@ const NameInput = ({
       error={Boolean(fieldError)}
       fullWidth
       required={required}
-      className={css.textField}
+      className={inputCss.input}
       {...register(name, { maxLength: 50, required })}
     />
   )

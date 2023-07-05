@@ -8,6 +8,7 @@ import EthHashInfo from '../EthHashInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import EntryDialog from '@/components/address-book/EntryDialog'
 import css from './styles.module.css'
+import inputCss from '@/styles/inputs.module.css'
 
 const abFilterOptions = createFilterOptions({
   stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
@@ -49,7 +50,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
         open={open}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
-        className={css.input}
+        className={inputCss.input}
         disableClearable
         value={addressValue || ''}
         disabled={props.disabled}
