@@ -43,5 +43,5 @@
 }
 
 .errorWrapper {
-  margin-top: var(--space-2);
+  margin-top: var(--space-2) !important;
 }
