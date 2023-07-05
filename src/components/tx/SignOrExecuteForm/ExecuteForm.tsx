@@ -83,7 +83,7 @@ const ExecuteForm = ({
 
     try {
       const executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
-      setTxFlow(<SuccessScreen txId={executedTxId} />)
+      setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
     } catch (_err) {
       const err = asError(_err)
       logError(Errors._804, err)
