@@ -114,9 +114,7 @@ describe('useSafeCreation', () => {
   })
 
   it('should create a safe with no gas params if the gas estimation threw, there is no txHash and status is AWAITING', async () => {
-    jest
-      .spyOn(gasPrice, 'default')
-      .mockReturnValue([{ maxFeePerGas: undefined, maxPriorityFeePerGas: undefined }, undefined, false])
+    jest.spyOn(gasPrice, 'default').mockReturnValue([undefined, Error('Error for testing'), false])
 
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
