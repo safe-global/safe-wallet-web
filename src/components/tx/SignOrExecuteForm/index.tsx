@@ -185,7 +185,11 @@ const SignOrExecuteForm = ({
             <DecodedTx tx={tx} txId={txId} />
 
             {canExecute && (
-              <ExecuteCheckbox checked={shouldExecute} onChange={handleExecuteCheckboxChange} disabled={onlyExecute} />
+              <ExecuteCheckbox
+                checked={shouldExecute || onlyExecute}
+                onChange={handleExecuteCheckboxChange}
+                disabled={onlyExecute}
+              />
             )}
 
             <AdvancedParams
