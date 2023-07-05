@@ -1,5 +1,5 @@
 import { type ReactElement, useContext } from 'react'
-import { TxSimulation } from '@/components/tx/security/tenderly'
+import { TxSimulation, TxSimulationMessage } from '@/components/tx/security/tenderly'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { Box, Typography } from '@mui/material'
 import { Redefine, RedefineMessage } from '@/components/tx/security/redefine'
@@ -15,9 +15,13 @@ const TxChecks = (): ReactElement => {
 
       <TxSimulation disabled={false} transactions={safeTx} />
 
+      <Box className={css.mobileTxCheckMessages}>
+        <TxSimulationMessage />
+      </Box>
+
       <Redefine />
 
-      <Box className={css.mobileRedefineMessages}>
+      <Box className={css.mobileTxCheckMessages}>
         <RedefineMessage />
       </Box>
     </>

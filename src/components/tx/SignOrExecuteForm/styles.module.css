@@ -46,12 +46,12 @@
   margin-top: var(--space-2) !important;
 }
 
-.mobileRedefineMessages {
+.mobileTxCheckMessages {
   display: none;
 }
 
 @media (max-width: 899.95px) {
-  .mobileRedefineMessages {
+  .mobileTxCheckMessages {
     display: block;
   }
 }
