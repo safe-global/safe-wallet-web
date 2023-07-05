@@ -1,3 +1,4 @@
+/* TODO: Apply these styles in the MUI theme once its part of this repository */
 .input :global .MuiFormHelperText-root {
   position: absolute;
   bottom: -20px;
