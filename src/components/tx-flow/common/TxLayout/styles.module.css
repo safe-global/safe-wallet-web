@@ -36,7 +36,7 @@
   margin-top: var(--space-3);
 }
 
-.step :global(.MuiCardActions-root) button[type='submit'] {
+.step :global(.MuiCardActions-root) > * {
   align-self: flex-end;
 }
 

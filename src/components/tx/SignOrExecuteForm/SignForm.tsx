@@ -12,6 +12,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { asError } from '@/services/exceptions/utils'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
+import css from '@/components/tx/SignOrExecuteForm/styles.module.css'
 
 const SignForm = ({
   safeTx,
@@ -65,12 +66,14 @@ const SignForm = ({
     <form onSubmit={handleSubmit}>
       {/* Error messages */}
       {isSubmittable && cannotPropose ? (
-        <ErrorMessage>
+        <ErrorMessage className={css.errorWrapper}>
           You are currently not an owner of this Safe Account and won&apos;t be able to submit this transaction.
         </ErrorMessage>
       ) : (
         submitError && (
-          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          <ErrorMessage error={submitError} className={css.errorWrapper}>
+            Error submitting the transaction. Please try again.
+          </ErrorMessage>
         )
       )}
 

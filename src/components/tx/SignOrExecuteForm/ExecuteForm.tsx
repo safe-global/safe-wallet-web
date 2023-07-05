@@ -123,11 +123,11 @@ const ExecuteForm = ({
 
         {/* Error messages */}
         {isExecutionLoop ? (
-          <ErrorMessage>
+          <ErrorMessage className={css.errorWrapper}>
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
         ) : executionValidationError || gasLimitError ? (
-          <ErrorMessage error={executionValidationError || gasLimitError}>
+          <ErrorMessage error={executionValidationError || gasLimitError} className={css.errorWrapper}>
             This transaction will most likely fail.{' '}
             {isNewExecutableTx
               ? 'To save gas costs, avoid creating the transaction.'
@@ -135,7 +135,9 @@ const ExecuteForm = ({
           </ErrorMessage>
         ) : (
           submitError && (
-            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+            <ErrorMessage error={submitError} className={css.errorWrapper}>
+              Error submitting the transaction. Please try again.
+            </ErrorMessage>
           )
         )}
 
