@@ -20,10 +20,6 @@ const NewTxMenu = () => {
     setTxFlow(<TokenTransferFlow />)
   }, [setTxFlow])
 
-  const onNavigate = useCallback(() => {
-    setTxFlow(undefined)
-  }, [setTxFlow])
-
   const progress = 10
 
   return (
@@ -53,7 +49,7 @@ const NewTxMenu = () => {
 
               <SendTokensButton onClick={onTokensClick} sx={buttonSx} />
 
-              <SendNFTsButton onClick={onNavigate} sx={buttonSx} />
+              <SendNFTsButton sx={buttonSx} />
 
               {txBuilder?.app && (
                 <>
@@ -62,7 +58,7 @@ const NewTxMenu = () => {
                     interaction
                   </Typography>
 
-                  <TxBuilderButton onClick={onNavigate} sx={buttonSx} />
+                  <TxBuilderButton sx={buttonSx} />
                 </>
               )}
             </Grid>

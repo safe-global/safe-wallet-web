@@ -149,7 +149,6 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
                       readOnly,
                     }}
                     className={css.input}
-                    title={field.value}
                     sx={{
                       minWidth: `clamp(1ch, ${field.value.length}ch, 200px)`,
                     }}

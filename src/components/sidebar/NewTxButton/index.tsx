@@ -10,7 +10,7 @@ const NewTxButton = (): ReactElement => {
   const { setTxFlow } = useContext(TxModalContext)
 
   const onClick = () => {
-    setTxFlow(<NewTxMenu />)
+    setTxFlow(<NewTxMenu />, undefined, false)
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 
