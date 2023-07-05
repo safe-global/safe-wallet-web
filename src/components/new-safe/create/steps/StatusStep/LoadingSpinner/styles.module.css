@@ -11,7 +11,8 @@
   animation-play-state: paused;
 }
 
-.rectSuccess .rectCenter {
+.rectSuccess .rectCenter,
+.rectError .rectCenter {
   visibility: visible;
   transform: translateY(30px) translateX(30px) scale(1);
 }

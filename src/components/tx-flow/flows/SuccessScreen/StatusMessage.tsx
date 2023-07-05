@@ -4,9 +4,10 @@ import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/step
 import { PendingStatus } from '@/store/pendingTxsSlice'
 import css from './styles.module.css'
 
-const getStep = (status: PendingStatus) => {
+const getStep = (status: PendingStatus, error?: Error) => {
   switch (status) {
     case PendingStatus.PROCESSING:
+    case PendingStatus.RELAYING:
       return {
         description: 'Transaction is now processing.',
         instruction: 'The transaction was confirmed and is now being processed.',
@@ -18,17 +19,17 @@ const getStep = (status: PendingStatus) => {
       }
     default:
       return {
-        description: 'Transaction was successful.',
-        instruction: '',
+        description: error ? 'Transaction failed' : 'Transaction was successful.',
+        instruction: error ? error.message : '',
       }
   }
 }
 
-const StatusMessage = ({ status, isError }: { status: PendingStatus; isError: boolean }) => {
-  const stepInfo = getStep(status)
+const StatusMessage = ({ status, error }: { status: PendingStatus; error?: Error }) => {
+  const stepInfo = getStep(status, error)
 
   const isSuccess = status === undefined
-  const spinnerStatus = isSuccess ? SpinnerStatus.SUCCESS : SpinnerStatus.PROCESSING
+  const spinnerStatus = error ? SpinnerStatus.ERROR : isSuccess ? SpinnerStatus.SUCCESS : SpinnerStatus.PROCESSING
 
   return (
     <>
@@ -39,7 +40,7 @@ const StatusMessage = ({ status, isError }: { status: PendingStatus; isError: bo
         </Typography>
       </Box>
       {stepInfo.instruction && (
-        <Box className={classNames(css.instructions, isError ? css.errorBg : css.infoBg)}>
+        <Box className={classNames(css.instructions, error ? css.errorBg : css.infoBg)}>
           <Typography variant="body2">{stepInfo.instruction}</Typography>
         </Box>
       )}

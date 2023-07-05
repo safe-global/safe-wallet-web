@@ -1,7 +1,7 @@
+import { useRouter } from 'next/router'
 import StatusMessage from './StatusMessage'
 import StatusStepper from './StatusStepper'
 import { AppRoutes } from '@/config/routes'
-import useSafeAddress from '@/hooks/useSafeAddress'
 import { Button, Container, Divider, Paper } from '@mui/material'
 import classnames from 'classnames'
 import Link from 'next/link'
@@ -12,10 +12,12 @@ import { selectPendingTxById } from '@/store/pendingTxsSlice'
 import { useEffect, useState } from 'react'
 import { getBlockExplorerLink } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
+import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 
 export const SuccessScreen = ({ txId }: { txId: string }) => {
-  const [localTxHash, setLocalTxHash] = useState<string>('')
-  const safeAddress = useSafeAddress()
+  const [localTxHash, setLocalTxHash] = useState<string>()
+  const [error, setError] = useState<Error>()
+  const router = useRouter()
   const chain = useCurrentChain()
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, txId))
   const { txHash = '', status } = pendingTx || {}
@@ -26,12 +28,20 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
     setLocalTxHash(txHash)
   }, [txHash])
 
+  useEffect(() => {
+    const unsubscribe = txSubscribe(TxEvent.FAILED, (detail) => {
+      if (detail.txId === txId) setError(detail.error)
+    })
+
+    return unsubscribe
+  }, [txId])
+
   const homeLink: UrlObject = {
     pathname: AppRoutes.home,
-    query: { safe: safeAddress },
+    query: { safe: router.query.safe },
   }
 
-  const txLink = chain ? getBlockExplorerLink(chain, localTxHash) : undefined
+  const txLink = chain && localTxHash ? getBlockExplorerLink(chain, localTxHash) : undefined
 
   return (
     <Container
@@ -43,14 +53,17 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
       maxWidth="md"
     >
       <div className={css.row}>
-        {/* TODO: figure out the isError logic */}
-        <StatusMessage status={status} isError={false} />
+        <StatusMessage status={status} error={error} />
       </div>
 
-      <Divider />
-      <div className={css.row}>
-        <StatusStepper status={status} txHash={localTxHash} />
-      </div>
+      {!error && (
+        <>
+          <Divider />
+          <div className={css.row}>
+            <StatusStepper status={status} txHash={localTxHash} />
+          </div>
+        </>
+      )}
 
       <Divider />
       <div className={classnames(css.row, css.buttons)}>
