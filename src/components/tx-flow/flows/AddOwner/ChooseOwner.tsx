@@ -12,6 +12,7 @@ import {
   TextField,
   MenuItem,
   SvgIcon,
+  Tooltip,
 } from '@mui/material'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
 
@@ -78,7 +79,7 @@ export const ChooseOwner = ({
                 {params.removedOwner &&
                   'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'}
               </Typography>
-              <Box my={2}>
+              <Box my={3}>
                 <Typography variant="body2" color="text.secondary" mb={1}>
                   Current owner
                 </Typography>
@@ -119,15 +120,23 @@ export const ChooseOwner = ({
               <Typography variant="h6" fontWeight="bold">
                 Threshold
               </Typography>
-              <SvgIcon component={InfoIcon} color="disabled" inheritViewBox fontSize="small" />
+              <Tooltip
+                title="The threshold of a Safe Account specifies how many owners need to confirm a Safe Account transaction before it can be executed."
+                arrow
+                placement="top"
+              >
+                <span style={{ display: 'flex' }}>
+                  <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
+                </span>
+              </Tooltip>
             </Box>
 
             <Typography variant="body2" mb={1}>
               Any transaction requires the confirmation of:
             </Typography>
 
-            <Grid container direction="row" alignItems="center" gap={1} pt={1}>
-              <Grid item xs={1.5}>
+            <Grid container direction="row" alignItems="center" gap={2} pt={1}>
+              <Grid item>
                 <Controller
                   control={control}
                   name="threshold"

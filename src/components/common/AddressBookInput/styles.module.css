@@ -18,11 +18,3 @@
   text-decoration: underline;
   cursor: pointer;
 }
-
-.input :global .MuiInputBase-root fieldset {
-  border-width: 1px !important;
-}
-
-.input :global .MuiInputBase-root:not(.Mui-error) fieldset {
-  border-color: var(--color-border-light) !important;
-}
