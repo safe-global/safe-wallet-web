@@ -26,6 +26,7 @@ import { ExecutionMethodSelector, ExecutionMethod } from '@/components/tx/Execut
 import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import classnames from 'classnames'
 import { hasRemainingRelays } from '@/utils/relaying'
+import { BigNumber } from 'ethers'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
@@ -56,8 +57,15 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const { gasLimit } = useEstimateSafeCreationGas(safeParams)
 
   const totalFee =
-    gasLimit && maxFeePerGas && maxPriorityFeePerGas
-      ? formatVisualAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+    gasLimit && maxFeePerGas
+      ? formatVisualAmount(
+          maxFeePerGas
+            .add(
+              maxPriorityFeePerGas || BigNumber.from(0), // EIP-1559 disabled
+            )
+            .mul(gasLimit),
+          chain?.nativeCurrency.decimals,
+        )
       : '> 0.001'
 
   const handleBack = () => {

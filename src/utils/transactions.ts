@@ -30,6 +30,9 @@ import { Multi_send__factory } from '@/types/contracts'
 import { ethers } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { id } from 'ethers/lib/utils'
+import chains from '@/config/chains'
+import { WALLET_KEYS } from '@/hooks/wallets/consts'
+import type { ConnectedWallet } from '@/services/onboard'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -265,4 +268,17 @@ export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransactio
   }
 
   return txs
+}
+
+/**
+ * Transactions are underpriced on Ledger if the gasPrice is not set
+ */
+export const shouldSetGasPrice = (chain: ChainInfo, wallet: ConnectedWallet): boolean => {
+  const POLYGON_CHAIN_ID = chains.matic
+
+  const isEIP1559 = hasFeature(chain, FEATURES.EIP1559)
+  const isPolygon = chains[chain.shortName] === POLYGON_CHAIN_ID
+  const isLedger = wallet.label.toUpperCase() === WALLET_KEYS.LEDGER
+
+  return !isEIP1559 && isLedger && isPolygon
 }

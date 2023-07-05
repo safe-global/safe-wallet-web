@@ -20,6 +20,8 @@ import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
+import useGasPrice from '@/hooks/useGasPrice'
+import { shouldSetGasPrice } from '@/utils/transactions'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -48,6 +50,7 @@ export const useSafeCreation = (
   const provider = useWeb3()
   const web3ReadOnly = useWeb3ReadOnly()
   const chain = useCurrentChain()
+  const { maxFeePerGas } = useGasPrice()
 
   const createSafeCallback = useCallback(
     async (txHash: string, tx: PendingSafeTx) => {
@@ -59,7 +62,7 @@ export const useSafeCreation = (
   )
 
   const handleCreateSafe = useCallback(async () => {
-    if (!pendingSafe || !provider || !chain || !wallet || isCreating) return
+    if (!pendingSafe || !provider || !chain || !wallet || isCreating || !maxFeePerGas) return
 
     setIsCreating(true)
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
@@ -87,7 +90,12 @@ export const useSafeCreation = (
           chain.chainId,
         )
 
-        await createNewSafe(provider, safeParams)
+        await createNewSafe(provider, {
+          ...safeParams,
+          options: {
+            gasPrice: shouldSetGasPrice(chain, wallet) ? maxFeePerGas.toString() : undefined,
+          },
+        })
         setStatus(SafeCreationStatus.SUCCESS)
       }
     } catch (err) {
@@ -107,6 +115,7 @@ export const useSafeCreation = (
     createSafeCallback,
     dispatch,
     isCreating,
+    maxFeePerGas,
     pendingSafe,
     provider,
     setPendingSafe,
