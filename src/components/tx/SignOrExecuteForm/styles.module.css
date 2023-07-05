@@ -45,3 +45,13 @@
 .errorWrapper {
   margin-top: var(--space-2) !important;
 }
+
+.mobileTxCheckMessages {
+  display: none;
+}
+
+@media (max-width: 899.95px) {
+  .mobileTxCheckMessages {
+    display: block;
+  }
+}
