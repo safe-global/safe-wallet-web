@@ -5,7 +5,7 @@ import { didReprice, didRevert } from '@/utils/ethers-utils'
 import type MultiSendCallOnlyEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
 import type { SpendingLimitTxParams } from '@/components/tx/modals/TokenTransferModal/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
-import type { BigNumber, ContractTransaction } from 'ethers'
+import type { ContractTransaction, PayableOverrides } from 'ethers'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
@@ -174,7 +174,7 @@ export const dispatchBatchExecution = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
-  gasPrice?: BigNumber,
+  overrides?: PayableOverrides,
 ) => {
   const groupKey = multiSendTxData
 
@@ -184,9 +184,7 @@ export const dispatchBatchExecution = async (
     const wallet = await assertWalletChain(onboard, chainId)
 
     const provider = createWeb3(wallet.provider)
-    result = await multiSendContract.contract
-      .connect(provider.getSigner())
-      .multiSend(multiSendTxData, { gasPrice: gasPrice?.toString() })
+    result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData, overrides)
 
     txs.forEach(({ txId }) => {
       txDispatch(TxEvent.EXECUTING, { txId, groupKey })

@@ -34,7 +34,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const chain = useCurrentChain()
   const wallet = useWallet()
   const provider = useWeb3()
-  const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
+  const [gasPrice] = useGasPrice()
   const saltNonce = useMemo(() => Date.now(), [])
   const [_, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
@@ -56,12 +56,16 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const { gasLimit } = useEstimateSafeCreationGas(safeParams)
 
+  const maxFeePerGas = gasPrice?.maxFeePerGas
+  const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
+
   const totalFee =
     gasLimit && maxFeePerGas
       ? formatVisualAmount(
           maxFeePerGas
             .add(
-              maxPriorityFeePerGas || BigNumber.from(0), // EIP-1559 disabled
+              // maxPriorityFeePerGas is undefined if EIP-1559 disabled
+              maxPriorityFeePerGas || BigNumber.from(0),
             )
             .mul(gasLimit),
           chain?.nativeCurrency.decimals,

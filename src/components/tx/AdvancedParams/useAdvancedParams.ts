@@ -9,7 +9,7 @@ export const useAdvancedParams = ({
   safeTxGas,
 }: AdvancedParameters): [AdvancedParameters, (params: AdvancedParameters) => void] => {
   const [manualParams, setManualParams] = useState<AdvancedParameters>()
-  const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
+  const [gasPrice] = useGasPrice()
   const userNonce = useUserNonce()
 
   const advancedParams: AdvancedParameters = useMemo(
@@ -17,11 +17,11 @@ export const useAdvancedParams = ({
       nonce: manualParams?.nonce ?? nonce,
       userNonce: manualParams?.userNonce ?? userNonce,
       gasLimit: manualParams?.gasLimit ?? gasLimit,
-      maxFeePerGas: manualParams?.maxFeePerGas ?? maxFeePerGas,
-      maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas ?? maxPriorityFeePerGas,
+      maxFeePerGas: manualParams?.maxFeePerGas ?? gasPrice?.maxFeePerGas,
+      maxPriorityFeePerGas: manualParams?.maxPriorityFeePerGas ?? gasPrice?.maxPriorityFeePerGas,
       safeTxGas: manualParams?.safeTxGas ?? safeTxGas,
     }),
-    [manualParams, nonce, userNonce, gasLimit, maxFeePerGas, maxPriorityFeePerGas, safeTxGas],
+    [manualParams, nonce, userNonce, gasLimit, gasPrice?.maxFeePerGas, gasPrice?.maxPriorityFeePerGas, safeTxGas],
   )
 
   return [advancedParams, setManualParams]
