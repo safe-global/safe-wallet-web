@@ -4,7 +4,7 @@ import { Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
 import type { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
-import valueCss from '@/components/transactions/TxDetails/TxData/DecodedData/Value/styles.module.css'
+import valueCss from '@/components/transactions/TxDetails/TxData/DecodedData/ValueArray/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 type TxDataRowProps = {
