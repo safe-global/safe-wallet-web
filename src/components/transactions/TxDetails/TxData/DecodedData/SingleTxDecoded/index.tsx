@@ -57,7 +57,7 @@ export const SingleTxDecoded = ({
     <Accordion variant={variant} expanded={expanded} onChange={onChange}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <div className={css.summary}>
-          <CodeIcon />
+          <CodeIcon color="border" fontSize="small" />
           <Typography>{actionTitle}</Typography>
           <Typography ml="8px">
             <b>{method}</b>

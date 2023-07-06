@@ -179,8 +179,8 @@ describe('DecodedTx', () => {
     await waitFor(() => {
       expect(result.queryByText('multi Send')).toBeInTheDocument()
       expect(result.queryByText('transactions(bytes):')).toBeInTheDocument()
-      expect(result.queryByText('Action 1')).toBeInTheDocument()
-      expect(result.queryByText('Action 2')).toBeInTheDocument()
+      expect(result.queryByText('1')).toBeInTheDocument()
+      expect(result.queryByText('2')).toBeInTheDocument()
     })
   })
 
