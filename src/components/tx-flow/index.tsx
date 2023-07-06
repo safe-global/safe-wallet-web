@@ -1,37 +1,60 @@
-import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback } from 'react'
+import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback, type ComponentProps } from 'react'
 import { useRouter } from 'next/router'
 import TxModalDialog from '@/components/common/TxModalDialog'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectNewTxById, setNewTx, clearNewTx } from '@/store/newTxsSlice'
 
+// All flows
+import NewTxMenu from '@/components/tx-flow/flows/NewTx'
+import RemoveModuleFlow from '@/components/tx-flow/flows/RemoveModule'
+import RemoveGuardFlow from '@/components/tx-flow/flows/RemoveGuard'
+import ReplaceOwnerFlow from '@/components/tx-flow/flows/ReplaceOwner'
+import RemoveOwnerFlow from '@/components/tx-flow/flows/RemoveOwner'
+import AddOwnerFlow from '@/components/tx-flow/flows/AddOwner'
+import UpdateSafeFlow from '@/components/tx-flow/flows/UpdateSafe'
+import NewSpendingLimitFlow from '@/components/tx-flow/flows/NewSpendingLimit'
+import RemoveSpendingLimitFlow from '@/components/tx-flow/flows/RemoveSpendingLimit'
+import ChangeThresholdFlow from '@/components/tx-flow/flows/ChangeThreshold'
+import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
+import RejectTx from '@/components/tx-flow/flows/RejectTx'
+import SuccessScreen from '@/components/tx-flow/flows/SuccessScreen'
+import SafeAppsTxFlow from '@/components/tx-flow/flows/SafeAppsTx'
+import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
+import SignMessageOnChainFlow from '@/components/tx-flow/flows/SignMessageOnChain'
+import ExecuteBatchFlow from '@/components/tx-flow/flows/ExecuteBatch'
+import ConfirmTxFlow from '@/components/tx-flow/flows/ConfirmTx'
+import ReplaceTxMenu from '@/components/tx-flow/flows/ReplaceTx'
+import NftTransferFlow from '@/components/tx-flow/flows/NftTransfer'
+
+
 const Flows = {
-  NewTxMenu: require('@/components/tx-flow/flows/NewTx').default,
-  RemoveModuleFlow: require('@/components/tx-flow/flows/RemoveModule').default,
-  RemoveGuardFlow: require('@/components/tx-flow/flows/RemoveGuard').default,
-  ReplaceOwnerFlow: require('@/components/tx-flow/flows/ReplaceOwner').default,
-  RemoveOwnerFlow: require('@/components/tx-flow/flows/RemoveOwner').default,
-  AddOwnerFlow: require('@/components/tx-flow/flows/AddOwner').default,
-  UpdateSafeFlow: require('@/components/tx-flow/flows/UpdateSafe').default,
-  NewSpendingLimitFlow: require('@/components/tx-flow/flows/NewSpendingLimit').default,
-  RemoveSpendingLimitFlow: require('@/components/tx-flow/flows/RemoveSpendingLimit').default,
-  ChangeThresholdFlow: require('@/components/tx-flow/flows/ChangeThreshold').default,
-  TokenTransferFlow: require('@/components/tx-flow/flows/TokenTransfer').default,
-  RejectTx: require('@/components/tx-flow/flows/RejectTx').default,
-  SuccessScreen: require('@/components/tx-flow/flows/SuccessScreen').default,
-  SafeAppsTxFlow: require('@/components/tx-flow/flows/SafeAppsTx').default,
-  SignMessageFlow: require('@/components/tx-flow/flows/SignMessage').default,
-  SignMessageOnChainFlow: require('@/components/tx-flow/flows/SignMessageOnChain').default,
-  ExecuteBatchFlow: require('@/components/tx-flow/flows/ExecuteBatch').default,
-  ConfirmTxFlow: require('@/components/tx-flow/flows/ConfirmTx').default,
-  ReplaceTxMenu: require('@/components/tx-flow/flows/ReplaceTx').default,
-  NftTransferFlow: require('@/components/tx-flow/flows/NftTransfer').default,
+  NewTxMenu,
+  RemoveModuleFlow,
+  RemoveGuardFlow,
+  ReplaceOwnerFlow,
+  RemoveOwnerFlow,
+  AddOwnerFlow,
+  UpdateSafeFlow,
+  NewSpendingLimitFlow,
+  RemoveSpendingLimitFlow,
+  ChangeThresholdFlow,
+  TokenTransferFlow,
+  RejectTx,
+  SuccessScreen,
+  SafeAppsTxFlow,
+  SignMessageFlow,
+  SignMessageOnChainFlow,
+  ExecuteBatchFlow,
+  ConfirmTxFlow,
+  ReplaceTxMenu,
+  NftTransferFlow,
 }
 
 const noop = () => {}
 
-export type TxFlow = {
-  component: keyof typeof Flows
-  props?: any
+export type TxFlow<T extends keyof typeof Flows> = {
+  component: T
+  props?: ComponentProps<typeof Flows[T]>
 }
 
 type TxModalContextType = {
