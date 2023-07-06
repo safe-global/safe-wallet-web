@@ -1,4 +1,4 @@
-import { Alert, Button, Paper, SvgIcon, Typography } from '@mui/material'
+import { Alert, Button, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
 
@@ -19,6 +19,7 @@ import css from './styles.module.css'
 import sharedCss from '@/components/tx/security/shared/styles.module.css'
 import { TxInfoContext } from '@/components/tx-flow/TxInfoProvider'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import InfoIcon from '@/public/images/notifications/info.svg'
 
 export type TxSimulationProps = {
   transactions?: SimulationTxParams['transactions']
@@ -72,6 +73,24 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
       <div>
         <Typography variant="body2" fontWeight={700}>
           Simulate transaction
+          <Tooltip
+            title="This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
+            arrow
+            placement="top"
+          >
+            <span>
+              <SvgIcon
+                component={InfoIcon}
+                inheritViewBox
+                color="border"
+                fontSize="small"
+                sx={{
+                  verticalAlign: 'middle',
+                  ml: 0.5,
+                }}
+              />
+            </span>
+          </Tooltip>
         </Typography>
         <Typography variant="caption" className={sharedCss.poweredBy}>
           Powered by{' '}

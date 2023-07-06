@@ -3,12 +3,12 @@ import { mapRedefineSeverity } from '@/components/tx/security/redefine/useRedefi
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { groupBy } from 'lodash'
-import { Alert, Box, Checkbox, FormControlLabel, Paper, SvgIcon, Typography } from '@mui/material'
+import { Alert, Box, Checkbox, FormControlLabel, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import ExternalLink from '@/components/common/ExternalLink'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import { ErrorBoundary } from '@sentry/react'
-import { REDEFINE_SIMULATION_URL } from '@/config/constants'
+import { REDEFINE_ARTICLE, REDEFINE_SIMULATION_URL } from '@/config/constants'
 import css from 'src/components/tx/security/redefine/styles.module.css'
 import sharedCss from '@/components/tx/security/shared/styles.module.css'
 import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
@@ -18,6 +18,7 @@ import { MODALS_EVENTS } from '@/services/analytics'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import CircularProgress from '@mui/material/CircularProgress'
 import { RedefineHint } from '@/components/tx/security/redefine/RedefineHint'
+import InfoIcon from '@/public/images/notifications/info.svg'
 
 const MAX_SHOWN_WARNINGS = 3
 
@@ -50,6 +51,32 @@ const RedefineBlock = () => {
         <div>
           <Typography variant="body2" fontWeight={700}>
             Scan for risks
+            <Tooltip
+              title={
+                <>
+                  This transaction has been automatically scanned for risks to help prevent scams.&nbsp;
+                  <ExternalLink href={REDEFINE_ARTICLE} title="Learn more about security scans">
+                    Learn more about security scans
+                  </ExternalLink>
+                  .
+                </>
+              }
+              arrow
+              placement="top"
+            >
+              <span>
+                <SvgIcon
+                  component={InfoIcon}
+                  inheritViewBox
+                  color="border"
+                  fontSize="small"
+                  sx={{
+                    verticalAlign: 'middle',
+                    ml: 0.5,
+                  }}
+                />
+              </span>
+            </Tooltip>
           </Typography>
 
           <Typography variant="caption" className={sharedCss.poweredBy} position="relative">

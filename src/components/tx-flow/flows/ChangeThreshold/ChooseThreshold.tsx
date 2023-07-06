@@ -1,11 +1,24 @@
 import { Controller, useForm } from 'react-hook-form'
-import { TextField, MenuItem, Button, CardActions, Divider, Typography, Box, Grid } from '@mui/material'
+import {
+  TextField,
+  MenuItem,
+  Button,
+  CardActions,
+  Divider,
+  Typography,
+  Box,
+  Grid,
+  SvgIcon,
+  Tooltip,
+} from '@mui/material'
 import type { ReactElement } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { ChangeThresholdFlowFieldNames } from '@/components/tx-flow/flows/ChangeThreshold'
 import type { ChangeThresholdFlowProps } from '@/components/tx-flow/flows/ChangeThreshold'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -28,9 +41,24 @@ export const ChooseThreshold = ({
   return (
     <TxCard>
       <div>
-        <Typography variant="h3" fontWeight="700">
+        <Typography variant="h3" fontWeight={700}>
           Threshold
+          <Tooltip title={TOOLTIP_TITLES.THRESHOLD} arrow placement="top">
+            <span>
+              <SvgIcon
+                component={InfoIcon}
+                inheritViewBox
+                color="border"
+                fontSize="small"
+                sx={{
+                  verticalAlign: 'middle',
+                  ml: 0.5,
+                }}
+              />
+            </span>
+          </Tooltip>
         </Typography>
+
         <Typography>Any transaction will require the confirmation of:</Typography>
       </div>
 
