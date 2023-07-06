@@ -4,6 +4,7 @@ import { Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
 import type { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
+import valueCss from '@/components/transactions/TxDetails/TxData/DecodedData/Value/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 type TxDataRowProps = {
@@ -32,7 +33,7 @@ export const generateDataRowValue = (
     case 'hash':
     case 'address':
       return (
-        <div className={css.address}>
+        <div className={valueCss.address}>
           <EthHashInfo address={value} hasExplorer={hasExplorer} showAvatar={false} showCopyButton />
         </div>
       )

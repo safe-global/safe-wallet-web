@@ -26,11 +26,6 @@
   align-items: center;
 }
 
-/* 2nd only exists if there is address book entry */
-.address > div > div > div:nth-child(2) {
-  margin-top: -4px;
-}
-
 @media (max-width: 599.95px) {
   .gridRow {
     grid-template-columns: 1fr;

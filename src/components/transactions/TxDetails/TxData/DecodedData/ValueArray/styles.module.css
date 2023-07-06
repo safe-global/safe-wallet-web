@@ -1,3 +1,8 @@
 .nestedWrapper {
   padding-left: 12px;
 }
+
+/* Reduce space between name/address for clarity between rows */
+.address > div {
+  line-height: 1;
+}
