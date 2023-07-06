@@ -25,6 +25,7 @@ import usePreviousNonces from '@/hooks/usePreviousNonces'
 import { isRejectionTx } from '@/utils/transactions'
 
 import css from './styles.module.css'
+import classNames from 'classnames'
 
 const CustomPopper = function (props: PopperProps) {
   return <Popper {...props} sx={{ width: '300px !important' }} placement="bottom-start" />
@@ -102,6 +103,8 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
         },
       }}
       render={({ field, fieldState }) => {
+        const showRecommendedNonceButton = !readOnly && recommendedNonce.toString() !== field.value
+
         return (
           <Autocomplete
             value={field.value}
@@ -116,7 +119,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
               }
             }}
             options={previousNonces}
-            disabled={readOnly}
+            readOnly={readOnly}
             getOptionLabel={(option) => option.toString()}
             renderOption={(props, option) => {
               return <NonceFormOption menuItemProps={props} nonce={option} />
@@ -136,19 +139,23 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
                     InputProps={{
                       ...params.InputProps,
                       name: field.name,
-                      endAdornment:
-                        !readOnly && recommendedNonce.toString() !== field.value ? (
-                          <InputAdornment position="end" className={css.adornment}>
-                            <Tooltip title="Reset to recommended nonce">
-                              <IconButton onClick={resetNonce} size="small" color="primary">
-                                <RotateLeftIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </InputAdornment>
-                        ) : null,
+                      endAdornment: showRecommendedNonceButton ? (
+                        <InputAdornment position="end" className={css.adornment}>
+                          <Tooltip title="Reset to recommended nonce">
+                            <IconButton onClick={resetNonce} size="small" color="primary">
+                              <RotateLeftIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </InputAdornment>
+                      ) : null,
                       readOnly,
                     }}
-                    className={css.input}
+                    className={classNames([
+                      css.input,
+                      {
+                        [css.withAdornment]: showRecommendedNonceButton,
+                      },
+                    ])}
                     sx={{
                       minWidth: `clamp(1ch, ${field.value.length}ch, 200px)`,
                     }}
