@@ -53,8 +53,21 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   const router = useRouter()
   const { pathname } = router
   const dispatch = useAppDispatch()
-  const txFlow = useAppSelector((state) => selectNewTxById(state, pathname))
+  const txFlow = useAppSelector((state) => selectNewTxById(state, router.query.tx ? pathname : ''))
   const FlowComponent = txFlow ? Flows[txFlow.component] : null
+
+  const setQueryParam = useCallback(
+    (tx?: boolean) => {
+      const newQuery = { ...router.query }
+      if (tx) {
+        newQuery.tx = 'true'
+      } else {
+        delete newQuery.tx
+      }
+      router.push({ pathname: router.pathname, query: newQuery }, undefined, { shallow: true })
+    },
+    [router],
+  )
 
   const handleModalClose = useCallback(() => {
     setOnClose((prevOnClose) => {
@@ -62,7 +75,8 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
       return noop
     })
     dispatch(clearNewTx(pathname))
-  }, [dispatch, pathname, setOnClose])
+    setQueryParam(undefined)
+  }, [dispatch, pathname, setQueryParam, setOnClose, setQueryParam])
 
   const handleShowWarning = useCallback(() => {
     if (!shouldWarn) {
@@ -81,11 +95,12 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   const setTxFlow = useCallback(
     (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
+      setQueryParam(txFlow ? true : undefined)
       dispatch(txFlow ? setNewTx({ txFlow, id: pathname }) : clearNewTx(pathname))
       setOnClose(() => onClose ?? noop)
       setShouldWarn(shouldWarn ?? true)
     },
-    [dispatch, pathname, setOnClose],
+    [dispatch, router, pathname, setOnClose, setQueryParam],
   )
 
   // Show the confirmation dialog if user navigates
