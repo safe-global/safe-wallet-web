@@ -7,6 +7,7 @@ import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import { ProgressBar } from '@/components/common/ProgressBar'
+import ChainIndicator from '@/components/common/ChainIndicator'
 
 import css from './styles.module.css'
 
@@ -26,7 +27,9 @@ const NewTxMenu = () => {
     <Container className={css.container}>
       <Grid container>
         {/* Alignment of `TxLayout` */}
-        <Grid item xs={12} md={11}>
+        <Grid item xs={12} md={11} display="flex" flexDirection="column">
+          <ChainIndicator inline className={css.chain} />
+
           <Grid container component={Paper}>
             <Grid item xs={12} className={css.progressBar}>
               <ProgressBar value={progress} />

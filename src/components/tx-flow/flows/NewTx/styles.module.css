@@ -1,5 +1,10 @@
 .container {
-  margin-top: 110px;
+  margin-top: 72px;
+}
+
+.chain {
+  align-self: flex-end;
+  margin-bottom: var(--space-2);
 }
 
 .pane {
@@ -35,6 +40,13 @@
 
   .container :global(.MuiPaper-root) {
     border-radius: unset;
+  }
+
+  .chain {
+    position: absolute;
+    top: 0;
+    right: 57px;
+    margin: var(--space-2);
   }
 
   .progressBar {

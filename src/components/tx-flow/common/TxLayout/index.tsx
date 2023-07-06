@@ -13,6 +13,7 @@ import { TxSimulationMessage } from '@/components/tx/security/tenderly'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 import { RedefineMessage } from '@/components/tx/security/redefine'
 import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
+import ChainIndicator from '@/components/common/ChainIndicator'
 
 type TxLayoutProps = {
   title: ReactNode
@@ -59,10 +60,14 @@ const TxLayout = ({
         <TxSecurityProvider>
           <Container className={css.container}>
             <Grid container alignItems="center" justifyContent="center">
-              <Grid item xs={12}>
-                <Typography variant="h3" component="div" fontWeight="700" mb={2} className={css.title}>
-                  {title}
-                </Typography>
+              <Grid item container xs={12}>
+                <Grid item xs={12} md={7} className={css.titleWrapper}>
+                  <Typography variant="h3" component="div" fontWeight="700" className={css.title}>
+                    {title}
+                  </Typography>
+
+                  <ChainIndicator inline />
+                </Grid>
                 <IconButton
                   className={css.statusButton}
                   aria-label="Transaction status"
