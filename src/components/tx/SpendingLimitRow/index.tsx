@@ -1,4 +1,4 @@
-import { FormControl, FormControlLabel, InputLabel, Radio, RadioGroup } from '@mui/material'
+import { FormControl, FormControlLabel, InputLabel, Radio, RadioGroup, SvgIcon, Tooltip } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 import type { BigNumber } from '@ethersproject/bignumber'
 import classNames from 'classnames'
@@ -6,6 +6,9 @@ import { safeFormatUnits } from '@/utils/formatters'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenTransferFields, TokenTransferType } from '@/components/tx-flow/flows/TokenTransfer'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 import css from './styles.module.css'
 import { TokenAmountFields } from '@/components/common/TokenAmountInput'
@@ -49,8 +52,41 @@ const SpendingLimitRow = ({
             {!isOnlySpendLimitBeneficiary && (
               <FormControlLabel
                 value={TokenTransferType.multiSig}
-                // TODO: Add tooltip when we have the text
-                label="Standard transaction"
+                label={
+                  <>
+                    Standard transaction
+                    <Tooltip
+                      title={
+                        <>
+                          A standard transaction requires the signatures of other owners before the specified funds can
+                          be transferred.&nbsp;
+                          <ExternalLink
+                            href={HelpCenterArticle.SPENDING_LIMITS}
+                            title="Learn more about spending limits"
+                          >
+                            Learn more about spending limits
+                          </ExternalLink>
+                          .
+                        </>
+                      }
+                      arrow
+                      placement="top"
+                    >
+                      <span>
+                        <SvgIcon
+                          component={InfoIcon}
+                          inheritViewBox
+                          color="border"
+                          fontSize="small"
+                          sx={{
+                            verticalAlign: 'middle',
+                            ml: 0.5,
+                          }}
+                        />
+                      </span>
+                    </Tooltip>
+                  </>
+                }
                 control={<Radio />}
                 componentsProps={{ typography: { variant: 'body2' } }}
                 className={css.label}
@@ -58,10 +94,36 @@ const SpendingLimitRow = ({
             )}
             <FormControlLabel
               value={TokenTransferType.spendingLimit}
-              // TODO: Add tooltip when we have the text
               label={
                 <>
                   Spending limit <b>{`(${formattedAmount} ${selectedToken?.symbol})`}</b>
+                  <Tooltip
+                    title={
+                      <>
+                        A spending limit transaction allows you to transfer the specified funds without the need to
+                        collect the signatures of other owners.&nbsp;
+                        <ExternalLink href={HelpCenterArticle.SPENDING_LIMITS} title="Learn more about spending limits">
+                          Learn more about spending limits
+                        </ExternalLink>
+                        .
+                      </>
+                    }
+                    arrow
+                    placement="top"
+                  >
+                    <span>
+                      <SvgIcon
+                        component={InfoIcon}
+                        inheritViewBox
+                        color="border"
+                        fontSize="small"
+                        sx={{
+                          verticalAlign: 'middle',
+                          ml: 0.5,
+                        }}
+                      />
+                    </span>
+                  </Tooltip>
                 </>
               }
               control={<Radio />}

@@ -7,13 +7,16 @@ import { type RedefineModuleResponse } from '@/services/security/modules/Redefin
 import { sameAddress } from '@/utils/addresses'
 import { FEATURES } from '@/utils/chains'
 import { formatVisualAmount } from '@/utils/formatters'
-import { Box, Chip, CircularProgress, Grid, Typography } from '@mui/material'
+import { Box, Chip, CircularProgress, Grid, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ErrorBoundary } from '@sentry/react'
 import { useContext } from 'react'
 import { TxSecurityContext } from '../shared/TxSecurityContext'
 import ArrowOutwardIcon from '@/public/images/transactions/outgoing.svg'
 import ArrowDownwardIcon from '@/public/images/transactions/incoming.svg'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ExternalLink from '@/components/common/ExternalLink'
+import { REDEFINE_ARTICLE } from '@/config/constants'
 
 import css from './styles.module.css'
 
@@ -150,6 +153,33 @@ export const RedefineBalanceChanges = () => {
     <div className={css.box}>
       <Typography variant="subtitle2" fontWeight={700} flexShrink={0}>
         Balance change
+        <Tooltip
+          title={
+            <>
+              The balance change gives an overview of the implications of a transaction. You can see which assets will
+              be sent and received after the transaction is executed.&nbsp;
+              <ExternalLink href={REDEFINE_ARTICLE} title="Learn more about balance change">
+                Learn more about balance change
+              </ExternalLink>
+              .
+            </>
+          }
+          arrow
+          placement="top"
+        >
+          <span>
+            <SvgIcon
+              component={InfoIcon}
+              inheritViewBox
+              color="border"
+              fontSize="small"
+              sx={{
+                verticalAlign: 'middle',
+                ml: 0.5,
+              }}
+            />
+          </span>
+        </Tooltip>
       </Typography>
       <ErrorBoundary fallback={<div>Error showing balance changes</div>}>
         <BalanceChanges />
