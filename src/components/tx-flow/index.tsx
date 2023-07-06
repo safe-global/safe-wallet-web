@@ -76,7 +76,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     })
     dispatch(clearNewTx(pathname))
     setQueryParam(undefined)
-  }, [dispatch, pathname, setQueryParam, setOnClose, setQueryParam])
+  }, [dispatch, pathname, setOnClose, setQueryParam])
 
   const handleShowWarning = useCallback(() => {
     if (!shouldWarn) {
@@ -100,7 +100,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
       setOnClose(() => onClose ?? noop)
       setShouldWarn(shouldWarn ?? true)
     },
-    [dispatch, router, pathname, setOnClose, setQueryParam],
+    [dispatch, pathname, setOnClose, setQueryParam],
   )
 
   // Show the confirmation dialog if user navigates
