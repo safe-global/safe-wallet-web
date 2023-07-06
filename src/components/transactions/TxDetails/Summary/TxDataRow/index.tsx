@@ -31,7 +31,11 @@ export const generateDataRowValue = (
   switch (type) {
     case 'hash':
     case 'address':
-      return <EthHashInfo address={value} hasExplorer={hasExplorer} showAvatar={false} showCopyButton />
+      return (
+        <div className={css.address}>
+          <EthHashInfo address={value} hasExplorer={hasExplorer} showAvatar={false} showCopyButton />
+        </div>
+      )
     case 'rawData':
       return (
         <div className={css.rawData}>
