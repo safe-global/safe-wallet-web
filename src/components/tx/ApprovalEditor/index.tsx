@@ -25,7 +25,6 @@ const Title = () => {
   )
 }
 
-// TODO: Write tests for this component
 export const ApprovalEditor = ({
   safeTransaction,
   updateTransaction,
@@ -35,14 +34,14 @@ export const ApprovalEditor = ({
 }) => {
   const [readableApprovals, error, loading] = useApprovalInfos(safeTransaction)
 
-  if (!readableApprovals || readableApprovals.length === 0 || !safeTransaction) {
+  if (readableApprovals?.length === 0 || !safeTransaction) {
     return null
   }
 
-  const extractedTxs = decodeSafeTxToBaseTransactions(safeTransaction)
-
   const updateApprovals = (approvals: string[]) => {
     if (!updateTransaction) return
+
+    const extractedTxs = decodeSafeTxToBaseTransactions(safeTransaction)
 
     const updatedTxs = updateApprovalTxs(approvals, readableApprovals, extractedTxs)
     updateTransaction(updatedTxs)
@@ -56,7 +55,7 @@ export const ApprovalEditor = ({
       {error ? (
         <Alert severity="error">Error while decoding approval transactions.</Alert>
       ) : loading || !readableApprovals ? (
-        <Skeleton variant="rounded" height={126} />
+        <Skeleton variant="rounded" height={126} data-testid="approval-editor-loading" />
       ) : isReadOnly ? (
         <Approvals approvalInfos={readableApprovals} />
       ) : (
