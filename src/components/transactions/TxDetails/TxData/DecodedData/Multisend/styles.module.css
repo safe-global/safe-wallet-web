@@ -32,3 +32,8 @@
   border-radius: 0;
   margin-top: -1px !important;
 }
+
+.compact > div:hover,
+.compact > div:global(.Mui-expanded) {
+  border-color: var(--color-border-light);
+}
