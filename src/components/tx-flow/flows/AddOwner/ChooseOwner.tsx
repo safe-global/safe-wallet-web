@@ -26,6 +26,7 @@ import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
 import TxCard from '../../common/TxCard'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
 
 type FormData = Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner' | 'threshold'>
 
@@ -116,20 +117,23 @@ export const ChooseOwner = ({
           <Divider className={commonCss.nestedDivider} />
 
           <FormControl fullWidth>
-            <Box display="flex" flexDirection="row" alignItems="center" gap={1} mt={3}>
-              <Typography variant="h6" fontWeight="bold">
-                Threshold
-              </Typography>
-              <Tooltip
-                title="The threshold of a Safe Account specifies how many owners need to confirm a Safe Account transaction before it can be executed."
-                arrow
-                placement="top"
-              >
-                <span style={{ display: 'flex' }}>
-                  <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
+            <Typography variant="h6" fontWeight={700} mt={3}>
+              Threshold
+              <Tooltip title={TOOLTIP_TITLES.THRESHOLD} arrow placement="top">
+                <span>
+                  <SvgIcon
+                    component={InfoIcon}
+                    inheritViewBox
+                    color="border"
+                    fontSize="small"
+                    sx={{
+                      verticalAlign: 'middle',
+                      ml: 0.5,
+                    }}
+                  />
                 </span>
               </Tooltip>
-            </Box>
+            </Typography>
 
             <Typography variant="body2" mb={1}>
               Any transaction requires the confirmation of:

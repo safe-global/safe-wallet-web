@@ -44,7 +44,7 @@ const TxStatusWidget = ({
   return (
     <Paper>
       <div className={css.header}>
-        <SafeLogo width={32} height={32} />
+        <SafeLogo width={32} height={32} className={css.logo} />
         <Typography variant="h6" fontWeight="700" className={css.title}>
           Transaction status
         </Typography>

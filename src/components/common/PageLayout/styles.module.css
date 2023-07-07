@@ -37,7 +37,7 @@
 
 .sidebarTogglePosition {
   position: fixed;
-  z-index: 2;
+  z-index: 4;
   left: 0;
   top: 0;
   /* mimics MUI drawer animation */
