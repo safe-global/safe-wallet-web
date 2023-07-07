@@ -2,7 +2,7 @@ import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '@/components/tx-flow/useTxStepper'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { ReviewOwner } from '../AddOwner/ReviewOwner'
-import { ChooseOwner } from '../AddOwner/ChooseOwner'
+import { ChooseOwner, ChooseOwnerMode } from '../AddOwner/ChooseOwner'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
 
 type Owner = {
@@ -28,7 +28,12 @@ const ReplaceOwnerFlow = ({ address }: { address: string }) => {
   const { data, step, nextStep, prevStep } = useTxStepper<ReplaceOwnerFlowProps>(defaultValues)
 
   const steps = [
-    <ChooseOwner key={0} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
+    <ChooseOwner
+      key={0}
+      params={data}
+      onSubmit={(formData) => nextStep({ ...data, ...formData })}
+      mode={ChooseOwnerMode.REPLACE}
+    />,
     <ReviewOwner key={1} params={data} />,
   ]
 
