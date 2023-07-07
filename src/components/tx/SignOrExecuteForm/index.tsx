@@ -18,10 +18,11 @@ import RiskConfirmationError from './RiskConfirmationError'
 
 export type SignOrExecuteProps = {
   txId?: string
-  onSubmit: () => void // Should go to the success screen onSubmit
+  onSubmit: () => void
   children?: ReactNode
   isExecutable?: boolean
   isRejection?: boolean
+  isBatch?: boolean
   onlyExecute?: boolean
   disableSubmit?: boolean
   origin?: string
@@ -30,9 +31,9 @@ export type SignOrExecuteProps = {
 const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
-  const isCreation = !props.txId
-  const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const { safeTx, safeTxError } = useContext(SafeTxContext)
+  const isCreation = safeTx?.signatures.size === 0
+  const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it

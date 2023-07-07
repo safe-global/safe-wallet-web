@@ -17,8 +17,10 @@ import type { ConnectedWallet } from '@/services/onboard'
 import type { OnboardAPI } from '@web3-onboard/core'
 import { getSafeTxGas, getRecommendedNonce } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
+import { useUpdateBatch } from '@/hooks/useDraftBatch'
 
 type TxActions = {
+  addToBatch: (safeTx?: SafeTransaction, origin?: string) => Promise<string>
   signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string) => Promise<string>
   executeTx: (
     txOptions: TransactionOptions,
@@ -43,6 +45,7 @@ export const useTxActions = (): TxActions => {
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const wallet = useWallet()
+  const [addTxToBatch] = useUpdateBatch()
 
   return useMemo<TxActions>(() => {
     const safeAddress = safe.address.value
@@ -58,6 +61,15 @@ export const useTxActions = (): TxActions => {
         origin,
       })
       return tx.txId
+    }
+
+    const addToBatch: TxActions['addToBatch'] = async (safeTx, origin) => {
+      assertTx(safeTx)
+      assertWallet(wallet)
+
+      const id = await proposeTx(wallet.address, safeTx, undefined, origin)
+      addTxToBatch(id)
+      return id
     }
 
     const signRelayedTx = async (safeTx: SafeTransaction, txId?: string): Promise<SafeTransaction> => {
@@ -118,8 +130,8 @@ export const useTxActions = (): TxActions => {
       return txId
     }
 
-    return { signTx, executeTx }
-  }, [safe, onboard, wallet])
+    return { addToBatch, signTx, executeTx }
+  }, [safe, onboard, wallet, addTxToBatch])
 }
 
 export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {
