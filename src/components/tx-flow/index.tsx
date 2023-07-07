@@ -44,7 +44,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     }
 
     handleModalClose()
-  }, [shouldWarn, handleModalClose, router.events])
+  }, [shouldWarn, handleModalClose, router])
 
   const setTxFlow = useCallback(
     (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
@@ -63,7 +63,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     return () => {
       router.events.off('routeChangeStart', handleShowWarning)
     }
-  }, [txFlow, handleShowWarning, router.events])
+  }, [txFlow, handleShowWarning, router])
 
   return (
     <TxModalContext.Provider value={{ txFlow, setTxFlow, setFullWidth }}>
