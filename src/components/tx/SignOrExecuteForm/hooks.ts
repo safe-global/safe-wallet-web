@@ -143,11 +143,15 @@ export const useIsExecutionLoop = (): boolean => {
 export const useRecommendedNonce = (): number | undefined => {
   const { safeAddress, safe } = useSafeInfo()
 
-  const [recommendedNonce] = useAsync(() => {
-    if (!safe.chainId || !safeAddress) return
+  const [recommendedNonce] = useAsync(
+    () => {
+      if (!safe.chainId || !safeAddress) return
 
-    return getRecommendedNonce(safe.chainId, safeAddress)
-  }, [safeAddress, safe.chainId, safe.txQueuedTag]) // update when tx queue changes
+      return getRecommendedNonce(safe.chainId, safeAddress)
+    },
+    [safeAddress, safe.chainId, safe.txQueuedTag], // update when tx queue changes
+    false, // keep old recommended nonce while refreshing to avoid skeleton
+  )
 
   return recommendedNonce
 }

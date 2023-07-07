@@ -4,7 +4,11 @@
 
 .input input {
   font-weight: bold;
-  padding-right: 30px !important;
+  min-width: 0px !important;
+}
+
+.input.withAdornment input {
+  padding-right: 24px !important;
 }
 
 .adornment {

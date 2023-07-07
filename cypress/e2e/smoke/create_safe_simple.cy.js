@@ -11,7 +11,7 @@ describe('Create Safe form', () => {
     cy.contains('button', 'Accept selection').click()
 
     // Ensure wallet is connected to correct chain via header
-    cy.contains('E2E Wallet @ Görli')
+    cy.contains('E2E Wallet @ Goerli')
 
     cy.contains('Create new Account').click()
   })
@@ -33,7 +33,7 @@ describe('Create Safe form', () => {
 
     // Switch back to Görli
     cy.get('[data-cy="create-safe-select-network"]').click()
-    cy.contains('li span', 'Görli').click()
+    cy.contains('li span', 'Goerli').click()
 
     cy.contains('button', 'Next').click()
   })
