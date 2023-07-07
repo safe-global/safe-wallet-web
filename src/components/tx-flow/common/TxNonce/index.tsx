@@ -109,6 +109,8 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
 
         const showRecommendedNonceButton = recommendedNonce.toString() !== field.value
 
+        const extraWidth = showRecommendedNonceButton ? 32 : 8
+
         return (
           <Autocomplete
             value={field.value}
@@ -159,9 +161,9 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
                       },
                     ])}
                     sx={{
-                      minWidth: `clamp(1ch, calc(${field.value.toString().length}ch${
-                        showRecommendedNonceButton ? ' + 28px' : ' + 4px'
-                      }), 200px)`,
+                      minWidth: `clamp(calc(1ch + ${extraWidth}px), calc(${
+                        field.value.toString().length
+                      }ch + ${extraWidth}px), 200px)`,
                     }}
                   />
                 </Tooltip>

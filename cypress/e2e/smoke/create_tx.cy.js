@@ -62,7 +62,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('Native token transfer').should('be.visible')
 
     // Changes nonce to next one
-    cy.get('input[name="nonce"]').clear().type(currentNonce).type('{enter}')
+    cy.get('input[name="nonce"]').clear().type(currentNonce, { force: true }).type('{enter}', { force: true })
 
     // Execution
     cy.contains('Yes, ').should('exist')
@@ -99,9 +99,9 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('No, only').click()
 
     cy.get('input[name="nonce"]')
-      .clear()
-      .type(currentNonce + 10)
-      .type('{enter}')
+      .clear({ force: true })
+      .type(currentNonce + 10, { force: true })
+      .type('{enter}', { force: true })
 
     cy.contains('Submit').click()
   })
