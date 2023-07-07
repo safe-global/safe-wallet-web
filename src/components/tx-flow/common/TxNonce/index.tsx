@@ -10,6 +10,7 @@ import {
   type PopperProps,
   type MenuItemProps,
   MenuItem,
+  Typography,
 } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 
@@ -104,7 +105,11 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
       }}
       render={({ field, fieldState }) => {
         if (readOnly) {
-          return <>{nonce}</>
+          return (
+            <Typography fontWeight={700} ml={-1}>
+              {nonce}
+            </Typography>
+          )
         }
 
         const showRecommendedNonceButton = recommendedNonce.toString() !== field.value
@@ -182,7 +187,10 @@ const TxNonce = () => {
 
   return (
     <Box display="flex" alignItems="center" gap={1}>
-      Nonce #
+      Nonce{' '}
+      <Typography component="span" fontWeight={700}>
+        #
+      </Typography>
       {nonce === undefined || recommendedNonce === undefined ? (
         <Skeleton width="70px" height="38px" />
       ) : (
