@@ -4,6 +4,7 @@
 
 .input input {
   font-weight: bold;
+  min-width: 0px !important;
 }
 
 .input.withAdornment input {

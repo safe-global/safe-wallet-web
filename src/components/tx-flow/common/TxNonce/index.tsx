@@ -103,7 +103,13 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
         },
       }}
       render={({ field, fieldState }) => {
-        const showRecommendedNonceButton = !readOnly && recommendedNonce.toString() !== field.value
+        if (readOnly) {
+          return <>{nonce}</>
+        }
+
+        console.log(field, field.value)
+
+        const showRecommendedNonceButton = recommendedNonce.toString() !== field.value
 
         return (
           <Autocomplete
@@ -119,7 +125,6 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
               }
             }}
             options={previousNonces}
-            readOnly={readOnly}
             getOptionLabel={(option) => option.toString()}
             renderOption={(props, option) => {
               return <NonceFormOption menuItemProps={props} nonce={option} />
@@ -148,7 +153,6 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
                           </Tooltip>
                         </InputAdornment>
                       ) : null,
-                      readOnly,
                     }}
                     className={classNames([
                       css.input,
@@ -157,7 +161,9 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
                       },
                     ])}
                     sx={{
-                      minWidth: `clamp(1ch, ${field.value.length}ch, 200px)`,
+                      minWidth: `clamp(1ch, calc(${field.value.toString().length}ch${
+                        showRecommendedNonceButton ? ' + 28px' : ' + 4px'
+                      }), 200px)`,
                     }}
                   />
                 </Tooltip>
