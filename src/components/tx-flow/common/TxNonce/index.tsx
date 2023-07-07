@@ -107,8 +107,6 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
           return <>{nonce}</>
         }
 
-        console.log(field, field.value)
-
         const showRecommendedNonceButton = recommendedNonce.toString() !== field.value
 
         return (
