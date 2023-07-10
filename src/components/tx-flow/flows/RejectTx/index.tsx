@@ -8,7 +8,7 @@ type RejectTxProps = {
 
 const RejectTxFlow = ({ txNonce }: RejectTxProps): ReactElement => {
   return (
-    <TxLayout title="Reject transaction" step={0}>
+    <TxLayout title="Confirm transaction" subtitle="Reject" step={0}>
       <RejectTx txNonce={txNonce} />
     </TxLayout>
   )

@@ -38,7 +38,7 @@ const ExecuteTxButton = ({
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
-    setTxFlow(<ConfirmTxFlow txSummary={txSummary} />)
+    setTxFlow(<ConfirmTxFlow txSummary={txSummary} />, undefined, false)
   }
 
   const onMouseEnter = () => {

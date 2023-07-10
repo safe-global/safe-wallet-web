@@ -31,6 +31,10 @@
   color: var(--color-secondary-dark);
 }
 
+.params {
+  margin-bottom: var(--space-2);
+}
+
 .noBottomBorderRadius :global(.MuiPaper-root) {
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
@@ -40,10 +44,6 @@
   margin-top: -1px;
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
-}
-
-.errorWrapper {
-  margin-top: var(--space-2) !important;
 }
 
 .mobileTxCheckMessages,
