@@ -3,13 +3,13 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 
 const SendToBlock = ({ address, title = 'To' }: { address: string; title?: string }) => {
   return (
-    <Grid container gap={1} alignItems="center">
+    <Grid container alignItems="center" sx={{ gap: 1 }}>
       <Grid item md>
         <Typography variant="body2" color="text.secondary" noWrap>
           {title}
         </Typography>
       </Grid>
-      <Grid item xs={8} md={10}>
+      <Grid item md={10}>
         <Typography variant="body2" component="div">
           <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
         </Typography>

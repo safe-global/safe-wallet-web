@@ -68,7 +68,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
 
-  if (isRejection) return null
+  if (isRejection || !tx) return null
 
   return (
     <div>

@@ -17,7 +17,7 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }): ReactElement => {
   const addressBook = useAddressBook()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
-  const { safe, safeAddress } = useSafeInfo()
+  const { safe } = useSafeInfo()
   const { removedOwner, threshold } = params
 
   useEffect(() => {

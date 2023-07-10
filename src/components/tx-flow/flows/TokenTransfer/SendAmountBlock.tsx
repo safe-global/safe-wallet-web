@@ -16,7 +16,7 @@ export const AmountBlock = ({
   children?: ReactNode
 }) => {
   return (
-    <Grid item className={css.token}>
+    <Grid item md={10} className={css.token}>
       <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
       <Typography fontWeight="bold">{tokenInfo.symbol}</Typography>
       {children}
@@ -41,8 +41,8 @@ const SendAmountBlock = ({
   title?: string
 }) => {
   return (
-    <Grid container gap={1} alignItems="center">
-      <Grid item xs={4} md={2}>
+    <Grid container alignItems="center" sx={{ gap: 1 }}>
+      <Grid item md>
         <Typography variant="body2" color="text.secondary">
           {title}
         </Typography>

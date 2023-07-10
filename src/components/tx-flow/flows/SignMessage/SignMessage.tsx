@@ -200,11 +200,9 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
 
       <TxCard>
         <CardActions>
-          <Box display="flex" justifyContent="space-between" width="100%">
-            <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
-              Sign
-            </Button>
-          </Box>
+          <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
+            Sign
+          </Button>
         </CardActions>
       </TxCard>
     </>
