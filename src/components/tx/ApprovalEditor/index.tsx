@@ -1,4 +1,4 @@
-import { Alert, Box, Divider, Skeleton, SvgIcon, Typography } from '@mui/material'
+import { Box, Divider, SvgIcon, Typography } from '@mui/material'
 import { type MetaTransactionData, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import css from './styles.module.css'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
@@ -32,9 +32,9 @@ export const ApprovalEditor = ({
   safeTransaction: SafeTransaction | undefined
   updateTransaction?: (txs: MetaTransactionData[]) => void
 }) => {
-  const [readableApprovals, error, loading] = useApprovalInfos(safeTransaction)
+  const [readableApprovals] = useApprovalInfos(safeTransaction)
 
-  if (readableApprovals?.length === 0 || !safeTransaction) {
+  if (!readableApprovals || readableApprovals?.length === 0 || !safeTransaction) {
     return null
   }
 
@@ -52,11 +52,7 @@ export const ApprovalEditor = ({
   return (
     <Box display="flex" flexDirection="column" gap={2} mb={3}>
       <Title />
-      {error ? (
-        <Alert severity="error">Error while decoding approval transactions.</Alert>
-      ) : loading || !readableApprovals ? (
-        <Skeleton variant="rounded" height={126} data-testid="approval-editor-loading" />
-      ) : isReadOnly ? (
+      {isReadOnly ? (
         <Approvals approvalInfos={readableApprovals} />
       ) : (
         <ApprovalEditorForm approvalInfos={readableApprovals} updateApprovals={updateApprovals} />
