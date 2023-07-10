@@ -1,4 +1,5 @@
 import useAsync from '@/hooks/useAsync'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -21,6 +22,9 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { hasRemainingRelays } from '@/utils/relaying'
+import useGasPrice from '@/hooks/useGasPrice'
+import { hasFeature } from '@/utils/chains'
+import type { PayableOverrides } from 'ethers'
 
 const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubmit: (data: null) => void }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -29,6 +33,12 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
   const [relays] = useRelaysBySafe()
+  const [gasPrice, , gasPriceLoading] = useGasPrice()
+
+  const maxFeePerGas = gasPrice?.maxFeePerGas
+  const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
+
+  const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
 
   // Chain has relaying feature and available relays
   const canRelay = hasRemainingRelays(relays)
@@ -58,7 +68,11 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails) return
+    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || gasPriceLoading) return
+
+    const overrides: PayableOverrides = isEIP1559
+      ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
+      : { gasPrice: maxFeePerGas?.toString() }
 
     await dispatchBatchExecution(
       txsWithDetails,
@@ -67,6 +81,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
       onboard,
       safe.chainId,
       safe.address.value,
+      overrides,
     )
     onSubmit(null)
   }
@@ -100,7 +115,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
     }
   }
 
-  const submitDisabled = loading || !isSubmittable
+  const submitDisabled = loading || !isSubmittable || gasPriceLoading
 
   return (
     <div>

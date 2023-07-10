@@ -74,6 +74,9 @@ describe('useGasPrice', () => {
     // render the hook
     const { result } = renderHook(() => useGasPrice())
 
+    // assert the hook is loading
+    expect(result.current[2]).toBe(true)
+
     // wait for the hook to fetch the gas price
     await act(async () => {
       await Promise.resolve()
@@ -81,11 +84,14 @@ describe('useGasPrice', () => {
 
     expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
 
+    // assert the hook is not loading
+    expect(result.current[2]).toBe(false)
+
     // assert the gas price is correct
-    expect(result.current.maxFeePerGas?.toString()).toBe('47000000000')
+    expect(result.current[0]?.maxFeePerGas?.toString()).toBe('47000000000')
 
     // assert the priority fee is correct
-    expect(result.current.maxPriorityFeePerGas?.toString()).toEqual('4975')
+    expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toEqual('4975')
   })
 
   it('should return the fetched gas price from the second oracle if the first one fails', async () => {
@@ -110,6 +116,9 @@ describe('useGasPrice', () => {
     // render the hook
     const { result } = renderHook(() => useGasPrice())
 
+    // assert the hook is loading
+    expect(result.current[2]).toBe(true)
+
     // wait for the hook to fetch the gas price
     await act(async () => {
       await Promise.resolve()
@@ -118,11 +127,14 @@ describe('useGasPrice', () => {
     expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
     expect(fetch).toHaveBeenCalledWith('https://ethgasstation.info/json/ethgasAPI.json')
 
+    // assert the hook is not loading
+    expect(result.current[2]).toBe(false)
+
     // assert the gas price is correct
-    expect(result.current.maxFeePerGas?.toString()).toBe('60000000000')
+    expect(result.current[0]?.maxFeePerGas?.toString()).toBe('60000000000')
 
     // assert the priority fee is correct
-    expect(result.current.maxPriorityFeePerGas?.toString()).toEqual('4975')
+    expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toEqual('4975')
   })
 
   it('should fallback to a fixed gas price if the oracles fail', async () => {
@@ -137,6 +149,9 @@ describe('useGasPrice', () => {
     // render the hook
     const { result } = renderHook(() => useGasPrice())
 
+    // assert the hook is loading
+    expect(result.current[2]).toBe(true)
+
     // wait for the hook to fetch the gas price
     await act(async () => {
       await Promise.resolve()
@@ -145,11 +160,14 @@ describe('useGasPrice', () => {
     expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
     expect(fetch).toHaveBeenCalledWith('https://ethgasstation.info/json/ethgasAPI.json')
 
+    // assert the hook is not loading
+    expect(result.current[2]).toBe(false)
+
     // assert the gas price is correct
-    expect(result.current.maxFeePerGas?.toString()).toBe('24000000000')
+    expect(result.current[0]?.maxFeePerGas?.toString()).toBe('24000000000')
 
     // assert the priority fee is correct
-    expect(result.current.maxPriorityFeePerGas?.toString()).toEqual('4975')
+    expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toEqual('4975')
   })
 
   it('should keep the previous gas price if the hook re-renders', async () => {
@@ -185,25 +203,37 @@ describe('useGasPrice', () => {
     // render the hook
     const { result } = renderHook(() => useGasPrice())
 
-    expect(result.current.maxFeePerGas).toBe(undefined)
+    // assert the hook is loading
+    expect(result.current[2]).toBe(true)
+
+    expect(result.current[0]?.maxFeePerGas).toBe(undefined)
 
     // wait for the hook to fetch the gas price
     await act(async () => {
       await Promise.resolve()
     })
 
-    expect(result.current.maxFeePerGas?.toString()).toBe('21000000000')
+    // assert the hook is not loading
+    expect(result.current[2]).toBe(false)
+
+    expect(result.current[0]?.maxFeePerGas?.toString()).toBe('21000000000')
 
     // render the hook again
     const { result: result2 } = renderHook(() => useGasPrice())
 
-    expect(result.current.maxFeePerGas?.toString()).toBe('21000000000')
+    // assert the hook is not loading (as a value exists)
+    expect(result.current[2]).toBe(false)
+
+    expect(result.current[0]?.maxFeePerGas?.toString()).toBe('21000000000')
 
     // wait for the hook to fetch the gas price
     await act(async () => {
       await Promise.resolve()
     })
 
-    expect(result2.current.maxFeePerGas?.toString()).toBe('22000000000')
+    // assert the hook is not loading
+    expect(result.current[2]).toBe(false)
+
+    expect(result2.current[0]?.maxFeePerGas?.toString()).toBe('22000000000')
   })
 })

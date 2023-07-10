@@ -1,9 +1,7 @@
-import { useMemo } from 'react'
 import { BigNumber } from 'ethers'
-import type { FeeData } from '@ethersproject/providers'
 import type { GasPrice, GasPriceOracle } from '@safe-global/safe-gateway-typescript-sdk'
 import { GAS_PRICE_TYPE } from '@safe-global/safe-gateway-typescript-sdk'
-import useAsync from '@/hooks/useAsync'
+import useAsync, { type AsyncResult } from '@/hooks/useAsync'
 import { useCurrentChain } from './useChains'
 import useIntervalCounter from './useIntervalCounter'
 import { useWeb3ReadOnly } from '../hooks/wallets/web3'
@@ -54,41 +52,42 @@ const getGasPrice = async (gasPriceConfigs: GasPrice): Promise<BigNumber | undef
   }
 }
 
-const useGasPrice = (): {
-  maxFeePerGas?: BigNumber
-  maxPriorityFeePerGas?: BigNumber
-} => {
+const useGasPrice = (): AsyncResult<{
+  maxFeePerGas: BigNumber | undefined
+  maxPriorityFeePerGas: BigNumber | undefined
+}> => {
   const chain = useCurrentChain()
   const gasPriceConfigs = chain?.gasPrice
   const [counter] = useIntervalCounter(REFRESH_DELAY)
   const provider = useWeb3ReadOnly()
   const isEIP1559 = !!chain && hasFeature(chain, FEATURES.EIP1559)
 
-  // Fetch gas price from oracles or get a fixed value
-  const [gasPrice] = useAsync<BigNumber | undefined>(
-    () => {
-      if (gasPriceConfigs) {
-        return getGasPrice(gasPriceConfigs)
+  const [gasPrice, gasPriceError, gasPriceLoading] = useAsync(
+    async () => {
+      const [gasPrice, feeData] = await Promise.all([
+        // Fetch gas price from oracles or get a fixed value
+        gasPriceConfigs ? getGasPrice(gasPriceConfigs) : undefined,
+
+        // Fetch the gas fees from the blockchain itself
+        provider?.getFeeData(),
+      ])
+
+      // Prepare the return values
+      const maxFee = gasPrice || (isEIP1559 ? feeData?.maxFeePerGas : feeData?.gasPrice) || undefined
+      const maxPrioFee = (isEIP1559 && feeData?.maxPriorityFeePerGas) || undefined
+
+      return {
+        maxFeePerGas: maxFee,
+        maxPriorityFeePerGas: maxPrioFee,
       }
     },
-    [gasPriceConfigs, counter],
+    [gasPriceConfigs, provider, counter],
     false,
   )
 
-  // Fetch the gas fees from the blockchain itself
-  const [feeData] = useAsync<FeeData>(() => provider?.getFeeData(), [provider, counter], false)
+  const isLoading = gasPriceLoading || (!gasPrice && !gasPriceError)
 
-  // Prepare the return values
-  const maxFee = gasPrice || (isEIP1559 ? feeData?.maxFeePerGas : feeData?.gasPrice) || undefined
-  const maxPrioFee = (isEIP1559 && feeData?.maxPriorityFeePerGas) || undefined
-
-  return useMemo(
-    () => ({
-      maxFeePerGas: maxFee,
-      maxPriorityFeePerGas: maxPrioFee,
-    }),
-    [maxFee, maxPrioFee],
-  )
+  return [gasPrice, gasPriceError, isLoading]
 }
 
 export default useGasPrice

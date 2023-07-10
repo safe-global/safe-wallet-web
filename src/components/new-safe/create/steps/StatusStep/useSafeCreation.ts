@@ -20,6 +20,10 @@ import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
+import useGasPrice from '@/hooks/useGasPrice'
+import { hasFeature } from '@/utils/chains'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DeploySafeProps } from '@safe-global/safe-core-sdk'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -48,6 +52,12 @@ export const useSafeCreation = (
   const provider = useWeb3()
   const web3ReadOnly = useWeb3ReadOnly()
   const chain = useCurrentChain()
+  const [gasPrice, , gasPriceLoading] = useGasPrice()
+
+  const maxFeePerGas = gasPrice?.maxFeePerGas
+  const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
+
+  const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
 
   const createSafeCallback = useCallback(
     async (txHash: string, tx: PendingSafeTx) => {
@@ -59,7 +69,7 @@ export const useSafeCreation = (
   )
 
   const handleCreateSafe = useCallback(async () => {
-    if (!pendingSafe || !provider || !chain || !wallet || isCreating) return
+    if (!pendingSafe || !provider || !chain || !wallet || isCreating || gasPriceLoading) return
 
     setIsCreating(true)
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
@@ -87,7 +97,14 @@ export const useSafeCreation = (
           chain.chainId,
         )
 
-        await createNewSafe(provider, safeParams)
+        const options: DeploySafeProps['options'] = isEIP1559
+          ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
+          : { gasPrice: maxFeePerGas?.toString() }
+
+        await createNewSafe(provider, {
+          ...safeParams,
+          options,
+        })
         setStatus(SafeCreationStatus.SUCCESS)
       }
     } catch (err) {
@@ -106,7 +123,11 @@ export const useSafeCreation = (
     chain,
     createSafeCallback,
     dispatch,
+    gasPriceLoading,
     isCreating,
+    isEIP1559,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     pendingSafe,
     provider,
     setPendingSafe,
