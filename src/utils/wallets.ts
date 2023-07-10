@@ -24,6 +24,7 @@ export const isWalletRejection = (err: EthersError | Error): boolean => {
 export const WalletNames = {
   METAMASK: ProviderLabel.MetaMask,
   WALLET_CONNECT: WALLET_CONNECT_V1_MODULE_NAME,
+  WALLET_CONNECT_V2: 'WalletConnect',
   SAFE_MOBILE_PAIRING: PAIRING_MODULE_LABEL,
 }
 
