@@ -4,10 +4,10 @@ import { Container, Grid, Paper, SvgIcon, Typography } from '@mui/material'
 import { TxModalContext } from '../../'
 import TokenTransferFlow from '../TokenTransfer'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
-import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import NewTxIcon from '@/public/images/transactions/new-tx.svg'
 
 import css from './styles.module.css'
 
@@ -36,7 +36,7 @@ const NewTxMenu = () => {
             </Grid>
             <Grid item xs={12} md={6} className={css.pane} gap={3}>
               <div className={css.globs}>
-                <LoadingSpinner status={SpinnerStatus.PROCESSING} />
+                <NewTxIcon />
               </div>
 
               <Typography variant="h1" className={css.title}>

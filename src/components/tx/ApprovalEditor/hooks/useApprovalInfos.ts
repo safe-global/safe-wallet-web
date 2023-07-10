@@ -1,7 +1,6 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
-import { ApprovalModule, type ApprovalModuleResponse } from '@/services/security/modules/ApprovalModule'
-import type { SecurityResponse } from '@/services/security/modules/types'
+import { ApprovalModule } from '@/services/security/modules/ApprovalModule'
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -18,24 +17,15 @@ export type ApprovalInfo = {
 
 const ApprovalModuleInstance = new ApprovalModule()
 
-const useApprovalData = (safeTransaction: SafeTransaction | undefined) => {
-  return useAsync<SecurityResponse<ApprovalModuleResponse>>(() => {
-    if (!safeTransaction) {
-      return
-    }
-
-    return ApprovalModuleInstance.scanTransaction({ safeTransaction })
-  }, [safeTransaction])
-}
-
-// TODO: Write tests for this hook
 export const useApprovalInfos = (safeTransaction: SafeTransaction | undefined) => {
-  const [approvals] = useApprovalData(safeTransaction)
-
   const { balances } = useBalances()
 
-  return useAsync<ApprovalInfo[]>(
+  return useAsync<ApprovalInfo[] | undefined>(
     async () => {
+      if (!safeTransaction) return
+
+      const approvals = await ApprovalModuleInstance.scanTransaction({ safeTransaction })
+
       if (!approvals || !approvals.payload || approvals.payload.length === 0) return Promise.resolve([])
 
       return Promise.all(
@@ -55,7 +45,7 @@ export const useApprovalInfos = (safeTransaction: SafeTransaction | undefined) =
         }),
       )
     },
-    [balances.items.length, approvals],
+    [safeTransaction, balances.items.length],
     false, // Do not clear data on balance updates
   )
 }

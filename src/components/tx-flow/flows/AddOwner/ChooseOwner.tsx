@@ -26,15 +26,23 @@ import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
 import TxCard from '../../common/TxCard'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
 
 type FormData = Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner' | 'threshold'>
+
+export enum ChooseOwnerMode {
+  REPLACE,
+  ADD,
+}
 
 export const ChooseOwner = ({
   params,
   onSubmit,
+  mode,
 }: {
   params: AddOwnerFlowProps | ReplaceOwnerFlowProps
   onSubmit: (data: FormData) => void
+  mode: ChooseOwnerMode
 }) => {
   const { safe, safeAddress } = useSafeInfo()
 
@@ -115,52 +123,57 @@ export const ChooseOwner = ({
 
           <Divider className={commonCss.nestedDivider} />
 
-          <FormControl fullWidth>
-            <Box display="flex" flexDirection="row" alignItems="center" gap={1} mt={3}>
-              <Typography variant="h6" fontWeight="bold">
+          {mode === ChooseOwnerMode.ADD && (
+            <FormControl fullWidth>
+              <Typography variant="h6" fontWeight={700} mt={3}>
                 Threshold
+                <Tooltip title={TOOLTIP_TITLES.THRESHOLD} arrow placement="top">
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      color="border"
+                      fontSize="small"
+                      sx={{
+                        verticalAlign: 'middle',
+                        ml: 0.5,
+                      }}
+                    />
+                  </span>
+                </Tooltip>
               </Typography>
-              <Tooltip
-                title="The threshold of a Safe Account specifies how many owners need to confirm a Safe Account transaction before it can be executed."
-                arrow
-                placement="top"
-              >
-                <span style={{ display: 'flex' }}>
-                  <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
-                </span>
-              </Tooltip>
-            </Box>
 
-            <Typography variant="body2" mb={1}>
-              Any transaction requires the confirmation of:
-            </Typography>
+              <Typography variant="body2" mb={1}>
+                Any transaction requires the confirmation of:
+              </Typography>
 
-            <Grid container direction="row" alignItems="center" gap={2} pt={1}>
-              <Grid item>
-                <Controller
-                  control={control}
-                  name="threshold"
-                  render={({ field }) => (
-                    <TextField select {...field}>
-                      {safe.owners.map((_, idx) => (
-                        <MenuItem key={idx + 1} value={idx + 1}>
-                          {idx + 1}
-                        </MenuItem>
-                      ))}
-                      {!params.removedOwner && (
-                        <MenuItem key={newNumberOfOwners} value={newNumberOfOwners}>
-                          {newNumberOfOwners}
-                        </MenuItem>
-                      )}
-                    </TextField>
-                  )}
-                />
+              <Grid container direction="row" alignItems="center" gap={2} pt={1}>
+                <Grid item>
+                  <Controller
+                    control={control}
+                    name="threshold"
+                    render={({ field }) => (
+                      <TextField select {...field}>
+                        {safe.owners.map((_, idx) => (
+                          <MenuItem key={idx + 1} value={idx + 1}>
+                            {idx + 1}
+                          </MenuItem>
+                        ))}
+                        {!params.removedOwner && (
+                          <MenuItem key={newNumberOfOwners} value={newNumberOfOwners}>
+                            {newNumberOfOwners}
+                          </MenuItem>
+                        )}
+                      </TextField>
+                    )}
+                  />
+                </Grid>
+                <Grid item>
+                  <Typography>out of {newNumberOfOwners} owner(s)</Typography>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Typography>out of {newNumberOfOwners} owner(s)</Typography>
-              </Grid>
-            </Grid>
-          </FormControl>
+            </FormControl>
+          )}
 
           <Divider className={commonCss.nestedDivider} />
 
