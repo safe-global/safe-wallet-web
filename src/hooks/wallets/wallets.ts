@@ -33,6 +33,11 @@ const walletConnectV1 = (): WalletInit => {
 }
 
 const walletConnectV2 = (chain: ChainInfo): WalletInit => {
+  // WalletConnect v2 requires a project ID
+  if (!WC_PROJECT_ID) {
+    return () => null
+  }
+
   return walletConnect({
     version: 2,
     projectId: WC_PROJECT_ID,
