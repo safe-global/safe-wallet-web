@@ -118,7 +118,7 @@ export const connectWallet = async (
   // On mobile, automatically choose WalletConnect if there is no injected wallet
   if (!options && isMobile() && !hasInjectedWallet()) {
     options = {
-      autoSelect: WalletNames.WALLET_CONNECT,
+      autoSelect: WalletNames.WALLET_CONNECT_V2,
     }
   }
 
