@@ -11,8 +11,6 @@ import NewTxIcon from '@/public/images/transactions/new-tx.svg'
 
 import css from './styles.module.css'
 
-const buttonSx = { height: '58px' }
-
 const NewTxMenu = () => {
   const txBuilder = useTxBuilderApp()
   const { setTxFlow } = useContext(TxModalContext)
@@ -50,9 +48,9 @@ const NewTxMenu = () => {
                 Assets
               </Typography>
 
-              <SendTokensButton onClick={onTokensClick} sx={buttonSx} />
+              <SendTokensButton onClick={onTokensClick} />
 
-              <SendNFTsButton sx={buttonSx} />
+              <SendNFTsButton />
 
               {txBuilder?.app && (
                 <>
@@ -61,7 +59,7 @@ const NewTxMenu = () => {
                     interaction
                   </Typography>
 
-                  <TxBuilderButton sx={buttonSx} />
+                  <TxBuilderButton />
                 </>
               )}
             </Grid>

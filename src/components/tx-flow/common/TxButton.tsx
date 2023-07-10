@@ -7,29 +7,36 @@ import { AppRoutes } from '@/config/routes'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics'
 
-const TxButton = ({ sx, ...props }: ButtonProps) => (
-  <Button variant="contained" sx={{ '& svg path': { fill: 'currentColor' }, ...sx }} fullWidth {...props} />
-)
+const buttonSx = {
+  height: '58px',
+  '& svg path': { fill: 'currentColor' },
+}
 
-export const SendTokensButton = (props: ButtonProps) => (
-  <Track {...MODALS_EVENTS.SEND_FUNDS}>
-    <TxButton {...props}>Send tokens</TxButton>
-  </Track>
-)
+export const SendTokensButton = ({ onClick, sx }: { onClick: () => void; sx?: ButtonProps['sx'] }) => {
+  return (
+    <Track {...MODALS_EVENTS.SEND_FUNDS}>
+      <Button onClick={onClick} variant="contained" sx={sx ?? buttonSx} fullWidth>
+        Send tokens
+      </Button>
+    </Track>
+  )
+}
 
-export const SendNFTsButton = (props: ButtonProps) => {
+export const SendNFTsButton = () => {
   const router = useRouter()
 
   return (
     <Track {...MODALS_EVENTS.SEND_COLLECTIBLE}>
       <Link href={{ pathname: AppRoutes.balances.nfts, query: { safe: router.query.safe } }} passHref>
-        <TxButton {...props}>Send NFTs</TxButton>
+        <Button variant="contained" sx={buttonSx} fullWidth>
+          Send NFTs
+        </Button>
       </Link>
     </Track>
   )
 }
 
-export const TxBuilderButton = (props: ButtonProps) => {
+export const TxBuilderButton = () => {
   const txBuilder = useTxBuilderApp()
   if (!txBuilder?.app) return null
 
@@ -37,13 +44,11 @@ export const TxBuilderButton = (props: ButtonProps) => {
     <Track {...MODALS_EVENTS.CONTRACT_INTERACTION}>
       <Link href={txBuilder.link} passHref>
         <a style={{ width: '100%' }}>
-          <TxButton variant="outlined" {...props}>
+          <Button variant="outlined" sx={buttonSx} fullWidth>
             Transaction Builder
-          </TxButton>
+          </Button>
         </a>
       </Link>
     </Track>
   )
 }
-
-export default TxButton
