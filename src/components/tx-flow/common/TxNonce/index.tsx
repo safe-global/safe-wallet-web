@@ -36,11 +36,11 @@ const NonceFormOption = memo(function NonceFormOption({
   nonce,
   menuItemProps,
 }: {
-  nonce: number
+  nonce: string
   menuItemProps: MenuItemProps
 }): ReactElement {
   const addressBook = useAddressBook()
-  const transactions = useQueuedTxByNonce(nonce)
+  const transactions = useQueuedTxByNonce(Number(nonce))
 
   const label = useMemo(() => {
     const [{ transaction }] = getLatestTransactions(transactions)
@@ -48,7 +48,7 @@ const NonceFormOption = memo(function NonceFormOption({
   }, [addressBook, transactions])
 
   return (
-    <MenuItem key={nonce} {...menuItemProps}>
+    <MenuItem {...menuItemProps}>
       {nonce} ({label} transaction)
     </MenuItem>
   )
@@ -58,9 +58,9 @@ enum TxNonceFormFieldNames {
   NONCE = 'nonce',
 }
 
-const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNonce: number }) => {
+const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNonce: string }) => {
   const { safeTx, setNonce } = useContext(SafeTxContext)
-  const previousNonces = usePreviousNonces()
+  const previousNonces = usePreviousNonces().map((nonce) => nonce.toString())
   const { safe } = useSafeInfo()
 
   const isEditable = !safeTx || safeTx?.signatures.size === 0
@@ -68,13 +68,13 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
 
   const formMethods = useForm({
     defaultValues: {
-      [TxNonceFormFieldNames.NONCE]: nonce.toString(),
+      [TxNonceFormFieldNames.NONCE]: nonce,
     },
     mode: 'all',
   })
 
   const resetNonce = () => {
-    formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce.toString())
+    formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce)
   }
 
   return (
@@ -99,7 +99,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
             return 'Nonce is too high'
           }
 
-          // Update contect with valid nonce
+          // Update context with valid nonce
           setNonce(newNonce)
         },
       }}
@@ -112,7 +112,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
           )
         }
 
-        const showRecommendedNonceButton = recommendedNonce.toString() !== field.value
+        const showRecommendedNonceButton = recommendedNonce !== field.value
 
         const extraWidth = showRecommendedNonceButton ? 32 : 8
 
@@ -129,10 +129,16 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: number; recommendedNo
                 formMethods.setValue(field.name, recommendedNonce.toString())
               }
             }}
-            options={previousNonces}
+            options={[recommendedNonce, ...previousNonces]}
             getOptionLabel={(option) => option.toString()}
             renderOption={(props, option) => {
-              return <NonceFormOption menuItemProps={props} nonce={option} />
+              return option === recommendedNonce ? (
+                <MenuItem key={option} {...props}>
+                  {option} (recommended nonce)
+                </MenuItem>
+              ) : (
+                <NonceFormOption key={option} menuItemProps={props} nonce={option} />
+              )
             }}
             disableClearable
             componentsProps={{
@@ -194,7 +200,7 @@ const TxNonce = () => {
       {nonce === undefined || recommendedNonce === undefined ? (
         <Skeleton width="70px" height="38px" />
       ) : (
-        <TxNonceForm nonce={nonce} recommendedNonce={recommendedNonce} />
+        <TxNonceForm nonce={nonce.toString()} recommendedNonce={recommendedNonce.toString()} />
       )}
     </Box>
   )
