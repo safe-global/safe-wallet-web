@@ -72,7 +72,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
     <Paper variant="outlined" className={sharedCss.wrapper}>
       <div>
         <Typography variant="body2" fontWeight={700}>
-          Simulate transaction
+          Run a simulation
           <Tooltip
             title="This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
             arrow
