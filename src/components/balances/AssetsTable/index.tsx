@@ -181,7 +181,11 @@ const AssetsTable = ({
                 <>
                   <FiatValue value={item.fiatBalance} />
                   {rawFiatValue === 0 && (
-                    <Tooltip title="Value may be zero due to missing token price information" placement="top" arrow>
+                    <Tooltip
+                      title="Provided values are indicative and we are unable to accommodate pricing requests for individual assets"
+                      placement="top"
+                      arrow
+                    >
                       <span>
                         <SvgIcon
                           component={InfoIcon}
