@@ -24,6 +24,8 @@ import { asError } from '@/services/exceptions/utils'
 import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 
 const ExecuteForm = ({
   safeTx,
@@ -31,6 +33,7 @@ const ExecuteForm = ({
   onSubmit,
   disableSubmit = false,
   origin,
+  onlyExecute,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
 }): ReactElement => {
@@ -39,6 +42,7 @@ const ExecuteForm = ({
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
   // Hooks
+  const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
   const { executeTx } = useTxActions()
   const [relays] = useRelaysBySafe()
@@ -95,12 +99,14 @@ const ExecuteForm = ({
     onSubmit()
   }
 
-  const submitDisabled = !safeTx || !isSubmittable || disableSubmit || isValidExecutionLoading || isExecutionLoop
+  const cannotPropose = !isOwner && !onlyExecute
+  const submitDisabled =
+    !safeTx || !isSubmittable || disableSubmit || isValidExecutionLoading || isExecutionLoop || cannotPropose
 
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className={classNames({ [css.noBottomBorderRadius]: canRelay })}>
+        <div className={classNames(css.params, { [css.noBottomBorderRadius]: canRelay })}>
           <AdvancedParams
             willExecute
             params={advancedParams}
@@ -109,25 +115,27 @@ const ExecuteForm = ({
             gasLimitError={gasLimitError}
             willRelay={willRelay}
           />
+
+          {canRelay && (
+            <div className={css.noTopBorder}>
+              <ExecutionMethodSelector
+                executionMethod={executionMethod}
+                setExecutionMethod={setExecutionMethod}
+                relays={relays}
+              />
+            </div>
+          )}
         </div>
 
-        {canRelay && (
-          <div className={css.noTopBorder}>
-            <ExecutionMethodSelector
-              executionMethod={executionMethod}
-              setExecutionMethod={setExecutionMethod}
-              relays={relays}
-            />
-          </div>
-        )}
-
         {/* Error messages */}
-        {isExecutionLoop ? (
-          <ErrorMessage className={css.errorWrapper}>
+        {cannotPropose ? (
+          <NonOwnerError />
+        ) : isExecutionLoop ? (
+          <ErrorMessage>
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
         ) : executionValidationError || gasLimitError ? (
-          <ErrorMessage error={executionValidationError || gasLimitError} className={css.errorWrapper}>
+          <ErrorMessage error={executionValidationError || gasLimitError}>
             This transaction will most likely fail.{' '}
             {isNewExecutableTx
               ? 'To save gas costs, avoid creating the transaction.'
@@ -135,9 +143,7 @@ const ExecuteForm = ({
           </ErrorMessage>
         ) : (
           submitError && (
-            <ErrorMessage error={submitError} className={css.errorWrapper}>
-              Error submitting the transaction. Please try again.
-            </ErrorMessage>
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           )
         )}
 
@@ -145,7 +151,7 @@ const ExecuteForm = ({
 
         <CardActions>
           {/* Submit button */}
-          <CheckWallet allowNonOwner={true}>
+          <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
               <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
                 Submit
