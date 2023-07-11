@@ -5,7 +5,7 @@ import { Typography, Grid, Alert } from '@mui/material'
 
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
-import { AmountBlock } from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
+import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
@@ -59,33 +59,26 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && (
-        <Grid container gap={1} alignItems="center">
-          <Grid item xs={4} md={2}>
-            <Typography variant="body2" color="text.secondary">
-              Amount
-            </Typography>
-          </Grid>
-          <AmountBlock amount={params.amount} tokenInfo={token.tokenInfo}>
-            {!!existingSpendingLimit && (
-              <>
-                <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span">
-                  {formatVisualAmount(BigNumber.from(existingSpendingLimit.amount), decimals)}
-                </Typography>
-                {'→'}
-              </>
-            )}
-          </AmountBlock>
-        </Grid>
+        <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} title="Amount">
+          {!!existingSpendingLimit && (
+            <>
+              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span">
+                {formatVisualAmount(BigNumber.from(existingSpendingLimit.amount), decimals)}
+              </Typography>
+              {'→'}
+            </>
+          )}
+        </SendAmountBlock>
       )}
 
       <Grid container gap={1} alignItems="center">
-        <Grid item xs={4} md={2}>
+        <Grid item md>
           <Typography variant="body2" color="text.secondary">
             Beneficiary
           </Typography>
         </Grid>
 
-        <Grid item>
+        <Grid item md={10}>
           <EthHashInfo
             address={params.beneficiary}
             shortAddress={false}
@@ -97,12 +90,12 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
       </Grid>
 
       <Grid container gap={1} alignItems="center">
-        <Grid item xs={4} md={2}>
+        <Grid item md>
           <Typography variant="body2" color="text.secondary">
             Reset time
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid item md={10}>
           {existingSpendingLimit ? (
             <>
               <SpendingLimitLabel

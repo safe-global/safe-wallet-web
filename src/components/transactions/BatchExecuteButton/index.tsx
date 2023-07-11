@@ -37,7 +37,7 @@ const BatchExecuteButton = () => {
       label: batchableTransactions.length,
     })
 
-    setTxFlow(<ExecuteBatchFlow txs={batchableTransactions} />)
+    setTxFlow(<ExecuteBatchFlow txs={batchableTransactions} />, undefined, false)
   }
 
   return (
