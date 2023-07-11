@@ -6,6 +6,7 @@ import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
 import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
+import { useMemo } from 'react'
 
 export type ApprovalInfo = {
   tokenInfo: (Omit<TokenInfo, 'logoUri' | 'name'> & { logoUri?: string }) | undefined
@@ -17,22 +18,28 @@ export type ApprovalInfo = {
 
 const ApprovalModuleInstance = new ApprovalModule()
 
-export const useApprovalInfos = (safeTransaction: SafeTransaction | undefined) => {
+export const useApprovalInfos = (
+  safeTransaction: SafeTransaction | undefined,
+): [ApprovalInfo[] | undefined, Error | undefined, boolean] => {
   const { balances } = useBalances()
+  const approvals = useMemo(() => {
+    if (!safeTransaction) return
 
-  return useAsync<ApprovalInfo[] | undefined>(
+    return ApprovalModuleInstance.scanTransaction({ safeTransaction })
+  }, [safeTransaction])
+
+  const hasApprovalSignatures = !!approvals && !!approvals.payload && approvals.payload.length > 0
+
+  const [approvalInfos, error, loading] = useAsync<ApprovalInfo[] | undefined>(
     async () => {
-      if (!safeTransaction) return
-
-      const approvals = await ApprovalModuleInstance.scanTransaction({ safeTransaction })
-
-      if (!approvals || !approvals.payload || approvals.payload.length === 0) return Promise.resolve([])
+      if (!hasApprovalSignatures) return
 
       return Promise.all(
         approvals.payload.map(async (approval) => {
           let tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> | undefined = balances.items.find(
             (item) => item.tokenInfo.address === approval.tokenAddress,
           )?.tokenInfo
+
           if (!tokenInfo) {
             tokenInfo = await getERC20TokenInfoOnChain(approval.tokenAddress)
           }
@@ -45,7 +52,9 @@ export const useApprovalInfos = (safeTransaction: SafeTransaction | undefined) =
         }),
       )
     },
-    [safeTransaction, balances.items.length],
+    [hasApprovalSignatures, balances.items.length],
     false, // Do not clear data on balance updates
   )
+
+  return [hasApprovalSignatures ? approvalInfos : [], error, loading]
 }

@@ -55,7 +55,7 @@ export const ApprovalEditor = ({
       {error ? (
         <Alert severity="error">Error while decoding approval transactions.</Alert>
       ) : loading || !readableApprovals ? (
-        <Skeleton variant="rounded" height={126} data-testid="approval-editor-loading" />
+        <Skeleton variant="rounded" height={100} data-testid="approval-editor-loading" />
       ) : isReadOnly ? (
         <Approvals approvalInfos={readableApprovals} />
       ) : (
