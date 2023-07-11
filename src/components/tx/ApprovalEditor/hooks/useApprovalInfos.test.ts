@@ -22,13 +22,13 @@ describe('useApprovalInfos', () => {
     jest.restoreAllMocks()
   })
 
-  it('returns undefined if no Safe Transaction exists', async () => {
+  it('returns an empty array if no Safe Transaction exists', async () => {
     const { result } = renderHook(() => useApprovalInfos(undefined))
 
-    expect(result.current).toStrictEqual([undefined, undefined, true])
+    expect(result.current).toStrictEqual([[], undefined, true])
 
     await waitFor(() => {
-      expect(result.current).toStrictEqual([undefined, undefined, false])
+      expect(result.current).toStrictEqual([[], undefined, false])
     })
   })
 

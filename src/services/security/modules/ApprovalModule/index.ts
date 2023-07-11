@@ -35,7 +35,7 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     return []
   }
 
-  async scanTransaction(request: ApprovalModuleRequest): Promise<SecurityResponse<ApprovalModuleResponse>> {
+  scanTransaction(request: ApprovalModuleRequest): SecurityResponse<ApprovalModuleResponse> {
     const { safeTransaction } = request
     const safeTxData = safeTransaction.data.data
     const approvalInfos: Approval[] = []
