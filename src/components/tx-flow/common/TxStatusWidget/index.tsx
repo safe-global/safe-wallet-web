@@ -24,11 +24,13 @@ const TxStatusWidget = ({
   txSummary,
   handleClose,
   isReplacement = false,
+  isBatch = false,
 }: {
   step: number
   txSummary?: TransactionSummary
   handleClose: () => void
   isReplacement?: boolean
+  isBatch?: boolean
 }) => {
   const isDarkMode = useDarkMode()
   const wallet = useWallet()
@@ -62,28 +64,34 @@ const TxStatusWidget = ({
               <CreatedIcon />
             </ListItemIcon>
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
-              {isReplacement ? 'Create replacement transaction' : 'Create'}
+              {isReplacement ? 'Create replacement transaction' : isBatch ? 'Queue transactions' : 'Create'}
             </ListItemText>
           </ListItem>
 
-          <ListItem className={classnames({ [css.incomplete]: isConfirmedStepIncomplete })}>
+          <ListItem className={classnames({ [css.incomplete]: isConfirmedStepIncomplete && !isBatch })}>
             <ListItemIcon>
               <SignedIcon />
             </ListItemIcon>
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
-              {confirmedMessage(threshold, confirmationsSubmitted)}
-              {canSign && (
-                <Typography
-                  variant="body2"
-                  component="span"
-                  className={css.badge}
-                  sx={({ palette }) => ({
-                    bgcolor: isDarkMode ? `${palette.primary.main}` : `${palette.secondary.main}`,
-                    color: isDarkMode ? `${palette.text.secondary}` : `${palette.text.primary}`,
-                  })}
-                >
-                  +1
-                </Typography>
+              {isBatch ? (
+                'Create batch'
+              ) : (
+                <>
+                  {confirmedMessage(threshold, confirmationsSubmitted)}
+                  {canSign && (
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className={css.badge}
+                      sx={({ palette }) => ({
+                        bgcolor: isDarkMode ? `${palette.primary.main}` : `${palette.secondary.main}`,
+                        color: isDarkMode ? `${palette.text.secondary}` : `${palette.text.primary}`,
+                      })}
+                    >
+                      +1
+                    </Typography>
+                  )}
+                </>
               )}
             </ListItemText>
           </ListItem>
