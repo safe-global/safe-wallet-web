@@ -24,6 +24,7 @@ type TxLayoutProps = {
   txSummary?: TransactionSummary
   onBack?: () => void
   hideNonce?: boolean
+  isBatch?: boolean
   isReplacement?: boolean
 }
 
@@ -36,6 +37,7 @@ const TxLayout = ({
   txSummary,
   onBack,
   hideNonce = false,
+  isBatch = false,
   isReplacement = false,
 }: TxLayoutProps): ReactElement => {
   const [statusVisible, setStatusVisible] = useState<boolean>(true)
@@ -122,6 +124,7 @@ const TxLayout = ({
                       txSummary={txSummary}
                       handleClose={() => setStatusVisible(false)}
                       isReplacement={isReplacement}
+                      isBatch={isBatch}
                     />
                   )}
 
