@@ -75,6 +75,7 @@
   color: var(--color-text-primary);
   padding: var(--space-2);
   border-left: 1px solid var(--color-border-light);
+  border-right: 1px solid var(--color-border-light);
   border-radius: 0;
   width: 24px;
   height: 24px;
@@ -119,9 +120,9 @@
   .titleWrapper {
     position: absolute;
     top: 12px;
-    left: var(--space-3);
+    left: var(--space-2);
     margin-bottom: 0;
-    width: calc(100% - 154px);
+    width: calc(100% - 145px);
   }
 
   .title {

@@ -38,7 +38,7 @@ const TxModalDialog = ({
             onClick={(e) => onClose?.(e, 'backdropClick')}
             size="small"
           >
-            <CloseIcon />
+            <CloseIcon fontSize="large" />
           </IconButton>
         </div>
       </DialogTitle>
