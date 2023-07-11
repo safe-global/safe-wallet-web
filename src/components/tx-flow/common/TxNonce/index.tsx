@@ -54,16 +54,11 @@ const NonceFormOption = memo(function NonceFormOption({
   )
 })
 
-const getFieldMinWidth = (value: string, showRecommendedNonceButton?: boolean): string => {
-  const MIN_CHARS = 4
+const getFieldMinWidth = (value: string): string => {
+  const MIN_CHARS = 5
   const MAX_WIDTH = '200px'
 
-  const extraWidth = `${showRecommendedNonceButton ? 32 : 8}px`
-
-  return `clamp(calc(${MIN_CHARS}ch + ${extraWidth}), calc(${Math.max(
-    MIN_CHARS,
-    value.length,
-  )}ch + ${extraWidth}), ${MAX_WIDTH})`
+  return `clamp(calc(${MIN_CHARS}ch + 6px), calc(${Math.max(MIN_CHARS, value.length)}ch + 6px), ${MAX_WIDTH})`
 }
 
 enum TxNonceFormFieldNames {
@@ -182,7 +177,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
                       },
                     ])}
                     sx={{
-                      minWidth: getFieldMinWidth(field.value, showRecommendedNonceButton),
+                      minWidth: getFieldMinWidth(field.value),
                     }}
                   />
                 </Tooltip>
