@@ -24,7 +24,7 @@ type TxLayoutProps = {
   txSummary?: TransactionSummary
   onBack?: () => void
   hideNonce?: boolean
-  hideStatus?: boolean
+  isBatch?: boolean
   isReplacement?: boolean
 }
 
@@ -37,7 +37,7 @@ const TxLayout = ({
   txSummary,
   onBack,
   hideNonce = false,
-  hideStatus = false,
+  isBatch = false,
   isReplacement = false,
 }: TxLayoutProps): ReactElement => {
   const [statusVisible, setStatusVisible] = useState<boolean>(true)
@@ -63,23 +63,21 @@ const TxLayout = ({
           <Container className={css.container}>
             <Grid container alignItems="center" justifyContent="center">
               <Grid item container xs={12}>
-                <Grid item xs={12} md={7} className={classnames(css.titleWrapper, { [css.noStatus]: hideStatus })}>
+                <Grid item xs={12} md={7} className={css.titleWrapper}>
                   <Typography variant="h3" component="div" fontWeight="700" className={css.title}>
                     {title}
                   </Typography>
 
                   <ChainIndicator inline />
                 </Grid>
-                {!hideStatus && (
-                  <IconButton
-                    className={css.statusButton}
-                    aria-label="Transaction status"
-                    size="large"
-                    onClick={toggleStatus}
-                  >
-                    <SafeLogo width={16} height={16} />
-                  </IconButton>
-                )}
+                <IconButton
+                  className={css.statusButton}
+                  aria-label="Transaction status"
+                  size="large"
+                  onClick={toggleStatus}
+                >
+                  <SafeLogo width={16} height={16} />
+                </IconButton>
               </Grid>
 
               <Grid item container xs={12} gap={3}>
@@ -120,12 +118,13 @@ const TxLayout = ({
                 </Grid>
 
                 <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
-                  {statusVisible && !hideStatus && (
+                  {statusVisible && (
                     <TxStatusWidget
                       step={step}
                       txSummary={txSummary}
                       handleClose={() => setStatusVisible(false)}
                       isReplacement={isReplacement}
+                      isBatch={isBatch}
                     />
                   )}
 
