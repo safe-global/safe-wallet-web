@@ -6,7 +6,7 @@ describe('Assets > NFTs', () => {
 
     cy.visit(`/balances/nfts?safe=${TEST_SAFE}`)
     cy.contains('button', 'Accept selection').click()
-    cy.contains('E2E Wallet @ Görli')
+    cy.contains(/E2E Wallet @ G(ö|oe)rli/)
   })
 
   describe('should have NFTs', () => {
@@ -31,7 +31,9 @@ describe('Assets > NFTs', () => {
 
       // Modal
       cy.get('div[role="dialog"]').contains('Kitaro #261')
-      cy.get('div[role="dialog"]').contains('Görli')
+
+      // Prevent Base Mainnet Goerli from being selected
+      cy.get('div[role="dialog"]').contains(/^G(ö|oe)rli$/)
       cy.get('div[role="dialog"]').contains(
         'a[href="https://testnets.opensea.io/assets/0x000000000faE8c6069596c9C805A1975C657816D/443"]',
         'View on OpenSea',
