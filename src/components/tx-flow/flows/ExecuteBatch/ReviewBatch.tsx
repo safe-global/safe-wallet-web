@@ -1,6 +1,6 @@
 import { Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useContext } from 'react'
 import type { SyntheticEvent } from 'react'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -28,6 +28,7 @@ import { asError } from '@/services/exceptions/utils'
 import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { TxModalContext } from '@/components/tx-flow'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -36,6 +37,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
   const [relays] = useRelaysBySafe()
+  const { setTxFlow } = useContext(TxModalContext)
 
   // Chain has relaying feature and available relays
   const canRelay = hasRemainingRelays(relays)
@@ -95,6 +97,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
     try {
       await (willRelay ? onRelay() : onExecute())
+      setTxFlow(undefined)
     } catch (_err) {
       const err = asError(_err)
       logError(Errors._804, err)
