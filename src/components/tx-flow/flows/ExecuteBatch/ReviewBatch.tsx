@@ -1,26 +1,26 @@
 import { Typography, Button, CardActions, Divider, Alert } from '@mui/material'
+import useAsync from '@/hooks/useAsync'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { useState, useMemo, useContext } from 'react'
 import type { SyntheticEvent } from 'react'
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
 import { TxSimulation } from '@/components/tx/security/tenderly'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
-import useAsync from '@/hooks/useAsync'
-import { useCurrentChain } from '@/hooks/useChains'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { getTxsWithDetails, getMultiSendTxs } from '@/utils/transactions'
-import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import TxCard from '../../common/TxCard'
 import CheckWallet from '@/components/common/CheckWallet'
 import type { ExecuteBatchFlowProps } from '.'
@@ -29,6 +29,9 @@ import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxModalContext } from '@/components/tx-flow'
+import useGasPrice from '@/hooks/useGasPrice'
+import { hasFeature } from '@/utils/chains'
+import type { PayableOverrides } from 'ethers'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -38,6 +41,12 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const { safe } = useSafeInfo()
   const [relays] = useRelaysBySafe()
   const { setTxFlow } = useContext(TxModalContext)
+  const [gasPrice, , gasPriceLoading] = useGasPrice()
+
+  const maxFeePerGas = gasPrice?.maxFeePerGas
+  const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
+
+  const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
 
   // Chain has relaying feature and available relays
   const canRelay = hasRemainingRelays(relays)
@@ -66,7 +75,11 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails) return
+    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || gasPriceLoading) return
+
+    const overrides: PayableOverrides = isEIP1559
+      ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
+      : { gasPrice: maxFeePerGas?.toString() }
 
     await dispatchBatchExecution(
       txsWithDetails,
@@ -75,6 +88,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       onboard,
       safe.chainId,
       safe.address.value,
+      overrides,
     )
   }
 
@@ -107,7 +121,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
     }
   }
 
-  const submitDisabled = loading || !isSubmittable
+  const submitDisabled = loading || !isSubmittable || gasPriceLoading
 
   return (
     <>
