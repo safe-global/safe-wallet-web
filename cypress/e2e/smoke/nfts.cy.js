@@ -18,7 +18,7 @@ describe('Assets > NFTs', () => {
       cy.get('tbody tr:first-child').contains('td:first-child', 'BillyNFT721')
       cy.get('tbody tr:first-child').contains('td:first-child', '0x0000...816D')
 
-      cy.get('tbody tr:first-child').contains('td:nth-child(2)', 'Kitaro #261')
+      cy.get('tbody tr:first-child').contains('td:nth-child(2)', 'Kitaro World #261')
 
       cy.get(
         'tbody tr:first-child td:nth-child(3) a[href="https://testnets.opensea.io/assets/0x000000000faE8c6069596c9C805A1975C657816D/443"]',
@@ -30,7 +30,7 @@ describe('Assets > NFTs', () => {
       cy.get('tbody tr:first-child td:nth-child(2)').click()
 
       // Modal
-      cy.get('div[role="dialog"]').contains('Kitaro #261')
+      cy.get('div[role="dialog"]').contains('Kitaro World #261')
 
       // Prevent Base Mainnet Goerli from being selected
       cy.get('div[role="dialog"]').contains(/^G(ö|oe)rli$/)
