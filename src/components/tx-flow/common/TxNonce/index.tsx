@@ -54,6 +54,13 @@ const NonceFormOption = memo(function NonceFormOption({
   )
 })
 
+const getFieldMinWidth = (value: string): string => {
+  const MIN_CHARS = 5
+  const MAX_WIDTH = '200px'
+
+  return `clamp(calc(${MIN_CHARS}ch + 6px), calc(${Math.max(MIN_CHARS, value.length)}ch + 6px), ${MAX_WIDTH})`
+}
+
 enum TxNonceFormFieldNames {
   NONCE = 'nonce',
 }
@@ -114,8 +121,6 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
 
         const showRecommendedNonceButton = recommendedNonce !== field.value
 
-        const extraWidth = showRecommendedNonceButton ? 32 : 8
-
         return (
           <Autocomplete
             value={field.value}
@@ -172,9 +177,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
                       },
                     ])}
                     sx={{
-                      minWidth: `clamp(calc(1ch + ${extraWidth}px), calc(${
-                        field.value.toString().length
-                      }ch + ${extraWidth}px), 200px)`,
+                      minWidth: getFieldMinWidth(field.value),
                     }}
                   />
                 </Tooltip>
@@ -188,6 +191,8 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
   )
 }
 
+const skeletonMinWidth = getFieldMinWidth('')
+
 const TxNonce = () => {
   const { nonce, recommendedNonce } = useContext(SafeTxContext)
 
@@ -198,7 +203,7 @@ const TxNonce = () => {
         #
       </Typography>
       {nonce === undefined || recommendedNonce === undefined ? (
-        <Skeleton width="70px" height="38px" />
+        <Skeleton width={skeletonMinWidth} height="38px" />
       ) : (
         <TxNonceForm nonce={nonce.toString()} recommendedNonce={recommendedNonce.toString()} />
       )}
