@@ -145,9 +145,6 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         )}
 
         <div>
-          <Typography variant="body2" color="text.secondary">
-            Batched transactions:
-          </Typography>
           <DecodedTxs txs={txsWithDetails} />
         </div>
       </TxCard>
@@ -198,7 +195,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
             <CheckWallet allowNonOwner={true}>
               {(isOk) => (
                 <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} onClick={handleSubmit}>
-                  Send
+                  Submit
                 </Button>
               )}
             </CheckWallet>

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
-import { Box, Button, Divider, Stack } from '@mui/material'
+import { Button, Divider, Stack } from '@mui/material'
 import css from './styles.module.css'
 import classnames from 'classnames'
 
@@ -15,14 +15,16 @@ type MultisendProps = {
   compact?: boolean
 }
 
-const MultisendActionsHeader = ({
+export const MultisendActionsHeader = ({
   setOpen,
   amount,
   compact = false,
+  title = 'All actions',
 }: {
   setOpen: Dispatch<SetStateAction<Record<number, boolean> | undefined>>
   amount: number
   compact?: boolean
+  title?: string
 }) => {
   const onClickAll = (expanded: boolean) => () => {
     setOpen(Array(amount).fill(expanded))
@@ -30,7 +32,7 @@ const MultisendActionsHeader = ({
 
   return (
     <div className={classnames(css.actionsHeader, { [css.compactHeader]: compact })}>
-      All actions
+      {title}
       <Stack direction="row" divider={<Divider className={css.divider} />}>
         <Button onClick={onClickAll(true)} variant="text">
           Expand all
@@ -83,7 +85,7 @@ export const Multisend = ({
     <>
       <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} compact={compact} />
 
-      <Box display="flex" flexDirection="column" className={compact ? css.compact : ''}>
+      <div className={compact ? css.compact : ''}>
         {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
           const onChange: AccordionProps['onChange'] = (_, expanded) => {
             setOpenMap((prev) => ({
@@ -111,7 +113,7 @@ export const Multisend = ({
             />
           )
         })}
-      </Box>
+      </div>
     </>
   )
 }
