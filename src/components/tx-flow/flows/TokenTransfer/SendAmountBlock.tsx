@@ -6,7 +6,7 @@ import TokenIcon from '@/components/common/TokenIcon'
 import { formatAmountPrecise } from '@/utils/formatNumber'
 import { PSEUDO_APPROVAL_VALUES } from '@/components/tx/ApprovalEditor/utils/approvals'
 
-export const AmountBlock = ({
+const AmountBlock = ({
   amount,
   tokenInfo,
   children,
