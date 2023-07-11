@@ -124,6 +124,10 @@
     width: calc(100% - 154px);
   }
 
+  .noStatus {
+    width: calc(100% - 100px);
+  }
+
   .title {
     font-size: 16px;
   }

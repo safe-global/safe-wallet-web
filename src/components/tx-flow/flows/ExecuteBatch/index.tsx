@@ -10,7 +10,7 @@ export type ExecuteBatchFlowProps = {
 
 const ExecuteBatchFlow = (props: ExecuteBatchFlowProps) => {
   return (
-    <TxLayout title="Confirm transaction" subtitle="Execute batch" icon={BatchIcon} hideNonce>
+    <TxLayout title="Confirm transaction" subtitle="Execute batch" icon={BatchIcon} hideNonce hideStatus>
       <ReviewBatch params={props} />
     </TxLayout>
   )

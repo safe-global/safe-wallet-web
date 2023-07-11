@@ -1,4 +1,4 @@
-import { Typography, Button, CardActions, Divider } from '@mui/material'
+import { Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { useState, useMemo } from 'react'
 import type { SyntheticEvent } from 'react'
@@ -159,10 +159,10 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           </>
         ) : null}
 
-        <Typography>
+        <Alert severity="warning">
           Be aware that if any of the included transactions revert, none of them will be executed. This will result in
           the loss of the allocated transaction fees.
-        </Typography>
+        </Alert>
 
         {error && (
           <ErrorMessage error={error}>
