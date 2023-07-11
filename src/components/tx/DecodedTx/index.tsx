@@ -32,6 +32,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import accordionCss from '@/styles/accordion.module.css'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -94,7 +95,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
       )}
 
       <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} className={accordionCss.accordion}>
           <span style={{ flex: 1 }}>Transaction details</span>
 
           {decodedData ? decodedData.method : tx?.data.operation === OperationType.DelegateCall ? 'Delegate call' : ''}

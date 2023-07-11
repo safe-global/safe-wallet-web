@@ -18,7 +18,7 @@ const SponsoredBy = ({ relays, tooltip }: { relays: RelayResponse; tooltip?: str
     <Box className={css.sponsoredBy}>
       <SvgIcon component={GasStationIcon} inheritViewBox className={css.icon} />
       <div>
-        <Stack direction="row" spacing={0.5} alignItems="center" mb={0.2}>
+        <Stack direction="row" spacing={0.5} alignItems="center">
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
             Sponsored by
           </Typography>

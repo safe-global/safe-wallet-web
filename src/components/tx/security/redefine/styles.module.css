@@ -20,6 +20,7 @@
   border: 1px solid var(--color-border-light);
   padding: 0;
   background-color: var(--color-background-main);
+  line-height: 1;
 }
 
 .loader {

@@ -70,7 +70,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
 
   return (
     <Paper variant="outlined" className={sharedCss.wrapper}>
-      <div>
+      <div className={css.wrapper}>
         <Typography variant="body2" fontWeight={700}>
           Run a simulation
           <Tooltip
