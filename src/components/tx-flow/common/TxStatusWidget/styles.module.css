@@ -62,6 +62,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--color-secondary-main);
+  color: var(--color-text-primary);
+}
+
+[data-theme='dark'] .badge {
+  background-color: var(--color-primary-main);
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 899.95px) {
