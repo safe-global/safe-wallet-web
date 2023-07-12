@@ -69,7 +69,7 @@ const TxStatusWidget = ({
             </ListItemText>
           </ListItem>
 
-          <ListItem className={classnames({ [css.incomplete]: step < 1 && !canConfirm && !isBatch })}>
+          <ListItem className={classnames({ [css.incomplete]: !canConfirm && !isBatch })}>
             <ListItemIcon>
               <SignedIcon />
             </ListItemIcon>
