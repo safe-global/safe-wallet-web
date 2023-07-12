@@ -90,8 +90,8 @@ const ReviewSpendingLimitTx = ({
 
     try {
       await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress)
-      setTxFlow(undefined)
       onSubmit()
+      setTxFlow(undefined)
     } catch (_err) {
       const err = asError(_err)
       logError(Errors._801, err)
