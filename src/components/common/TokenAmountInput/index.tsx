@@ -80,7 +80,7 @@ const TokenAmountInput = ({
           {...register(TokenAmountFields.tokenAddress, {
             required: true,
             onChange: () => {
-              resetField(TokenAmountFields.amount, { defaultValue: '0' })
+              resetField(TokenAmountFields.amount, { defaultValue: '' })
             },
           })}
           value={tokenAddress}
