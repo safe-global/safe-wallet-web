@@ -127,6 +127,17 @@ export const isSignableBy = (txSummary: TransactionSummary, walletAddress: strin
   return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
 }
 
+export const isConfirmableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {
+  if (!txSummary.executionInfo || !isMultisigExecutionInfo(txSummary.executionInfo)) {
+    return false
+  }
+  const { confirmationsRequired, confirmationsSubmitted } = txSummary.executionInfo
+  return (
+    confirmationsSubmitted >= confirmationsRequired ||
+    (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
+  )
+}
+
 export const isExecutable = (txSummary: TransactionSummary, walletAddress: string, safe: SafeInfo): boolean => {
   if (
     !txSummary.executionInfo ||
@@ -135,11 +146,7 @@ export const isExecutable = (txSummary: TransactionSummary, walletAddress: strin
   ) {
     return false
   }
-  const { confirmationsRequired, confirmationsSubmitted } = txSummary.executionInfo
-  return (
-    confirmationsSubmitted >= confirmationsRequired ||
-    (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
-  )
+  return isConfirmableBy(txSummary, walletAddress)
 }
 
 // Spending limits
