@@ -12,7 +12,6 @@ import useChainId from '@/hooks/useChainId'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createNewSpendingLimitTx } from '@/services/tx/tx-sender'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
-import { relativeTime } from '@/utils/date'
 import { formatVisualAmount } from '@/utils/formatters'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import type { NewSpendingLimitFlowProps } from '.'
@@ -56,14 +55,22 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
     })
   }
 
+  const existingAmount = existingSpendingLimit
+    ? formatVisualAmount(BigNumber.from(existingSpendingLimit?.amount), decimals)
+    : undefined
+
+  const oldResetTime = existingSpendingLimit
+    ? getResetTimeOptions(chainId).find((time) => time.value === existingSpendingLimit?.resetTimeMin)?.label
+    : undefined
+
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && (
         <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} title="Amount">
-          {!!existingSpendingLimit && (
+          {existingAmount && existingAmount !== params.amount && (
             <>
               <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span">
-                {formatVisualAmount(BigNumber.from(existingSpendingLimit.amount), decimals)}
+                {existingAmount}
               </Typography>
               {'→'}
             </>
@@ -109,7 +116,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
                           display="inline"
                           component="span"
                         >
-                          {relativeTime(existingSpendingLimit.lastResetMin, existingSpendingLimit.resetTimeMin)}
+                          {oldResetTime}
                         </Typography>
                         {' → '}
                       </>
