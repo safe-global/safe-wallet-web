@@ -194,7 +194,7 @@ describe('AddressInput tests', () => {
     expect(input.previousElementSibling?.textContent).toBe('gor:')
   })
 
-  it('should not show adornment when the value contains correct prefix', async () => {
+  it('should not show the adornment prefix when the value contains correct prefix', async () => {
     ;(useCurrentChain as jest.Mock).mockImplementation(() => ({
       shortName: 'gor',
       chainId: '5',
@@ -208,7 +208,7 @@ describe('AddressInput tests', () => {
       fireEvent.change(input, { target: { value: `gor:${TEST_ADDRESS_B}` } })
     })
 
-    await waitFor(() => expect(input.previousElementSibling).toBe(null))
+    await waitFor(() => expect(input.previousElementSibling?.textContent).toBe(''))
   })
 
   it('should keep a bare address in the form state', async () => {

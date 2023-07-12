@@ -27,7 +27,7 @@ export const dispatchPreparedSignature = async (
     // fetchedMessage does not have a type because it is explicitly a message
     message = { ...fetchedMessage, type: SafeMessageListItemType.MESSAGE }
   } catch (err) {
-    logError(Errors._613, (err as Error).message)
+    logError(Errors._613, err)
     throw err
   }
 

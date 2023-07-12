@@ -1,7 +1,7 @@
 import CheckWallet from '@/components/common/CheckWallet'
 import { Button } from '@mui/material'
 import { useContext } from 'react'
-import { TransactionSecurityContext } from '../security/TransactionSecurityContext'
+import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 
 const SubmitButton = ({
   willExecute,
@@ -12,7 +12,7 @@ const SubmitButton = ({
   submitDisabled: boolean
   isEstimating: boolean
 }) => {
-  const { needsRiskConfirmation, isRiskConfirmed } = useContext(TransactionSecurityContext)
+  const { needsRiskConfirmation, isRiskConfirmed } = useContext(TxSecurityContext)
 
   const disableButton = submitDisabled || (needsRiskConfirmation && !isRiskConfirmed)
   return (

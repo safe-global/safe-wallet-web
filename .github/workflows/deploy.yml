@@ -79,7 +79,7 @@ jobs:
           BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/walletweb/${{ steps.extract_branch.outputs.branch }}
         run: bash ./scripts/github/s3_upload.sh
 
-      # Comnment
+      # Comment
       - name: Post a deployment link in the PR
         if: always() && github.event.number
         uses: mshick/add-pr-comment@v2

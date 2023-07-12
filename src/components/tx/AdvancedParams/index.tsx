@@ -8,10 +8,8 @@ import { type AdvancedParameters } from './types'
 
 type Props = {
   params: AdvancedParameters
-  recommendedNonce?: number
   recommendedGasLimit?: AdvancedParameters['gasLimit']
   willExecute: boolean
-  nonceReadonly: boolean
   onFormSubmit: (data: AdvancedParameters) => void
   gasLimitError?: Error
   willRelay?: boolean
@@ -19,10 +17,8 @@ type Props = {
 
 const AdvancedParams = ({
   params,
-  recommendedNonce,
   recommendedGasLimit,
   willExecute,
-  nonceReadonly,
   onFormSubmit,
   gasLimitError,
   willRelay,
@@ -44,9 +40,7 @@ const AdvancedParams = ({
     <AdvancedParamsForm
       params={params}
       isExecution={willExecute}
-      recommendedNonce={recommendedNonce}
       recommendedGasLimit={recommendedGasLimit}
-      nonceReadonly={nonceReadonly}
       onSubmit={onAdvancedSubmit}
       isEIP1559={isEIP1559}
       willRelay={willRelay}

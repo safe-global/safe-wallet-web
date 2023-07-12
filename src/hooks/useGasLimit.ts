@@ -51,6 +51,7 @@ const useGasLimit = (
   const walletAddress = wallet?.address
   const isOwner = useIsSafeOwner()
   const currentChainId = useChainId()
+  const hasSafeTxGas = !!safeTx?.data?.safeTxGas
 
   const encodedSafeTx = useMemo<string>(() => {
     if (!safeTx || !safeSDK || !walletAddress) {
@@ -77,17 +78,14 @@ const useGasLimit = (
       .then((gasLimit) => {
         // Due to a bug in Nethermind estimation, we need to increment the gasLimit by 30%
         // when the safeTxGas is defined and not 0. Currently Nethermind is used only for Gnosis Chain.
-        if (currentChainId === chains.gno) {
+        if (currentChainId === chains.gno && hasSafeTxGas) {
           const incrementPercentage = 30 // value defined in %, ex. 30%
-          const isSafeTxGasSetAndNotZero = !!safeTx?.data?.safeTxGas
-          if (isSafeTxGasSetAndNotZero) {
-            return incrementByPercentage(gasLimit, incrementPercentage)
-          }
+          return incrementByPercentage(gasLimit, incrementPercentage)
         }
 
         return gasLimit
       })
-  }, [currentChainId, safeAddress, safeTx, walletAddress, encodedSafeTx, web3ReadOnly, operationType])
+  }, [currentChainId, safeAddress, hasSafeTxGas, walletAddress, encodedSafeTx, web3ReadOnly, operationType])
 
   useEffect(() => {
     if (gasLimitError) {

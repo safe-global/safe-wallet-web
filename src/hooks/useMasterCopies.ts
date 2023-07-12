@@ -36,7 +36,7 @@ export const useMasterCopies = () => {
       const res = await getMasterCopies(chainId)
       return res.map(extractMasterCopyInfo)
     } catch (error) {
-      logError(Errors._619, (error as Error).message)
+      logError(Errors._619, error)
     }
   }
   return useAsync(fetchMasterCopies, [chainId])

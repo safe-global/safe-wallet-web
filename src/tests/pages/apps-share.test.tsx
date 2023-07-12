@@ -108,7 +108,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: 'https://apps-portal.safe.global/tx-builder/',
           chain: 'rin',
         },
       },

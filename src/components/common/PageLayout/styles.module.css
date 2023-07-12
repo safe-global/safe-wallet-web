@@ -37,7 +37,7 @@
 
 .sidebarTogglePosition {
   position: fixed;
-  z-index: 2;
+  z-index: 4;
   left: 0;
   top: 0;
   /* mimics MUI drawer animation */
@@ -72,7 +72,7 @@
   background-color: var(--color-background-light);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899.95px) {
   .main {
     padding-left: 0;
   }
@@ -82,7 +82,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .main main {
     padding: var(--space-2);
   }

@@ -31,7 +31,7 @@
   text-decoration: line-through;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .disclaimerContainer {
     gap: var(--space-1);
     align-items: flex-start;

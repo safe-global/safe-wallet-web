@@ -92,7 +92,7 @@ export const useGlobalImportJsonParser = (jsonData: string | undefined): Data =>
     try {
       parsedFile = JSON.parse(jsonData)
     } catch (err) {
-      logError(ErrorCodes._704, (err as Error).message)
+      logError(ErrorCodes._704, err)
 
       data.error = ImportErrors.INVALID_JSON_FORMAT
       return data

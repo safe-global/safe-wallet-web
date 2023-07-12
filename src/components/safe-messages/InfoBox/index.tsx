@@ -5,10 +5,12 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 
 const InfoBox = ({
+  title,
   message,
   children,
   className,
 }: {
+  title: string
   message: string
   children: ReactNode
   className?: string
@@ -16,14 +18,15 @@ const InfoBox = ({
   return (
     <div className={classNames(css.container, className)}>
       <div className={css.message}>
-        <SvgIcon component={InfoIcon} color="info" inheritViewBox fontSize="small" />
+        <SvgIcon component={InfoIcon} color="info" inheritViewBox fontSize="medium" />
         <div>
-          <Typography variant="body2" component="span">
-            {message}
+          <Typography variant="subtitle1" fontWeight="bold">
+            {title}
           </Typography>
+          <Typography variant="body2">{message}</Typography>
         </div>
       </div>
-      <Divider sx={{ marginRight: -2, marginLeft: -2 }} />
+      <Divider className={css.divider} />
       <div>{children}</div>
     </div>
   )

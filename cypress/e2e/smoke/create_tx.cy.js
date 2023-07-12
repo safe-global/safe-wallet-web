@@ -1,9 +1,7 @@
 const SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
 const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
-// generate number between 0.00001 and 0.00020
-let recommendedNonce
-const sendValue = Math.floor(Math.random() * 20 + 1) / 100000
+const sendValue = 0.00002
 const currentNonce = 3
 
 describe('Queue a transaction on 1/N', () => {
@@ -28,7 +26,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('New transaction').click()
 
     // Modal is open
-    cy.contains('h2', 'New transaction').should('be.visible')
+    cy.contains('h1', 'New transaction').should('be.visible')
     cy.contains('Send tokens').click()
 
     // Fill transaction data
@@ -50,59 +48,28 @@ describe('Queue a transaction on 1/N', () => {
       .next()
       .then((element) => {
         const maxBalance = element.text().replace(' GOR', '').trim()
-        cy.wrap(element)
-          .parents('form')
-          .find('label')
-          .contains('Amount')
-          .next()
-          .find('input')
-          .should('have.value', maxBalance)
-          .clear()
-          .type(sendValue)
+        cy.get('input[name="amount"]').should('have.value', maxBalance)
       })
+
+    cy.get('input[name="amount"]').clear().type(sendValue)
 
     cy.contains('Next').click()
   })
 
   it('should create a queued transaction', () => {
-    // Wait for /estimations response
-    cy.intercept('POST', '/**/multisig-transactions/estimations').as('EstimationRequest')
-
-    cy.wait('@EstimationRequest')
-
-    // Alias for New transaction modal
-    cy.contains('h2', 'Review transaction').parents('div').as('modal')
-
-    // Estimation is loaded
     cy.get('button[type="submit"]').should('not.be.disabled')
 
-    // Gets the recommended nonce
-    cy.contains('Signing the transaction with nonce').should(($div) => {
-      // get the number in the string
-      recommendedNonce = $div.text().match(/\d+$/)[0]
-    })
+    cy.contains('Native token transfer').should('be.visible')
 
     // Changes nonce to next one
-    cy.contains('Signing the transaction with nonce').click()
-    cy.contains('button', 'Edit').click()
-    cy.get('label').contains('Safe Account transaction nonce').next().clear().type(currentNonce)
-    cy.contains('Confirm').click()
+    cy.get('input[name="nonce"]').clear().type(currentNonce, { force: true }).type('{enter}', { force: true })
 
-    // Asserts the execute checkbox exists
-    cy.get('@modal').within(() => {
-      cy.get('input[type="checkbox"]')
-        .parent('span')
-        .should(($div) => {
-          // Turn the classList into a string
-          const classListString = Array.from($div[0].classList).join()
-          // Check if it contains the error class
-          expect(classListString).to.include('checked')
-        })
-    })
+    // Execution
+    cy.contains('Yes, ').should('exist')
     cy.contains('Estimated fee').should('exist')
 
     // Asserting the sponsored info is present
-    cy.contains('Sponsored by').should('be.visible')
+    cy.contains('Execute').should('be.visible')
 
     cy.get('span').contains('Estimated fee').next().should('have.css', 'text-decoration-line', 'line-through')
     cy.contains('Transactions per hour')
@@ -110,7 +77,7 @@ describe('Queue a transaction on 1/N', () => {
 
     cy.contains('Estimated fee').click()
     cy.contains('Edit').click()
-    cy.contains('Owner transaction (Execution)').parents('form').as('Paramsform')
+    cy.contains('Execution parameters').parents('form').as('Paramsform')
 
     // Only gaslimit should be editable when the relayer is selected
     const arrayNames = ['Wallet nonce', 'Max priority fee (Gwei)', 'Max fee (Gwei)']
@@ -125,37 +92,16 @@ describe('Queue a transaction on 1/N', () => {
       .invoke('prop', 'value')
       .should('equal', '300000')
     cy.get('@Paramsform').find('[name="gasLimit"]').parent('div').find('[data-testid="RotateLeftIcon"]').click()
-    cy.contains('Confirm').click()
+
+    cy.get('@Paramsform').submit()
 
     // Asserts the execute checkbox is uncheckable
-    cy.contains('Execute transaction').click()
-    cy.get('@modal').within(() => {
-      cy.get('input[type="checkbox"]')
-        .parent('span')
-        .should(($div) => {
-          // Turn the classList into a string
-          const classListString = Array.from($div[0].classList).join()
-          // Check if it contains the error class
-          expect(classListString).not.to.include('checked')
-        })
-    })
+    cy.contains('No, only').click()
 
-    // If the checkbox is unchecked the relayer is not present
-    cy.get('@modal').should('not.contain', 'Sponsored by').and('not.contain', 'Transactions per hour')
-
-    cy.contains('Signing the transaction with nonce').should('exist')
-
-    // Changes back to recommended nonce
-    cy.contains('Signing the transaction with nonce').click()
-    cy.contains('Edit').click()
-    cy.get('button[aria-label="Reset to recommended nonce"]').click()
-
-    // Accepts the values
-    cy.contains('Confirm').click()
-
-    cy.get('@modal').within(() => {
-      cy.get('input[type="checkbox"]').should('not.exist')
-    })
+    cy.get('input[name="nonce"]')
+      .clear({ force: true })
+      .type(currentNonce + 10, { force: true })
+      .type('{enter}', { force: true })
 
     cy.contains('Submit').click()
   })
@@ -174,9 +120,9 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('h3', 'Transaction details').should('be.visible')
 
     // Queue label
-    cy.contains(`Queued - transaction with nonce ${currentNonce} needs to be executed first`).should('be.visible')
+    cy.contains(`needs to be executed first`).should('be.visible')
 
     // Transaction summary
-    cy.contains(`${recommendedNonce}` + 'Send' + '-' + `${sendValue} GOR`).should('exist')
+    cy.contains('Send' + '-' + `${sendValue} GOR`).should('exist')
   })
 })

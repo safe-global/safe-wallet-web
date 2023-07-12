@@ -29,7 +29,7 @@ describe('DecodedTx', () => {
 
     fireEvent.click(result.getByText('Transaction details'))
 
-    expect(result.queryByText('Native token transfer')).toBeInTheDocument()
+    expect(result.queryAllByText('Native token transfer').length).toBe(2)
     expect(result.queryByText('to(address):')).toBeInTheDocument()
     expect(result.queryByText('0x3430...7600')).toBeInTheDocument()
     expect(result.queryByText('value(uint256):')).toBeInTheDocument()
@@ -79,7 +79,7 @@ describe('DecodedTx', () => {
     fireEvent.click(result.getByText('Transaction details'))
 
     await waitFor(() => {
-      expect(result.queryByText('transfer')).toBeInTheDocument()
+      expect(result.queryAllByText('transfer').length).toBe(2)
       expect(result.queryByText('to(address):')).toBeInTheDocument()
       expect(result.queryByText('0x474e...78C8')).toBeInTheDocument()
       expect(result.queryByText('value(uint256):')).toBeInTheDocument()
@@ -179,8 +179,8 @@ describe('DecodedTx', () => {
     await waitFor(() => {
       expect(result.queryByText('multi Send')).toBeInTheDocument()
       expect(result.queryByText('transactions(bytes):')).toBeInTheDocument()
-      expect(result.queryByText('Action 1')).toBeInTheDocument()
-      expect(result.queryByText('Action 2')).toBeInTheDocument()
+      expect(result.queryByText('1')).toBeInTheDocument()
+      expect(result.queryByText('2')).toBeInTheDocument()
     })
   })
 
@@ -216,6 +216,6 @@ describe('DecodedTx', () => {
 
     fireEvent.click(result.getByText('Transaction details'))
 
-    expect(await result.findByText('deposit')).toBeInTheDocument()
+    expect((await result.findAllByText('deposit')).length).toBe(2)
   })
 })

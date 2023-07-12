@@ -5,8 +5,9 @@ import { useState, useEffect } from 'react'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
-import { Box, Button, Divider, Stack } from '@mui/material'
+import { Button, Divider, Stack } from '@mui/material'
 import css from './styles.module.css'
+import classnames from 'classnames'
 
 type MultisendProps = {
   txData?: TransactionData
@@ -14,20 +15,24 @@ type MultisendProps = {
   compact?: boolean
 }
 
-const MultisendActionsHeader = ({
+export const MultisendActionsHeader = ({
   setOpen,
   amount,
+  compact = false,
+  title = 'All actions',
 }: {
   setOpen: Dispatch<SetStateAction<Record<number, boolean> | undefined>>
   amount: number
+  compact?: boolean
+  title?: string
 }) => {
   const onClickAll = (expanded: boolean) => () => {
     setOpen(Array(amount).fill(expanded))
   }
 
   return (
-    <div className={css.actionsHeader}>
-      All actions
+    <div className={classnames(css.actionsHeader, { [css.compactHeader]: compact })}>
+      {title}
       <Stack direction="row" divider={<Divider className={css.divider} />}>
         <Button onClick={onClickAll(true)} variant="text">
           Expand all
@@ -78,9 +83,9 @@ export const Multisend = ({
 
   return (
     <>
-      <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />
+      <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} compact={compact} />
 
-      <Box display="flex" flexDirection="column" gap={compact ? 1 : undefined}>
+      <div className={compact ? css.compact : ''}>
         {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
           const onChange: AccordionProps['onChange'] = (_, expanded) => {
             setOpenMap((prev) => ({
@@ -101,14 +106,14 @@ export const Multisend = ({
               }}
               txData={txData}
               showDelegateCallWarning={showDelegateCallWarning}
-              actionTitle={`Action ${index + 1}`}
-              variant="elevation"
+              actionTitle={`${index + 1}`}
+              variant={compact ? 'outlined' : 'elevation'}
               expanded={openMap?.[index] ?? false}
               onChange={onChange}
             />
           )
         })}
-      </Box>
+      </div>
     </>
   )
 }

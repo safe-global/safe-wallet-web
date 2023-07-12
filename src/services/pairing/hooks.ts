@@ -59,7 +59,7 @@ export const useInitPairing = () => {
       .then(() => {
         isConnecting = false
       })
-      .catch((e) => logError(Errors._303, (e as Error).message))
+      .catch((e) => logError(Errors._303, e))
   }, [canConnect, chain, isSupported, onboard, connector])
 
   useEffect(() => {

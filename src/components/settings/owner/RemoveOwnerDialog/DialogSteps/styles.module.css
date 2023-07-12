@@ -1,7 +1,0 @@
-.info {
-  background-color: var(--color-background-main);
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-1);
-}
