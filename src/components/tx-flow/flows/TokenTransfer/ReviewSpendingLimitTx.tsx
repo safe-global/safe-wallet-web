@@ -1,5 +1,5 @@
 import type { ReactElement, SyntheticEvent } from 'react'
-import { useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import type { BigNumberish, BytesLike } from 'ethers'
 import { Button, CardActions, Typography } from '@mui/material'
 import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
@@ -22,6 +22,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { asError } from '@/services/exceptions/utils'
 import TxCard from '@/components/tx-flow/common/TxCard'
+import { TxModalContext } from '@/components/tx-flow'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -43,6 +44,7 @@ const ReviewSpendingLimitTx = ({
 }): ReactElement => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const { setTxFlow } = useContext(TxModalContext)
   const currentChain = useCurrentChain()
   const onboard = useOnboard()
   const { safe, safeAddress } = useSafeInfo()
@@ -88,7 +90,7 @@ const ReviewSpendingLimitTx = ({
 
     try {
       await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress)
-
+      setTxFlow(undefined)
       onSubmit()
     } catch (_err) {
       const err = asError(_err)

@@ -9,6 +9,8 @@ import css from './styles.module.css'
 import CloseIcon from '@mui/icons-material/Close'
 import useWallet from '@/hooks/wallets/useWallet'
 import SafeLogo from '@/public/images/logo-no-text.svg'
+import { useContext } from 'react'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 const confirmedMessage = (threshold: number, confirmations: number) => {
   return (
@@ -33,6 +35,7 @@ const TxStatusWidget = ({
 }) => {
   const wallet = useWallet()
   const { safe } = useSafeInfo()
+  const { nonceNeeded } = useContext(SafeTxContext)
   const { threshold } = safe
 
   const { executionInfo = undefined } = txSummary || {}
@@ -73,6 +76,8 @@ const TxStatusWidget = ({
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
               {isBatch ? (
                 'Create batch'
+              ) : !nonceNeeded ? (
+                'Confirmed'
               ) : (
                 <>
                   {confirmedMessage(threshold, confirmationsSubmitted)}
