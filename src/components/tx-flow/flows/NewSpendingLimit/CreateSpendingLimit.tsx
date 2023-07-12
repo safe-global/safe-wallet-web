@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
-import { Button, CardActions, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import { Box, Button, CardActions, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
 import { defaultAbiCoder, parseUnits } from 'ethers/lib/utils'
 
@@ -14,6 +14,8 @@ import css from '@/components/tx/ExecuteCheckbox/styles.module.css'
 import TokenAmountInput from '@/components/common/TokenAmountInput'
 import { SpendingLimitFields } from '.'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
+import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
+import useAddressBook from '@/hooks/useAddressBook'
 
 export const _validateSpendingLimit = (val: string, decimals?: number) => {
   // Allowance amount is uint96 https://github.com/safe-global/safe-modules/blob/master/allowances/contracts/AlowanceModule.sol#L52
@@ -32,8 +34,10 @@ export const CreateSpendingLimit = ({
   params: NewSpendingLimitFlowProps
   onSubmit: (data: NewSpendingLimitFlowProps) => void
 }) => {
+  const [recipientFocus, setRecipientFocus] = useState(!params.beneficiary)
   const chainId = useChainId()
   const { balances } = useVisibleBalances()
+  const addressBook = useAddressBook()
 
   const resetTimeOptions = useMemo(() => getResetTimeOptions(chainId), [chainId])
 
@@ -42,8 +46,9 @@ export const CreateSpendingLimit = ({
     mode: 'onChange',
   })
 
-  const { handleSubmit, watch, control } = formMethods
+  const { handleSubmit, setValue, watch, control } = formMethods
 
+  const beneficiary = watch(SpendingLimitFields.beneficiary)
   const tokenAddress = watch(SpendingLimitFields.tokenAddress)
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
@@ -65,7 +70,18 @@ export const CreateSpendingLimit = ({
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth sx={{ mb: 3 }}>
-            <AddressBookInput name={SpendingLimitFields.beneficiary} label="Beneficiary" />
+            {addressBook[beneficiary] ? (
+              <Box
+                onClick={() => {
+                  setValue(SpendingLimitFields.beneficiary, '')
+                  setRecipientFocus(true)
+                }}
+              >
+                <AddressInputReadOnly label="Sending to" address={beneficiary} />
+              </Box>
+            ) : (
+              <AddressBookInput name={SpendingLimitFields.beneficiary} label="Beneficiary" focused={recipientFocus} />
+            )}
           </FormControl>
 
           <TokenAmountInput balances={balances.items} selectedToken={selectedToken} validate={validateSpendingLimit} />
