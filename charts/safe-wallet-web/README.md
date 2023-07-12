@@ -41,4 +41,5 @@ This chart packages the Safe wallet web resources.
 | --------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------- |
 | `config.extraEnvVars`       | Add additional extra environment vairables to the configMap                                   | `{}`                                                |
 | `config.gatewayUrl`         | The Client Gateway URL. This is for triggering webhooks to invalidate its cache for example   | `http://safe-client-gateway.safe.svc.cluster.local` |
+| `config.isProduction`       |                                                                                               | `false`                                             |
 | `config.secretReferenceKey` | Reference to an existing secret containing the following entries: SECRET_KEY, CGW_FLUSH_TOKEN | `""`                                                |
