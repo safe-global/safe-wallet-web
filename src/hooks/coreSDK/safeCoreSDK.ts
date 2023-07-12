@@ -1,5 +1,5 @@
 import chains from '@/config/chains'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { _getWeb3 } from '@/hooks/wallets/web3'
 import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
@@ -36,7 +36,7 @@ export const createEthersAdapter = (provider: Web3Provider) => {
   })
 }
 
-export const createReadOnlyEthersAdapter = (provider = getWeb3ReadOnly()) => {
+export const createReadOnlyEthersAdapter = (provider = _getWeb3()) => {
   if (!provider) {
     throw new Error('Unable to create `EthersAdapter` without a provider')
   }

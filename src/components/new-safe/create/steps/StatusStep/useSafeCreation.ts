@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { useCallback, useEffect, useState } from 'react'
-import { useWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { isWeb3ReadOnly, useWeb3 } from '@/hooks/wallets/web3'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { EthersError } from '@/utils/ethers-utils'
@@ -50,7 +50,6 @@ export const useSafeCreation = (
 
   const wallet = useWallet()
   const provider = useWeb3()
-  const web3ReadOnly = useWeb3ReadOnly()
   const chain = useCurrentChain()
   const [gasPrice, , gasPriceLoading] = useGasPrice()
 
@@ -69,7 +68,8 @@ export const useSafeCreation = (
   )
 
   const handleCreateSafe = useCallback(async () => {
-    if (!pendingSafe || !provider || !chain || !wallet || isCreating || gasPriceLoading) return
+    if (!pendingSafe || !provider || isWeb3ReadOnly(provider) || !chain || !wallet || isCreating || gasPriceLoading)
+      return
 
     setIsCreating(true)
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
@@ -137,15 +137,15 @@ export const useSafeCreation = (
   ])
 
   const watchSafeTx = useCallback(async () => {
-    if (!pendingSafe?.tx || !pendingSafe?.txHash || !web3ReadOnly || isWatching) return
+    if (!pendingSafe?.tx || !pendingSafe?.txHash || !provider || isWatching) return
 
     setStatus(SafeCreationStatus.PROCESSING)
     setIsWatching(true)
 
-    const txStatus = await checkSafeCreationTx(web3ReadOnly, pendingSafe.tx, pendingSafe.txHash, dispatch)
+    const txStatus = await checkSafeCreationTx(provider, pendingSafe.tx, pendingSafe.txHash, dispatch)
     setStatus(txStatus)
     setIsWatching(false)
-  }, [isWatching, pendingSafe, web3ReadOnly, setStatus, dispatch])
+  }, [isWatching, pendingSafe, provider, setStatus, dispatch])
 
   // Create or monitor Safe creation
   useEffect(() => {

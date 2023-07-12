@@ -6,20 +6,20 @@ import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import { parsePrefixedAddress, sameAddress } from '@/utils/addresses'
 
 export const useInitSafeCoreSDK = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const dispatch = useAppDispatch()
-  const web3ReadOnly = useWeb3ReadOnly()
+  const web3 = useWeb3()
 
   const { query } = useRouter()
   const prefixedAddress = Array.isArray(query.safe) ? query.safe[0] : query.safe
   const { address } = parsePrefixedAddress(prefixedAddress || '')
 
   useEffect(() => {
-    if (!safeLoaded || !web3ReadOnly || !sameAddress(address, safe.address.value)) {
+    if (!safeLoaded || !web3 || !sameAddress(address, safe.address.value)) {
       // If we don't reset the SDK, a previous Safe could remain in the store
       setSafeSDK(undefined)
       return
@@ -27,7 +27,7 @@ export const useInitSafeCoreSDK = () => {
 
     // A read-only instance of the SDK is sufficient because we connect the signer to it when needed
     initSafeSDK({
-      provider: web3ReadOnly,
+      provider: web3,
       chainId: safe.chainId,
       address: safe.address.value,
       version: safe.version,
@@ -55,6 +55,6 @@ export const useInitSafeCoreSDK = () => {
     safe.implementationVersionState,
     safe.version,
     safeLoaded,
-    web3ReadOnly,
+    web3,
   ])
 }

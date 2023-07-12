@@ -1,5 +1,5 @@
 import type { MutableRefObject } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
 import { BigNumber } from '@ethersproject/bignumber'
 import type {
@@ -30,11 +30,9 @@ import { RPC_CALLS } from '@safe-global/safe-apps-sdk/dist/src/eth/constants'
 import type { SafeSettings } from '@safe-global/safe-apps-sdk'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
-import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 import type { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
-import { useAppSelector } from '@/store'
-import { selectRpc } from '@/store/settingsSlice'
+import { useProvider } from '@/hooks/wallets/useProvider'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -74,15 +72,9 @@ const useAppCommunicator = (
   handlers: UseAppCommunicatorHandlers,
 ): AppCommunicator | undefined => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
-  const customRpc = useAppSelector(selectRpc)
 
-  const safeAppWeb3Provider = useMemo(() => {
-    if (!chain) {
-      return
-    }
-
-    return createSafeAppsWeb3Provider(chain.rpcUri, customRpc?.[chain.chainId])
-  }, [chain, customRpc])
+  // Don't use `useWeb3` as we want Safe Apps provider when read only
+  const safeAppWeb3Provider = useProvider(true)
 
   useEffect(() => {
     let communicatorInstance: AppCommunicator

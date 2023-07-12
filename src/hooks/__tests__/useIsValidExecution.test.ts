@@ -10,6 +10,8 @@ import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import * as contracts from '@/services/contracts/safeContracts'
 import type GnosisSafeContractEthers from '@safe-global/safe-ethers-lib/dist/src/contracts/GnosisSafe/GnosisSafeContractEthers'
+import * as useChains from '@/hooks/useChains'
+import { type ChainInfo, RPC_AUTHENTICATION } from '@safe-global/safe-gateway-typescript-sdk'
 
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
@@ -50,9 +52,12 @@ describe('useIsValidExecution', () => {
   beforeEach(() => {
     jest.resetAllMocks()
 
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
+    jest
+      .spyOn(useChains, 'useCurrentChain')
+      .mockReturnValue({ rpcUri: { authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION, value: '' } } as ChainInfo)
     jest.spyOn(useWallet, 'default').mockReturnValue(mockWallet)
     jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockProvider)
+    jest.spyOn(web3, 'createWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
   })
 
   it('should append the error code description to the error thrown', async () => {

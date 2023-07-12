@@ -6,7 +6,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import chains from '@/config/chains'
 import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
@@ -45,7 +45,7 @@ const useGasLimit = (
   gasLimitLoading: boolean
 } => {
   const safeSDK = useSafeSDK()
-  const web3ReadOnly = useWeb3ReadOnly()
+  const web3 = useWeb3()
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
   const walletAddress = wallet?.address
@@ -65,9 +65,9 @@ const useGasLimit = (
   )
 
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>(() => {
-    if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return
+    if (!safeAddress || !walletAddress || !encodedSafeTx || !web3) return
 
-    return web3ReadOnly
+    return web3
       .estimateGas({
         to: safeAddress,
         from: walletAddress,
@@ -87,7 +87,7 @@ const useGasLimit = (
 
         return gasLimit
       })
-  }, [currentChainId, safeAddress, safeTx, walletAddress, encodedSafeTx, web3ReadOnly, operationType])
+  }, [currentChainId, safeAddress, safeTx, walletAddress, encodedSafeTx, web3, operationType])
 
   useEffect(() => {
     if (gasLimitError) {

@@ -4,7 +4,7 @@ import useSafeInfo from '../useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import useChainId from '@/hooks/useChainId'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { getSpendingLimitContract, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import type { AddressEx, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -98,7 +98,7 @@ export const getSpendingLimits = async (
 export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
   const { safeAddress, safe, safeLoaded } = useSafeInfo()
   const chainId = useChainId()
-  const provider = useWeb3ReadOnly()
+  const provider = useWeb3()
   const tokenInfoFromBalances = useAppSelector(selectTokens, isEqual)
 
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(() => {

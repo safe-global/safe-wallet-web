@@ -49,7 +49,7 @@ describe('checkSafeCreationTx', () => {
   beforeEach(() => {
     jest.resetAllMocks()
 
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => new Web3Provider(jest.fn()))
+    jest.spyOn(web3, '_getWeb3').mockImplementation(() => new Web3Provider(jest.fn()))
 
     waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
     jest.spyOn(provider, 'getBlockNumber').mockReturnValue(Promise.resolve(4))

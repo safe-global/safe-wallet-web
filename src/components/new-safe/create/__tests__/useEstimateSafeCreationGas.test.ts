@@ -41,7 +41,7 @@ describe('useEstimateSafeCreationGas', () => {
 
   it('should estimate gas', async () => {
     const mockProvider = new JsonRpcProvider()
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(mockProvider)
+    jest.spyOn(web3, 'useWeb3').mockReturnValue(mockProvider)
     jest.spyOn(sender, 'estimateSafeCreationGas').mockReturnValue(Promise.resolve(BigNumber.from('123')))
     jest.spyOn(wallet, 'default').mockReturnValue({
       label: 'MetaMask',
@@ -69,7 +69,7 @@ describe('useEstimateSafeCreationGas', () => {
   })
 
   it('should not estimate gas if there is no provider', async () => {
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(undefined)
+    jest.spyOn(web3, 'useWeb3').mockReturnValue(undefined)
     const { result } = renderHook(() => useEstimateSafeCreationGas(mockProps))
 
     await waitFor(() => {

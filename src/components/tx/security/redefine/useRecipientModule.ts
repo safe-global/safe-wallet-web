@@ -4,7 +4,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import useAddressBook from '@/hooks/useAddressBook'
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import { RecipientAddressModule } from '@/services/security/modules/RecipientAddressModule'
 import type { RecipientAddressModuleResponse } from '@/services/security/modules/RecipientAddressModule'
 import type { SecurityResponse } from '@/services/security/modules/types'
@@ -13,7 +13,7 @@ const RecipientAddressModuleInstance = new RecipientAddressModule()
 
 export const useRecipientModule = (safeTransaction: SafeTransaction | undefined) => {
   const { safe, safeLoaded } = useSafeInfo()
-  const web3ReadOnly = useWeb3ReadOnly()
+  const web3 = useWeb3()
   const addressBook = useAddressBook()
 
   const knownAddresses = useMemo(() => {
@@ -24,7 +24,7 @@ export const useRecipientModule = (safeTransaction: SafeTransaction | undefined)
   }, [addressBook, safe.owners])
 
   return useAsync<SecurityResponse<RecipientAddressModuleResponse>>(() => {
-    if (!safeTransaction || !web3ReadOnly || !safeLoaded) {
+    if (!safeTransaction || !web3 || !safeLoaded) {
       return
     }
 
@@ -32,7 +32,7 @@ export const useRecipientModule = (safeTransaction: SafeTransaction | undefined)
       chainId: safe.chainId,
       safeTransaction,
       knownAddresses,
-      provider: web3ReadOnly,
+      provider: web3,
     })
-  }, [safeTransaction, web3ReadOnly, safeLoaded, safe.chainId, knownAddresses, web3ReadOnly])
+  }, [safeTransaction, web3, safeLoaded, safe.chainId, knownAddresses, web3])
 }

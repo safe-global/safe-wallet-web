@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 import { act, renderHook } from '@/tests/test-utils'
 import useGasPrice from '@/hooks/useGasPrice'
 
-// mock useWeb3Readonly
+// mock useWeb3
 jest.mock('../wallets/web3', () => {
   const provider = {
     getFeeData: jest.fn(() =>
@@ -14,7 +14,7 @@ jest.mock('../wallets/web3', () => {
     ),
   }
   return {
-    useWeb3ReadOnly: jest.fn(() => provider),
+    useWeb3: jest.fn(() => provider),
   }
 })
 

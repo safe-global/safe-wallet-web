@@ -11,7 +11,7 @@ import {
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/TxSimulation/types'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { _getWeb3 } from '@/hooks/wallets/web3'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { BigNumber } from 'ethers'
 import type { EnvState } from '@/store/settingsSlice'
@@ -204,8 +204,8 @@ const getStateOverwrites = (params: SimulationTxParams) => {
 }
 
 const getLatestBlockGasLimit = async (): Promise<number> => {
-  const web3ReadOnly = getWeb3ReadOnly()
-  const latestBlock = await web3ReadOnly?.getBlock('latest')
+  const web3 = _getWeb3()
+  const latestBlock = await web3?.getBlock('latest')
   if (!latestBlock) {
     throw Error('Could not determine block gas limit')
   }

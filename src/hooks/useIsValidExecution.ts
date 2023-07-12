@@ -4,15 +4,17 @@ import type { EthersError } from '@/utils/ethers-utils'
 
 import useAsync from './useAsync'
 import ContractErrorCodes from '@/services/contracts/ContractErrorCodes'
-import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { createWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { type JsonRpcProvider } from '@ethersproject/providers'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { createWeb3, createWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type ConnectedWallet } from '@/services/onboard'
 import { getCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { useCurrentChain } from './useChains'
+import { useAppSelector } from '@/store'
+import { selectRpc } from '@/store/settingsSlice'
 
 const isContractError = (error: EthersError) => {
   if (!error.reason) return false
@@ -22,14 +24,11 @@ const isContractError = (error: EthersError) => {
 
 // Monkey patch the signerProvider to proxy requests to the "readonly" provider if on the wrong chain
 // This is ONLY used to check the validity of a transaction in `useIsValidExecution`
-const getPatchedSignerProvider = (
-  wallet: ConnectedWallet,
-  chainId: SafeInfo['chainId'],
-  readOnlyProvider: JsonRpcProvider,
-) => {
+const getPatchedSignerProvider = (wallet: ConnectedWallet, chain: ChainInfo, customRpc?: Record<string, string>) => {
   const signerProvider = createWeb3(wallet.provider)
+  const readOnlyProvider = createWeb3ReadOnly(chain.rpcUri, customRpc?.[chain.chainId])
 
-  if (wallet.chainId !== chainId) {
+  if (wallet.chainId !== chain.chainId) {
     // The RPC methods that are used when we call contract.callStatic.execTransaction
     const READ_ONLY_METHODS = ['eth_chainId', 'eth_call']
     const ETH_ACCOUNTS_METHOD = 'eth_accounts'
@@ -60,16 +59,17 @@ const useIsValidExecution = (
 } => {
   const wallet = useWallet()
   const { safe } = useSafeInfo()
-  const readOnlyProvider = useWeb3ReadOnly()
+  const chain = useCurrentChain()
+  const customRpc = useAppSelector(selectRpc)
   const isOwner = useIsSafeOwner()
 
   const [isValidExecution, executionValidationError, isValidExecutionLoading] = useAsync(async () => {
-    if (!safeTx || !wallet || !gasLimit || !readOnlyProvider) {
+    if (!safeTx || !wallet || !gasLimit || !chain) {
       return
     }
 
     try {
-      const provider = getPatchedSignerProvider(wallet, safe.chainId, readOnlyProvider)
+      const provider = getPatchedSignerProvider(wallet, chain, customRpc)
       const safeContract = getCurrentGnosisSafeContract(safe, provider)
 
       /**
@@ -101,7 +101,7 @@ const useIsValidExecution = (
 
       throw err
     }
-  }, [safeTx, wallet, gasLimit, safe, readOnlyProvider])
+  }, [safeTx, wallet, gasLimit, chain, customRpc, safe])
 
   return { isValidExecution, executionValidationError, isValidExecutionLoading }
 }

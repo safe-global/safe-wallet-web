@@ -1,6 +1,6 @@
 import useChainId from '@/hooks/useChainId'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import useAsync from '@/hooks/useAsync'
 import { Contract } from 'ethers'
 import { Interface } from '@ethersproject/abi'
@@ -10,7 +10,7 @@ const PAUSED_ABI = 'function paused() public view virtual returns (bool)'
 // TODO: Remove this hook after the safe token has been unpaused
 const useIsSafeTokenPaused = () => {
   const chainId = useChainId()
-  const provider = useWeb3ReadOnly()
+  const provider = useWeb3()
 
   const [isSafeTokenPaused] = useAsync<boolean>(async () => {
     const safeTokenAddress = getSafeTokenAddress(chainId)

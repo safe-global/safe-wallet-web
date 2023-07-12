@@ -1,5 +1,5 @@
 import useAddressBook from '@/hooks/useAddressBook'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import { lookupAddress } from '@/services/ens'
 import { FEATURES } from '@/utils/chains'
 import { useMemo } from 'react'
@@ -9,7 +9,7 @@ import { useHasFeature } from './useChains'
 
 export const useAddressResolver = (address: string) => {
   const addressBook = useAddressBook()
-  const ethersProvider = useWeb3ReadOnly()
+  const ethersProvider = useWeb3()
   const debouncedValue = useDebounce(address, 200)
   const addressBookName = addressBook[address]
   const isDomainLookupEnabled = useHasFeature(FEATURES.DOMAIN_LOOKUP)

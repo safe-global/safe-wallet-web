@@ -75,7 +75,7 @@ describe('useSafeTokenAllocation', () => {
   test('return 0 if no allocations / balances exist', async () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub('', 404))
     const mockFetch = jest.spyOn(global, 'fetch')
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+    jest.spyOn(web3, '_getWeb3').mockImplementation(
       () =>
         ({
           call: (transaction: any, blockTag?: any) => {
@@ -101,7 +101,7 @@ describe('useSafeTokenAllocation', () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub('', 404))
     const mockFetch = jest.spyOn(global, 'fetch')
 
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+    jest.spyOn(web3, '_getWeb3').mockImplementation(
       () =>
         ({
           call: (transaction: any, blockTag?: any) => {
@@ -142,7 +142,7 @@ describe('useSafeTokenAllocation', () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub(mockAllocation, 200))
     const mockFetch = jest.spyOn(global, 'fetch')
 
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+    jest.spyOn(web3, '_getWeb3').mockImplementation(
       () =>
         ({
           call: (transaction: any, blockTag?: any) => {
@@ -193,7 +193,7 @@ describe('useSafeTokenAllocation', () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub(mockAllocation, 200))
     const mockFetch = jest.spyOn(global, 'fetch')
 
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+    jest.spyOn(web3, '_getWeb3').mockImplementation(
       () =>
         ({
           call: (transaction: any, blockTag?: any) => {
@@ -249,7 +249,7 @@ describe('useSafeTokenAllocation', () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub(mockAllocation, 200))
     const mockFetch = jest.spyOn(global, 'fetch')
 
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+    jest.spyOn(web3, '_getWeb3').mockImplementation(
       () =>
         ({
           call: (transaction: any, blockTag?: any) => {
@@ -305,7 +305,7 @@ describe('useSafeTokenAllocation', () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub(mockAllocation, 200))
     const mockFetch = jest.spyOn(global, 'fetch')
 
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+    jest.spyOn(web3, '_getWeb3').mockImplementation(
       () =>
         ({
           call: (transaction: any, blockTag?: any) => {
@@ -362,7 +362,7 @@ describe('useSafeTokenAllocation', () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub(mockAllocation, 200))
     const mockFetch = jest.spyOn(global, 'fetch')
 
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+    jest.spyOn(web3, '_getWeb3').mockImplementation(
       () =>
         ({
           call: (transaction: any, blockTag?: any) => {

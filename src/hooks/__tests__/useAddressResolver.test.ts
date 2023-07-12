@@ -13,7 +13,7 @@ const mockProvider = new JsonRpcProvider()
 describe('useAddressResolver', () => {
   beforeEach(() => {
     jest.resetAllMocks()
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockProvider)
+    jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
   })
 
   it('returns address book name if found, not resolving ENS domain', async () => {

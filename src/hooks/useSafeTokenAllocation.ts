@@ -6,7 +6,7 @@ import { defaultAbiCoder, Interface } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
-import { getWeb3ReadOnly } from './wallets/web3'
+import { _getWeb3 } from './wallets/web3'
 
 export const VESTING_URL = 'https://safe-claiming-app-data.safe.global/allocations/'
 
@@ -41,11 +41,11 @@ const tokenInterface = new Interface(['function balanceOf(address _owner) public
  * Fetches if the redeem deadline is expired and the claimed tokens from on-chain
  */
 const completeAllocation = async (allocation: VestingData): Promise<Vesting> => {
-  const web3ReadOnly = getWeb3ReadOnly()
-  if (!web3ReadOnly) {
+  const web3 = _getWeb3()
+  if (!web3) {
     throw new Error('Cannot fetch vesting without web3 provider')
   }
-  const onChainVestingData = await web3ReadOnly.call({
+  const onChainVestingData = await web3.call({
     to: allocation.contract,
     data: airdropInterface.encodeFunctionData('vestings', [allocation.vestingId]),
   })
@@ -61,7 +61,7 @@ const completeAllocation = async (allocation: VestingData): Promise<Vesting> => 
   }
 
   // Allocation is not yet redeemed => check the redeemDeadline
-  const redeemDeadline = await web3ReadOnly.call({
+  const redeemDeadline = await web3.call({
     to: allocation.contract,
     data: airdropInterface.encodeFunctionData('redeemDeadline'),
   })
@@ -95,11 +95,11 @@ const fetchAllocation = async (chainId: string, safeAddress: string): Promise<Ve
 
 const fetchTokenBalance = async (chainId: string, safeAddress: string): Promise<string> => {
   try {
-    const web3ReadOnly = getWeb3ReadOnly()
+    const web3 = _getWeb3()
     const safeTokenAddress = getSafeTokenAddress(chainId)
-    if (!safeTokenAddress || !web3ReadOnly) return '0'
+    if (!safeTokenAddress || !web3) return '0'
 
-    return await web3ReadOnly.call({
+    return await web3.call({
       to: safeTokenAddress,
       data: tokenInterface.encodeFunctionData('balanceOf', [safeAddress]),
     })

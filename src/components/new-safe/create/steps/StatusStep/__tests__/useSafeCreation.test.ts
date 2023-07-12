@@ -6,7 +6,7 @@ import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '@/components/new-safe/create/logic'
 import * as contracts from '@/services/contracts/safeContracts'
 import * as txMonitor from '@/services/tx/txMonitor'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { Web3Provider } from '@ethersproject/providers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -40,7 +40,6 @@ describe('useSafeCreation', () => {
   const mockStatus = SafeCreationStatus.AWAITING
   const mockSetStatus = jest.fn()
   const mockProvider: Web3Provider = new Web3Provider(jest.fn())
-  const mockReadOnlyProvider: JsonRpcProvider = new JsonRpcProvider()
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -51,8 +50,7 @@ describe('useSafeCreation', () => {
     } as unknown as ChainInfo
 
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockProvider)
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
+    jest.spyOn(web3, '_getWeb3').mockImplementation(() => mockProvider)
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() => mockChain)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(logic, 'getSafeCreationTxInfo').mockReturnValue(Promise.resolve(mockSafeInfo))

@@ -37,7 +37,7 @@ describe('useInitSafeCoreSDK hook', () => {
     jest.clearAllMocks()
 
     mockProvider = jest.fn() as unknown as JsonRpcProvider
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(mockProvider)
+    jest.spyOn(web3, 'useWeb3').mockReturnValue(mockProvider)
     jest.spyOn(useSafeInfo, 'default').mockReturnValue(mockSafeInfo)
     jest
       .spyOn(router, 'useRouter')
@@ -84,7 +84,7 @@ describe('useInitSafeCoreSDK hook', () => {
     const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValueOnce(undefined)
+    jest.spyOn(web3, 'useWeb3').mockReturnValueOnce(undefined)
 
     renderHook(() => useInitSafeCoreSDK())
 

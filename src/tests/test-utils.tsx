@@ -104,7 +104,7 @@ const mockWeb3Provider = (
   callImplementations: MockCallImplementation[],
   resolveName?: (name: string) => string,
 ): jest.SpyInstance<any, unknown[]> => {
-  return jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+  return jest.spyOn(web3, '_getWeb3').mockImplementation(
     () =>
       ({
         call: (tx: { data: string; to: string }) => {

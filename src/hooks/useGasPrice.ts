@@ -4,7 +4,7 @@ import { GAS_PRICE_TYPE } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync, { type AsyncResult } from '@/hooks/useAsync'
 import { useCurrentChain } from './useChains'
 import useIntervalCounter from './useIntervalCounter'
-import { useWeb3ReadOnly } from '../hooks/wallets/web3'
+import { useWeb3 } from '../hooks/wallets/web3'
 import { Errors, logError } from '@/services/exceptions'
 import { FEATURES, hasFeature } from '@/utils/chains'
 
@@ -59,7 +59,7 @@ const useGasPrice = (): AsyncResult<{
   const chain = useCurrentChain()
   const gasPriceConfigs = chain?.gasPrice
   const [counter] = useIntervalCounter(REFRESH_DELAY)
-  const provider = useWeb3ReadOnly()
+  const provider = useWeb3()
   const isEIP1559 = !!chain && hasFeature(chain, FEATURES.EIP1559)
 
   const [gasPrice, gasPriceError, gasPriceLoading] = useAsync(

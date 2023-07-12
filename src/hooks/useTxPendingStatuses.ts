@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useChainId from './useChainId'
 import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import useTxHistory from './useTxHistory'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import useSafeInfo from './useSafeInfo'
@@ -25,7 +25,7 @@ const useTxMonitor = (): void => {
   const chainId = useChainId()
   const pendingTxs = useAppSelector(selectPendingTxs)
   const pendingTxEntriesOnChain = Object.entries(pendingTxs).filter(([, pendingTx]) => pendingTx.chainId === chainId)
-  const provider = useWeb3ReadOnly()
+  const provider = useWeb3()
 
   // Prevent `waitForTx` from monitoring the same tx more than once
   const monitoredTxs = useRef<{ [txId: string]: boolean }>({})

@@ -20,7 +20,7 @@ import { ExecutionMethod, ExecutionMethodSelector } from '../../ExecutionMethodS
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import { isWeb3ReadOnly, useWeb3 } from '@/hooks/wallets/web3'
 import { hasRemainingRelays } from '@/utils/relaying'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
@@ -53,7 +53,7 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
   }, [data.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
-    if (!chain?.chainId || !safe.version || !web3) return
+    if (!chain?.chainId || !safe.version || !web3 || isWeb3ReadOnly(web3)) return
     return getMultiSendCallOnlyContract(chain.chainId, safe.version, web3)
   }, [chain?.chainId, safe.version, web3])
 

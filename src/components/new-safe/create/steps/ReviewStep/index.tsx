@@ -14,7 +14,7 @@ import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import { isWeb3ReadOnly, useWeb3 } from '@/hooks/wallets/web3'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/create/steps/StatusStep'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
@@ -77,7 +77,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   }
 
   const createSafe = async () => {
-    if (!wallet || !provider || !chain) return
+    if (!wallet || !provider || isWeb3ReadOnly(provider) || !chain) return
 
     const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
 

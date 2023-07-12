@@ -191,7 +191,7 @@ describe('getTokenAllowanceForDelegate', () => {
       BigNumber.from(0),
     ])
 
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
+    jest.spyOn(web3, '_getWeb3').mockImplementation(
       () =>
         ({
           call: (tx: { data: string; to: string }) => {

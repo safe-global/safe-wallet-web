@@ -30,16 +30,18 @@ export const createSafeAppsWeb3Provider = (safeAppsRpcUri: RpcUri, customRpc?: s
   })
 }
 
-export const { setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<Web3Provider>()
-
 export const {
-  getStore: getWeb3ReadOnly,
-  setStore: setWeb3ReadOnly,
-  useStore: useWeb3ReadOnly,
-} = new ExternalStore<JsonRpcProvider>()
+  getStore: _getWeb3,
+  setStore: setWeb3,
+  useStore: useWeb3,
+} = new ExternalStore<JsonRpcProvider | Web3Provider>()
+
+export const isWeb3ReadOnly = (provider: JsonRpcProvider | Web3Provider): provider is JsonRpcProvider => {
+  return provider instanceof JsonRpcProvider && !(provider instanceof Web3Provider)
+}
 
 export const getUserNonce = async (userAddress: string): Promise<number> => {
-  const web3 = getWeb3ReadOnly()
+  const web3 = _getWeb3()
   if (!web3) return -1
   try {
     return await web3.getTransactionCount(userAddress, 'pending')

@@ -38,7 +38,7 @@ describe('simulation utils', () => {
       .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')
       .mockImplementation(() => multisendContractMock as any)
 
-    jest.spyOn(Web3, 'getWeb3ReadOnly').mockImplementation(
+    jest.spyOn(Web3, '_getWeb3').mockImplementation(
       () =>
         ({
           getBlock: () =>
