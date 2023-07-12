@@ -1,10 +1,10 @@
-import { type ComponentType, type ReactElement, type ReactNode, useEffect, useState } from 'react'
+import { type ComponentType, type ReactElement, type ReactNode, useContext, useEffect, useState } from 'react'
 import { Box, Container, Grid, Typography, Button, Paper, SvgIcon, IconButton, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { ProgressBar } from '@/components/common/ProgressBar'
-import SafeTxProvider from '../../SafeTxProvider'
+import SafeTxProvider, { SafeTxContext } from '../../SafeTxProvider'
 import { TxInfoProvider } from '@/components/tx-flow/TxInfoProvider'
 import TxNonce from '../TxNonce'
 import TxStatusWidget from '../TxStatusWidget'
@@ -14,6 +14,38 @@ import SafeLogo from '@/public/images/logo-no-text.svg'
 import { RedefineMessage } from '@/components/tx/security/redefine'
 import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
 import ChainIndicator from '@/components/common/ChainIndicator'
+
+const TxLayoutHeader = ({
+  hideNonce,
+  icon,
+  subtitle,
+}: {
+  hideNonce: TxLayoutProps['hideNonce']
+  icon: TxLayoutProps['icon']
+  subtitle: TxLayoutProps['subtitle']
+}) => {
+  const { nonceNeeded } = useContext(SafeTxContext)
+
+  if (hideNonce && !icon && !subtitle) return null
+
+  return (
+    <Box className={css.headerInner}>
+      <Box display="flex" alignItems="center">
+        {icon && (
+          <div className={css.icon}>
+            <SvgIcon component={icon} inheritViewBox />
+          </div>
+        )}
+
+        <Typography variant="h4" component="div" fontWeight="bold">
+          {subtitle}
+        </Typography>
+      </Box>
+
+      {!hideNonce && nonceNeeded && <TxNonce />}
+    </Box>
+  )
+}
 
 type TxLayoutProps = {
   title: ReactNode
@@ -87,23 +119,7 @@ const TxLayout = ({
                       <ProgressBar value={progress} />
                     </Box>
 
-                    {!hideNonce || icon || subtitle ? (
-                      <Box className={css.headerInner}>
-                        <Box display="flex" alignItems="center">
-                          {icon && (
-                            <div className={css.icon}>
-                              <SvgIcon component={icon} inheritViewBox />
-                            </div>
-                          )}
-
-                          <Typography variant="h4" component="div" fontWeight="bold">
-                            {subtitle}
-                          </Typography>
-                        </Box>
-
-                        {!hideNonce && <TxNonce />}
-                      </Box>
-                    ) : null}
+                    <TxLayoutHeader subtitle={subtitle} icon={icon} hideNonce={hideNonce} />
                   </Paper>
 
                   <div className={css.step}>

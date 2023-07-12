@@ -12,6 +12,8 @@ import { HelpCenterArticle } from '@/config/constants'
 
 import css from './styles.module.css'
 import { TokenAmountFields } from '@/components/common/TokenAmountInput'
+import { useContext } from 'react'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 const SpendingLimitRow = ({
   availableAmount,
@@ -22,6 +24,7 @@ const SpendingLimitRow = ({
 }) => {
   const { control, trigger } = useFormContext()
   const isOnlySpendLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
+  const { setNonceNeeded } = useContext(SafeTxContext)
 
   const formattedAmount = safeFormatUnits(availableAmount, selectedToken?.decimals)
 
@@ -39,6 +42,8 @@ const SpendingLimitRow = ({
             row
             onChange={(e) => {
               onChange(e)
+
+              setNonceNeeded(e.target.value === TokenTransferType.multiSig)
 
               // Validate only after the field is changed
               setTimeout(() => {
