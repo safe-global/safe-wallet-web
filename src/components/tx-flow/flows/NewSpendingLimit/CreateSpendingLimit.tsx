@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { Button, CardActions, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
@@ -12,9 +12,8 @@ import type { NewSpendingLimitFlowProps } from '.'
 import TxCard from '../../common/TxCard'
 import css from '@/components/tx/ExecuteCheckbox/styles.module.css'
 import TokenAmountInput from '@/components/common/TokenAmountInput'
-import { BigNumber } from '@ethersproject/bignumber'
-import { safeFormatUnits } from '@/utils/formatters'
 import { SpendingLimitFields } from '.'
+import { validateAmount, validateDecimalLength } from '@/utils/validation'
 
 export const _validateSpendingLimit = (val: string, decimals?: number) => {
   // Allowance amount is uint96 https://github.com/safe-global/safe-modules/blob/master/allowances/contracts/AlowanceModule.sol#L52
@@ -43,24 +42,23 @@ export const CreateSpendingLimit = ({
     mode: 'onChange',
   })
 
-  const { handleSubmit, setValue, watch, control } = formMethods
+  const { handleSubmit, watch, control } = formMethods
 
   const tokenAddress = watch(SpendingLimitFields.tokenAddress)
   const selectedToken = tokenAddress
     ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
     : undefined
 
-  const totalAmount = BigNumber.from(selectedToken?.balance || 0)
-
-  const onMaxAmountClick = () => {
-    if (!selectedToken) return
-
-    const amount = selectedToken.balance
-
-    setValue(SpendingLimitFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
-      shouldValidate: true,
-    })
-  }
+  const validateSpendingLimit = useCallback(
+    (value: string) => {
+      return (
+        validateAmount(value) ||
+        validateDecimalLength(value, selectedToken?.tokenInfo.decimals) ||
+        _validateSpendingLimit(value, selectedToken?.tokenInfo.decimals)
+      )
+    },
+    [selectedToken?.tokenInfo.decimals],
+  )
 
   return (
     <TxCard>
@@ -70,12 +68,7 @@ export const CreateSpendingLimit = ({
             <AddressBookInput name={SpendingLimitFields.beneficiary} label="Beneficiary" />
           </FormControl>
 
-          <TokenAmountInput
-            balances={balances.items}
-            selectedToken={selectedToken}
-            maxAmount={totalAmount}
-            onMaxAmountClick={onMaxAmountClick}
-          />
+          <TokenAmountInput balances={balances.items} selectedToken={selectedToken} validate={validateSpendingLimit} />
 
           <Typography variant="h4" fontWeight={700} mt={3}>
             Reset Timer

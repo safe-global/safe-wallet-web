@@ -7,6 +7,7 @@ import { AutocompleteItem } from '@/components/tx-flow/flows/TokenTransfer/Creat
 import { useFormContext } from 'react-hook-form'
 import { type BigNumber } from '@ethersproject/bignumber'
 import classNames from 'classnames'
+import { useCallback } from 'react'
 
 export enum TokenAmountFields {
   tokenAddress = 'tokenAddress',
@@ -18,11 +19,13 @@ const TokenAmountInput = ({
   selectedToken,
   onMaxAmountClick,
   maxAmount,
+  validate,
 }: {
   balances: SafeBalanceResponse['items']
   selectedToken: SafeBalanceResponse['items'][number] | undefined
-  onMaxAmountClick: () => void
-  maxAmount: BigNumber
+  onMaxAmountClick?: () => void
+  maxAmount?: BigNumber
+  validate?: (value: string) => string | undefined
 }) => {
   const {
     formState: { errors },
@@ -34,6 +37,14 @@ const TokenAmountInput = ({
   const tokenAddress = watch(TokenAmountFields.tokenAddress)
   const isAmountError = !!errors[TokenAmountFields.tokenAddress] || !!errors[TokenAmountFields.amount]
 
+  const validateAmount = useCallback(
+    (value: string) => {
+      const decimals = selectedToken?.tokenInfo.decimals
+      return validateLimitedAmount(value, decimals, maxAmount?.toString()) || validateDecimalLength(value, decimals)
+    },
+    [maxAmount, selectedToken?.tokenInfo.decimals],
+  )
+
   return (
     <FormControl className={classNames(css.outline, { [css.error]: isAmountError })} fullWidth>
       <InputLabel shrink required className={css.label}>
@@ -44,7 +55,7 @@ const TokenAmountInput = ({
           variant="standard"
           InputProps={{
             disableUnderline: true,
-            endAdornment: (
+            endAdornment: onMaxAmountClick && (
               <Button className={css.max} onClick={onMaxAmountClick}>
                 Max
               </Button>
@@ -55,10 +66,7 @@ const TokenAmountInput = ({
           placeholder="0"
           {...register(TokenAmountFields.amount, {
             required: true,
-            validate: (val) => {
-              const decimals = selectedToken?.tokenInfo.decimals
-              return validateLimitedAmount(val, decimals, maxAmount.toString()) || validateDecimalLength(val, decimals)
-            },
+            validate: validate ?? validateAmount,
           })}
         />
         <Divider orientation="vertical" flexItem />

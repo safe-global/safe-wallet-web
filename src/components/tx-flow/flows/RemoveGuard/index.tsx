@@ -8,7 +8,7 @@ export type RemoveGuardFlowProps = {
 
 const RemoveGuardFlow = ({ address }: RemoveGuardFlowProps) => {
   return (
-    <TxLayout title="Remove guard">
+    <TxLayout title="Confirm transaction" subtitle="Remove guard">
       <ReviewRemoveGuard params={{ address }} />
     </TxLayout>
   )
