@@ -27,4 +27,5 @@ EXPOSE 8080
 ENV NODE_PORT 8080
 RUN npm install --global serve
 
-ENTRYPOINT [ "npx", "serve", "-p", ${NODE_PORT}, "out" ]
+ENTRYPOINT ["/bin/sh", "-c"]
+CMD [ "npx serve -p ${NODE_PORT} out" ]
