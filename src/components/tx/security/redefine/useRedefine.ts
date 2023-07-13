@@ -94,6 +94,7 @@ export const useRedefine = (
         threshold: safe.threshold,
       })
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [safe.chainId, safe.threshold, safeAddress, safeTransaction, wallet?.address, retryCounter, isFeatureEnabled],
     false,
   )
