@@ -43,12 +43,14 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
   const isDarkMode = useDarkMode()
   const { safeTx } = useContext(SafeTxContext)
   const {
-    simulation: { simulateTransaction, simulationRequestStatus, resetSimulation },
+    simulation: { simulation, simulateTransaction, simulationRequestStatus, resetSimulation },
   } = useContext(TxInfoContext)
 
   const isLoading = simulationRequestStatus === FETCH_STATUS.LOADING
   const isSuccess = simulationRequestStatus === FETCH_STATUS.SUCCESS
   const isError = simulationRequestStatus === FETCH_STATUS.ERROR
+
+  const isCallTraceError = isSuccess && getCallTraceErrors(simulation).length > 0
 
   const handleSimulation = async () => {
     if (!wallet) {
@@ -111,15 +113,15 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
               color: ({ palette }) => palette.text.secondary,
             }}
           />
+        ) : isError || isCallTraceError ? (
+          <Typography variant="body2" color="error.main" className={sharedCss.result}>
+            <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
+            Error
+          </Typography>
         ) : isSuccess ? (
           <Typography variant="body2" color="success.main" className={sharedCss.result}>
             <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
             Success
-          </Typography>
-        ) : isError ? (
-          <Typography variant="body2" color="error.main" className={sharedCss.result}>
-            <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
-            Error
           </Typography>
         ) : (
           <Button
