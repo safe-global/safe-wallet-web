@@ -94,7 +94,7 @@ export const useRedefine = (
         threshold: safe.threshold,
       })
     },
-    [safe.chainId, safe.threshold, safeAddress, safeTransaction, wallet?.address, retryCounter],
+    [safe.chainId, safe.threshold, safeAddress, safeTransaction, wallet?.address, retryCounter, isFeatureEnabled],
     false,
   )
 

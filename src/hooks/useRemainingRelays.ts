@@ -14,6 +14,7 @@ export const useRelaysBySafe = () => {
     if (!safeAddress || !chain || !hasFeature(chain, FEATURES.RELAYING)) return
 
     return getRelays(chain.chainId, safeAddress)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chain, safeAddress, safe.txHistoryTag])
 }
 
@@ -32,5 +33,6 @@ export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
       .catch(() => {
         return { remaining: 0, limit: MAX_HOUR_RELAYS }
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chain, ownerAddresses, safe.txHistoryTag])
 }

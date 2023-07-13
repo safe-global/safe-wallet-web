@@ -129,6 +129,7 @@ const TxDetails = ({
     async () => {
       return txDetails || getTransactionDetails(chainId, txSummary.id)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [txDetails, chainId, txSummary.id, safe.txQueuedTag],
     false,
   )

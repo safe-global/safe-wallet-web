@@ -56,7 +56,7 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
   const [txDetails, txDetailsError, txDetailsLoading] = useAsync<TransactionDetails>(() => {
     if (!txId) return
     return getTransactionDetails(chainId, txId)
-  }, [])
+  }, [chainId, txId])
 
   const approvalEditorTx = useMemo(() => {
     if (!decodedData || !txDetails?.txData) {

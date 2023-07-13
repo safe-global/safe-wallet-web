@@ -105,7 +105,7 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
     if (!provider || !safeLoaded || !safe.modules || !tokenInfoFromBalances) return
 
     return getSpendingLimits(provider, safe.modules, safeAddress, chainId, tokenInfoFromBalances)
-  }, [provider, safeLoaded, safe.modules?.length, safeAddress, chainId, safe.txHistoryTag, tokenInfoFromBalances])
+  }, [provider, safeLoaded, safe.modules, tokenInfoFromBalances, safeAddress, chainId])
 
   useEffect(() => {
     if (error) {

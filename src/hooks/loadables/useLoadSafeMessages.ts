@@ -27,6 +27,7 @@ export const useLoadSafeMessages = (): AsyncResult<SafeMessageListPage> => {
       }
       return getSafeMessages(safe.chainId, safeAddress)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       safeLoaded,
       safe.chainId,
