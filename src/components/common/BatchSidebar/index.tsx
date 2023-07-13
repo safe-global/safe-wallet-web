@@ -1,6 +1,4 @@
 import type { SyntheticEvent } from 'react'
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { type MetaTransactionData, OperationType } from '@safe-global/safe-core-sdk-types'
 import { useCallback, useContext } from 'react'
 import { Button, Divider, Drawer, SvgIcon, Typography } from '@mui/material'
 import { useDraftBatch, useUpdateBatch } from '@/hooks/useDraftBatch'
@@ -10,15 +8,6 @@ import { TxModalContext } from '@/components/tx-flow'
 import BatchTxItem from './BatchTxItem'
 import ConfirmBatchFlow from '@/components/tx-flow/flows/ConfirmBatch'
 import PlusIcon from '@/public/images/common/plus.svg'
-
-const getData = (txDetails: TransactionDetails): MetaTransactionData => {
-  return {
-    to: txDetails.txData?.to.value ?? '',
-    value: txDetails.txData?.value ?? '0',
-    data: txDetails.txData?.hexData ?? '0x',
-    operation: OperationType.Call, // only calls can be batched
-  }
-}
 
 const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: boolean) => void }) => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -44,7 +33,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
       e.preventDefault()
       if (!batchTxs.length) return
       closeSidebar()
-      setTxFlow(<ConfirmBatchFlow calls={batchTxs.map((item) => getData(item.txDetails))} onSubmit={clearBatch} />)
+      setTxFlow(<ConfirmBatchFlow onSubmit={clearBatch} />, undefined, false)
     },
     [setTxFlow, batchTxs, closeSidebar, clearBatch],
   )

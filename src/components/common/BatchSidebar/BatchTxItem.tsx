@@ -10,7 +10,7 @@ import css from './styles.module.css'
 
 type BatchTxItemProps = DraftBatchItem & {
   count: number
-  onDelete: () => void
+  onDelete?: () => void
 }
 
 const BatchTxItem = ({ count, timestamp, txDetails, onDelete }: BatchTxItemProps) => {
@@ -39,11 +39,15 @@ const BatchTxItem = ({ count, timestamp, txDetails, onDelete }: BatchTxItemProps
 
         <DateTime value={timestamp} />
 
-        <Box className={css.separator} />
+        {onDelete && (
+          <>
+            <Box className={css.separator} />
 
-        <ButtonBase onClick={onDelete}>
-          <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
-        </ButtonBase>
+            <ButtonBase onClick={onDelete}>
+              <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
+            </ButtonBase>
+          </>
+        )}
       </Box>
     </Box>
   )

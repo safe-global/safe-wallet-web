@@ -15,6 +15,9 @@ import { selectSettings } from '@/store/settingsSlice'
 import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 import UnknownContractError from './UnknownContractError'
 import RiskConfirmationError from './RiskConfirmationError'
+import useDecodeTx, { isMultisendTx } from '@/hooks/useDecodeTx'
+import { ErrorBoundary } from '@sentry/react'
+import ApprovalEditor from '../ApprovalEditor'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -35,6 +38,8 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const isCreation = safeTx?.signatures.size === 0
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
+  const decodedTx = useDecodeTx(safeTx)
+  const isMultisend = props.isBatch || isMultisendTx(decodedTx[0])
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
@@ -45,7 +50,17 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
       <TxCard>
         {props.children}
 
-        <DecodedTx tx={safeTx} txId={props.txId} />
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor safeTransaction={safeTx} />
+        </ErrorBoundary>
+
+        <DecodedTx
+          tx={safeTx}
+          txId={props.txId}
+          decodedData={decodedTx[0]}
+          decodedDataError={decodedTx[1]}
+          decodedDataLoading={decodedTx[2]}
+        />
 
         <RedefineBalanceChanges />
       </TxCard>
@@ -74,7 +89,11 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
 
         <RiskConfirmationError />
 
-        {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
+        {willExecute ? (
+          <ExecuteForm {...props} safeTx={safeTx} />
+        ) : (
+          <SignForm {...props} safeTx={safeTx} isBatch={isMultisend} />
+        )}
       </TxCard>
     </>
   )
