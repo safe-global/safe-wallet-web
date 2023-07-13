@@ -1,9 +1,8 @@
-import { type SyntheticEvent, type ReactElement, useCallback, useEffect, useState } from 'react'
+import { type SyntheticEvent, type ReactElement, useCallback, useEffect, useState, useContext } from 'react'
 import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NftIcon from '@/public/images/common/nft.svg'
-import NftBatchModal from '@/components/tx/modals/NftBatchModal'
 import useCollectibles from '@/hooks/useCollectibles'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
 import { NFT_EVENTS } from '@/services/analytics/events/nfts'
@@ -11,6 +10,8 @@ import { trackEvent } from '@/services/analytics'
 import NftGrid from '../NftGrid'
 import NftSendForm from '../NftSendForm'
 import NftPreviewModal from '../NftPreviewModal'
+import { TxModalContext } from '@/components/tx-flow'
+import NftTransferFlow from '@/components/tx-flow/flows/NftTransfer'
 
 const NftCollections = (): ReactElement => {
   // Track the current NFT page url
@@ -21,10 +22,10 @@ const NftCollections = (): ReactElement => {
   const [allNfts, setAllNfts] = useState<SafeCollectibleResponse[]>([])
   // Selected NFTs
   const [selectedNfts, setSelectedNfts] = useState<SafeCollectibleResponse[]>([])
-  // Modal open state
-  const [showSendModal, setShowSendModal] = useState<boolean>(false)
   // Preview
   const [previewNft, setPreviewNft] = useState<SafeCollectibleResponse>()
+  // Tx modal
+  const { setTxFlow } = useContext(TxModalContext)
 
   // On NFT preview click
   const onPreview = useCallback((token: SafeCollectibleResponse) => {
@@ -38,13 +39,13 @@ const NftCollections = (): ReactElement => {
 
       if (selectedNfts.length) {
         // Show the NFT transfer modal
-        setShowSendModal(true)
+        setTxFlow(<NftTransferFlow tokens={selectedNfts} />)
 
         // Track how many NFTs are being sent
         trackEvent({ ...NFT_EVENTS.SEND, label: selectedNfts.length })
       }
     },
-    [selectedNfts.length],
+    [selectedNfts, setTxFlow],
   )
 
   // Add new NFTs to the accumulated list
@@ -82,19 +83,6 @@ const NftCollections = (): ReactElement => {
             {nftPage?.next ? <InfiniteScroll onLoadMore={() => setPageUrl(nftPage.next)} /> : null}
           </NftGrid>
         </form>
-      )}
-
-      {/* Send NFT modal */}
-      {showSendModal && (
-        <NftBatchModal
-          onClose={() => setShowSendModal(false)}
-          initialData={[
-            {
-              recipient: '',
-              tokens: selectedNfts,
-            },
-          ]}
-        />
       )}
 
       {/* NFT preview */}

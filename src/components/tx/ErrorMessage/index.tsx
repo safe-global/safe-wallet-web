@@ -14,7 +14,7 @@ const ErrorMessage = ({
   children: ReactNode
   error?: Error & { reason?: string }
   className?: string
-  level?: 'error' | 'info'
+  level?: 'error' | 'warning' | 'info'
 }): ReactElement => {
   const [showDetails, setShowDetails] = useState<boolean>(false)
 
@@ -24,7 +24,7 @@ const ErrorMessage = ({
   }
 
   return (
-    <div className={classNames(css.container, css[level], className)}>
+    <div className={classNames(css.container, css[level], className, 'errorMessage')}>
       <div className={css.message}>
         <SvgIcon component={level === 'info' ? InfoIcon : WarningIcon} inheritViewBox fontSize="small" />
 

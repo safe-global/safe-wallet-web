@@ -1,0 +1,20 @@
+.unknownAddress {
+  margin-top: calc(-1 * var(--space-2));
+  padding: 20px 12px 4px;
+  background-color: var(--color-background-main);
+  color: var(--color-text-secondary);
+  display: flex;
+  gap: var(--space-1);
+  width: 100%;
+  border-radius: 6px;
+}
+
+.unknownAddress svg {
+  height: auto;
+}
+
+.unknownAddress a {
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

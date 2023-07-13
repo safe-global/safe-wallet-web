@@ -1,10 +1,19 @@
-import { FormControl, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
+import { FormControl, FormControlLabel, InputLabel, Radio, RadioGroup, SvgIcon, Tooltip } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 import type { BigNumber } from '@ethersproject/bignumber'
+import classNames from 'classnames'
 import { safeFormatUnits } from '@/utils/formatters'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { SendAssetsField, SendTxType } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { TokenTransferFields, TokenTransferType } from '@/components/tx-flow/flows/TokenTransfer'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
+
+import css from './styles.module.css'
+import { TokenAmountFields } from '@/components/common/TokenAmountInput'
+import { useContext } from 'react'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 const SpendingLimitRow = ({
   availableAmount,
@@ -15,49 +24,121 @@ const SpendingLimitRow = ({
 }) => {
   const { control, trigger } = useFormContext()
   const isOnlySpendLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
+  const { setNonceNeeded } = useContext(SafeTxContext)
 
   const formattedAmount = safeFormatUnits(availableAmount, selectedToken?.decimals)
 
   return (
-    <>
-      <Typography>Send as</Typography>
-      <FormControl>
-        <Controller
-          rules={{ required: true }}
-          control={control}
-          name={SendAssetsField.type}
-          render={({ field: { onChange, ...field } }) => (
-            <RadioGroup
-              onChange={(e) => {
-                onChange(e)
+    <FormControl>
+      <InputLabel shrink required sx={{ backgroundColor: 'background.paper', px: '6px', mx: '-6px' }}>
+        Send as
+      </InputLabel>
+      <Controller
+        rules={{ required: true }}
+        control={control}
+        name={TokenTransferFields.type}
+        render={({ field: { onChange, ...field } }) => (
+          <RadioGroup
+            row
+            onChange={(e) => {
+              onChange(e)
 
-                // Validate only after the field is changed
-                setTimeout(() => {
-                  trigger(SendAssetsField.amount)
-                }, 10)
-              }}
-              {...field}
-              defaultValue={SendTxType.multiSig}
-            >
-              {!isOnlySpendLimitBeneficiary && (
-                <FormControlLabel
-                  value={SendTxType.multiSig}
-                  label="Multisig transaction"
-                  control={<Radio />}
-                  componentsProps={{ typography: { variant: 'body2' } }}
-                />
-              )}
+              setNonceNeeded(e.target.value === TokenTransferType.multiSig)
+
+              // Validate only after the field is changed
+              setTimeout(() => {
+                trigger(TokenAmountFields.amount)
+              }, 10)
+            }}
+            {...field}
+            defaultValue={TokenTransferType.multiSig}
+            className={css.group}
+          >
+            {!isOnlySpendLimitBeneficiary && (
               <FormControlLabel
-                value={SendTxType.spendingLimit}
-                label={`Spending limit transaction (${formattedAmount} ${selectedToken?.symbol})`}
+                value={TokenTransferType.multiSig}
+                label={
+                  <>
+                    Standard transaction
+                    <Tooltip
+                      title={
+                        <>
+                          A standard transaction requires the signatures of other owners before the specified funds can
+                          be transferred.&nbsp;
+                          <ExternalLink
+                            href={HelpCenterArticle.SPENDING_LIMITS}
+                            title="Learn more about spending limits"
+                          >
+                            Learn more about spending limits
+                          </ExternalLink>
+                          .
+                        </>
+                      }
+                      arrow
+                      placement="top"
+                    >
+                      <span>
+                        <SvgIcon
+                          component={InfoIcon}
+                          inheritViewBox
+                          color="border"
+                          fontSize="small"
+                          sx={{
+                            verticalAlign: 'middle',
+                            ml: 0.5,
+                          }}
+                        />
+                      </span>
+                    </Tooltip>
+                  </>
+                }
                 control={<Radio />}
                 componentsProps={{ typography: { variant: 'body2' } }}
+                className={css.label}
               />
-            </RadioGroup>
-          )}
-        />
-      </FormControl>
-    </>
+            )}
+            <FormControlLabel
+              value={TokenTransferType.spendingLimit}
+              label={
+                <>
+                  Spending limit <b>{`(${formattedAmount} ${selectedToken?.symbol})`}</b>
+                  <Tooltip
+                    title={
+                      <>
+                        A spending limit transaction allows you to transfer the specified funds without the need to
+                        collect the signatures of other owners.&nbsp;
+                        <ExternalLink href={HelpCenterArticle.SPENDING_LIMITS} title="Learn more about spending limits">
+                          Learn more about spending limits
+                        </ExternalLink>
+                        .
+                      </>
+                    }
+                    arrow
+                    placement="top"
+                  >
+                    <span>
+                      <SvgIcon
+                        component={InfoIcon}
+                        inheritViewBox
+                        color="border"
+                        fontSize="small"
+                        sx={{
+                          verticalAlign: 'middle',
+                          ml: 0.5,
+                        }}
+                      />
+                    </span>
+                  </Tooltip>
+                </>
+              }
+              control={<Radio />}
+              componentsProps={{ typography: { variant: 'body2' } }}
+              className={classNames(css.label, { [css.spendingLimit]: !isOnlySpendLimitBeneficiary })}
+            />
+          </RadioGroup>
+        )}
+      />
+    </FormControl>
   )
 }
 

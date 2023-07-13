@@ -1,5 +1,6 @@
 import { LS_NAMESPACE } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
+import { asError } from '../exceptions/utils'
 
 type BrowserStorage = typeof localStorage | typeof sessionStorage
 
@@ -27,7 +28,7 @@ class Storage {
     try {
       saved = this.storage?.getItem(fullKey) ?? null
     } catch (err) {
-      logError(Errors._700, `key ${key} – ${(err as Error).message}`)
+      logError(Errors._700, `key ${key} – ${asError(err).message}`)
     }
 
     if (saved == null) return null
@@ -35,7 +36,7 @@ class Storage {
     try {
       return JSON.parse(saved) as T
     } catch (err) {
-      logError(Errors._700, `key ${key} – ${(err as Error).message}`)
+      logError(Errors._700, `key ${key} – ${asError(err).message}`)
     }
     return null
   }
@@ -49,7 +50,7 @@ class Storage {
         this.storage?.setItem(fullKey, JSON.stringify(item))
       }
     } catch (err) {
-      logError(Errors._701, `key ${key} – ${(err as Error).message}`)
+      logError(Errors._701, `key ${key} – ${asError(err).message}`)
     }
   }
 
@@ -58,7 +59,7 @@ class Storage {
     try {
       this.storage?.removeItem(fullKey)
     } catch (err) {
-      logError(Errors._702, `key ${key} – ${(err as Error).message}`)
+      logError(Errors._702, `key ${key} – ${asError(err).message}`)
     }
   }
 

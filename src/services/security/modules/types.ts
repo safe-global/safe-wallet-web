@@ -17,5 +17,5 @@ export type SecurityResponse<Res> =
     }
 
 export interface SecurityModule<Req, Res> {
-  scanTransaction(request: Req): Promise<SecurityResponse<Res>>
+  scanTransaction(request: Req): Promise<SecurityResponse<Res>> | SecurityResponse<Res>
 }

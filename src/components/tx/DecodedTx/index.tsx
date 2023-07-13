@@ -1,5 +1,14 @@
-import { type SyntheticEvent, type ReactElement, useMemo } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Typography } from '@mui/material'
+import { type SyntheticEvent, type ReactElement, useMemo, memo } from 'react'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Skeleton,
+  SvgIcon,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import {
   type DecodedDataResponse,
@@ -12,13 +21,18 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import ErrorMessage from '../ErrorMessage'
-import Summary from '@/components/transactions/TxDetails/Summary'
+import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { isEmptyHexData } from '@/utils/hex'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { ErrorBoundary } from '@sentry/react'
 import { getNativeTransferData } from '@/services/tx/tokenTransferParams'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import accordionCss from '@/styles/accordion.module.css'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -55,10 +69,10 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
 
-  if (isRejection) return null
+  if (isRejection || !tx) return null
 
   return (
-    <Box mb={2}>
+    <div>
       {approvalEditorTx && (
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor safeTransaction={tx} />
@@ -81,7 +95,11 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
       )}
 
       <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
-        <AccordionSummary>Transaction details</AccordionSummary>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} className={accordionCss.accordion}>
+          <span style={{ flex: 1 }}>Transaction details</span>
+
+          {decodedData ? decodedData.method : tx?.data.operation === OperationType.DelegateCall ? 'Delegate call' : ''}
+        </AccordionSummary>
 
         <AccordionDetails>
           {decodedData ? (
@@ -92,22 +110,49 @@ const DecodedTx = ({ tx, txId }: DecodedTxProps): ReactElement | null => {
             decodedDataLoading && <Skeleton />
           )}
 
-          {txDetails ? (
-            <Box mt={2}>
-              <Typography variant="overline" fontWeight="bold" color="border.main">
-                Advanced details
-              </Typography>
-              <Summary txDetails={txDetails} defaultExpanded />
-            </Box>
-          ) : txDetailsError ? (
-            <ErrorMessage error={txDetailsError}>Failed loading transaction details</ErrorMessage>
-          ) : (
-            txDetailsLoading && <Skeleton />
-          )}
+          <Box mt={2}>
+            <Typography variant="overline" fontWeight="bold" color="border.main" display="flex" alignItems="center">
+              Advanced details
+              <Tooltip
+                title={
+                  <>
+                    We recommend not changing the default values unless necessary.{' '}
+                    <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS} title="Learn more about advanced details">
+                      Learn more about advanced details
+                    </ExternalLink>
+                    .
+                  </>
+                }
+                arrow
+                placement="top"
+              >
+                <span>
+                  <SvgIcon
+                    component={InfoIcon}
+                    inheritViewBox
+                    color="border"
+                    fontSize="small"
+                    sx={{
+                      verticalAlign: 'middle',
+                      ml: 0.5,
+                    }}
+                  />
+                </span>
+              </Tooltip>
+            </Typography>
+
+            {txDetails ? <Summary txDetails={txDetails} defaultExpanded /> : tx && <PartialSummary safeTx={tx} />}
+
+            {txDetailsLoading && <Skeleton />}
+
+            {txDetailsError && (
+              <ErrorMessage error={txDetailsError}>Failed loading all transaction details</ErrorMessage>
+            )}
+          </Box>
         </AccordionDetails>
       </Accordion>
-    </Box>
+    </div>
   )
 }
 
-export default DecodedTx
+export default memo(DecodedTx)

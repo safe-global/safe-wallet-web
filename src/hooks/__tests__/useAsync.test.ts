@@ -35,7 +35,7 @@ describe('useAsync hook', () => {
     expect(result.current).toEqual([undefined, undefined, true])
 
     await waitFor(() => {
-      expect(result.current).toEqual([undefined, 'test', false])
+      expect(result.current).toEqual([undefined, new Error('test'), false])
     })
   })
 

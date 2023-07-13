@@ -30,7 +30,7 @@
   gap: var(--space-1);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .container {
     padding: var(--space-3) var(--space-2) 0;
   }

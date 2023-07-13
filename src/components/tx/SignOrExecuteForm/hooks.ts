@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
@@ -12,10 +13,10 @@ import {
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import type { ConnectedWallet } from '@/services/onboard'
 import type { OnboardAPI } from '@web3-onboard/core'
-import { hasEnoughSignatures } from '@/utils/transactions'
+import { getSafeTxGas, getRecommendedNonce } from '@/services/tx/tx-sender/recommendedNonce'
+import useAsync from '@/hooks/useAsync'
 
 type TxActions = {
   signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string) => Promise<string>
@@ -28,13 +29,13 @@ type TxActions = {
   ) => Promise<string>
 }
 
-function assertTx(safeTx?: SafeTransaction): asserts safeTx {
+function assertTx(safeTx: SafeTransaction | undefined): asserts safeTx {
   if (!safeTx) throw new Error('Transaction not provided')
 }
 function assertWallet(wallet: ConnectedWallet | null): asserts wallet {
   if (!wallet) throw new Error('Wallet not connected')
 }
-function assertOnboard(onboard?: OnboardAPI): asserts onboard {
+function assertOnboard(onboard: OnboardAPI | undefined): asserts onboard {
   if (!onboard) throw new Error('Onboard not connected')
 }
 
@@ -97,7 +98,7 @@ export const useTxActions = (): TxActions => {
       assertOnboard(onboard)
 
       // Relayed transactions must be fully signed, so request a final signature if needed
-      if (isRelayed && !hasEnoughSignatures(safeTx, safe)) {
+      if (isRelayed && safeTx.signatures.size < safe.threshold) {
         safeTx = await signRelayedTx(safeTx)
         txId = await proposeTx(wallet.address, safeTx, txId, origin)
       }
@@ -121,7 +122,7 @@ export const useTxActions = (): TxActions => {
   }, [safe, onboard, wallet])
 }
 
-export const useValidateNonce = (safeTx?: SafeTransaction): boolean => {
+export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {
   const { safe } = useSafeInfo()
   return !!safeTx && safeTx?.data.nonce === safe.nonce
 }
@@ -137,4 +138,44 @@ export const useIsExecutionLoop = (): boolean => {
   const wallet = useWallet()
   const { safeAddress } = useSafeInfo()
   return wallet ? sameString(wallet.address, safeAddress) : false
+}
+
+export const useRecommendedNonce = (): number | undefined => {
+  const { safeAddress, safe } = useSafeInfo()
+
+  const [recommendedNonce] = useAsync(
+    () => {
+      if (!safe.chainId || !safeAddress) return
+
+      return getRecommendedNonce(safe.chainId, safeAddress)
+    },
+    [safeAddress, safe.chainId, safe.txQueuedTag], // update when tx queue changes
+    false, // keep old recommended nonce while refreshing to avoid skeleton
+  )
+
+  return recommendedNonce
+}
+
+export const useSafeTxGas = (safeTx: SafeTransaction | undefined): number | undefined => {
+  const { safeAddress, safe } = useSafeInfo()
+
+  // Memoize only the necessary params so that the useAsync hook is not called every time safeTx changes
+  const safeTxParams = useMemo(() => {
+    return !safeTx?.data?.to
+      ? undefined
+      : {
+          to: safeTx?.data.to,
+          value: safeTx?.data?.value,
+          data: safeTx?.data?.data,
+          operation: safeTx?.data?.operation,
+        }
+  }, [safeTx?.data.to, safeTx?.data.value, safeTx?.data.data, safeTx?.data.operation])
+
+  const [safeTxGas] = useAsync(() => {
+    if (!safe.chainId || !safeAddress || !safeTxParams) return
+
+    return getSafeTxGas(safe.chainId, safeAddress, safeTxParams)
+  }, [safeAddress, safe.chainId, safeTxParams])
+
+  return safeTxGas
 }

@@ -21,6 +21,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import NumberField from '@/components/common/NumberField'
 
 import css from './styles.module.css'
+import inputCss from '@/styles/inputs.module.css'
 
 enum TxFilterFormFieldNames {
   FILTER_TYPE = 'type',
@@ -184,6 +185,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           }}
                           render={({ field, fieldState }) => (
                             <NumberField
+                              className={inputCss.input}
                               label={
                                 fieldState.error?.message ||
                                 `Amount${isMultisigFilter && chain ? ` (only ${chain.nativeCurrency.symbol})` : ''}`
@@ -232,6 +234,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           }}
                           render={({ field, fieldState }) => (
                             <NumberField
+                              className={inputCss.input}
                               label={fieldState.error?.message || 'Nonce'}
                               error={!!fieldState.error}
                               {...field}

@@ -1,4 +1,4 @@
-import type { NewSpendingLimitData } from '@/components/settings/SpendingLimits/NewSpendingLimit'
+import type { NewSpendingLimitFlowProps } from '@/components/tx-flow/flows/NewSpendingLimit'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import * as spendingLimit from '@/services/contracts/spendingLimitContracts'
@@ -8,7 +8,7 @@ import type Safe from '@safe-global/safe-core-sdk'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { createNewSpendingLimitTx } from '@/services/tx/tx-sender'
 
-const mockData: NewSpendingLimitData = {
+const mockData: NewSpendingLimitFlowProps = {
   beneficiary: ZERO_ADDRESS,
   tokenAddress: ZERO_ADDRESS,
   amount: '1',

@@ -1,0 +1,35 @@
+.row {
+  width: 100%;
+  padding: var(--space-4) var(--space-7);
+}
+
+@media (max-width: 599.95px) {
+  .row {
+    padding: var(--space-2);
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: 14px;
+}
+
+.instructions {
+  padding: var(--space-3);
+  margin-top: var(--space-4);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 6px;
+}
+
+.errorBg {
+  background-color: var(--color-error-background);
+  border-color: var(--color-error-light);
+}
+
+.infoBg {
+  background-color: var(--color-info-background);
+  border-color: var(--color-info-light);
+}

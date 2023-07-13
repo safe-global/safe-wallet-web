@@ -1,0 +1,146 @@
+import { useState } from 'react'
+import { Box, Button, CardActions, Divider, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
+import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import { FormProvider, useForm } from 'react-hook-form'
+import NftIcon from '@/public/images/common/nft.svg'
+import AddressBookInput from '@/components/common/AddressBookInput'
+import type { NftTransferParams } from '.'
+import ImageFallback from '@/components/common/ImageFallback'
+import useAddressBook from '@/hooks/useAddressBook'
+import TxCard from '../../common/TxCard'
+import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
+
+enum Field {
+  recipient = 'recipient',
+}
+
+type FormData = Pick<NftTransferParams, Field.recipient>
+
+type SendNftBatchProps = {
+  onSubmit: (data: NftTransferParams) => void
+  params: NftTransferParams
+}
+
+const NftItem = ({ image, name, description }: { image: string; name: string; description?: string }) => (
+  <Grid container gap={2} alignItems="center" wrap="nowrap">
+    <Grid item>
+      <Box width={40} height={40}>
+        <ImageFallback
+          src={image}
+          fallbackSrc=""
+          fallbackComponent={<SvgIcon component={NftIcon} inheritViewBox sx={{ width: 1, height: 1 }} />}
+          alt={name}
+          height={40}
+        />
+      </Box>
+    </Grid>
+
+    <Grid item overflow="hidden">
+      <Typography variant="body2" fontWeight={700} whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+        {name}
+      </Typography>
+
+      {description && (
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          whiteSpace="nowrap"
+          display="block"
+          overflow="hidden"
+          textOverflow="ellipsis"
+        >
+          {description}
+        </Typography>
+      )}
+    </Grid>
+  </Grid>
+)
+
+export const NftItems = ({ tokens }: { tokens: SafeCollectibleResponse[] }) => {
+  return (
+    <Box display="flex" flexDirection="column" gap={2} overflow="auto" maxHeight="20vh" minHeight="40px">
+      {tokens.map((token) => (
+        <NftItem
+          key={`${token.address}-${token.id}`}
+          image={token.imageUri || token.logoUri}
+          name={`${token.tokenName || token.tokenSymbol || ''} #${token.id}`}
+          description={`Token ID: ${token.id}${token.name ? ` - ${token.name}` : ''}`}
+        />
+      ))}
+    </Box>
+  )
+}
+
+const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
+  const [recipientFocus, setRecipientFocus] = useState(false)
+  const addressBook = useAddressBook()
+  const { tokens } = params
+
+  const formMethods = useForm<FormData>({
+    defaultValues: {
+      [Field.recipient]: params.recipient,
+    },
+  })
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = formMethods
+
+  const recipient = watch(Field.recipient)
+  const isAddressValid = !!recipient && !errors[Field.recipient]
+
+  const onFormSubmit = (data: FormData) => {
+    onSubmit({
+      recipient: data.recipient,
+      tokens,
+    })
+  }
+
+  return (
+    <TxCard>
+      <FormProvider {...formMethods}>
+        <form onSubmit={handleSubmit(onFormSubmit)}>
+          <FormControl fullWidth sx={{ mb: 3, mt: 1 }}>
+            {/* TODO: Extract this */}
+            {addressBook[recipient] ? (
+              <Box
+                onClick={() => {
+                  setValue(Field.recipient, '')
+                  setRecipientFocus(true)
+                }}
+              >
+                <AddressInputReadOnly label="Sending to" address={recipient} />
+              </Box>
+            ) : (
+              <AddressBookInput
+                name={Field.recipient}
+                label="Recipient address or ENS"
+                canAdd={isAddressValid}
+                focused={recipientFocus}
+              />
+            )}
+          </FormControl>
+
+          <Typography variant="body2" color="text.secondary" mb={2}>
+            Selected NFTs
+          </Typography>
+
+          <NftItems tokens={tokens} />
+
+          <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
+
+          <CardActions>
+            <Button variant="contained" type="submit">
+              Next
+            </Button>
+          </CardActions>
+        </form>
+      </FormProvider>
+    </TxCard>
+  )
+}
+
+export default SendNftBatch

@@ -7,6 +7,8 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import { dateString } from '@/utils/formatters'
 import css from './styles.module.css'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import SafeTxGasForm from '../SafeTxGasForm'
 
 interface Props {
   txDetails: TransactionDetails
@@ -69,3 +71,17 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
 }
 
 export default Summary
+
+export const PartialSummary = ({ safeTx }: { safeTx: SafeTransaction }) => {
+  const txData = safeTx.data
+  return (
+    <>
+      <TxDataRow title="safeTxGas:">
+        <SafeTxGasForm />
+      </TxDataRow>
+      <TxDataRow title="baseGas:">{txData.baseGas}</TxDataRow>
+      <TxDataRow title="refundReceiver:">{generateDataRowValue(txData.refundReceiver, 'hash', true)}</TxDataRow>
+      <TxDataRow title="Raw data:">{generateDataRowValue(txData.data, 'rawData')}</TxDataRow>
+    </>
+  )
+}

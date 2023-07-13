@@ -17,6 +17,7 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { hasFeature } from './chains'
+import { asError } from '@/services/exceptions/utils'
 
 /*
  * From v1.3.0, EIP-1271 support was moved to the CompatibilityFallbackHandler.
@@ -131,7 +132,7 @@ export const tryOffChainMsgSigning = async (
     } catch (error) {
       const isLastSigningMethod = i === signingMethods.length - 1
 
-      if (isWalletRejection(error as Error) || isLastSigningMethod) {
+      if (isWalletRejection(asError(error)) || isLastSigningMethod) {
         throw error
       }
     }

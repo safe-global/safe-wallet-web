@@ -1,4 +1,4 @@
-import { Button, SvgIcon, MenuItem, Select, Tooltip, Typography, Divider, Box } from '@mui/material'
+import { Button, SvgIcon, MenuItem, Tooltip, Typography, Divider, Box, Grid, TextField } from '@mui/material'
 import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import type { ReactElement } from 'react'
 
@@ -11,7 +11,6 @@ import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafe
 import { useSafeSetupHints } from '@/components/new-safe/create/steps/OwnerPolicyStep/useSafeSetupHints'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import css from '@/components/new-safe/create/steps/OwnerPolicyStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
@@ -145,22 +144,26 @@ const OwnerPolicyStep = ({
           <Typography variant="body2" mb={2}>
             Any transaction requires the confirmation of:
           </Typography>
-          <Box display="flex" alignItems="center">
-            <Controller
-              name={OwnerPolicyStepFields.threshold}
-              control={control}
-              render={({ field }) => (
-                <Select {...field} className={css.select}>
-                  {ownerFields.map(({ id }, i) => (
-                    <MenuItem key={id} value={i + 1}>
-                      {i + 1}
-                    </MenuItem>
-                  ))}
-                </Select>
-              )}
-            />{' '}
-            out of {ownerFields.length} owner(s).
-          </Box>
+          <Grid container direction="row" alignItems="center" gap={2} pt={1}>
+            <Grid item>
+              <Controller
+                control={control}
+                name="threshold"
+                render={({ field }) => (
+                  <TextField select {...field}>
+                    {ownerFields.map((_, idx) => (
+                      <MenuItem key={idx + 1} value={idx + 1}>
+                        {idx + 1}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+            </Grid>
+            <Grid item>
+              <Typography>out of {ownerFields.length} owner(s)</Typography>
+            </Grid>
+          </Grid>
 
           {isWrongChain && <NetworkWarning />}
         </Box>

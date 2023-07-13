@@ -1,17 +1,18 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext } from 'react'
 import { Button, Tooltip } from '@mui/material'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
-import BatchExecuteModal from '@/components/tx/modals/BatchExecuteModal'
+import ExecuteBatchFlow from '@/components/tx-flow/flows/ExecuteBatch'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import useWallet from '@/hooks/wallets/useWallet'
 import useTxQueue from '@/hooks/useTxQueue'
+import { TxModalContext } from '@/components/tx-flow'
 
 const BatchExecuteButton = () => {
-  const [open, setOpen] = useState(false)
+  const { setTxFlow } = useContext(TxModalContext)
   const pendingTxs = useAppSelector(selectPendingTxs)
   const hoverContext = useContext(BatchExecuteHoverContext)
   const { page } = useTxQueue()
@@ -36,7 +37,7 @@ const BatchExecuteButton = () => {
       label: batchableTransactions.length,
     })
 
-    setOpen(true)
+    setTxFlow(<ExecuteBatchFlow txs={batchableTransactions} />, undefined, false)
   }
 
   return (
@@ -63,7 +64,6 @@ const BatchExecuteButton = () => {
           </Button>
         </span>
       </Tooltip>
-      {open && <BatchExecuteModal onClose={() => setOpen(false)} initialData={[{ txs: batchableTransactions }]} />}
     </>
   )
 }

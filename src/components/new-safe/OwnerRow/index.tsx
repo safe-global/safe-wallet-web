@@ -78,7 +78,6 @@ export const OwnerRow = ({
       <Grid item xs={12} md={readOnly ? 5 : 4}>
         <FormControl fullWidth>
           <NameInput
-            className={css.name}
             name={`${fieldName}.name`}
             label="Owner name"
             InputLabelProps={{ shrink: true }}
@@ -106,16 +105,7 @@ export const OwnerRow = ({
         )}
       </Grid>
       {!readOnly && (
-        <Grid
-          item
-          ml={-3}
-          xs={1}
-          alignSelf="stretch"
-          maxHeight="80px"
-          display="flex"
-          alignItems="center"
-          flexShrink={0}
-        >
+        <Grid item ml={-2} xs={1} alignSelf="stretch" display="flex" alignItems="center" flexShrink={0}>
           {removable && (
             <>
               <IconButton onClick={() => remove?.(index)} aria-label="Remove owner">

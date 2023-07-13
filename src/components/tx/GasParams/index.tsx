@@ -7,6 +7,7 @@ import { type AdvancedParameters } from '../AdvancedParams/types'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import classnames from 'classnames'
 import css from './styles.module.css'
+import accordionCss from '@/styles/accordion.module.css'
 
 const GasDetail = ({ name, value, isLoading }: { name: string; value: string; isLoading: boolean }): ReactElement => {
   const valueSkeleton = <Skeleton variant="text" sx={{ minWidth: '5em' }} />
@@ -68,7 +69,7 @@ const GasParams = ({
       onChange={onChangeExpand}
       className={classnames({ [css.withExecutionMethod]: isExecution })}
     >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />} className={accordionCss.accordion}>
         {isExecution ? (
           <Typography display="flex" alignItems="center" justifyContent="space-between" width={1}>
             <span>Estimated fee </span>
