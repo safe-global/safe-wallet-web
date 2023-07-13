@@ -67,10 +67,6 @@ const TokenAmountInput = ({
           {...register(TokenAmountFields.amount, {
             required: true,
             validate: validate ?? validateAmount,
-            onChange: (event) => {
-              event.target.value = event.target.value.trim()
-              return event
-            },
           })}
         />
         <Divider orientation="vertical" flexItem />
