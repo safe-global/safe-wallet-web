@@ -12,8 +12,6 @@ export const useProvider = (isSafeApp = false): JsonRpcProvider | Web3Provider |
   const wallet = useWallet()
   const rpcMap = useAppSelector(selectRpc)
 
-  const customRpc = chain ? rpcMap[chain.chainId] : undefined
-
   return useMemo(() => {
     if (!chain) {
       return
@@ -25,10 +23,12 @@ export const useProvider = (isSafeApp = false): JsonRpcProvider | Web3Provider |
       return createWeb3(wallet.provider)
     }
 
+    const customRpc = rpcMap[chain.chainId]
+
     if (!isSafeApp) {
       return createWeb3ReadOnly(chain.rpcUri, customRpc)
     } else {
       return createSafeAppsWeb3Provider(chain.safeAppsRpcUri, customRpc)
     }
-  }, [chain, wallet, isSafeApp, customRpc])
+  }, [chain, wallet, isSafeApp, rpcMap])
 }
