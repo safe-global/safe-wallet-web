@@ -448,6 +448,50 @@ const SafePrivacyPolicy = () => {
         <li>Error info: Time, stacktrace</li>
       </ol>
       <p>We rely on our legitimate interest (GDPR Art.6.1f) of ensuring product quality. </p>
+      <p>
+        4.5.6 We process your personal data to allow you to authenticate using your gmail account or AppleID and to
+        create a signer wallet/owner account . For that purpose following personal data is processed:
+      </p>
+      <ol start={1} className={css.alphaList}>
+        <li>Anonymised device information and identifiers, e.g. IP address, cookie IDs, device type</li>
+        <li>User account authentication information (e.g. username, password)</li>
+        <li>
+          Unique user identifier (e.g. a random string associated with authentication, at times can be email. If so,
+          sensitive strings are processed but hashed and not stored)
+        </li>
+        <li>Connection and usage Information (e.g. logins to the application)</li>
+      </ol>
+      <p>
+        For this processing, we rely on our legitimate interest (GDPR Art.6.1f) of facilitating the onboarding for users
+        and ameliorating the user experience with regards to our product.
+      </p>
+      <p>
+        4.5.7 Providing on and off-ramp services to enable you to top up your Safe Account with e.g. bank transfer,
+        debit card, credit card. For this purpose MoonPay may process your:
+      </p>
+      <ol start={1} className={css.alphaList}>
+        <li>full name</li>
+        <li>date of birth</li>
+        <li>nationality</li>
+        <li>gender</li>
+        <li>signature</li>
+        <li>utility bills</li>
+        <li>photographs</li>
+        <li>phone number</li>
+        <li>home address</li>
+        <li>email</li>
+        <li>
+          information about the transactions you make via MoonPay services (e.g. name of the recipient, your name, the
+          amount, and/or timestamp)
+        </li>
+        <li>geo location/tracking details</li>
+        <li>operating system</li>
+        <li>personal IP address</li>
+      </ol>
+      <p>
+        To conduct this activity we rely on our legitimate interest (GDPR Art.6.1f) of ameliorating the onboarding
+        process and the user experience through providing an easier option to customers to fund their account.
+      </p>
       <h4>4.6 Other uses of your Personal Data</h4>
       <p>
         We may process any of your Personal Data where it is necessary to establish, exercise, or defend legal claims.
@@ -632,6 +676,27 @@ const SafePrivacyPolicy = () => {
           </Link>
         </li>
       </ul>
+      <h4>5.13. Web3Auth</h4>
+      <p>
+        We use{' '}
+        <Link href="https://web3auth.io/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            Web3Auth
+          </MUILink>
+        </Link>{' '}
+        to create a signer wallet/an owner account by using the user&apos;s Gmail account or Apple ID information.
+      </p>
+      <h4>MoonPay</h4>
+      <p>
+        We use{' '}
+        <Link href="https://www.moonpay.com/" passHref>
+          <MUILink target="_blank" rel="noreferrer">
+            MoonPay
+          </MUILink>
+        </Link>{' '}
+        to offer on-ramp and off-ramp services. For that purpose personal data is required for KYC/AML or other
+        financial regulatory requirements. This data is encrypted by MoonPay.
+      </p>
       <h3 id="6">6. Sharing Your Personal Data</h3>
       <p>
         We may pass your information to our Business Partners, administration centers, third party service providers,
@@ -668,6 +733,8 @@ const SafePrivacyPolicy = () => {
       <ul>
         <li>Tenderly d.o.o. is based in Serbia.</li>
         <li>Node Real PTE Ltd. is based in Singapore.</li>
+        <li>Torus Labs PTE. Ltd. is based in Singapore.</li>
+        <li>Eighteenth September Limited (“MoonPay”) in the Seychelles.</li>
       </ul>
       <p>
         HOWEVER, WHEN INTERACTING WITH THE BLOCKCHAIN, AS EXPLAINED ABOVE IN THIS POLICY, THE BLOCKCHAIN IS A GLOBAL
