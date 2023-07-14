@@ -1,7 +1,7 @@
 .actionsHeader {
   border-bottom: 1px solid var(--color-border-light);
   cursor: auto !important;
-  padding-left: 0;
+  padding-left: var(--space-2);
   padding-right: 0;
   display: flex;
   justify-content: space-between;
@@ -10,6 +10,7 @@
 
 .compactHeader {
   border: 0;
+  padding-left: 0;
 }
 
 .actionsHeader button {
