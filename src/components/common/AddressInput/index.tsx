@@ -50,6 +50,7 @@ const AddressInput = ({
     formState: { errors },
     trigger,
   } = useFormContext()
+
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
   const watchedValue = useWatch({ name, control })
@@ -153,8 +154,12 @@ const AddressInput = ({
             return parsePrefixedAddress(cleanValue).address
           },
 
-          validate: async () => {
+          validate: async (inputValue) => {
             const value = rawValueRef.current
+
+            // Validation unmounts QR code otherwise
+            if (inputValue === value) return
+
             if (value) {
               setIsValidating(true)
               const result = validatePrefixed(value) || (await validate?.(parsePrefixedAddress(value).address))
