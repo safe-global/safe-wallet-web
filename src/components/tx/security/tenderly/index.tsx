@@ -47,7 +47,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
   } = useContext(TxInfoContext)
 
   const isLoading = simulationRequestStatus === FETCH_STATUS.LOADING
-  const isSuccess = simulationRequestStatus === FETCH_STATUS.SUCCESS
+  const isSuccess = simulation?.simulation.status
   const isError = simulationRequestStatus === FETCH_STATUS.ERROR
 
   const isCallTraceError = isSuccess && getCallTraceErrors(simulation).length > 0
