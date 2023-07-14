@@ -4,7 +4,7 @@ import { useWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { EthersError } from '@/utils/ethers-utils'
-import { getInitialCreationStatus, type PendingSafeData } from '@/components/new-safe/create/steps/StatusStep/index'
+import { getInitialCreationStatus } from '@/components/new-safe/create/steps/StatusStep/index'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
 import {
   createNewSafe,
@@ -24,6 +24,7 @@ import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import type { DeploySafeProps } from '@safe-global/safe-core-sdk'
+import { usePendingSafe } from './usePendingSafe'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -38,8 +39,6 @@ export enum SafeCreationStatus {
 }
 
 export const useSafeCreation = (
-  pendingSafe: PendingSafeData | undefined,
-  setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>,
   status: SafeCreationStatus,
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
   willRelay: boolean,
@@ -47,6 +46,7 @@ export const useSafeCreation = (
   const [isCreating, setIsCreating] = useState(false)
   const [isWatching, setIsWatching] = useState(false)
   const dispatch = useAppDispatch()
+  const [pendingSafe, setPendingSafe] = usePendingSafe()
 
   const wallet = useWallet()
   const provider = useWeb3()
@@ -63,9 +63,9 @@ export const useSafeCreation = (
     async (txHash: string, tx: PendingSafeTx) => {
       setStatus(SafeCreationStatus.PROCESSING)
       trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
-      setPendingSafe((prev) => (prev ? { ...prev, txHash, tx } : undefined))
+      setPendingSafe(pendingSafe ? { ...pendingSafe, txHash, tx } : undefined)
     },
-    [setStatus, setPendingSafe],
+    [setStatus, setPendingSafe, pendingSafe],
   )
 
   const handleCreateSafe = useCallback(async () => {
@@ -81,7 +81,7 @@ export const useSafeCreation = (
       if (willRelay) {
         const taskId = await relaySafeCreation(chain, ownersAddresses, threshold, saltNonce)
 
-        setPendingSafe((prev) => (prev ? { ...prev, taskId } : undefined))
+        setPendingSafe(pendingSafe ? { ...pendingSafe, taskId } : undefined)
         setStatus(SafeCreationStatus.PROCESSING)
         waitForCreateSafeTx(taskId, setStatus)
       } else {

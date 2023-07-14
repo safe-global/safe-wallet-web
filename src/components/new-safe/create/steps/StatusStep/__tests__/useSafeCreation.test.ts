@@ -67,7 +67,7 @@ describe('useSafeCreation', () => {
   it('should create a safe with gas params if there is no txHash and status is AWAITING', async () => {
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus, false))
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).toHaveBeenCalled()
@@ -99,7 +99,7 @@ describe('useSafeCreation', () => {
     )
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus, false))
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).toHaveBeenCalled()
@@ -118,7 +118,7 @@ describe('useSafeCreation', () => {
 
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus, false))
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).toHaveBeenCalled()
@@ -136,7 +136,7 @@ describe('useSafeCreation', () => {
 
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus, false))
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
@@ -146,65 +146,49 @@ describe('useSafeCreation', () => {
   it('should not create a safe if the status is not AWAITING', async () => {
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe')
 
-    renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.WALLET_REJECTED, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(SafeCreationStatus.WALLET_REJECTED, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
     })
 
-    renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.PROCESSING, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(SafeCreationStatus.PROCESSING, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
     })
 
-    renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.ERROR, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(SafeCreationStatus.ERROR, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
     })
 
-    renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.REVERTED, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(SafeCreationStatus.REVERTED, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
     })
 
-    renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.TIMEOUT, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(SafeCreationStatus.TIMEOUT, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
     })
 
-    renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.SUCCESS, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(SafeCreationStatus.SUCCESS, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
     })
 
-    renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.INDEXED, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(SafeCreationStatus.INDEXED, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
     })
 
-    renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.INDEX_FAILED, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(SafeCreationStatus.INDEX_FAILED, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
@@ -214,15 +198,7 @@ describe('useSafeCreation', () => {
   it('should not create a safe if there is a txHash', async () => {
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe')
 
-    renderHook(() =>
-      useSafeCreation(
-        { ...mockPendingSafe, txHash: '0x123' },
-        mockSetPendingSafe,
-        SafeCreationStatus.AWAITING,
-        mockSetStatus,
-        false,
-      ),
-    )
+    renderHook(() => useSafeCreation(SafeCreationStatus.AWAITING, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
@@ -232,15 +208,7 @@ describe('useSafeCreation', () => {
   it('should watch a tx if there is a txHash and a tx object', async () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
 
-    renderHook(() =>
-      useSafeCreation(
-        { ...mockPendingSafe, txHash: '0x123', tx: mockSafeInfo },
-        mockSetPendingSafe,
-        mockStatus,
-        mockSetStatus,
-        false,
-      ),
-    )
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(watchSafeTxSpy).toHaveBeenCalledTimes(1)
@@ -251,15 +219,7 @@ describe('useSafeCreation', () => {
     jest.spyOn(wallet, 'default').mockReturnValue(null)
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
 
-    renderHook(() =>
-      useSafeCreation(
-        { ...mockPendingSafe, txHash: '0x123', tx: mockSafeInfo },
-        mockSetPendingSafe,
-        mockStatus,
-        mockSetStatus,
-        false,
-      ),
-    )
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(watchSafeTxSpy).toHaveBeenCalledTimes(1)
@@ -269,9 +229,7 @@ describe('useSafeCreation', () => {
   it('should not watch a tx if there is no txHash', async () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
 
-    renderHook(() =>
-      useSafeCreation({ ...mockPendingSafe, tx: mockSafeInfo }, mockSetPendingSafe, mockStatus, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(watchSafeTxSpy).not.toHaveBeenCalled()
@@ -281,9 +239,7 @@ describe('useSafeCreation', () => {
   it('should not watch a tx if there is no tx object', async () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
 
-    renderHook(() =>
-      useSafeCreation({ ...mockPendingSafe, txHash: '0x123' }, mockSetPendingSafe, mockStatus, mockSetStatus, false),
-    )
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(watchSafeTxSpy).not.toHaveBeenCalled()
@@ -291,15 +247,7 @@ describe('useSafeCreation', () => {
   })
 
   it('should set a PROCESSING state when watching a tx', async () => {
-    renderHook(() =>
-      useSafeCreation(
-        { ...mockPendingSafe, txHash: '0x123', tx: mockSafeInfo },
-        mockSetPendingSafe,
-        mockStatus,
-        mockSetStatus,
-        false,
-      ),
-    )
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
@@ -313,9 +261,7 @@ describe('useSafeCreation', () => {
 
     const initialStatus = SafeCreationStatus.PROCESSING
 
-    renderHook(() =>
-      useSafeCreation({ ...mockPendingSafe, tx: mockSafeInfo }, mockSetPendingSafe, initialStatus, mockSetStatus, true),
-    )
+    renderHook(() => useSafeCreation(initialStatus, mockSetStatus, true))
 
     await waitFor(() => {
       expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)

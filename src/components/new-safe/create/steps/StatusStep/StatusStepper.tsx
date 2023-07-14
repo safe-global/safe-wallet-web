@@ -2,10 +2,11 @@ import { Box, Step, StepConnector, Stepper, Typography } from '@mui/material'
 import css from '@/components/new-safe/create/steps/StatusStep/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
-import type { PendingSafeData } from '@/components/new-safe/create/steps/StatusStep/index'
 import StatusStep from '@/components/new-safe/create/steps/StatusStep/StatusStep'
+import { usePendingSafe } from './usePendingSafe'
 
-const StatusStepper = ({ pendingSafe, status }: { pendingSafe: PendingSafeData; status: SafeCreationStatus }) => {
+const StatusStepper = ({ status }: { status: SafeCreationStatus }) => {
+  const [pendingSafe] = usePendingSafe()
   if (!pendingSafe?.safeAddress) return null
 
   return (

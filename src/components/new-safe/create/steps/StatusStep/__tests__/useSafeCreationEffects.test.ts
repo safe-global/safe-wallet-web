@@ -4,9 +4,7 @@ import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import * as web3 from '@/hooks/wallets/web3'
 import * as pendingSafe from '@/components/new-safe/create/logic'
 import { Web3Provider } from '@ethersproject/providers'
-import type { PendingSafeData } from '@/components/new-safe/create/types'
 import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
-import type { NamedAddress } from '@/components/new-safe/create/types'
 
 describe('useSafeCreationEffects', () => {
   beforeEach(() => {
@@ -24,8 +22,6 @@ describe('useSafeCreationEffects', () => {
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.ERROR,
-        pendingSafe: { txHash: '0x10' } as PendingSafeData,
-        setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
       }),
     )
@@ -40,8 +36,6 @@ describe('useSafeCreationEffects', () => {
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.ERROR,
-        pendingSafe: {} as PendingSafeData,
-        setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
       }),
     )
@@ -57,11 +51,6 @@ describe('useSafeCreationEffects', () => {
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.SUCCESS,
-        pendingSafe: {
-          safeAddress: '0x1',
-          owners: [] as NamedAddress[],
-        } as PendingSafeData,
-        setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
       }),
     )
@@ -77,8 +66,6 @@ describe('useSafeCreationEffects', () => {
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.SUCCESS,
-        pendingSafe: undefined,
-        setPendingSafe: setPendingSafeSpy,
         setStatus: setStatusSpy,
       }),
     )
