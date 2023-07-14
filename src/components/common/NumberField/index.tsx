@@ -35,6 +35,17 @@ const NumberField = forwardRef<HTMLInputElement, TextFieldProps>(({ onChange, ..
         return onChange?.(event)
       }}
       {...props}
+      inputProps={{
+        ...props.inputProps,
+        // Autocomplete passes `onChange` in `inputProps`
+        onChange: (event) => {
+          // inputProps['onChange'] is generically typed
+          if ('value' in event.target && typeof event.target.value === 'string') {
+            event.target.value = _formatNumber(event.target.value)
+            return props.inputProps?.onChange?.(event)
+          }
+        },
+      }}
     />
   )
 })
