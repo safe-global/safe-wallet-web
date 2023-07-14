@@ -27,6 +27,7 @@ export type TxSimulationProps = {
 
 // TODO: Investigate resetting on gasLimit change as we are not simulating with the gasLimit of the tx
 // otherwise remove all usage of gasLimit in simulation. Note: this was previously being done.
+// TODO: Test this component
 const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
@@ -134,6 +135,7 @@ export const TxSimulation = (props: TxSimulationProps): ReactElement | null => {
   return <TxSimulationBlock {...props} />
 }
 
+// TODO: Test this component
 export const TxSimulationMessage = () => {
   const {
     simulation: { simulationLink, simulation, requestError },
