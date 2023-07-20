@@ -33,7 +33,8 @@ export const FallbackHandler = (): ReactElement | null => {
     return null
   }
 
-  const isOfficial = !!safe.fallbackHandler && safe.fallbackHandler.value === fallbackHandlerDeployment?.defaultAddress
+  const isOfficial =
+    !!safe.fallbackHandler && safe.fallbackHandler.value === fallbackHandlerDeployment?.networkAddresses[safe.chainId]
 
   const tooltip = !safe.fallbackHandler ? (
     <>
