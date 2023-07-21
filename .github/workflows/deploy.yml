@@ -7,6 +7,7 @@ on:
     branches:
       - dev
       - main
+      - web3-static-html
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -57,7 +58,7 @@ jobs:
 
       # Dev
       - name: Deploy to the dev S3
-        if: github.ref == 'refs/heads/web3auth-static-page'
+        if: github.ref == 'refs/heads/dev'
         env:
           BUCKET: s3://${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}
         run: bash ./scripts/github/s3_upload.sh
