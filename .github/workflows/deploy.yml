@@ -7,7 +7,7 @@ on:
     branches:
       - dev
       - main
-      - web3-static-html
+      - web3auth-static-page
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
