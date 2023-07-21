@@ -44,6 +44,7 @@ export const DataWidget = (): ReactElement => {
             <SvgIcon component={FileIcon} inheritViewBox fontSize="small" sx={{ fill: 'none' }} />
           </Box>
         }
+        className={css.cardHeader}
         title={<b>{hasData ? 'Work with your data' : 'Already have a Safe Account?'}</b>}
         subheader={hasData ? 'Export or import your data' : 'Import your data'}
       />
