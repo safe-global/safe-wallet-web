@@ -60,6 +60,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
           decodedData={decodedTx[0]}
           decodedDataError={decodedTx[1]}
           decodedDataLoading={decodedTx[2]}
+          showMultisend={!props.isBatch}
         />
 
         <RedefineBalanceChanges />

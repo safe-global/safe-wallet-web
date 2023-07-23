@@ -28,6 +28,7 @@ import accordionCss from '@/styles/accordion.module.css'
 type DecodedTxProps = {
   tx?: SafeTransaction
   txId?: string
+  showMultisend?: boolean
   decodedData?: DecodedDataResponse
   decodedDataError?: Error
   decodedDataLoading?: boolean
@@ -35,10 +36,11 @@ type DecodedTxProps = {
 
 const DecodedTx = ({
   tx,
+  txId,
+  showMultisend = true,
   decodedData,
   decodedDataError,
   decodedDataLoading = false,
-  txId,
 }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
 
@@ -57,7 +59,7 @@ const DecodedTx = ({
 
   return (
     <div>
-      {isMultisend && (
+      {isMultisend && showMultisend && (
         <Box my={2}>
           <Multisend
             txData={{

@@ -1,6 +1,7 @@
 import type { SyntheticEvent } from 'react'
 import { useCallback, useContext } from 'react'
-import { Button, Divider, Drawer, SvgIcon, Typography } from '@mui/material'
+import { Button, Divider, Drawer, IconButton, SvgIcon, Typography } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 import { useDraftBatch, useUpdateBatch } from '@/hooks/useDraftBatch'
 import css from './styles.module.css'
 import NewTxMenu from '@/components/tx-flow/flows/NewTx'
@@ -69,6 +70,10 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
         <Button variant="contained" onClick={onConfirmClick} disabled={!batchTxs.length}>
           Confirm batch
         </Button>
+
+        <IconButton className={css.close} aria-label="close" onClick={closeSidebar} size="small">
+          <CloseIcon fontSize="medium" />
+        </IconButton>
       </aside>
     </Drawer>
   )
