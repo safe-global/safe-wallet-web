@@ -9,6 +9,8 @@ import { TxModalContext } from '@/components/tx-flow'
 import BatchTxItem from './BatchTxItem'
 import ConfirmBatchFlow from '@/components/tx-flow/flows/ConfirmBatch'
 import PlusIcon from '@/public/images/common/plus.svg'
+import Track from '../Track'
+import { BATCH_EVENTS } from '@/services/analytics'
 
 const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: boolean) => void }) => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -60,16 +62,20 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
           ))}
         </div>
 
-        <Button onClick={onAddClick}>
-          <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-          Add new transaction
-        </Button>
+        <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
+          <Button onClick={onAddClick}>
+            <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
+            Add new transaction
+          </Button>
+        </Track>
 
         <Divider />
 
-        <Button variant="contained" onClick={onConfirmClick} disabled={!batchTxs.length}>
-          Confirm batch
-        </Button>
+        <Track {...BATCH_EVENTS.BATCH_CONFIRM}>
+          <Button variant="contained" onClick={onConfirmClick} disabled={!batchTxs.length}>
+            Confirm batch
+          </Button>
+        </Track>
 
         <IconButton className={css.close} aria-label="close" onClick={closeSidebar} size="small">
           <CloseIcon fontSize="medium" />

@@ -12,6 +12,8 @@ import TxData from '@/components/transactions/TxDetails/TxData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { dateString } from '@/utils/formatters'
+import Track from '../Track'
+import { BATCH_EVENTS } from '@/services/analytics'
 
 type BatchTxItemProps = DraftBatchItem & {
   count: number
@@ -47,31 +49,35 @@ const BatchTxItem = ({ count, timestamp, txDetails, onDelete }: BatchTxItemProps
       <div className={css.number}>{count}</div>
 
       <Accordion elevation={0} onChange={(_, isOpen) => setIsExpanded(isOpen)} sx={{ flex: 1 }}>
-        <AccordionSummary>
-          <Box flex={1} display="flex" gap={2} py={0.4}>
-            <TxType tx={txSummary} />
+        <Track {...BATCH_EVENTS.BATCH_EXPAND_TX}>
+          <AccordionSummary>
+            <Box flex={1} display="flex" gap={2} py={0.4}>
+              <TxType tx={txSummary} />
 
-            <Box flex={1}>
-              <TxInfo info={txDetails.txInfo} />
+              <Box flex={1}>
+                <TxInfo info={txDetails.txInfo} />
+              </Box>
+
+              {onDelete && (
+                <>
+                  <Box className={css.separator} />
+
+                  <Track {...BATCH_EVENTS.BATCH_DELETE_TX}>
+                    <ButtonBase onClick={handleDelete}>
+                      <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
+                    </ButtonBase>
+                  </Track>
+                </>
+              )}
+
+              <Box className={css.separator} />
+
+              <ButtonBase onClick={() => null}>
+                <SvgIcon component={isExpanded ? ExpandLessIcon : ExpandMoreIcon} inheritViewBox fontSize="small" />
+              </ButtonBase>
             </Box>
-
-            {onDelete && (
-              <>
-                <Box className={css.separator} />
-
-                <ButtonBase onClick={handleDelete}>
-                  <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
-                </ButtonBase>
-              </>
-            )}
-
-            <Box className={css.separator} />
-
-            <ButtonBase onClick={() => null}>
-              <SvgIcon component={isExpanded ? ExpandLessIcon : ExpandMoreIcon} inheritViewBox fontSize="small" />
-            </ButtonBase>
-          </Box>
-        </AccordionSummary>
+          </AccordionSummary>
+        </Track>
 
         <AccordionDetails>
           <div className={css.details}>

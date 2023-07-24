@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, Divider, SvgIcon } from '@mui/material'
+import { Box, Button, CardActions, Divider } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -13,7 +13,7 @@ import { asError } from '@/services/exceptions/utils'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
-import PlusIcon from '@/public/images/common/plus.svg'
+import BatchButton from './BatchButton'
 
 const SignForm = ({
   safeTx,
@@ -89,18 +89,7 @@ const SignForm = ({
       <CardActions>
         <Box display="flex" gap={2}>
           {/* Batch button */}
-          {isCreation && !isBatch && (
-            <>
-              <Button variant="outlined" onClick={onBatchClick} disabled={submitDisabled}>
-                <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-                Add to batch
-              </Button>
-
-              <Box display="flex" flexDirection="column" justifyContent="center" color="border.main">
-                or
-              </Box>
-            </>
-          )}
+          {isCreation && !isBatch && <BatchButton onClick={onBatchClick} disabled={submitDisabled} />}
 
           {/* Submit button */}
           <CheckWallet>

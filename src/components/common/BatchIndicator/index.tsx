@@ -5,6 +5,8 @@ import { styled } from '@mui/material/styles'
 import BatchIcon from '@/public/images/common/batch.svg'
 import SuccessIcon from '@/public/images/common/success.svg'
 import { useDraftBatch } from '@/hooks/useDraftBatch'
+import Track from '../Track'
+import { BATCH_EVENTS } from '@/services/analytics'
 
 const BatchTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -53,11 +55,13 @@ const BatchIndicator = ({ onClick }: { onClick?: () => void }) => {
   }, [])
 
   const button = (
-    <ButtonBase onClick={onClick} sx={{ p: 0.5 }}>
-      <Badge variant="standard" color="secondary" badgeContent={length}>
-        <SvgIcon component={BatchIcon} inheritViewBox fontSize="small" />
-      </Badge>
-    </ButtonBase>
+    <Track {...BATCH_EVENTS.BATCH_SIDEBAR_OPEN}>
+      <ButtonBase onClick={onClick} sx={{ p: 0.5 }}>
+        <Badge variant="standard" color="secondary" badgeContent={length}>
+          <SvgIcon component={BatchIcon} inheritViewBox fontSize="small" />
+        </Badge>
+      </ButtonBase>
+    </Track>
   )
 
   return (
