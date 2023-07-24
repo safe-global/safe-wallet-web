@@ -13,11 +13,12 @@ const useDecodeTx = (tx?: SafeTransaction): AsyncResult<DecodedDataResponse> => 
   const isRejection = isEmptyData && tx?.data.value === '0'
   const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData(tx?.data) : undefined
 
-  return useAsync<DecodedDataResponse>(() => {
-    if (nativeTransfer) return Promise.resolve(nativeTransfer)
+  const [data = nativeTransfer, error, loading] = useAsync<DecodedDataResponse>(() => {
     if (!encodedData || isEmptyData) return
     return getDecodedData(chainId, encodedData)
-  }, [chainId, encodedData, isEmptyData, nativeTransfer])
+  }, [chainId, encodedData, isEmptyData])
+
+  return [data, error, loading]
 }
 
 export const isMultisendTx = (decodedData?: DecodedDataResponse): boolean => {
