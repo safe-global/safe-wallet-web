@@ -66,11 +66,11 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         </div>
       )}
 
-      <div className={classnames(css.element, css.hideMobile)}>
+      <div className={css.element}>
         <BatchIndicator onClick={handleBatchToggle} />
       </div>
 
-      <div className={classnames(css.element, css.hideMobile)}>
+      <div className={css.element}>
         <NotificationCenter />
       </div>
 
