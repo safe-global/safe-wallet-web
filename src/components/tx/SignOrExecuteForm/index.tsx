@@ -15,7 +15,7 @@ import { selectSettings } from '@/store/settingsSlice'
 import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 import UnknownContractError from './UnknownContractError'
 import RiskConfirmationError from './RiskConfirmationError'
-import useDecodeTx, { isMultisendTx } from '@/hooks/useDecodeTx'
+import useDecodeTx from '@/hooks/useDecodeTx'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
 
@@ -39,7 +39,6 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const decodedTx = useDecodeTx(safeTx)
-  const isMultisend = props.isBatch || isMultisendTx(decodedTx[0])
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
@@ -90,11 +89,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
 
         <RiskConfirmationError />
 
-        {willExecute ? (
-          <ExecuteForm {...props} safeTx={safeTx} />
-        ) : (
-          <SignForm {...props} safeTx={safeTx} isBatch={isMultisend} />
-        )}
+        {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
       </TxCard>
     </>
   )
