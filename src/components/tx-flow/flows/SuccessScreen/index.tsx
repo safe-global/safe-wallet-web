@@ -29,14 +29,8 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
   }, [txHash])
 
   useEffect(() => {
-    const unsubFns: Array<() => void> = []
-    unsubFns.push(
-      txSubscribe(TxEvent.FAILED, (detail) => {
-        if (detail.txId === txId) setError(detail.error)
-      }),
-    )
-    unsubFns.push(
-      txSubscribe(TxEvent.REVERTED, (detail) => {
+    const unsubFns: Array<() => void> = ([TxEvent.FAILED, TxEvent.REVERTED] as const).map((event) =>
+      txSubscribe(event, (detail) => {
         if (detail.txId === txId) setError(detail.error)
       }),
     )
