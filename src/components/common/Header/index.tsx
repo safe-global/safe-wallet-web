@@ -14,7 +14,7 @@ import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/images/logo.svg'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import BatchIndicator from '../BatchIndicator'
+import BatchIndicator from '@/components/batch/BatchIndicator'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>

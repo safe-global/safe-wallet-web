@@ -6,6 +6,7 @@ import type { DraftBatchItem } from '@/store/batchSlice'
 import { selectBatchBySafe, addTx, removeTx } from '@/store/batchSlice'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { BATCH_EVENTS, trackEvent } from '@/services/analytics'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 export const useUpdateBatch = () => {
   const chainId = useChainId()
@@ -23,6 +24,8 @@ export const useUpdateBatch = () => {
             txDetails: tx,
           }),
         )
+
+        txDispatch(TxEvent.BATCH_ADD, { txId: id })
 
         trackEvent({ ...BATCH_EVENTS.BATCH_TX_APPENDED, label: tx.txInfo.type })
       })

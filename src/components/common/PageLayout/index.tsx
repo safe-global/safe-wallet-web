@@ -10,7 +10,7 @@ import { AppRoutes } from '@/config/routes'
 import useDebounce from '@/hooks/useDebounce'
 import { useRouter } from 'next/router'
 import { TxModalContext } from '@/components/tx-flow'
-import BatchSidebar from '../BatchSidebar'
+import BatchSidebar from '@/components/batch/BatchSidebar'
 
 const isNoSidebarRoute = (pathname: string): boolean => {
   return [

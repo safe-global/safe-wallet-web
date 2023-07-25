@@ -8,7 +8,7 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import TxLayout from '../../common/TxLayout'
 import BatchIcon from '@/public/images/common/batch.svg'
 import { useDraftBatch } from '@/hooks/useDraftBatch'
-import BatchTxItem from '@/components/common/BatchSidebar/BatchTxItem'
+import BatchTxList from '@/components/batch/BatchSidebar/BatchTxList'
 
 type ConfirmBatchProps = {
   onSubmit: () => void
@@ -34,9 +34,7 @@ const ConfirmBatch = ({ onSubmit }: ConfirmBatchProps): ReactElement => {
 
   return (
     <SignOrExecuteForm onSubmit={onSubmit} isBatch>
-      {batchTxs.map((item, index) => (
-        <BatchTxItem key={index} count={index + 1} {...item} />
-      ))}
+      <BatchTxList txItems={batchTxs} />
     </SignOrExecuteForm>
   )
 }

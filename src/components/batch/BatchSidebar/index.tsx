@@ -6,11 +6,11 @@ import { useDraftBatch, useUpdateBatch } from '@/hooks/useDraftBatch'
 import css from './styles.module.css'
 import NewTxMenu from '@/components/tx-flow/flows/NewTx'
 import { TxModalContext } from '@/components/tx-flow'
-import BatchTxItem from './BatchTxItem'
 import ConfirmBatchFlow from '@/components/tx-flow/flows/ConfirmBatch'
 import PlusIcon from '@/public/images/common/plus.svg'
-import Track from '../Track'
+import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
+import BatchTxList from './BatchTxList'
 
 const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: boolean) => void }) => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -41,10 +41,6 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
     [setTxFlow, batchTxs, closeSidebar, clearBatch],
   )
 
-  const onDeleteClick = (txId: string) => {
-    deleteTx(txId)
-  }
-
   return (
     <Drawer variant="temporary" anchor="right" open={isOpen} onClose={closeSidebar}>
       <aside className={css.aside}>
@@ -57,9 +53,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
         <div className={css.txs}>
           {!batchTxs.length && 'No transactions added yet'}
 
-          {batchTxs.map((item, index) => (
-            <BatchTxItem key={index} count={index + 1} {...item} onDelete={() => onDeleteClick(item.txDetails.txId)} />
-          ))}
+          <BatchTxList txItems={batchTxs} onDelete={deleteTx} />
         </div>
 
         <Track {...BATCH_EVENTS.BATCH_NEW_TX}>

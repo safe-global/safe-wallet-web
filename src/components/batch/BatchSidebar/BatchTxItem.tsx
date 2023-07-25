@@ -12,12 +12,12 @@ import TxData from '@/components/transactions/TxDetails/TxData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { dateString } from '@/utils/formatters'
-import Track from '../Track'
+import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
 
 type BatchTxItemProps = DraftBatchItem & {
   count: number
-  onDelete?: () => void
+  onDelete?: (id: string) => void
 }
 
 const BatchTxItem = ({ count, timestamp, txDetails, onDelete }: BatchTxItemProps) => {
@@ -38,10 +38,10 @@ const BatchTxItem = ({ count, timestamp, txDetails, onDelete }: BatchTxItemProps
     (e: SyntheticEvent) => {
       e.stopPropagation()
       if (confirm('Are you sure you want to delete this transaction?')) {
-        onDelete?.()
+        onDelete?.(txDetails.txId)
       }
     },
-    [onDelete],
+    [onDelete, txDetails.txId],
   )
 
   return (
@@ -51,7 +51,7 @@ const BatchTxItem = ({ count, timestamp, txDetails, onDelete }: BatchTxItemProps
       <Accordion elevation={0} onChange={(_, isOpen) => setIsExpanded(isOpen)} sx={{ flex: 1 }}>
         <Track {...BATCH_EVENTS.BATCH_EXPAND_TX}>
           <AccordionSummary>
-            <Box flex={1} display="flex" gap={2} py={0.4}>
+            <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4}>
               <TxType tx={txSummary} />
 
               <Box flex={1}>
