@@ -29,11 +29,13 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
   }, [txHash])
 
   useEffect(() => {
-    const unsubscribe = txSubscribe(TxEvent.FAILED, (detail) => {
-      if (detail.txId === txId) setError(detail.error)
-    })
+    const unsubFns: Array<() => void> = ([TxEvent.FAILED, TxEvent.REVERTED] as const).map((event) =>
+      txSubscribe(event, (detail) => {
+        if (detail.txId === txId) setError(detail.error)
+      }),
+    )
 
-    return unsubscribe
+    return () => unsubFns.forEach((unsubscribe) => unsubscribe())
   }, [txId])
 
   const homeLink: UrlObject = {
