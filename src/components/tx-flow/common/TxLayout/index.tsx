@@ -92,28 +92,29 @@ const TxLayout = ({
     <SafeTxProvider>
       <TxInfoProvider>
         <TxSecurityProvider>
-          <Container className={css.container}>
-            <Grid container alignItems="center" justifyContent="center">
-              <Grid item container xs={12}>
-                <Grid item xs={12} md={7} className={css.titleWrapper}>
-                  <Typography variant="h3" component="div" fontWeight="700" className={css.title}>
-                    {title}
-                  </Typography>
+          <>
+            {/* Header status button */}
+            <IconButton
+              className={css.statusButton}
+              aria-label="Transaction status"
+              size="large"
+              onClick={toggleStatus}
+            >
+              <SafeLogo width={16} height={16} />
+            </IconButton>
 
-                  <ChainIndicator inline />
-                </Grid>
-                <IconButton
-                  className={css.statusButton}
-                  aria-label="Transaction status"
-                  size="large"
-                  onClick={toggleStatus}
-                >
-                  <SafeLogo width={16} height={16} />
-                </IconButton>
-              </Grid>
-
-              <Grid item container xs={12} gap={3}>
+            <Container className={css.container}>
+              <Grid container gap={3} justifyContent="center">
+                {/* Main content */}
                 <Grid item xs={12} md={7}>
+                  <div className={css.titleWrapper}>
+                    <Typography variant="h3" component="div" fontWeight="700" className={css.title}>
+                      {title}
+                    </Typography>
+
+                    <ChainIndicator inline />
+                  </div>
+
                   <Paper className={css.header}>
                     <Box className={css.progressBar}>
                       <ProgressBar value={progress} />
@@ -133,6 +134,7 @@ const TxLayout = ({
                   </div>
                 </Grid>
 
+                {/* Sidebar */}
                 <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
                   {statusVisible && (
                     <TxStatusWidget
@@ -151,8 +153,8 @@ const TxLayout = ({
                   </Box>
                 </Grid>
               </Grid>
-            </Grid>
-          </Container>
+            </Container>
+          </>
         </TxSecurityProvider>
       </TxInfoProvider>
     </SafeTxProvider>

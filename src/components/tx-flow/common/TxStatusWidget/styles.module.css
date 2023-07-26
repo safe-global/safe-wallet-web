@@ -1,13 +1,12 @@
 .header {
-  padding: var(--space-3);
+  padding: var(--space-4) var(--space-3);
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: var(--space-1);
 }
 
 .content {
-  padding: var(--space-3);
+  padding: var(--space-2);
 }
 
 .status {
@@ -83,11 +82,11 @@
     margin-left: 16px;
   }
 
-  .title {
-    font-size: 16px;
-  }
-
   .close {
     display: flex;
+  }
+
+  .content {
+    padding: var(--space-3);
   }
 }
