@@ -20,9 +20,18 @@ type BatchTxItemProps = DraftBatchItem & {
   count: number
   onDelete?: (id: string) => void
   draggable?: boolean
+  dragging?: boolean
 }
 
-const BatchTxItem = ({ id, count, timestamp, txDetails, onDelete, draggable = false }: BatchTxItemProps) => {
+const BatchTxItem = ({
+  id,
+  count,
+  timestamp,
+  txDetails,
+  onDelete,
+  dragging = false,
+  draggable = false,
+}: BatchTxItemProps) => {
   const txSummary = useMemo(
     () =>
       ({
@@ -51,7 +60,7 @@ const BatchTxItem = ({ id, count, timestamp, txDetails, onDelete, draggable = fa
 
       <Accordion elevation={0} sx={{ flex: 1 }}>
         <Track {...BATCH_EVENTS.BATCH_EXPAND_TX}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} disabled={dragging} className={css.accordion}>
             <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4}>
               {draggable && (
                 <SvgIcon

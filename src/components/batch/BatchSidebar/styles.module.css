@@ -87,3 +87,7 @@
 .dragHandle:active {
   cursor: grabbing;
 }
+
+.accordion {
+  opacity: 1 !important;
+}
