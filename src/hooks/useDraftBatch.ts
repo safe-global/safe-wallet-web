@@ -20,7 +20,6 @@ export const useUpdateBatch = () => {
           addTx({
             chainId,
             safeAddress,
-            timestamp: Date.now(),
             txDetails: tx,
           }),
         )
@@ -34,12 +33,12 @@ export const useUpdateBatch = () => {
   )
 
   const onDelete = useCallback(
-    (txId: string) => {
+    (id: string) => {
       dispatch(
         removeTx({
           chainId,
           safeAddress,
-          txId,
+          id,
         }),
       )
     },
@@ -55,6 +54,8 @@ export const useUpdateBatch = () => {
           items,
         }),
       )
+
+      trackEvent({ ...BATCH_EVENTS.BATCH_REORDER })
     },
     [dispatch, chainId, safeAddress],
   )

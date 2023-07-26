@@ -1,7 +1,6 @@
-import { type SyntheticEvent, useMemo, useState, useCallback } from 'react'
+import { type SyntheticEvent, useMemo, useCallback } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Box, ButtonBase, SvgIcon } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import { type DraftBatchItem } from '@/store/batchSlice'
@@ -17,12 +16,13 @@ import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
 
 type BatchTxItemProps = DraftBatchItem & {
+  id: string
   count: number
   onDelete?: (id: string) => void
   draggable?: boolean
 }
 
-const BatchTxItem = ({ count, timestamp, txDetails, onDelete, draggable = false }: BatchTxItemProps) => {
+const BatchTxItem = ({ id, count, timestamp, txDetails, onDelete, draggable = false }: BatchTxItemProps) => {
   const txSummary = useMemo(
     () =>
       ({
@@ -34,27 +34,34 @@ const BatchTxItem = ({ count, timestamp, txDetails, onDelete, draggable = false 
       } as TransactionSummary),
     [timestamp, txDetails],
   )
-  const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
   const handleDelete = useCallback(
     (e: SyntheticEvent) => {
       e.stopPropagation()
       if (confirm('Are you sure you want to delete this transaction?')) {
-        onDelete?.(txDetails.txId)
+        onDelete?.(id)
       }
     },
-    [onDelete, txDetails.txId],
+    [onDelete, id],
   )
 
   return (
     <Box display="flex" gap={2}>
       <div className={css.number}>{count}</div>
 
-      <Accordion elevation={0} onChange={(_, isOpen) => setIsExpanded(isOpen)} sx={{ flex: 1 }}>
+      <Accordion elevation={0} sx={{ flex: 1 }}>
         <Track {...BATCH_EVENTS.BATCH_EXPAND_TX}>
-          <AccordionSummary>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4}>
-              {draggable && <SvgIcon component={DragIcon} inheritViewBox fontSize="small" />}
+              {draggable && (
+                <SvgIcon
+                  component={DragIcon}
+                  inheritViewBox
+                  fontSize="small"
+                  className={css.dragHandle}
+                  onClick={(e: MouseEvent) => e.stopPropagation()}
+                />
+              )}
 
               <TxType tx={txSummary} />
 
@@ -67,18 +74,14 @@ const BatchTxItem = ({ count, timestamp, txDetails, onDelete, draggable = false 
                   <Box className={css.separator} />
 
                   <Track {...BATCH_EVENTS.BATCH_DELETE_TX}>
-                    <ButtonBase onClick={handleDelete}>
+                    <ButtonBase onClick={handleDelete} sx={{ p: 0.5 }}>
                       <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
                     </ButtonBase>
                   </Track>
+
+                  <Box className={css.separator} mr={2} />
                 </>
               )}
-
-              <Box className={css.separator} />
-
-              <ButtonBase onClick={() => null}>
-                <SvgIcon component={isExpanded ? ExpandLessIcon : ExpandMoreIcon} inheritViewBox fontSize="small" />
-              </ButtonBase>
             </Box>
           </AccordionSummary>
         </Track>

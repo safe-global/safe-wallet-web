@@ -3,6 +3,7 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import type { RootState } from '.'
 
 export type DraftBatchItem = {
+  id: string
   timestamp: number
   txDetails: TransactionDetails
 }
@@ -40,15 +41,18 @@ export const batchSlice = createSlice({
       action: PayloadAction<{
         chainId: string
         safeAddress: string
-        timestamp: number
         txDetails: TransactionDetails
       }>,
     ) => {
-      const { chainId, safeAddress, ...data } = action.payload
+      const { chainId, safeAddress, txDetails } = action.payload
       state[chainId] = state[chainId] || {}
       state[chainId][safeAddress] = state[chainId][safeAddress] || []
       // @ts-ignore
-      state[chainId][safeAddress].push(data)
+      state[chainId][safeAddress].push({
+        id: Math.random().toString(36).slice(2),
+        timestamp: Date.now(),
+        txDetails,
+      })
     },
 
     // Remove a tx to the batch by txId
@@ -57,15 +61,13 @@ export const batchSlice = createSlice({
       action: PayloadAction<{
         chainId: string
         safeAddress: string
-        txId: string
+        id: string
       }>,
     ) => {
-      const { chainId, safeAddress, txId } = action.payload
+      const { chainId, safeAddress, id } = action.payload
       state[chainId] = state[chainId] || {}
       state[chainId][safeAddress] = state[chainId][safeAddress] || []
-      state[chainId][safeAddress] = state[chainId][safeAddress].filter(
-        (item: DraftBatchItem) => item.txDetails.txId !== txId,
-      )
+      state[chainId][safeAddress] = state[chainId][safeAddress].filter((item: DraftBatchItem) => item.id !== id)
     },
   },
 })
