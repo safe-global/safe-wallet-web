@@ -11,7 +11,7 @@ const EmptyBatch = ({ children }: { children: ReactNode }) => (
     <SvgIcon component={EmptyBatchIcon} inheritViewBox sx={{ fontSize: 110 }} />
 
     <Typography variant="h4" fontWeight={700}>
-      Add a first transaction to the batch
+      Add an initial transaction to the batch
     </Typography>
 
     <Typography variant="body2" mt={2} mb={4} px={8} sx={{ textWrap: 'balance' }}>
