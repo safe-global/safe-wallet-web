@@ -15,7 +15,7 @@ const EmptyBatch = ({ children }: { children: ReactNode }) => (
     </Typography>
 
     <Typography variant="body2" mt={2} mb={4} px={8} sx={{ textWrap: 'balance' }}>
-      Save gas and signatures by batching multiple Safe transactions as a single multi-send transaction. You can reorder
+      Save gas and signatures by adding multiple Safe transactions to a single batch transaction. You can reorder
       and delete individual transactions in a batch.
     </Typography>
 
