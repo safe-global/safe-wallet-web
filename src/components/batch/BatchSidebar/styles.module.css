@@ -20,11 +20,17 @@
   margin: var(--space-3) 0;
 }
 
-.txs {
+.txs ul {
   padding: 0 var(--space-3) var(--space-3);
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  list-style: none;
+}
+
+.txs li {
+  margin: 0;
+  padding: 0;
 }
 
 .separator {

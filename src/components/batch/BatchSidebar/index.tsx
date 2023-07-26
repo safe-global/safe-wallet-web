@@ -9,7 +9,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import ConfirmBatchFlow from '@/components/tx-flow/flows/ConfirmBatch'
 import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
-import BatchTxList from './BatchTxList'
+import { BatchReorder } from './BatchTxList'
 
 import PlusIcon from '@/public/images/common/plus.svg'
 import EmptyBatch from './EmptyBatch'
@@ -18,7 +18,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
   const { setTxFlow } = useContext(TxModalContext)
   const batchTxs = useDraftBatch()
   const closeSidebar = useCallback(() => onToggle(false), [onToggle])
-  const [, deleteTx] = useUpdateBatch()
+  const [, deleteTx, onReorder] = useUpdateBatch()
 
   const clearBatch = useCallback(() => {
     batchTxs.forEach((item) => deleteTx(item.txDetails.txId))
@@ -55,7 +55,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
         {batchTxs.length ? (
           <>
             <div className={css.txs}>
-              <BatchTxList txItems={batchTxs} onDelete={deleteTx} />
+              <BatchReorder txItems={batchTxs} onDelete={deleteTx} onReorder={onReorder} />
             </div>
 
             <Track {...BATCH_EVENTS.BATCH_NEW_TX}>

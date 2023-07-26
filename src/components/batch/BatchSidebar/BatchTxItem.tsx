@@ -8,6 +8,7 @@ import { type DraftBatchItem } from '@/store/batchSlice'
 import TxType from '@/components/transactions/TxType'
 import TxInfo from '@/components/transactions/TxInfo'
 import DeleteIcon from '@/public/images/common/delete.svg'
+import DragIcon from '@/public/images/common/drag.svg'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
@@ -18,9 +19,10 @@ import { BATCH_EVENTS } from '@/services/analytics'
 type BatchTxItemProps = DraftBatchItem & {
   count: number
   onDelete?: (id: string) => void
+  draggable?: boolean
 }
 
-const BatchTxItem = ({ count, timestamp, txDetails, onDelete }: BatchTxItemProps) => {
+const BatchTxItem = ({ count, timestamp, txDetails, onDelete, draggable = false }: BatchTxItemProps) => {
   const txSummary = useMemo(
     () =>
       ({
@@ -52,6 +54,8 @@ const BatchTxItem = ({ count, timestamp, txDetails, onDelete }: BatchTxItemProps
         <Track {...BATCH_EVENTS.BATCH_EXPAND_TX}>
           <AccordionSummary>
             <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4}>
+              {draggable && <SvgIcon component={DragIcon} inheritViewBox fontSize="small" />}
+
               <TxType tx={txSummary} />
 
               <Box flex={1}>

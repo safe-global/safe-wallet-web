@@ -19,6 +19,21 @@ export const batchSlice = createSlice({
   name: 'batch',
   initialState,
   reducers: {
+    // Set a batch (used for reordering)
+    setBatch: (
+      state,
+      action: PayloadAction<{
+        chainId: string
+        safeAddress: string
+        items: DraftBatchItem[]
+      }>,
+    ) => {
+      const { chainId, safeAddress, items } = action.payload
+      state[chainId] = state[chainId] || {}
+      // @ts-ignore
+      state[chainId][safeAddress] = items
+    },
+
     // Add a tx to the batch
     addTx: (
       state,
@@ -55,7 +70,7 @@ export const batchSlice = createSlice({
   },
 })
 
-export const { addTx, removeTx } = batchSlice.actions
+export const { setBatch, addTx, removeTx } = batchSlice.actions
 
 const selectAllBatches = (state: RootState): BatchTxsState => {
   return state[batchSlice.name]
