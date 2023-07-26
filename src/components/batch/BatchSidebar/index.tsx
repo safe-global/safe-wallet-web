@@ -7,10 +7,12 @@ import css from './styles.module.css'
 import NewTxMenu from '@/components/tx-flow/flows/NewTx'
 import { TxModalContext } from '@/components/tx-flow'
 import ConfirmBatchFlow from '@/components/tx-flow/flows/ConfirmBatch'
-import PlusIcon from '@/public/images/common/plus.svg'
 import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
 import BatchTxList from './BatchTxList'
+
+import PlusIcon from '@/public/images/common/plus.svg'
+import EmptyBatch from './EmptyBatch'
 
 const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: boolean) => void }) => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -50,26 +52,36 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
 
         <Divider />
 
-        <div className={css.txs}>
-          {!batchTxs.length && 'No transactions added yet'}
+        {batchTxs.length ? (
+          <>
+            <div className={css.txs}>
+              <BatchTxList txItems={batchTxs} onDelete={deleteTx} />
+            </div>
 
-          <BatchTxList txItems={batchTxs} onDelete={deleteTx} />
-        </div>
+            <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
+              <Button onClick={onAddClick}>
+                <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
+                Add new transaction
+              </Button>
+            </Track>
 
-        <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
-          <Button onClick={onAddClick}>
-            <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-            Add new transaction
-          </Button>
-        </Track>
+            <Divider />
 
-        <Divider />
-
-        <Track {...BATCH_EVENTS.BATCH_CONFIRM} label={batchTxs.length}>
-          <Button variant="contained" onClick={onConfirmClick} disabled={!batchTxs.length}>
-            Confirm batch
-          </Button>
-        </Track>
+            <Track {...BATCH_EVENTS.BATCH_CONFIRM} label={batchTxs.length}>
+              <Button variant="contained" onClick={onConfirmClick} disabled={!batchTxs.length}>
+                Confirm batch
+              </Button>
+            </Track>
+          </>
+        ) : (
+          <EmptyBatch>
+            <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
+              <Button onClick={onAddClick} variant="contained">
+                New transaction
+              </Button>
+            </Track>
+          </EmptyBatch>
+        )}
 
         <IconButton className={css.close} aria-label="close" onClick={closeSidebar} size="small">
           <CloseIcon fontSize="medium" />
