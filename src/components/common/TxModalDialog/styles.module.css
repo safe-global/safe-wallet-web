@@ -38,6 +38,7 @@
 .close {
   color: var(--color-border-main);
   padding: var(--space-1);
+  background-color: var(--color-border-light);
 }
 
 .paper {
@@ -74,6 +75,10 @@
   .title {
     margin-bottom: var(--space-3);
     background-color: var(--color-background-paper);
+  }
+
+  .close {
+    background-color: unset;
   }
 
   .close svg {

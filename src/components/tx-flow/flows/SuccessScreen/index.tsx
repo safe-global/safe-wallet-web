@@ -51,8 +51,9 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
       disableGutters
       sx={{
         textAlign: 'center',
+        maxWidth: `${900 - 75}px`, // md={11}
       }}
-      maxWidth="md"
+      maxWidth={false}
     >
       <div className={css.row}>
         <StatusMessage status={status} error={error} />

@@ -47,8 +47,8 @@ const TxStatusWidget = ({
   return (
     <Paper>
       <div className={css.header}>
-        <SafeLogo width={32} height={32} className={css.logo} />
-        <Typography variant="h6" fontWeight="700" className={css.title}>
+        <Typography fontWeight="700" display="flex" alignItems="center" gap={1}>
+          <SafeLogo width={16} height={16} className={css.logo} />
           Transaction status
         </Typography>
         <IconButton className={css.close} aria-label="close" onClick={handleClose} size="small">
