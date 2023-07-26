@@ -1,7 +1,6 @@
 import { type SyntheticEvent, useMemo, useCallback } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Box, ButtonBase, SvgIcon } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import { type DraftBatchItem } from '@/store/batchSlice'
 import TxType from '@/components/transactions/TxType'
@@ -40,7 +39,7 @@ const BatchTxItem = ({
         txInfo: txDetails.txInfo,
         txStatus: txDetails.txStatus,
         safeAppInfo: txDetails.safeAppInfo,
-      } as TransactionSummary),
+      }),
     [timestamp, txDetails],
   )
 
