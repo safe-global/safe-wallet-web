@@ -26,6 +26,7 @@ export type SignOrExecuteProps = {
   isExecutable?: boolean
   isRejection?: boolean
   isBatch?: boolean
+  isMultisend?: boolean
   onlyExecute?: boolean
   disableSubmit?: boolean
   origin?: string
@@ -39,7 +40,6 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
-  const isBatch = props.isBatch || isMultisendTx(decodedData)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
@@ -93,7 +93,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
         {willExecute ? (
           <ExecuteForm {...props} safeTx={safeTx} />
         ) : (
-          <SignForm {...props} safeTx={safeTx} isBatch={isBatch} />
+          <SignForm {...props} safeTx={safeTx} isMultisend={isMultisendTx(decodedData)} />
         )}
       </TxCard>
     </>

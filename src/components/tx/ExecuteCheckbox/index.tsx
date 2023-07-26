@@ -1,5 +1,5 @@
 import type { ChangeEvent, ReactElement } from 'react'
-import { FormControlLabel, RadioGroup, Radio } from '@mui/material'
+import { FormControlLabel, RadioGroup, Radio, Typography } from '@mui/material'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setTransactionExecution } from '@/store/settingsSlice'
@@ -18,28 +18,23 @@ const ExecuteCheckbox = ({ onChange }: { onChange: (checked: boolean) => void })
   }
 
   return (
-    <RadioGroup row value={String(settings.transactionExecution)} onChange={handleChange} className={css.group}>
-      <FormControlLabel
-        value="true"
-        label={
-          <>
-            Yes, <b>execute</b>
-          </>
-        }
-        control={<Radio />}
-        className={css.radio}
-      />
-      <FormControlLabel
-        value="false"
-        label={
-          <>
-            No, only <b>sign</b>
-          </>
-        }
-        control={<Radio />}
-        className={css.radio}
-      />
-    </RadioGroup>
+    <>
+      <Typography>Would you like to execute the transaction immediately?</Typography>
+
+      <RadioGroup row value={String(settings.transactionExecution)} onChange={handleChange} className={css.group}>
+        <FormControlLabel
+          value="true"
+          label={
+            <>
+              Yes, <b>execute</b>
+            </>
+          }
+          control={<Radio />}
+          className={css.radio}
+        />
+        <FormControlLabel value="false" label={<>No, later</>} control={<Radio />} className={css.radio} />
+      </RadioGroup>
+    </>
   )
 }
 

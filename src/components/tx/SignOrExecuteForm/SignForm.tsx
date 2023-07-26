@@ -22,6 +22,7 @@ const SignForm = ({
   disableSubmit = false,
   origin,
   isBatch,
+  isMultisend,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
 }): ReactElement => {
@@ -89,7 +90,13 @@ const SignForm = ({
       <CardActions>
         <Box display="flex" gap={2}>
           {/* Batch button */}
-          {isCreation && !isBatch && <BatchButton onClick={onBatchClick} disabled={submitDisabled} />}
+          {isCreation && !isBatch && (
+            <BatchButton
+              onClick={onBatchClick}
+              disabled={submitDisabled || isMultisend}
+              tooltip={isMultisend ? `Cannot batch this transaction because it's already a batch` : undefined}
+            />
+          )}
 
           {/* Submit button */}
           <CheckWallet>
