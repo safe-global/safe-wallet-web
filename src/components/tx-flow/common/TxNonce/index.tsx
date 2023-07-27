@@ -12,6 +12,7 @@ import {
   MenuItem,
   Typography,
   ListSubheader,
+  type ListSubheaderProps,
 } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 
@@ -29,17 +30,24 @@ import { isRejectionTx } from '@/utils/transactions'
 import css from './styles.module.css'
 import classNames from 'classnames'
 
-const CustomPopper = function ({ className, ...props }: PopperProps) {
-  return (
-    <Popper
-      {...props}
-      // Doesn't display correctly on mobile if in CSS module
-      sx={{ minWidth: '300px !important' }}
-      className={classNames(className, css.popper)}
-      placement="bottom-start"
-    />
-  )
+const CustomPopper = function ({
+  // Don't set width of Popper to that of the field
+  style: _,
+  className,
+  ...props
+}: PopperProps) {
+  return <Popper {...props} className={classNames(className, css.popper)} placement="bottom-start" />
 }
+
+const NonceFormHeader = memo(function NonceFormSubheader({ children, ...props }: ListSubheaderProps) {
+  return (
+    <ListSubheader {...props} disableSticky>
+      <Typography variant="caption" fontWeight={700} color="text.secondary">
+        {children}
+      </Typography>
+    </ListSubheader>
+  )
+})
 
 const NonceFormOption = memo(function NonceFormOption({
   nonce,
@@ -64,7 +72,9 @@ const NonceFormOption = memo(function NonceFormOption({
 
   return (
     <MenuItem {...menuItemProps}>
-      <b>{nonce}</b>&nbsp;- {`${label || 'New'} transaction`}
+      <Typography variant="body2">
+        <b>{nonce}</b>&nbsp;- {`${label || 'New'} transaction`}
+      </Typography>
     </MenuItem>
   )
 })
@@ -128,7 +138,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
       render={({ field, fieldState }) => {
         if (readOnly) {
           return (
-            <Typography fontWeight={700} ml={-1}>
+            <Typography variant="body2" fontWeight={700} ml={-1}>
               {nonce}
             </Typography>
           )
@@ -157,16 +167,8 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
 
               return (
                 <>
-                  {isRecommendedNonce && (
-                    <ListSubheader>
-                      <b>Recommended nonce</b>
-                    </ListSubheader>
-                  )}
-                  {isInitialPreviousNonce && (
-                    <ListSubheader sx={{ pt: 3 }}>
-                      <b>Already in queue</b>
-                    </ListSubheader>
-                  )}
+                  {isRecommendedNonce && <NonceFormHeader>Recommended nonce</NonceFormHeader>}
+                  {isInitialPreviousNonce && <NonceFormHeader sx={{ pt: 3 }}>Already in queue</NonceFormHeader>}
                   <NonceFormOption key={option} menuItemProps={props} nonce={option} />
                 </>
               )
