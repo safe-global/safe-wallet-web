@@ -13,16 +13,14 @@ const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
     color: theme.palette.text.primary,
     fontSize: theme.typography.pxToRem(16),
     fontWeight: 700,
-    border: '1px solid',
-    borderColor: theme.palette.border.light,
+    border: `1px solid ${theme.palette.border.light}`,
     marginTop: theme.spacing(2) + ' !important',
   },
   [`& .${tooltipClasses.arrow}`]: {
     color: theme.palette.background.paper,
   },
   [`& .${tooltipClasses.arrow}:before`]: {
-    border: '1px solid',
-    borderColor: theme.palette.border.light,
+    border: `1px solid ${theme.palette.border.light}`,
   },
 }))
 
