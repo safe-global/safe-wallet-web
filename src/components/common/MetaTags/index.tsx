@@ -1,4 +1,4 @@
-import { IS_PRODUCTION } from '@/config/constants'
+import { IS_PRODUCTION, IS_OFFICIAL_HOST } from '@/config/constants'
 import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
 import { lightPalette, darkPalette } from '@safe-global/safe-react-components'
 
@@ -43,6 +43,11 @@ const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
     <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
     <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#000" />
+
+    {/* Plausible Analytics */}
+    {IS_PRODUCTION && IS_OFFICIAL_HOST && (
+      <script defer data-domain="app.safe.global" src="https://plausible.io/js/script.js"></script>
+    )}
   </>
 )
 

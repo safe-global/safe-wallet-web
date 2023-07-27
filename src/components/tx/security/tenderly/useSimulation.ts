@@ -9,7 +9,7 @@ import { asError } from '@/services/exceptions/utils'
 
 export type UseSimulationReturn =
   | {
-      simulationRequestStatus: FETCH_STATUS.NOT_ASKED | FETCH_STATUS.ERROR | FETCH_STATUS.LOADING
+      _simulationRequestStatus: FETCH_STATUS.NOT_ASKED | FETCH_STATUS.ERROR | FETCH_STATUS.LOADING
       simulation: undefined
       simulateTransaction: (params: SimulationTxParams) => void
       simulationLink: string
@@ -17,7 +17,7 @@ export type UseSimulationReturn =
       resetSimulation: () => void
     }
   | {
-      simulationRequestStatus: FETCH_STATUS.SUCCESS
+      _simulationRequestStatus: FETCH_STATUS.SUCCESS
       simulation: TenderlySimulation
       simulateTransaction: (params: SimulationTxParams) => void
       simulationLink: string
@@ -63,7 +63,8 @@ export const useSimulation = (): UseSimulationReturn => {
 
   return {
     simulateTransaction,
-    simulationRequestStatus,
+    // This is only used by the provider
+    _simulationRequestStatus: simulationRequestStatus,
     simulation,
     simulationLink,
     requestError,

@@ -188,7 +188,7 @@ export const useInitOnboard = () => {
       isWalletUnlocked(label).then((isUnlocked) => {
         isUnlocked &&
           connectWallet(onboard, {
-            autoSelect: { label, disableModals: true },
+            autoSelect: { label, disableModals: false },
           })
       })
     })

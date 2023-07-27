@@ -10,10 +10,8 @@ import { useDarkMode } from '@/hooks/useDarkMode'
 import CircularProgress from '@mui/material/CircularProgress'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useCurrentChain } from '@/hooks/useChains'
-import { FETCH_STATUS } from '@/components/tx/security/tenderly/types'
 import { isTxSimulationEnabled } from '@/components/tx/security/tenderly/utils'
 import type { SimulationTxParams } from '@/components/tx/security/tenderly/utils'
-import type { TenderlySimulation } from '@/components/tx/security/tenderly/types'
 
 import css from './styles.module.css'
 import sharedCss from '@/components/tx/security/shared/styles.module.css'
@@ -27,28 +25,18 @@ export type TxSimulationProps = {
   disabled: boolean
 }
 
-const getCallTraceErrors = (simulation?: TenderlySimulation) => {
-  if (!simulation || !simulation.simulation.status) {
-    return []
-  }
-
-  return simulation.transaction.call_trace.filter((call) => call.error)
-}
-
 // TODO: Investigate resetting on gasLimit change as we are not simulating with the gasLimit of the tx
 // otherwise remove all usage of gasLimit in simulation. Note: this was previously being done.
+// TODO: Test this component
 const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const isDarkMode = useDarkMode()
   const { safeTx } = useContext(SafeTxContext)
   const {
-    simulation: { simulateTransaction, simulationRequestStatus, resetSimulation },
+    simulation: { simulateTransaction, resetSimulation },
+    status: { isFinished, isError, isSuccess, isCallTraceError, isLoading },
   } = useContext(TxInfoContext)
-
-  const isLoading = simulationRequestStatus === FETCH_STATUS.LOADING
-  const isSuccess = simulationRequestStatus === FETCH_STATUS.SUCCESS
-  const isError = simulationRequestStatus === FETCH_STATUS.ERROR
 
   const handleSimulation = async () => {
     if (!wallet) {
@@ -111,16 +99,18 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
               color: ({ palette }) => palette.text.secondary,
             }}
           />
-        ) : isSuccess ? (
-          <Typography variant="body2" color="success.main" className={sharedCss.result}>
-            <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
-            Success
-          </Typography>
-        ) : isError ? (
-          <Typography variant="body2" color="error.main" className={sharedCss.result}>
-            <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
-            Error
-          </Typography>
+        ) : isFinished ? (
+          !isSuccess || isError || isCallTraceError ? (
+            <Typography variant="body2" color="error.main" className={sharedCss.result}>
+              <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
+              Error
+            </Typography>
+          ) : (
+            <Typography variant="body2" color="success.main" className={sharedCss.result}>
+              <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
+              Success
+            </Typography>
+          )
         ) : (
           <Button
             variant="outlined"
@@ -147,21 +137,16 @@ export const TxSimulation = (props: TxSimulationProps): ReactElement | null => {
   return <TxSimulationBlock {...props} />
 }
 
+// TODO: Test this component
 export const TxSimulationMessage = () => {
   const {
-    simulation: { simulationRequestStatus, simulationLink, simulation, requestError },
+    simulation: { simulationLink, simulation, requestError },
+    status: { isError, isSuccess, isCallTraceError, isFinished },
   } = useContext(TxInfoContext)
-
-  const isFinished = simulationRequestStatus === FETCH_STATUS.SUCCESS || simulationRequestStatus === FETCH_STATUS.ERROR
 
   if (!isFinished) {
     return null
   }
-
-  const isSuccess = simulation?.simulation.status
-  // Safe can emit failure event even though Tenderly simulation succeeds
-  const isCallTraceError = isSuccess && getCallTraceErrors(simulation).length > 0
-  const isError = simulationRequestStatus === FETCH_STATUS.ERROR
 
   if (!isSuccess || isError || isCallTraceError) {
     return (

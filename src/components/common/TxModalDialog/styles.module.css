@@ -1,7 +1,7 @@
 .dialog {
   top: 52px;
   left: 230px;
-  z-index: 3;
+  z-index: 1201;
   transition: left 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
 }
 
@@ -38,6 +38,7 @@
 .close {
   color: var(--color-border-main);
   padding: var(--space-1);
+  background-color: var(--color-border-light);
 }
 
 .paper {
@@ -74,6 +75,10 @@
   .title {
     margin-bottom: var(--space-3);
     background-color: var(--color-background-paper);
+  }
+
+  .close {
+    background-color: unset;
   }
 
   .close svg {

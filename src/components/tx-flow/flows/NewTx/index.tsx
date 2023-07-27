@@ -23,7 +23,7 @@ const NewTxMenu = () => {
 
   return (
     <Container className={css.container}>
-      <Grid container>
+      <Grid container justifyContent="center">
         {/* Alignment of `TxLayout` */}
         <Grid item xs={12} md={11} display="flex" flexDirection="column">
           <ChainIndicator inline className={css.chain} />
