@@ -11,6 +11,7 @@ import {
   type MenuItemProps,
   MenuItem,
   Typography,
+  ListSubheader,
 } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 
@@ -28,8 +29,16 @@ import { isRejectionTx } from '@/utils/transactions'
 import css from './styles.module.css'
 import classNames from 'classnames'
 
-const CustomPopper = function (props: PopperProps) {
-  return <Popper {...props} sx={{ width: '300px !important' }} placement="bottom-start" />
+const CustomPopper = function ({ className, ...props }: PopperProps) {
+  return (
+    <Popper
+      {...props}
+      // Doesn't display correctly on mobile if in CSS module
+      sx={{ minWidth: '300px !important' }}
+      className={classNames(className, css.popper)}
+      placement="bottom-start"
+    />
+  )
 }
 
 const NonceFormOption = memo(function NonceFormOption({
@@ -43,13 +52,19 @@ const NonceFormOption = memo(function NonceFormOption({
   const transactions = useQueuedTxByNonce(Number(nonce))
 
   const label = useMemo(() => {
-    const [{ transaction }] = getLatestTransactions(transactions)
+    const latestTransactions = getLatestTransactions(transactions)
+
+    if (latestTransactions.length === 0) {
+      return
+    }
+
+    const [{ transaction }] = latestTransactions
     return getTransactionType(transaction, addressBook).text
   }, [addressBook, transactions])
 
   return (
     <MenuItem {...menuItemProps}>
-      {nonce} ({label} transaction)
+      <b>{nonce}</b>&nbsp;- {`${label || 'New'} transaction`}
     </MenuItem>
   )
 })
@@ -137,12 +152,23 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
             options={[recommendedNonce, ...previousNonces]}
             getOptionLabel={(option) => option.toString()}
             renderOption={(props, option) => {
-              return option === recommendedNonce ? (
-                <MenuItem key={option} {...props}>
-                  {option} (recommended nonce)
-                </MenuItem>
-              ) : (
-                <NonceFormOption key={option} menuItemProps={props} nonce={option} />
+              const isRecommendedNonce = option === recommendedNonce
+              const isInitialPreviousNonce = option === previousNonces[0]
+
+              return (
+                <>
+                  {isRecommendedNonce && (
+                    <ListSubheader>
+                      <b>Recommended nonce</b>
+                    </ListSubheader>
+                  )}
+                  {isInitialPreviousNonce && (
+                    <ListSubheader sx={{ pt: 3 }}>
+                      <b>Already in queue</b>
+                    </ListSubheader>
+                  )}
+                  <NonceFormOption key={option} menuItemProps={props} nonce={option} />
+                </>
               )
             }}
             disableClearable
