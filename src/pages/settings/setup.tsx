@@ -7,6 +7,7 @@ import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
+import DelegatesList from '@/components/settings/DelegatesList'
 
 const Setup: NextPage = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -61,6 +62,8 @@ const Setup: NextPage = () => {
 
           <RequiredConfirmation threshold={threshold} owners={ownerLength} />
         </Paper>
+
+        <DelegatesList />
       </main>
     </>
   )
