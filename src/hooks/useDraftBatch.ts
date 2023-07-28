@@ -4,7 +4,7 @@ import useChainId from './useChainId'
 import useSafeAddress from './useSafeAddress'
 import type { DraftBatchItem } from '@/store/batchSlice'
 import { selectBatchBySafe, addTx, removeTx, setBatch } from '@/store/batchSlice'
-import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { BATCH_EVENTS, trackEvent } from '@/services/analytics'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
@@ -14,9 +14,7 @@ export const useUpdateBatch = () => {
   const dispatch = useAppDispatch()
 
   const onAdd = useCallback(
-    async (id: string): Promise<void> => {
-      const txDetails = await getTransactionDetails(chainId, id)
-
+    async (txDetails: TransactionDetails): Promise<void> => {
       dispatch(
         addTx({
           chainId,
@@ -25,7 +23,7 @@ export const useUpdateBatch = () => {
         }),
       )
 
-      txDispatch(TxEvent.BATCH_ADD, { txId: id })
+      txDispatch(TxEvent.BATCH_ADD, { txId: txDetails.txId })
 
       trackEvent({ ...BATCH_EVENTS.BATCH_TX_APPENDED, label: txDetails.txInfo.type })
     },
