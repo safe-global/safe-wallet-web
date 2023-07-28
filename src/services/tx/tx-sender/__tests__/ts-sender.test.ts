@@ -1,6 +1,6 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/safe-core-sdk'
-import type { SafeSignature, SafeTransaction, TransactionResult } from '@safe-global/safe-core-sdk-types'
+import type { TransactionResult } from '@safe-global/safe-core-sdk-types'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import extractTxInfo from '../../extractTxInfo'
@@ -31,29 +31,7 @@ const setupFetchStub = (data: any) => (_url: string) => {
 import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
-
-const createSafeTx = (data = '0x'): SafeTransaction => {
-  return {
-    data: {
-      to: '0x0000000000000000000000000000000000000000',
-      value: '0x0',
-      data,
-      operation: 0,
-      nonce: 100,
-    },
-    signatures: new Map([]),
-    addSignature: function (sig: SafeSignature): void {
-      this.signatures.set(sig.signer, sig)
-    },
-    encodedSignatures: function (): string {
-      return Array.from(this.signatures)
-        .map(([, sig]) => {
-          return [sig.signer, sig.data].join(' = ')
-        })
-        .join('; ')
-    },
-  } as SafeTransaction
-}
+import { createMockSafeTransaction } from '@/tests/transactions'
 
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -237,7 +215,10 @@ describe('txSender', () => {
     })
 
     it('should dispatch a PROPOSED event if tx is signed and has no id', async () => {
-      const tx = createSafeTx()
+      const tx = createMockSafeTransaction({
+        to: '0x123',
+        data: '0x0',
+      })
       tx.addSignature(generatePreValidatedSignature('0x1234567890123456789012345678901234567890'))
 
       const proposedTx = await dispatchTxProposal({ chainId: '4', safeAddress: '0x123', sender: '0x456', safeTx: tx })
@@ -249,7 +230,10 @@ describe('txSender', () => {
     })
 
     it('should dispatch a SIGNATURE_PROPOSED event if tx has signatures and an id', async () => {
-      const tx = createSafeTx()
+      const tx = createMockSafeTransaction({
+        to: '0x123',
+        data: '0x0',
+      })
       tx.addSignature(generatePreValidatedSignature('0x1234567890123456789012345678901234567890'))
 
       const proposedTx = await dispatchTxProposal({

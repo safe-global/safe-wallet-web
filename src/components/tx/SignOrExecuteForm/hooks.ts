@@ -68,7 +68,7 @@ export const useTxActions = (): TxActions => {
       assertWallet(wallet)
 
       const id = await proposeTx(wallet.address, safeTx, undefined, origin)
-      addTxToBatch(id)
+      await addTxToBatch(id)
       return id
     }
 

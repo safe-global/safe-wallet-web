@@ -32,14 +32,13 @@ const BatchTxItem = ({
   draggable = false,
 }: BatchTxItemProps) => {
   const txSummary = useMemo(
-    () =>
-      ({
-        timestamp,
-        id: txDetails.txId,
-        txInfo: txDetails.txInfo,
-        txStatus: txDetails.txStatus,
-        safeAppInfo: txDetails.safeAppInfo,
-      }),
+    () => ({
+      timestamp,
+      id: txDetails.txId,
+      txInfo: txDetails.txInfo,
+      txStatus: txDetails.txStatus,
+      safeAppInfo: txDetails.safeAppInfo,
+    }),
     [timestamp, txDetails],
   )
 

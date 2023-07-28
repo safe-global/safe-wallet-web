@@ -14,20 +14,20 @@ export const useUpdateBatch = () => {
   const dispatch = useAppDispatch()
 
   const onAdd = useCallback(
-    (id: string) => {
-      getTransactionDetails(chainId, id).then((tx) => {
-        dispatch(
-          addTx({
-            chainId,
-            safeAddress,
-            txDetails: tx,
-          }),
-        )
+    async (id: string): Promise<void> => {
+      const txDetails = await getTransactionDetails(chainId, id)
 
-        txDispatch(TxEvent.BATCH_ADD, { txId: id })
+      dispatch(
+        addTx({
+          chainId,
+          safeAddress,
+          txDetails,
+        }),
+      )
 
-        trackEvent({ ...BATCH_EVENTS.BATCH_TX_APPENDED, label: tx.txInfo.type })
-      })
+      txDispatch(TxEvent.BATCH_ADD, { txId: id })
+
+      trackEvent({ ...BATCH_EVENTS.BATCH_TX_APPENDED, label: txDetails.txInfo.type })
     },
     [dispatch, chainId, safeAddress],
   )

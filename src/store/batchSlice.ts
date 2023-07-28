@@ -31,7 +31,7 @@ export const batchSlice = createSlice({
     ) => {
       const { chainId, safeAddress, items } = action.payload
       state[chainId] = state[chainId] || {}
-      // @ts-ignore
+      // @ts-expect-error
       state[chainId][safeAddress] = items
     },
 
@@ -47,7 +47,6 @@ export const batchSlice = createSlice({
       const { chainId, safeAddress, txDetails } = action.payload
       state[chainId] = state[chainId] || {}
       state[chainId][safeAddress] = state[chainId][safeAddress] || []
-      // @ts-ignore
       state[chainId][safeAddress].push({
         id: Math.random().toString(36).slice(2),
         timestamp: Date.now(),

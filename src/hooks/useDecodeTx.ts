@@ -1,4 +1,4 @@
-import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type DecodedDataResponse, getDecodedData } from '@safe-global/safe-gateway-typescript-sdk'
 import { getNativeTransferData } from '@/services/tx/tokenTransferParams'
 import { isEmptyHexData } from '@/utils/hex'
@@ -23,6 +23,10 @@ const useDecodeTx = (tx?: SafeTransaction): AsyncResult<DecodedDataResponse> => 
 
 export const isMultisendTx = (decodedData?: DecodedDataResponse): boolean => {
   return !!decodedData?.parameters?.[0]?.valueDecoded
+}
+
+export const isDelegateCall = (safeTx: SafeTransaction): boolean => {
+  return safeTx.data.operation === OperationType.DelegateCall
 }
 
 export default useDecodeTx
