@@ -3,6 +3,7 @@ import type { Dispatch, ReactNode, SetStateAction, ReactElement } from 'react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { createTx } from '@/services/tx/tx-sender'
 import { useRecommendedNonce, useSafeTxGas } from '../tx/SignOrExecuteForm/hooks'
+import { Errors, logError } from '@/services/exceptions'
 
 export const SafeTxContext = createContext<{
   safeTx?: SafeTransaction
@@ -27,8 +28,6 @@ export const SafeTxContext = createContext<{
   setNonceNeeded: () => {},
   setSafeTxGas: () => {},
 })
-
-// (err) => logError(Errors._103, err)
 
 const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [safeTx, setSafeTx] = useState<SafeTransaction>()
@@ -57,6 +56,11 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
       .then(setSafeTx)
       .catch(setSafeTxError)
   }, [isSigned, finalNonce, finalSafeTxGas, safeTx?.data])
+
+  // Log errors
+  useEffect(() => {
+    safeTxError && logError(Errors._103, safeTxError)
+  }, [safeTxError])
 
   return (
     <SafeTxContext.Provider
