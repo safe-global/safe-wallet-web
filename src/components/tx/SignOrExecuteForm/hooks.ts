@@ -179,3 +179,10 @@ export const useSafeTxGas = (safeTx: SafeTransaction | undefined): number | unde
 
   return safeTxGas
 }
+
+export const useAlreadySigned = (safeTx: SafeTransaction | undefined): boolean => {
+  const wallet = useWallet()
+  const hasSigned =
+    safeTx && wallet && (safeTx.signatures.has(wallet.address.toLowerCase()) || safeTx.signatures.has(wallet.address))
+  return Boolean(hasSigned)
+}

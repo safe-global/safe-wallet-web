@@ -71,8 +71,8 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
       <Divider />
       <div className={classnames(css.row, css.buttons)}>
         <Link href={homeLink} passHref>
-          <Button variant="outlined" size="small">
-            Back to dashboard
+          <Button variant="contained" size="small">
+            Finish
           </Button>
         </Link>
         {txLink && (
