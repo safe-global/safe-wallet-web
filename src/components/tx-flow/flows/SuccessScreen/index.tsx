@@ -2,23 +2,26 @@ import StatusMessage from './StatusMessage'
 import StatusStepper from './StatusStepper'
 import { Button, Container, Divider, Paper } from '@mui/material'
 import classnames from 'classnames'
+import Link from 'next/link'
 import css from './styles.module.css'
 import { useAppSelector } from '@/store'
 import { selectPendingTxById } from '@/store/pendingTxsSlice'
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { getBlockExplorerLink } from '@/utils/chains'
+import { useEffect, useState, useCallback, useContext } from 'react'
+import { getTxLink } from '@/hooks/useTxNotifications'
 import { useCurrentChain } from '@/hooks/useChains'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { TxModalContext } from '../..'
 
 export const SuccessScreen = ({ txId }: { txId: string }) => {
   const [localTxHash, setLocalTxHash] = useState<string>()
   const [error, setError] = useState<Error>()
   const { setTxFlow } = useContext(TxModalContext)
-  const pendingTx = useAppSelector((state) => selectPendingTxById(state, txId))
-  const { txHash = '', status } = pendingTx || {}
   const chain = useCurrentChain()
-  const txLink = chain && localTxHash ? getBlockExplorerLink(chain, localTxHash) : undefined
+  const pendingTx = useAppSelector((state) => selectPendingTxById(state, txId))
+  const { safeAddress } = useSafeInfo()
+  const { txHash = '', status } = pendingTx || {}
+  const txLink = chain && getTxLink(txId, chain, safeAddress)
 
   useEffect(() => {
     if (!txHash) return
@@ -67,9 +70,11 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
 
       <div className={classnames(css.row, css.buttons)}>
         {txLink && (
-          <Button href={txLink.href} target="_blank" rel="noreferrer" variant="outlined" size="small">
-            View transaction
-          </Button>
+          <Link {...txLink} passHref target="_blank" rel="noreferrer">
+            <Button variant="outlined" size="small">
+              View transaction
+            </Button>
+          </Link>
         )}
 
         <Button variant="contained" size="small" onClick={onFinishClick}>
