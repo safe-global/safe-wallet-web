@@ -1,28 +1,27 @@
-import { useRouter } from 'next/router'
 import StatusMessage from './StatusMessage'
 import StatusStepper from './StatusStepper'
-import { AppRoutes } from '@/config/routes'
 import { Button, Container, Divider, Paper } from '@mui/material'
 import classnames from 'classnames'
 import Link from 'next/link'
-import { type UrlObject } from 'url'
 import css from './styles.module.css'
 import { useAppSelector } from '@/store'
 import { selectPendingTxById } from '@/store/pendingTxsSlice'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useContext } from 'react'
 import { getTxLink } from '@/hooks/useTxNotifications'
 import { useCurrentChain } from '@/hooks/useChains'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { TxModalContext } from '../..'
 
 export const SuccessScreen = ({ txId }: { txId: string }) => {
   const [localTxHash, setLocalTxHash] = useState<string>()
   const [error, setError] = useState<Error>()
-  const router = useRouter()
+  const { setTxFlow } = useContext(TxModalContext)
   const chain = useCurrentChain()
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, txId))
   const { safeAddress } = useSafeInfo()
   const { txHash = '', status } = pendingTx || {}
+  const txLink = chain && getTxLink(txId, chain, safeAddress)
 
   useEffect(() => {
     if (!txHash) return
@@ -40,12 +39,9 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
     return () => unsubFns.forEach((unsubscribe) => unsubscribe())
   }, [txId])
 
-  const homeLink: UrlObject = {
-    pathname: AppRoutes.home,
-    query: { safe: router.query.safe },
-  }
-
-  const txLink = chain && getTxLink(txId, chain, safeAddress)
+  const onFinishClick = useCallback(() => {
+    setTxFlow(undefined)
+  }, [setTxFlow])
 
   return (
     <Container
@@ -71,12 +67,8 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
       )}
 
       <Divider />
+
       <div className={classnames(css.row, css.buttons)}>
-        <Link href={homeLink} passHref>
-          <Button variant="outlined" size="small">
-            Back to dashboard
-          </Button>
-        </Link>
         {txLink && (
           <Link {...txLink} passHref target="_blank" rel="noreferrer">
             <Button variant="outlined" size="small">
@@ -84,6 +76,10 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
             </Button>
           </Link>
         )}
+
+        <Button variant="contained" size="small" onClick={onFinishClick}>
+          Finish
+        </Button>
       </div>
     </Container>
   )
