@@ -1,8 +1,8 @@
 ---
 apiVersion: v2
 name: safe-wallet-web
-version: 0.1.2
-appVersion: v1.9.1
+version: 0.1.3
+appVersion: v1.15.2
 description: A Helm chart for Safe wallet web
 type: application
 icon: "https://raw.githubusercontent.com/safe-global/safe-core-sdk/main/assets/logo.png"

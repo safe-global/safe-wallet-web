@@ -57,11 +57,11 @@ affinity: {}
 image:
   ## @param image.registry Docker registry to deployment
   ##
-  registry: gcr.io
+  registry: registry.hub.docker.com
 
   ## @param image.repository Docker image repository to deployment
   ##
-  repository: hoprassociation/safe-wallet-web
+  repository: safeglobal/safe-wallet-web
 
   ## @param image.tag Docker image tag to deployment
   ##
