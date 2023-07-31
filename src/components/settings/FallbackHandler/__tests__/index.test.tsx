@@ -45,6 +45,43 @@ describe('FallbackHandler', () => {
     })
   })
 
+  it('should render the Fallback Handler without warning when one that is not a default address is set', async () => {
+    const OPTIMISM_FALLBACK_HANDLER = '0x69f4D1788e39c87893C980c06EdF4b7f686e2938'
+
+    // Optimism is not a "default" address
+    expect(OPTIMISM_FALLBACK_HANDLER).not.toBe(GOERLI_FALLBACK_HANDLER)
+
+    jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
+      () =>
+        ({
+          safe: {
+            version: '1.3.0',
+            chainId: '10',
+            fallbackHandler: {
+              value: OPTIMISM_FALLBACK_HANDLER,
+              name: 'FallbackHandlerName',
+            },
+          },
+        } as unknown as ReturnType<typeof useSafeInfoHook.default>),
+    )
+
+    const fbHandler = render(<FallbackHandler />)
+
+    await waitFor(() => {
+      expect(
+        fbHandler.queryByText(
+          'The fallback handler adds fallback logic for funtionality that may not be present in the Safe contract. Learn more about the fallback handler',
+        ),
+      ).toBeDefined()
+
+      expect(fbHandler.getByText(OPTIMISM_FALLBACK_HANDLER)).toBeDefined()
+
+      expect(fbHandler.getByText('FallbackHandlerName')).toBeDefined()
+
+      expect(fbHandler.queryByText('An unofficial fallback handler is currently set.')).not.toBeInTheDocument()
+    })
+  })
+
   it('should use the official deployment name if the address is official but no known name is present', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
       () =>

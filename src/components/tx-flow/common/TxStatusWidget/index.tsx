@@ -3,7 +3,7 @@ import CreatedIcon from '@/public/images/messages/created.svg'
 import SignedIcon from '@/public/images/messages/signed.svg'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isMultisigExecutionInfo, isSignableBy } from '@/utils/transaction-guards'
+import { isMultisigExecutionInfo, isSignableBy, isConfirmableBy } from '@/utils/transaction-guards'
 import classnames from 'classnames'
 import css from './styles.module.css'
 import CloseIcon from '@mui/icons-material/Close'
@@ -41,14 +41,14 @@ const TxStatusWidget = ({
   const { executionInfo = undefined } = txSummary || {}
   const { confirmationsSubmitted = 0 } = isMultisigExecutionInfo(executionInfo) ? executionInfo : {}
 
-  const isConfirmedStepIncomplete = step < 1 && !confirmationsSubmitted
+  const canConfirm = txSummary ? isConfirmableBy(txSummary, wallet?.address || '') : safe.threshold === 1
   const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : true
 
   return (
     <Paper>
       <div className={css.header}>
-        <SafeLogo width={32} height={32} className={css.logo} />
-        <Typography variant="h6" fontWeight="700" className={css.title}>
+        <Typography fontWeight="700" display="flex" alignItems="center" gap={1}>
+          <SafeLogo width={16} height={16} className={css.logo} />
           Transaction status
         </Typography>
         <IconButton className={css.close} aria-label="close" onClick={handleClose} size="small">
@@ -69,7 +69,7 @@ const TxStatusWidget = ({
             </ListItemText>
           </ListItem>
 
-          <ListItem className={classnames({ [css.incomplete]: isConfirmedStepIncomplete && !isBatch })}>
+          <ListItem className={classnames({ [css.incomplete]: !canConfirm && !isBatch })}>
             <ListItemIcon>
               <SignedIcon />
             </ListItemIcon>

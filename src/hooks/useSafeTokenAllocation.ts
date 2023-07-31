@@ -1,4 +1,6 @@
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
+import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
+import { IS_PRODUCTION } from '@/config/constants'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { isPast } from 'date-fns'
 import { BigNumber } from 'ethers'
@@ -8,10 +10,13 @@ import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { _getWeb3 } from './wallets/web3'
 
-export const VESTING_URL = 'https://safe-claiming-app-data.safe.global/allocations/'
+export const VESTING_URL =
+  IS_PRODUCTION || cgwDebugStorage.get()
+    ? 'https://safe-claiming-app-data.safe.global/allocations/'
+    : 'https://safe-claiming-app-data.staging.5afe.dev/allocations/'
 
 type VestingData = {
-  tag: 'user' | 'ecosystem' | 'investor'
+  tag: 'user' | 'ecosystem' | 'investor' | 'user_v2' // SEP #5
   account: string
   chainId: number
   contract: string

@@ -76,8 +76,8 @@ export const initSafeSDK = async ({
     const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
     const safeL2Deployment = getSafeL2SingletonDeployment({ network: chainId, version: safeVersion })
 
-    isL1SafeMasterCopy = masterCopy === safeL1Deployment?.defaultAddress
-    const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.defaultAddress
+    isL1SafeMasterCopy = masterCopy === safeL1Deployment?.networkAddresses[chainId]
+    const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.networkAddresses[chainId]
 
     // Unknown deployment, which we do not want to support
     if (!isL1SafeMasterCopy && !isL2SafeMasterCopy) {
