@@ -189,18 +189,14 @@ export const getTxOrigin = (app?: SafeAppData): string | undefined => {
   let origin: string | undefined
 
   try {
-    const maxNameLength =
-      MAX_ORIGIN_LENGTH -
-      JSON.stringify({
-        name: '', // Must include empty string to avoid including the length of `undefined`
-        url: '',
-      }).length
-    const maxUrlLength = maxNameLength - app.name.length
+    // Must include empty string to avoid including the length of `undefined`
+    const maxUrlLength = MAX_ORIGIN_LENGTH - JSON.stringify({ url: '', name: '' }).length
+    const trimmedUrl = app.url.slice(0, maxUrlLength)
 
-    origin = JSON.stringify({
-      name: app.name.slice(0, maxNameLength),
-      url: app.url.slice(0, maxUrlLength),
-    })
+    const maxNameLength = Math.max(0, maxUrlLength - trimmedUrl.length)
+    const trimmedName = app.name.slice(0, maxNameLength)
+
+    origin = JSON.stringify({ url: trimmedUrl, name: trimmedName })
   } catch (e) {
     logError(Errors._808, e)
   }

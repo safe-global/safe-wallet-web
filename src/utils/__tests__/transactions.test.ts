@@ -68,49 +68,30 @@ describe('transactions', () => {
 
   describe('getTxOrigin', () => {
     it('should return undefined if no app is provided', () => {
-      expect(getTxOrigin(undefined)).toBe(undefined)
+      expect(getTxOrigin()).toBe(undefined)
     })
 
     it('should return a stringified object with the app name and url', () => {
       const app = {
-        name: 'Test',
         url: 'https://test.com',
+        name: 'Test name',
       } as SafeAppData
 
-      expect(getTxOrigin(app)).toBe('{"name":"Test","url":"https://test.com"}')
+      expect(getTxOrigin(app)).toBe('{"url":"https://test.com","name":"Test name"}')
     })
 
-    it('should limit the URL to 200 characters', () => {
+    it('should limit the origin to 200 characters with preference of the URL', () => {
       const app = {
-        name: 'Test',
-        url: 'https://test.com/' + 'a'.repeat(1337),
+        url: 'https://test.com/' + 'a'.repeat(160),
+        name: 'Test name',
       } as SafeAppData
-
-      expect(JSON.stringify(app).length).toBeGreaterThan(200)
 
       const result = getTxOrigin(app)
 
       expect(result?.length).toBe(200)
 
       expect(result).toBe(
-        '{"name":"Test","url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}',
-      )
-    })
-
-    it('should preserve the name when limiting', () => {
-      const app = {
-        name: 'Test' + 'a'.repeat(1337),
-        url: '',
-      } as SafeAppData
-
-      expect(JSON.stringify(app).length).toBeGreaterThan(200)
-
-      const result = getTxOrigin(app)
-
-      expect(result?.length).toBe(200)
-
-      expect(result).toBe(
-        '{"name":"Testaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","url":""}',
+        '{"url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","name":"Tes"}',
       )
     })
   })
