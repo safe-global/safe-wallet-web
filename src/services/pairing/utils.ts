@@ -30,7 +30,7 @@ export const killPairingSession = (connector: InstanceType<typeof WalletConnect>
 }
 
 export const isPairingSupported = (disabledWallets?: string[]) => {
-  return !!disabledWallets?.length && !disabledWallets.includes(CGW_NAMES[WALLET_KEYS.PAIRING] as string)
+  return disabledWallets && !disabledWallets.includes(CGW_NAMES[WALLET_KEYS.PAIRING] as string)
 }
 
 export const _isPairingSessionExpired = (session: IWalletConnectSession): boolean => {
