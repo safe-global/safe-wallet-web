@@ -1,15 +1,21 @@
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Grid, Paper, Typography } from '@mui/material'
+import { Box, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 const useDelegates = () => {
   const {
     safe: { chainId },
     safeAddress,
   } = useSafeInfo()
-  const [delegates] = useAsync(() => getDelegates(chainId, { safe: safeAddress }), [chainId, safeAddress])
+  const [delegates] = useAsync(() => {
+    if (!chainId || !safeAddress) return
+    return getDelegates(chainId, { safe: safeAddress })
+  }, [chainId, safeAddress])
   return delegates
 }
 
@@ -24,7 +30,26 @@ const DelegatesList = () => {
         <Grid container spacing={3}>
           <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight={700}>
-              Delegated accounts
+              <Tooltip
+                placement="top"
+                title={
+                  <>
+                    What are delegated accounts?{' '}
+                    <ExternalLink href={HelpCenterArticle.DELEGATES}>Learn more</ExternalLink>
+                  </>
+                }
+              >
+                <span>
+                  Delegated accounts
+                  <SvgIcon
+                    component={InfoIcon}
+                    inheritViewBox
+                    fontSize="small"
+                    color="border"
+                    sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                  />
+                </span>
+              </Tooltip>
             </Typography>
           </Grid>
 
