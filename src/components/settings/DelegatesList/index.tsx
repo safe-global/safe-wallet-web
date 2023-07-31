@@ -16,7 +16,7 @@ const useDelegates = () => {
 const DelegatesList = () => {
   const delegates = useDelegates()
 
-  if (!delegates) return null
+  if (!delegates?.results.length) return null
 
   return (
     <Paper sx={{ p: 4, mt: 2 }}>
@@ -30,7 +30,7 @@ const DelegatesList = () => {
 
           <Grid item xs>
             <ul style={{ padding: 0, margin: 0 }}>
-              {(delegates?.results || []).map((item) => (
+              {delegates.results.map((item) => (
                 <li
                   key={item.delegate}
                   style={{ listStyleType: 'none', marginBottom: '1em' }}
