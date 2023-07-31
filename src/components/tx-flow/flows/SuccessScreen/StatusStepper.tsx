@@ -49,13 +49,6 @@ const StatusStepper = ({ status, txHash }: { status: PendingStatus; txHash?: str
           </Typography>
         </StatusStep>
       </Step>
-      <Step>
-        <StatusStep isLoading={!isSuccess} safeAddress={safeAddress}>
-          <Typography variant="body2" fontWeight="700">
-            Transaction is executed
-          </Typography>
-        </StatusStep>
-      </Step>
     </Stepper>
   )
 }
