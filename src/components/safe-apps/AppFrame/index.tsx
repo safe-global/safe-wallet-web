@@ -264,7 +264,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     })
 
     return unsubscribe
-  }, [appName, chainId, communicator, currentRequestId, setTxFlow])
+  }, [appName, chainId, communicator, currentRequestId])
 
   useEffect(() => {
     const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ messageHash, requestId, signature }) => {
@@ -274,7 +274,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
     })
 
     return unsubscribe
-  }, [communicator, currentRequestId, setTxFlow])
+  }, [communicator, currentRequestId])
 
   if (!safeLoaded) {
     return <div />
