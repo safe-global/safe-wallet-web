@@ -50,7 +50,7 @@ export const safeAppsSlice = createSlice({
 
 export const { setPinned, markOpened } = safeAppsSlice.actions
 
-export const selectSafeApps = (state: RootState) => {
+export const selectSafeApps = (state: RootState): SafeAppsState => {
   return state[safeAppsSlice.name]
 }
 
