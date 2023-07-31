@@ -10,9 +10,10 @@ import css from './styles.module.css'
 import { useAppSelector } from '@/store'
 import { selectPendingTxById } from '@/store/pendingTxsSlice'
 import { useEffect, useState } from 'react'
-import { getBlockExplorerLink } from '@/utils/chains'
+import { getTxLink } from '@/hooks/useTxNotifications'
 import { useCurrentChain } from '@/hooks/useChains'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 export const SuccessScreen = ({ txId }: { txId: string }) => {
   const [localTxHash, setLocalTxHash] = useState<string>()
@@ -20,6 +21,7 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
   const router = useRouter()
   const chain = useCurrentChain()
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, txId))
+  const { safeAddress } = useSafeInfo()
   const { txHash = '', status } = pendingTx || {}
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
     query: { safe: router.query.safe },
   }
 
-  const txLink = chain && localTxHash ? getBlockExplorerLink(chain, localTxHash) : undefined
+  const txLink = chain && getTxLink(txId, chain, safeAddress)
 
   return (
     <Container
@@ -76,9 +78,11 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
           </Button>
         </Link>
         {txLink && (
-          <Button href={txLink.href} target="_blank" rel="noreferrer" variant="outlined" size="small">
-            View transaction
-          </Button>
+          <Link {...txLink} passHref target="_blank" rel="noreferrer">
+            <Button variant="outlined" size="small">
+              View transaction
+            </Button>
+          </Link>
         )}
       </div>
     </Container>
