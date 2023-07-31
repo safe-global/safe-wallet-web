@@ -1,11 +1,14 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Paper, Grid, Typography, Box } from '@mui/material'
+import { Paper, Grid, Typography, Box, IconButton, SvgIcon } from '@mui/material'
 
 import css from './styles.module.css'
-import { RemoveModule } from '@/components/settings/SafeModules/RemoveModule'
-import useIsGranted from '@/hooks/useIsGranted'
 import ExternalLink from '@/components/common/ExternalLink'
+import RemoveModuleFlow from '@/components/tx-flow/flows/RemoveModule'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import CheckWallet from '@/components/common/CheckWallet'
+import { useContext } from 'react'
+import { TxModalContext } from '@/components/tx-flow'
 
 const NoModules = () => {
   return (
@@ -16,7 +19,7 @@ const NoModules = () => {
 }
 
 const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name?: string }) => {
-  const isGranted = useIsGranted()
+  const { setTxFlow } = useContext(TxModalContext)
 
   return (
     <Box className={css.container}>
@@ -28,7 +31,18 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
         chainId={chainId}
         hasExplorer
       />
-      {isGranted && <RemoveModule address={moduleAddress} />}
+      <CheckWallet>
+        {(isOk) => (
+          <IconButton
+            onClick={() => setTxFlow(<RemoveModuleFlow address={moduleAddress} />)}
+            color="error"
+            size="small"
+            disabled={!isOk}
+          >
+            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+          </IconButton>
+        )}
+      </CheckWallet>
     </Box>
   )
 }
@@ -42,16 +56,16 @@ const SafeModules = () => {
       <Grid container direction="row" justifyContent="space-between" spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
-            Safe modules
+            Safe Account modules
           </Typography>
         </Grid>
 
         <Grid item xs>
           <Box>
             <Typography>
-              Modules allow you to customize the access-control logic of your Safe. Modules are potentially risky, so
-              make sure to only use modules from trusted sources. Learn more about modules{' '}
-              <ExternalLink href="https://docs.safe.global/contracts/modules-1">here</ExternalLink>
+              Modules allow you to customize the access-control logic of your Safe Account. Modules are potentially
+              risky, so make sure to only use modules from trusted sources. Learn more about modules{' '}
+              <ExternalLink href="https://docs.safe.global/safe-core-protocol/plugins">here</ExternalLink>
             </Typography>
             {safeModules.length === 0 ? (
               <NoModules />

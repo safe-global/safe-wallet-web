@@ -5,6 +5,7 @@ import * as chain from '@/hooks/useChains'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '@/components/new-safe/create/logic'
 import * as contracts from '@/services/contracts/safeContracts'
+import * as txMonitor from '@/services/tx/txMonitor'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -13,6 +14,8 @@ import { waitFor } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
+import { FEATURES } from '@/utils/chains'
+import * as gasPrice from '@/hooks/useGasPrice'
 
 const mockSafeInfo = {
   data: '0x',
@@ -44,26 +47,99 @@ describe('useSafeCreation', () => {
 
     const mockChain = {
       chainId: '4',
+      features: [],
     } as unknown as ChainInfo
 
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
-    jest.spyOn(web3, 'getWeb3').mockImplementation(() => mockProvider)
+    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockProvider)
     jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() => mockChain)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(logic, 'getSafeCreationTxInfo').mockReturnValue(Promise.resolve(mockSafeInfo))
     jest
-      .spyOn(contracts, 'getFallbackHandlerContractInstance')
+      .spyOn(contracts, 'getReadOnlyFallbackHandlerContract')
       .mockReturnValue({ getAddress: () => hexZeroPad('0x123', 20) } as CompatibilityFallbackHandlerEthersContract)
+    jest
+      .spyOn(gasPrice, 'default')
+      .mockReturnValue([{ maxFeePerGas: BigNumber.from(123), maxPriorityFeePerGas: undefined }, undefined, false])
   })
 
-  it('should create a safe if there is no txHash and status is AWAITING', async () => {
+  it('should create a safe with gas params if there is no txHash and status is AWAITING', async () => {
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus))
+    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
       expect(createSafeSpy).toHaveBeenCalled()
+
+      const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = createSafeSpy.mock.calls[0][1].options || {}
+
+      expect(gasPrice).toBe('123')
+
+      expect(maxFeePerGas).toBeUndefined()
+      expect(maxPriorityFeePerGas).toBeUndefined()
+    })
+  })
+
+  it('should create a safe with EIP-1559 gas params if there is no txHash and status is AWAITING', async () => {
+    jest
+      .spyOn(gasPrice, 'default')
+      .mockReturnValue([
+        { maxFeePerGas: BigNumber.from(123), maxPriorityFeePerGas: BigNumber.from(456) },
+        undefined,
+        false,
+      ])
+
+    jest.spyOn(chain, 'useCurrentChain').mockImplementation(
+      () =>
+        ({
+          chainId: '4',
+          features: [FEATURES.EIP1559],
+        } as unknown as ChainInfo),
+    )
+    const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
+
+    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus, false))
+
+    await waitFor(() => {
+      expect(createSafeSpy).toHaveBeenCalled()
+
+      const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = createSafeSpy.mock.calls[0][1].options || {}
+
+      expect(maxFeePerGas).toBe('123')
+      expect(maxPriorityFeePerGas).toBe('456')
+
+      expect(gasPrice).toBeUndefined()
+    })
+  })
+
+  it('should create a safe with no gas params if the gas estimation threw, there is no txHash and status is AWAITING', async () => {
+    jest.spyOn(gasPrice, 'default').mockReturnValue([undefined, Error('Error for testing'), false])
+
+    const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
+
+    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus, false))
+
+    await waitFor(() => {
+      expect(createSafeSpy).toHaveBeenCalled()
+
+      const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = createSafeSpy.mock.calls[0][1].options || {}
+
+      expect(gasPrice).toBeUndefined()
+      expect(maxFeePerGas).toBeUndefined()
+      expect(maxPriorityFeePerGas).toBeUndefined()
+    })
+  })
+
+  it('should not create a safe if there is no txHash, status is AWAITING but gas is loading', async () => {
+    jest.spyOn(gasPrice, 'default').mockReturnValue([undefined, undefined, true])
+
+    const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
+
+    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, mockStatus, mockSetStatus, false))
+
+    await waitFor(() => {
+      expect(createSafeSpy).not.toHaveBeenCalled()
     })
   })
 
@@ -71,51 +147,63 @@ describe('useSafeCreation', () => {
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe')
 
     renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.WALLET_REJECTED, mockSetStatus),
+      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.WALLET_REJECTED, mockSetStatus, false),
     )
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
     })
 
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.PROCESSING, mockSetStatus))
-
-    await waitFor(() => {
-      expect(createSafeSpy).not.toHaveBeenCalled()
-    })
-
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.ERROR, mockSetStatus))
-
-    await waitFor(() => {
-      expect(createSafeSpy).not.toHaveBeenCalled()
-    })
-
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.REVERTED, mockSetStatus))
-
-    await waitFor(() => {
-      expect(createSafeSpy).not.toHaveBeenCalled()
-    })
-
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.TIMEOUT, mockSetStatus))
-
-    await waitFor(() => {
-      expect(createSafeSpy).not.toHaveBeenCalled()
-    })
-
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.SUCCESS, mockSetStatus))
-
-    await waitFor(() => {
-      expect(createSafeSpy).not.toHaveBeenCalled()
-    })
-
-    renderHook(() => useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.INDEXED, mockSetStatus))
+    renderHook(() =>
+      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.PROCESSING, mockSetStatus, false),
+    )
 
     await waitFor(() => {
       expect(createSafeSpy).not.toHaveBeenCalled()
     })
 
     renderHook(() =>
-      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.INDEX_FAILED, mockSetStatus),
+      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.ERROR, mockSetStatus, false),
+    )
+
+    await waitFor(() => {
+      expect(createSafeSpy).not.toHaveBeenCalled()
+    })
+
+    renderHook(() =>
+      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.REVERTED, mockSetStatus, false),
+    )
+
+    await waitFor(() => {
+      expect(createSafeSpy).not.toHaveBeenCalled()
+    })
+
+    renderHook(() =>
+      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.TIMEOUT, mockSetStatus, false),
+    )
+
+    await waitFor(() => {
+      expect(createSafeSpy).not.toHaveBeenCalled()
+    })
+
+    renderHook(() =>
+      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.SUCCESS, mockSetStatus, false),
+    )
+
+    await waitFor(() => {
+      expect(createSafeSpy).not.toHaveBeenCalled()
+    })
+
+    renderHook(() =>
+      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.INDEXED, mockSetStatus, false),
+    )
+
+    await waitFor(() => {
+      expect(createSafeSpy).not.toHaveBeenCalled()
+    })
+
+    renderHook(() =>
+      useSafeCreation(mockPendingSafe, mockSetPendingSafe, SafeCreationStatus.INDEX_FAILED, mockSetStatus, false),
     )
 
     await waitFor(() => {
@@ -132,6 +220,7 @@ describe('useSafeCreation', () => {
         mockSetPendingSafe,
         SafeCreationStatus.AWAITING,
         mockSetStatus,
+        false,
       ),
     )
 
@@ -149,6 +238,7 @@ describe('useSafeCreation', () => {
         mockSetPendingSafe,
         mockStatus,
         mockSetStatus,
+        false,
       ),
     )
 
@@ -167,6 +257,7 @@ describe('useSafeCreation', () => {
         mockSetPendingSafe,
         mockStatus,
         mockSetStatus,
+        false,
       ),
     )
 
@@ -179,7 +270,7 @@ describe('useSafeCreation', () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
 
     renderHook(() =>
-      useSafeCreation({ ...mockPendingSafe, tx: mockSafeInfo }, mockSetPendingSafe, mockStatus, mockSetStatus),
+      useSafeCreation({ ...mockPendingSafe, tx: mockSafeInfo }, mockSetPendingSafe, mockStatus, mockSetStatus, false),
     )
 
     await waitFor(() => {
@@ -191,7 +282,7 @@ describe('useSafeCreation', () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
 
     renderHook(() =>
-      useSafeCreation({ ...mockPendingSafe, txHash: '0x123' }, mockSetPendingSafe, mockStatus, mockSetStatus),
+      useSafeCreation({ ...mockPendingSafe, txHash: '0x123' }, mockSetPendingSafe, mockStatus, mockSetStatus, false),
     )
 
     await waitFor(() => {
@@ -206,11 +297,29 @@ describe('useSafeCreation', () => {
         mockSetPendingSafe,
         mockStatus,
         mockSetStatus,
+        false,
       ),
     )
 
     await waitFor(() => {
       expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
+    })
+  })
+
+  it('should set a PROCESSING state and monitor relay taskId after successfully tx relay', async () => {
+    jest.spyOn(logic, 'relaySafeCreation').mockResolvedValue('0x456')
+
+    const txMonitorSpy = jest.spyOn(txMonitor, 'waitForCreateSafeTx').mockImplementation(jest.fn())
+
+    const initialStatus = SafeCreationStatus.PROCESSING
+
+    renderHook(() =>
+      useSafeCreation({ ...mockPendingSafe, tx: mockSafeInfo }, mockSetPendingSafe, initialStatus, mockSetStatus, true),
+    )
+
+    await waitFor(() => {
+      expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
+      expect(txMonitorSpy).toHaveBeenCalledWith('0x456', expect.anything())
     })
   })
 })

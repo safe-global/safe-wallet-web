@@ -1,7 +1,7 @@
 import { Typography, Link } from '@mui/material'
 import type { FallbackRender } from '@sentry/react'
 
-import { IS_PRODUCTION } from '@/config/constants'
+import { HELP_CENTER_URL, IS_PRODUCTION } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 
@@ -24,7 +24,7 @@ const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
         {IS_PRODUCTION ? (
           <Typography color="text.primary">
             In case the problem persists, please reach out to us via our{' '}
-            <ExternalLink href="https://help.safe.global">Help Center</ExternalLink>
+            <ExternalLink href={HELP_CENTER_URL}>Help Center</ExternalLink>
           </Typography>
         ) : (
           <>

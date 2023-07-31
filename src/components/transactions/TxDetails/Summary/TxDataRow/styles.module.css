@@ -7,9 +7,9 @@
 }
 
 .title {
+  color: var(--color-primary-light);
   font-weight: 400;
   word-break: break-all;
-  color: var(--color-text-secondary);
 }
 
 .gridRow > * {
@@ -26,7 +26,7 @@
   align-items: center;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .gridRow {
     grid-template-columns: 1fr;
     gap: 0;

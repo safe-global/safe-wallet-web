@@ -1,10 +1,13 @@
 export const AppRoutes = {
   '404': '/404',
   welcome: '/welcome',
+  terms: '/terms',
+  privacy: '/privacy',
+  licenses: '/licenses',
   index: '/',
-  import: '/import',
+  imprint: '/imprint',
   home: '/home',
-  environmentVariables: '/environment-variables',
+  cookie: '/cookie',
   addressBook: '/address-book',
   _offline: '/_offline',
   apps: {
@@ -28,6 +31,7 @@ export const AppRoutes = {
     index: '/settings',
     environmentVariables: '/settings/environment-variables',
     data: '/settings/data',
+    cookies: '/settings/cookies',
     appearance: '/settings/appearance',
     safeApps: {
       index: '/settings/safe-apps',
@@ -39,6 +43,7 @@ export const AppRoutes = {
   transactions: {
     tx: '/transactions/tx',
     queue: '/transactions/queue',
+    messages: '/transactions/messages',
     index: '/transactions',
     history: '/transactions/history',
   },

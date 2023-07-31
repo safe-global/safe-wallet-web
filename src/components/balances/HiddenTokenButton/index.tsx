@@ -22,10 +22,9 @@ const HiddenTokenButton = ({
     balances.items?.filter((item) => currentHiddenAssets.includes(item.tokenInfo.address)).length || 0
 
   return (
-    <div>
+    <div className={css.hiddenTokenButton}>
       <Track {...ASSETS_EVENTS.SHOW_HIDDEN_ASSETS}>
         <Button
-          className={css.hiddenTokenButton}
           sx={{
             gap: 1,
             padding: 1,

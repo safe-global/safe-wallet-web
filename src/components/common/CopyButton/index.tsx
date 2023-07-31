@@ -18,24 +18,40 @@ const CopyButton = ({
   onCopy?: () => void
 }): ReactElement => {
   const [tooltipText, setTooltipText] = useState(initialToolTipText)
+  const [isCopyEnabled, setIsCopyEnabled] = useState(true)
 
   const handleCopy = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
-      onCopy?.()
+      try {
+        navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
+        onCopy?.()
+      } catch (err) {
+        setIsCopyEnabled(false)
+        setTooltipText('Copying is disabled in your browser')
+      }
     },
     [text, onCopy],
   )
 
   const handleMouseLeave = useCallback(() => {
-    setTimeout(() => setTooltipText(initialToolTipText), 500)
-  }, [initialToolTipText])
+    setTimeout(() => {
+      if (isCopyEnabled) {
+        setTooltipText(initialToolTipText)
+      }
+    }, 500)
+  }, [initialToolTipText, isCopyEnabled])
 
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
-      <IconButton aria-label={initialToolTipText} onClick={handleCopy} size="small" className={className}>
+      <IconButton
+        aria-label={initialToolTipText}
+        onClick={handleCopy}
+        size="small"
+        className={className}
+        disabled={!isCopyEnabled}
+      >
         {children ?? <SvgIcon component={CopyIcon} inheritViewBox color="border" fontSize="small" />}
       </IconButton>
     </Tooltip>

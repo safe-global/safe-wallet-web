@@ -12,7 +12,7 @@ describe('getConnectedWallet', () => {
     const wallets = [
       {
         label: 'Wallet 1',
-        icon: '',
+        icon: 'wallet1.svg',
         provider: null as unknown as EIP1193Provider,
         chains: [{ id: '0x4' }],
         accounts: [
@@ -25,7 +25,7 @@ describe('getConnectedWallet', () => {
       },
       {
         label: 'Wallet 2',
-        icon: '',
+        icon: 'wallet2.svg',
         provider: null as unknown as EIP1193Provider,
         chains: [{ id: '0x100' }],
         accounts: [
@@ -40,9 +40,30 @@ describe('getConnectedWallet', () => {
 
     expect(getConnectedWallet(wallets)).toEqual({
       label: 'Wallet 1',
+      icon: 'wallet1.svg',
       address: '0x1234567890123456789012345678901234567890',
       provider: wallets[0].provider,
       chainId: '4',
     })
+  })
+
+  it('should return null if the address is invalid', () => {
+    const wallets = [
+      {
+        label: 'Wallet 1',
+        icon: 'wallet1.svg',
+        provider: null as unknown as EIP1193Provider,
+        chains: [{ id: '0x4' }],
+        accounts: [
+          {
+            address: '0xinvalid',
+            ens: null,
+            balance: null,
+          },
+        ],
+      },
+    ] as WalletState[]
+
+    expect(getConnectedWallet(wallets)).toBeNull()
   })
 })

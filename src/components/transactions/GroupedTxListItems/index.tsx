@@ -7,6 +7,7 @@ import ExpandableTransactionItem from '@/components/transactions/TxListItem/Expa
 import css from './styles.module.css'
 import { ReplaceTxHoverContext, ReplaceTxHoverProvider } from './ReplaceTxHoverProvider'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 const Disclaimer = ({ nonce }: { nonce?: number }) => (
   <Box className={css.disclaimerContainer}>
@@ -16,7 +17,7 @@ const Disclaimer = ({ nonce }: { nonce?: number }) => (
     </Typography>
 
     <ExternalLink
-      href="https://help.safe.global/en/articles/4730252-why-are-transactions-with-the-same-nonce-conflicting-with-each-other"
+      href={HelpCenterArticle.CONFLICTING_TRANSACTIONS}
       title="Why are transactions with the same nonce conflicting with each other?"
       className={css.link}
     >
@@ -44,7 +45,9 @@ const TxGroup = ({ groupedListItems }: { groupedListItems: Transaction[] }): Rea
   )
 }
 
-const GroupedTxListItems = ({ groupedListItems }: { groupedListItems: Transaction[] }): ReactElement => {
+const GroupedTxListItems = ({ groupedListItems }: { groupedListItems: Transaction[] }): ReactElement | null => {
+  if (groupedListItems.length === 0) return null
+
   return (
     <ReplaceTxHoverProvider groupedListItems={groupedListItems}>
       <TxGroup groupedListItems={groupedListItems} />

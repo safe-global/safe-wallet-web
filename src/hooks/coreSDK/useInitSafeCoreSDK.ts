@@ -1,41 +1,62 @@
 import { useEffect } from 'react'
-import useWallet from '../wallets/useWallet'
+import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { initSafeSDK, setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import useOnboard from '@/hooks/wallets/useOnboard'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { parsePrefixedAddress, sameAddress } from '@/utils/addresses'
+import { asError } from '@/services/exceptions/utils'
 
 export const useInitSafeCoreSDK = () => {
-  const wallet = useWallet()
-  const onboard = useOnboard()
   const { safe, safeLoaded } = useSafeInfo()
   const dispatch = useAppDispatch()
+  const web3ReadOnly = useWeb3ReadOnly()
+
+  const { query } = useRouter()
+  const prefixedAddress = Array.isArray(query.safe) ? query.safe[0] : query.safe
+  const { address } = parsePrefixedAddress(prefixedAddress || '')
 
   useEffect(() => {
-    if (!onboard || !wallet?.provider || !safeLoaded || safe.chainId !== wallet.chainId || !safe.version) {
+    if (!safeLoaded || !web3ReadOnly || !sameAddress(address, safe.address.value)) {
       // If we don't reset the SDK, a previous Safe could remain in the store
       setSafeSDK(undefined)
       return
     }
 
-    initSafeSDK(wallet.provider, safe.chainId, safe.address.value, safe.version)
+    // A read-only instance of the SDK is sufficient because we connect the signer to it when needed
+    initSafeSDK({
+      provider: web3ReadOnly,
+      chainId: safe.chainId,
+      address: safe.address.value,
+      version: safe.version,
+      implementationVersionState: safe.implementationVersionState,
+      implementation: safe.implementation.value,
+    })
       .then(setSafeSDK)
-      .catch((e) => {
+      .catch((_e) => {
+        const e = asError(_e)
         dispatch(
           showNotification({
             message: 'Please try connecting your wallet again.',
             groupKey: 'core-sdk-init-error',
             variant: 'error',
-            detailedMessage: (e as Error).message,
+            detailedMessage: e.message,
           }),
         )
-        trackError(ErrorCodes._105, (e as Error).message)
-
-        // Disconnect the wallet
-        onboard.disconnectWallet({ label: wallet.label })
+        trackError(ErrorCodes._105, e.message)
       })
-  }, [onboard, wallet, safe.chainId, safe.address.value, safe.version, safeLoaded, dispatch])
+  }, [
+    address,
+    dispatch,
+    safe.address.value,
+    safe.chainId,
+    safe.implementation.value,
+    safe.implementationVersionState,
+    safe.version,
+    safeLoaded,
+    web3ReadOnly,
+  ])
 }

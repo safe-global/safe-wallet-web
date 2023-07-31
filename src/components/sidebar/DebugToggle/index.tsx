@@ -16,7 +16,7 @@ const DebugToggle = (): ReactElement => {
 
   const [isProdGateway = false, setIsProdGateway] = useLocalStorage<boolean>(LS_KEY)
 
-  const onToggle = (event: ChangeEvent<HTMLInputElement>) => {
+  const onToggleGateway = (event: ChangeEvent<HTMLInputElement>) => {
     setIsProdGateway(event.target.checked)
 
     setTimeout(() => {
@@ -30,7 +30,7 @@ const DebugToggle = (): ReactElement => {
         control={<Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} />}
         label="Dark mode"
       />
-      <FormControlLabel control={<Switch checked={isProdGateway} onChange={onToggle} />} label="Use prod CGW" />
+      <FormControlLabel control={<Switch checked={isProdGateway} onChange={onToggleGateway} />} label="Use prod CGW" />
     </Box>
   )
 }

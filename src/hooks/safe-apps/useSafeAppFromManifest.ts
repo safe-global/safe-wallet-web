@@ -4,6 +4,7 @@ import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useAsync from '@/hooks/useAsync'
 import { getEmptySafeApp } from '@/components/safe-apps/utils'
 import type { SafeAppDataWithPermissions } from '@/components/safe-apps/types'
+import { asError } from '@/services/exceptions/utils'
 
 type UseSafeAppFromManifestReturnType = {
   safeApp: SafeAppDataWithPermissions
@@ -11,7 +12,7 @@ type UseSafeAppFromManifestReturnType = {
 }
 
 const useSafeAppFromManifest = (appUrl: string, chainId: string): UseSafeAppFromManifestReturnType => {
-  const [data, error, loading] = useAsync<SafeAppDataWithPermissions>(() => {
+  const [data, error, isLoading] = useAsync<SafeAppDataWithPermissions>(() => {
     if (appUrl && chainId) return fetchSafeAppFromManifest(appUrl, chainId)
   }, [appUrl, chainId])
 
@@ -19,13 +20,10 @@ const useSafeAppFromManifest = (appUrl: string, chainId: string): UseSafeAppFrom
 
   useEffect(() => {
     if (!error) return
-    logError(Errors._903, `${appUrl}, ${(error as Error).message}`)
+    logError(Errors._903, `${appUrl}, ${asError(error).message}`)
   }, [appUrl, error])
 
-  return {
-    safeApp: data || emptyApp,
-    isLoading: loading || (!!appUrl && !data),
-  }
+  return { safeApp: data || emptyApp, isLoading }
 }
 
 export { useSafeAppFromManifest }

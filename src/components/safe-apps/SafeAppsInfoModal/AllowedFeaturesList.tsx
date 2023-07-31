@@ -28,11 +28,11 @@ const AllowedFeaturesList: React.FC<SafeAppsInfoAllowedFeaturesProps> = ({
           margin: '0 75px',
         }}
       >
-        Manage the features Safe App can use
+        Manage the features Safe Apps can use
       </Typography>
 
       <Box mx={1} my={3} textAlign="left">
-        <Typography>This app is requesting permission to use:</Typography>
+        <Typography>This Safe App is requesting permission to use:</Typography>
 
         <Box display="flex" flexDirection="column" ml={2} mt={1}>
           {features

@@ -7,7 +7,7 @@ type DataLayer = Record<string, unknown>
 export type TagManagerArgs = {
   // GTM id, e.g. GTM-000000
   gtmId: string
-  // GTM authetication key
+  // GTM authentication key
   auth: string
   // GTM environment, e.g. env-00.
   preview: string

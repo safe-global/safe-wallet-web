@@ -8,6 +8,7 @@ import crypto from 'crypto'
 import type { EIP1193Provider } from '@web3-onboard/core'
 
 const FETCH_TIMEOUT = 5000
+const TX_BUILDER = 'https://apps-portal.safe.global/tx-builder'
 
 describe('Share Safe App Page', () => {
   beforeEach(() => {
@@ -19,7 +20,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: TX_BUILDER,
           chain: 'eth',
         },
       },
@@ -38,7 +39,7 @@ describe('Share Safe App Page', () => {
         expect(
           screen.getByText('Compose custom contract interactions and batch them into a single transaction'),
         ).toBeInTheDocument()
-        expect(screen.getByText('https://apps.gnosis-safe.io/tx-builder')).toBeInTheDocument()
+        expect(screen.getByText(TX_BUILDER)).toBeInTheDocument()
       },
       { timeout: FETCH_TIMEOUT },
     )
@@ -48,7 +49,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: TX_BUILDER,
           chain: 'eth',
         },
       },
@@ -73,7 +74,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: TX_BUILDER,
           chain: 'eth',
         },
       },
@@ -107,7 +108,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: 'https://apps-portal.safe.global/tx-builder/',
           chain: 'rin',
         },
       },
@@ -122,7 +123,7 @@ describe('Share Safe App Page', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByText('Create new Safe')).toBeInTheDocument()
+        expect(screen.getByText('Create new Safe Account')).toBeInTheDocument()
       },
       { timeout: FETCH_TIMEOUT },
     )
@@ -145,7 +146,7 @@ describe('Share Safe App Page', () => {
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
-          appUrl: 'https://apps.gnosis-safe.io/tx-builder/',
+          appUrl: TX_BUILDER,
           chain: 'eth',
         },
       },
@@ -160,7 +161,7 @@ describe('Share Safe App Page', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByLabelText('Select a Safe')).toBeInTheDocument()
+        expect(screen.getByLabelText('Select a Safe Account')).toBeInTheDocument()
       },
       { timeout: FETCH_TIMEOUT },
     )

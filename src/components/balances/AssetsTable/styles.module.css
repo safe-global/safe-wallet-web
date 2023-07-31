@@ -14,7 +14,7 @@
   gap: var(--space-1);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .container td:last-of-type,
   .container th:last-of-type {
     display: none;

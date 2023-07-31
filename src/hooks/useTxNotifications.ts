@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
+import { formatError } from '@/utils/formatters'
 import type { LinkProps } from 'next/link'
-import { capitalize } from '@/utils/formatters'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
@@ -10,7 +10,7 @@ import useTxQueue from './useTxQueue'
 import { isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
 import { type ChainInfo, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
-import useIsGranted from './useIsGranted'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
@@ -42,14 +42,6 @@ enum Variant {
 }
 
 const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
-
-// Format the error message
-export const formatError = (error: Error & { reason?: string }): string => {
-  let { reason } = error
-  if (!reason) return ''
-  if (!reason.endsWith('.')) reason += '.'
-  return capitalize(reason)
-}
 
 const getTxLink = (txId: string, chain: ChainInfo, safeAddress: string): { href: LinkProps['href']; title: string } => {
   return {
@@ -114,7 +106,7 @@ const useTxNotifications = (): void => {
    */
 
   const { page } = useTxQueue()
-  const isGranted = useIsGranted()
+  const isOwner = useIsSafeOwner()
   const pendingTxs = useAppSelector(selectPendingTxs)
   const notifications = useAppSelector(selectNotifications)
   const wallet = useWallet()
@@ -133,7 +125,7 @@ const useTxNotifications = (): void => {
   }, [page?.results, pendingTxs, wallet?.address])
 
   useEffect(() => {
-    if (!isGranted || txsAwaitingConfirmation.length === 0) {
+    if (!isOwner || txsAwaitingConfirmation.length === 0) {
       return
     }
 
@@ -150,7 +142,7 @@ const useTxNotifications = (): void => {
         }),
       )
     }
-  }, [chain, dispatch, isGranted, notifications, safeAddress, txsAwaitingConfirmation])
+  }, [chain, dispatch, isOwner, notifications, safeAddress, txsAwaitingConfirmation])
 }
 
 export default useTxNotifications

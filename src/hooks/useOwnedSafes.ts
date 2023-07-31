@@ -1,11 +1,10 @@
 import { useEffect } from 'react'
 import { getOwnedSafes, type OwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
 
-import useChainId from '@/hooks/useChainId'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import useWallet from '@/hooks/wallets/useWallet'
-import useAsync from './useAsync'
 import { Errors, logError } from '@/services/exceptions'
+import useChainId from './useChainId'
 
 const CACHE_KEY = 'ownedSafes'
 
@@ -20,28 +19,32 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const { address: walletAddress } = useWallet() || {}
   const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY)
 
-  const [ownedSafes, error] = useAsync<OwnedSafes>(() => {
-    if (!chainId || !walletAddress) return
-    return getOwnedSafes(chainId, walletAddress)
-  }, [chainId, walletAddress])
-
   useEffect(() => {
-    if (!ownedSafes || !walletAddress || !chainId) return
+    if (!walletAddress || !chainId) return
+    let isCurrent = true
 
-    setOwnedSafesCache((prev) => ({
-      ...prev,
-      [walletAddress]: {
-        ...(prev?.[walletAddress] || {}),
-        [chainId]: ownedSafes.safes,
-      },
-    }))
-  }, [ownedSafes, setOwnedSafesCache, walletAddress, chainId])
+    /**
+     * No useAsync in this case to avoid updating
+     * for a new chainId with stale data see https://github.com/safe-global/safe-wallet-web/pull/1760#discussion_r1133705349
+     */
+    getOwnedSafes(chainId, walletAddress)
+      .then(
+        (ownedSafes) =>
+          isCurrent &&
+          setOwnedSafesCache((prev) => ({
+            ...prev,
+            [walletAddress]: {
+              ...(prev?.[walletAddress] || {}),
+              [chainId]: ownedSafes.safes,
+            },
+          })),
+      )
+      .catch((error: Error) => logError(Errors._610, error.message))
 
-  useEffect(() => {
-    if (error) {
-      logError(Errors._610, error.message)
+    return () => {
+      isCurrent = false
     }
-  }, [error])
+  }, [chainId, walletAddress, setOwnedSafesCache])
 
   return ownedSafesCache?.[walletAddress || ''] ?? {}
 }

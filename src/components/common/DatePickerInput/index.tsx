@@ -5,6 +5,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import TextField from '@mui/material/TextField'
 import { isFuture, isValid, startOfDay } from 'date-fns'
 
+import inputCss from '@/styles/inputs.module.css'
+
 const DatePickerInput = ({
   name,
   label,
@@ -46,6 +48,7 @@ const DatePickerInput = ({
       render={({ field, fieldState }) => (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
+            className={inputCss.input}
             label={label}
             inputFormat="dd/MM/yyyy"
             {...field}

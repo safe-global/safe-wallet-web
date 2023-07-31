@@ -50,7 +50,7 @@ const SafeApps: NextPage = () => {
   }, [router])
 
   // appUrl is required to be present
-  if (!appUrl) return null
+  if (!appUrl || !router.isReady) return null
 
   if (isModalVisible) {
     return (

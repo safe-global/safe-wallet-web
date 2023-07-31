@@ -19,7 +19,7 @@ const GNO_CSV_ENTRY = {
 
 describe('Address book', () => {
   before(() => {
-    cy.visit(`/${GOERLI_TEST_SAFE}/address-book`, { failOnStatusCode: false })
+    cy.visit(`/address-book?safe=${GOERLI_TEST_SAFE}`)
     cy.contains('Accept selection').click()
     // Waits for the Address Book table to be in the page
     cy.contains('p', 'Address book').should('be.visible')
@@ -84,7 +84,7 @@ describe('Address book', () => {
       cy.contains('Gnosis Chain').click()
 
       // Navigate to the Address Book page
-      cy.visit(`/${GNO_TEST_SAFE}/address-book`, { failOnStatusCode: false })
+      cy.visit(`/address-book?safe=${GNO_TEST_SAFE}`)
 
       // Waits for the Address Book table to be in the page
       cy.contains('p', 'Address book').should('be.visible')

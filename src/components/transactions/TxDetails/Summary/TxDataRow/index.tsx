@@ -4,6 +4,7 @@ import { Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
 import type { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
+import valueCss from '@/components/transactions/TxDetails/TxData/DecodedData/ValueArray/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 type TxDataRowProps = {
@@ -17,7 +18,7 @@ export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement | n
     <div className={css.gridRow}>
       <div className={css.title}>{title}</div>
 
-      <Typography component="div">{children}</Typography>
+      {typeof children === 'string' ? <Typography component="div">{children}</Typography> : children}
     </div>
   )
 }
@@ -31,7 +32,11 @@ export const generateDataRowValue = (
   switch (type) {
     case 'hash':
     case 'address':
-      return <EthHashInfo address={value} hasExplorer={hasExplorer} showAvatar={false} showCopyButton />
+      return (
+        <div className={valueCss.address}>
+          <EthHashInfo address={value} hasExplorer={hasExplorer} showAvatar={false} showCopyButton />
+        </div>
+      )
     case 'rawData':
       return (
         <div className={css.rawData}>

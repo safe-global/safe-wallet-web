@@ -20,6 +20,10 @@
   position: relative;
 }
 
+.safeAppIconContainer iframe {
+  display: block;
+}
+
 .safeAppBatchIcon {
   position: absolute;
   top: -6px;

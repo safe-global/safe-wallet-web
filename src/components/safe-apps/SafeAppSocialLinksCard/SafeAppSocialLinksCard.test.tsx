@@ -47,7 +47,7 @@ describe('SafeAppSocialLinksCard', () => {
     render(<SafeAppSocialLinksCard safeApp={transactionBuilderSafeAppMock} />)
 
     await waitFor(() => {
-      expect(screen.queryByText('Something wrong with the app?')).not.toBeInTheDocument()
+      expect(screen.queryByText('Something wrong with the Safe App?')).not.toBeInTheDocument()
     })
   })
 
@@ -59,7 +59,7 @@ describe('SafeAppSocialLinksCard', () => {
     render(<SafeAppSocialLinksCard safeApp={safeAppData} />)
 
     await waitFor(() => {
-      expect(screen.queryByText('Something wrong with the app?')).toBeInTheDocument()
+      expect(screen.queryByText('Something wrong with the Safe App?')).toBeInTheDocument()
       expect(screen.queryByText(developerWebsiteMock)).toBeInTheDocument()
     })
   })
@@ -72,7 +72,7 @@ describe('SafeAppSocialLinksCard', () => {
     render(<SafeAppSocialLinksCard safeApp={safeAppData} />)
 
     await waitFor(() => {
-      expect(screen.queryByText('Something wrong with the app?')).toBeInTheDocument()
+      expect(screen.queryByText('Something wrong with the Safe App?')).toBeInTheDocument()
       expect(screen.getByLabelText('Discord link')).toBeInTheDocument()
       expect(screen.getByLabelText('Twitter link')).toBeInTheDocument()
       expect(screen.getByLabelText('Github link')).toBeInTheDocument()
@@ -88,7 +88,7 @@ describe('SafeAppSocialLinksCard', () => {
     render(<SafeAppSocialLinksCard safeApp={safeAppData} />)
 
     await waitFor(() => {
-      expect(screen.queryByText('Something wrong with the app?')).toBeInTheDocument()
+      expect(screen.queryByText('Something wrong with the Safe App?')).toBeInTheDocument()
       expect(screen.queryByText(developerWebsiteMock)).toBeInTheDocument()
       expect(screen.getByLabelText('Discord link')).toBeInTheDocument()
       expect(screen.getByLabelText('Twitter link')).toBeInTheDocument()
@@ -105,7 +105,7 @@ describe('SafeAppSocialLinksCard', () => {
     render(<SafeAppSocialLinksCard safeApp={safeAppData} />)
 
     await waitFor(() => {
-      expect(screen.queryByText('Something wrong with the app?')).toBeInTheDocument()
+      expect(screen.queryByText('Something wrong with the Safe App?')).toBeInTheDocument()
       expect(screen.queryByLabelText('Discord link')).toBeInTheDocument()
       expect(screen.queryByLabelText('Twitter link')).not.toBeInTheDocument()
       expect(screen.queryByLabelText('Github link')).not.toBeInTheDocument()

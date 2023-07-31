@@ -1,5 +1,6 @@
 import React, { type ElementType } from 'react'
 import { Box, Button, Dialog, DialogContent, Grid, SvgIcon, Typography } from '@mui/material'
+import { useRouter } from 'next/router'
 
 import HomeIcon from '@/public/images/sidebar/home.svg'
 import TransactionIcon from '@/public/images/sidebar/transactions.svg'
@@ -9,6 +10,7 @@ import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
 import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useCurrentChain } from '@/hooks/useChains'
+import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
 
 const HintItem = ({ Icon, title, description }: { Icon: ElementType; title: string; description: string }) => {
   return (
@@ -26,21 +28,29 @@ const HintItem = ({ Icon, title, description }: { Icon: ElementType; title: stri
 }
 
 const CreationDialog = () => {
+  const router = useRouter()
   const [open, setOpen] = React.useState(true)
   const [remoteSafeApps = []] = useRemoteSafeApps()
   const chain = useCurrentChain()
+
+  const onClose = () => {
+    const { [CREATION_MODAL_QUERY_PARM]: _, ...query } = router.query
+    router.replace({ pathname: router.pathname, query })
+
+    setOpen(false)
+  }
 
   return (
     <Dialog open={open}>
       <DialogContent sx={{ paddingX: 8, paddingTop: 9, paddingBottom: 6 }}>
         <Typography variant="h3" fontWeight="700" mb={1}>
-          Welcome to your Safe!
+          Welcome to {'Safe{Wallet}'}!
         </Typography>
         <Typography variant="body2">
           Congratulations on your first step to truly unlock ownership. Enjoy the experience and discover our app.
         </Typography>
         <Grid container mt={4} mb={6} spacing={3}>
-          <HintItem Icon={HomeIcon} title="Home" description="Get a status overview of your Safe here." />
+          <HintItem Icon={HomeIcon} title="Home" description="Get a status overview of your Safe Account here." />
           <HintItem
             Icon={TransactionIcon}
             title="Transactions"
@@ -54,7 +64,7 @@ const CreationDialog = () => {
           <HintItem
             Icon={SettingsIcon}
             title="Settings"
-            description="Want to change your Safe setup? Settings is the right place to go."
+            description="Want to change your Safe Account setup? Settings is the right place to go."
           />
           <HintItem Icon={BeamerIcon} title="What's new" description="Don't miss any future Safe updates." />
           <HintItem
@@ -64,7 +74,7 @@ const CreationDialog = () => {
           />
         </Grid>
         <Box display="flex" justifyContent="center">
-          <Button onClick={() => setOpen(false)} variant="contained" size="stretched">
+          <Button onClick={onClose} variant="contained" size="stretched">
             Got it
           </Button>
         </Box>

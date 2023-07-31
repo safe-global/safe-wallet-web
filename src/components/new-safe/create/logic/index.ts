@@ -1,9 +1,9 @@
 import type { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
-  getFallbackHandlerContractInstance,
-  getGnosisSafeContractInstance,
-  getProxyFactoryContractInstance,
+  getReadOnlyFallbackHandlerContract,
+  getReadOnlyGnosisSafeContract,
+  getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
 import type { ConnectedWallet } from '@/services/onboard'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -15,12 +15,10 @@ import { isWalletRejection } from '@/utils/wallets'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import type { UrlObject } from 'url'
-import { getShortName } from '@/utils/chains'
 import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import type { AppDispatch, AppThunk } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { formatError } from '@/hooks/useTxNotifications'
 import { SafeFactory } from '@safe-global/safe-core-sdk'
 import type Safe from '@safe-global/safe-core-sdk'
 import type { DeploySafeProps } from '@safe-global/safe-core-sdk'
@@ -29,6 +27,8 @@ import type { PredictSafeProps } from '@safe-global/safe-core-sdk/dist/src/safeF
 import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { formatError } from '@/utils/formatters'
+import { sponsoredCall } from '@/services/tx/relaying'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -44,13 +44,13 @@ export const getSafeDeployProps = (
   callback: (txHash: string) => void,
   chainId: string,
 ): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
-  const fallbackHandler = getFallbackHandlerContractInstance(chainId)
+  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chainId)
 
   return {
     safeAccountConfig: {
       threshold: safeParams.threshold,
       owners: safeParams.owners,
-      fallbackHandler: fallbackHandler.getAddress(),
+      fallbackHandler: readOnlyFallbackHandlerContract.getAddress(),
     },
     safeDeploymentConfig: {
       saltNonce: safeParams.saltNonce.toString(),
@@ -89,22 +89,22 @@ export const encodeSafeCreationTx = ({
   saltNonce,
   chain,
 }: SafeCreationProps & { chain: ChainInfo }) => {
-  const safeContract = getGnosisSafeContractInstance(chain, LATEST_SAFE_VERSION)
-  const proxyContract = getProxyFactoryContractInstance(chain.chainId)
-  const fallbackHandlerContract = getFallbackHandlerContractInstance(chain.chainId)
+  const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
+  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId)
+  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
 
-  const setupData = safeContract.encode('setup', [
+  const setupData = readOnlySafeContract.encode('setup', [
     owners,
     threshold,
     ZERO_ADDRESS,
     EMPTY_DATA,
-    fallbackHandlerContract.getAddress(),
+    readOnlyFallbackHandlerContract.getAddress(),
     ZERO_ADDRESS,
     '0',
     ZERO_ADDRESS,
   ])
 
-  return proxyContract.encode('createProxyWithNonce', [safeContract.getAddress(), setupData, saltNonce])
+  return readOnlyProxyContract.encode('createProxyWithNonce', [readOnlySafeContract.getAddress(), setupData, saltNonce])
 }
 
 /**
@@ -112,16 +112,18 @@ export const encodeSafeCreationTx = ({
  */
 export const getSafeCreationTxInfo = async (
   provider: Web3Provider,
-  params: NewSafeFormData,
+  owners: NewSafeFormData['owners'],
+  threshold: NewSafeFormData['threshold'],
+  saltNonce: NewSafeFormData['saltNonce'],
   chain: ChainInfo,
   wallet: ConnectedWallet,
 ): Promise<PendingSafeTx> => {
-  const proxyContract = getProxyFactoryContractInstance(chain.chainId)
+  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId)
 
   const data = encodeSafeCreationTx({
-    owners: params.owners.map((owner) => owner.address),
-    threshold: params.threshold,
-    saltNonce: params.saltNonce,
+    owners: owners.map((owner) => owner.address),
+    threshold,
+    saltNonce,
     chain,
   })
 
@@ -129,7 +131,7 @@ export const getSafeCreationTxInfo = async (
     data,
     from: wallet.address,
     nonce: await provider.getTransactionCount(wallet.address),
-    to: proxyContract.getAddress(),
+    to: readOnlyProxyContract.getAddress(),
     value: BigNumber.from(0),
     startBlock: await provider.getBlockNumber(),
   }
@@ -141,12 +143,12 @@ export const estimateSafeCreationGas = async (
   from: string,
   safeParams: SafeCreationProps,
 ): Promise<BigNumber> => {
-  const proxyFactoryContract = getProxyFactoryContractInstance(chain.chainId)
+  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId)
   const encodedSafeCreationTx = encodeSafeCreationTx({ ...safeParams, chain })
 
   return provider.estimateGas({
     from: from,
-    to: proxyFactoryContract.getAddress(),
+    to: readOnlyProxyFactoryContract.getAddress(),
     data: encodedSafeCreationTx,
   })
 }
@@ -191,7 +193,7 @@ export const handleSafeCreationError = (error: EthersError) => {
 }
 
 export const SAFE_CREATION_ERROR_KEY = 'create-safe-error'
-export const showSafeCreationError = (error: EthersError): AppThunk => {
+export const showSafeCreationError = (error: EthersError | Error): AppThunk => {
   return (dispatch) => {
     dispatch(
       showNotification({
@@ -233,13 +235,14 @@ export const checkSafeCreationTx = async (
   }
 }
 
+export const CREATION_MODAL_QUERY_PARM = 'showCreationModal'
+
 export const getRedirect = (
-  chainId: string,
+  chainPrefix: string,
   safeAddress: string,
   redirectQuery?: string | string[],
 ): UrlObject | string => {
   const redirectUrl = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery
-  const chainPrefix = getShortName(chainId)
   const address = `${chainPrefix}:${safeAddress}`
 
   // Should never happen in practice
@@ -247,7 +250,7 @@ export const getRedirect = (
 
   // Go to the dashboard if no specific redirect is provided
   if (!redirectUrl) {
-    return { pathname: AppRoutes.home, query: { safe: address, showCreationModal: true } }
+    return { pathname: AppRoutes.home, query: { safe: address, [CREATION_MODAL_QUERY_PARM]: true } }
   }
 
   // Otherwise, redirect to the provided URL (e.g. from a Safe App)
@@ -264,4 +267,49 @@ export const getRedirect = (
   const hasQueryParams = redirectUrl.includes('?')
   const appendChar = hasQueryParams ? '&' : '?'
   return redirectUrl + `${appendChar}safe=${address}`
+}
+
+export const relaySafeCreation = async (chain: ChainInfo, owners: string[], threshold: number, saltNonce: number) => {
+  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId)
+  const proxyFactoryAddress = readOnlyProxyFactoryContract.getAddress()
+  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
+  const fallbackHandlerAddress = readOnlyFallbackHandlerContract.getAddress()
+  const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain)
+  const safeContractAddress = readOnlySafeContract.getAddress()
+
+  const callData = {
+    owners,
+    threshold,
+    to: ZERO_ADDRESS,
+    data: EMPTY_DATA,
+    fallbackHandler: fallbackHandlerAddress,
+    paymentToken: ZERO_ADDRESS,
+    payment: 0,
+    paymentReceiver: ZERO_ADDRESS,
+  }
+
+  const initializer = readOnlySafeContract.encode('setup', [
+    callData.owners,
+    callData.threshold,
+    callData.to,
+    callData.data,
+    callData.fallbackHandler,
+    callData.paymentToken,
+    callData.payment,
+    callData.paymentReceiver,
+  ])
+
+  const createProxyWithNonceCallData = readOnlyProxyFactoryContract.encode('createProxyWithNonce', [
+    safeContractAddress,
+    initializer,
+    saltNonce,
+  ])
+
+  const relayResponse = await sponsoredCall({
+    chainId: chain.chainId,
+    to: proxyFactoryAddress,
+    data: createProxyWithNonceCallData,
+  })
+
+  return relayResponse.taskId
 }

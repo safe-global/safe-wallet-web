@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const APP_LOAD_ERROR_TIMEOUT = 30000
 const APP_SLOW_LOADING_WARNING_TIMEOUT = 15_000
-const APP_LOAD_ERROR = 'There was an error loading the Safe App. There might be a problem with the App provider.'
+const APP_LOAD_ERROR = 'There was an error loading the Safe App. There might be a problem with the Safe App provider.'
 
 type UseAppIsLoadingReturnType = {
   iframeRef: React.RefObject<HTMLIFrameElement>

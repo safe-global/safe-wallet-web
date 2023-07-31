@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
-import LoadingSpinner from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
+import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
 
 const getStep = (status: SafeCreationStatus) => {
   const ERROR_TEXT = 'Please cancel the process or retry the transaction.'
@@ -38,19 +38,19 @@ const getStep = (status: SafeCreationStatus) => {
       }
     case SafeCreationStatus.SUCCESS:
       return {
-        description: 'Your Safe was successfully created!',
+        description: 'Your Safe Account was successfully created!',
         instruction: 'It is now being indexed. Please do not leave this page.',
       }
     case SafeCreationStatus.INDEXED:
       return {
-        description: 'Your Safe was successfully created!',
+        description: 'Your Safe Account was successfully created!',
         instruction: '',
       }
     case SafeCreationStatus.INDEX_FAILED:
       return {
-        description: 'Your Safe is created and will be picked up by our services shortly.',
+        description: 'Your Safe Account is created and will be picked up by our services shortly.',
         instruction:
-          'You can already open your Safe. It might take a moment until it becomes fully usable in the interface.',
+          'You can already open Safe{Wallet}. It might take a moment until it becomes fully usable in the interface.',
       }
   }
 }
@@ -59,11 +59,13 @@ const StatusMessage = ({ status, isError }: { status: SafeCreationStatus; isErro
   const stepInfo = getStep(status)
 
   const color = isError ? 'error' : 'info'
+  const isSuccess = status >= SafeCreationStatus.SUCCESS
+  const spinnerStatus = isError ? SpinnerStatus.ERROR : isSuccess ? SpinnerStatus.SUCCESS : SpinnerStatus.PROCESSING
 
   return (
     <>
       <Box paddingX={3} mt={3}>
-        <LoadingSpinner status={status} />
+        <LoadingSpinner status={spinnerStatus} />
         <Typography variant="h6" marginTop={2} fontWeight={700}>
           {stepInfo.description}
         </Typography>

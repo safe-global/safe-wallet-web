@@ -6,7 +6,7 @@ inputs:
   secrets:
     required: true
 
-  prod:  # id of input
+  prod: # id of input
     description: 'Production build flag'
     required: false
 
@@ -22,6 +22,9 @@ runs:
       run: yarn build && yarn export
       env:
         NEXT_PUBLIC_IS_PRODUCTION: ${{ inputs.prod }}
+        NEXT_PUBLIC_GATEWAY_URL_PRODUCTION: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GATEWAY_URL_PRODUCTION }}
+        NEXT_PUBLIC_GATEWAY_URL_STAGING: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GATEWAY_URL_STAGING }}
+        NEXT_PUBLIC_SAFE_VERSION: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_VERSION }}
         NEXT_PUBLIC_BEAMER_ID: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_BEAMER_ID }}
         NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH }}
         NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID }}
@@ -34,4 +37,9 @@ runs:
         NEXT_PUBLIC_TENDERLY_PROJECT_NAME: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_PROJECT_NAME }}
         NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL }}
         NEXT_PUBLIC_WC_BRIDGE: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_WC_BRIDGE }}
+        NEXT_PUBLIC_WC_PROJECT_ID: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_WC_PROJECT_ID }}
         NEXT_PUBLIC_CYPRESS_MNEMONIC: ${{ inputs.e2e_mnemonic }}
+        NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_PRODUCTION: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION }}
+        NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_STAGING: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING }}
+        NEXT_PUBLIC_IS_OFFICIAL_HOST: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_IS_OFFICIAL_HOST }}
+        NEXT_PUBLIC_REDEFINE_API: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_REDEFINE_API }}

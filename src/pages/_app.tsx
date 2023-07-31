@@ -21,25 +21,28 @@ import useTxNotifications from '@/hooks/useTxNotifications'
 import useSafeNotifications from '@/hooks/useSafeNotifications'
 import useTxPendingStatuses from '@/hooks/useTxPendingStatuses'
 import { useInitSession } from '@/hooks/useInitSession'
-import useStorageMigration from '@/services/ls-migration'
 import Notifications from '@/components/common/Notifications'
 import CookieBanner from '@/components/common/CookieBanner'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { useTxTracking } from '@/hooks/useTxTracking'
+import { useSafeMsgTracking } from '@/hooks/messages/useSafeMsgTracking'
 import useGtm from '@/services/analytics/useGtm'
 import useBeamer from '@/hooks/useBeamer'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import createEmotionCache from '@/utils/createEmotionCache'
 import MetaTags from '@/components/common/MetaTags'
 import useAdjustUrl from '@/hooks/useAdjustUrl'
+import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifications'
+import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
+import useChangedValue from '@/hooks/useChangedValue'
+import { TxModalProvider } from '@/components/tx-flow'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
 const InitApp = (): null => {
   setGatewayBaseUrl(GATEWAY_URL)
   useAdjustUrl()
-  useStorageMigration()
   useGtm()
   useInitSession()
   useLoadableStores()
@@ -47,9 +50,12 @@ const InitApp = (): null => {
   useInitWeb3()
   useInitSafeCoreSDK()
   useTxNotifications()
+  useSafeMessageNotifications()
   useSafeNotifications()
   useTxPendingStatuses()
+  useSafeMessagePendingStatuses()
   useTxTracking()
+  useSafeMsgTracking()
   useBeamer()
 
   return null
@@ -67,7 +73,7 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            {children}
+            <TxModalProvider>{children}</TxModalProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}
@@ -85,10 +91,12 @@ const WebCoreApp = ({
   router,
   emotionCache = clientSideEmotionCache,
 }: WebCoreAppProps): ReactElement => {
+  const safeKey = useChangedValue(router.query.safe?.toString())
+
   return (
     <StoreHydrator>
       <Head>
-        <title key="default-title">Safe</title>
+        <title key="default-title">{'Safe{Wallet}'}</title>
         <MetaTags prefetchUrl={GATEWAY_URL} />
       </Head>
 
@@ -99,7 +107,7 @@ const WebCoreApp = ({
           <InitApp />
 
           <PageLayout pathname={router.pathname}>
-            <Component {...pageProps} />
+            <Component {...pageProps} key={safeKey} />
           </PageLayout>
 
           <CookieBanner />

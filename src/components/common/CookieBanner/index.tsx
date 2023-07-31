@@ -1,6 +1,6 @@
-import type { ReactElement } from 'react'
-import { useEffect } from 'react'
-import { Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon } from '@mui/material'
+import { useEffect, type ReactElement } from 'react'
+import type { CheckboxProps } from '@mui/material'
+import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { useForm } from 'react-hook-form'
 
@@ -9,28 +9,61 @@ import { selectCookies, CookieType, saveCookieConsent } from '@/store/cookiesSli
 import { selectCookieBanner, openCookieBanner, closeCookieBanner } from '@/store/popupSlice'
 
 import css from './styles.module.css'
+import { AppRoutes } from '@/config/routes'
 import ExternalLink from '../ExternalLink'
 
 const COOKIE_WARNING: Record<CookieType, string> = {
   [CookieType.NECESSARY]: '',
-  [CookieType.UPDATES]: `You attempted to open the "What's new" section but need to accept the "Updates & Feedback" cookies first.`,
+  [CookieType.UPDATES]: `You attempted to open the "What's new" section but need to accept the "Beamer" cookies first.`,
   [CookieType.ANALYTICS]: '',
 }
 
-const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactElement => {
+const CookieCheckbox = ({
+  checkboxProps,
+  label,
+  checked,
+  color,
+}: {
+  label: string
+  checked: boolean
+  checkboxProps: CheckboxProps
+  color?: string
+}) => (
+  <FormControlLabel
+    label={label}
+    checked={checked}
+    control={<Checkbox {...checkboxProps} />}
+    sx={{
+      mt: '-9px',
+      color,
+      '.MuiCheckbox-root': {
+        color,
+      },
+    }}
+  />
+)
+
+export const CookieBanner = ({
+  warningKey,
+  inverted,
+}: {
+  warningKey?: CookieType
+  inverted?: boolean
+}): ReactElement => {
   const warning = warningKey ? COOKIE_WARNING[warningKey] : undefined
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
 
   const { register, watch, getValues, setValue } = useForm({
     defaultValues: {
-      ...cookies,
+      [CookieType.NECESSARY]: true,
+      [CookieType.UPDATES]: cookies[CookieType.UPDATES] ?? false,
+      [CookieType.ANALYTICS]: cookies[CookieType.ANALYTICS] ?? false,
       ...(warningKey ? { [warningKey]: true } : {}),
     },
   })
 
   const handleAccept = () => {
-    setValue(CookieType.NECESSARY, true)
     dispatch(saveCookieConsent(getValues()))
     dispatch(closeCookieBanner())
   }
@@ -38,65 +71,102 @@ const CookieBannerPopup = ({ warningKey }: { warningKey?: CookieType }): ReactEl
   const handleAcceptAll = () => {
     setValue(CookieType.UPDATES, true)
     setValue(CookieType.ANALYTICS, true)
-
-    setTimeout(() => {
-      handleAccept()
-    }, 100)
+    setTimeout(handleAccept, 300)
   }
 
+  const color = inverted ? 'background.paper' : undefined
+
   return (
-    <Paper className={css.container} elevation={3}>
+    <Paper sx={inverted ? { backgroundColor: 'text.primary' } : undefined} className={css.container}>
       {warning && (
-        <Typography align="center" paddingBottom="8px">
-          <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" color="error" /> {warning}
+        <Typography align="center" mb={2} color="warning.background" variant="body2">
+          <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" color="error" sx={{ mb: -0.4 }} /> {warning}
         </Typography>
       )}
 
-      <Typography align="center">
-        We use cookies to provide you with the best experience and to help improve our website and application. Please
-        read our <ExternalLink href="https://safe.global/cookie">Cookie Policy</ExternalLink> for more information. By
-        clicking &quot;Accept all&quot;, you agree to the storing of cookies on your device to enhance site navigation,
-        analyze site usage and provide customer support.
-      </Typography>
+      <form>
+        <Grid container alignItems="center">
+          <Grid item xs>
+            <Typography variant="body2" color={color} mb={2}>
+              By clicking &quot;Accept all&quot; you agree to the use of the tools listed below and their corresponding{' '}
+              <span style={{ whiteSpace: 'nowrap' }}>3rd-party</span> cookies.{' '}
+              <ExternalLink href={AppRoutes.cookie} color={color}>
+                Cookie policy
+              </ExternalLink>
+            </Typography>
 
-      <form className={css.grid}>
-        <FormControlLabel
-          control={<Checkbox defaultChecked disabled {...register(CookieType.NECESSARY)} />}
-          label="Necessary"
-        />
+            <Grid container alignItems="center" gap={4}>
+              <Grid item xs={12} sm>
+                <Box mb={2}>
+                  <CookieCheckbox
+                    checkboxProps={{ id: 'necessary', disabled: true }}
+                    label="Necessary"
+                    checked
+                    color={color}
+                  />
+                  <br />
+                  <Typography variant="body2" color={color}>
+                    Locally stored data for core functionality
+                  </Typography>
+                </Box>
+                <Box mb={2}>
+                  <CookieCheckbox
+                    checkboxProps={{ ...register(CookieType.UPDATES), id: 'beamer' }}
+                    label="Beamer"
+                    checked={watch(CookieType.UPDATES)}
+                    color={color}
+                  />
+                  <br />
+                  <Typography variant="body2" color={color}>
+                    New features and product announcements
+                  </Typography>
+                </Box>
+                <Box>
+                  <CookieCheckbox
+                    checkboxProps={{ ...register(CookieType.ANALYTICS), id: 'ga' }}
+                    label="Google Analytics"
+                    checked={watch(CookieType.ANALYTICS)}
+                    color={color}
+                  />
+                  <br />
+                  <Typography variant="body2" color={color}>
+                    Help us make the app better. We never track your Safe Account address or wallet addresses, or any
+                    transaction data.
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
 
-        <FormControlLabel
-          control={<Checkbox {...register(CookieType.UPDATES)} />}
-          label="Updates (Beamer)"
-          checked={watch(CookieType.UPDATES)}
-        />
+            <Grid container alignItems="center" justifyContent="center" mt={4} gap={2}>
+              <Grid item>
+                <Typography color={color}>
+                  <Button onClick={handleAccept} variant="text" size="small" color="inherit" disableElevation>
+                    Accept selection
+                  </Button>
+                </Typography>
+              </Grid>
 
-        <FormControlLabel
-          control={<Checkbox {...register(CookieType.ANALYTICS)} />}
-          label="Analytics"
-          checked={watch(CookieType.ANALYTICS)}
-        />
-
-        <div className={css.grid}>
-          <Button onClick={handleAccept} variant="outlined" disableElevation>
-            Accept selection
-          </Button>
-          <Button onClick={handleAcceptAll} variant="contained" disableElevation>
-            Accept all
-          </Button>
-        </div>
+              <Grid item>
+                <Button onClick={handleAcceptAll} variant="contained" color="secondary" size="small" disableElevation>
+                  Accept all
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </form>
     </Paper>
   )
 }
 
-const CookieBanner = (): ReactElement | null => {
+const CookieBannerPopup = (): ReactElement | null => {
   const cookiePopup = useAppSelector(selectCookieBanner)
   const cookies = useAppSelector(selectCookies)
   const dispatch = useAppDispatch()
 
-  // Open the banner if "necessary" cookies haven't been accepted
-  const shouldOpen = !cookies[CookieType.NECESSARY]
+  // Open the banner if cookie preferences haven't been set
+  const shouldOpen = cookies[CookieType.NECESSARY] === undefined
+
   useEffect(() => {
     if (shouldOpen) {
       dispatch(openCookieBanner({}))
@@ -105,7 +175,11 @@ const CookieBanner = (): ReactElement | null => {
     }
   }, [dispatch, shouldOpen])
 
-  return cookiePopup?.open ? <CookieBannerPopup warningKey={cookiePopup.warningKey} /> : null
+  return cookiePopup?.open ? (
+    <div className={css.popup}>
+      <CookieBanner warningKey={cookiePopup.warningKey} inverted />
+    </div>
+  ) : null
 }
 
-export default CookieBanner
+export default CookieBannerPopup

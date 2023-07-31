@@ -110,7 +110,7 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
     gtmEvent.eventType = undefined
   }
 
-  if (eventData.label) {
+  if (eventData.label !== undefined) {
     gtmEvent.eventLabel = eventData.label
   } else {
     // Otherwise, whatever was in the datalayer before will be reused

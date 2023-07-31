@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography'
 import CardActions from '@mui/material/CardActions'
 import Box from '@mui/material/Box'
 import { resolveHref } from 'next/dist/shared/lib/router/router'
+import classNames from 'classnames'
 import type { ReactNode, SyntheticEvent } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { NextRouter } from 'next/router'
@@ -168,7 +169,7 @@ const SafeAppCardListView = ({
 }: SafeAppCardViewProps) => {
   return (
     <SafeAppCardContainer safeApp={safeApp} safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
-      <CardContent>
+      <CardContent sx={{ pb: '16px !important' }}>
         <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
           <div className={css.safeAppIconContainer}>
             {/* Batch transactions Icon */}
@@ -207,6 +208,7 @@ type SafeAppCardContainerProps = {
   safeAppUrl: string
   children: ReactNode
   height?: string
+  className?: string
 }
 
 export const SafeAppCardContainer = ({
@@ -215,6 +217,7 @@ export const SafeAppCardContainer = ({
   safeAppUrl,
   onClickSafeApp,
   height,
+  className,
 }: SafeAppCardContainerProps) => {
   const { openedSafeAppIds } = useOpenedSafeApps()
 
@@ -228,7 +231,7 @@ export const SafeAppCardContainer = ({
   return (
     <Link href={safeAppUrl} passHref>
       <a rel="noreferrer" onClick={handleClickSafeApp}>
-        <Card className={css.safeAppContainer} sx={{ height }}>
+        <Card className={classNames(css.safeAppContainer, className)} sx={{ height }}>
           {children}
         </Card>
       </a>

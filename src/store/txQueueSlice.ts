@@ -1,4 +1,4 @@
-import type { Middleware } from '@reduxjs/toolkit'
+import type { listenerMiddlewareInstance } from '@/store'
 import { createSelector } from '@reduxjs/toolkit'
 import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '@/store'
@@ -27,28 +27,24 @@ export const selectQueuedTransactionsByNonce = createSelector(
   },
 )
 
-export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
-  const result = next(action)
-
-  switch (action.type) {
-    case txQueueSlice.actions.set.type: {
-      // Update proposed txs if signature was added successfully
-      const state = store.getState()
-      const pendingTxs = selectPendingTxs(state)
-
-      const { payload } = action as ReturnType<typeof txQueueSlice.actions.set>
-      const results = payload.data?.results
-      if (!results) {
+export const txQueueListener = (listenerMiddleware: typeof listenerMiddlewareInstance) => {
+  listenerMiddleware.startListening({
+    actionCreator: txQueueSlice.actions.set,
+    effect: (action, listenerApi) => {
+      if (!action.payload.data) {
         return
       }
 
-      for (const result of results) {
+      const pendingTxs = selectPendingTxs(listenerApi.getState())
+
+      for (const result of action.payload.data.results) {
         if (!isTransactionListItem(result)) {
           continue
         }
-        const id = result.transaction.id
 
-        const pendingTx = pendingTxs[id]
+        const txId = result.transaction.id
+
+        const pendingTx = pendingTxs[txId]
         if (!pendingTx || pendingTx.status !== PendingStatus.SIGNING) {
           continue
         }
@@ -57,6 +53,7 @@ export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) =>
         if (!awaitingSigner) {
           continue
         }
+
         // The transaction is waiting for a signature of awaitingSigner
         if (
           isMultisigExecutionInfo(result.transaction.executionInfo) &&
@@ -64,11 +61,9 @@ export const txQueueMiddleware: Middleware<{}, RootState> = (store) => (next) =>
             sameAddress(address.value, awaitingSigner),
           )
         ) {
-          txDispatch(TxEvent.SIGNATURE_INDEXED, { txId: id })
+          txDispatch(TxEvent.SIGNATURE_INDEXED, { txId: txId })
         }
       }
-    }
-  }
-
-  return result
+    },
+  })
 }

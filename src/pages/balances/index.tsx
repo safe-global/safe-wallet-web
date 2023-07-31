@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Box } from '@mui/material'
 
 import AssetsTable from '@/components/balances/AssetsTable'
 import AssetsHeader from '@/components/balances/AssetsHeader'
@@ -21,15 +20,13 @@ const Balances: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – Assets</title>
+        <title>{'Safe{Wallet} – Assets'}</title>
       </Head>
 
       <AssetsHeader>
-        <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-          <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />
-          <TokenListSelect />
-          <CurrencySelect />
-        </Box>
+        <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />
+        <TokenListSelect />
+        <CurrencySelect />
       </AssetsHeader>
 
       <main>

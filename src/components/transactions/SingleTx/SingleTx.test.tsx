@@ -1,4 +1,4 @@
-import { act, fireEvent, render } from '@/tests/test-utils'
+import { fireEvent, render } from '@/tests/test-utils'
 import SingleTx from '@/pages/transactions/tx'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -49,12 +49,10 @@ describe('SingleTx', () => {
   it('renders <SingleTx />', async () => {
     const screen = render(<SingleTx />)
 
-    await act(() => Promise.resolve())
-
     const button = screen.queryByText('Details')
     expect(button).not.toBeInTheDocument()
 
-    expect(screen.getByText('Contract interaction')).toBeInTheDocument()
+    expect(await screen.findByText('Contract interaction')).toBeInTheDocument()
   })
 
   it('shows an error when the transaction has failed to load', async () => {
@@ -66,9 +64,7 @@ describe('SingleTx', () => {
 
     const screen = render(<SingleTx />)
 
-    await act(() => Promise.resolve())
-
-    expect(screen.getByText('Failed to load transaction')).toBeInTheDocument()
+    expect(await screen.findByText('Failed to load transaction')).toBeInTheDocument()
 
     const button = screen.getByText('Details')
     fireEvent.click(button!)
@@ -90,13 +86,11 @@ describe('SingleTx', () => {
 
     const screen = render(<SingleTx />)
 
-    await act(() => Promise.resolve())
-
-    expect(screen.getByText('Failed to load transaction')).toBeInTheDocument()
+    expect(await screen.findByText('Failed to load transaction')).toBeInTheDocument()
 
     const button = screen.getByText('Details')
     fireEvent.click(button!)
 
-    expect(screen.getByText('Transaction with this id was not found in this Safe')).toBeInTheDocument()
+    expect(screen.getByText('Transaction with this id was not found in this Safe Account')).toBeInTheDocument()
   })
 })

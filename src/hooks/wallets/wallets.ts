@@ -1,57 +1,70 @@
-import { CYPRESS_MNEMONIC, TREZOR_APP_URL, TREZOR_EMAIL, WC_BRIDGE } from '@/config/constants'
-import { type RecommendedInjectedWallets, type WalletInit } from '@web3-onboard/common/dist/types.d'
+import { CYPRESS_MNEMONIC, TREZOR_APP_URL, TREZOR_EMAIL, WC_BRIDGE, WC_PROJECT_ID } from '@/config/constants'
+import type { RecommendedInjectedWallets, WalletInit, WalletModule } from '@web3-onboard/common/dist/types.d'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import coinbaseModule from '@web3-onboard/coinbase'
 import injectedWalletModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
 import keystoneModule from '@web3-onboard/keystone/dist/index'
-import ledgerModule from '@web3-onboard/ledger'
+import ledgerModule from '@web3-onboard/ledger/dist/index'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
-import tallyhoModule from '@web3-onboard/tallyho'
+import tahoModule from '@web3-onboard/taho'
 
 import pairingModule from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
-import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { CGW_NAMES, WALLET_KEYS } from './consts'
 
-export const enum WALLET_KEYS {
-  COINBASE = 'COINBASE',
-  INJECTED = 'INJECTED',
-  KEYSTONE = 'KEYSTONE',
-  LEDGER = 'LEDGER',
-  PAIRING = 'PAIRING',
-  TREZOR = 'TREZOR',
-  WALLETCONNECT = 'WALLETCONNECT',
-  TALLYHO = 'TALLYHO',
+const prefersDarkMode = (): boolean => {
+  return window?.matchMedia('(prefers-color-scheme: dark)')?.matches
 }
 
-export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
-  [WALLET_KEYS.COINBASE]: 'coinbase',
-  [WALLET_KEYS.INJECTED]: 'detectedwallet',
-  [WALLET_KEYS.KEYSTONE]: 'keystone',
-  [WALLET_KEYS.LEDGER]: 'ledger',
-  [WALLET_KEYS.PAIRING]: 'safeMobile',
-  [WALLET_KEYS.TREZOR]: 'trezor',
-  [WALLET_KEYS.WALLETCONNECT]: 'walletConnect',
-  [WALLET_KEYS.TALLYHO]: 'tally',
+// We need to modify the module name as onboard dedupes modules with the same label and the WC v1 and v2 modules have the same
+// @see https://github.com/blocknative/web3-onboard/blob/d399e0b76daf7b363d6a74b100b2c96ccb14536c/packages/core/src/store/actions.ts#L419
+// TODO: When removing this, also remove the associated CSS in `onboard.css`
+export const WALLET_CONNECT_V1_MODULE_NAME = 'WalletConnect v1'
+const walletConnectV1 = (): WalletInit => {
+  return (helpers) => {
+    const walletConnectModule = walletConnect({ version: 1, bridge: WC_BRIDGE })(helpers) as WalletModule
+
+    walletConnectModule.label = WALLET_CONNECT_V1_MODULE_NAME
+
+    return walletConnectModule
+  }
 }
 
-const WALLET_MODULES: { [key in WALLET_KEYS]: () => WalletInit } = {
-  [WALLET_KEYS.INJECTED]: injectedWalletModule,
-  [WALLET_KEYS.PAIRING]: pairingModule,
-  [WALLET_KEYS.WALLETCONNECT]: () => walletConnect({ bridge: WC_BRIDGE }),
-  [WALLET_KEYS.LEDGER]: ledgerModule,
+const walletConnectV2 = (chain: ChainInfo): WalletInit => {
+  // WalletConnect v2 requires a project ID
+  if (!WC_PROJECT_ID) {
+    return () => null
+  }
+
+  return walletConnect({
+    version: 2,
+    projectId: WC_PROJECT_ID,
+    qrModalOptions: {
+      themeVariables: {
+        '--wcm-z-index': '1302',
+      },
+      themeMode: prefersDarkMode() ? 'dark' : 'light',
+    },
+    requiredChains: [parseInt(chain.chainId)],
+  })
+}
+
+const WALLET_MODULES: { [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit } = {
+  [WALLET_KEYS.INJECTED]: () => injectedWalletModule(),
+  [WALLET_KEYS.PAIRING]: () => pairingModule(),
+  [WALLET_KEYS.WALLETCONNECT]: () => walletConnectV1(),
+  [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain),
+  [WALLET_KEYS.LEDGER]: () => ledgerModule(),
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
-  [WALLET_KEYS.KEYSTONE]: keystoneModule,
-  [WALLET_KEYS.TALLYHO]: tallyhoModule,
-  [WALLET_KEYS.COINBASE]: () =>
-    coinbaseModule({ darkMode: !!window?.matchMedia('(prefers-color-scheme: dark)')?.matches }),
+  [WALLET_KEYS.KEYSTONE]: () => keystoneModule(),
+  [WALLET_KEYS.TAHO]: () => tahoModule(),
+  [WALLET_KEYS.COINBASE]: () => coinbaseModule({ darkMode: prefersDarkMode() }),
 }
 
-export const getAllWallets = (): WalletInit[] => {
-  return Object.values(WALLET_MODULES).map((module) => module())
+export const getAllWallets = (chain: ChainInfo): WalletInit[] => {
+  return Object.values(WALLET_MODULES).map((module) => module(chain))
 }
 
 export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] => {
@@ -70,26 +83,8 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   const enabledWallets = Object.entries(WALLET_MODULES).filter(([key]) => isWalletSupported(chain.disabledWallets, key))
 
   if (enabledWallets.length === 0) {
-    return [WALLET_MODULES.INJECTED()]
+    return [WALLET_MODULES.INJECTED(chain)]
   }
 
-  return enabledWallets.map(([, module]) => module())
-}
-
-export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
-  return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE].includes(
-    wallet.label.toUpperCase() as WALLET_KEYS,
-  )
-}
-
-export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
-  const provider = getWeb3ReadOnly()
-
-  if (!provider) {
-    throw new Error('Provider not found')
-  }
-
-  const code = await provider.getCode(wallet.address)
-
-  return code !== EMPTY_DATA
+  return enabledWallets.map(([, module]) => module(chain))
 }

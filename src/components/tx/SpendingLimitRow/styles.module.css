@@ -1,0 +1,15 @@
+.group {
+  border: 1px solid var(--color-border-main);
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.label {
+  margin: 0;
+  padding: 12px 3px;
+}
+
+.spendingLimit {
+  border-left: 1px solid var(--color-border-main);
+}

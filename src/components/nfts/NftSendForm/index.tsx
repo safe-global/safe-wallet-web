@@ -2,16 +2,14 @@ import type { ReactElement } from 'react'
 import { Box, Button, Grid, SvgIcon, Typography } from '@mui/material'
 import ArrowIcon from '@/public/images/common/arrow-nw.svg'
 import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import useIsGranted from '@/hooks/useIsGranted'
 import { Sticky } from '@/components/common/Sticky'
+import CheckWallet from '@/components/common/CheckWallet'
 
 type NftSendFormProps = {
   selectedNfts: SafeCollectibleResponse[]
-  onSelectAll: () => void
 }
 
-const NftSendForm = ({ selectedNfts, onSelectAll }: NftSendFormProps): ReactElement => {
-  const isGranted = useIsGranted()
+const NftSendForm = ({ selectedNfts }: NftSendFormProps): ReactElement => {
   const nftsText = `NFT${selectedNfts.length === 1 ? '' : 's'}`
   const noSelected = selectedNfts.length === 0
 
@@ -31,32 +29,21 @@ const NftSendForm = ({ selectedNfts, onSelectAll }: NftSendFormProps): ReactElem
         </Grid>
 
         <Grid item>
-          <Button
-            onClick={onSelectAll}
-            variant="outlined"
-            size="small"
-            sx={{
-              // The custom padding is needed to align the outlined button with the adjacent filled button
-              py: '6px',
-              minWidth: '10em',
-            }}
-          >
-            {noSelected ? 'Select all' : 'Deselect all'}
-          </Button>
-        </Grid>
-
-        <Grid item>
-          <Button
-            type="submit"
-            variant="contained"
-            size="small"
-            disabled={!isGranted || noSelected}
-            sx={{
-              minWidth: '10em',
-            }}
-          >
-            {noSelected ? 'Send' : `Send ${selectedNfts.length} ${nftsText}`}
-          </Button>
+          <CheckWallet>
+            {(isOk) => (
+              <Button
+                type="submit"
+                variant="contained"
+                size="small"
+                disabled={!isOk || noSelected}
+                sx={{
+                  minWidth: '10em',
+                }}
+              >
+                {noSelected ? 'Send' : `Send ${selectedNfts.length} ${nftsText}`}
+              </Button>
+            )}
+          </CheckWallet>
         </Grid>
       </Grid>
     </Sticky>

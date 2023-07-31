@@ -99,7 +99,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
             sx={{ mt: 3 }}
             onClick={onOpenSafe}
           >
-            Open App
+            Open Safe App
           </Button>
         </Link>
 

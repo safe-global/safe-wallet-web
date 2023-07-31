@@ -41,12 +41,16 @@ export const safeAppsSlice = createSlice({
         state[chainId].opened.push(id)
       }
     },
+    setSafeApps: (_, { payload }: PayloadAction<SafeAppsState>) => {
+      // We must return as we are overwriting the entire state
+      return payload
+    },
   },
 })
 
 export const { setPinned, markOpened } = safeAppsSlice.actions
 
-const selectSafeApps = (state: RootState) => {
+export const selectSafeApps = (state: RootState) => {
   return state[safeAppsSlice.name]
 }
 
@@ -60,6 +64,7 @@ const selectSafeAppsPerChain = createSelector(
 export const selectPinned = createSelector([selectSafeAppsPerChain], (safeAppsPerChain) => {
   return safeAppsPerChain?.pinned || []
 })
+
 export const selectOpened = createSelector([selectSafeAppsPerChain], (safeAppsPerChain) => {
   return safeAppsPerChain?.opened || []
 })

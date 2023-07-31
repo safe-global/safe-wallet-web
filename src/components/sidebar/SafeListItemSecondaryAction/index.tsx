@@ -42,7 +42,7 @@ const SafeListItemSecondaryAction = ({
             onClick?.()
           }}
         >
-          Add Safe
+          Add
         </Button>
       </Link>
     )

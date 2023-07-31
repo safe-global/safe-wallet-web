@@ -25,4 +25,19 @@ export const WALLET_EVENTS = {
     action: 'On-chain interaction',
     category: WALLET_CATEGORY,
   },
+  SIGN_MESSAGE: {
+    event: EventType.META,
+    action: 'Sign message',
+    category: WALLET_CATEGORY,
+  },
+  CONFIRM_MESSAGE: {
+    event: EventType.META,
+    action: 'Confirm message',
+    category: WALLET_CATEGORY,
+  },
+  RELAYED_EXECUTION: {
+    event: EventType.META,
+    action: 'Relayed execution',
+    category: WALLET_CATEGORY,
+  },
 }

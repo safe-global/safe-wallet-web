@@ -47,7 +47,7 @@ const ConnectWalletStep = ({ onSubmit, setStep }: StepRenderProps<NewSafeFormDat
             <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center" gap={2}>
               <PairingQRCode />
               <Typography variant="h6" fontWeight="700">
-                Connect to Safe mobile
+                Connect to {'Safe{Wallet}'} mobile
               </Typography>
               <PairingDescription />
             </Grid>

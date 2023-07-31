@@ -40,7 +40,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
         </div>
         <div>
           <Typography fontWeight="bold" variant="subtitle1">
-            Something wrong with the app?
+            Something wrong with the Safe App?
           </Typography>
           <Typography color="primary.light" variant="body2">
             Get in touch with the team

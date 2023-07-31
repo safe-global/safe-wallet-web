@@ -4,6 +4,10 @@ import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 import type { EthersError } from '@/utils/ethers-utils'
 import { ErrorCode } from '@ethersproject/logger'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { getWeb3ReadOnly, isSmartContract } from '@/hooks/wallets/web3'
+import { WALLET_KEYS } from '@/hooks/wallets/consts'
+import { WALLET_CONNECT_V1_MODULE_NAME } from '@/hooks/wallets/wallets'
 
 const isWCRejection = (err: Error): boolean => {
   return /rejected/.test(err?.message)
@@ -19,13 +23,18 @@ export const isWalletRejection = (err: EthersError | Error): boolean => {
 
 export const WalletNames = {
   METAMASK: ProviderLabel.MetaMask,
-  WALLET_CONNECT: 'WalletConnect',
+  WALLET_CONNECT: WALLET_CONNECT_V1_MODULE_NAME,
+  WALLET_CONNECT_V2: 'WalletConnect',
   SAFE_MOBILE_PAIRING: PAIRING_MODULE_LABEL,
 }
 
 /* Check if the wallet is unlocked. */
 export const isWalletUnlocked = async (walletName: string): Promise<boolean> => {
   if (typeof window === 'undefined') return false
+
+  if (window.ethereum?.isConnected?.()) {
+    return true
+  }
 
   // Only MetaMask exposes a method to check if the wallet is unlocked
   if (walletName === WalletNames.METAMASK) {
@@ -47,4 +56,20 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean> => 
   }
 
   return false
+}
+
+export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
+  return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE].includes(
+    wallet.label.toUpperCase() as WALLET_KEYS,
+  )
+}
+
+export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
+  const provider = getWeb3ReadOnly()
+
+  if (!provider) {
+    throw new Error('Provider not found')
+  }
+
+  return isSmartContract(provider, wallet.address)
 }

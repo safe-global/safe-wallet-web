@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import { Suspense, useMemo } from 'react'
+import { Suspense } from 'react'
 import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -7,7 +7,6 @@ import WalletIcon from '@/components/common/WalletIcon'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
-import { getShortName } from '@/utils/chains'
 
 import css from './styles.module.css'
 
@@ -15,16 +14,13 @@ export const UNKNOWN_CHAIN_NAME = 'Unknown'
 
 const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
-
-  const prefix = useMemo(() => {
-    return walletChain?.shortName || getShortName(wallet.chainId)
-  }, [walletChain?.shortName, wallet.chainId])
+  const prefix = walletChain?.shortName
 
   return (
     <Box className={css.container}>
       <Box className={css.imageContainer}>
         <Suspense>
-          <WalletIcon provider={wallet.label} />
+          <WalletIcon provider={wallet.label} icon={wallet.icon} />
         </Suspense>
       </Box>
       <Box>

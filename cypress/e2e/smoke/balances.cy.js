@@ -2,9 +2,8 @@ const assetsTable = '[aria-labelledby="tableTitle"] > tbody'
 const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 
 const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
-// TODO: replace PAGINATION_TEST_SAFE for a Görli safe with > 25 tokens
-const PAGINATION_TEST_SAFE = 'rin:0x656c1121a6f40d25C5CFfF0Db08938DB7633B2A3'
-const ASSETS_LENGTH = 7
+const PAGINATION_TEST_SAFE = 'gor:0x850493a15914aAC05a821A3FAb973b4598889A7b'
+const ASSETS_LENGTH = 8
 const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
 const FIAT_AMOUNT_COLUMN = 2
@@ -14,28 +13,24 @@ describe('Assets > Coins', () => {
   const fiatRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2}`)
 
   before(() => {
+    cy.disableProdCGW()
+
     // Open the Safe used for testing
-    cy.visit(`/${TEST_SAFE}/balances`, { failOnStatusCode: false })
+    cy.visit(`/balances?safe=${TEST_SAFE}`)
     cy.contains('button', 'Accept selection').click()
     // Table is loaded
     cy.contains('Görli Ether')
 
     cy.contains('button', 'Got it').click()
+
+    cy.get(balanceSingleRow).should('have.length.lessThan', ASSETS_LENGTH)
+    cy.contains('div', 'Default tokens').click()
+    cy.wait(100)
+    cy.contains('div', 'All tokens').click()
+    cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
   })
 
   describe('should have different tokens', () => {
-    it(`should have ${ASSETS_LENGTH} entries in the table`, () => {
-      // "Spam" tokens filtered
-      cy.get(balanceSingleRow).should('have.length', 2)
-
-      // Enable all tokens
-      cy.contains('div', 'Default tokens').click()
-      cy.wait(100)
-      cy.contains('div', 'All tokens').click()
-
-      cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
-    })
-
     it('should have Dai', () => {
       // Row should have an image with alt text "Dai"
       cy.contains('Dai')
@@ -175,18 +170,48 @@ describe('Assets > Coins', () => {
     })
   })
 
-  describe.skip('pagination should work', () => {
+  describe('tokens can be manually hidden', () => {
+    it('hide single token', () => {
+      // Click hide Dai
+      cy.contains('Dai').parents('tr').find('button[aria-label="Hide asset"]').click()
+      // time to hide the asset
+      cy.wait(350)
+      cy.contains('Dai').should('not.exist')
+    })
+
+    it('unhide hidden token', () => {
+      // Open hide token menu
+      cy.contains('1 hidden token').click()
+      // uncheck dai token
+      cy.contains('Dai').parents('tr').find('input[type="checkbox"]').click()
+      // apply changes
+      cy.contains('Save').click()
+      // Dai token is visible again
+      cy.contains('Dai')
+      // The menu button shows "Hide tokens" label again
+      cy.contains('Hide tokens')
+    })
+  })
+
+  describe('pagination should work', () => {
     before(() => {
       // Open the Safe used for testing pagination
-      cy.visit(`/${PAGINATION_TEST_SAFE}/balances`, { failOnStatusCode: false })
+      cy.visit(`/balances?safe=${PAGINATION_TEST_SAFE}`)
+      cy.contains('button', 'Accept selection').click()
+
       // Table is loaded
       cy.contains('Görli Ether')
+      cy.contains('button', 'Got it').click()
+      // Enable all tokens
+      cy.contains('div', 'Default tokens').click()
+      cy.wait(100)
+      cy.contains('div', 'All tokens').click()
     })
 
     it('should allow changing rows per page and navigate to next and previous page', () => {
       // Table should have 25 rows inittially
       cy.contains('Rows per page:').next().contains('25')
-      cy.contains('1–25 of 27')
+      cy.contains('1–25 of')
       cy.get(balanceSingleRow).should('have.length', 25)
 
       // Change to 10 rows per page
@@ -196,22 +221,22 @@ describe('Assets > Coins', () => {
 
       // Table should have 10 rows
       cy.contains('Rows per page:').next().contains('10')
-      cy.contains('1–10 of 27')
+      cy.contains('1–10 of')
       cy.get(balanceSingleRow).should('have.length', 10)
 
       // Click on the next page button
       cy.get('button[aria-label="Go to next page"]').click({ force: true })
       cy.get('button[aria-label="Go to next page"]').click({ force: true })
 
-      // Table should have 7 rows
-      cy.contains('21–27 of 27')
-      cy.get(balanceSingleRow).should('have.length', 7)
+      // Table should have N rows
+      cy.contains('21–28 of')
+      cy.get(balanceSingleRow).should('have.length', ASSETS_LENGTH)
 
       // Click on the previous page button
       cy.get('button[aria-label="Go to previous page"]').click({ force: true })
 
       // Table should have 10 rows
-      cy.contains('11–20 of 27')
+      cy.contains('11–20 of')
       cy.get(balanceSingleRow).should('have.length', 10)
     })
   })

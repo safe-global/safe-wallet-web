@@ -15,29 +15,38 @@ import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusSte
 import { SafeCreationStatus, useSafeCreation } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import StatusStepper from '@/components/new-safe/create/steps/StatusStep/StatusStepper'
 import { trackEvent } from '@/services/analytics'
-import useChainId from '@/hooks/useChainId'
 import { getRedirect } from '@/components/new-safe/create/logic'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { AppRoutes } from '@/config/routes'
 import { lightPalette } from '@safe-global/safe-react-components'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export const SAFE_PENDING_CREATION_STORAGE_KEY = 'pendingSafe'
 
 export type PendingSafeData = NewSafeFormData & {
   txHash?: string
   tx?: PendingSafeTx
+  taskId?: string
 }
 
-export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFormData>) => {
-  const [status, setStatus] = useState<SafeCreationStatus>(SafeCreationStatus.AWAITING)
+export const getInitialCreationStatus = (willRelay: boolean): SafeCreationStatus =>
+  willRelay ? SafeCreationStatus.PROCESSING : SafeCreationStatus.AWAITING
+
+export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<NewSafeFormData>) => {
   const [pendingSafe, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
   const router = useRouter()
-  const chainId = useChainId()
+  const chainInfo = useCurrentChain()
+  const chainPrefix = chainInfo?.shortName || ''
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain
 
-  const { createSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus)
+  // The willRelay flag can come from the previous step or from local storage
+  const willRelay = !!(data.willRelay || pendingSafe?.willRelay)
+  const initialStatus = getInitialCreationStatus(willRelay)
+  const [status, setStatus] = useState<SafeCreationStatus>(initialStatus)
+
+  const { handleCreateSafe } = useSafeCreation(pendingSafe, setPendingSafe, status, setStatus, willRelay)
 
   useSafeCreationEffects({
     pendingSafe,
@@ -51,10 +60,10 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
     router.push(AppRoutes.welcome)
   }, [router, setPendingSafe])
 
-  const onCreate = useCallback(() => {
-    setStatus(SafeCreationStatus.AWAITING)
-    void createSafe()
-  }, [createSafe, setStatus])
+  const handleRetry = useCallback(() => {
+    setStatus(initialStatus)
+    void handleCreateSafe()
+  }, [handleCreateSafe, initialStatus])
 
   const onFinish = useCallback(() => {
     trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
@@ -63,9 +72,9 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
 
     if (safeAddress) {
       setPendingSafe(undefined)
-      router.push(getRedirect(chainId, safeAddress, router.query?.safeViewRedirectURL))
+      router.push(getRedirect(chainPrefix, safeAddress, router.query?.safeViewRedirectURL))
     }
-  }, [chainId, pendingSafe, router, setPendingSafe])
+  }, [chainPrefix, pendingSafe, router, setPendingSafe])
 
   const displaySafeLink = status >= SafeCreationStatus.INDEXED
   const isError = status >= SafeCreationStatus.WALLET_REJECTED && status <= SafeCreationStatus.TIMEOUT
@@ -105,7 +114,7 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
           <Box className={layoutCss.row}>
             <Track {...CREATE_SAFE_EVENTS.GO_TO_SAFE}>
               <Button variant="contained" onClick={onFinish}>
-                Start using Safe
+                Start using {'Safe{Wallet}'}
               </Button>
             </Track>
           </Box>
@@ -127,7 +136,7 @@ export const CreateSafeStatus = ({ setProgressColor }: StepRenderProps<NewSafeFo
                   title={!isConnected ? 'Please make sure your wallet is connected on the correct network.' : ''}
                 >
                   <Typography display="flex" height={1}>
-                    <Button onClick={onCreate} variant="contained" disabled={!isConnected}>
+                    <Button onClick={handleRetry} variant="contained" disabled={!isConnected}>
                       Retry
                     </Button>
                   </Typography>

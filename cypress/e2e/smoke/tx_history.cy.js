@@ -1,13 +1,15 @@
 const SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 
-const INCOMING = '/images/transactions/incoming.svg'
-const OUTGOING = '/images/transactions/outgoing.svg'
-const CONTRACT_INTERACTION = '/images/transactions/custom.svg'
+const INCOMING = 'Received'
+const OUTGOING = 'Sent'
+const CONTRACT_INTERACTION = 'Contract interaction'
 
 describe('Transaction history', () => {
   before(() => {
+    cy.useProdCGW()
+
     // Go to the test Safe transaction history
-    cy.visit(`/${SAFE}/transactions/history`, { failOnStatusCode: false })
+    cy.visit(`/transactions/history?safe=${SAFE}`)
     cy.contains('button', 'Accept selection').click()
   })
 
@@ -31,7 +33,7 @@ describe('Transaction history', () => {
       .last()
       .within(() => {
         // Type
-        cy.get('img').should('have.attr', 'src', INCOMING)
+        cy.get('iframe').should('have.attr', 'title', INCOMING)
         cy.contains('div', 'Received').should('exist')
 
         // Info
@@ -103,7 +105,7 @@ describe('Transaction history', () => {
       .prev()
       .within(() => {
         // Type
-        cy.get('img').should('have.attr', 'src', OUTGOING)
+        cy.get('iframe').should('have.attr', 'title', OUTGOING)
         cy.contains('div', 'Sent').should('exist')
 
         // Info
@@ -129,6 +131,30 @@ describe('Transaction history', () => {
 
         // Status
         cy.contains('span', 'Success').should('exist')
+      })
+  })
+
+  it('should expand/collapse all actions', () => {
+    // Open the tx details
+    cy.contains('div', 'Mar 24, 2023')
+      .next()
+      .click()
+      .within(() => {
+        cy.contains('True').should('not.be.visible')
+        cy.contains('1337').should('not.be.visible')
+        cy.contains('5688').should('not.be.visible')
+        cy.contains('Expand all').click()
+
+        // All the values in the actions must be visible
+        cy.contains('True').should('exist')
+        cy.contains('1337').should('exist')
+        cy.contains('5688').should('exist')
+
+        // After collapse all the same values should not be visible
+        cy.contains('Collapse all').click()
+        cy.contains('True').should('not.be.visible')
+        cy.contains('1337').should('not.be.visible')
+        cy.contains('5688').should('not.be.visible')
       })
   })
 })

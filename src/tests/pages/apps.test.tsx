@@ -74,7 +74,7 @@ describe('AppsPage', () => {
         // Transaction Builder Safe App title
         expect(getByRole(safeAppPreviewDrawer, 'heading', { level: 4, name: 'Transaction Builder' }))
         // open app button should be present
-        expect(getByText(safeAppPreviewDrawer, 'Open App'))
+        expect(getByText(safeAppPreviewDrawer, 'Open Safe App'))
       })
     })
 
@@ -227,7 +227,7 @@ describe('AppsPage', () => {
         // Transaction Builder Safe App title
         expect(getByRole(safeAppPreviewDrawer, 'heading', { level: 4, name: 'Transaction Builder' }))
         // open app button should be present
-        expect(getByText(safeAppPreviewDrawer, 'Open App'))
+        expect(getByText(safeAppPreviewDrawer, 'Open Safe App'))
       })
     })
   })
@@ -245,22 +245,22 @@ describe('AppsPage', () => {
 
       await waitFor(() => {
         // show add custom app card
-        expect(screen.getByRole('button', { name: 'Add custom app' }))
+        expect(screen.getByRole('button', { name: 'Add custom Safe App' }))
       })
 
       // Add custom app modal is not present
       expect(screen.queryByRole('presentation')).not.toBeInTheDocument()
 
       await act(() => {
-        fireEvent.click(screen.getByRole('button', { name: 'Add custom app' }))
+        fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
       })
 
       // shows Add custom app modal
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 2, name: 'Add custom app' })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 2, name: 'Add custom Safe App' })).toBeInTheDocument()
 
         // shows custom safe App App Url input
-        const customSafeAppURLInput = screen.getByLabelText(/App URL/)
+        const customSafeAppURLInput = screen.getByLabelText(/Safe App URL/)
         expect(customSafeAppURLInput).toBeInTheDocument()
       })
     })
@@ -294,10 +294,10 @@ describe('AppsPage', () => {
         },
       })
 
-      fireEvent.click(screen.getByRole('button', { name: 'Add custom app' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
 
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument())
-      const appURLInput = screen.getByLabelText(/App URL/)
+      await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument())
+      const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       const riskCheckbox = await screen.findByRole('checkbox')
       fireEvent.click(riskCheckbox)
@@ -313,7 +313,7 @@ describe('AppsPage', () => {
       })
 
       // modal is closed
-      await waitForElementToBeRemoved(() => screen.queryByLabelText(/App URL/))
+      await waitForElementToBeRemoved(() => screen.queryByLabelText(/Safe App URL/))
 
       // custom safe app is present in the list
       expect(screen.queryByText('Custom test Safe app')).toBeInTheDocument()
@@ -332,7 +332,7 @@ describe('AppsPage', () => {
         // Custom test Safe app Safe App title
         expect(getByRole(safeAppPreviewDrawer, 'heading', { level: 4, name: 'Custom test Safe app' }))
         // open app button should be present
-        expect(getByText(safeAppPreviewDrawer, 'Open App'))
+        expect(getByText(safeAppPreviewDrawer, 'Open Safe App'))
       })
     })
 
@@ -346,15 +346,15 @@ describe('AppsPage', () => {
           },
         },
       })
-      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
-      const addCustomAppButton = screen.getByText('Add custom app')
+      await waitFor(() => expect(screen.getByText('Add custom Safe App')).toBeInTheDocument())
+      const addCustomAppButton = screen.getByText('Add custom Safe App')
       await act(() => {
         fireEvent.click(addCustomAppButton)
       })
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
-      const appURLInput = screen.getByLabelText(/App URL/)
+      await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument(), { timeout: 3000 })
+      const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: INVALID_SAFE_APP_URL } })
-      await screen.findByText(/the app doesn't support safe app functionality/i)
+      await screen.findByText(/the app doesn't support Safe App functionality/i)
     })
 
     it('Requires risk acknowledgment checkbox to add the app', async () => {
@@ -385,16 +385,16 @@ describe('AppsPage', () => {
           },
         },
       })
-      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
-      const addCustomAppButton = screen.getByText('Add custom app')
+      await waitFor(() => expect(screen.getByText('Add custom Safe App')).toBeInTheDocument())
+      const addCustomAppButton = screen.getByText('Add custom Safe App')
       await act(() => {
         fireEvent.click(addCustomAppButton)
       })
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
-      const appURLInput = screen.getByLabelText(/App URL/)
+      await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument(), { timeout: 3000 })
+      const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       const riskCheckbox = await screen.findByText(
-        /This app is not part of Safe and I agree to use it at my own risk\./,
+        /This Safe App is not part of Safe{Wallet} and I agree to use it at my own risk\./,
       )
       await act(() => {
         fireEvent.click(riskCheckbox)
@@ -435,10 +435,10 @@ describe('AppsPage', () => {
         },
       })
 
-      fireEvent.click(screen.getByRole('button', { name: 'Add custom app' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
 
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument())
-      const appURLInput = screen.getByLabelText(/App URL/)
+      await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument())
+      const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       const riskCheckbox = await screen.findByRole('checkbox')
       fireEvent.click(riskCheckbox)
@@ -454,7 +454,7 @@ describe('AppsPage', () => {
       })
 
       // modal is closed
-      await waitForElementToBeRemoved(() => screen.queryByLabelText(/App URL/))
+      await waitForElementToBeRemoved(() => screen.queryByLabelText(/Safe App URL/))
 
       const removeCustomSafeAppButton = screen.getByLabelText('Delete Custom test Safe app')
 
@@ -462,7 +462,7 @@ describe('AppsPage', () => {
         fireEvent.click(removeCustomSafeAppButton)
       })
 
-      await waitFor(() => expect(screen.getByText('Confirm app removal')).toBeInTheDocument())
+      await waitFor(() => expect(screen.getByText('Confirm Safe App removal')).toBeInTheDocument())
 
       const confirmRemovalButton = screen.getByRole('button', { name: 'Remove' })
       await act(() => {
@@ -570,7 +570,7 @@ describe('AppsPage', () => {
           expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
 
           // zero results component
-          expect(screen.getByText('No apps found', { exact: false })).toBeInTheDocument()
+          expect(screen.getByText('No Safe Apps found', { exact: false })).toBeInTheDocument()
           expect(screen.queryByText('Use WalletConnect')).toBeInTheDocument()
         })
       })

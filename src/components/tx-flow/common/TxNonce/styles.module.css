@@ -1,0 +1,19 @@
+.input :global .MuiOutlinedInput-root {
+  padding: 0;
+}
+
+.input input {
+  font-weight: bold;
+  min-width: 0px !important;
+}
+
+.input.withAdornment input {
+  padding-right: 24px !important;
+}
+
+.adornment {
+  margin-left: 0;
+  margin-right: 4px;
+  position: absolute;
+  right: 0;
+}

@@ -4,8 +4,6 @@ import useTxHistory from '@/hooks/useTxHistory'
 import PaginatedTxns from '@/components/common/PaginatedTxns'
 import TxHeader from '@/components/transactions/TxHeader'
 import { Box } from '@mui/material'
-import NavTabs from '@/components/common/NavTabs'
-import { transactionNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import { useState } from 'react'
 import Button from '@mui/material/Button'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
@@ -26,19 +24,14 @@ const History: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – Transaction history</title>
+        <title>{'Safe{Wallet} – Transaction history'}</title>
       </Head>
 
-      <TxHeader
-        action={
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <NavTabs tabs={transactionNavItems} />
-            <Button variant="outlined" onClick={toggleFilter} size="small" endIcon={<ExpandIcon />}>
-              {filter?.type ?? 'Filter'}
-            </Button>
-          </Box>
-        }
-      />
+      <TxHeader>
+        <Button variant="outlined" onClick={toggleFilter} size="small" endIcon={<ExpandIcon />}>
+          {filter?.type ?? 'Filter'}
+        </Button>
+      </TxHeader>
 
       <main>
         {showFilter && <TxFilterForm toggleFilter={toggleFilter} />}

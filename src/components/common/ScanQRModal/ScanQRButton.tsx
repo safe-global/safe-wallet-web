@@ -1,6 +1,8 @@
 import React, { lazy, useState, Suspense, type ReactElement } from 'react'
 import QrCodeIcon from '@/public/images/common/qr.svg'
 import { IconButton, SvgIcon } from '@mui/material'
+import Track from '../Track'
+import { MODALS_EVENTS } from '@/services/analytics'
 
 const ScanQRModal = lazy(() => import('.'))
 
@@ -26,9 +28,11 @@ const ScanQRButton = ({ onScan }: Props): ReactElement => {
 
   return (
     <>
-      <IconButton onClick={openQrModal}>
-        <SvgIcon component={QrCodeIcon} inheritViewBox color="primary" fontSize="small" />
-      </IconButton>
+      <Track {...MODALS_EVENTS.SCAN_QR}>
+        <IconButton onClick={openQrModal}>
+          <SvgIcon component={QrCodeIcon} inheritViewBox color="primary" fontSize="small" />
+        </IconButton>
+      </Track>
 
       {open && (
         <Suspense>

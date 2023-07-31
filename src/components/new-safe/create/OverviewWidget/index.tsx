@@ -24,7 +24,7 @@ const OverviewWidget = ({ safeName }: { safeName: string }): ReactElement | null
       <Card className={css.card}>
         <div className={css.header}>
           <SafeLogo alt="Safe logo" width={LOGO_DIMENSIONS} height={LOGO_DIMENSIONS} />
-          <Typography variant="h4">Your Safe preview</Typography>
+          <Typography variant="h4">Your Safe Account preview</Typography>
         </div>
         {wallet ? (
           rows.map((row) => (
