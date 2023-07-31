@@ -1,5 +1,11 @@
-import type { ConflictHeader, DateLabel, Label, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
-import { getQueuedTransactionCount } from '../transactions'
+import type {
+  ConflictHeader,
+  DateLabel,
+  Label,
+  SafeAppData,
+  Transaction,
+} from '@safe-global/safe-gateway-typescript-sdk'
+import { getQueuedTransactionCount, getTxOrigin } from '../transactions'
 
 describe('transactions', () => {
   describe('getQueuedTransactionCount', () => {
@@ -57,6 +63,55 @@ describe('transactions', () => {
         ],
       }
       expect(getQueuedTransactionCount(txPage)).toBe('1')
+    })
+  })
+
+  describe('getTxOrigin', () => {
+    it('should return undefined if no app is provided', () => {
+      expect(getTxOrigin(undefined)).toBe(undefined)
+    })
+
+    it('should return a stringified object with the app name and url', () => {
+      const app = {
+        name: 'Test',
+        url: 'https://test.com',
+      } as SafeAppData
+
+      expect(getTxOrigin(app)).toBe('{"name":"Test","url":"https://test.com"}')
+    })
+
+    it('should limit the URL to 200 characters', () => {
+      const app = {
+        name: 'Test',
+        url: 'https://test.com/' + 'a'.repeat(1337),
+      } as SafeAppData
+
+      expect(JSON.stringify(app).length).toBeGreaterThan(200)
+
+      const result = getTxOrigin(app)
+
+      expect(result?.length).toBe(200)
+
+      expect(result).toBe(
+        '{"name":"Test","url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}',
+      )
+    })
+
+    it('should preserve the name when limiting', () => {
+      const app = {
+        name: 'Test' + 'a'.repeat(1337),
+        url: '',
+      } as SafeAppData
+
+      expect(JSON.stringify(app).length).toBeGreaterThan(200)
+
+      const result = getTxOrigin(app)
+
+      expect(result?.length).toBe(200)
+
+      expect(result).toBe(
+        '{"name":"Testaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","url":""}',
+      )
     })
   })
 })
