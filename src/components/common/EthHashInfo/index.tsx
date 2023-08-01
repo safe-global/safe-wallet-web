@@ -21,7 +21,7 @@ const PrefixedEthHashInfo = ({
   const addressBook = useAddressBook()
   const link = chain ? getBlockExplorerLink(chain, props.address) : undefined
   const name = showName ? props.name || addressBook[props.address] : undefined
-  const showEmoji = settings.addressEmojis && props.showAvatar !== false && !props.customAvatar
+  const showEmoji = settings.addressEmojis && props.showAvatar !== false && !props.customAvatar && avatarSize >= 20
 
   return (
     <div className={css.container}>
