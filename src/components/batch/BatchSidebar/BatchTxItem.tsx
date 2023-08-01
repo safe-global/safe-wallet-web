@@ -11,8 +11,7 @@ import TxData from '@/components/transactions/TxDetails/TxData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { dateString } from '@/utils/formatters'
-import Track from '@/components/common/Track'
-import { BATCH_EVENTS } from '@/services/analytics'
+import { BATCH_EVENTS, trackEvent } from '@/services/analytics'
 
 type BatchTxItemProps = DraftBatchItem & {
   id: string
@@ -47,51 +46,52 @@ const BatchTxItem = ({
       e.stopPropagation()
       if (confirm('Are you sure you want to delete this transaction?')) {
         onDelete?.(id)
+        trackEvent(BATCH_EVENTS.BATCH_DELETE_TX)
       }
     },
     [onDelete, id],
   )
 
+  const handleExpand = () => {
+    trackEvent(BATCH_EVENTS.BATCH_EXPAND_TX)
+  }
+
   return (
     <Box display="flex" gap={2}>
       <div className={css.number}>{count}</div>
 
-      <Accordion elevation={0} sx={{ flex: 1 }}>
-        <Track {...BATCH_EVENTS.BATCH_EXPAND_TX}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} disabled={dragging} className={css.accordion}>
-            <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4}>
-              {draggable && (
-                <SvgIcon
-                  component={DragIcon}
-                  inheritViewBox
-                  fontSize="small"
-                  className={css.dragHandle}
-                  onClick={(e: MouseEvent) => e.stopPropagation()}
-                />
-              )}
+      <Accordion elevation={0} sx={{ flex: 1 }} onChange={handleExpand}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} disabled={dragging} className={css.accordion}>
+          <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4}>
+            {draggable && (
+              <SvgIcon
+                component={DragIcon}
+                inheritViewBox
+                fontSize="small"
+                className={css.dragHandle}
+                onClick={(e: MouseEvent) => e.stopPropagation()}
+              />
+            )}
 
-              <TxType tx={txSummary} />
+            <TxType tx={txSummary} />
 
-              <Box flex={1}>
-                <TxInfo info={txDetails.txInfo} />
-              </Box>
-
-              {onDelete && (
-                <>
-                  <Box className={css.separator} />
-
-                  <Track {...BATCH_EVENTS.BATCH_DELETE_TX}>
-                    <ButtonBase onClick={handleDelete} sx={{ p: 0.5 }}>
-                      <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
-                    </ButtonBase>
-                  </Track>
-
-                  <Box className={css.separator} mr={2} />
-                </>
-              )}
+            <Box flex={1}>
+              <TxInfo info={txDetails.txInfo} />
             </Box>
-          </AccordionSummary>
-        </Track>
+
+            {onDelete && (
+              <>
+                <Box className={css.separator} />
+
+                <ButtonBase onClick={handleDelete} sx={{ p: 0.5 }}>
+                  <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
+                </ButtonBase>
+
+                <Box className={css.separator} mr={2} />
+              </>
+            )}
+          </Box>
+        </AccordionSummary>
 
         <AccordionDetails>
           <div className={css.details}>
