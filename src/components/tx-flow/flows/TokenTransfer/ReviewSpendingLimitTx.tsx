@@ -1,6 +1,6 @@
 import type { ReactElement, SyntheticEvent } from 'react'
 import { useContext, useMemo, useState } from 'react'
-import type { BigNumberish, BytesLike } from 'ethers'
+import { type BigNumberish, type BytesLike, ethers } from 'ethers'
 import { Button, CardActions, Typography } from '@mui/material'
 import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
 import { type TokenTransferParams } from '@/components/tx-flow/flows/TokenTransfer/index'
@@ -18,11 +18,11 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
 import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { asError } from '@/services/exceptions/utils'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
+import useWallet from '@/hooks/wallets/useWallet'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -46,7 +46,7 @@ const ReviewSpendingLimitTx = ({
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const { setTxFlow } = useContext(TxModalContext)
   const currentChain = useCurrentChain()
-  const onboard = useOnboard()
+  const [wallet] = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
@@ -79,7 +79,7 @@ const ReviewSpendingLimitTx = ({
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
-    if (!onboard) return
+    if (!wallet || !wallet.provider) return
 
     trackEvent(MODALS_EVENTS.USE_SPENDING_LIMIT)
 
@@ -89,7 +89,13 @@ const ReviewSpendingLimitTx = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress)
+      await dispatchSpendingLimitTxExecution(
+        txParams,
+        txOptions,
+        new ethers.providers.Web3Provider(wallet.provider),
+        safe.chainId,
+        safeAddress,
+      )
       onSubmit()
       setTxFlow(undefined)
     } catch (_err) {

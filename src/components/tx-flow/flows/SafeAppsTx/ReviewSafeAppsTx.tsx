@@ -9,7 +9,6 @@ import type { SafeAppsTxParams } from '.'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
@@ -17,6 +16,8 @@ import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { getInteractionTitle, isTxValid } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
+import useWallet from '@/hooks/wallets/useWallet'
+import { ethers } from 'ethers'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -26,7 +27,7 @@ const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
 }: ReviewSafeAppsTxProps): ReactElement => {
   const { safe } = useSafeInfo()
-  const onboard = useOnboard()
+  const [wallet] = useWallet()
   const chain = useCurrentChain()
   const [txList, setTxList] = useState(txs)
   const { safeTx, setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
@@ -51,11 +52,11 @@ const ReviewSafeAppsTx = ({
   }, [txList, setSafeTx, setSafeTxError, params])
 
   const handleSubmit = async () => {
-    if (!safeTx || !onboard) return
+    if (!safeTx || !wallet || !wallet.provider) return
     trackSafeAppTxCount(Number(appId))
 
     try {
-      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
+      await dispatchSafeAppsTx(safeTx, requestId, new ethers.providers.Web3Provider(wallet.provider), safe.chainId)
     } catch (error) {
       setSafeTxError(asError(error))
     }

@@ -16,7 +16,8 @@ type OwnedSafesCache = {
 
 const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const chainId = useChainId()
-  const { address: walletAddress } = useWallet() || {}
+  const [wallet] = useWallet()
+  const { address: walletAddress } = wallet || {}
   const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY)
 
   useEffect(() => {

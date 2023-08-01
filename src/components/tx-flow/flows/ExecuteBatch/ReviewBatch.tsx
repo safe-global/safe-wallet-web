@@ -15,7 +15,6 @@ import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
 import { TxSimulation } from '@/components/tx/security/tenderly'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
@@ -31,7 +30,8 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxModalContext } from '@/components/tx-flow'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
-import type { PayableOverrides } from 'ethers'
+import { ethers, type PayableOverrides } from 'ethers'
+import useWallet from '@/hooks/wallets/useWallet'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -51,7 +51,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   // Chain has relaying feature and available relays
   const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
-  const onboard = useOnboard()
+  const [wallet] = useWallet()
   const web3 = useWeb3()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
@@ -75,7 +75,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || gasPriceLoading) return
+    if (!wallet || !wallet.provider || !multiSendTxData || !multiSendContract || !txsWithDetails || gasPriceLoading)
+      return
 
     const overrides: PayableOverrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
@@ -85,7 +86,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       txsWithDetails,
       multiSendContract,
       multiSendTxData,
-      onboard,
+      new ethers.providers.Web3Provider(wallet.provider),
       safe.chainId,
       safe.address.value,
       overrides,

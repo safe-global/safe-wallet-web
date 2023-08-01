@@ -52,7 +52,7 @@ const PendingActionButtons = ({
                   borderBottomRightRadius: ({ shape }) => shape.borderRadius,
                 }}
               >
-                <WalletIcon provider={wallet.label} icon={wallet.icon} />
+                <WalletIcon provider={wallet.walletClientType} />
                 <Typography variant="body2">{totalToSign}</Typography>
               </ButtonBase>
             </Tooltip>

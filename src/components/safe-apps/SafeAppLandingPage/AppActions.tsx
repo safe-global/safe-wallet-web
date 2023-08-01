@@ -3,7 +3,7 @@ import type { ChainInfo, SafeAppData } from '@safe-global/safe-gateway-typescrip
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import type { UrlObject } from 'url'
-import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import type { ConnectedWallet } from '@privy-io/react-auth'
 import { useAppSelector } from '@/store'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { selectChains } from '@/store/chainsSlice'
@@ -18,7 +18,7 @@ import CreateNewSafeSVG from '@/public/images/open/safe-creation.svg'
 
 type Props = {
   appUrl: string
-  wallet: ConnectedWallet | null
+  wallet: ConnectedWallet | null | undefined
   onConnectWallet: () => Promise<void>
   chain: ChainInfo
   app: SafeAppData

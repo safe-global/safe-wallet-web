@@ -2,9 +2,10 @@ import { asError } from '@/services/exceptions/utils'
 import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 import { dispatchSafeMsgProposal, dispatchSafeMsgConfirmation } from '@/services/safe-messages/safeMsgSender'
 import { type EIP712TypedData, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { ethers } from 'ethers'
 import { useEffect, useCallback, useState } from 'react'
 import useSafeInfo from '../useSafeInfo'
-import useOnboard from '../wallets/useOnboard'
+import useWallet from '../wallets/useWallet'
 
 const useSyncSafeMessageSigner = (
   message: SafeMessage | undefined,
@@ -15,7 +16,7 @@ const useSyncSafeMessageSigner = (
   onClose: () => void,
 ) => {
   const [submitError, setSubmitError] = useState<Error | undefined>()
-  const onboard = useOnboard()
+  const [wallet] = useWallet()
   const { safe } = useSafeInfo()
 
   // If the message gets updated in the messageSlice we dispatch it if the signature is complete
@@ -27,7 +28,7 @@ const useSyncSafeMessageSigner = (
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
-    if (!onboard) {
+    if (!wallet || !wallet.provider) {
       return
     }
 
@@ -36,14 +37,23 @@ const useSyncSafeMessageSigner = (
     try {
       // When collecting the first signature
       if (!message) {
-        await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, safeAppId })
+        await dispatchSafeMsgProposal({
+          provider: new ethers.providers.Web3Provider(wallet.provider),
+          safe,
+          message: decodedMessage,
+          safeAppId,
+        })
 
         // If threshold 1, we do not want to wait for polling
         if (safe.threshold === 1) {
           await dispatchPreparedSignature(safe.chainId, safeMessageHash, onClose, requestId)
         }
       } else {
-        await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage })
+        await dispatchSafeMsgConfirmation({
+          provider: new ethers.providers.Web3Provider(wallet.provider),
+          safe,
+          message: decodedMessage,
+        })
 
         // No requestID => we are in the confirm message dialog and do not need to leave the window open
         if (!requestId) {
@@ -59,7 +69,7 @@ const useSyncSafeMessageSigner = (
     } catch (e) {
       setSubmitError(asError(e))
     }
-  }, [onboard, requestId, message, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
+  }, [wallet, requestId, message, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
 
   return { submitError, onSign }
 }

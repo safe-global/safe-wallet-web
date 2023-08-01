@@ -19,12 +19,13 @@ import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
+import useWallet from '@/hooks/wallets/useWallet'
+import { ethers } from 'ethers'
 
 export type SignMessageOnChainProps = {
   appId?: number
@@ -37,7 +38,7 @@ export type SignMessageOnChainProps = {
 const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnChainProps): ReactElement => {
   const chainId = useChainId()
   const { safe } = useSafeInfo()
-  const onboard = useOnboard()
+  const [wallet] = useWallet()
   const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
   useHighlightHiddenTab()
@@ -94,9 +95,9 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   ])
 
   const handleSubmit = async () => {
-    if (!safeTx || !onboard) return
+    if (!safeTx || !wallet || !wallet.provider) return
     try {
-      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
+      await dispatchSafeAppsTx(safeTx, requestId, new ethers.providers.Web3Provider(wallet.provider), safe.chainId)
     } catch (error) {
       setSafeTxError(asError(error))
     }
