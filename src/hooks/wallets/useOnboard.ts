@@ -117,13 +117,6 @@ export const connectWallet = async (
     }
   }
 
-  // e2e wallet
-  if (typeof window !== 'undefined' && window.Cypress) {
-    options = {
-      autoSelect: { label: E2E_WALLET_NAME, disableModals: true },
-    }
-  }
-
   let wallets: WalletState[] | undefined
 
   try {
@@ -176,7 +169,15 @@ export const useInitOnboard = () => {
       const supportedWallets = getSupportedWallets(chain)
       onboard.state.actions.setWalletModules(supportedWallets)
     }
-    enableWallets()
+
+    enableWallets().then(() => {
+      // e2e wallet
+      if (typeof window !== 'undefined' && window.Cypress) {
+        connectWallet(onboard, {
+          autoSelect: { label: E2E_WALLET_NAME, disableModals: true },
+        })
+      }
+    })
   }, [chain, onboard])
 }
 
