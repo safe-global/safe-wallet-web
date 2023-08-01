@@ -15,9 +15,10 @@ import { selectSettings } from '@/store/settingsSlice'
 import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 import UnknownContractError from './UnknownContractError'
 import RiskConfirmationError from './RiskConfirmationError'
-import useDecodeTx, { isDelegateCall, isMultisendTx } from '@/hooks/useDecodeTx'
+import useDecodeTx from '@/hooks/useDecodeTx'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
+import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -40,7 +41,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
-  const isBatchable = safeTx && !isDelegateCall(safeTx) && !isMultisendTx(decodedData)
+  const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)

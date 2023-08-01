@@ -36,7 +36,7 @@ const SignForm = ({
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
   const hasSigned = useAlreadySigned(safeTx)
-  const isCreation = safeTx?.signatures.size === 0
+  const isCreation = !txId
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent, isAddingToBatch = false) => {
@@ -94,7 +94,7 @@ const SignForm = ({
             <BatchButton
               onClick={onBatchClick}
               disabled={submitDisabled || !isBatchable}
-              tooltip={!isBatchable ? `Cannot batch this transaction because it's already a batch` : undefined}
+              tooltip={!isBatchable ? `Cannot batch this type of transaction` : undefined}
             />
           )}
 
