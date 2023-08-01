@@ -5,6 +5,7 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
 import 'whatwg-fetch'
+import { TextEncoder, TextDecoder } from 'util'
 
 jest.mock('@web3-onboard/coinbase', () => jest.fn())
 jest.mock('@web3-onboard/injected-wallets', () => ({ ProviderLabel: { MetaMask: 'MetaMask' } }))
@@ -42,5 +43,8 @@ jest.mock('@web3-onboard/core', () => () => ({
 // to avoid failing tests in some environments
 const NumberFormat = Intl.NumberFormat
 const englishTestLocale = 'en'
+
+// `viem` used by the `safe-apps-sdk` uses `TextEncoder` and `TextDecoder` which are not available in jsdom for some reason
+Object.assign(global, { TextDecoder, TextEncoder })
 
 jest.spyOn(Intl, 'NumberFormat').mockImplementation((locale, ...rest) => new NumberFormat([englishTestLocale], ...rest))
