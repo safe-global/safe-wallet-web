@@ -15,7 +15,7 @@ import SettingsHeader from '@/components/settings/SettingsHeader'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import ExternalLink from '@/components/common/ExternalLink'
-import SafeIcon from '@/components/common/SafeIcon'
+import EmojiPreview from '@/components/settings/EmojiPreview'
 
 const Appearance: NextPage = () => {
   const dispatch = useAppDispatch()
@@ -49,7 +49,7 @@ const Appearance: NextPage = () => {
       <SettingsHeader />
 
       <main>
-        <Paper sx={{ padding: 4 }}>
+        <Paper sx={{ p: 4 }}>
           <Grid container spacing={3}>
             <Grid item lg={4} xs={12}>
               <Typography variant="h4" fontWeight="bold" mb={1}>
@@ -106,7 +106,7 @@ const Appearance: NextPage = () => {
             </Grid>
           </Grid>
 
-          <Grid container alignItems="center" marginTop={2} spacing={3}>
+          <Grid container spacing={3} mt={2}>
             <Grid item lg={4} xs={12}>
               <Typography variant="h4" fontWeight="bold">
                 Experimental
@@ -114,26 +114,16 @@ const Appearance: NextPage = () => {
             </Grid>
 
             <Grid item xs>
-              <Grid container alignItems="center" spacing={1}>
-                <Grid item>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={settings.addressEmojis}
-                        onChange={handleToggle(setAddressEmojis, SETTINGS_EVENTS.APPEARANCE.ADDRESS_EMOJIS)}
-                      />
-                    }
-                    label="Enable emojis for Ethereum addresses"
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={settings.addressEmojis}
+                    onChange={handleToggle(setAddressEmojis, SETTINGS_EVENTS.APPEARANCE.ADDRESS_EMOJIS)}
                   />
-                </Grid>
-
-                <Grid item>
-                  <Typography color="border.main">Preview:</Typography>
-                </Grid>
-                <Grid item xs>
-                  <SafeIcon address="0x220866b1a2219f40e72f5c628b65d54268ca3a9d" />
-                </Grid>
-              </Grid>
+                }
+                label="Address emoji"
+              />
+              <EmojiPreview />
             </Grid>
           </Grid>
         </Paper>

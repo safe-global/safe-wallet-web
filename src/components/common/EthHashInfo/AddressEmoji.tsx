@@ -41,7 +41,7 @@ type EmojiProps = {
   size?: number
 }
 
-const Emoji = memo(function Emoji({ address, size = 40 }: EmojiProps): ReactElement {
+export const Emoji = memo(function Emoji({ address, size = 40 }: EmojiProps): ReactElement {
   return (
     <div className={css.emojiWrapper} style={{ fontSize: `${size * 0.7}px`, width: `${size}px`, height: `${size}px` }}>
       {ethereumAddressToEmoji(address)}

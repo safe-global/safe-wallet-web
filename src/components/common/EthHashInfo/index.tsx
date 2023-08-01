@@ -8,7 +8,7 @@ import { selectChainById } from '@/store/chainsSlice'
 import { getBlockExplorerLink } from '@/utils/chains'
 import type { EthHashInfoProps } from '@safe-global/safe-react-components'
 import css from './styles.module.css'
-import AddressEmoji from './AddressEmoji'
+import { Emoji } from './AddressEmoji'
 
 const PrefixedEthHashInfo = ({
   showName = true,
@@ -37,7 +37,7 @@ const PrefixedEthHashInfo = ({
       >
         {props.children}
       </EthHashInfo>
-      {showEmoji && <AddressEmoji address={props.address} size={avatarSize} />}
+      {showEmoji && <Emoji address={props.address} size={avatarSize} />}
     </div>
   )
 }

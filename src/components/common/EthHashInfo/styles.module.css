@@ -9,7 +9,8 @@
   justify-content: center;
   position: absolute;
   z-index: 1;
-  top: 0;
+  top: 50%;
+  transform: translateY(-50%);
   left: 0;
   border-radius: 100%;
   border: 2px solid var(--color-secondary-light);
