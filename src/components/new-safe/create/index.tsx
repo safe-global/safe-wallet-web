@@ -98,11 +98,11 @@ const staticHints: Record<
 
 const CreateSafe = () => {
   const router = useRouter()
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const addressBook = useAddressBook()
   const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
   const defaultOwner: NamedAddress = {
-    name: defaultOwnerAddressBookName || wallet?.ens || '',
+    name: defaultOwnerAddressBookName || '',
     address: wallet?.address || '',
   }
 

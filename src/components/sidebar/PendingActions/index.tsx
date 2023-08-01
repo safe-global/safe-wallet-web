@@ -26,7 +26,7 @@ const PendingActionButtons = ({
   shortName: string
   safeAddress: string
 }) => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
 
   const queueLink: UrlObject = useMemo(
     () => ({

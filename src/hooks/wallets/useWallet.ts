@@ -1,25 +1,29 @@
-import { useEffect, useState } from 'react'
-import useOnboard, { type ConnectedWallet, getConnectedWallet } from './useOnboard'
+import { useWallets, type ConnectedWallet, type EIP1193Provider, usePrivy } from '@privy-io/react-auth'
+import { useMemo } from 'react'
+import useAsync, { type AsyncResult } from '../useAsync'
 
-const useWallet = (): ConnectedWallet | null => {
-  const onboard = useOnboard()
-  const onboardWallets = onboard?.state.get().wallets || []
-  const [wallet, setWallet] = useState<ConnectedWallet | null>(getConnectedWallet(onboardWallets))
+const useWallet = (): AsyncResult<(ConnectedWallet & { provider: EIP1193Provider }) | null> => {
+  const { wallets } = useWallets()
+  const privy = usePrivy()
 
-  useEffect(() => {
-    if (!onboard) return
+  console.log('useWallet', wallets, privy)
 
-    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
-      const newWallet = getConnectedWallet(wallets)
-      setWallet(newWallet)
-    })
+  const embeddedWallet = useMemo(() => wallets.find((wallet) => wallet.linked), [wallets])
 
-    return () => {
-      walletSubscription.unsubscribe()
+  return useAsync(async () => {
+    const provider = await embeddedWallet?.getEthereumProvider()
+
+    if (!provider) {
+      return null
     }
-  }, [onboard])
 
-  return wallet
+    const chainId = await provider.request({ method: 'eth_chainId' })
+    console.log('eth_chainId', chainId)
+
+    return embeddedWallet
+      ? { ...embeddedWallet, provider, chainId: chainId ?? embeddedWallet.chainId.replace('eip155:', '') }
+      : null
+  }, [embeddedWallet])
 }
 
 export default useWallet

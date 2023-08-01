@@ -25,7 +25,7 @@ const SafeListItemSecondaryAction = ({
   href?: LinkProps['href']
 }) => {
   const { configs } = useChains()
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
   const isAddedSafeOwner = isOwner(addedSafes?.[address]?.owners, wallet?.address)

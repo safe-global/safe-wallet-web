@@ -27,7 +27,7 @@ export const ExecutionMethodSelector = ({
   noLabel?: boolean
   tooltip?: string
 }): ReactElement | null => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
 
   const shouldRelay = executionMethod === ExecutionMethod.RELAY
 

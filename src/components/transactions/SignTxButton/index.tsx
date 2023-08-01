@@ -24,7 +24,7 @@ const SignTxButton = ({
   compact?: boolean
 }): ReactElement => {
   const { setTxFlow } = useContext(TxModalContext)
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const isSignable = isSignableBy(txSummary, wallet?.address || '')
   const isPending = useIsPending(txSummary.id)
   const safeSDK = useSafeSDK()

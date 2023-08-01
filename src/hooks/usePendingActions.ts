@@ -18,7 +18,7 @@ const getSignableCount = (queue: TransactionListPage, walletAddress: string): nu
 }
 
 const usePendingActions = (chainId: string, safeAddress?: string): PendingActions => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const { safeAddress: currentSafeAddress } = useSafeInfo()
   const { page: currentSafeQueue } = useTxQueue()
   const isCurrentSafe = currentSafeAddress === safeAddress

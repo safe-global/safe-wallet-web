@@ -8,10 +8,10 @@ import useWallet from '@/hooks/wallets/useWallet'
 
 const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => {
   const [pendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
-  const wallet = useWallet()
+  const [wallet, _, isWalletLoading] = useWallet()
 
   useEffect(() => {
-    if (!wallet) {
+    if (wallet === null && !isWalletLoading) {
       setStep(0)
     }
 
@@ -19,7 +19,7 @@ const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setS
     if (pendingSafe) {
       setStep(4)
     }
-  }, [wallet, setStep, pendingSafe])
+  }, [wallet, setStep, pendingSafe, isWalletLoading])
 }
 
 export default useSyncSafeCreationStep

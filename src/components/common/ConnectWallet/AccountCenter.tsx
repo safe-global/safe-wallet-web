@@ -5,35 +5,30 @@ import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useOnboard, { forgetLastWallet, switchWallet } from '@/hooks/wallets/useOnboard'
+import { forgetLastWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
-import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
+import { type ConnectedWallet, usePrivy } from '@privy-io/react-auth'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-  const onboard = useOnboard()
+  const privy = usePrivy()
   const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const addressBook = useAddressBook()
   const prefix = chainInfo?.shortName
 
   const handleSwitchWallet = () => {
-    if (onboard) {
-      handleClose()
-      switchWallet(onboard)
-    }
+    handleClose()
   }
 
   const handleDisconnect = () => {
     if (!wallet) return
 
-    onboard?.disconnectWallet({
-      label: wallet.label,
-    })
+    privy.logout()
 
     forgetLastWallet()
     handleClose()
@@ -81,7 +76,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           <Identicon address={wallet.address} />
 
           <Typography variant="h5" className={css.addressName}>
-            {addressBook[wallet.address] || wallet.ens}
+            {addressBook[wallet.address]}
           </Typography>
 
           <Box bgcolor="border.background" px={2} py={1} fontSize={14}>
@@ -98,7 +93,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           <Box className={css.rowContainer}>
             <Box className={css.row}>
               <Typography variant="caption">Wallet</Typography>
-              <Typography variant="body2">{wallet.label}</Typography>
+              <Typography variant="body2">{wallet.walletClientType}</Typography>
             </Box>
             <Box className={css.row}>
               <Typography variant="caption">Connected network</Typography>

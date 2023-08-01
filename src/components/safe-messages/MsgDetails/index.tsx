@@ -23,7 +23,7 @@ import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 
 const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
   const safeMessage = useMemo(() => {
     return generateSafeMessageMessage(msg.message)

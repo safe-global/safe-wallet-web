@@ -34,7 +34,7 @@ const useTransactionStatus = (txSummary: TransactionSummary): string => {
   const { txStatus, id } = txSummary
 
   const { replacedTxIds } = useContext(ReplaceTxHoverContext)
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, id))
 
   if (replacedTxIds.includes(id)) {

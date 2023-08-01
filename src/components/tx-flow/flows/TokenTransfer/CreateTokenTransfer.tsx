@@ -57,7 +57,7 @@ const CreateTokenTransfer = ({
   const isSafeTokenPaused = useIsSafeTokenPaused()
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const { setNonce } = useContext(SafeTxContext)
   const [recipientFocus, setRecipientFocus] = useState(!params.recipient)
 

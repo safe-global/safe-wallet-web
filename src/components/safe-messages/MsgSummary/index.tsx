@@ -28,7 +28,7 @@ const getStatusColor = (value: SafeMessageStatus, palette: Palette) => {
 
 const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const { confirmationsSubmitted, confirmationsRequired } = msg
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const txStatusLabel = useSafeMessageStatus(msg)
   const isPending = useIsSafeMessagePending(msg.messageHash)
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED

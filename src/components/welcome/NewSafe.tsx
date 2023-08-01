@@ -29,7 +29,7 @@ const NewSafe = () => {
   const router = useRouter()
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const wallet = useWallet()
+  const [wallet] = useWallet()
 
   useEffect(() => {
     setExpanded(!isSmallScreen)

@@ -4,7 +4,7 @@ import { isOwner } from '@/utils/transaction-guards'
 
 const useIsSafeOwner = () => {
   const { safe } = useSafeInfo()
-  const wallet = useWallet()
+  const [wallet] = useWallet()
 
   return isOwner(safe.owners, wallet?.address)
 }

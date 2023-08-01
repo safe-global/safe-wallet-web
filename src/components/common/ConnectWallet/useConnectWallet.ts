@@ -1,20 +1,23 @@
 import { useMemo } from 'react'
-import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { usePrivy } from '@privy-io/react-auth'
 
 const useConnectWallet = (): (() => void) => {
-  const onboard = useOnboard()
+  const privy = usePrivy()
 
   return useMemo(() => {
-    if (!onboard) {
-      return () => {}
-    }
-
     return () => {
       trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
-      connectWallet(onboard)
+      if (!privy.ready) {
+        return
+      }
+      if (!privy.authenticated) {
+        privy.login()
+      } else {
+        privy.connectWallet()
+      }
     }
-  }, [onboard])
+  }, [privy])
 }
 
 export default useConnectWallet

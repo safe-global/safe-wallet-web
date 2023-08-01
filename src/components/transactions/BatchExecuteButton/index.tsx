@@ -17,7 +17,7 @@ const BatchExecuteButton = () => {
   const hoverContext = useContext(BatchExecuteHoverContext)
   const { page } = useTxQueue()
   const batchableTransactions = useBatchedTxs(page?.results || [])
-  const wallet = useWallet()
+  const [wallet] = useWallet()
 
   const isBatchable = batchableTransactions.length > 1
   const hasPendingTx = batchableTransactions.some((tx) => pendingTxs[tx.transaction.id])

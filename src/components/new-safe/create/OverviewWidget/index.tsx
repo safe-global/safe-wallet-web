@@ -11,7 +11,7 @@ import css from '@/components/new-safe/create/OverviewWidget/styles.module.css'
 const LOGO_DIMENSIONS = '22px'
 
 const OverviewWidget = ({ safeName }: { safeName: string }): ReactElement | null => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const chain = useCurrentChain()
   const rows = [
     ...(wallet ? [{ title: 'Wallet', component: <WalletInfo wallet={wallet} /> }] : []),

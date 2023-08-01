@@ -3,7 +3,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { getUserNonce } from '@/hooks/wallets/web3'
 
 const useUserNonce = (): number | undefined => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
 
   const [userNonce] = useAsync<number>(() => {
     if (!wallet) return

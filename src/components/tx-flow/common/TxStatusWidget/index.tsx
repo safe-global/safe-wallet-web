@@ -33,7 +33,7 @@ const TxStatusWidget = ({
   isReplacement?: boolean
   isBatch?: boolean
 }) => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const { safe } = useSafeInfo()
   const { nonceNeeded } = useContext(SafeTxContext)
   const { threshold } = safe

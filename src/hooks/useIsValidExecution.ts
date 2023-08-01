@@ -58,7 +58,7 @@ const useIsValidExecution = (
   executionValidationError?: Error
   isValidExecutionLoading: boolean
 } => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const { safe } = useSafeInfo()
   const readOnlyProvider = useWeb3ReadOnly()
   const isOwner = useIsSafeOwner()

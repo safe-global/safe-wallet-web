@@ -26,7 +26,7 @@ export const OwnerRow = ({
   remove?: (index: number) => void
   readOnly?: boolean
 }) => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const fieldName = `${groupName}.${index}`
   const { control, getValues, setValue } = useFormContext()
   const owners = useWatch({

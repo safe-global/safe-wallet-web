@@ -13,7 +13,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: boolean }): ReactElement => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const isSignable = useIsSafeMessageSignableBy(msg, wallet?.address || '')
   const isPending = useIsSafeMessagePending(msg.messageHash)
   const { setTxFlow } = useContext(TxModalContext)

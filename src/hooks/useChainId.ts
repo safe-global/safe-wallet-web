@@ -50,7 +50,7 @@ export const useUrlChainId = (): string | undefined => {
 export const useChainId = (): string => {
   const session = useAppSelector(selectSession)
   const urlChainId = useUrlChainId()
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const { configs } = useChains()
 
   const walletChainId =

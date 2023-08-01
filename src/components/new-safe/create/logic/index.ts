@@ -5,7 +5,7 @@ import {
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
-import type { ConnectedWallet } from '@/services/onboard'
+import type { ConnectedWallet } from '@privy-io/react-auth'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
@@ -29,6 +29,7 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { formatError } from '@/utils/formatters'
 import { sponsoredCall } from '@/services/tx/relaying'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -62,8 +63,13 @@ export const getSafeDeployProps = (
 /**
  * Create a Safe creation transaction via Core SDK and submits it to the wallet
  */
-export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
-  const ethAdapter = createEthersAdapter(ethersProvider)
+export const createNewSafe = async (
+  ethersProvider: Web3Provider,
+  props: DeploySafeProps,
+  chainId: string,
+): Promise<Safe> => {
+  const assertedProvider = await assertWalletChain(ethersProvider, chainId)
+  const ethAdapter = createEthersAdapter(assertedProvider)
 
   const safeFactory = await SafeFactory.create({ ethAdapter })
   return safeFactory.deploySafe(props)

@@ -71,7 +71,7 @@ const DialogHeader = ({ threshold }: { threshold: number }) => (
 )
 
 const MessageDialogError = ({ isOwner, submitError }: { isOwner: boolean; submitError: Error | undefined }) => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const onboard = useOnboard()
 
   const errorMessage =
@@ -136,7 +136,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const { palette } = useTheme()
   const { safe } = useSafeInfo()
   const isOwner = useIsSafeOwner()
-  const wallet = useWallet()
+  const [wallet] = useWallet()
 
   const { decodedMessage, safeMessageMessage, safeMessageHash } = useDecodedSafeMessage(message, safe)
   const ongoingMessage = useSafeMessage(safeMessageHash)

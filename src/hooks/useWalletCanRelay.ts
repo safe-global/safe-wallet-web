@@ -7,7 +7,7 @@ import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 const useWalletCanRelay = (tx: SafeTransaction | undefined) => {
   const { safe } = useSafeInfo()
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const hasEnoughSignatures = tx && tx.signatures.size >= safe.threshold
 
   return useAsync(() => {

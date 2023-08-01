@@ -6,7 +6,7 @@ import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import { sameAddress } from '@/utils/addresses'
 
 const useSpendingLimit = (selectedToken?: TokenInfo): SpendingLimitState | undefined => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const spendingLimits = useSelector(selectSpendingLimits)
 
   return spendingLimits.find(

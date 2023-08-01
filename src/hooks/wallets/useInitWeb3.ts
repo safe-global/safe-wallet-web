@@ -8,7 +8,7 @@ import { selectRpc } from '@/store/settingsSlice'
 
 export const useInitWeb3 = () => {
   const chain = useCurrentChain()
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const customRpc = useAppSelector(selectRpc)
 
   useEffect(() => {

@@ -38,7 +38,7 @@ type TxSummaryProps = {
 
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const txStatusLabel = useTransactionStatus(tx)
   const isPending = useIsPending(tx.id)
   const isQueue = isTxQueued(tx.txStatus)

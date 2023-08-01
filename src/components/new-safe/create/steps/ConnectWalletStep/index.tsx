@@ -17,7 +17,7 @@ import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
 
 const ConnectWalletStep = ({ onSubmit, setStep }: StepRenderProps<NewSafeFormData>) => {
   const [pendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const chain = useCurrentChain()
   const isSupported = isPairingSupported(chain?.disabledWallets)
   const handleConnect = useConnectWallet()
@@ -26,7 +26,7 @@ const ConnectWalletStep = ({ onSubmit, setStep }: StepRenderProps<NewSafeFormDat
   useEffect(() => {
     if (!wallet || pendingSafe) return
 
-    onSubmit({ owners: [{ address: wallet.address, name: wallet.ens || '' }] })
+    onSubmit({ owners: [{ address: wallet.address, name: '' }] })
   }, [onSubmit, wallet, pendingSafe])
 
   return (

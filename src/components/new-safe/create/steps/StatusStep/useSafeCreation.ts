@@ -48,7 +48,7 @@ export const useSafeCreation = (
   const [isWatching, setIsWatching] = useState(false)
   const dispatch = useAppDispatch()
 
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const provider = useWeb3()
   const web3ReadOnly = useWeb3ReadOnly()
   const chain = useCurrentChain()
@@ -101,10 +101,14 @@ export const useSafeCreation = (
           ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
           : { gasPrice: maxFeePerGas?.toString() }
 
-        await createNewSafe(provider, {
-          ...safeParams,
-          options,
-        })
+        await createNewSafe(
+          provider,
+          {
+            ...safeParams,
+            options,
+          },
+          chain.chainId,
+        )
         setStatus(SafeCreationStatus.SUCCESS)
       }
     } catch (err) {

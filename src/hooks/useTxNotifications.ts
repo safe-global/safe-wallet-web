@@ -109,7 +109,7 @@ const useTxNotifications = (): void => {
   const isOwner = useIsSafeOwner()
   const pendingTxs = useAppSelector(selectPendingTxs)
   const notifications = useAppSelector(selectNotifications)
-  const wallet = useWallet()
+  const [wallet] = useWallet()
 
   const txsAwaitingConfirmation = useMemo(() => {
     if (!page?.results) {

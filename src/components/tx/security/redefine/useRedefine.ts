@@ -76,7 +76,7 @@ export const useRedefine = (
   safeTransaction: SafeTransaction | undefined,
 ): AsyncResult<SecurityResponse<RedefineModuleResponse>> => {
   const { safe, safeAddress } = useSafeInfo()
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const [retryCounter, setRetryCounter] = useState(0)
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 

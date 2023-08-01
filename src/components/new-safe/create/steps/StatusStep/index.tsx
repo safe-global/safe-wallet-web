@@ -37,7 +37,7 @@ export const CreateSafeStatus = ({ data, setProgressColor }: StepRenderProps<New
   const router = useRouter()
   const chainInfo = useCurrentChain()
   const chainPrefix = chainInfo?.shortName || ''
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const isWrongChain = useIsWrongChain()
   const isConnected = wallet && !isWrongChain
 

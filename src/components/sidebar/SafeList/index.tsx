@@ -71,7 +71,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
   const addedSafes = useAppSelector(selectAllAddedSafes)
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const handleConnect = useConnectWallet()
 
   const [open, setOpen] = useState<Record<string, boolean>>({})

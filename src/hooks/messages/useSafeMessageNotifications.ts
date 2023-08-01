@@ -75,7 +75,7 @@ const useSafeMessageNotifications = () => {
 
   const { page } = useSafeMessages()
   const pendingMsgs = useAppSelector(selectPendingSafeMessages)
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const isOwner = useIsSafeOwner()
   const notifications = useAppSelector(selectNotifications)
   const chain = useCurrentChain()

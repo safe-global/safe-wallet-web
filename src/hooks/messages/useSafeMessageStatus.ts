@@ -18,7 +18,7 @@ const STATUS_LABELS: { [key in SafeMessageLocalStatus]: string } = {
 
 const useSafeMessageStatus = (msg: SafeMessage) => {
   const isPending = useIsSafeMessagePending(msg.messageHash)
-  const wallet = useWallet()
+  const [wallet] = useWallet()
 
   if (isPending) {
     return STATUS_LABELS[ConfirmingStatus]

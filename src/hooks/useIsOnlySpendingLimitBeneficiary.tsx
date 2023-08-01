@@ -8,7 +8,7 @@ import { useHasFeature } from './useChains'
 const useIsOnlySpendingLimitBeneficiary = (): boolean => {
   const isEnabled = useHasFeature(FEATURES.SPENDING_LIMIT)
   const spendingLimits = useAppSelector(selectSpendingLimits)
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const isSafeOwner = useIsSafeOwner()
 
   if (isSafeOwner || !isEnabled || spendingLimits.length === 0) {

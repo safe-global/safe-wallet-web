@@ -30,7 +30,7 @@ export type TxSimulationProps = {
 // TODO: Test this component
 const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const isDarkMode = useDarkMode()
   const { safeTx } = useContext(SafeTxContext)
   const {

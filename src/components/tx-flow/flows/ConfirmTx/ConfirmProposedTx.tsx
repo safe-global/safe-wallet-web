@@ -18,7 +18,7 @@ const EXECUTE_TEXT = 'Submit the form to execute this transaction.'
 const SIGN_EXECUTE_TEXT = 'Sign or immediately execute this transaction.'
 
 const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement => {
-  const wallet = useWallet()
+  const [wallet] = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
   const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
