@@ -179,17 +179,15 @@ export const useInitOnboard = () => {
     }
 
     // Connect to the last connected wallet
-    enableWallets().then(() => {
+    enableWallets().then(async () => {
       if (onboard.state.get().wallets.length > 0) return
 
       const label = lastWalletStorage.get()
-      if (!label) return
+      const isUnlocked = label && (await isWalletUnlocked(label))
+      if (!isUnlocked) return
 
-      isWalletUnlocked(label).then((isUnlocked) => {
-        isUnlocked &&
-          connectWallet(onboard, {
-            autoSelect: { label, disableModals: false },
-          })
+      connectWallet(onboard, {
+        autoSelect: { label, disableModals: true },
       })
     })
   }, [chain, onboard])

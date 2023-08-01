@@ -32,17 +32,13 @@ export const WalletNames = {
 export const isWalletUnlocked = async (walletName: string): Promise<boolean> => {
   if (typeof window === 'undefined') return false
 
-  if (window.ethereum?.isConnected?.()) {
-    return true
-  }
-
   // Only MetaMask exposes a method to check if the wallet is unlocked
   if (walletName === WalletNames.METAMASK) {
-    return window.ethereum?._metamask?.isUnlocked?.() || false
+    return (await window.ethereum?._metamask?.isUnlocked?.()) || false
   }
 
   // Wallet connect creates a localStorage entry when connected and removes it when disconnected
-  if (walletName === WalletNames.WALLET_CONNECT) {
+  if (walletName === WalletNames.WALLET_CONNECT || walletName === WalletNames.WALLET_CONNECT_V2) {
     return window.localStorage.getItem('walletconnect') !== null
   }
 
