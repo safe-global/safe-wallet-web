@@ -260,23 +260,21 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
       if (safeAppRequestId && currentRequestId === safeAppRequestId) {
         trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION, appName)
         communicator?.send({ safeTxHash }, safeAppRequestId)
-        setTxFlow(undefined)
       }
     })
 
     return unsubscribe
-  }, [appName, chainId, communicator, currentRequestId, setTxFlow])
+  }, [appName, chainId, communicator, currentRequestId])
 
   useEffect(() => {
     const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ messageHash, requestId, signature }) => {
       if (requestId && currentRequestId === requestId) {
         communicator?.send({ messageHash, signature }, requestId)
-        setTxFlow(undefined)
       }
     })
 
     return unsubscribe
-  }, [communicator, currentRequestId, setTxFlow])
+  }, [communicator, currentRequestId])
 
   if (!safeLoaded) {
     return <div />
