@@ -1,4 +1,4 @@
-import type { SyntheticEvent } from 'react'
+import { type SyntheticEvent, useEffect } from 'react'
 import { useCallback, useContext } from 'react'
 import { Button, Divider, Drawer, IconButton, SvgIcon, Typography } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
@@ -15,10 +15,13 @@ import PlusIcon from '@/public/images/common/plus.svg'
 import EmptyBatch from './EmptyBatch'
 
 const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: boolean) => void }) => {
-  const { setTxFlow } = useContext(TxModalContext)
+  const { txFlow, setTxFlow } = useContext(TxModalContext)
   const batchTxs = useDraftBatch()
-  const closeSidebar = useCallback(() => onToggle(false), [onToggle])
   const [, deleteTx, onReorder] = useUpdateBatch()
+
+  const closeSidebar = useCallback(() => {
+    onToggle(false)
+  }, [onToggle])
 
   const clearBatch = useCallback(() => {
     batchTxs.forEach((item) => deleteTx(item.txDetails.txId))
@@ -27,10 +30,9 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
   const onAddClick = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault()
-      closeSidebar()
       setTxFlow(<NewTxMenu />, undefined, false)
     },
-    [closeSidebar, setTxFlow],
+    [setTxFlow],
   )
 
   const onConfirmClick = useCallback(
@@ -42,6 +44,11 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
     },
     [setTxFlow, batchTxs, closeSidebar, clearBatch],
   )
+
+  // Close sidebar when txFlow modal is opened
+  useEffect(() => {
+    if (txFlow) closeSidebar()
+  }, [txFlow, closeSidebar])
 
   return (
     <Drawer variant="temporary" anchor="right" open={isOpen} onClose={closeSidebar}>
