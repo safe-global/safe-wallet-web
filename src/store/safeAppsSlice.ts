@@ -6,15 +6,14 @@ import type { RootState } from '@/store'
 
 type SafeAppsPerChain = {
   pinned: Array<SafeAppData['id']>
+  opened: Array<SafeAppData['id']>
 }
 
 export type SafeAppsState = {
   [chainId: string]: SafeAppsPerChain
-} & { opened: Array<SafeAppData['id']> }
+}
 
-const initialState = {
-  opened: [],
-} as unknown as SafeAppsState
+const initialState: SafeAppsState = {}
 
 export const safeAppsSlice = createSlice({
   name: 'safeApps',
@@ -22,16 +21,24 @@ export const safeAppsSlice = createSlice({
   reducers: {
     setPinned: (state, { payload }: PayloadAction<{ chainId: string; pinned: SafeAppsPerChain['pinned'] }>) => {
       const { pinned, chainId } = payload
-      state[chainId] ??= { pinned: [] }
+
+      // Initialise chain-specific state
+      state[chainId] ??= { pinned: [], opened: [] }
+      // If apps were opened before any were pinned, no pinned array exists
+      state[chainId].pinned ??= []
 
       state[chainId].pinned = pinned
     },
-    markOpened: (state, { payload }: PayloadAction<{ id: SafeAppData['id'] }>) => {
-      const { id } = payload
-      state.opened ??= []
+    markOpened: (state, { payload }: PayloadAction<{ chainId: string; id: SafeAppData['id'] }>) => {
+      const { id, chainId } = payload
 
-      if (!state.opened.includes(id)) {
-        state.opened.push(id)
+      // Initialise chain-specific state
+      state[chainId] ??= { pinned: [], opened: [] }
+      // If apps were pinned before any were opened, no opened array exists
+      state[chainId].opened ??= []
+
+      if (!state[chainId].opened.includes(id)) {
+        state[chainId].opened.push(id)
       }
     },
     setSafeApps: (_, { payload }: PayloadAction<SafeAppsState>) => {
@@ -58,6 +65,6 @@ export const selectPinned = createSelector([selectSafeAppsPerChain], (safeAppsPe
   return safeAppsPerChain?.pinned || []
 })
 
-export const selectOpened = createSelector([selectSafeApps], (safeApps) => {
-  return safeApps?.opened || []
+export const selectOpened = createSelector([selectSafeAppsPerChain], (safeAppsPerChain) => {
+  return safeAppsPerChain?.opened || []
 })
