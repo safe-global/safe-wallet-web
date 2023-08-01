@@ -37,8 +37,14 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean> => 
     return (await window.ethereum?._metamask?.isUnlocked?.()) || false
   }
 
-  // Wallet connect creates a localStorage entry when connected and removes it when disconnected
-  if (walletName === WalletNames.WALLET_CONNECT || walletName === WalletNames.WALLET_CONNECT_V2) {
+  // WalletConnect v2
+  if (walletName === WalletNames.WALLET_CONNECT_V2) {
+    const wcSession = window.localStorage.getItem('wc@2:client:0.3//session')
+    return !!wcSession && wcSession !== '[]'
+  }
+
+  // WalletConnect v1 creates a localStorage entry when connected and removes it when disconnected
+  if (walletName === WalletNames.WALLET_CONNECT) {
     return window.localStorage.getItem('walletconnect') !== null
   }
 
