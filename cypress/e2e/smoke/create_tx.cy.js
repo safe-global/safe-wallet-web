@@ -6,7 +6,6 @@ const currentNonce = 3
 
 describe('Queue a transaction on 1/N', () => {
   before(() => {
-    cy.connectE2EWallet()
     cy.useProdCGW()
 
     cy.visit(`/home?safe=${SAFE}`)

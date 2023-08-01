@@ -1,9 +1,3 @@
-Cypress.Commands.add('connectE2EWallet', () => {
-  cy.on('window:before:load', (window) => {
-    // @FIXME
-  })
-})
-
 Cypress.Commands.add('useProdCGW', () => {
   cy.on('window:before:load', (window) => {
     window.localStorage.setItem('SAFE_v2__debugProdCgw', JSON.stringify(true))
