@@ -21,7 +21,9 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const addressBook = useAddressBook()
   const prefix = chainInfo?.shortName
 
-  const handleSwitchWallet = () => {
+  const handleSwitchWallet = async () => {
+    await privy.logout()
+    privy.login()
     handleClose()
   }
 
