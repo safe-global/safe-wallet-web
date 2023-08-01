@@ -42,7 +42,7 @@ export type SettingsState = {
     onChainSigning: boolean
   }
   transactionExecution: boolean
-  addressEmojis?: boolean
+  addressEmojis: boolean
 }
 
 export const initialState: SettingsState = {

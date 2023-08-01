@@ -15,7 +15,7 @@ import SettingsHeader from '@/components/settings/SettingsHeader'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import ExternalLink from '@/components/common/ExternalLink'
-import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
+import SafeIcon from '@/components/common/SafeIcon'
 
 const Appearance: NextPage = () => {
   const dispatch = useAppDispatch()
@@ -123,7 +123,7 @@ const Appearance: NextPage = () => {
                         onChange={handleToggle(setAddressEmojis, SETTINGS_EVENTS.APPEARANCE.ADDRESS_EMOJIS)}
                       />
                     }
-                    label="Enable address emojis"
+                    label="Enable emojis for Ethereum addresses"
                   />
                 </Grid>
 
@@ -131,7 +131,7 @@ const Appearance: NextPage = () => {
                   <Typography color="border.main">Preview:</Typography>
                 </Grid>
                 <Grid item xs>
-                  <PrefixedEthHashInfo address="0x0000000000000000000000000000000000000000" />
+                  <SafeIcon address="0x220866b1a2219f40e72f5c628b65d54268ca3a9d" />
                 </Grid>
               </Grid>
             </Grid>

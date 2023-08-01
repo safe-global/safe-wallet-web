@@ -1,9 +1,9 @@
+import { type ReactElement, memo } from 'react'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import { type ReactElement, useMemo } from 'react'
 import css from './styles.module.css'
 
-export function ethereumAddressToEmoji(address: string): string {
+function ethereumAddressToEmoji(address: string): string {
   // Convert the Ethereum address from hexadecimal to decimal
   const decimal = BigInt(address.slice(0, 6))
 
@@ -36,15 +36,22 @@ export function ethereumAddressToEmoji(address: string): string {
   return ''
 }
 
-const AddressEmoji = ({ address, size = 40 }: { address: string; size?: number }): ReactElement | null => {
-  const { addressEmojis } = useAppSelector(selectSettings)
-  const emoji = useMemo<string>(() => (addressEmojis ? ethereumAddressToEmoji(address) : ''), [address, addressEmojis])
+type EmojiProps = {
+  address: string
+  size?: number
+}
 
-  return emoji ? (
+const Emoji = memo(function Emoji({ address, size = 40 }: EmojiProps): ReactElement {
+  return (
     <div className={css.emojiWrapper} style={{ fontSize: `${size * 0.7}px`, width: `${size}px`, height: `${size}px` }}>
-      {emoji}
+      {ethereumAddressToEmoji(address)}
     </div>
-  ) : null
+  )
+})
+
+const AddressEmoji = (props: EmojiProps): ReactElement | null => {
+  const { addressEmojis } = useAppSelector(selectSettings)
+  return addressEmojis ? <Emoji {...props} /> : null
 }
 
 export default AddressEmoji
