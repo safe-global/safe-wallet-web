@@ -94,5 +94,20 @@ describe('transactions', () => {
         '{"url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","name":"Tes"}',
       )
     })
+
+    it('should only limit the URL to 200 characters', () => {
+      const app = {
+        url: 'https://test.com/' + 'a'.repeat(180),
+        name: 'Test name',
+      } as SafeAppData
+
+      const result = getTxOrigin(app)
+
+      expect(result?.length).toBe(200)
+
+      expect(result).toBe(
+        '{"url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","name":""}',
+      )
+    })
   })
 })
