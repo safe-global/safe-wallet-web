@@ -1,27 +1,34 @@
-import { useWallets, usePrivy, type ConnectedWallet, type EIP1193Provider } from '@privy-io/react-auth'
-import { useMemo } from 'react'
-import useAsync, { type AsyncResult } from '../useAsync'
+import { type ExternalProvider, Web3Provider } from '@ethersproject/providers'
+import useAsync from '../useAsync'
+import useWeb3AuthStore from './useWeb3Auth'
 
-const useWallet = (): AsyncResult<(ConnectedWallet & { provider: EIP1193Provider }) | null> => {
-  const { wallets } = useWallets()
-  const privy = usePrivy()
+export type ConnectedWallet = {
+  address: string
+  chainId: string
+  label: string
+  provider: ExternalProvider
+  ens: string | undefined
+}
 
-  const embeddedWallet = useMemo(
-    () => wallets.find((wallet) => wallet.address === privy.user?.wallet?.address),
-    [wallets, privy.user?.wallet?.address],
-  )
-
+const useWallet = () => {
+  const web3Auth = useWeb3AuthStore()
   return useAsync(async () => {
-    const provider = await embeddedWallet?.getEthereumProvider()
-
-    if (!provider) {
-      return null
+    if (!web3Auth || !web3Auth.connected || !web3Auth.provider) {
+      return Promise.resolve(null)
     }
+    const userInfo = await web3Auth.getUserInfo()
+    const web3Provider = new Web3Provider(web3Auth.provider)
+    const address = await web3Provider.getSigner().getAddress()
+    const chainId = await web3Provider.getNetwork()
 
-    return embeddedWallet
-      ? { ...embeddedWallet, provider, chainId: embeddedWallet.chainId.replace('eip155:', '') }
-      : null
-  }, [embeddedWallet])
+    return {
+      address,
+      chainId: chainId.chainId.toString(),
+      label: 'Web3Auth',
+      provider: web3Auth.provider as ExternalProvider,
+      ens: userInfo.name,
+    }
+  }, [web3Auth, web3Auth?.connected, web3Auth?.provider])
 }
 
 export default useWallet

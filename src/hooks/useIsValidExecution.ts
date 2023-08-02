@@ -7,10 +7,9 @@ import ContractErrorCodes from '@/services/contracts/ContractErrorCodes'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { createWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type JsonRpcProvider } from '@ethersproject/providers'
-import type { ConnectedWallet, EIP1193Provider } from '@privy-io/react-auth'
 import { getCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet from '@/hooks/wallets/useWallet'
+import useWallet, { type ConnectedWallet } from '@/hooks/wallets/useWallet'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
@@ -23,7 +22,7 @@ const isContractError = (error: EthersError) => {
 // Monkey patch the signerProvider to proxy requests to the "readonly" provider if on the wrong chain
 // This is ONLY used to check the validity of a transaction in `useIsValidExecution`
 const getPatchedSignerProvider = (
-  wallet: ConnectedWallet & { provider: EIP1193Provider },
+  wallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
   readOnlyProvider: JsonRpcProvider,
 ) => {

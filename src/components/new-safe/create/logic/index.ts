@@ -5,7 +5,6 @@ import {
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
-import type { ConnectedWallet } from '@privy-io/react-auth'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
@@ -30,6 +29,7 @@ import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/ut
 import { formatError } from '@/utils/formatters'
 import { sponsoredCall } from '@/services/tx/relaying'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
+import type { ConnectedWallet } from '@/hooks/wallets/useWallet'
 
 export type SafeCreationProps = {
   owners: string[]

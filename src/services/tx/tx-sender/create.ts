@@ -10,7 +10,9 @@ import { getAndValidateSafeSDK } from './sdk'
  */
 export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: number): Promise<SafeTransaction> => {
   if (nonce !== undefined) txParams = { ...txParams, nonce }
+  console.log('Trying to create tx')
   const safeSDK = getAndValidateSafeSDK()
+  console.log('Got SDK')
   return safeSDK.createTransaction({ safeTransactionData: txParams })
 }
 

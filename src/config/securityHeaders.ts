@@ -19,7 +19,7 @@ export const ContentSecurityPolicy = `
  };
  frame-src *;
  style-src 'self' 'unsafe-inline' https://*.getbeamer.com https://*.googleapis.com;
- font-src 'self' data:;
+ font-src 'self' data: https://fonts.gstatic.com/
  worker-src 'self' blob:;
  img-src * data:;
 `

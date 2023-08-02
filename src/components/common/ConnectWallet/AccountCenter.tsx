@@ -12,25 +12,29 @@ import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
-import { type ConnectedWallet, usePrivy } from '@privy-io/react-auth'
+import type { ConnectedWallet } from '@/hooks/wallets/useWallet'
+import useWeb3AuthStore, { connectWallet } from '@/hooks/wallets/useWeb3Auth'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-  const privy = usePrivy()
+  const web3Auth = useWeb3AuthStore()
   const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const addressBook = useAddressBook()
   const prefix = chainInfo?.shortName
 
   const handleSwitchWallet = async () => {
-    await privy.logout()
-    privy.login()
+    if (!web3Auth) {
+      return
+    }
+    await web3Auth.logout()
+    connectWallet(web3Auth)
     handleClose()
   }
 
-  const handleDisconnect = () => {
-    if (!wallet) return
+  const handleDisconnect = async () => {
+    if (!wallet || !web3Auth) return
 
-    privy.logout()
+    await web3Auth.logout()
 
     forgetLastWallet()
     handleClose()
@@ -95,7 +99,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           <Box className={css.rowContainer}>
             <Box className={css.row}>
               <Typography variant="caption">Wallet</Typography>
-              <Typography variant="body2">{wallet.walletClientType}</Typography>
+              <Typography variant="body2">{wallet.label}</Typography>
             </Box>
             <Box className={css.row}>
               <Typography variant="caption">Connected network</Typography>

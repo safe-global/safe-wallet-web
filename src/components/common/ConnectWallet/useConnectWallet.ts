@@ -1,23 +1,21 @@
 import { useMemo } from 'react'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { usePrivy } from '@privy-io/react-auth'
+import useWeb3AuthStore, { connectWallet } from '@/hooks/wallets/useWeb3Auth'
 
 const useConnectWallet = (): (() => void) => {
-  const privy = usePrivy()
+  const web3Auth = useWeb3AuthStore()
 
   return useMemo(() => {
     return () => {
       trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
-      if (!privy.ready) {
+      if (!web3Auth) {
         return
       }
-      if (!privy.authenticated) {
-        privy.login()
-      } else {
-        privy.connectWallet()
+      if (!web3Auth.connected) {
+        connectWallet(web3Auth)
       }
     }
-  }, [privy])
+  }, [web3Auth])
 }
 
 export default useConnectWallet

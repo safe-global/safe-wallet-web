@@ -4,10 +4,10 @@ import { PAIRING_MODULE_LABEL } from '@/services/pairing/module'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 import type { EthersError } from '@/utils/ethers-utils'
 import { ErrorCode } from '@ethersproject/logger'
-import { type ConnectedWallet } from '@privy-io/react-auth'
 import { getWeb3ReadOnly, isSmartContract } from '@/hooks/wallets/web3'
 import { WALLET_KEYS } from '@/hooks/wallets/consts'
 import { WALLET_CONNECT_V1_MODULE_NAME } from '@/hooks/wallets/wallets'
+import type { ConnectedWallet } from '@/hooks/wallets/useWallet'
 
 const isWCRejection = (err: Error): boolean => {
   return /rejected/.test(err?.message)
@@ -60,7 +60,7 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean> => 
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE].includes(
-    wallet.walletClientType.toUpperCase() as WALLET_KEYS,
+    wallet.label.toUpperCase() as WALLET_KEYS,
   )
 }
 

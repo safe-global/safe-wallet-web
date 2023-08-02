@@ -61,7 +61,7 @@ export const ExecutionMethodSelector = ({
               value={ExecutionMethod.WALLET}
               label={
                 <Typography className={css.radioLabel}>
-                  <WalletIcon provider={wallet?.walletClientType || ''} width={20} height={20} /> Connected wallet
+                  <WalletIcon provider={wallet?.label || ''} width={20} height={20} /> Connected wallet
                 </Typography>
               }
               control={<Radio />}

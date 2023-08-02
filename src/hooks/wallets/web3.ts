@@ -1,9 +1,8 @@
 import { RPC_AUTHENTICATION, type RpcUri } from '@safe-global/safe-gateway-typescript-sdk'
 import { INFURA_TOKEN, SAFE_APPS_INFURA_TOKEN } from '@/config/constants'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider, Web3Provider, type ExternalProvider } from '@ethersproject/providers'
 import ExternalStore from '@/services/ExternalStore'
 import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { type EIP1193Provider } from '@privy-io/react-auth'
 
 // RPC helpers
 const formatRpcServiceUrl = ({ authentication, value }: RpcUri, TOKEN: string): string => {
@@ -19,7 +18,7 @@ export const createWeb3ReadOnly = (rpcUri: RpcUri, customRpc?: string): JsonRpcP
   return new JsonRpcProvider({ url: customRpc || getRpcServiceUrl(rpcUri), timeout: 10_000 })
 }
 
-export const createWeb3 = (walletProvider: EIP1193Provider): Web3Provider => {
+export const createWeb3 = (walletProvider: ExternalProvider): Web3Provider => {
   return new Web3Provider(walletProvider)
 }
 

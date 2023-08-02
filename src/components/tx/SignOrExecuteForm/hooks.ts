@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet from '@/hooks/wallets/useWallet'
+import useWallet, { type ConnectedWallet } from '@/hooks/wallets/useWallet'
 import { isSmartContractWallet } from '@/utils/wallets'
 import {
   dispatchOnChainSigning,
@@ -12,7 +12,6 @@ import {
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import type { ConnectedWallet } from '@privy-io/react-auth'
 import { getSafeTxGas, getRecommendedNonce } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
 import { ethers } from 'ethers'

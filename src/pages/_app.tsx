@@ -10,7 +10,7 @@ import { setBaseUrl as setGatewayBaseUrl } from '@safe-global/safe-gateway-types
 import { CacheProvider, type EmotionCache } from '@emotion/react'
 import { SafeThemeProvider } from '@safe-global/safe-react-components'
 import '@/styles/globals.css'
-import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION, PRIVY_APP_ID } from '@/config/constants'
+import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/config/constants'
 import { StoreHydrator } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import useLoadableStores from '@/hooks/useLoadableStores'
@@ -36,7 +36,7 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
-import { PrivyProvider } from '@privy-io/react-auth'
+import { useInitWeb3Auth } from '@/hooks/wallets/useWeb3Auth'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -47,6 +47,7 @@ const InitApp = (): null => {
   useInitSession()
   useLoadableStores()
   //useInitOnboard()
+  useInitWeb3Auth()
   useInitWeb3()
   useInitSafeCoreSDK()
   useTxNotifications()
@@ -72,11 +73,9 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
     <SafeThemeProvider mode={themeMode}>
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
-          <PrivyProvider appId={PRIVY_APP_ID}>
-            <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-              <TxModalProvider>{children}</TxModalProvider>
-            </Sentry.ErrorBoundary>
-          </PrivyProvider>
+          <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
+            <TxModalProvider>{children}</TxModalProvider>
+          </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}
     </SafeThemeProvider>
