@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, CardActions, Divider } from '@mui/material'
+import { Box, Button, CardActions, Divider } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
@@ -13,6 +13,7 @@ import { asError } from '@/services/exceptions/utils'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
+import BatchButton from './BatchButton'
 
 const SignForm = ({
   safeTx,
@@ -20,6 +21,8 @@ const SignForm = ({
   onSubmit,
   disableSubmit = false,
   origin,
+  isBatch,
+  isBatchable,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
 }): ReactElement => {
@@ -29,13 +32,14 @@ const SignForm = ({
 
   // Hooks
   const isOwner = useIsSafeOwner()
-  const { signTx } = useTxActions()
+  const { signTx, addToBatch } = useTxActions()
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
   const hasSigned = useAlreadySigned(safeTx)
+  const isCreation = !txId
 
   // On modal submit
-  const handleSubmit = async (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent, isAddingToBatch = false) => {
     e.preventDefault()
 
     if (needsRiskConfirmation && !isRiskConfirmed) {
@@ -43,12 +47,13 @@ const SignForm = ({
       return
     }
 
+    if (!safeTx) return
+
     setIsSubmittable(false)
     setSubmitError(undefined)
 
     try {
-      await signTx(safeTx, txId, origin)
-      setTxFlow(undefined)
+      await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin))
     } catch (_err) {
       const err = asError(_err)
       logError(Errors._804, err)
@@ -57,7 +62,12 @@ const SignForm = ({
       return
     }
 
+    setTxFlow(undefined)
     onSubmit()
+  }
+
+  const onBatchClick = (e: SyntheticEvent) => {
+    handleSubmit(e, true)
   }
 
   const cannotPropose = !isOwner
@@ -78,14 +88,25 @@ const SignForm = ({
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
 
       <CardActions>
-        {/* Submit button */}
-        <CheckWallet>
-          {(isOk) => (
-            <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-              Sign
-            </Button>
+        <Box display="flex" gap={2}>
+          {/* Batch button */}
+          {isCreation && !isBatch && (
+            <BatchButton
+              onClick={onBatchClick}
+              disabled={submitDisabled || !isBatchable}
+              tooltip={!isBatchable ? `Cannot batch this type of transaction` : undefined}
+            />
           )}
-        </CheckWallet>
+
+          {/* Submit button */}
+          <CheckWallet>
+            {(isOk) => (
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+                Sign
+              </Button>
+            )}
+          </CheckWallet>
+        </Box>
       </CardActions>
     </form>
   )

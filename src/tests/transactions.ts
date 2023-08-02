@@ -1,6 +1,6 @@
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { ethers } from 'ethers'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
+import { OperationType, type SafeSignature } from '@safe-global/safe-core-sdk-types'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import { ERC20__factory, ERC721__factory, Multi_send__factory } from '@/types/contracts'
@@ -73,6 +73,8 @@ export const createMockSafeTransaction = ({
   data: string
   operation?: OperationType
 }): SafeTransaction => {
+  const signatures = new Map<string, SafeSignature>([])
+
   return {
     data: {
       to,
@@ -86,12 +88,12 @@ export const createMockSafeTransaction = ({
       safeTxGas: 0,
       value: '0x0',
     },
-    signatures: new Map(),
-    addSignature: () => {
-      throw new Error('Function not implemented.')
+    signatures,
+    addSignature: (sig: SafeSignature) => {
+      signatures.set(sig.signer, sig)
     },
     encodedSignatures: () => {
-      throw new Error('Function not implemented.')
+      return '0x'
     },
   }
 }

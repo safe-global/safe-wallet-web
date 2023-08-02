@@ -59,6 +59,8 @@ describe('Queue a transaction on 1/N', () => {
   it('should create a queued transaction', () => {
     cy.get('button[type="submit"]').should('not.be.disabled')
 
+    cy.wait(1000)
+
     cy.contains('Native token transfer').should('be.visible')
 
     // Changes nonce to next one
@@ -96,7 +98,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('@Paramsform').submit()
 
     // Asserts the execute checkbox is uncheckable
-    cy.contains('No, only').click()
+    cy.contains('No, later').click()
 
     cy.get('input[name="nonce"]')
       .clear({ force: true })

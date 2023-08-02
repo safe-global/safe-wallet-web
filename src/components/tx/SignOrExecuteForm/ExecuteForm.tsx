@@ -50,7 +50,7 @@ const ExecuteForm = ({
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
 
   // Check that the transaction is executable
-  const isCreation = !txId
+  const isCreation = safeTx?.signatures.size === 0
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isExecutionLoop = useIsExecutionLoop()
 
