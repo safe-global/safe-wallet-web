@@ -17,14 +17,14 @@ const BatchButton = ({
     <Tooltip title={tooltip} placement="top">
       <span>
         <Track {...BATCH_EVENTS.BATCH_APPEND}>
-          <Button variant="outlined" onClick={onClick} disabled={disabled}>
+          <Button variant="outlined" onClick={onClick} disabled={disabled} sx={{ display: ['none', 'block'] }}>
             <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
             Add to batch
           </Button>
         </Track>
       </span>
     </Tooltip>
-    <Box display="flex" flexDirection="column" justifyContent="center" color="border.main">
+    <Box display={['none', 'flex']} flexDirection="column" justifyContent="center" color="border.main">
       {' '}
       or
     </Box>

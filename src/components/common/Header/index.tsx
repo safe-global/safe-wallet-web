@@ -66,7 +66,7 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         </div>
       )}
 
-      <div className={css.element}>
+      <div className={classnames(css.element, css.hideMobile)}>
         <BatchIndicator onClick={handleBatchToggle} />
       </div>
 
