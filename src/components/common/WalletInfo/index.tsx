@@ -23,10 +23,12 @@ const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
           <WalletIcon provider={wallet.label} />
         </Suspense>
       </Box>
-      <Box>
-        <Typography variant="caption" component="div" className={css.walletDetails}>
+
+      <Box className={css.walletDetails}>
+        <Typography variant="caption" component="div" className={css.walletName}>
           {wallet.label} @ {walletChain?.chainName || UNKNOWN_CHAIN_NAME}
         </Typography>
+
         <Typography variant="caption" fontWeight="bold" component="div">
           <EthHashInfo prefix={prefix || ''} address={wallet.address} showName={false} showAvatar avatarSize={12} />
         </Typography>

@@ -28,6 +28,7 @@ import { spendingLimitSlice } from './spendingLimitsSlice'
 import { safeAppsSlice } from './safeAppsSlice'
 import { safeMessagesListener, safeMessagesSlice } from './safeMessagesSlice'
 import { pendingSafeMessagesSlice } from './pendingSafeMessagesSlice'
+import { batchSlice } from './batchSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -47,6 +48,7 @@ const rootReducer = combineReducers({
   [safeAppsSlice.name]: safeAppsSlice.reducer,
   [safeMessagesSlice.name]: safeMessagesSlice.reducer,
   [pendingSafeMessagesSlice.name]: pendingSafeMessagesSlice.reducer,
+  [batchSlice.name]: batchSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -58,6 +60,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   cookiesSlice.name,
   safeAppsSlice.name,
   pendingSafeMessagesSlice.name,
+  batchSlice.name,
 ]
 
 export const getPersistedState = () => {
