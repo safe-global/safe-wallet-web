@@ -154,7 +154,7 @@ const ExecuteForm = ({
           <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
               <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-                Submit
+                Execute
               </Button>
             )}
           </CheckWallet>

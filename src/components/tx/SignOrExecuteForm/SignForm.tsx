@@ -5,7 +5,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { logError, Errors } from '@/services/exceptions'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useTxActions } from './hooks'
+import { useAlreadySigned, useTxActions } from './hooks'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
@@ -32,6 +32,7 @@ const SignForm = ({
   const { signTx } = useTxActions()
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
+  const hasSigned = useAlreadySigned(safeTx)
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -64,6 +65,8 @@ const SignForm = ({
 
   return (
     <form onSubmit={handleSubmit}>
+      {hasSigned && <ErrorMessage level="warning">You have already signed this transaction.</ErrorMessage>}
+
       {cannotPropose ? (
         <NonOwnerError />
       ) : (
@@ -79,7 +82,7 @@ const SignForm = ({
         <CheckWallet>
           {(isOk) => (
             <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-              Submit
+              Sign
             </Button>
           )}
         </CheckWallet>
