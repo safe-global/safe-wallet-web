@@ -60,19 +60,29 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   }
 }
 
-const getWalletConnectLabel = async ({ label, provider }: ConnectedWallet): Promise<string | undefined> => {
-  if (label.toUpperCase() !== WALLET_KEYS.WALLETCONNECT.toUpperCase()) return
-
+const getWalletConnectLabel = async (wallet: ConnectedWallet): Promise<string | undefined> => {
   const UNKNOWN_PEER = 'Unknown'
-  const { default: WalletConnect } = await import('@walletconnect/client')
+  const { label } = wallet
 
-  const peerWallet =
-    ((provider as unknown as any).connector as InstanceType<typeof WalletConnect>).peerMeta?.name || UNKNOWN_PEER
+  const isWalletConnect = [
+    WALLET_KEYS.WALLETCONNECT.toUpperCase(),
+    WALLET_KEYS.WALLETCONNECT_V2.toUpperCase(),
+  ].includes(label.toUpperCase())
 
-  return peerWallet ?? UNKNOWN_PEER
+  if (!isWalletConnect) return
+
+  const { connector } = wallet.provider as unknown as any
+  const peerWalletV2 = connector.session?.peer?.metadata?.name
+  const peerWalletV1 = connector.peerMeta?.name
+
+  return peerWalletV2 || peerWalletV1 || UNKNOWN_PEER
 }
 
+let lastTracked = ''
 const trackWalletType = (wallet: ConnectedWallet) => {
+  if (wallet.label === lastTracked) return
+  lastTracked = wallet.label
+
   trackEvent({ ...WALLET_EVENTS.CONNECT, label: wallet.label })
 
   getWalletConnectLabel(wallet)
@@ -128,14 +138,6 @@ export const connectWallet = async (
     return
   }
 
-  // Save the last used wallet and track the wallet type
-  const newWallet = getConnectedWallet(wallets)
-
-  if (newWallet) {
-    // Track
-    trackWalletType(newWallet)
-  }
-
   isConnecting = false
 
   return wallets
@@ -179,6 +181,22 @@ export const useInitOnboard = () => {
       }
     })
   }, [chain, onboard])
+
+  // Track connected wallet
+  useEffect(() => {
+    if (!onboard) return
+
+    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
+      const newWallet = getConnectedWallet(wallets)
+      if (newWallet) {
+        trackWalletType(newWallet)
+      }
+    })
+
+    return () => {
+      walletSubscription.unsubscribe()
+    }
+  }, [onboard])
 }
 
 export default useStore
