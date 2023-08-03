@@ -57,10 +57,14 @@ export const dispatchTxProposal = async ({
     throw error
   }
 
-  txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
-    txId: proposedTx.txId,
-    signerAddress: txId ? sender : undefined,
-  })
+  // Dispatch a success event only if the tx is signed
+  // Unsigned txs are proposed only temporarily and won't appear in the queue
+  if (safeTx.signatures.size > 0) {
+    txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
+      txId: proposedTx.txId,
+      signerAddress: txId ? sender : undefined,
+    })
+  }
 
   return proposedTx
 }

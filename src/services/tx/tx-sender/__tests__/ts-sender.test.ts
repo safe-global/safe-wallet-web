@@ -1,15 +1,15 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/safe-core-sdk'
-import { type TransactionResult } from '@safe-global/safe-core-sdk-types'
+import type { TransactionResult } from '@safe-global/safe-core-sdk-types'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import extractTxInfo from '../../extractTxInfo'
 import proposeTx from '../../proposeTransaction'
 import * as txEvents from '../../txEvents'
 import {
+  createTx,
   createExistingTx,
   createRejectTx,
-  createTx,
   dispatchTxExecution,
   dispatchTxProposal,
   dispatchTxSigning,
@@ -30,6 +30,8 @@ const setupFetchStub = (data: any) => (_url: string) => {
 }
 import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
 import { hexZeroPad } from 'ethers/lib/utils'
+import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
+import { createMockSafeTransaction } from '@/tests/transactions'
 
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -197,7 +199,7 @@ describe('txSender', () => {
   })
 
   describe('dispatchTxProposal', () => {
-    it('should dispatch a tx proposal', async () => {
+    it('should NOT dispatch a tx proposal if tx is unsigned', async () => {
       const tx = await createTx({
         to: '0x123',
         value: '1',
@@ -209,15 +211,30 @@ describe('txSender', () => {
       expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890', undefined)
       expect(proposedTx).toEqual({ txId: '123' })
 
+      expect(txEvents.txDispatch).not.toHaveBeenCalled()
+    })
+
+    it('should dispatch a PROPOSED event if tx is signed and has no id', async () => {
+      const tx = createMockSafeTransaction({
+        to: '0x123',
+        data: '0x0',
+      })
+      tx.addSignature(generatePreValidatedSignature('0x1234567890123456789012345678901234567890'))
+
+      const proposedTx = await dispatchTxProposal({ chainId: '4', safeAddress: '0x123', sender: '0x456', safeTx: tx })
+
+      expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890', undefined)
+      expect(proposedTx).toEqual({ txId: '123' })
+
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROPOSED', { txId: '123' })
     })
 
-    it('should dispatch a tx proposal with a signature', async () => {
-      const tx = await createTx({
+    it('should dispatch a SIGNATURE_PROPOSED event if tx has signatures and an id', async () => {
+      const tx = createMockSafeTransaction({
         to: '0x123',
-        value: '1',
         data: '0x0',
       })
+      tx.addSignature(generatePreValidatedSignature('0x1234567890123456789012345678901234567890'))
 
       const proposedTx = await dispatchTxProposal({
         chainId: '4',

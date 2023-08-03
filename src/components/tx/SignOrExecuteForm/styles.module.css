@@ -31,6 +31,14 @@
   color: var(--color-secondary-dark);
 }
 
+[data-theme='dark'] .execute {
+  background-color: var(--color-success-background);
+}
+
+[data-theme='dark'] .execute svg {
+  color: var(--color-success-dark);
+}
+
 .params {
   margin-bottom: var(--space-2);
 }

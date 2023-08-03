@@ -18,6 +18,7 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   const [data, error, loading] = useAsync<SafeInfo>(() => {
     if (!chainId || !address) return
     return getSafeInfo(chainId, address)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, address, pollCount])
 
   // Reset the counter when safe address/chainId changes

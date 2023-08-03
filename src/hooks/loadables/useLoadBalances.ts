@@ -38,6 +38,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
         trusted: isTrustedTokenList,
       })
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [safeAddress, chainId, currency, isTrustedTokenList, pollCount],
     false, // don't clear data between polls
   )

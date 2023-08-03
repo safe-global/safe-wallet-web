@@ -19,6 +19,7 @@ import SafeAppTags from '@/components/safe-apps/SafeAppTags'
 import { isOptimizedForBatchTransactions } from '@/components/safe-apps/utils'
 import { AppRoutes } from '@/config/routes'
 import BatchIcon from '@/public/images/apps/batch-icon.svg'
+import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import css from './styles.module.css'
 
 export type SafeAppsViewMode = 'list-view' | 'grid-view'
@@ -33,6 +34,7 @@ type SafeAppCardProps = {
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
   removeCustomApp?: (safeApp: SafeAppData) => void
+  openPreviewDrawer?: (safeApp: SafeAppData) => void
 }
 
 const SafeAppCard = ({
@@ -42,6 +44,7 @@ const SafeAppCard = ({
   isBookmarked,
   onBookmarkSafeApp,
   removeCustomApp,
+  openPreviewDrawer,
 }: SafeAppCardProps) => {
   const router = useRouter()
 
@@ -58,6 +61,7 @@ const SafeAppCard = ({
         onBookmarkSafeApp={onBookmarkSafeApp}
         removeCustomApp={removeCustomApp}
         onClickSafeApp={onClickSafeApp}
+        openPreviewDrawer={openPreviewDrawer}
       />
     )
   }
@@ -71,6 +75,7 @@ const SafeAppCard = ({
       onBookmarkSafeApp={onBookmarkSafeApp}
       removeCustomApp={removeCustomApp}
       onClickSafeApp={onClickSafeApp}
+      openPreviewDrawer={openPreviewDrawer}
     />
   )
 }
@@ -93,6 +98,7 @@ type SafeAppCardViewProps = {
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
   removeCustomApp?: (safeApp: SafeAppData) => void
+  openPreviewDrawer?: (safeApp: SafeAppData) => void
 }
 
 const SafeAppCardGridView = ({
@@ -102,9 +108,10 @@ const SafeAppCardGridView = ({
   isBookmarked,
   onBookmarkSafeApp,
   removeCustomApp,
+  openPreviewDrawer,
 }: SafeAppCardViewProps) => {
   return (
-    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp} height={'100%'}>
+    <SafeAppCardContainer safeApp={safeApp} safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp} height={'100%'}>
       {/* Safe App Header */}
       <CardHeader
         className={css.safeAppHeader}
@@ -127,6 +134,7 @@ const SafeAppCardGridView = ({
               isBookmarked={isBookmarked}
               onBookmarkSafeApp={onBookmarkSafeApp}
               removeCustomApp={removeCustomApp}
+              openPreviewDrawer={openPreviewDrawer}
             />
           </>
         }
@@ -157,9 +165,10 @@ const SafeAppCardListView = ({
   isBookmarked,
   onBookmarkSafeApp,
   removeCustomApp,
+  openPreviewDrawer,
 }: SafeAppCardViewProps) => {
   return (
-    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
+    <SafeAppCardContainer safeApp={safeApp} safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
       <CardContent sx={{ pb: '16px !important' }}>
         <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
           <div className={css.safeAppIconContainer}>
@@ -184,6 +193,7 @@ const SafeAppCardListView = ({
               isBookmarked={isBookmarked}
               onBookmarkSafeApp={onBookmarkSafeApp}
               removeCustomApp={removeCustomApp}
+              openPreviewDrawer={openPreviewDrawer}
             />
           </CardActions>
         </Box>
@@ -194,6 +204,7 @@ const SafeAppCardListView = ({
 
 type SafeAppCardContainerProps = {
   onClickSafeApp?: () => void
+  safeApp?: SafeAppData
   safeAppUrl: string
   children: ReactNode
   height?: string
@@ -202,15 +213,18 @@ type SafeAppCardContainerProps = {
 
 export const SafeAppCardContainer = ({
   children,
+  safeApp,
   safeAppUrl,
   onClickSafeApp,
   height,
   className,
 }: SafeAppCardContainerProps) => {
+  const { openedSafeAppIds } = useOpenedSafeApps()
+
   const handleClickSafeApp = (event: SyntheticEvent) => {
-    if (onClickSafeApp) {
+    if (safeApp && !openedSafeAppIds.includes(safeApp.id)) {
       event.preventDefault()
-      onClickSafeApp()
+      onClickSafeApp?.()
     }
   }
 

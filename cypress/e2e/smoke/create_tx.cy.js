@@ -59,6 +59,8 @@ describe('Queue a transaction on 1/N', () => {
   it('should create a queued transaction', () => {
     cy.get('button[type="submit"]').should('not.be.disabled')
 
+    cy.wait(1000)
+
     cy.contains('Native token transfer').should('be.visible')
 
     // Changes nonce to next one
@@ -69,7 +71,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('Estimated fee').should('exist')
 
     // Asserting the sponsored info is present
-    cy.contains('Execute').should('be.visible')
+    cy.contains('Execute').scrollIntoView().should('be.visible')
 
     cy.get('span').contains('Estimated fee').next().should('have.css', 'text-decoration-line', 'line-through')
     cy.contains('Transactions per hour')
@@ -96,14 +98,14 @@ describe('Queue a transaction on 1/N', () => {
     cy.get('@Paramsform').submit()
 
     // Asserts the execute checkbox is uncheckable
-    cy.contains('No, only').click()
+    cy.contains('No, later').click()
 
     cy.get('input[name="nonce"]')
       .clear({ force: true })
       .type(currentNonce + 10, { force: true })
       .type('{enter}', { force: true })
 
-    cy.contains('Submit').click()
+    cy.contains('Sign').click()
   })
 
   it('should click the notification and see the transaction queued', () => {

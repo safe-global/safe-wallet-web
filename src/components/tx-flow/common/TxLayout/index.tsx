@@ -9,11 +9,10 @@ import { TxInfoProvider } from '@/components/tx-flow/TxInfoProvider'
 import TxNonce from '../TxNonce'
 import TxStatusWidget from '../TxStatusWidget'
 import css from './styles.module.css'
-import { TxSimulationMessage } from '@/components/tx/security/tenderly'
 import SafeLogo from '@/public/images/logo-no-text.svg'
-import { RedefineMessage } from '@/components/tx/security/redefine'
 import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import SecurityWarnings from '@/components/tx/security/SecurityWarnings'
 
 const TxLayoutHeader = ({
   hideNonce,
@@ -147,9 +146,7 @@ const TxLayout = ({
                   )}
 
                   <Box className={css.sticky}>
-                    <RedefineMessage />
-
-                    <TxSimulationMessage />
+                    <SecurityWarnings />
                   </Box>
                 </Grid>
               </Grid>
