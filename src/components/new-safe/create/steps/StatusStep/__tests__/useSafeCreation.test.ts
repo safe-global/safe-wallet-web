@@ -6,6 +6,7 @@ import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '@/components/new-safe/create/logic'
 import * as contracts from '@/services/contracts/safeContracts'
 import * as txMonitor from '@/services/tx/txMonitor'
+import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/usePendingSafe'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -34,9 +35,7 @@ describe('useSafeCreation', () => {
     saltNonce: 123,
     address: '0x10',
   }
-
   const mockSetPendingSafe = jest.fn()
-
   const mockStatus = SafeCreationStatus.AWAITING
   const mockSetStatus = jest.fn()
   const mockProvider: Web3Provider = new Web3Provider(jest.fn())
@@ -66,7 +65,7 @@ describe('useSafeCreation', () => {
 
   it('should create a safe with gas params if there is no txHash and status is AWAITING', async () => {
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
-
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
     renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
@@ -97,6 +96,8 @@ describe('useSafeCreation', () => {
           features: [FEATURES.EIP1559],
         } as unknown as ChainInfo),
     )
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
+
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
     renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
@@ -115,6 +116,7 @@ describe('useSafeCreation', () => {
 
   it('should create a safe with no gas params if the gas estimation threw, there is no txHash and status is AWAITING', async () => {
     jest.spyOn(gasPrice, 'default').mockReturnValue([undefined, Error('Error for testing'), false])
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
 
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
@@ -133,6 +135,7 @@ describe('useSafeCreation', () => {
 
   it('should not create a safe if there is no txHash, status is AWAITING but gas is loading', async () => {
     jest.spyOn(gasPrice, 'default').mockReturnValue([undefined, undefined, true])
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
 
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe').mockReturnValue(Promise.resolve({} as Safe))
 
@@ -145,6 +148,7 @@ describe('useSafeCreation', () => {
 
   it('should not create a safe if the status is not AWAITING', async () => {
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe')
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
 
     renderHook(() => useSafeCreation(SafeCreationStatus.WALLET_REJECTED, mockSetStatus, false))
 
@@ -197,6 +201,9 @@ describe('useSafeCreation', () => {
 
   it('should not create a safe if there is a txHash', async () => {
     const createSafeSpy = jest.spyOn(logic, 'createNewSafe')
+    jest
+      .spyOn(usePendingSafe, 'usePendingSafe')
+      .mockReturnValue([{ ...mockPendingSafe, txHash: '0x123' }, mockSetPendingSafe])
 
     renderHook(() => useSafeCreation(SafeCreationStatus.AWAITING, mockSetStatus, false))
 
@@ -207,7 +214,21 @@ describe('useSafeCreation', () => {
 
   it('should watch a tx if there is a txHash and a tx object', async () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
-
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([
+      {
+        ...mockPendingSafe,
+        txHash: '0x123',
+        tx: {
+          data: '0x',
+          from: '0x1234',
+          nonce: 0,
+          startBlock: 0,
+          to: '0x456',
+          value: BigNumber.from(0),
+        },
+      },
+      mockSetPendingSafe,
+    ])
     renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
@@ -217,6 +238,21 @@ describe('useSafeCreation', () => {
 
   it('should watch a tx even if no wallet is connected', async () => {
     jest.spyOn(wallet, 'default').mockReturnValue(null)
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([
+      {
+        ...mockPendingSafe,
+        txHash: '0x123',
+        tx: {
+          data: '0x',
+          from: '0x1234',
+          nonce: 0,
+          startBlock: 0,
+          to: '0x456',
+          value: BigNumber.from(0),
+        },
+      },
+      mockSetPendingSafe,
+    ])
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
 
     renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
@@ -228,7 +264,7 @@ describe('useSafeCreation', () => {
 
   it('should not watch a tx if there is no txHash', async () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
-
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
     renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
@@ -238,7 +274,20 @@ describe('useSafeCreation', () => {
 
   it('should not watch a tx if there is no tx object', async () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
-
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([
+      {
+        ...mockPendingSafe,
+        tx: {
+          data: '0x',
+          from: '0x1234',
+          nonce: 0,
+          startBlock: 0,
+          to: '0x456',
+          value: BigNumber.from(0),
+        },
+      },
+      mockSetPendingSafe,
+    ])
     renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
@@ -247,6 +296,22 @@ describe('useSafeCreation', () => {
   })
 
   it('should set a PROCESSING state when watching a tx', async () => {
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([
+      {
+        ...mockPendingSafe,
+        txHash: '0x123',
+        tx: {
+          data: '0x',
+          from: '0x1234',
+          nonce: 0,
+          startBlock: 0,
+          to: '0x456',
+          value: BigNumber.from(0),
+        },
+      },
+      mockSetPendingSafe,
+    ])
+
     renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
@@ -256,7 +321,12 @@ describe('useSafeCreation', () => {
 
   it('should set a PROCESSING state and monitor relay taskId after successfully tx relay', async () => {
     jest.spyOn(logic, 'relaySafeCreation').mockResolvedValue('0x456')
-
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([
+      {
+        ...mockPendingSafe,
+      },
+      mockSetPendingSafe,
+    ])
     const txMonitorSpy = jest.spyOn(txMonitor, 'waitForCreateSafeTx').mockImplementation(jest.fn())
 
     const initialStatus = SafeCreationStatus.PROCESSING

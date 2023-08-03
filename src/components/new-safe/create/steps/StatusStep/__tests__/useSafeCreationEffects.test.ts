@@ -3,13 +3,18 @@ import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusSte
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import * as web3 from '@/hooks/wallets/web3'
 import * as pendingSafe from '@/components/new-safe/create/logic'
+import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/usePendingSafe'
+import * as addressbook from '@/components/new-safe/create/logic/address-book'
 import { Web3Provider } from '@ethersproject/providers'
 import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
+import type { PendingSafeData } from '@/components/new-safe/create/types'
+import { hexZeroPad } from 'ethers/lib/utils'
 
 describe('useSafeCreationEffects', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn(() => Promise.resolve({} as SafeInfo)))
+    jest.spyOn(addressbook, 'updateAddressBook').mockReturnValue(() => {})
 
     const mockProvider: Web3Provider = new Web3Provider(jest.fn())
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
@@ -18,6 +23,9 @@ describe('useSafeCreationEffects', () => {
   it('should clear the tx hash if it exists on ERROR or REVERTED', () => {
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
+    jest
+      .spyOn(usePendingSafe, 'usePendingSafe')
+      .mockReturnValue([{ txHash: '0x123' } as PendingSafeData, setPendingSafeSpy])
 
     renderHook(() =>
       useSafeCreationEffects({
@@ -32,7 +40,7 @@ describe('useSafeCreationEffects', () => {
   it('should not clear the tx hash if it doesnt exist on ERROR or REVERTED', () => {
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
-
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([{} as PendingSafeData, setPendingSafeSpy])
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.ERROR,
@@ -47,7 +55,9 @@ describe('useSafeCreationEffects', () => {
     const pollSafeInfoSpy = jest.spyOn(pendingSafe, 'pollSafeInfo')
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
-
+    jest
+      .spyOn(usePendingSafe, 'usePendingSafe')
+      .mockReturnValue([{ safeAddress: hexZeroPad('0x123', 20) } as PendingSafeData, setPendingSafeSpy])
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.SUCCESS,
@@ -62,7 +72,7 @@ describe('useSafeCreationEffects', () => {
     const pollSafeInfoSpy = jest.spyOn(pendingSafe, 'pollSafeInfo')
     const setStatusSpy = jest.fn()
     const setPendingSafeSpy = jest.fn()
-
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([{} as PendingSafeData, setPendingSafeSpy])
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.SUCCESS,
