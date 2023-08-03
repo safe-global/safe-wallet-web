@@ -21,10 +21,16 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const addressBook = useAddressBook()
   const prefix = chainInfo?.shortName
 
+  const isPrivyWallet = wallet.walletClientType === 'privy'
+
   const handleSwitchWallet = async () => {
     await privy.logout()
     privy.login()
     handleClose()
+  }
+
+  const exportPrivyAccount = async () => {
+    await privy.exportWallet()
   }
 
   const handleDisconnect = () => {
@@ -118,6 +124,18 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           <Button onClick={handleDisconnect} variant="danger" size="small" fullWidth disableElevation>
             Disconnect
           </Button>
+
+          {isPrivyWallet && (
+            <Button
+              variant="contained"
+              size="small"
+              onClick={exportPrivyAccount}
+              fullWidth
+              sx={{ display: ['none', 'block'] }}
+            >
+              Export Privy Account
+            </Button>
+          )}
         </Paper>
       </Popover>
     </>
