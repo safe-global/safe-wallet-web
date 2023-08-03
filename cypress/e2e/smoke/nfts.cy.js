@@ -84,7 +84,7 @@ describe('Assets > NFTs', () => {
       cy.contains('1')
       cy.contains('2')
       cy.get('b:contains("safeTransferFrom")').should('have.length', 2)
-      cy.contains('button:not([disabled])', 'Submit')
+      cy.contains('button:not([disabled])', 'Execute')
     })
   })
 })

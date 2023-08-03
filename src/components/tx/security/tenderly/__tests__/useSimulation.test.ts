@@ -30,12 +30,12 @@ describe('useSimulation()', () => {
 
   it('should have the correct initial values', () => {
     const { result } = renderHook(() => useSimulation())
-    const { simulation, simulationLink, requestError: simulationError, simulationRequestStatus } = result.current
+    const { simulation, simulationLink, requestError: simulationError, _simulationRequestStatus } = result.current
 
     expect(simulation).toBeUndefined()
     expect(simulationLink).not.toBeUndefined()
     expect(simulationError).toBeUndefined()
-    expect(simulationRequestStatus).toEqual(FETCH_STATUS.NOT_ASKED)
+    expect(_simulationRequestStatus).toEqual(FETCH_STATUS.NOT_ASKED)
   })
 
   it('should set simulationError on errors and errors can be reset.', async () => {
@@ -84,8 +84,8 @@ describe('useSimulation()', () => {
     )
 
     await waitFor(() => {
-      const { simulationRequestStatus, requestError: simulationError } = result.current
-      expect(simulationRequestStatus).toEqual(FETCH_STATUS.ERROR)
+      const { _simulationRequestStatus, requestError: simulationError } = result.current
+      expect(_simulationRequestStatus).toEqual(FETCH_STATUS.ERROR)
       expect(simulationError).toEqual('404 not found')
     })
 
@@ -95,7 +95,7 @@ describe('useSimulation()', () => {
       result.current.resetSimulation()
     })
 
-    expect(result.current.simulationRequestStatus).toEqual(FETCH_STATUS.NOT_ASKED)
+    expect(result.current._simulationRequestStatus).toEqual(FETCH_STATUS.NOT_ASKED)
     expect(result.current.requestError).toBeUndefined()
   })
 
@@ -153,8 +153,8 @@ describe('useSimulation()', () => {
     )
 
     await waitFor(() => {
-      const { simulationRequestStatus, simulation } = result.current
-      expect(simulationRequestStatus).toEqual(FETCH_STATUS.SUCCESS)
+      const { _simulationRequestStatus, simulation } = result.current
+      expect(_simulationRequestStatus).toEqual(FETCH_STATUS.SUCCESS)
       expect(simulation?.simulation.status).toBeTruthy()
       expect(simulation?.simulation.id).toEqual('123')
     })
@@ -165,7 +165,7 @@ describe('useSimulation()', () => {
       result.current.resetSimulation()
     })
 
-    expect(result.current.simulationRequestStatus).toEqual(FETCH_STATUS.NOT_ASKED)
+    expect(result.current._simulationRequestStatus).toEqual(FETCH_STATUS.NOT_ASKED)
     expect(result.current.simulation).toBeUndefined()
   })
 
@@ -223,8 +223,8 @@ describe('useSimulation()', () => {
     )
 
     await waitFor(() => {
-      const { simulationRequestStatus, simulation } = result.current
-      expect(simulationRequestStatus).toEqual(FETCH_STATUS.SUCCESS)
+      const { _simulationRequestStatus, simulation } = result.current
+      expect(_simulationRequestStatus).toEqual(FETCH_STATUS.SUCCESS)
       expect(simulation?.simulation.status).toBeTruthy()
       expect(simulation?.simulation.id).toEqual('123')
     })

@@ -10,7 +10,7 @@ import * as pending from '@/hooks/usePendingTxs'
 import * as txSender from '@/services/tx/tx-sender/dispatch'
 import * as onboardHooks from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
-import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
+import { useAlreadySigned, useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
 
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
@@ -541,5 +541,44 @@ describe('SignOrExecute hooks', () => {
       expect(signSpy).not.toHaveBeenCalled()
       expect(relaySpy).not.toHaveBeenCalled()
     })
+  })
+
+  describe('useAlreadySigned', () => {
+    it('should return true if wallet already signed a tx', () => {
+      // Wallet
+      jest.spyOn(wallet, 'default').mockReturnValue({
+        chainId: '1',
+        label: 'MetaMask',
+        address: '0x1234567890000000000000000000000000000000',
+      } as unknown as ConnectedWallet)
+
+      const tx = createSafeTx()
+      tx.addSignature({
+        signer: '0x1234567890000000000000000000000000000000',
+        data: '0x0001',
+        staticPart: () => '',
+        dynamicPart: () => '',
+      })
+      const { result } = renderHook(() => useAlreadySigned(tx))
+      expect(result.current).toEqual(true)
+    })
+  })
+  it('should return false if wallet has not signed a tx yet', () => {
+    // Wallet
+    jest.spyOn(wallet, 'default').mockReturnValue({
+      chainId: '1',
+      label: 'MetaMask',
+      address: '0x1234567890000000000000000000000000000000',
+    } as unknown as ConnectedWallet)
+
+    const tx = createSafeTx()
+    tx.addSignature({
+      signer: '0x00000000000000000000000000000000000000000',
+      data: '0x0001',
+      staticPart: () => '',
+      dynamicPart: () => '',
+    })
+    const { result } = renderHook(() => useAlreadySigned(tx))
+    expect(result.current).toEqual(false)
   })
 })

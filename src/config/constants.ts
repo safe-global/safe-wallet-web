@@ -37,7 +37,7 @@ export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
 export const SAFE_APPS_INFURA_TOKEN = process.env.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN || INFURA_TOKEN
 export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = 'https://third-party-cookies-check.gnosis-safe.com'
 export const SAFE_APPS_DEMO_SAFE_MAINNET = 'eth:0xfF501B324DC6d78dC9F983f140B9211c3EdB4dc7'
-export const SAFE_APPS_SDK_DOCS_URL = 'https://docs.safe.global/learn/safe-tools/sdks/safe-apps'
+export const SAFE_APPS_SDK_DOCS_URL = 'https://docs.safe.global/safe-core-aa-sdk/safe-apps'
 
 // Google Tag Manager
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || ''
@@ -82,6 +82,7 @@ export const HelpCenterArticle = {
   SPENDING_LIMITS: `${HELP_CENTER_URL}/en/articles/40842-set-up-and-use-spending-limits`,
   TRANSACTION_GUARD: `${HELP_CENTER_URL}/en/articles/40809-what-is-a-transaction-guard`,
   UNEXPECTED_DELEGATE_CALL: `${HELP_CENTER_URL}/en/articles/40794-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction`,
+  DELEGATES: `${HELP_CENTER_URL}/en/articles/40799-what-is-a-delegate-key`,
 } as const
 
 // Social

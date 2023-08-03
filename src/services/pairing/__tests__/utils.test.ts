@@ -27,15 +27,18 @@ describe('Pairing utils', () => {
 
   describe('isPairingSupported', () => {
     it('should return true if the wallet is enabled', () => {
-      const result = isPairingSupported(['walletConnect'])
+      const disabledWallets = ['walletConnect']
+      const result = isPairingSupported(disabledWallets)
       expect(result).toBe(true)
     })
 
     it('should return false if the wallet is disabled', () => {
-      const result1 = isPairingSupported([])
-      expect(result1).toBe(false)
+      const disabledWallets1: string[] = []
+      const result1 = isPairingSupported(disabledWallets1)
+      expect(result1).toBe(true)
 
-      const result2 = isPairingSupported(['safeMobile'])
+      const disabledWallets2 = ['safeMobile']
+      const result2 = isPairingSupported(disabledWallets2)
       expect(result2).toBe(false)
     })
   })

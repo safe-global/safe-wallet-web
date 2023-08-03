@@ -4,7 +4,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useChainId } from '@/hooks/useChainId'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
+import { isExecutable, isMultisigExecutionInfo, isSignableBy } from '@/utils/transaction-guards'
 import { Typography } from '@mui/material'
 import { createExistingTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
@@ -21,11 +21,16 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
   const wallet = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
-  const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
+  const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
 
   const txId = txSummary.id
+  const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
   const canExecute = isExecutable(txSummary, wallet?.address || '', safe)
   const canSign = isSignableBy(txSummary, wallet?.address || '')
+
+  useEffect(() => {
+    txNonce && setNonce(txNonce)
+  }, [setNonce, txNonce])
 
   useEffect(() => {
     createExistingTx(chainId, safeAddress, txId).then(setSafeTx).catch(setSafeTxError)

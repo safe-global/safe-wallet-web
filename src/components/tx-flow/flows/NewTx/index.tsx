@@ -23,7 +23,7 @@ const NewTxMenu = () => {
 
   return (
     <Container className={css.container}>
-      <Grid container>
+      <Grid container justifyContent="center">
         {/* Alignment of `TxLayout` */}
         <Grid item xs={12} md={11} display="flex" flexDirection="column">
           <ChainIndicator inline className={css.chain} />
@@ -44,7 +44,7 @@ const NewTxMenu = () => {
 
             <Grid item xs={12} md={5} className={css.pane} gap={2}>
               <Typography variant="h4" className={css.type}>
-                <SvgIcon component={AssetsIcon} inheritViewBox />
+                <SvgIcon component={AssetsIcon} inheritViewBox color="secondary" />
                 Assets
               </Typography>
 

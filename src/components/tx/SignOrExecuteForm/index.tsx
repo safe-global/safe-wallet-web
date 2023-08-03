@@ -15,13 +15,19 @@ import { selectSettings } from '@/store/settingsSlice'
 import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 import UnknownContractError from './UnknownContractError'
 import RiskConfirmationError from './RiskConfirmationError'
+import useDecodeTx from '@/hooks/useDecodeTx'
+import { ErrorBoundary } from '@sentry/react'
+import ApprovalEditor from '../ApprovalEditor'
+import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
 
 export type SignOrExecuteProps = {
   txId?: string
-  onSubmit: () => void // Should go to the success screen onSubmit
+  onSubmit: () => void
   children?: ReactNode
   isExecutable?: boolean
   isRejection?: boolean
+  isBatch?: boolean
+  isBatchable?: boolean
   onlyExecute?: boolean
   disableSubmit?: boolean
   origin?: string
@@ -30,10 +36,12 @@ export type SignOrExecuteProps = {
 const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
-  const isCreation = !props.txId
-  const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const { safeTx, safeTxError } = useContext(SafeTxContext)
+  const isCreation = safeTx?.signatures.size === 0
+  const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
+  const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
+  const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
@@ -44,7 +52,18 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
       <TxCard>
         {props.children}
 
-        <DecodedTx tx={safeTx} txId={props.txId} />
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor safeTransaction={safeTx} />
+        </ErrorBoundary>
+
+        <DecodedTx
+          tx={safeTx}
+          txId={props.txId}
+          decodedData={decodedData}
+          decodedDataError={decodedDataError}
+          decodedDataLoading={decodedDataLoading}
+          showMultisend={!props.isBatch}
+        />
 
         <RedefineBalanceChanges />
       </TxCard>
@@ -73,7 +92,11 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
 
         <RiskConfirmationError />
 
-        {willExecute ? <ExecuteForm {...props} safeTx={safeTx} /> : <SignForm {...props} safeTx={safeTx} />}
+        {willExecute ? (
+          <ExecuteForm {...props} safeTx={safeTx} />
+        ) : (
+          <SignForm {...props} safeTx={safeTx} isBatchable={isBatchable} />
+        )}
       </TxCard>
     </>
   )
