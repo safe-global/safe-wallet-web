@@ -35,5 +35,5 @@ export const useRecipientModule = (safeTransaction: SafeTransaction | undefined)
       knownAddresses,
       provider: web3,
     })
-  }, [safeTransaction, web3, safeLoaded, safe.chainId, knownAddresses, web3])
+  }, [safeTransaction, web3, safeLoaded, safe.chainId, knownAddresses])
 }

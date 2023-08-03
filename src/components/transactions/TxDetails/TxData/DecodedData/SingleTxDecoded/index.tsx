@@ -61,7 +61,7 @@ export const SingleTxDecoded = ({
           <CodeIcon color="border" fontSize="small" />
           <Typography>{actionTitle}</Typography>
           <Typography ml="8px">
-            <b>{method}</b>
+            <b>{method || 'native transfer'}</b>
           </Typography>
         </div>
       </AccordionSummary>

@@ -16,6 +16,7 @@ import SafeAppActionButtons from '@/components/safe-apps/SafeAppActionButtons'
 import SafeAppTags from '@/components/safe-apps/SafeAppTags'
 import SafeAppSocialLinksCard from '@/components/safe-apps/SafeAppSocialLinksCard'
 import CloseIcon from '@/public/images/common/close.svg'
+import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import css from './styles.module.css'
 
 type SafeAppPreviewDrawerProps = {
@@ -27,8 +28,15 @@ type SafeAppPreviewDrawerProps = {
 }
 
 const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookmark }: SafeAppPreviewDrawerProps) => {
+  const { markSafeAppOpened } = useOpenedSafeApps()
   const router = useRouter()
   const safeAppUrl = getSafeAppUrl(router, safeApp?.url || '')
+
+  const onOpenSafe = () => {
+    if (safeApp) {
+      markSafeAppOpened(safeApp.id)
+    }
+  }
 
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
@@ -82,7 +90,15 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
 
         {/* Open Safe App button */}
         <Link href={safeAppUrl} passHref>
-          <Button fullWidth variant="contained" color="primary" component={'a'} href={safeApp?.url} sx={{ mt: 3 }}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            component="a"
+            href={safeApp?.url}
+            sx={{ mt: 3 }}
+            onClick={onOpenSafe}
+          >
             Open Safe App
           </Button>
         </Link>
