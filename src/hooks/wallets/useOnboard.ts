@@ -78,11 +78,7 @@ const getWalletConnectLabel = async (wallet: ConnectedWallet): Promise<string | 
   return peerWalletV2 || peerWalletV1 || UNKNOWN_PEER
 }
 
-let lastTracked = ''
 const trackWalletType = (wallet: ConnectedWallet) => {
-  if (wallet.label === lastTracked) return
-  lastTracked = wallet.label
-
   trackEvent({ ...WALLET_EVENTS.CONNECT, label: wallet.label })
 
   getWalletConnectLabel(wallet)
@@ -183,20 +179,28 @@ export const useInitOnboard = () => {
   }, [chain, onboard])
 
   // Track connected wallet
-  useEffect(() => {
-    if (!onboard) return
+  {
+    let lastConnectedWallet = ''
+    useEffect(() => {
+      if (!onboard) return
 
-    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
-      const newWallet = getConnectedWallet(wallets)
-      if (newWallet) {
-        trackWalletType(newWallet)
+      const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
+        const newWallet = getConnectedWallet(wallets)
+        if (newWallet) {
+          if (newWallet.label !== lastConnectedWallet) {
+            lastConnectedWallet = newWallet.label
+            trackWalletType(newWallet)
+          }
+        } else {
+          lastConnectedWallet = ''
+        }
+      })
+
+      return () => {
+        walletSubscription.unsubscribe()
       }
-    })
-
-    return () => {
-      walletSubscription.unsubscribe()
-    }
-  }, [onboard])
+    }, [onboard])
+  }
 }
 
 export default useStore
