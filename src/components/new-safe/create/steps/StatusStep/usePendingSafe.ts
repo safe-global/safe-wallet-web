@@ -9,8 +9,8 @@ export const usePendingSafe = (): [PendingSafeData | undefined, (safe: PendingSa
   const [pendingSafes, setPendingSafes] = useLocalStorage<PendingSafeByChain>(SAFE_PENDING_CREATION_STORAGE_KEY)
 
   const chainInfo = useCurrentChain()
-  const pendingSafe = chainInfo && pendingSafes?.[chainInfo.chainId]
 
+  const pendingSafe = chainInfo && pendingSafes?.[chainInfo.chainId]
   const setPendingSafe = useCallback(
     (safe: PendingSafeData | undefined) => {
       if (!chainInfo?.chainId) {
