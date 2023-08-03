@@ -179,28 +179,26 @@ export const useInitOnboard = () => {
   }, [chain, onboard])
 
   // Track connected wallet
-  {
+  useEffect(() => {
     let lastConnectedWallet = ''
-    useEffect(() => {
-      if (!onboard) return
+    if (!onboard) return
 
-      const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
-        const newWallet = getConnectedWallet(wallets)
-        if (newWallet) {
-          if (newWallet.label !== lastConnectedWallet) {
-            lastConnectedWallet = newWallet.label
-            trackWalletType(newWallet)
-          }
-        } else {
-          lastConnectedWallet = ''
+    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
+      const newWallet = getConnectedWallet(wallets)
+      if (newWallet) {
+        if (newWallet.label !== lastConnectedWallet) {
+          lastConnectedWallet = newWallet.label
+          trackWalletType(newWallet)
         }
-      })
-
-      return () => {
-        walletSubscription.unsubscribe()
+      } else {
+        lastConnectedWallet = ''
       }
-    }, [onboard])
-  }
+    })
+
+    return () => {
+      walletSubscription.unsubscribe()
+    }
+  }, [onboard])
 }
 
 export default useStore
