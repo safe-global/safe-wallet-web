@@ -4,8 +4,6 @@ const offset = 7
 
 describe('Adding an owner', () => {
   before(() => {
-    cy.connectE2EWallet()
-
     cy.visit(`/${TEST_SAFE}/settings/setup`)
     cy.contains('button', 'Accept selection').click()
 

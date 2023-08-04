@@ -3,8 +3,6 @@ const SPENDING_LIMIT_SAFE = 'gor:0xBE3C5aFF7f66c23fe71c3047911f9Aa0026b281B'
 
 describe('Check non-owner spending limit beneficiary modal', () => {
   before(() => {
-    cy.connectE2EWallet()
-
     cy.visit(`/${SPENDING_LIMIT_SAFE}/home`, { failOnStatusCode: false })
 
     cy.contains('Accept selection').click()
