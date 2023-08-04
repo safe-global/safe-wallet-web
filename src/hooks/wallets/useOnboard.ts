@@ -9,8 +9,9 @@ import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { useInitPairing } from '@/services/pairing/hooks'
 import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
-import { WALLET_KEYS } from './consts'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
+
+const WALLETCONNECT = 'WalletConnect'
 
 export type ConnectedWallet = {
   label: string
@@ -63,18 +64,11 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
 const getWalletConnectLabel = async (wallet: ConnectedWallet): Promise<string | undefined> => {
   const UNKNOWN_PEER = 'Unknown'
   const { label } = wallet
-
-  const isWalletConnect = [
-    WALLET_KEYS.WALLETCONNECT.toUpperCase(),
-    WALLET_KEYS.WALLETCONNECT_V2.toUpperCase(),
-  ].includes(label.toUpperCase())
-
+  const isWalletConnect = label.startsWith(WALLETCONNECT)
   if (!isWalletConnect) return
-
   const { connector } = wallet.provider as unknown as any
   const peerWalletV2 = connector.session?.peer?.metadata?.name
   const peerWalletV1 = connector.peerMeta?.name
-
   return peerWalletV2 || peerWalletV1 || UNKNOWN_PEER
 }
 
@@ -108,8 +102,6 @@ export const connectWallet = async (
   onboard: OnboardAPI,
   options?: Parameters<OnboardAPI['connectWallet']>[0],
 ): Promise<WalletState[] | undefined> => {
-  const WALLETCONNECT_V2 = 'WalletConnect'
-
   if (isConnecting) {
     return
   }
@@ -119,7 +111,7 @@ export const connectWallet = async (
   // On mobile, automatically choose WalletConnect if there is no injected wallet
   if (!options && isMobile() && !hasInjectedWallet()) {
     options = {
-      autoSelect: WALLETCONNECT_V2,
+      autoSelect: WALLETCONNECT,
     }
   }
 
