@@ -21,6 +21,10 @@
   margin: var(--space-3) 0;
 }
 
+.txs {
+  width: 100%;
+}
+
 .txs ul {
   padding: 0 var(--space-3) var(--space-3);
   display: flex;

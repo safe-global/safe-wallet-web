@@ -17,7 +17,7 @@ const BatchButton = ({
     <Tooltip title={tooltip} placement="top">
       <span>
         <Track {...BATCH_EVENTS.BATCH_APPEND}>
-          <Button variant="outlined" onClick={onClick} disabled={disabled} sx={{ display: ['none', 'block'] }}>
+          <Button variant="outlined" onClick={onClick} disabled={disabled} sx={{ display: ['none', 'flex'] }}>
             <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
             Add to batch
           </Button>

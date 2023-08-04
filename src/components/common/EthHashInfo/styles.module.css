@@ -1,41 +1,19 @@
 .container {
+  position: relative;
+}
+
+.emojiWrapper {
+  text-align: center;
   display: flex;
-  align-items: center;
-  gap: 0.5em;
-  line-height: 1.4;
-}
-
-.avatar {
-  flex-shrink: 0;
-}
-
-.resizeAvatar,
-.resizeAvatar * {
-  width: 2.3em !important;
-  height: 2.3em !important;
-}
-
-.addressRow {
-  display: flex;
-  align-items: center;
-  gap: 0.25em;
-  white-space: nowrap;
-}
-
-.nameRow {
-  overflow: hidden;
-}
-
-.mobileAddress {
-  display: none;
-}
-
-@media (max-width: 599.95px) {
-  .mobileAddress {
-    display: inline-block;
-  }
-
-  .desktopAddress {
-    display: none;
-  }
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 100%;
+  border: 2px solid var(--color-secondary-light);
+  color: #000;
+  background-color: rgba(255, 255, 255, 0.5);
+  text-shadow: -1px 0 0 var(--color-secondary-light), 0 -1px 0 var(--color-secondary-light),
+    1px 0 0 var(--color-secondary-light), 0 1px 0 var(--color-secondary-light);
 }

@@ -109,6 +109,7 @@ describe('AssetsTable', () => {
             onChainSigning: false,
           },
           transactionExecution: true,
+          addressEmojis: false,
         },
       },
     })
@@ -215,6 +216,7 @@ describe('AssetsTable', () => {
             onChainSigning: false,
           },
           transactionExecution: true,
+          addressEmojis: false,
         },
       },
     })
@@ -317,6 +319,7 @@ describe('AssetsTable', () => {
             onChainSigning: false,
           },
           transactionExecution: true,
+          addressEmojis: false,
         },
       },
     })
@@ -416,6 +419,7 @@ describe('AssetsTable', () => {
             onChainSigning: false,
           },
           transactionExecution: true,
+          addressEmojis: false,
         },
       },
     })

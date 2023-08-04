@@ -5,13 +5,14 @@ import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { selectChainById } from '@/store/chainsSlice'
-
-import { getBlockExplorerLink } from '../../../utils/chains'
-
+import { getBlockExplorerLink } from '@/utils/chains'
 import type { EthHashInfoProps } from '@safe-global/safe-react-components'
+import css from './styles.module.css'
+import { Emoji } from './AddressEmoji'
 
 const PrefixedEthHashInfo = ({
   showName = true,
+  avatarSize = 44,
   ...props
 }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
@@ -20,18 +21,24 @@ const PrefixedEthHashInfo = ({
   const addressBook = useAddressBook()
   const link = chain ? getBlockExplorerLink(chain, props.address) : undefined
   const name = showName ? props.name || addressBook[props.address] : undefined
+  const showEmoji = settings.addressEmojis && props.showAvatar !== false && !props.customAvatar && avatarSize >= 20
 
   return (
-    <EthHashInfo
-      prefix={chain?.shortName}
-      showPrefix={settings.shortName.show}
-      copyPrefix={settings.shortName.copy}
-      {...props}
-      name={name}
-      ExplorerButtonProps={{ title: link?.title || '', href: link?.href || '' }}
-    >
-      {props.children}
-    </EthHashInfo>
+    <div className={css.container}>
+      <EthHashInfo
+        prefix={chain?.shortName}
+        showPrefix={settings.shortName.show}
+        copyPrefix={settings.shortName.copy}
+        {...props}
+        name={name}
+        customAvatar={props.customAvatar}
+        ExplorerButtonProps={{ title: link?.title || '', href: link?.href || '' }}
+        avatarSize={avatarSize}
+      >
+        {props.children}
+      </EthHashInfo>
+      {showEmoji && <Emoji address={props.address} size={avatarSize} />}
+    </div>
   )
 }
 
