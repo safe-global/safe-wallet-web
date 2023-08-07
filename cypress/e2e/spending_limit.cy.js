@@ -3,8 +3,6 @@ const SPENDING_LIMIT_SAFE = 'gor:0x28F95E682D1dd632b54Dc61740575f49DB39Eb7F'
 
 describe('Check spending limit modal', () => {
   before(() => {
-    cy.connectE2EWallet()
-
     cy.visit(`/${SPENDING_LIMIT_SAFE}/home`, { failOnStatusCode: false })
 
     cy.contains('Accept selection').click()

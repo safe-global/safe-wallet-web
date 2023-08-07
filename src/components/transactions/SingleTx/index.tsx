@@ -52,6 +52,7 @@ const SingleTx = () => {
         return details
       })
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [transactionId, safe.chainId, safe.txQueuedTag, safe.txHistoryTag, safeAddress],
     false,
   )

@@ -18,6 +18,7 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
       if (!safeLoaded) return
       return getTransactionQueue(chainId, safeAddress)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [safeLoaded, chainId, safeAddress, reloadTag],
     false,
   )

@@ -3,8 +3,6 @@ const RECIPIENT_ADDRESS = '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC'
 
 describe('Tx Simulation', () => {
   before(() => {
-    cy.connectE2EWallet()
-
     // Open the Safe used for testing
     cy.visit(`/${TEST_SAFE}/home`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()

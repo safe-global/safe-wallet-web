@@ -101,7 +101,7 @@ const useIsValidExecution = (
 
       throw err
     }
-  }, [safeTx, wallet, gasLimit, safe, isOwner])
+  }, [safeTx, wallet, gasLimit, chain, customRpc, safe, isOwner])
 
   return { isValidExecution, executionValidationError, isValidExecutionLoading }
 }

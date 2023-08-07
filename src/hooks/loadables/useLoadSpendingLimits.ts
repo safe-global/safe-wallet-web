@@ -105,7 +105,8 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
     if (!provider || !safeLoaded || !safe.modules || !tokenInfoFromBalances) return
 
     return getSpendingLimits(provider, safe.modules, safeAddress, chainId, tokenInfoFromBalances)
-  }, [provider, safeLoaded, safe.modules?.length, safeAddress, chainId, safe.txHistoryTag, tokenInfoFromBalances])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider, safeLoaded, safe.modules, tokenInfoFromBalances, safeAddress, chainId, safe.txHistoryTag])
 
   useEffect(() => {
     if (error) {

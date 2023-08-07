@@ -52,6 +52,7 @@ export const useApprovalInfos = (
         }),
       )
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [hasApprovalSignatures, balances.items.length],
     false, // Do not clear data on balance updates
   )

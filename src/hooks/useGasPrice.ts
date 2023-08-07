@@ -82,7 +82,8 @@ const useGasPrice = (): AsyncResult<{
         maxPriorityFeePerGas: maxPrioFee,
       }
     },
-    [gasPriceConfigs, provider, counter],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [gasPriceConfigs, provider, counter, isEIP1559],
     false,
   )
 
