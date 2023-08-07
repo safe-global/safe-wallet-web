@@ -30,7 +30,7 @@ export const navItems: NavItem[] = [
   {
     label: 'Transactions',
     icon: <SvgIcon component={TransactionIcon} inheritViewBox />,
-    href: AppRoutes.transactions.history,
+    href: AppRoutes.transactions.index,
   },
   {
     label: 'Address book',
