@@ -1,5 +1,11 @@
-import type { ConflictHeader, DateLabel, Label, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
-import { getQueuedTransactionCount } from '../transactions'
+import type {
+  ConflictHeader,
+  DateLabel,
+  Label,
+  SafeAppData,
+  Transaction,
+} from '@safe-global/safe-gateway-typescript-sdk'
+import { getQueuedTransactionCount, getTxOrigin } from '../transactions'
 
 describe('transactions', () => {
   describe('getQueuedTransactionCount', () => {
@@ -57,6 +63,51 @@ describe('transactions', () => {
         ],
       }
       expect(getQueuedTransactionCount(txPage)).toBe('1')
+    })
+  })
+
+  describe('getTxOrigin', () => {
+    it('should return undefined if no app is provided', () => {
+      expect(getTxOrigin()).toBe(undefined)
+    })
+
+    it('should return a stringified object with the app name and url', () => {
+      const app = {
+        url: 'https://test.com',
+        name: 'Test name',
+      } as SafeAppData
+
+      expect(getTxOrigin(app)).toBe('{"url":"https://test.com","name":"Test name"}')
+    })
+
+    it('should limit the origin to 200 characters with preference of the URL', () => {
+      const app = {
+        url: 'https://test.com/' + 'a'.repeat(160),
+        name: 'Test name',
+      } as SafeAppData
+
+      const result = getTxOrigin(app)
+
+      expect(result?.length).toBe(200)
+
+      expect(result).toBe(
+        '{"url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","name":"Tes"}',
+      )
+    })
+
+    it('should only limit the URL to 200 characters', () => {
+      const app = {
+        url: 'https://test.com/' + 'a'.repeat(180),
+        name: 'Test name',
+      } as SafeAppData
+
+      const result = getTxOrigin(app)
+
+      expect(result?.length).toBe(200)
+
+      expect(result).toBe(
+        '{"url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","name":""}',
+      )
     })
   })
 })
