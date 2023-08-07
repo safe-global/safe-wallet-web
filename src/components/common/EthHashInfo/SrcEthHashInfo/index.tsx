@@ -1,4 +1,4 @@
-import type { ReactNode, ReactElement } from 'react'
+import type { ReactNode, ReactElement, SyntheticEvent } from 'react'
 import { isAddress } from 'ethers/lib/utils'
 import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -26,6 +26,8 @@ export type EthHashInfoProps = {
   children?: ReactNode
   ExplorerButtonProps?: ExplorerButtonProps
 }
+
+const stopPropagation = (e: SyntheticEvent) => e.stopPropagation()
 
 const SrcEthHashInfo = ({
   address,
@@ -82,7 +84,7 @@ const SrcEthHashInfo = ({
 
           {hasExplorer && ExplorerButtonProps && (
             <Box color="border.main">
-              <ExplorerButton {...ExplorerButtonProps} />
+              <ExplorerButton {...ExplorerButtonProps} onClick={stopPropagation} />
             </Box>
           )}
 

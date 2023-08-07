@@ -1,4 +1,5 @@
 import { useEffect, type ReactElement } from 'react'
+import classnames from 'classnames'
 import type { CheckboxProps } from '@mui/material'
 import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
@@ -22,26 +23,11 @@ const CookieCheckbox = ({
   checkboxProps,
   label,
   checked,
-  color,
 }: {
   label: string
   checked: boolean
   checkboxProps: CheckboxProps
-  color?: string
-}) => (
-  <FormControlLabel
-    label={label}
-    checked={checked}
-    control={<Checkbox {...checkboxProps} />}
-    sx={{
-      mt: '-9px',
-      color,
-      '.MuiCheckbox-root': {
-        color,
-      },
-    }}
-  />
-)
+}) => <FormControlLabel label={label} checked={checked} control={<Checkbox {...checkboxProps} />} sx={{ mt: '-9px' }} />
 
 export const CookieBanner = ({
   warningKey,
@@ -74,10 +60,8 @@ export const CookieBanner = ({
     setTimeout(handleAccept, 300)
   }
 
-  const color = inverted ? 'background.paper' : undefined
-
   return (
-    <Paper sx={inverted ? { backgroundColor: 'text.primary' } : undefined} className={css.container}>
+    <Paper className={classnames(css.container, { [css.inverted]: inverted })}>
       {warning && (
         <Typography align="center" mb={2} color="warning.background" variant="body2">
           <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" color="error" sx={{ mb: -0.4 }} /> {warning}
@@ -87,49 +71,36 @@ export const CookieBanner = ({
       <form>
         <Grid container alignItems="center">
           <Grid item xs>
-            <Typography variant="body2" color={color} mb={2}>
+            <Typography variant="body2" mb={2}>
               By clicking &quot;Accept all&quot; you agree to the use of the tools listed below and their corresponding{' '}
               <span style={{ whiteSpace: 'nowrap' }}>3rd-party</span> cookies.{' '}
-              <ExternalLink href={AppRoutes.cookie} color={color}>
-                Cookie policy
-              </ExternalLink>
+              <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
             </Typography>
 
             <Grid container alignItems="center" gap={4}>
               <Grid item xs={12} sm>
                 <Box mb={2}>
-                  <CookieCheckbox
-                    checkboxProps={{ id: 'necessary', disabled: true }}
-                    label="Necessary"
-                    checked
-                    color={color}
-                  />
+                  <CookieCheckbox checkboxProps={{ id: 'necessary', disabled: true }} label="Necessary" checked />
                   <br />
-                  <Typography variant="body2" color={color}>
-                    Locally stored data for core functionality
-                  </Typography>
+                  <Typography variant="body2">Locally stored data for core functionality</Typography>
                 </Box>
                 <Box mb={2}>
                   <CookieCheckbox
                     checkboxProps={{ ...register(CookieType.UPDATES), id: 'beamer' }}
                     label="Beamer"
                     checked={watch(CookieType.UPDATES)}
-                    color={color}
                   />
                   <br />
-                  <Typography variant="body2" color={color}>
-                    New features and product announcements
-                  </Typography>
+                  <Typography variant="body2">New features and product announcements</Typography>
                 </Box>
                 <Box>
                   <CookieCheckbox
                     checkboxProps={{ ...register(CookieType.ANALYTICS), id: 'ga' }}
                     label="Google Analytics"
                     checked={watch(CookieType.ANALYTICS)}
-                    color={color}
                   />
                   <br />
-                  <Typography variant="body2" color={color}>
+                  <Typography variant="body2">
                     Help us make the app better. We never track your Safe Account address or wallet addresses, or any
                     transaction data.
                   </Typography>
@@ -139,7 +110,7 @@ export const CookieBanner = ({
 
             <Grid container alignItems="center" justifyContent="center" mt={4} gap={2}>
               <Grid item>
-                <Typography color={color}>
+                <Typography>
                   <Button onClick={handleAccept} variant="text" size="small" color="inherit" disableElevation>
                     Accept selection
                   </Button>
