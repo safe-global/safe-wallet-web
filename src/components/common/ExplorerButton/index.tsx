@@ -1,4 +1,4 @@
-import type { ReactElement, ComponentType } from 'react'
+import type { ReactElement, ComponentType, SyntheticEvent } from 'react'
 import { IconButton, SvgIcon, Tooltip } from '@mui/material'
 import LinkIcon from '@/public/images/common/link.svg'
 
@@ -7,9 +7,16 @@ export type ExplorerButtonProps = {
   href?: string
   className?: string
   icon?: ComponentType
+  onClick?: (e: SyntheticEvent) => void
 }
 
-const ExplorerButton = ({ title = '', href = '', icon = LinkIcon, className }: ExplorerButtonProps): ReactElement => (
+const ExplorerButton = ({
+  title = '',
+  href = '',
+  icon = LinkIcon,
+  className,
+  onClick,
+}: ExplorerButtonProps): ReactElement => (
   <Tooltip title={title} placement="top">
     <IconButton
       className={className}
@@ -18,6 +25,7 @@ const ExplorerButton = ({ title = '', href = '', icon = LinkIcon, className }: E
       href={href}
       size="small"
       sx={{ color: 'inherit' }}
+      onClick={onClick}
     >
       <SvgIcon component={icon} inheritViewBox fontSize="small" />
     </IconButton>
