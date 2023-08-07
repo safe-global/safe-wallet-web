@@ -1,4 +1,5 @@
 import { useEffect, type ReactElement } from 'react'
+import classnames from 'classnames'
 import type { CheckboxProps } from '@mui/material'
 import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
@@ -77,7 +78,7 @@ export const CookieBanner = ({
   const color = inverted ? 'background.paper' : undefined
 
   return (
-    <Paper sx={inverted ? { backgroundColor: 'text.primary' } : undefined} className={css.container}>
+    <Paper className={classnames(css.container, { [css.inverted]: inverted })}>
       {warning && (
         <Typography align="center" mb={2} color="warning.background" variant="body2">
           <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" color="error" sx={{ mb: -0.4 }} /> {warning}
