@@ -37,7 +37,7 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
   const { safeTx, safeTxError } = useContext(SafeTxContext)
-  const isCreation = safeTx?.signatures.size === 0
+  const isCreation = !props.txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
