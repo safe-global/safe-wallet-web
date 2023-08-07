@@ -1,4 +1,3 @@
-import { EthHashInfo } from '@safe-global/safe-react-components'
 import {
   Box,
   Typography,
@@ -27,6 +26,7 @@ import TxCard from '../../common/TxCard'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 type FormData = Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner' | 'threshold'>
 

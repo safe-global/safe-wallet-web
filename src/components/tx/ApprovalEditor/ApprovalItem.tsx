@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react'
 import { Alert, Grid, Typography } from '@mui/material'
 import css from '@/components/tx/ApprovalEditor/styles.module.css'
-import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 const ApprovalItem = ({ spender, children }: { spender: string; children: ReactElement }) => {
   return (
@@ -20,7 +20,7 @@ const ApprovalItem = ({ spender, children }: { spender: string; children: ReactE
 
           <Grid item>
             <Typography fontSize="14px">
-              <PrefixedEthHashInfo address={spender} hasExplorer showAvatar={false} shortAddress={false} />
+              <EthHashInfo address={spender} hasExplorer showAvatar={false} shortAddress={false} />
             </Typography>
           </Grid>
         </Grid>
