@@ -19,7 +19,7 @@ const ShareSafeApp = () => {
     )
   }
 
-  if (!appUrl || !validChain || !chain) {
+  if (router.isReady && (!appUrl || !validChain || !chain)) {
     router.push(AppRoutes.index)
     return null
   }
@@ -34,9 +34,7 @@ const ShareSafeApp = () => {
         <title>Safe Apps – Share</title>
       </Head>
 
-      <main>
-        <SafeAppLanding appUrl={appUrl} chain={chain} />
-      </main>
+      <main>{appUrl && chain && <SafeAppLanding appUrl={appUrl} chain={chain} />}</main>
     </>
   )
 }
