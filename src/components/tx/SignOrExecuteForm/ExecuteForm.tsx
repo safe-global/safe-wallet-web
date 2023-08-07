@@ -8,7 +8,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useImmediatelyExecutable, useIsExecutionLoop, useTxActions } from './hooks'
+import { useIsExecutionLoop, useTxActions } from './hooks'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
@@ -34,6 +34,7 @@ const ExecuteForm = ({
   disableSubmit = false,
   origin,
   onlyExecute,
+  isCreation,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
 }): ReactElement => {
@@ -50,8 +51,6 @@ const ExecuteForm = ({
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
 
   // Check that the transaction is executable
-  const isCreation = safeTx?.signatures.size === 0
-  const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isExecutionLoop = useIsExecutionLoop()
 
   // We default to relay, but the option is only shown if we canRelay
@@ -136,10 +135,8 @@ const ExecuteForm = ({
           </ErrorMessage>
         ) : executionValidationError || gasLimitError ? (
           <ErrorMessage error={executionValidationError || gasLimitError}>
-            This transaction will most likely fail.{' '}
-            {isNewExecutableTx
-              ? 'To save gas costs, avoid creating the transaction.'
-              : 'To save gas costs, reject this transaction.'}
+            This transaction will most likely fail.
+            {` To save gas costs, ${isCreation ? 'avoid creating' : 'reject'} this transaction.`}
           </ErrorMessage>
         ) : (
           submitError && (

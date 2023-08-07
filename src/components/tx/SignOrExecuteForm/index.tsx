@@ -31,6 +31,7 @@ export type SignOrExecuteProps = {
   onlyExecute?: boolean
   disableSubmit?: boolean
   origin?: string
+  isCreation?: boolean
 }
 
 const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
@@ -93,9 +94,9 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
         <RiskConfirmationError />
 
         {willExecute ? (
-          <ExecuteForm {...props} safeTx={safeTx} />
+          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} />
         ) : (
-          <SignForm {...props} safeTx={safeTx} isBatchable={isBatchable} />
+          <SignForm {...props} safeTx={safeTx} isBatchable={isBatchable} isCreation={isCreation} />
         )}
       </TxCard>
     </>
