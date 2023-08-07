@@ -1,10 +1,19 @@
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 
-type ImageFallbackProps = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> & {
-  fallbackSrc: string
-  fallbackComponent?: ReactElement
-}
+type ImageAttributes = React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
+
+type ImageFallbackProps = ImageAttributes &
+  (
+    | {
+        fallbackSrc: string
+        fallbackComponent?: ReactElement
+      }
+    | {
+        fallbackSrc?: string
+        fallbackComponent: ReactElement
+      }
+  )
 
 const ImageFallback = ({ src, fallbackSrc, fallbackComponent, ...props }: ImageFallbackProps): React.ReactElement => {
   const [isError, setIsError] = useState<boolean>(false)
@@ -14,7 +23,7 @@ const ImageFallback = ({ src, fallbackSrc, fallbackComponent, ...props }: ImageF
   return (
     <img
       {...props}
-      alt={props.alt}
+      alt={props.alt || ''}
       src={isError || src === undefined ? fallbackSrc : src}
       onError={() => setIsError(true)}
     />

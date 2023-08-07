@@ -1,13 +1,14 @@
-import { type ReactElement, useState, useCallback } from 'react'
+import type { ReactNode, ReactElement } from 'react'
 import { isAddress } from 'ethers/lib/utils'
 import { useTheme } from '@mui/material/styles'
-import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Identicon from '../../Identicon'
 import CopyAddressButton from '../../CopyAddressButton'
 import ExplorerButton, { type ExplorerButtonProps } from '../../ExplorerButton'
 import { shortenAddress } from '@/utils/formatters'
+import ImageFallback from '../../ImageFallback'
+import css from './styles.module.css'
 
 export type EthHashInfoProps = {
   address: string
@@ -22,7 +23,7 @@ export type EthHashInfoProps = {
   customAvatar?: string
   hasExplorer?: boolean
   avatarSize?: number
-  children?: React.ReactNode
+  children?: ReactNode
   ExplorerButtonProps?: ExplorerButtonProps
 }
 
@@ -41,25 +42,25 @@ const SrcEthHashInfo = ({
   ExplorerButtonProps,
   children,
 }: EthHashInfoProps): ReactElement => {
-  const [fallbackToIdenticon, setFallbackToIdenticon] = useState(false)
   const shouldPrefix = isAddress(address)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
-  const onError = useCallback(() => {
-    setFallbackToIdenticon(true)
-  }, [])
+  const identicon = <Identicon address={address} size={avatarSize} />
 
   return (
-    <Container>
+    <div className={css.container}>
       {showAvatar && (
-        <AvatarContainer size={avatarSize}>
-          {!fallbackToIdenticon && customAvatar ? (
-            <img src={customAvatar} alt={address} onError={onError} width={avatarSize} height={avatarSize} />
+        <div
+          className={css.avatarContainer}
+          style={avatarSize ? { width: `${avatarSize}px`, height: `${avatarSize}px` } : undefined}
+        >
+          {customAvatar ? (
+            <ImageFallback src={customAvatar} fallbackComponent={identicon} width={avatarSize} height={avatarSize} />
           ) : (
-            <Identicon address={address} size={avatarSize} />
+            identicon
           )}
-        </AvatarContainer>
+        </div>
       )}
 
       <Box overflow="hidden">
@@ -69,7 +70,7 @@ const SrcEthHashInfo = ({
           </Box>
         )}
 
-        <AddressContainer>
+        <div className={css.addressContainer}>
           <Box fontWeight="inherit" fontSize="inherit">
             {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
             <span>{shortAddress || isMobile ? shortenAddress(address) : address}</span>
@@ -86,34 +87,10 @@ const SrcEthHashInfo = ({
           )}
 
           {children}
-        </AddressContainer>
+        </div>
       </Box>
-    </Container>
+    </div>
   )
 }
-
-const Container = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '0.5em',
-  lineHeight: 1.4,
-})
-
-const AvatarContainer = styled('div')<{ size?: number }>(({ size }) => ({
-  flexShrink: 0,
-  width: size || '2.3em !important',
-  height: size || '2.3em !important',
-  '> *': {
-    width: '100% !important',
-    height: '100% !important',
-  },
-}))
-
-const AddressContainer = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '0.25em',
-  whiteSpace: 'nowrap',
-})
 
 export default SrcEthHashInfo
