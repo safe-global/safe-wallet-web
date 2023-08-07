@@ -18,12 +18,14 @@ import type { OnboardAPI } from '@web3-onboard/core'
 import { getSafeTxGas, getRecommendedNonce } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
+import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 
 type TxActions = {
   addToBatch: (safeTx?: SafeTransaction, origin?: string) => Promise<string>
   signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string) => Promise<string>
   executeTx: (
     txOptions: TransactionOptions,
+    provider: JsonRpcProvider | Web3Provider,
     safeTx?: SafeTransaction,
     txId?: string,
     origin?: string,
@@ -104,7 +106,7 @@ export const useTxActions = (): TxActions => {
       return tx.txId
     }
 
-    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed) => {
+    const executeTx: TxActions['executeTx'] = async (txOptions, provider, safeTx, txId, origin, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
@@ -124,7 +126,7 @@ export const useTxActions = (): TxActions => {
 
       // Relay or execute the tx via connected wallet
       if (isRelayed) {
-        await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit)
+        await dispatchTxRelay(safeTx, safe, txId, provider, txOptions.gasLimit)
       } else {
         await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress)
       }

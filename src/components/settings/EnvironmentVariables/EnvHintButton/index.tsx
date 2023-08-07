@@ -7,13 +7,15 @@ import { isEnvInitialState } from '@/store/settingsSlice'
 import css from './styles.module.css'
 import AlertIcon from '@/public/images/common/alert.svg'
 import useChainId from '@/hooks/useChainId'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const EnvHintButton = () => {
   const router = useRouter()
   const chainId = useChainId()
+  const wallet = useWallet()
   const isInitialState = useAppSelector((state) => isEnvInitialState(state, chainId))
 
-  if (isInitialState) {
+  if (isInitialState || wallet) {
     return null
   }
 

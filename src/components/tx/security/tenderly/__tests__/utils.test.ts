@@ -12,6 +12,7 @@ import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transa
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
 import { hexZeroPad } from 'ethers/lib/utils'
+import { Web3Provider } from '@ethersproject/providers'
 import * as Web3 from '@/hooks/wallets/web3'
 
 const SIGNATURE_LENGTH = 65 * 2
@@ -26,6 +27,8 @@ describe('simulation utils', () => {
   const mockSafeAddress = ethers.utils.hexZeroPad('0x123', 20)
   const mockMultisendAddress = ethers.utils.hexZeroPad('0x1234', 20)
 
+  const mockProvider = new Web3Provider(jest.fn())
+
   beforeAll(() => {
     const safeContractMock = {
       encode: (functionFragment: string, values: readonly any[]) =>
@@ -37,10 +40,8 @@ describe('simulation utils', () => {
         multiSendContractInterface.encodeFunctionData(functionFragment, values),
       getAddress: () => mockMultisendAddress,
     }
-    jest.spyOn(safeContracts, 'getReadOnlyCurrentGnosisSafeContract').mockImplementation(() => safeContractMock as any)
-    jest
-      .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')
-      .mockImplementation(() => multisendContractMock as any)
+    jest.spyOn(safeContracts, 'getCurrentGnosisSafeContract').mockImplementation(() => safeContractMock as any)
+    jest.spyOn(safeContracts, 'getMultiSendCallOnlyContract').mockImplementation(() => multisendContractMock as any)
 
     jest.spyOn(Web3, '_getWeb3').mockImplementation(
       () =>
@@ -79,6 +80,7 @@ describe('simulation utils', () => {
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
+        provider: mockProvider,
       })
 
       /* Decode the call params:
@@ -147,6 +149,7 @@ describe('simulation utils', () => {
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
+        provider: mockProvider,
       })
 
       const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
@@ -186,6 +189,7 @@ describe('simulation utils', () => {
         executionOwner: ownerAddress,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
+        provider: mockProvider,
       })
 
       const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
@@ -231,6 +235,7 @@ describe('simulation utils', () => {
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
+        provider: mockProvider,
       })
 
       const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
@@ -269,6 +274,7 @@ describe('simulation utils', () => {
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
+        provider: mockProvider,
       })
 
       const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
@@ -317,6 +323,7 @@ describe('simulation utils', () => {
         executionOwner: ownerAddress,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTxs,
+        provider: mockProvider,
       })
 
       const decodedTxData = multiSendContractInterface.decodeFunctionData('multiSend', tenderlyPayload.input)

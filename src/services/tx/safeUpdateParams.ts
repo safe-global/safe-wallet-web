@@ -2,7 +2,8 @@ import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import type GnosisSafeContractEthers from '@safe-global/safe-ethers-lib/dist/src/contracts/GnosisSafe/GnosisSafeContractEthers'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getReadOnlyFallbackHandlerContract, getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
+import { getFallbackHandlerContract, getGnosisSafeContract } from '@/services/contracts/safeContracts'
+import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
@@ -12,12 +13,13 @@ const getChangeFallbackHandlerCallData = (
   safe: SafeInfo,
   chain: ChainInfo,
   safeContractInstance: GnosisSafeContractEthers,
+  provider: JsonRpcProvider | Web3Provider,
 ): string => {
   if (!hasSafeFeature(SAFE_FEATURES.SAFE_FALLBACK_HANDLER, safe.version)) {
     return '0x'
   }
 
-  const fallbackHandlerAddress = getReadOnlyFallbackHandlerContract(chain.chainId).getAddress()
+  const fallbackHandlerAddress = getFallbackHandlerContract(chain.chainId, provider).getAddress()
   return safeContractInstance.encode('setFallbackHandler', [fallbackHandlerAddress])
 }
 
@@ -27,15 +29,19 @@ const getChangeFallbackHandlerCallData = (
  * - set the fallback handler address
  * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
-export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTransactionData[] => {
+export const createUpdateSafeTxs = (
+  safe: SafeInfo,
+  chain: ChainInfo,
+  provider: JsonRpcProvider | Web3Provider,
+): MetaTransactionData[] => {
   assertValidSafeVersion(safe.version)
 
-  const latestMasterCopyAddress = getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION).getAddress()
-  const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain, safe.version)
+  const latestMasterCopyAddress = getGnosisSafeContract(chain, provider, LATEST_SAFE_VERSION).getAddress()
+  const safeContract = getGnosisSafeContract(chain, provider, safe.version)
 
   // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions
-  const changeMasterCopyCallData = readOnlySafeContract.encode('changeMasterCopy', [latestMasterCopyAddress])
-  const changeFallbackHandlerCallData = getChangeFallbackHandlerCallData(safe, chain, readOnlySafeContract)
+  const changeMasterCopyCallData = safeContract.encode('changeMasterCopy', [latestMasterCopyAddress])
+  const changeFallbackHandlerCallData = getChangeFallbackHandlerCallData(safe, chain, safeContract, provider)
 
   const txs: MetaTransactionData[] = [
     {

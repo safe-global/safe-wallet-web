@@ -19,9 +19,9 @@ import {
   Proxy_factory__factory,
 } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
 import {
-  getReadOnlyFallbackHandlerContract,
-  getReadOnlyGnosisSafeContract,
-  getReadOnlyProxyFactoryContract,
+  getFallbackHandlerContract,
+  getGnosisSafeContract,
+  getProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
 
 const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
@@ -225,14 +225,16 @@ describe('createNewSafeViaRelayer', () => {
     l2: false,
   } as ChainInfo
 
+  const mockProvider = new Web3Provider(jest.fn())
+
   it('returns taskId if create Safe successfully relayed', async () => {
     const sponsoredCallSpy = jest.spyOn(relaying, 'sponsoredCall').mockResolvedValue({ taskId: '0x123' })
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
-    const proxyFactoryAddress = getReadOnlyProxyFactoryContract('5').getAddress()
-    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract('5')
-    const safeContractAddress = getReadOnlyGnosisSafeContract(mockChainInfo).getAddress()
+    const proxyFactoryAddress = getProxyFactoryContract('5', mockProvider).getAddress()
+    const readOnlyFallbackHandlerContract = getFallbackHandlerContract('5', mockProvider)
+    const safeContractAddress = getGnosisSafeContract(mockChainInfo, mockProvider).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
       [owner1, owner2],
@@ -251,7 +253,13 @@ describe('createNewSafeViaRelayer', () => {
       expectedSaltNonce,
     ])
 
-    const taskId = await relaySafeCreation(mockChainInfo, [owner1, owner2], expectedThreshold, expectedSaltNonce)
+    const taskId = await relaySafeCreation(
+      mockChainInfo,
+      [owner1, owner2],
+      expectedThreshold,
+      expectedSaltNonce,
+      mockProvider,
+    )
 
     expect(taskId).toEqual('0x123')
     expect(sponsoredCallSpy).toHaveBeenCalledTimes(1)
@@ -267,6 +275,6 @@ describe('createNewSafeViaRelayer', () => {
 
     jest.spyOn(relaying, 'sponsoredCall').mockRejectedValue(relayFailedError)
 
-    expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
+    expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69, mockProvider)).rejects.toEqual(relayFailedError)
   })
 })

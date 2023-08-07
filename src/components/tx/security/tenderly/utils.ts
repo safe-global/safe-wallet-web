@@ -3,11 +3,9 @@ import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transa
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 
-import {
-  getReadOnlyMultiSendCallOnlyContract,
-  getReadOnlyCurrentGnosisSafeContract,
-} from '@/services/contracts/safeContracts'
+import { getCurrentGnosisSafeContract, getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/security/tenderly/types'
@@ -67,6 +65,7 @@ type SingleTransactionSimulationParams = {
   executionOwner: string
   transactions: SafeTransaction
   gasLimit?: number
+  provider: JsonRpcProvider | Web3Provider
 }
 
 type MultiSendTransactionSimulationParams = {
@@ -74,6 +73,7 @@ type MultiSendTransactionSimulationParams = {
   executionOwner: string
   transactions: MetaTransactionData[]
   gasLimit?: number
+  provider: JsonRpcProvider | Web3Provider
 }
 
 export type SimulationTxParams = SingleTransactionSimulationParams | MultiSendTransactionSimulationParams
@@ -97,9 +97,9 @@ export const _getSingleTransactionPayload = (
     transaction = simulatedTransaction
   }
 
-  const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(params.safe)
+  const safeContract = getCurrentGnosisSafeContract(params.safe, params.provider)
 
-  const input = readOnlySafeContract.encode('execTransaction', [
+  const input = safeContract.encode('execTransaction', [
     transaction.data.to,
     transaction.data.value,
     transaction.data.data,
@@ -113,7 +113,7 @@ export const _getSingleTransactionPayload = (
   ])
 
   return {
-    to: readOnlySafeContract.getAddress(),
+    to: safeContract.getAddress(),
     input,
   }
 }
@@ -122,11 +122,11 @@ export const _getMultiSendCallOnlyPayload = (
   params: MultiSendTransactionSimulationParams,
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
   const data = encodeMultiSendData(params.transactions)
-  const readOnlyMultiSendContract = getReadOnlyMultiSendCallOnlyContract(params.safe.chainId, params.safe.version)
+  const multiSendContract = getMultiSendCallOnlyContract(params.safe.chainId, params.provider, params.safe.version)
 
   return {
-    to: readOnlyMultiSendContract.getAddress(),
-    input: readOnlyMultiSendContract.encode('multiSend', [data]),
+    to: multiSendContract.getAddress(),
+    input: multiSendContract.encode('multiSend', [data]),
   }
 }
 

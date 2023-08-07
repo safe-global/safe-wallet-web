@@ -9,20 +9,22 @@ import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import { useWeb3 } from '@/hooks/wallets/web3'
 
 export const UpdateSafeReview = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
+  const web3 = useWeb3()
   const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
 
   useEffect(() => {
-    if (!chain || !safeLoaded) {
+    if (!chain || !safeLoaded || !web3) {
       return
     }
 
-    const txs = createUpdateSafeTxs(safe, chain)
+    const txs = createUpdateSafeTxs(safe, chain, web3)
     createMultiSendCallOnlyTx(txs).then(setSafeTx).catch(setSafeTxError)
-  }, [chain, safe, safeLoaded, setNonce, setSafeTx, setSafeTxError])
+  }, [chain, safe, safeLoaded, setNonce, setSafeTx, setSafeTxError, web3])
 
   return (
     <SignOrExecuteForm onSubmit={() => null}>

@@ -11,7 +11,7 @@ import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardS
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
+import { getFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isWeb3ReadOnly, useWeb3 } from '@/hooks/wallets/web3'
@@ -79,13 +79,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const createSafe = async () => {
     if (!wallet || !provider || isWeb3ReadOnly(provider) || !chain) return
 
-    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
+    const fallbackHandlerContract = getFallbackHandlerContract(chain.chainId, provider)
 
     const props = {
       safeAccountConfig: {
         threshold: data.threshold,
         owners: data.owners.map((owner) => owner.address),
-        fallbackHandler: readOnlyFallbackHandlerContract.getAddress(),
+        fallbackHandler: fallbackHandlerContract.getAddress(),
       },
       safeDeploymentConfig: {
         saltNonce: saltNonce.toString(),

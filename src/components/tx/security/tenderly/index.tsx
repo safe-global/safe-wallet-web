@@ -18,6 +18,7 @@ import sharedCss from '@/components/tx/security/shared/styles.module.css'
 import { TxInfoContext } from '@/components/tx-flow/TxInfoProvider'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import { useWeb3 } from '@/hooks/wallets/web3'
 
 export type TxSimulationProps = {
   transactions?: SimulationTxParams['transactions']
@@ -31,6 +32,7 @@ export type TxSimulationProps = {
 const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
+  const web3 = useWeb3()
   const isDarkMode = useDarkMode()
   const { safeTx } = useContext(SafeTxContext)
   const {
@@ -39,7 +41,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
   } = useContext(TxInfoContext)
 
   const handleSimulation = async () => {
-    if (!wallet) {
+    if (!wallet || !web3) {
       return
     }
 
@@ -48,6 +50,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
       executionOwner: wallet.address,
       transactions,
       gasLimit,
+      provider: web3,
     } as SimulationTxParams)
   }
 

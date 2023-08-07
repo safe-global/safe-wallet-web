@@ -1,3 +1,4 @@
+import { Web3Provider } from '@ethersproject/providers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { act, renderHook, waitFor } from '@/tests/test-utils'
@@ -27,6 +28,8 @@ describe('useSimulation()', () => {
   beforeEach(() => {
     jest.resetAllMocks()
   })
+
+  const mockProvider = new Web3Provider(jest.fn())
 
   it('should have the correct initial values', () => {
     const { result } = renderHook(() => useSimulation())
@@ -80,6 +83,7 @@ describe('useSimulation()', () => {
           chainId,
         } as SafeInfo,
         executionOwner: safeAddress,
+        provider: mockProvider,
       }),
     )
 
@@ -149,6 +153,7 @@ describe('useSimulation()', () => {
           chainId,
         } as SafeInfo,
         executionOwner: safeAddress,
+        provider: mockProvider,
       }),
     )
 
@@ -219,6 +224,7 @@ describe('useSimulation()', () => {
           chainId,
         } as SafeInfo,
         executionOwner: safeAddress,
+        provider: mockProvider,
       }),
     )
 

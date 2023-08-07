@@ -16,7 +16,7 @@ import { TxSimulation } from '@/components/tx/security/tenderly'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { isWeb3ReadOnly, useWeb3 } from '@/hooks/wallets/web3'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import { hasRemainingRelays } from '@/utils/relaying'
@@ -60,14 +60,14 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [params.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
-    if (!chain?.chainId || !safe.version || !web3 || isWeb3ReadOnly(web3)) return
-    return getMultiSendCallOnlyContract(chain.chainId, safe.version, web3)
+    if (!chain?.chainId || !safe.version || !web3) return
+    return getMultiSendCallOnlyContract(chain.chainId, web3, safe.version)
   }, [chain?.chainId, safe.version, web3])
 
   const multiSendTxs = useMemo(() => {
-    if (!txsWithDetails || !chain || !safe.version) return
-    return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
-  }, [chain, safe.address.value, safe.version, txsWithDetails])
+    if (!txsWithDetails || !chain || !safe.version || !web3) return
+    return getMultiSendTxs(txsWithDetails, chain, safe.address.value, web3, safe.version)
+  }, [chain, safe.address.value, safe.version, txsWithDetails, web3])
 
   const multiSendTxData = useMemo(() => {
     if (!txsWithDetails || !multiSendTxs) return

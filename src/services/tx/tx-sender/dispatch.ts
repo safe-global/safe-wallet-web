@@ -10,7 +10,7 @@ import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { waitForRelayedTx } from '@/services/tx/txMonitor'
-import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
+import { getCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import { sponsoredCall } from '@/services/tx/relaying'
 import {
   getAndValidateSafeSDK,
@@ -22,6 +22,7 @@ import {
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
+import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 
 /**
  * Propose a transaction
@@ -315,12 +316,13 @@ export const dispatchTxRelay = async (
   safeTx: SafeTransaction,
   safe: SafeInfo,
   txId: string,
+  provider: JsonRpcProvider | Web3Provider,
   gasLimit?: string | number,
 ) => {
-  const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(safe)
+  const safeContract = getCurrentGnosisSafeContract(safe, provider)
 
   let transactionToRelay = safeTx
-  const data = readOnlySafeContract.encode('execTransaction', [
+  const data = safeContract.encode('execTransaction', [
     transactionToRelay.data.to,
     transactionToRelay.data.value,
     transactionToRelay.data.data,

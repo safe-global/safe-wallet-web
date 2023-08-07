@@ -1,9 +1,9 @@
 import type { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
-  getReadOnlyFallbackHandlerContract,
-  getReadOnlyGnosisSafeContract,
-  getReadOnlyProxyFactoryContract,
+  getFallbackHandlerContract,
+  getGnosisSafeContract,
+  getProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
 import type { ConnectedWallet } from '@/services/onboard'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -43,14 +43,15 @@ export const getSafeDeployProps = (
   safeParams: SafeCreationProps,
   callback: (txHash: string) => void,
   chainId: string,
+  provider: JsonRpcProvider | Web3Provider,
 ): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
-  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chainId)
+  const fallbackHandlerContract = getFallbackHandlerContract(chainId, provider)
 
   return {
     safeAccountConfig: {
       threshold: safeParams.threshold,
       owners: safeParams.owners,
-      fallbackHandler: readOnlyFallbackHandlerContract.getAddress(),
+      fallbackHandler: fallbackHandlerContract.getAddress(),
     },
     safeDeploymentConfig: {
       saltNonce: safeParams.saltNonce.toString(),
@@ -88,23 +89,24 @@ export const encodeSafeCreationTx = ({
   threshold,
   saltNonce,
   chain,
-}: SafeCreationProps & { chain: ChainInfo }) => {
-  const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
-  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId)
-  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
+  provider,
+}: SafeCreationProps & { chain: ChainInfo; provider: Web3Provider | JsonRpcProvider }) => {
+  const safeContract = getGnosisSafeContract(chain, provider, LATEST_SAFE_VERSION)
+  const proxyFactoryContract = getProxyFactoryContract(chain.chainId, provider)
+  const fallbackHandlerContract = getFallbackHandlerContract(chain.chainId, provider)
 
-  const setupData = readOnlySafeContract.encode('setup', [
+  const setupData = safeContract.encode('setup', [
     owners,
     threshold,
     ZERO_ADDRESS,
     EMPTY_DATA,
-    readOnlyFallbackHandlerContract.getAddress(),
+    fallbackHandlerContract.getAddress(),
     ZERO_ADDRESS,
     '0',
     ZERO_ADDRESS,
   ])
 
-  return readOnlyProxyContract.encode('createProxyWithNonce', [readOnlySafeContract.getAddress(), setupData, saltNonce])
+  return proxyFactoryContract.encode('createProxyWithNonce', [safeContract.getAddress(), setupData, saltNonce])
 }
 
 /**
@@ -118,20 +120,21 @@ export const getSafeCreationTxInfo = async (
   chain: ChainInfo,
   wallet: ConnectedWallet,
 ): Promise<PendingSafeTx> => {
-  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId)
+  const proxyFactoryContract = getProxyFactoryContract(chain.chainId, provider)
 
   const data = encodeSafeCreationTx({
     owners: owners.map((owner) => owner.address),
     threshold,
     saltNonce,
     chain,
+    provider,
   })
 
   return {
     data,
     from: wallet.address,
     nonce: await provider.getTransactionCount(wallet.address),
-    to: readOnlyProxyContract.getAddress(),
+    to: proxyFactoryContract.getAddress(),
     value: BigNumber.from(0),
     startBlock: await provider.getBlockNumber(),
   }
@@ -143,12 +146,12 @@ export const estimateSafeCreationGas = async (
   from: string,
   safeParams: SafeCreationProps,
 ): Promise<BigNumber> => {
-  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId)
-  const encodedSafeCreationTx = encodeSafeCreationTx({ ...safeParams, chain })
+  const proxyFactoryContract = getProxyFactoryContract(chain.chainId, provider)
+  const encodedSafeCreationTx = encodeSafeCreationTx({ ...safeParams, provider, chain })
 
   return provider.estimateGas({
     from: from,
-    to: readOnlyProxyFactoryContract.getAddress(),
+    to: proxyFactoryContract.getAddress(),
     data: encodedSafeCreationTx,
   })
 }
@@ -269,13 +272,19 @@ export const getRedirect = (
   return redirectUrl + `${appendChar}safe=${address}`
 }
 
-export const relaySafeCreation = async (chain: ChainInfo, owners: string[], threshold: number, saltNonce: number) => {
-  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId)
-  const proxyFactoryAddress = readOnlyProxyFactoryContract.getAddress()
-  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
-  const fallbackHandlerAddress = readOnlyFallbackHandlerContract.getAddress()
-  const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain)
-  const safeContractAddress = readOnlySafeContract.getAddress()
+export const relaySafeCreation = async (
+  chain: ChainInfo,
+  owners: string[],
+  threshold: number,
+  saltNonce: number,
+  provider: Web3Provider,
+) => {
+  const proxyFactoryContract = getProxyFactoryContract(chain.chainId, provider)
+  const proxyFactoryAddress = proxyFactoryContract.getAddress()
+  const fallbackHandlerContract = getFallbackHandlerContract(chain.chainId, provider)
+  const fallbackHandlerAddress = fallbackHandlerContract.getAddress()
+  const safeContract = getGnosisSafeContract(chain, provider)
+  const safeContractAddress = safeContract.getAddress()
 
   const callData = {
     owners,
@@ -288,7 +297,7 @@ export const relaySafeCreation = async (chain: ChainInfo, owners: string[], thre
     paymentReceiver: ZERO_ADDRESS,
   }
 
-  const initializer = readOnlySafeContract.encode('setup', [
+  const initializer = safeContract.encode('setup', [
     callData.owners,
     callData.threshold,
     callData.to,
@@ -299,7 +308,7 @@ export const relaySafeCreation = async (chain: ChainInfo, owners: string[], thre
     callData.paymentReceiver,
   ])
 
-  const createProxyWithNonceCallData = readOnlyProxyFactoryContract.encode('createProxyWithNonce', [
+  const createProxyWithNonceCallData = proxyFactoryContract.encode('createProxyWithNonce', [
     safeContractAddress,
     initializer,
     saltNonce,

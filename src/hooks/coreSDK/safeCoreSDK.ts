@@ -1,5 +1,4 @@
 import chains from '@/config/chains'
-import { _getWeb3 } from '@/hooks/wallets/web3'
 import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
@@ -28,22 +27,11 @@ export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersio
   return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe Account version`)
 }
 
-export const createEthersAdapter = (provider: Web3Provider) => {
+export const createEthersAdapter = (provider: Web3Provider | JsonRpcProvider) => {
   const signer = provider.getSigner(0)
   return new EthersAdapter({
     ethers,
     signerOrProvider: signer,
-  })
-}
-
-export const createReadOnlyEthersAdapter = (provider = _getWeb3()) => {
-  if (!provider) {
-    throw new Error('Unable to create `EthersAdapter` without a provider')
-  }
-
-  return new EthersAdapter({
-    ethers,
-    signerOrProvider: provider,
   })
 }
 
@@ -91,7 +79,7 @@ export const initSafeSDK = async ({
   }
 
   return Safe.create({
-    ethAdapter: createReadOnlyEthersAdapter(provider),
+    ethAdapter: createEthersAdapter(provider),
     safeAddress: address,
     isL1SafeMasterCopy,
   })

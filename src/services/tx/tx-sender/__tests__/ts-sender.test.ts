@@ -589,9 +589,7 @@ describe('txSender', () => {
         getAddress: () => mockMultisendAddress,
       } as MultiSendCallOnlyEthersContract
 
-      jest
-        .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')
-        .mockImplementation(() => multisendContractMock as any)
+      jest.spyOn(safeContracts, 'getMultiSendCallOnlyContract').mockImplementation(() => multisendContractMock as any)
 
       const mockData = {
         taskId: '0xdead1',

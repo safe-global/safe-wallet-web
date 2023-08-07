@@ -13,10 +13,9 @@ import semverSatisfies from 'semver/functions/satisfies'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { assertValidSafeVersion, createEthersAdapter, createReadOnlyEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
+import { assertValidSafeVersion, createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import type SignMessageLibEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/SignMessageLib/SignMessageLibEthersContract'
-import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type GnosisSafeContractEthers from '@safe-global/safe-ethers-lib/dist/src/contracts/GnosisSafe/GnosisSafeContractEthers'
 import type EthersAdapter from '@safe-global/safe-ethers-lib'
 
@@ -52,12 +51,10 @@ const getGnosisSafeContractEthers = (safe: SafeInfo, ethAdapter: EthersAdapter):
   })
 }
 
-export const getReadOnlyCurrentGnosisSafeContract = (safe: SafeInfo): GnosisSafeContractEthers => {
-  const ethAdapter = createReadOnlyEthersAdapter()
-  return getGnosisSafeContractEthers(safe, ethAdapter)
-}
-
-export const getCurrentGnosisSafeContract = (safe: SafeInfo, provider: Web3Provider): GnosisSafeContractEthers => {
+export const getCurrentGnosisSafeContract = (
+  safe: SafeInfo,
+  provider: JsonRpcProvider | Web3Provider,
+): GnosisSafeContractEthers => {
   const ethAdapter = createEthersAdapter(provider)
   return getGnosisSafeContractEthers(safe, ethAdapter)
 }
@@ -91,8 +88,12 @@ const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): Singl
   )
 }
 
-export const getReadOnlyGnosisSafeContract = (chain: ChainInfo, safeVersion: string = LATEST_SAFE_VERSION) => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+export const getGnosisSafeContract = (
+  chain: ChainInfo,
+  provider: JsonRpcProvider | Web3Provider,
+  safeVersion: string = LATEST_SAFE_VERSION,
+) => {
+  const ethAdapter = createEthersAdapter(provider)
 
   return ethAdapter.getSafeContract({
     singletonDeployment: getSafeContractDeployment(chain, safeVersion),
@@ -126,8 +127,8 @@ export const getMultiSendCallOnlyContractAddress = (chainId: string): string | u
 
 export const getMultiSendCallOnlyContract = (
   chainId: string,
+  provider: JsonRpcProvider | Web3Provider,
   safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
-  provider: Web3Provider,
 ) => {
   const ethAdapter = createEthersAdapter(provider)
 
@@ -137,21 +138,9 @@ export const getMultiSendCallOnlyContract = (
   })
 }
 
-export const getReadOnlyMultiSendCallOnlyContract = (
-  chainId: string,
-  safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
-) => {
-  const ethAdapter = createReadOnlyEthersAdapter()
-
-  return ethAdapter.getMultiSendCallOnlyContract({
-    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId),
-    ..._getValidatedGetContractProps(chainId, safeVersion),
-  })
-}
-
 // GnosisSafeProxyFactory
 
-const getProxyFactoryContractDeployment = (chainId: string) => {
+export const getProxyFactoryContractDeployment = (chainId: string) => {
   return (
     getProxyFactoryDeployment({
       version: LATEST_SAFE_VERSION,
@@ -163,8 +152,12 @@ const getProxyFactoryContractDeployment = (chainId: string) => {
   )
 }
 
-export const getReadOnlyProxyFactoryContract = (chainId: string, safeVersion: string = LATEST_SAFE_VERSION) => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+export const getProxyFactoryContract = (
+  chainId: string,
+  provider: JsonRpcProvider | Web3Provider,
+  safeVersion: string = LATEST_SAFE_VERSION,
+) => {
+  const ethAdapter = createEthersAdapter(provider)
 
   return ethAdapter.getSafeProxyFactoryContract({
     singletonDeployment: getProxyFactoryContractDeployment(chainId),
@@ -186,11 +179,12 @@ const getFallbackHandlerContractDeployment = (chainId: string) => {
   )
 }
 
-export const getReadOnlyFallbackHandlerContract = (
+export const getFallbackHandlerContract = (
   chainId: string,
+  provider: JsonRpcProvider | Web3Provider,
   safeVersion: string = LATEST_SAFE_VERSION,
-): CompatibilityFallbackHandlerEthersContract => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+) => {
+  const ethAdapter = createEthersAdapter(provider)
 
   return ethAdapter.getCompatibilityFallbackHandlerContract({
     singletonDeployment: getFallbackHandlerContractDeployment(chainId),
@@ -203,11 +197,12 @@ const getSignMessageLibContractDeployment = (chainId: string) => {
   return getSignMessageLibDeployment({ network: chainId }) || getSignMessageLibDeployment()
 }
 
-export const getReadOnlySignMessageLibContract = (
+export const getSignMessageLibContract = (
   chainId: string,
+  provider: JsonRpcProvider | Web3Provider,
   safeVersion: string = LATEST_SAFE_VERSION,
 ): SignMessageLibEthersContract => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+  const ethAdapter = createEthersAdapter(provider)
 
   return ethAdapter.getSignMessageLibContract({
     singletonDeployment: getSignMessageLibContractDeployment(chainId),

@@ -14,7 +14,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useChainId from '@/hooks/useChainId'
-import { getReadOnlySignMessageLibContract } from '@/services/contracts/safeContracts'
+import { getSignMessageLibContract } from '@/services/contracts/safeContracts'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
@@ -25,6 +25,7 @@ import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
+import { useWeb3 } from '@/hooks/wallets/web3'
 
 export type SignMessageOnChainProps = {
   appId?: number
@@ -38,6 +39,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const chainId = useChainId()
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
+  const web3 = useWeb3()
   const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
   useHighlightHiddenTab()
@@ -45,8 +47,11 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
 
-  const readOnlySignMessageLibContract = useMemo(() => getReadOnlySignMessageLibContract(chainId), [chainId])
-  const signMessageAddress = readOnlySignMessageLibContract.getAddress()
+  const signMessageLibContract = useMemo(() => {
+    if (web3) {
+      return getSignMessageLibContract(chainId, web3)
+    }
+  }, [chainId, web3])
 
   const [decodedMessage, readableMessage] = useMemo(() => {
     if (isTextMessage) {
@@ -59,10 +64,14 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   }, [isTextMessage, isTypedMessage, message])
 
   useEffect(() => {
+    if (!signMessageLibContract) {
+      return
+    }
+
     let txData
 
     if (isTextMessage) {
-      txData = readOnlySignMessageLibContract.encode('signMessage', [hashMessage(getDecodedMessage(message))])
+      txData = signMessageLibContract.encode('signMessage', [hashMessage(getDecodedMessage(message))])
     } else if (isTypedMessage) {
       const typesCopy = { ...message.types }
 
@@ -71,27 +80,19 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       // The types are not allowed to be recursive, so ever type must either be used by another type, or be
       // the primary type. And there must only be one type that is not used by any other type.
       delete typesCopy.EIP712Domain
-      txData = readOnlySignMessageLibContract.encode('signMessage', [
+      txData = signMessageLibContract.encode('signMessage', [
         _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
 
     const params = {
-      to: signMessageAddress,
+      to: signMessageLibContract.getAddress(),
       value: '0',
       data: txData || '0x',
       operation: OperationType.DelegateCall,
     }
     createTx(params).then(setSafeTx).catch(setSafeTxError)
-  }, [
-    isTextMessage,
-    isTypedMessage,
-    message,
-    readOnlySignMessageLibContract,
-    setSafeTx,
-    setSafeTxError,
-    signMessageAddress,
-  ])
+  }, [isTextMessage, isTypedMessage, message, signMessageLibContract, setSafeTx, setSafeTxError])
 
   const handleSubmit = async () => {
     if (!safeTx || !onboard) return
@@ -107,7 +108,12 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       <SendFromBlock />
 
       <InfoDetails title="Interact with SignMessageLib">
-        <EthHashInfo address={signMessageAddress} shortAddress={false} showCopyButton hasExplorer />
+        <EthHashInfo
+          address={signMessageLibContract?.getAddress() || ''}
+          shortAddress={false}
+          showCopyButton
+          hasExplorer
+        />
       </InfoDetails>
 
       {safeTx && (
