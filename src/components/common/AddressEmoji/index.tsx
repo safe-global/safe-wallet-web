@@ -5,10 +5,13 @@ import css from './styles.module.css'
 
 // Define the Unicode ranges for animal, fruit, and vegetable emojis
 const unicodeRanges = [
-  [0x1f400, 0x1f43f],
-  [0x1f980, 0x1f994],
-  [0x1f345, 0x1f35f],
-  [0x1f950, 0x1f96b],
+  [0x1f600, 0x1f60e],
+  [0x1f638, 0x1f63d],
+  [0x1f680, 0x1f683],
+  [0x2614, 0x2615],
+  [0x1f330, 0x1f393],
+  [0x1f3a0, 0x1f3ca],
+  [0x1f400, 0x1f42a],
 ]
 
 // Calculate the total number of emojis
@@ -17,7 +20,7 @@ for (let range of unicodeRanges) {
   totalEmojis += range[1] - range[0] + 1
 }
 
-function ethereumAddressToEmoji(address: string): string {
+export function ethereumAddressToEmoji(address: string): string {
   // Convert the Ethereum address from hexadecimal to decimal
   const decimal = BigInt(address.slice(0, 6))
 

@@ -1,12 +1,12 @@
 import { type ReactElement } from 'react'
+import { Box } from '@mui/material'
 import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { selectChainById } from '@/store/chainsSlice'
 import { getBlockExplorerLink } from '@/utils/chains'
-import css from './styles.module.css'
-import { Emoji } from './AddressEmoji'
+import { Emoji } from '@/components/common/AddressEmoji'
 import SrcEthHashInfo, { type EthHashInfoProps } from './SrcEthHashInfo'
 
 const EthHashInfo = ({
@@ -23,7 +23,7 @@ const EthHashInfo = ({
   const showEmoji = settings.addressEmojis && props.showAvatar !== false && !props.customAvatar && avatarSize >= 20
 
   return (
-    <div className={css.container}>
+    <Box position="relative">
       <SrcEthHashInfo
         prefix={chain?.shortName}
         showPrefix={settings.shortName.show}
@@ -37,7 +37,7 @@ const EthHashInfo = ({
         {props.children}
       </SrcEthHashInfo>
       {showEmoji && <Emoji address={props.address} size={avatarSize} />}
-    </div>
+    </Box>
   )
 }
 
