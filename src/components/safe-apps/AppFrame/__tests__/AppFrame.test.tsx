@@ -9,16 +9,19 @@ import {
   TransactionStatus,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { getEmptySafeApp } from '@/components/safe-apps/utils'
+
+const emptySafeApp = getEmptySafeApp()
 
 describe('AppFrame', () => {
   it('should not show the transaction queue bar when there are no queued transactions', () => {
-    render(<AppFrame appUrl="https://app.url" allowedFeaturesList="" />)
+    render(<AppFrame appUrl="https://app.url" allowedFeaturesList="" safeAppFromManifest={emptySafeApp} />)
 
     expect(screen.queryAllByText('(0) Transaction queue').length).toBe(0)
   })
 
   it('should show queued transactions in the queue bar', () => {
-    render(<AppFrame appUrl="https://app.url" allowedFeaturesList="" />, {
+    render(<AppFrame appUrl="https://app.url" allowedFeaturesList="" safeAppFromManifest={emptySafeApp} />, {
       initialReduxState: {
         safeInfo: {
           loading: true,
