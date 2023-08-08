@@ -158,7 +158,7 @@ describe('Assets > Coins', () => {
 
     it('should allow changing the currency to EUR', () => {
       // Click on balances currency dropdown
-      cy.get('[id="currency"]').click()
+      cy.get('[id="currency"]').click({ force: true })
 
       // Select EUR
       cy.get('ul[role="listbox"]').findByText('EUR').click({ force: true })
@@ -181,7 +181,7 @@ describe('Assets > Coins', () => {
 
     it('unhide hidden token', () => {
       // Open hide token menu
-      cy.contains('1 hidden token').click()
+      cy.contains('1 hidden token').click({ force: true })
       // uncheck dai token
       cy.contains('Dai').parents('tr').find('input[type="checkbox"]').click()
       // apply changes
