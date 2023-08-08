@@ -28,6 +28,7 @@ import { SvgIcon } from '@mui/material'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import EnvHintButton from '@/components/settings/EnvironmentVariables/EnvHintButton'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import ExplorerButton from '@/components/common/ExplorerButton'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
@@ -93,16 +94,7 @@ const SafeHeader = (): ReactElement => {
           </Track>
 
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
-            <Tooltip title={blockExplorerLink?.title || ''} placement="top">
-              <IconButton
-                className={css.iconButton}
-                target="_blank"
-                rel="noreferrer"
-                href={blockExplorerLink?.href || ''}
-              >
-                <SvgIcon component={LinkIconBold} inheritViewBox fontSize="small" color="primary" />
-              </IconButton>
-            </Tooltip>
+            <ExplorerButton {...blockExplorerLink} className={css.iconButton} icon={LinkIconBold} />
           </Track>
 
           <EnvHintButton />

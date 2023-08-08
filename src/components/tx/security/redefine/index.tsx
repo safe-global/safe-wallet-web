@@ -11,14 +11,15 @@ import { ErrorBoundary } from '@sentry/react'
 import { REDEFINE_ARTICLE, REDEFINE_SIMULATION_URL } from '@/config/constants'
 import css from 'src/components/tx/security/redefine/styles.module.css'
 import sharedCss from '@/components/tx/security/shared/styles.module.css'
-import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.svg'
-import RedefineLogo from '@/public/images/transactions/redefine.svg'
+import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.png'
+import RedefineLogo from '@/public/images/transactions/redefine.png'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import CircularProgress from '@mui/material/CircularProgress'
 import { RedefineHint } from '@/components/tx/security/redefine/RedefineHint'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import Image from 'next/image'
 
 const MAX_SHOWN_WARNINGS = 3
 
@@ -81,11 +82,9 @@ const RedefineBlock = () => {
 
           <Typography variant="caption" className={sharedCss.poweredBy} position="relative">
             Powered by{' '}
-            <SvgIcon
-              inheritViewBox
-              sx={{ height: '40px', width: '52px', position: 'absolute', right: '-58px' }}
-              component={isDarkMode ? RedefineLogoDark : RedefineLogo}
-            />
+            <div className={css.redefine}>
+              <Image src={isDarkMode ? RedefineLogoDark : RedefineLogo} alt="Redefine logo" />
+            </div>
           </Typography>
         </div>
 

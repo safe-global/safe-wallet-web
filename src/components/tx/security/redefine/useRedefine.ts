@@ -11,8 +11,8 @@ import {
 import type { SecurityResponse } from '@/services/security/modules/types'
 import { FEATURES } from '@/utils/chains'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { useState, useEffect, useMemo } from 'react'
-import { type AlertColor, type SvgIconProps } from '@mui/material'
+import { useState, useEffect, useMemo, type ComponentType } from 'react'
+import { type AlertColor } from '@mui/material'
 import { SecuritySeverity } from '@/services/security/modules/types'
 import CloseIcon from '@/public/images/common/close.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -31,8 +31,7 @@ const CRITICAL_ERRORS: Record<number, string> = {
 
 type SecurityWarningProps = {
   color: AlertColor
-  // @ts-expect-error - Use any to avoid conflicts with @svgr/webpack plugin or babel-plugin-inline-react-svg plugin.
-  icon: SvgIconProps['component']
+  icon: ComponentType
   label: string
   action?: string
 }

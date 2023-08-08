@@ -129,12 +129,14 @@ const useSafeTokenAllocation = (): [BigNumber | undefined, boolean] => {
       ),
     )
     // If the history tag changes we could have claimed / redeemed tokens
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, safeAddress, safe.txHistoryTag])
 
   const [balance, _error, balanceLoading] = useAsync<string>(() => {
     if (!safeAddress) return
     return fetchTokenBalance(chainId, safeAddress)
     // If the history tag changes we could have claimed / redeemed tokens
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, safeAddress, safe.txHistoryTag])
 
   const allocation = useMemo(() => {

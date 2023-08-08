@@ -23,6 +23,7 @@ const SignForm = ({
   origin,
   isBatch,
   isBatchable,
+  isCreation,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
 }): ReactElement => {
@@ -36,7 +37,6 @@ const SignForm = ({
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
   const hasSigned = useAlreadySigned(safeTx)
-  const isCreation = !txId
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent, isAddingToBatch = false) => {

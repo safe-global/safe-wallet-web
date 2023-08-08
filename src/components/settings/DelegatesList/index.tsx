@@ -2,7 +2,7 @@ import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
-import PrefixedEthHashInfo from '@/components/common/EthHashInfo'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
@@ -61,7 +61,7 @@ const DelegatesList = () => {
                   style={{ listStyleType: 'none', marginBottom: '1em' }}
                   title={`Delegated by ${item.delegator}`}
                 >
-                  <PrefixedEthHashInfo
+                  <EthHashInfo
                     address={item.delegate}
                     showCopyButton
                     hasExplorer

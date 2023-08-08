@@ -22,6 +22,15 @@ export const useHasPendingTxs = (): boolean => {
   return pendingIds.length > 0
 }
 
+/**
+ * Show unsigned pending queue only in 1/X Safes
+ */
+export const useShowUnsignedQueue = (): boolean => {
+  const { safe } = useSafeInfo()
+  const hasPending = useHasPendingTxs()
+  return safe.threshold === 1 && hasPending
+}
+
 export const usePendingTxsQueue = (): {
   page?: TransactionListPage
   error?: string
@@ -30,13 +39,14 @@ export const usePendingTxsQueue = (): {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const pendingIds = usePendingTxIds()
+  const hasPending = pendingIds.length > 0
 
   const [untrustedQueue, error, loading] = useAsync<TransactionListPage>(
     () => {
-      if (!pendingIds.length) return
+      if (!hasPending) return
       return getTransactionQueue(chainId, safeAddress, undefined, false)
     },
-    [chainId, safeAddress, pendingIds],
+    [chainId, safeAddress, hasPending],
     false,
   )
 
