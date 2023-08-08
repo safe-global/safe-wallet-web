@@ -6,21 +6,18 @@ import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { updateAddressBook } from '@/components/new-safe/create/logic/address-book'
 import { useAppDispatch } from '@/store'
 import useChainId from '@/hooks/useChainId'
-import type { PendingSafeData } from '@/components/new-safe/create/steps/StatusStep/index'
+import { usePendingSafe } from './usePendingSafe'
 
 const useSafeCreationEffects = ({
-  pendingSafe,
-  setPendingSafe,
   status,
   setStatus,
 }: {
-  pendingSafe: PendingSafeData | undefined
-  setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>
   status: SafeCreationStatus
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>
 }) => {
   const dispatch = useAppDispatch()
   const chainId = useChainId()
+  const [pendingSafe, setPendingSafe] = usePendingSafe()
 
   useEffect(() => {
     if (status === SafeCreationStatus.SUCCESS) {
@@ -58,7 +55,7 @@ const useSafeCreationEffects = ({
       status === SafeCreationStatus.REVERTED
     ) {
       if (pendingSafe?.txHash) {
-        setPendingSafe((prev) => (prev ? { ...prev, txHash: undefined, tx: undefined } : undefined))
+        setPendingSafe(pendingSafe ? { ...pendingSafe, txHash: undefined, tx: undefined } : undefined)
       }
       return
     }
