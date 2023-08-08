@@ -8,7 +8,7 @@ import { useWeb3ReadOnly } from '../hooks/wallets/web3'
 import { Errors, logError } from '@/services/exceptions'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { asError } from '@/services/exceptions/utils'
-import { adjustGasEstimationForChain } from '@/utils/gas'
+import { adjustGasPriceEstimationForChain } from '@/utils/gas'
 
 export type EstimatedGasPrice = {
   maxFeePerGas: BigNumber | undefined
@@ -80,12 +80,12 @@ const useGasPrice = (): AsyncResult<EstimatedGasPrice> => {
       const maxFee = gasPrice || (isEIP1559 ? feeData?.maxFeePerGas : feeData?.gasPrice) || undefined
       const maxPrioFee = (isEIP1559 && feeData?.maxPriorityFeePerGas) || undefined
 
-      const gasEstimation = {
+      const gasPriceEstimation = {
         maxFeePerGas: maxFee,
         maxPriorityFeePerGas: maxPrioFee,
       }
 
-      return adjustGasEstimationForChain(gasEstimation, chain?.chainId)
+      return adjustGasPriceEstimationForChain(gasPriceEstimation, chain?.chainId)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [gasPriceConfigs, provider, counter, isEIP1559],
