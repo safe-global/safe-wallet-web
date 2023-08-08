@@ -58,9 +58,8 @@ export const createOnboard = (
 
     connect: {
       removeWhereIsMyWalletWarning: true,
+      autoConnectLastWallet: true,
     },
-
-    // TODO: Investigate using `autoConnectLastWallet` instead of our `lastWalletStorage`
   })
 
   return onboard

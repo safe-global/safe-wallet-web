@@ -173,7 +173,7 @@ describe('EthHashInfo', () => {
 
       expect(container.querySelector('.icon')).toHaveAttribute(
         'style',
-        `background-image: url(${makeBlockie(MOCK_SAFE_ADDRESS)}); width: 40px; height: 40px;`,
+        `background-image: url(${makeBlockie(MOCK_SAFE_ADDRESS)}); width: 44px; height: 44px;`,
       )
     })
 

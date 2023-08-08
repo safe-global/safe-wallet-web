@@ -2,8 +2,6 @@ const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 
 describe('Assets > NFTs', () => {
   before(() => {
-    cy.connectE2EWallet()
-
     cy.visit(`/balances/nfts?safe=${TEST_SAFE}`)
     cy.contains('button', 'Accept selection').click()
     cy.contains(/E2E Wallet @ G(ö|oe)rli/)

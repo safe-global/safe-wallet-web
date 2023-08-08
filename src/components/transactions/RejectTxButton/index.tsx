@@ -32,7 +32,7 @@ const RejectTxButton = ({
   const tooltipTitle = getTxButtonTooltip('Replace', { hasSafeSDK: !!safeSDK })
 
   const openReplacementModal = () => {
-    if (!txNonce) return
+    if (txNonce === undefined) return
     setTxFlow(<ReplaceTxMenu txNonce={txNonce} />)
   }
 
