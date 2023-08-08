@@ -10,7 +10,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useCurrentChain } from '@/hooks/useChains'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { getFirebaseSwRegistrationPath } from '@/services/firebase'
 
 const NOTIFICATIONS_LS_REGISTRATION_KEY = 'firebaseCloudMessaging'
 
@@ -34,8 +33,9 @@ type RegisterDeviceDto = {
 }
 
 const getFirebaseToken = async () => {
-  const firebaseSwPath = getFirebaseSwRegistrationPath()
-  const swRegistration = await navigator.serviceWorker.getRegistration(firebaseSwPath)
+  const NEXT_PWA_SW_PATH = '/sw.js'
+
+  const swRegistration = await navigator.serviceWorker.getRegistration(NEXT_PWA_SW_PATH)
 
   // Get token
   const messaging = getMessaging()

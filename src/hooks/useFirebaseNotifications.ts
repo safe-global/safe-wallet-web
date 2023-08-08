@@ -4,31 +4,19 @@ import { getMessaging, onMessage } from 'firebase/messaging'
 
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { FIREBASE_CONFIG, getFirebaseSwRegistrationPath } from '@/services/firebase'
+import {
+  FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_DATABASE_URL,
+  FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET,
+  FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_APP_ID,
+  FIREBASE_MEASUREMENT_ID,
+} from '@/config/constants'
 
 export const useFirebaseNotifications = (): null => {
   const dispatch = useAppDispatch()
-
-  // Register servicer worker
-  useEffect(() => {
-    if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
-      return
-    }
-
-    const registerFirebaseSw = () => {
-      // Firebase normally registers a service worker when calling `getToken`
-      // but we register it manually to pass custom config from the env
-      const serviceWorkerPath = getFirebaseSwRegistrationPath()
-
-      navigator.serviceWorker.register(serviceWorkerPath).catch(() => null)
-    }
-
-    window.addEventListener('load', registerFirebaseSw)
-
-    return () => {
-      window.removeEventListener('load', registerFirebaseSw)
-    }
-  }, [])
 
   // Listen for messages
   useEffect(() => {
@@ -37,7 +25,17 @@ export const useFirebaseNotifications = (): null => {
     }
 
     // TODO: Should this be added to the privacy policy?
-    const _app = initializeApp(FIREBASE_CONFIG)
+    const _app = initializeApp({
+      apiKey: FIREBASE_API_KEY,
+      authDomain: FIREBASE_AUTH_DOMAIN,
+      databaseURL: FIREBASE_DATABASE_URL,
+      projectId: FIREBASE_PROJECT_ID,
+      storageBucket: FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+      appId: FIREBASE_APP_ID,
+      measurementId: FIREBASE_MEASUREMENT_ID,
+    })
+
     const messaging = getMessaging(_app)
 
     const unsubscribe = onMessage(messaging, (payload) => {

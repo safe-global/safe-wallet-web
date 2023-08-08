@@ -1,9 +1,10 @@
 import path from 'path'
 import withBundleAnalyzer from '@next/bundle-analyzer'
-import NextPwa from'next-pwa'
+import NextPwa from 'next-pwa'
 
+// If we disable this, it will also disable the Firebase SW
+// @see https://github.com/safe-global/safe-wallet-web/pull/2369/commits/92106a828084a1b25763fb6e3e4aa058e491265b
 const withPWA = NextPwa({
-  disable: process.env.NODE_ENV === 'development',
   dest: 'public',
   reloadOnOnline: false,
   /* Do not precache anything */
