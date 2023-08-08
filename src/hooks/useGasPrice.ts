@@ -8,6 +8,12 @@ import { useWeb3ReadOnly } from '../hooks/wallets/web3'
 import { Errors, logError } from '@/services/exceptions'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { asError } from '@/services/exceptions/utils'
+import { adjustGasEstimationForChain } from '@/utils/gas'
+
+export type EstimatedGasPrice = {
+  maxFeePerGas: BigNumber | undefined
+  maxPriorityFeePerGas: BigNumber | undefined
+}
 
 // Update gas fees every 20 seconds
 const REFRESH_DELAY = 20e3
@@ -53,10 +59,7 @@ const getGasPrice = async (gasPriceConfigs: GasPrice): Promise<BigNumber | undef
   }
 }
 
-const useGasPrice = (): AsyncResult<{
-  maxFeePerGas: BigNumber | undefined
-  maxPriorityFeePerGas: BigNumber | undefined
-}> => {
+const useGasPrice = (): AsyncResult<EstimatedGasPrice> => {
   const chain = useCurrentChain()
   const gasPriceConfigs = chain?.gasPrice
   const [counter] = useIntervalCounter(REFRESH_DELAY)
@@ -77,10 +80,12 @@ const useGasPrice = (): AsyncResult<{
       const maxFee = gasPrice || (isEIP1559 ? feeData?.maxFeePerGas : feeData?.gasPrice) || undefined
       const maxPrioFee = (isEIP1559 && feeData?.maxPriorityFeePerGas) || undefined
 
-      return {
+      const gasEstimation = {
         maxFeePerGas: maxFee,
         maxPriorityFeePerGas: maxPrioFee,
       }
+
+      return adjustGasEstimationForChain(gasEstimation, chain?.chainId)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [gasPriceConfigs, provider, counter, isEIP1559],
