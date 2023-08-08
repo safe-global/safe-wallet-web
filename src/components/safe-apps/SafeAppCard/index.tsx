@@ -19,7 +19,6 @@ import SafeAppTags from '@/components/safe-apps/SafeAppTags'
 import { isOptimizedForBatchTransactions } from '@/components/safe-apps/utils'
 import { AppRoutes } from '@/config/routes'
 import BatchIcon from '@/public/images/apps/batch-icon.svg'
-import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import css from './styles.module.css'
 
 export type SafeAppsViewMode = 'list-view' | 'grid-view'
@@ -111,7 +110,7 @@ const SafeAppCardGridView = ({
   openPreviewDrawer,
 }: SafeAppCardViewProps) => {
   return (
-    <SafeAppCardContainer safeApp={safeApp} safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp} height={'100%'}>
+    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp} height={'100%'}>
       {/* Safe App Header */}
       <CardHeader
         className={css.safeAppHeader}
@@ -168,7 +167,7 @@ const SafeAppCardListView = ({
   openPreviewDrawer,
 }: SafeAppCardViewProps) => {
   return (
-    <SafeAppCardContainer safeApp={safeApp} safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
+    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
       <CardContent sx={{ pb: '16px !important' }}>
         <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
           <div className={css.safeAppIconContainer}>
@@ -204,7 +203,6 @@ const SafeAppCardListView = ({
 
 type SafeAppCardContainerProps = {
   onClickSafeApp?: () => void
-  safeApp?: SafeAppData
   safeAppUrl: string
   children: ReactNode
   height?: string
@@ -213,18 +211,15 @@ type SafeAppCardContainerProps = {
 
 export const SafeAppCardContainer = ({
   children,
-  safeApp,
   safeAppUrl,
   onClickSafeApp,
   height,
   className,
 }: SafeAppCardContainerProps) => {
-  const { openedSafeAppIds } = useOpenedSafeApps()
-
   const handleClickSafeApp = (event: SyntheticEvent) => {
-    if (safeApp && !openedSafeAppIds.includes(safeApp.id)) {
+    if (onClickSafeApp) {
       event.preventDefault()
-      onClickSafeApp?.()
+      onClickSafeApp()
     }
   }
 

@@ -1,6 +1,5 @@
 import { useContext, useEffect } from 'react'
 import { Typography, Divider, Box, Paper, SvgIcon } from '@mui/material'
-import { EthHashInfo } from '@safe-global/safe-react-components'
 import type { ReactElement } from 'react'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -11,6 +10,7 @@ import { createRemoveOwnerTx } from '@/services/tx/tx-sender'
 import MinusIcon from '@/public/images/common/minus.svg'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { RemoveOwnerFlowProps } from '.'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 

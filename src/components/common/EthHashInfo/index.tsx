@@ -1,16 +1,15 @@
 import { type ReactElement } from 'react'
-import { EthHashInfo } from '@safe-global/safe-react-components'
 import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 import { selectChainById } from '@/store/chainsSlice'
 import { getBlockExplorerLink } from '@/utils/chains'
-import type { EthHashInfoProps } from '@safe-global/safe-react-components'
 import css from './styles.module.css'
 import { Emoji } from './AddressEmoji'
+import SrcEthHashInfo, { type EthHashInfoProps } from './SrcEthHashInfo'
 
-const PrefixedEthHashInfo = ({
+const EthHashInfo = ({
   showName = true,
   avatarSize = 44,
   ...props
@@ -25,7 +24,7 @@ const PrefixedEthHashInfo = ({
 
   return (
     <div className={css.container}>
-      <EthHashInfo
+      <SrcEthHashInfo
         prefix={chain?.shortName}
         showPrefix={settings.shortName.show}
         copyPrefix={settings.shortName.copy}
@@ -36,10 +35,10 @@ const PrefixedEthHashInfo = ({
         avatarSize={avatarSize}
       >
         {props.children}
-      </EthHashInfo>
+      </SrcEthHashInfo>
       {showEmoji && <Emoji address={props.address} size={avatarSize} />}
     </div>
   )
 }
 
-export default PrefixedEthHashInfo
+export default EthHashInfo
