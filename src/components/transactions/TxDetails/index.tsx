@@ -30,6 +30,7 @@ import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsPending from '@/hooks/useIsPending'
+import ReadableDescription from '@/components/transactions/TxDetails/TxData/ReadableDescription'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -60,6 +61,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
 
         <div className={css.txData}>
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
+            <ReadableDescription txData={txDetails.txData} />
             <TxData txDetails={txDetails} />
           </ErrorBoundary>
         </div>
