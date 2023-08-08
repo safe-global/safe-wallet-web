@@ -39,13 +39,14 @@ export const usePendingTxsQueue = (): {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const pendingIds = usePendingTxIds()
+  const hasPending = pendingIds.length > 0
 
   const [untrustedQueue, error, loading] = useAsync<TransactionListPage>(
     () => {
-      if (!pendingIds.length) return
+      if (!hasPending) return
       return getTransactionQueue(chainId, safeAddress, undefined, false)
     },
-    [chainId, safeAddress, pendingIds],
+    [chainId, safeAddress, hasPending],
     false,
   )
 
