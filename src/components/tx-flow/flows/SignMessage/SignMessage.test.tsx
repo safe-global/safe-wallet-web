@@ -16,6 +16,7 @@ import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { EIP1193Provider, WalletState, AppState, OnboardAPI } from '@web3-onboard/core'
 import { generateSafeMessageHash } from '@/utils/safe-messages'
+import { getSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
@@ -68,6 +69,14 @@ const mockOnboard = {
 } as unknown as OnboardAPI
 
 describe('SignMessage', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
   beforeEach(() => {
     jest.clearAllMocks()
 
@@ -196,7 +205,7 @@ describe('SignMessage', () => {
 
     jest.spyOn(useAsyncHook, 'default').mockReturnValue([undefined, new Error('SafeMessage not found'), false])
 
-    const { getByText } = render(
+    const { getByText, baseElement } = render(
       <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
@@ -206,7 +215,23 @@ describe('SignMessage', () => {
       />,
     )
 
-    const proposalSpy = jest.spyOn(sender, 'dispatchSafeMsgProposal')
+    const proposalSpy = jest.spyOn(sender, 'dispatchSafeMsgProposal').mockImplementation(() => Promise.resolve())
+    const mockMessageHash = '0x456'
+    const msg = {
+      type: SafeMessageListItemType.MESSAGE,
+      messageHash: mockMessageHash,
+      confirmations: [
+        {
+          owner: {
+            value: hexZeroPad('0x2', 20),
+          },
+        },
+      ],
+      confirmationsRequired: 2,
+      confirmationsSubmitted: 1,
+    } as unknown as SafeMessage
+
+    ;(getSafeMessage as jest.Mock).mockResolvedValue(msg)
 
     const button = getByText('Sign')
 
@@ -228,6 +253,11 @@ describe('SignMessage', () => {
         safeAppId: 25,
       }),
     )
+
+    // Immediately refetches message and displays confirmation
+    expect(baseElement).toHaveTextContent('0x0000...0002')
+    expect(baseElement).toHaveTextContent('1 of 2')
+    expect(baseElement).toHaveTextContent('Confirmation #2')
   })
 
   it('confirms the message if already proposed', async () => {
@@ -275,11 +305,31 @@ describe('SignMessage', () => {
       Promise.resolve()
     })
 
-    const confirmationSpy = jest.spyOn(sender, 'dispatchSafeMsgConfirmation')
+    const confirmationSpy = jest
+      .spyOn(sender, 'dispatchSafeMsgConfirmation')
+      .mockImplementation(() => Promise.resolve())
 
     const button = getByText('Sign')
 
     expect(button).toBeEnabled()
+    ;(getSafeMessage as jest.Mock).mockResolvedValue({
+      ...msg,
+      confirmations: [
+        {
+          owner: {
+            value: hexZeroPad('0x2', 20),
+          },
+        },
+        {
+          owner: {
+            value: hexZeroPad('0x3', 20),
+          },
+        },
+      ],
+      confirmationsRequired: 2,
+      confirmationsSubmitted: 2,
+      preparedSignature: '0x789',
+    })
 
     await act(() => {
       fireEvent.click(button)
@@ -298,6 +348,12 @@ describe('SignMessage', () => {
         message: 'Hello world!',
       }),
     )
+
+    await act(() => {
+      jest.advanceTimersByTime(1000)
+    })
+
+    expect(getByText('Message successfully signed')).toBeInTheDocument()
   })
 
   it('displays an error if no wallet is connected', () => {
@@ -448,6 +504,10 @@ describe('SignMessage', () => {
       fireEvent.click(button)
     })
 
+    await act(() => {
+      jest.advanceTimersByTime(1000)
+    })
+
     await waitFor(() => {
       expect(proposalSpy).toHaveBeenCalled()
       expect(getByText('Error confirming the message. Please try again.')).toBeInTheDocument()
@@ -488,6 +548,11 @@ describe('SignMessage', () => {
       fireEvent.click(button)
     })
 
+    await act(() => {
+      jest.advanceTimersByTime(1000)
+    })
+
+    // We automatically call the dispatch after 1 second
     expect(confirmationSpy).toHaveBeenCalled()
 
     await waitFor(() => {
