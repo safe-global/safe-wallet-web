@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { SvgIcon, IconButton, Tooltip } from '@mui/material'
 import { AppRoutes } from '@/config/routes'
 import { useAppSelector } from '@/store'
-import { isEnvInitialState } from '@/store/settingsSlice'
+import { isEnvInitialState, selectTenderly } from '@/store/settingsSlice'
 import css from './styles.module.css'
 import AlertIcon from '@/public/images/common/alert.svg'
 import useChainId from '@/hooks/useChainId'
@@ -14,8 +14,9 @@ const EnvHintButton = () => {
   const chainId = useChainId()
   const wallet = useWallet()
   const isInitialState = useAppSelector((state) => isEnvInitialState(state, chainId))
+  const customTenderlyUrl = useAppSelector(selectTenderly)
 
-  if (isInitialState || wallet) {
+  if (isInitialState || (wallet && customTenderlyUrl)) {
     return null
   }
 
