@@ -31,6 +31,9 @@ describe('Address book', () => {
       cy.contains('Create entry').click()
       cy.get('input[name="name"]').type(NAME)
       cy.get('input[name="address"]').type(ENS_NAME)
+      // Wait for resolution
+      cy.wait(1000)
+
       // Name was translated
       cy.get(ENS_NAME).should('not.exist')
       cy.contains('button', 'Save').click()

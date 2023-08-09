@@ -28,15 +28,14 @@ export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersio
 }
 
 export const createEthersAdapter = (provider: Web3Provider | JsonRpcProvider) => {
-  const signer = provider.getSigner(0)
   return new EthersAdapter({
     ethers,
-    signerOrProvider: signer,
+    signerOrProvider: provider,
   })
 }
 
 type SafeCoreSDKProps = {
-  provider: JsonRpcProvider
+  provider: Web3Provider | JsonRpcProvider
   chainId: SafeInfo['chainId']
   address: SafeInfo['address']['value']
   version: SafeInfo['version']
