@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { useContext, useEffect, useState } from 'react'
+import { useContext } from 'react'
 import { SafeMessageListItemType, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -24,7 +24,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useSafeMessage } from '@/hooks/messages/useSafeMessages'
+import useSafeMessage from '@/hooks/messages/useSafeMessage'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '@/components/tx-flow'
 import CopyButton from '@/components/common/CopyButton'
@@ -171,13 +171,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const wallet = useWallet()
 
   const { decodedMessage, safeMessageMessage, safeMessageHash } = useDecodedSafeMessage(message, safe)
-  const ongoingMessage = useSafeMessage(safeMessageHash)
-  const [safeMessage, setSafeMessage] = useState(ongoingMessage)
-
-  // Sync ongoing msg
-  useEffect(() => {
-    setSafeMessage(ongoingMessage)
-  }, [ongoingMessage])
+  const [safeMessage, setSafeMessage] = useSafeMessage(safeMessageHash)
 
   useHighlightHiddenTab()
 
