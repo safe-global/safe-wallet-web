@@ -58,16 +58,16 @@ export const useFirebaseNotifications = (): null => {
     const messaging = getMessaging(_app)
 
     const unsubscribe = onMessage(messaging, async (payload) => {
-      const { title, body } = await parseFirebaseNotification(payload)
+      const notification = await parseFirebaseNotification(payload)
 
-      if (!title) {
+      if (!notification) {
         return
       }
 
       dispatch(
         showNotification({
-          message: title,
-          detailedMessage: body,
+          message: notification.title,
+          detailedMessage: notification.body,
           groupKey: payload.messageId,
           variant: 'info',
         }),

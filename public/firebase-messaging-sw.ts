@@ -42,14 +42,17 @@ const app = initializeApp({
 const messaging = getMessaging(app)
 
 onBackgroundMessage(messaging, async (payload) => {
-  const { title, body, image, link } = await parseFirebaseNotification(payload)
+  const ICON_PATH = '/images/safe-logo-green.png'
+  const DEFAULT_LINK = 'https://app.safe.global'
 
-  if (title) {
-    self.registration.showNotification(title, {
-      icon: '/images/safe-logo-green.png',
-      body,
-      image,
-      tag: link,
+  const notification = await parseFirebaseNotification(payload)
+
+  if (notification) {
+    self.registration.showNotification(notification.title, {
+      icon: ICON_PATH,
+      body: notification.body,
+      image: notification.image,
+      tag: notification.link ?? DEFAULT_LINK,
     })
   }
 })
