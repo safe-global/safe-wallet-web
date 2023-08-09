@@ -56,6 +56,7 @@ export const FIREBASE_MESSAGING_SENDER_ID = process.env.NEXT_PUBLIC_FIREBASE_MES
 export const FIREBASE_APP_ID = process.env.NEXT_PUBLIC_FIREBASE_APP_ID || ''
 export const FIREBASE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || ''
 export const FIREBASE_VAPID_KEY = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || ''
+export const FIREBASE_MESSAGING_SW_PATH = '/firebase-messaging-sw.js'
 
 // Tenderly - API docs: https://www.notion.so/Simulate-API-Documentation-6f7009fe6d1a48c999ffeb7941efc104
 export const TENDERLY_SIMULATE_ENDPOINT_URL = process.env.NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL || ''

@@ -4,13 +4,12 @@ import { getToken, getMessaging } from 'firebase/messaging'
 import type { ReactElement } from 'react'
 
 import packageJson from '../../../../package.json'
-import { FIREBASE_VAPID_KEY, GATEWAY_URL_STAGING } from '@/config/constants'
+import { FIREBASE_MESSAGING_SW_PATH, FIREBASE_VAPID_KEY, GATEWAY_URL_STAGING } from '@/config/constants'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useCurrentChain } from '@/hooks/useChains'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { getFirebaseSwRegistrationPath } from '@/services/firebase'
 
 const NOTIFICATIONS_LS_REGISTRATION_KEY = 'firebaseCloudMessaging'
 
@@ -34,8 +33,7 @@ type RegisterDeviceDto = {
 }
 
 const getFirebaseToken = async () => {
-  const firebaseSwPath = getFirebaseSwRegistrationPath()
-  const swRegistration = await navigator.serviceWorker.getRegistration(firebaseSwPath)
+  const swRegistration = await navigator.serviceWorker.getRegistration(FIREBASE_MESSAGING_SW_PATH)
 
   // Get token
   const messaging = getMessaging()
