@@ -15,6 +15,7 @@ import {
   FIREBASE_PROJECT_ID,
   FIREBASE_STORAGE_BUCKET,
 } from '@/config/constants'
+import { parseFirebaseNotification } from '@/services/firebase'
 
 export const useFirebaseNotifications = (): null => {
   const dispatch = useAppDispatch()
@@ -56,11 +57,17 @@ export const useFirebaseNotifications = (): null => {
 
     const messaging = getMessaging(_app)
 
-    const unsubscribe = onMessage(messaging, (payload) => {
+    const unsubscribe = onMessage(messaging, async (payload) => {
+      const { title, body } = await parseFirebaseNotification(payload)
+
+      if (!title) {
+        return
+      }
+
       dispatch(
         showNotification({
-          message: payload.notification?.title || '',
-          detailedMessage: payload.notification?.body,
+          message: title,
+          detailedMessage: body,
           groupKey: payload.messageId,
           variant: 'info',
         }),
