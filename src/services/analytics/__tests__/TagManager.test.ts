@@ -69,9 +69,9 @@ describe('TagManager', () => {
       )
 
       expect(window.dataLayer).toHaveLength(3)
-      expect(window.dataLayer[0][0]).toBe('consent')
-      expect(window.dataLayer[0][1]).toBe('default')
-      expect(window.dataLayer[0][2]).toStrictEqual({
+      expect(window.dataLayer?.[0][0]).toBe('consent')
+      expect(window.dataLayer?.[0][1]).toBe('default')
+      expect(window.dataLayer?.[0][2]).toStrictEqual({
         ad_storage: 'denied',
         analytics_storage: 'denied',
         functionality_storage: 'granted',
@@ -79,12 +79,12 @@ describe('TagManager', () => {
         security_storage: 'granted',
         wait_for_update: 500,
       })
-      expect(window.dataLayer[1]).toStrictEqual({
+      expect(window.dataLayer?.[1]).toStrictEqual({
         'gtm.blocklist': ['j', 'jsm', 'customScripts'],
         pageLocation: 'http://localhost/balances',
         pagePath: '/balances',
       })
-      expect(window.dataLayer[2]).toStrictEqual({ event: 'gtm.js', 'gtm.start': expect.any(Number) })
+      expect(window.dataLayer?.[2]).toStrictEqual({ event: 'gtm.js', 'gtm.start': expect.any(Number) })
     })
   })
 
@@ -105,7 +105,7 @@ describe('TagManager', () => {
       })
 
       expect(window.dataLayer).toHaveLength(4)
-      expect(window.dataLayer[3]).toStrictEqual({ test: '123' })
+      expect(window.dataLayer?.[3]).toStrictEqual({ test: '123' })
     })
   })
 

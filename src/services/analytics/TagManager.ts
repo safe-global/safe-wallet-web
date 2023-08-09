@@ -47,12 +47,12 @@ const TagManager = {
   initialize: (args: TagManagerArgs) => {
     window[DATA_LAYER_NAME] = window[DATA_LAYER_NAME] || []
     // This function MUST be in `window`, otherwise GTM Consent Mode just doesn't work
-    ;(window as any).gtag = function () {
-      window[DATA_LAYER_NAME].push(arguments)
+    window.gtag = function () {
+      window[DATA_LAYER_NAME]?.push(arguments)
     }
 
     // Consent mode
-    ;(window as any).gtag('consent', 'default', {
+    window.gtag('consent', 'default', {
       ad_storage: 'denied',
       analytics_storage: 'denied',
       functionality_storage: 'granted',
@@ -77,13 +77,13 @@ const TagManager = {
   },
 
   enableCookies: () => {
-    ;(window as any).gtag('consent', 'update', {
+    window.gtag('consent', 'update', {
       analytics_storage: 'granted',
     })
   },
 
   disableCookies: () => {
-    ;(window as any).gtag('consent', 'update', {
+    window.gtag('consent', 'update', {
       analytics_storage: 'denied',
     })
 
