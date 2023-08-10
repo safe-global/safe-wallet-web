@@ -5,13 +5,15 @@ import css from './styles.module.css'
 
 // Define the Unicode ranges for animal, fruit, and vegetable emojis
 const unicodeRanges = [
-  [0x1f600, 0x1f60e],
-  [0x1f638, 0x1f63d],
-  [0x1f680, 0x1f683],
-  [0x2614, 0x2615],
-  [0x1f330, 0x1f393],
-  [0x1f3a0, 0x1f3ca],
-  [0x1f400, 0x1f42a],
+  [0x1f331, 0x1f333], // Plant
+  [0x1f334, 0x1f335], // Plant
+  [0x1f340, 0x1f341], // Plant
+  [0x1f34f, 0x1f37f], // Food
+  [0x1f950, 0x1f96b], // Food
+  [0x1f400, 0x1f43e], // Animal
+  [0x1f981, 0x1f984], // Animal
+  [0x1f3b0, 0x1f3bd], // Sports
+  [0x1f3bc, 0x1f3b7], // Music
 ]
 
 // Calculate the total number of emojis
