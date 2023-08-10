@@ -24,7 +24,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
   }, [onToggle])
 
   const clearBatch = useCallback(() => {
-    batchTxs.forEach((item) => deleteTx(item.txDetails.txId))
+    batchTxs.forEach((item) => deleteTx(item.id))
   }, [deleteTx, batchTxs])
 
   const onAddClick = useCallback(
