@@ -77,13 +77,13 @@ const TagManager = {
   },
 
   enableCookies: () => {
-    window.gtag('consent', 'update', {
+    window.gtag?.('consent', 'update', {
       analytics_storage: 'granted',
     })
   },
 
   disableCookies: () => {
-    window.gtag('consent', 'update', {
+    window.gtag?.('consent', 'update', {
       analytics_storage: 'denied',
     })
 
