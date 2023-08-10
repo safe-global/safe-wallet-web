@@ -43,7 +43,6 @@ export const useFirebaseNotifications = (): null => {
       return
     }
 
-    // TODO: Should this be added to the privacy policy?
     const _app = initializeApp({
       apiKey: FIREBASE_API_KEY,
       authDomain: FIREBASE_AUTH_DOMAIN,
