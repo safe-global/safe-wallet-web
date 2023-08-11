@@ -59,7 +59,7 @@ const NonceFormOption = memo(function NonceFormOption({
   const addressBook = useAddressBook()
   const transactions = useQueuedTxByNonce(Number(nonce))
 
-  const label = useMemo(() => {
+  const txLabel = useMemo(() => {
     const latestTransactions = getLatestTransactions(transactions)
 
     if (latestTransactions.length === 0) {
@@ -67,13 +67,16 @@ const NonceFormOption = memo(function NonceFormOption({
     }
 
     const [{ transaction }] = latestTransactions
-    return getTransactionType(transaction, addressBook).text
+    // @ts-ignore TODO: Add type to gateway-typescript-sdk
+    return transaction.txInfo.readableDescription || getTransactionType(transaction, addressBook).text
   }, [addressBook, transactions])
+
+  const label = txLabel || 'New transaction'
 
   return (
     <MenuItem {...menuItemProps}>
       <Typography variant="body2">
-        <b>{nonce}</b>&nbsp;- {`${label || 'New'} transaction`}
+        <b>{nonce}</b>&nbsp;- {label}
       </Typography>
     </MenuItem>
   )
