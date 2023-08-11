@@ -31,7 +31,7 @@ export const useUpdateBatch = () => {
   )
 
   const onDelete = useCallback(
-    (id: string) => {
+    (id: DraftBatchItem['id']) => {
       dispatch(
         removeTx({
           chainId,
