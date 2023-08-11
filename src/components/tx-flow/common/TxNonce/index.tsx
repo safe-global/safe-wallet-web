@@ -115,9 +115,9 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
   // Update to recommended nonce if the current nonce is unchanged and invalid after update
   useEffect(() => {
     if (!isFormChanged && Number(currentFormNonce) < safe.nonce) {
-      formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce)
+      formMethods.setValue(TxNonceFormFieldNames.NONCE, safe.nonce.toString())
     }
-  }, [safe.nonce, recommendedNonce, currentFormNonce, isFormChanged, formMethods])
+  }, [safe.nonce, currentFormNonce, isFormChanged, formMethods])
 
   return (
     <Controller
