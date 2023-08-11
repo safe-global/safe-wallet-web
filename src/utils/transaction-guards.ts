@@ -35,7 +35,10 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
-import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
+import {
+  getMultiSendCallOnlyContractDeployment,
+  getMultiSendContractDeployment,
+} from '@/services/contracts/safeContracts'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -80,8 +83,12 @@ export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
 
 export const isSupportedMultiSendAddress = (txInfo: TransactionInfo, chainId: string): boolean => {
   const toAddress = isCustomTxInfo(txInfo) ? txInfo.to.value : ''
-  const multiSendAddress = getMultiSendContractAddress(chainId)
-  const multiSendCallOnlyAddress = getMultiSendCallOnlyContractAddress(chainId)
+
+  const multiSend = getMultiSendContractDeployment(chainId)
+  const multiSendCallOnly = getMultiSendCallOnlyContractDeployment(chainId)
+
+  const multiSendAddress = multiSend?.networkAddresses[chainId]
+  const multiSendCallOnlyAddress = multiSendCallOnly?.networkAddresses[chainId]
 
   return sameAddress(multiSendAddress, toAddress) || sameAddress(multiSendCallOnlyAddress, toAddress)
 }

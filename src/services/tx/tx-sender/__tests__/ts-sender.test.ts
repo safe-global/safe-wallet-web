@@ -596,7 +596,7 @@ describe('txSender', () => {
       }
       global.fetch = jest.fn().mockImplementationOnce(setupFetchStub(mockData))
 
-      await dispatchBatchExecutionRelay(txs, multisendContractMock, '0x1234', '5', safeAddress)
+      await dispatchBatchExecutionRelay(txs, '0x1234', '5', safeAddress)
 
       expect(txEvents.txDispatch).toHaveBeenCalledWith('RELAYING', {
         txId: 'multisig_0x01',

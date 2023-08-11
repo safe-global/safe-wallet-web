@@ -18,14 +18,14 @@ import type { OnboardAPI } from '@web3-onboard/core'
 import { getSafeTxGas, getRecommendedNonce } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
-import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { useCurrentChain } from '@/hooks/useChains'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 type TxActions = {
   addToBatch: (safeTx?: SafeTransaction, origin?: string) => Promise<string>
   signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string) => Promise<string>
   executeTx: (
     txOptions: TransactionOptions,
-    provider: JsonRpcProvider | Web3Provider,
     safeTx?: SafeTransaction,
     txId?: string,
     origin?: string,
@@ -42,9 +42,13 @@ function assertWallet(wallet: ConnectedWallet | null): asserts wallet {
 function assertOnboard(onboard: OnboardAPI | undefined): asserts onboard {
   if (!onboard) throw new Error('Onboard not connected')
 }
+function assertChain(chain: ChainInfo | undefined): asserts chain {
+  if (!chain) throw new Error('No chain found')
+}
 
 export const useTxActions = (): TxActions => {
   const { safe } = useSafeInfo()
+  const chain = useCurrentChain()
   const onboard = useOnboard()
   const wallet = useWallet()
   const [addTxToBatch] = useUpdateBatch()
@@ -106,10 +110,11 @@ export const useTxActions = (): TxActions => {
       return tx.txId
     }
 
-    const executeTx: TxActions['executeTx'] = async (txOptions, provider, safeTx, txId, origin, isRelayed) => {
+    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
+      assertChain(chain)
 
       // Relayed transactions must be fully signed, so request a final signature if needed
       if (isRelayed && safeTx.signatures.size < safe.threshold) {
@@ -126,7 +131,7 @@ export const useTxActions = (): TxActions => {
 
       // Relay or execute the tx via connected wallet
       if (isRelayed) {
-        await dispatchTxRelay(safeTx, safe, txId, provider, txOptions.gasLimit)
+        await dispatchTxRelay(safeTx, safe, txId, chain, txOptions.gasLimit)
       } else {
         await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress)
       }
@@ -135,7 +140,7 @@ export const useTxActions = (): TxActions => {
     }
 
     return { addToBatch, signTx, executeTx }
-  }, [safe, onboard, wallet, addTxToBatch])
+  }, [safe, onboard, wallet, addTxToBatch, chain])
 }
 
 export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {

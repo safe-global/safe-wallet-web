@@ -14,7 +14,6 @@ import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { assertValidSafeVersion, createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
-import type SignMessageLibEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/SignMessageLib/SignMessageLibEthersContract'
 import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type GnosisSafeContractEthers from '@safe-global/safe-ethers-lib/dist/src/contracts/GnosisSafe/GnosisSafeContractEthers'
 import type EthersAdapter from '@safe-global/safe-ethers-lib'
@@ -63,7 +62,7 @@ const isOldestVersion = (safeVersion: string): boolean => {
   return semverSatisfies(safeVersion, '<=1.0.0')
 }
 
-const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
+export const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
   const useOldestContractVersion = isOldestVersion(safeVersion)
 
@@ -88,41 +87,16 @@ const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): Singl
   )
 }
 
-export const getGnosisSafeContract = (
-  chain: ChainInfo,
-  provider: JsonRpcProvider | Web3Provider,
-  safeVersion: string = LATEST_SAFE_VERSION,
-) => {
-  const ethAdapter = createEthersAdapter(provider)
-
-  return ethAdapter.getSafeContract({
-    singletonDeployment: getSafeContractDeployment(chain, safeVersion),
-    ..._getValidatedGetContractProps(chain.chainId, safeVersion),
-  })
-}
-
 // MultiSend
 
-const getMultiSendContractDeployment = (chainId: string) => {
+export const getMultiSendContractDeployment = (chainId: string) => {
   return getMultiSendDeployment({ network: chainId }) || getMultiSendDeployment()
-}
-
-export const getMultiSendContractAddress = (chainId: string): string | undefined => {
-  const deployment = getMultiSendContractDeployment(chainId)
-
-  return deployment?.networkAddresses[chainId]
 }
 
 // MultiSendCallOnly
 
-const getMultiSendCallOnlyContractDeployment = (chainId: string) => {
+export const getMultiSendCallOnlyContractDeployment = (chainId: string) => {
   return getMultiSendCallOnlyDeployment({ network: chainId }) || getMultiSendCallOnlyDeployment()
-}
-
-export const getMultiSendCallOnlyContractAddress = (chainId: string): string | undefined => {
-  const deployment = getMultiSendCallOnlyContractDeployment(chainId)
-
-  return deployment?.networkAddresses[chainId]
 }
 
 export const getMultiSendCallOnlyContract = (
@@ -152,22 +126,9 @@ export const getProxyFactoryContractDeployment = (chainId: string) => {
   )
 }
 
-export const getProxyFactoryContract = (
-  chainId: string,
-  provider: JsonRpcProvider | Web3Provider,
-  safeVersion: string = LATEST_SAFE_VERSION,
-) => {
-  const ethAdapter = createEthersAdapter(provider)
-
-  return ethAdapter.getSafeProxyFactoryContract({
-    singletonDeployment: getProxyFactoryContractDeployment(chainId),
-    ..._getValidatedGetContractProps(chainId, safeVersion),
-  })
-}
-
 // Fallback handler
 
-const getFallbackHandlerContractDeployment = (chainId: string) => {
+export const getFallbackHandlerContractDeployment = (chainId: string) => {
   return (
     getFallbackHandlerDeployment({
       version: LATEST_SAFE_VERSION,
@@ -179,33 +140,7 @@ const getFallbackHandlerContractDeployment = (chainId: string) => {
   )
 }
 
-export const getFallbackHandlerContract = (
-  chainId: string,
-  provider: JsonRpcProvider | Web3Provider,
-  safeVersion: string = LATEST_SAFE_VERSION,
-) => {
-  const ethAdapter = createEthersAdapter(provider)
-
-  return ethAdapter.getCompatibilityFallbackHandlerContract({
-    singletonDeployment: getFallbackHandlerContractDeployment(chainId),
-    ..._getValidatedGetContractProps(chainId, safeVersion),
-  })
-}
-
 // Sign messages deployment
-const getSignMessageLibContractDeployment = (chainId: string) => {
+export const getSignMessageLibContractDeployment = (chainId: string) => {
   return getSignMessageLibDeployment({ network: chainId }) || getSignMessageLibDeployment()
-}
-
-export const getSignMessageLibContract = (
-  chainId: string,
-  provider: JsonRpcProvider | Web3Provider,
-  safeVersion: string = LATEST_SAFE_VERSION,
-): SignMessageLibEthersContract => {
-  const ethAdapter = createEthersAdapter(provider)
-
-  return ethAdapter.getSignMessageLibContract({
-    singletonDeployment: getSignMessageLibContractDeployment(chainId),
-    ..._getValidatedGetContractProps(chainId, safeVersion),
-  })
 }

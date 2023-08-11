@@ -4,7 +4,6 @@ import * as web3 from '@/hooks/wallets/web3'
 import * as chain from '@/hooks/useChains'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '@/components/new-safe/create/logic'
-import * as contracts from '@/services/contracts/safeContracts'
 import * as txMonitor from '@/services/tx/txMonitor'
 import { Web3Provider } from '@ethersproject/providers'
 import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/usePendingSafe'
@@ -13,8 +12,6 @@ import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { waitFor } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
-import { hexZeroPad } from 'ethers/lib/utils'
-import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 import { FEATURES } from '@/utils/chains'
 import * as gasPrice from '@/hooks/useGasPrice'
 
@@ -53,9 +50,6 @@ describe('useSafeCreation', () => {
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() => mockChain)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(logic, 'getSafeCreationTxInfo').mockReturnValue(Promise.resolve(mockSafeInfo))
-    jest
-      .spyOn(contracts, 'getFallbackHandlerContract')
-      .mockReturnValue({ getAddress: () => hexZeroPad('0x123', 20) } as CompatibilityFallbackHandlerEthersContract)
     jest
       .spyOn(gasPrice, 'default')
       .mockReturnValue([{ maxFeePerGas: BigNumber.from(123), maxPriorityFeePerGas: undefined }, undefined, false])

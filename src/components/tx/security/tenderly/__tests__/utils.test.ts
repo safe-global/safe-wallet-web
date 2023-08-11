@@ -1,18 +1,16 @@
 import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber, ethers } from 'ethers'
 import {
   getSimulationPayload,
   NONCE_STORAGE_POSITION,
   THRESHOLD_STORAGE_POSITION,
 } from '@/components/tx/security/tenderly/utils'
-import * as safeContracts from '@/services/contracts/safeContracts'
 import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
 import { hexZeroPad } from 'ethers/lib/utils'
-import { Web3Provider } from '@ethersproject/providers'
 import * as Web3 from '@/hooks/wallets/web3'
 
 const SIGNATURE_LENGTH = 65 * 2
@@ -20,29 +18,13 @@ const SIGNATURE_LENGTH = 65 * 2
 const getPreValidatedSignature = (addr: string): string => generatePreValidatedSignature(addr).data
 
 describe('simulation utils', () => {
-  const safeContractInterface = new ethers.utils.Interface(getSafeSingletonDeployment({ version: '1.3.0' })?.abi || [])
-  const multiSendContractInterface = new ethers.utils.Interface(
-    getMultiSendCallOnlyDeployment({ version: '1.3.0' })?.abi || [],
-  )
-  const mockSafeAddress = ethers.utils.hexZeroPad('0x123', 20)
-  const mockMultisendAddress = ethers.utils.hexZeroPad('0x1234', 20)
+  const safeContractDeployment = getSafeSingletonDeployment({ version: '1.3.0' })
+  const safeContractInterface = new ethers.utils.Interface(safeContractDeployment?.abi || [])
 
-  const mockProvider = new Web3Provider(jest.fn())
+  const multiSendDeployment = getMultiSendCallOnlyDeployment({ version: '1.3.0' })
+  const multiSendContractInterface = new ethers.utils.Interface(multiSendDeployment?.abi || [])
 
   beforeAll(() => {
-    const safeContractMock = {
-      encode: (functionFragment: string, values: readonly any[]) =>
-        safeContractInterface.encodeFunctionData(functionFragment, values),
-      getAddress: () => mockSafeAddress,
-    }
-    const multisendContractMock = {
-      encode: (functionFragment: string, values: readonly any[]) =>
-        multiSendContractInterface.encodeFunctionData(functionFragment, values),
-      getAddress: () => mockMultisendAddress,
-    }
-    jest.spyOn(safeContracts, 'getCurrentGnosisSafeContract').mockImplementation(() => safeContractMock as any)
-    jest.spyOn(safeContracts, 'getMultiSendCallOnlyContract').mockImplementation(() => multisendContractMock as any)
-
     jest.spyOn(Web3, '_getWeb3').mockImplementation(
       () =>
         ({
@@ -56,11 +38,15 @@ describe('simulation utils', () => {
   describe('getSimulationPayload', () => {
     it('unsigned executable multisig transaction with threshold 1', async () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
-      const mockSafeInfo: Partial<SafeInfo> = {
+      const mockSafeInfo = {
         threshold: 1,
         nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
+      }
+      const mockChainInfo: Partial<ChainInfo> = {
+        chainId: mockSafeInfo.chainId,
+        l2: false,
       }
       const mockTx: SafeTransaction = new EthSafeTransaction({
         to: ZERO_ADDRESS,
@@ -80,7 +66,7 @@ describe('simulation utils', () => {
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
-        provider: mockProvider,
+        chain: mockChainInfo as ChainInfo,
       })
 
       /* Decode the call params:
@@ -97,7 +83,7 @@ describe('simulation utils', () => {
        */
       const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
 
-      expect(tenderlyPayload.to).toEqual(mockSafeAddress)
+      expect(tenderlyPayload.to).toEqual(mockSafeInfo.address.value)
       expect(decodedTxData[0]).toEqual(ZERO_ADDRESS)
       expect(decodedTxData[1]).toEqual(BigNumber.from(0))
       expect(decodedTxData[2]).toEqual('0x')
@@ -128,6 +114,10 @@ describe('simulation utils', () => {
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
       }
+      const mockChainInfo: Partial<ChainInfo> = {
+        chainId: mockSafeInfo.chainId,
+        l2: false,
+      }
       const mockTx: SafeTransaction = new EthSafeTransaction({
         to: ZERO_ADDRESS,
         value: '0x0',
@@ -149,7 +139,7 @@ describe('simulation utils', () => {
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
-        provider: mockProvider,
+        chain: mockChainInfo as ChainInfo,
       })
 
       const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
@@ -164,11 +154,15 @@ describe('simulation utils', () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
       const otherOwnerAddress1 = ethers.utils.hexZeroPad('0x11', 20)
 
-      const mockSafeInfo: Partial<SafeInfo> = {
+      const mockSafeInfo = {
         threshold: 2,
         nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
+      }
+      const mockChainInfo: Partial<ChainInfo> = {
+        chainId: mockSafeInfo.chainId,
+        l2: false,
       }
       const mockTx: SafeTransaction = new EthSafeTransaction({
         to: ZERO_ADDRESS,
@@ -189,7 +183,7 @@ describe('simulation utils', () => {
         executionOwner: ownerAddress,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
-        provider: mockProvider,
+        chain: mockChainInfo as ChainInfo,
       })
 
       const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
@@ -199,7 +193,7 @@ describe('simulation utils', () => {
       expect(decodedTxData[9]).toHaveLength(SIGNATURE_LENGTH * 2 + 2)
       // Do  overwrite the nonce but not the threshold
       expect(tenderlyPayload.state_objects).toBeDefined()
-      const safeOverwrite = tenderlyPayload.state_objects![mockSafeAddress]
+      const safeOverwrite = tenderlyPayload.state_objects![mockSafeInfo.address.value]
       expect(safeOverwrite?.storage).toBeDefined()
       expect(safeOverwrite.storage![NONCE_STORAGE_POSITION]).toBe(hexZeroPad('0x1', 32))
       expect(safeOverwrite.storage![THRESHOLD_STORAGE_POSITION]).toBeUndefined()
@@ -214,6 +208,10 @@ describe('simulation utils', () => {
         nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
+      }
+      const mockChainInfo: Partial<ChainInfo> = {
+        chainId: mockSafeInfo.chainId,
+        l2: false,
       }
       const mockTx: SafeTransaction = new EthSafeTransaction({
         to: ZERO_ADDRESS,
@@ -235,7 +233,7 @@ describe('simulation utils', () => {
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
-        provider: mockProvider,
+        chain: mockChainInfo as ChainInfo,
       })
 
       const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
@@ -250,11 +248,15 @@ describe('simulation utils', () => {
     it('unsigned signed not-executable multisig transaction with threshold 2', async () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
 
-      const mockSafeInfo: Partial<SafeInfo> = {
+      const mockSafeInfo = {
         threshold: 2,
         nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
+      }
+      const mockChainInfo: Partial<ChainInfo> = {
+        chainId: mockSafeInfo.chainId,
+        l2: false,
       }
       const mockTx: SafeTransaction = new EthSafeTransaction({
         to: ZERO_ADDRESS,
@@ -274,7 +276,7 @@ describe('simulation utils', () => {
         gasLimit: 50_000,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTx,
-        provider: mockProvider,
+        chain: mockChainInfo as ChainInfo,
       })
 
       const decodedTxData = safeContractInterface.decodeFunctionData('execTransaction', tenderlyPayload.input)
@@ -283,7 +285,7 @@ describe('simulation utils', () => {
       expect(decodedTxData[9]).toContain(getPreValidatedSignature(ownerAddress))
       // Overwrite the threshold with 1
       expect(tenderlyPayload.state_objects).toBeDefined()
-      const safeOverwrite = tenderlyPayload.state_objects![mockSafeAddress]
+      const safeOverwrite = tenderlyPayload.state_objects![mockSafeInfo.address.value]
       expect(safeOverwrite?.storage).toBeDefined()
       expect(safeOverwrite.storage![THRESHOLD_STORAGE_POSITION]).toBe(hexZeroPad('0x1', 32))
       expect(safeOverwrite.storage![NONCE_STORAGE_POSITION]).toBeUndefined()
@@ -292,11 +294,15 @@ describe('simulation utils', () => {
     it('batched transaction without gas limit', async () => {
       const ownerAddress = ethers.utils.hexZeroPad('0x1', 20)
 
-      const mockSafeInfo: Partial<SafeInfo> = {
+      const mockSafeInfo = {
         threshold: 2,
         nonce: 0,
         chainId: '4',
         address: { value: ethers.utils.hexZeroPad('0x123', 20) },
+      }
+      const mockChainInfo: Partial<ChainInfo> = {
+        chainId: mockSafeInfo.chainId,
+        l2: false,
       }
       const mockTxs: MetaTransactionData[] = [
         {
@@ -323,12 +329,12 @@ describe('simulation utils', () => {
         executionOwner: ownerAddress,
         safe: mockSafeInfo as SafeInfo,
         transactions: mockTxs,
-        provider: mockProvider,
+        chain: mockChainInfo as ChainInfo,
       })
 
       const decodedTxData = multiSendContractInterface.decodeFunctionData('multiSend', tenderlyPayload.input)
 
-      expect(tenderlyPayload.to).toEqual(mockMultisendAddress)
+      expect(tenderlyPayload.to).toEqual(multiSendDeployment?.networkAddresses[mockSafeInfo.chainId])
       expect(tenderlyPayload.gas).toEqual(30_000_000)
       expect(decodedTxData[0]).toBeDefined()
 

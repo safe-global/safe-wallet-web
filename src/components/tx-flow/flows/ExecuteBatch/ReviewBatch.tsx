@@ -65,9 +65,9 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [chain?.chainId, safe.version, web3])
 
   const multiSendTxs = useMemo(() => {
-    if (!txsWithDetails || !chain || !safe.version || !web3) return
-    return getMultiSendTxs(txsWithDetails, chain, safe.address.value, web3, safe.version)
-  }, [chain, safe.address.value, safe.version, txsWithDetails, web3])
+    if (!txsWithDetails || !chain || !safe.version) return
+    return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
+  }, [chain, safe.address.value, safe.version, txsWithDetails])
 
   const multiSendTxData = useMemo(() => {
     if (!txsWithDetails || !multiSendTxs) return
@@ -93,15 +93,9 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }
 
   const onRelay = async () => {
-    if (!multiSendTxData || !multiSendContract || !txsWithDetails) return
+    if (!multiSendTxData || !txsWithDetails) return
 
-    await dispatchBatchExecutionRelay(
-      txsWithDetails,
-      multiSendContract,
-      multiSendTxData,
-      safe.chainId,
-      safe.address.value,
-    )
+    await dispatchBatchExecutionRelay(txsWithDetails, multiSendTxData, safe.chainId, safe.address.value)
   }
 
   const handleSubmit = async (e: SyntheticEvent) => {

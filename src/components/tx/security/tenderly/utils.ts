@@ -3,14 +3,18 @@ import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transa
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 
-import { getCurrentGnosisSafeContract, getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
-import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAME } from '@/config/constants'
+import { getMultiSendCallOnlyContractDeployment, getSafeContractDeployment } from '@/services/contracts/safeContracts'
+import {
+  TENDERLY_SIMULATE_ENDPOINT_URL,
+  TENDERLY_ORG_NAME,
+  TENDERLY_PROJECT_NAME,
+  LATEST_SAFE_VERSION,
+} from '@/config/constants'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/security/tenderly/types'
 import { _getWeb3 } from '@/hooks/wallets/web3'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { hexZeroPad, Interface } from 'ethers/lib/utils'
 import { BigNumber } from 'ethers'
 import type { EnvState } from '@/store/settingsSlice'
 
@@ -60,20 +64,19 @@ export const getSimulationLink = (simulationId: string): string => {
   return `https://dashboard.tenderly.co/public/${TENDERLY_ORG_NAME}/${TENDERLY_PROJECT_NAME}/simulator/${simulationId}`
 }
 
-type SingleTransactionSimulationParams = {
+type BaseSimulationParams = {
   safe: SafeInfo
   executionOwner: string
-  transactions: SafeTransaction
   gasLimit?: number
-  provider: JsonRpcProvider | Web3Provider
 }
 
-type MultiSendTransactionSimulationParams = {
-  safe: SafeInfo
-  executionOwner: string
+type SingleTransactionSimulationParams = BaseSimulationParams & {
+  transactions: SafeTransaction
+  chain: ChainInfo
+}
+
+type MultiSendTransactionSimulationParams = BaseSimulationParams & {
   transactions: MetaTransactionData[]
-  gasLimit?: number
-  provider: JsonRpcProvider | Web3Provider
 }
 
 export type SimulationTxParams = SingleTransactionSimulationParams | MultiSendTransactionSimulationParams
@@ -97,9 +100,15 @@ export const _getSingleTransactionPayload = (
     transaction = simulatedTransaction
   }
 
-  const safeContract = getCurrentGnosisSafeContract(params.safe, params.provider)
+  const safeContract = getSafeContractDeployment(params.chain, params.safe.version ?? LATEST_SAFE_VERSION)
 
-  const input = safeContract.encode('execTransaction', [
+  if (!safeContract) {
+    throw new Error('No Safe deployment found')
+  }
+
+  const safeContractInterface = new Interface(safeContract.abi)
+
+  const input = safeContractInterface.encodeFunctionData('execTransaction', [
     transaction.data.to,
     transaction.data.value,
     transaction.data.data,
@@ -113,7 +122,7 @@ export const _getSingleTransactionPayload = (
   ])
 
   return {
-    to: safeContract.getAddress(),
+    to: params.safe.address.value,
     input,
   }
 }
@@ -121,12 +130,19 @@ export const _getSingleTransactionPayload = (
 export const _getMultiSendCallOnlyPayload = (
   params: MultiSendTransactionSimulationParams,
 ): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
+  const chainId = params.safe.chainId
+  const multiSendContractDeployment = getMultiSendCallOnlyContractDeployment(chainId)
+
+  if (!multiSendContractDeployment) {
+    throw new Error('No MultiSend deployment found')
+  }
+
+  const multiSendInterface = new Interface(multiSendContractDeployment.abi)
   const data = encodeMultiSendData(params.transactions)
-  const multiSendContract = getMultiSendCallOnlyContract(params.safe.chainId, params.provider, params.safe.version)
 
   return {
-    to: multiSendContract.getAddress(),
-    input: multiSendContract.encode('multiSend', [data]),
+    to: multiSendContractDeployment.networkAddresses[chainId],
+    input: multiSendInterface.encodeFunctionData('multiSend', [data]),
   }
 }
 

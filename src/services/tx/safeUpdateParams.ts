@@ -1,26 +1,31 @@
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import type GnosisSafeContractEthers from '@safe-global/safe-ethers-lib/dist/src/contracts/GnosisSafe/GnosisSafeContractEthers'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getFallbackHandlerContract, getGnosisSafeContract } from '@/services/contracts/safeContracts'
-import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { getFallbackHandlerContractDeployment, getSafeContractDeployment } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
+import { Interface } from 'ethers/lib/utils'
 
 const getChangeFallbackHandlerCallData = (
   safe: SafeInfo,
   chain: ChainInfo,
-  safeContractInstance: GnosisSafeContractEthers,
-  provider: JsonRpcProvider | Web3Provider,
+  safeContractInstance: Interface,
 ): string => {
   if (!hasSafeFeature(SAFE_FEATURES.SAFE_FALLBACK_HANDLER, safe.version)) {
     return '0x'
   }
 
-  const fallbackHandlerAddress = getFallbackHandlerContract(chain.chainId, provider).getAddress()
-  return safeContractInstance.encode('setFallbackHandler', [fallbackHandlerAddress])
+  const fallbackHandlerContract = getFallbackHandlerContractDeployment(chain.chainId)
+
+  if (!fallbackHandlerContract) {
+    throw new Error('No FallbackHandler deployment found')
+  }
+
+  return safeContractInstance.encodeFunctionData('setFallbackHandler', [
+    fallbackHandlerContract.networkAddresses[chain.chainId],
+  ])
 }
 
 /**
@@ -29,19 +34,28 @@ const getChangeFallbackHandlerCallData = (
  * - set the fallback handler address
  * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
-export const createUpdateSafeTxs = (
-  safe: SafeInfo,
-  chain: ChainInfo,
-  provider: JsonRpcProvider | Web3Provider,
-): MetaTransactionData[] => {
+export const createUpdateSafeTxs = (safe: SafeInfo, chain: ChainInfo): MetaTransactionData[] => {
   assertValidSafeVersion(safe.version)
 
-  const latestMasterCopyAddress = getGnosisSafeContract(chain, provider, LATEST_SAFE_VERSION).getAddress()
-  const safeContract = getGnosisSafeContract(chain, provider, safe.version)
+  const latestMasterCopy = getSafeContractDeployment(chain, LATEST_SAFE_VERSION)
 
-  // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions
-  const changeMasterCopyCallData = safeContract.encode('changeMasterCopy', [latestMasterCopyAddress])
-  const changeFallbackHandlerCallData = getChangeFallbackHandlerCallData(safe, chain, safeContract, provider)
+  if (!latestMasterCopy) {
+    throw new Error('No latest Safe deployment found')
+  }
+
+  const safeContract = getSafeContractDeployment(chain, safe.version)
+
+  if (!safeContract) {
+    throw new Error('No Safe deployment found')
+  }
+
+  const safeContractInterface = new Interface(safeContract.abi)
+
+  // This was removed in 1.3.0 but we need to support it for older safe versions
+  const changeMasterCopyCallData = safeContractInterface.encodeFunctionData('changeMasterCopy', [
+    latestMasterCopy.networkAddresses[chain.chainId],
+  ])
+  const changeFallbackHandlerCallData = getChangeFallbackHandlerCallData(safe, chain, safeContractInterface)
 
   const txs: MetaTransactionData[] = [
     {

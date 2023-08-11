@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 import { useContext, useEffect } from 'react'
 import { useMemo } from 'react'
-import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
+import { hashMessage, Interface, _TypedDataEncoder } from 'ethers/lib/utils'
 import { Box } from '@mui/system'
 import { Typography, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
@@ -14,7 +14,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useChainId from '@/hooks/useChainId'
-import { getSignMessageLibContract } from '@/services/contracts/safeContracts'
+import { getSignMessageLibContractDeployment } from '@/services/contracts/safeContracts'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
@@ -25,7 +25,6 @@ import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
-import { useWeb3 } from '@/hooks/wallets/web3'
 
 export type SignMessageOnChainProps = {
   appId?: number
@@ -39,7 +38,6 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const chainId = useChainId()
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
-  const web3 = useWeb3()
   const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
   useHighlightHiddenTab()
@@ -48,10 +46,8 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
 
   const signMessageLibContract = useMemo(() => {
-    if (web3) {
-      return getSignMessageLibContract(chainId, web3)
-    }
-  }, [chainId, web3])
+    return getSignMessageLibContractDeployment(chainId)
+  }, [chainId])
 
   const [decodedMessage, readableMessage] = useMemo(() => {
     if (isTextMessage) {
@@ -70,8 +66,10 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
 
     let txData
 
+    const signMessageLibInterface = new Interface(signMessageLibContract.abi)
+
     if (isTextMessage) {
-      txData = signMessageLibContract.encode('signMessage', [hashMessage(getDecodedMessage(message))])
+      txData = signMessageLibInterface.encodeFunctionData('signMessage', [hashMessage(getDecodedMessage(message))])
     } else if (isTypedMessage) {
       const typesCopy = { ...message.types }
 
@@ -80,19 +78,19 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       // The types are not allowed to be recursive, so ever type must either be used by another type, or be
       // the primary type. And there must only be one type that is not used by any other type.
       delete typesCopy.EIP712Domain
-      txData = signMessageLibContract.encode('signMessage', [
+      txData = signMessageLibInterface.encodeFunctionData('signMessage', [
         _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
 
     const params = {
-      to: signMessageLibContract.getAddress(),
+      to: signMessageLibContract.networkAddresses[chainId],
       value: '0',
       data: txData || '0x',
       operation: OperationType.DelegateCall,
     }
     createTx(params).then(setSafeTx).catch(setSafeTxError)
-  }, [isTextMessage, isTypedMessage, message, signMessageLibContract, setSafeTx, setSafeTxError])
+  }, [isTextMessage, isTypedMessage, message, signMessageLibContract, setSafeTx, setSafeTxError, chainId])
 
   const handleSubmit = async () => {
     if (!safeTx || !onboard) return
@@ -109,7 +107,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
 
       <InfoDetails title="Interact with SignMessageLib">
         <EthHashInfo
-          address={signMessageLibContract?.getAddress() || ''}
+          address={signMessageLibContract?.networkAddresses[chainId] || ''}
           shortAddress={false}
           showCopyButton
           hasExplorer

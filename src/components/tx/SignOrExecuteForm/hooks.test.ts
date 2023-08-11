@@ -1,11 +1,11 @@
 import { renderHook } from '@/tests/test-utils'
 import { ethers } from 'ethers'
-import { Web3Provider } from '@ethersproject/providers'
 import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/services/onboard'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as wallet from '@/hooks/wallets/useWallet'
+import * as chains from '@/hooks/useChains'
 import * as walletHooks from '@/utils/wallets'
 import * as pending from '@/hooks/usePendingTxs'
 import * as txSender from '@/services/tx/tx-sender/dispatch'
@@ -63,9 +63,13 @@ describe('SignOrExecute hooks', () => {
       label: 'MetaMask',
       address: '0x1234567890000000000000000000000000000000',
     } as unknown as ConnectedWallet)
-  })
 
-  const mockProvider = new Web3Provider(jest.fn())
+    // Chain
+    jest.spyOn(chains, 'useCurrentChain').mockReturnValue({
+      chainId: '1',
+      l2: false,
+    } as unknown as ChainInfo)
+  })
 
   describe('useValidateNonce', () => {
     it('should return true if nonce is correct', () => {
@@ -344,7 +348,7 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useTxActions())
       const { executeTx } = result.current
 
-      const id = await executeTx({ gasPrice: 1 }, mockProvider, createSafeTx())
+      const id = await executeTx({ gasPrice: 1 }, createSafeTx())
       expect(proposeSpy).toHaveBeenCalled()
       expect(executeSpy).toHaveBeenCalled()
       expect(id).toEqual('123')
@@ -376,7 +380,7 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useTxActions())
       const { executeTx } = result.current
 
-      const id = await executeTx({ gasPrice: 1 }, mockProvider, createSafeTx(), '455')
+      const id = await executeTx({ gasPrice: 1 }, createSafeTx(), '455')
       expect(proposeSpy).not.toHaveBeenCalled()
       expect(executeSpy).toHaveBeenCalled()
       expect(id).toEqual('455')
@@ -403,7 +407,7 @@ describe('SignOrExecute hooks', () => {
 
       // Expect signTx to throw an error
       await expect(signTx()).rejects.toThrowError('Transaction not provided')
-      await expect(executeTx({ gasPrice: 1 }, mockProvider)).rejects.toThrowError('Transaction not provided')
+      await expect(executeTx({ gasPrice: 1 })).rejects.toThrowError('Transaction not provided')
     })
 
     it('should relay a tx execution', async () => {
@@ -438,7 +442,7 @@ describe('SignOrExecute hooks', () => {
         dynamicPart: () => '',
       })
 
-      const id = await executeTx({ gasPrice: 1 }, mockProvider, tx, '123', 'origin.com', true)
+      const id = await executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)
       expect(proposeSpy).not.toHaveBeenCalled()
       expect(relaySpy).toHaveBeenCalled()
       expect(id).toEqual('123')
@@ -487,7 +491,7 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useTxActions())
       const { executeTx } = result.current
 
-      const id = await executeTx({ gasPrice: 1 }, mockProvider, tx, '123', 'origin.com', true)
+      const id = await executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)
       expect(proposeSpy).toHaveBeenCalled()
       expect(signSpy).toHaveBeenCalled()
       expect(relaySpy).toHaveBeenCalled()
@@ -537,7 +541,7 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useTxActions())
       const { executeTx } = result.current
 
-      await expect(() => executeTx({ gasPrice: 1 }, mockProvider, tx, '123', 'origin.com', true)).rejects.toThrowError(
+      await expect(() => executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)).rejects.toThrowError(
         'Cannot relay an unsigned transaction from a smart contract wallet',
       )
       expect(proposeSpy).not.toHaveBeenCalled()

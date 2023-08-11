@@ -8,13 +8,10 @@ import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-s
 import { ethers } from 'ethers'
 import { createUpdateSafeTxs } from '../safeUpdateParams'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { Web3Provider } from '@ethersproject/providers'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 
 describe('safeUpgradeParams', () => {
-  const mockProvider = new Web3Provider(jest.fn())
-
   it('Should add empty setFallbackHandler transaction data for older Safes', () => {
     const mockSafe = {
       address: {
@@ -22,7 +19,7 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.0.0',
     } as SafeInfo
-    const txs = createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo, mockProvider)
+    const txs = createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -49,7 +46,7 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.1.1',
     } as SafeInfo
-    const txs = createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo, mockProvider)
+    const txs = createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -81,7 +78,7 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.1.1',
     } as SafeInfo
-    const txs = createUpdateSafeTxs(mockSafe, { chainId: '100', l2: true } as ChainInfo, mockProvider)
+    const txs = createUpdateSafeTxs(mockSafe, { chainId: '100', l2: true } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)

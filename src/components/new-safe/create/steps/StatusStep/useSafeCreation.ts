@@ -79,7 +79,7 @@ export const useSafeCreation = (
 
     try {
       if (willRelay) {
-        const taskId = await relaySafeCreation(chain, ownersAddresses, threshold, saltNonce, provider)
+        const taskId = await relaySafeCreation(chain, ownersAddresses, threshold, saltNonce)
 
         setPendingSafe(pendingSafe ? { ...pendingSafe, taskId } : undefined)
         setStatus(SafeCreationStatus.PROCESSING)
@@ -95,7 +95,6 @@ export const useSafeCreation = (
           },
           (txHash) => createSafeCallback(txHash, tx),
           chain.chainId,
-          provider,
         )
 
         const options: DeploySafeProps['options'] = isEIP1559

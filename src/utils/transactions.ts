@@ -19,7 +19,7 @@ import {
 } from './transaction-guards'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types/dist/src/types'
 import { OperationType } from '@safe-global/safe-core-sdk-types/dist/src/types'
-import { getGnosisSafeContract } from '@/services/contracts/safeContracts'
+import { getSafeContractDeployment } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
@@ -28,9 +28,8 @@ import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
 import { Multi_send__factory } from '@/types/contracts'
 import { ethers } from 'ethers'
-import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
-import { id } from 'ethers/lib/utils'
+import { id, Interface } from 'ethers/lib/utils'
 import { isEmptyHexData } from '@/utils/hex'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
@@ -102,10 +101,15 @@ export const getMultiSendTxs = (
   txs: TransactionDetails[],
   chain: ChainInfo,
   safeAddress: string,
-  provider: JsonRpcProvider | Web3Provider,
   safeVersion: string,
 ): MetaTransactionData[] => {
-  const safeContract = getGnosisSafeContract(chain, provider, safeVersion)
+  const safeContract = getSafeContractDeployment(chain, safeVersion)
+
+  if (!safeContract) {
+    throw new Error('No Safe found')
+  }
+
+  const safeContractInterface = new Interface(safeContract.abi)
 
   return txs
     .map((tx) => {
@@ -114,7 +118,7 @@ export const getMultiSendTxs = (
       const args = extractTxInfo(tx, safeAddress)
       const sigs = getSignatures(args.signatures)
 
-      const data = safeContract.encode('execTransaction', [
+      const data = safeContractInterface.encodeFunctionData('execTransaction', [
         args.txParams.to,
         args.txParams.value,
         args.txParams.data,

@@ -1,4 +1,4 @@
-import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
 import type { EthersError } from '@/utils/ethers-utils'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
@@ -10,7 +10,7 @@ import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { waitForRelayedTx } from '@/services/tx/txMonitor'
-import { getCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
+import { getMultiSendContractDeployment, getSafeContractDeployment } from '@/services/contracts/safeContracts'
 import { sponsoredCall } from '@/services/tx/relaying'
 import {
   getAndValidateSafeSDK,
@@ -22,7 +22,8 @@ import {
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
-import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { Interface } from 'ethers/lib/utils'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 /**
  * Propose a transaction
@@ -316,23 +317,27 @@ export const dispatchTxRelay = async (
   safeTx: SafeTransaction,
   safe: SafeInfo,
   txId: string,
-  provider: JsonRpcProvider | Web3Provider,
+  chain: ChainInfo,
   gasLimit?: string | number,
 ) => {
-  const safeContract = getCurrentGnosisSafeContract(safe, provider)
+  const safeContract = getSafeContractDeployment(chain, safe.version ?? LATEST_SAFE_VERSION)
 
-  let transactionToRelay = safeTx
-  const data = safeContract.encode('execTransaction', [
-    transactionToRelay.data.to,
-    transactionToRelay.data.value,
-    transactionToRelay.data.data,
-    transactionToRelay.data.operation,
-    transactionToRelay.data.safeTxGas,
-    transactionToRelay.data.baseGas,
-    transactionToRelay.data.gasPrice,
-    transactionToRelay.data.gasToken,
-    transactionToRelay.data.refundReceiver,
-    transactionToRelay.encodedSignatures(),
+  if (!safeContract) {
+    throw new Error('No Safe deployment found')
+  }
+
+  const safeContractInterface = new Interface(safeContract.abi)
+  const data = safeContractInterface.encodeFunctionData('execTransaction', [
+    safeTx.data.to,
+    safeTx.data.value,
+    safeTx.data.data,
+    safeTx.data.operation,
+    safeTx.data.safeTxGas,
+    safeTx.data.baseGas,
+    safeTx.data.gasPrice,
+    safeTx.data.gasToken,
+    safeTx.data.refundReceiver,
+    safeTx.encodedSignatures(),
   ])
 
   try {
@@ -355,13 +360,20 @@ export const dispatchTxRelay = async (
 
 export const dispatchBatchExecutionRelay = async (
   txs: TransactionDetails[],
-  multiSendContract: MultiSendCallOnlyEthersContract,
   multiSendTxData: string,
   chainId: string,
   safeAddress: string,
 ) => {
-  const to = multiSendContract.getAddress()
-  const data = multiSendContract.contract.interface.encodeFunctionData('multiSend', [multiSendTxData])
+  const multiSendContract = getMultiSendContractDeployment(chainId)
+
+  if (!multiSendContract) {
+    throw new Error('No MultiSend deployment found')
+  }
+
+  const to = multiSendContract.networkAddresses[chainId]
+  const multiSendInterface = new Interface(multiSendContract.abi)
+  const data = multiSendInterface.encodeFunctionData('multiSend', [multiSendTxData])
+
   const groupKey = multiSendTxData
 
   let relayResponse

@@ -1,9 +1,9 @@
 import type { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
-  getFallbackHandlerContract,
-  getGnosisSafeContract,
-  getProxyFactoryContract,
+  getFallbackHandlerContractDeployment,
+  getProxyFactoryContractDeployment,
+  getSafeContractDeployment,
 } from '@/services/contracts/safeContracts'
 import type { ConnectedWallet } from '@/services/onboard'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -29,6 +29,7 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { formatError } from '@/utils/formatters'
 import { sponsoredCall } from '@/services/tx/relaying'
+import { Interface } from 'ethers/lib/utils'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -43,15 +44,14 @@ export const getSafeDeployProps = (
   safeParams: SafeCreationProps,
   callback: (txHash: string) => void,
   chainId: string,
-  provider: JsonRpcProvider | Web3Provider,
 ): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
-  const fallbackHandlerContract = getFallbackHandlerContract(chainId, provider)
+  const fallbackHandlerContract = getFallbackHandlerContractDeployment(chainId)
 
   return {
     safeAccountConfig: {
       threshold: safeParams.threshold,
       owners: safeParams.owners,
-      fallbackHandler: fallbackHandlerContract.getAddress(),
+      fallbackHandler: fallbackHandlerContract?.networkAddresses[chainId],
     },
     safeDeploymentConfig: {
       saltNonce: safeParams.saltNonce.toString(),
@@ -89,24 +89,44 @@ export const encodeSafeCreationTx = ({
   threshold,
   saltNonce,
   chain,
-  provider,
 }: SafeCreationProps & { chain: ChainInfo; provider: Web3Provider | JsonRpcProvider }) => {
-  const safeContract = getGnosisSafeContract(chain, provider, LATEST_SAFE_VERSION)
-  const proxyFactoryContract = getProxyFactoryContract(chain.chainId, provider)
-  const fallbackHandlerContract = getFallbackHandlerContract(chain.chainId, provider)
+  const safeContract = getSafeContractDeployment(chain, LATEST_SAFE_VERSION)
 
-  const setupData = safeContract.encode('setup', [
+  if (!safeContract) {
+    throw new Error('No Safe deployment found')
+  }
+
+  const proxyFactoryContract = getProxyFactoryContractDeployment(chain.chainId)
+
+  if (!proxyFactoryContract) {
+    throw new Error('No ProxyFactory deployment found')
+  }
+
+  const fallbackHandlerContract = getFallbackHandlerContractDeployment(chain.chainId)
+
+  if (!fallbackHandlerContract) {
+    throw new Error('No FallbackHandler deployment found')
+  }
+
+  const safeInterface = new Interface(safeContract.abi)
+  const proxyFactoryInterface = new Interface(proxyFactoryContract.abi)
+
+  const setupData = safeInterface.encodeFunctionData('setup', [
     owners,
     threshold,
     ZERO_ADDRESS,
     EMPTY_DATA,
-    fallbackHandlerContract.getAddress(),
+    fallbackHandlerContract.networkAddresses[chain.chainId],
     ZERO_ADDRESS,
     '0',
     ZERO_ADDRESS,
   ])
 
-  return proxyFactoryContract.encode('createProxyWithNonce', [safeContract.getAddress(), setupData, saltNonce])
+  return proxyFactoryInterface.encodeFunctionData('createProxyWithNonce', [
+    safeContract.networkAddresses[chain.chainId],
+    setupData,
+    saltNonce,
+  ])
 }
 
 /**
@@ -120,7 +140,11 @@ export const getSafeCreationTxInfo = async (
   chain: ChainInfo,
   wallet: ConnectedWallet,
 ): Promise<PendingSafeTx> => {
-  const proxyFactoryContract = getProxyFactoryContract(chain.chainId, provider)
+  const proxyFactoryContract = getProxyFactoryContractDeployment(chain.chainId)
+
+  if (!proxyFactoryContract) {
+    throw new Error('No ProxyFactory deployment found')
+  }
 
   const data = encodeSafeCreationTx({
     owners: owners.map((owner) => owner.address),
@@ -134,7 +158,7 @@ export const getSafeCreationTxInfo = async (
     data,
     from: wallet.address,
     nonce: await provider.getTransactionCount(wallet.address),
-    to: proxyFactoryContract.getAddress(),
+    to: proxyFactoryContract.networkAddresses[chain.chainId],
     value: BigNumber.from(0),
     startBlock: await provider.getBlockNumber(),
   }
@@ -146,12 +170,17 @@ export const estimateSafeCreationGas = async (
   from: string,
   safeParams: SafeCreationProps,
 ): Promise<BigNumber> => {
-  const proxyFactoryContract = getProxyFactoryContract(chain.chainId, provider)
+  const proxyFactoryContract = getProxyFactoryContractDeployment(chain.chainId)
+
+  if (!proxyFactoryContract) {
+    throw new Error('No ProxyFactory deployment found')
+  }
+
   const encodedSafeCreationTx = encodeSafeCreationTx({ ...safeParams, provider, chain })
 
   return provider.estimateGas({
     from: from,
-    to: proxyFactoryContract.getAddress(),
+    to: proxyFactoryContract.networkAddresses[chain.chainId],
     data: encodedSafeCreationTx,
   })
 }
@@ -272,19 +301,31 @@ export const getRedirect = (
   return redirectUrl + `${appendChar}safe=${address}`
 }
 
-export const relaySafeCreation = async (
-  chain: ChainInfo,
-  owners: string[],
-  threshold: number,
-  saltNonce: number,
-  provider: Web3Provider,
-) => {
-  const proxyFactoryContract = getProxyFactoryContract(chain.chainId, provider)
-  const proxyFactoryAddress = proxyFactoryContract.getAddress()
-  const fallbackHandlerContract = getFallbackHandlerContract(chain.chainId, provider)
-  const fallbackHandlerAddress = fallbackHandlerContract.getAddress()
-  const safeContract = getGnosisSafeContract(chain, provider)
-  const safeContractAddress = safeContract.getAddress()
+export const relaySafeCreation = async (chain: ChainInfo, owners: string[], threshold: number, saltNonce: number) => {
+  const proxyFactoryContract = getProxyFactoryContractDeployment(chain.chainId)
+
+  if (!proxyFactoryContract) {
+    throw new Error('No ProxyFactory deployment found')
+  }
+
+  const fallbackHandlerContract = getFallbackHandlerContractDeployment(chain.chainId)
+
+  if (!fallbackHandlerContract) {
+    throw new Error('No FallbackHandler deployment found')
+  }
+
+  const safeContractDeployment = getSafeContractDeployment(chain, LATEST_SAFE_VERSION)
+
+  if (!safeContractDeployment) {
+    throw new Error('No Safe contract deployment found')
+  }
+
+  const proxyFactoryAddress = proxyFactoryContract.networkAddresses[chain.chainId]
+  const fallbackHandlerAddress = fallbackHandlerContract.networkAddresses[chain.chainId]
+  const safeContractAddress = safeContractDeployment.networkAddresses[chain.chainId]
+
+  const safeContractInterface = new Interface(safeContractDeployment.abi)
+  const proxyFactoryInterface = new Interface(proxyFactoryContract.abi)
 
   const callData = {
     owners,
@@ -297,7 +338,7 @@ export const relaySafeCreation = async (
     paymentReceiver: ZERO_ADDRESS,
   }
 
-  const initializer = safeContract.encode('setup', [
+  const initializer = safeContractInterface.encodeFunctionData('setup', [
     callData.owners,
     callData.threshold,
     callData.to,
@@ -308,7 +349,7 @@ export const relaySafeCreation = async (
     callData.paymentReceiver,
   ])
 
-  const createProxyWithNonceCallData = proxyFactoryContract.encode('createProxyWithNonce', [
+  const createProxyWithNonceCallData = proxyFactoryInterface.encodeFunctionData('createProxyWithNonce', [
     safeContractAddress,
     initializer,
     saltNonce,
