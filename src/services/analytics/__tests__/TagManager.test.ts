@@ -117,12 +117,18 @@ describe('TagManager', () => {
         preview: MOCK_PREVIEW,
       })
 
+      document.cookie = '_ga=GA123;'
+      document.cookie = '_ga_JB9NXCRJ0G=GS123;'
+      document.cookie = '_gat=GA123;'
+      document.cookie = '_gid=GI123;'
+
       TagManager.disableCookies()
 
       const path = '/'
       const domain = '.localhost'
 
       expect(Cookies.remove).toHaveBeenCalledWith('_ga', { path, domain })
+      expect(Cookies.remove).toHaveBeenCalledWith('_ga_JB9NXCRJ0G', { path, domain })
       expect(Cookies.remove).toHaveBeenCalledWith('_gat', { path, domain })
       expect(Cookies.remove).toHaveBeenCalledWith('_gid', { path, domain })
 

@@ -87,9 +87,12 @@ const TagManager = {
       analytics_storage: 'denied',
     })
 
-    const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
+    const GA_COOKIE_LIST = ['_ga', '_gat', '_gid']
+    const GA_PREFIX = '_ga_'
+    const allCookies = document.cookie.split(';').map((cookie) => cookie.split('=')[0].trim())
+    const gaCookies = allCookies.filter((cookie) => cookie.startsWith(GA_PREFIX))
 
-    GTM_COOKIE_LIST.forEach((cookie) => {
+    GA_COOKIE_LIST.concat(gaCookies).forEach((cookie) => {
       Cookies.remove(cookie, {
         path: '/',
         domain: `.${location.host.split('.').slice(-2).join('.')}`,
