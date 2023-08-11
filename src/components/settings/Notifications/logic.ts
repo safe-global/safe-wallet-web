@@ -154,7 +154,7 @@ export const registerSafe = async (
   return payload
 }
 
-export const _unregisterSafe = async (
+export const unregisterSafe = async (
   safe: SafeInfo,
   currentRegistration: RegisterDeviceDto,
 ): Promise<RegisterDeviceDto> => {

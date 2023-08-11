@@ -441,7 +441,7 @@ describe('Notifications', () => {
         ],
       }
 
-      const updatedRegistration = await logic._unregisterSafe(
+      const updatedRegistration = await logic.unregisterSafe(
         { chainId, address: { value: safeAddress } } as SafeInfo,
         currentRegistration,
       )
@@ -479,7 +479,7 @@ describe('Notifications', () => {
         ],
       }
 
-      const updatedRegistration = await logic._unregisterSafe(
+      const updatedRegistration = await logic.unregisterSafe(
         { chainId, address: { value: safeAddress } } as SafeInfo,
         currentRegistration,
       )
@@ -526,7 +526,7 @@ describe('Notifications', () => {
         ],
       }
 
-      const updatedRegistration = await logic._unregisterSafe(
+      const updatedRegistration = await logic.unregisterSafe(
         { chainId, address: { value: safeAddress } } as SafeInfo,
         currentRegistration,
       )

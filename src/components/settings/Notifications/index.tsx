@@ -1,19 +1,25 @@
-import { Grid, Paper, Typography, Button } from '@mui/material'
+import { Grid, Paper, Typography, Button, IconButton, SvgIcon, Tooltip } from '@mui/material'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import { useCallback, useMemo } from 'react'
 import type { ReactElement } from 'react'
 
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import CheckWallet from '@/components/common/CheckWallet'
-import { requestNotificationPermission, registerSafe, _unregisterSafe } from './logic'
-import type { RegisterDeviceDto } from './logic'
+import EnhancedTable from '@/components/common/EnhancedTable'
+import { requestNotificationPermission, registerSafe, unregisterSafe } from '@/components/settings/Notifications/logic'
+import type { RegisterDeviceDto } from '@/components/settings/Notifications/logic'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
-// TODO: If we also want to display this on the "general" settings we will need to:
-// - adjust the layout to list subscribed Safes with unregister buttons
-// - add device removal route to gateway if we want it (it exists on Transaction Service)
-// - update the below code accordingly
+import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
 const FIREBASE_LS_KEY = 'firebase'
+
+const headCells = [
+  { id: 'safe', label: 'Safe' },
+  { id: 'actions', label: '', sticky: true },
+]
 
 export const Notifications = (): ReactElement => {
   const web3 = useWeb3()
@@ -25,7 +31,7 @@ export const Notifications = (): ReactElement => {
     return registration.safes.includes(safe.address.value)
   })
 
-  const handleRegister = async () => {
+  const handleRegister = useCallback(async () => {
     if (!web3) {
       return
     }
@@ -38,22 +44,52 @@ export const Notifications = (): ReactElement => {
 
     const registration = await registerSafe(safe, web3, currentRegistration)
 
-    if (registration) {
-      setCurrentRegistration(registration)
-    }
-  }
+    setCurrentRegistration(registration)
+  }, [currentRegistration, safe, setCurrentRegistration, web3])
 
-  const handleUnregister = async () => {
+  const handleUnregister = useCallback(async () => {
     if (!currentRegistration) {
       return
     }
 
-    const unregisteration = await _unregisterSafe(safe, currentRegistration)
+    const registration = await unregisterSafe(safe, currentRegistration)
 
-    if (unregisteration) {
-      setCurrentRegistration(undefined)
-    }
-  }
+    setCurrentRegistration(registration)
+  }, [currentRegistration, safe, setCurrentRegistration])
+
+  const rows = useMemo(() => {
+    return currentRegistration?.safeRegistrations.flatMap(({ safes }) => {
+      return safes.map((safeAddress) => {
+        return {
+          cells: {
+            safe: {
+              rawValue: safeAddress,
+              content: (
+                <EthHashInfo address={safeAddress} showCopyButton shortAddress={false} showName={true} hasExplorer />
+              ),
+            },
+            actions: {
+              rawValue: '',
+              sticky: true,
+              content: (
+                <div className={tableCss.actions}>
+                  <CheckWallet>
+                    {(isOk) => (
+                      <Tooltip title="Unregister">
+                        <IconButton onClick={handleUnregister} size="small" disabled={!isOk}>
+                          <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </CheckWallet>
+                </div>
+              ),
+            },
+          },
+        }
+      })
+    })
+  }, [currentRegistration?.safeRegistrations, handleUnregister])
 
   return (
     <Paper sx={{ p: 4 }}>
@@ -67,18 +103,14 @@ export const Notifications = (): ReactElement => {
         <Grid item xs>
           <Typography mb={3}>
             {isCurrentSafeRegistered
-              ? 'You are currently opt-in to receive notifications about this Safe on your device.'
-              : 'You can register to see notifications about this Safe on your device. To register, you will have to sign a message to verify that you are the owner of this Safe.'}
+              ? 'You will receive notifications about the following Safes on your device.'
+              : `You can opt-in to see notifications about this Safe on your device. To do so, you have to sign a message to verify that you are an owner.`}
             <br />
             <br />
             Please note that registration is per-browser and you will need to register again if you clear your browser
             cache.
           </Typography>
-          {isCurrentSafeRegistered ? (
-            <Button variant="contained" color="primary" onClick={handleUnregister} disabled>
-              Unregister
-            </Button>
-          ) : (
+          {!isCurrentSafeRegistered && (
             <CheckWallet>
               {(isOk) => (
                 <Button variant="contained" color="primary" onClick={handleRegister} disabled={!isOk}>
@@ -87,6 +119,8 @@ export const Notifications = (): ReactElement => {
               )}
             </CheckWallet>
           )}
+
+          {rows && <EnhancedTable rows={rows} headCells={headCells} />}
         </Grid>
       </Grid>
     </Paper>
