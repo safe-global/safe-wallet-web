@@ -16,6 +16,7 @@ import { formatTimeInWords } from '@/utils/date'
 import css from './styles.module.css'
 import classnames from 'classnames'
 import SvgIcon from '@mui/material/SvgIcon'
+import { Typography } from '@mui/material'
 
 const VARIANT_ICONS = {
   error: ErrorIcon,
@@ -35,6 +36,7 @@ const NotificationCenterItem = ({
   timestamp,
   link,
   handleClose,
+  title,
 }: Notification & { handleClose: () => void }): ReactElement => {
   const requiresAction = !isRead && !!link
 
@@ -43,6 +45,13 @@ const NotificationCenterItem = ({
       <span>{formatTimeInWords(timestamp)}</span>
       <NotificationLink link={link} onClick={handleClose} />
     </span>
+  )
+
+  const primaryText = (
+    <>
+      {title && <Typography fontWeight="700">{title}</Typography>}
+      <Typography>{message}</Typography>
+    </>
   )
 
   return (
@@ -58,7 +67,7 @@ const NotificationCenterItem = ({
           {getNotificationIcon(variant)}
         </UnreadBadge>
       </ListItemAvatar>
-      <ListItemText primary={message} secondary={secondaryText} />
+      <ListItemText primary={primaryText} secondary={secondaryText} />
     </ListItem>
   )
 }

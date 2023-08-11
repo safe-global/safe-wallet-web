@@ -28,7 +28,12 @@ export const txHistoryListener = (listenerMiddleware: typeof listenerMiddlewareI
         const txId = result.transaction.id
 
         if (pendingTxs[txId]) {
-          txDispatch(TxEvent.SUCCESS, { txId, groupKey: pendingTxs[txId].groupKey })
+          txDispatch(TxEvent.SUCCESS, {
+            txId,
+            groupKey: pendingTxs[txId].groupKey,
+            // @ts-ignore TODO: Add type to gateway-typescript-sdk
+            txDescription: result.transaction.txInfo?.readableDescription,
+          })
         }
       }
     },

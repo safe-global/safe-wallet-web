@@ -24,27 +24,28 @@ export enum TxEvent {
 }
 
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
+type TxDescription = { txDescription?: string }
 
 interface TxEvents {
-  [TxEvent.SIGNED]: { txId?: string }
-  [TxEvent.SIGN_FAILED]: { txId?: string; error: Error }
-  [TxEvent.PROPOSE_FAILED]: { error: Error }
-  [TxEvent.PROPOSED]: { txId: string }
-  [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error }
-  [TxEvent.SIGNATURE_PROPOSED]: { txId: string; signerAddress: string }
-  [TxEvent.SIGNATURE_INDEXED]: { txId: string }
-  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id
-  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id
-  [TxEvent.EXECUTING]: Id
-  [TxEvent.PROCESSING]: Id & { txHash: string }
-  [TxEvent.PROCESSING_MODULE]: Id & { txHash: string }
-  [TxEvent.PROCESSED]: Id & { safeAddress: string }
-  [TxEvent.REVERTED]: Id & { error: Error }
-  [TxEvent.RELAYING]: Id & { taskId: string }
-  [TxEvent.FAILED]: Id & { error: Error }
-  [TxEvent.SUCCESS]: Id
-  [TxEvent.SAFE_APPS_REQUEST]: { safeAppRequestId: RequestId; safeTxHash: string }
-  [TxEvent.BATCH_ADD]: Id
+  [TxEvent.SIGNED]: TxDescription & { txId?: string }
+  [TxEvent.SIGN_FAILED]: TxDescription & { txId?: string; error: Error }
+  [TxEvent.PROPOSE_FAILED]: TxDescription & { error: Error }
+  [TxEvent.PROPOSED]: TxDescription & { txId: string }
+  [TxEvent.SIGNATURE_PROPOSE_FAILED]: TxDescription & { txId: string; error: Error }
+  [TxEvent.SIGNATURE_PROPOSED]: TxDescription & { txId: string; signerAddress: string }
+  [TxEvent.SIGNATURE_INDEXED]: TxDescription & { txId: string }
+  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id & TxDescription
+  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id & TxDescription
+  [TxEvent.EXECUTING]: Id & TxDescription
+  [TxEvent.PROCESSING]: Id & TxDescription & { txHash: string }
+  [TxEvent.PROCESSING_MODULE]: Id & TxDescription & { txHash: string }
+  [TxEvent.PROCESSED]: Id & TxDescription & { safeAddress: string }
+  [TxEvent.REVERTED]: Id & TxDescription & { error: Error }
+  [TxEvent.RELAYING]: Id & TxDescription & { taskId: string }
+  [TxEvent.FAILED]: Id & TxDescription & { error: Error }
+  [TxEvent.SUCCESS]: Id & TxDescription
+  [TxEvent.SAFE_APPS_REQUEST]: TxDescription & { safeAppRequestId: RequestId; safeTxHash: string }
+  [TxEvent.BATCH_ADD]: Id & TxDescription
 }
 
 const txEventBus = new EventBus<TxEvents>()

@@ -35,8 +35,10 @@ const ExecuteForm = ({
   origin,
   onlyExecute,
   isCreation,
+  txDescription,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
+  txDescription?: string
 }): ReactElement => {
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -85,7 +87,7 @@ const ExecuteForm = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      const executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
+      const executedTxId = await executeTx({ txOptions, safeTx, txId, origin, willRelay, txDescription })
       setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
     } catch (_err) {
       const err = asError(_err)
