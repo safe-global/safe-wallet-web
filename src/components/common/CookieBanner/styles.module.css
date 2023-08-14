@@ -23,10 +23,20 @@
   }
 }
 
-.container :global(.Mui-checked) {
+.container.inverted {
+  background: var(--color-text-primary);
+}
+
+.container.inverted,
+.container.inverted :global(.MuiCheckbox-root),
+.container.inverted a {
   color: var(--color-background-paper);
 }
 
-.container :global(.Mui-checked.Mui-disabled) {
+.container.inverted :global(.Mui-checked) {
+  color: var(--color-background-paper);
+}
+
+.container.inverted :global(.Mui-checked.Mui-disabled) {
   opacity: 0.5;
 }

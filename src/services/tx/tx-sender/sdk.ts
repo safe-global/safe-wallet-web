@@ -3,7 +3,7 @@ import type Safe from '@safe-global/safe-core-sdk'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
 import { ethers } from 'ethers'
 import { isWalletRejection, isHardwareWallet } from '@/utils/wallets'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
@@ -155,4 +155,8 @@ export const tryOffChainTxSigning = async (
 
   // Won't be reached, but TS otherwise complains
   throw new Error('No supported signing methods')
+}
+
+export const isDelegateCall = (safeTx: SafeTransaction): boolean => {
+  return safeTx.data.operation === OperationType.DelegateCall
 }

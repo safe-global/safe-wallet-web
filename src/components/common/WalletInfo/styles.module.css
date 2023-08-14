@@ -20,8 +20,16 @@
     font-size: 12px;
   }
 
-  .imageContainer,
   .walletDetails {
+    display: none;
+  }
+
+  .imageContainer img {
+    width: 22px;
+    height: auto;
+  }
+
+  .walletName {
     display: none;
   }
 }

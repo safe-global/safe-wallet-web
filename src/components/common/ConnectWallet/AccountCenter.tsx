@@ -5,7 +5,7 @@ import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useOnboard, { forgetLastWallet, switchWallet } from '@/hooks/wallets/useOnboard'
+import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
@@ -13,6 +13,7 @@ import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
+import AddressEmoji from '../AddressEmoji'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -35,7 +36,6 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
       label: wallet.label,
     })
 
-    forgetLastWallet()
     handleClose()
   }
 
@@ -78,7 +78,10 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         sx={{ marginTop: 1 }}
       >
         <Paper className={css.popoverContainer}>
-          <Identicon address={wallet.address} />
+          <div className={css.identicon}>
+            <Identicon address={wallet.address} />
+            <AddressEmoji address={wallet.address} />
+          </div>
 
           <Typography variant="h5" className={css.addressName}>
             {addressBook[wallet.address] || wallet.ens}
@@ -108,13 +111,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
 
           <ChainSwitcher fullWidth />
 
-          <Button
-            variant="contained"
-            size="small"
-            onClick={handleSwitchWallet}
-            fullWidth
-            sx={{ display: ['none', 'block'] }}
-          >
+          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
             Switch wallet
           </Button>
 

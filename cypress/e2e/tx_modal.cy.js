@@ -5,8 +5,6 @@ const SAFE_NONCE = '6'
 
 describe('Tx Modal', () => {
   before(() => {
-    cy.connectE2EWallet()
-
     // Open the Safe used for testing
     cy.visit(`/${TEST_SAFE}`)
     cy.contains('a', 'Accept selection').click()

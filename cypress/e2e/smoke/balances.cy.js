@@ -13,8 +13,6 @@ describe('Assets > Coins', () => {
   const fiatRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2}`)
 
   before(() => {
-    cy.disableProdCGW()
-
     // Open the Safe used for testing
     cy.visit(`/balances?safe=${TEST_SAFE}`)
     cy.contains('button', 'Accept selection').click()

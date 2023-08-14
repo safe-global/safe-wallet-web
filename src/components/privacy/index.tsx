@@ -6,7 +6,7 @@ const SafePrivacyPolicy = () => {
   return (
     <div>
       <h1>Privacy Policy</h1>
-      <p>Last updated on July&nbsp;2023.</p>
+      <p>Last updated in August&nbsp;2023.</p>
       <p>
         Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
         regulation regarding any personal information we may collect about you, including across our website,{' '}
@@ -686,7 +686,7 @@ const SafePrivacyPolicy = () => {
         </Link>{' '}
         to create a signer wallet/an owner account by using the user&apos;s Gmail account or Apple ID information.
       </p>
-      <h4>MoonPay</h4>
+      <h4>5.14. MoonPay</h4>
       <p>
         We use{' '}
         <Link href="https://www.moonpay.com/" passHref>

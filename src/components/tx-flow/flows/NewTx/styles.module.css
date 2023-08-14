@@ -1,7 +1,3 @@
-.container {
-  margin-top: 50px;
-}
-
 .chain {
   align-self: flex-end;
   margin-bottom: var(--space-2);

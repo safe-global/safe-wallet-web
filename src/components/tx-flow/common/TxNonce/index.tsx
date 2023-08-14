@@ -11,6 +11,8 @@ import {
   type MenuItemProps,
   MenuItem,
   Typography,
+  ListSubheader,
+  type ListSubheaderProps,
 } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 
@@ -28,9 +30,24 @@ import { isRejectionTx } from '@/utils/transactions'
 import css from './styles.module.css'
 import classNames from 'classnames'
 
-const CustomPopper = function (props: PopperProps) {
-  return <Popper {...props} sx={{ width: '300px !important' }} placement="bottom-start" />
+const CustomPopper = function ({
+  // Don't set width of Popper to that of the field
+  style: _,
+  className,
+  ...props
+}: PopperProps) {
+  return <Popper {...props} className={classNames(className, css.popper)} placement="bottom-start" />
 }
+
+const NonceFormHeader = memo(function NonceFormSubheader({ children, ...props }: ListSubheaderProps) {
+  return (
+    <ListSubheader {...props} disableSticky>
+      <Typography variant="caption" fontWeight={700} color="text.secondary">
+        {children}
+      </Typography>
+    </ListSubheader>
+  )
+})
 
 const NonceFormOption = memo(function NonceFormOption({
   nonce,
@@ -43,13 +60,21 @@ const NonceFormOption = memo(function NonceFormOption({
   const transactions = useQueuedTxByNonce(Number(nonce))
 
   const label = useMemo(() => {
-    const [{ transaction }] = getLatestTransactions(transactions)
+    const latestTransactions = getLatestTransactions(transactions)
+
+    if (latestTransactions.length === 0) {
+      return
+    }
+
+    const [{ transaction }] = latestTransactions
     return getTransactionType(transaction, addressBook).text
   }, [addressBook, transactions])
 
   return (
     <MenuItem {...menuItemProps}>
-      {nonce} ({label} transaction)
+      <Typography variant="body2">
+        <b>{nonce}</b>&nbsp;- {`${label || 'New'} transaction`}
+      </Typography>
     </MenuItem>
   )
 })
@@ -113,7 +138,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
       render={({ field, fieldState }) => {
         if (readOnly) {
           return (
-            <Typography fontWeight={700} ml={-1}>
+            <Typography variant="body2" fontWeight={700} ml={-1}>
               {nonce}
             </Typography>
           )
@@ -137,12 +162,15 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
             options={[recommendedNonce, ...previousNonces]}
             getOptionLabel={(option) => option.toString()}
             renderOption={(props, option) => {
-              return option === recommendedNonce ? (
-                <MenuItem key={option} {...props}>
-                  {option} (recommended nonce)
-                </MenuItem>
-              ) : (
-                <NonceFormOption key={option} menuItemProps={props} nonce={option} />
+              const isRecommendedNonce = option === recommendedNonce
+              const isInitialPreviousNonce = option === previousNonces[0]
+
+              return (
+                <>
+                  {isRecommendedNonce && <NonceFormHeader>Recommended nonce</NonceFormHeader>}
+                  {isInitialPreviousNonce && <NonceFormHeader sx={{ pt: 3 }}>Already in queue</NonceFormHeader>}
+                  <NonceFormOption key={option} menuItemProps={props} nonce={option} />
+                </>
               )
             }}
             disableClearable

@@ -20,6 +20,7 @@ export enum TxEvent {
   FAILED = 'FAILED',
   SUCCESS = 'SUCCESS',
   SAFE_APPS_REQUEST = 'SAFE_APPS_REQUEST',
+  BATCH_ADD = 'BATCH_ADD',
 }
 
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
@@ -43,6 +44,7 @@ interface TxEvents {
   [TxEvent.FAILED]: Id & { error: Error }
   [TxEvent.SUCCESS]: Id
   [TxEvent.SAFE_APPS_REQUEST]: { safeAppRequestId: RequestId; safeTxHash: string }
+  [TxEvent.BATCH_ADD]: Id
 }
 
 const txEventBus = new EventBus<TxEvents>()

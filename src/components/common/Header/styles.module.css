@@ -62,10 +62,6 @@
 }
 
 @media (max-width: 599.95px) {
-  .element {
-    padding: 0 var(--space-1);
-  }
-
   .menuButton {
     padding-left: var(--space-2);
   }

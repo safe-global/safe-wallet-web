@@ -32,10 +32,13 @@
         const path = window.location.pathname
         switch (path.split('/')[1]) {
           case 'dummy':
-            sendMessage('sendTransactions', {
-              txs: [{ to: '0x11Df0fa87b30080d59eba632570f620e37f2a8f7', value: '0', data: '0x' }],
-              params: { safeTxGas: 70000 },
-            })
+            // In case that fetching the manifest takes a bit longer
+            setTimeout(() => {
+              sendMessage('sendTransactions', {
+                txs: [{ to: '0x11Df0fa87b30080d59eba632570f620e37f2a8f7', value: '0', data: '0x' }],
+                params: { safeTxGas: 70000 },
+              })
+            }, 1000)
             break
           case 'get-permissions':
             sendMessage('wallet_getPermissions')

@@ -1,8 +1,8 @@
-import { fireEvent, getAllByRole, render, waitFor } from '@/tests/test-utils'
+import { fireEvent, render, waitFor } from '@/tests/test-utils'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ApprovalEditorForm } from '@/components/tx/ApprovalEditor/ApprovalEditorForm'
-import { getAllByTestId } from '@testing-library/dom'
+import { getAllByTestId, getAllByTitle } from '@testing-library/dom'
 
 describe('ApprovalEditorForm', () => {
   beforeEach(() => {
@@ -39,7 +39,7 @@ describe('ApprovalEditorForm', () => {
     expect(approvalItems).toHaveLength(2)
 
     // One button for each approval
-    const buttons = getAllByRole(result.container, 'button')
+    const buttons = getAllByTitle(result.container, 'Save')
     expect(buttons).toHaveLength(2)
 
     // First approval value is rendered
@@ -100,7 +100,7 @@ describe('ApprovalEditorForm', () => {
 
     // Change value and save
     const amountInput = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
-    const saveButton = result.getByRole('button')
+    const saveButton = result.getByTitle('Save')
 
     fireEvent.change(amountInput!, { target: { value: '100' } })
     fireEvent.click(saveButton)

@@ -2,8 +2,6 @@ import Cookies from 'js-cookie'
 
 import { IS_PRODUCTION } from '@/config/constants'
 
-type DataLayer = Record<string, unknown>
-
 export type TagManagerArgs = {
   // GTM id, e.g. GTM-000000
   gtmId: string
@@ -11,8 +9,6 @@ export type TagManagerArgs = {
   auth: string
   // GTM environment, e.g. env-00.
   preview: string
-  // Object that contains all of the information that you want to pass to GTM
-  dataLayer?: DataLayer
 }
 
 const DATA_LAYER_NAME = 'dataLayer'
@@ -38,18 +34,40 @@ const TagManager = {
 
     return script
   },
-  isInitialized: () => {
-    const GTM_SCRIPT = 'https://www.googletagmanager.com/gtm.js'
 
-    return !!document.querySelector(`[src^="${GTM_SCRIPT}"]`)
+  dataLayer: (data: Record<string, any>) => {
+    window[DATA_LAYER_NAME] = window[DATA_LAYER_NAME] || []
+    window[DATA_LAYER_NAME].push(data)
+
+    if (!IS_PRODUCTION) {
+      console.info('[GTM] -', data)
+    }
   },
+
   initialize: (args: TagManagerArgs) => {
-    if (TagManager.isInitialized()) {
-      return
+    window[DATA_LAYER_NAME] = window[DATA_LAYER_NAME] || []
+    // This function MUST be in `window`, otherwise GTM Consent Mode just doesn't work
+    window.gtag = function () {
+      window[DATA_LAYER_NAME]?.push(arguments)
     }
 
-    // Initialize dataLayer (with configuration)
-    window[DATA_LAYER_NAME] = args.dataLayer ? [args.dataLayer] : []
+    // Consent mode
+    window.gtag('consent', 'default', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied',
+      functionality_storage: 'granted',
+      personalization_storage: 'denied',
+      security_storage: 'granted',
+      wait_for_update: 500,
+    })
+
+    TagManager.dataLayer({
+      // Block JS variables and custom scripts
+      // @see https://developers.google.com/tag-platform/tag-manager/web/restrict
+      'gtm.blocklist': ['j', 'jsm', 'customScripts'],
+      pageLocation: `${location.origin}${location.pathname}`,
+      pagePath: location.pathname,
+    })
 
     const script = TagManager._getScript(args)
 
@@ -57,25 +75,24 @@ const TagManager = {
     // { "gtm.start": new Date().getTime(), event: "gtm.js" }
     document.head.insertBefore(script, document.head.childNodes[0])
   },
-  dataLayer: (dataLayer: DataLayer) => {
-    if (!TagManager.isInitialized()) {
-      return
-    }
 
-    window[DATA_LAYER_NAME].push(dataLayer)
-
-    if (!IS_PRODUCTION) {
-      console.info('[GTM] -', dataLayer)
-    }
+  enableCookies: () => {
+    window.gtag?.('consent', 'update', {
+      analytics_storage: 'granted',
+    })
   },
-  disable: () => {
-    if (!TagManager.isInitialized()) {
-      return
-    }
 
-    const GTM_COOKIE_LIST = ['_ga', '_gat', '_gid']
+  disableCookies: () => {
+    window.gtag?.('consent', 'update', {
+      analytics_storage: 'denied',
+    })
 
-    GTM_COOKIE_LIST.forEach((cookie) => {
+    const GA_COOKIE_LIST = ['_ga', '_gat', '_gid']
+    const GA_PREFIX = '_ga_'
+    const allCookies = document.cookie.split(';').map((cookie) => cookie.split('=')[0].trim())
+    const gaCookies = allCookies.filter((cookie) => cookie.startsWith(GA_PREFIX))
+
+    GA_COOKIE_LIST.concat(gaCookies).forEach((cookie) => {
       Cookies.remove(cookie, {
         path: '/',
         domain: `.${location.host.split('.').slice(-2).join('.')}`,

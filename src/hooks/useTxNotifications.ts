@@ -43,21 +43,17 @@ enum Variant {
 
 const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
 
-const getTxLink = (txId: string, chain: ChainInfo, safeAddress: string): { href: LinkProps['href']; title: string } => {
+export const getTxLink = (
+  txId: string,
+  chain: ChainInfo,
+  safeAddress: string,
+): { href: LinkProps['href']; title: string } => {
   return {
     href: {
       pathname: AppRoutes.transactions.tx,
       query: { id: txId, safe: `${chain?.shortName}:${safeAddress}` },
     },
     title: 'View transaction',
-  }
-}
-
-const getTxExplorerLink = (txHash: string, chain: ChainInfo): { href: LinkProps['href']; title: string } => {
-  const { href } = getExplorerLink(txHash, chain.blockExplorerUriTemplate)
-  return {
-    href,
-    title: 'View on explorer',
   }
 }
 
@@ -90,7 +86,11 @@ const useTxNotifications = (): void => {
             detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
-            link: txId ? getTxLink(txId, chain, safeAddress) : txHash ? getTxExplorerLink(txHash, chain) : undefined,
+            link: txId
+              ? getTxLink(txId, chain, safeAddress)
+              : txHash
+              ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
+              : undefined,
           }),
         )
       }),

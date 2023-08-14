@@ -14,6 +14,7 @@ import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import css from './styles.module.css'
 import { Skeleton } from '@mui/material'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -38,6 +39,7 @@ const SafeAppList = ({
 }: SafeAppListProps) => {
   const [safeAppsViewMode = GRID_VIEW_MODE, setSafeAppsViewMode] = useLocalStorage<SafeAppsViewMode>(VIEW_MODE_KEY)
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
+  const { openedSafeAppIds } = useOpenedSafeApps()
 
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
     useSafeAppsFilters(safeAppsList)
@@ -48,11 +50,11 @@ const SafeAppList = ({
     (safeApp: SafeAppData) => {
       const isCustomApp = safeApp.id < 1
 
-      if (isCustomApp) return
+      if (isCustomApp || openedSafeAppIds.includes(safeApp.id)) return
 
       return () => openPreviewDrawer(safeApp)
     },
-    [openPreviewDrawer],
+    [openPreviewDrawer, openedSafeAppIds],
   )
 
   return (
@@ -106,6 +108,7 @@ const SafeAppList = ({
               onBookmarkSafeApp={onBookmarkSafeApp}
               removeCustomApp={removeCustomApp}
               onClickSafeApp={handleSafeAppClick(safeApp)}
+              openPreviewDrawer={openPreviewDrawer}
             />
           </li>
         ))}

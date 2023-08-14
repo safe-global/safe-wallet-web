@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useEffect, useCallback, useRef, useMemo, useState } from 'react'
+import { useEffect, useCallback, useRef, useMemo } from 'react'
 import {
   InputAdornment,
   TextField,
@@ -47,14 +47,14 @@ const AddressInput = ({
     register,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isValidating },
     trigger,
   } = useFormContext()
+
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
   const watchedValue = useWatch({ name, control })
   const currentShortName = currentChain?.shortName || ''
-  const [isValidating, setIsValidating] = useState<boolean>(false)
 
   // Fetch an ENS resolution for the current address
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
@@ -155,11 +155,9 @@ const AddressInput = ({
 
           validate: async () => {
             const value = rawValueRef.current
+
             if (value) {
-              setIsValidating(true)
-              const result = validatePrefixed(value) || (await validate?.(parsePrefixedAddress(value).address))
-              setIsValidating(false)
-              return result
+              return validatePrefixed(value) || (await validate?.(parsePrefixedAddress(value).address))
             }
           },
 
