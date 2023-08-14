@@ -8,6 +8,8 @@ import { selectChainById } from '@/store/chainsSlice'
 import { getBlockExplorerLink } from '@/utils/chains'
 import { Emoji } from '@/components/common/AddressEmoji'
 import SrcEthHashInfo, { type EthHashInfoProps } from './SrcEthHashInfo'
+import { selectAddedSafes } from '@/store/addedSafesSlice'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 const EthHashInfo = ({
   showName = true,
@@ -16,11 +18,18 @@ const EthHashInfo = ({
 }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
   const currentChainId = useChainId()
+  const safeAddress = useSafeAddress()
+  const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId)) || {}
   const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChainId))
   const addressBook = useAddressBook()
   const link = chain ? getBlockExplorerLink(chain, props.address) : undefined
   const name = showName ? props.name || addressBook[props.address] : undefined
-  const showEmoji = settings.addressEmojis && props.showAvatar !== false && !props.customAvatar && avatarSize >= 20
+  const showEmoji =
+    settings.addressEmojis &&
+    props.showAvatar !== false &&
+    !props.customAvatar &&
+    avatarSize >= 20 &&
+    (safeAddress === props.address || props.address in addedSafes)
 
   return (
     <Box position="relative">
