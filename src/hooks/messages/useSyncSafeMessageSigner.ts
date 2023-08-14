@@ -12,7 +12,7 @@ import { useEffect, useCallback, useState } from 'react'
 import useSafeInfo from '../useSafeInfo'
 import useOnboard from '../wallets/useOnboard'
 
-const HIDE_DELAY = 1000
+const HIDE_DELAY = 3000
 
 const fetchSafeMessage = async (safeMessageHash: string, chainId: string) => {
   let message: SafeMessage | undefined
