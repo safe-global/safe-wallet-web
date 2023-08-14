@@ -7,6 +7,7 @@
 
 .avatarContainer {
   flex-shrink: 0;
+  position: relative;
 }
 
 .avatarContainer > * {
