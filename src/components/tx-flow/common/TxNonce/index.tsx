@@ -109,15 +109,10 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
     formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce)
   }
 
-  const currentFormNonce = formMethods.watch(TxNonceFormFieldNames.NONCE)
-  const isFormChanged = formMethods.formState.isDirty
-
-  // Update to recommended nonce if the current nonce is unchanged and invalid after update
+  // keep the formdata up-to-date when the actually used nonce updates
   useEffect(() => {
-    if (!isFormChanged && Number(currentFormNonce) < safe.nonce) {
-      formMethods.setValue(TxNonceFormFieldNames.NONCE, safe.nonce.toString())
-    }
-  }, [safe.nonce, currentFormNonce, isFormChanged, formMethods])
+    formMethods.setValue(TxNonceFormFieldNames.NONCE, nonce)
+  }, [nonce, formMethods])
 
   return (
     <Controller
