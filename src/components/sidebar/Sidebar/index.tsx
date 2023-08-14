@@ -55,7 +55,9 @@ const Sidebar = (): ReactElement => {
         <div className={css.drawer}>
           <SafeList closeDrawer={closeDrawer} />
 
-          <DataWidget />
+          <div className={css.dataWidget}>
+            <DataWidget />
+          </div>
         </div>
       </Drawer>
     </div>

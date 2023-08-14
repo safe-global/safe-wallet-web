@@ -1,7 +1,3 @@
-.container {
-  overflow-y: auto;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
