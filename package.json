@@ -3,7 +3,7 @@
   "homepage": "https://github.com/safe-global/safe-wallet-web",
   "license": "GPL-3.0",
   "type": "module",
-  "version": "1.15.2",
+  "version": "1.17.0",
   "scripts": {
     "dev": "next dev",
     "start": "next dev",
@@ -125,7 +125,6 @@
     "ts-prune": "^0.10.3",
     "typechain": "^8.0.0",
     "typescript": "4.9.4",
-    "typescript-plugin-css-modules": "^4.2.2",
-    "whatwg-fetch": "3.6.2"
+    "typescript-plugin-css-modules": "^4.2.2"
   }
 }

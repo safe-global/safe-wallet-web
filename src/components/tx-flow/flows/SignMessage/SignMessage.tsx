@@ -1,5 +1,17 @@
-import { Grid, Button, Box, Typography, SvgIcon, CardContent, CardActions } from '@mui/material'
+import {
+  Grid,
+  Button,
+  Box,
+  Typography,
+  SvgIcon,
+  CardContent,
+  CardActions,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useContext } from 'react'
 import { SafeMessageListItemType, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
@@ -12,7 +24,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useSafeMessage } from '@/hooks/messages/useSafeMessages'
+import useSafeMessage from '@/hooks/messages/useSafeMessage'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '@/components/tx-flow'
 import CopyButton from '@/components/common/CopyButton'
@@ -25,6 +37,7 @@ import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import InfoBox from '@/components/safe-messages/InfoBox'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import TxCard from '@/components/tx-flow/common/TxCard'
+import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -64,9 +77,11 @@ const DialogHeader = ({ threshold }: { threshold: number }) => (
     <Typography variant="h4" textAlign="center" gutterBottom>
       Confirm message
     </Typography>
-    <Typography variant="body1" textAlign="center" mb={2}>
-      To sign this message, you need to collect <b>{threshold} owner signatures</b> of your Safe Account.
-    </Typography>
+    {threshold > 1 && (
+      <Typography variant="body1" textAlign="center" mb={2}>
+        To sign this message, collect signatures from <b>{threshold} owners</b> of your Safe Account.
+      </Typography>
+    )}
   </>
 )
 
@@ -116,6 +131,23 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   )
 }
 
+const SuccessCard = ({ safeMessage, onContinue }: { safeMessage: SafeMessage; onContinue: () => void }) => {
+  return (
+    <TxCard>
+      <Typography variant="h4" textAlign="center" gutterBottom>
+        Message successfully signed
+      </Typography>
+
+      <MsgSigners msg={safeMessage} showOnlyConfirmations showMissingSignatures />
+      <CardActions>
+        <Button variant="contained" color="primary" onClick={onContinue} disabled={!safeMessage.preparedSignature}>
+          Continue
+        </Button>
+      </CardActions>
+    </TxCard>
+  )
+}
+
 type BaseProps = Pick<SafeMessage, 'logoUri' | 'name' | 'message'>
 
 // Custom Safe Apps do not have a `safeAppId`
@@ -139,24 +171,41 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const wallet = useWallet()
 
   const { decodedMessage, safeMessageMessage, safeMessageHash } = useDecodedSafeMessage(message, safe)
-  const ongoingMessage = useSafeMessage(safeMessageHash)
+  const [safeMessage, setSafeMessage] = useSafeMessage(safeMessageHash)
+
   useHighlightHiddenTab()
 
   const decodedMessageAsString =
     typeof decodedMessage === 'string' ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
 
-  const hasSigned = !!ongoingMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
+  const hasSigned = !!safeMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
+
+  const isFullySigned = !!safeMessage?.preparedSignature
 
   const isDisabled = !isOwner || hasSigned
 
   const { onSign, submitError } = useSyncSafeMessageSigner(
-    ongoingMessage,
+    safeMessage,
     decodedMessage,
     safeMessageHash,
     requestId,
     safeAppId,
     () => setTxFlow(undefined),
   )
+
+  const handleSign = async () => {
+    const updatedMessage = await onSign()
+    if (updatedMessage) {
+      setSafeMessage(updatedMessage)
+    }
+  }
+
+  const onContinue = async () => {
+    if (!safeMessage) {
+      return
+    }
+    await dispatchPreparedSignature(safeMessage, safeMessageHash, () => setTxFlow(undefined), requestId)
+  }
 
   return (
     <>
@@ -169,42 +218,52 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
 
-          <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
-          <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
+          <Accordion sx={{ mt: 2, '&.Mui-expanded': { mt: 2 } }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>SafeMessage details</AccordionSummary>
+            <AccordionDetails>
+              <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
+              <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
+            </AccordionDetails>
+          </Accordion>
         </CardContent>
       </TxCard>
 
-      <TxCard>
-        <AlreadySignedByOwnerMessage hasSigned={hasSigned} />
+      {isFullySigned ? (
+        <SuccessCard onContinue={onContinue} safeMessage={safeMessage} />
+      ) : (
+        <>
+          <TxCard>
+            <AlreadySignedByOwnerMessage hasSigned={hasSigned} />
 
-        <InfoBox
-          title="Collect all the confirmations"
-          message={
-            requestId
-              ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
-              : 'The signature will be submitted to the Safe App when the message is fully signed.'
-          }
-        >
-          <MsgSigners
-            msg={ongoingMessage || createSkeletonMessage(safe.threshold)}
-            showOnlyConfirmations
-            showMissingSignatures
-            backgroundColor={palette.info.background}
-          />
-        </InfoBox>
+            <InfoBox
+              title="Collect all the confirmations"
+              message={
+                requestId
+                  ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
+                  : 'The signature will be submitted to the Safe App when the message is fully signed.'
+              }
+            >
+              <MsgSigners
+                msg={safeMessage || createSkeletonMessage(safe.threshold)}
+                showOnlyConfirmations
+                showMissingSignatures
+                backgroundColor={palette.info.background}
+              />
+            </InfoBox>
 
-        <WrongChainWarning />
+            <WrongChainWarning />
 
-        <MessageDialogError isOwner={isOwner} submitError={submitError} />
-      </TxCard>
-
-      <TxCard>
-        <CardActions>
-          <Button variant="contained" color="primary" onClick={onSign} disabled={isDisabled}>
-            Sign
-          </Button>
-        </CardActions>
-      </TxCard>
+            <MessageDialogError isOwner={isOwner} submitError={submitError} />
+          </TxCard>
+          <TxCard>
+            <CardActions>
+              <Button variant="contained" color="primary" onClick={handleSign} disabled={isDisabled}>
+                Sign
+              </Button>
+            </CardActions>
+          </TxCard>
+        </>
+      )}
     </>
   )
 }

@@ -28,4 +28,8 @@
     width: 22px;
     height: auto;
   }
+
+  .walletName {
+    display: none;
+  }
 }

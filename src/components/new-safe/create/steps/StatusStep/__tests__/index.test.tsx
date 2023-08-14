@@ -17,12 +17,6 @@ describe('StatusStep', () => {
       />,
     )
 
-    expect(useSafeCreationSpy).toHaveBeenCalledWith(
-      undefined,
-      expect.anything(),
-      SafeCreationStatus.PROCESSING,
-      expect.anything(),
-      true,
-    )
+    expect(useSafeCreationSpy).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING, expect.anything(), true)
   })
 })

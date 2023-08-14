@@ -22,7 +22,7 @@ const usePreviousNonces = () => {
   const previousNonces = useMemo(() => {
     return _getUniqueQueuedTxs(page)
       .map((tx) => (isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined))
-      .filter((nonce): nonce is number => !!nonce)
+      .filter((nonce): nonce is number => nonce !== undefined)
   }, [page])
 
   return previousNonces
