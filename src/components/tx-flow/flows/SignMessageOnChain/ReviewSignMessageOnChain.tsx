@@ -72,7 +72,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       // the primary type. And there must only be one type that is not used by any other type.
       delete typesCopy.EIP712Domain
       txData = readOnlySignMessageLibContract.encode('signMessage', [
-        // @ts-expect-error ethers type is complaining about missing BigNumber's methods. But we're not getting a BigNumber instance from a JSON
+        // @ts-ignore
         _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
