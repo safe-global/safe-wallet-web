@@ -1,4 +1,4 @@
-import { memo, type ReactElement, useContext, useMemo, useEffect } from 'react'
+import { memo, type ReactElement, useContext, useMemo } from 'react'
 import {
   Autocomplete,
   Box,
@@ -102,17 +102,15 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
     defaultValues: {
       [TxNonceFormFieldNames.NONCE]: nonce,
     },
-    mode: 'all',
+    mode: 'onChange',
+    values: {
+      [TxNonceFormFieldNames.NONCE]: nonce,
+    },
   })
 
   const resetNonce = () => {
     formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce)
   }
-
-  // keep the formdata up-to-date when the actually used nonce updates
-  useEffect(() => {
-    formMethods.setValue(TxNonceFormFieldNames.NONCE, nonce)
-  }, [nonce, formMethods])
 
   return (
     <Controller
