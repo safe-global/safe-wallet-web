@@ -374,10 +374,6 @@ describe('SignMessage', () => {
       }),
     )
 
-    await act(() => {
-      jest.advanceTimersByTime(1000)
-    })
-
     expect(getByText('Message successfully signed')).toBeInTheDocument()
   })
 
@@ -555,10 +551,6 @@ describe('SignMessage', () => {
       fireEvent.click(button)
     })
 
-    await act(() => {
-      jest.advanceTimersByTime(1000)
-    })
-
     await waitFor(() => {
       expect(proposalSpy).toHaveBeenCalled()
       expect(getByText('Error confirming the message. Please try again.')).toBeInTheDocument()
@@ -611,11 +603,6 @@ describe('SignMessage', () => {
       fireEvent.click(button)
     })
 
-    await act(() => {
-      jest.advanceTimersByTime(1000)
-    })
-
-    // We automatically call the dispatch after 1 second
     expect(confirmationSpy).toHaveBeenCalled()
 
     await waitFor(() => {
