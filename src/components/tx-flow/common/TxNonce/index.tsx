@@ -67,8 +67,7 @@ const NonceFormOption = memo(function NonceFormOption({
     }
 
     const [{ transaction }] = latestTransactions
-    // @ts-ignore TODO: Add type to gateway-typescript-sdk
-    return transaction.txInfo.readableDescription || getTransactionType(transaction, addressBook).text
+    return transaction.txInfo.humanDescription || getTransactionType(transaction, addressBook).text
   }, [addressBook, transactions])
 
   const label = txLabel || 'New transaction'

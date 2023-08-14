@@ -34,7 +34,7 @@ export const dispatchTxProposal = async ({
   safeTx,
   txId,
   origin,
-  txDescription,
+  humanDescription,
 }: {
   chainId: string
   safeAddress: string
@@ -42,7 +42,7 @@ export const dispatchTxProposal = async ({
   safeTx: SafeTransaction
   txId?: string
   origin?: string
-  txDescription?: string
+  humanDescription?: string
 }): Promise<TransactionDetails> => {
   const safeSDK = getAndValidateSafeSDK()
   const safeTxHash = await safeSDK.getTransactionHash(safeTx)
@@ -55,10 +55,10 @@ export const dispatchTxProposal = async ({
       txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, {
         txId,
         error: asError(error),
-        txDescription,
+        humanDescription,
       })
     } else {
-      txDispatch(TxEvent.PROPOSE_FAILED, { error: asError(error), txDescription })
+      txDispatch(TxEvent.PROPOSE_FAILED, { error: asError(error), humanDescription })
     }
     throw error
   }
@@ -69,7 +69,7 @@ export const dispatchTxProposal = async ({
     txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
       txId: proposedTx.txId,
       signerAddress: txId ? sender : undefined,
-      txDescription,
+      humanDescription,
     })
   }
 
@@ -85,7 +85,7 @@ export const dispatchTxSigning = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   txId?: string,
-  txDescription?: string,
+  humanDescription?: string,
 ): Promise<SafeTransaction> => {
   const sdk = await getSafeSDKWithSigner(onboard, chainId)
 
@@ -93,11 +93,11 @@ export const dispatchTxSigning = async (
   try {
     signedTx = await tryOffChainTxSigning(safeTx, safeVersion, sdk)
   } catch (error) {
-    txDispatch(TxEvent.SIGN_FAILED, { txId, error: asError(error), txDescription })
+    txDispatch(TxEvent.SIGN_FAILED, { txId, error: asError(error), humanDescription })
     throw error
   }
 
-  txDispatch(TxEvent.SIGNED, { txId, txDescription })
+  txDispatch(TxEvent.SIGNED, { txId, humanDescription })
 
   return signedTx
 }
@@ -110,11 +110,11 @@ export const dispatchOnChainSigning = async (
   txId: string,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
-  txDescription?: string,
+  humanDescription?: string,
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
-  const eventParams = { txId, txDescription }
+  const eventParams = { txId, humanDescription }
 
   try {
     // With the unchecked signer, the contract call resolves once the tx
@@ -142,10 +142,10 @@ export const dispatchTxExecution = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
-  txDescription?: string,
+  humanDescription?: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
-  const eventParams = { txId, txDescription }
+  const eventParams = { txId, humanDescription }
 
   // Execute the tx
   let result: TransactionResult | undefined
@@ -326,7 +326,7 @@ export const dispatchTxRelay = async (
   safe: SafeInfo,
   txId: string,
   gasLimit?: string | number,
-  txDescription?: string,
+  humanDescription?: string,
 ) => {
   const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(safe)
 
@@ -352,12 +352,12 @@ export const dispatchTxRelay = async (
       throw new Error('Transaction could not be relayed')
     }
 
-    txDispatch(TxEvent.RELAYING, { taskId, txId, txDescription })
+    txDispatch(TxEvent.RELAYING, { taskId, txId, humanDescription })
 
     // Monitor relay tx
     waitForRelayedTx(taskId, [txId], safe.address.value)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: asError(error), txDescription })
+    txDispatch(TxEvent.FAILED, { txId, error: asError(error), humanDescription })
     throw error
   }
 }

@@ -24,7 +24,7 @@ export enum TxEvent {
 }
 
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
-type TxDescription = { txDescription?: string }
+type TxDescription = { humanDescription?: string }
 
 interface TxEvents {
   [TxEvent.SIGNED]: TxDescription & { txId?: string }

@@ -3268,10 +3268,10 @@
   dependencies:
     cross-fetch "^3.1.5"
 
-"@safe-global/safe-gateway-typescript-sdk@^3.8.1":
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.8.1.tgz#582d5364de48b62b4ea2b76abc7f3c7602ff1a5c"
-  integrity sha512-MynG0sOHItKYf51jls1fr4NcyCWLXcXA2pZ+Hj0Ea2LMYY3sAthHjoHYGFTt6uSePS094ZFR38wH5ReVIpFSdw==
+"@safe-global/safe-gateway-typescript-sdk@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.9.0.tgz#5aa36c05b865f6fe754d1d460f83bc9bf3a0145e"
+  integrity sha512-DxRM/sBBQhv955dPtdo0z2Bf2fXxrzoRUnGyTa3+4Z0RAhcyiqnffRP1Bt3tyuvlyfZnFL0RsvkqDcAIKzq3RQ==
   dependencies:
     cross-fetch "^3.1.5"
 

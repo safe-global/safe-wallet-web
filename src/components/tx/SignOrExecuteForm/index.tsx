@@ -99,17 +99,16 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
             safeTx={safeTx}
             isCreation={isCreation}
             // @ts-ignore TODO: Update gateway-typescript-sdk type
-            txDescription={decodedData?.readableDescription}
+            humanDescription={decodedData?.humanDescription}
           />
         ) : (
-          // TODO: Pass txDescription
           <SignForm
             {...props}
             safeTx={safeTx}
             isBatchable={isBatchable}
             isCreation={isCreation}
             // @ts-ignore TODO: Update gateway-typescript-sdk type
-            txDescription={decodedData?.readableDescription}
+            humanDescription={decodedData?.humanDescription}
           />
         )}
       </TxCard>

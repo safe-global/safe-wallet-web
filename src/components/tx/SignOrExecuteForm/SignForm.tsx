@@ -24,10 +24,10 @@ const SignForm = ({
   isBatch,
   isBatchable,
   isCreation,
-  txDescription,
+  humanDescription,
 }: SignOrExecuteProps & {
   safeTx?: SafeTransaction
-  txDescription?: string
+  humanDescription?: string
 }): ReactElement => {
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -55,7 +55,9 @@ const SignForm = ({
     setSubmitError(undefined)
 
     try {
-      await (isAddingToBatch ? addToBatch(safeTx, origin, txDescription) : signTx(safeTx, txId, origin, txDescription))
+      await (isAddingToBatch
+        ? addToBatch(safeTx, origin, humanDescription)
+        : signTx(safeTx, txId, origin, humanDescription))
     } catch (_err) {
       const err = asError(_err)
       logError(Errors._804, err)

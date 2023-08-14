@@ -76,11 +76,11 @@ const useTxNotifications = (): void => {
         const txId = 'txId' in detail ? detail.txId : undefined
         const txHash = 'txHash' in detail ? detail.txHash : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
-        const txDescription = 'txDescription' in detail ? detail.txDescription : ''
+        const humanDescription = 'humanDescription' in detail ? detail.humanDescription : ''
 
         dispatch(
           showNotification({
-            title: txDescription,
+            title: humanDescription,
             message,
             detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
