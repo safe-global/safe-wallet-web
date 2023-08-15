@@ -50,7 +50,7 @@ const StatusStepper = ({ status }: { status: SafeCreationStatus }) => {
       <Step>
         <StatusStep isLoading={status < SafeCreationStatus.SUCCESS} safeAddress={pendingSafe.safeAddress}>
           <Typography variant="body2" fontWeight="700">
-            Processing
+            Indexing
           </Typography>
         </StatusStep>
       </Step>
