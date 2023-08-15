@@ -9,6 +9,7 @@ export const AppRoutes = {
   home: '/home',
   cookie: '/cookie',
   addressBook: '/address-book',
+  addOwner: '/addOwner',
   _offline: '/_offline',
   apps: {
     open: '/apps/open',

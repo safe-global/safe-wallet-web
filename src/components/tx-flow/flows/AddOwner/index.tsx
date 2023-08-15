@@ -16,17 +16,7 @@ export type AddOwnerFlowProps = {
   threshold: number
 }
 
-const AddOwnerFlow = () => {
-  const { safe } = useSafeInfo()
-
-  const defaultValues: AddOwnerFlowProps = {
-    newOwner: {
-      address: '',
-      name: '',
-    },
-    threshold: safe.threshold,
-  }
-
+const FlowInner = ({ defaultValues }: { defaultValues: AddOwnerFlowProps }) => {
   const { data, step, nextStep, prevStep } = useTxStepper<AddOwnerFlowProps>(defaultValues)
 
   const steps = [
@@ -50,6 +40,22 @@ const AddOwnerFlow = () => {
       {steps}
     </TxLayout>
   )
+}
+
+const AddOwnerFlow = ({ address }: { address?: string }) => {
+  const { safe, safeLoading, safeLoaded } = useSafeInfo()
+
+  const defaultValues: AddOwnerFlowProps = {
+    newOwner: {
+      address: address || '',
+      name: '',
+    },
+    threshold: safe.threshold,
+  }
+
+  if (!safeLoaded || safeLoading) return null
+
+  return <FlowInner defaultValues={defaultValues} />
 }
 
 export default AddOwnerFlow
