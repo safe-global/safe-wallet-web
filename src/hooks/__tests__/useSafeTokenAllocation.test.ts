@@ -69,6 +69,9 @@ describe('useSafeTokenAllocation', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    // Clear memoization cache
+    _getRedeemDeadline.cache.clear?.()
+
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
       () =>
         ({
