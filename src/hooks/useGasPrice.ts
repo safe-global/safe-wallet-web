@@ -1,3 +1,4 @@
+import { useContext, createContext } from 'react'
 import { BigNumber } from 'ethers'
 import type { FeeData } from '@ethersproject/abstract-provider'
 import type {
@@ -124,7 +125,12 @@ const getGasParameters = (
     maxPriorityFeePerGas: undefined,
   }
 }
-const useGasPrice = (): AsyncResult<GasFeeParams> => {
+
+type AsyncGasPrice = AsyncResult<GasFeeParams>
+
+export const GasContext = createContext<AsyncGasPrice>([undefined, undefined, true])
+
+export const useGasPriceAsync = (): AsyncGasPrice => {
   const chain = useCurrentChain()
   const gasPriceConfigs = chain?.gasPrice
   const [counter] = useIntervalCounter(REFRESH_DELAY)
@@ -152,6 +158,10 @@ const useGasPrice = (): AsyncResult<GasFeeParams> => {
   const isLoading = gasPriceLoading || (!gasPrice && !gasPriceError)
 
   return [gasPrice, gasPriceError, isLoading]
+}
+
+const useGasPrice = (): AsyncResult<GasFeeParams> => {
+  return useContext(GasContext)
 }
 
 export default useGasPrice

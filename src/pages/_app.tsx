@@ -37,6 +37,7 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
+import { GasContext, useGasPriceAsync } from '@/hooks/useGasPrice'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -67,13 +68,16 @@ const clientSideEmotionCache = createEmotionCache()
 export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }) => {
   const isDarkMode = useDarkMode()
   const themeMode = isDarkMode ? 'dark' : 'light'
+  const gasPrice = useGasPriceAsync()
 
   return (
     <SafeThemeProvider mode={themeMode}>
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <TxModalProvider>{children}</TxModalProvider>
+            <GasContext.Provider value={gasPrice}>
+              <TxModalProvider>{children}</TxModalProvider>
+            </GasContext.Provider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}

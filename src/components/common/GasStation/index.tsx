@@ -9,8 +9,10 @@ const GasStation = () => {
   const gasGwei = maxFeePerGas ? formatVisualAmount(maxFeePerGas, 'gwei', 0) : ''
 
   return (
-    <Box display="flex" alignItems="center">
-      <Typography sx={{ minWidth: '1.4em' }}>{gasGwei}</Typography>
+    <Box display="flex" alignItems="center" gap={0.5}>
+      <Typography minWidth={gasGwei.length * 0.75 + 'em'} fontWeight="bold">
+        {gasGwei}
+      </Typography>
       <SvgIcon component={LocalGasStationIcon} inheritViewBox fontSize="small" />
     </Box>
   )

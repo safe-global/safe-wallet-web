@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 import { act, renderHook } from '@/tests/test-utils'
-import useGasPrice from '@/hooks/useGasPrice'
+import { useGasPriceAsync as useGasPrice } from '@/hooks/useGasPrice'
 import { useCurrentChain } from '../useChains'
 
 // mock useWeb3Readonly
