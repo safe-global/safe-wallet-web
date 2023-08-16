@@ -11,7 +11,8 @@ import { useInitPairing } from '@/services/pairing/hooks'
 import { isWalletUnlocked, WalletNames } from '@/utils/wallets'
 import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
-import { WALLET_KEYS } from './consts'
+
+const WALLETCONNECT = 'WalletConnect'
 
 export type ConnectedWallet = {
   label: string
@@ -67,16 +68,15 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   }
 }
 
-const getWalletConnectLabel = async ({ label, provider }: ConnectedWallet): Promise<string | undefined> => {
-  if (label.toUpperCase() !== WALLET_KEYS.WALLETCONNECT.toUpperCase()) return
-
+const getWalletConnectLabel = async (wallet: ConnectedWallet): Promise<string | undefined> => {
   const UNKNOWN_PEER = 'Unknown'
-  const { default: WalletConnect } = await import('@walletconnect/client')
-
-  const peerWallet =
-    ((provider as unknown as any).connector as InstanceType<typeof WalletConnect>).peerMeta?.name || UNKNOWN_PEER
-
-  return peerWallet ?? UNKNOWN_PEER
+  const { label } = wallet
+  const isWalletConnect = label.startsWith(WALLETCONNECT)
+  if (!isWalletConnect) return
+  const { connector } = wallet.provider as unknown as any
+  const peerWalletV2 = connector.session?.peer?.metadata?.name
+  const peerWalletV1 = connector.peerMeta?.name
+  return peerWalletV2 || peerWalletV1 || UNKNOWN_PEER
 }
 
 const trackWalletType = (wallet: ConnectedWallet) => {

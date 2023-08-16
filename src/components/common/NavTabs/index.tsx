@@ -32,7 +32,7 @@ const NextLinkComposed = forwardRef<HTMLAnchorElement, Props>(function NextCompo
 
 const NavTabs = ({ tabs }: { tabs: NavItem[] }) => {
   const router = useRouter()
-  const activeTab = tabs.map((tab) => tab.href).indexOf(router.pathname)
+  const activeTab = Math.max(0, tabs.map((tab) => tab.href).indexOf(router.pathname))
   const query = router.query.safe ? { safe: router.query.safe } : undefined
 
   return (
