@@ -3,6 +3,7 @@ import { ErrorCode } from '@ethersproject/logger'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly, isSmartContract } from '@/hooks/wallets/web3'
 import { WALLET_KEYS } from '@/hooks/wallets/consts'
+import { memoize } from 'lodash'
 
 const isWCRejection = (err: Error): boolean => {
   return /rejected/.test(err?.message)
@@ -22,12 +23,15 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   )
 }
 
-export const isSmartContractWallet = async (wallet: ConnectedWallet) => {
-  const provider = getWeb3ReadOnly()
+export const isSmartContractWallet = memoize(
+  async (wallet: ConnectedWallet) => {
+    const provider = getWeb3ReadOnly()
 
-  if (!provider) {
-    throw new Error('Provider not found')
-  }
+    if (!provider) {
+      throw new Error('Provider not found')
+    }
 
-  return isSmartContract(provider, wallet.address)
-}
+    return isSmartContract(provider, wallet.address)
+  },
+  ({ chainId, address }) => chainId + address,
+)
