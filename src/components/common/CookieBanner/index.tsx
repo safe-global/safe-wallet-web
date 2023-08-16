@@ -72,9 +72,8 @@ export const CookieBanner = ({
         <Grid container alignItems="center">
           <Grid item xs>
             <Typography variant="body2" mb={2}>
-              By clicking &quot;Accept all&quot; you agree to the use of the tools listed below and their corresponding{' '}
-              <span style={{ whiteSpace: 'nowrap' }}>3rd-party</span> cookies.{' '}
-              <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
+              By clicking &quot;Accept all&quot; you agree to the use of the tools listed below and their corresponding
+              cookies. <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
             </Typography>
 
             <Grid container alignItems="center" gap={4}>
@@ -84,6 +83,7 @@ export const CookieBanner = ({
                   <br />
                   <Typography variant="body2">Locally stored data for core functionality</Typography>
                 </Box>
+
                 <Box mb={2}>
                   <CookieCheckbox
                     checkboxProps={{ ...register(CookieType.UPDATES), id: 'beamer' }}
@@ -93,16 +93,16 @@ export const CookieBanner = ({
                   <br />
                   <Typography variant="body2">New features and product announcements</Typography>
                 </Box>
+
                 <Box>
                   <CookieCheckbox
                     checkboxProps={{ ...register(CookieType.ANALYTICS), id: 'ga' }}
-                    label="Google Analytics"
+                    label="Analytics"
                     checked={watch(CookieType.ANALYTICS)}
                   />
                   <br />
                   <Typography variant="body2">
-                    Help us make the app better. We never track your Safe Account address or wallet addresses, or any
-                    transaction data.
+                    Opt in for Google Analytics cookies to help us analyze app usage patterns.
                   </Typography>
                 </Box>
               </Grid>

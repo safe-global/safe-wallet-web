@@ -19,7 +19,6 @@ import { Methods } from '@safe-global/safe-apps-sdk'
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
-import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import useChainId from '@/hooks/useChainId'
@@ -41,7 +40,7 @@ import { selectSafeMessages } from '@/store/safeMessagesSlice'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
 import PermissionsPrompt from '@/components/safe-apps/PermissionsPrompt'
-import { PermissionStatus } from '@/components/safe-apps/types'
+import { PermissionStatus, type SafeAppDataWithPermissions } from '@/components/safe-apps/types'
 
 import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
@@ -58,9 +57,10 @@ const UNKNOWN_APP_NAME = 'Unknown Safe App'
 type AppFrameProps = {
   appUrl: string
   allowedFeaturesList: string
+  safeAppFromManifest: SafeAppDataWithPermissions
 }
 
-const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement => {
+const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrameProps): ReactElement => {
   const chainId = useChainId()
   // We use offChainSigning by default
   const [settings, setSettings] = useState<SafeSettings>({
@@ -84,7 +84,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList }: AppFrameProps): ReactElement 
   } = useTransactionQueueBarState()
   const queueBarVisible = transactions.results.length > 0 && !queueBarDismissed
   const [remoteApp, , isBackendAppsLoading] = useSafeAppFromBackend(appUrl, safe.chainId)
-  const { safeApp: safeAppFromManifest } = useSafeAppFromManifest(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
   useAnalyticsFromSafeApp(iframeRef)

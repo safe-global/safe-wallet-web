@@ -40,7 +40,9 @@ const FEATURES = [
   'speaker-selection',
 ]
 
-export type AllowedFeatures = typeof FEATURES[number]
+type FeaturesType = typeof FEATURES
+
+export type AllowedFeatures = FeaturesType[number]
 
 export const isBrowserFeature = (featureKey: string): featureKey is AllowedFeatures => {
   return FEATURES.includes(featureKey as AllowedFeatures)

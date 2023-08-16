@@ -213,10 +213,10 @@ export const useSafeTxGas = (safeTx: SafeTransaction | undefined): number | unde
   }, [safeTx?.data.to, safeTx?.data.value, safeTx?.data.data, safeTx?.data.operation])
 
   const [safeTxGas] = useAsync(() => {
-    if (!safe.chainId || !safeAddress || !safeTxParams) return
+    if (!safe.chainId || !safeAddress || !safeTxParams || !safe.version) return
 
-    return getSafeTxGas(safe.chainId, safeAddress, safeTxParams)
-  }, [safeAddress, safe.chainId, safeTxParams])
+    return getSafeTxGas(safe.chainId, safeAddress, safe.version, safeTxParams)
+  }, [safeAddress, safe.chainId, safe.version, safeTxParams])
 
   return safeTxGas
 }

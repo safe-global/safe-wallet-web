@@ -46,7 +46,7 @@ export const gtmSetChainId = (chainId: string): void => {
   _chainId = chainId
 }
 
-export const gtmInit = (pagePath: string): void => {
+export const gtmInit = (): void => {
   const GTM_ENVIRONMENT = IS_PRODUCTION ? GTM_ENV_AUTH.LIVE : GTM_ENV_AUTH.DEVELOPMENT
 
   if (!GOOGLE_TAG_MANAGER_ID || !GTM_ENVIRONMENT.auth) {
@@ -57,17 +57,11 @@ export const gtmInit = (pagePath: string): void => {
   TagManager.initialize({
     gtmId: GOOGLE_TAG_MANAGER_ID,
     ...GTM_ENVIRONMENT,
-    dataLayer: {
-      pageLocation: `${location.origin}${pagePath}`,
-      pagePath,
-      // Block JS variables and custom scripts
-      // @see https://developers.google.com/tag-platform/tag-manager/web/restrict
-      'gtm.blocklist': ['j', 'jsm', 'customScripts'],
-    },
   })
 }
 
-export const gtmClear = TagManager.disable
+export const gtmEnableCookies = TagManager.enableCookies
+export const gtmDisableCookies = TagManager.disableCookies
 
 type GtmEvent = {
   event: EventType

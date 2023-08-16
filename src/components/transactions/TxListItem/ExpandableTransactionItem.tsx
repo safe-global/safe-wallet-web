@@ -35,7 +35,7 @@ export const ExpandableTransactionItem = ({
       }}
       elevation={0}
       defaultExpanded={!!txDetails}
-      className={classNames(css.accordion, { [css.batched]: isBatched })}
+      className={classNames({ [css.batched]: isBatched })}
       data-testid={testId}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
@@ -59,7 +59,7 @@ export const TransactionSkeleton = () => (
       <Skeleton variant="text" width="35px" />
     </Box>
 
-    <Accordion disableGutters elevation={0} defaultExpanded className={css.accordion}>
+    <Accordion disableGutters elevation={0} defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
         <Skeleton width="100%" />
       </AccordionSummary>

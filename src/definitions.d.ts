@@ -14,7 +14,8 @@ declare global {
     }
     beamer_config?: BeamerConfig
     Beamer?: BeamerMethods
-    dataLayer?: DataLayerArgs['dataLayer']
+    dataLayer?: any[]
+    gtag?: (...args: any[]) => void
     Cypress?
   }
 }
