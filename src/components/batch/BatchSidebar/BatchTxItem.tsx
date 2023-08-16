@@ -83,7 +83,7 @@ const BatchTxItem = ({
               <>
                 <Box className={css.separator} />
 
-                <ButtonBase onClick={handleDelete} sx={{ p: 0.5 }}>
+                <ButtonBase onClick={handleDelete} title="Delete transaction" sx={{ p: 0.5 }}>
                   <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
                 </ButtonBase>
 

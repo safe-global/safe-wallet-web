@@ -39,7 +39,10 @@ describe('Create batch transaction', () => {
     //Not able to trigger a drag and drop as I found on guides so this doesn't work. I'll keep trying
     cy.wait(3000)
     const dataTransfer = new DataTransfer()
-    cy.contains(funds_second_tx).invoke('attr', 'draggable', 'true').trigger('dragstart', { dataTransfer })
+    cy.contains(funds_second_tx)
+      .parents('li')
+      .invoke('attr', 'draggable', 'true')
+      .trigger('dragstart', { dataTransfer })
     cy.contains('Add new transaction').trigger('drop', { dataTransfer })
   })
   it.skip('Should confirm the batch and see 2 tx in the form', () => {
@@ -47,10 +50,9 @@ describe('Create batch transaction', () => {
     //This one is hard since the list of tx to execute are divs on divs, and not an ul that I can count or compare with anything
     //and there are no ids or classes to use
   }) //TODO'
-  it.skip('Should remove a tx from the batch', () => {
-    //The find() is fiding buttons in both li's instead of just the 1st one for some reason so this test doesn't work yet.
+  it('Should remove a tx from the batch', () => {
     cy.contains('Batched transactions').should('be.visible')
-    cy.contains(funds_first_tx).parents('ul li:nth-child(1)').find('button').click()
+    cy.contains(funds_first_tx).parents('ul li').find('[title="Delete transaction"]').eq(0).click()
     cy.contains(funds_first_tx).should('not.exist')
   }) //TODO
 })
