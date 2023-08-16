@@ -3,6 +3,8 @@ const OWNER_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 
 describe('Create Safe form', () => {
   it('should navigate to the form', () => {
+    cy.connectE2EWallet()
+
     cy.visit('/welcome')
 
     // Close cookie banner

@@ -9,17 +9,17 @@ const getStep = (status: PendingStatus, error?: Error) => {
     case PendingStatus.PROCESSING:
     case PendingStatus.RELAYING:
       return {
-        description: 'Transaction is now processing',
+        description: 'Transaction is now processing.',
         instruction: 'The transaction was confirmed and is now being processed.',
       }
     case PendingStatus.INDEXING:
       return {
-        description: 'Transaction was processed',
+        description: 'Transaction was processed.',
         instruction: 'It is now being indexed.',
       }
     default:
       return {
-        description: error ? 'Transaction failed' : 'Transaction was successful',
+        description: error ? 'Transaction failed' : 'Transaction was successful.',
         instruction: error ? error.message : '',
       }
   }

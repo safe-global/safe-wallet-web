@@ -2,6 +2,8 @@ const SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
 
 describe('Pending actions', () => {
   before(() => {
+    cy.connectE2EWallet()
+
     cy.visit(`/welcome`)
     cy.contains('button', 'Accept selection').click()
   })

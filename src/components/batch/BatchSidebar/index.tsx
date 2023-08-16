@@ -75,12 +75,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
             <Divider />
 
             <Track {...BATCH_EVENTS.BATCH_CONFIRM} label={batchTxs.length}>
-              <Button
-                variant="contained"
-                onClick={onConfirmClick}
-                disabled={!batchTxs.length}
-                className={css.confirmButton}
-              >
+              <Button variant="contained" onClick={onConfirmClick} disabled={!batchTxs.length}>
                 Confirm batch
               </Button>
             </Track>

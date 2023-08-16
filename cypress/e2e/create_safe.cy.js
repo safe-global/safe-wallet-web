@@ -1,5 +1,7 @@
 describe('Create Safe', () => {
   it('should create a new Safe', () => {
+    cy.connectE2EWallet()
+
     cy.visit('/welcome')
 
     // Close cookie banner

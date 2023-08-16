@@ -5,7 +5,7 @@ import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
+import useOnboard, { forgetLastWallet, switchWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import Identicon from '@/components/common/Identicon'
@@ -36,6 +36,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
       label: wallet.label,
     })
 
+    forgetLastWallet()
     handleClose()
   }
 
