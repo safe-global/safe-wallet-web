@@ -329,7 +329,7 @@ const SafePrivacyPolicy = () => {
       <h4>4.2. Tracking</h4>
       <p>4.2.1 We may store the following personal data to analyze your behavior:</p>
       <ol start={1} className={css.romanList}>
-        <li>IP Address, </li>
+        <li>IP address (except for EU users), </li>
         <li>session tracking, </li>
         <li>user behavior, </li>
         <li>wallet type, </li>
@@ -340,7 +340,11 @@ const SafePrivacyPolicy = () => {
         <li>user behavior: subpage, duration, and revisit, the date and time of access,</li>
       </ol>
       <p>This data may be processed in order to improve the product and user experience.</p>
-      <p>The lawful basis for this processing is your consent (GDPR Art.6.1a) when agreeing to accept cookies.</p>
+      <p>
+        We may additionally store an analytics cookie on your device to identify you as a user and to track the app
+        usage across browsing sessions. The lawful basis for this processing is your consent (GDPR Art.6.1a) when
+        agreeing to accept cookies.
+      </p>
       <p>
         4.2.2 We conduct technical monitoring of your activity on the platform in order to ensure availability,
         integrity and robustness of the service. For this purpose we process your:
