@@ -21,16 +21,16 @@ const useSafeCreationEffects = ({
 
   // Asynchronously wait for Safe creation
   useEffect(() => {
-    if (pendingSafe?.safeAddress) {
+    if (status === SafeCreationStatus.SUCCESS && pendingSafe?.safeAddress) {
       pollSafeInfo(chainId, pendingSafe.safeAddress)
         .then(() => setStatus(SafeCreationStatus.INDEXED))
         .catch(() => setStatus(SafeCreationStatus.INDEX_FAILED))
     }
-  }, [chainId, pendingSafe?.safeAddress, setStatus])
+  }, [chainId, pendingSafe?.safeAddress, status, setStatus])
 
   // Add Safe to Added Safes and add owner and safe names to Address Book
   useEffect(() => {
-    if (pendingSafe?.safeAddress && status === SafeCreationStatus.PROCESSING) {
+    if (status === SafeCreationStatus.SUCCESS && pendingSafe?.safeAddress) {
       dispatch(
         updateAddressBook(
           chainId,
