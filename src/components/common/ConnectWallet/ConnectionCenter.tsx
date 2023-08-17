@@ -34,7 +34,7 @@ const ConnectionCenter = (): ReactElement => {
       <ButtonBase disableRipple onClick={handleClick} className={css.buttonContainer}>
         <KeyholeIcon />
 
-        <Typography variant="caption">
+        <Typography variant="caption" className={css.notConnected}>
           <b>Not connected</b>
           <br />
           <Typography variant="inherit" sx={{ color: ({ palette }) => palette.error.main }}>

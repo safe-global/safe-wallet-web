@@ -56,11 +56,11 @@ const pairingModule = (): WalletInit => {
           public chains: Chain[]
           public disconnect: EIP1193Provider['disconnect']
           // @ts-expect-error - 'emit' does not exist on `typeof EventEmitter`
-          public emit: typeof EventEmitter['emit']
+          public emit: EventEmitter['emit']
           // @ts-expect-error - 'on' does not exist on `typeof EventEmitter`
-          public on: typeof EventEmitter['on']
+          public on: EventEmitter['on']
           // @ts-expect-error - 'removeListener' does not exist on `typeof EventEmitter`
-          public removeListener: typeof EventEmitter['removeListener']
+          public removeListener: EventEmitter['removeListener']
 
           private disconnected$: InstanceType<typeof Subject>
           private providers: Record<string, InstanceType<typeof StaticJsonRpcProvider>>

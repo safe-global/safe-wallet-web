@@ -9,13 +9,15 @@ import { useMemo } from 'react'
 import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { getWeb3ReadOnly } from './wallets/web3'
+import { memoize } from 'lodash'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 export const VESTING_URL =
   IS_PRODUCTION || cgwDebugStorage.get()
     ? 'https://safe-claiming-app-data.safe.global/allocations/'
     : 'https://safe-claiming-app-data.staging.5afe.dev/allocations/'
 
-type VestingData = {
+export type VestingData = {
   tag: 'user' | 'ecosystem' | 'investor' | 'user_v2' // SEP #5
   account: string
   chainId: number
@@ -40,6 +42,16 @@ const airdropInterface = new Interface([
   'function vestings(bytes32) public returns ({address account, uint8 curveType,bool managed, uint16 durationWeeks, uint64 startDate, uint128 amount, uint128 amountClaimed, uint64 pausingDate,bool cancelled})',
 ])
 const tokenInterface = new Interface(['function balanceOf(address _owner) public view returns (uint256 balance)'])
+
+export const _getRedeemDeadline = memoize(
+  async (allocation: VestingData, web3ReadOnly: JsonRpcProvider): Promise<string> => {
+    return web3ReadOnly.call({
+      to: allocation.contract,
+      data: airdropInterface.encodeFunctionData('redeemDeadline'),
+    })
+  },
+  ({ chainId, contract }) => chainId + contract,
+)
 
 /**
  * Add on-chain information to allocation.
@@ -66,10 +78,7 @@ const completeAllocation = async (allocation: VestingData): Promise<Vesting> => 
   }
 
   // Allocation is not yet redeemed => check the redeemDeadline
-  const redeemDeadline = await web3ReadOnly.call({
-    to: allocation.contract,
-    data: airdropInterface.encodeFunctionData('redeemDeadline'),
-  })
+  const redeemDeadline = await _getRedeemDeadline(allocation, web3ReadOnly)
 
   const redeemDeadlineDate = new Date(BigNumber.from(redeemDeadline).mul(1000).toNumber())
 

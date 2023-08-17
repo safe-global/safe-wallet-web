@@ -59,10 +59,11 @@
 }
 
 @media (max-width: 599.95px) {
-  .buttonContainer button {
-    font-size: 12px;
+  .buttonContainer {
+    transform: scale(0.8);
   }
 
+  .notConnected,
   .pairingDetails {
     display: none;
   }

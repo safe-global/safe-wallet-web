@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 
 import css from './styles.module.css'
 import Identicon, { type IdenticonProps } from '../Identicon'
-import AddressEmoji from '../EthHashInfo/AddressEmoji'
+import AddressEmoji from '../AddressEmoji'
 
 interface ThresholdProps {
   threshold: number | string

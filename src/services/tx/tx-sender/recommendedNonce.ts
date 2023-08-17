@@ -3,7 +3,6 @@ import { Operation, postSafeGasEstimation } from '@safe-global/safe-gateway-type
 import type { MetaTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 import { isLegacyVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { Errors, logError } from '@/services/exceptions'
-import { getAndValidateSafeSDK } from './sdk'
 import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 
 const fetchRecommendedParams = async (
@@ -22,11 +21,10 @@ const fetchRecommendedParams = async (
 export const getSafeTxGas = async (
   chainId: string,
   safeAddress: string,
+  safeVersion: string,
   safeTxData: SafeTransactionDataPartial,
 ): Promise<number | undefined> => {
-  const safeSDK = getAndValidateSafeSDK()
-  const contractVersion = await safeSDK.getContractVersion()
-  const isSafeTxGasRequired = isLegacyVersion(contractVersion)
+  const isSafeTxGasRequired = isLegacyVersion(safeVersion)
 
   // For 1.3.0+ Safes safeTxGas is not required
   if (!isSafeTxGasRequired) return 0

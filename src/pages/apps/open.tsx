@@ -78,7 +78,7 @@ const SafeApps: NextPage = () => {
 
   return (
     <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => router.back()} />}>
-      <AppFrame appUrl={appUrl} allowedFeaturesList={getAllowedFeaturesList(origin)} />
+      <AppFrame appUrl={appUrl} allowedFeaturesList={getAllowedFeaturesList(origin)} safeAppFromManifest={safeApp} />
     </SafeAppsErrorBoundary>
   )
 }

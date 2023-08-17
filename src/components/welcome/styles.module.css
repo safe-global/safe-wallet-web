@@ -63,6 +63,10 @@
   padding: 0;
 }
 
+.cardHeader {
+  text-align: left;
+}
+
 @media (max-width: 899.95px) {
   .sidebar :global .MuiPaper-root {
     height: 100%;

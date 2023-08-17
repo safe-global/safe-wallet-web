@@ -133,7 +133,7 @@ export const selectTotalAdded = (state: RootState): number => {
 export const selectAddedSafes = createSelector(
   [selectAllAddedSafes, (_: RootState, chainId: string) => chainId],
   (allAddedSafes, chainId): AddedSafesOnChain | undefined => {
-    return allAddedSafes[chainId]
+    return allAddedSafes?.[chainId]
   },
 )
 
