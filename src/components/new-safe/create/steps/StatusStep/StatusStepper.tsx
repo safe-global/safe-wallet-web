@@ -8,9 +8,12 @@ import { usePendingSafe } from './usePendingSafe'
 import { useHasFeature } from '@/hooks/useChains'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { FEATURES } from '@/utils/chains'
+import { Proxy_factory__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
+
+const proxyFactoryInterface = Proxy_factory__factory.createInterface()
 
 // TODO: Remove when we update SDK
-const useSyncZkEvmSafeAddress = (status: SafeCreationStatus) => {
+export const useSyncZkEvmSafeAddress = (status: SafeCreationStatus) => {
   const shouldFetchAddress = useHasFeature(FEATURES.SAFE_CREATION_FETCH_ADDRESS)
   const [pendingSafe, setPendingSafe] = usePendingSafe()
   const web3ReadOnly = useWeb3ReadOnly()
@@ -30,12 +33,24 @@ const useSyncZkEvmSafeAddress = (status: SafeCreationStatus) => {
     let isCurrent = true
 
     web3ReadOnly
-      .getTransactionReceipt(pendingSafe.txHash)
+      .getTransactionReceipt('0x3cd978744f5515be16affda1a66a94216e66d3d2511936b48da7e877eee75730')
       .then((receipt) => {
-        if (isCurrent) {
-          const safeAddress = receipt.logs[0].address
-          setPendingSafe(pendingSafe ? { ...pendingSafe, safeAddress } : undefined)
+        if (!isCurrent) {
+          return
         }
+
+        const [proxyCreationLog] = receipt.logs
+          .map((log) => {
+            try {
+              return proxyFactoryInterface.parseLog(log)
+            } catch {
+              return null
+            }
+          })
+          .filter((log) => log !== null)
+
+        const safeAddress = proxyCreationLog?.args.proxy
+        setPendingSafe(pendingSafe ? { ...pendingSafe, safeAddress } : undefined)
       })
       .catch(() => null)
 
