@@ -26,6 +26,7 @@ import classnames from 'classnames'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { BigNumber } from 'ethers'
 import { usePendingSafe } from '../StatusStep/usePendingSafe'
+import { useIsZkEvmChain } from '../StatusStep/useIsZkEvmChain'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
@@ -37,6 +38,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const saltNonce = useMemo(() => Date.now(), [])
   const [_, setPendingSafe] = usePendingSafe()
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
+  const isZkEvmChain = useIsZkEvmChain()
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
@@ -91,7 +93,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       },
     }
 
-    const safeAddress = await computeNewSafeAddress(provider, props)
+    const safeAddress = isZkEvmChain ? undefined : await computeNewSafeAddress(provider, props)
 
     const pendingSafe = {
       ...data,
