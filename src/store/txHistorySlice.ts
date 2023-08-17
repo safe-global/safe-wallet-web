@@ -31,7 +31,7 @@ export const txHistoryListener = (listenerMiddleware: typeof listenerMiddlewareI
           txDispatch(TxEvent.SUCCESS, {
             txId,
             groupKey: pendingTxs[txId].groupKey,
-            humanDescription: result.transaction.txInfo.humanDescription,
+            humanDescription: result.transaction.txInfo?.humanDescription,
           })
         }
       }

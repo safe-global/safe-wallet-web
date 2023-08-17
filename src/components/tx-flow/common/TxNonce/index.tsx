@@ -170,7 +170,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
               return (
                 <>
                   {isRecommendedNonce && <NonceFormHeader>Recommended nonce</NonceFormHeader>}
-                  {isInitialPreviousNonce && <NonceFormHeader sx={{ pt: 3 }}>Already in queue</NonceFormHeader>}
+                  {isInitialPreviousNonce && <NonceFormHeader sx={{ pt: 3 }}>Replace existing</NonceFormHeader>}
                   <NonceFormOption key={option} menuItemProps={props} nonce={option} />
                 </>
               )

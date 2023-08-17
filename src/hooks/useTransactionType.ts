@@ -59,14 +59,14 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
 
       return {
         icon: '/images/transactions/settings.svg',
-        text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.dataDecoded.method,
+        text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.humanDescription || tx.txInfo.dataDecoded.method,
       }
     }
     case TransactionInfoType.CUSTOM: {
       if (isModuleExecutionInfo(tx.executionInfo)) {
         return {
           icon: toAddress?.logoUri || '/images/transactions/custom.svg',
-          text: toAddress?.name || 'Contract interaction',
+          text: tx.txInfo.humanDescription || toAddress?.name || 'Contract interaction',
         }
       }
 
@@ -80,13 +80,13 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       if (tx.safeAppInfo) {
         return {
           icon: tx.safeAppInfo.logoUri,
-          text: tx.safeAppInfo.name,
+          text: tx.txInfo.humanDescription || tx.safeAppInfo.name,
         }
       }
 
       return {
         icon: toAddress?.logoUri || '/images/transactions/custom.svg',
-        text: addressBookName || toAddress?.name || 'Contract interaction',
+        text: tx.txInfo.humanDescription || addressBookName || toAddress?.name || 'Contract interaction',
       }
     }
     default: {

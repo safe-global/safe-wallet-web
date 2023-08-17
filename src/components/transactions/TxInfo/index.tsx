@@ -71,7 +71,7 @@ export const TransferTx = ({
 }
 
 const CustomTx = ({ info }: { info: Custom }): ReactElement => {
-  return <>{info.methodName}</>
+  return <>{!info.humanDescription && info.methodName}</>
 }
 
 const CreationTx = ({ info }: { info: Creation }): ReactElement => {
