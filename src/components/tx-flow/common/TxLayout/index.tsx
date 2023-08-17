@@ -57,6 +57,7 @@ type TxLayoutProps = {
   hideNonce?: boolean
   isBatch?: boolean
   isReplacement?: boolean
+  isMessage?: boolean
 }
 
 const TxLayout = ({
@@ -70,6 +71,7 @@ const TxLayout = ({
   hideNonce = false,
   isBatch = false,
   isReplacement = false,
+  isMessage = false,
 }: TxLayoutProps): ReactElement => {
   const [statusVisible, setStatusVisible] = useState<boolean>(true)
 
@@ -142,6 +144,7 @@ const TxLayout = ({
                       handleClose={() => setStatusVisible(false)}
                       isReplacement={isReplacement}
                       isBatch={isBatch}
+                      isMessage={isMessage}
                     />
                   )}
 
