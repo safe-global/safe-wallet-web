@@ -1,4 +1,4 @@
-import type { ReactNode, ReactElement } from 'react'
+import type { ReactNode, ReactElement, SyntheticEvent } from 'react'
 import { isAddress } from 'ethers/lib/utils'
 import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -9,12 +9,14 @@ import ExplorerButton, { type ExplorerButtonProps } from '../../ExplorerButton'
 import { shortenAddress } from '@/utils/formatters'
 import ImageFallback from '../../ImageFallback'
 import css from './styles.module.css'
+import { Emoji } from '../../AddressEmoji'
 
 export type EthHashInfoProps = {
   address: string
   chainId?: string
   name?: string | null
   showAvatar?: boolean
+  showEmoji?: boolean
   showCopyButton?: boolean
   prefix?: string
   showPrefix?: boolean
@@ -27,6 +29,8 @@ export type EthHashInfoProps = {
   ExplorerButtonProps?: ExplorerButtonProps
 }
 
+const stopPropagation = (e: SyntheticEvent) => e.stopPropagation()
+
 const SrcEthHashInfo = ({
   address,
   customAvatar,
@@ -35,6 +39,7 @@ const SrcEthHashInfo = ({
   showPrefix,
   shortAddress = true,
   showAvatar = true,
+  showEmoji,
   avatarSize,
   name,
   showCopyButton,
@@ -60,6 +65,7 @@ const SrcEthHashInfo = ({
           ) : (
             identicon
           )}
+          {showEmoji && <Emoji address={address} size={avatarSize} />}
         </div>
       )}
 
@@ -82,7 +88,7 @@ const SrcEthHashInfo = ({
 
           {hasExplorer && ExplorerButtonProps && (
             <Box color="border.main">
-              <ExplorerButton {...ExplorerButtonProps} />
+              <ExplorerButton {...ExplorerButtonProps} onClick={stopPropagation} />
             </Box>
           )}
 

@@ -8,15 +8,14 @@ import type { NewSafeFormData } from '@/components/new-safe/create'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/create/steps/StatusStep'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import PairingDescription from '@/components/common/PairingDetails/PairingDescription'
 import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
+import { usePendingSafe } from '../StatusStep/usePendingSafe'
 
 const ConnectWalletStep = ({ onSubmit, setStep }: StepRenderProps<NewSafeFormData>) => {
-  const [pendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
+  const [pendingSafe] = usePendingSafe()
   const wallet = useWallet()
   const chain = useCurrentChain()
   const isSupported = isPairingSupported(chain?.disabledWallets)

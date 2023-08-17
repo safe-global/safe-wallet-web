@@ -31,13 +31,14 @@ export type SignOrExecuteProps = {
   onlyExecute?: boolean
   disableSubmit?: boolean
   origin?: string
+  isCreation?: boolean
 }
 
 const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
   const { safeTx, safeTxError } = useContext(SafeTxContext)
-  const isCreation = safeTx?.signatures.size === 0
+  const isCreation = !props.txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
@@ -52,9 +53,11 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
       <TxCard>
         {props.children}
 
-        <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor safeTransaction={safeTx} />
-        </ErrorBoundary>
+        {!isCreation && (
+          <ErrorBoundary fallback={<div>Error parsing data</div>}>
+            <ApprovalEditor safeTransaction={safeTx} />
+          </ErrorBoundary>
+        )}
 
         <DecodedTx
           tx={safeTx}
@@ -93,9 +96,9 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
         <RiskConfirmationError />
 
         {willExecute ? (
-          <ExecuteForm {...props} safeTx={safeTx} />
+          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} />
         ) : (
-          <SignForm {...props} safeTx={safeTx} isBatchable={isBatchable} />
+          <SignForm {...props} safeTx={safeTx} isBatchable={isBatchable} isCreation={isCreation} />
         )}
       </TxCard>
     </>

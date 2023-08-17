@@ -6,10 +6,10 @@ import TxHeader from '@/components/transactions/TxHeader'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 import { Box } from '@mui/material'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
-import { useHasPendingTxs, usePendingTxsQueue } from '@/hooks/usePendingTxs'
+import { usePendingTxsQueue, useShowUnsignedQueue } from '@/hooks/usePendingTxs'
 
 const Queue: NextPage = () => {
-  const hasPending = useHasPendingTxs()
+  const showPending = useShowUnsignedQueue()
 
   return (
     <>
@@ -25,7 +25,7 @@ const Queue: NextPage = () => {
         <main>
           <Box mb={4}>
             {/* Pending unsigned transactions */}
-            {hasPending && <PaginatedTxns useTxns={usePendingTxsQueue} />}
+            {showPending && <PaginatedTxns useTxns={usePendingTxsQueue} />}
 
             {/* The main queue of signed transactions */}
             <PaginatedTxns useTxns={useTxQueue} />

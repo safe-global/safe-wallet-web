@@ -10,6 +10,7 @@ import SidebarFooter from '@/components/sidebar/SidebarFooter'
 
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import { DataWidget } from '@/components/welcome/DataWidget'
 
 const Sidebar = (): ReactElement => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
@@ -53,6 +54,10 @@ const Sidebar = (): ReactElement => {
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
         <div className={css.drawer}>
           <SafeList closeDrawer={closeDrawer} />
+
+          <div className={css.dataWidget}>
+            <DataWidget />
+          </div>
         </div>
       </Drawer>
     </div>

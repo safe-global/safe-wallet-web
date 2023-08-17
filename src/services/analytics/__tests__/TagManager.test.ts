@@ -51,18 +51,6 @@ describe('TagManager', () => {
     })
   })
 
-  describe('TagManager.isInitialized', () => {
-    it('should return false if no script is found', () => {
-      expect(TagManager.isInitialized()).toBe(false)
-    })
-
-    it('should return true if a script is found', () => {
-      TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
-
-      expect(TagManager.isInitialized()).toBe(true)
-    })
-  })
-
   describe('TagManager.initialize', () => {
     it('should initialize TagManager', () => {
       TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
@@ -80,35 +68,27 @@ describe('TagManager', () => {
         TagManager._getScript({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW }),
       )
 
-      expect(window.dataLayer).toHaveLength(1)
-      expect(window.dataLayer[0]).toStrictEqual({ event: 'gtm.js', 'gtm.start': expect.any(Number) })
-    })
-
-    it('should not re-initialize the scripts if previously enabled', async () => {
-      const getScriptSpy = jest.spyOn(gtm.default, '_getScript')
-
-      TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
-      TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW })
-
-      expect(getScriptSpy).toHaveBeenCalledTimes(1)
-    })
-
-    it('should push to the dataLayer if povided', () => {
-      TagManager.initialize({ gtmId: MOCK_ID, auth: MOCK_AUTH, preview: MOCK_PREVIEW, dataLayer: { test: '456' } })
-
-      expect(window.dataLayer).toHaveLength(2)
-      expect(window.dataLayer[0]).toStrictEqual({ test: '456' })
-      expect(window.dataLayer[1]).toStrictEqual({ event: 'gtm.js', 'gtm.start': expect.any(Number) })
+      expect(window.dataLayer).toHaveLength(3)
+      expect(window.dataLayer?.[0][0]).toBe('consent')
+      expect(window.dataLayer?.[0][1]).toBe('default')
+      expect(window.dataLayer?.[0][2]).toStrictEqual({
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        functionality_storage: 'granted',
+        personalization_storage: 'denied',
+        security_storage: 'granted',
+        wait_for_update: 500,
+      })
+      expect(window.dataLayer?.[1]).toStrictEqual({
+        'gtm.blocklist': ['j', 'jsm', 'customScripts'],
+        pageLocation: 'http://localhost/balances',
+        pagePath: '/balances',
+      })
+      expect(window.dataLayer?.[2]).toStrictEqual({ event: 'gtm.js', 'gtm.start': expect.any(Number) })
     })
   })
 
   describe('TagManager.dataLayer', () => {
-    it('should not push to the dataLayer if not initialized', () => {
-      TagManager.dataLayer({ test: '456' })
-
-      expect(window.dataLayer).toBeUndefined()
-    })
-
     it('should push data to the dataLayer', () => {
       expect(window.dataLayer).toBeUndefined()
 
@@ -118,39 +98,37 @@ describe('TagManager', () => {
         preview: MOCK_PREVIEW,
       })
 
-      expect(window.dataLayer).toHaveLength(1)
-      expect(window.dataLayer[0]).toStrictEqual({ event: 'gtm.js', 'gtm.start': expect.any(Number) })
+      expect(window.dataLayer).toHaveLength(3)
 
       TagManager.dataLayer({
         test: '123',
       })
 
-      expect(window.dataLayer).toHaveLength(2)
-      expect(window.dataLayer[1]).toStrictEqual({ test: '123' })
+      expect(window.dataLayer).toHaveLength(4)
+      expect(window.dataLayer?.[3]).toStrictEqual({ test: '123' })
     })
   })
 
   describe('TagManager.disable', () => {
-    it('should not remove GA cookies and reload if not mounted', () => {
-      TagManager.disable()
-
-      expect(Cookies.remove).not.toHaveBeenCalled()
-
-      expect(global.location.reload).not.toHaveBeenCalled()
-    })
-    it('should remove GA cookies and reload if mounted', () => {
+    it('should remove GA cookies and reload', () => {
       TagManager.initialize({
         gtmId: MOCK_ID,
         auth: MOCK_AUTH,
         preview: MOCK_PREVIEW,
       })
 
-      TagManager.disable()
+      document.cookie = '_ga=GA123;'
+      document.cookie = '_ga_JB9NXCRJ0G=GS123;'
+      document.cookie = '_gat=GA123;'
+      document.cookie = '_gid=GI123;'
+
+      TagManager.disableCookies()
 
       const path = '/'
       const domain = '.localhost'
 
       expect(Cookies.remove).toHaveBeenCalledWith('_ga', { path, domain })
+      expect(Cookies.remove).toHaveBeenCalledWith('_ga_JB9NXCRJ0G', { path, domain })
       expect(Cookies.remove).toHaveBeenCalledWith('_gat', { path, domain })
       expect(Cookies.remove).toHaveBeenCalledWith('_gid', { path, domain })
 

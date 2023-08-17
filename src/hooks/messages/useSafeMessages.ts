@@ -5,7 +5,6 @@ import { useAppSelector } from '@/store'
 import useAsync from '@/hooks/useAsync'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { selectSafeMessages } from '@/store/safeMessagesSlice'
-import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 
 const useSafeMessages = (
   pageUrl?: string,
@@ -43,15 +42,6 @@ const useSafeMessages = (
         error: messagesState.error,
         loading: messagesState.loading,
       }
-}
-
-export const useSafeMessage = (safeMessageHash: string) => {
-  const messages = useSafeMessages()
-  const ongoingMessage = messages.page?.results
-    ?.filter(isSafeMessageListItem)
-    .find((msg) => msg.messageHash === safeMessageHash)
-
-  return ongoingMessage
 }
 
 export default useSafeMessages

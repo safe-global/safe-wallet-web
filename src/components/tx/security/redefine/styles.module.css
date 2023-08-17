@@ -91,3 +91,10 @@
 .checkboxError svg {
   color: var(--color-error-main) !important;
 }
+
+.redefine {
+  height: 40px;
+  width: 52px;
+  position: absolute;
+  right: -58px;
+}

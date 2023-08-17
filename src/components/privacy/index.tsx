@@ -6,7 +6,7 @@ const SafePrivacyPolicy = () => {
   return (
     <div>
       <h1>Privacy Policy</h1>
-      <p>Last updated on August&nbsp;2023.</p>
+      <p>Last updated in August&nbsp;2023.</p>
       <p>
         Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
         regulation regarding any personal information we may collect about you, including across our website,{' '}
@@ -329,7 +329,7 @@ const SafePrivacyPolicy = () => {
       <h4>4.2. Tracking</h4>
       <p>4.2.1 We may store the following personal data to analyze your behavior:</p>
       <ol start={1} className={css.romanList}>
-        <li>IP Address, </li>
+        <li>IP address (except for EU users), </li>
         <li>session tracking, </li>
         <li>user behavior, </li>
         <li>wallet type, </li>
@@ -340,7 +340,11 @@ const SafePrivacyPolicy = () => {
         <li>user behavior: subpage, duration, and revisit, the date and time of access,</li>
       </ol>
       <p>This data may be processed in order to improve the product and user experience.</p>
-      <p>The lawful basis for this processing is your consent (GDPR Art.6.1a) when agreeing to accept cookies.</p>
+      <p>
+        We may additionally store an analytics cookie on your device to identify you as a user and to track the app
+        usage across browsing sessions. The lawful basis for this processing is your consent (GDPR Art.6.1a) when
+        agreeing to accept cookies.
+      </p>
       <p>
         4.2.2 We conduct technical monitoring of your activity on the platform in order to ensure availability,
         integrity and robustness of the service. For this purpose we process your:
@@ -696,24 +700,6 @@ const SafePrivacyPolicy = () => {
         </Link>{' '}
         to offer on-ramp and off-ramp services. For that purpose personal data is required for KYC/AML or other
         financial regulatory requirements. This data is encrypted by MoonPay.
-      </p>
-      <h4>5.15. Plausible Analytics</h4>
-      <p>
-        We use{' '}
-        <Link href="https://plausible.io/" passHref>
-          <MUILink target="_blank" rel="noreferrer">
-            Plausible Analytics
-          </MUILink>
-        </Link>{' '}
-        to track overall trends in the usage of our website in a privacy-friendly manner. Plausible Analytics collects
-        only aggregated information, which does not allow us to identify any visitor to our website. For further
-        details, please refer to the{' '}
-        <Link href="https://plausible.io/data-policy" passHref>
-          <MUILink target="_blank" rel="noreferrer">
-            Plausible Analytics Data Policy
-          </MUILink>
-        </Link>
-        .
       </p>
       <h3 id="6">6. Sharing Your Personal Data</h3>
       <p>

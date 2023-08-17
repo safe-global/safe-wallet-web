@@ -1,5 +1,4 @@
-import { getSafeMessage, SafeMessageListItemType, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import { logError, Errors } from '../exceptions'
+import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
 
 const isMessageFullySigned = (message: SafeMessage): message is SafeMessage & { preparedSignature: string } => {
@@ -15,22 +14,11 @@ const isMessageFullySigned = (message: SafeMessage): message is SafeMessage & { 
  * @param requestId
  */
 export const dispatchPreparedSignature = async (
-  chainId: string,
+  message: SafeMessage,
   safeMessageHash: string,
   onClose: () => void,
   requestId?: string,
 ) => {
-  let message: SafeMessage | undefined
-  try {
-    const fetchedMessage = await getSafeMessage(chainId, safeMessageHash)
-
-    // fetchedMessage does not have a type because it is explicitly a message
-    message = { ...fetchedMessage, type: SafeMessageListItemType.MESSAGE }
-  } catch (err) {
-    logError(Errors._613, err)
-    throw err
-  }
-
   if (isMessageFullySigned(message)) {
     safeMsgDispatch(SafeMsgEvent.SIGNATURE_PREPARED, {
       messageHash: safeMessageHash,

@@ -10,7 +10,6 @@
   justify-content: center;
 }
 
-[data-theme='dark'] .imageContainer img[alt*='Trezor'],
 [data-theme='dark'] .imageContainer img[alt*='Ledger'] {
   filter: invert(100%);
 }
@@ -27,5 +26,9 @@
   .imageContainer img {
     width: 22px;
     height: auto;
+  }
+
+  .walletName {
+    display: none;
   }
 }
