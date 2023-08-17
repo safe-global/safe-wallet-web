@@ -5,18 +5,19 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import StatusStep from '@/components/new-safe/create/steps/StatusStep/StatusStep'
 import { usePendingSafe } from './usePendingSafe'
-import { useIsZkEvmChain } from './useIsZkEvmChain'
+import { useHasFeature } from '@/hooks/useChains'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { FEATURES } from '@/utils/chains'
 
 // TODO: Remove when we update SDK
 const useSyncZkEvmSafeAddress = (status: SafeCreationStatus) => {
-  const isZkEvmChain = useIsZkEvmChain()
+  const shouldFetchAddress = useHasFeature(FEATURES.SAFE_CREATION_FETCH_ADDRESS)
   const [pendingSafe, setPendingSafe] = usePendingSafe()
   const web3ReadOnly = useWeb3ReadOnly()
 
   useEffect(() => {
     if (
-      !isZkEvmChain ||
+      !shouldFetchAddress ||
       status !== SafeCreationStatus.SUCCESS ||
       !pendingSafe ||
       !pendingSafe.txHash ||
@@ -41,7 +42,15 @@ const useSyncZkEvmSafeAddress = (status: SafeCreationStatus) => {
     return () => {
       isCurrent = false
     }
-  }, [status, web3ReadOnly, pendingSafe, pendingSafe?.txHash, pendingSafe?.safeAddress, isZkEvmChain, setPendingSafe])
+  }, [
+    status,
+    web3ReadOnly,
+    pendingSafe,
+    pendingSafe?.txHash,
+    pendingSafe?.safeAddress,
+    shouldFetchAddress,
+    setPendingSafe,
+  ])
 }
 
 const StatusStepper = ({ status }: { status: SafeCreationStatus }) => {
