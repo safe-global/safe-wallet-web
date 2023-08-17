@@ -58,8 +58,7 @@
   --onboard-link-color: var(--color-primary-main);
 
   --onboard-wallet-app-icon-border-color: var(--color-border-light);
-  --onboard-wallet-app-icon-background-white: #fff;
-  --onboard-wallet-app-icon-background-transparent: #fff;
+  --onboard-wallet-app-icon-background-transparent: rgba(255, 255, 255, 0.2);
   --onboard-wallet-app-icon-background-light-gray: rgba(255, 255, 255, 0.5);
 
   --onboard-wallet-button-border-radius: var(--w3o-border-radius);
