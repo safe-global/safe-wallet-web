@@ -1,5 +1,5 @@
 import { type SyntheticEvent, useMemo, useCallback } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, ButtonBase, SvgIcon } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, ButtonBase, ListItem, SvgIcon } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import css from './styles.module.css'
 import { type DraftBatchItem } from '@/store/batchSlice'
@@ -57,7 +57,7 @@ const BatchTxItem = ({
   }
 
   return (
-    <Box display="flex" gap={2}>
+    <ListItem disablePadding sx={{ gap: 2, alignItems: 'flex-start' }}>
       <div className={css.number}>{count}</div>
 
       <Accordion elevation={0} sx={{ flex: 1 }} onChange={handleExpand}>
@@ -103,7 +103,7 @@ const BatchTxItem = ({
           </div>
         </AccordionDetails>
       </Accordion>
-    </Box>
+    </ListItem>
   )
 }
 
