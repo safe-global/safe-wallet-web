@@ -14,8 +14,6 @@ export enum FEATURES {
   RELAYING = 'RELAYING',
   EIP1271 = 'EIP1271',
   RISK_MITIGATION = 'RISK_MITIGATION',
-  // TODO: Remove when we update SDK
-  SAFE_CREATION_FETCH_ADDRESS = 'SAFE_CREATION_FETCH_ADDRESS',
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {
