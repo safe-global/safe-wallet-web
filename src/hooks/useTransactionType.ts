@@ -49,7 +49,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
 
       return {
         icon: isSendTx ? '/images/transactions/outgoing.svg' : '/images/transactions/incoming.svg',
-        text: isSendTx ? (isTxQueued(tx.txStatus) ? 'Send' : 'Sent') : 'Received',
+        text: isSendTx ? (isTxQueued(tx.txStatus) ? 'Send' : tx.txInfo.humanDescription || 'Sent') : 'Received',
       }
     }
     case TransactionInfoType.SETTINGS_CHANGE: {
@@ -58,7 +58,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       const isDeleteGuard = tx.txInfo.settingsInfo?.type === SettingsInfoType.DELETE_GUARD
 
       return {
-        icon: '/images/transactions/settings.svg',
+        icon: tx.safeAppInfo?.logoUri ?? '/images/transactions/settings.svg',
         text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.humanDescription || tx.txInfo.dataDecoded.method,
       }
     }

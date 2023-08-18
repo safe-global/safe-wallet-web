@@ -23,10 +23,7 @@
 }
 
 .columnTemplateTxHistory {
-  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 2fr) minmax(150px, 2fr) minmax(100px, 1fr) minmax(
-      170px,
-      1fr
-    );
+  grid-template-columns: minmax(50px, 0.25fr) 5fr 2.5fr 1fr 1.5fr;
   grid-template-areas: 'nonce type info date status';
 }
 
