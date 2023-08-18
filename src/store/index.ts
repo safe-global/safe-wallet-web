@@ -24,7 +24,6 @@ import { addedSafesListener, addedSafesSlice } from './addedSafesSlice'
 import { settingsSlice } from './settingsSlice'
 import { cookiesSlice } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
-import { spendingLimitSlice } from './spendingLimitsSlice'
 import { safeAppsSlice } from './safeAppsSlice'
 import { safeMessagesListener, safeMessagesSlice } from './safeMessagesSlice'
 import { pendingSafeMessagesSlice } from './pendingSafeMessagesSlice'
@@ -44,7 +43,6 @@ const rootReducer = combineReducers({
   [settingsSlice.name]: settingsSlice.reducer,
   [cookiesSlice.name]: cookiesSlice.reducer,
   [popupSlice.name]: popupSlice.reducer,
-  [spendingLimitSlice.name]: spendingLimitSlice.reducer,
   [safeAppsSlice.name]: safeAppsSlice.reducer,
   [safeMessagesSlice.name]: safeMessagesSlice.reducer,
   [pendingSafeMessagesSlice.name]: pendingSafeMessagesSlice.reducer,

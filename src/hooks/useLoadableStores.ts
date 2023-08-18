@@ -17,8 +17,6 @@ import { safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from '@/store/balancesSlice'
 import { txHistorySlice } from '@/store/txHistorySlice'
 import { txQueueSlice } from '@/store/txQueueSlice'
-import { spendingLimitSlice } from '@/store/spendingLimitsSlice'
-import useLoadSpendingLimits from '@/hooks/loadables/useLoadSpendingLimits'
 import { safeMessagesSlice } from '@/store/safeMessagesSlice'
 
 // Dispatch into the corresponding store when the loadable is loaded
@@ -45,7 +43,6 @@ const useLoadableStores = () => {
   useUpdateStore(txHistorySlice, useLoadTxHistory)
   useUpdateStore(txQueueSlice, useLoadTxQueue)
   useUpdateStore(safeMessagesSlice, useLoadMessages)
-  useUpdateStore(spendingLimitSlice, useLoadSpendingLimits)
 }
 
 export default useLoadableStores

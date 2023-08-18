@@ -6,8 +6,6 @@ import useChainId from '@/hooks/useChainId'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import useIsSafeTokenPaused from '@/hooks/useIsSafeTokenPaused'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
-import { useAppSelector } from '@/store'
-import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { FormProvider, useForm } from 'react-hook-form'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
@@ -25,6 +23,7 @@ import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import TokenAmountInput, { TokenAmountFields } from '@/components/common/TokenAmountInput'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import useAllSpendingLimits from '@/hooks/useSpendingLimits'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -56,7 +55,7 @@ const CreateTokenTransfer = ({
   const safeTokenAddress = getSafeTokenAddress(chainId)
   const isSafeTokenPaused = useIsSafeTokenPaused()
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
-  const spendingLimits = useAppSelector(selectSpendingLimits)
+  const [spendingLimits] = useAllSpendingLimits()
   const wallet = useWallet()
   const { setNonce } = useContext(SafeTxContext)
   const [recipientFocus, setRecipientFocus] = useState(!params.recipient)

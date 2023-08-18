@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, useContext } from 'react'
-import { useSelector } from 'react-redux'
 import { BigNumber } from 'ethers'
 import { Typography, Grid, Alert } from '@mui/material'
 
@@ -11,16 +10,15 @@ import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createNewSpendingLimitTx } from '@/services/tx/tx-sender'
-import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import { formatVisualAmount } from '@/utils/formatters'
-import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import type { NewSpendingLimitFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeTxContext } from '../../SafeTxProvider'
+import { type SpendingLimitState, useAllSpendingLimits } from '@/hooks/useSpendingLimits'
 
 export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowProps }) => {
   const [existingSpendingLimit, setExistingSpendingLimit] = useState<SpendingLimitState>()
-  const spendingLimits = useSelector(selectSpendingLimits)
+  const [spendingLimits] = useAllSpendingLimits()
   const chainId = useChainId()
   const { balances } = useBalances()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
@@ -28,7 +26,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   const { decimals } = token?.tokenInfo || {}
 
   useEffect(() => {
-    const existingSpendingLimit = spendingLimits.find(
+    const existingSpendingLimit = spendingLimits?.find(
       (spendingLimit) =>
         spendingLimit.beneficiary === params.beneficiary && spendingLimit.token.address === params.tokenAddress,
     )
@@ -36,6 +34,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   }, [spendingLimits, params])
 
   useEffect(() => {
+    if (!spendingLimits) return
     createNewSpendingLimitTx(params, spendingLimits, chainId, decimals, existingSpendingLimit)
       .then(setSafeTx)
       .catch(setSafeTxError)

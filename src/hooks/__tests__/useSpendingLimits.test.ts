@@ -3,20 +3,13 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import type { AllowanceModule } from '@/types/contracts'
 import { ERC20__factory } from '@/types/contracts'
-import {
-  getSpendingLimits,
-  getTokenAllowanceForDelegate,
-  getTokensForDelegate,
-} from '../loadables/useLoadSpendingLimits'
+import { getSpendingLimits, getTokenAllowanceForDelegate, getTokensForDelegate } from '../useSpendingLimits'
 import { BigNumber } from '@ethersproject/bignumber'
 import * as web3 from '../wallets/web3'
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 
 const mockProvider = new JsonRpcProvider()
-const mockModule = {
-  value: '0x1',
-}
 
 describe('getSpendingLimits', () => {
   beforeEach(() => {
@@ -24,44 +17,7 @@ describe('getSpendingLimits', () => {
     jest.resetAllMocks()
   })
 
-  it('should return undefined if no spending limit module address was found', async () => {
-    jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue(undefined)
-
-    const result = await getSpendingLimits(mockProvider, [], ZERO_ADDRESS, '4', [])
-
-    expect(result).toBeUndefined()
-  })
-
-  it('should return undefined if the safe has no spending limit module', async () => {
-    jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue('0x1')
-
-    const result = await getSpendingLimits(mockProvider, [], ZERO_ADDRESS, '4', [])
-
-    expect(result).toBeUndefined()
-  })
-
-  it('should fetch a list of delegates', async () => {
-    const getDelegatesMock = jest.fn(() => ({ results: [] }))
-    jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue('0x1')
-    jest.spyOn(spendingLimit, 'getSpendingLimitContract').mockImplementation(
-      jest.fn(() => {
-        return {
-          getDelegates: getDelegatesMock,
-        } as unknown as AllowanceModule
-      }),
-    )
-
-    const mockModule = {
-      value: '0x1',
-    }
-
-    await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4', [])
-
-    expect(getDelegatesMock).toHaveBeenCalledWith(ZERO_ADDRESS, 0, 100)
-  })
-
   it('should return a flat list of spending limits', async () => {
-    const getDelegatesMock = jest.fn(() => ({ results: ['0x2', '0x3'] }))
     const getTokensMock = jest.fn(() => ['0x10', '0x11'])
     const getTokenAllowanceMock = jest.fn(() => [
       BigNumber.from(1),
@@ -75,20 +31,18 @@ describe('getSpendingLimits', () => {
     jest.spyOn(spendingLimit, 'getSpendingLimitContract').mockImplementation(
       jest.fn(() => {
         return {
-          getDelegates: getDelegatesMock,
           getTokens: getTokensMock,
           getTokenAllowance: getTokenAllowanceMock,
         } as unknown as AllowanceModule
       }),
     )
 
-    const result = await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4', [])
+    const result = await getSpendingLimits(mockProvider, ZERO_ADDRESS, '4', ['0x2', '0x3'], [])
 
     expect(result?.length).toBe(4)
   })
 
   it('should filter out empty allowances', async () => {
-    const getDelegatesMock = jest.fn(() => ({ results: ['0x2', '0x3'] }))
     const getTokensMock = jest.fn(() => ['0x10', '0x11'])
     const getTokenAllowanceMock = jest.fn(() => [
       BigNumber.from(0),
@@ -102,14 +56,13 @@ describe('getSpendingLimits', () => {
     jest.spyOn(spendingLimit, 'getSpendingLimitContract').mockImplementation(
       jest.fn(() => {
         return {
-          getDelegates: getDelegatesMock,
           getTokens: getTokensMock,
           getTokenAllowance: getTokenAllowanceMock,
         } as unknown as AllowanceModule
       }),
     )
 
-    const result = await getSpendingLimits(mockProvider, [mockModule], ZERO_ADDRESS, '4', [])
+    const result = await getSpendingLimits(mockProvider, ZERO_ADDRESS, '4', ['0x2', '0x3'], [])
 
     expect(result?.length).toBe(0)
   })

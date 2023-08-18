@@ -5,7 +5,6 @@ import { useContext, useEffect } from 'react'
 import { SafeTxContext } from '../../SafeTxProvider'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Grid, Typography } from '@mui/material'
-import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { relativeTime } from '@/utils/date'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import useBalances from '@/hooks/useBalances'
@@ -13,6 +12,7 @@ import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmount
 import { safeFormatUnits } from '@/utils/formatters'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { createTx } from '@/services/tx/tx-sender'
+import type { SpendingLimitState } from '@/hooks/useSpendingLimits'
 
 export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) => {
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)

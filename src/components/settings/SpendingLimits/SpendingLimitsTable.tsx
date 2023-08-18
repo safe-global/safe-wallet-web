@@ -5,7 +5,6 @@ import { Box, IconButton, Skeleton, SvgIcon, Typography } from '@mui/material'
 import { relativeTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useContext, useMemo } from 'react'
-import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { BigNumber } from '@ethersproject/bignumber'
 import RemoveSpendingLimitFlow from '@/components/tx-flow/flows/RemoveSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
@@ -14,6 +13,7 @@ import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import TokenIcon from '@/components/common/TokenIcon'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import CheckWallet from '@/components/common/CheckWallet'
+import type { SpendingLimitState } from '@/hooks/useSpendingLimits'
 
 const SKELETON_ROWS = new Array(3).fill('').map(() => {
   return {

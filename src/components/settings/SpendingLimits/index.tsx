@@ -1,9 +1,7 @@
 import { useContext } from 'react'
-import { Paper, Grid, Typography, Box, Button } from '@mui/material'
+import { Paper, Grid, Typography, Box, Button, Skeleton } from '@mui/material'
 import { NoSpendingLimits } from '@/components/settings/SpendingLimits/NoSpendingLimits'
 import { SpendingLimitsTable } from '@/components/settings/SpendingLimits/SpendingLimitsTable'
-import { useSelector } from 'react-redux'
-import { selectSpendingLimits, selectSpendingLimitsLoading } from '@/store/spendingLimitsSlice'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import NewSpendingLimitFlow from '@/components/tx-flow/flows/NewSpendingLimit'
@@ -11,11 +9,11 @@ import { SETTINGS_EVENTS } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
 import Track from '@/components/common/Track'
 import { TxModalContext } from '@/components/tx-flow'
+import useAllSpendingLimits from '@/hooks/useSpendingLimits'
 
 const SpendingLimits = () => {
   const { setTxFlow } = useContext(TxModalContext)
-  const spendingLimits = useSelector(selectSpendingLimits)
-  const spendingLimitsLoading = useSelector(selectSpendingLimitsLoading)
+  const [spendingLimits, , spendingLimitsLoading] = useAllSpendingLimits()
   const isEnabled = useHasFeature(FEATURES.SPENDING_LIMIT)
 
   return (
@@ -50,14 +48,23 @@ const SpendingLimits = () => {
                 )}
               </CheckWallet>
 
-              {!spendingLimits.length && !spendingLimitsLoading && <NoSpendingLimits />}
+              {!spendingLimits?.length && !spendingLimitsLoading && <NoSpendingLimits />}
             </Box>
           ) : (
             <Typography>The spending limit module is not yet available on this chain.</Typography>
           )}
         </Grid>
       </Grid>
-      <SpendingLimitsTable isLoading={spendingLimitsLoading} spendingLimits={spendingLimits} />
+      {spendingLimits ? (
+        <SpendingLimitsTable isLoading={spendingLimitsLoading} spendingLimits={spendingLimits} />
+      ) : (
+        spendingLimitsLoading && (
+          <Box>
+            <Skeleton height="4em" />
+            <Skeleton height="4em" />
+          </Box>
+        )
+      )}
     </Paper>
   )
 }

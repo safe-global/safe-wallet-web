@@ -1,13 +1,12 @@
 import { useEffect } from 'react'
-import useAsync, { type AsyncResult } from '../useAsync'
-import useSafeInfo from '../useSafeInfo'
+import { isEqual } from 'lodash'
 import { Errors, logError } from '@/services/exceptions'
-import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { getSpendingLimitContract, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
-import type { AddressEx, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { sameAddress } from '@/utils/addresses'
 import { type AllowanceModule } from '@/types/contracts'
 import { getERC20TokenInfoOnChain } from '@/utils/tokens'
@@ -15,15 +14,28 @@ import { getERC20TokenInfoOnChain } from '@/utils/tokens'
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
 import { useAppSelector } from '@/store'
 import { selectTokens } from '@/store/balancesSlice'
-import { isEqual } from 'lodash'
+import useSafeInfo from './useSafeInfo'
+import useAsync, { type AsyncResult } from './useAsync'
+import { useHasFeature } from './useChains'
+
+export type SpendingLimitState = {
+  beneficiary: string
+  token: {
+    address: string
+    symbol: string
+    decimals: number
+    logoUri?: string
+  }
+  amount: string
+  nonce: string
+  resetTimeMin: string
+  lastResetMin: string
+  spent: string
+}
 
 const DEFAULT_TOKEN_INFO = {
   decimals: 18,
   symbol: '',
-}
-
-const isModuleEnabled = (modules: string[], moduleAddress: string): boolean => {
-  return modules?.some((module) => sameAddress(module, moduleAddress)) ?? false
 }
 
 const discardZeroAllowance = (spendingLimit: SpendingLimitState): boolean =>
@@ -70,56 +82,71 @@ export const getTokensForDelegate = async (
 
 export const getSpendingLimits = async (
   provider: JsonRpcProvider,
-  safeModules: AddressEx[],
   safeAddress: string,
   chainId: string,
+  delegates: string[],
   tokenInfoFromBalances: TokenInfo[],
 ): Promise<SpendingLimitState[] | undefined> => {
-  const spendingLimitModuleAddress = getSpendingLimitModuleAddress(chainId)
-  if (!spendingLimitModuleAddress) return
-
-  const isSpendingLimitEnabled = isModuleEnabled(
-    safeModules.map((module) => module.value),
-    spendingLimitModuleAddress,
-  )
-  if (!isSpendingLimitEnabled) return
-
   const contract = getSpendingLimitContract(chainId, provider)
-  const delegates = await contract.getDelegates(safeAddress, 0, 100)
 
   const spendingLimits = await Promise.all(
-    delegates.results.map(async (delegate) =>
-      getTokensForDelegate(contract, safeAddress, delegate, tokenInfoFromBalances),
-    ),
+    delegates.map(async (delegate) => getTokensForDelegate(contract, safeAddress, delegate, tokenInfoFromBalances)),
   )
+
   return spendingLimits.flat().filter(discardZeroAllowance)
 }
 
-export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
-  const { safeAddress, safe, safeLoaded } = useSafeInfo()
+export const useSpendingLimitDelegates = (isEnabled: boolean): AsyncResult<string[]> => {
+  const provider = useWeb3ReadOnly()
+  const { safe, safeAddress } = useSafeInfo()
+
+  return useAsync(async () => {
+    if (!isEnabled || !provider) return
+    const contract = getSpendingLimitContract(safe.chainId, provider)
+    if (!contract) return
+
+    const data = await contract.getDelegates(safeAddress, 0, 100)
+    return data.results
+  }, [isEnabled, safeAddress, safe.chainId, provider])
+}
+
+export const useSafeHasSpendingLimits = (): boolean => {
+  const { safe } = useSafeInfo()
+  const isEnabled = useHasFeature(FEATURES.SPENDING_LIMIT)
+  if (!safe || !safe.modules || !isEnabled) return false
+
+  const moduleAddress = getSpendingLimitModuleAddress(safe.chainId)
+  if (!moduleAddress) return false
+
+  return safe.modules.some((module) => sameAddress(module.value, moduleAddress))
+}
+
+export const useAllSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
+  const { safeAddress } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
   const tokenInfoFromBalances = useAppSelector(selectTokens, isEqual)
 
+  const [delegates, delegatesError, delegatesLoading] = useSpendingLimitDelegates(useSafeHasSpendingLimits())
+
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(
     () => {
-      if (!provider || !safeLoaded || !safe.modules || !tokenInfoFromBalances) return
+      if (!delegates || !safeAddress || !provider || !tokenInfoFromBalances) return
 
-      return getSpendingLimits(provider, safe.modules, safeAddress, chainId, tokenInfoFromBalances)
+      return getSpendingLimits(provider, safeAddress, chainId, delegates, tokenInfoFromBalances)
     },
-    // Need to check length of modules array to prevent new request every time Safe info polls
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [provider, safeLoaded, safe.modules?.length, tokenInfoFromBalances, safeAddress, chainId, safe.txHistoryTag],
+    [provider, delegates, tokenInfoFromBalances, safeAddress, chainId],
     false,
   )
 
+  const finalError = error || delegatesError
   useEffect(() => {
-    if (error) {
-      logError(Errors._609, error.message)
+    if (finalError) {
+      logError(Errors._609, finalError.message)
     }
-  }, [error])
+  }, [finalError])
 
-  return [data, error, loading]
+  return [data, finalError, loading || delegatesLoading]
 }
 
-export default useLoadSpendingLimits
+export default useAllSpendingLimits

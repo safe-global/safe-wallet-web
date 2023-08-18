@@ -17,7 +17,6 @@ import useBalances from '@/hooks/useBalances'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { useHideAssets } from './useHideAssets'
 import CheckWallet from '@/components/common/CheckWallet'
-import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
 import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
 
@@ -93,10 +92,8 @@ const SendButton = ({
   tokenInfo: TokenInfo
   onClick: (tokenAddress: string) => void
 }): ReactElement => {
-  const spendingLimit = useSpendingLimit(tokenInfo)
-
   return (
-    <CheckWallet allowSpendingLimit={!!spendingLimit}>
+    <CheckWallet>
       {(isOk) => (
         <Track {...ASSETS_EVENTS.SEND}>
           <Button
