@@ -7,6 +7,7 @@ const BATCH_TX_COUNTER = '[data-track="batching: Batch sidebar open"] span > spa
 const ADD_NEW_TX_BATCH = '[data-track="batching: Add new tx to batch"]'
 const funds_first_tx = '0.001'
 const funds_second_tx = '0.002'
+var transactionsInBatchList = 0
 
 describe('Create batch transaction', () => {
   before(() => {
@@ -20,45 +21,54 @@ describe('Create batch transaction', () => {
     cy.contains('Add an initial transaction to the batch')
     cy.get(ADD_NEW_TX_BATCH).click()
   })
-  it('Should see the add batch button in a tx form', () => {
+
+  it('Should see the add batch button in a transaction form', () => {
+    //The "true" is to validate that the add to batch button is not visible if "Yes, execute" is selected
     addToBatch(EOA, currentNonce, funds_first_tx, true)
   })
-  it('Should see the tx being added to the batch', () => {
+
+  it('Should see the transaction being added to the batch', () => {
     cy.contains('Transaction is added to batch').should('be.visible')
-    //Counter The batch button in the header
+    //The batch button in the header shows the transaction count
     cy.get(BATCH_TX_COUNTER).contains('1').click()
-    batchCounterShouldBe(1)
+    amountTransactionsInBatch(1)
   })
-  it('Should add a second tx to the batch', () => {
+
+  it('Should add a second transaction to the batch', () => {
     cy.contains('Add new transaction').click()
     addToBatch(EOA, currentNonce, funds_second_tx)
     cy.get(BATCH_TX_COUNTER).contains('2').click()
-    batchCounterShouldBe(2)
+    amountTransactionsInBatch(2)
   })
-  it.skip('Should swap tx orders', () => {
-    //Not able to trigger a drag and drop as I found on guides so this doesn't work. I'll keep trying
-    cy.wait(3000)
-    const dataTransfer = new DataTransfer()
-    cy.contains(funds_second_tx)
-      .parents('li')
-      .invoke('attr', 'draggable', 'true')
-      .trigger('dragstart', { dataTransfer })
-    cy.contains('Add new transaction').trigger('drop', { dataTransfer })
+
+  it.skip('Should swap transactions order', () => {
+    //TODO
   })
-  it.skip('Should confirm the batch and see 2 tx in the form', () => {
+
+  it('Should confirm the batch and see 2 transactions in the form', () => {
     cy.contains('Confirm batch').click()
-    //This one is hard since the list of tx to execute are divs on divs, and not an ul that I can count or compare with anything
-    //and there are no ids or classes to use
-  }) //TODO'
-  it('Should remove a tx from the batch', () => {
-    cy.contains('Batched transactions').should('be.visible')
-    cy.contains(funds_first_tx).parents('ul li').find('[title="Delete transaction"]').eq(0).click()
-    cy.contains(funds_first_tx).should('not.exist')
-  }) //TODO
+    cy.contains(`This batch contains ${transactionsInBatchList} transactions`).should('be.visible')
+    cy.contains(funds_first_tx).parents('ul').as('TransactionList')
+    cy.get('@TransactionList').find('li').eq(0).find('span').eq(0).contains(funds_first_tx)
+    cy.get('@TransactionList').find('li').eq(1).find('span').eq(0).contains(funds_second_tx)
+  })
+
+  it('Should remove a transaction from the batch', () => {
+    cy.get(BATCH_TX_COUNTER).click()
+    cy.contains('Batched transactions').should('be.visible').parents('aside').find('ul > li').as('BatchList')
+    cy.get('@BatchList').find('[title="Delete transaction"]').eq(0).click()
+    cy.get('@BatchList').should('have.length', 1)
+    cy.get('@BatchList').contains(funds_first_tx).should('not.exist')
+  })
 })
 
-const batchCounterShouldBe = (count) => {
-  cy.contains('Batched transactions').should('be.visible').parents('aside').find('ul li').should('have.length', count)
+const amountTransactionsInBatch = (count) => {
+  cy.contains('Batched transactions', { timeout: 7000 })
+    .should('be.visible')
+    .parents('aside')
+    .find('ul > li')
+    .should('have.length', count)
+  transactionsInBatchList = count
 }
 
 const addToBatch = (EOA, currentNonce, amount, verify = false) => {
@@ -78,7 +88,7 @@ const addToBatch = (EOA, currentNonce, amount, verify = false) => {
   cy.contains('Next').click()
   cy.get('input[name="nonce"]').clear().type(currentNonce, { force: true }).type('{enter}', { force: true })
   cy.contains('Execute').scrollIntoView()
-  //Only validates the button not showing once
+  //Only validates the button not showing once in the entire run
   if (verify) {
     cy.contains('Yes, execute', { timeout: 4000 }).click()
     cy.contains('Add to batch').should('not.exist')
