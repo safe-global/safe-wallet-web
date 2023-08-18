@@ -6,6 +6,8 @@ import { createWeb3, createWeb3ReadOnly, setWeb3, setWeb3ReadOnly } from '@/hook
 import { useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
 
+const READONLY_WAIT = 1000
+
 export const useInitWeb3 = () => {
   const chain = useCurrentChain()
   const wallet = useWallet()
@@ -15,18 +17,22 @@ export const useInitWeb3 = () => {
   useEffect(() => {
     if (!chain) return
 
-    let web3
     if (wallet) {
-      web3 = createWeb3(wallet.provider)
+      const web3 = createWeb3(wallet.provider)
       setWeb3(web3)
+
+      if (wallet.chainId === chain.chainId) {
+        setWeb3ReadOnly(web3)
+        return
+      }
     }
 
-    let web3ReadOnly
-    if (wallet && wallet.chainId === chain.chainId) {
-      web3ReadOnly = web3
-    } else {
-      web3ReadOnly = createWeb3ReadOnly(chain.rpcUri, customRpcUrl)
-    }
-    setWeb3ReadOnly(web3ReadOnly)
+    // Wait for wallet to be connected
+    const timeout = setTimeout(() => {
+      const web3ReadOnly = createWeb3ReadOnly(chain.rpcUri, customRpcUrl)
+      setWeb3ReadOnly(web3ReadOnly)
+    }, READONLY_WAIT)
+
+    return () => clearTimeout(timeout)
   }, [wallet, chain, customRpcUrl])
 }

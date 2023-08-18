@@ -7,8 +7,6 @@ import ExternalStore from '@/services/ExternalStore'
 import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { useInitPairing } from '@/services/pairing/hooks'
-import { useAppSelector } from '@/store'
-import { type EnvState, selectRpc } from '@/store/settingsSlice'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 
 const WALLETCONNECT = 'WalletConnect'
@@ -24,14 +22,10 @@ export type ConnectedWallet = {
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
-export const initOnboard = async (
-  chainConfigs: ChainInfo[],
-  currentChain: ChainInfo,
-  rpcConfig: EnvState['rpc'] | undefined,
-) => {
+export const initOnboard = async (chainConfigs: ChainInfo[], currentChain: ChainInfo) => {
   const { createOnboard } = await import('@/services/onboard')
   if (!getStore()) {
-    setStore(createOnboard(chainConfigs, currentChain, rpcConfig))
+    setStore(createOnboard(chainConfigs, currentChain))
   }
 }
 
@@ -140,15 +134,14 @@ export const useInitOnboard = () => {
   const { configs } = useChains()
   const chain = useCurrentChain()
   const onboard = useStore()
-  const customRpc = useAppSelector(selectRpc)
 
   useInitPairing()
 
   useEffect(() => {
     if (configs.length > 0 && chain) {
-      void initOnboard(configs, chain, customRpc)
+      void initOnboard(configs, chain)
     }
-  }, [configs, chain, customRpc])
+  }, [configs, chain])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
