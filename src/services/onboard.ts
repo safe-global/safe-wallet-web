@@ -27,7 +27,7 @@ export const createOnboard = (
   const chains = chainConfigs.map((cfg) => ({
     id: hexValue(parseInt(cfg.chainId)),
     label: cfg.chainName,
-    rpcUrl: rpcConfig?.[cfg.chainId] || getRpcServiceUrl(cfg.rpcUri),
+    rpcUrl: rpcConfig?.[cfg.chainId] || getRpcServiceUrl(cfg.rpcUri) || undefined,
     token: cfg.nativeCurrency.symbol,
     color: cfg.theme.backgroundColor,
     publicRpcUrl: cfg.publicRpcUri.value,
