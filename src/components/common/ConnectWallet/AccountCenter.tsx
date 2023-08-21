@@ -13,7 +13,6 @@ import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
-import AddressEmoji from '../AddressEmoji'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -78,10 +77,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         sx={{ marginTop: 1 }}
       >
         <Paper className={css.popoverContainer}>
-          <div className={css.identicon}>
-            <Identicon address={wallet.address} />
-            <AddressEmoji address={wallet.address} />
-          </div>
+          <Identicon address={wallet.address} />
 
           <Typography variant="h5" className={css.addressName}>
             {addressBook[wallet.address] || wallet.ens}
