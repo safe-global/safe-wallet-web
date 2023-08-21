@@ -28,6 +28,21 @@ const useSafeCreationEffects = ({
     }
   }, [chainId, pendingSafe?.safeAddress, status, setStatus])
 
+  // Warn about leaving the page before Safe creation
+  useEffect(() => {
+    if (status !== SafeCreationStatus.PROCESSING && status !== SafeCreationStatus.AWAITING) return
+
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault()
+      event.returnValue = 'Are you sure you want to leave before your Safe Account is fully created?'
+      return event.returnValue
+    }
+
+    window.addEventListener('beforeunload', onBeforeUnload)
+
+    return () => window.removeEventListener('beforeunload', onBeforeUnload)
+  }, [status])
+
   // Add Safe to Added Safes and add owner and safe names to Address Book
   useEffect(() => {
     if (status === SafeCreationStatus.SUCCESS && pendingSafe?.safeAddress) {
