@@ -31,7 +31,7 @@ describe('Transaction history', () => {
       .last()
       .within(() => {
         // Type
-        cy.get('iframe').should('have.attr', 'title', INCOMING)
+        cy.get('img').should('have.attr', 'alt', INCOMING)
         cy.contains('div', 'Received').should('exist')
 
         // Info
@@ -103,7 +103,7 @@ describe('Transaction history', () => {
       .prev()
       .within(() => {
         // Type
-        cy.get('iframe').should('have.attr', 'title', OUTGOING)
+        cy.get('img').should('have.attr', 'alt', OUTGOING)
         cy.contains('div', 'Sent').should('exist')
 
         // Info
