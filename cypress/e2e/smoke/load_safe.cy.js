@@ -21,7 +21,7 @@ describe('Load existing Safe', () => {
 
     // Enters Loading Safe form
     cy.contains('button', 'Add existing Account').click()
-    cy.contains('Connect wallet & select network')
+    cy.contains('Name, address & network')
   })
 
   it('should allow choosing the network where the Safe exists', () => {

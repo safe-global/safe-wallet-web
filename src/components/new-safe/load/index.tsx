@@ -18,8 +18,8 @@ export type LoadSafeFormData = NamedAddress & {
 
 export const LoadSafeSteps: TxStepperProps<LoadSafeFormData>['steps'] = [
   {
-    title: 'Connect wallet & select network',
-    subtitle: 'Select network on which the Safe Account was created',
+    title: 'Name, address & network',
+    subtitle: 'Paste the address of the Safe Account you want to add, select the network and choose a name.',
     render: (_, onSubmit, onBack, setStep) => (
       <SetAddressStep onSubmit={onSubmit} onBack={onBack} data={_} setStep={setStep} />
     ),
