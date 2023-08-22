@@ -4,7 +4,7 @@ import { initializeApp } from 'firebase/app'
 import { onBackgroundMessage } from 'firebase/messaging/sw'
 import { getMessaging } from 'firebase/messaging/sw'
 
-import { parseFirebaseNotification } from '@/services/firebase'
+import { parseFirebaseNotification, shouldShowNotification } from '@/services/firebase'
 
 // Default type of `self` is `WorkerGlobalScope & typeof globalThis`
 // https://github.com/microsoft/TypeScript/issues/14877
@@ -44,6 +44,12 @@ const messaging = getMessaging(app)
 onBackgroundMessage(messaging, async (payload) => {
   const ICON_PATH = '/images/safe-logo-green.png'
   const DEFAULT_LINK = 'https://app.safe.global'
+
+  const shouldShow = await shouldShowNotification(payload)
+
+  if (!shouldShow) {
+    return
+  }
 
   const notification = await parseFirebaseNotification(payload)
 

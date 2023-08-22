@@ -72,6 +72,7 @@
     "firebase": "^10.1.0",
     "framer-motion": "^10.13.1",
     "fuse.js": "^6.6.2",
+    "idb-keyval": "^6.2.1",
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "next": "12.2.0",
