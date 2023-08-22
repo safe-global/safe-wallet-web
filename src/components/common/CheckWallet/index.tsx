@@ -20,7 +20,7 @@ enum Message {
 const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner }: CheckWalletProps): ReactElement => {
   const wallet = useWallet()
   const isSafeOwner = useIsSafeOwner()
-  const isSpendingLimit = useIsOnlySpendingLimitBeneficiary(allowSpendingLimit)
+  const isSpendingLimit = useIsOnlySpendingLimitBeneficiary(allowSpendingLimit || false)
   const connectWallet = useConnectWallet()
 
   const message = !wallet

@@ -121,8 +121,8 @@ export const useSafeHasSpendingLimits = (): boolean => {
   return safe.modules.some((module) => sameAddress(module.value, moduleAddress))
 }
 
-export const useAllSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
-  const { safeAddress } = useSafeInfo()
+export const useAllSpendingLimits = (autoRefresh = false): AsyncResult<SpendingLimitState[]> => {
+  const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
   const tokenInfoFromBalances = useAppSelector(selectTokens, isEqual)
@@ -135,7 +135,7 @@ export const useAllSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
 
       return getSpendingLimits(provider, safeAddress, chainId, delegates, tokenInfoFromBalances)
     },
-    [provider, delegates, tokenInfoFromBalances, safeAddress, chainId],
+    [provider, delegates, tokenInfoFromBalances, safeAddress, chainId, autoRefresh ? safe.txHistoryTag : undefined],
     false,
   )
 

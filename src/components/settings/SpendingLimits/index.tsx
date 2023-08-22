@@ -13,7 +13,7 @@ import useAllSpendingLimits from '@/hooks/useSpendingLimits'
 
 const SpendingLimits = () => {
   const { setTxFlow } = useContext(TxModalContext)
-  const [spendingLimits, , spendingLimitsLoading] = useAllSpendingLimits()
+  const [spendingLimits, , spendingLimitsLoading] = useAllSpendingLimits(true)
   const isEnabled = useHasFeature(FEATURES.SPENDING_LIMIT)
 
   return (
