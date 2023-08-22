@@ -11,7 +11,7 @@ const BatchIndicator = ({ onClick }: { onClick?: () => void }) => {
   return (
     <BatchTooltip>
       <Track {...BATCH_EVENTS.BATCH_SIDEBAR_OPEN} label={length}>
-        <ButtonBase onClick={onClick} sx={{ p: 0.5 }}>
+        <ButtonBase onClick={onClick} sx={{ p: 0.5 }} title="Batch">
           <Badge variant="standard" color="secondary" badgeContent={length}>
             <SvgIcon component={BatchIcon} inheritViewBox fontSize="small" />
           </Badge>
