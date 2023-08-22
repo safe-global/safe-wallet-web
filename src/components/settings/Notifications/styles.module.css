@@ -1,0 +1,22 @@
+.info {
+  border-color: var(--color-border-light);
+  background-color: var(--color-background-main);
+  padding: var(--space-2);
+}
+
+.info :global .MuiAlert-icon {
+  color: var(--color-text-main);
+  padding: 0;
+}
+
+.info :global .MuiAlert-message {
+  padding: 0;
+}
+
+/* TODO: Move to theme */
+.switch :global .MuiSwitch-switchBase {
+  color: var(--color-primary-main);
+}
+.switch :global .MuiSwitch-track {
+  background-color: var(--color-primary-main) !important;
+}

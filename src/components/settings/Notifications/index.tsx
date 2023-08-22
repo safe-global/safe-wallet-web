@@ -1,69 +1,45 @@
-import {
-  Grid,
-  Paper,
-  Typography,
-  Button,
-  IconButton,
-  SvgIcon,
-  Tooltip,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-} from '@mui/material'
-import DeleteIcon from '@/public/images/common/delete.svg'
-import { useCallback, useMemo } from 'react'
+import { Grid, Paper, Typography, Checkbox, FormControlLabel, FormGroup, Alert, Switch } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import CheckWallet from '@/components/common/CheckWallet'
-import EnhancedTable from '@/components/common/EnhancedTable'
-import { requestNotificationPermission, registerSafe, unregisterSafe } from '@/components/settings/Notifications/logic'
+import { registerNotifications, unregisterSafe } from '@/components/settings/Notifications/logic'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { WebhookType } from '@/services/firebase/webhooks'
 import { useNotificationPreferences } from './useNotificationPreferences'
+import { AllSafesNotifications } from './AllSafesNotifications'
 import type { NotificationRegistration } from '@/components/settings/Notifications/logic'
 
-import tableCss from '@/components/common/EnhancedTable/styles.module.css'
+import css from './styles.module.css'
 
 const FIREBASE_LS_KEY = 'firebase'
 
-const headCells = [
-  { id: 'safe', label: 'Safe' },
-  { id: 'actions', label: '', sticky: true },
-]
-
 export const Notifications = (): ReactElement => {
   const web3 = useWeb3()
-  const { safe } = useSafeInfo()
+  const { safe, safeLoaded } = useSafeInfo()
   const [preferences, setPreferences] = useNotificationPreferences()
 
   const [currentRegistration, setCurrentRegistration] = useLocalStorage<NotificationRegistration | undefined>(
     FIREBASE_LS_KEY,
   )
 
-  const isCurrentSafeRegistered = currentRegistration?.safeRegistrations?.some((registration) => {
-    return registration.safes.includes(safe.address.value)
+  const currentSafeRegistration = currentRegistration?.safeRegistrations.find(({ safes }) => {
+    return safes.includes(safe.address.value)
   })
 
-  const handleRegister = useCallback(async () => {
+  const handleRegister = async (safesToRegister: { [chainId: string]: Array<string> }) => {
     if (!web3) {
       return
     }
 
-    const isGranted = await requestNotificationPermission()
-
-    if (!isGranted) {
-      return
-    }
-
-    const registration = await registerSafe(safe, web3, currentRegistration)
+    const registration = await registerNotifications(safesToRegister, web3, currentRegistration)
 
     setCurrentRegistration(registration)
-  }, [currentRegistration, safe, setCurrentRegistration, web3])
+  }
 
-  const handleUnregister = useCallback(async () => {
+  const handleUnregister = async () => {
     if (!currentRegistration) {
       return
     }
@@ -71,41 +47,15 @@ export const Notifications = (): ReactElement => {
     const registration = await unregisterSafe(safe, currentRegistration)
 
     setCurrentRegistration(registration)
-  }, [currentRegistration, safe, setCurrentRegistration])
+  }
 
-  const rows = useMemo(() => {
-    return currentRegistration?.safeRegistrations.flatMap(({ safes }) => {
-      return safes.map((safeAddress) => {
-        return {
-          cells: {
-            safe: {
-              rawValue: safeAddress,
-              content: (
-                <EthHashInfo address={safeAddress} showCopyButton shortAddress={false} showName={true} hasExplorer />
-              ),
-            },
-            actions: {
-              rawValue: '',
-              sticky: true,
-              content: (
-                <div className={tableCss.actions}>
-                  <CheckWallet>
-                    {(isOk) => (
-                      <Tooltip title="Unregister">
-                        <IconButton onClick={handleUnregister} size="small" disabled={!isOk}>
-                          <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                  </CheckWallet>
-                </div>
-              ),
-            },
-          },
-        }
-      })
-    })
-  }, [currentRegistration?.safeRegistrations, handleUnregister])
+  const handleOnChange = () => {
+    if (currentSafeRegistration) {
+      handleUnregister()
+    } else {
+      handleRegister({ [safe.chainId]: [safe.address.value] })
+    }
+  }
 
   return (
     <>
@@ -117,27 +67,45 @@ export const Notifications = (): ReactElement => {
             </Typography>
           </Grid>
 
-          <Grid item xs>
-            <Typography mb={3}>
-              {isCurrentSafeRegistered
-                ? 'You will receive notifications about the following Safes on your device.'
-                : `You can opt-in to see notifications about this Safe on your device. To do so, you have to sign a message to verify that you are an owner.`}
-              <br />
-              <br />
-              Please note that registration is per-browser and you will need to register again if you clear your browser
-              cache.
-            </Typography>
-            {!isCurrentSafeRegistered && (
-              <CheckWallet>
-                {(isOk) => (
-                  <Button variant="contained" color="primary" onClick={handleRegister} disabled={!isOk}>
-                    Register
-                  </Button>
-                )}
-              </CheckWallet>
-            )}
+          <Grid item>
+            <Grid container gap={2.5} flexDirection="column">
+              <Typography>
+                {currentSafeRegistration
+                  ? 'You will receive notifications about this Safe Account in this browser.'
+                  : `Subscribe to receive notifications about ${
+                      safeLoaded ? 'this Safe Account' : 'Safe Accounts'
+                    } in this browser. To do so, you will have to sign a message to verify that you are an owner.`}
+              </Typography>
 
-            {rows && <EnhancedTable rows={rows} headCells={headCells} />}
+              <Alert severity="info" className={css.info}>
+                Please note that registration is per-browser and you will need to register again if you clear your
+                browser cache.
+              </Alert>
+
+              {safeLoaded ? (
+                <div style={{ display: 'flex' }}>
+                  <CheckWallet>
+                    {(isOk) => (
+                      <Switch
+                        checked={!!currentSafeRegistration}
+                        onChange={handleOnChange}
+                        disabled={!isOk}
+                        className={css.switch}
+                      />
+                    )}
+                  </CheckWallet>
+                  <EthHashInfo
+                    address={safe.address.value}
+                    showCopyButton
+                    shortAddress={false}
+                    showName={true}
+                    hasExplorer
+                  />
+                </div>
+              ) : (
+                <AllSafesNotifications currentRegistration={currentRegistration} handleRegister={handleRegister} />
+              )}
+            </Grid>
           </Grid>
         </Grid>
       </Paper>
@@ -151,25 +119,23 @@ export const Notifications = (): ReactElement => {
 
           <Grid item xs>
             <FormGroup>
-              {Object.values(WebhookType).map((type) => {
-                return (
-                  <FormControlLabel
-                    key={type}
-                    control={
-                      <Checkbox
-                        checked={preferences[type]}
-                        onChange={(_, checked) => {
-                          setPreferences({
-                            ...preferences,
-                            [type]: checked,
-                          })
-                        }}
-                      />
-                    }
-                    label={type}
-                  />
-                )
-              })}
+              {Object.values(WebhookType).map((type) => (
+                <FormControlLabel
+                  key={type}
+                  control={
+                    <Checkbox
+                      checked={preferences[type]}
+                      onChange={(_, checked) => {
+                        setPreferences((prev) => ({
+                          ...prev,
+                          [type]: checked,
+                        }))
+                      }}
+                    />
+                  }
+                  label={type}
+                />
+              ))}
             </FormGroup>
           </Grid>
         </Grid>

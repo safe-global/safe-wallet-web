@@ -6,8 +6,8 @@ import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import packageJson from '../../../../package.json'
 import { FIREBASE_MESSAGING_SW_PATH, FIREBASE_VAPID_KEY } from '@/config/constants'
+import packageJson from '../../../../package.json'
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
@@ -40,22 +40,19 @@ const getTimestampWithoutMilliseconds = () => {
   return Math.floor(new Date().getTime() / 1000).toString()
 }
 
-export const createRegisterSafePayload = async (
-  safe: SafeInfo,
+export const createRegisterDevicePayload = async (
+  safesToRegister: { [chainId: string]: Array<string> },
   web3: Web3Provider,
   currentRegistration?: NotificationRegistration,
-): Promise<NotificationRegistration | undefined> => {
+): Promise<NotificationRegistration> => {
   const MESSAGE_PREFIX = 'gnosis-safe'
 
-  const currentChainSafeRegistrations = currentRegistration?.safeRegistrations.find(
-    (registration) => registration.chainId === safe.chainId,
-  )?.safes
-
-  const safeAddress = safe.address.value
-
-  // Safe is already registered
-  if (currentChainSafeRegistrations?.includes(safeAddress)) {
-    return currentRegistration
+  for (const { chainId, safes } of currentRegistration?.safeRegistrations ?? []) {
+    if (safesToRegister[chainId]) {
+      safesToRegister[chainId] = Array.from(new Set([...safes, ...safesToRegister[chainId]]))
+    } else {
+      safesToRegister[chainId] = safes
+    }
   }
 
   const swRegistration = await navigator.serviceWorker.getRegistration(FIREBASE_MESSAGING_SW_PATH)
@@ -79,14 +76,21 @@ export const createRegisterSafePayload = async (
   const timestamp = getTimestampWithoutMilliseconds()
   const uuid = currentRegistration?.uuid ?? self.crypto.randomUUID()
 
-  const safesToRegister = currentChainSafeRegistrations
-    ? [...currentChainSafeRegistrations, safeAddress]
-    : [safeAddress]
+  const safeRegistrations = await Promise.all(
+    Object.entries(safesToRegister)
+      .filter(([, safes]) => safes.length > 0)
+      .map(async ([chainId, safes]) => {
+        const message = MESSAGE_PREFIX + timestamp + uuid + token + safes.join('')
+        const hashedMessage = keccak256(toUtf8Bytes(message))
+        const signature = await web3.getSigner().signMessage(hashedMessage)
 
-  const message = MESSAGE_PREFIX + timestamp + uuid + token + safesToRegister.join('')
-  const hashedMessage = keccak256(toUtf8Bytes(message))
-
-  const signature = await web3.getSigner().signMessage(hashedMessage)
+        return {
+          chainId,
+          safes,
+          signatures: [signature],
+        }
+      }),
+  )
 
   return {
     uuid,
@@ -96,27 +100,27 @@ export const createRegisterSafePayload = async (
     deviceType: DeviceType.WEB,
     version: packageJson.version,
     timestamp,
-    safeRegistrations: [
-      {
-        chainId: safe.chainId,
-        safes: safesToRegister,
-        signatures: [signature],
-      },
-    ],
+    safeRegistrations,
   }
 }
 
-export const registerSafe = async (
-  safe: SafeInfo,
+export const registerNotifications = async (
+  safesToRegister: { [chainId: string]: Array<string> },
   web3: Web3Provider,
   currentRegistration?: NotificationRegistration,
 ): Promise<NotificationRegistration | undefined> => {
+  const isGranted = await requestNotificationPermission()
+
+  if (!isGranted) {
+    return currentRegistration
+  }
+
   let didRegister = false
 
   let payload: NotificationRegistration | undefined
 
   try {
-    payload = await createRegisterSafePayload(safe, web3, currentRegistration)
+    payload = await createRegisterDevicePayload(safesToRegister, web3, currentRegistration)
 
     if (payload) {
       // Gateway will return 200 with an empty payload if the device was registered successfully
@@ -126,11 +130,11 @@ export const registerSafe = async (
       didRegister = response == null
     }
   } catch (e) {
-    console.error('Error registering Safe', e)
+    console.error('Error registering Safe(s)', e)
   }
 
   if (!didRegister) {
-    alert('Unable to register Safe')
+    alert('Unable to register Safe(s)')
     return currentRegistration
   }
 

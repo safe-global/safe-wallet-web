@@ -94,14 +94,25 @@ describe('Notifications', () => {
     })
   })
 
-  describe('createRegisterSafePayload', () => {
-    it('should return the current registrations if the safe is already registered', async () => {
+  describe('createRegisterDevicePayload', () => {
+    it('should return the current registration if it is the same', async () => {
+      const token = crypto.randomUUID()
+      const signature = hexZeroPad('0xDEAD', 65)
+
+      jest.spyOn(firebase, 'getToken').mockImplementation(() => Promise.resolve(token))
+      jest.spyOn(mockProvider, 'getSigner').mockImplementation(
+        () =>
+          ({
+            signMessage: jest.fn().mockResolvedValue(signature),
+          } as unknown as JsonRpcSigner),
+      )
+
       const safeAddress = hexZeroPad('0x1', 20)
       const chainId = '1'
 
       const currentRegistration: logic.NotificationRegistration = {
         uuid: crypto.randomUUID(),
-        cloudMessagingToken: crypto.randomUUID(),
+        cloudMessagingToken: token,
         buildNumber: '0',
         bundle: 'https://app.safe.global',
         deviceType: DeviceType.WEB,
@@ -116,17 +127,17 @@ describe('Notifications', () => {
         ],
       }
 
-      const payload = await logic.createRegisterSafePayload(
-        { chainId, address: { value: safeAddress } } as SafeInfo,
+      const payload = await logic.createRegisterDevicePayload(
+        { [chainId]: [safeAddress] },
         mockProvider,
         currentRegistration,
       )
 
-      expect(payload).toStrictEqual(currentRegistration)
+      expect(payload).toStrictEqual({ ...currentRegistration, timestamp: expect.any(String) })
     })
 
-    describe('should return a registration payload if the safe is not already registered', () => {
-      it('should just be the current Safe if none is registered on the current chain', async () => {
+    describe('should return a registration payload if the chain registration(s) is not already registered', () => {
+      it('if none on the same chain is registered', async () => {
         const token = crypto.randomUUID()
         const signature = hexZeroPad('0xDEAD', 65)
 
@@ -141,10 +152,7 @@ describe('Notifications', () => {
         const safeAddress = hexZeroPad('0x1', 20)
         const chainId = '1'
 
-        const payload = await logic.createRegisterSafePayload(
-          { chainId, address: { value: safeAddress } } as SafeInfo,
-          mockProvider,
-        )
+        const payload = await logic.createRegisterDevicePayload({ [chainId]: [safeAddress] }, mockProvider)
 
         expect(payload).toStrictEqual({
           uuid: expect.any(String),
@@ -164,7 +172,7 @@ describe('Notifications', () => {
         })
       })
 
-      it('should append the Safe if one is already registered on the chain', async () => {
+      it('if others on the same chain exists', async () => {
         const token = crypto.randomUUID()
         const signature = hexZeroPad('0xDEAD', 65)
 
@@ -176,7 +184,7 @@ describe('Notifications', () => {
             } as unknown as JsonRpcSigner),
         )
 
-        const safeAddress = hexZeroPad('0x1', 20)
+        const safeAddress = hexZeroPad('0x3', 20)
         const chainId = '1'
 
         const currentRegistration = {
@@ -190,20 +198,25 @@ describe('Notifications', () => {
           safeRegistrations: [
             {
               chainId,
-              safes: [hexZeroPad('0x2', 20)],
+              safes: [hexZeroPad('0x1', 20), hexZeroPad('0x2', 20)],
+              signatures: [hexZeroPad('0xBEEF', 65)],
+            },
+            {
+              chainId: '2',
+              safes: [hexZeroPad('0x4', 20)],
               signatures: [signature],
             },
           ],
         }
 
-        const payload = await logic.createRegisterSafePayload(
-          { chainId, address: { value: safeAddress } } as SafeInfo,
+        const payload = await logic.createRegisterDevicePayload(
+          { [chainId]: [safeAddress] },
           mockProvider,
           currentRegistration,
         )
 
-        expect(payload?.timestamp).not.toBe(currentRegistration.timestamp)
-        expect(payload?.safeRegistrations[0].signatures).not.toBe(currentRegistration?.safeRegistrations[0].signatures)
+        expect(payload.timestamp).not.toBe(currentRegistration.timestamp)
+        expect(payload.safeRegistrations[0].signatures).not.toBe(currentRegistration.safeRegistrations[0].signatures)
 
         expect(payload).toStrictEqual({
           uuid: currentRegistration.uuid, // Same UUID
@@ -216,8 +229,13 @@ describe('Notifications', () => {
           safeRegistrations: [
             {
               chainId,
-              safes: [hexZeroPad('0x2', 20), safeAddress],
-              signatures: [expect.any(String)],
+              safes: [hexZeroPad('0x1', 20), hexZeroPad('0x2', 20), safeAddress],
+              signatures: [signature],
+            },
+            {
+              chainId: '2',
+              safes: [hexZeroPad('0x4', 20)],
+              signatures: [signature],
             },
           ],
         })
@@ -225,30 +243,29 @@ describe('Notifications', () => {
     })
   })
 
-  describe('registerSafe', () => {
+  describe('registerNotifications', () => {
     const mockRegisterSafe = jest.spyOn(sdk, 'registerDevice')
 
     it('should return undefined if no registration exists and the registration threw', async () => {
       const safeAddress = hexZeroPad('0x1', 20)
       const chainId = '1'
 
+      jest.spyOn(logic, 'requestNotificationPermission').mockImplementation(() => Promise.resolve(true))
+
       jest
-        .spyOn(logic, 'createRegisterSafePayload')
+        .spyOn(logic, 'createRegisterDevicePayload')
         .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
 
       mockRegisterSafe.mockImplementation(() => {
         return Promise.reject()
       })
 
-      const registration = await logic.registerSafe(
-        { chainId, address: { value: safeAddress } } as SafeInfo,
-        mockProvider,
-      )
+      const registration = await logic.registerNotifications({ [chainId]: [safeAddress] }, mockProvider)
 
       expect(mockRegisterSafe).toHaveBeenCalledTimes(1)
 
       expect(alertMock).toHaveBeenCalledTimes(1)
-      expect(alertMock).toHaveBeenCalledWith('Unable to register Safe')
+      expect(alertMock).toHaveBeenCalledWith('Unable to register Safe(s)')
 
       expect(registration).toBe(undefined)
     })
@@ -257,8 +274,10 @@ describe('Notifications', () => {
       const safeAddress = hexZeroPad('0x1', 20)
       const chainId = '1'
 
+      jest.spyOn(logic, 'requestNotificationPermission').mockImplementation(() => Promise.resolve(true))
+
       jest
-        .spyOn(logic, 'createRegisterSafePayload')
+        .spyOn(logic, 'createRegisterDevicePayload')
         .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
 
       mockRegisterSafe.mockImplementation(() => {
@@ -282,8 +301,8 @@ describe('Notifications', () => {
         ],
       }
 
-      const registration = await logic.registerSafe(
-        { chainId, address: { value: safeAddress } } as SafeInfo,
+      const registration = await logic.registerNotifications(
+        { [chainId]: [safeAddress] },
         mockProvider,
         currentRegistration,
       )
@@ -291,12 +310,14 @@ describe('Notifications', () => {
       expect(mockRegisterSafe).toHaveBeenCalledTimes(1)
 
       expect(alertMock).toHaveBeenCalledTimes(1)
-      expect(alertMock).toHaveBeenCalledWith('Unable to register Safe')
+      expect(alertMock).toHaveBeenCalledWith('Unable to register Safe(s)')
 
       expect(registration).toBe(currentRegistration)
     })
 
     it('should return the registration payload if the registration succeeded', async () => {
+      jest.spyOn(logic, 'requestNotificationPermission').mockImplementation(() => Promise.resolve(true))
+
       const safeAddress = hexZeroPad('0x1', 20)
       const chainId = '1'
 
@@ -317,16 +338,13 @@ describe('Notifications', () => {
         ],
       }
 
-      jest.spyOn(logic, 'createRegisterSafePayload').mockImplementation(() => Promise.resolve(registrationPayload))
+      jest.spyOn(logic, 'createRegisterDevicePayload').mockImplementation(() => Promise.resolve(registrationPayload))
 
       mockRegisterSafe.mockImplementation(() => {
         return Promise.resolve()
       })
 
-      const registration = await logic.registerSafe(
-        { chainId, address: { value: safeAddress } } as SafeInfo,
-        mockProvider,
-      )
+      const registration = await logic.registerNotifications({ [chainId]: [safeAddress] }, mockProvider)
 
       expect(mockRegisterSafe).toHaveBeenCalledTimes(1)
 
@@ -416,7 +434,7 @@ describe('Notifications', () => {
 
       expect(alertMock).not.toHaveBeenCalled()
 
-      expect(updatedRegistration?.timestamp).not.toBe(currentRegistration.timestamp)
+      expect(updatedRegistration.timestamp).not.toBe(currentRegistration.timestamp)
 
       expect(updatedRegistration).toEqual({
         uuid: currentRegistration.uuid, // Same UUID
