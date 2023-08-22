@@ -32,6 +32,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
 import type { PayableOverrides } from 'ethers'
+import useWallet from '@/hooks/wallets/useWallet'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -52,6 +53,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
+  const wallet = useWallet()
   const web3 = useWeb3()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
@@ -75,7 +77,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || gasPriceLoading) return
+    if (!wallet || !multiSendTxData || !multiSendContract || !txsWithDetails || gasPriceLoading) return
 
     const overrides: PayableOverrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
@@ -85,7 +87,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       txsWithDetails,
       multiSendContract,
       multiSendTxData,
-      onboard,
+      wallet,
       safe.chainId,
       safe.address.value,
       overrides,
