@@ -123,7 +123,7 @@ export const registerSafe = async (
       // @see https://github.com/safe-global/safe-client-gateway-nest/blob/27b6b3846b4ecbf938cdf5d0595ca464c10e556b/src/routes/notifications/notifications.service.ts#L29
       const response = await registerDevice(payload)
 
-      didRegister = response != null
+      didRegister = response == null
     }
   } catch (e) {
     console.error('Error registering Safe', e)
@@ -146,7 +146,7 @@ export const unregisterSafe = async (
   try {
     const response = await gatewayUnregisterSafe(safe.chainId, safe.address.value, currentRegistration.uuid)
 
-    didUnregister = response != null
+    didUnregister = response == null
   } catch (e) {
     console.error('Error unregistering Safe', e)
   }

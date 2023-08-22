@@ -2,6 +2,7 @@ import * as firebase from 'firebase/messaging'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { Web3Provider } from '@ethersproject/providers'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
+import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -9,6 +10,8 @@ import * as logic from './logic'
 import packageJson from '../../../../package.json'
 
 jest.mock('firebase/messaging')
+
+jest.mock('@safe-global/safe-gateway-typescript-sdk')
 
 Object.defineProperty(globalThis, 'crypto', {
   value: {
@@ -38,7 +41,6 @@ describe('Notifications', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    global.fetch = jest.fn()
     window.alert = alertMock
   })
 
@@ -224,81 +226,7 @@ describe('Notifications', () => {
   })
 
   describe('registerSafe', () => {
-    it('should return undefined if no registration exists and the registration failed', async () => {
-      const safeAddress = hexZeroPad('0x1', 20)
-      const chainId = '1'
-
-      jest
-        .spyOn(logic, 'createRegisterSafePayload')
-        .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
-
-      global.fetch = jest.fn().mockImplementation(() => {
-        return Promise.resolve({
-          json: () => Promise.resolve({}),
-          status: 69420, // Failed
-          ok: true,
-        })
-      })
-
-      const registration = await logic.registerSafe(
-        { chainId, address: { value: safeAddress } } as SafeInfo,
-        mockProvider,
-      )
-
-      expect(global.fetch).toHaveBeenCalledTimes(1)
-
-      expect(alertMock).toHaveBeenCalledTimes(1)
-      expect(alertMock).toHaveBeenCalledWith('Unable to register Safe')
-
-      expect(registration).toBe(undefined)
-    })
-
-    it('should return the current registration if one exists and the registration failed', async () => {
-      const safeAddress = hexZeroPad('0x1', 20)
-      const chainId = '1'
-
-      jest
-        .spyOn(logic, 'createRegisterSafePayload')
-        .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
-
-      global.fetch = jest.fn().mockImplementation(() => {
-        return Promise.resolve({
-          json: () => Promise.resolve({}),
-          status: 69420, // Failed
-          ok: true,
-        })
-      })
-
-      const currentRegistration: logic.NotificationRegistration = {
-        uuid: crypto.randomUUID(),
-        cloudMessagingToken: crypto.randomUUID(),
-        buildNumber: '0',
-        bundle: 'https://app.safe.global',
-        deviceType: DeviceType.WEB,
-        version: packageJson.version,
-        timestamp: crypto.randomUUID(),
-        safeRegistrations: [
-          {
-            chainId,
-            safes: [safeAddress],
-            signatures: [hexZeroPad('0xDEAD', 65)],
-          },
-        ],
-      }
-
-      const registration = await logic.registerSafe(
-        { chainId, address: { value: safeAddress } } as SafeInfo,
-        mockProvider,
-        currentRegistration,
-      )
-
-      expect(global.fetch).toHaveBeenCalledTimes(1)
-
-      expect(alertMock).toHaveBeenCalledTimes(1)
-      expect(alertMock).toHaveBeenCalledWith('Unable to register Safe')
-
-      expect(registration).toBe(currentRegistration)
-    })
+    const mockRegisterSafe = jest.spyOn(sdk, 'registerDevice')
 
     it('should return undefined if no registration exists and the registration threw', async () => {
       const safeAddress = hexZeroPad('0x1', 20)
@@ -308,7 +236,7 @@ describe('Notifications', () => {
         .spyOn(logic, 'createRegisterSafePayload')
         .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
 
-      global.fetch = jest.fn().mockImplementation(() => {
+      mockRegisterSafe.mockImplementation(() => {
         return Promise.reject()
       })
 
@@ -317,7 +245,7 @@ describe('Notifications', () => {
         mockProvider,
       )
 
-      expect(global.fetch).toHaveBeenCalledTimes(1)
+      expect(mockRegisterSafe).toHaveBeenCalledTimes(1)
 
       expect(alertMock).toHaveBeenCalledTimes(1)
       expect(alertMock).toHaveBeenCalledWith('Unable to register Safe')
@@ -333,7 +261,7 @@ describe('Notifications', () => {
         .spyOn(logic, 'createRegisterSafePayload')
         .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
 
-      global.fetch = jest.fn().mockImplementation(() => {
+      mockRegisterSafe.mockImplementation(() => {
         return Promise.reject()
       })
 
@@ -360,7 +288,7 @@ describe('Notifications', () => {
         currentRegistration,
       )
 
-      expect(global.fetch).toHaveBeenCalledTimes(1)
+      expect(mockRegisterSafe).toHaveBeenCalledTimes(1)
 
       expect(alertMock).toHaveBeenCalledTimes(1)
       expect(alertMock).toHaveBeenCalledWith('Unable to register Safe')
@@ -391,12 +319,8 @@ describe('Notifications', () => {
 
       jest.spyOn(logic, 'createRegisterSafePayload').mockImplementation(() => Promise.resolve(registrationPayload))
 
-      global.fetch = jest.fn().mockImplementation(() => {
-        return Promise.resolve({
-          json: () => Promise.resolve({}),
-          status: 200,
-          ok: true,
-        })
+      mockRegisterSafe.mockImplementation(() => {
+        return Promise.resolve()
       })
 
       const registration = await logic.registerSafe(
@@ -404,7 +328,7 @@ describe('Notifications', () => {
         mockProvider,
       )
 
-      expect(global.fetch).toHaveBeenCalledTimes(1)
+      expect(mockRegisterSafe).toHaveBeenCalledTimes(1)
 
       expect(alertMock).not.toHaveBeenCalled()
 
@@ -413,50 +337,10 @@ describe('Notifications', () => {
   })
 
   describe('unregisterSafe', () => {
-    it('should return the current registration if the unregistration was unsuccessful', async () => {
-      global.fetch = jest.fn().mockImplementation(() => {
-        return Promise.resolve({
-          json: () => Promise.resolve({}),
-          status: 69420, // Failed
-          ok: true,
-        })
-      })
-
-      const safeAddress = hexZeroPad('0x1', 20)
-      const chainId = '1'
-
-      const currentRegistration: logic.NotificationRegistration = {
-        uuid: crypto.randomUUID(),
-        cloudMessagingToken: crypto.randomUUID(),
-        buildNumber: '0',
-        bundle: 'https://app.safe.global',
-        deviceType: DeviceType.WEB,
-        version: packageJson.version,
-        timestamp: crypto.randomUUID(),
-        safeRegistrations: [
-          {
-            chainId,
-            safes: [safeAddress],
-            signatures: [hexZeroPad('0xDEAD', 65)],
-          },
-        ],
-      }
-
-      const updatedRegistration = await logic.unregisterSafe(
-        { chainId, address: { value: safeAddress } } as SafeInfo,
-        currentRegistration,
-      )
-
-      expect(global.fetch).toHaveBeenCalledTimes(1)
-
-      expect(alertMock).toHaveBeenCalledTimes(1)
-      expect(alertMock).toHaveBeenCalledWith('Unable to unregister Safe')
-
-      expect(updatedRegistration).toEqual(currentRegistration)
-    })
+    const mockUnregisterSafe = jest.spyOn(sdk, 'unregisterSafe')
 
     it('should return the current registration if the unregistration threw', async () => {
-      global.fetch = jest.fn().mockImplementation(() => {
+      mockUnregisterSafe.mockImplementation(() => {
         return Promise.reject()
       })
 
@@ -485,7 +369,7 @@ describe('Notifications', () => {
         currentRegistration,
       )
 
-      expect(global.fetch).toHaveBeenCalledTimes(1)
+      expect(mockUnregisterSafe).toHaveBeenCalledTimes(1)
 
       expect(alertMock).toHaveBeenCalledTimes(1)
       expect(alertMock).toHaveBeenCalledWith('Unable to unregister Safe')
@@ -494,12 +378,8 @@ describe('Notifications', () => {
     })
 
     it('should return the updated registration if the registration succeeded', async () => {
-      global.fetch = jest.fn().mockImplementation(() => {
-        return Promise.resolve({
-          json: () => Promise.resolve({}),
-          status: 200,
-          ok: true,
-        })
+      mockUnregisterSafe.mockImplementation(() => {
+        return Promise.resolve()
       })
 
       const safeAddress = hexZeroPad('0x1', 20)
@@ -532,7 +412,7 @@ describe('Notifications', () => {
         currentRegistration,
       )
 
-      expect(global.fetch).toHaveBeenCalledTimes(1)
+      expect(mockUnregisterSafe).toHaveBeenCalledTimes(1)
 
       expect(alertMock).not.toHaveBeenCalled()
 
