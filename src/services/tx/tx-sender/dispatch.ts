@@ -19,9 +19,8 @@ import {
   assertWalletChain,
   tryOffChainTxSigning,
 } from './sdk'
-import { createWeb3 } from '@/hooks/wallets/web3'
-import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
+import type { ConnectedWallet } from '@/services/onboard'
 
 /**
  * Propose a transaction
@@ -75,11 +74,11 @@ export const dispatchTxProposal = async ({
 export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
   safeVersion: SafeInfo['version'],
-  onboard: OnboardAPI,
+  connectedWallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
   txId?: string,
 ): Promise<SafeTransaction> => {
-  const sdk = await getSafeSDKWithSigner(onboard, chainId)
+  const sdk = await getSafeSDKWithSigner(connectedWallet, chainId)
 
   let signedTx: SafeTransaction | undefined
   try {
@@ -100,10 +99,10 @@ export const dispatchTxSigning = async (
 export const dispatchOnChainSigning = async (
   safeTx: SafeTransaction,
   txId: string,
-  onboard: OnboardAPI,
+  connectedWallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
 ) => {
-  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
+  const sdkUnchecked = await getUncheckedSafeSDK(connectedWallet, chainId)
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
   const eventParams = { txId }
 
@@ -130,11 +129,11 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
   txId: string,
-  onboard: OnboardAPI,
+  connectedWallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
 ): Promise<string> => {
-  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
+  const sdkUnchecked = await getUncheckedSafeSDK(connectedWallet, chainId)
   const eventParams = { txId }
 
   // Execute the tx
@@ -176,7 +175,7 @@ export const dispatchBatchExecution = async (
   txs: TransactionDetails[],
   multiSendContract: MultiSendCallOnlyEthersContract,
   multiSendTxData: string,
-  onboard: OnboardAPI,
+  connectedWallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
   overrides?: PayableOverrides,
@@ -186,9 +185,9 @@ export const dispatchBatchExecution = async (
   let result: TransactionResult | undefined
 
   try {
-    const wallet = await assertWalletChain(onboard, chainId)
+    const wallet = await assertWalletChain(connectedWallet, chainId)
 
-    const provider = createWeb3(wallet.provider)
+    const provider = wallet.provider
     result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData, overrides)
 
     txs.forEach(({ txId }) => {
@@ -250,7 +249,7 @@ export const dispatchBatchExecution = async (
 export const dispatchSpendingLimitTxExecution = async (
   txParams: SpendingLimitTxParams,
   txOptions: TransactionOptions,
-  onboard: OnboardAPI,
+  connectedWallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
 ) => {
@@ -258,8 +257,8 @@ export const dispatchSpendingLimitTxExecution = async (
 
   let result: ContractTransaction | undefined
   try {
-    const wallet = await assertWalletChain(onboard, chainId)
-    const provider = createWeb3(wallet.provider)
+    const wallet = await assertWalletChain(connectedWallet, chainId)
+    const provider = wallet.provider
     const contract = getSpendingLimitContract(chainId, provider.getSigner())
 
     result = await contract.executeAllowanceTransfer(
@@ -303,10 +302,10 @@ export const dispatchSpendingLimitTxExecution = async (
 export const dispatchSafeAppsTx = async (
   safeTx: SafeTransaction,
   safeAppRequestId: RequestId,
-  onboard: OnboardAPI,
+  connectedWallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
 ) => {
-  const sdk = await getSafeSDKWithSigner(onboard, chainId)
+  const sdk = await getSafeSDKWithSigner(connectedWallet, chainId)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, safeTxHash })
 }

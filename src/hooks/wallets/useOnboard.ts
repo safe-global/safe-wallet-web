@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { type EIP1193Provider, type WalletState, type OnboardAPI } from '@web3-onboard/core'
+import { type WalletState, type OnboardAPI } from '@web3-onboard/core'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getAddress } from 'ethers/lib/utils'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
@@ -10,6 +10,7 @@ import { useInitPairing } from '@/services/pairing/hooks'
 import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
+import { Web3Provider } from '@ethersproject/providers'
 
 const WALLETCONNECT = 'WalletConnect'
 
@@ -18,7 +19,7 @@ export type ConnectedWallet = {
   chainId: string
   address: string
   ens?: string
-  provider: EIP1193Provider
+  provider: Web3Provider
   icon?: string
 }
 
@@ -52,7 +53,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
       address,
       ens: account.ens?.name,
       chainId: Number(primaryWallet.chains[0].id).toString(10),
-      provider: primaryWallet.provider,
+      provider: new Web3Provider(primaryWallet.provider),
       icon: primaryWallet.icon,
     }
   } catch (e) {

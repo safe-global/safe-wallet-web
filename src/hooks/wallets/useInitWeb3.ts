@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
-import { createWeb3, createWeb3ReadOnly, setWeb3, setWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { createWeb3ReadOnly, setWeb3, setWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
 
@@ -16,7 +16,7 @@ export const useInitWeb3 = () => {
       return
     }
 
-    const web3 = createWeb3(wallet.provider)
+    const web3 = wallet.provider
     setWeb3(web3)
   }, [wallet])
 

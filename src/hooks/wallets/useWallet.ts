@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useMPCProvider } from './mpc/useMPCWallet'
 import useOnboard, { type ConnectedWallet, getConnectedWallet } from './useOnboard'
 
 const useWallet = (): ConnectedWallet | null => {
   const onboard = useOnboard()
+  const mpcWallet = useMPCProvider()
   const onboardWallets = onboard?.state.get().wallets || []
   const [wallet, setWallet] = useState<ConnectedWallet | null>(getConnectedWallet(onboardWallets))
 
@@ -19,7 +21,7 @@ const useWallet = (): ConnectedWallet | null => {
     }
   }, [onboard])
 
-  return wallet
+  return wallet ?? mpcWallet ?? null
 }
 
 export default useWallet

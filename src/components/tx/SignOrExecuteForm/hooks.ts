@@ -80,13 +80,12 @@ export const useTxActions = (): TxActions => {
       if (await isSmartContractWallet(wallet)) {
         throw new Error('Cannot relay an unsigned transaction from a smart contract wallet')
       }
-      return await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
+      return await dispatchTxSigning(safeTx, version, wallet, chainId, txId)
     }
 
     const signTx: TxActions['signTx'] = async (safeTx, txId, origin) => {
       assertTx(safeTx)
       assertWallet(wallet)
-      assertOnboard(onboard)
 
       // Smart contract wallets must sign via an on-chain tx
       if (await isSmartContractWallet(wallet)) {
@@ -94,12 +93,12 @@ export const useTxActions = (): TxActions => {
         // Otherwise the backend won't pick up the tx
         // The signature will be added once the on-chain signature is indexed
         const id = txId || (await proposeTx(wallet.address, safeTx, txId, origin)).txId
-        await dispatchOnChainSigning(safeTx, id, onboard, chainId)
+        await dispatchOnChainSigning(safeTx, id, wallet, chainId)
         return id
       }
 
       // Otherwise, sign off-chain
-      const signedTx = await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
+      const signedTx = await dispatchTxSigning(safeTx, version, wallet, chainId, txId)
       const tx = await proposeTx(wallet.address, signedTx, txId, origin)
       return tx.txId
     }
@@ -107,7 +106,6 @@ export const useTxActions = (): TxActions => {
     const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
-      assertOnboard(onboard)
 
       // Relayed transactions must be fully signed, so request a final signature if needed
       if (isRelayed && safeTx.signatures.size < safe.threshold) {
@@ -126,7 +124,7 @@ export const useTxActions = (): TxActions => {
       if (isRelayed) {
         await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit)
       } else {
-        await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress)
+        await dispatchTxExecution(safeTx, txOptions, txId, wallet, chainId, safeAddress)
       }
 
       return txId
