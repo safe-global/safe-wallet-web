@@ -2,13 +2,16 @@ import { Reorder } from 'framer-motion'
 import type { DraftBatchItem } from '@/store/batchSlice'
 import BatchTxItem from './BatchTxItem'
 import { useState } from 'react'
+import { List } from '@mui/material'
 
 const BatchTxList = ({ txItems, onDelete }: { txItems: DraftBatchItem[]; onDelete?: (id: string) => void }) => {
   return (
     <>
-      {txItems.map((item, index) => (
-        <BatchTxItem key={item.id} count={index + 1} {...item} onDelete={onDelete} />
-      ))}
+      <List sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {txItems.map((item, index) => (
+          <BatchTxItem key={item.id} count={index + 1} {...item} onDelete={onDelete} />
+        ))}
+      </List>
     </>
   )
 }
