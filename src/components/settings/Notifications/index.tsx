@@ -9,8 +9,8 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import CheckWallet from '@/components/common/CheckWallet'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import { requestNotificationPermission, registerSafe, unregisterSafe } from '@/components/settings/Notifications/logic'
-import type { RegisterDeviceDto } from '@/components/settings/Notifications/logic'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import type { NotificationRegistration } from '@/components/settings/Notifications/logic'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -25,7 +25,9 @@ export const Notifications = (): ReactElement => {
   const web3 = useWeb3()
   const { safe } = useSafeInfo()
 
-  const [currentRegistration, setCurrentRegistration] = useLocalStorage<RegisterDeviceDto | undefined>(FIREBASE_LS_KEY)
+  const [currentRegistration, setCurrentRegistration] = useLocalStorage<NotificationRegistration | undefined>(
+    FIREBASE_LS_KEY,
+  )
 
   const isCurrentSafeRegistered = currentRegistration?.safeRegistrations?.some((registration) => {
     return registration.safes.includes(safe.address.value)

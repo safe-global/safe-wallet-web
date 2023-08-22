@@ -1,6 +1,7 @@
 import * as firebase from 'firebase/messaging'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { Web3Provider } from '@ethersproject/providers'
+import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -96,12 +97,12 @@ describe('Notifications', () => {
       const safeAddress = hexZeroPad('0x1', 20)
       const chainId = '1'
 
-      const currentRegistration: logic.RegisterDeviceDto = {
+      const currentRegistration: logic.NotificationRegistration = {
         uuid: crypto.randomUUID(),
         cloudMessagingToken: crypto.randomUUID(),
         buildNumber: '0',
         bundle: 'https://app.safe.global',
-        deviceType: logic.DeviceType.WEB,
+        deviceType: DeviceType.WEB,
         version: packageJson.version,
         timestamp: crypto.randomUUID(),
         safeRegistrations: [
@@ -148,7 +149,7 @@ describe('Notifications', () => {
           cloudMessagingToken: token,
           buildNumber: '0',
           bundle: 'https://app.safe.global',
-          deviceType: logic.DeviceType.WEB,
+          deviceType: DeviceType.WEB,
           version: packageJson.version,
           timestamp: expect.any(String),
           safeRegistrations: [
@@ -181,7 +182,7 @@ describe('Notifications', () => {
           cloudMessagingToken: token,
           buildNumber: '0',
           bundle: 'https://app.safe.global',
-          deviceType: logic.DeviceType.WEB,
+          deviceType: DeviceType.WEB,
           version: packageJson.version,
           timestamp: expect.any(String),
           safeRegistrations: [
@@ -207,7 +208,7 @@ describe('Notifications', () => {
           cloudMessagingToken: expect.any(String),
           buildNumber: '0',
           bundle: 'https://app.safe.global',
-          deviceType: logic.DeviceType.WEB,
+          deviceType: DeviceType.WEB,
           version: packageJson.version,
           timestamp: expect.any(String),
           safeRegistrations: [
@@ -229,7 +230,7 @@ describe('Notifications', () => {
 
       jest
         .spyOn(logic, 'createRegisterSafePayload')
-        .mockImplementation(() => Promise.resolve({} as logic.RegisterDeviceDto))
+        .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
 
       global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
@@ -258,7 +259,7 @@ describe('Notifications', () => {
 
       jest
         .spyOn(logic, 'createRegisterSafePayload')
-        .mockImplementation(() => Promise.resolve({} as logic.RegisterDeviceDto))
+        .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
 
       global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
@@ -268,12 +269,12 @@ describe('Notifications', () => {
         })
       })
 
-      const currentRegistration: logic.RegisterDeviceDto = {
+      const currentRegistration: logic.NotificationRegistration = {
         uuid: crypto.randomUUID(),
         cloudMessagingToken: crypto.randomUUID(),
         buildNumber: '0',
         bundle: 'https://app.safe.global',
-        deviceType: logic.DeviceType.WEB,
+        deviceType: DeviceType.WEB,
         version: packageJson.version,
         timestamp: crypto.randomUUID(),
         safeRegistrations: [
@@ -305,7 +306,7 @@ describe('Notifications', () => {
 
       jest
         .spyOn(logic, 'createRegisterSafePayload')
-        .mockImplementation(() => Promise.resolve({} as logic.RegisterDeviceDto))
+        .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
 
       global.fetch = jest.fn().mockImplementation(() => {
         return Promise.reject()
@@ -330,18 +331,18 @@ describe('Notifications', () => {
 
       jest
         .spyOn(logic, 'createRegisterSafePayload')
-        .mockImplementation(() => Promise.resolve({} as logic.RegisterDeviceDto))
+        .mockImplementation(() => Promise.resolve({} as logic.NotificationRegistration))
 
       global.fetch = jest.fn().mockImplementation(() => {
         return Promise.reject()
       })
 
-      const currentRegistration: logic.RegisterDeviceDto = {
+      const currentRegistration: logic.NotificationRegistration = {
         uuid: crypto.randomUUID(),
         cloudMessagingToken: crypto.randomUUID(),
         buildNumber: '0',
         bundle: 'https://app.safe.global',
-        deviceType: logic.DeviceType.WEB,
+        deviceType: DeviceType.WEB,
         version: packageJson.version,
         timestamp: crypto.randomUUID(),
         safeRegistrations: [
@@ -371,12 +372,12 @@ describe('Notifications', () => {
       const safeAddress = hexZeroPad('0x1', 20)
       const chainId = '1'
 
-      const registrationPayload: logic.RegisterDeviceDto = {
+      const registrationPayload: logic.NotificationRegistration = {
         uuid: crypto.randomUUID(),
         cloudMessagingToken: crypto.randomUUID(),
         buildNumber: '0',
         bundle: 'https://app.safe.global',
-        deviceType: logic.DeviceType.WEB,
+        deviceType: DeviceType.WEB,
         version: packageJson.version,
         timestamp: crypto.randomUUID(),
         safeRegistrations: [
@@ -424,12 +425,12 @@ describe('Notifications', () => {
       const safeAddress = hexZeroPad('0x1', 20)
       const chainId = '1'
 
-      const currentRegistration: logic.RegisterDeviceDto = {
+      const currentRegistration: logic.NotificationRegistration = {
         uuid: crypto.randomUUID(),
         cloudMessagingToken: crypto.randomUUID(),
         buildNumber: '0',
         bundle: 'https://app.safe.global',
-        deviceType: logic.DeviceType.WEB,
+        deviceType: DeviceType.WEB,
         version: packageJson.version,
         timestamp: crypto.randomUUID(),
         safeRegistrations: [
@@ -462,12 +463,12 @@ describe('Notifications', () => {
       const safeAddress = hexZeroPad('0x1', 20)
       const chainId = '1'
 
-      const currentRegistration: logic.RegisterDeviceDto = {
+      const currentRegistration: logic.NotificationRegistration = {
         uuid: crypto.randomUUID(),
         cloudMessagingToken: crypto.randomUUID(),
         buildNumber: '0',
         bundle: 'https://app.safe.global',
-        deviceType: logic.DeviceType.WEB,
+        deviceType: DeviceType.WEB,
         version: packageJson.version,
         timestamp: crypto.randomUUID(),
         safeRegistrations: [
@@ -504,12 +505,12 @@ describe('Notifications', () => {
       const safeAddress = hexZeroPad('0x1', 20)
       const chainId = '1'
 
-      const currentRegistration: logic.RegisterDeviceDto = {
+      const currentRegistration: logic.NotificationRegistration = {
         uuid: crypto.randomUUID(),
         cloudMessagingToken: crypto.randomUUID(),
         buildNumber: '0',
         bundle: 'https://app.safe.global',
-        deviceType: logic.DeviceType.WEB,
+        deviceType: DeviceType.WEB,
         version: packageJson.version,
         timestamp: crypto.randomUUID(),
         safeRegistrations: [
@@ -542,7 +543,7 @@ describe('Notifications', () => {
         cloudMessagingToken: currentRegistration.cloudMessagingToken, // Same token
         buildNumber: '0',
         bundle: 'https://app.safe.global',
-        deviceType: logic.DeviceType.WEB,
+        deviceType: DeviceType.WEB,
         version: packageJson.version,
         timestamp: expect.any(String),
         safeRegistrations: [

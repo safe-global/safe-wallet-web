@@ -1,10 +1,18 @@
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { getToken, getMessaging } from 'firebase/messaging'
+import { registerDevice, unregisterSafe as gatewayUnregisterSafe } from '@safe-global/safe-gateway-typescript-sdk'
+import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import packageJson from '../../../../package.json'
-import { FIREBASE_MESSAGING_SW_PATH, FIREBASE_VAPID_KEY, GATEWAY_URL_STAGING } from '@/config/constants'
+import { FIREBASE_MESSAGING_SW_PATH, FIREBASE_VAPID_KEY } from '@/config/constants'
+
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
+
+// We store UUID locally to track device registration
+export type NotificationRegistration = WithRequired<RegisterNotificationsRequest, 'uuid'>
 
 export const requestNotificationPermission = async (): Promise<boolean> => {
   if (Notification.permission === 'granted') {
@@ -28,25 +36,6 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
   return isGranted
 }
 
-export const enum DeviceType {
-  WEB = 'WEB',
-}
-
-export type RegisterDeviceDto = {
-  uuid: string
-  cloudMessagingToken: string
-  buildNumber: string
-  bundle: string
-  deviceType: DeviceType
-  version: string
-  timestamp: string
-  safeRegistrations: Array<{
-    chainId: string
-    safes: Array<string>
-    signatures: Array<string>
-  }>
-}
-
 const getTimestampWithoutMilliseconds = () => {
   return Math.floor(new Date().getTime() / 1000).toString()
 }
@@ -54,8 +43,8 @@ const getTimestampWithoutMilliseconds = () => {
 export const createRegisterSafePayload = async (
   safe: SafeInfo,
   web3: Web3Provider,
-  currentRegistration?: RegisterDeviceDto,
-): Promise<RegisterDeviceDto | undefined> => {
+  currentRegistration?: NotificationRegistration,
+): Promise<NotificationRegistration | undefined> => {
   const MESSAGE_PREFIX = 'gnosis-safe'
 
   const currentChainSafeRegistrations = currentRegistration?.safeRegistrations.find(
@@ -120,28 +109,22 @@ export const createRegisterSafePayload = async (
 export const registerSafe = async (
   safe: SafeInfo,
   web3: Web3Provider,
-  currentRegistration?: RegisterDeviceDto,
-): Promise<RegisterDeviceDto | undefined> => {
-  const SAFE_REGISTRATION_ENDPOINT = `${GATEWAY_URL_STAGING}/v1/register/notifications`
-
+  currentRegistration?: NotificationRegistration,
+): Promise<NotificationRegistration | undefined> => {
   let didRegister = false
 
-  let payload: RegisterDeviceDto | undefined
+  let payload: NotificationRegistration | undefined
 
   try {
     payload = await createRegisterSafePayload(safe, web3, currentRegistration)
 
-    const response = await fetch(SAFE_REGISTRATION_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
+    if (payload) {
+      // Gateway will return 200 with an empty payload if the device was registered successfully
+      // @see https://github.com/safe-global/safe-client-gateway-nest/blob/27b6b3846b4ecbf938cdf5d0595ca464c10e556b/src/routes/notifications/notifications.service.ts#L29
+      const response = await registerDevice(payload)
 
-    // Gateway will return 200 if the device was registered successfully
-    // @see https://github.com/safe-global/safe-client-gateway-nest/blob/27b6b3846b4ecbf938cdf5d0595ca464c10e556b/src/routes/notifications/notifications.service.ts#L29
-    didRegister = response.ok && response.status === 200
+      didRegister = response != null
+    }
   } catch (e) {
     console.error('Error registering Safe', e)
   }
@@ -156,18 +139,14 @@ export const registerSafe = async (
 
 export const unregisterSafe = async (
   safe: SafeInfo,
-  currentRegistration: RegisterDeviceDto,
-): Promise<RegisterDeviceDto> => {
-  const SAFE_UNREGISTRATION_ENDPOINT = `${GATEWAY_URL_STAGING}/v1/chains/${safe.chainId}/notifications/devices/${currentRegistration.uuid}/safes/${safe.address.value}`
-
+  currentRegistration: NotificationRegistration,
+): Promise<NotificationRegistration> => {
   let didUnregister = false
 
   try {
-    const response = await fetch(SAFE_UNREGISTRATION_ENDPOINT, {
-      method: 'DELETE',
-    })
+    const response = await gatewayUnregisterSafe(safe.chainId, safe.address.value, currentRegistration.uuid)
 
-    didUnregister = response.ok && response.status === 200
+    didUnregister = response != null
   } catch (e) {
     console.error('Error unregistering Safe', e)
   }
