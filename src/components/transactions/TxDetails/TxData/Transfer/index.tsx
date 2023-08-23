@@ -28,14 +28,22 @@ const TransferTxInfoSummary = ({ txInfo, txStatus }: TransferTxInfoProps) => {
 }
 
 const TransferTxInfo = ({ txInfo, txStatus }: TransferTxInfoProps) => {
-  const address =
-    txInfo.direction.toUpperCase() === TransferDirection.INCOMING ? txInfo.sender.value : txInfo.recipient.value
+  const address = txInfo.direction.toUpperCase() === TransferDirection.INCOMING ? txInfo.sender : txInfo.recipient
+
   return (
-    <Box>
+    <Box display="flex" flexDirection="column" gap={1}>
       <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} />
+
       <Box display="flex" alignItems="center">
-        <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton avatarSize={44}>
-          <TransferActions address={address} txInfo={txInfo} />
+        <EthHashInfo
+          address={address.value}
+          name={address.name}
+          customAvatar={address.logoUri}
+          shortAddress={false}
+          hasExplorer
+          showCopyButton
+        >
+          <TransferActions address={address.value} txInfo={txInfo} />
         </EthHashInfo>
       </Box>
     </Box>

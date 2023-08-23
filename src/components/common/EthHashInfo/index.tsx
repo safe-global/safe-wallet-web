@@ -11,7 +11,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 
 const EthHashInfo = ({
   showName = true,
-  avatarSize = 44,
+  avatarSize = 40,
   ...props
 }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
@@ -21,7 +21,7 @@ const EthHashInfo = ({
   const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChainId))
   const addressBook = useAddressBook()
   const link = chain ? getBlockExplorerLink(chain, props.address) : undefined
-  const name = showName ? props.name || addressBook[props.address] : undefined
+  const name = showName ? addressBook[props.address] || props.name : undefined
   const showEmoji =
     settings.addressEmojis &&
     props.showAvatar !== false &&

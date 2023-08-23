@@ -99,7 +99,9 @@ const BatchTxItem = ({
 
             <TxDataRow title="Created:">{timestamp ? dateString(timestamp) : null}</TxDataRow>
 
-            {txDetails.txData?.dataDecoded && <MethodDetails data={txDetails.txData.dataDecoded} />}
+            {txDetails.txData?.dataDecoded && (
+              <MethodDetails data={txDetails.txData.dataDecoded} addressInfoIndex={txDetails.txData.addressInfoIndex} />
+            )}
           </div>
         </AccordionDetails>
       </Accordion>
