@@ -5,7 +5,6 @@ import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
 import css from './styles.module.css'
-import valueCss from '@/components/transactions/TxDetails/TxData/DecodedData/ValueArray/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 type TxDataRowProps = {
@@ -38,17 +37,14 @@ export const generateDataRowValue = (
       const customAvatar = addressInfo?.logoUri
 
       return (
-        <div className={valueCss.address}>
-          <EthHashInfo
-            address={value}
-            name={addressInfo?.name}
-            customAvatar={customAvatar}
-            showAvatar={!!customAvatar}
-            hasExplorer={hasExplorer}
-            avatarSize={40}
-            showCopyButton
-          />
-        </div>
+        <EthHashInfo
+          address={value}
+          name={addressInfo?.name}
+          customAvatar={customAvatar}
+          showAvatar={!!customAvatar}
+          hasExplorer={hasExplorer}
+          showCopyButton
+        />
       )
     case 'rawData':
       return (

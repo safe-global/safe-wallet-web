@@ -21,7 +21,7 @@ const EthHashInfo = ({
   const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChainId))
   const addressBook = useAddressBook()
   const link = chain ? getBlockExplorerLink(chain, props.address) : undefined
-  const name = showName ? props.name || addressBook[props.address] : undefined
+  const name = showName ? addressBook[props.address] || props.name : undefined
   const showEmoji =
     settings.addressEmojis &&
     props.showAvatar !== false &&

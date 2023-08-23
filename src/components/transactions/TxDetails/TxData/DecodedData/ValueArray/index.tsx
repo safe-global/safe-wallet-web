@@ -47,7 +47,7 @@ export const Value = ({ type, value, ...props }: ValueArrayProps): ReactElement 
               return <Value key={key} {...newProps} />
             }
             return (
-              <div key={`${address}_${key}`} className={css.address}>
+              <div key={`${address}_${key}`}>
                 <EthHashInfo address={address} showAvatar={false} shortAddress={false} showCopyButton hasExplorer />
               </div>
             )
