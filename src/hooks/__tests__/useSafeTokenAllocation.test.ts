@@ -1,10 +1,11 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
 import { defaultAbiCoder, hexZeroPad, keccak256, parseEther, toUtf8Bytes } from 'ethers/lib/utils'
-import useSafeTokenAllocation from '../useSafeTokenAllocation'
+import useSafeTokenAllocation, { type VestingData, _getRedeemDeadline } from '../useSafeTokenAllocation'
 import * as web3 from '../wallets/web3'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { BigNumber } from 'ethers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 const setupFetchStub =
   (data: any, status: number = 200) =>
@@ -15,6 +16,44 @@ const setupFetchStub =
       ok: status === 200,
     })
   }
+
+describe('_getRedeemDeadline', () => {
+  const mockProvider = {
+    call: jest.fn(),
+  } as unknown as JsonRpcProvider
+
+  beforeEach(() => {
+    // Clear memoization cache
+    _getRedeemDeadline.cache.clear?.()
+
+    jest.clearAllMocks()
+  })
+
+  it('should should only call the provider once per address on a chain', async () => {
+    for await (const _ of Array.from({ length: 10 })) {
+      await _getRedeemDeadline({ chainId: 1, contract: hexZeroPad('0x1', 20) } as VestingData, mockProvider)
+    }
+
+    expect(mockProvider.call).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not memoize different addresses on the same chain', async () => {
+    const chainId = 1
+
+    await _getRedeemDeadline({ chainId, contract: hexZeroPad('0x1', 20) } as VestingData, mockProvider)
+    await _getRedeemDeadline({ chainId, contract: hexZeroPad('0x2', 20) } as VestingData, mockProvider)
+
+    expect(mockProvider.call).toHaveBeenCalledTimes(2)
+  })
+
+  it('should not memoize the same address on difference chains', async () => {
+    for await (const i of Array.from({ length: 10 }, (_, i) => i + 1)) {
+      await _getRedeemDeadline({ chainId: i, contract: hexZeroPad('0x1', 20) } as VestingData, mockProvider)
+    }
+
+    expect(mockProvider.call).toHaveBeenCalledTimes(10)
+  })
+})
 
 // TODO: use mockWeb3Provider()
 describe('useSafeTokenAllocation', () => {
@@ -30,6 +69,9 @@ describe('useSafeTokenAllocation', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    // Clear memoization cache
+    _getRedeemDeadline.cache.clear?.()
+
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
       () =>
         ({

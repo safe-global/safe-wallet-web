@@ -26,6 +26,7 @@ const SignMessageFlow = ({ ...props }: ProposeProps | ConfirmProps) => {
       subtitle={<AppTitle name={props.name} logoUri={props.logoUri} />}
       step={0}
       hideNonce
+      isMessage
     >
       <SignMessage {...props} />
     </TxLayout>
