@@ -4,13 +4,23 @@
  * The hook needs to be called when the app starts.
  */
 import { useEffect, useState } from 'react'
-import { gtmInit, gtmTrackPageview, gtmSetChainId, gtmEnableCookies, gtmDisableCookies } from '@/services/analytics/gtm'
+import { useTheme } from '@mui/material/styles'
+import {
+  gtmInit,
+  gtmTrackPageview,
+  gtmSetChainId,
+  gtmEnableCookies,
+  gtmDisableCookies,
+  gtmSetDeviceType,
+} from '@/services/analytics/gtm'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import useChainId from '@/hooks/useChainId'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import useMetaEvents from './useMetaEvents'
+import { useMediaQuery } from '@mui/material'
+import { DeviceType } from './types'
 
 const useGtm = () => {
   const chainId = useChainId()
@@ -18,6 +28,10 @@ const useGtm = () => {
   const isAnalyticsEnabled = cookies[CookieType.ANALYTICS] || false
   const [, setPrevAnalytics] = useState(isAnalyticsEnabled)
   const router = useRouter()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'))
+  const deviceType = isMobile ? DeviceType.MOBILE : isTablet ? DeviceType.TABLET : DeviceType.DESKTOP
 
   // Initialize GTM
   useEffect(() => {
@@ -39,10 +53,15 @@ const useGtm = () => {
     })
   }, [isAnalyticsEnabled])
 
-  // Set the chain ID for GTM
+  // Set the chain ID for all GTM events
   useEffect(() => {
     gtmSetChainId(chainId)
   }, [chainId])
+
+  // Set device type for all GTM events
+  useEffect(() => {
+    gtmSetDeviceType(deviceType)
+  }, [deviceType])
 
   // Track page views – anononimized by default.
   // Sensitive info, like the safe address or tx id, is always in the query string, which we DO NOT track.
