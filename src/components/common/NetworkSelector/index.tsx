@@ -65,6 +65,7 @@ const NetworkSelector = (): ReactElement => {
         sx: {
           '& .MuiPaper-root': {
             mt: 2,
+            overflow: 'auto',
           },
         },
       }}
