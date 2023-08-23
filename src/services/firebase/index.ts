@@ -1,18 +1,18 @@
 import { formatUnits } from 'ethers/lib/utils'
-import { get } from 'idb-keyval'
+import { createStore, get } from 'idb-keyval'
 import type { MessagePayload } from 'firebase/messaging/sw'
 import type { ChainInfo, SafeBalanceResponse, ChainListResponse } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { shortenAddress } from '@/utils/formatters'
 import { AppRoutes } from '@/config/routes'
 import { isWebhookEvent, WebhookType } from '@/services/firebase/webhooks'
-import { getCustomStore } from '@/services/indexed-db'
 import type { WebhookEvent } from '@/services/firebase/webhooks'
+import { GATEWAY_URL_PRODUCTION, GATEWAY_URL_STAGING, IS_PRODUCTION } from '@/config/constants'
 
-export const getNotificationPreferencesStore = () => {
-  const STORE_NAME = 'notification-preferences'
+export const getNotificationPreferencesStore = (safeAddress: string) => {
+  const DB_NAME = 'notification-preferences'
 
-  return getCustomStore(STORE_NAME)
+  return createStore(DB_NAME, safeAddress)
 }
 
 export const shouldShowNotification = async (payload: MessagePayload): Promise<boolean> => {
@@ -20,15 +20,16 @@ export const shouldShowNotification = async (payload: MessagePayload): Promise<b
     return true
   }
 
-  const store = getNotificationPreferencesStore()
+  const store = getNotificationPreferencesStore(payload.data.address)
   const preference = await get(payload.data.type, store)
 
   return preference ?? true
 }
 
-// XHR is not supported in service workers so we can't use the SDK
-const BASE_URL = 'https://safe-client.safe.global'
+// localStorage cannot be accessed in service workers so we reference the flag
+const BASE_URL = IS_PRODUCTION ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
+// XHR is not supported in service workers so we can't use the SDK
 const getChains = async (): Promise<ChainListResponse | undefined> => {
   const ENDPOINT = `${BASE_URL}/v1/chains`
 

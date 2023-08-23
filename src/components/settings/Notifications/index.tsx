@@ -109,37 +109,128 @@ export const Notifications = (): ReactElement => {
           </Grid>
         </Grid>
       </Paper>
-      <Paper sx={{ p: 4 }}>
-        <Grid container spacing={3}>
-          <Grid item sm={4} xs={12}>
-            <Typography variant="h4" fontWeight={700}>
-              Preferences
-            </Typography>
-          </Grid>
+      {safeLoaded && (
+        <Paper sx={{ p: 4 }}>
+          <Grid container spacing={3}>
+            <Grid item sm={4} xs={12}>
+              <Typography variant="h4" fontWeight={700}>
+                Preferences
+              </Typography>
+            </Grid>
 
-          <Grid item xs>
-            <FormGroup>
-              {Object.values(WebhookType).map((type) => (
+            <Grid item xs>
+              {/* TODO: Confirm order */}
+              <FormGroup>
                 <FormControlLabel
-                  key={type}
                   control={
                     <Checkbox
-                      checked={preferences[type]}
+                      checked={preferences[WebhookType.INCOMING_ETHER] && preferences[WebhookType.INCOMING_TOKEN]}
                       onChange={(_, checked) => {
                         setPreferences((prev) => ({
                           ...prev,
-                          [type]: checked,
+                          [WebhookType.INCOMING_ETHER]: checked,
+                          [WebhookType.INCOMING_TOKEN]: checked,
                         }))
                       }}
                     />
                   }
-                  label={type}
+                  label="Incoming assets"
                 />
-              ))}
-            </FormGroup>
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={preferences[WebhookType.OUTGOING_ETHER] && preferences[WebhookType.OUTGOING_TOKEN]}
+                      onChange={(_, checked) => {
+                        setPreferences((prev) => ({
+                          ...prev,
+                          [WebhookType.OUTGOING_ETHER]: checked,
+                          [WebhookType.OUTGOING_TOKEN]: checked,
+                        }))
+                      }}
+                    />
+                  }
+                  label="Outgoing assets"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={preferences[WebhookType.PENDING_MULTISIG_TRANSACTION]}
+                      onChange={(_, checked) => {
+                        setPreferences((prev) => ({
+                          ...prev,
+                          [WebhookType.PENDING_MULTISIG_TRANSACTION]: checked,
+                        }))
+                      }}
+                    />
+                  }
+                  label="Pending transactions"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={preferences[WebhookType.CONFIRMATION_REQUEST]}
+                      onChange={(_, checked) => {
+                        setPreferences((prev) => ({
+                          ...prev,
+                          [WebhookType.CONFIRMATION_REQUEST]: checked,
+                        }))
+                      }}
+                    />
+                  }
+                  label="Confirmation requests"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={preferences[WebhookType.NEW_CONFIRMATION]}
+                      onChange={(_, checked) => {
+                        setPreferences((prev) => ({
+                          ...prev,
+                          [WebhookType.NEW_CONFIRMATION]: checked,
+                        }))
+                      }}
+                    />
+                  }
+                  label="New confirmations"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={preferences[WebhookType.EXECUTED_MULTISIG_TRANSACTION]}
+                      onChange={(_, checked) => {
+                        setPreferences((prev) => ({
+                          ...prev,
+                          [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: checked,
+                        }))
+                      }}
+                    />
+                  }
+                  label="Executed transactions"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={preferences[WebhookType.MODULE_TRANSACTION]}
+                      onChange={(_, checked) => {
+                        setPreferences((prev) => ({
+                          ...prev,
+                          [WebhookType.MODULE_TRANSACTION]: checked,
+                        }))
+                      }}
+                    />
+                  }
+                  label="Module transactions"
+                />
+              </FormGroup>
+            </Grid>
           </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
+      )}
     </>
   )
 }

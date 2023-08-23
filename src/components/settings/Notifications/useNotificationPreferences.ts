@@ -3,6 +3,7 @@ import { entries, setMany } from 'idb-keyval'
 
 import { WebhookType } from '@/services/firebase/webhooks'
 import { getNotificationPreferencesStore } from '@/services/firebase'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type NotifcationPreferences = { [key in WebhookType]: boolean }
 
@@ -14,13 +15,14 @@ const getDefaultPreferences = (): NotifcationPreferences => {
 }
 
 export const useNotificationPreferences = () => {
+  const { safe } = useSafeInfo()
   const [preferences, _setPreferences] = useState(getDefaultPreferences)
 
   const customStore = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return getNotificationPreferencesStore()
+    if (typeof window !== 'undefined' && safe.address.value) {
+      return getNotificationPreferencesStore(safe.address.value)
     }
-  }, [])
+  }, [safe.address.value])
 
   useEffect(() => {
     if (!customStore) {
