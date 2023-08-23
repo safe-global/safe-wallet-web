@@ -1,5 +1,5 @@
 import { formatUnits } from 'ethers/lib/utils'
-import { createStore, get } from 'idb-keyval'
+import { get } from 'idb-keyval'
 import type { MessagePayload } from 'firebase/messaging/sw'
 import type { ChainInfo, SafeBalanceResponse, ChainListResponse } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -8,22 +8,21 @@ import { AppRoutes } from '@/config/routes'
 import { isWebhookEvent, WebhookType } from '@/services/firebase/webhooks'
 import type { WebhookEvent } from '@/services/firebase/webhooks'
 import { GATEWAY_URL_PRODUCTION, GATEWAY_URL_STAGING, IS_PRODUCTION } from '@/config/constants'
-
-export const getNotificationPreferencesStore = (safeAddress: string) => {
-  const DB_NAME = 'notification-preferences'
-
-  return createStore(DB_NAME, safeAddress)
-}
+import { createNotificationDbStore, getNotificationDbKey } from './notification-db'
 
 export const shouldShowNotification = async (payload: MessagePayload): Promise<boolean> => {
   if (!isWebhookEvent(payload.data)) {
     return true
   }
 
-  const store = getNotificationPreferencesStore(payload.data.address)
-  const preference = await get(payload.data.type, store)
+  const { chainId, address, type } = payload.data
 
-  return preference ?? true
+  const key = getNotificationDbKey(chainId, address)
+  const store = createNotificationDbStore()
+
+  const safeStore = await get(key, store).catch(() => null)
+
+  return safeStore?.[type] ?? true
 }
 
 // localStorage cannot be accessed in service workers so we reference the flag

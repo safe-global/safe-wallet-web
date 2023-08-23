@@ -11,7 +11,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import { Fragment, useMemo, useState } from 'react'
+import { unregisterDevice } from '@safe-global/safe-gateway-typescript-sdk'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -20,83 +21,145 @@ import useChains from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes, selectTotalAdded } from '@/store/addedSafesSlice'
 import CheckWallet from '@/components/common/CheckWallet'
-import type { NotificationRegistration } from './logic'
+import { registerNotificationDevice, requestNotificationPermission, unregisterSafeNotifications } from './logic'
+import { useNotificationDb } from './useNotificationDb'
 
-export const AllSafesNotifications = ({
-  currentRegistration,
-  handleRegister,
-}: {
-  currentRegistration: NotificationRegistration | undefined
-  handleRegister: (safesToRegister: { [chainId: string]: Array<string> }) => Promise<void>
-}): ReactElement | null => {
+export const AllSafesNotifications = (): ReactElement | null => {
   const chains = useChains()
-
   const totalAddedSafes = useAppSelector(selectTotalAdded)
   const addedSafes = useAppSelector(selectAllAddedSafes)
 
+  const {
+    deviceUuid,
+    locallyRegisteredSafes,
+    registerSafeLocally,
+    unregisterSafeLocally,
+    clearLocallyRegisteredSafes,
+  } = useNotificationDb()
+
+  const [selectedSafes, setSelectedSafes] = useState(() => locallyRegisteredSafes)
+
+  // `locallyRegisteredSafes` is initially undefined until indexedDB resolves
+  useEffect(() => {
+    setSelectedSafes(locallyRegisteredSafes)
+  }, [locallyRegisteredSafes])
+
+  // Merge added Safes and locally notification-registered Safes
   const notifiableSafes = useMemo(() => {
     const registerable: { [chainId: string]: Array<string> } = {}
 
+    // Added Safes
     for (const [chainId, addedSafesOnChain] of Object.entries(addedSafes)) {
       registerable[chainId] = Object.keys(addedSafesOnChain)
     }
 
-    for (const { chainId, safes } of currentRegistration?.safeRegistrations ?? []) {
-      registerable[chainId] = Array.from(new Set([...registerable[chainId], ...safes]))
+    // Locally registered Safes (if not already added)
+    for (const safeAddress of Object.keys(locallyRegisteredSafes)) {
+      const [chainId, address] = safeAddress.split(':')
+
+      if (chainId && address) {
+        registerable[chainId] = Array.from(new Set([...registerable[chainId], address]))
+      }
     }
 
     return registerable
-  }, [addedSafes, currentRegistration?.safeRegistrations])
+  }, [addedSafes, locallyRegisteredSafes])
 
-  const [safesToRegister, setSafesToRegister] = useState<{ [chainId: string]: Array<string> }>(
-    currentRegistration
-      ? currentRegistration.safeRegistrations.reduce<{ [chainId: string]: Array<string> }>(
-          (acc, { chainId, safes }) => {
-            acc[chainId] = safes
-            return acc
-          },
-          {},
-        )
-      : {},
-  )
-
-  const canRegister = Object.entries(safesToRegister).some(([chainId, safes]) => {
-    const chainSafeRegistration = currentRegistration?.safeRegistrations.find(
-      (safeRegistration) => safeRegistration.chainId === chainId,
-    )
-
-    return (
-      !chainSafeRegistration ||
-      safes.length !== chainSafeRegistration.safes.length ||
-      safes.some((address) => !chainSafeRegistration.safes.includes(address))
-    )
-  })
-
-  const isAllSelected = Object.entries(notifiableSafes).every(([chainId, safes]) => {
-    const hasChain = Object.keys(safesToRegister).includes(chainId)
-    const hasEverySafe = safes.every((address) => safesToRegister[chainId]?.includes(address))
+  const isAllSelected = Object.entries(notifiableSafes).every(([chainId, safeAddresses]) => {
+    const hasChain = Object.keys(selectedSafes).includes(chainId)
+    const hasEverySafe = safeAddresses.every((safeAddress) => selectedSafes[chainId]?.includes(safeAddress))
     return hasChain && hasEverySafe
   })
 
   const onSelectAll = () => {
-    setSafesToRegister(() => {
+    setSelectedSafes(() => {
       if (isAllSelected) {
         return []
       }
 
-      return Object.entries(notifiableSafes).reduce((acc, [chainId, safes]) => {
+      return Object.entries(notifiableSafes).reduce((acc, [chainId, safeAddresses]) => {
         return {
           ...acc,
-          [chainId]: safes,
+          [chainId]: safeAddresses,
         }
       }, {})
     })
   }
 
-  const onSubscribe = async () => {
-    await handleRegister(safesToRegister)
+  const shouldRegisterSafes = Object.entries(selectedSafes).some(([chainId, safeAddresses]) => {
+    return safeAddresses.some((safeAddress) => !locallyRegisteredSafes[chainId]?.includes(safeAddress))
+  })
+  const shouldUnregisterSafes = Object.entries(locallyRegisteredSafes).some(([chainId, safeAddresses]) => {
+    return safeAddresses.some((safeAddress) => !selectedSafes[chainId]?.includes(safeAddress))
+  })
+  const canSave = shouldRegisterSafes || shouldUnregisterSafes
 
-    // TODO: Handle unregistration(s)
+  const onSave = async () => {
+    if (!canSave) {
+      return
+    }
+
+    const isGranted = await requestNotificationPermission()
+
+    if (!isGranted) {
+      return
+    }
+
+    const shouldUnregisterDevice = Object.values(selectedSafes).every((safeAddresses) => safeAddresses.length === 0)
+
+    if (shouldUnregisterDevice) {
+      // Device unregister is chain agnostic
+      await unregisterDevice('1', deviceUuid)
+
+      clearLocallyRegisteredSafes()
+      return
+    }
+
+    const promises = []
+    const safesToRegister: { [chainId: string]: Array<string> } = {}
+
+    for (const [chainId, safeAddresses] of Object.entries(selectedSafes)) {
+      for (const safeAddress of safeAddresses) {
+        const shouldUnregister = locallyRegisteredSafes[chainId]?.includes(safeAddress)
+
+        if (shouldUnregister) {
+          promises.push(
+            unregisterSafeNotifications({
+              chainId,
+              safeAddress: safeAddress,
+              deviceUuid,
+              callback: () => unregisterSafeLocally(chainId, safeAddress),
+            }),
+          )
+        } else {
+          if (!safesToRegister[chainId]) {
+            safesToRegister[chainId] = []
+          }
+
+          safesToRegister[chainId].push(safeAddress)
+        }
+      }
+    }
+
+    if (Object.keys(safesToRegister).length > 0) {
+      const callback = () => {
+        Object.entries(safesToRegister).forEach(([chainId, safeAddresses]) => {
+          safeAddresses.forEach((safeAddress) => {
+            registerSafeLocally(chainId, safeAddress)
+          })
+        })
+      }
+
+      promises.push(
+        registerNotificationDevice({
+          safesToRegister,
+          deviceUuid,
+          callback,
+        }),
+      )
+    }
+
+    Promise.all(promises)
   }
 
   if (totalAddedSafes === 0) {
@@ -112,8 +175,8 @@ export const AllSafesNotifications = ({
 
         <CheckWallet allowNonOwner>
           {(isOk) => (
-            <Button variant="contained" disabled={!isOk || !canRegister} onClick={onSubscribe}>
-              Subscribe
+            <Button variant="contained" disabled={!isOk || !canSave} onClick={onSave}>
+              Save
             </Button>
           )}
         </CheckWallet>
@@ -134,15 +197,15 @@ export const AllSafesNotifications = ({
 
           <Divider />
 
-          {Object.entries(notifiableSafes).map(([chainId, safes], i, arr) => {
+          {Object.entries(notifiableSafes).map(([chainId, safeAddresses], i, arr) => {
             const chain = chains.configs?.find((chain) => chain.chainId === chainId)
 
-            const isChainSelected = safes.every((address) => {
-              return safesToRegister[chainId]?.includes(address)
+            const isChainSelected = safeAddresses.every((address) => {
+              return selectedSafes[chainId]?.includes(address)
             })
 
             const onSelectChain = () => {
-              setSafesToRegister((prev) => {
+              setSelectedSafes((prev) => {
                 if (isChainSelected) {
                   return {
                     ...prev,
@@ -152,7 +215,7 @@ export const AllSafesNotifications = ({
 
                 return {
                   ...prev,
-                  [chainId]: safes,
+                  [chainId]: safeAddresses,
                 }
               })
             }
@@ -170,11 +233,11 @@ export const AllSafesNotifications = ({
                   </ListItem>
 
                   <List disablePadding>
-                    {safes.map((address) => {
-                      const isSafeSelected = safesToRegister[chainId]?.includes(address) ?? false
+                    {safeAddresses.map((address) => {
+                      const isSafeSelected = selectedSafes[chainId]?.includes(address) ?? false
 
                       const onSelectSafe = () => {
-                        setSafesToRegister((prev) => {
+                        setSelectedSafes((prev) => {
                           if (isSafeSelected) {
                             return {
                               ...prev,

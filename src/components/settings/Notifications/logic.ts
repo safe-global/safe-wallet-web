@@ -1,8 +1,7 @@
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { getToken, getMessaging } from 'firebase/messaging'
-import { registerDevice, unregisterSafe as gatewayUnregisterSafe } from '@safe-global/safe-gateway-typescript-sdk'
+import { registerDevice, unregisterSafe } from '@safe-global/safe-gateway-typescript-sdk'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import type { Web3Provider } from '@ethersproject/providers'
 
@@ -36,25 +35,50 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
   return isGranted
 }
 
-const getTimestampWithoutMilliseconds = () => {
-  return Math.floor(new Date().getTime() / 1000).toString()
-}
-
-export const createRegisterDevicePayload = async (
-  safesToRegister: { [chainId: string]: Array<string> },
-  web3: Web3Provider,
-  currentRegistration?: NotificationRegistration,
-): Promise<NotificationRegistration> => {
+const getSafeRegistrationSignature = ({
+  safes,
+  web3,
+  timestamp,
+  deviceUuid,
+  token,
+}: {
+  safes: Array<string>
+  web3: Web3Provider
+  timestamp: string
+  deviceUuid: string
+  token: string
+}) => {
   const MESSAGE_PREFIX = 'gnosis-safe'
 
-  for (const { chainId, safes } of currentRegistration?.safeRegistrations ?? []) {
-    if (safesToRegister[chainId]) {
-      safesToRegister[chainId] = Array.from(new Set([...safes, ...safesToRegister[chainId]]))
-    } else {
-      safesToRegister[chainId] = safes
-    }
-  }
+  const message = MESSAGE_PREFIX + timestamp + deviceUuid + token + safes.join('')
+  const hashedMessage = keccak256(toUtf8Bytes(message))
 
+  return web3.getSigner().signMessage(hashedMessage)
+}
+
+type RegisterDeviceParams =
+  | {
+      safesToRegister: { [chainId: string]: Array<string> }
+      deviceUuid: string
+      callback: () => void
+      web3?: never
+    }
+  | {
+      safesToRegister: { [chainId: string]: Array<string> }
+      deviceUuid: string
+      callback?: () => void
+      web3: Web3Provider
+    }
+
+export const getRegisterDevicePayload = async ({
+  safesToRegister,
+  deviceUuid,
+  web3,
+}: {
+  safesToRegister: { [chainId: string]: Array<string> }
+  deviceUuid: string
+  web3?: Web3Provider
+}): Promise<RegisterNotificationsRequest> => {
   const swRegistration = await navigator.serviceWorker.getRegistration(FIREBASE_MESSAGING_SW_PATH)
 
   // Get Firebase token
@@ -73,27 +97,25 @@ export const createRegisterDevicePayload = async (
 
   // @see https://github.com/safe-global/safe-transaction-service/blob/3644c08ac4b01b6a1c862567bc1d1c81b1a8c21f/safe_transaction_service/notifications/views.py#L19-L24
 
-  const timestamp = getTimestampWithoutMilliseconds()
-  const uuid = currentRegistration?.uuid ?? self.crypto.randomUUID()
+  const timestamp = Math.floor(new Date().getTime() / 1000).toString()
 
   const safeRegistrations = await Promise.all(
-    Object.entries(safesToRegister)
-      .filter(([, safes]) => safes.length > 0)
-      .map(async ([chainId, safes]) => {
-        const message = MESSAGE_PREFIX + timestamp + uuid + token + safes.join('')
-        const hashedMessage = keccak256(toUtf8Bytes(message))
-        const signature = await web3.getSigner().signMessage(hashedMessage)
+    Object.entries(safesToRegister).map(async ([chainId, safeAddresses]) => {
+      // Signature is only required for CONFIRMATION_REQUESTS
+      const signature = web3
+        ? await getSafeRegistrationSignature({ safes: safeAddresses, web3, deviceUuid, timestamp, token })
+        : undefined
 
-        return {
-          chainId,
-          safes,
-          signatures: [signature],
-        }
-      }),
+      return {
+        chainId,
+        safes: safeAddresses,
+        signatures: signature ? [signature] : [],
+      }
+    }),
   )
 
   return {
-    uuid,
+    uuid: deviceUuid,
     cloudMessagingToken: token,
     buildNumber: '0', // Required value, but does not exist on web
     bundle: location.origin,
@@ -104,80 +126,53 @@ export const createRegisterDevicePayload = async (
   }
 }
 
-export const registerNotifications = async (
-  safesToRegister: { [chainId: string]: Array<string> },
-  web3: Web3Provider,
-  currentRegistration?: NotificationRegistration,
-): Promise<NotificationRegistration | undefined> => {
-  const isGranted = await requestNotificationPermission()
-
-  if (!isGranted) {
-    return currentRegistration
-  }
-
+export const registerNotificationDevice = async ({
+  safesToRegister,
+  deviceUuid,
+  callback,
+  web3,
+}: RegisterDeviceParams) => {
   let didRegister = false
 
-  let payload: NotificationRegistration | undefined
-
   try {
-    payload = await createRegisterDevicePayload(safesToRegister, web3, currentRegistration)
+    const payload = await getRegisterDevicePayload({ deviceUuid, safesToRegister, web3 })
 
-    if (payload) {
-      // Gateway will return 200 with an empty payload if the device was registered successfully
-      // @see https://github.com/safe-global/safe-client-gateway-nest/blob/27b6b3846b4ecbf938cdf5d0595ca464c10e556b/src/routes/notifications/notifications.service.ts#L29
-      const response = await registerDevice(payload)
+    // Gateway will return 200 with an empty payload if the device was registered successfully
+    // @see https://github.com/safe-global/safe-client-gateway-nest/blob/27b6b3846b4ecbf938cdf5d0595ca464c10e556b/src/routes/notifications/notifications.service.ts#L29
+    const response = await registerDevice(payload)
 
-      didRegister = response == null
-    }
+    didRegister = response == null
   } catch (e) {
-    console.error('Error registering Safe(s)', e)
+    console.error(`Error registering Safe(s)`, e)
   }
 
-  if (!didRegister) {
-    alert('Unable to register Safe(s)')
-    return currentRegistration
+  if (didRegister) {
+    callback?.()
   }
-
-  return payload
 }
 
-export const unregisterSafe = async (
-  safe: SafeInfo,
-  currentRegistration: NotificationRegistration,
-): Promise<NotificationRegistration> => {
+export const unregisterSafeNotifications = async ({
+  chainId,
+  safeAddress,
+  deviceUuid,
+  callback,
+}: {
+  chainId: string
+  safeAddress: string
+  deviceUuid: string
+  callback: () => void
+}) => {
   let didUnregister = false
 
   try {
-    const response = await gatewayUnregisterSafe(safe.chainId, safe.address.value, currentRegistration.uuid)
+    const response = await unregisterSafe(chainId, safeAddress, deviceUuid)
 
     didUnregister = response == null
   } catch (e) {
-    console.error('Error unregistering Safe', e)
+    console.error(`Error unregistering ${safeAddress} on chain ${chainId}`, e)
   }
 
-  if (!didUnregister) {
-    alert('Unable to unregister Safe')
-    return currentRegistration
-  }
-
-  // Remove deleted Safe from registration and clear signatures
-  const updatedSafeRegistrations = currentRegistration.safeRegistrations.map((registration) => {
-    if (registration.chainId !== safe.chainId) {
-      return registration
-    }
-
-    const updatedSafes = registration.safes.filter((safeAddress) => safeAddress !== safe.address.value)
-
-    return {
-      ...registration,
-      safes: updatedSafes,
-      signatures: [],
-    }
-  })
-
-  return {
-    ...currentRegistration,
-    timestamp: getTimestampWithoutMilliseconds(),
-    safeRegistrations: updatedSafeRegistrations,
+  if (didUnregister) {
+    callback()
   }
 }

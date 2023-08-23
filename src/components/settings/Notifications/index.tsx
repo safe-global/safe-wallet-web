@@ -1,59 +1,45 @@
-import { Grid, Paper, Typography, Checkbox, FormControlLabel, FormGroup, Alert, Switch } from '@mui/material'
+import { Grid, Paper, Typography, Checkbox, FormControlLabel, FormGroup, Alert, Switch, Divider } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import { useWeb3 } from '@/hooks/wallets/web3'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import CheckWallet from '@/components/common/CheckWallet'
-import { registerNotifications, unregisterSafe } from '@/components/settings/Notifications/logic'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { WebhookType } from '@/services/firebase/webhooks'
-import { useNotificationPreferences } from './useNotificationPreferences'
+import { useNotificationDb } from './useNotificationDb'
 import { AllSafesNotifications } from './AllSafesNotifications'
-import type { NotificationRegistration } from '@/components/settings/Notifications/logic'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { registerNotificationDevice, unregisterSafeNotifications } from './logic'
+import { useWeb3 } from '@/hooks/wallets/web3'
 
 import css from './styles.module.css'
-
-const FIREBASE_LS_KEY = 'firebase'
 
 export const Notifications = (): ReactElement => {
   const web3 = useWeb3()
   const { safe, safeLoaded } = useSafeInfo()
-  const [preferences, setPreferences] = useNotificationPreferences()
-
-  const [currentRegistration, setCurrentRegistration] = useLocalStorage<NotificationRegistration | undefined>(
-    FIREBASE_LS_KEY,
-  )
-
-  const currentSafeRegistration = currentRegistration?.safeRegistrations.find(({ safes }) => {
-    return safes.includes(safe.address.value)
-  })
-
-  const handleRegister = async (safesToRegister: { [chainId: string]: Array<string> }) => {
-    if (!web3) {
-      return
-    }
-
-    const registration = await registerNotifications(safesToRegister, web3, currentRegistration)
-
-    setCurrentRegistration(registration)
-  }
-
-  const handleUnregister = async () => {
-    if (!currentRegistration) {
-      return
-    }
-
-    const registration = await unregisterSafe(safe, currentRegistration)
-
-    setCurrentRegistration(registration)
-  }
+  const isOwner = useIsSafeOwner()
+  const {
+    deviceUuid,
+    isSafeRegistered,
+    notificationPreferences,
+    setNotificationPreferences,
+    registerSafeLocally,
+    unregisterSafeLocally,
+  } = useNotificationDb()
 
   const handleOnChange = () => {
-    if (currentSafeRegistration) {
-      handleUnregister()
+    if (isSafeRegistered) {
+      unregisterSafeNotifications({
+        deviceUuid,
+        chainId: safe.chainId,
+        safeAddress: safe.address.value,
+        callback: () => unregisterSafeLocally(safe.chainId, safe.address.value),
+      })
     } else {
-      handleRegister({ [safe.chainId]: [safe.address.value] })
+      registerNotificationDevice({
+        deviceUuid,
+        safesToRegister: { [safe.chainId]: [safe.address.value] },
+        callback: () => registerSafeLocally(safe.chainId, safe.address.value),
+      })
     }
   }
 
@@ -67,14 +53,14 @@ export const Notifications = (): ReactElement => {
             </Typography>
           </Grid>
 
-          <Grid item>
+          <Grid item xs>
             <Grid container gap={2.5} flexDirection="column">
               <Typography>
-                {currentSafeRegistration
+                {isSafeRegistered
                   ? 'You will receive notifications about this Safe Account in this browser.'
                   : `Subscribe to receive notifications about ${
                       safeLoaded ? 'this Safe Account' : 'Safe Accounts'
-                    } in this browser. To do so, you will have to sign a message to verify that you are an owner.`}
+                    } in this browser.`}
               </Typography>
 
               <Alert severity="info" className={css.info}>
@@ -83,27 +69,36 @@ export const Notifications = (): ReactElement => {
               </Alert>
 
               {safeLoaded ? (
-                <div style={{ display: 'flex' }}>
-                  <CheckWallet>
-                    {(isOk) => (
-                      <Switch
-                        checked={!!currentSafeRegistration}
-                        onChange={handleOnChange}
-                        disabled={!isOk}
-                        className={css.switch}
-                      />
-                    )}
-                  </CheckWallet>
-                  <EthHashInfo
-                    address={safe.address.value}
-                    showCopyButton
-                    shortAddress={false}
-                    showName={true}
-                    hasExplorer
-                  />
-                </div>
+                <>
+                  <Divider />
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <EthHashInfo
+                      address={safe.address.value}
+                      showCopyButton
+                      shortAddress={false}
+                      showName={true}
+                      hasExplorer
+                    />
+                    <CheckWallet>
+                      {(isOk) => (
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={!!isSafeRegistered}
+                              onChange={handleOnChange}
+                              disabled={!isOk}
+                              className={css.switch}
+                            />
+                          }
+                          label={!!isSafeRegistered ? 'On' : 'Off'}
+                        />
+                      )}
+                    </CheckWallet>
+                  </div>
+                </>
               ) : (
-                <AllSafesNotifications currentRegistration={currentRegistration} handleRegister={handleRegister} />
+                <AllSafesNotifications />
               )}
             </Grid>
           </Grid>
@@ -119,19 +114,22 @@ export const Notifications = (): ReactElement => {
             </Grid>
 
             <Grid item xs>
-              {/* TODO: Confirm order */}
               <FormGroup>
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences[WebhookType.INCOMING_ETHER] && preferences[WebhookType.INCOMING_TOKEN]}
+                      checked={
+                        notificationPreferences[WebhookType.INCOMING_ETHER] &&
+                        notificationPreferences[WebhookType.INCOMING_TOKEN]
+                      }
                       onChange={(_, checked) => {
-                        setPreferences((prev) => ({
-                          ...prev,
+                        setNotificationPreferences({
+                          ...notificationPreferences,
                           [WebhookType.INCOMING_ETHER]: checked,
                           [WebhookType.INCOMING_TOKEN]: checked,
-                        }))
+                        })
                       }}
+                      disabled={!isSafeRegistered}
                     />
                   }
                   label="Incoming assets"
@@ -140,14 +138,18 @@ export const Notifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences[WebhookType.OUTGOING_ETHER] && preferences[WebhookType.OUTGOING_TOKEN]}
+                      checked={
+                        notificationPreferences[WebhookType.OUTGOING_ETHER] &&
+                        notificationPreferences[WebhookType.OUTGOING_TOKEN]
+                      }
                       onChange={(_, checked) => {
-                        setPreferences((prev) => ({
-                          ...prev,
+                        setNotificationPreferences({
+                          ...notificationPreferences,
                           [WebhookType.OUTGOING_ETHER]: checked,
                           [WebhookType.OUTGOING_TOKEN]: checked,
-                        }))
+                        })
                       }}
+                      disabled={!isSafeRegistered}
                     />
                   }
                   label="Outgoing assets"
@@ -155,13 +157,14 @@ export const Notifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences[WebhookType.PENDING_MULTISIG_TRANSACTION]}
+                      checked={notificationPreferences[WebhookType.PENDING_MULTISIG_TRANSACTION]}
                       onChange={(_, checked) => {
-                        setPreferences((prev) => ({
-                          ...prev,
+                        setNotificationPreferences({
+                          ...notificationPreferences,
                           [WebhookType.PENDING_MULTISIG_TRANSACTION]: checked,
-                        }))
+                        })
                       }}
+                      disabled={!isSafeRegistered}
                     />
                   }
                   label="Pending transactions"
@@ -170,28 +173,14 @@ export const Notifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences[WebhookType.CONFIRMATION_REQUEST]}
+                      checked={notificationPreferences[WebhookType.NEW_CONFIRMATION]}
                       onChange={(_, checked) => {
-                        setPreferences((prev) => ({
-                          ...prev,
-                          [WebhookType.CONFIRMATION_REQUEST]: checked,
-                        }))
-                      }}
-                    />
-                  }
-                  label="Confirmation requests"
-                />
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={preferences[WebhookType.NEW_CONFIRMATION]}
-                      onChange={(_, checked) => {
-                        setPreferences((prev) => ({
-                          ...prev,
+                        setNotificationPreferences({
+                          ...notificationPreferences,
                           [WebhookType.NEW_CONFIRMATION]: checked,
-                        }))
+                        })
                       }}
+                      disabled={!isSafeRegistered}
                     />
                   }
                   label="New confirmations"
@@ -200,13 +189,14 @@ export const Notifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences[WebhookType.EXECUTED_MULTISIG_TRANSACTION]}
+                      checked={notificationPreferences[WebhookType.EXECUTED_MULTISIG_TRANSACTION]}
                       onChange={(_, checked) => {
-                        setPreferences((prev) => ({
-                          ...prev,
+                        setNotificationPreferences({
+                          ...notificationPreferences,
                           [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: checked,
-                        }))
+                        })
                       }}
+                      disabled={!isSafeRegistered}
                     />
                   }
                   label="Executed transactions"
@@ -215,16 +205,48 @@ export const Notifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences[WebhookType.MODULE_TRANSACTION]}
+                      checked={notificationPreferences[WebhookType.MODULE_TRANSACTION]}
                       onChange={(_, checked) => {
-                        setPreferences((prev) => ({
-                          ...prev,
+                        setNotificationPreferences({
+                          ...notificationPreferences,
                           [WebhookType.MODULE_TRANSACTION]: checked,
-                        }))
+                        })
                       }}
+                      disabled={!isSafeRegistered}
                     />
                   }
                   label="Module transactions"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={notificationPreferences[WebhookType.CONFIRMATION_REQUEST]}
+                      onChange={(_, checked) => {
+                        registerNotificationDevice({
+                          deviceUuid,
+                          safesToRegister: {
+                            [safe.chainId]: [safe.address.value],
+                          },
+                          web3, // Add signature
+                          callback: () =>
+                            setNotificationPreferences({
+                              ...notificationPreferences,
+                              [WebhookType.CONFIRMATION_REQUEST]: checked,
+                            }),
+                        })
+                      }}
+                    />
+                  }
+                  label={
+                    <>
+                      <Typography>Confirmation requests</Typography>
+                      <Typography color="text.secondary" variant="body2">
+                        {isOwner ? 'Requires your signature' : 'Only owners'}
+                      </Typography>
+                    </>
+                  }
+                  disabled={!isOwner || !isSafeRegistered}
                 />
               </FormGroup>
             </Grid>
