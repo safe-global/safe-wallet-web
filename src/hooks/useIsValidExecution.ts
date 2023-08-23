@@ -5,7 +5,7 @@ import type { EthersError } from '@/utils/ethers-utils'
 import useAsync from './useAsync'
 import ContractErrorCodes from '@/services/contracts/ContractErrorCodes'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { createWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type JsonRpcProvider } from '@ethersproject/providers'
 import { type ConnectedWallet } from '@/services/onboard'
 import { getCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
@@ -27,7 +27,7 @@ const getPatchedSignerProvider = (
   chainId: SafeInfo['chainId'],
   readOnlyProvider: JsonRpcProvider,
 ) => {
-  const signerProvider = createWeb3(wallet.provider)
+  const signerProvider = wallet.provider
 
   if (wallet.chainId !== chainId) {
     // The RPC methods that are used when we call contract.callStatic.execTransaction
