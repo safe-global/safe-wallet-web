@@ -42,7 +42,6 @@ const TransferTxInfo = ({ txInfo, txStatus }: TransferTxInfoProps) => {
           shortAddress={false}
           hasExplorer
           showCopyButton
-          avatarSize={44}
         >
           <TransferActions address={address.value} txInfo={txInfo} />
         </EthHashInfo>

@@ -11,7 +11,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 
 const EthHashInfo = ({
   showName = true,
-  avatarSize = 44,
+  avatarSize = 40,
   ...props
 }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
