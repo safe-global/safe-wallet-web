@@ -18,15 +18,18 @@ import type { ReactElement } from 'react'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
 import useChains from '@/hooks/useChains'
-import { useAppSelector } from '@/store'
-import { selectAllAddedSafes, selectTotalAdded } from '@/store/addedSafesSlice'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import CheckWallet from '@/components/common/CheckWallet'
 import { registerNotificationDevice, requestNotificationPermission, unregisterSafeNotifications } from './logic'
 import { useNotificationDb } from './useNotificationDb'
+import { showNotification } from '@/store/notificationsSlice'
+
+import css from './styles.module.css'
 
 export const AllSafesNotifications = (): ReactElement | null => {
   const chains = useChains()
-  const totalAddedSafes = useAppSelector(selectTotalAdded)
+  const dispatch = useAppDispatch()
   const addedSafes = useAppSelector(selectAllAddedSafes)
 
   const {
@@ -37,7 +40,7 @@ export const AllSafesNotifications = (): ReactElement | null => {
     clearLocallyRegisteredSafes,
   } = useNotificationDb()
 
-  const [selectedSafes, setSelectedSafes] = useState(() => locallyRegisteredSafes)
+  const [selectedSafes, setSelectedSafes] = useState(locallyRegisteredSafes)
 
   // `locallyRegisteredSafes` is initially undefined until indexedDB resolves
   useEffect(() => {
@@ -54,16 +57,18 @@ export const AllSafesNotifications = (): ReactElement | null => {
     }
 
     // Locally registered Safes (if not already added)
-    for (const safeAddress of Object.keys(locallyRegisteredSafes)) {
-      const [chainId, address] = safeAddress.split(':')
-
-      if (chainId && address) {
-        registerable[chainId] = Array.from(new Set([...registerable[chainId], address]))
-      }
+    for (const [chainId, safeAddresses] of Object.entries(locallyRegisteredSafes)) {
+      registerable[chainId] = Array.from(new Set([...registerable[chainId], ...safeAddresses]))
     }
 
     return registerable
   }, [addedSafes, locallyRegisteredSafes])
+
+  const totalNotifiableSafes = useMemo(() => {
+    return Object.values(notifiableSafes).reduce((acc, safeAddresses) => {
+      return (acc += safeAddresses.length)
+    }, 0)
+  }, [notifiableSafes])
 
   const isAllSelected = Object.entries(notifiableSafes).every(([chainId, safeAddresses]) => {
     const hasChain = Object.keys(selectedSafes).includes(chainId)
@@ -115,7 +120,8 @@ export const AllSafesNotifications = (): ReactElement | null => {
       return
     }
 
-    const promises = []
+    const registrationPromises = []
+
     const safesToRegister: { [chainId: string]: Array<string> } = {}
 
     for (const [chainId, safeAddresses] of Object.entries(selectedSafes)) {
@@ -123,7 +129,7 @@ export const AllSafesNotifications = (): ReactElement | null => {
         const shouldUnregister = locallyRegisteredSafes[chainId]?.includes(safeAddress)
 
         if (shouldUnregister) {
-          promises.push(
+          registrationPromises.push(
             unregisterSafeNotifications({
               chainId,
               safeAddress: safeAddress,
@@ -131,26 +137,38 @@ export const AllSafesNotifications = (): ReactElement | null => {
               callback: () => unregisterSafeLocally(chainId, safeAddress),
             }),
           )
-        } else {
-          if (!safesToRegister[chainId]) {
-            safesToRegister[chainId] = []
-          }
-
-          safesToRegister[chainId].push(safeAddress)
+          continue
         }
+
+        // Safes to register
+        if (!safesToRegister[chainId]) {
+          safesToRegister[chainId] = []
+        }
+
+        safesToRegister[chainId].push(safeAddress)
       }
     }
 
-    if (Object.keys(safesToRegister).length > 0) {
+    const shouldRegisterSafes = Object.keys(safesToRegister).length > 0
+
+    if (shouldRegisterSafes) {
       const callback = () => {
         Object.entries(safesToRegister).forEach(([chainId, safeAddresses]) => {
           safeAddresses.forEach((safeAddress) => {
             registerSafeLocally(chainId, safeAddress)
           })
         })
+
+        dispatch(
+          showNotification({
+            message: 'You will now receive notifications for these Safe Accounts in your browser.',
+            variant: 'success',
+            groupKey: 'notifications',
+          }),
+        )
       }
 
-      promises.push(
+      registrationPromises.push(
         registerNotificationDevice({
           safesToRegister,
           deviceUuid,
@@ -159,18 +177,18 @@ export const AllSafesNotifications = (): ReactElement | null => {
       )
     }
 
-    Promise.all(promises)
+    Promise.all(registrationPromises)
   }
 
-  if (totalAddedSafes === 0) {
+  if (totalNotifiableSafes === 0) {
     return null
   }
 
   return (
     <Grid container>
-      <Grid item xs={12} display="flex" alignItems="center" justifyContent="space-between">
+      <Grid item xs={12} display="flex" alignItems="center" justifyContent="space-between" mb={1}>
         <Typography variant="h4" fontWeight={700} display="inline">
-          My Safes ({totalAddedSafes})
+          My Safes ({totalNotifiableSafes})
         </Typography>
 
         <CheckWallet allowNonOwner>
@@ -185,9 +203,9 @@ export const AllSafesNotifications = (): ReactElement | null => {
       <Grid item xs={12}>
         <Paper sx={{ border: ({ palette }) => `1px solid ${palette.border.light}` }}>
           <List>
-            <ListItem disablePadding>
+            <ListItem disablePadding className={css.item}>
               <ListItemButton onClick={onSelectAll} dense>
-                <ListItemIcon>
+                <ListItemIcon className={css.icon}>
                   <Checkbox edge="start" checked={isAllSelected} disableRipple />
                 </ListItemIcon>
                 <ListItemText primary="Select all" primaryTypographyProps={{ variant: 'h5' }} />
@@ -223,16 +241,16 @@ export const AllSafesNotifications = (): ReactElement | null => {
             return (
               <Fragment key={chainId}>
                 <List>
-                  <ListItem disablePadding>
+                  <ListItem disablePadding className={css.item}>
                     <ListItemButton onClick={onSelectChain} dense>
-                      <ListItemIcon>
+                      <ListItemIcon className={css.icon}>
                         <Checkbox edge="start" checked={isChainSelected} disableRipple />
                       </ListItemIcon>
                       <ListItemText primary={`${chain?.chainName} Safes`} primaryTypographyProps={{ variant: 'h5' }} />
                     </ListItemButton>
                   </ListItem>
 
-                  <List disablePadding>
+                  <List disablePadding className={css.item}>
                     {safeAddresses.map((address) => {
                       const isSafeSelected = selectedSafes[chainId]?.includes(address) ?? false
 
@@ -254,11 +272,17 @@ export const AllSafesNotifications = (): ReactElement | null => {
 
                       return (
                         <ListItem disablePadding key={address}>
-                          <ListItemButton sx={{ pl: 4 }} onClick={onSelectSafe} dense>
-                            <ListItemIcon>
+                          <ListItemButton sx={{ pl: 7, py: 0.5 }} onClick={onSelectSafe} dense>
+                            <ListItemIcon className={css.icon}>
                               <Checkbox edge="start" checked={isSafeSelected} disableRipple />
                             </ListItemIcon>
-                            <EthHashInfo key={address} address={address} shortAddress={false} showName={true} />
+                            <EthHashInfo
+                              avatarSize={36}
+                              key={address}
+                              address={address}
+                              shortAddress={false}
+                              showName={true}
+                            />
                           </ListItemButton>
                         </ListItem>
                       )

@@ -1,4 +1,15 @@
-import { Grid, Paper, Typography, Checkbox, FormControlLabel, FormGroup, Alert, Switch, Divider } from '@mui/material'
+import {
+  Grid,
+  Paper,
+  Typography,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Alert,
+  Switch,
+  Divider,
+  AlertTitle,
+} from '@mui/material'
 import type { ReactElement } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -10,13 +21,19 @@ import { AllSafesNotifications } from './AllSafesNotifications'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { registerNotificationDevice, unregisterSafeNotifications } from './logic'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import { IS_DEV } from '@/config/constants'
+import { useAppDispatch } from '@/store'
+import { showNotification } from '@/store/notificationsSlice'
 
 import css from './styles.module.css'
 
 export const Notifications = (): ReactElement => {
   const web3 = useWeb3()
+  const dispatch = useAppDispatch()
+
   const { safe, safeLoaded } = useSafeInfo()
   const isOwner = useIsSafeOwner()
+
   const {
     deviceUuid,
     isSafeRegistered,
@@ -25,6 +42,8 @@ export const Notifications = (): ReactElement => {
     registerSafeLocally,
     unregisterSafeLocally,
   } = useNotificationDb()
+
+  const isMac = typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac')
 
   const handleOnChange = () => {
     if (isSafeRegistered) {
@@ -38,7 +57,17 @@ export const Notifications = (): ReactElement => {
       registerNotificationDevice({
         deviceUuid,
         safesToRegister: { [safe.chainId]: [safe.address.value] },
-        callback: () => registerSafeLocally(safe.chainId, safe.address.value),
+        callback: () => {
+          registerSafeLocally(safe.chainId, safe.address.value)
+
+          dispatch(
+            showNotification({
+              message: 'You will now receive notifications for this Safe Account in your browser.',
+              variant: 'success',
+              groupKey: 'notification',
+            }),
+          )
+        },
       })
     }
   }
@@ -56,17 +85,17 @@ export const Notifications = (): ReactElement => {
           <Grid item xs>
             <Grid container gap={2.5} flexDirection="column">
               <Typography>
-                {isSafeRegistered
-                  ? 'You will receive notifications about this Safe Account in this browser.'
-                  : `Subscribe to receive notifications about ${
-                      safeLoaded ? 'this Safe Account' : 'Safe Accounts'
-                    } in this browser.`}
+                Enable push notifications for {safeLoaded ? 'this Safe Account' : 'your Safe Accounts'} in your browser.
+                You will need to enable them again if you clear your browser cache.
               </Typography>
 
-              <Alert severity="info" className={css.info}>
-                Please note that registration is per-browser and you will need to register again if you clear your
-                browser cache.
-              </Alert>
+              {(isMac || IS_DEV) && (
+                <Alert severity="info" className={css.info}>
+                  <AlertTitle>For MacOS users</AlertTitle>
+                  Double-check that you have enabled your browser notifications under <b>System Settings</b> &gt;{' '}
+                  <b>Notifications</b> &gt; <b>Application Notifications</b> (path may vary depending on OS version).
+                </Alert>
+              )}
 
               {safeLoaded ? (
                 <>
@@ -109,7 +138,7 @@ export const Notifications = (): ReactElement => {
           <Grid container spacing={3}>
             <Grid item sm={4} xs={12}>
               <Typography variant="h4" fontWeight={700}>
-                Preferences
+                Notification
               </Typography>
             </Grid>
 

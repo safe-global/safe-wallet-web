@@ -20,3 +20,11 @@
 .switch :global .MuiSwitch-track {
   background-color: var(--color-primary-main) !important;
 }
+
+.item {
+  padding-left: var(--space-1);
+}
+
+.icon {
+  min-width: 38px;
+}
