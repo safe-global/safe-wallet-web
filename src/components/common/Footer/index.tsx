@@ -22,7 +22,7 @@ const footerPages = [
 
 const FooterLink = ({ children, href }: { children: ReactNode; href: string }): ReactElement => {
   return href ? (
-    <Link href={href} passHref>
+    <Link href={href} passHref legacyBehavior>
       <MUILink>{children}</MUILink>
     </Link>
   ) : (

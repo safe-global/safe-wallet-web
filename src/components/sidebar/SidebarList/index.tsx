@@ -27,7 +27,7 @@ export const SidebarListItemButton = ({
   )
 
   return href ? (
-    <Link href={href} passHref>
+    <Link href={href} passHref legacyBehavior>
       {button}
     </Link>
   ) : (

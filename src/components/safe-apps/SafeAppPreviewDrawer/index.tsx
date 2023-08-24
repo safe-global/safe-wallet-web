@@ -89,7 +89,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         </Box>
 
         {/* Open Safe App button */}
-        <Link href={safeAppUrl} passHref>
+        <Link href={safeAppUrl} passHref legacyBehavior>
           <Button
             fullWidth
             variant="contained"

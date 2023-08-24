@@ -82,7 +82,7 @@ const SafeListItem = ({
         )
       }
     >
-      <Link href={href} passHref>
+      <Link href={href} passHref legacyBehavior>
         <ListItemButton
           key={address}
           onClick={closeDrawer}

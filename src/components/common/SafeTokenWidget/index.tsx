@@ -47,7 +47,7 @@ const SafeTokenWidget = () => {
       <Tooltip title={url ? `Open ${governanceApp?.name}` : ''}>
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
-            <Link href={url || ''} passHref>
+            <Link href={url || ''} passHref legacyBehavior>
               <ButtonBase
                 aria-describedby="safe-token-widget"
                 sx={{ alignSelf: 'stretch' }}

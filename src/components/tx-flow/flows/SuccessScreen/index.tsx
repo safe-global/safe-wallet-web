@@ -70,7 +70,7 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
 
       <div className={classnames(css.row, css.buttons)}>
         {txLink && (
-          <Link {...txLink} passHref target="_blank" rel="noreferrer">
+          <Link {...txLink} passHref target="_blank" rel="noreferrer" legacyBehavior>
             <Button variant="outlined" size="small">
               View transaction
             </Button>
