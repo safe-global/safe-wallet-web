@@ -78,7 +78,14 @@ export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
   return value.type === TransactionInfoType.CUSTOM
 }
 
-export const isSupportedMultiSendAddress = (txInfo: TransactionInfo, chainId: string, version: string): boolean => {
+export const isSupportedMultiSendAddress = (
+  txInfo: TransactionInfo,
+  chainId: string,
+  version: string | null,
+): boolean => {
+  // Safe version can be null when a Safe is being loaded
+  if (version == null) return false
+
   const toAddress = isCustomTxInfo(txInfo) ? txInfo.to.value : ''
   const multiSendAddress = getMultiSendContractAddress(chainId, version)
   const multiSendCallOnlyAddress = getMultiSendCallOnlyContractAddress(chainId, version)
