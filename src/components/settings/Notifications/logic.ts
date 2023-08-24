@@ -1,6 +1,5 @@
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { getToken, getMessaging } from 'firebase/messaging'
-import { registerDevice, unregisterSafe } from '@safe-global/safe-gateway-typescript-sdk'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import type { Web3Provider } from '@ethersproject/providers'
@@ -56,27 +55,13 @@ const getSafeRegistrationSignature = ({
   return web3.getSigner().signMessage(hashedMessage)
 }
 
-type RegisterDeviceParams =
-  | {
-      safesToRegister: { [chainId: string]: Array<string> }
-      deviceUuid: string
-      callback: () => void
-      web3?: never
-    }
-  | {
-      safesToRegister: { [chainId: string]: Array<string> }
-      deviceUuid: string
-      callback?: () => void
-      web3: Web3Provider
-    }
-
 export const getRegisterDevicePayload = async ({
   safesToRegister,
-  deviceUuid,
+  uuid,
   web3,
 }: {
   safesToRegister: { [chainId: string]: Array<string> }
-  deviceUuid: string
+  uuid: string
   web3?: Web3Provider
 }): Promise<RegisterNotificationsRequest> => {
   const swRegistration = await navigator.serviceWorker.getRegistration(FIREBASE_MESSAGING_SW_PATH)
@@ -103,7 +88,7 @@ export const getRegisterDevicePayload = async ({
     Object.entries(safesToRegister).map(async ([chainId, safeAddresses]) => {
       // Signature is only required for CONFIRMATION_REQUESTS
       const signature = web3
-        ? await getSafeRegistrationSignature({ safes: safeAddresses, web3, deviceUuid, timestamp, token })
+        ? await getSafeRegistrationSignature({ safes: safeAddresses, web3, deviceUuid: uuid, timestamp, token })
         : undefined
 
       return {
@@ -115,7 +100,7 @@ export const getRegisterDevicePayload = async ({
   )
 
   return {
-    uuid: deviceUuid,
+    uuid: uuid,
     cloudMessagingToken: token,
     buildNumber: '0', // Required value, but does not exist on web
     bundle: location.origin,
@@ -123,56 +108,5 @@ export const getRegisterDevicePayload = async ({
     version: packageJson.version,
     timestamp,
     safeRegistrations,
-  }
-}
-
-export const registerNotificationDevice = async ({
-  safesToRegister,
-  deviceUuid,
-  callback,
-  web3,
-}: RegisterDeviceParams) => {
-  let didRegister = false
-
-  try {
-    const payload = await getRegisterDevicePayload({ deviceUuid, safesToRegister, web3 })
-
-    // Gateway will return 200 with an empty payload if the device was registered successfully
-    // @see https://github.com/safe-global/safe-client-gateway-nest/blob/27b6b3846b4ecbf938cdf5d0595ca464c10e556b/src/routes/notifications/notifications.service.ts#L29
-    const response = await registerDevice(payload)
-
-    didRegister = response == null
-  } catch (e) {
-    console.error(`Error registering Safe(s)`, e)
-  }
-
-  if (didRegister) {
-    callback?.()
-  }
-}
-
-export const unregisterSafeNotifications = async ({
-  chainId,
-  safeAddress,
-  deviceUuid,
-  callback,
-}: {
-  chainId: string
-  safeAddress: string
-  deviceUuid: string
-  callback: () => void
-}) => {
-  let didUnregister = false
-
-  try {
-    const response = await unregisterSafe(chainId, safeAddress, deviceUuid)
-
-    didUnregister = response == null
-  } catch (e) {
-    console.error(`Error unregistering ${safeAddress} on chain ${chainId}`, e)
-  }
-
-  if (didUnregister) {
-    callback()
   }
 }

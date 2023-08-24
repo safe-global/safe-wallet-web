@@ -15,6 +15,7 @@ import SafeLogo from '@/public/images/logo.svg'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import BatchIndicator from '@/components/batch/BatchIndicator'
+import { NotificationBanner } from '@/components/settings/Notifications/NotificationBanner'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -71,7 +72,9 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
       </div>
 
       <div className={css.element}>
-        <NotificationCenter />
+        <NotificationBanner>
+          <NotificationCenter />
+        </NotificationBanner>
       </div>
 
       <div className={classnames(css.element, css.connectWallet)}>

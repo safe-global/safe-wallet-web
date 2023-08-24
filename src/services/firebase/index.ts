@@ -8,7 +8,11 @@ import { AppRoutes } from '@/config/routes'
 import { isWebhookEvent, WebhookType } from '@/services/firebase/webhooks'
 import type { WebhookEvent } from '@/services/firebase/webhooks'
 import { GATEWAY_URL_PRODUCTION, GATEWAY_URL_STAGING, IS_PRODUCTION } from '@/config/constants'
-import { createNotificationDbStore, getNotificationDbKey } from './notification-db'
+import {
+  createPreferencesStore,
+  getSafeNotificationKey,
+} from '@/components/settings/Notifications/hooks/notifications-idb'
+import type { NotificationPreferences } from '@/components/settings/Notifications/hooks/notifications-idb'
 
 export const shouldShowNotification = async (payload: MessagePayload): Promise<boolean> => {
   if (!isWebhookEvent(payload.data)) {
@@ -17,12 +21,17 @@ export const shouldShowNotification = async (payload: MessagePayload): Promise<b
 
   const { chainId, address, type } = payload.data
 
-  const key = getNotificationDbKey(chainId, address)
-  const store = createNotificationDbStore()
+  const store = createPreferencesStore()
+  const preferencesStore = await get<NotificationPreferences>(chainId, store).catch(() => null)
 
-  const safeStore = await get(key, store).catch(() => null)
+  if (!preferencesStore) {
+    return false
+  }
 
-  return safeStore?.[type] ?? true
+  const key = getSafeNotificationKey(chainId, address)
+  const notificationPreferences = preferencesStore[key]?.preferences
+
+  return !!notificationPreferences[type]
 }
 
 // localStorage cannot be accessed in service workers so we reference the flag

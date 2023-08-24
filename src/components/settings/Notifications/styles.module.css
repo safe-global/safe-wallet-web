@@ -13,14 +13,6 @@
   padding: 0;
 }
 
-/* TODO: Move to theme */
-.switch :global .MuiSwitch-switchBase {
-  color: var(--color-primary-main);
-}
-.switch :global .MuiSwitch-track {
-  background-color: var(--color-primary-main) !important;
-}
-
 .item {
   padding-left: var(--space-1);
 }
