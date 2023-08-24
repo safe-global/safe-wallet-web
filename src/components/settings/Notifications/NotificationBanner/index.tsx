@@ -6,12 +6,12 @@ import type { ReactElement } from 'react'
 
 import { CustomTooltip } from '@/components/common/CustomTooltip'
 import { AppRoutes } from '@/config/routes'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { useAppSelector } from '@/store'
 import { selectAllAddedSafes, selectTotalAdded } from '@/store/addedSafesSlice'
 import PushNotificationIcon from '@/public/images/notifications/push-notification.svg'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useNotificationRegistrations } from '../hooks/useNotificationRegistrations'
-import { getNotiableAddedSafes } from '../GlobalNotifications'
+import { transformAddedSafes } from '../GlobalNotifications'
 
 import css from './styles.module.css'
 
@@ -19,12 +19,13 @@ const LS_KEY = 'dismissPushNotifications'
 
 export const NotificationBanner = ({ children }: { children: ReactElement }): ReactElement => {
   const [dismissedBanner = false, setDismissedBanner] = useLocalStorage<boolean>(LS_KEY)
-  const dispatch = useAppDispatch()
   const addedSafes = useAppSelector(selectAllAddedSafes)
   const totalAddedSafes = useAppSelector(selectTotalAdded)
-  const { query } = useRouter()
 
-  const { registerNotifications: registerDevice } = useNotificationRegistrations()
+  const { query } = useRouter()
+  const safe = Array.isArray(query.safe) ? query.safe[0] : query.safe
+
+  const { registerNotifications } = useNotificationRegistrations()
 
   const dismissBanner = useCallback(() => {
     setDismissedBanner(true)
@@ -32,15 +33,19 @@ export const NotificationBanner = ({ children }: { children: ReactElement }): Re
 
   // Click outside to dismiss banner
   useEffect(() => {
+    if (dismissedBanner) {
+      return
+    }
+
     document.addEventListener('click', dismissBanner)
     return () => {
       document.removeEventListener('click', dismissBanner)
     }
-  }, [dismissBanner])
+  }, [dismissBanner, dismissedBanner])
 
   const onEnableAll = () => {
-    const safesToRegister = getNotiableAddedSafes(addedSafes)
-    registerDevice(safesToRegister)
+    const safesToRegister = transformAddedSafes(addedSafes)
+    registerNotifications(safesToRegister)
 
     setDismissedBanner(true)
   }
@@ -74,11 +79,13 @@ export const NotificationBanner = ({ children }: { children: ReactElement }): Re
                 Enable all
               </Button>
             )}
-            <Link passHref href={{ pathname: AppRoutes.settings.notifications, query }} onClick={dismissBanner}>
-              <Button variant="outlined" size="small" className={css.button}>
-                Customize
-              </Button>
-            </Link>
+            {safe && (
+              <Link passHref href={{ pathname: AppRoutes.settings.notifications, query }} onClick={dismissBanner}>
+                <Button variant="outlined" size="small" className={css.button}>
+                  Customize
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       }

@@ -1,7 +1,8 @@
-import { get, set, entries, delMany, setMany, clear } from 'idb-keyval'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { set, entries, delMany, setMany, clear, update } from 'idb-keyval'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { WebhookType } from '@/services/firebase/webhooks'
+import ExternalStore from '@/services/ExternalStore'
 import { createPreferencesStore, createUuidStore, getSafeNotificationKey } from './notifications-idb'
 import type { NotificationPreferences, SafeNotificationKey } from './notifications-idb'
 
@@ -18,48 +19,70 @@ const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences[SafeNotification
   [WebhookType.SAFE_CREATED]: false, // Cannot be registered to predicted address
 }
 
-// TODO: mounted check in effects
+// ExternalStores are used to keep indexedDB state longer than the component lifecycle
+const { useStore: useUuid, setStore: setUuid } = new ExternalStore<string>()
+const { useStore: usePreferences, setStore: setPreferences } = new ExternalStore<NotificationPreferences>()
 
 export const useNotificationPreferences = () => {
-  const [uuid, setUuid] = useState('')
-  const [preferences, setPreferences] = useState<NotificationPreferences>()
+  // State
+  const uuid = useUuid()
+  const preferences = usePreferences()
 
-  // UUID store
+  // Getters
+  const getPreferences = (chainId: string, safeAddress: string) => {
+    const key = getSafeNotificationKey(chainId, safeAddress)
+    return preferences?.[key]?.preferences
+  }
+
+  const getAllPreferences = useCallback(() => {
+    return preferences
+  }, [preferences])
+
+  // idb-keyval stores
   const uuidStore = useMemo(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof indexedDB !== 'undefined') {
       return createUuidStore()
     }
   }, [])
 
-  // Load/initialise UUID
-  useEffect(() => {
+  const preferencesStore = useMemo(() => {
+    if (typeof indexedDB !== 'undefined') {
+      return createPreferencesStore()
+    }
+  }, [])
+
+  // UUID state hydrator
+  const hydrateUuidStore = useCallback(() => {
     if (!uuidStore) {
       return
     }
 
     const UUID_KEY = 'uuid'
 
-    get<string>(UUID_KEY, uuidStore)
-      .then((uuid) => {
-        if (!uuid) {
-          uuid = self.crypto.randomUUID()
-          set(UUID_KEY, uuid, uuidStore)
-        }
+    let _uuid: string
 
-        setUuid(uuid)
+    update<string>(
+      UUID_KEY,
+      (storedUuid) => {
+        // Initialise UUID if it doesn't exist
+        _uuid = storedUuid || self.crypto.randomUUID()
+        return _uuid
+      },
+      uuidStore,
+    )
+      .then(() => {
+        setUuid(_uuid)
       })
       .catch(() => null)
   }, [uuidStore])
 
-  // Preferences store
-  const preferencesStore = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return createPreferencesStore()
-    }
-  }, [])
-
-  // Load preferences
+  // Hydrate UUID state
   useEffect(() => {
+    hydrateUuidStore()
+  }, [hydrateUuidStore, uuidStore])
+
+  // Preferences state hydrator
+  const hydratePreferences = useCallback(() => {
     if (!preferencesStore) {
       return
     }
@@ -71,15 +94,12 @@ export const useNotificationPreferences = () => {
       .catch(() => null)
   }, [preferencesStore])
 
-  const getPreferences = (chainId: string, safeAddress: string) => {
-    const key = getSafeNotificationKey(chainId, safeAddress)
-    return preferences?.[key]?.preferences
-  }
+  // Hydrate preferences state
+  useEffect(() => {
+    hydratePreferences()
+  }, [hydratePreferences])
 
-  const getAllPreferences = useCallback(() => {
-    return preferences
-  }, [preferences])
-
+  // Add store entry with default preferences for specified Safe(s)
   const createPreferences = (safesToRegister: { [chain: string]: Array<string> }) => {
     if (!preferencesStore) {
       return
@@ -89,24 +109,22 @@ export const useNotificationPreferences = () => {
       return safeAddresses.map((safeAddress): [SafeNotificationKey, NotificationPreferences[SafeNotificationKey]] => {
         const key = getSafeNotificationKey(chainId, safeAddress)
 
-        return [
-          key,
-          {
-            chainId,
-            safeAddress,
-            preferences: DEFAULT_NOTIFICATION_PREFERENCES,
-          },
-        ]
+        const defaultPreferences: NotificationPreferences[SafeNotificationKey] = {
+          chainId,
+          safeAddress,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
+        }
+
+        return [key, defaultPreferences]
       })
     })
 
     setMany(defaultPreferencesEntries, preferencesStore)
-      .then(() => {
-        setPreferences(Object.fromEntries(defaultPreferencesEntries))
-      })
+      .then(hydratePreferences)
       .catch(() => null)
   }
 
+  // Update preferences for specified Safe
   const updatePreferences = (
     chainId: string,
     safeAddress: string,
@@ -118,19 +136,18 @@ export const useNotificationPreferences = () => {
 
     const key = getSafeNotificationKey(chainId, safeAddress)
 
-    set(key, preferences, preferencesStore)
-      .then(() => {
-        setPreferences((prev) => ({
-          ...prev,
-          [key]: {
-            ...prev?.[key],
-            preferences,
-          },
-        }))
-      })
+    const newPreferences: NotificationPreferences[SafeNotificationKey] = {
+      safeAddress,
+      chainId,
+      preferences,
+    }
+
+    set(key, newPreferences, preferencesStore)
+      .then(hydratePreferences)
       .catch(() => null)
   }
 
+  // Delete preferences store entry for specified Safe(s)
   const deletePreferences = (safesToUnregister: { [chain: string]: Array<string> }) => {
     if (!preferencesStore) {
       return
@@ -141,31 +158,18 @@ export const useNotificationPreferences = () => {
     })
 
     delMany(keysToDelete, preferencesStore)
-      .then(() => {
-        setPreferences((prev) => {
-          if (!prev) {
-            return
-          }
-
-          const newEntries = Object.entries(prev).filter(([key]) => {
-            return !keysToDelete.includes(key as SafeNotificationKey)
-          })
-
-          return Object.fromEntries(newEntries)
-        })
-      })
+      .then(hydratePreferences)
       .catch(() => null)
   }
 
+  // Delete all preferences store entries
   const clearPreferences = () => {
     if (!preferencesStore) {
       return
     }
 
     clear(preferencesStore)
-      .then(() => {
-        setPreferences({})
-      })
+      .then(hydratePreferences)
       .catch(() => null)
   }
 

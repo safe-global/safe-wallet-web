@@ -31,42 +31,43 @@ import css from './styles.module.css'
 type NotifiableSafes = { [chainId: string]: Array<string> }
 
 // Convert data structure of added Safes
-export const getNotiableAddedSafes = (addedSafes: AddedSafesState): NotifiableSafes => {
-  const notifiableAddedSafes: NotifiableSafes = {}
+export const transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafes => {
+  const obj: NotifiableSafes = {}
 
   for (const [chainId, addedSafesOnChain] of Object.entries(addedSafes)) {
-    notifiableAddedSafes[chainId] = Object.keys(addedSafesOnChain)
+    obj[chainId] = Object.keys(addedSafesOnChain)
   }
 
-  return notifiableAddedSafes
+  return obj
 }
 
-// Convert data structure of locally notification-registered Safes
-const getCurrentNotifiedSafes = (allPreferences: NotificationPreferences): NotifiableSafes => {
-  const currentNotifiedSafes: NotifiableSafes = {}
+// Convert data structure of currently notified Safes
+const transformCurrentNotifiedSafes = (allPreferences: NotificationPreferences): NotifiableSafes => {
+  const obj: NotifiableSafes = {}
 
   for (const { chainId, safeAddress } of Object.values(allPreferences)) {
-    if (!currentNotifiedSafes[chainId]) {
-      currentNotifiedSafes[chainId] = []
+    if (!obj[chainId]) {
+      obj[chainId] = []
     }
 
-    currentNotifiedSafes[chainId].push(safeAddress)
+    obj[chainId].push(safeAddress)
   }
 
-  return currentNotifiedSafes
+  return obj
 }
 
+// Merges added Safes and currently notified Safes into a single data structure without duplicates
 const mergeNotifiableSafes = (addedSafes: AddedSafesState, currentSubscriptions?: NotifiableSafes): NotifiableSafes => {
-  const notifiableSafes = getNotiableAddedSafes(addedSafes)
+  const notifiableSafes = transformAddedSafes(addedSafes)
 
   if (!currentSubscriptions) {
     return notifiableSafes
   }
 
   // Locally registered Safes (if not already added)
-  for (const [chainId, safeAddresses] of Object.entries(notifiableSafes)) {
-    const notifiableAddedSafes = notifiableSafes[chainId] ?? []
-    const uniqueSafeAddresses = Array.from(new Set([...notifiableAddedSafes, ...safeAddresses]))
+  for (const [chainId, safeAddresses] of Object.entries(currentSubscriptions)) {
+    const notifiableSafesOnChain = notifiableSafes[chainId] ?? []
+    const uniqueSafeAddresses = Array.from(new Set([...notifiableSafesOnChain, ...safeAddresses]))
 
     notifiableSafes[chainId] = uniqueSafeAddresses
   }
@@ -81,26 +82,35 @@ export const GlobalNotifications = (): ReactElement | null => {
   const { getAllPreferences } = useNotificationPreferences()
   const { unregisterSafeNotifications, registerNotifications } = useNotificationRegistrations()
 
-  // Current Safes registered for notifications in IndexedDB
-  const currentSubscriptions = useMemo(() => {
-    const allPreferences = getAllPreferences()
-    return allPreferences ? getCurrentNotifiedSafes(allPreferences) : undefined
-  }, [getAllPreferences])
-
   // Safes selected in the UI
   const [selectedSafes, setSelectedSafes] = useState<NotifiableSafes>({})
 
-  useEffect(() => {
-    // `currentSubscriptions` is initially undefined until indexedDB resolves
-    if (currentSubscriptions) {
-      setSelectedSafes(currentSubscriptions)
+  // Current Safes registered for notifications in indexedDB
+  const currentNotifiedSafes = useMemo(() => {
+    const allPreferences = getAllPreferences()
+    if (!allPreferences) {
+      return
     }
-  }, [currentSubscriptions])
+    return transformCurrentNotifiedSafes(allPreferences)
+  }, [getAllPreferences])
 
-  // Merged added Safes and `currentSubscriptions` (in case subscriptions aren't added)
+  // `currentNotifiedSafes` is initially undefined until indexedDB resolves
+  useEffect(() => {
+    let isMounted = true
+
+    if (currentNotifiedSafes && isMounted) {
+      setSelectedSafes(currentNotifiedSafes)
+    }
+
+    return () => {
+      isMounted = false
+    }
+  }, [currentNotifiedSafes])
+
+  // Merged added Safes and `currentNotifiedSafes` (in case subscriptions aren't added)
   const notifiableSafes = useMemo(() => {
-    return mergeNotifiableSafes(addedSafes, currentSubscriptions)
-  }, [addedSafes, currentSubscriptions])
+    return mergeNotifiableSafes(addedSafes, currentNotifiedSafes)
+  }, [addedSafes, currentNotifiedSafes])
 
   const totalNotifiableSafes = useMemo(() => {
     return Object.values(notifiableSafes).reduce((acc, safeAddresses) => {
@@ -129,13 +139,14 @@ export const GlobalNotifications = (): ReactElement | null => {
     })
   }
 
-  // Wether Safes need to be registered or unregistered with the service
+  // Wether Safes need to be (un-)reigstered with the service
   const shouldRegisterSafes = Object.entries(selectedSafes).some(([chainId, safeAddresses]) => {
-    return safeAddresses.some((safeAddress) => !currentSubscriptions?.[chainId]?.includes(safeAddress))
+    return safeAddresses.some((safeAddress) => !currentNotifiedSafes?.[chainId]?.includes(safeAddress))
   })
+
   const shouldUnregisterSafes =
-    currentSubscriptions &&
-    Object.entries(currentSubscriptions).some(([chainId, safeAddresses]) => {
+    currentNotifiedSafes &&
+    Object.entries(currentNotifiedSafes).some(([chainId, safeAddresses]) => {
       return safeAddresses.some((safeAddress) => !selectedSafes[chainId]?.includes(safeAddress))
     })
 
@@ -155,17 +166,15 @@ export const GlobalNotifications = (): ReactElement | null => {
     // TODO: Enable when live on prod.
     // const shouldUnregisterDevice = Object.values(selectedSafes).every((safeAddresses) => safeAddresses.length === 0)
     // if (shouldUnregisterDevice) {
-    //   // Device unregister is chain agnostic
-    //   await unregisterDevice('1', uuid)
-    //   clearPreferences()
+    //   unregisterAllNotifications()
     //   return
     // }
 
-    const registrationPromises = []
+    const registrationPromises: Array<Promise<void>> = []
 
     const safesToRegister = Object.entries(selectedSafes).reduce<NotifiableSafes>((acc, [chainId, safeAddresses]) => {
       const safesToRegisterOnChain = safeAddresses.filter(
-        (safeAddress) => !currentSubscriptions?.[chainId]?.includes(safeAddress),
+        (safeAddress) => !currentNotifiedSafes?.[chainId]?.includes(safeAddress),
       )
 
       if (safesToRegisterOnChain.length > 0) {
@@ -176,8 +185,8 @@ export const GlobalNotifications = (): ReactElement | null => {
     }, {})
 
     const safesToUnregister =
-      currentSubscriptions &&
-      Object.entries(currentSubscriptions).reduce<NotifiableSafes>((acc, [chainId, safeAddresses]) => {
+      currentNotifiedSafes &&
+      Object.entries(currentNotifiedSafes).reduce<NotifiableSafes>((acc, [chainId, safeAddresses]) => {
         const safesToUnregisterOnChain = safeAddresses.filter(
           (safeAddress) => !selectedSafes[chainId]?.includes(safeAddress),
         )

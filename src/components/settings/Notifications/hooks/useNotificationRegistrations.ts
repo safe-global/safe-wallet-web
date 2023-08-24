@@ -15,6 +15,10 @@ export const useNotificationRegistrations = () => {
   const { uuid, _createPreferences, _deletePreferences, _clearPreferences } = useNotificationPreferences()
 
   const registerNotifications = async (safesToRegister: Subscriptions, withSignature = false) => {
+    if (!uuid) {
+      return
+    }
+
     let didRegister = false
 
     try {
@@ -56,6 +60,10 @@ export const useNotificationRegistrations = () => {
   }
 
   const unregisterSafeNotifications = async (chainId: string, safeAddress: string) => {
+    if (!uuid) {
+      return
+    }
+
     let didUnregister = false
 
     try {
@@ -72,6 +80,10 @@ export const useNotificationRegistrations = () => {
   }
 
   const unregisterAllNotifications = () => {
+    if (!uuid) {
+      return
+    }
+
     // Device unregistration is chain agnostic
     unregisterDevice('1', uuid)
       .then(() => {

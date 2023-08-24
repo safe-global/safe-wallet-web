@@ -19,7 +19,7 @@ export const SafeNotifications = (): ReactElement => {
   const { safe, safeLoaded } = useSafeInfo()
   const isOwner = useIsSafeOwner()
 
-  const { getPreferences, updatePreferences } = useNotificationPreferences()
+  const { updatePreferences, getPreferences } = useNotificationPreferences()
   const { unregisterSafeNotifications, registerNotifications } = useNotificationRegistrations()
 
   const preferences = getPreferences(safe.chainId, safe.address.value)
@@ -28,13 +28,11 @@ export const SafeNotifications = (): ReactElement => {
     updatePreferences(safe.chainId, safe.address.value, newPreferences)
   }
 
-  const isSafeRegistered = !!preferences
-
   const isMac = typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac')
   const shouldShowMacHelper = isMac || IS_DEV
 
   const handleOnChange = () => {
-    if (isSafeRegistered) {
+    if (preferences) {
       unregisterSafeNotifications(safe.chainId, safe.address.value)
     } else {
       registerNotifications({ [safe.chainId]: [safe.address.value] })
@@ -83,8 +81,8 @@ export const SafeNotifications = (): ReactElement => {
                       hasExplorer
                     />
                     <FormControlLabel
-                      control={<Switch checked={!!isSafeRegistered} onChange={handleOnChange} />}
-                      label={!!isSafeRegistered ? 'On' : 'Off'}
+                      control={<Switch checked={!!preferences} onChange={handleOnChange} />}
+                      label={preferences ? 'On' : 'Off'}
                     />
                   </div>
                 </>
@@ -109,7 +107,7 @@ export const SafeNotifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences?.[WebhookType.INCOMING_ETHER] && preferences?.[WebhookType.INCOMING_TOKEN]}
+                      checked={preferences[WebhookType.INCOMING_ETHER] && preferences[WebhookType.INCOMING_TOKEN]}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
@@ -125,7 +123,7 @@ export const SafeNotifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences?.[WebhookType.OUTGOING_ETHER] && preferences?.[WebhookType.OUTGOING_TOKEN]}
+                      checked={preferences[WebhookType.OUTGOING_ETHER] && preferences[WebhookType.OUTGOING_TOKEN]}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
@@ -140,7 +138,7 @@ export const SafeNotifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences?.[WebhookType.PENDING_MULTISIG_TRANSACTION]}
+                      checked={preferences[WebhookType.PENDING_MULTISIG_TRANSACTION]}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
@@ -155,7 +153,7 @@ export const SafeNotifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences?.[WebhookType.NEW_CONFIRMATION]}
+                      checked={preferences[WebhookType.NEW_CONFIRMATION]}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
@@ -170,7 +168,7 @@ export const SafeNotifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences?.[WebhookType.EXECUTED_MULTISIG_TRANSACTION]}
+                      checked={preferences[WebhookType.EXECUTED_MULTISIG_TRANSACTION]}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
@@ -185,7 +183,7 @@ export const SafeNotifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences?.[WebhookType.MODULE_TRANSACTION]}
+                      checked={preferences[WebhookType.MODULE_TRANSACTION]}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
@@ -200,7 +198,7 @@ export const SafeNotifications = (): ReactElement => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences?.[WebhookType.CONFIRMATION_REQUEST]}
+                      checked={preferences[WebhookType.CONFIRMATION_REQUEST]}
                       onChange={async (_, checked) => {
                         registerNotifications(
                           {
@@ -235,7 +233,7 @@ export const SafeNotifications = (): ReactElement => {
                       </Typography>
                     </>
                   }
-                  disabled={!isOwner || !isSafeRegistered}
+                  disabled={!isOwner || !preferences}
                 />
               </FormGroup>
             </Grid>
