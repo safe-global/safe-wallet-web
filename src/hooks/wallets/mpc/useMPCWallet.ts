@@ -14,6 +14,10 @@ import { utils } from '@toruslabs/tss-client'
 import type { ConnectedWallet } from '../useOnboard'
 import { ethers } from 'ethers'
 import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
+import { useCurrentChain } from '@/hooks/useChains'
+import { hexlify } from 'ethers/lib/utils'
+import { isArray } from 'lodash'
+import { getRpcServiceUrl } from '../web3'
 
 const { getTSSPubKey } = utils
 
@@ -59,27 +63,32 @@ export const useMPCWallet = () => {
 
   const tKey = useMPC()
 
+  const chain = useCurrentChain()
+
   // sets up web3
   useEffect(() => {
     const localSetup = async () => {
       const { setupWeb3 } = await import('@/hooks/wallets/mpc/utils')
 
-      if (!loginResponse) {
+      if (!loginResponse || !chain) {
         return
       }
 
       const chainConfig = {
-        chainId: '0x5',
-        rpcTarget: 'https://rpc.ankr.com/eth_goerli',
-        displayName: 'Goerli Testnet',
-        blockExplorer: 'https://goerli.etherscan.io',
-        ticker: 'ETH',
-        tickerName: 'Ethereum',
+        chainId: hexlify(Number(chain.chainId)),
+        rpcTarget: getRpcServiceUrl(chain.rpcUri),
+        displayName: chain.chainName,
+        blockExplorer: chain.blockExplorerUriTemplate.address,
+        ticker: chain.nativeCurrency.symbol,
+        tickerName: chain.nativeCurrency.name,
       }
+      console.log(chainConfig)
       const web3Local = await setupWeb3(chainConfig, loginResponse, signingParams)
 
-      const fromAddress = (await web3Local?.send('eth_accounts', []))[0]
-      setWalletAddress(fromAddress)
+      const accountsResponse = await web3Local?.send('eth_accounts', [])
+      if (isArray(accountsResponse) && accountsResponse.length > 0) {
+        setWalletAddress(accountsResponse[0])
+      }
 
       if (web3Local) {
         setMPCProvider({
@@ -87,14 +96,14 @@ export const useMPCWallet = () => {
           address: walletAddress ? ethers.utils.getAddress(walletAddress) : '',
           label: 'Web3Auth',
           ens: user?.email,
-          chainId: '5',
+          chainId: chain.chainId,
         })
       }
     }
     if (signingParams) {
       localSetup()
     }
-  }, [loginResponse, signingParams, user?.email, walletAddress])
+  }, [chain, loginResponse, signingParams, user?.email, walletAddress])
 
   const resetAccount = async () => {
     if (!loginResponse || !tKey) {
