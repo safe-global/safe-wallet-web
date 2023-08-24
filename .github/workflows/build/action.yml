@@ -19,7 +19,7 @@ runs:
   steps:
     - name: Build
       shell: bash
-      run: yarn build && yarn export
+      run: yarn build
       env:
         NEXT_PUBLIC_IS_PRODUCTION: ${{ inputs.prod }}
         NEXT_PUBLIC_GATEWAY_URL_PRODUCTION: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GATEWAY_URL_PRODUCTION }}

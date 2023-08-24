@@ -85,10 +85,10 @@ yarn test --watch
 
 ### Cypress tests
 
-Build and generarate a static site:
+Build a static site:
 
 ```
-yarn build && yarn export
+yarn build
 ```
 
 Serve the static files:
