@@ -47,3 +47,11 @@ const englishTestLocale = 'en'
 Object.assign(global, { TextDecoder, TextEncoder })
 
 jest.spyOn(Intl, 'NumberFormat').mockImplementation((locale, ...rest) => new NumberFormat([englishTestLocale], ...rest))
+
+const defineProperty = Object.defineProperty
+Object.defineProperty = (obj, prop, desc) => {
+  if (prop !== 'prototype') {
+    desc.configurable = true
+  }
+  return defineProperty(obj, prop, desc)
+}

@@ -1,6 +1,6 @@
 import path from 'path'
 import withBundleAnalyzer from '@next/bundle-analyzer'
-import NextPwa from'next-pwa'
+import NextPwa from 'next-pwa'
 
 const withPWA = NextPwa({
   disable: process.env.NODE_ENV === 'development',
@@ -13,6 +13,12 @@ const withPWA = NextPwa({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export', // static site export
+
+  images: {
+    unoptimized: true,
+  },
+
   reactStrictMode: false,
   productionBrowserSourceMaps: true,
   eslint: {
