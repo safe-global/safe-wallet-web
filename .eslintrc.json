@@ -2,6 +2,9 @@
   "extends": ["next", "prettier", "plugin:prettier/recommended"],
   "rules": {
     "@next/next/no-img-element": "off",
+    "@next/next/google-font-display": "off",
+    "@next/next/google-font-preconnect": "off",
+    "@next/next/no-page-custom-font": "off",
     "unused-imports/no-unused-imports-ts": "error",
     "@typescript-eslint/consistent-type-imports": "error",
     "no-constant-condition": "warn",

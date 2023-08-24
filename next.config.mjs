@@ -18,11 +18,6 @@ const nextConfig = {
   eslint: {
     dirs: ['src'],
   },
-  experimental: {
-    images: {
-      unoptimized: true,
-    },
-  },
   modularizeImports: {
     '@mui/material': {
       transform: '@mui/material/{{member}}',
