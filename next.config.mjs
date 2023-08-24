@@ -22,28 +22,20 @@ const nextConfig = {
     images: {
       unoptimized: true,
     },
-    modularizeImports: {
-      '@mui/material': {
-        transform: '@mui/material/{{member}}',
-      },
-      '@mui/icons-material/?(((\\w*)?/?)*)': {
-        transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
-      },
-      lodash: {
-        transform: 'lodash/{{member}}',
-      },
-      'date-fns': {
-        transform: 'date-fns/{{member}}',
-      },
-    },
   },
-  async rewrites() {
-    return [
-      {
-        source: '/:safe([a-z0-9-]+\\:0x[a-fA-F0-9]{40})/:path*',
-        destination: '/:path*?safe=:safe',
-      },
-    ]
+  modularizeImports: {
+    '@mui/material': {
+      transform: '@mui/material/{{member}}',
+    },
+    '@mui/icons-material/?(((\\w*)?/?)*)': {
+      transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
+    },
+    lodash: {
+      transform: 'lodash/{{member}}',
+    },
+    'date-fns': {
+      transform: 'date-fns/{{member}}',
+    },
   },
   webpack(config) {
     config.module.rules.push({
