@@ -3295,7 +3295,18 @@
     "@safe-global/safe-gateway-typescript-sdk" "^3.5.3"
     viem "^1.0.0"
 
-"@safe-global/safe-core-sdk-types@^1.9.1", "@safe-global/safe-core-sdk-types@^1.9.2":
+"@safe-global/safe-core-sdk-types@^1.9.1":
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-1.10.1.tgz#94331b982671d2f2b8cc23114c58baf63d460c81"
+  integrity sha512-BKvuYTLOlY16Rq6qCXglmnL6KxInDuXMFqZMaCzwDKiEh+uoHu3xCumG5tVtWOkCgBF4XEZXMqwZUiLcon7IsA==
+  dependencies:
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@safe-global/safe-deployments" "^1.20.2"
+    web3-core "^1.8.1"
+    web3-utils "^1.8.1"
+
+"@safe-global/safe-core-sdk-types@^1.9.2":
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-1.9.2.tgz#c8ae3500f5f16a9380f0270ab543f7f0718c9848"
   integrity sha512-TVBoCf3bry3y6vmJXACDNOaQnHWTh8Q9G8P3wZCgUBxMc676hP9HEvF1Xrvwe0wMxevMIKyBnEV4FpZUJGSefg==
@@ -3329,6 +3340,13 @@
     web3-utils "^1.8.1"
     zksync-web3 "^0.14.3"
 
+"@safe-global/safe-deployments@^1.20.2":
+  version "1.26.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.26.0.tgz#b83615b3b5a66e736e08f8ecf2801ed988e9e007"
+  integrity sha512-Tw89O4/paT19ieMoiWQbqRApb0Bef/DxweS9rxodXAM5EQModkbyFXGZca+YxXE67sLvWjLr2jJUOxwze8mhGw==
+  dependencies:
+    semver "^7.3.7"
+
 "@safe-global/safe-deployments@^1.25.0":
   version "1.25.0"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.25.0.tgz#882f0703cd4dd86cc19238319d77459ded09ec88"
@@ -3352,10 +3370,10 @@
   dependencies:
     cross-fetch "^3.1.5"
 
-"@safe-global/safe-gateway-typescript-sdk@^3.8.0":
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.8.0.tgz#6a71eeab0ecd447a585531ef87cf987da30b78a0"
-  integrity sha512-CiGWIHgIaOdICpDxp05Jw3OPslWTu8AnL0PhrCT1xZgIO86NlMMLzkGbeycJ4FHpTjA999O791Oxp4bZPIjgHA==
+"@safe-global/safe-gateway-typescript-sdk@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.9.0.tgz#5aa36c05b865f6fe754d1d460f83bc9bf3a0145e"
+  integrity sha512-DxRM/sBBQhv955dPtdo0z2Bf2fXxrzoRUnGyTa3+4Z0RAhcyiqnffRP1Bt3tyuvlyfZnFL0RsvkqDcAIKzq3RQ==
   dependencies:
     cross-fetch "^3.1.5"
 

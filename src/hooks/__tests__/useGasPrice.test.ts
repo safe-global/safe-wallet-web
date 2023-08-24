@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers'
 import { act, renderHook } from '@/tests/test-utils'
 import useGasPrice from '@/hooks/useGasPrice'
+import { useCurrentChain } from '../useChains'
 
 // mock useWeb3Readonly
 jest.mock('../wallets/web3', () => {
@@ -8,8 +9,8 @@ jest.mock('../wallets/web3', () => {
     getFeeData: jest.fn(() =>
       Promise.resolve({
         gasPrice: undefined,
-        maxFeePerGas: BigNumber.from('0x956e'),
-        maxPriorityFeePerGas: BigNumber.from('0x136f'),
+        maxFeePerGas: BigNumber.from('0x956e'), //38254
+        maxPriorityFeePerGas: BigNumber.from('0x136f'), //4975
       }),
     ),
   }
@@ -17,32 +18,30 @@ jest.mock('../wallets/web3', () => {
     useWeb3ReadOnly: jest.fn(() => provider),
   }
 })
-
+const currentChain = {
+  chainId: '4',
+  gasPrice: [
+    {
+      type: 'oracle',
+      uri: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
+      gasParameter: 'FastGasPrice',
+      gweiFactor: '1000000000.000000000',
+    },
+    {
+      type: 'oracle',
+      uri: 'https://ethgasstation.info/json/ethgasAPI.json',
+      gasParameter: 'fast',
+      gweiFactor: '200000000.000000000',
+    },
+    {
+      type: 'fixed',
+      weiValue: '24000000000',
+    },
+  ],
+  features: ['EIP1559'],
+}
 // Mock useCurrentChain
 jest.mock('@/hooks/useChains', () => {
-  const currentChain = {
-    chainId: '4',
-    gasPrice: [
-      {
-        type: 'ORACLE',
-        uri: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle',
-        gasParameter: 'FastGasPrice',
-        gweiFactor: '1000000000.000000000',
-      },
-      {
-        type: 'ORACLE',
-        uri: 'https://ethgasstation.info/json/ethgasAPI.json',
-        gasParameter: 'fast',
-        gweiFactor: '200000000.000000000',
-      },
-      {
-        type: 'FIXED',
-        weiValue: '24000000000',
-      },
-    ],
-    features: ['EIP1559'],
-  }
-
   return {
     useCurrentChain: jest.fn(() => currentChain),
   }
@@ -52,6 +51,7 @@ describe('useGasPrice', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     jest.clearAllMocks()
+    ;(useCurrentChain as jest.Mock).mockReturnValue(currentChain)
   })
 
   it('should return the fetched gas price from the first oracle', async () => {
@@ -168,6 +168,56 @@ describe('useGasPrice', () => {
 
     // assert the priority fee is correct
     expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toEqual('4975')
+  })
+
+  it('should be able to set a fixed EIP 1559 gas price', async () => {
+    ;(useCurrentChain as jest.Mock).mockReturnValue({
+      chainId: '10',
+      gasPrice: [
+        {
+          type: 'fixed1559',
+          maxFeePerGas: '100000000',
+          maxPriorityFeePerGas: '100000',
+        },
+      ],
+      features: ['EIP1559'],
+    })
+
+    const { result } = renderHook(() => useGasPrice())
+
+    await act(async () => {
+      await Promise.resolve()
+    })
+    // assert the hook is not loading
+    expect(result.current[2]).toBe(false)
+
+    // assert fixed gas price as minimum of 0.1 gwei
+    expect(result.current[0]?.maxFeePerGas?.toString()).toBe('100000000')
+
+    // assert fixed priority fee
+    expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toBe('100000')
+  })
+
+  it("should use the previous block's fee data if there are no oracles", async () => {
+    ;(useCurrentChain as jest.Mock).mockReturnValue({
+      chainId: '1',
+      gasPrice: [],
+      features: ['EIP1559'],
+    })
+
+    const { result } = renderHook(() => useGasPrice())
+
+    await act(async () => {
+      await Promise.resolve()
+    })
+    // assert the hook is not loading
+    expect(result.current[2]).toBe(false)
+
+    // assert gas price from provider
+    expect(result.current[0]?.maxFeePerGas?.toString()).toBe('38254')
+
+    // assert priority fee from provider
+    expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toBe('4975')
   })
 
   it('should keep the previous gas price if the hook re-renders', async () => {
