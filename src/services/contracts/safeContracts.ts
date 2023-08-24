@@ -102,26 +102,16 @@ export const getReadOnlyGnosisSafeContract = (chain: ChainInfo, safeVersion: str
 
 // MultiSend
 
-const getMultiSendContractDeployment = (chainId: string) => {
-  return getMultiSendDeployment({ network: chainId }) || getMultiSendDeployment()
-}
-
-export const getMultiSendContractAddress = (chainId: string): string | undefined => {
-  const deployment = getMultiSendContractDeployment(chainId)
-
-  return deployment?.networkAddresses[chainId]
+export const getMultiSendContractAddress = (network: string, version: string): string | undefined => {
+  const deployment = getMultiSendDeployment({ network, version })
+  return deployment?.networkAddresses[network]
 }
 
 // MultiSendCallOnly
 
-const getMultiSendCallOnlyContractDeployment = (chainId: string) => {
-  return getMultiSendCallOnlyDeployment({ network: chainId }) || getMultiSendCallOnlyDeployment()
-}
-
-export const getMultiSendCallOnlyContractAddress = (chainId: string): string | undefined => {
-  const deployment = getMultiSendCallOnlyContractDeployment(chainId)
-
-  return deployment?.networkAddresses[chainId]
+export const getMultiSendCallOnlyContractAddress = (network: string, version: string): string | undefined => {
+  const deployment = getMultiSendCallOnlyDeployment({ network, version })
+  return deployment?.networkAddresses[network]
 }
 
 export const getMultiSendCallOnlyContract = (
@@ -132,7 +122,7 @@ export const getMultiSendCallOnlyContract = (
   const ethAdapter = createEthersAdapter(provider)
 
   return ethAdapter.getMultiSendCallOnlyContract({
-    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId),
+    singletonDeployment: getMultiSendCallOnlyDeployment({ network: chainId, version: safeVersion || undefined }),
     ..._getValidatedGetContractProps(chainId, safeVersion),
   })
 }
@@ -144,7 +134,7 @@ export const getReadOnlyMultiSendCallOnlyContract = (
   const ethAdapter = createReadOnlyEthersAdapter()
 
   return ethAdapter.getMultiSendCallOnlyContract({
-    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId),
+    singletonDeployment: getMultiSendCallOnlyDeployment({ network: chainId, version: safeVersion || undefined }),
     ..._getValidatedGetContractProps(chainId, safeVersion),
   })
 }

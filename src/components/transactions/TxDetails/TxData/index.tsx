@@ -19,9 +19,11 @@ import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
 import { MultiSendTxInfo } from '@/components/transactions/TxDetails/TxData/MultiSendTxInfo'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
   const chainId = useChainId()
+  const { safe } = useSafeInfo()
   const txInfo = txDetails.txInfo
 
   if (isTransferTxInfo(txInfo)) {
@@ -36,7 +38,7 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
     return <RejectionTxInfo nonce={txDetails.detailedExecutionInfo?.nonce} isTxExecuted={!!txDetails.executedAt} />
   }
 
-  if (isSupportedMultiSendAddress(txInfo, chainId) && isMultiSendTxInfo(txInfo)) {
+  if (isSupportedMultiSendAddress(txInfo, chainId, safe.version) && isMultiSendTxInfo(txInfo)) {
     return <MultiSendTxInfo txInfo={txInfo} />
   }
 
