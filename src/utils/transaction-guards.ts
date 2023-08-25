@@ -83,7 +83,7 @@ export const isSupportedMultiSendAddress = (
   chainId: string,
   version: string | null,
 ): boolean => {
-  // Safe version can be null when a Safe is being loaded
+  // Safe version can be null when a Safe is an unsupported deployment
   if (version == null) return false
 
   const toAddress = isCustomTxInfo(txInfo) ? txInfo.to.value : ''
