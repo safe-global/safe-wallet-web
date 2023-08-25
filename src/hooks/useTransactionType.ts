@@ -59,7 +59,11 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
 
       return {
         icon: tx.safeAppInfo?.logoUri ?? '/images/transactions/settings.svg',
-        text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.humanDescription || tx.txInfo.dataDecoded.method,
+        text: isDeleteGuard
+          ? 'deleteGuard'
+          : isTxQueued(tx.txStatus)
+          ? tx.txInfo.dataDecoded.method
+          : tx.txInfo.humanDescription || tx.txInfo.dataDecoded.method,
       }
     }
     case TransactionInfoType.CUSTOM: {
