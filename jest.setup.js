@@ -48,6 +48,9 @@ Object.assign(global, { TextDecoder, TextEncoder })
 
 jest.spyOn(Intl, 'NumberFormat').mockImplementation((locale, ...rest) => new NumberFormat([englishTestLocale], ...rest))
 
+// This is required for jest.spyOn to work with imported modules.
+// After Next 13, imported modules have `configurable: false` for named exports,
+// which means that `jest.spyOn` cannot modify the exported function.
 const defineProperty = Object.defineProperty
 Object.defineProperty = (obj, prop, desc) => {
   if (prop !== 'prototype') {
