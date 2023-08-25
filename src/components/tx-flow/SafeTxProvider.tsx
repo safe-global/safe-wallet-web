@@ -47,8 +47,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
   const recommendedSafeTxGas = useSafeTxGas(safeTx)
 
   // Priority to external nonce if valid, then to the recommended one
-  const isNonceValid = nonce !== undefined && nonce >= safe.nonce
-  const finalNonce = isSigned ? safeTx?.data.nonce : isNonceValid ? nonce : recommendedNonce ?? safeTx?.data.nonce
+  const finalNonce = isSigned ? safeTx?.data.nonce : nonce ?? recommendedNonce ?? safeTx?.data.nonce
   const finalSafeTxGas = isSigned ? safeTx?.data.safeTxGas : safeTxGas ?? recommendedSafeTxGas ?? safeTx?.data.safeTxGas
 
   // Update the tx when the nonce or safeTxGas change

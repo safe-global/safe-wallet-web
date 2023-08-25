@@ -102,7 +102,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
     defaultValues: {
       [TxNonceFormFieldNames.NONCE]: nonce,
     },
-    mode: 'onChange',
+    mode: 'onTouched',
     values: {
       [TxNonceFormFieldNames.NONCE]: nonce,
     },
