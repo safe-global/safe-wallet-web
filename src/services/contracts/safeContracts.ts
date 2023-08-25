@@ -1,7 +1,6 @@
 import {
   getFallbackHandlerDeployment,
   getMultiSendCallOnlyDeployment,
-  getMultiSendDeployment,
   getProxyFactoryDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
@@ -101,18 +100,6 @@ export const getReadOnlyGnosisSafeContract = (chain: ChainInfo, safeVersion: str
 }
 
 // MultiSend
-
-export const getMultiSendContractAddress = (network: string, version: string): string | undefined => {
-  const deployment = getMultiSendDeployment({ network, version })
-  return deployment?.networkAddresses[network]
-}
-
-// MultiSendCallOnly
-
-export const getMultiSendCallOnlyContractAddress = (network: string, version: string): string | undefined => {
-  const deployment = getMultiSendCallOnlyDeployment({ network, version })
-  return deployment?.networkAddresses[network]
-}
 
 export const getMultiSendCallOnlyContract = (
   chainId: string,

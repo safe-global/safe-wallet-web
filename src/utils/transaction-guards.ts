@@ -35,7 +35,6 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
-import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -78,23 +77,12 @@ export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
   return value.type === TransactionInfoType.CUSTOM
 }
 
-export const isSupportedMultiSendAddress = (
-  txInfo: TransactionInfo,
-  chainId: string,
-  version: string | null,
-): boolean => {
-  // Safe version can be null when a Safe is an unsupported deployment
-  if (version == null) return false
-
-  const toAddress = isCustomTxInfo(txInfo) ? txInfo.to.value : ''
-  const multiSendAddress = getMultiSendContractAddress(chainId, version)
-  const multiSendCallOnlyAddress = getMultiSendCallOnlyContractAddress(chainId, version)
-
-  return sameAddress(multiSendAddress, toAddress) || sameAddress(multiSendCallOnlyAddress, toAddress)
-}
-
 export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend => {
-  return value.type === TransactionInfoType.CUSTOM && value.methodName === 'multiSend'
+  return (
+    value.type === TransactionInfoType.CUSTOM &&
+    value.methodName === 'multiSend' &&
+    typeof value.actionCount === 'number'
+  )
 }
 
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
