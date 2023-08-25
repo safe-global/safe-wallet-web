@@ -19,7 +19,6 @@ import type {
   SafeInfo,
   SettingsChange,
   Transaction,
-  TransactionDetails,
   TransactionInfo,
   TransactionListItem,
   TransactionSummary,
@@ -36,6 +35,7 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
+import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -57,10 +57,6 @@ export const isOwner = (safeOwners: AddressEx[] | NamedAddress[] = [], walletAdd
   return safeOwners.some((owner) => sameAddress(owner.address, walletAddress))
 }
 
-export const isTrustedDelegateCall = (txDetails: TransactionDetails): boolean => {
-  return txDetails.txData?.trustedDelegateCallTarget || false
-}
-
 export const isMultisigDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is MultisigExecutionDetails => {
   return value?.type === DetailedExecutionInfoType.MULTISIG
 }
@@ -80,6 +76,21 @@ export const isSettingsChangeTxInfo = (value: TransactionInfo): value is Setting
 
 export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
   return value.type === TransactionInfoType.CUSTOM
+}
+
+export const isSupportedMultiSendAddress = (
+  txInfo: TransactionInfo,
+  chainId: string,
+  version: string | null,
+): boolean => {
+  // Safe version can be null when a Safe is being loaded
+  if (version == null) return false
+
+  const toAddress = isCustomTxInfo(txInfo) ? txInfo.to.value : ''
+  const multiSendAddress = getMultiSendContractAddress(chainId, version)
+  const multiSendCallOnlyAddress = getMultiSendCallOnlyContractAddress(chainId, version)
+
+  return sameAddress(multiSendAddress, toAddress) || sameAddress(multiSendCallOnlyAddress, toAddress)
 }
 
 export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend => {
