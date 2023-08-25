@@ -156,7 +156,7 @@ export const useMPCWallet = () => {
       return
     }
     try {
-      const { addFactorKeyMetadata, getEcCrypto, setupWeb3 } = await import('@/hooks/wallets/mpc/utils')
+      const { addFactorKeyMetadata, getEcCrypto } = await import('@/hooks/wallets/mpc/utils')
 
       setLoginPending(true)
       // Triggering Login using Service Provider ==> opens the popup

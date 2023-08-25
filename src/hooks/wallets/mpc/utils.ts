@@ -9,7 +9,7 @@ import { Client } from '@toruslabs/tss-client'
 import * as tss from '@toruslabs/tss-lib'
 import { EthereumSigningProvider } from '@web3auth-mpc/ethereum-provider'
 import keccak256 from 'keccak256'
-import { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider, type ExternalProvider, JsonRpcProvider } from '@ethersproject/providers'
 import { utils } from '@toruslabs/tss-client'
 const { getDKLSCoeff, setupSockets } = utils
 
@@ -158,10 +158,23 @@ export const setupWeb3 = async (
     }
 
     await ethereumSigningProvider.setupProvider({ sign, getPublic })
-    if (!ethereumSigningProvider.provider) {
+
+    const innerProvider = ethereumSigningProvider.provider
+    if (!innerProvider) {
       return null
     }
-    const web3 = new Web3Provider(ethereumSigningProvider.provider)
+
+    const fallbackProvider = new JsonRpcProvider(chainConfig.rpcTarget)
+
+    const patchedProvider: ExternalProvider = {
+      request: (request) => {
+        if (request.method === 'eth_estimateGas') {
+          return fallbackProvider.send(request.method, request.params ?? [])
+        }
+        return innerProvider.request(request)
+      },
+    }
+    const web3 = new Web3Provider(patchedProvider)
     return web3
   } catch (e) {
     console.error(e)
