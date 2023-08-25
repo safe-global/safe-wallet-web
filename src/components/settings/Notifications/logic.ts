@@ -35,32 +35,34 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
 }
 
 const getSafeRegistrationSignature = ({
-  safes,
+  safeAddresses,
   web3,
   timestamp,
-  deviceUuid,
+  uuid,
   token,
 }: {
-  safes: Array<string>
+  safeAddresses: Array<string>
   web3: Web3Provider
   timestamp: string
-  deviceUuid: string
+  uuid: string
   token: string
 }) => {
   const MESSAGE_PREFIX = 'gnosis-safe'
 
-  const message = MESSAGE_PREFIX + timestamp + deviceUuid + token + safes.join('')
+  const message = MESSAGE_PREFIX + timestamp + uuid + token + safeAddresses.join('')
   const hashedMessage = keccak256(toUtf8Bytes(message))
 
   return web3.getSigner().signMessage(hashedMessage)
 }
+
+export type NotifiableSafes = { [chainId: string]: Array<string> }
 
 export const getRegisterDevicePayload = async ({
   safesToRegister,
   uuid,
   web3,
 }: {
-  safesToRegister: { [chainId: string]: Array<string> }
+  safesToRegister: NotifiableSafes
   uuid: string
   web3?: Web3Provider
 }): Promise<RegisterNotificationsRequest> => {
@@ -88,7 +90,7 @@ export const getRegisterDevicePayload = async ({
     Object.entries(safesToRegister).map(async ([chainId, safeAddresses]) => {
       // Signature is only required for CONFIRMATION_REQUESTS
       const signature = web3
-        ? await getSafeRegistrationSignature({ safes: safeAddresses, web3, deviceUuid: uuid, timestamp, token })
+        ? await getSafeRegistrationSignature({ safeAddresses, web3, uuid, timestamp, token })
         : undefined
 
       return {
@@ -100,7 +102,7 @@ export const getRegisterDevicePayload = async ({
   )
 
   return {
-    uuid: uuid,
+    uuid,
     cloudMessagingToken: token,
     buildNumber: '0', // Required value, but does not exist on web
     bundle: location.origin,

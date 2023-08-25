@@ -6,7 +6,7 @@ import ExternalStore from '@/services/ExternalStore'
 import { createPreferencesStore, createUuidStore, getSafeNotificationKey } from './notifications-idb'
 import type { NotificationPreferences, SafeNotificationKey } from './notifications-idb'
 
-const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences[SafeNotificationKey]['preferences'] = {
+export const _DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences[SafeNotificationKey]['preferences'] = {
   [WebhookType.NEW_CONFIRMATION]: true,
   [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: true,
   [WebhookType.PENDING_MULTISIG_TRANSACTION]: true,
@@ -19,9 +19,13 @@ const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences[SafeNotification
   [WebhookType.SAFE_CREATED]: false, // Cannot be registered to predicted address
 }
 
-// ExternalStores are used to keep indexedDB state longer than the component lifecycle
+// ExternalStores are used to keep indexedDB state synced across hook instances
 const { useStore: useUuid, setStore: setUuid } = new ExternalStore<string>()
 const { useStore: usePreferences, setStore: setPreferences } = new ExternalStore<NotificationPreferences>()
+
+// Used for testing
+export const _setUuid = setUuid
+export const _setPreferences = setPreferences
 
 export const useNotificationPreferences = () => {
   // State
@@ -112,7 +116,7 @@ export const useNotificationPreferences = () => {
         const defaultPreferences: NotificationPreferences[SafeNotificationKey] = {
           chainId,
           safeAddress,
-          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
         }
 
         return [key, defaultPreferences]
@@ -177,8 +181,8 @@ export const useNotificationPreferences = () => {
     uuid,
     getAllPreferences,
     getPreferences,
-    updatePreferences,
     _createPreferences: createPreferences,
+    updatePreferences,
     _deletePreferences: deletePreferences,
     _clearPreferences: clearPreferences,
   }

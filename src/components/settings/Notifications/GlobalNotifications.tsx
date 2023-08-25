@@ -19,16 +19,15 @@ import { sameAddress } from '@/utils/addresses'
 import useChains from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import CheckWallet from '@/components/common/CheckWallet'
-import { requestNotificationPermission } from './logic'
 import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
+import { requestNotificationPermission } from './logic'
+import type { NotifiableSafes } from './logic'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 import type { NotificationPreferences } from './hooks/notifications-idb'
 
 import css from './styles.module.css'
-
-type NotifiableSafes = { [chainId: string]: Array<string> }
 
 // Convert data structure of added Safes
 export const transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafes => {

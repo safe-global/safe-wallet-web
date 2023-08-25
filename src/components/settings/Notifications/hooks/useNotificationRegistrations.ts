@@ -3,10 +3,9 @@ import { registerDevice, unregisterDevice, unregisterSafe } from '@safe-global/s
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { getRegisterDevicePayload } from '../logic'
 import { useNotificationPreferences } from './useNotificationPreferences'
-
-type Subscriptions = { [chainId: string]: Array<string> }
+import { getRegisterDevicePayload } from '../logic'
+import type { NotifiableSafes } from '../logic'
 
 export const useNotificationRegistrations = () => {
   const dispatch = useAppDispatch()
@@ -14,7 +13,7 @@ export const useNotificationRegistrations = () => {
 
   const { uuid, _createPreferences, _deletePreferences, _clearPreferences } = useNotificationPreferences()
 
-  const registerNotifications = async (safesToRegister: Subscriptions, withSignature = false) => {
+  const registerNotifications = async (safesToRegister: NotifiableSafes, withSignature = false) => {
     if (!uuid) {
       return
     }
