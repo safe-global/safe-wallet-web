@@ -89,7 +89,11 @@ export const _parseWebhookNotification = async (
   const shortSafeAddress = shortenAddress(address)
 
   const historyLink = getLink(AppRoutes.transactions.history, address, chain)
-  const queueLink = getLink(AppRoutes.transactions.queue, address, chain)
+
+  const getSafeTxHashLink = (safeTxHash: string): string => {
+    const txLink = getLink(AppRoutes.transactions.tx, address, chain)
+    return `${txLink}&id=${safeTxHash}`
+  }
 
   if (type === WebhookType.NEW_CONFIRMATION) {
     const { owner, safeTxHash } = data
@@ -99,12 +103,12 @@ export const _parseWebhookNotification = async (
       body: `Safe ${shortSafeAddress} on ${chainName} has a new confirmation from ${shortenAddress(
         owner,
       )} on transaction ${shortenAddress(safeTxHash)}.`,
-      link: queueLink,
+      link: getSafeTxHashLink(safeTxHash),
     }
   }
 
   if (type === WebhookType.EXECUTED_MULTISIG_TRANSACTION) {
-    const { failed, txHash } = data
+    const { failed, txHash, safeTxHash } = data
 
     const shortTxHash = shortenAddress(txHash)
 
@@ -112,13 +116,13 @@ export const _parseWebhookNotification = async (
       return {
         title: `Transaction failed`,
         body: `Safe ${shortSafeAddress} on ${chainName} failed to execute transaction ${shortTxHash}.`,
-        link: queueLink,
+        link: getSafeTxHashLink(safeTxHash),
       }
     } else {
       return {
         title: `Transaction executed`,
         body: `Safe ${shortSafeAddress} on ${chainName} executed transaction ${shortTxHash}.`,
-        link: historyLink,
+        link: getSafeTxHashLink(safeTxHash),
       }
     }
   }
@@ -129,7 +133,7 @@ export const _parseWebhookNotification = async (
     return {
       title: `New pending transaction`,
       body: `Safe ${shortSafeAddress} on ${chainName} has a new pending transaction ${shortenAddress(safeTxHash)}.`,
-      link: queueLink,
+      link: getSafeTxHashLink(safeTxHash),
     }
   }
 
@@ -213,7 +217,7 @@ export const _parseWebhookNotification = async (
       body: `Safe ${shortSafeAddress} on ${chainName} has a new confirmation request for transaction ${shortenAddress(
         safeTxHash,
       )}.`,
-      link: queueLink,
+      link: getSafeTxHashLink(safeTxHash),
     }
   }
 
