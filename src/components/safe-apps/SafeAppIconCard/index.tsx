@@ -1,3 +1,4 @@
+import ImageFallback from '@/components/common/ImageFallback'
 import { type ReactElement, memo } from 'react'
 
 const APP_LOGO_FALLBACK_IMAGE = `/images/apps/app-placeholder.svg`
@@ -16,6 +17,22 @@ const getIframeContent = (url: string, width: number, height: number, fallback: 
   `
 }
 
+export const _isSafeSrc = (src: string) => {
+  const allowedHosts = ['.safe.global', '.5afe.dev']
+  const isRelative = src.startsWith('/')
+
+  let hostname = ''
+  if (!isRelative) {
+    try {
+      hostname = new URL(src).hostname
+    } catch (e) {
+      return false
+    }
+  }
+
+  return isRelative || allowedHosts.some((host) => hostname.endsWith(host))
+}
+
 const SafeAppIconCard = ({
   src,
   alt,
@@ -29,6 +46,10 @@ const SafeAppIconCard = ({
   height?: number
   fallback?: string
 }): ReactElement => {
+  if (_isSafeSrc(src)) {
+    return <ImageFallback src={src} alt={alt} width={width} height={height} fallbackSrc={fallback} />
+  }
+
   return (
     <iframe
       title={alt}

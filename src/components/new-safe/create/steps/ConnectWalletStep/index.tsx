@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Box, Button, Grid, Typography } from '@mui/material'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -20,12 +20,17 @@ const ConnectWalletStep = ({ onSubmit, setStep }: StepRenderProps<NewSafeFormDat
   const chain = useCurrentChain()
   const isSupported = isPairingSupported(chain?.disabledWallets)
   const handleConnect = useConnectWallet()
+  const [, setSubmitted] = useState(false)
   useSyncSafeCreationStep(setStep)
 
   useEffect(() => {
     if (!wallet || pendingSafe) return
 
-    onSubmit({ owners: [{ address: wallet.address, name: wallet.ens || '' }] })
+    setSubmitted((prev) => {
+      if (prev) return prev
+      onSubmit({ owners: [{ address: wallet.address, name: wallet.ens || '' }] })
+      return true
+    })
   }, [onSubmit, wallet, pendingSafe])
 
   return (

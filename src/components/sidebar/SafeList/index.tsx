@@ -14,7 +14,7 @@ import { Link as MuiLink } from '@mui/material'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import AddIcon from '@/public/images/common/add.svg'
-import useChains from '@/hooks/useChains'
+import useChains, { useCurrentChain } from '@/hooks/useChains'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
@@ -67,6 +67,7 @@ const NO_SAFE_MESSAGE = 'Create a new Safe Account or add'
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
+  const currentChain = useCurrentChain()
   const { safeAddress, safe } = useSafeInfo()
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
@@ -108,7 +109,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
         {!isWelcomePage && (
           <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
-            <Link href={{ pathname: AppRoutes.welcome }} passHref>
+            <Link href={{ pathname: AppRoutes.welcome, query: { chain: currentChain?.shortName } }} passHref>
               <Button
                 disableElevation
                 size="small"
