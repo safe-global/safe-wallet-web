@@ -1,11 +1,16 @@
 .banner :global .MuiTooltip-tooltip {
   min-width: 384px !important;
   padding: var(--space-3);
+}
+
+.banner :global .MuiTooltip-tooltip,
+.banner :global .MuiTooltip-arrow::before {
   border-color: var(--color-secondary-main);
 }
 
-.banner :global .MuiTooltip-arrow::before {
-  border-color: var(--color-secondary-main);
+[data-theme='dark'] .banner :global .MuiTooltip-tooltip,
+[data-theme='dark'] .banner :global .MuiTooltip-arrow::before {
+  border-color: var(--color-primary-main);
 }
 
 .container {
@@ -35,6 +40,11 @@
   font-size: 12px;
   width: var(--space-5);
   height: 24px;
+}
+
+[data-theme='dark'] .chip {
+  color: var(--color-static-main);
+  background-color: var(--color-primary-main);
 }
 
 .chip :global .MuiChip-label {

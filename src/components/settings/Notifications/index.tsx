@@ -228,9 +228,11 @@ export const SafeNotifications = (): ReactElement => {
                   label={
                     <>
                       <Typography>Confirmation requests</Typography>
-                      <Typography color="text.secondary" variant="body2">
-                        {isOwner ? 'Requires your signature' : 'Only owners'}
-                      </Typography>
+                      {!preferences[WebhookType.CONFIRMATION_REQUEST] && (
+                        <Typography color="text.secondary" variant="body2">
+                          {isOwner ? 'Requires your signature' : 'Only owners'}
+                        </Typography>
+                      )}
                     </>
                   }
                   disabled={!isOwner || !preferences}

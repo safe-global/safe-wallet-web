@@ -42,6 +42,24 @@ Here's the list of all the required and optional variables:
 | `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING`    | optional     | Relay URL on staging
 | `NEXT_PUBLIC_IS_OFFICIAL_HOST`                         | optional     | Whether it's the official distribution of the app, or a fork; has legal implications. Set to true only if you also update the legal pages like Imprint and Terms of use
 | `NEXT_PUBLIC_REDEFINE_API`                             | optional     | Redefine API base URL
+| `NEXT_PUBLIC_FIREBASE_API_KEY_PRODUCTION`              | optional     | Firebase Cloud Messaging (FCM) API key on production
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN_PRODUCTION`          | optional     | FCM auth domain on production
+| `NEXT_PUBLIC_FIREBASE_DATABASE_URL_PRODUCTION`         | optional     | FCM database URL on production
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID_PRODUCTION`           | optional     | FCM project ID on production
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET_PRODUCTION`       | optional     | FCM storage bucket on production
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID_PRODUCTION`  | optional     | FCM sender ID on production
+| `NEXT_PUBLIC_FIREBASE_APP_ID_PRODUCTION`               | optional     | FCM app ID on production
+| `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID_PRODUCTION`       | optional     | FCM measurement ID on production
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY_PRODUCTION`            | optional     | FCM vapid key on production
+| `NEXT_PUBLIC_FIREBASE_API_KEY_STAGING`                 | optional     | FCM API key on staging
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN_STAGING`             | optional     | FCM auth domain on staging
+| `NEXT_PUBLIC_FIREBASE_DATABASE_URL_STAGING`            | optional     | FCM database URL on staging
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID_STAGING`              | optional     | FCM project ID on staging
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET_STAGING`          | optional     | FCM storage bucket on staging
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID_STAGING`     | optional     | FCM sender ID on staging
+| `NEXT_PUBLIC_FIREBASE_APP_ID_STAGING`                  | optional     | FCM app ID on staging
+| `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID_STAGING`          | optional     | FCM measurement ID on staging
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING`               | optional     | FCM vapid key on staging
 
 If you don't provide some of the optional vars, the corresponding features will be disabled in the UI.
 

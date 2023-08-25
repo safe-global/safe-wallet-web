@@ -12,7 +12,10 @@ import {
   createPreferencesStore,
   getSafeNotificationKey,
 } from '@/components/settings/Notifications/hooks/notifications-idb'
-import type { NotificationPreferences } from '@/components/settings/Notifications/hooks/notifications-idb'
+import type {
+  NotificationPreferences,
+  SafeNotificationKey,
+} from '@/components/settings/Notifications/hooks/notifications-idb'
 
 export const shouldShowNotification = async (payload: MessagePayload): Promise<boolean> => {
   if (!isWebhookEvent(payload.data)) {
@@ -21,17 +24,16 @@ export const shouldShowNotification = async (payload: MessagePayload): Promise<b
 
   const { chainId, address, type } = payload.data
 
+  const key = getSafeNotificationKey(chainId, address)
   const store = createPreferencesStore()
-  const preferencesStore = await get<NotificationPreferences>(chainId, store).catch(() => null)
+
+  const preferencesStore = await get<NotificationPreferences[SafeNotificationKey]>(key, store).catch(() => null)
 
   if (!preferencesStore) {
     return false
   }
 
-  const key = getSafeNotificationKey(chainId, address)
-  const notificationPreferences = preferencesStore[key]?.preferences
-
-  return !!notificationPreferences[type]
+  return preferencesStore.preferences[type]
 }
 
 // localStorage cannot be accessed in service workers so we reference the flag

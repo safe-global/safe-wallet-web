@@ -1,30 +1,22 @@
 import { useEffect } from 'react'
+
+import { FIREBASE_MESSAGING_SW_PATH, FIREBASE_OPTIONS } from '@/config/constants'
 import { initializeApp } from 'firebase/app'
-import { getMessaging, onMessage } from 'firebase/messaging'
 
-import { useAppDispatch } from '@/store'
-import { showNotification } from '@/store/notificationsSlice'
-import {
-  FIREBASE_API_KEY,
-  FIREBASE_APP_ID,
-  FIREBASE_AUTH_DOMAIN,
-  FIREBASE_DATABASE_URL,
-  FIREBASE_MEASUREMENT_ID,
-  FIREBASE_MESSAGING_SENDER_ID,
-  FIREBASE_MESSAGING_SW_PATH,
-  FIREBASE_PROJECT_ID,
-  FIREBASE_STORAGE_BUCKET,
-} from '@/config/constants'
-import { parseFirebaseNotification } from '@/services/firebase'
-
-export const useFirebaseNotifications = (): null => {
-  const dispatch = useAppDispatch()
-
+export const useFirebaseNotifications = (): void => {
   // Register servicer worker
   useEffect(() => {
     if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
       return
     }
+
+    const hasFirebaseOptions = Object.values(FIREBASE_OPTIONS).every(Boolean)
+
+    if (!hasFirebaseOptions) {
+      return
+    }
+
+    initializeApp(FIREBASE_OPTIONS)
 
     const registerFirebaseSw = () => {
       navigator.serviceWorker.register(FIREBASE_MESSAGING_SW_PATH).catch(() => null)
@@ -36,47 +28,4 @@ export const useFirebaseNotifications = (): null => {
       window.removeEventListener('load', registerFirebaseSw)
     }
   }, [])
-
-  // Listen for messages
-  useEffect(() => {
-    if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) {
-      return
-    }
-
-    const _app = initializeApp({
-      apiKey: FIREBASE_API_KEY,
-      authDomain: FIREBASE_AUTH_DOMAIN,
-      databaseURL: FIREBASE_DATABASE_URL,
-      projectId: FIREBASE_PROJECT_ID,
-      storageBucket: FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
-      appId: FIREBASE_APP_ID,
-      measurementId: FIREBASE_MEASUREMENT_ID,
-    })
-
-    const messaging = getMessaging(_app)
-
-    const unsubscribe = onMessage(messaging, async (payload) => {
-      const notification = await parseFirebaseNotification(payload)
-
-      if (!notification) {
-        return
-      }
-
-      dispatch(
-        showNotification({
-          message: notification.title,
-          detailedMessage: notification.body,
-          groupKey: payload.messageId,
-          variant: 'info',
-        }),
-      )
-    })
-
-    return () => {
-      unsubscribe()
-    }
-  }, [dispatch])
-
-  return null
 }

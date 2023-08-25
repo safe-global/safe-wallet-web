@@ -78,17 +78,27 @@ export const useNotificationRegistrations = () => {
     }
   }
 
-  const unregisterAllNotifications = () => {
+  const unregisterAllNotifications = async () => {
     if (!uuid) {
       return
     }
 
-    // Device unregistration is chain agnostic
-    unregisterDevice('1', uuid)
-      .then(() => {
-        _clearPreferences()
-      })
-      .catch(() => null)
+    // Device unregistration is chain agnostic but is required for the route
+    const CHAIN_ID = '1'
+
+    let didUnregister = false
+
+    try {
+      const response = await unregisterDevice(CHAIN_ID, uuid)
+
+      didUnregister = response == null
+    } catch (e) {
+      console.error(`Error unregistering device on chain ${CHAIN_ID}`, e)
+    }
+
+    if (didUnregister) {
+      _clearPreferences()
+    }
   }
 
   return {
