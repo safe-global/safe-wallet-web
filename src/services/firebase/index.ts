@@ -61,14 +61,20 @@ const getBalances = async (chainId: string, safeAddress: string): Promise<SafeBa
   }
 }
 
-const getLink = (path: string, address: string, chain?: ChainInfo) => {
+const getLink = (path: string, query: { address: string; chain?: ChainInfo; safeTxHash?: string }) => {
   const APP_URL = 'https://app.safe.global'
 
-  if (!chain) {
+  if (!query.chain) {
     return APP_URL
   }
 
-  return `${APP_URL}${path}?safe=${chain.shortName}:${address}`
+  const link = `${APP_URL}${path}?safe=${query.chain.shortName}:${query.address}`
+
+  if (!query.safeTxHash) {
+    return link
+  }
+
+  return `${link}&id=${query.safeTxHash}`
 }
 
 export const _parseWebhookNotification = async (
@@ -88,12 +94,9 @@ export const _parseWebhookNotification = async (
 
   const shortSafeAddress = shortenAddress(address)
 
-  const historyLink = getLink(AppRoutes.transactions.history, address, chain)
+  const historyLink = getLink(AppRoutes.transactions.history, { address, chain })
 
-  const getSafeTxHashLink = (safeTxHash: string): string => {
-    const txLink = getLink(AppRoutes.transactions.tx, address, chain)
-    return `${txLink}&id=${safeTxHash}`
-  }
+  const getSafeTxHashLink = (safeTxHash: string) => getLink(AppRoutes.transactions.tx, { address, chain, safeTxHash })
 
   if (type === WebhookType.NEW_CONFIRMATION) {
     const { owner, safeTxHash } = data

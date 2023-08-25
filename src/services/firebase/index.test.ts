@@ -50,7 +50,7 @@ describe('parseWebhookNotification', () => {
       expect(notification).toEqual({
         title: 'New confirmation',
         body: 'Safe 0x0000...0001 on Mainnet has a new confirmation from 0x0000...0002 on transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/queue?safe=eth:0x0000000000000000000000000000000000000001',
+        link: 'https://app.safe.global/transactions/tx?safe=eth:0x0000000000000000000000000000000000000001&id=0x0000000000000000000000000000000000000000000000000000000000000003',
       })
     })
 
@@ -92,7 +92,7 @@ describe('parseWebhookNotification', () => {
         expect(notification).toEqual({
           title: 'Transaction executed',
           body: 'Safe 0x0000...0001 on Mainnet executed transaction 0x0000...0004.',
-          link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
+          link: 'https://app.safe.global/transactions/tx?safe=eth:0x0000000000000000000000000000000000000001&id=0x0000000000000000000000000000000000000000000000000000000000000003',
         })
       })
 
@@ -128,7 +128,7 @@ describe('parseWebhookNotification', () => {
         expect(notification).toEqual({
           title: 'Transaction failed',
           body: 'Safe 0x0000...0001 on Mainnet failed to execute transaction 0x0000...0004.',
-          link: 'https://app.safe.global/transactions/queue?safe=eth:0x0000000000000000000000000000000000000001',
+          link: 'https://app.safe.global/transactions/tx?safe=eth:0x0000000000000000000000000000000000000001&id=0x0000000000000000000000000000000000000000000000000000000000000003',
         })
       })
 
@@ -169,7 +169,7 @@ describe('parseWebhookNotification', () => {
       expect(notification).toEqual({
         title: 'New pending transaction',
         body: 'Safe 0x0000...0001 on Mainnet has a new pending transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/queue?safe=eth:0x0000000000000000000000000000000000000001',
+        link: 'https://app.safe.global/transactions/tx?safe=eth:0x0000000000000000000000000000000000000001&id=0x0000000000000000000000000000000000000000000000000000000000000003',
       })
     })
 
@@ -772,7 +772,7 @@ describe('parseWebhookNotification', () => {
       expect(notification).toEqual({
         title: 'Confirmation request',
         body: 'Safe 0x0000...0001 on Mainnet has a new confirmation request for transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/queue?safe=eth:0x0000000000000000000000000000000000000001',
+        link: 'https://app.safe.global/transactions/tx?safe=eth:0x0000000000000000000000000000000000000001&id=0x0000000000000000000000000000000000000000000000000000000000000003',
       })
     })
 
