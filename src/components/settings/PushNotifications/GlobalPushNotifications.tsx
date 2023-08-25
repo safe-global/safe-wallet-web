@@ -22,6 +22,8 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
+import { trackEvent } from '@/services/analytics'
+import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { requestNotificationPermission } from './logic'
 import type { NotifiableSafes } from './logic'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
@@ -74,7 +76,7 @@ const mergeNotifiableSafes = (addedSafes: AddedSafesState, currentSubscriptions?
   return notifiableSafes
 }
 
-export const GlobalNotifications = (): ReactElement | null => {
+export const GlobalPushNotifications = (): ReactElement | null => {
   const chains = useChains()
   const addedSafes = useAppSelector(selectAllAddedSafes)
 
@@ -211,6 +213,8 @@ export const GlobalNotifications = (): ReactElement | null => {
     }
 
     Promise.all(registrationPromises)
+
+    trackEvent(PUSH_NOTIFICATION_EVENTS.SAVE_SETTINGS)
   }
 
   if (totalNotifiableSafes === 0) {

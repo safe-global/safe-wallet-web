@@ -2,7 +2,7 @@ import Head from 'next/head'
 import type { NextPage } from 'next'
 
 import SettingsHeader from '@/components/settings/SettingsHeader'
-import { SafeNotifications } from '@/components/settings/Notifications'
+import { PushNotifications } from '@/components/settings/PushNotifications'
 
 const NotificationsPage: NextPage = () => {
   return (
@@ -14,7 +14,7 @@ const NotificationsPage: NextPage = () => {
       <SettingsHeader />
 
       <main>
-        <SafeNotifications />
+        <PushNotifications />
       </main>
     </>
   )

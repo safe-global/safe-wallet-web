@@ -4,6 +4,8 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 import { useNotificationPreferences } from './useNotificationPreferences'
+import { trackEvent } from '@/services/analytics'
+import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { getRegisterDevicePayload } from '../logic'
 import type { NotifiableSafes } from '../logic'
 
@@ -42,14 +44,18 @@ export const useNotificationRegistrations = () => {
 
     _createPreferences(safesToRegister)
 
-    if (!withSignature) {
-      const isMultiple =
-        Object.keys(safesToRegister).length > 1 || Object.values(safesToRegister).some((safes) => safes.length > 1)
+    const totalRegistered = Object.values(safesToRegister).reduce((acc, safeAddresses) => acc + safeAddresses.length, 0)
 
+    trackEvent({
+      ...PUSH_NOTIFICATION_EVENTS.REGISTER_SAFES,
+      label: totalRegistered,
+    })
+
+    if (!withSignature) {
       dispatch(
         showNotification({
           message: `You will now receive notifications for ${
-            isMultiple ? 'these Safe Accounts' : 'this Safe Account'
+            totalRegistered > 1 ? 'these Safe Accounts' : 'this Safe Account'
           } in your browser.`,
           variant: 'success',
           groupKey: 'notifications',
@@ -73,9 +79,13 @@ export const useNotificationRegistrations = () => {
       console.error(`Error unregistering ${safeAddress} on chain ${chainId}`, e)
     }
 
-    if (didUnregister) {
-      _deletePreferences({ [chainId]: [safeAddress] })
+    if (!didUnregister) {
+      return
     }
+
+    _deletePreferences({ [chainId]: [safeAddress] })
+
+    trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_SAFE)
   }
 
   const unregisterAllNotifications = async () => {
@@ -96,9 +106,13 @@ export const useNotificationRegistrations = () => {
       console.error(`Error unregistering device on chain ${CHAIN_ID}`, e)
     }
 
-    if (didUnregister) {
-      _clearPreferences()
+    if (!didUnregister) {
+      return
     }
+
+    _clearPreferences()
+
+    trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_DEVICE)
   }
 
   return {

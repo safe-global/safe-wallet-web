@@ -1,0 +1,109 @@
+export const category = 'push-notifications'
+
+export const PUSH_NOTIFICATION_EVENTS = {
+  // Browser notification shown to user
+  SHOW_NOTIFICATION: {
+    action: 'Show notification',
+    category,
+  },
+  // User clicked on notification
+  CLICK_NOTIFICATION: {
+    action: 'Click notification',
+    category,
+  },
+  // User granted notification permissions
+  GRANT_PERMISSION: {
+    action: 'Allow notifications',
+    category,
+  },
+  // User refused notification permissions
+  REJECT_PERMISSION: {
+    action: 'Reject notifications',
+    category,
+  },
+  // User registered Safe(s) for notifications
+  REGISTER_SAFES: {
+    action: 'Register Safe(s) notifications',
+    category,
+  },
+  // User unregistered Safe from notifications
+  UNREGISTER_SAFE: {
+    action: 'Unregister Safe notifications',
+    category,
+  },
+  // User unregistered device from notifications
+  UNREGISTER_DEVICE: {
+    action: 'Unregister device notifications',
+    category,
+  },
+  // Notification banner displayed
+  DISPLAY_BANNER: {
+    action: 'Display notification banner',
+    category,
+  },
+  // User dismissed notfication banner
+  DISMISS_BANNER: {
+    action: 'Dismiss notification banner',
+    category,
+  },
+  // User enabled all notifications from banner
+  ENABLE_ALL: {
+    action: 'Enable all notifications',
+    category,
+  },
+  // User opened Safe notification settings from banner
+  CUSTOMIZE_SETTINGS: {
+    action: 'Customize notifications',
+    category,
+  },
+  // User turned notifications on for a Safe from settings
+  ENABLE_SAFE: {
+    action: 'Turn notifications on',
+    category,
+  },
+  // User turned notifications off for a Safe from settings
+  DISABLE_SAFE: {
+    action: 'Turn notifications off',
+    category,
+  },
+  // Save button clicked in global notification settings
+  SAVE_SETTINGS: {
+    action: 'Save notification settings',
+    category,
+  },
+  // User changed the incoming assets notifications setting
+  TOGGLE_INCOMING_ASSETS: {
+    action: 'Toggle incoming assets notifications',
+    category,
+  },
+  // User changed the outgoing assets notifications setting
+  TOGGLE_OUTGOING_ASSETS: {
+    action: 'Toggle outgoing assets notifications',
+    category,
+  },
+  // User changed the pending multisig notifications setting
+  TOGGLE_PENDING_MULTISIG: {
+    action: 'Toggle pending multisig notifications',
+    category,
+  },
+  // User changed the new confirmation notifications setting
+  TOGGLE_NEW_CONFIRMATION: {
+    action: 'Toggle new confirmation notifications',
+    category,
+  },
+  // User changed the executed multisig transaction notifications setting
+  TOGGLE_EXECUTED_MULTISIG: {
+    action: 'Toggle executed multisig notifications',
+    category,
+  },
+  // User changed the module transaction notifications setting
+  TOGGLE_MODULE_TRANSACTION: {
+    action: 'Toggle module transaction notifications',
+    category,
+  },
+  // User changed the confirmation request notifications setting
+  TOGGLE_CONFIRMATION_REQUEST: {
+    action: 'Toggle confirmation request notifications',
+    category,
+  },
+}

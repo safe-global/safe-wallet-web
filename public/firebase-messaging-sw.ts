@@ -6,6 +6,9 @@ import { getMessaging } from 'firebase/messaging/sw'
 
 import { parseFirebaseNotification, shouldShowNotification } from '@/services/firebase'
 import { FIREBASE_OPTIONS } from '@/config/constants'
+import { trackEvent } from '@/services/analytics'
+import { isWebhookEvent } from '@/services/firebase/webhooks'
+import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 
 // Default type of `self` is `WorkerGlobalScope & typeof globalThis`
 // https://github.com/microsoft/TypeScript/issues/14877
@@ -25,9 +28,13 @@ if (hasFirebaseOptions) {
 
       const link = event.notification.tag
 
-      if (link) {
-        self.clients.openWindow(link)
+      if (!link) {
+        return
       }
+
+      self.clients.openWindow(link)
+
+      trackEvent(PUSH_NOTIFICATION_EVENTS.CLICK_NOTIFICATION)
     },
     false,
   )
@@ -48,13 +55,20 @@ if (hasFirebaseOptions) {
 
     const notification = await parseFirebaseNotification(payload)
 
-    if (notification) {
-      self.registration.showNotification(notification.title, {
-        icon: ICON_PATH,
-        body: notification.body,
-        image: notification.image,
-        tag: notification.link ?? DEFAULT_LINK,
-      })
+    if (!notification) {
+      return
     }
+
+    self.registration.showNotification(notification.title, {
+      icon: ICON_PATH,
+      body: notification.body,
+      image: notification.image,
+      tag: notification.link ?? DEFAULT_LINK,
+    })
+
+    trackEvent({
+      ...PUSH_NOTIFICATION_EVENTS.SHOW_NOTIFICATION,
+      label: isWebhookEvent(payload.data) ? payload.data.type : 'CUSTOM',
+    })
   })
 }

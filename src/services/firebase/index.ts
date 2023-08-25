@@ -11,11 +11,11 @@ import { GATEWAY_URL_PRODUCTION, GATEWAY_URL_STAGING, IS_PRODUCTION } from '@/co
 import {
   createPreferencesStore,
   getSafeNotificationKey,
-} from '@/components/settings/Notifications/hooks/notifications-idb'
+} from '@/components/settings/PushNotifications/hooks/notifications-idb'
 import type {
   NotificationPreferences,
   SafeNotificationKey,
-} from '@/components/settings/Notifications/hooks/notifications-idb'
+} from '@/components/settings/PushNotifications/hooks/notifications-idb'
 
 export const shouldShowNotification = async (payload: MessagePayload): Promise<boolean> => {
   if (!isWebhookEvent(payload.data)) {

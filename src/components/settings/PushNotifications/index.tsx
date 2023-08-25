@@ -6,15 +6,17 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { WebhookType } from '@/services/firebase/webhooks'
 import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
 import { useNotificationPreferences } from './hooks/useNotificationPreferences'
-import { GlobalNotifications } from './GlobalNotifications'
+import { GlobalPushNotifications } from './GlobalPushNotifications'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { IS_DEV } from '@/config/constants'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
+import { trackEvent } from '@/services/analytics'
+import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 
 import css from './styles.module.css'
 
-export const SafeNotifications = (): ReactElement => {
+export const PushNotifications = (): ReactElement => {
   const dispatch = useAppDispatch()
   const { safe, safeLoaded } = useSafeInfo()
   const isOwner = useIsSafeOwner()
@@ -34,8 +36,10 @@ export const SafeNotifications = (): ReactElement => {
   const handleOnChange = () => {
     if (preferences) {
       unregisterSafeNotifications(safe.chainId, safe.address.value)
+      trackEvent(PUSH_NOTIFICATION_EVENTS.DISABLE_SAFE)
     } else {
       registerNotifications({ [safe.chainId]: [safe.address.value] })
+      trackEvent(PUSH_NOTIFICATION_EVENTS.ENABLE_SAFE)
     }
   }
 
@@ -87,7 +91,7 @@ export const SafeNotifications = (): ReactElement => {
                   </div>
                 </>
               ) : (
-                <GlobalNotifications />
+                <GlobalPushNotifications />
               )}
             </Grid>
           </Grid>
@@ -114,6 +118,8 @@ export const SafeNotifications = (): ReactElement => {
                           [WebhookType.INCOMING_ETHER]: checked,
                           [WebhookType.INCOMING_TOKEN]: checked,
                         })
+
+                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_INCOMING_ASSETS, label: checked })
                       }}
                     />
                   }
@@ -130,6 +136,8 @@ export const SafeNotifications = (): ReactElement => {
                           [WebhookType.OUTGOING_ETHER]: checked,
                           [WebhookType.OUTGOING_TOKEN]: checked,
                         })
+
+                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_OUTGOING_ASSETS, label: checked })
                       }}
                     />
                   }
@@ -144,6 +152,8 @@ export const SafeNotifications = (): ReactElement => {
                           ...preferences,
                           [WebhookType.PENDING_MULTISIG_TRANSACTION]: checked,
                         })
+
+                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_PENDING_MULTISIG, label: checked })
                       }}
                     />
                   }
@@ -159,6 +169,8 @@ export const SafeNotifications = (): ReactElement => {
                           ...preferences,
                           [WebhookType.NEW_CONFIRMATION]: checked,
                         })
+
+                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_NEW_CONFIRMATION, label: checked })
                       }}
                     />
                   }
@@ -174,6 +186,8 @@ export const SafeNotifications = (): ReactElement => {
                           ...preferences,
                           [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: checked,
                         })
+
+                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_EXECUTED_MULTISIG, label: checked })
                       }}
                     />
                   }
@@ -189,6 +203,8 @@ export const SafeNotifications = (): ReactElement => {
                           ...preferences,
                           [WebhookType.MODULE_TRANSACTION]: checked,
                         })
+
+                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_MODULE_TRANSACTION, label: checked })
                       }}
                     />
                   }
@@ -211,6 +227,8 @@ export const SafeNotifications = (): ReactElement => {
                               ...preferences,
                               [WebhookType.CONFIRMATION_REQUEST]: checked,
                             })
+
+                            trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_CONFIRMATION_REQUEST, label: checked })
 
                             dispatch(
                               showNotification({

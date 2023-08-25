@@ -5,6 +5,8 @@ import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typ
 import type { Web3Provider } from '@ethersproject/providers'
 
 import { FIREBASE_MESSAGING_SW_PATH, FIREBASE_VAPID_KEY } from '@/config/constants'
+import { trackEvent } from '@/services/analytics'
+import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import packageJson from '../../../../package.json'
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
@@ -26,6 +28,8 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
   }
 
   const isGranted = permission === 'granted'
+
+  trackEvent(isGranted ? PUSH_NOTIFICATION_EVENTS.GRANT_PERMISSION : PUSH_NOTIFICATION_EVENTS.REJECT_PERMISSION)
 
   if (!isGranted) {
     alert('You must allow notifications to register your device.')
