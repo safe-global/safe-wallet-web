@@ -15,8 +15,6 @@ import type { ConnectedWallet } from '../useOnboard'
 import { ethers } from 'ethers'
 import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
 import { useCurrentChain } from '@/hooks/useChains'
-import { hexlify } from 'ethers/lib/utils'
-import { isArray } from 'lodash'
 import { getRpcServiceUrl } from '../web3'
 
 const { getTSSPubKey } = utils
@@ -75,7 +73,7 @@ export const useMPCWallet = () => {
       }
 
       const chainConfig = {
-        chainId: hexlify(Number(chain.chainId)),
+        chainId: `0x${Number(chain.chainId).toString(16)}`,
         rpcTarget: getRpcServiceUrl(chain.rpcUri),
         displayName: chain.chainName,
         blockExplorer: chain.blockExplorerUriTemplate.address,
@@ -86,7 +84,7 @@ export const useMPCWallet = () => {
       const web3Local = await setupWeb3(chainConfig, loginResponse, signingParams)
 
       const accountsResponse = await web3Local?.send('eth_accounts', [])
-      if (isArray(accountsResponse) && accountsResponse.length > 0) {
+      if (Array.isArray(accountsResponse) && accountsResponse.length > 0) {
         setWalletAddress(accountsResponse[0])
       }
 
