@@ -71,34 +71,21 @@ export const PUSH_NOTIFICATION_EVENTS = {
     action: 'Save notification settings',
     category,
   },
-  // User changed the incoming assets notifications setting
-  TOGGLE_INCOMING_ASSETS: {
-    action: 'Toggle incoming assets notifications',
+  // User changed the incoming transactions notifications setting
+  // (incoming native currency/tokens)
+  TOGGLE_INCOMING_TXS: {
+    action: 'Toggle incoming transactions notifications',
     category,
   },
-  // User changed the outgoing assets notifications setting
-  TOGGLE_OUTGOING_ASSETS: {
+  // User changed the outgoing transactions notifications setting
+  // (outgoing native currency/tokens, module/executed/pending multisig transactions)
+  TOGGLE_OUTGOING_TXS: {
     action: 'Toggle outgoing assets notifications',
-    category,
-  },
-  // User changed the pending multisig notifications setting
-  TOGGLE_PENDING_MULTISIG: {
-    action: 'Toggle pending multisig notifications',
     category,
   },
   // User changed the new confirmation notifications setting
   TOGGLE_NEW_CONFIRMATION: {
     action: 'Toggle new confirmation notifications',
-    category,
-  },
-  // User changed the executed multisig transaction notifications setting
-  TOGGLE_EXECUTED_MULTISIG: {
-    action: 'Toggle executed multisig notifications',
-    category,
-  },
-  // User changed the module transaction notifications setting
-  TOGGLE_MODULE_TRANSACTION: {
-    action: 'Toggle module transaction notifications',
     category,
   },
   // User changed the confirmation request notifications setting

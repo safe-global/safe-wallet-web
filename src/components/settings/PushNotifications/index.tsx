@@ -119,45 +119,38 @@ export const PushNotifications = (): ReactElement => {
                           [WebhookType.INCOMING_TOKEN]: checked,
                         })
 
-                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_INCOMING_ASSETS, label: checked })
+                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_INCOMING_TXS, label: checked })
                       }}
                     />
                   }
-                  label="Incoming assets"
+                  label="Incoming transactions"
                 />
 
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={preferences[WebhookType.OUTGOING_ETHER] && preferences[WebhookType.OUTGOING_TOKEN]}
+                      checked={
+                        preferences[WebhookType.OUTGOING_ETHER] &&
+                        preferences[WebhookType.OUTGOING_TOKEN] &&
+                        preferences[WebhookType.MODULE_TRANSACTION] &&
+                        preferences[WebhookType.EXECUTED_MULTISIG_TRANSACTION] &&
+                        preferences[WebhookType.PENDING_MULTISIG_TRANSACTION]
+                      }
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
                           [WebhookType.OUTGOING_ETHER]: checked,
                           [WebhookType.OUTGOING_TOKEN]: checked,
-                        })
-
-                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_OUTGOING_ASSETS, label: checked })
-                      }}
-                    />
-                  }
-                  label="Outgoing assets"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={preferences[WebhookType.PENDING_MULTISIG_TRANSACTION]}
-                      onChange={(_, checked) => {
-                        setPreferences({
-                          ...preferences,
+                          [WebhookType.MODULE_TRANSACTION]: checked,
+                          [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: checked,
                           [WebhookType.PENDING_MULTISIG_TRANSACTION]: checked,
                         })
 
-                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_PENDING_MULTISIG, label: checked })
+                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_OUTGOING_TXS, label: checked })
                       }}
                     />
                   }
-                  label="Pending transactions"
+                  label="Outgoing transactions"
                 />
 
                 <FormControlLabel
@@ -175,40 +168,6 @@ export const PushNotifications = (): ReactElement => {
                     />
                   }
                   label="New confirmations"
-                />
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={preferences[WebhookType.EXECUTED_MULTISIG_TRANSACTION]}
-                      onChange={(_, checked) => {
-                        setPreferences({
-                          ...preferences,
-                          [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: checked,
-                        })
-
-                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_EXECUTED_MULTISIG, label: checked })
-                      }}
-                    />
-                  }
-                  label="Executed transactions"
-                />
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={preferences[WebhookType.MODULE_TRANSACTION]}
-                      onChange={(_, checked) => {
-                        setPreferences({
-                          ...preferences,
-                          [WebhookType.MODULE_TRANSACTION]: checked,
-                        })
-
-                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_MODULE_TRANSACTION, label: checked })
-                      }}
-                    />
-                  }
-                  label="Module transactions"
                 />
 
                 <FormControlLabel
