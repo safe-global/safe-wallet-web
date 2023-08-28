@@ -30,7 +30,7 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
   }, [txHash])
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && !window.Beamer?.npsShown) {
+    if (typeof window !== 'undefined' && !window.Beamer?.shouldShowNPS()) {
       window.Beamer?.forceShowNPS()
     }
   }, [])
