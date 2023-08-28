@@ -89,7 +89,7 @@ const SafeTerms = () => {
       <p>
         A Safe Account is a modular, self-custodial (i.e. not supervised by us) smart contract-based wallet not provided
         by CC. Safe Accounts are{' '}
-        <Link href="https://github.com/safe-global/safe-contracts/" passHref>
+        <Link href="https://github.com/safe-global/safe-contracts/" passHref legacyBehavior>
           <MUILink target="_blank" rel="noreferrer">
             open-source
           </MUILink>
@@ -512,7 +512,7 @@ const SafeTerms = () => {
       <p>
         We inform you about our processing of personal data, including the disclosure to third parties and your rights
         as an affected party, in the{' '}
-        <Link href={AppRoutes.privacy} passHref>
+        <Link href={AppRoutes.privacy} passHref legacyBehavior>
           <MUILink>Privacy Policy</MUILink>
         </Link>
         .
@@ -533,7 +533,7 @@ const SafeTerms = () => {
       <ol start={1}>
         <li>
           Intercom:{' '}
-          <Link href={HELP_CENTER_URL} passHref>
+          <Link href={HELP_CENTER_URL} passHref legacyBehavior>
             <MUILink target="_blank" rel="noreferrer">
               {HELP_CENTER_URL}
             </MUILink>
@@ -541,7 +541,7 @@ const SafeTerms = () => {
         </li>
         <li>
           Discord:{' '}
-          <Link href={DISCORD_URL} passHref>
+          <Link href={DISCORD_URL} passHref legacyBehavior>
             <MUILink target="_blank" rel="noreferrer">
               {DISCORD_URL}
             </MUILink>
@@ -549,7 +549,7 @@ const SafeTerms = () => {
         </li>
         <li>
           Twitter:{' '}
-          <Link href={TWITTER_URL} passHref>
+          <Link href={TWITTER_URL} passHref legacyBehavior>
             <MUILink target="_blank" rel="noreferrer">
               {TWITTER_URL}
             </MUILink>
