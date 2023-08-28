@@ -27,7 +27,7 @@ export const SendNFTsButton = () => {
 
   return (
     <Track {...MODALS_EVENTS.SEND_COLLECTIBLE}>
-      <Link href={{ pathname: AppRoutes.balances.nfts, query: { safe: router.query.safe } }} passHref>
+      <Link href={{ pathname: AppRoutes.balances.nfts, query: { safe: router.query.safe } }} passHref legacyBehavior>
         <Button variant="contained" sx={buttonSx} fullWidth>
           Send NFTs
         </Button>
@@ -42,12 +42,10 @@ export const TxBuilderButton = () => {
 
   return (
     <Track {...MODALS_EVENTS.CONTRACT_INTERACTION}>
-      <Link href={txBuilder.link} passHref>
-        <a style={{ width: '100%' }}>
-          <Button variant="outlined" sx={buttonSx} fullWidth>
-            Transaction Builder
-          </Button>
-        </a>
+      <Link href={txBuilder.link} passHref style={{ width: '100%' }}>
+        <Button variant="outlined" sx={buttonSx} fullWidth>
+          Transaction Builder
+        </Button>
       </Link>
     </Track>
   )

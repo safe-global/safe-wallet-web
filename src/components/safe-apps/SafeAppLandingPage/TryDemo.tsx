@@ -15,7 +15,7 @@ const TryDemo = ({ demoUrl, onClick }: Props) => (
       Try the Safe App before using it
     </Typography>
     <DemoAppSVG alt="An icon of a internet browser" />
-    <Link href={demoUrl} passHref>
+    <Link href={demoUrl} passHref legacyBehavior>
       <Button variant="outlined" sx={{ width: CTA_BUTTON_WIDTH }} onClick={onClick}>
         Try demo
       </Button>

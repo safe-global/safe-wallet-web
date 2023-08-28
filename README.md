@@ -1,4 +1,4 @@
-# <img src="/public/images/logo.svg" height="60" valign="middle" alt="Safe{Wallet}" />
+# <img src="/public/images/logo.svg" height="60" valign="middle" alt="Safe{Wallet}" style="background: #fff; padding: 20px; margin: 0 -20px" />
 
 [![License](https://img.shields.io/github/license/safe-global/safe-wallet-web)](https://github.com/safe-global/safe-wallet-web/blob/main/LICENSE)
 ![Tests](https://img.shields.io/github/actions/workflow/status/safe-global/safe-wallet-web/test.yml?branch=main&label=tests)
@@ -103,10 +103,10 @@ yarn test --watch
 
 ### Cypress tests
 
-Build and generarate a static site:
+Build a static site:
 
 ```
-yarn build && yarn export
+yarn build
 ```
 
 Serve the static files:

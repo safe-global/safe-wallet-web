@@ -94,7 +94,12 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
               </Button>
             )}
             {safe && (
-              <Link passHref href={{ pathname: AppRoutes.settings.notifications, query }} onClick={onCustomize}>
+              <Link
+                passHref
+                legacyBehavior
+                href={{ pathname: AppRoutes.settings.notifications, query }}
+                onClick={onCustomize}
+              >
                 <Button variant="outlined" size="small" className={css.button}>
                   Customize
                 </Button>

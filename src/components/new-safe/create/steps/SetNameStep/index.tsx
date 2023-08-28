@@ -95,11 +95,11 @@ function SetNameStep({
           </Grid>
           <Typography variant="body2" mt={2}>
             By continuing, you agree to our{' '}
-            <Link href={AppRoutes.terms} passHref>
+            <Link href={AppRoutes.terms} passHref legacyBehavior>
               <MUILink>terms of use</MUILink>
             </Link>{' '}
             and{' '}
-            <Link href={AppRoutes.privacy} passHref>
+            <Link href={AppRoutes.privacy} passHref legacyBehavior>
               <MUILink>privacy policy</MUILink>
             </Link>
             .

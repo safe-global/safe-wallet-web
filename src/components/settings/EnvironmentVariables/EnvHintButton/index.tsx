@@ -18,7 +18,7 @@ const EnvHintButton = () => {
   }
 
   return (
-    <Link href={{ pathname: AppRoutes.settings.environmentVariables, query: router.query }} passHref>
+    <Link href={{ pathname: AppRoutes.settings.environmentVariables, query: router.query }} passHref legacyBehavior>
       <Tooltip title="Default environment has been changed" placement="top" arrow>
         <IconButton
           className={css.button}
