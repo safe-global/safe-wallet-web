@@ -2,7 +2,7 @@
 
 The code is being actively developed on the `dev` branch. Pull requests are made against this branch.
 
-When it's time to make a release, we "freeze" the code by creating a release branch off of the dev branch. A release PR is created from that branch, and sent to QA.
+When it's time to make a release, we "freeze" the code by creating a release branch off of the `dev` branch. A release PR is created from that branch, and sent to QA.
 
 After the PR is tested and approved by QA, it's merged into the `main` branch. `Main` is automatically deployed to the staging environment.
 
