@@ -164,7 +164,7 @@ export const useRecommendedNonce = (): number | undefined => {
       return getRecommendedNonce(safe.chainId, safeAddress)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safeAddress, safe.chainId, safe.txQueuedTag, safe.nonce], // update when tx queue or safe nonce changes
+    [safeAddress, safe.chainId, safe.txQueuedTag],
     false, // keep old recommended nonce while refreshing to avoid skeleton
   )
 
