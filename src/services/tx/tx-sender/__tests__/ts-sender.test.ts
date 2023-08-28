@@ -107,6 +107,9 @@ const mockSafeSDK = {
   createTransaction: jest.fn(() => ({
     signatures: new Map(),
     addSignature: jest.fn(),
+    data: {
+      nonce: '1',
+    },
   })),
   createRejectionTransaction: jest.fn(() => ({
     addSignature: jest.fn(),
@@ -266,6 +269,7 @@ describe('txSender', () => {
       expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSE_FAILED', {
         txId: '345',
         error: new Error('error'),
+        humanDescription: expect.anything(),
       })
     })
 
@@ -284,6 +288,7 @@ describe('txSender', () => {
 
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROPOSE_FAILED', {
         error: new Error('error'),
+        humanDescription: expect.anything(),
       })
     })
   })
@@ -399,7 +404,11 @@ describe('txSender', () => {
 
         expect((error as Error).message).toBe('rejected')
 
-        expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGN_FAILED', { txId: '0x345', error })
+        expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGN_FAILED', {
+          txId: '0x345',
+          error,
+          humanDescription: expect.anything(),
+        })
         expect(txEvents.txDispatch).not.toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
       }
     })
@@ -430,7 +439,11 @@ describe('txSender', () => {
 
         expect((error as Error).message).toBe('failure-specific error')
 
-        expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGN_FAILED', { txId: '0x345', error })
+        expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGN_FAILED', {
+          txId: '0x345',
+          error,
+          humanDescription: expect.anything(),
+        })
         expect(txEvents.txDispatch).not.toHaveBeenCalledWith('SIGNED', { txId: '0x345' })
       }
     })
