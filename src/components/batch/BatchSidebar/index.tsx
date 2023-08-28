@@ -27,23 +27,20 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
     batchTxs.forEach((item) => deleteTx(item.id))
   }, [deleteTx, batchTxs])
 
+  // Close confirmation flow when batch is empty
+  const shouldExitFlow = !!txFlow && batchTxs.length === 0
+  useEffect(() => {
+    if (shouldExitFlow) {
+      setTxFlow(undefined)
+    }
+  }, [setTxFlow, shouldExitFlow])
+
   const onAddClick = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault()
       setTxFlow(<NewTxMenu />, undefined, false)
     },
     [setTxFlow],
-  )
-
-  const onDelete = useCallback(
-    (id: string) => {
-      const shouldCloseFlow = batchTxs.length === 1
-      deleteTx(id)
-      if (shouldCloseFlow) {
-        setTxFlow(undefined)
-      }
-    },
-    [deleteTx, batchTxs, setTxFlow],
   )
 
   const onConfirmClick = useCallback(
@@ -73,7 +70,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
         {batchTxs.length ? (
           <>
             <div className={css.txs}>
-              <BatchReorder txItems={batchTxs} onDelete={onDelete} onReorder={onReorder} />
+              <BatchReorder txItems={batchTxs} onDelete={deleteTx} onReorder={onReorder} />
             </div>
 
             <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
