@@ -151,9 +151,12 @@ export const selectTokenList = (state: RootState): SettingsState['tokenList'] =>
   return state[settingsSlice.name].tokenList || initialState.tokenList
 }
 
-export const selectHiddenTokensPerChain = (state: RootState, chainId: string): string[] => {
-  return state[settingsSlice.name].hiddenTokens?.[chainId] || []
-}
+export const selectHiddenTokensPerChain = createSelector(
+  [selectSettings, (_, chainId) => chainId],
+  (settings, chainId) => {
+    return settings.hiddenTokens?.[chainId] || []
+  },
+)
 
 export const selectRpc = createSelector(selectSettings, (settings) => settings.env.rpc)
 
