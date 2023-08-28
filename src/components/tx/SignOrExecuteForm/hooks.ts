@@ -18,25 +18,18 @@ import type { OnboardAPI } from '@web3-onboard/core'
 import { getSafeTxGas, getRecommendedNonce } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
+import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 type TxActions = {
   addToBatch: (safeTx?: SafeTransaction, origin?: string, humanDescription?: string) => Promise<string>
   signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string, humanDescription?: string) => Promise<string>
-  executeTx: ({
-    txOptions,
-    safeTx,
-    txId,
-    origin,
-    willRelay,
-    humanDescription,
-  }: {
-    txOptions: TransactionOptions
-    safeTx?: SafeTransaction
-    txId?: string
-    origin?: string
-    willRelay?: boolean
-    humanDescription?: string
-  }) => Promise<string>
+  executeTx: (
+    txOptions: TransactionOptions,
+    safeTx?: SafeTransaction,
+    txId?: string,
+    origin?: string,
+    isRelayed?: boolean,
+  ) => Promise<string>
 }
 
 function assertTx(safeTx: SafeTransaction | undefined): asserts safeTx {
@@ -59,13 +52,7 @@ export const useTxActions = (): TxActions => {
     const safeAddress = safe.address.value
     const { chainId, version } = safe
 
-    const proposeTx = async (
-      sender: string,
-      safeTx: SafeTransaction,
-      txId?: string,
-      origin?: string,
-      humanDescription?: string,
-    ) => {
+    const proposeTx = async (sender: string, safeTx: SafeTransaction, txId?: string, origin?: string) => {
       return dispatchTxProposal({
         chainId,
         safeAddress,
@@ -73,15 +60,14 @@ export const useTxActions = (): TxActions => {
         safeTx,
         txId,
         origin,
-        humanDescription,
       })
     }
 
-    const addToBatch: TxActions['addToBatch'] = async (safeTx, origin, humanDescription) => {
+    const addToBatch: TxActions['addToBatch'] = async (safeTx, origin) => {
       assertTx(safeTx)
       assertWallet(wallet)
 
-      const tx = await proposeTx(wallet.address, safeTx, undefined, origin, humanDescription)
+      const tx = await proposeTx(wallet.address, safeTx, undefined, origin)
       await addTxToBatch(tx)
       return tx.txId
     }
@@ -118,41 +104,35 @@ export const useTxActions = (): TxActions => {
       }
 
       // Otherwise, sign off-chain
-      const signedTx = await dispatchTxSigning(safeTx, version, onboard, chainId, txId, humanDescription)
-      const tx = await proposeTx(wallet.address, signedTx, txId, origin, humanDescription)
+      const signedTx = await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
+      const tx = await proposeTx(wallet.address, signedTx, txId, origin)
       return tx.txId
     }
 
-    const executeTx: TxActions['executeTx'] = async ({
-      txOptions,
-      safeTx,
-      txId,
-      origin,
-      willRelay,
-      humanDescription,
-    }) => {
+    const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
 
+      let tx: TransactionDetails | undefined
       // Relayed transactions must be fully signed, so request a final signature if needed
-      if (willRelay && safeTx.signatures.size < safe.threshold) {
+      if (isRelayed && safeTx.signatures.size < safe.threshold) {
         safeTx = await signRelayedTx(safeTx)
-        const tx = await proposeTx(wallet.address, safeTx, txId, origin, humanDescription)
+        tx = await proposeTx(wallet.address, safeTx, txId, origin)
         txId = tx.txId
       }
 
       // Propose the tx if there's no id yet ("immediate execution")
       if (!txId) {
-        const tx = await proposeTx(wallet.address, safeTx, txId, origin, humanDescription)
+        tx = await proposeTx(wallet.address, safeTx, txId, origin)
         txId = tx.txId
       }
 
       // Relay or execute the tx via connected wallet
-      if (willRelay) {
-        await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit, humanDescription)
+      if (isRelayed) {
+        await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit, tx?.txInfo.humanDescription)
       } else {
-        await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress, humanDescription)
+        await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress, tx?.txInfo.humanDescription)
       }
 
       return txId

@@ -24,28 +24,28 @@ export enum TxEvent {
 }
 
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
-type TxDescription = { humanDescription?: string }
+type HumanDescription = { humanDescription?: string }
 
 interface TxEvents {
-  [TxEvent.SIGNED]: TxDescription & { txId?: string }
-  [TxEvent.SIGN_FAILED]: TxDescription & { txId?: string; error: Error }
-  [TxEvent.PROPOSE_FAILED]: TxDescription & { error: Error }
-  [TxEvent.PROPOSED]: TxDescription & { txId: string }
-  [TxEvent.SIGNATURE_PROPOSE_FAILED]: TxDescription & { txId: string; error: Error }
-  [TxEvent.SIGNATURE_PROPOSED]: TxDescription & { txId: string; signerAddress: string }
-  [TxEvent.SIGNATURE_INDEXED]: TxDescription & { txId: string }
-  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id & TxDescription
-  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id & TxDescription
-  [TxEvent.EXECUTING]: Id & TxDescription
-  [TxEvent.PROCESSING]: Id & TxDescription & { txHash: string }
-  [TxEvent.PROCESSING_MODULE]: Id & TxDescription & { txHash: string }
-  [TxEvent.PROCESSED]: Id & TxDescription & { safeAddress: string }
-  [TxEvent.REVERTED]: Id & TxDescription & { error: Error }
-  [TxEvent.RELAYING]: Id & TxDescription & { taskId: string }
-  [TxEvent.FAILED]: Id & TxDescription & { error: Error }
-  [TxEvent.SUCCESS]: Id & TxDescription
-  [TxEvent.SAFE_APPS_REQUEST]: TxDescription & { safeAppRequestId: RequestId; safeTxHash: string }
-  [TxEvent.BATCH_ADD]: Id & TxDescription
+  [TxEvent.SIGNED]: HumanDescription & { txId?: string }
+  [TxEvent.SIGN_FAILED]: HumanDescription & { txId?: string; error: Error }
+  [TxEvent.PROPOSE_FAILED]: HumanDescription & { error: Error }
+  [TxEvent.PROPOSED]: HumanDescription & { txId: string }
+  [TxEvent.SIGNATURE_PROPOSE_FAILED]: HumanDescription & { txId: string; error: Error }
+  [TxEvent.SIGNATURE_PROPOSED]: HumanDescription & { txId: string; signerAddress: string }
+  [TxEvent.SIGNATURE_INDEXED]: HumanDescription & { txId: string }
+  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id & HumanDescription
+  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id & HumanDescription
+  [TxEvent.EXECUTING]: Id & HumanDescription
+  [TxEvent.PROCESSING]: Id & HumanDescription & { txHash: string }
+  [TxEvent.PROCESSING_MODULE]: Id & HumanDescription & { txHash: string }
+  [TxEvent.PROCESSED]: Id & HumanDescription & { safeAddress: string }
+  [TxEvent.REVERTED]: Id & HumanDescription & { error: Error }
+  [TxEvent.RELAYING]: Id & HumanDescription & { taskId: string }
+  [TxEvent.FAILED]: Id & HumanDescription & { error: Error }
+  [TxEvent.SUCCESS]: Id & HumanDescription
+  [TxEvent.SAFE_APPS_REQUEST]: HumanDescription & { safeAppRequestId: RequestId; safeTxHash: string }
+  [TxEvent.BATCH_ADD]: Id & HumanDescription
 }
 
 const txEventBus = new EventBus<TxEvents>()

@@ -96,22 +96,9 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
         <RiskConfirmationError />
 
         {willExecute ? (
-          <ExecuteForm
-            {...props}
-            safeTx={safeTx}
-            isCreation={isCreation}
-            // @ts-ignore TODO: Update gateway-typescript-sdk type
-            humanDescription={decodedData?.humanDescription}
-          />
+          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} />
         ) : (
-          <SignForm
-            {...props}
-            safeTx={safeTx}
-            isBatchable={isBatchable}
-            isCreation={isCreation}
-            // @ts-ignore TODO: Update gateway-typescript-sdk type
-            humanDescription={decodedData?.humanDescription}
-          />
+          <SignForm {...props} safeTx={safeTx} isBatchable={isBatchable} isCreation={isCreation} />
         )}
       </TxCard>
     </>

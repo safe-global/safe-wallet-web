@@ -34,7 +34,6 @@ export const dispatchTxProposal = async ({
   safeTx,
   txId,
   origin,
-  humanDescription,
 }: {
   chainId: string
   safeAddress: string
@@ -42,7 +41,6 @@ export const dispatchTxProposal = async ({
   safeTx: SafeTransaction
   txId?: string
   origin?: string
-  humanDescription?: string
 }): Promise<TransactionDetails> => {
   const safeSDK = getAndValidateSafeSDK()
   const safeTxHash = await safeSDK.getTransactionHash(safeTx)
@@ -55,10 +53,9 @@ export const dispatchTxProposal = async ({
       txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, {
         txId,
         error: asError(error),
-        humanDescription,
       })
     } else {
-      txDispatch(TxEvent.PROPOSE_FAILED, { error: asError(error), humanDescription })
+      txDispatch(TxEvent.PROPOSE_FAILED, { error: asError(error) })
     }
     throw error
   }
@@ -69,7 +66,7 @@ export const dispatchTxProposal = async ({
     txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
       txId: proposedTx.txId,
       signerAddress: txId ? sender : undefined,
-      humanDescription,
+      humanDescription: proposedTx.txInfo.humanDescription,
     })
   }
 
