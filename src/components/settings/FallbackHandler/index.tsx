@@ -7,8 +7,8 @@ import type { ReactElement } from 'react'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AlertIcon from '@/public/images/common/alert.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { getFallbackHandlerDeployment } from '@safe-global/safe-deployments'
-import { HelpCenterArticle, LATEST_SAFE_VERSION } from '@/config/constants'
+import { getFallbackHandlerContractDeployment } from '@/services/contracts/safeContracts'
+import { HelpCenterArticle } from '@/config/constants'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 
@@ -23,10 +23,7 @@ export const FallbackHandler = (): ReactElement | null => {
   const supportsFallbackHandler = !!safe.version && semverSatisfies(safe.version, FALLBACK_HANDLER_VERSION)
 
   const fallbackHandlerDeployment = useMemo(() => {
-    return getFallbackHandlerDeployment({
-      version: safe.version || LATEST_SAFE_VERSION,
-      network: safe.chainId,
-    })
+    return getFallbackHandlerContractDeployment(safe.chainId, safe.version)
   }, [safe.version, safe.chainId])
 
   if (!supportsFallbackHandler) {

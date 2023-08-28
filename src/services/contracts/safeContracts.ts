@@ -11,7 +11,7 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 import semverSatisfies from 'semver/functions/satisfies'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-types'
+import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { assertValidSafeVersion, createEthersAdapter, createReadOnlyEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import type SignMessageLibEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/SignMessageLib/SignMessageLibEthersContract'
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
@@ -26,28 +26,41 @@ export const isValidMasterCopy = (implementationVersionState: SafeInfo['implemen
   return implementationVersionState !== ImplementationVersionState.UNKNOWN
 }
 
-export const _getValidatedGetContractProps = (
-  chainId: string,
-  safeVersion: SafeInfo['version'],
-): Pick<GetContractProps, 'chainId' | 'safeVersion'> => {
-  assertValidSafeVersion(safeVersion)
+export const shouldPinDeploymentVersion = (safeVersion: SafeInfo['version']): boolean => {
+  return !!safeVersion && semverSatisfies(safeVersion, `>${LATEST_SAFE_VERSION}`)
+}
 
-  // SDK request here: https://github.com/safe-global/safe-core-sdk/issues/261
+// Pins version to LATEST_SAFE_VERSION until we officially update to new safe-deployments
+// @see https://github.com/safe-global/safe-deployments/pull/248
+export const getPinnedDeploymentVersion = (safeVersion: SafeInfo['version']): string => {
+  const PINNED_VERSION = LATEST_SAFE_VERSION
+
+  if (!safeVersion) {
+    return PINNED_VERSION
+  }
+
   // Remove '+L2'/'+Circles' metadata from version
+  // SDK request here: https://github.com/safe-global/safe-core-sdk/issues/261
   const [noMetadataVersion] = safeVersion.split('+')
 
-  return {
-    chainId: +chainId,
-    safeVersion: noMetadataVersion as SafeVersion,
-  }
+  const version = shouldPinDeploymentVersion(safeVersion) ? PINNED_VERSION : noMetadataVersion
+
+  // Assert SDK support
+  assertValidSafeVersion(version)
+
+  return version
 }
 
 // GnosisSafe
 
 const getGnosisSafeContractEthers = (safe: SafeInfo, ethAdapter: EthersAdapter): GnosisSafeContractEthers => {
+  const customContractAddress = shouldPinDeploymentVersion(safe.version) ? undefined : safe.address.value
+  const pinnedVersion = getPinnedDeploymentVersion(safe.version)
+
   return ethAdapter.getSafeContract({
-    customContractAddress: safe.address.value,
-    ..._getValidatedGetContractProps(safe.chainId, safe.version),
+    customContractAddress,
+    chainId: +safe.chainId,
+    safeVersion: pinnedVersion as SafeVersion,
   })
 }
 
@@ -62,25 +75,25 @@ export const getCurrentGnosisSafeContract = (safe: SafeInfo, provider: Web3Provi
 }
 
 const isOldestVersion = (safeVersion: string): boolean => {
-  return semverSatisfies(safeVersion, '<=1.0.0')
+  return !!safeVersion && semverSatisfies(safeVersion, '<=1.0.0')
 }
 
-const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
+export const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): SingletonDeployment | undefined => {
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
+
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
-  const useOldestContractVersion = isOldestVersion(safeVersion)
+  const useOldestContractVersion = isOldestVersion(pinnedVersion)
 
   // We had L1 contracts in three L2 networks, xDai, EWC and Volta so even if network is L2 we have to check that safe version is after v1.3.0
-  const useL2ContractVersion = chain.l2 && semverSatisfies(safeVersion, '>=1.3.0')
+  const useL2ContractVersion = chain.l2 && semverSatisfies(pinnedVersion, '>=1.3.0')
   const getDeployment = useL2ContractVersion ? getSafeL2SingletonDeployment : getSafeSingletonDeployment
 
   return (
     getDeployment({
-      version: safeVersion,
+      version: pinnedVersion,
       network: chain.chainId,
     }) ||
-    getDeployment({
-      version: safeVersion,
-    }) ||
+    getDeployment({ version: pinnedVersion }) ||
     // In case we couldn't find a valid deployment and it's a version before 1.0.0 we return v1.0.0 to allow a minimum compatibility
     (useOldestContractVersion
       ? getDeployment({
@@ -92,25 +105,41 @@ const getSafeContractDeployment = (chain: ChainInfo, safeVersion: string): Singl
 
 export const getReadOnlyGnosisSafeContract = (chain: ChainInfo, safeVersion: string = LATEST_SAFE_VERSION) => {
   const ethAdapter = createReadOnlyEthersAdapter()
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
 
   return ethAdapter.getSafeContract({
-    singletonDeployment: getSafeContractDeployment(chain, safeVersion),
-    ..._getValidatedGetContractProps(chain.chainId, safeVersion),
+    singletonDeployment: getSafeContractDeployment(chain, pinnedVersion),
+    chainId: +chain.chainId,
+    safeVersion: pinnedVersion as SafeVersion,
   })
 }
 
 // MultiSend
 
-export const getMultiSendCallOnlyContract = (
+export const getMultiSendCallOnlyContractDeployment = (
   chainId: string,
   safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
+) => {
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
+
+  return (
+    getMultiSendCallOnlyDeployment({ version: pinnedVersion, network: chainId }) ||
+    getMultiSendCallOnlyDeployment({ version: pinnedVersion })
+  )
+}
+
+export const getMultiSendCallOnlyContract = (
+  chainId: string,
+  safeVersion: SafeInfo['version'],
   provider: Web3Provider,
 ) => {
   const ethAdapter = createEthersAdapter(provider)
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
 
   return ethAdapter.getMultiSendCallOnlyContract({
-    singletonDeployment: getMultiSendCallOnlyDeployment({ network: chainId, version: safeVersion || undefined }),
-    ..._getValidatedGetContractProps(chainId, safeVersion),
+    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId, pinnedVersion),
+    chainId: +chainId,
+    safeVersion: pinnedVersion as SafeVersion,
   })
 }
 
@@ -119,47 +148,48 @@ export const getReadOnlyMultiSendCallOnlyContract = (
   safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
 ) => {
   const ethAdapter = createReadOnlyEthersAdapter()
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
 
   return ethAdapter.getMultiSendCallOnlyContract({
-    singletonDeployment: getMultiSendCallOnlyDeployment({ network: chainId, version: safeVersion || undefined }),
-    ..._getValidatedGetContractProps(chainId, safeVersion),
+    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId, pinnedVersion),
+    chainId: +chainId,
+    safeVersion: pinnedVersion as SafeVersion,
   })
 }
 
 // GnosisSafeProxyFactory
 
-const getProxyFactoryContractDeployment = (chainId: string) => {
+export const getProxyFactoryContractDeployment = (chainId: string, safeVersion: string) => {
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
+
   return (
-    getProxyFactoryDeployment({
-      version: LATEST_SAFE_VERSION,
-      network: chainId,
-    }) ||
-    getProxyFactoryDeployment({
-      version: LATEST_SAFE_VERSION,
-    })
+    getProxyFactoryDeployment({ version: pinnedVersion, network: chainId }) ||
+    getProxyFactoryDeployment({ version: pinnedVersion })
   )
 }
 
 export const getReadOnlyProxyFactoryContract = (chainId: string, safeVersion: string = LATEST_SAFE_VERSION) => {
   const ethAdapter = createReadOnlyEthersAdapter()
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
 
   return ethAdapter.getSafeProxyFactoryContract({
-    singletonDeployment: getProxyFactoryContractDeployment(chainId),
-    ..._getValidatedGetContractProps(chainId, safeVersion),
+    singletonDeployment: getProxyFactoryContractDeployment(chainId, pinnedVersion),
+    chainId: +chainId,
+    safeVersion: pinnedVersion as SafeVersion,
   })
 }
 
 // Fallback handler
 
-const getFallbackHandlerContractDeployment = (chainId: string) => {
+export const getFallbackHandlerContractDeployment = (
+  chainId: string,
+  safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
+) => {
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
+
   return (
-    getFallbackHandlerDeployment({
-      version: LATEST_SAFE_VERSION,
-      network: chainId,
-    }) ||
-    getFallbackHandlerDeployment({
-      version: LATEST_SAFE_VERSION,
-    })
+    getFallbackHandlerDeployment({ version: pinnedVersion, network: chainId }) ||
+    getFallbackHandlerDeployment({ version: pinnedVersion })
   )
 }
 
@@ -168,26 +198,35 @@ export const getReadOnlyFallbackHandlerContract = (
   safeVersion: string = LATEST_SAFE_VERSION,
 ): CompatibilityFallbackHandlerEthersContract => {
   const ethAdapter = createReadOnlyEthersAdapter()
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
 
   return ethAdapter.getCompatibilityFallbackHandlerContract({
-    singletonDeployment: getFallbackHandlerContractDeployment(chainId),
-    ..._getValidatedGetContractProps(chainId, safeVersion),
+    singletonDeployment: getFallbackHandlerContractDeployment(chainId, pinnedVersion),
+    chainId: +chainId,
+    safeVersion: pinnedVersion as SafeVersion,
   })
 }
 
 // Sign messages deployment
-const getSignMessageLibContractDeployment = (chainId: string) => {
-  return getSignMessageLibDeployment({ network: chainId }) || getSignMessageLibDeployment()
+export const getSignMessageLibContractDeployment = (chainId: string, safeVersion: string) => {
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
+
+  return (
+    getSignMessageLibDeployment({ network: chainId, version: pinnedVersion }) ||
+    getSignMessageLibDeployment({ version: pinnedVersion })
+  )
 }
 
 export const getReadOnlySignMessageLibContract = (
   chainId: string,
-  safeVersion: string = LATEST_SAFE_VERSION,
+  safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
 ): SignMessageLibEthersContract => {
   const ethAdapter = createReadOnlyEthersAdapter()
+  const pinnedVersion = getPinnedDeploymentVersion(safeVersion)
 
   return ethAdapter.getSignMessageLibContract({
-    singletonDeployment: getSignMessageLibContractDeployment(chainId),
-    ..._getValidatedGetContractProps(chainId, safeVersion),
+    singletonDeployment: getSignMessageLibContractDeployment(chainId, pinnedVersion),
+    chainId: +chainId,
+    safeVersion: pinnedVersion as SafeVersion,
   })
 }

@@ -11,7 +11,7 @@ import EthersAdapter from '@safe-global/safe-ethers-lib'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
-import { isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { isValidMasterCopy, shouldPinDeploymentVersion } from '@/services/contracts/safeContracts'
 
 export const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
@@ -71,6 +71,11 @@ export const initSafeSDK = async ({
 
   // If it is an official deployment we should still initiate the safeSDK
   if (!isValidMasterCopy(implementationVersionState)) {
+    // Unofficial deployment with a version that we don't support
+    if (shouldPinDeploymentVersion(safeVersion)) {
+      return Promise.resolve(undefined)
+    }
+
     const masterCopy = implementation
 
     const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
