@@ -19,7 +19,7 @@ describe('CodedException', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
-    ;(constants as any).IS_PRODUCTION = false
+    jest.spyOn(constants, 'IS_PRODUCTION', 'get').mockImplementation(() => false)
   })
 
   it('throws an error if code is not found', () => {
@@ -101,7 +101,7 @@ describe('CodedException', () => {
     })
 
     it('logs only the error message on prod', () => {
-      ;(constants as any).IS_PRODUCTION = true
+      jest.spyOn(constants, 'IS_PRODUCTION', 'get').mockImplementation(() => true)
       logError(Errors._100)
       expect(console.error).toHaveBeenCalledWith('Code 100: Invalid input in the address field')
     })
@@ -109,7 +109,7 @@ describe('CodedException', () => {
 
   describe('Tracking', () => {
     it('tracks using Sentry on production', () => {
-      ;(constants as any).IS_PRODUCTION = true
+      jest.spyOn(constants, 'IS_PRODUCTION', 'get').mockImplementation(() => true)
       const err = trackError(Errors._100)
       expect(Sentry.captureException).toHaveBeenCalled()
       expect(console.error).toHaveBeenCalledWith(err.message)

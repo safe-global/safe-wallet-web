@@ -40,7 +40,7 @@ export const SingleTxDecoded = ({
 
   let details
   if (tx.dataDecoded) {
-    details = <MethodDetails data={tx.dataDecoded} />
+    details = <MethodDetails data={tx.dataDecoded} addressInfoIndex={txData.addressInfoIndex} />
   } else if (tx.data) {
     // If data is not decoded in the backend response
     details = <HexEncodedData title="Data (hex encoded)" hexData={tx.data} />
@@ -61,6 +61,7 @@ export const SingleTxDecoded = ({
           <CodeIcon color="border" fontSize="small" />
           <Typography>{actionTitle}</Typography>
           <Typography ml="8px">
+            {name ? name + ': ' : ''}
             <b>{method || 'native transfer'}</b>
           </Typography>
         </div>

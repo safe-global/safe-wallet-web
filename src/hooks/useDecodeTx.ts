@@ -14,7 +14,7 @@ const useDecodeTx = (tx?: SafeTransaction): AsyncResult<DecodedDataResponse> => 
   const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData(tx?.data) : undefined
 
   const [data = nativeTransfer, error, loading] = useAsync<DecodedDataResponse>(() => {
-    if (!encodedData || isEmptyData || !tx?.data.to) return
+    if (!encodedData || isEmptyData) return
     return getDecodedData(chainId, encodedData, tx.data.to)
   }, [chainId, encodedData, isEmptyData, tx?.data.to])
 

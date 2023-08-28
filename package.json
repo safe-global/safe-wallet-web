@@ -8,7 +8,6 @@
     "dev": "next dev",
     "start": "next dev",
     "build": "next build",
-    "export": "next export",
     "lint": "tsc && next lint",
     "lint:fix": "next lint --fix",
     "prettier": "prettier -w \"{src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}\"",
@@ -27,13 +26,16 @@
     "cypress:run": "cypress run",
     "cypress:ci": "yarn cypress:run --config baseUrl=http://localhost:8080 --spec cypress/e2e/smoke/*.cy.js",
     "serve": "npx -y serve out -p ${REVERSE_PROXY_UI_PORT:=8080}",
-    "static-serve": "yarn build && yarn export && yarn serve"
+    "static-serve": "yarn build && yarn serve"
   },
   "pre-commit": [
     "lint"
   ],
   "resolutions": {
     "@web3-onboard/trezor/**/protobufjs": "^7.2.4"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "dependencies": {
     "@date-io/date-fns": "^2.15.0",
@@ -46,9 +48,9 @@
     "@mui/x-date-pickers": "^5.0.12",
     "@reduxjs/toolkit": "^1.9.5",
     "@safe-global/safe-apps-sdk": "^8.0.0",
-    "@safe-global/safe-core-sdk": "^3.3.4",
+    "@safe-global/safe-core-sdk": "^3.3.5",
     "@safe-global/safe-core-sdk-utils": "^1.7.4",
-    "@safe-global/safe-deployments": "^1.25.0",
+    "@safe-global/safe-deployments": "1.25.0",
     "@safe-global/safe-ethers-lib": "^1.9.4",
     "@safe-global/safe-gateway-typescript-sdk": "^3.9.0",
     "@safe-global/safe-modules-deployments": "^1.0.0",
@@ -57,13 +59,13 @@
     "@sentry/tracing": "^7.28.1",
     "@truffle/hdwallet-provider": "^2.1.4",
     "@web3-onboard/coinbase": "^2.2.4",
-    "@web3-onboard/core": "2.20.4",
+    "@web3-onboard/core": "^2.21.0",
     "@web3-onboard/injected-wallets": "^2.10.0",
     "@web3-onboard/keystone": "^2.3.7",
     "@web3-onboard/ledger": "2.3.2",
     "@web3-onboard/taho": "^2.0.5",
     "@web3-onboard/trezor": "^2.4.2",
-    "@web3-onboard/walletconnect": "2.4.0",
+    "@web3-onboard/walletconnect": "^2.4.5",
     "classnames": "^2.3.1",
     "date-fns": "^2.29.2",
     "ethereum-blockies-base64": "^1.0.2",
@@ -73,7 +75,7 @@
     "fuse.js": "^6.6.2",
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
-    "next": "12.2.0",
+    "next": "^13.2.0",
     "next-pwa": "^5.6.0",
     "papaparse": "^5.3.2",
     "qrcode.react": "^3.1.0",
@@ -98,7 +100,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.4.2",
     "@typechain/ethers-v5": "^10.2.0",
-    "@types/jest": "^28.1.6",
+    "@types/jest": "^29.5.4",
     "@types/js-cookie": "^3.0.2",
     "@types/lodash": "^4.14.182",
     "@types/node": "18.11.18",
@@ -117,8 +119,8 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "jest": "^28.1.2",
-    "jest-environment-jsdom": "^28.1.2",
+    "jest": "^29.6.2",
+    "jest-environment-jsdom": "^29.6.2",
     "pre-commit": "^1.2.2",
     "prettier": "^2.7.0",
     "ts-node": "^10.8.2",

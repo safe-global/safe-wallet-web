@@ -1,6 +1,6 @@
 import path from 'path'
 import withBundleAnalyzer from '@next/bundle-analyzer'
-import NextPwa from'next-pwa'
+import NextPwa from 'next-pwa'
 
 const withPWA = NextPwa({
   disable: process.env.NODE_ENV === 'development',
@@ -13,37 +13,30 @@ const withPWA = NextPwa({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export', // static site export
+
+  images: {
+    unoptimized: true,
+  },
+
   reactStrictMode: false,
   productionBrowserSourceMaps: true,
   eslint: {
     dirs: ['src'],
   },
-  experimental: {
-    images: {
-      unoptimized: true,
+  modularizeImports: {
+    '@mui/material': {
+      transform: '@mui/material/{{member}}',
     },
-    modularizeImports: {
-      '@mui/material': {
-        transform: '@mui/material/{{member}}',
-      },
-      '@mui/icons-material/?(((\\w*)?/?)*)': {
-        transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
-      },
-      lodash: {
-        transform: 'lodash/{{member}}',
-      },
-      'date-fns': {
-        transform: 'date-fns/{{member}}',
-      },
+    '@mui/icons-material/?(((\\w*)?/?)*)': {
+      transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
     },
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/:safe([a-z0-9-]+\\:0x[a-fA-F0-9]{40})/:path*',
-        destination: '/:path*?safe=:safe',
-      },
-    ]
+    lodash: {
+      transform: 'lodash/{{member}}',
+    },
+    'date-fns': {
+      transform: 'date-fns/{{member}}',
+    },
   },
   webpack(config) {
     config.module.rules.push({

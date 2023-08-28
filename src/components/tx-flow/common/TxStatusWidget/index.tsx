@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import { Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material'
 import CreatedIcon from '@/public/images/messages/created.svg'
 import SignedIcon from '@/public/images/messages/signed.svg'
@@ -9,16 +10,7 @@ import css from './styles.module.css'
 import CloseIcon from '@mui/icons-material/Close'
 import useWallet from '@/hooks/wallets/useWallet'
 import SafeLogo from '@/public/images/logo-no-text.svg'
-import { useContext } from 'react'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-
-const confirmedMessage = (threshold: number, confirmations: number) => {
-  return (
-    <>
-      Confirmed ({confirmations} of {threshold})
-    </>
-  )
-}
 
 const TxStatusWidget = ({
   step,
@@ -26,12 +18,14 @@ const TxStatusWidget = ({
   handleClose,
   isReplacement = false,
   isBatch = false,
+  isMessage = false,
 }: {
   step: number
   txSummary?: TransactionSummary
   handleClose: () => void
   isReplacement?: boolean
   isBatch?: boolean
+  isMessage?: boolean
 }) => {
   const wallet = useWallet()
   const { safe } = useSafeInfo()
@@ -49,8 +43,9 @@ const TxStatusWidget = ({
       <div className={css.header}>
         <Typography fontWeight="700" display="flex" alignItems="center" gap={1}>
           <SafeLogo width={16} height={16} className={css.logo} />
-          Transaction status
+          {isMessage ? 'Message' : 'Transaction'} status
         </Typography>
+
         <IconButton className={css.close} aria-label="close" onClick={handleClose} size="small">
           <CloseIcon />
         </IconButton>
@@ -64,6 +59,7 @@ const TxStatusWidget = ({
             <ListItemIcon>
               <CreatedIcon />
             </ListItemIcon>
+
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
               {isReplacement ? 'Create replacement transaction' : isBatch ? 'Queue transactions' : 'Create'}
             </ListItemText>
@@ -73,14 +69,17 @@ const TxStatusWidget = ({
             <ListItemIcon>
               <SignedIcon />
             </ListItemIcon>
+
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
               {isBatch ? (
                 'Create batch'
               ) : !nonceNeeded ? (
                 'Confirmed'
+              ) : isMessage ? (
+                'Collect signatures'
               ) : (
                 <>
-                  {confirmedMessage(threshold, confirmationsSubmitted)}
+                  Confirmed ({confirmationsSubmitted} of {threshold})
                   {canSign && (
                     <Typography variant="body2" component="span" className={css.badge}>
                       +1
@@ -95,7 +94,8 @@ const TxStatusWidget = ({
             <ListItemIcon>
               <SignedIcon />
             </ListItemIcon>
-            <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Execute</ListItemText>
+
+            <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>{isMessage ? 'Done' : 'Execute'}</ListItemText>
           </ListItem>
 
           {isReplacement && (
@@ -103,6 +103,7 @@ const TxStatusWidget = ({
               <ListItemIcon>
                 <SignedIcon />
               </ListItemIcon>
+
               <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Transaction is replaced</ListItemText>
             </ListItem>
           )}
