@@ -66,7 +66,7 @@ export const dispatchTxProposal = async ({
     txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
       txId: proposedTx.txId,
       signerAddress: txId ? sender : undefined,
-      humanDescription: proposedTx.txInfo.humanDescription,
+      humanDescription: proposedTx?.txInfo?.humanDescription,
     })
   }
 

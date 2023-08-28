@@ -130,9 +130,9 @@ export const useTxActions = (): TxActions => {
 
       // Relay or execute the tx via connected wallet
       if (isRelayed) {
-        await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit, tx?.txInfo.humanDescription)
+        await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit, tx?.txInfo?.humanDescription)
       } else {
-        await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress, tx?.txInfo.humanDescription)
+        await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress, tx?.txInfo?.humanDescription)
       }
 
       return txId
