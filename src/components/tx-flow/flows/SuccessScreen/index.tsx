@@ -30,6 +30,12 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
   }, [txHash])
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.Beamer?.forceShowNPS()
+    }
+  }, [])
+
+  useEffect(() => {
     const unsubFns: Array<() => void> = ([TxEvent.FAILED, TxEvent.REVERTED] as const).map((event) =>
       txSubscribe(event, (detail) => {
         if (detail.txId === txId) setError(detail.error)
