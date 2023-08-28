@@ -21,7 +21,7 @@ import { useUpdateBatch } from '@/hooks/useDraftBatch'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 type TxActions = {
-  addToBatch: (safeTx?: SafeTransaction, origin?: string, humanDescription?: string) => Promise<string>
+  addToBatch: (safeTx?: SafeTransaction, origin?: string) => Promise<string>
   signTx: (safeTx?: SafeTransaction, txId?: string, origin?: string, humanDescription?: string) => Promise<string>
   executeTx: (
     txOptions: TransactionOptions,

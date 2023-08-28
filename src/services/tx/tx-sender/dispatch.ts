@@ -50,10 +50,7 @@ export const dispatchTxProposal = async ({
     proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash, origin)
   } catch (error) {
     if (txId) {
-      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, {
-        txId,
-        error: asError(error),
-      })
+      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: asError(error) })
     } else {
       txDispatch(TxEvent.PROPOSE_FAILED, { error: asError(error) })
     }

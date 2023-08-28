@@ -49,7 +49,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
 
       return {
         icon: isSendTx ? '/images/transactions/outgoing.svg' : '/images/transactions/incoming.svg',
-        text: isSendTx ? (isTxQueued(tx.txStatus) ? 'Send' : tx.txInfo.humanDescription || 'Sent') : 'Received',
+        text: isSendTx ? (isTxQueued(tx.txStatus) ? 'Send' : 'Sent') : 'Received',
       }
     }
     case TransactionInfoType.SETTINGS_CHANGE: {
@@ -58,19 +58,15 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       const isDeleteGuard = tx.txInfo.settingsInfo?.type === SettingsInfoType.DELETE_GUARD
 
       return {
-        icon: tx.safeAppInfo?.logoUri ?? '/images/transactions/settings.svg',
-        text: isDeleteGuard
-          ? 'deleteGuard'
-          : isTxQueued(tx.txStatus)
-          ? tx.txInfo.dataDecoded.method
-          : tx.txInfo.humanDescription || tx.txInfo.dataDecoded.method,
+        icon: '/images/transactions/settings.svg',
+        text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.dataDecoded.method,
       }
     }
     case TransactionInfoType.CUSTOM: {
       if (isModuleExecutionInfo(tx.executionInfo)) {
         return {
           icon: toAddress?.logoUri || '/images/transactions/custom.svg',
-          text: tx.txInfo.humanDescription || toAddress?.name || 'Contract interaction',
+          text: toAddress?.name || 'Contract interaction',
         }
       }
 
@@ -84,13 +80,13 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       if (tx.safeAppInfo) {
         return {
           icon: tx.safeAppInfo.logoUri,
-          text: tx.txInfo.humanDescription || tx.safeAppInfo.name,
+          text: tx.safeAppInfo.name,
         }
       }
 
       return {
         icon: toAddress?.logoUri || '/images/transactions/custom.svg',
-        text: tx.txInfo.humanDescription || addressBookName || toAddress?.name || 'Contract interaction',
+        text: addressBookName || toAddress?.name || 'Contract interaction',
       }
     }
     default: {
