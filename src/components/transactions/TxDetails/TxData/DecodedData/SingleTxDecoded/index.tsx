@@ -61,6 +61,7 @@ export const SingleTxDecoded = ({
           <CodeIcon color="border" fontSize="small" />
           <Typography>{actionTitle}</Typography>
           <Typography ml="8px">
+            {name ? name + ': ' : ''}
             <b>{method || 'native transfer'}</b>
           </Typography>
         </div>

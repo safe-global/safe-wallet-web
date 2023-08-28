@@ -48,6 +48,7 @@ const walletConnectV2 = (chain: ChainInfo): WalletInit => {
       themeMode: prefersDarkMode() ? 'dark' : 'light',
     },
     requiredChains: [parseInt(chain.chainId)],
+    dappUrl: location.origin,
   })
 }
 
