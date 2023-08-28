@@ -35,6 +35,17 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
     [setTxFlow],
   )
 
+  const onDelete = useCallback(
+    (id: string) => {
+      const shouldCloseFlow = batchTxs.length === 1
+      deleteTx(id)
+      if (shouldCloseFlow) {
+        setTxFlow(undefined)
+      }
+    },
+    [deleteTx, batchTxs, setTxFlow],
+  )
+
   const onConfirmClick = useCallback(
     async (e: SyntheticEvent) => {
       e.preventDefault()
@@ -62,7 +73,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
         {batchTxs.length ? (
           <>
             <div className={css.txs}>
-              <BatchReorder txItems={batchTxs} onDelete={deleteTx} onReorder={onReorder} />
+              <BatchReorder txItems={batchTxs} onDelete={onDelete} onReorder={onReorder} />
             </div>
 
             <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
