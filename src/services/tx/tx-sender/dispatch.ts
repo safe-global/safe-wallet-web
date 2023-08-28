@@ -49,10 +49,11 @@ export const dispatchTxProposal = async ({
   try {
     proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash, origin)
   } catch (error) {
+    const humanDescription = `Transaction #${safeTx.data.nonce}`
     if (txId) {
-      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: asError(error) })
+      txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: asError(error), humanDescription })
     } else {
-      txDispatch(TxEvent.PROPOSE_FAILED, { error: asError(error) })
+      txDispatch(TxEvent.PROPOSE_FAILED, { error: asError(error), humanDescription })
     }
     throw error
   }
@@ -87,11 +88,15 @@ export const dispatchTxSigning = async (
   try {
     signedTx = await tryOffChainTxSigning(safeTx, safeVersion, sdk)
   } catch (error) {
-    txDispatch(TxEvent.SIGN_FAILED, { txId, error: asError(error), humanDescription })
+    txDispatch(TxEvent.SIGN_FAILED, {
+      txId,
+      error: asError(error),
+      humanDescription: humanDescription || `Transaction #${safeTx.data.nonce}`,
+    })
     throw error
   }
 
-  txDispatch(TxEvent.SIGNED, { txId, humanDescription })
+  txDispatch(TxEvent.SIGNED, { txId })
 
   return signedTx
 }
@@ -108,7 +113,7 @@ export const dispatchOnChainSigning = async (
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
-  const eventParams = { txId, humanDescription }
+  const eventParams = { txId, humanDescription: humanDescription || `Transaction #${safeTx.data.nonce}` }
 
   try {
     // With the unchecked signer, the contract call resolves once the tx
@@ -195,37 +200,39 @@ export const dispatchBatchExecution = async (
     const provider = createWeb3(wallet.provider)
     result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData, overrides)
 
-    txs.forEach(({ txId }) => {
-      txDispatch(TxEvent.EXECUTING, { txId, groupKey })
+    txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+      txDispatch(TxEvent.EXECUTING, { txId, groupKey, humanDescription })
     })
   } catch (err) {
-    txs.forEach(({ txId }) => {
-      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey })
+    txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey, humanDescription })
     })
     throw err
   }
 
-  txs.forEach(({ txId }) => {
-    txDispatch(TxEvent.PROCESSING, { txId, txHash: result!.hash, groupKey })
+  txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+    txDispatch(TxEvent.PROCESSING, { txId, txHash: result!.hash, groupKey, humanDescription })
   })
 
   result!.transactionResponse
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txs.forEach(({ txId }) => {
+        txs.forEach(({ txId, txInfo: { humanDescription } }) => {
           txDispatch(TxEvent.REVERTED, {
             txId,
             error: new Error('Transaction reverted by EVM'),
             groupKey,
+            humanDescription,
           })
         })
       } else {
-        txs.forEach(({ txId }) => {
+        txs.forEach(({ txId, txInfo: { humanDescription } }) => {
           txDispatch(TxEvent.PROCESSED, {
             txId,
             groupKey,
             safeAddress,
+            humanDescription,
           })
         })
       }
@@ -234,15 +241,16 @@ export const dispatchBatchExecution = async (
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, { txId, safeAddress })
+        txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+          txDispatch(TxEvent.PROCESSED, { txId, safeAddress, humanDescription })
         })
       } else {
-        txs.forEach(({ txId }) => {
+        txs.forEach(({ txId, txInfo: { humanDescription } }) => {
           txDispatch(TxEvent.FAILED, {
             txId,
             error: asError(err),
             groupKey,
+            humanDescription,
           })
         })
       }
@@ -259,6 +267,7 @@ export const dispatchSpendingLimitTxExecution = async (
   safeAddress: string,
 ) => {
   const id = JSON.stringify(txParams)
+  const humanDescription = 'Module transaction'
 
   let result: ContractTransaction | undefined
   try {
@@ -277,7 +286,7 @@ export const dispatchSpendingLimitTxExecution = async (
       txParams.signature,
       txOptions,
     )
-    txDispatch(TxEvent.EXECUTING, { groupKey: id })
+    txDispatch(TxEvent.EXECUTING, { groupKey: id, humanDescription })
   } catch (error) {
     txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
     throw error
@@ -286,19 +295,24 @@ export const dispatchSpendingLimitTxExecution = async (
   txDispatch(TxEvent.PROCESSING_MODULE, {
     groupKey: id,
     txHash: result.hash,
+    humanDescription,
   })
 
   result
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { groupKey: id, error: new Error('Transaction reverted by EVM') })
+        txDispatch(TxEvent.REVERTED, {
+          groupKey: id,
+          error: new Error('Transaction reverted by EVM'),
+          humanDescription,
+        })
       } else {
-        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress })
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress, humanDescription })
       }
     })
     .catch((error) => {
-      txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+      txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error), humanDescription })
     })
 
   return result?.hash
@@ -346,7 +360,7 @@ export const dispatchTxRelay = async (
       throw new Error('Transaction could not be relayed')
     }
 
-    txDispatch(TxEvent.RELAYING, { taskId, txId, humanDescription })
+    txDispatch(TxEvent.RELAYING, { taskId, txId })
 
     // Monitor relay tx
     waitForRelayedTx(taskId, [txId], safe.address.value)

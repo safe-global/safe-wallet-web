@@ -27,13 +27,13 @@ type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: strin
 type HumanDescription = { humanDescription?: string }
 
 interface TxEvents {
-  [TxEvent.SIGNED]: HumanDescription & { txId?: string }
+  [TxEvent.SIGNED]: { txId?: string }
   [TxEvent.SIGN_FAILED]: HumanDescription & { txId?: string; error: Error }
   [TxEvent.PROPOSE_FAILED]: HumanDescription & { error: Error }
   [TxEvent.PROPOSED]: HumanDescription & { txId: string }
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: HumanDescription & { txId: string; error: Error }
   [TxEvent.SIGNATURE_PROPOSED]: HumanDescription & { txId: string; signerAddress: string }
-  [TxEvent.SIGNATURE_INDEXED]: HumanDescription & { txId: string }
+  [TxEvent.SIGNATURE_INDEXED]: { txId: string }
   [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id & HumanDescription
   [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id & HumanDescription
   [TxEvent.EXECUTING]: Id & HumanDescription
@@ -41,11 +41,11 @@ interface TxEvents {
   [TxEvent.PROCESSING_MODULE]: Id & HumanDescription & { txHash: string }
   [TxEvent.PROCESSED]: Id & HumanDescription & { safeAddress: string }
   [TxEvent.REVERTED]: Id & HumanDescription & { error: Error }
-  [TxEvent.RELAYING]: Id & HumanDescription & { taskId: string }
+  [TxEvent.RELAYING]: Id & { taskId: string }
   [TxEvent.FAILED]: Id & HumanDescription & { error: Error }
   [TxEvent.SUCCESS]: Id & HumanDescription
-  [TxEvent.SAFE_APPS_REQUEST]: HumanDescription & { safeAppRequestId: RequestId; safeTxHash: string }
-  [TxEvent.BATCH_ADD]: Id & HumanDescription
+  [TxEvent.SAFE_APPS_REQUEST]: { safeAppRequestId: RequestId; safeTxHash: string }
+  [TxEvent.BATCH_ADD]: Id
 }
 
 const txEventBus = new EventBus<TxEvents>()
