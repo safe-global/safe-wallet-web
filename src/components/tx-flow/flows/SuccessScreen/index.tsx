@@ -12,7 +12,6 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { TxModalContext } from '../..'
-import { useBeamerNps } from '@/hooks/Beamer/useBeamerNps'
 
 export const SuccessScreen = ({ txId }: { txId: string }) => {
   const [localTxHash, setLocalTxHash] = useState<string>()
@@ -29,8 +28,6 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
 
     setLocalTxHash(txHash)
   }, [txHash])
-
-  useBeamerNps()
 
   useEffect(() => {
     const unsubFns: Array<() => void> = ([TxEvent.FAILED, TxEvent.REVERTED] as const).map((event) =>
