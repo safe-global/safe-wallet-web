@@ -61,7 +61,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
 
       return {
         icon: '/images/transactions/settings.svg',
-        text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.dataDecoded.method,
+        text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.humanDescription || tx.txInfo.dataDecoded.method,
       }
     }
     case TransactionInfoType.CUSTOM: {
