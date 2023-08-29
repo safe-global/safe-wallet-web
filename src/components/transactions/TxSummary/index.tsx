@@ -67,11 +67,10 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       {nonce && !isGrouped && <Box gridArea="nonce">{nonce}</Box>}
 
       <Box gridArea="type" className={css.columnWrap}>
-        <TxType tx={tx} />
-      </Box>
-
-      <Box gridArea="info" className={css.columnWrap}>
-        <TxInfo info={tx.txInfo} />
+        <Box display="flex" alignItems="center" gap={1}>
+          <TxType tx={tx} />
+          <TxInfo info={tx.txInfo} />
+        </Box>
       </Box>
 
       <Box gridArea="date">

@@ -3,6 +3,7 @@
   align-items: center;
   gap: 0.5em;
   line-height: 1.4;
+  font-family: monospace;
 }
 
 .avatarContainer {

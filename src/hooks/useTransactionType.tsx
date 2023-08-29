@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import {
   SettingsInfoType,
   TransactionInfoType,
@@ -10,6 +10,8 @@ import {
 import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
+import css from '@/components/transactions/TxSummary/styles.module.css'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -30,7 +32,7 @@ const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | un
 
 type TxType = {
   icon: string
-  text: string
+  text: ReactNode
 }
 
 export const getTransactionType = (tx: TransactionSummary, addressBook: AddressBook): TxType => {
@@ -79,14 +81,40 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
 
       if (tx.safeAppInfo) {
         return {
-          icon: tx.safeAppInfo.logoUri,
-          text: tx.safeAppInfo.name,
+          icon: '',
+          text: tx.txInfo.humanDescription ?? (
+            <>
+              {tx.txInfo.methodName ? (
+                <>
+                  <span>Called </span>
+                  <b className={css.method}>{tx.txInfo.methodName}</b>
+                  <span> on</span>
+                </>
+              ) : (
+                ''
+              )}
+              <SafeAppIconCard
+                src={tx.safeAppInfo.logoUri}
+                alt="Transaction icon"
+                width={16}
+                height={16}
+                fallback="/images/transactions/custom.svg"
+              />
+              {tx.safeAppInfo.name}
+            </>
+          ),
         }
       }
 
       return {
         icon: toAddress?.logoUri || '/images/transactions/custom.svg',
-        text: addressBookName || toAddress?.name || 'Contract interaction',
+        text: tx.txInfo.humanDescription ?? (
+          <>
+            {addressBookName || toAddress?.name || 'Contract interaction'}
+            {tx.txInfo.methodName && ': '}
+            {tx.txInfo.methodName ? <b className={css.method}>{tx.txInfo.methodName}</b> : ''}
+          </>
+        ),
       }
     }
     default: {
