@@ -32,7 +32,7 @@ const Track = ({ children, as: Wrapper = 'span', ...trackData }: Props): typeof 
     return () => {
       trackEl.removeEventListener('click', handleClick)
     }
-  }, [children.type, el, trackData])
+  }, [el, trackData])
 
   if (children.type === Fragment) {
     throw new Error('Fragments cannot be tracked.')
