@@ -1,6 +1,6 @@
 import type { listenerMiddlewareInstance } from '@/store'
 import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
-import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
+import { isTransactionListItem } from '@/utils/transaction-guards'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { selectPendingTxs } from './pendingTxsSlice'
 import { makeLoadableSlice } from './common'
@@ -28,12 +28,7 @@ export const txHistoryListener = (listenerMiddleware: typeof listenerMiddlewareI
         const txId = result.transaction.id
 
         if (pendingTxs[txId]) {
-          const HUMAN_DESCRIPTION_FALLBACK =
-            'Transaction ' +
-            (isMultisigExecutionInfo(result.transaction.executionInfo)
-              ? `#${result.transaction.executionInfo.nonce}`
-              : '')
-          const humanDescription = result.transaction.txInfo?.humanDescription || HUMAN_DESCRIPTION_FALLBACK
+          const humanDescription = result.transaction.txInfo?.humanDescription
 
           txDispatch(TxEvent.SUCCESS, {
             txId,

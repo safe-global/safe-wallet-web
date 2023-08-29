@@ -57,7 +57,6 @@ describe('txHistorySlice', () => {
       expect(txDispatchSpy).toHaveBeenCalledWith(txEvents.TxEvent.SUCCESS, {
         txId: '0x123',
         groupKey: 'groupKey',
-        humanDescription: expect.anything(),
       })
     })
 

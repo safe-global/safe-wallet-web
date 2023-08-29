@@ -54,8 +54,6 @@ export const useTxActions = (): TxActions => {
     const { chainId, version } = safe
 
     const proposeTx = async (sender: string, safeTx: SafeTransaction, txId?: string, origin?: string) => {
-      const humanDescription = `Transaction #${safeTx.data.nonce}`
-
       return dispatchTxProposal({
         chainId,
         safeAddress,
@@ -63,7 +61,6 @@ export const useTxActions = (): TxActions => {
         safeTx,
         txId,
         origin,
-        humanDescription,
       })
     }
 
@@ -85,9 +82,7 @@ export const useTxActions = (): TxActions => {
       if (await isSmartContractWallet(wallet)) {
         throw new Error('Cannot relay an unsigned transaction from a smart contract wallet')
       }
-      const humanDescription = `Transaction #${safeTx.data.nonce}`
-
-      return await dispatchTxSigning(safeTx, version, onboard, chainId, txId, humanDescription)
+      return await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
     }
 
     const signTx: TxActions['signTx'] = async (safeTx, txId, origin, transaction) => {
@@ -95,7 +90,7 @@ export const useTxActions = (): TxActions => {
       assertWallet(wallet)
       assertOnboard(onboard)
 
-      const humanDescription = transaction?.transaction?.txInfo?.humanDescription || `Transaction #${safeTx.data.nonce}`
+      const humanDescription = transaction?.transaction?.txInfo?.humanDescription
 
       // Smart contract wallets must sign via an on-chain tx
       if (await isSmartContractWallet(wallet)) {
@@ -132,10 +127,7 @@ export const useTxActions = (): TxActions => {
         txId = tx.txId
       }
 
-      const humanDescription =
-        tx?.txInfo?.humanDescription ||
-        transaction?.transaction?.txInfo?.humanDescription ||
-        `Transaction #${safeTx.data.nonce}`
+      const humanDescription = tx?.txInfo?.humanDescription || transaction?.transaction?.txInfo?.humanDescription
 
       // Relay or execute the tx via connected wallet
       if (isRelayed) {
