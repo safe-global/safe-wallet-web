@@ -28,6 +28,9 @@
     "serve": "npx -y serve out -p ${REVERSE_PROXY_UI_PORT:=8080}",
     "static-serve": "yarn build && yarn serve"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "pre-commit": [
     "lint"
   ],
