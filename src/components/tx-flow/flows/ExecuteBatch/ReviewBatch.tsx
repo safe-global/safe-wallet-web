@@ -81,7 +81,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
       : { gasPrice: maxFeePerGas?.toString() }
 
-    const humanDescription = 'Batch transaction'
+    const FALLBACK_HUMAN_DESCRIPTION = 'Batch transaction'
 
     await dispatchBatchExecution(
       txsWithDetails,
@@ -90,15 +90,15 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       onboard,
       safe.chainId,
       safe.address.value,
-      humanDescription,
       overrides,
+      FALLBACK_HUMAN_DESCRIPTION,
     )
   }
 
   const onRelay = async () => {
     if (!multiSendTxData || !multiSendContract || !txsWithDetails) return
 
-    const humanDescription = 'Batch transaction'
+    const FALLBACK_HUMAN_DESCRIPTION = 'Batch transaction'
 
     await dispatchBatchExecutionRelay(
       txsWithDetails,
@@ -106,7 +106,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       multiSendTxData,
       safe.chainId,
       safe.address.value,
-      humanDescription,
+      FALLBACK_HUMAN_DESCRIPTION,
     )
   }
 

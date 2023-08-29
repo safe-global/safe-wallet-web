@@ -87,10 +87,17 @@ const ReviewSpendingLimitTx = ({
     setSubmitError(undefined)
 
     const txOptions = getTxOptions(advancedParams, currentChain)
-    const humanDescription = 'Module transaction'
+    const FALLBACK_HUMAN_DESCRIPTION = 'Module transaction'
 
     try {
-      await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress, humanDescription)
+      await dispatchSpendingLimitTxExecution(
+        txParams,
+        txOptions,
+        onboard,
+        safe.chainId,
+        safeAddress,
+        FALLBACK_HUMAN_DESCRIPTION,
+      )
       onSubmit()
       setTxFlow(undefined)
     } catch (_err) {

@@ -189,8 +189,8 @@ export const dispatchBatchExecution = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
-  humanDescription?: string,
   overrides?: PayableOverrides,
+  humanDescription?: string,
 ) => {
   const groupKey = multiSendTxData
 
