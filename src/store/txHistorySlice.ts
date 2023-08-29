@@ -29,7 +29,7 @@ export const txHistoryListener = (listenerMiddleware: typeof listenerMiddlewareI
 
         if (pendingTxs[txId]) {
           const HUMAN_DESCRIPTION_FALLBACK =
-            'Transaction' +
+            'Transaction ' +
             (isMultisigExecutionInfo(result.transaction.executionInfo)
               ? `#${result.transaction.executionInfo.nonce}`
               : '')

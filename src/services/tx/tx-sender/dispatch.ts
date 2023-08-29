@@ -65,7 +65,7 @@ export const dispatchTxProposal = async ({
     txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
       txId: proposedTx.txId,
       signerAddress: txId ? sender : undefined,
-      humanDescription: proposedTx?.txInfo?.humanDescription,
+      humanDescription: proposedTx?.txInfo?.humanDescription || humanDescription,
     })
   }
 
@@ -365,7 +365,7 @@ export const dispatchTxRelay = async (
     txDispatch(TxEvent.RELAYING, { taskId, txId })
 
     // Monitor relay tx
-    waitForRelayedTx(taskId, [txId], safe.address.value)
+    waitForRelayedTx(taskId, [txId], safe.address.value, humanDescription)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { txId, error: asError(error), humanDescription })
     throw error
