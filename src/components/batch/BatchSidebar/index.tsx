@@ -66,7 +66,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
               <BatchReorder txItems={batchTxs} onDelete={deleteTx} onReorder={onReorder} />
             </div>
 
-            <CheckWallet allowSpendingLimit>
+            <CheckWallet>
               {(isOk) => (
                 <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
                   <Button onClick={onAddClick} disabled={!isOk}>
@@ -79,7 +79,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
 
             <Divider />
 
-            <CheckWallet allowSpendingLimit>
+            <CheckWallet>
               {(isOk) => (
                 <Track {...BATCH_EVENTS.BATCH_CONFIRM} label={batchTxs.length}>
                   <Button
@@ -96,7 +96,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
           </>
         ) : (
           <EmptyBatch>
-            <CheckWallet allowSpendingLimit>
+            <CheckWallet>
               {(isOk) => (
                 <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
                   <Button onClick={onAddClick} variant="contained" disabled={!isOk}>
