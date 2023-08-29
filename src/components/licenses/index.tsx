@@ -553,14 +553,6 @@ const SafeLicenses = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>@web3-onboard/taho</TableCell>
-                <TableCell>
-                  <ExternalLink href="https://github.com/blocknative/web3-onboard/blob/main/LICENSE">
-                    https://github.com/blocknative/web3-onboard/blob/main/LICENSE
-                  </ExternalLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
                 <TableCell>@web3-onboard/trezor</TableCell>
                 <TableCell>
                   <ExternalLink href="https://github.com/blocknative/web3-onboard/blob/main/LICENSE">
