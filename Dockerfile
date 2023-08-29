@@ -1,10 +1,10 @@
-FROM node:16-alpine
+FROM node:18-alpine
 RUN apk add --no-cache libc6-compat git python3 py3-pip make g++
 WORKDIR /app
 COPY . .
 
 # install deps
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 ENV NODE_ENV production
 
