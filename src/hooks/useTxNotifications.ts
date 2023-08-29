@@ -41,7 +41,12 @@ enum Variant {
   ERROR = 'error',
 }
 
-const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
+export const successEvents = [
+  TxEvent.PROPOSED,
+  TxEvent.SIGNATURE_PROPOSED,
+  TxEvent.ONCHAIN_SIGNATURE_SUCCESS,
+  TxEvent.SUCCESS,
+]
 
 export const getTxLink = (
   txId: string,
