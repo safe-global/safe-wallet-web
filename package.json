@@ -34,9 +34,6 @@
   "resolutions": {
     "@web3-onboard/trezor/**/protobufjs": "^7.2.4"
   },
-  "engines": {
-    "node": ">=18"
-  },
   "dependencies": {
     "@date-io/date-fns": "^2.15.0",
     "@emotion/cache": "^11.10.1",
