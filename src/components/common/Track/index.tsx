@@ -10,6 +10,11 @@ type Props = {
   label?: EventLabel
 }
 
+const shouldTrack = (el: HTMLDivElement) => {
+  const disabledChildren = el.querySelectorAll('*[disabled]')
+  return disabledChildren.length === 0
+}
+
 const Track = ({ children, as: Wrapper = 'span', ...trackData }: Props): typeof children => {
   const el = useRef<HTMLDivElement>(null)
 
@@ -20,9 +25,8 @@ const Track = ({ children, as: Wrapper = 'span', ...trackData }: Props): typeof 
 
     const trackEl = el.current
 
-    const handleClick = (e: MouseEvent) => {
-      // If clicked target is disabled, event.target will be trackEl
-      if (e.target !== trackEl) {
+    const handleClick = () => {
+      if (shouldTrack(trackEl)) {
         trackEvent(trackData)
       }
     }
