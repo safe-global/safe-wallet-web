@@ -20,8 +20,11 @@ const Track = ({ children, as: Wrapper = 'span', ...trackData }: Props): typeof 
 
     const trackEl = el.current
 
-    const handleClick = () => {
-      trackEvent(trackData)
+    const handleClick = (e: MouseEvent) => {
+      // If clicked target is disabled, event.target will be trackEl
+      if (e.target !== trackEl) {
+        trackEvent(trackData)
+      }
     }
 
     // We cannot use onClick as events in children do not always bubble up
@@ -29,7 +32,7 @@ const Track = ({ children, as: Wrapper = 'span', ...trackData }: Props): typeof 
     return () => {
       trackEl.removeEventListener('click', handleClick)
     }
-  }, [el, trackData])
+  }, [children.type, el, trackData])
 
   if (children.type === Fragment) {
     throw new Error('Fragments cannot be tracked.')
