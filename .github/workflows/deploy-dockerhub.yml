@@ -7,7 +7,6 @@ on:
     branches:
       - main
       - dev
-      - docker
   release:
     types: [ released ]
 
@@ -34,10 +33,5 @@ jobs:
     - name: Deploy Dockerhub tag
       if: startsWith(github.ref, 'refs/tags/')
       run: bash scripts/github/deploy_docker.sh ${GITHUB_REF##*/}
-      env:
-        DOCKERHUB_PROJECT: ${{ secrets.DOCKER_PROJECT }}
-    - name: Deploy Dockerhub branch
-      if: github.ref == 'refs/heads/docker'
-      run: bash scripts/github/deploy_docker.sh dev
       env:
         DOCKERHUB_PROJECT: ${{ secrets.DOCKER_PROJECT }}
