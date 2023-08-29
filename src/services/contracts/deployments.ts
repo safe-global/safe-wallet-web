@@ -17,24 +17,20 @@ export const _tryDeploymentVersions = (
   network: string,
   version: SafeInfo['version'],
 ): SingletonDeployment | undefined => {
-  // Get deployments using LATEST_SAFE_VERSION for unsupported frontends/versions
-
-  return (
-    getDeployment({
-      version: version || LATEST_SAFE_VERSION,
-      network,
-    }) ||
-    getDeployment({
-      version: version || LATEST_SAFE_VERSION,
-    }) ||
-    getDeployment({
+  // Unsupported Safe version
+  if (version === null) {
+    // Assume latest version as fallback
+    return getDeployment({
       version: LATEST_SAFE_VERSION,
       network,
-    }) ||
-    getDeployment({
-      version: LATEST_SAFE_VERSION,
     })
-  )
+  }
+
+  // Supported Safe version
+  return getDeployment({
+    version,
+    network,
+  })
 }
 
 export const _isLegacy = (safeVersion: SafeInfo['version']): boolean => {
@@ -45,15 +41,13 @@ export const _isLegacy = (safeVersion: SafeInfo['version']): boolean => {
 export const _isL2 = (chain: ChainInfo, safeVersion: SafeInfo['version']): boolean => {
   const L2_VERSIONS = '>=1.3.0'
 
+  // Unsupported safe version
+  if (safeVersion === null) {
+    return chain.l2
+  }
+
   // We had L1 contracts on xDai, EWC and Volta so we also need to check version is after 1.3.0
-  return (
-    chain.l2 &&
-    semverSatisfies(
-      // Support unsupported versions
-      safeVersion || LATEST_SAFE_VERSION,
-      L2_VERSIONS,
-    )
-  )
+  return chain.l2 && semverSatisfies(safeVersion, L2_VERSIONS)
 }
 
 export const getSafeContractDeployment = (

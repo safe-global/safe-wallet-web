@@ -12,7 +12,7 @@ describe('deployments', () => {
   describe('tryDeploymentVersions', () => {
     const getSafeSpy = jest.spyOn(safeDeployments, 'getSafeSingletonDeployment')
 
-    it('should call the deployment getter in the correct order when a supported version/network is provided', () => {
+    it('should call the deployment getter with a supported version/network', () => {
       deployments._tryDeploymentVersions(
         getSafeSpy as unknown as typeof safeDeployments.getSafeSingletonDeployment,
         '1',
@@ -27,54 +27,37 @@ describe('deployments', () => {
       })
     })
 
-    it('should call the deployment getter in the correct order when a supported version/unsupported network is provided', () => {
+    it('should call the deployment getter with a supported version/unsupported network', () => {
       deployments._tryDeploymentVersions(
         getSafeSpy as unknown as typeof safeDeployments.getSafeSingletonDeployment,
         '69420',
         '1.1.1',
       )
 
-      expect(getSafeSpy).toHaveBeenCalledTimes(2)
+      expect(getSafeSpy).toHaveBeenCalledTimes(1)
 
       expect(getSafeSpy).toHaveBeenNthCalledWith(1, {
         version: '1.1.1',
         network: '69420',
       })
-
-      expect(getSafeSpy).toHaveBeenNthCalledWith(2, {
-        version: '1.1.1',
-      })
     })
 
-    it('should call the deployment getter in the correct order when an unsupported version/unsupported network is provided', () => {
+    it('should call the deployment getter with an unsupported version/unsupported', () => {
       deployments._tryDeploymentVersions(
         getSafeSpy as unknown as typeof safeDeployments.getSafeSingletonDeployment,
         '69420',
         '1.2.3',
       )
 
-      expect(getSafeSpy).toHaveBeenCalledTimes(4)
+      expect(getSafeSpy).toHaveBeenCalledTimes(1)
 
       expect(getSafeSpy).toHaveBeenNthCalledWith(1, {
         version: '1.2.3',
         network: '69420',
       })
-
-      expect(getSafeSpy).toHaveBeenNthCalledWith(2, {
-        version: '1.2.3',
-      })
-
-      expect(getSafeSpy).toHaveBeenNthCalledWith(3, {
-        version: '1.3.0',
-        network: '69420',
-      })
-
-      expect(getSafeSpy).toHaveBeenNthCalledWith(4, {
-        version: '1.3.0',
-      })
     })
 
-    it('should call the deployment getter in the correct order when no version/supported network is provided', () => {
+    it('should call the deployment getter with the latest version/supported network if no version is provider', () => {
       deployments._tryDeploymentVersions(
         getSafeSpy as unknown as typeof safeDeployments.getSafeSingletonDeployment,
         '1',
@@ -89,21 +72,17 @@ describe('deployments', () => {
       })
     })
 
-    it('should call the deployment getter in the correct order when no version/unsupported network is provided', () => {
+    it('should call the deployment getter with the latest version/unsupported network if no version is provider', () => {
       deployments._tryDeploymentVersions(
         getSafeSpy as unknown as typeof safeDeployments.getSafeSingletonDeployment,
         '69420',
         null,
       )
 
-      expect(getSafeSpy).toHaveBeenCalledTimes(2)
+      expect(getSafeSpy).toHaveBeenCalledTimes(1)
 
       expect(getSafeSpy).toHaveBeenNthCalledWith(1, {
         network: '69420',
-        version: '1.3.0',
-      })
-
-      expect(getSafeSpy).toHaveBeenNthCalledWith(2, {
         version: '1.3.0',
       })
     })
@@ -161,14 +140,9 @@ describe('deployments', () => {
         expect(deployment).toStrictEqual(expected)
       })
 
-      it('should return the versioned deployment for supported version/unsupported chain', () => {
-        const expected = safeDeployments.getSafeSingletonDeployment({
-          version: '1.1.1',
-        })
-
-        expect(expected).toBeDefined()
+      it('should return undefined for supported version/unsupported chain', () => {
         const deployment = deployments.getSafeContractDeployment({ chainId: '69420' } as ChainInfo, '1.1.1')
-        expect(deployment).toStrictEqual(expected)
+        expect(deployment).toBe(undefined)
       })
 
       it('should return the oldest deployment for legacy version/supported chain', () => {
@@ -191,14 +165,9 @@ describe('deployments', () => {
         expect(deployment).toStrictEqual(expected)
       })
 
-      it('should return the latest deployment for unsupported version/chain', () => {
-        const expected = safeDeployments.getSafeSingletonDeployment({
-          version: LATEST_SAFE_VERSION,
-        })
-
-        expect(expected).toBeDefined()
+      it('should return undefined for unsupported version/chain', () => {
         const deployment = deployments.getSafeContractDeployment({ chainId: '69420' } as ChainInfo, '1.2.3')
-        expect(deployment).toStrictEqual(expected)
+        expect(deployment).toStrictEqual(undefined)
       })
 
       it('should return the latest deployment for no version/supported chain', () => {
@@ -212,14 +181,9 @@ describe('deployments', () => {
         expect(deployment).toStrictEqual(expected)
       })
 
-      it('should return the latest deployment for no version/unsupported chain', () => {
-        const expected = safeDeployments.getSafeSingletonDeployment({
-          version: LATEST_SAFE_VERSION,
-        })
-
-        expect(expected).toBeDefined()
+      it('should return undefined for no version/unsupported chain', () => {
         const deployment = deployments.getSafeContractDeployment({ chainId: '69420' } as ChainInfo, null)
-        expect(deployment).toStrictEqual(expected)
+        expect(deployment).toBe(undefined)
       })
     })
 
@@ -235,24 +199,19 @@ describe('deployments', () => {
         expect(deployment).toStrictEqual(expected)
       })
 
-      it('should return the versioned deployment for supported version/unsupported chain', () => {
-        const expected = safeDeployments.getSafeL2SingletonDeployment({
-          version: '1.3.0', // First available version
-        })
-
-        expect(expected).toBeDefined()
+      it('should return undefined for supported version/unsupported chain', () => {
         const deployment = deployments.getSafeContractDeployment({ chainId: '69420', l2: true } as ChainInfo, '1.3.0')
-        expect(deployment).toStrictEqual(expected)
+        expect(deployment).toBe(undefined)
       })
 
-      it('should return the latest deployment for unsupported version/chain', () => {
+      it('should return undefined for unsupported version/chain', () => {
         const expected = safeDeployments.getSafeSingletonDeployment({
           version: LATEST_SAFE_VERSION,
         })
 
         expect(expected).toBeDefined()
         const deployment = deployments.getSafeContractDeployment({ chainId: '69420' } as ChainInfo, '1.2.3')
-        expect(deployment).toStrictEqual(expected)
+        expect(deployment).toBe(undefined)
       })
 
       it('should return the latest deployment for no version/supported chain', () => {
@@ -266,14 +225,9 @@ describe('deployments', () => {
         expect(deployment).toStrictEqual(expected)
       })
 
-      it('should return the latest deployment for no version/unsupported chain', () => {
-        const expected = safeDeployments.getSafeL2SingletonDeployment({
-          version: LATEST_SAFE_VERSION,
-        })
-
-        expect(expected).toBeDefined()
+      it('should return undefined no version/unsupported chain', () => {
         const deployment = deployments.getSafeContractDeployment({ chainId: '69420', l2: true } as ChainInfo, null)
-        expect(deployment).toStrictEqual(expected)
+        expect(deployment).toStrictEqual(undefined)
       })
     })
   })
@@ -290,24 +244,14 @@ describe('deployments', () => {
       expect(deployment).toStrictEqual(expected)
     })
 
-    it('should return the versioned deployment for supported version/unsupported chain', () => {
-      const expected = safeDeployments.getMultiSendCallOnlyDeployment({
-        version: '1.3.0', // First available version
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for supported version/unsupported chain', () => {
       const deployment = deployments.getMultiSendCallOnlyContractDeployment('69420', '1.3.0')
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
 
-    it('should return the latest deployment for unsupported version/chain', () => {
-      const expected = safeDeployments.getMultiSendCallOnlyDeployment({
-        version: LATEST_SAFE_VERSION,
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for unsupported version/chain', () => {
       const deployment = deployments.getMultiSendCallOnlyContractDeployment('69420', '1.2.3')
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
 
     it('should return the latest deployment for no version/supported chain', () => {
@@ -321,14 +265,9 @@ describe('deployments', () => {
       expect(deployment).toStrictEqual(expected)
     })
 
-    it('should return the latest deployment for no version/unsupported chain', () => {
-      const expected = safeDeployments.getMultiSendCallOnlyDeployment({
-        version: LATEST_SAFE_VERSION,
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for no version/unsupported chain', () => {
       const deployment = deployments.getMultiSendCallOnlyContractDeployment('69420', null)
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
   })
 
@@ -344,24 +283,14 @@ describe('deployments', () => {
       expect(deployment).toStrictEqual(expected)
     })
 
-    it('should return the versioned deployment for supported version/unsupported chain', () => {
-      const expected = safeDeployments.getFallbackHandlerDeployment({
-        version: '1.3.0', // First available version
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for supported version/unsupported chain', () => {
       const deployment = deployments.getFallbackHandlerContractDeployment('69420', '1.3.0')
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
 
-    it('should return the latest deployment for unsupported version/chain', () => {
-      const expected = safeDeployments.getFallbackHandlerDeployment({
-        version: LATEST_SAFE_VERSION,
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for unsupported version/chain', () => {
       const deployment = deployments.getFallbackHandlerContractDeployment('69420', '1.2.3')
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
 
     it('should return the latest deployment for no version/supported chain', () => {
@@ -375,14 +304,9 @@ describe('deployments', () => {
       expect(deployment).toStrictEqual(expected)
     })
 
-    it('should return the latest deployment for no version/unsupported chain', () => {
-      const expected = safeDeployments.getFallbackHandlerDeployment({
-        version: LATEST_SAFE_VERSION,
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for no version/unsupported chain', () => {
       const deployment = deployments.getFallbackHandlerContractDeployment('69420', null)
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
   })
 
@@ -398,24 +322,14 @@ describe('deployments', () => {
       expect(deployment).toStrictEqual(expected)
     })
 
-    it('should return the versioned deployment for supported version/unsupported chain', () => {
-      const expected = safeDeployments.getProxyFactoryDeployment({
-        version: '1.1.1', // First available version
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for supported version/unsupported chain', () => {
       const deployment = deployments.getProxyFactoryContractDeployment('69420', '1.1.1')
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
 
-    it('should return the latest deployment for unsupported version/chain', () => {
-      const expected = safeDeployments.getProxyFactoryDeployment({
-        version: LATEST_SAFE_VERSION,
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for unsupported version/chain', () => {
       const deployment = deployments.getProxyFactoryContractDeployment('69420', '1.2.3')
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
 
     it('should return the latest deployment for no version/supported chain', () => {
@@ -429,14 +343,9 @@ describe('deployments', () => {
       expect(deployment).toStrictEqual(expected)
     })
 
-    it('should return the latest deployment for no version/unsupported chain', () => {
-      const expected = safeDeployments.getProxyFactoryDeployment({
-        version: LATEST_SAFE_VERSION,
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for no version/unsupported chain', () => {
       const deployment = deployments.getProxyFactoryContractDeployment('69420', null)
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
   })
 
@@ -452,24 +361,14 @@ describe('deployments', () => {
       expect(deployment).toStrictEqual(expected)
     })
 
-    it('should return the versioned deployment for supported version/unsupported chain', () => {
-      const expected = safeDeployments.getSignMessageLibDeployment({
-        version: '1.3.0', // First available version
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for supported version/unsupported chain', () => {
       const deployment = deployments.getSignMessageLibContractDeployment('69420', '1.3.0')
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
 
-    it('should return the latest deployment for unsupported version/chain', () => {
-      const expected = safeDeployments.getSignMessageLibDeployment({
-        version: LATEST_SAFE_VERSION,
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for unsupported version/chain', () => {
       const deployment = deployments.getSignMessageLibContractDeployment('69420', '1.2.3')
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
 
     it('should return the latest deployment for no version/supported chain', () => {
@@ -483,14 +382,9 @@ describe('deployments', () => {
       expect(deployment).toStrictEqual(expected)
     })
 
-    it('should return the latest deployment for no version/unsupported chain', () => {
-      const expected = safeDeployments.getSignMessageLibDeployment({
-        version: LATEST_SAFE_VERSION,
-      })
-
-      expect(expected).toBeDefined()
+    it('should return undefined for no version/unsupported chain', () => {
       const deployment = deployments.getSignMessageLibContractDeployment('69420', null)
-      expect(deployment).toStrictEqual(expected)
+      expect(deployment).toBe(undefined)
     })
   })
 })
