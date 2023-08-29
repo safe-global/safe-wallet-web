@@ -34,6 +34,7 @@ export const dispatchTxProposal = async ({
   safeTx,
   txId,
   origin,
+  humanDescription,
 }: {
   chainId: string
   safeAddress: string
@@ -41,6 +42,7 @@ export const dispatchTxProposal = async ({
   safeTx: SafeTransaction
   txId?: string
   origin?: string
+  humanDescription?: string
 }): Promise<TransactionDetails> => {
   const safeSDK = getAndValidateSafeSDK()
   const safeTxHash = await safeSDK.getTransactionHash(safeTx)
@@ -49,7 +51,6 @@ export const dispatchTxProposal = async ({
   try {
     proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash, origin)
   } catch (error) {
-    const humanDescription = `Transaction #${safeTx.data.nonce}`
     if (txId) {
       txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: asError(error), humanDescription })
     } else {
@@ -91,7 +92,7 @@ export const dispatchTxSigning = async (
     txDispatch(TxEvent.SIGN_FAILED, {
       txId,
       error: asError(error),
-      humanDescription: humanDescription || `Transaction #${safeTx.data.nonce}`,
+      humanDescription,
     })
     throw error
   }
@@ -113,7 +114,7 @@ export const dispatchOnChainSigning = async (
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
-  const eventParams = { txId, humanDescription: humanDescription || `Transaction #${safeTx.data.nonce}` }
+  const eventParams = { txId, humanDescription }
 
   try {
     // With the unchecked signer, the contract call resolves once the tx
@@ -188,6 +189,7 @@ export const dispatchBatchExecution = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
+  humanDescription?: string,
   overrides?: PayableOverrides,
 ) => {
   const groupKey = multiSendTxData
@@ -200,17 +202,17 @@ export const dispatchBatchExecution = async (
     const provider = createWeb3(wallet.provider)
     result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData, overrides)
 
-    txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+    txs.forEach(({ txId }) => {
       txDispatch(TxEvent.EXECUTING, { txId, groupKey, humanDescription })
     })
   } catch (err) {
-    txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+    txs.forEach(({ txId }) => {
       txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey, humanDescription })
     })
     throw err
   }
 
-  txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+  txs.forEach(({ txId }) => {
     txDispatch(TxEvent.PROCESSING, { txId, txHash: result!.hash, groupKey, humanDescription })
   })
 
@@ -218,7 +220,7 @@ export const dispatchBatchExecution = async (
     ?.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
-        txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+        txs.forEach(({ txId }) => {
           txDispatch(TxEvent.REVERTED, {
             txId,
             error: new Error('Transaction reverted by EVM'),
@@ -227,7 +229,7 @@ export const dispatchBatchExecution = async (
           })
         })
       } else {
-        txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+        txs.forEach(({ txId }) => {
           txDispatch(TxEvent.PROCESSED, {
             txId,
             groupKey,
@@ -241,11 +243,11 @@ export const dispatchBatchExecution = async (
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+        txs.forEach(({ txId }) => {
           txDispatch(TxEvent.PROCESSED, { txId, safeAddress, humanDescription })
         })
       } else {
-        txs.forEach(({ txId, txInfo: { humanDescription } }) => {
+        txs.forEach(({ txId }) => {
           txDispatch(TxEvent.FAILED, {
             txId,
             error: asError(err),
@@ -265,9 +267,9 @@ export const dispatchSpendingLimitTxExecution = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
+  humanDescription?: string,
 ) => {
   const id = JSON.stringify(txParams)
-  const humanDescription = 'Module transaction'
 
   let result: ContractTransaction | undefined
   try {
@@ -288,7 +290,7 @@ export const dispatchSpendingLimitTxExecution = async (
     )
     txDispatch(TxEvent.EXECUTING, { groupKey: id, humanDescription })
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+    txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error), humanDescription })
     throw error
   }
 
@@ -376,6 +378,7 @@ export const dispatchBatchExecutionRelay = async (
   multiSendTxData: string,
   chainId: string,
   safeAddress: string,
+  humanDescription?: string,
 ) => {
   const to = multiSendContract.getAddress()
   const data = multiSendContract.contract.interface.encodeFunctionData('multiSend', [multiSendTxData])
@@ -394,6 +397,7 @@ export const dispatchBatchExecutionRelay = async (
         txId,
         error: asError(error),
         groupKey,
+        humanDescription,
       })
     })
     throw error
