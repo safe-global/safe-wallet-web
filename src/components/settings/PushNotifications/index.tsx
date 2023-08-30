@@ -1,4 +1,16 @@
-import { Grid, Paper, Typography, Checkbox, FormControlLabel, FormGroup, Alert, Switch, Divider } from '@mui/material'
+import {
+  Grid,
+  Paper,
+  Typography,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Alert,
+  Switch,
+  Divider,
+  Link as MuiLink,
+} from '@mui/material'
+import Link from 'next/link'
 import type { ReactElement } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -13,6 +25,7 @@ import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
+import { AppRoutes } from '@/config/routes'
 
 import css from './styles.module.css'
 
@@ -61,7 +74,7 @@ export const PushNotifications = (): ReactElement => {
               </Typography>
 
               {shouldShowMacHelper && (
-                <Alert severity="info" className={css.info}>
+                <Alert severity="info" className={css.macOsInfo}>
                   <Typography fontWeight={700} variant="body2" mb={1}>
                     For MacOS users
                   </Typography>
@@ -89,6 +102,16 @@ export const PushNotifications = (): ReactElement => {
                       label={preferences ? 'On' : 'Off'}
                     />
                   </div>
+
+                  <Paper className={css.globalInfo} variant="outlined">
+                    <Typography variant="body2">
+                      Want to setup notifications for different or all Safes? You can do so in your{' '}
+                      <Link href={AppRoutes.settings.notifications} passHref legacyBehavior>
+                        <MuiLink>global preferences</MuiLink>
+                      </Link>
+                      .
+                    </Typography>
+                  </Paper>
                 </>
               ) : (
                 <GlobalPushNotifications />

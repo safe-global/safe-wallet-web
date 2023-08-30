@@ -17,29 +17,24 @@
   min-width: 100%;
 }
 
-.content {
-  display: flex;
-  align-items: center;
+.button {
+  padding: 4px 10px;
 }
 
-.text {
+.buttons {
   display: flex;
-  flex-direction: column;
-}
-
-.title {
-  display: flex;
-  align-items: center;
+  gap: var(--space-2);
 }
 
 .chip {
   border-radius: 4px;
   background-color: var(--color-secondary-main);
-  margin-right: var(--space-1);
   font-weight: 400;
   font-size: 12px;
   width: var(--space-5);
   height: 24px;
+  z-index: 9999999;
+  position: relative;
 }
 
 [data-theme='dark'] .chip {
@@ -53,15 +48,7 @@
 }
 
 .icon {
+  margin-top: -12px;
   width: 64px;
   height: 64px;
-}
-
-.buttons {
-  display: flex;
-  gap: var(--space-2);
-}
-
-.button {
-  padding: 4px 10px;
 }

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
-import { FIREBASE_MESSAGING_SW_PATH, FIREBASE_OPTIONS } from '@/config/constants'
-import { initializeApp } from 'firebase/app'
+import { initializeFirebase } from '@/services/firebase'
+import { FIREBASE_MESSAGING_SW_PATH } from '@/config/constants'
 
 export const useFirebaseNotifications = (): void => {
   // Register servicer worker
@@ -10,13 +10,11 @@ export const useFirebaseNotifications = (): void => {
       return
     }
 
-    const hasFirebaseOptions = Object.values(FIREBASE_OPTIONS).every(Boolean)
+    const app = initializeFirebase()
 
-    if (!hasFirebaseOptions) {
+    if (!app) {
       return
     }
-
-    initializeApp(FIREBASE_OPTIONS)
 
     const registerFirebaseSw = () => {
       navigator.serviceWorker.register(FIREBASE_MESSAGING_SW_PATH).catch(() => null)

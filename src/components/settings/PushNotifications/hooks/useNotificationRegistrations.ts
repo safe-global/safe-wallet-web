@@ -88,22 +88,19 @@ export const useNotificationRegistrations = () => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_SAFE)
   }
 
-  const unregisterAllNotifications = async () => {
+  const unregisterChainNotifications = async (chainId: string) => {
     if (!uuid) {
       return
     }
 
-    // Device unregistration is chain agnostic but is required for the route
-    const CHAIN_ID = '1'
-
     let didUnregister = false
 
     try {
-      const response = await unregisterDevice(CHAIN_ID, uuid)
+      const response = await unregisterDevice(chainId, uuid)
 
       didUnregister = response == null
     } catch (e) {
-      console.error(`Error unregistering device on chain ${CHAIN_ID}`, e)
+      console.error(`Error unregistering device on chain ${chainId}`, e)
     }
 
     if (!didUnregister) {
@@ -118,6 +115,6 @@ export const useNotificationRegistrations = () => {
   return {
     registerNotifications,
     unregisterSafeNotifications,
-    unregisterAllNotifications,
+    unregisterChainNotifications,
   }
 }

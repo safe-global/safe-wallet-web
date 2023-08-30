@@ -344,7 +344,7 @@ describe('useNotificationRegistrations', () => {
     })
   })
 
-  describe('unregisterAllNotifications', () => {
+  describe('unregisterChainNotifications', () => {
     const unregisterDeviceSpy = jest.spyOn(sdk, 'unregisterDevice')
 
     it('does not unregister device if no uuid is present', async () => {
@@ -357,7 +357,7 @@ describe('useNotificationRegistrations', () => {
 
       const { result } = renderHook(() => useNotificationRegistrations())
 
-      await result.current.unregisterAllNotifications()
+      await result.current.unregisterChainNotifications('1')
 
       expect(unregisterDeviceSpy).not.toHaveBeenCalled()
     })
@@ -379,7 +379,7 @@ describe('useNotificationRegistrations', () => {
 
       const { result } = renderHook(() => useNotificationRegistrations())
 
-      await result.current.unregisterAllNotifications()
+      await result.current.unregisterChainNotifications('1')
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
@@ -402,7 +402,7 @@ describe('useNotificationRegistrations', () => {
 
       const { result } = renderHook(() => useNotificationRegistrations())
 
-      await result.current.unregisterAllNotifications()
+      await result.current.unregisterChainNotifications('1')
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
@@ -425,7 +425,7 @@ describe('useNotificationRegistrations', () => {
 
       const { result } = renderHook(() => useNotificationRegistrations())
 
-      await result.current.unregisterAllNotifications()
+      await result.current.unregisterChainNotifications('1')
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 

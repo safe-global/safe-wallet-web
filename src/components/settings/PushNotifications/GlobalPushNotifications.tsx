@@ -18,7 +18,6 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
 import useChains from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
-import CheckWallet from '@/components/common/CheckWallet'
 import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
@@ -43,7 +42,7 @@ export const transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafe
 }
 
 // Convert data structure of currently notified Safes
-const transformCurrentNotifiedSafes = (allPreferences: NotificationPreferences): NotifiableSafes => {
+const transformCurrentSubscribedSafes = (allPreferences: NotificationPreferences): NotifiableSafes => {
   const obj: NotifiableSafes = {}
 
   for (const { chainId, safeAddress } of Object.values(allPreferences)) {
@@ -81,7 +80,8 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   const addedSafes = useAppSelector(selectAllAddedSafes)
 
   const { getAllPreferences } = useNotificationPreferences()
-  const { unregisterSafeNotifications, registerNotifications } = useNotificationRegistrations()
+  const { unregisterChainNotifications, unregisterSafeNotifications, registerNotifications } =
+    useNotificationRegistrations()
 
   // Safes selected in the UI
   const [selectedSafes, setSelectedSafes] = useState<NotifiableSafes>({})
@@ -92,7 +92,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     if (!allPreferences) {
       return
     }
-    return transformCurrentNotifiedSafes(allPreferences)
+    return transformCurrentSubscribedSafes(allPreferences)
   }, [getAllPreferences])
 
   // `currentNotifiedSafes` is initially undefined until indexedDB resolves
@@ -140,18 +140,18 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     })
   }
 
-  // Wether Safes need to be (un-)reigstered with the service
-  const shouldRegisterSafes = Object.entries(selectedSafes).some(([chainId, safeAddresses]) => {
+  // Whether Safes need to be (un-)registered with the service
+  const shouldRegisterSelectedSafes = Object.entries(selectedSafes).some(([chainId, safeAddresses]) => {
     return safeAddresses.some((safeAddress) => !currentNotifiedSafes?.[chainId]?.includes(safeAddress))
   })
 
-  const shouldUnregisterSafes =
+  const shouldUnregisterUnselectedSafes =
     currentNotifiedSafes &&
     Object.entries(currentNotifiedSafes).some(([chainId, safeAddresses]) => {
       return safeAddresses.some((safeAddress) => !selectedSafes[chainId]?.includes(safeAddress))
     })
 
-  const canSave = shouldRegisterSafes || shouldUnregisterSafes
+  const canSave = shouldRegisterSelectedSafes || shouldUnregisterUnselectedSafes
 
   const onSave = async () => {
     if (!canSave) {
@@ -163,13 +163,6 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     if (!isGranted) {
       return
     }
-
-    // TODO: Enable when live on prod.
-    // const shouldUnregisterDevice = Object.values(selectedSafes).every((safeAddresses) => safeAddresses.length === 0)
-    // if (shouldUnregisterDevice) {
-    //   unregisterAllNotifications()
-    //   return
-    // }
 
     const registrationPromises: Array<Promise<void>> = []
 
@@ -185,7 +178,13 @@ export const GlobalPushNotifications = (): ReactElement | null => {
       return acc
     }, {})
 
-    const safesToUnregister =
+    const shouldRegister = Object.values(safesToRegister).some((safeAddresses) => safeAddresses.length > 0)
+
+    if (shouldRegister) {
+      registrationPromises.push(registerNotifications(safesToRegister))
+    }
+
+    const shouldUnregister =
       currentNotifiedSafes &&
       Object.entries(currentNotifiedSafes).reduce<NotifiableSafes>((acc, [chainId, safeAddresses]) => {
         const safesToUnregisterOnChain = safeAddresses.filter(
@@ -198,21 +197,26 @@ export const GlobalPushNotifications = (): ReactElement | null => {
         return acc
       }, {})
 
-    const shouldRegisterSafes = Object.values(safesToRegister).some((safeAddresses) => safeAddresses.length > 0)
+    if (shouldUnregister) {
+      for (const [chainId, safeAddresses] of Object.entries(shouldUnregister)) {
+        const shouldUnregsiterDevice =
+          safeAddresses.length === currentNotifiedSafes[chainId].length &&
+          safeAddresses.every((safeAddress) => {
+            return currentNotifiedSafes[chainId]?.includes(safeAddress)
+          })
 
-    if (shouldRegisterSafes) {
-      registrationPromises.push(registerNotifications(safesToRegister))
-    }
+        if (shouldUnregsiterDevice) {
+          registrationPromises.push(unregisterChainNotifications(chainId))
+          continue
+        }
 
-    if (safesToUnregister) {
-      for (const [chainId, safeAddresses] of Object.entries(safesToUnregister)) {
         for (const safeAddress of safeAddresses) {
           registrationPromises.push(unregisterSafeNotifications(chainId, safeAddress))
         }
       }
     }
 
-    Promise.all(registrationPromises)
+    await Promise.all(registrationPromises)
 
     trackEvent(PUSH_NOTIFICATION_EVENTS.SAVE_SETTINGS)
   }
@@ -228,13 +232,9 @@ export const GlobalPushNotifications = (): ReactElement | null => {
           My Safes ({totalNotifiableSafes})
         </Typography>
 
-        <CheckWallet allowNonOwner>
-          {(isOk) => (
-            <Button variant="contained" disabled={!isOk || !canSave} onClick={onSave}>
-              Save
-            </Button>
-          )}
-        </CheckWallet>
+        <Button variant="contained" disabled={!canSave} onClick={onSave}>
+          Save
+        </Button>
       </Grid>
 
       <Grid item xs={12}>

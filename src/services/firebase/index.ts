@@ -1,5 +1,6 @@
 import { formatUnits } from 'ethers/lib/utils'
 import { get } from 'idb-keyval'
+import { initializeApp } from 'firebase/app'
 import type { MessagePayload } from 'firebase/messaging/sw'
 import type { ChainInfo, SafeBalanceResponse, ChainListResponse } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -7,7 +8,7 @@ import { shortenAddress } from '@/utils/formatters'
 import { AppRoutes } from '@/config/routes'
 import { isWebhookEvent, WebhookType } from '@/services/firebase/webhooks'
 import type { WebhookEvent } from '@/services/firebase/webhooks'
-import { GATEWAY_URL_PRODUCTION, GATEWAY_URL_STAGING, IS_PRODUCTION } from '@/config/constants'
+import { FIREBASE_OPTIONS, GATEWAY_URL_PRODUCTION, GATEWAY_URL_STAGING, IS_PRODUCTION } from '@/config/constants'
 import {
   createPreferencesStore,
   getSafeNotificationKey,
@@ -16,6 +17,24 @@ import type {
   NotificationPreferences,
   SafeNotificationKey,
 } from '@/components/settings/PushNotifications/hooks/notifications-idb'
+
+export const initializeFirebase = () => {
+  const hasFirebaseOptions = Object.values(FIREBASE_OPTIONS).every(Boolean)
+
+  if (!hasFirebaseOptions) {
+    return
+  }
+
+  let app: ReturnType<typeof initializeApp> | null = null
+
+  try {
+    app = initializeApp(FIREBASE_OPTIONS)
+  } catch (e) {
+    console.error('[Firebase] Initialization failed', e)
+  }
+
+  return app
+}
 
 export const shouldShowNotification = async (payload: MessagePayload): Promise<boolean> => {
   if (!isWebhookEvent(payload.data)) {
@@ -62,13 +81,11 @@ const getBalances = async (chainId: string, safeAddress: string): Promise<SafeBa
 }
 
 const getLink = (path: string, query: { address: string; chain?: ChainInfo; safeTxHash?: string }) => {
-  const APP_URL = 'https://app.safe.global'
-
   if (!query.chain) {
-    return APP_URL
+    return self.location.origin
   }
 
-  const link = `${APP_URL}${path}?safe=${query.chain.shortName}:${query.address}`
+  const link = `${self.location.origin}${path}?safe=${query.chain.shortName}:${query.address}`
 
   if (!query.safeTxHash) {
     return link

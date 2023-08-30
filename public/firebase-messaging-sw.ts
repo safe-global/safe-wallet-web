@@ -1,11 +1,9 @@
 /// <reference lib="webworker" />
 
-import { initializeApp } from 'firebase/app'
 import { onBackgroundMessage } from 'firebase/messaging/sw'
 import { getMessaging } from 'firebase/messaging/sw'
 
-import { parseFirebaseNotification, shouldShowNotification } from '@/services/firebase'
-import { FIREBASE_OPTIONS } from '@/config/constants'
+import { initializeFirebase, parseFirebaseNotification, shouldShowNotification } from '@/services/firebase'
 import { trackEvent } from '@/services/analytics'
 import { isWebhookEvent } from '@/services/firebase/webhooks'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
@@ -17,9 +15,9 @@ declare const self: ServiceWorkerGlobalScope & { __WB_MANIFEST: unknown }
 // Satisfy Workbox
 self.__WB_MANIFEST
 
-const hasFirebaseOptions = Object.values(FIREBASE_OPTIONS).every(Boolean)
+const app = initializeFirebase()
 
-if (hasFirebaseOptions) {
+if (app) {
   // Must be called before `onBackgroundMessage` as Firebase embeds a `notificationclick` listener
   self.addEventListener(
     'notificationclick',
@@ -39,13 +37,10 @@ if (hasFirebaseOptions) {
     false,
   )
 
-  const app = initializeApp(FIREBASE_OPTIONS)
-
   const messaging = getMessaging(app)
 
   onBackgroundMessage(messaging, async (payload) => {
     const ICON_PATH = '/images/safe-logo-green.png'
-    const DEFAULT_LINK = 'https://app.safe.global'
 
     const shouldShow = await shouldShowNotification(payload)
 
@@ -63,7 +58,7 @@ if (hasFirebaseOptions) {
       icon: ICON_PATH,
       body: notification.body,
       image: notification.image,
-      tag: notification.link ?? DEFAULT_LINK,
+      tag: notification.link ?? self.location.origin,
     })
 
     trackEvent({

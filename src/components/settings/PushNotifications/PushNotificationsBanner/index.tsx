@@ -1,4 +1,4 @@
-import { Button, Chip, SvgIcon, Typography } from '@mui/material'
+import { Button, Chip, Grid, SvgIcon, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect } from 'react'
@@ -72,41 +72,39 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     <CustomTooltip
       className={css.banner}
       title={
-        <div className={css.container}>
-          <div className={css.content}>
-            <div className={css.text}>
-              <div className={css.title}>
-                <Chip label="New" className={css.chip} />
-                <Typography variant="subtitle2" fontWeight={700}>
-                  Enable push notifications
-                </Typography>
-              </div>
-              <Typography mt={0.5} mb={1.5} variant="body2">
-                Easily track your Safe Account activity with broswer push notifications.
-              </Typography>
-            </div>
+        <Grid container className={css.container}>
+          <Grid item xs={3}>
+            <Chip label="New" className={css.chip} />
             <SvgIcon component={PushNotificationIcon} inheritViewBox fontSize="inherit" className={css.icon} />
-          </div>
-          <div className={css.buttons}>
-            {totalAddedSafes > 0 && (
-              <Button variant="contained" size="small" className={css.button} onClick={onEnableAll}>
-                Enable all
-              </Button>
-            )}
-            {safe && (
-              <Link
-                passHref
-                legacyBehavior
-                href={{ pathname: AppRoutes.settings.notifications, query }}
-                onClick={onCustomize}
-              >
-                <Button variant="outlined" size="small" className={css.button}>
-                  Customize
+          </Grid>
+          <Grid item xs={9}>
+            <Typography variant="subtitle2" fontWeight={700}>
+              Enable push notifications
+            </Typography>
+            <Typography mt={0.5} mb={1.5} variant="body2">
+              Easily track your Safe Account activity with broswer push notifications.
+            </Typography>
+            <div className={css.buttons}>
+              {totalAddedSafes > 0 && (
+                <Button variant="contained" size="small" className={css.button} onClick={onEnableAll}>
+                  Enable all
                 </Button>
-              </Link>
-            )}
-          </div>
-        </div>
+              )}
+              {safe && (
+                <Link
+                  passHref
+                  legacyBehavior
+                  href={{ pathname: AppRoutes.settings.notifications, query }}
+                  onClick={onCustomize}
+                >
+                  <Button variant="outlined" size="small" className={css.button}>
+                    Customize
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </Grid>
+        </Grid>
       }
       open
     >
