@@ -14,6 +14,7 @@ import Track from '../Track'
 import SafeTokenIcon from '@/public/images/common/safe-token.svg'
 import css from './styles.module.css'
 import UnreadBadge from '../UnreadBadge'
+import classnames from 'classnames'
 
 const TOKEN_DECIMALS = 18
 
@@ -63,8 +64,7 @@ const SafeTokenWidget = () => {
             <Link href={url || ''} passHref legacyBehavior>
               <ButtonBase
                 aria-describedby="safe-token-widget"
-                sx={canRedeemSep5 ? { height: '42px !important' } : undefined}
-                className={css.tokenButton}
+                className={classnames(css.tokenButton, { [css.sep5]: canRedeemSep5 })}
                 disabled={url === undefined}
               >
                 <SafeTokenIcon width={24} height={24} />

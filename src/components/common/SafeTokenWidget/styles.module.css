@@ -22,6 +22,10 @@
   align-self: stretch;
 }
 
+.sep5 {
+  height: 42px;
+}
+
 [data-theme='dark'] .allocationBadge :global .MuiBadge-dot {
   background-color: var(--color-primary-main);
 }
