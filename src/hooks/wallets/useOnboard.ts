@@ -68,8 +68,7 @@ const getWalletConnectLabel = async (wallet: ConnectedWallet): Promise<string | 
   if (!isWalletConnect) return
   const { connector } = wallet.provider as unknown as any
   const peerWalletV2 = connector.session?.peer?.metadata?.name
-  const peerWalletV1 = connector.peerMeta?.name
-  return peerWalletV2 || peerWalletV1 || UNKNOWN_PEER
+  return peerWalletV2 || UNKNOWN_PEER
 }
 
 const trackWalletType = (wallet: ConnectedWallet) => {
