@@ -4,6 +4,7 @@ import ThresholdKey from '@tkey-mpc/core'
 import { TorusServiceProvider } from '@tkey-mpc/service-provider-torus'
 import { TorusStorageLayer } from '@tkey-mpc/storage-layer-torus'
 import { ShareSerializationModule } from '@tkey-mpc/share-serialization'
+import { SecurityQuestionsModule } from '@tkey/security-questions'
 import { WEB3_AUTH_CLIENT_ID } from '@/config/constants'
 
 const { getStore, setStore, useStore } = new ExternalStore<ThresholdKey>()
@@ -32,6 +33,9 @@ export const useInitMPC = () => {
     // Configuration of Share Serialization Module
     const shareSerializationModule = new ShareSerializationModule()
 
+    // Security questions module
+    const securityQuestionsModule = new SecurityQuestionsModule()
+
     // Instantiation of tKey
     const tKey = new ThresholdKey({
       enableLogging: true,
@@ -40,6 +44,7 @@ export const useInitMPC = () => {
       manualSync: true,
       modules: {
         shareSerialization: shareSerializationModule,
+        securityQuestions: securityQuestionsModule,
       },
     })
 

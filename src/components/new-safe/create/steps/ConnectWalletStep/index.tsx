@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Box, Button, Grid, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isPairingSupported } from '@/services/pairing/utils'
@@ -13,6 +13,7 @@ import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import PairingDescription from '@/components/common/PairingDetails/PairingDescription'
 import PairingQRCode from '@/components/common/PairingDetails/PairingQRCode'
 import { usePendingSafe } from '../StatusStep/usePendingSafe'
+import { MPCWallet } from '@/components/common/ConnectWallet/MPCWallet'
 
 const ConnectWalletStep = ({ onSubmit, setStep }: StepRenderProps<NewSafeFormData>) => {
   const [pendingSafe] = usePendingSafe()
@@ -45,6 +46,12 @@ const ConnectWalletStep = ({ onSubmit, setStep }: StepRenderProps<NewSafeFormDat
             <Button onClick={handleConnect} variant="contained" size="stretched" disableElevation>
               Connect
             </Button>
+
+            <Divider sx={{ width: '100%' }}>
+              <Typography color="primary">or</Typography>
+            </Divider>
+
+            <MPCWallet />
           </Grid>
 
           {isSupported && (

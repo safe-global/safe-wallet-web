@@ -16,6 +16,7 @@ import { ethers } from 'ethers'
 import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getRpcServiceUrl } from '../web3'
+import type { SecurityQuestionsModule } from '@tkey/security-questions'
 
 const { getTSSPubKey } = utils
 
@@ -122,7 +123,28 @@ export const useMPCWallet = () => {
     }
   }
 
-  const copyTSSShareIntoManualBackupFactorkey = async () => {
+  const setupUserPassword2 = async (password: string) => {
+    const question = 'YOUR PASSWORD'
+    try {
+      if (!tKey) {
+        throw new Error('tkey does not exist, cannot add factor pub')
+      }
+      if (!localFactorKey) {
+        throw new Error('localFactorKey does not exist, cannot add factor pub')
+      }
+
+      const passwordShare = await (
+        tKey.modules.securityQuestions as SecurityQuestionsModule
+      ).generateNewShareWithSecurityQuestions(password, question)
+
+      passwordShare.newShareStores[passwordShare.newShareIndex.toString(16)]
+      await tKey.syncLocalMetadataTransitions()
+    } catch (err) {
+      console.error(`Failed to copy share to new manual factor: ${err}`)
+    }
+  }
+
+  const setupUserPassword = async () => {
     try {
       if (!tKey) {
         throw new Error('tkey does not exist, cannot add factor pub')
@@ -163,6 +185,7 @@ export const useMPCWallet = () => {
         verifier: WEB3AUTH_VERIFIER_ID,
         clientId: GOOGLE_CLIENT_ID,
       })
+
       console.log('Login successful', loginResponse)
 
       setLoginResponse(loginResponse)
@@ -316,7 +339,7 @@ export const useMPCWallet = () => {
   }
 
   return {
-    copyTSSShareIntoManualBackupFactorkey,
+    setupUserPassword,
     manualBackup,
     setManualBackup,
     loginPending,

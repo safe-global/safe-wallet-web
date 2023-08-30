@@ -11,7 +11,6 @@ export const MPCWallet = () => {
   const [showBackup, setShowBackup] = useState(false)
   const tKey = useMPC()
   const {
-    copyTSSShareIntoManualBackupFactorkey,
     manualBackup,
     setManualBackup,
     loginPending,
@@ -19,7 +18,11 @@ export const MPCWallet = () => {
     triggerLogin,
     resetAccount,
     user,
+    setupUserPassword,
   } = useContext(MpcWalletContext)
+  const handleBackup = async () => {
+    await setupUserPassword('HelloWorld!')
+  }
   const hasManualBackup = useMemo(() => {
     if (!tKey) {
       return false
@@ -29,7 +32,8 @@ export const MPCWallet = () => {
 
       const shares = Object.values(tKey.getMetadata().getShareDescription())
       console.log(shares)
-      return shares.some((share) => share.some((description) => description.includes('manual share')))
+      //return shares.some((share) => share.some((description) => description.includes('manual share')))
+      return false
     } catch (err) {
       console.error(err)
       return false
@@ -63,7 +67,7 @@ export const MPCWallet = () => {
             </span>
             <span>
               {!hasManualBackup && (
-                <Button variant="contained" size="small" onClick={copyTSSShareIntoManualBackupFactorkey}>
+                <Button variant="contained" size="small" onClick={handleBackup}>
                   Backup
                 </Button>
               )}
@@ -71,7 +75,7 @@ export const MPCWallet = () => {
           </Box>
         </>
       ) : (
-        <Button variant="contained" size="small" onClick={triggerLogin} fullWidth disabled={loginPending}>
+        <Button variant="contained" onClick={triggerLogin} disabled={loginPending}>
           {loginPending ? (
             <>
               Login Pending <CircularProgress size={20} />{' '}

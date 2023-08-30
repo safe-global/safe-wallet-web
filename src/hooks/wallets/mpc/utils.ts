@@ -11,6 +11,7 @@ import { EthereumSigningProvider } from '@web3auth-mpc/ethereum-provider'
 import keccak256 from 'keccak256'
 import { Web3Provider, type ExternalProvider, JsonRpcProvider } from '@ethersproject/providers'
 import { utils } from '@toruslabs/tss-client'
+import type ThresholdKey from '@tkey-mpc/default'
 const { getDKLSCoeff, setupSockets } = utils
 
 const parties = 4
@@ -188,10 +189,7 @@ export type FactorKeyCloudMetadata = {
   tssIndex: number
 }
 
-const fetchDeviceShareFromTkey = async (tKey: {
-  metadata: { getLatestPublicPolynomial: () => { (): any; new (): any; getPolynomialID: { (): any; new (): any } } }
-  shares: { [x: string]: any }
-}) => {
+const fetchDeviceShareFromTkey = async (tKey: ThresholdKey) => {
   if (!tKey) {
     console.error('tKey not initialized yet')
     return
@@ -214,7 +212,7 @@ const fetchDeviceShareFromTkey = async (tKey: {
 }
 
 export const addFactorKeyMetadata = async (
-  tKey: any,
+  tKey: ThresholdKey,
   factorKey: BN,
   tssShare: BN,
   tssIndex: number,
@@ -254,7 +252,7 @@ export const addFactorKeyMetadata = async (
 }
 
 export const copyExistingTSSShareForNewFactor = async (
-  tKey: any,
+  tKey: ThresholdKey,
   newFactorPub: Point,
   factorKeyForExistingTSSShare: BN,
 ) => {

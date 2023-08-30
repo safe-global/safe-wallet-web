@@ -239,7 +239,7 @@ self.addEventListener('fetch', function (event) {
                                 },
                                 error: error,
                               },
-                              "https://tkeympc--walletweb.review-wallet-web.5afe.dev"
+                              "http://localhost:3000"
                             );
                           } else {
                             // communicate via broadcast channel
