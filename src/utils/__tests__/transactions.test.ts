@@ -5,6 +5,8 @@ import type {
   SafeAppData,
   Transaction,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
+import { isMultiSendTxInfo } from '../transaction-guards'
 import { getQueuedTransactionCount, getTxOrigin } from '../transactions'
 
 describe('transactions', () => {
@@ -108,6 +110,79 @@ describe('transactions', () => {
       expect(result).toBe(
         '{"url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","name":""}',
       )
+    })
+  })
+
+  describe('isMultiSendTxInfo', () => {
+    it('should return true for a multisend tx', () => {
+      expect(
+        isMultiSendTxInfo({
+          type: TransactionInfoType.CUSTOM,
+          to: {
+            value: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+            name: 'Gnosis Safe: MultiSendCallOnly',
+            logoUri:
+              'https://safe-transaction-assets.safe.global/contracts/logos/0x40A2aCCbd92BCA938b02010E17A5b8929b49130D.png',
+          },
+          dataSize: '1188',
+          value: '0',
+          methodName: 'multiSend',
+          actionCount: 3,
+          isCancellation: false,
+        }),
+      ).toBe(true)
+    })
+
+    it('should return false for non-multisend txs', () => {
+      expect(
+        isMultiSendTxInfo({
+          type: TransactionInfoType.CUSTOM,
+          to: {
+            value: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+            name: 'Gnosis Safe: MultiSendCallOnly',
+            logoUri:
+              'https://safe-transaction-assets.safe.global/contracts/logos/0x40A2aCCbd92BCA938b02010E17A5b8929b49130D.png',
+          },
+          dataSize: '1188',
+          value: '0',
+          methodName: 'multiSend',
+          //actionCount: 3, // missing actionCount
+          isCancellation: false,
+        }),
+      ).toBe(false)
+
+      expect(
+        isMultiSendTxInfo({
+          type: TransactionInfoType.CUSTOM,
+          to: {
+            value: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+            name: 'Gnosis Safe: MultiSendCallOnly',
+            logoUri:
+              'https://safe-transaction-assets.safe.global/contracts/logos/0x40A2aCCbd92BCA938b02010E17A5b8929b49130D.png',
+          },
+          dataSize: '1188',
+          value: '0',
+          methodName: 'notMultiSend', // wrong method
+          actionCount: 3,
+          isCancellation: false,
+        }),
+      ).toBe(false)
+
+      expect(
+        isMultiSendTxInfo({
+          type: TransactionInfoType.SETTINGS_CHANGE, // wrong type
+          dataDecoded: {
+            method: 'changeThreshold',
+            parameters: [
+              {
+                name: '_threshold',
+                type: 'uint256',
+                value: '2',
+              },
+            ],
+          },
+        }),
+      ).toBe(false)
     })
   })
 })

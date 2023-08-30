@@ -74,7 +74,7 @@ export const batchSlice = createSlice({
 export const { setBatch, addTx, removeTx } = batchSlice.actions
 
 const selectAllBatches = (state: RootState): BatchTxsState => {
-  return state[batchSlice.name] || {}
+  return state[batchSlice.name] || initialState
 }
 
 export const selectBatchBySafe = createSelector(
