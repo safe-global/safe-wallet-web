@@ -142,7 +142,7 @@ const fetchTokenBalance = async (chainId: string, safeAddress: string): Promise<
  * The Safe token allocation is equal to the voting power.
  * It is computed by adding all vested tokens - claimed tokens + token balance
  */
-export const useSafeTokenBalance = (allocationData?: Vesting[]): AsyncResult<BigNumber> => {
+export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<BigNumber> => {
   const { safe, safeAddress } = useSafeInfo()
   const chainId = safe.chainId
 

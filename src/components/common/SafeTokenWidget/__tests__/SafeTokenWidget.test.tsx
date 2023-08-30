@@ -6,7 +6,7 @@ import { BigNumber } from 'ethers'
 import SafeTokenWidget from '..'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
-import useSafeTokenAllocation, { useSafeTokenBalance } from '@/hooks/useSafeTokenAllocation'
+import useSafeTokenAllocation, { useSafeVotingPower } from '@/hooks/useSafeTokenAllocation'
 
 const MOCK_GOVERNANCE_APP_URL = 'https://mock.governance.safe.global'
 
@@ -53,7 +53,7 @@ describe('SafeTokenWidget', () => {
   it('Should render nothing for unsupported chains', () => {
     ;(useChainId as jest.Mock).mockImplementationOnce(jest.fn(() => '100'))
     ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [[], , false])
-    ;(useSafeTokenBalance as jest.Mock).mockImplementation(() => [BigNumber.from(0), , false])
+    ;(useSafeVotingPower as jest.Mock).mockImplementation(() => [BigNumber.from(0), , false])
 
     const result = render(<SafeTokenWidget />)
     expect(result.baseElement).toContainHTML('<body><div /></body>')
@@ -61,7 +61,7 @@ describe('SafeTokenWidget', () => {
 
   it('Should display 0 if Safe has no SAFE token', async () => {
     ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [[], , false])
-    ;(useSafeTokenBalance as jest.Mock).mockImplementation(() => [BigNumber.from(0), , false])
+    ;(useSafeVotingPower as jest.Mock).mockImplementation(() => [BigNumber.from(0), , false])
 
     const result = render(<SafeTokenWidget />)
     await waitFor(() => expect(result.baseElement).toHaveTextContent('0'))
@@ -69,7 +69,7 @@ describe('SafeTokenWidget', () => {
 
   it('Should display the value formatted correctly', async () => {
     ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [[], , false])
-    ;(useSafeTokenBalance as jest.Mock).mockImplementation(() => [BigNumber.from('472238796133701648384'), , false])
+    ;(useSafeVotingPower as jest.Mock).mockImplementation(() => [BigNumber.from('472238796133701648384'), , false])
 
     // to avoid failing tests in some environments
     const NumberFormat = Intl.NumberFormat
@@ -86,7 +86,7 @@ describe('SafeTokenWidget', () => {
 
   it('Should render a link to the governance app', async () => {
     ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [[], , false])
-    ;(useSafeTokenBalance as jest.Mock).mockImplementation(() => [BigNumber.from(420000), , false])
+    ;(useSafeVotingPower as jest.Mock).mockImplementation(() => [BigNumber.from(420000), , false])
 
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
@@ -98,7 +98,7 @@ describe('SafeTokenWidget', () => {
 
   it('Should render a claim button for SEP5 qualification', async () => {
     ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [[{ tag: 'user_v2' }], , false])
-    ;(useSafeTokenBalance as jest.Mock).mockImplementation(() => [BigNumber.from(420000), , false])
+    ;(useSafeVotingPower as jest.Mock).mockImplementation(() => [BigNumber.from(420000), , false])
 
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {

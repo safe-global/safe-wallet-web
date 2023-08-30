@@ -2,7 +2,7 @@ import { SafeAppsTag, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import useChainId from '@/hooks/useChainId'
-import useSafeTokenAllocation, { useSafeTokenBalance, type Vesting } from '@/hooks/useSafeTokenAllocation'
+import useSafeTokenAllocation, { useSafeVotingPower, type Vesting } from '@/hooks/useSafeTokenAllocation'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Button, ButtonBase, Skeleton, Tooltip, Typography } from '@mui/material'
@@ -28,7 +28,7 @@ const canRedeemSep5Airdrop = (allocation?: Vesting[]): boolean => {
     return false
   }
 
-  return !sep5Allocation.isRedeemed
+  return !sep5Allocation.isRedeemed && !sep5Allocation.isExpired
 }
 
 const SafeTokenWidget = () => {
@@ -38,7 +38,7 @@ const SafeTokenWidget = () => {
   const governanceApp = apps?.[0]
 
   const [allocationData, , allocationDataLoading] = useSafeTokenAllocation()
-  const [allocation, , allocationLoading] = useSafeTokenBalance(allocationData)
+  const [allocation, , allocationLoading] = useSafeVotingPower(allocationData)
 
   const tokenAddress = getSafeTokenAddress(chainId)
   if (!tokenAddress) {

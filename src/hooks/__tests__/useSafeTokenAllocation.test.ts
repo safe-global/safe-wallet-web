@@ -3,7 +3,7 @@ import { defaultAbiCoder, hexZeroPad, keccak256, parseEther, toUtf8Bytes } from 
 import useSafeTokenAllocation, {
   type VestingData,
   _getRedeemDeadline,
-  useSafeTokenBalance,
+  useSafeVotingPower,
   type Vesting,
 } from '../useSafeTokenAllocation'
 import * as web3 from '../wallets/web3'
@@ -253,7 +253,7 @@ describe('Allocations', () => {
 
   describe('useSafeTokenBalance', () => {
     it('should return undefined without allocation data', async () => {
-      const { result } = renderHook(() => useSafeTokenBalance())
+      const { result } = renderHook(() => useSafeVotingPower())
 
       await waitFor(() => {
         expect(result.current[1]).toBeFalsy()
@@ -273,7 +273,7 @@ describe('Allocations', () => {
           } as any),
       )
 
-      const { result } = renderHook(() => useSafeTokenBalance([{} as Vesting]))
+      const { result } = renderHook(() => useSafeVotingPower([{} as Vesting]))
 
       await waitFor(() => {
         expect(result.current[1]).toBeFalsy()
@@ -296,7 +296,7 @@ describe('Allocations', () => {
           } as any),
       )
 
-      const { result } = renderHook(() => useSafeTokenBalance())
+      const { result } = renderHook(() => useSafeVotingPower())
 
       await waitFor(() => {
         expect(result.current[0]?.eq(parseEther('100'))).toBeTruthy()
@@ -337,7 +337,7 @@ describe('Allocations', () => {
         },
       ]
 
-      const { result } = renderHook(() => useSafeTokenBalance(mockAllocation))
+      const { result } = renderHook(() => useSafeVotingPower(mockAllocation))
 
       await waitFor(() => {
         expect(result.current[0]?.toNumber()).toEqual(2000 - 1000 + 400)
@@ -378,7 +378,7 @@ describe('Allocations', () => {
         },
       ]
 
-      const { result } = renderHook(() => useSafeTokenBalance(mockAllocation))
+      const { result } = renderHook(() => useSafeVotingPower(mockAllocation))
 
       await waitFor(() => {
         expect(result.current[0]?.toNumber()).toEqual(0)
