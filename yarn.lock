@@ -5040,15 +5040,6 @@
     buffer "^6.0.3"
     ethereumjs-util "^7.1.3"
 
-"@web3-onboard/taho@^2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/taho/-/taho-2.0.5.tgz#899d147c234d61e1fb81045fc7339182c230c632"
-  integrity sha512-Z5n2UMumLNppOlDgYM9MhrM+YGyz8Emouaf7htH8l4B2r/meV4F3Wkgol2xYuwwu5SJyPaJH2GxNeh/EAfyBxg==
-  dependencies:
-    "@web3-onboard/common" "^2.3.3"
-    tallyho-detect-provider "^1.0.0"
-    tallyho-onboarding "^1.0.2"
-
 "@web3-onboard/trezor@^2.4.2":
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/@web3-onboard/trezor/-/trezor-2.4.2.tgz#49a485467d970ae872288c07eccb7adf18782622"
@@ -5860,7 +5851,7 @@ borsh@^0.7.0:
     bs58 "^4.0.0"
     text-encoding-utf-8 "^1.0.2"
 
-bowser@^2.11.0, bowser@^2.9.0:
+bowser@^2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.11.0.tgz#5ca3c35757a7aa5771500c70a73a9f91ef420a8f"
   integrity sha512-AlcaJBi/pqqJBIQ8U9Mcpc9i8Aqxn88Skv5d+xBX006BY5u8N3mGLHa5Lgppa7L/HfwgwLgZ6NYs+Ag6uUmJRA==
@@ -13409,18 +13400,6 @@ table-layout@^1.0.2:
     deep-extend "~0.6.0"
     typical "^5.2.0"
     wordwrapjs "^4.0.0"
-
-tallyho-detect-provider@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/tallyho-detect-provider/-/tallyho-detect-provider-1.0.2.tgz#6e462c34494217d39a83e22709dd855488b2d32d"
-  integrity sha512-VUGZiWUrKJUUjtnkib09tuNO7Kld4UWLs54nnNYP0tewvzmeb1VWDK0UTv88bEUcuRKx2YWGDIuOuK9v270Ewg==
-
-tallyho-onboarding@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/tallyho-onboarding/-/tallyho-onboarding-1.0.2.tgz#afc7dc4eb05b3a7861ead215e798585e1cbe2e91"
-  integrity sha512-bdFT/fNrFrq1BYVgjl/JKtwDmeS+z2u0415PoxmGmmYYRfdcKqXtEPImMoEbVwGtOeN0iFVohuS8ESrrAe+w7w==
-  dependencies:
-    bowser "^2.9.0"
 
 tapable@^2.2.0:
   version "2.2.1"
