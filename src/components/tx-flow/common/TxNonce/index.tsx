@@ -59,7 +59,7 @@ const NonceFormOption = memo(function NonceFormOption({
   const addressBook = useAddressBook()
   const transactions = useQueuedTxByNonce(Number(nonce))
 
-  const label = useMemo(() => {
+  const txLabel = useMemo(() => {
     const latestTransactions = getLatestTransactions(transactions)
 
     if (latestTransactions.length === 0) {
@@ -67,13 +67,15 @@ const NonceFormOption = memo(function NonceFormOption({
     }
 
     const [{ transaction }] = latestTransactions
-    return getTransactionType(transaction, addressBook).text
+    return transaction.txInfo.humanDescription || `${getTransactionType(transaction, addressBook).text} transaction`
   }, [addressBook, transactions])
+
+  const label = txLabel || 'New transaction'
 
   return (
     <MenuItem {...menuItemProps}>
       <Typography variant="body2">
-        <b>{nonce}</b>&nbsp;- {`${label || 'New'} transaction`}
+        <b>{nonce}</b>&nbsp;- {label}
       </Typography>
     </MenuItem>
   )
@@ -168,7 +170,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
               return (
                 <>
                   {isRecommendedNonce && <NonceFormHeader>Recommended nonce</NonceFormHeader>}
-                  {isInitialPreviousNonce && <NonceFormHeader sx={{ pt: 3 }}>Already in queue</NonceFormHeader>}
+                  {isInitialPreviousNonce && <NonceFormHeader sx={{ pt: 3 }}>Replace existing</NonceFormHeader>}
                   <NonceFormOption key={option} menuItemProps={props} nonce={option} />
                 </>
               )

@@ -7,6 +7,7 @@ export type Notification = {
   id: string
   message: string
   detailedMessage?: string
+  title?: string
   groupKey: string
   variant: AlertColor
   timestamp: number

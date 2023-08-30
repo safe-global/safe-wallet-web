@@ -27,6 +27,14 @@ export const selectQueuedTransactionsByNonce = createSelector(
   },
 )
 
+export const selectQueuedTransactionById = createSelector(
+  selectQueuedTransactions,
+  (_: RootState, txId?: string) => txId,
+  (queuedTransactions, txId?: string) => {
+    return (queuedTransactions || []).find((item) => item.transaction.id === txId)
+  },
+)
+
 export const txQueueListener = (listenerMiddleware: typeof listenerMiddlewareInstance) => {
   listenerMiddleware.startListening({
     actionCreator: txQueueSlice.actions.set,
