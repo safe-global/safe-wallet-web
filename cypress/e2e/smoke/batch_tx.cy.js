@@ -13,6 +13,8 @@ describe('Create batch transaction', () => {
   before(() => {
     cy.visit(`/home?safe=${SAFE}`)
     cy.contains('Accept selection').click()
+
+    cy.contains(/E2E Wallet @ G(ö|oe)rli/)
   })
 
   it('Should open an empty batch list', () => {

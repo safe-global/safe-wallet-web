@@ -14,7 +14,6 @@ import {
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
-  isSupportedMultiSendAddress,
   isTxQueued,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
@@ -39,7 +38,6 @@ type TxDetailsProps = {
 }
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
-  const chainId = useChainId()
   const isPending = useIsPending(txSummary.id)
   const isQueue = isTxQueued(txSummary.txStatus)
   const awaitingExecution = isAwaitingExecution(txSummary.txStatus)
@@ -89,7 +87,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <Summary txDetails={txDetails} />
         </div>
 
-        {isSupportedMultiSendAddress(txDetails.txInfo, chainId) && isMultiSendTxInfo(txDetails.txInfo) && (
+        {isMultiSendTxInfo(txDetails.txInfo) && (
           <div className={`${css.multiSend}`}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <Multisend txData={txDetails.txData} />

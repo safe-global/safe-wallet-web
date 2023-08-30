@@ -17,12 +17,10 @@ import {
   isMultiSendTxInfo,
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
-  isSupportedMultiSendAddress,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
-import useChainId from '@/hooks/useChainId'
 
 export const TransferTx = ({
   info,
@@ -98,13 +96,11 @@ const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
 }
 
 const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; withLogo?: boolean }): ReactElement => {
-  const chainId = useChainId()
-
   if (isSettingsChangeTxInfo(info)) {
     return <SettingsChangeTx info={info} />
   }
 
-  if (isSupportedMultiSendAddress(info, chainId) && isMultiSendTxInfo(info)) {
+  if (isMultiSendTxInfo(info)) {
     return <MultiSendTx info={info} />
   }
 

@@ -21,7 +21,7 @@ Here's the list of all the required and optional variables:
 
 | Env variable                                           |              | Description
 | ------------------------------------------------------ | ------------ | -----------
-| `NEXT_PUBLIC_INFURA_TOKEN`                             | **required** | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token
+| `NEXT_PUBLIC_INFURA_TOKEN`                             | optional     | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token
 | `NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN`                   | optional     | Infura token for Safe Apps, falls back to `NEXT_PUBLIC_INFURA_TOKEN`
 | `NEXT_PUBLIC_IS_PRODUCTION`                            | optional     | Set to `true` to build a minified production app
 | `NEXT_PUBLIC_GATEWAY_URL_PRODUCTION`                   | optional     | The base URL for the [Safe Client Gateway](https://github.com/safe-global/safe-client-gateway)
