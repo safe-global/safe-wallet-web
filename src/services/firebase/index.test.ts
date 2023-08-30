@@ -24,6 +24,12 @@ const setupFetchStub = (data: any) => (_url: string) => {
   })
 }
 
+Object.defineProperty(self, 'location', {
+  value: {
+    origin: 'https://app.safe.global',
+  },
+})
+
 describe('parseWebhookNotification', () => {
   beforeEach(() => {
     global.fetch = jest.fn()
