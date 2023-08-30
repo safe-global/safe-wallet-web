@@ -32,7 +32,7 @@ const canRedeemSep5Airdrop = (allocation?: Vesting[]): boolean => {
   return !sep5Allocation.isRedeemed && !sep5Allocation.isExpired
 }
 
-const SEP5_DEADLINE = '27.10.2023 10:00 UTC'
+const SEP5_DEADLINE = '27.10'
 
 const SafeTokenWidget = () => {
   const chainId = useChainId()
@@ -61,7 +61,13 @@ const SafeTokenWidget = () => {
   return (
     <Box className={css.buttonContainer}>
       <Tooltip
-        title={url ? (canRedeemSep5 ? `New airdrop until ${SEP5_DEADLINE}` : `Open ${governanceApp?.name}`) : ''}
+        title={
+          url
+            ? canRedeemSep5
+              ? `Claim any amount until ${SEP5_DEADLINE} to be eligible!`
+              : `Open ${governanceApp?.name}`
+            : ''
+        }
       >
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
