@@ -76,7 +76,8 @@ const useTxNotifications = (): void => {
         const txId = 'txId' in detail ? detail.txId : undefined
         const txHash = 'txHash' in detail ? detail.txHash : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
-        const humanDescription = 'humanDescription' in detail ? detail.humanDescription : 'Transaction'
+        const humanDescription =
+          'humanDescription' in detail && detail.humanDescription ? detail.humanDescription : 'Transaction'
 
         dispatch(
           showNotification({
