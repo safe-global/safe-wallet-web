@@ -26,6 +26,7 @@ import { showNotification } from '@/store/notificationsSlice'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { AppRoutes } from '@/config/routes'
+import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
 
@@ -34,8 +35,9 @@ export const PushNotifications = (): ReactElement => {
   const { safe, safeLoaded } = useSafeInfo()
   const isOwner = useIsSafeOwner()
 
-  const { updatePreferences, getPreferences } = useNotificationPreferences()
-  const { unregisterSafeNotifications, registerNotifications } = useNotificationRegistrations()
+  const { updatePreferences, getPreferences, getAllPreferences } = useNotificationPreferences()
+  const { unregisterSafeNotifications, unregisterChainNotifications, registerNotifications } =
+    useNotificationRegistrations()
 
   const preferences = getPreferences(safe.chainId, safe.address.value)
 
@@ -46,14 +48,26 @@ export const PushNotifications = (): ReactElement => {
   const isMac = typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac')
   const shouldShowMacHelper = isMac || IS_DEV
 
-  const handleOnChange = () => {
-    if (preferences) {
-      unregisterSafeNotifications(safe.chainId, safe.address.value)
-      trackEvent(PUSH_NOTIFICATION_EVENTS.DISABLE_SAFE)
-    } else {
-      registerNotifications({ [safe.chainId]: [safe.address.value] })
+  const handleOnChange = async () => {
+    if (!preferences) {
+      await registerNotifications({ [safe.chainId]: [safe.address.value] })
       trackEvent(PUSH_NOTIFICATION_EVENTS.ENABLE_SAFE)
+      return
     }
+
+    const allPreferences = getAllPreferences()
+    const totalRegisteredSafesOnChain = allPreferences
+      ? Object.values(allPreferences).filter(({ chainId }) => chainId === safe.chainId).length
+      : 0
+    const shouldUnregisterDevice = totalRegisteredSafesOnChain === 1
+
+    if (shouldUnregisterDevice) {
+      await unregisterChainNotifications(safe.chainId)
+    } else {
+      await unregisterSafeNotifications(safe.chainId, safe.address.value)
+    }
+
+    trackEvent(PUSH_NOTIFICATION_EVENTS.DISABLE_SAFE)
   }
 
   return (
@@ -69,8 +83,8 @@ export const PushNotifications = (): ReactElement => {
           <Grid item xs>
             <Grid container gap={2.5} flexDirection="column">
               <Typography>
-                Enable push notifications for {safeLoaded ? 'this Safe Account' : 'your Safe Accounts'} in your browser.
-                You will need to enable them again if you clear your browser cache.
+                Enable push notifications for {safeLoaded ? 'this Safe Account' : 'your Safe Accounts'} in your browser
+                with your signature. You will need to enable them again if you clear your browser cache.
               </Typography>
 
               {shouldShowMacHelper && (
@@ -97,10 +111,15 @@ export const PushNotifications = (): ReactElement => {
                       showName={true}
                       hasExplorer
                     />
-                    <FormControlLabel
-                      control={<Switch checked={!!preferences} onChange={handleOnChange} />}
-                      label={preferences ? 'On' : 'Off'}
-                    />
+                    <CheckWallet>
+                      {(isOk) => (
+                        <FormControlLabel
+                          control={<Switch checked={!!preferences} onChange={handleOnChange} />}
+                          label={preferences ? 'On' : 'Off'}
+                          disabled={!isOk}
+                        />
+                      )}
+                    </CheckWallet>
                   </div>
 
                   <Paper className={css.globalInfo} variant="outlined">
@@ -198,12 +217,9 @@ export const PushNotifications = (): ReactElement => {
                     <Checkbox
                       checked={preferences[WebhookType.CONFIRMATION_REQUEST]}
                       onChange={async (_, checked) => {
-                        registerNotifications(
-                          {
-                            [safe.chainId]: [safe.address.value],
-                          },
-                          true, // Add signature
-                        )
+                        registerNotifications({
+                          [safe.chainId]: [safe.address.value],
+                        })
                           .then(() => {
                             setPreferences({
                               ...preferences,

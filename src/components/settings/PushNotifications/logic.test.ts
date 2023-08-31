@@ -89,44 +89,6 @@ describe('Notifications', () => {
   })
 
   describe('getRegisterDevicePayload', () => {
-    it('should return the payload without signature', async () => {
-      const token = crypto.randomUUID()
-
-      jest.spyOn(firebase, 'getToken').mockImplementation(() => Promise.resolve(token))
-
-      const uuid = crypto.randomUUID()
-
-      const payload = await logic.getRegisterDevicePayload({
-        safesToRegister: {
-          ['1']: [hexZeroPad('0x1', 20), hexZeroPad('0x2', 20)],
-          ['2']: [hexZeroPad('0x1', 20)],
-        },
-        uuid,
-      })
-
-      expect(payload).toStrictEqual({
-        uuid,
-        cloudMessagingToken: token,
-        buildNumber: '0',
-        bundle: 'https://app.safe.global',
-        deviceType: DeviceType.WEB,
-        version: packageJson.version,
-        timestamp: expect.any(String),
-        safeRegistrations: [
-          {
-            chainId: '1',
-            safes: [hexZeroPad('0x1', 20), hexZeroPad('0x2', 20)],
-            signatures: [],
-          },
-          {
-            chainId: '2',
-            safes: [hexZeroPad('0x1', 20)],
-            signatures: [],
-          },
-        ],
-      })
-    })
-
     it('should return the payload with signature', async () => {
       const token = crypto.randomUUID()
       jest.spyOn(firebase, 'getToken').mockImplementation(() => Promise.resolve(token))

@@ -14,26 +14,34 @@ import { useNotificationRegistrations } from '../hooks/useNotificationRegistrati
 import { transformAddedSafes } from '../GlobalPushNotifications'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { trackEvent } from '@/services/analytics'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
 
-const LS_KEY = 'dismissPushNotifications'
+const DISMISS_NOTIFICATION_KEY = 'dismissPushNotifications'
 
 export const PushNotificationsBanner = ({ children }: { children: ReactElement }): ReactElement => {
-  const [dismissedBanner = false, setDismissedBanner] = useLocalStorage<boolean>(LS_KEY)
   const addedSafes = useAppSelector(selectAllAddedSafes)
   const totalAddedSafes = useAppSelector(selectTotalAdded)
-
+  const { safe } = useSafeInfo()
   const { query } = useRouter()
-  const safe = Array.isArray(query.safe) ? query.safe[0] : query.safe
+
+  const [dismissedBannerPerChain = {}, setDismissedBannerPerChain] = useLocalStorage<{
+    [chainId: string]: boolean
+  }>(DISMISS_NOTIFICATION_KEY)
+  const dismissedBanner = !!dismissedBannerPerChain[safe.chainId]
 
   const { registerNotifications } = useNotificationRegistrations()
 
   const dismissBanner = useCallback(() => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.DISMISS_BANNER)
 
-    setDismissedBanner(true)
-  }, [setDismissedBanner])
+    setDismissedBannerPerChain({
+      ...dismissedBannerPerChain,
+      [safe.chainId]: true,
+    })
+  }, [dismissedBannerPerChain, safe.chainId, setDismissedBannerPerChain])
 
   // Click outside to dismiss banner
   useEffect(() => {
@@ -49,11 +57,11 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     }
   }, [dismissBanner, dismissedBanner])
 
-  const onEnableAll = () => {
+  const onEnableAll = async () => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.ENABLE_ALL)
 
     const safesToRegister = transformAddedSafes(addedSafes)
-    registerNotifications(safesToRegister)
+    await registerNotifications(safesToRegister)
 
     dismissBanner()
   }
@@ -82,13 +90,24 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
               Enable push notifications
             </Typography>
             <Typography mt={0.5} mb={1.5} variant="body2">
-              Easily track your Safe Account activity with broswer push notifications.
+              Get notified about pending signatures, incoming and outgoing transactions and more when Safe{`{Wallet}`}{' '}
+              is in the background or closed.
             </Typography>
             <div className={css.buttons}>
               {totalAddedSafes > 0 && (
-                <Button variant="contained" size="small" className={css.button} onClick={onEnableAll}>
-                  Enable all
-                </Button>
+                <CheckWallet>
+                  {(isOk) => (
+                    <Button
+                      variant="contained"
+                      size="small"
+                      className={css.button}
+                      onClick={onEnableAll}
+                      disabled={!isOk}
+                    >
+                      Enable all
+                    </Button>
+                  )}
+                </CheckWallet>
               )}
               {safe && (
                 <Link

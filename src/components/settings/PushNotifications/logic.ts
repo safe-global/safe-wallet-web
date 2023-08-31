@@ -68,7 +68,7 @@ export const getRegisterDevicePayload = async ({
 }: {
   safesToRegister: NotifiableSafes
   uuid: string
-  web3?: Web3Provider
+  web3: Web3Provider
 }): Promise<RegisterNotificationsRequest> => {
   const BUILD_NUMBER = '0' // Required value, but does not exist on web
   const BUNDLE = 'safe'
@@ -95,15 +95,13 @@ export const getRegisterDevicePayload = async ({
 
   const safeRegistrations = await Promise.all(
     Object.entries(safesToRegister).map(async ([chainId, safeAddresses]) => {
-      // Signature is only required for CONFIRMATION_REQUESTS
-      const signature = web3
-        ? await getSafeRegistrationSignature({ safeAddresses, web3, uuid, timestamp, token })
-        : undefined
+      // We require a signature for confirmation request notifications
+      const signature = await getSafeRegistrationSignature({ safeAddresses, web3, uuid, timestamp, token })
 
       return {
         chainId,
         safes: safeAddresses,
-        signatures: signature ? [signature] : [],
+        signatures: [signature],
       }
     }),
   )

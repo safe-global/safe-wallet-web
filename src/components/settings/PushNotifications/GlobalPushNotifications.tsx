@@ -27,6 +27,7 @@ import { requestNotificationPermission } from './logic'
 import type { NotifiableSafes } from './logic'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 import type { NotificationPreferences } from './hooks/notifications-idb'
+import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
 
@@ -85,6 +86,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
   // Safes selected in the UI
   const [selectedSafes, setSelectedSafes] = useState<NotifiableSafes>({})
+  const selectedChains = Object.keys(selectedSafes)
 
   // Current Safes registered for notifications in indexedDB
   const currentNotifiedSafes = useMemo(() => {
@@ -94,6 +96,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     }
     return transformCurrentSubscribedSafes(allPreferences)
   }, [getAllPreferences])
+  const currentNotifiedChains = currentNotifiedSafes ? Object.keys(currentNotifiedSafes) : []
 
   // `currentNotifiedSafes` is initially undefined until indexedDB resolves
   useEffect(() => {
@@ -120,7 +123,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   }, [notifiableSafes])
 
   const isAllSelected = Object.entries(notifiableSafes).every(([chainId, safeAddresses]) => {
-    const hasChain = Object.keys(selectedSafes).includes(chainId)
+    const hasChain = selectedChains.includes(chainId)
     const hasEverySafe = safeAddresses?.every((safeAddress) => selectedSafes[chainId]?.includes(safeAddress))
     return hasChain && hasEverySafe
   })
@@ -139,6 +142,10 @@ export const GlobalPushNotifications = (): ReactElement | null => {
       }, {})
     })
   }
+
+  const totalSignaturesRequired = selectedChains.filter((chainId) => {
+    return !currentNotifiedChains.includes(chainId)
+  }).length
 
   // Whether Safes need to be (un-)registered with the service
   const shouldRegisterSelectedSafes = Object.entries(selectedSafes).some(([chainId, safeAddresses]) => {
@@ -232,9 +239,21 @@ export const GlobalPushNotifications = (): ReactElement | null => {
           My Safes ({totalNotifiableSafes})
         </Typography>
 
-        <Button variant="contained" disabled={!canSave} onClick={onSave}>
-          Save
-        </Button>
+        <div>
+          {totalSignaturesRequired > 0 && (
+            <Typography display="inline" mr={1}>
+              You will have to verify with your signature {totalSignaturesRequired} times
+            </Typography>
+          )}
+
+          <CheckWallet allowNonOwner>
+            {(isOk) => (
+              <Button variant="contained" disabled={!canSave || !isOk} onClick={onSave}>
+                Save
+              </Button>
+            )}
+          </CheckWallet>
+        </div>
       </Grid>
 
       <Grid item xs={12}>

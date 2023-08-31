@@ -23,8 +23,8 @@ export const _DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences[SafeNoti
   [WebhookType.INCOMING_TOKEN]: true,
   [WebhookType.OUTGOING_TOKEN]: true,
   [WebhookType.MODULE_TRANSACTION]: true,
-  [WebhookType.CONFIRMATION_REQUEST]: false, // Requires signature
-  [WebhookType.SAFE_CREATED]: false, // Cannot be registered to predicted address
+  [WebhookType.CONFIRMATION_REQUEST]: true, // Requires signature
+  [WebhookType.SAFE_CREATED]: false, // We do not preemptively subscribe to Safes before they are created
 }
 
 // ExternalStores are used to keep indexedDB state synced across hook instances
@@ -44,7 +44,7 @@ export const useNotificationPreferences = (): {
     safeAddress: string,
     preferences: NotificationPreferences[SafeNotificationKey]['preferences'],
   ) => void
-  _createPreferences: (safesToRegister: NotifiableSafes, withConfirmationRequests?: boolean) => void
+  _createPreferences: (safesToRegister: NotifiableSafes) => void
   _deletePreferences: (safesToUnregister: NotifiableSafes) => void
   _clearPreferences: () => void
 } => {
@@ -124,10 +124,7 @@ export const useNotificationPreferences = (): {
   }, [hydratePreferences])
 
   // Add store entry with default preferences for specified Safe(s)
-  const createPreferences = (
-    safesToRegister: { [chain: string]: Array<string> },
-    withConfirmationRequests?: boolean,
-  ) => {
+  const createPreferences = (safesToRegister: { [chain: string]: Array<string> }) => {
     if (!preferencesStore) {
       return
     }
@@ -139,9 +136,7 @@ export const useNotificationPreferences = (): {
         const defaultPreferences: NotificationPreferences[SafeNotificationKey] = {
           chainId,
           safeAddress,
-          preferences: withConfirmationRequests
-            ? { ..._DEFAULT_NOTIFICATION_PREFERENCES, [WebhookType.CONFIRMATION_REQUEST]: true }
-            : _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
         }
 
         return [key, defaultPreferences]
