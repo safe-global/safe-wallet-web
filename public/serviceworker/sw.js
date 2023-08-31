@@ -12,6 +12,7 @@ self.addEventListener('message', function (event) {
 self.addEventListener('fetch', function (event) {
   try {
     const url = new URL(event.request.url)
+    const redirectURL = self.location.url
     if (url.pathname.includes('redirect') && url.href.includes(getScope())) {
       event.respondWith(
         new Response(
@@ -239,7 +240,7 @@ self.addEventListener('fetch', function (event) {
                                 },
                                 error: error,
                               },
-                              "http://localhost:3000"
+                              "${redirectURL}"
                             );
                           } else {
                             // communicate via broadcast channel
