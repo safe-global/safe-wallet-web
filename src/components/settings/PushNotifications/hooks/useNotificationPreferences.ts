@@ -10,11 +10,15 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import { WebhookType } from '@/services/firebase/webhooks'
 import ExternalStore from '@/services/ExternalStore'
-import { createPreferencesStore, createUuidStore, getSafeNotificationKey } from './notifications-idb'
-import type { NotificationPreferences, SafeNotificationKey } from './notifications-idb'
+import {
+  createNotificationPrefsIndexedDb,
+  createNotificationUuidIndexedDb,
+  getSafeNotificationPrefsKey,
+} from '@/services/firebase/preferences'
+import type { NotificationPreferences, SafeNotificationPrefsKey } from '@/services/firebase/preferences'
 import type { NotifiableSafes } from '../logic'
 
-export const _DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences[SafeNotificationKey]['preferences'] = {
+export const _DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences[SafeNotificationPrefsKey]['preferences'] = {
   [WebhookType.NEW_CONFIRMATION]: true,
   [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: true,
   [WebhookType.PENDING_MULTISIG_TRANSACTION]: true,
@@ -42,7 +46,7 @@ export const useNotificationPreferences = (): {
   updatePreferences: (
     chainId: string,
     safeAddress: string,
-    preferences: NotificationPreferences[SafeNotificationKey]['preferences'],
+    preferences: NotificationPreferences[SafeNotificationPrefsKey]['preferences'],
   ) => void
   _createPreferences: (safesToRegister: NotifiableSafes) => void
   _deletePreferences: (safesToUnregister: NotifiableSafes) => void
@@ -54,7 +58,7 @@ export const useNotificationPreferences = (): {
 
   // Getters
   const getPreferences = (chainId: string, safeAddress: string) => {
-    const key = getSafeNotificationKey(chainId, safeAddress)
+    const key = getSafeNotificationPrefsKey(chainId, safeAddress)
     return preferences?.[key]?.preferences
   }
 
@@ -65,13 +69,13 @@ export const useNotificationPreferences = (): {
   // idb-keyval stores
   const uuidStore = useMemo(() => {
     if (typeof indexedDB !== 'undefined') {
-      return createUuidStore()
+      return createNotificationUuidIndexedDb()
     }
   }, [])
 
   const preferencesStore = useMemo(() => {
     if (typeof indexedDB !== 'undefined') {
-      return createPreferencesStore()
+      return createNotificationPrefsIndexedDb()
     }
   }, [])
 
@@ -111,7 +115,9 @@ export const useNotificationPreferences = (): {
       return
     }
 
-    getEntriesFromIndexedDb<SafeNotificationKey, NotificationPreferences[SafeNotificationKey]>(preferencesStore)
+    getEntriesFromIndexedDb<SafeNotificationPrefsKey, NotificationPreferences[SafeNotificationPrefsKey]>(
+      preferencesStore,
+    )
       .then((preferencesEntries) => {
         setPreferences(Object.fromEntries(preferencesEntries))
       })
@@ -130,17 +136,19 @@ export const useNotificationPreferences = (): {
     }
 
     const defaultPreferencesEntries = Object.entries(safesToRegister).flatMap(([chainId, safeAddresses]) => {
-      return safeAddresses.map((safeAddress): [SafeNotificationKey, NotificationPreferences[SafeNotificationKey]] => {
-        const key = getSafeNotificationKey(chainId, safeAddress)
+      return safeAddresses.map(
+        (safeAddress): [SafeNotificationPrefsKey, NotificationPreferences[SafeNotificationPrefsKey]] => {
+          const key = getSafeNotificationPrefsKey(chainId, safeAddress)
 
-        const defaultPreferences: NotificationPreferences[SafeNotificationKey] = {
-          chainId,
-          safeAddress,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
-        }
+          const defaultPreferences: NotificationPreferences[SafeNotificationPrefsKey] = {
+            chainId,
+            safeAddress,
+            preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          }
 
-        return [key, defaultPreferences]
-      })
+          return [key, defaultPreferences]
+        },
+      )
     })
 
     setManyIndexedDb(defaultPreferencesEntries, preferencesStore)
@@ -152,15 +160,15 @@ export const useNotificationPreferences = (): {
   const updatePreferences = (
     chainId: string,
     safeAddress: string,
-    preferences: NotificationPreferences[SafeNotificationKey]['preferences'],
+    preferences: NotificationPreferences[SafeNotificationPrefsKey]['preferences'],
   ) => {
     if (!preferencesStore) {
       return
     }
 
-    const key = getSafeNotificationKey(chainId, safeAddress)
+    const key = getSafeNotificationPrefsKey(chainId, safeAddress)
 
-    const newPreferences: NotificationPreferences[SafeNotificationKey] = {
+    const newPreferences: NotificationPreferences[SafeNotificationPrefsKey] = {
       safeAddress,
       chainId,
       preferences,
@@ -178,7 +186,7 @@ export const useNotificationPreferences = (): {
     }
 
     const keysToDelete = Object.entries(safesToUnregister).flatMap(([chainId, safeAddresses]) => {
-      return safeAddresses.map((safeAddress) => getSafeNotificationKey(chainId, safeAddress))
+      return safeAddresses.map((safeAddress) => getSafeNotificationPrefsKey(chainId, safeAddress))
     })
 
     deleteManyFromIndexedDb(keysToDelete, preferencesStore)

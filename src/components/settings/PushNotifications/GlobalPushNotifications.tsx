@@ -26,7 +26,7 @@ import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notif
 import { requestNotificationPermission } from './logic'
 import type { NotifiableSafes } from './logic'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
-import type { NotificationPreferences } from './hooks/notifications-idb'
+import type { NotificationPreferences } from '@/services/firebase/preferences'
 import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'

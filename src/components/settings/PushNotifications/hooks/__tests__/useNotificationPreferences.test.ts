@@ -3,7 +3,7 @@ import { set, setMany } from 'idb-keyval'
 import { renderHook, waitFor } from '@/tests/test-utils'
 import { hexZeroPad } from 'ethers/lib/utils'
 
-import { createUuidStore, createPreferencesStore } from '../notifications-idb'
+import { createNotificationUuidIndexedDb, createNotificationPrefsIndexedDb } from '@/services/firebase/preferences'
 import {
   useNotificationPreferences,
   _DEFAULT_NOTIFICATION_PREFERENCES,
@@ -40,7 +40,7 @@ describe('useNotificationPreferences', () => {
     it('return uuid if it exists', async () => {
       const uuid = 'test-uuid'
 
-      await set('uuid', uuid, createUuidStore())
+      await set('uuid', uuid, createNotificationUuidIndexedDb())
 
       const { result } = renderHook(() => useNotificationPreferences())
 
@@ -67,7 +67,7 @@ describe('useNotificationPreferences', () => {
         },
       }
 
-      await setMany(Object.entries(preferences), createPreferencesStore())
+      await setMany(Object.entries(preferences), createNotificationPrefsIndexedDb())
 
       const { result } = renderHook(() => useNotificationPreferences())
 
@@ -88,7 +88,7 @@ describe('useNotificationPreferences', () => {
         },
       }
 
-      await setMany(Object.entries(preferences), createPreferencesStore())
+      await setMany(Object.entries(preferences), createNotificationPrefsIndexedDb())
 
       const { result } = renderHook(() => useNotificationPreferences())
 
@@ -146,7 +146,7 @@ describe('useNotificationPreferences', () => {
         },
       }
 
-      await setMany(Object.entries(preferences), createPreferencesStore())
+      await setMany(Object.entries(preferences), createNotificationPrefsIndexedDb())
 
       const { result } = renderHook(() => useNotificationPreferences())
 
@@ -194,7 +194,7 @@ describe('useNotificationPreferences', () => {
         },
       }
 
-      await setMany(Object.entries(preferences), createPreferencesStore())
+      await setMany(Object.entries(preferences), createNotificationPrefsIndexedDb())
 
       const { result } = renderHook(() => useNotificationPreferences())
 
@@ -238,7 +238,7 @@ describe('useNotificationPreferences', () => {
         },
       }
 
-      await setMany(Object.entries(preferences), createPreferencesStore())
+      await setMany(Object.entries(preferences), createNotificationPrefsIndexedDb())
 
       const { result } = renderHook(() => useNotificationPreferences())
 

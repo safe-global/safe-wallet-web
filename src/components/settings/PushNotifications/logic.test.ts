@@ -118,7 +118,7 @@ describe('Notifications', () => {
         uuid,
         cloudMessagingToken: token,
         buildNumber: '0',
-        bundle: 'https://app.safe.global',
+        bundle: 'safe',
         deviceType: DeviceType.WEB,
         version: packageJson.version,
         timestamp: expect.any(String),

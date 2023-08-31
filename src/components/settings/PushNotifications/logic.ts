@@ -4,7 +4,7 @@ import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import { FIREBASE_MESSAGING_SW_PATH, FIREBASE_VAPID_KEY } from '@/config/constants'
+import { FIREBASE_MESSAGING_SW_PATH, FIREBASE_VAPID_KEY } from '@/services/firebase/constants'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import packageJson from '../../../../package.json'

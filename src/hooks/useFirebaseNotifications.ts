@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
-import { initializeFirebase } from '@/services/firebase'
-import { FIREBASE_MESSAGING_SW_PATH } from '@/config/constants'
+import { initializeFirebase } from '@/services/firebase/firebase'
+import { FIREBASE_MESSAGING_SW_PATH } from '@/services/firebase/constants'
 
 export const useFirebaseNotifications = (): void => {
   // Register servicer worker

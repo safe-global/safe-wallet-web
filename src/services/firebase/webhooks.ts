@@ -1,3 +1,5 @@
+// Refrain from importing outside of this folder to keep firebase-sw.js bundle small
+
 import type { MessagePayload } from 'firebase/messaging'
 
 export const isWebhookEvent = (data: MessagePayload['data']): data is WebhookEvent => {

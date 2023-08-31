@@ -3,7 +3,8 @@
 import { onBackgroundMessage } from 'firebase/messaging/sw'
 import { getMessaging } from 'firebase/messaging/sw'
 
-import { initializeFirebase, parseFirebaseNotification, shouldShowNotification } from '@/services/firebase'
+import { initializeFirebase } from '@/services/firebase/firebase'
+import { parseFirebaseNotification, shouldShowNotification } from '@/services/firebase/notifications'
 
 const ICON_PATH = '/images/safe-logo-green.png'
 

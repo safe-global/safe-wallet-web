@@ -1,8 +1,8 @@
 import { hexZeroPad } from 'ethers/lib/utils'
 import type { ChainInfo, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { _parseWebhookNotification } from '.'
-import { WebhookType } from './webhooks'
+import { _parseWebhookNotification } from '../notifications'
+import { WebhookType } from '../webhooks'
 import type {
   ConfirmationRequestEvent,
   ExecutedMultisigTransactionEvent,
@@ -14,7 +14,7 @@ import type {
   OutgoingTokenEvent,
   PendingMultisigTransactionEvent,
   SafeCreatedEvent,
-} from './webhooks'
+} from '../webhooks'
 
 const setupFetchStub = (data: any) => (_url: string) => {
   return Promise.resolve({
