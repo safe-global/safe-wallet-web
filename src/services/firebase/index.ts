@@ -62,193 +62,192 @@ const BASE_URL = IS_PRODUCTION ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
 // XHR is not supported in service workers so we can't use the SDK
 // TODO: Migrate to SDK when we update it to use fetch
-const getChains = async (): Promise<ChainListResponse | undefined> => {
+const getChain = async (chainId: string): Promise<ChainInfo | undefined> => {
   const ENDPOINT = `${BASE_URL}/v1/chains`
 
-  const response = await fetch(ENDPOINT)
+  let chains: ChainListResponse | null = null
 
-  if (response.ok) {
-    return response.json()
-  }
+  try {
+    const response = await fetch(ENDPOINT)
+    if (response.ok) {
+      chains = await response.json()
+    }
+  } catch {}
+
+  return chains?.results.find((chain) => chain.chainId === chainId)
 }
 
-const getBalances = async (chainId: string, safeAddress: string): Promise<SafeBalanceResponse | undefined> => {
+const getTokenInfo = async (
+  chainId: string,
+  safeAddress: string,
+  tokenAddress: string,
+  tokenValue?: string,
+): Promise<{ symbol: string; value: string; name: string }> => {
   const DEFAULT_CURRENCY = 'USD'
   const ENDPOINT = `${BASE_URL}/v1/chains/${chainId}/safes/${safeAddress}/balances/${DEFAULT_CURRENCY}`
 
-  const response = await fetch(ENDPOINT)
+  const DEFAULT_INFO = {
+    symbol: 'tokens',
+    value: 'some',
+    name: 'Token',
+  }
 
-  if (response.ok) {
-    return response.json()
+  let balances: SafeBalanceResponse | null = null
+
+  try {
+    const response = await fetch(ENDPOINT)
+    if (response.ok) {
+      balances = await response.json()
+    }
+  } catch {}
+
+  const tokenInfo = balances?.items.find((token) => token.tokenInfo.address === tokenAddress)?.tokenInfo
+
+  if (!tokenInfo) {
+    return DEFAULT_INFO
+  }
+
+  const symbol = tokenInfo?.symbol ?? DEFAULT_INFO.symbol
+  const value = tokenValue && tokenInfo ? formatUnits(tokenValue, tokenInfo.decimals).toString() : DEFAULT_INFO.value
+  const name = tokenInfo?.name ?? DEFAULT_INFO.name
+
+  return {
+    symbol,
+    value,
+    name,
   }
 }
 
-const getLink = (path: string, query: { address: string; chain?: ChainInfo; safeTxHash?: string }) => {
-  if (!query.chain) {
-    return self.location.origin
+const getLink = (data: WebhookEvent, shortName?: string) => {
+  const URL = self.location.origin
+
+  if (!shortName) {
+    return URL
   }
 
-  const link = `${self.location.origin}${path}?safe=${query.chain.shortName}:${query.address}`
-
-  if (!query.safeTxHash) {
-    return link
+  const withRoute = (route: string) => {
+    return `${URL}${route}?safe=${shortName}:${data.address}`
   }
 
-  return `${link}&id=${query.safeTxHash}`
+  if ('safeTxHash' in data) {
+    return `${withRoute(AppRoutes.transactions.tx)}&id=${data.safeTxHash}`
+  }
+
+  return withRoute(AppRoutes.transactions.history)
+}
+
+type NotificationsMap<T extends WebhookEvent = WebhookEvent> = {
+  [P in T['type']]: (
+    data: Extract<T, { type: P }>,
+  ) => Promise<{ title: string; body: string }> | { title: string; body: string } | null
 }
 
 export const _parseWebhookNotification = async (
   data: WebhookEvent,
 ): Promise<{ title: string; body: string; link: string } | undefined> => {
-  const { type, chainId, address } = data
-
-  let chains: Array<ChainInfo> | undefined
+  let chain: ChainInfo | undefined
 
   try {
-    const response = await getChains()
-    chains = response?.results
+    chain = await getChain(data.chainId)
   } catch {}
 
-  const chain = chains?.find((chain) => chain.chainId === chainId)
-  const chainName = chain?.chainName ?? `chain ${chainId}`
+  const chainName = chain?.chainName ?? `chain ${data.chainId}`
 
-  const shortSafeAddress = shortenAddress(address)
+  const currencySymbol = chain?.nativeCurrency?.symbol ?? 'ETH'
+  const currencyName = chain?.nativeCurrency?.name ?? 'Ether'
 
-  const historyLink = getLink(AppRoutes.transactions.history, { address, chain })
-
-  const getSafeTxHashLink = (safeTxHash: string) => getLink(AppRoutes.transactions.tx, { address, chain, safeTxHash })
-
-  if (type === WebhookType.NEW_CONFIRMATION) {
-    const { owner, safeTxHash } = data
-
-    return {
-      title: `Transaction confirmation`,
-      body: `Safe ${shortSafeAddress} on ${chainName} has a new confirmation from ${shortenAddress(
-        owner,
-      )} on transaction ${shortenAddress(safeTxHash)}.`,
-      link: getSafeTxHashLink(safeTxHash),
-    }
-  }
-
-  if (type === WebhookType.EXECUTED_MULTISIG_TRANSACTION) {
-    const { failed, txHash, safeTxHash } = data
-
-    const shortTxHash = shortenAddress(txHash)
-
-    if (failed === 'true') {
+  const Notifications: NotificationsMap = {
+    [WebhookType.NEW_CONFIRMATION]: ({ address, owner, safeTxHash }) => {
       return {
-        title: `Transaction failed`,
-        body: `Safe ${shortSafeAddress} on ${chainName} failed to execute transaction ${shortTxHash}.`,
-        link: getSafeTxHashLink(safeTxHash),
+        title: 'Transaction confirmation',
+        body: `Safe ${shortenAddress(address)} on ${chainName} has a new confirmation from ${shortenAddress(
+          owner,
+        )} on transaction ${shortenAddress(safeTxHash)}.`,
       }
-    } else {
+    },
+    [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: ({ address, failed, txHash }) => {
+      const didFail = failed === 'true'
       return {
-        title: `Transaction executed`,
-        body: `Safe ${shortSafeAddress} on ${chainName} executed transaction ${shortTxHash}.`,
-        link: getSafeTxHashLink(safeTxHash),
+        title: `Transaction ${didFail ? 'failed' : 'executed'}`,
+        body: `Safe ${shortenAddress(address)} on ${chainName} ${
+          didFail ? 'failed to execute' : 'executed'
+        } transaction ${shortenAddress(txHash)}.`,
       }
-    }
-  }
-
-  // TODO: Check notification
-  // https://github.com/safe-global/safe-transaction-service/blob/5d648f7dea05d46c00a7d43f9585a067a685758b/safe_transaction_service/notifications/tasks.py#L63
-  if (type === WebhookType.PENDING_MULTISIG_TRANSACTION) {
-    const { safeTxHash } = data
-
-    return {
-      title: `New pending transaction`,
-      body: `Safe ${shortSafeAddress} on ${chainName} has a new pending transaction ${shortenAddress(safeTxHash)}.`,
-      link: getSafeTxHashLink(safeTxHash),
-    }
-  }
-
-  if (type === WebhookType.INCOMING_ETHER || type === WebhookType.OUTGOING_ETHER) {
-    const { txHash, value } = data
-
-    const currencySymbol = chain?.nativeCurrency?.symbol ?? 'ETH'
-    const currencyValue = formatUnits(value, chain?.nativeCurrency?.decimals).toString()
-    const currencyName = chain?.nativeCurrency?.name ?? 'Ether'
-
-    const shortTxHash = shortenAddress(txHash)
-
-    if (type === WebhookType.INCOMING_ETHER) {
+    },
+    [WebhookType.PENDING_MULTISIG_TRANSACTION]: ({ address, safeTxHash }) => {
+      return {
+        title: 'Pending transaction',
+        body: `Safe ${shortenAddress(address)} on ${chainName} has a pending transaction ${shortenAddress(
+          safeTxHash,
+        )}.`,
+      }
+    },
+    [WebhookType.INCOMING_ETHER]: ({ address, txHash, value }) => {
       return {
         title: `${currencyName} received`,
-        body: `Safe ${shortSafeAddress} on ${chainName} received ${currencyValue} ${currencySymbol} in transaction ${shortTxHash}.`,
-        link: historyLink,
+        body: `Safe ${shortenAddress(address)} on ${chainName} received ${formatUnits(
+          value,
+          chain?.nativeCurrency?.decimals,
+        ).toString()} ${currencySymbol} in transaction ${shortenAddress(txHash)}.`,
       }
-    }
-
-    if (type === WebhookType.OUTGOING_ETHER) {
+    },
+    [WebhookType.OUTGOING_ETHER]: ({ address, txHash, value }) => {
       return {
         title: `${currencyName} sent`,
-        body: `Safe ${shortSafeAddress} on ${chainName} sent ${currencyValue} ${currencySymbol} in transaction ${shortTxHash}.`,
-        link: historyLink,
+        body: `Safe ${shortenAddress(address)} on ${chainName} sent ${formatUnits(
+          value,
+          chain?.nativeCurrency?.decimals,
+        ).toString()} ${currencySymbol} in transaction ${shortenAddress(txHash)}.`,
       }
-    }
-  }
-
-  if (type === WebhookType.INCOMING_TOKEN || type === WebhookType.OUTGOING_TOKEN) {
-    const { tokenAddress, txHash, value } = data
-
-    let balances: SafeBalanceResponse | undefined
-
-    try {
-      balances = await getBalances(chainId, address)
-    } catch {}
-
-    const tokenInfo = balances?.items.find((token) => token.tokenInfo.address === tokenAddress)?.tokenInfo
-
-    const tokenSymbol = tokenInfo?.symbol ?? 'tokens'
-    const tokenValue = value && tokenInfo ? formatUnits(value, tokenInfo.decimals).toString() : 'some'
-    const tokenName = tokenInfo?.name ?? 'Token'
-
-    const shortTxHash = shortenAddress(txHash)
-
-    if (type === WebhookType.INCOMING_TOKEN) {
+    },
+    [WebhookType.INCOMING_TOKEN]: async ({ address, txHash, tokenAddress, value }) => {
+      const token = await getTokenInfo(data.chainId, address, tokenAddress, value)
       return {
-        title: `${tokenName} received`,
-        body: `Safe ${shortSafeAddress} on ${chainName} received ${tokenValue} ${tokenSymbol} in transaction ${shortTxHash}.`,
-        link: historyLink,
+        title: `${token.name} received`,
+        body: `Safe ${shortenAddress(address)} on ${chainName} received ${token.value} ${
+          token.symbol
+        } in transaction ${shortenAddress(txHash)}.`,
       }
-    }
-
-    if (type === WebhookType.OUTGOING_TOKEN) {
+    },
+    [WebhookType.OUTGOING_TOKEN]: async ({ address, txHash, tokenAddress, value }) => {
+      const token = await getTokenInfo(data.chainId, address, tokenAddress, value)
       return {
-        title: `${tokenName} sent`,
-        body: `Safe ${shortSafeAddress} on ${chainName} sent ${tokenValue} ${tokenSymbol} in transaction ${shortTxHash}.`,
-        link: historyLink,
+        title: `${token.name} sent`,
+        body: `Safe ${shortenAddress(address)} on ${chainName} sent ${token.value} ${
+          token.symbol
+        } in transaction ${shortenAddress(txHash)}.`,
       }
-    }
+    },
+    [WebhookType.MODULE_TRANSACTION]: ({ address, module, txHash }) => {
+      return {
+        title: 'Module transaction',
+        body: `Safe ${shortenAddress(address)} on ${chainName} executed a module transaction ${shortenAddress(
+          txHash,
+        )} from module ${shortenAddress(module)}.`,
+      }
+    },
+    [WebhookType.CONFIRMATION_REQUEST]: ({ address, safeTxHash }) => {
+      return {
+        title: 'Confirmation request',
+        body: `Safe ${shortenAddress(
+          address,
+        )} on ${chainName} has a new confirmation request for transaction ${shortenAddress(safeTxHash)}.`,
+      }
+    },
+    [WebhookType.SAFE_CREATED]: () => {
+      // We do not preemptively subscribe to Safes before they are created
+      return null
+    },
   }
 
-  if (type === WebhookType.MODULE_TRANSACTION) {
-    const { module, txHash } = data
+  // Can be safely casted as `data.type` is a mapped type of `NotificationsMap`
+  const notification = await Notifications[data.type](data as any)
 
+  if (notification) {
     return {
-      title: `Module transaction`,
-      body: `Safe ${shortSafeAddress} on ${chainName} executed a module transaction ${shortenAddress(
-        txHash,
-      )} from module ${shortenAddress(module)}.`,
-      link: historyLink,
+      ...notification,
+      link: getLink(data, chain?.shortName),
     }
-  }
-
-  if (type === WebhookType.CONFIRMATION_REQUEST) {
-    const { safeTxHash } = data
-
-    return {
-      title: `Confirmation request`,
-      body: `Safe ${shortSafeAddress} on ${chainName} has a new confirmation request for transaction ${shortenAddress(
-        safeTxHash,
-      )}.`,
-      link: getSafeTxHashLink(safeTxHash),
-    }
-  }
-
-  if (type === WebhookType.SAFE_CREATED) {
-    // Notifications are subscribed to per Safe so we would only show this notification
-    // if the user was subscribed to a pre-determined address
   }
 }
 

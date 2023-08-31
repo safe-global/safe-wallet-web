@@ -54,7 +54,7 @@ describe('parseWebhookNotification', () => {
       const notification = await _parseWebhookNotification(payload)
 
       expect(notification).toEqual({
-        title: 'New confirmation',
+        title: 'Transaction confirmation',
         body: 'Safe 0x0000...0001 on Mainnet has a new confirmation from 0x0000...0002 on transaction 0x0000...0003.',
         link: 'https://app.safe.global/transactions/tx?safe=eth:0x0000000000000000000000000000000000000001&id=0x0000000000000000000000000000000000000000000000000000000000000003',
       })
@@ -66,7 +66,7 @@ describe('parseWebhookNotification', () => {
       const notification = await _parseWebhookNotification(payload)
 
       expect(notification).toEqual({
-        title: 'New confirmation',
+        title: 'Transaction confirmation',
         body: 'Safe 0x0000...0001 on chain 1 has a new confirmation from 0x0000...0002 on transaction 0x0000...0003.',
         link: 'https://app.safe.global',
       })
@@ -173,8 +173,8 @@ describe('parseWebhookNotification', () => {
       const notification = await _parseWebhookNotification(payload)
 
       expect(notification).toEqual({
-        title: 'New pending transaction',
-        body: 'Safe 0x0000...0001 on Mainnet has a new pending transaction 0x0000...0003.',
+        title: 'Pending transaction',
+        body: 'Safe 0x0000...0001 on Mainnet has a pending transaction 0x0000...0003.',
         link: 'https://app.safe.global/transactions/tx?safe=eth:0x0000000000000000000000000000000000000001&id=0x0000000000000000000000000000000000000000000000000000000000000003',
       })
     })
@@ -185,8 +185,8 @@ describe('parseWebhookNotification', () => {
       const notification = await _parseWebhookNotification(payload)
 
       expect(notification).toEqual({
-        title: 'New pending transaction',
-        body: 'Safe 0x0000...0001 on chain 1 has a new pending transaction 0x0000...0003.',
+        title: 'Pending transaction',
+        body: 'Safe 0x0000...0001 on chain 1 has a pending transaction 0x0000...0003.',
         link: 'https://app.safe.global',
       })
     })
