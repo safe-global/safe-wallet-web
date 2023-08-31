@@ -1,10 +1,18 @@
-import { set, entries, delMany, setMany, clear, update } from 'idb-keyval'
+import {
+  set as setIndexedDb,
+  entries as getEntriesFromIndexedDb,
+  delMany as deleteManyFromIndexedDb,
+  setMany as setManyIndexedDb,
+  clear as clearIndexedDb,
+  update as updateIndexedDb,
+} from 'idb-keyval'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { WebhookType } from '@/services/firebase/webhooks'
 import ExternalStore from '@/services/ExternalStore'
 import { createPreferencesStore, createUuidStore, getSafeNotificationKey } from './notifications-idb'
 import type { NotificationPreferences, SafeNotificationKey } from './notifications-idb'
+import type { NotifiableSafes } from '../logic'
 
 export const _DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences[SafeNotificationKey]['preferences'] = {
   [WebhookType.NEW_CONFIRMATION]: true,
@@ -27,7 +35,19 @@ const { useStore: usePreferences, setStore: setPreferences } = new ExternalStore
 export const _setUuid = setUuid
 export const _setPreferences = setPreferences
 
-export const useNotificationPreferences = () => {
+export const useNotificationPreferences = (): {
+  uuid: string | undefined
+  getAllPreferences: () => NotificationPreferences | undefined
+  getPreferences: (chainId: string, safeAddress: string) => typeof _DEFAULT_NOTIFICATION_PREFERENCES | undefined
+  updatePreferences: (
+    chainId: string,
+    safeAddress: string,
+    preferences: NotificationPreferences[SafeNotificationKey]['preferences'],
+  ) => void
+  _createPreferences: (safesToRegister: NotifiableSafes, withConfirmationRequests?: boolean) => void
+  _deletePreferences: (safesToUnregister: NotifiableSafes) => void
+  _clearPreferences: () => void
+} => {
   // State
   const uuid = useUuid()
   const preferences = usePreferences()
@@ -65,7 +85,7 @@ export const useNotificationPreferences = () => {
 
     let _uuid: string
 
-    update<string>(
+    updateIndexedDb<string>(
       UUID_KEY,
       (storedUuid) => {
         // Initialise UUID if it doesn't exist
@@ -91,7 +111,7 @@ export const useNotificationPreferences = () => {
       return
     }
 
-    entries<SafeNotificationKey, NotificationPreferences[SafeNotificationKey]>(preferencesStore)
+    getEntriesFromIndexedDb<SafeNotificationKey, NotificationPreferences[SafeNotificationKey]>(preferencesStore)
       .then((preferencesEntries) => {
         setPreferences(Object.fromEntries(preferencesEntries))
       })
@@ -104,7 +124,10 @@ export const useNotificationPreferences = () => {
   }, [hydratePreferences])
 
   // Add store entry with default preferences for specified Safe(s)
-  const createPreferences = (safesToRegister: { [chain: string]: Array<string> }) => {
+  const createPreferences = (
+    safesToRegister: { [chain: string]: Array<string> },
+    withConfirmationRequests?: boolean,
+  ) => {
     if (!preferencesStore) {
       return
     }
@@ -116,14 +139,16 @@ export const useNotificationPreferences = () => {
         const defaultPreferences: NotificationPreferences[SafeNotificationKey] = {
           chainId,
           safeAddress,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: withConfirmationRequests
+            ? { ..._DEFAULT_NOTIFICATION_PREFERENCES, [WebhookType.CONFIRMATION_REQUEST]: true }
+            : _DEFAULT_NOTIFICATION_PREFERENCES,
         }
 
         return [key, defaultPreferences]
       })
     })
 
-    setMany(defaultPreferencesEntries, preferencesStore)
+    setManyIndexedDb(defaultPreferencesEntries, preferencesStore)
       .then(hydratePreferences)
       .catch(() => null)
   }
@@ -146,7 +171,7 @@ export const useNotificationPreferences = () => {
       preferences,
     }
 
-    set(key, newPreferences, preferencesStore)
+    setIndexedDb(key, newPreferences, preferencesStore)
       .then(hydratePreferences)
       .catch(() => null)
   }
@@ -161,7 +186,7 @@ export const useNotificationPreferences = () => {
       return safeAddresses.map((safeAddress) => getSafeNotificationKey(chainId, safeAddress))
     })
 
-    delMany(keysToDelete, preferencesStore)
+    deleteManyFromIndexedDb(keysToDelete, preferencesStore)
       .then(hydratePreferences)
       .catch(() => null)
   }
@@ -172,7 +197,7 @@ export const useNotificationPreferences = () => {
       return
     }
 
-    clear(preferencesStore)
+    clearIndexedDb(preferencesStore)
       .then(hydratePreferences)
       .catch(() => null)
   }
@@ -181,8 +206,8 @@ export const useNotificationPreferences = () => {
     uuid,
     getAllPreferences,
     getPreferences,
-    _createPreferences: createPreferences,
     updatePreferences,
+    _createPreferences: createPreferences,
     _deletePreferences: deletePreferences,
     _clearPreferences: clearPreferences,
   }

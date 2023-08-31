@@ -9,13 +9,17 @@ import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notif
 import { getRegisterDevicePayload } from '../logic'
 import type { NotifiableSafes } from '../logic'
 
-export const useNotificationRegistrations = () => {
+export const useNotificationRegistrations = (): {
+  registerNotifications: (safesToRegister: NotifiableSafes, withSignature?: boolean) => Promise<void>
+  unregisterSafeNotifications: (chainId: string, safeAddress: string) => Promise<void>
+  unregisterChainNotifications: (chainId: string) => Promise<void>
+} => {
   const dispatch = useAppDispatch()
   const web3 = useWeb3()
 
   const { uuid, _createPreferences, _deletePreferences, _clearPreferences } = useNotificationPreferences()
 
-  const registerNotifications = async (safesToRegister: NotifiableSafes, withSignature = false) => {
+  const registerNotifications = async (safesToRegister: NotifiableSafes, withConfirmationRequests = false) => {
     if (!uuid) {
       return
     }
@@ -26,7 +30,7 @@ export const useNotificationRegistrations = () => {
       const payload = await getRegisterDevicePayload({
         uuid,
         safesToRegister,
-        web3: withSignature ? web3 : undefined,
+        web3: withConfirmationRequests ? web3 : undefined,
       })
 
       // Gateway will return 200 with an empty payload if the device was registered successfully
@@ -42,7 +46,7 @@ export const useNotificationRegistrations = () => {
       return
     }
 
-    _createPreferences(safesToRegister)
+    _createPreferences(safesToRegister, withConfirmationRequests)
 
     const totalRegistered = Object.values(safesToRegister).reduce((acc, safeAddresses) => acc + safeAddresses.length, 0)
 
@@ -51,7 +55,7 @@ export const useNotificationRegistrations = () => {
       label: totalRegistered,
     })
 
-    if (!withSignature) {
+    if (!withConfirmationRequests) {
       dispatch(
         showNotification({
           message: `You will now receive notifications for ${
@@ -64,52 +68,40 @@ export const useNotificationRegistrations = () => {
     }
   }
 
-  const unregisterSafeNotifications = async (chainId: string, safeAddress: string) => {
-    if (!uuid) {
-      return
-    }
-
+  const unregisterNotifications = async (unregistrationFn: Promise<void>, callback: () => void) => {
     let didUnregister = false
 
     try {
-      const response = await unregisterSafe(chainId, safeAddress, uuid)
+      const response = await unregistrationFn
 
       didUnregister = response == null
     } catch (e) {
-      console.error(`Error unregistering ${safeAddress} on chain ${chainId}`, e)
+      console.error('Error unregistering', e)
     }
 
     if (!didUnregister) {
       return
     }
 
-    _deletePreferences({ [chainId]: [safeAddress] })
+    callback()
+  }
 
-    trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_SAFE)
+  const unregisterSafeNotifications = async (chainId: string, safeAddress: string) => {
+    if (uuid) {
+      await unregisterNotifications(unregisterSafe(chainId, safeAddress, uuid), () => {
+        _deletePreferences({ [chainId]: [safeAddress] })
+        trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_SAFE)
+      })
+    }
   }
 
   const unregisterChainNotifications = async (chainId: string) => {
-    if (!uuid) {
-      return
+    if (uuid) {
+      await unregisterNotifications(unregisterDevice(chainId, uuid), () => {
+        _clearPreferences()
+        trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_DEVICE)
+      })
     }
-
-    let didUnregister = false
-
-    try {
-      const response = await unregisterDevice(chainId, uuid)
-
-      didUnregister = response == null
-    } catch (e) {
-      console.error(`Error unregistering device on chain ${chainId}`, e)
-    }
-
-    if (!didUnregister) {
-      return
-    }
-
-    _clearPreferences()
-
-    trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_DEVICE)
   }
 
   return {

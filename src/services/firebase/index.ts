@@ -1,5 +1,5 @@
 import { formatUnits } from 'ethers/lib/utils'
-import { get } from 'idb-keyval'
+import { get as getFromIndexedDb } from 'idb-keyval'
 import { initializeApp } from 'firebase/app'
 import type { MessagePayload } from 'firebase/messaging/sw'
 import type { ChainInfo, SafeBalanceResponse, ChainListResponse } from '@safe-global/safe-gateway-typescript-sdk'
@@ -46,7 +46,9 @@ export const shouldShowNotification = async (payload: MessagePayload): Promise<b
   const key = getSafeNotificationKey(chainId, address)
   const store = createPreferencesStore()
 
-  const preferencesStore = await get<NotificationPreferences[SafeNotificationKey]>(key, store).catch(() => null)
+  const preferencesStore = await getFromIndexedDb<NotificationPreferences[SafeNotificationKey]>(key, store).catch(
+    () => null,
+  )
 
   if (!preferencesStore) {
     return false
@@ -59,6 +61,7 @@ export const shouldShowNotification = async (payload: MessagePayload): Promise<b
 const BASE_URL = IS_PRODUCTION ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
 // XHR is not supported in service workers so we can't use the SDK
+// TODO: Migrate to SDK when we update it to use fetch
 const getChains = async (): Promise<ChainListResponse | undefined> => {
   const ENDPOINT = `${BASE_URL}/v1/chains`
 
@@ -119,7 +122,7 @@ export const _parseWebhookNotification = async (
     const { owner, safeTxHash } = data
 
     return {
-      title: `New confirmation`,
+      title: `Transaction confirmation`,
       body: `Safe ${shortSafeAddress} on ${chainName} has a new confirmation from ${shortenAddress(
         owner,
       )} on transaction ${shortenAddress(safeTxHash)}.`,
@@ -147,6 +150,8 @@ export const _parseWebhookNotification = async (
     }
   }
 
+  // TODO: Check notification
+  // https://github.com/safe-global/safe-transaction-service/blob/5d648f7dea05d46c00a7d43f9585a067a685758b/safe_transaction_service/notifications/tasks.py#L63
   if (type === WebhookType.PENDING_MULTISIG_TRANSACTION) {
     const { safeTxHash } = data
 
@@ -263,7 +268,8 @@ export const parseFirebaseNotification = async (
     }
   }
 
-  // Firebase-dispatched notification
+  // Manually dispatched notifications from the Firebase admin panel
+  // Displayed as is
   if (payload.notification) {
     return {
       title: payload.notification.title || '',

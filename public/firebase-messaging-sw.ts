@@ -4,9 +4,8 @@ import { onBackgroundMessage } from 'firebase/messaging/sw'
 import { getMessaging } from 'firebase/messaging/sw'
 
 import { initializeFirebase, parseFirebaseNotification, shouldShowNotification } from '@/services/firebase'
-import { trackEvent } from '@/services/analytics'
-import { isWebhookEvent } from '@/services/firebase/webhooks'
-import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
+
+const ICON_PATH = '/images/safe-logo-green.png'
 
 // Default type of `self` is `WorkerGlobalScope & typeof globalThis`
 // https://github.com/microsoft/TypeScript/issues/14877
@@ -31,8 +30,6 @@ if (app) {
       }
 
       self.clients.openWindow(link)
-
-      trackEvent(PUSH_NOTIFICATION_EVENTS.CLICK_NOTIFICATION)
     },
     false,
   )
@@ -40,8 +37,6 @@ if (app) {
   const messaging = getMessaging(app)
 
   onBackgroundMessage(messaging, async (payload) => {
-    const ICON_PATH = '/images/safe-logo-green.png'
-
     const shouldShow = await shouldShowNotification(payload)
 
     if (!shouldShow) {
@@ -59,11 +54,6 @@ if (app) {
       body: notification.body,
       image: notification.image,
       tag: notification.link ?? self.location.origin,
-    })
-
-    trackEvent({
-      ...PUSH_NOTIFICATION_EVENTS.SHOW_NOTIFICATION,
-      label: isWebhookEvent(payload.data) ? payload.data.type : 'CUSTOM',
     })
   })
 }

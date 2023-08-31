@@ -70,6 +70,9 @@ export const getRegisterDevicePayload = async ({
   uuid: string
   web3?: Web3Provider
 }): Promise<RegisterNotificationsRequest> => {
+  const BUILD_NUMBER = '0' // Required value, but does not exist on web
+  const BUNDLE = 'safe'
+
   const swRegistration = await navigator.serviceWorker.getRegistration(FIREBASE_MESSAGING_SW_PATH)
 
   // Get Firebase token
@@ -108,8 +111,8 @@ export const getRegisterDevicePayload = async ({
   return {
     uuid,
     cloudMessagingToken: token,
-    buildNumber: '0', // Required value, but does not exist on web
-    bundle: location.origin,
+    buildNumber: BUILD_NUMBER,
+    bundle: BUNDLE,
     deviceType: DeviceType.WEB,
     version: packageJson.version,
     timestamp,
