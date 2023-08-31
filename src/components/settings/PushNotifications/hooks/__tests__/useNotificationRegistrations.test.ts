@@ -1,9 +1,11 @@
 import { hexZeroPad } from 'ethers/lib/utils'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
+import { Web3Provider } from '@ethersproject/providers'
 import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 
 import { renderHook } from '@/tests/test-utils'
 import { useNotificationRegistrations } from '../useNotificationRegistrations'
+import * as web3 from '@/hooks/wallets/web3'
 import * as logic from '../../logic'
 import * as preferences from '../useNotificationPreferences'
 import * as notificationsSlice from '@/store/notificationsSlice'
@@ -24,11 +26,15 @@ describe('useNotificationRegistrations', () => {
   })
 
   describe('registerNotifications', () => {
+    beforeEach(() => {
+      const mockProvider = new Web3Provider(jest.fn())
+      jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
+    })
+
     const registerDeviceSpy = jest.spyOn(sdk, 'registerDevice')
 
     const getExampleRegisterDevicePayload = (
       safesToRegister: logic.NotifiableSafes,
-      withSignatures = false,
     ): logic.NotificationRegistration => {
       const safeRegistrations = Object.entries(safesToRegister).reduce<
         logic.NotificationRegistration['safeRegistrations']
@@ -36,7 +42,7 @@ describe('useNotificationRegistrations', () => {
         const safeRegistration: logic.NotificationRegistration['safeRegistrations'][number] = {
           chainId,
           safes: safeAddresses,
-          signatures: withSignatures ? [hexZeroPad('0x69420', 65)] : [],
+          signatures: [hexZeroPad('0x69420', 65)],
         }
 
         acc.push(safeRegistration)
@@ -135,82 +141,7 @@ describe('useNotificationRegistrations', () => {
       expect(createPreferencesMock).not.toHaveBeenCalledWith()
     })
 
-    it('creates preferences if registration succeeds without signature for a single Safe Account', async () => {
-      const safesToRegister: logic.NotifiableSafes = {
-        '1': [hexZeroPad('0x1', 20)],
-      }
-
-      const payload = getExampleRegisterDevicePayload(safesToRegister)
-
-      jest.spyOn(logic, 'getRegisterDevicePayload').mockImplementation(() => Promise.resolve(payload))
-
-      registerDeviceSpy.mockImplementation(() => Promise.resolve())
-
-      const createPreferencesMock = jest.fn()
-
-      ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
-        () =>
-          ({
-            uuid: self.crypto.randomUUID(),
-            _createPreferences: createPreferencesMock,
-          } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
-      )
-
-      const showNotificationSpy = jest.spyOn(notificationsSlice, 'showNotification')
-
-      const { result } = renderHook(() => useNotificationRegistrations())
-
-      await result.current.registerNotifications(safesToRegister)
-
-      expect(registerDeviceSpy).toHaveBeenCalledWith(payload)
-
-      expect(createPreferencesMock).toHaveBeenCalled()
-
-      expect(showNotificationSpy).toHaveBeenCalledWith({
-        message: 'You will now receive notifications for this Safe Account in your browser.',
-        variant: 'success',
-        groupKey: 'notifications',
-      })
-    })
-
-    it('creates preferences if registration succeeds without signature for multiple Safe Accounts', async () => {
-      const safesToRegister: logic.NotifiableSafes = {
-        '1': [hexZeroPad('0x1', 20)],
-        '2': [hexZeroPad('0x2', 20)],
-      }
-
-      const payload = getExampleRegisterDevicePayload(safesToRegister)
-
-      jest.spyOn(logic, 'getRegisterDevicePayload').mockImplementation(() => Promise.resolve(payload))
-
-      const createPreferencesMock = jest.fn()
-
-      ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
-        () =>
-          ({
-            uuid: self.crypto.randomUUID(),
-            _createPreferences: createPreferencesMock,
-          } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
-      )
-
-      const showNotificationSpy = jest.spyOn(notificationsSlice, 'showNotification')
-
-      const { result } = renderHook(() => useNotificationRegistrations())
-
-      await result.current.registerNotifications(safesToRegister)
-
-      expect(registerDeviceSpy).toHaveBeenCalledWith(payload)
-
-      expect(createPreferencesMock).toHaveBeenCalled()
-
-      expect(showNotificationSpy).toHaveBeenCalledWith({
-        message: 'You will now receive notifications for these Safe Accounts in your browser.',
-        variant: 'success',
-        groupKey: 'notifications',
-      })
-    })
-
-    it('creates preferences/does not notify if registration succeeded with signature', async () => {
+    it('creates preferences/notifies if registration succeeded', async () => {
       const safesToRegister: logic.NotifiableSafes = {
         '1': [hexZeroPad('0x1', 20)],
         '2': [hexZeroPad('0x2', 20)],
@@ -242,7 +173,11 @@ describe('useNotificationRegistrations', () => {
 
       expect(createPreferencesMock).toHaveBeenCalled()
 
-      expect(showNotificationSpy).not.toHaveBeenCalled()
+      expect(showNotificationSpy).toHaveBeenCalledWith({
+        groupKey: 'notifications',
+        message: 'You will now receive notifications for these Safe Accounts in your browser.',
+        variant: 'success',
+      })
     })
   })
 

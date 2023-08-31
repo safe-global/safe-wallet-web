@@ -242,7 +242,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
         <div>
           {totalSignaturesRequired > 0 && (
             <Typography display="inline" mr={1}>
-              You will have to verify with your signature {totalSignaturesRequired} times
+              We&apos;ll ask you to verify with your signature {totalSignaturesRequired} times
             </Typography>
           )}
 
