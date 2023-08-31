@@ -42,8 +42,8 @@ const NewSafe = () => {
   }
 
   return (
-    <Grid container spacing={3} p={3} pb={0} flex={1}>
-      <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 480 }} className={css.sidebar}>
+    <Grid container spacing={3} p={3} pb={0} flex={1} direction={'row-reverse'}>
+      <Grid item xs={12} md={4} lg={3.5} minWidth={{ md: 480 }} className={css.sidebar} order={2}>
         <Box display="flex" flexDirection="column" height="100%">
           <Box flex={1}>
             <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded} defaultExpanded={true}>
@@ -65,7 +65,7 @@ const NewSafe = () => {
         </Box>
       </Grid>
 
-      <Grid item flex={1}>
+      <Grid item flex={1} order={1}>
         <div className={css.content}>
           <Typography
             variant="h1"
