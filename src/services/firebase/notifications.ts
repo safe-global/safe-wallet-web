@@ -6,14 +6,12 @@ import type { ChainInfo, ChainListResponse, SafeBalanceResponse } from '@safe-gl
 import type { MessagePayload } from 'firebase/messaging'
 
 import { AppRoutes } from '@/config/routes' // Has no internal imports
-import { _GATEWAY_URL } from './constants'
 import { isWebhookEvent, WebhookType } from './webhooks'
 import { getSafeNotificationPrefsKey, createNotificationUuidIndexedDb } from './preferences'
 import type { WebhookEvent } from './webhooks'
 import type { NotificationPreferences, SafeNotificationPrefsKey } from './preferences'
 
-// Export for formatters to keep bundle small
-export const _shortenAddress = (address: string, length = 4): string => {
+const shortenAddress = (address: string, length = 4): string => {
   if (!address) {
     return ''
   }
@@ -42,12 +40,16 @@ export const shouldShowNotification = async (payload: MessagePayload): Promise<b
   return preferencesStore.preferences[type]
 }
 
-// localStorage cannot be accessed in service workers so we reference the flag
+const GATEWAY_URL_PRODUCTION = process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.safe.global'
+const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-client.staging.5afe.dev'
+
+// localStorage cannot be accessed in service workers so we reference the flag from the environment
+const GATEWAY_URL = !!process.env.NEXT_PUBLIC_IS_PRODUCTION ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
 // XHR is not supported in service workers so we can't use the SDK
 // TODO: Migrate to SDK when we update it to use fetch
 const getChain = async (chainId: string): Promise<ChainInfo | undefined> => {
-  const ENDPOINT = `${_GATEWAY_URL}/v1/chains`
+  const ENDPOINT = `${GATEWAY_URL}/v1/chains`
 
   let chains: ChainListResponse | null = null
 
@@ -68,7 +70,7 @@ const getTokenInfo = async (
   tokenValue?: string,
 ): Promise<{ symbol: string; value: string; name: string }> => {
   const DEFAULT_CURRENCY = 'USD'
-  const ENDPOINT = `${_GATEWAY_URL}/v1/chains/${chainId}/safes/${safeAddress}/balances/${DEFAULT_CURRENCY}`
+  const ENDPOINT = `${GATEWAY_URL}/v1/chains/${chainId}/safes/${safeAddress}/balances/${DEFAULT_CURRENCY}`
 
   const DEFAULT_INFO = {
     symbol: 'tokens',
@@ -144,24 +146,24 @@ export const _parseWebhookNotification = async (
     [WebhookType.NEW_CONFIRMATION]: ({ address, owner, safeTxHash }) => {
       return {
         title: 'Transaction confirmation',
-        body: `Safe ${_shortenAddress(address)} on ${chainName} has a new confirmation from ${_shortenAddress(
+        body: `Safe ${shortenAddress(address)} on ${chainName} has a new confirmation from ${shortenAddress(
           owner,
-        )} on transaction ${_shortenAddress(safeTxHash)}.`,
+        )} on transaction ${shortenAddress(safeTxHash)}.`,
       }
     },
     [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: ({ address, failed, txHash }) => {
       const didFail = failed === 'true'
       return {
         title: `Transaction ${didFail ? 'failed' : 'executed'}`,
-        body: `Safe ${_shortenAddress(address)} on ${chainName} ${
+        body: `Safe ${shortenAddress(address)} on ${chainName} ${
           didFail ? 'failed to execute' : 'executed'
-        } transaction ${_shortenAddress(txHash)}.`,
+        } transaction ${shortenAddress(txHash)}.`,
       }
     },
     [WebhookType.PENDING_MULTISIG_TRANSACTION]: ({ address, safeTxHash }) => {
       return {
         title: 'Pending transaction',
-        body: `Safe ${_shortenAddress(address)} on ${chainName} has a pending transaction ${_shortenAddress(
+        body: `Safe ${shortenAddress(address)} on ${chainName} has a pending transaction ${shortenAddress(
           safeTxHash,
         )}.`,
       }
@@ -169,53 +171,53 @@ export const _parseWebhookNotification = async (
     [WebhookType.INCOMING_ETHER]: ({ address, txHash, value }) => {
       return {
         title: `${currencyName} received`,
-        body: `Safe ${_shortenAddress(address)} on ${chainName} received ${formatUnits(
+        body: `Safe ${shortenAddress(address)} on ${chainName} received ${formatUnits(
           value,
           chain?.nativeCurrency?.decimals,
-        ).toString()} ${currencySymbol} in transaction ${_shortenAddress(txHash)}.`,
+        ).toString()} ${currencySymbol} in transaction ${shortenAddress(txHash)}.`,
       }
     },
     [WebhookType.OUTGOING_ETHER]: ({ address, txHash, value }) => {
       return {
         title: `${currencyName} sent`,
-        body: `Safe ${_shortenAddress(address)} on ${chainName} sent ${formatUnits(
+        body: `Safe ${shortenAddress(address)} on ${chainName} sent ${formatUnits(
           value,
           chain?.nativeCurrency?.decimals,
-        ).toString()} ${currencySymbol} in transaction ${_shortenAddress(txHash)}.`,
+        ).toString()} ${currencySymbol} in transaction ${shortenAddress(txHash)}.`,
       }
     },
     [WebhookType.INCOMING_TOKEN]: async ({ address, txHash, tokenAddress, value }) => {
       const token = await getTokenInfo(data.chainId, address, tokenAddress, value)
       return {
         title: `${token.name} received`,
-        body: `Safe ${_shortenAddress(address)} on ${chainName} received ${token.value} ${
+        body: `Safe ${shortenAddress(address)} on ${chainName} received ${token.value} ${
           token.symbol
-        } in transaction ${_shortenAddress(txHash)}.`,
+        } in transaction ${shortenAddress(txHash)}.`,
       }
     },
     [WebhookType.OUTGOING_TOKEN]: async ({ address, txHash, tokenAddress, value }) => {
       const token = await getTokenInfo(data.chainId, address, tokenAddress, value)
       return {
         title: `${token.name} sent`,
-        body: `Safe ${_shortenAddress(address)} on ${chainName} sent ${token.value} ${
+        body: `Safe ${shortenAddress(address)} on ${chainName} sent ${token.value} ${
           token.symbol
-        } in transaction ${_shortenAddress(txHash)}.`,
+        } in transaction ${shortenAddress(txHash)}.`,
       }
     },
     [WebhookType.MODULE_TRANSACTION]: ({ address, module, txHash }) => {
       return {
         title: 'Module transaction',
-        body: `Safe ${_shortenAddress(address)} on ${chainName} executed a module transaction ${_shortenAddress(
+        body: `Safe ${shortenAddress(address)} on ${chainName} executed a module transaction ${shortenAddress(
           txHash,
-        )} from module ${_shortenAddress(module)}.`,
+        )} from module ${shortenAddress(module)}.`,
       }
     },
     [WebhookType.CONFIRMATION_REQUEST]: ({ address, safeTxHash }) => {
       return {
         title: 'Confirmation request',
-        body: `Safe ${_shortenAddress(
+        body: `Safe ${shortenAddress(
           address,
-        )} on ${chainName} has a new confirmation request for transaction ${_shortenAddress(safeTxHash)}.`,
+        )} on ${chainName} has a new confirmation request for transaction ${shortenAddress(safeTxHash)}.`,
       }
     },
     [WebhookType.SAFE_CREATED]: () => {

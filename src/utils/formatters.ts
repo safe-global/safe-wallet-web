@@ -51,7 +51,13 @@ export const safeParseUnits = (value: string, decimals: number | string = GWEI):
   }
 }
 
-export { _shortenAddress as shortenAddress } from '@/services/firebase/notifications'
+export const shortenAddress = (address: string, length = 4): string => {
+  if (!address) {
+    return ''
+  }
+
+  return `${address.slice(0, length + 2)}...${address.slice(-length)}`
+}
 
 export const shortenText = (text: string, length = 10, separator = '...'): string => {
   return `${text.slice(0, length)}${separator}`

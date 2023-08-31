@@ -1,12 +1,11 @@
 import chains from './chains'
-import { _GATEWAY_URL_PRODUCTION, _GATEWAY_URL_STAGING, _IS_PRODUCTION } from '@/services/firebase/constants'
 
-// Imported from firebase service worker constants as we want to keep its budle size small
-export const IS_PRODUCTION = _IS_PRODUCTION
+export const IS_PRODUCTION = !!process.env.NEXT_PUBLIC_IS_PRODUCTION
 export const IS_DEV = process.env.NODE_ENV === 'development'
 
-export const GATEWAY_URL_PRODUCTION = _GATEWAY_URL_PRODUCTION
-export const GATEWAY_URL_STAGING = _GATEWAY_URL_STAGING
+export const GATEWAY_URL_PRODUCTION =
+  process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.safe.global'
+export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-client.staging.5afe.dev'
 
 // Magic numbers
 export const POLLING_INTERVAL = 15_000
