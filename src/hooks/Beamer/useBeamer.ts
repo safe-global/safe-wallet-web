@@ -4,11 +4,14 @@ import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import { loadBeamer, unloadBeamer, updateBeamer } from '@/services/beamer'
 import { useCurrentChain } from '@/hooks/useChains'
+import { useBeamerNps } from '@/hooks/Beamer/useBeamerNps'
 
 const useBeamer = () => {
   const cookies = useAppSelector(selectCookies)
   const isBeamerEnabled = cookies[CookieType.UPDATES]
   const chain = useCurrentChain()
+
+  useBeamerNps()
 
   useEffect(() => {
     if (!chain?.shortName) {

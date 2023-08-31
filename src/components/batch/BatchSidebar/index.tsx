@@ -10,6 +10,7 @@ import ConfirmBatchFlow from '@/components/tx-flow/flows/ConfirmBatch'
 import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
 import { BatchReorder } from './BatchTxList'
+import CheckWallet from '@/components/common/CheckWallet'
 
 import PlusIcon from '@/public/images/common/plus.svg'
 import EmptyBatch from './EmptyBatch'
@@ -74,33 +75,45 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
               <BatchReorder txItems={batchTxs} onDelete={deleteTx} onReorder={onReorder} />
             </div>
 
-            <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
-              <Button onClick={onAddClick}>
-                <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-                Add new transaction
-              </Button>
-            </Track>
+            <CheckWallet>
+              {(isOk) => (
+                <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
+                  <Button onClick={onAddClick} disabled={!isOk}>
+                    <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
+                    Add new transaction
+                  </Button>
+                </Track>
+              )}
+            </CheckWallet>
 
             <Divider />
 
-            <Track {...BATCH_EVENTS.BATCH_CONFIRM} label={batchTxs.length}>
-              <Button
-                variant="contained"
-                onClick={onConfirmClick}
-                disabled={!batchTxs.length}
-                className={css.confirmButton}
-              >
-                Confirm batch
-              </Button>
-            </Track>
+            <CheckWallet>
+              {(isOk) => (
+                <Track {...BATCH_EVENTS.BATCH_CONFIRM} label={batchTxs.length}>
+                  <Button
+                    variant="contained"
+                    onClick={onConfirmClick}
+                    disabled={!batchTxs.length || !isOk}
+                    className={css.confirmButton}
+                  >
+                    Confirm batch
+                  </Button>
+                </Track>
+              )}
+            </CheckWallet>
           </>
         ) : (
           <EmptyBatch>
-            <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
-              <Button onClick={onAddClick} variant="contained">
-                New transaction
-              </Button>
-            </Track>
+            <CheckWallet>
+              {(isOk) => (
+                <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
+                  <Button onClick={onAddClick} variant="contained" disabled={!isOk}>
+                    New transaction
+                  </Button>
+                </Track>
+              )}
+            </CheckWallet>
           </EmptyBatch>
         )}
 
