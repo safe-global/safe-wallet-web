@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, CardActions, Divider } from '@mui/material'
+import { Box, Button, CardActions, Divider } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -137,15 +137,19 @@ const ExecuteForm = ({
           <ErrorMessage>
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
-        ) : executionValidationError || gasLimitError ? (
-          <ErrorMessage error={executionValidationError || gasLimitError}>
-            This transaction will most likely fail.
-            {` To save gas costs, ${isCreation ? 'avoid creating' : 'reject'} this transaction.`}
-          </ErrorMessage>
         ) : (
-          submitError && (
-            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          (executionValidationError || gasLimitError) && (
+            <ErrorMessage error={executionValidationError || gasLimitError}>
+              This transaction will most likely fail.
+              {` To save gas costs, ${isCreation ? 'avoid creating' : 'reject'} this transaction.`}
+            </ErrorMessage>
           )
+        )}
+
+        {submitError && (
+          <Box mt={1}>
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          </Box>
         )}
 
         <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
