@@ -9,16 +9,9 @@
 }
 
 .popoverContainer {
-  width: 446px;
   border: 1px solid var(--color-border-light);
 }
 
-@media only screen and (max-width: 470px) {
-  .popoverContainer {
-    width: 320px;
-    border: 1px solid var(--color-border-light);
-  }
-}
 
 .popoverHeader {
   display: flex;

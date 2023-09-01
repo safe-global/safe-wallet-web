@@ -8,7 +8,8 @@ import IconButton from '@mui/material/IconButton'
 import BellIcon from '@/public/images/notifications/bell.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
 import { useAppDispatch, useAppSelector } from '@/store'
 import {
   selectNotifications,
@@ -29,6 +30,8 @@ const NotificationCenter = (): ReactElement => {
   const [showAll, setShowAll] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = Boolean(anchorEl)
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.up('sm'))
 
   const dispatch = useAppDispatch()
 
@@ -112,7 +115,7 @@ const NotificationCenter = (): ReactElement => {
         }}
         sx={{ mt: 1 }}
       >
-        <Paper className={css.popoverContainer}>
+        <Paper sx={{ width: matches ? 446 : 320 }} className={css.popoverContainer}>
           <div className={css.popoverHeader}>
             <div>
               <Typography variant="h4" component="span" fontWeight={700}>
