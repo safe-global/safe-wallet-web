@@ -24,25 +24,26 @@ export enum TxEvent {
 }
 
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
+type HumanDescription = { humanDescription?: string }
 
 interface TxEvents {
   [TxEvent.SIGNED]: { txId?: string }
-  [TxEvent.SIGN_FAILED]: { txId?: string; error: Error }
-  [TxEvent.PROPOSE_FAILED]: { error: Error }
-  [TxEvent.PROPOSED]: { txId: string }
-  [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error }
-  [TxEvent.SIGNATURE_PROPOSED]: { txId: string; signerAddress: string }
+  [TxEvent.SIGN_FAILED]: HumanDescription & { txId?: string; error: Error }
+  [TxEvent.PROPOSE_FAILED]: HumanDescription & { error: Error }
+  [TxEvent.PROPOSED]: HumanDescription & { txId: string }
+  [TxEvent.SIGNATURE_PROPOSE_FAILED]: HumanDescription & { txId: string; error: Error }
+  [TxEvent.SIGNATURE_PROPOSED]: HumanDescription & { txId: string; signerAddress: string }
   [TxEvent.SIGNATURE_INDEXED]: { txId: string }
-  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id
-  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id
-  [TxEvent.EXECUTING]: Id
-  [TxEvent.PROCESSING]: Id & { txHash: string }
-  [TxEvent.PROCESSING_MODULE]: Id & { txHash: string }
-  [TxEvent.PROCESSED]: Id & { safeAddress: string }
-  [TxEvent.REVERTED]: Id & { error: Error }
+  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id & HumanDescription
+  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id & HumanDescription
+  [TxEvent.EXECUTING]: Id & HumanDescription
+  [TxEvent.PROCESSING]: Id & HumanDescription & { txHash: string }
+  [TxEvent.PROCESSING_MODULE]: Id & HumanDescription & { txHash: string }
+  [TxEvent.PROCESSED]: Id & HumanDescription & { safeAddress: string }
+  [TxEvent.REVERTED]: Id & HumanDescription & { error: Error }
   [TxEvent.RELAYING]: Id & { taskId: string }
-  [TxEvent.FAILED]: Id & { error: Error }
-  [TxEvent.SUCCESS]: Id
+  [TxEvent.FAILED]: Id & HumanDescription & { error: Error }
+  [TxEvent.SUCCESS]: Id & HumanDescription
   [TxEvent.SAFE_APPS_REQUEST]: { safeAppRequestId: RequestId; safeTxHash: string }
   [TxEvent.BATCH_ADD]: Id
 }
