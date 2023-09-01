@@ -60,7 +60,7 @@ const SignForm = ({
       await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin, tx))
     } catch (_err) {
       const err = asError(_err)
-      trackError(Errors._804, err)
+      trackError(Errors._805, err)
       setIsSubmittable(true)
       setSubmitError(err)
       return
