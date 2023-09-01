@@ -3,7 +3,7 @@ import { Box, Button, CardActions, Divider } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { logError, Errors } from '@/services/exceptions'
+import { trackError, Errors } from '@/services/exceptions'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
@@ -93,7 +93,7 @@ const ExecuteForm = ({
       setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
     } catch (_err) {
       const err = asError(_err)
-      logError(Errors._804, err)
+      trackError(Errors._804, err)
       setIsSubmittable(true)
       setSubmitError(err)
       return
