@@ -1,9 +1,9 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, CardActions, Divider } from '@mui/material'
+import { Box, Button, CardActions, Divider } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { logError, Errors } from '@/services/exceptions'
+import { trackError, Errors } from '@/services/exceptions'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import useIsValidExecution from '@/hooks/useIsValidExecution'
@@ -26,6 +26,8 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
+import { useAppSelector } from '@/store'
+import { selectQueuedTransactionById } from '@/store/txQueueSlice'
 
 const ExecuteForm = ({
   safeTx,
@@ -49,6 +51,8 @@ const ExecuteForm = ({
   const [relays] = useRelaysBySafe()
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
+
+  const tx = useAppSelector((state) => selectQueuedTransactionById(state, txId))
 
   // Check that the transaction is executable
   const isExecutionLoop = useIsExecutionLoop()
@@ -85,11 +89,11 @@ const ExecuteForm = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      const executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
+      const executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay, tx)
       setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
     } catch (_err) {
       const err = asError(_err)
-      logError(Errors._804, err)
+      trackError(Errors._804, err)
       setIsSubmittable(true)
       setSubmitError(err)
       return
@@ -133,15 +137,19 @@ const ExecuteForm = ({
           <ErrorMessage>
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
-        ) : executionValidationError || gasLimitError ? (
-          <ErrorMessage error={executionValidationError || gasLimitError}>
-            This transaction will most likely fail.
-            {` To save gas costs, ${isCreation ? 'avoid creating' : 'reject'} this transaction.`}
-          </ErrorMessage>
         ) : (
-          submitError && (
-            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          (executionValidationError || gasLimitError) && (
+            <ErrorMessage error={executionValidationError || gasLimitError}>
+              This transaction will most likely fail.
+              {` To save gas costs, ${isCreation ? 'avoid creating' : 'reject'} this transaction.`}
+            </ErrorMessage>
           )
+        )}
+
+        {submitError && (
+          <Box mt={1}>
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          </Box>
         )}
 
         <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />

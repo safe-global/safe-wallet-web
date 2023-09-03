@@ -16,23 +16,20 @@ import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
 
 const TxNotifications = {
-  [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
-  [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
-  [TxEvent.PROPOSE_FAILED]: 'Failed proposing the transaction. Please try again.',
-  [TxEvent.SIGNATURE_PROPOSED]: 'You successfully signed the transaction.',
-  [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send the signature. Please try again.',
-  [TxEvent.EXECUTING]: 'Please confirm the execution in your wallet.',
-  [TxEvent.PROCESSING]: 'Your transaction is being processed.',
-  [TxEvent.PROCESSING_MODULE]:
-    'Your transaction has been submitted and will appear in the interface only after it has been successfully processed and indexed.',
-  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]:
-    'An on-chain signature is required. Please confirm the transaction in your wallet.',
-  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]:
-    "The on-chain signature request was confirmed. Once it's on chain, the transaction will be signed.",
-  [TxEvent.PROCESSED]: 'Your transaction was successfully processed and is now being indexed.',
-  [TxEvent.REVERTED]: 'Transaction reverted. Please check your gas settings.',
-  [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',
-  [TxEvent.FAILED]: 'Your transaction was unsuccessful.',
+  [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
+  [TxEvent.PROPOSED]: 'Successfully added to queue.',
+  [TxEvent.PROPOSE_FAILED]: 'Failed to add to queue. Please try again.',
+  [TxEvent.SIGNATURE_PROPOSED]: 'Successfully signed.',
+  [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send signature. Please try again.',
+  [TxEvent.EXECUTING]: 'Confirm the execution in your wallet.',
+  [TxEvent.PROCESSING]: 'Validating...',
+  [TxEvent.PROCESSING_MODULE]: 'Validating module interaction...',
+  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: 'Confirm on-chain signature in your wallet.',
+  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: 'On-chain signature request confirmed.',
+  [TxEvent.PROCESSED]: 'Successfully validated. Indexing...',
+  [TxEvent.REVERTED]: 'Reverted. Please check your gas settings.',
+  [TxEvent.SUCCESS]: 'Successfully executed.',
+  [TxEvent.FAILED]: 'Failed.',
 }
 
 enum Variant {
@@ -79,9 +76,12 @@ const useTxNotifications = (): void => {
         const txId = 'txId' in detail ? detail.txId : undefined
         const txHash = 'txHash' in detail ? detail.txHash : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
+        const humanDescription =
+          'humanDescription' in detail && detail.humanDescription ? detail.humanDescription : 'Transaction'
 
         dispatch(
           showNotification({
+            title: humanDescription,
             message,
             detailedMessage: isError ? detail.error.message : undefined,
             groupKey,

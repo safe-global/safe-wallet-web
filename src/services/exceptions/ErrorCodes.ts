@@ -44,7 +44,8 @@ enum ErrorCodes {
 
   _800 = '800: Safe creation tx failed',
   _801 = '801: Failed to send a tx with a spending limit',
-  _804 = '804: Error processing a transaction',
+  _804 = '804: Error executing a transaction',
+  _805 = '805: Error proposing or confirming a transaction',
   _806 = '806: Failed to remove module',
   _807 = '807: Failed to remove guard',
   _808 = '808: Failed to get transaction origin',
