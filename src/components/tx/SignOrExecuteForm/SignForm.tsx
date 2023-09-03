@@ -2,7 +2,7 @@ import { type ReactElement, type SyntheticEvent, useContext, useState } from 're
 import { Box, Button, CardActions, Divider } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { logError, Errors } from '@/services/exceptions'
+import { trackError, Errors } from '@/services/exceptions'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useAlreadySigned, useTxActions } from './hooks'
@@ -60,7 +60,7 @@ const SignForm = ({
       await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin, tx))
     } catch (_err) {
       const err = asError(_err)
-      logError(Errors._804, err)
+      trackError(Errors._805, err)
       setIsSubmittable(true)
       setSubmitError(err)
       return

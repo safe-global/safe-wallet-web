@@ -9,7 +9,7 @@ import type { ConnectedWallet } from '@/services/onboard'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
-import { Errors, logError } from '@/services/exceptions'
+import { Errors, trackError } from '@/services/exceptions'
 import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
@@ -167,7 +167,7 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
 }
 
 export const handleSafeCreationError = (error: EthersError) => {
-  logError(Errors._800, error.message)
+  trackError(Errors._800, error.message)
 
   if (isWalletRejection(error)) {
     return SafeCreationStatus.WALLET_REJECTED
