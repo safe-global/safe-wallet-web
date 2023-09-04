@@ -11,7 +11,6 @@ import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
 import css from '@/components/transactions/TxSummary/styles.module.css'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
