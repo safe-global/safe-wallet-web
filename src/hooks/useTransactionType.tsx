@@ -37,7 +37,7 @@ type TxType = {
 
 export const getTransactionType = (tx: TransactionSummary, addressBook: AddressBook): TxType => {
   const toAddress = getTxTo(tx)
-  const addressBookName = toAddress?.value ? addressBook[toAddress.value] : undefined
+  const addressName = addressBook[toAddress?.value || ''] || toAddress?.name
 
   switch (tx.txInfo.type) {
     case TransactionInfoType.CREATION: {
@@ -81,26 +81,19 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
 
       if (tx.safeAppInfo) {
         return {
-          icon: '',
+          icon: tx.safeAppInfo.logoUri || '/images/transactions/custom.svg',
           text: tx.txInfo.humanDescription ?? (
             <>
               {tx.txInfo.methodName ? (
                 <>
                   <span>Called </span>
                   <b className={css.method}>{tx.txInfo.methodName}</b>
-                  <span> on</span>
                 </>
               ) : (
                 ''
               )}
-              <SafeAppIconCard
-                src={tx.safeAppInfo.logoUri}
-                alt="Transaction icon"
-                width={16}
-                height={16}
-                fallback="/images/transactions/custom.svg"
-              />
-              {tx.safeAppInfo.name}
+
+              {(addressName ? ' on ' + addressName : '') || (tx.safeAppInfo.name ? ' via ' + tx.safeAppInfo.name : '')}
             </>
           ),
         }
@@ -110,7 +103,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         icon: toAddress?.logoUri || '/images/transactions/custom.svg',
         text: tx.txInfo.humanDescription ?? (
           <>
-            {addressBookName || toAddress?.name || 'Contract interaction'}
+            {addressName || 'Contract interaction'}
             {tx.txInfo.methodName && ': '}
             {tx.txInfo.methodName ? <b className={css.method}>{tx.txInfo.methodName}</b> : ''}
           </>
@@ -120,7 +113,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
     default: {
       return {
         icon: '/images/transactions/custom.svg',
-        text: addressBookName || 'Contract interaction',
+        text: addressName || 'Contract interaction',
       }
     }
   }
