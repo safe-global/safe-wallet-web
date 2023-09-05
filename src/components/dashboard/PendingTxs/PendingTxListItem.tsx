@@ -9,7 +9,6 @@ import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import TxInfo from '@/components/transactions/TxInfo'
 import TxType from '@/components/transactions/TxType'
 import css from './styles.module.css'
-import classNames from 'classnames'
 import OwnersIcon from '@/public/images/common/owners.svg'
 import { AppRoutes } from '@/config/routes'
 
@@ -34,35 +33,29 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
 
   return (
     <NextLink href={url} passHref>
-      <Box className={classNames(css.gridContainer, css.columnTemplate)}>
-        <Box gridArea="nonce">
-          {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
-        </Box>
+      <Box className={css.container}>
+        {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
 
-        <Box gridArea="type" className={css.columnWrap}>
+        <Box flex={1}>
           <TxType tx={transaction} />
         </Box>
 
-        <Box gridArea="info" className={css.columnWrap}>
+        <Box flex={1} className={css.txInfo}>
           <TxInfo info={transaction.txInfo} />
         </Box>
 
-        <Box gridArea="confirmations">
-          {isMultisigExecutionInfo(transaction.executionInfo) ? (
-            <Box className={css.confirmationsCount}>
-              <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" />
-              <Typography variant="caption" fontWeight="bold">
-                {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
-              </Typography>
-            </Box>
-          ) : (
-            <Box flexGrow={1} />
-          )}
-        </Box>
+        {isMultisigExecutionInfo(transaction.executionInfo) ? (
+          <Box className={css.confirmationsCount}>
+            <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" />
+            <Typography variant="caption" fontWeight="bold">
+              {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
+            </Typography>
+          </Box>
+        ) : (
+          <Box flexGrow={1} />
+        )}
 
-        <Box gridArea="icon" marginLeft="12px">
-          <ChevronRight color="border" />
-        </Box>
+        <ChevronRight color="border" />
       </Box>
     </NextLink>
   )
