@@ -83,7 +83,7 @@ const RedefineBlock = () => {
           <Typography variant="caption" className={sharedCss.poweredBy} position="relative">
             Powered by{' '}
             <div className={css.redefine}>
-              <Image src={isDarkMode ? RedefineLogoDark : RedefineLogo} alt="Redefine logo" />
+              <Image src={isDarkMode ? RedefineLogoDark : RedefineLogo} alt="Redefine logo" width={52} />
             </div>
           </Typography>
         </div>

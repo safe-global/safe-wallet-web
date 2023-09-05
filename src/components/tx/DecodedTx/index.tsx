@@ -51,6 +51,8 @@ const DecodedTx = ({
     return getTransactionDetails(chainId, txId)
   }, [chainId, txId])
 
+  const addressInfoIndex = txDetails?.txData?.addressInfoIndex
+
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
@@ -68,6 +70,7 @@ const DecodedTx = ({
               value: tx?.data.value,
               operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
               trustedDelegateCallTarget: false,
+              addressInfoIndex,
             }}
             compact
           />
@@ -83,7 +86,7 @@ const DecodedTx = ({
 
         <AccordionDetails>
           {decodedData ? (
-            <MethodDetails data={decodedData} />
+            <MethodDetails data={decodedData} addressInfoIndex={addressInfoIndex} />
           ) : decodedDataError ? (
             <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
           ) : (

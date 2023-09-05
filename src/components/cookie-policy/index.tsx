@@ -10,7 +10,7 @@ const SafeCookiePolicy = () => {
       <p>Last updated on March 2023</p>
       <p>
         As described in our{' '}
-        <Link href={AppRoutes.privacy} passHref>
+        <Link href={AppRoutes.privacy} passHref legacyBehavior>
           <MUILink>Privacy Policy</MUILink>
         </Link>
         , for general web-browsing of this website, your personal data is not revealed to us, although certain
@@ -21,7 +21,7 @@ const SafeCookiePolicy = () => {
       </p>
       <p>
         This Cookie Policy applies to our website at{' '}
-        <Link href="https://app.safe.global" passHref>
+        <Link href="https://app.safe.global" passHref legacyBehavior>
           <MUILink>https://app.safe.global</MUILink>
         </Link>
         &nbsp;and sets out some further detail on how and why we use these technologies on our website.{' '}
@@ -142,7 +142,7 @@ const SafeCookiePolicy = () => {
       </ol>
       <p>
         We may also use other services, such as{' '}
-        <Link href="https://www.google.com/intl/en/analytics/#?modal_active=none" passHref>
+        <Link href="https://www.google.com/intl/en/analytics/#?modal_active=none" passHref legacyBehavior>
           <MUILink target="_blank" rel="noreferrer">
             Google Analytics
           </MUILink>
@@ -156,7 +156,7 @@ const SafeCookiePolicy = () => {
       <h2>Google Analytics Cookies</h2>
       <p>
         This website uses{' '}
-        <Link href="https://www.google.com/analytics/" passHref>
+        <Link href="https://www.google.com/analytics/" passHref legacyBehavior>
           <MUILink target="_blank" rel="noreferrer">
             Google Analytics
           </MUILink>
@@ -197,7 +197,7 @@ const SafeCookiePolicy = () => {
       <p>
         By using this website, you consent to the processing of data about you by Google in the manner and for the
         purposes set out above. Google Analytics, its purpose and function is further explained on the{' '}
-        <Link href="https://www.google.com/analytics/" passHref>
+        <Link href="https://www.google.com/analytics/" passHref legacyBehavior>
           <MUILink target="_blank" rel="noreferrer">
             Google Analytics website
           </MUILink>
@@ -206,19 +206,23 @@ const SafeCookiePolicy = () => {
       </p>
       <p>
         For more information about Google Analytics cookies, please see Google&apos;s help pages and privacy policy:{' '}
-        <Link href="https://www.google.com/intl/en/policies/privacy/" passHref>
+        <Link href="https://www.google.com/intl/en/policies/privacy/" passHref legacyBehavior>
           <MUILink target="_blank" rel="noreferrer">
             Google&apos;s Privacy Policy
           </MUILink>
         </Link>
         &nbsp;and{' '}
-        <Link href="https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage" passHref>
+        <Link
+          href="https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage"
+          passHref
+          legacyBehavior
+        >
           <MUILink target="_blank" rel="noreferrer">
             Google Analytics Help pages
           </MUILink>
         </Link>
         . For further information about the use of these cookies by Google{' '}
-        <Link href="https://support.google.com/analytics/answer/6004245" passHref>
+        <Link href="https://support.google.com/analytics/answer/6004245" passHref legacyBehavior>
           <MUILink target="_blank" rel="noreferrer">
             click here
           </MUILink>
@@ -237,7 +241,7 @@ const SafeCookiePolicy = () => {
       <p>
         Most browsers are initially set to accept cookies. If you prefer, you can set your browser to refuse cookies and
         control and/or delete cookies as you wish &ndash; for details, see{' '}
-        <Link href="https://www.aboutcookies.org/" passHref>
+        <Link href="https://www.aboutcookies.org/" passHref legacyBehavior>
           <MUILink target="_blank" rel="noreferrer">
             https://aboutcookies.org
           </MUILink>
@@ -265,7 +269,7 @@ const SafeCookiePolicy = () => {
         To opt out of being tracked by Google Analytics across all websites, Google has developed Google Analytics
         opt-out browser add-on. If you would like to opt out of Google Analytics, you have the option of downloading and
         installing this browser add-on which can be found under the link:{' '}
-        <Link href="https://tools.google.com/dlpage/gaoptout" passHref>
+        <Link href="https://tools.google.com/dlpage/gaoptout" passHref legacyBehavior>
           <MUILink target="_blank" rel="noreferrer">
             https://tools.google.com/dlpage/gaoptout
           </MUILink>

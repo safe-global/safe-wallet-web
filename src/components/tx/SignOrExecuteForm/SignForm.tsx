@@ -2,7 +2,7 @@ import { type ReactElement, type SyntheticEvent, useContext, useState } from 're
 import { Box, Button, CardActions, Divider } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { logError, Errors } from '@/services/exceptions'
+import { trackError, Errors } from '@/services/exceptions'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useAlreadySigned, useTxActions } from './hooks'
@@ -14,6 +14,8 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 import BatchButton from './BatchButton'
+import { useAppSelector } from '@/store'
+import { selectQueuedTransactionById } from '@/store/txQueueSlice'
 
 const SignForm = ({
   safeTx,
@@ -38,6 +40,8 @@ const SignForm = ({
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
   const hasSigned = useAlreadySigned(safeTx)
 
+  const tx = useAppSelector((state) => selectQueuedTransactionById(state, txId))
+
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent, isAddingToBatch = false) => {
     e.preventDefault()
@@ -53,10 +57,10 @@ const SignForm = ({
     setSubmitError(undefined)
 
     try {
-      await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin))
+      await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin, tx))
     } catch (_err) {
       const err = asError(_err)
-      logError(Errors._804, err)
+      trackError(Errors._805, err)
       setIsSubmittable(true)
       setSubmitError(err)
       return

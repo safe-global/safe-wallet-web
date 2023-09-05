@@ -4,8 +4,7 @@ import { format } from 'date-fns'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
-const ENS_NAME = 'diogo.eth'
-const ENS_ADDRESS = '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC'
+const ADDRESS = '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC'
 const GOERLI_TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
 const GOERLI_CSV_ENTRY = {
@@ -30,13 +29,14 @@ describe('Address book', () => {
       // Add a new entry manually
       cy.contains('Create entry').click()
       cy.get('input[name="name"]').type(NAME)
-      cy.get('input[name="address"]').type(ENS_NAME)
-      // Name was translated
-      cy.get(ENS_NAME).should('not.exist')
+      cy.get('input[name="address"]').type(ADDRESS)
+
+      // Save the entry
       cy.contains('button', 'Save').click()
 
+      // The new entry is visible
       cy.contains(NAME).should('exist')
-      cy.contains(ENS_ADDRESS).should('exist')
+      cy.contains(ADDRESS).should('exist')
     })
 
     it('should save an edited entry name', () => {

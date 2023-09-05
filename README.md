@@ -1,4 +1,4 @@
-# <img src="/public/images/logo.svg" height="60" valign="middle" alt="Safe{Wallet}" />
+# <img src="/public/images/logo.svg" height="60" valign="middle" alt="Safe{Wallet}" style="background: #fff; padding: 20px; margin: 0 -20px" />
 
 [![License](https://img.shields.io/github/license/safe-global/safe-wallet-web)](https://github.com/safe-global/safe-wallet-web/blob/main/LICENSE)
 ![Tests](https://img.shields.io/github/actions/workflow/status/safe-global/safe-wallet-web/test.yml?branch=main&label=tests)
@@ -21,7 +21,7 @@ Here's the list of all the required and optional variables:
 
 | Env variable                                           |              | Description
 | ------------------------------------------------------ | ------------ | -----------
-| `NEXT_PUBLIC_INFURA_TOKEN`                             | **required** | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token
+| `NEXT_PUBLIC_INFURA_TOKEN`                             | optional     | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token
 | `NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN`                   | optional     | Infura token for Safe Apps, falls back to `NEXT_PUBLIC_INFURA_TOKEN`
 | `NEXT_PUBLIC_IS_PRODUCTION`                            | optional     | Set to `true` to build a minified production app
 | `NEXT_PUBLIC_GATEWAY_URL_PRODUCTION`                   | optional     | The base URL for the [Safe Client Gateway](https://github.com/safe-global/safe-client-gateway)
@@ -85,10 +85,10 @@ yarn test --watch
 
 ### Cypress tests
 
-Build and generarate a static site:
+Build a static site:
 
 ```
-yarn build && yarn export
+yarn build
 ```
 
 Serve the static files:

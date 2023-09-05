@@ -152,8 +152,12 @@ const useAppCommunicator = (
         return handlers.onSetSafeSettings(settings)
       }
 
+      if (!safeAppWeb3Provider) {
+        throw new Error('SafeAppWeb3Provider is not initialized')
+      }
+
       try {
-        return await safeAppWeb3Provider?.send(params.call, params.params)
+        return await safeAppWeb3Provider.send(params.call, params.params)
       } catch (err) {
         throw new Error((err as JsonRpcResponse).error)
       }

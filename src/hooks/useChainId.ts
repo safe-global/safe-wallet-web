@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'
 import { parse, type ParsedUrlQuery } from 'querystring'
 import { IS_PRODUCTION } from '@/config/constants'
 import chains from '@/config/chains'
@@ -31,11 +31,11 @@ const getLocationQuery = (): ParsedUrlQuery => {
 }
 
 export const useUrlChainId = (): string | undefined => {
-  const router = useRouter()
+  const queryParams = useParams()
   const { configs } = useChains()
 
   // Dynamic query params
-  const query = router && (router.query.safe || router.query.chain) ? router.query : getLocationQuery()
+  const query = queryParams && (queryParams.safe || queryParams.chain) ? queryParams : getLocationQuery()
   const chain = query.chain?.toString() || ''
   const safe = query.safe?.toString() || ''
 

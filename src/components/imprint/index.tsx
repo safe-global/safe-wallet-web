@@ -24,7 +24,7 @@ const SafeImprint = () => {
         Managing directors: Richard Meißner, Tobias Schubotz
         <br />
         Contact:{' '}
-        <Link href="mailto:info@cc0x.dev" passHref>
+        <Link href="mailto:info@cc0x.dev" passHref legacyBehavior>
           <MUILink>info@cc0x.dev</MUILink>
         </Link>
         <br />
@@ -59,7 +59,7 @@ const SafeImprint = () => {
       </Typography>
       <Typography>
         This website and their contents are subject to copyright laws.{' '}
-        <Link href="https://github.com/safe-global/safe-wallet-web/blob/dev/LICENSE" passHref>
+        <Link href="https://github.com/safe-global/safe-wallet-web/blob/dev/LICENSE" passHref legacyBehavior>
           <MUILink target="_blank" rel="noreferrer">
             The code is open-source, released under GPL-3.0.
           </MUILink>

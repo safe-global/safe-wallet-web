@@ -95,7 +95,14 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
               Website
             </Typography>
 
-            <Link href={developerWebsite} passHref target="_blank" rel="noopener noreferrer" color="primary">
+            <Link
+              href={developerWebsite}
+              passHref
+              target="_blank"
+              rel="noopener noreferrer"
+              color="primary"
+              legacyBehavior
+            >
               <MuiLink target="_blank" className={css.websiteLink} underline="hover" fontWeight="bold" mt={1.2}>
                 {developerWebsite}
               </MuiLink>

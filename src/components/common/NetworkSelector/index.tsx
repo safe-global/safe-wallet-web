@@ -65,6 +65,7 @@ const NetworkSelector = (): ReactElement => {
         sx: {
           '& .MuiPaper-root': {
             mt: 2,
+            overflow: 'auto',
           },
         },
       }}
@@ -81,9 +82,7 @@ const NetworkSelector = (): ReactElement => {
         return (
           <MenuItem key={chain.chainId} value={chain.chainId}>
             <Link href={getNetworkLink(chain.shortName)} passHref>
-              <a>
-                <ChainIndicator chainId={chain.chainId} inline />
-              </a>
+              <ChainIndicator chainId={chain.chainId} inline />
             </Link>
           </MenuItem>
         )
