@@ -1,4 +1,5 @@
 import ExternalStore from '@/services/ExternalStore'
+
 import BN from 'bn.js'
 import { generatePrivate } from 'eccrypto'
 import { getPubKeyPoint, type ShareStore } from '@tkey-mpc/common-types'
@@ -135,9 +136,9 @@ export const useMPCWallet = () => {
         privKey: factorKey,
       })
 
-      // If the metadata doesn't have the TSS Share, it means the user has entered an invalid backup share
+      // If the metadata doesn't have the TSS Share, the factorKey is invalid
       if (factorKeyMetadata.message === 'KEY_NOT_FOUND') {
-        throw new Error('no metadata for your factor key, reset your account')
+        throw new Error('no metadata for your factor key')
       }
       const metadataShare = JSON.parse(factorKeyMetadata.message)
       if (!metadataShare.deviceShare || !metadataShare.tssShare) throw new Error('Invalid data from metadata')
@@ -155,12 +156,6 @@ export const useMPCWallet = () => {
       return
     }
 
-    const metadataDeviceShare = await validateFactorKey(factorKey)
-
-    // Initialize the tKey with the TSS Share from metadata
-    await tKey.initialize({ neverInitializeNewKey: true })
-    await tKey.inputShareStoreSafe(metadataDeviceShare, true)
-
     // Checks the requiredShares to reconstruct the tKey, starts from 2 by default and each of the above share reduce it by one.
     const { requiredShares } = tKey.getKeyDetails()
     if (requiredShares > 0) {
@@ -171,14 +166,14 @@ export const useMPCWallet = () => {
     await tKey.reconstructKey()
 
     const tssNonce: number = tKey.metadata.tssNonces![tKey.tssTag]
-    // tssShare1 = TSS Share from the social login/ service provider
+    // tssShare1 = OAuth TSS Share
     const tssShare1PubKeyDetails = await tKey.serviceProvider.getTSSPubKey(tKey.tssTag, tssNonce)
     const tssShare1PubKey = {
       x: tssShare1PubKeyDetails.pubKey.x.toString('hex'),
       y: tssShare1PubKeyDetails.pubKey.y.toString('hex'),
     }
 
-    // tssShare2 = TSS Share from the local storage of the device
+    // tssShare2 = Device TSS Share
     const { tssShare: tssShare2, tssIndex: tssShare2Index } = await tKey.getTSSShare(factorKey)
 
     const ec = getEcCrypto()
@@ -218,26 +213,41 @@ export const useMPCWallet = () => {
     })
 
     setLoginPending(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createNewMetadata, factorKey, loginResponse, setLocalFactorKey, tKey, validateFactorKey])
 
   /**
-   * If a user has not logged in before we create a new MPC wallet:
-   * We create and store a new device share.
+   * Creates a new factor key pair and device share private key.
+   * The public key of the factor key pair is used to encrypt the device share.
+   * The encrypted device share gets stored in the torus metadata.
    */
-  const initializeNewWalletShares = useCallback(async () => {
+  const initializeNewShare = useCallback(async () => {
     if (!tKey) {
       console.error('tKey not initialized')
       return null
     }
-    // If the user is new, we'll generate a new factorKey & deviceShare and store it in the local storage. The factorKey can be used to get the deviceShare from metadata. Device Share is stored on the metadata encrypted by the factorKey.
+
     const factorKey = new BN(generatePrivate())
     const deviceTSSShare = new BN(generatePrivate())
     const deviceTSSIndex = 2
     const factorPub = getPubKeyPoint(factorKey)
     await tKey.initialize({ useTSS: true, factorPub, deviceTSSShare, deviceTSSIndex })
-
     return factorKey
   }, [tKey])
+
+  const initializeTKeyForExistingUser = useCallback(
+    async (factorKey: BN) => {
+      if (!tKey) {
+        throw new Error('tKey not initialized')
+      }
+      const metadataDeviceShare = await validateFactorKey(factorKey)
+
+      // Initialize the tKey with the TSS Share from metadata
+      await tKey.initialize({ neverInitializeNewKey: true })
+      await tKey.inputShareStoreSafe(metadataDeviceShare, true)
+    },
+    [tKey, validateFactorKey],
+  )
 
   const deriveSecondShare = useCallback(async () => {
     if (!tKey) {
@@ -257,7 +267,7 @@ export const useMPCWallet = () => {
     const existingUser = await isMetadataPresent(tKey, oAuthShare)
     let nextState = MPCWalletState.CREATED_SECOND_FACTOR
     if (!existingUser) {
-      const newFactorKey = await initializeNewWalletShares()
+      const newFactorKey = await initializeNewShare()
       setCreateNewMetadata(true)
       setFactorKey(newFactorKey)
     } else {
@@ -268,6 +278,8 @@ export const useMPCWallet = () => {
       ) {
         // If the user is existing and the local storage has the factorKey corresponding the logged in user, we'll use that factorKey to get the deviceShare from metadata. Device Share is stored on the metadata encrypted by the factorKey.
         const factorKeyFromLocalStorage = new BN(tKeyLocalStore.factorKey, 'hex')
+        await initializeTKeyForExistingUser(factorKeyFromLocalStorage)
+
         setFactorKey(factorKeyFromLocalStorage)
       } else {
         // If the user is existing but the local storage doesn't have the factorKey corresponding the logged in user, we'll ask the user to enter the backup factor key to get the deviceShare from metadata.
@@ -275,11 +287,13 @@ export const useMPCWallet = () => {
       }
     }
     setWalletState(nextState)
-  }, [fetchDeviceShare, initializeNewWalletShares, loginResponse, oAuthShare, tKey])
+  }, [fetchDeviceShare, initializeNewShare, initializeTKeyForExistingUser, loginResponse, oAuthShare, tKey])
 
   const recoverFactorWithPassword = async (password: string) => {
     try {
       const recoveredFactorKey = await recoverPasswordFactorKey(password)
+      await initializeTKeyForExistingUser(recoveredFactorKey)
+
       setCreateNewMetadata(true)
       setFactorKey(recoveredFactorKey)
       setWalletState(MPCWalletState.CREATED_SECOND_FACTOR)
@@ -318,7 +332,6 @@ export const useMPCWallet = () => {
 
   // Login flow
   useEffect(() => {
-    console.log('Login flow effect')
     if (walletState === MPCWalletState.AUTHENTICATED) {
       deriveSecondShare()
     }
