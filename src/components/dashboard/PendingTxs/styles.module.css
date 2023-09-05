@@ -31,7 +31,7 @@
 @media (max-width: 599.95px) {
   .txInfo {
     width: 100%;
-    order: 4;
+    order: 1;
     flex: auto;
     margin-top: calc(var(--space-1) * -1);
   }
