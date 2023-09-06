@@ -15,24 +15,22 @@ export type ConnectedWallet = {
 
 let onboard: OnboardAPI | null = null
 
-export const createOnboard = (
-  chainConfigs: ChainInfo[],
-  currentChain: ChainInfo,
-  rpcConfig: EnvState['rpc'] | undefined,
-): OnboardAPI => {
+export const createOnboard = (chainInfo: ChainInfo, rpcConfig: EnvState['rpc'] | undefined): OnboardAPI => {
   if (onboard) return onboard
 
-  const wallets = getAllWallets(currentChain)
+  const wallets = getAllWallets(chainInfo)
 
-  const chains = chainConfigs.map((cfg) => ({
-    id: hexValue(parseInt(cfg.chainId)),
-    label: cfg.chainName,
-    rpcUrl: rpcConfig?.[cfg.chainId] || getRpcServiceUrl(cfg.rpcUri),
-    token: cfg.nativeCurrency.symbol,
-    color: cfg.theme.backgroundColor,
-    publicRpcUrl: cfg.publicRpcUri.value,
-    blockExplorerUrl: new URL(cfg.blockExplorerUriTemplate.address).origin,
-  }))
+  const chains = [
+    {
+      id: hexValue(parseInt(chainInfo.chainId)),
+      label: chainInfo.chainName,
+      rpcUrl: rpcConfig?.[chainInfo.chainId] || getRpcServiceUrl(chainInfo.rpcUri),
+      token: chainInfo.nativeCurrency.symbol,
+      color: chainInfo.theme.backgroundColor,
+      publicRpcUrl: chainInfo.publicRpcUri.value,
+      blockExplorerUrl: new URL(chainInfo.blockExplorerUriTemplate.address).origin,
+    },
+  ]
 
   onboard = Onboard({
     wallets,

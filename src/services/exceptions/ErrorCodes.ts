@@ -14,6 +14,7 @@ enum ErrorCodes {
   _105 = '105: Error initializing the Safe Core SDK',
   _106 = '106: Failed to get connected wallet',
 
+  _301 = '301: Error initializing web3-onboard',
   _302 = '302: Error connecting to the wallet',
   _303 = '303: Error creating pairing session',
 

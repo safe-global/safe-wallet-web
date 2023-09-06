@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { type EIP1193Provider, type WalletState, type OnboardAPI } from '@web3-onboard/core'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getAddress } from 'ethers/lib/utils'
-import useChains, { useCurrentChain } from '@/hooks/useChains'
+import { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
@@ -24,14 +24,10 @@ export type ConnectedWallet = {
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
 
-export const initOnboard = async (
-  chainConfigs: ChainInfo[],
-  currentChain: ChainInfo,
-  rpcConfig: EnvState['rpc'] | undefined,
-) => {
+export const initOnboard = async (currentChain: ChainInfo, rpcConfig: EnvState['rpc'] | undefined) => {
   const { createOnboard } = await import('@/services/onboard')
   if (!getStore()) {
-    setStore(createOnboard(chainConfigs, currentChain, rpcConfig))
+    setStore(createOnboard(currentChain, rpcConfig))
   }
 }
 
@@ -136,7 +132,6 @@ export const switchWallet = (onboard: OnboardAPI) => {
 
 // Disable/enable wallets according to chain
 export const useInitOnboard = () => {
-  const { configs } = useChains()
   const chain = useCurrentChain()
   const onboard = useStore()
   const customRpc = useAppSelector(selectRpc)
@@ -144,10 +139,12 @@ export const useInitOnboard = () => {
   useInitPairing()
 
   useEffect(() => {
-    if (configs.length > 0 && chain) {
-      void initOnboard(configs, chain, customRpc)
+    if (chain) {
+      initOnboard(chain, customRpc).catch((e) => {
+        logError(Errors._301, e)
+      })
     }
-  }, [configs, chain, customRpc])
+  }, [chain, customRpc])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
