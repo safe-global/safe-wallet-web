@@ -59,9 +59,23 @@ const NewSafe = () => {
             </Accordion>
           </Box>
 
-          <Box mt={2}>
+          <Box mt={2} display={{ xs: 'none', md: 'block' }}>
             <DataWidget />
           </Box>
+        </Box>
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        md={4}
+        lg={3.5}
+        minWidth={{ md: 480 }}
+        className={css.sidebar}
+        display={{ md: 'none' }}
+        order={3}
+      >
+        <Box>
+          <DataWidget />
         </Box>
       </Grid>
 
