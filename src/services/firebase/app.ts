@@ -5,15 +5,19 @@ import type { FirebaseApp, FirebaseOptions } from 'firebase/app'
 
 export const FIREBASE_IS_PRODUCTION = !!process.env.NEXT_PUBLIC_IS_PRODUCTION
 
-export const FIREBASE_VAPID_KEY = FIREBASE_IS_PRODUCTION
-  ? process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY_PRODUCTION || ''
-  : process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING || ''
+const FIREBASE_VALID_KEY_PRODUCTION = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY_PRODUCTION || ''
+const FIREBASE_VALID_KEY_STAGING = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING
+export const FIREBASE_VAPID_KEY = FIREBASE_IS_PRODUCTION ? FIREBASE_VALID_KEY_PRODUCTION : FIREBASE_VALID_KEY_STAGING
 
-export const FIREBASE_OPTIONS: FirebaseOptions = JSON.parse(
-  FIREBASE_IS_PRODUCTION
-    ? process.env.NEXT_PUBLIC_FIREBASE_OPTIONS_PRODUCTION || ''
-    : process.env.NEXT_PUBLIC_FIREBASE_OPTIONS_STAGING || '',
-)
+export const FIREBASE_OPTIONS: FirebaseOptions = (() => {
+  const FIREBASE_OPTIONS_PRODUCTION = process.env.NEXT_PUBLIC_FIREBASE_OPTIONS_PRODUCTION || ''
+  const FIREBASE_OPTIONS_STAGING = process.env.NEXT_PUBLIC_FIREBASE_OPTIONS_STAGING || ''
+  try {
+    return JSON.parse(FIREBASE_IS_PRODUCTION ? FIREBASE_OPTIONS_PRODUCTION : FIREBASE_OPTIONS_STAGING)
+  } catch {
+    return {}
+  }
+})()
 
 export const initializeFirebase = () => {
   const hasFirebaseOptions = Object.values(FIREBASE_OPTIONS).every(Boolean)

@@ -18,7 +18,7 @@ Object.defineProperty(globalThis, 'crypto', {
 Object.defineProperty(globalThis, 'navigator', {
   value: {
     serviceWorker: {
-      getRegistration: jest.fn(),
+      getRegistrations: () => [],
     },
   },
 })
