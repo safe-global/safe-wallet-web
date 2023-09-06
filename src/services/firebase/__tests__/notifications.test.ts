@@ -1,5 +1,5 @@
 import { hexZeroPad } from 'ethers/lib/utils'
-import type { ChainInfo, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 
 import { _parseWebhookNotification } from '../notifications'
 import { WebhookType } from '../webhooks'
@@ -16,13 +16,7 @@ import type {
   SafeCreatedEvent,
 } from '../webhooks'
 
-const setupFetchStub = (data: any) => (_url: string) => {
-  return Promise.resolve({
-    json: () => Promise.resolve(data),
-    status: 200,
-    ok: true,
-  })
-}
+jest.mock('@safe-global/safe-gateway-typescript-sdk')
 
 Object.defineProperty(self, 'location', {
   value: {
@@ -31,8 +25,12 @@ Object.defineProperty(self, 'location', {
 })
 
 describe('parseWebhookNotification', () => {
+  let getChainsConfigSpy: jest.SpyInstance<Promise<sdk.ChainListResponse>>
+  let getBalancesMockSpy: jest.SpyInstance<Promise<sdk.SafeBalanceResponse>>
+
   beforeEach(() => {
-    global.fetch = jest.fn()
+    getChainsConfigSpy = jest.spyOn(sdk, 'getChainsConfig')
+    getBalancesMockSpy = jest.spyOn(sdk, 'getBalances')
   })
 
   describe('should parse NEW_CONFIRMATION payloads', () => {
@@ -45,11 +43,9 @@ describe('parseWebhookNotification', () => {
     }
 
     it('with chain info', async () => {
-      global.fetch = jest.fn().mockImplementation(
-        setupFetchStub({
-          results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-        }),
-      )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -61,7 +57,7 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain info', async () => {
-      global.fetch = jest.fn().mockImplementationOnce(() => Promise.reject()) // chains
+      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -84,11 +80,9 @@ describe('parseWebhookNotification', () => {
 
     describe('successful transactions', () => {
       it('with chain info', async () => {
-        global.fetch = jest.fn().mockImplementation(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
+        getChainsConfigSpy.mockResolvedValue({
+          results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+        })
 
         const notification = await _parseWebhookNotification({
           ...payload,
@@ -103,7 +97,7 @@ describe('parseWebhookNotification', () => {
       })
 
       it('without chain info', async () => {
-        global.fetch = jest.fn().mockImplementationOnce(() => Promise.reject()) // chains
+        getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
         const notification = await _parseWebhookNotification({
           ...payload,
@@ -120,11 +114,9 @@ describe('parseWebhookNotification', () => {
 
     describe('failed transactions', () => {
       it('with chain info', async () => {
-        global.fetch = jest.fn().mockImplementation(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
+        getChainsConfigSpy.mockResolvedValue({
+          results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+        })
 
         const notification = await _parseWebhookNotification({
           ...payload,
@@ -139,7 +131,7 @@ describe('parseWebhookNotification', () => {
       })
 
       it('without chain info', async () => {
-        global.fetch = jest.fn().mockImplementationOnce(() => Promise.reject()) // chains
+        getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
         const notification = await _parseWebhookNotification({
           ...payload,
@@ -164,11 +156,9 @@ describe('parseWebhookNotification', () => {
     }
 
     it('with chain info', async () => {
-      global.fetch = jest.fn().mockImplementation(
-        setupFetchStub({
-          results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-        }),
-      )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -180,7 +170,7 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain info', async () => {
-      global.fetch = jest.fn().mockImplementationOnce(() => Promise.reject()) // chains
+      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -202,18 +192,16 @@ describe('parseWebhookNotification', () => {
     }
 
     it('with chain info', async () => {
-      global.fetch = jest.fn().mockImplementationOnce(
-        setupFetchStub({
-          results: [
-            {
-              chainName: 'Polygon',
-              chainId: payload.chainId,
-              shortName: 'matic',
-              nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 },
-            } as ChainInfo,
-          ],
-        }),
-      )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [
+          {
+            chainName: 'Polygon',
+            chainId: payload.chainId,
+            shortName: 'matic',
+            nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 },
+          } as sdk.ChainInfo,
+        ],
+      })
       const notification = await _parseWebhookNotification(payload)
 
       expect(notification).toEqual({
@@ -224,7 +212,7 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain info', async () => {
-      global.fetch = jest.fn().mockImplementationOnce(() => Promise.reject()) // chains
+      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -246,18 +234,16 @@ describe('parseWebhookNotification', () => {
     }
 
     it('with chain info', async () => {
-      global.fetch = jest.fn().mockImplementationOnce(
-        setupFetchStub({
-          results: [
-            {
-              chainName: 'Polygon',
-              chainId: payload.chainId,
-              shortName: 'matic',
-              nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 },
-            } as ChainInfo,
-          ],
-        }),
-      )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [
+          {
+            chainName: 'Polygon',
+            chainId: payload.chainId,
+            shortName: 'matic',
+            nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 },
+          } as sdk.ChainInfo,
+        ],
+      })
       const notification = await _parseWebhookNotification(payload)
 
       expect(notification).toEqual({
@@ -268,6 +254,8 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain info', async () => {
+      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
+
       const notification = await _parseWebhookNotification(payload)
 
       expect(notification).toEqual({
@@ -293,27 +281,21 @@ describe('parseWebhookNotification', () => {
     }
 
     it('with chain and token info', async () => {
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [
-              {
-                tokenInfo: {
-                  address: payload.tokenAddress,
-                  decimals: 18,
-                  name: 'Fake',
-                  symbol: 'FAKE',
-                } as TokenInfo,
-              },
-            ],
-          }),
-        )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -323,27 +305,21 @@ describe('parseWebhookNotification', () => {
         link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
       })
 
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [
-              {
-                tokenInfo: {
-                  address: payload.tokenAddress,
-                  decimals: 18,
-                  name: 'Fake',
-                  symbol: 'FAKE',
-                } as TokenInfo,
-              },
-            ],
-          }),
-        )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
 
       const erc20Notification = await _parseWebhookNotification(erc20Payload)
 
@@ -355,23 +331,19 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain info', async () => {
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.reject()) // chains
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [
-              {
-                tokenInfo: {
-                  address: payload.tokenAddress,
-                  decimals: 18,
-                  name: 'Fake',
-                  symbol: 'FAKE',
-                } as TokenInfo,
-              },
-            ],
-          }),
-        )
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -381,23 +353,19 @@ describe('parseWebhookNotification', () => {
         link: 'https://app.safe.global',
       })
 
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.reject()) // chains
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [
-              {
-                tokenInfo: {
-                  address: payload.tokenAddress,
-                  decimals: 18,
-                  name: 'Fake',
-                  symbol: 'FAKE',
-                } as TokenInfo,
-              },
-            ],
-          }),
-        )
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
 
       const erc20Notification = await _parseWebhookNotification(erc20Payload)
 
@@ -409,14 +377,10 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without token info', async () => {
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(() => Promise.reject()) // tokens
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -426,14 +390,10 @@ describe('parseWebhookNotification', () => {
         link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
       })
 
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(() => Promise.reject()) // tokens
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
       const erc20Notification = await _parseWebhookNotification(erc20Payload)
 
@@ -445,10 +405,8 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain and balance info', async () => {
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.reject()) // chains
-        .mockImplementationOnce(() => Promise.reject()) // tokens
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -458,10 +416,8 @@ describe('parseWebhookNotification', () => {
         link: 'https://app.safe.global',
       })
 
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.reject()) // chains
-        .mockImplementationOnce(() => Promise.reject()) // tokens
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
       const erc20Notification = await _parseWebhookNotification(erc20Payload)
 
@@ -488,27 +444,21 @@ describe('parseWebhookNotification', () => {
     }
 
     it('with chain and token info', async () => {
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [
-              {
-                tokenInfo: {
-                  address: payload.tokenAddress,
-                  decimals: 18,
-                  name: 'Fake',
-                  symbol: 'FAKE',
-                } as TokenInfo,
-              },
-            ],
-          }),
-        )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -518,27 +468,21 @@ describe('parseWebhookNotification', () => {
         link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
       })
 
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [
-              {
-                tokenInfo: {
-                  address: payload.tokenAddress,
-                  decimals: 18,
-                  name: 'Fake',
-                  symbol: 'FAKE',
-                } as TokenInfo,
-              },
-            ],
-          }),
-        )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
 
       const erc20Notification = await _parseWebhookNotification(erc20Payload)
 
@@ -550,18 +494,12 @@ describe('parseWebhookNotification', () => {
     })
 
     it('with chain and empty token info', async () => {
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [], // Transaction sent all of the tokens
-          }),
-        )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [] as sdk.SafeBalanceResponse['items'], // Transaction sent all of the tokens
+      } as sdk.SafeBalanceResponse)
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -571,27 +509,21 @@ describe('parseWebhookNotification', () => {
         link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
       })
 
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [
-              {
-                tokenInfo: {
-                  address: payload.tokenAddress,
-                  decimals: 18,
-                  name: 'Fake',
-                  symbol: 'FAKE',
-                } as TokenInfo,
-              },
-            ],
-          }),
-        )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
 
       const erc20Notification = await _parseWebhookNotification(erc20Payload)
 
@@ -603,23 +535,19 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain info', async () => {
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.reject()) // chains
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [
-              {
-                tokenInfo: {
-                  address: payload.tokenAddress,
-                  decimals: 18,
-                  name: 'Fake',
-                  symbol: 'FAKE',
-                } as TokenInfo,
-              },
-            ],
-          }),
-        )
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -629,23 +557,19 @@ describe('parseWebhookNotification', () => {
         link: 'https://app.safe.global',
       })
 
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.reject()) // chains
-        .mockImplementationOnce(
-          setupFetchStub({
-            items: [
-              {
-                tokenInfo: {
-                  address: payload.tokenAddress,
-                  decimals: 18,
-                  name: 'Fake',
-                  symbol: 'FAKE',
-                } as TokenInfo,
-              },
-            ],
-          }),
-        )
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
 
       const erc20Notification = await _parseWebhookNotification(erc20Payload)
 
@@ -656,14 +580,10 @@ describe('parseWebhookNotification', () => {
       })
     })
     it('without token info', async () => {
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(() => Promise.reject()) // tokens
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -673,14 +593,10 @@ describe('parseWebhookNotification', () => {
         link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
       })
 
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(
-          setupFetchStub({
-            results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as ChainInfo],
-          }),
-        )
-        .mockImplementationOnce(() => Promise.reject()) // tokens
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
       const erc20Notification = await _parseWebhookNotification(erc20Payload)
 
@@ -692,10 +608,8 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain and balance info', async () => {
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.reject()) // chains
-        .mockImplementationOnce(() => Promise.reject()) // tokens
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -705,10 +619,8 @@ describe('parseWebhookNotification', () => {
         link: 'https://app.safe.global',
       })
 
-      global.fetch = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.reject()) // chains
-        .mockImplementationOnce(() => Promise.reject()) // tokens
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
       const erc20Notification = await _parseWebhookNotification(erc20Payload)
 
@@ -730,11 +642,9 @@ describe('parseWebhookNotification', () => {
     }
 
     it('with chain info', async () => {
-      global.fetch = jest.fn().mockImplementation(
-        setupFetchStub({
-          results: [{ chainName: 'Mainnet', chainId: '1', shortName: 'eth' } as ChainInfo],
-        }),
-      )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: '1', shortName: 'eth' } as sdk.ChainInfo],
+      })
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -746,7 +656,7 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain info', async () => {
-      global.fetch = jest.fn().mockImplementationOnce(() => Promise.reject()) // chains
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -767,11 +677,9 @@ describe('parseWebhookNotification', () => {
     }
 
     it('with chain info', async () => {
-      global.fetch = jest.fn().mockImplementation(
-        setupFetchStub({
-          results: [{ chainName: 'Mainnet', chainId: '1', shortName: 'eth' } as ChainInfo],
-        }),
-      )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: '1', shortName: 'eth' } as sdk.ChainInfo],
+      })
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -783,7 +691,7 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain info', async () => {
-      global.fetch = jest.fn().mockImplementationOnce(() => Promise.reject()) // chains
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -804,11 +712,9 @@ describe('parseWebhookNotification', () => {
       blockNumber: '1',
     }
     it('with chain info', async () => {
-      global.fetch = jest.fn().mockImplementation(
-        setupFetchStub({
-          results: [{ chainName: 'Mainnet', chainId: '1', shortName: 'eth' } as ChainInfo],
-        }),
-      )
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: '1', shortName: 'eth' } as sdk.ChainInfo],
+      })
 
       const notification = await _parseWebhookNotification(payload)
 
@@ -816,7 +722,7 @@ describe('parseWebhookNotification', () => {
     })
 
     it('without chain info', async () => {
-      global.fetch = jest.fn().mockImplementationOnce(() => Promise.reject()) // chains
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
 
       const notification = await _parseWebhookNotification(payload)
 

@@ -2,7 +2,8 @@
 
 import { get as getFromIndexedDb } from 'idb-keyval'
 import { formatUnits } from '@ethersproject/units' // Increases bundle significantly but unavoidable
-import type { ChainInfo, ChainListResponse, SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import { getChainsConfig, getBalances, setBaseUrl } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { MessagePayload } from 'firebase/messaging'
 
 import { AppRoutes } from '@/config/routes' // Has no internal imports
@@ -46,22 +47,12 @@ const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'http
 
 // localStorage cannot be accessed in service workers so we reference the flag from the environment
 const GATEWAY_URL = FIREBASE_IS_PRODUCTION ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
+setBaseUrl(GATEWAY_URL)
 
-// XHR is not supported in service workers so we can't use the SDK
-// TODO: Migrate to SDK when we update it to use fetch
 const getChain = async (chainId: string): Promise<ChainInfo | undefined> => {
-  const ENDPOINT = `${GATEWAY_URL}/v1/chains`
-
-  let chains: ChainListResponse | null = null
-
-  try {
-    const response = await fetch(ENDPOINT)
-    if (response.ok) {
-      chains = await response.json()
-    }
-  } catch {}
-
-  return chains?.results.find((chain) => chain.chainId === chainId)
+  return getChainsConfig()
+    .then(({ results }) => results.find((chain) => chain.chainId === chainId))
+    .catch(() => undefined)
 }
 
 const getTokenInfo = async (
@@ -71,7 +62,6 @@ const getTokenInfo = async (
   tokenValue?: string,
 ): Promise<{ symbol: string; value: string; name: string }> => {
   const DEFAULT_CURRENCY = 'USD'
-  const ENDPOINT = `${GATEWAY_URL}/v1/chains/${chainId}/safes/${safeAddress}/balances/${DEFAULT_CURRENCY}`
 
   const DEFAULT_INFO = {
     symbol: 'tokens',
@@ -79,16 +69,9 @@ const getTokenInfo = async (
     name: 'Token',
   }
 
-  let balances: SafeBalanceResponse | null = null
-
-  try {
-    const response = await fetch(ENDPOINT)
-    if (response.ok) {
-      balances = await response.json()
-    }
-  } catch {}
-
-  const tokenInfo = balances?.items.find((token) => token.tokenInfo.address === tokenAddress)?.tokenInfo
+  const tokenInfo = await getBalances(chainId, safeAddress, DEFAULT_CURRENCY)
+    .then(({ items }) => items.find((token) => token.tokenInfo.address === tokenAddress)?.tokenInfo)
+    .catch(() => null)
 
   if (!tokenInfo) {
     return DEFAULT_INFO
@@ -132,11 +115,7 @@ type NotificationsMap<T extends WebhookEvent = WebhookEvent> = {
 export const _parseWebhookNotification = async (
   data: WebhookEvent,
 ): Promise<{ title: string; body: string; link: string } | undefined> => {
-  let chain: ChainInfo | undefined
-
-  try {
-    chain = await getChain(data.chainId)
-  } catch {}
+  const chain = await getChain(data.chainId)
 
   const chainName = chain?.chainName ?? `chain ${data.chainId}`
 

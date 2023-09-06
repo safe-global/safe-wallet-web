@@ -1,7 +1,7 @@
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { getToken, getMessaging } from 'firebase/messaging'
-import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
-import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
+import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk'
+import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Web3Provider } from '@ethersproject/providers'
 
 import { FIREBASE_VAPID_KEY, initializeFirebase } from '@/services/firebase/app'
