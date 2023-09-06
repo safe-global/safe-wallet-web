@@ -34,6 +34,16 @@
   border-radius: 4px;
   font-size: 14px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.description {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-primary);
 }
 
 @media (max-width: 599.95px) {

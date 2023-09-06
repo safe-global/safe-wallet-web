@@ -1,10 +1,9 @@
 import type { Palette } from '@mui/material'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
-import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { type Transaction, TransactionStatus, type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 
 import DateTime from '@/components/common/DateTime'
-import TxInfo from '@/components/transactions/TxInfo'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
@@ -12,9 +11,11 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isAwaitingExecution, isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
-import TxType from '@/components/transactions/TxType'
 import TxConfirmations from '../TxConfirmations'
 import useIsPending from '@/hooks/useIsPending'
+import { HumanDescription, type HumanDescriptionFragment } from '@/components/transactions/HumanDescription'
+import { useTransactionDescription } from '@/hooks/useTransactionDescription'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette) => {
   switch (value) {
@@ -34,6 +35,26 @@ const getStatusColor = (value: TransactionStatus, palette: Palette) => {
 type TxSummaryProps = {
   isGrouped?: boolean
   item: Transaction
+}
+
+const TxDescription = ({ tx }: { tx: TransactionSummary }) => {
+  const { text, icon } = useTransactionDescription(tx)
+
+  // @ts-ignore
+  const humanDescription = tx.txInfo.richDecodedInfo?.fragments as HumanDescriptionFragment[]
+
+  return (
+    <Box className={css.description}>
+      <SafeAppIconCard
+        src={icon}
+        alt="Transaction icon"
+        width={16}
+        height={16}
+        fallback="/images/transactions/custom.svg"
+      />
+      {humanDescription ? <HumanDescription fragments={humanDescription} /> : text}
+    </Box>
+  )
 }
 
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
@@ -67,10 +88,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       {nonce && !isGrouped && <Box gridArea="nonce">{nonce}</Box>}
 
       <Box gridArea="type" className={css.columnWrap}>
-        <Box display="flex" alignItems="center" gap={1}>
-          <TxType tx={tx} />
-          <TxInfo info={tx.txInfo} />
-        </Box>
+        <TxDescription tx={tx} />
       </Box>
 
       <Box gridArea="date">
