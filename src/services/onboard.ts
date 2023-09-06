@@ -13,11 +13,7 @@ export type ConnectedWallet = {
   provider: EIP1193Provider
 }
 
-let onboard: OnboardAPI | null = null
-
 export const createOnboard = (chainInfo: ChainInfo, rpcConfig: EnvState['rpc'] | undefined): OnboardAPI => {
-  if (onboard) return onboard
-
   const wallets = getAllWallets(chainInfo)
 
   const chains = [
@@ -32,7 +28,7 @@ export const createOnboard = (chainInfo: ChainInfo, rpcConfig: EnvState['rpc'] |
     },
   ]
 
-  onboard = Onboard({
+  const onboard = Onboard({
     wallets,
 
     chains,

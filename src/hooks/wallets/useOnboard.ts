@@ -22,13 +22,11 @@ export type ConnectedWallet = {
   icon?: string
 }
 
-const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
+const { setStore, useStore } = new ExternalStore<OnboardAPI>()
 
 export const initOnboard = async (currentChain: ChainInfo, rpcConfig: EnvState['rpc'] | undefined) => {
   const { createOnboard } = await import('@/services/onboard')
-  if (!getStore()) {
-    setStore(createOnboard(currentChain, rpcConfig))
-  }
+  setStore(createOnboard(currentChain, rpcConfig))
 }
 
 // Get the most recently connected wallet address

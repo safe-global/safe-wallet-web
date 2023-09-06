@@ -64,7 +64,7 @@
     "@web3-onboard/keystone": "^2.3.7",
     "@web3-onboard/ledger": "2.3.2",
     "@web3-onboard/trezor": "^2.4.2",
-    "@web3-onboard/walletconnect": "^2.4.5",
+    "@web3-onboard/walletconnect": "^2.4.6",
     "classnames": "^2.3.1",
     "date-fns": "^2.29.2",
     "ethereum-blockies-base64": "^1.0.2",
