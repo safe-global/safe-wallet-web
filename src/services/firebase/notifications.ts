@@ -7,7 +7,7 @@ import type { MessagePayload } from 'firebase/messaging'
 
 import { AppRoutes } from '@/config/routes' // Has no internal imports
 import { isWebhookEvent, WebhookType } from './webhooks'
-import { getSafeNotificationPrefsKey, createNotificationUuidIndexedDb } from './preferences'
+import { getSafeNotificationPrefsKey, createNotificationPrefsIndexedDb } from './preferences'
 import { FIREBASE_IS_PRODUCTION } from './app'
 import type { WebhookEvent } from './webhooks'
 import type { NotificationPreferences, SafeNotificationPrefsKey } from './preferences'
@@ -28,7 +28,7 @@ export const shouldShowNotification = async (payload: MessagePayload): Promise<b
   const { chainId, address, type } = payload.data
 
   const key = getSafeNotificationPrefsKey(chainId, address)
-  const store = createNotificationUuidIndexedDb()
+  const store = createNotificationPrefsIndexedDb()
 
   const preferencesStore = await getFromIndexedDb<NotificationPreferences[SafeNotificationPrefsKey]>(key, store).catch(
     () => null,

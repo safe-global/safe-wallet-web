@@ -92,12 +92,8 @@ const areAllSafesSelected = (notifiableSafes: NotifiableSafes, selectedSafes: No
 
 // Total number of signatures required to register selected Safes
 const getTotalSignaturesRequired = (selectedSafes: NotifiableSafes, currentNotifiedSafes?: NotifiableSafes): number => {
-  if (!currentNotifiedSafes) {
-    return 0
-  }
-
   return Object.keys(selectedSafes).filter((chainId) => {
-    return !Object.keys(currentNotifiedSafes).includes(chainId)
+    return !Object.keys(currentNotifiedSafes || {}).includes(chainId)
   }).length
 }
 
@@ -105,21 +101,13 @@ const shouldRegisterSelectedSafes = (
   selectedSafes: NotifiableSafes,
   currentNotifiedSafes?: NotifiableSafes,
 ): boolean => {
-  if (!currentNotifiedSafes) {
-    return false
-  }
-
   return Object.entries(selectedSafes).some(([chainId, safeAddresses]) => {
-    return safeAddresses.some((safeAddress) => !currentNotifiedSafes[chainId]?.includes(safeAddress))
+    return safeAddresses.some((safeAddress) => !currentNotifiedSafes?.[chainId]?.includes(safeAddress))
   })
 }
 
 const shouldUnregsiterSelectedSafes = (selectedSafes: NotifiableSafes, currentNotifiedSafes?: NotifiableSafes) => {
-  if (!currentNotifiedSafes) {
-    return false
-  }
-
-  return Object.entries(currentNotifiedSafes).some(([chainId, safeAddresses]) => {
+  return Object.entries(currentNotifiedSafes || {}).some(([chainId, safeAddresses]) => {
     return safeAddresses.some((safeAddress) => !selectedSafes[chainId]?.includes(safeAddress))
   })
 }

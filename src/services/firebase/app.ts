@@ -3,7 +3,7 @@
 import { initializeApp } from 'firebase/app'
 import type { FirebaseApp, FirebaseOptions } from 'firebase/app'
 
-export const FIREBASE_IS_PRODUCTION = !!process.env.NEXT_PUBLIC_IS_PRODUCTION
+export const FIREBASE_IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === 'true'
 
 const FIREBASE_VALID_KEY_PRODUCTION = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY_PRODUCTION || ''
 const FIREBASE_VALID_KEY_STAGING = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING
