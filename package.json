@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@date-io/date-fns": "^2.15.0",
+    "@ducanh2912/next-pwa": "^9.5.0",
     "@emotion/cache": "^11.10.1",
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
@@ -70,14 +71,13 @@
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "5.7.2",
     "exponential-backoff": "^3.1.0",
-    "firebase": "^10.1.0",
+    "firebase": "^10.3.1",
     "framer-motion": "^10.13.1",
     "fuse.js": "^6.6.2",
     "idb-keyval": "^6.2.1",
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "next": "^13.2.0",
-    "next-pwa": "^5.6.0",
     "papaparse": "^5.3.2",
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
@@ -88,7 +88,8 @@
     "react-papaparse": "^4.0.2",
     "react-qr-reader": "2.2.1",
     "react-redux": "^8.0.5",
-    "semver": "^7.5.2"
+    "semver": "^7.5.2",
+    "webpack": "^5.88.2"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^13.1.1",
@@ -129,7 +130,6 @@
     "ts-prune": "^0.10.3",
     "typechain": "^8.0.0",
     "typescript": "4.9.4",
-    "typescript-plugin-css-modules": "^4.2.2",
-    "workbox-webpack-plugin": "^7.0.0"
+    "typescript-plugin-css-modules": "^4.2.2"
   }
 }

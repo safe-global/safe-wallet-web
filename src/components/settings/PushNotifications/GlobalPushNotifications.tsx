@@ -23,7 +23,7 @@ import { useNotificationRegistrations } from './hooks/useNotificationRegistratio
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
-import { requestNotificationPermission } from './logic'
+// import { requestNotificationPermission } from './logic'
 import type { NotifiableSafes } from './logic'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 import type { NotificationPreferences } from '@/services/firebase/preferences'
@@ -165,11 +165,12 @@ export const GlobalPushNotifications = (): ReactElement | null => {
       return
     }
 
-    const isGranted = await requestNotificationPermission()
+    // TODO: Can we remove this?
+    // const isGranted = await requestNotificationPermission()
 
-    if (!isGranted) {
-      return
-    }
+    // if (!isGranted) {
+    //   return
+    // }
 
     const registrationPromises: Array<Promise<void>> = []
 

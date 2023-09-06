@@ -1,4 +1,4 @@
-// Refrain from importing outside of this folder to keep firebase-sw.js bundle small
+// Be careful what you import here as it will increase the service worker bundle size
 
 import type { MessagePayload } from 'firebase/messaging'
 

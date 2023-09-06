@@ -1,11 +1,9 @@
-// Refrain from importing outside of this folder to keep firebase-sw.js bundle small
+// Be careful what you import here as it will increase the service worker bundle size
 
 import { initializeApp } from 'firebase/app'
 import type { FirebaseApp, FirebaseOptions } from 'firebase/app'
 
 const IS_PRODUCTION = !!process.env.NEXT_PUBLIC_IS_PRODUCTION
-
-export const FIREBASE_MESSAGING_SW_PATH = '/firebase-messaging-sw.js'
 
 const FIREBASE_API_KEY_PRODUCTION = process.env.NEXT_PUBLIC_FIREBASE_API_KEY_PRODUCTION || ''
 const FIREBASE_AUTH_DOMAIN_PRODUCTION = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN_PRODUCTION || ''

@@ -1,6 +1,6 @@
-// Refrain from importing outside of this folder to keep firebase-sw.js bundle small
+// Be careful what you import here as it will increase the service worker bundle size
 
-import { createStore } from 'idb-keyval'
+import { createStore as createIndexedDb } from 'idb-keyval'
 
 import type { WebhookType } from './webhooks'
 
@@ -8,7 +8,7 @@ export const createNotificationUuidIndexedDb = () => {
   const DB_NAME = 'notifications-uuid-database'
   const STORE_NAME = 'notifications-uuid-store'
 
-  return createStore(DB_NAME, STORE_NAME)
+  return createIndexedDb(DB_NAME, STORE_NAME)
 }
 
 export type SafeNotificationPrefsKey = `${string}:${string}`
@@ -29,5 +29,5 @@ export const createNotificationPrefsIndexedDb = () => {
   const DB_NAME = 'notifications-preferences-database'
   const STORE_NAME = 'notifications-preferences-store'
 
-  return createStore(DB_NAME, STORE_NAME)
+  return createIndexedDb(DB_NAME, STORE_NAME)
 }

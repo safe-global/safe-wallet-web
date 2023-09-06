@@ -1,19 +1,24 @@
+// Be careful what you import here as it will increase the service worker bundle size
+
+// TypeScript
 /// <reference lib="webworker" />
 
-import { onBackgroundMessage } from 'firebase/messaging/sw'
-import { getMessaging } from 'firebase/messaging/sw'
+import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw'
 
-import { initializeFirebase } from '@/services/firebase/firebase'
-import { parseFirebaseNotification, shouldShowNotification } from '@/services/firebase/notifications'
-
-const ICON_PATH = '/images/safe-logo-green.png'
+import { initializeFirebase } from '@/services/firebase/app'
+import { shouldShowNotification, parseFirebaseNotification } from '@/services/firebase/notifications'
 
 // Default type of `self` is `WorkerGlobalScope & typeof globalThis`
 // https://github.com/microsoft/TypeScript/issues/14877
-declare const self: ServiceWorkerGlobalScope & { __WB_MANIFEST: unknown }
+// TODO: Fix type
+declare const self: ServiceWorkerGlobalScope & { __WB_MANIFEST: unknown; __WB_DISABLE_DEV_LOGS: boolean }
 
-// Satisfy Workbox
+// Satisfy workbox
 self.__WB_MANIFEST
+
+self.__WB_DISABLE_DEV_LOGS = true
+
+const ICON_PATH = '/images/safe-logo-green.png'
 
 const app = initializeFirebase()
 

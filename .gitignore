@@ -47,11 +47,9 @@ yalc.lock
 /cypress/screenshots
 /cypress/downloads
 
-/public/firebase-messaging-sw.js
-
-# TODO: Remove after we have all deleted these locally - next-pwa remnants
 /public/sw.js
 /public/sw.js.map
+/public/worker-*.js
 /public/workbox-*.js
 /public/workbox-*.js.map
 /public/fallback*
