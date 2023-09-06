@@ -1,6 +1,5 @@
 // Be careful what you import here as it will increase the service worker bundle size
 
-// TypeScript
 /// <reference lib="webworker" />
 
 import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw'
@@ -8,21 +7,17 @@ import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw'
 import { initializeFirebase } from '@/services/firebase/app'
 import { shouldShowNotification, parseFirebaseNotification } from '@/services/firebase/notifications'
 
-// Default type of `self` is `WorkerGlobalScope & typeof globalThis`
-// https://github.com/microsoft/TypeScript/issues/14877
-// TODO: Fix type
-declare const self: ServiceWorkerGlobalScope & { __WB_MANIFEST: unknown; __WB_DISABLE_DEV_LOGS: boolean }
+declare const self: ServiceWorkerGlobalScope
 
-// Satisfy workbox
-self.__WB_MANIFEST
+export function firebaseMessagingSw() {
+  const ICON_PATH = '/images/safe-logo-green.png'
 
-self.__WB_DISABLE_DEV_LOGS = true
+  const app = initializeFirebase()
 
-const ICON_PATH = '/images/safe-logo-green.png'
+  if (!app) {
+    return
+  }
 
-const app = initializeFirebase()
-
-if (app) {
   // Must be called before `onBackgroundMessage` as Firebase embeds a `notificationclick` listener
   self.addEventListener(
     'notificationclick',

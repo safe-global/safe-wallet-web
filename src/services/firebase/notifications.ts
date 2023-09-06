@@ -8,6 +8,7 @@ import type { MessagePayload } from 'firebase/messaging'
 import { AppRoutes } from '@/config/routes' // Has no internal imports
 import { isWebhookEvent, WebhookType } from './webhooks'
 import { getSafeNotificationPrefsKey, createNotificationUuidIndexedDb } from './preferences'
+import { FIREBASE_IS_PRODUCTION } from './app'
 import type { WebhookEvent } from './webhooks'
 import type { NotificationPreferences, SafeNotificationPrefsKey } from './preferences'
 
@@ -44,7 +45,7 @@ const GATEWAY_URL_PRODUCTION = process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION ||
 const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-client.staging.5afe.dev'
 
 // localStorage cannot be accessed in service workers so we reference the flag from the environment
-const GATEWAY_URL = !!process.env.NEXT_PUBLIC_IS_PRODUCTION ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
+const GATEWAY_URL = FIREBASE_IS_PRODUCTION ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
 // XHR is not supported in service workers so we can't use the SDK
 // TODO: Migrate to SDK when we update it to use fetch

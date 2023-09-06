@@ -37,7 +37,6 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
-import { useFirebaseNotifications } from '@/hooks/useFirebaseNotifications'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -50,7 +49,6 @@ const InitApp = (): null => {
   useInitOnboard()
   useInitWeb3()
   useInitSafeCoreSDK()
-  useFirebaseNotifications()
   useTxNotifications()
   useSafeMessageNotifications()
   useSafeNotifications()

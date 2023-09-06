@@ -4,7 +4,7 @@ import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import { FIREBASE_VAPID_KEY } from '@/services/firebase/app'
+import { FIREBASE_VAPID_KEY, initializeFirebase } from '@/services/firebase/app'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import packageJson from '../../../../package.json'
@@ -76,7 +76,9 @@ export const getRegisterDevicePayload = async ({
   const [serviceWorkerRegistration] = await navigator.serviceWorker.getRegistrations()
 
   // Get Firebase token
-  const messaging = getMessaging()
+  const app = initializeFirebase()
+  const messaging = getMessaging(app)
+
   const token = await getToken(messaging, {
     vapidKey: FIREBASE_VAPID_KEY,
     serviceWorkerRegistration,
