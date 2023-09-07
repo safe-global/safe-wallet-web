@@ -16,6 +16,7 @@ import { isCancellationTxInfo, isModuleExecutionInfo, isMultiSendTxInfo } from '
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
 import css from '@/components/transactions/TxSummary/styles.module.css'
+import humanDescriptionCss from '@/components/transactions/HumanDescription/styles.module.css'
 import { shortenAddress } from '@/utils/formatters'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { TransferTx } from '@/components/transactions/TxInfo'
@@ -47,10 +48,12 @@ const TransferDescription = ({ txInfo, isSendTx }: { txInfo: Transfer; isSendTx:
   return (
     <>
       {isSendTx ? 'Send' : 'Receive'}
-      <TransferTx info={txInfo} />
+      <TransferTx info={txInfo} omitSign={true} size={16} />
       <>
         {isSendTx ? 'to' : 'from'}
-        <EthHashInfo address={txInfo.recipient.value} avatarSize={16} showName={false} showPrefix={false} />
+        <div className={humanDescriptionCss.address}>
+          <EthHashInfo address={txInfo.recipient.value} name={txInfo.recipient.name} avatarSize={20} />
+        </div>
       </>
     </>
   )

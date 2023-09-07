@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from 'react'
+import { useMemo } from 'react'
 import {
   SettingsInfoType,
   TransactionInfoType,
@@ -10,7 +10,6 @@ import {
 import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
-import css from '@/components/transactions/TxSummary/styles.module.css'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -31,12 +30,12 @@ const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | un
 
 type TxType = {
   icon: string
-  text: ReactNode
+  text: string
 }
 
 export const getTransactionType = (tx: TransactionSummary, addressBook: AddressBook): TxType => {
   const toAddress = getTxTo(tx)
-  const addressName = addressBook[toAddress?.value || ''] || toAddress?.name
+  const addressBookName = toAddress?.value ? addressBook[toAddress.value] : undefined
 
   switch (tx.txInfo.type) {
     case TransactionInfoType.CREATION: {
@@ -60,7 +59,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
 
       return {
         icon: '/images/transactions/settings.svg',
-        text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.humanDescription || tx.txInfo.dataDecoded.method,
+        text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.dataDecoded.method,
       }
     }
     case TransactionInfoType.CUSTOM: {
@@ -80,39 +79,20 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
 
       if (tx.safeAppInfo) {
         return {
-          icon: tx.safeAppInfo.logoUri || '/images/transactions/custom.svg',
-          text: tx.txInfo.humanDescription ?? (
-            <>
-              {tx.txInfo.methodName ? (
-                <>
-                  <span>Called </span>
-                  <b className={css.method}>{tx.txInfo.methodName}</b>
-                </>
-              ) : (
-                ''
-              )}
-
-              {(addressName ? ' on ' + addressName : '') || (tx.safeAppInfo.name ? ' via ' + tx.safeAppInfo.name : '')}
-            </>
-          ),
+          icon: tx.safeAppInfo.logoUri,
+          text: tx.safeAppInfo.name,
         }
       }
 
       return {
         icon: toAddress?.logoUri || '/images/transactions/custom.svg',
-        text: tx.txInfo.humanDescription ?? (
-          <>
-            {addressName || 'Contract interaction'}
-            {tx.txInfo.methodName && ': '}
-            {tx.txInfo.methodName ? <b className={css.method}>{tx.txInfo.methodName}</b> : ''}
-          </>
-        ),
+        text: addressBookName || toAddress?.name || 'Contract interaction',
       }
     }
     default: {
       return {
         icon: '/images/transactions/custom.svg',
-        text: addressName || 'Contract interaction',
+        text: addressBookName || 'Contract interaction',
       }
     }
   }

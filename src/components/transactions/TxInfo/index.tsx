@@ -7,10 +7,11 @@ import type {
   MultiSend,
   SettingsChange,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import { SettingsInfoType, TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
+import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 import {
   isCreationTxInfo,
+  isCustomTxInfo,
   isERC20Transfer,
   isERC721Transfer,
   isMultiSendTxInfo,
@@ -20,16 +21,17 @@ import {
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
-import EthHashInfo from '@/components/common/EthHashInfo'
 
 export const TransferTx = ({
   info,
   omitSign = false,
   withLogo = true,
+  size,
 }: {
   info: Transfer
   omitSign?: boolean
   withLogo?: boolean
+  size?: number
 }): ReactElement => {
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
@@ -39,19 +41,19 @@ export const TransferTx = ({
   if (isNativeTokenTransfer(transfer)) {
     return (
       <TokenAmount
-        direction={undefined}
+        direction={direction}
         value={transfer.value}
         decimals={nativeCurrency?.decimals}
         tokenSymbol={nativeCurrency?.symbol}
         logoUri={withLogo ? nativeCurrency?.logoUri : undefined}
-        size={16}
+        size={size}
       />
     )
   }
 
   if (isERC20Transfer(transfer)) {
     return (
-      <TokenAmount {...transfer} direction={undefined} logoUri={withLogo ? transfer?.logoUri : undefined} size={16} />
+      <TokenAmount {...transfer} direction={undefined} logoUri={withLogo ? transfer?.logoUri : undefined} size={size} />
     )
   }
 
@@ -64,7 +66,7 @@ export const TransferTx = ({
         direction={undefined}
         logoUri={withLogo ? transfer?.logoUri : undefined}
         fallbackSrc="/images/common/nft-placeholder.png"
-        size={16}
+        size={size}
       />
     )
   }
@@ -73,7 +75,7 @@ export const TransferTx = ({
 }
 
 const CustomTx = ({ info }: { info: Custom }): ReactElement => {
-  return <>{!info.humanDescription && info.methodName}</>
+  return <>{info.methodName}</>
 }
 
 const CreationTx = ({ info }: { info: Creation }): ReactElement => {
@@ -83,7 +85,7 @@ const CreationTx = ({ info }: { info: Creation }): ReactElement => {
 const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   return (
     <>
-      with {info.actionCount} {`action${info.actionCount > 1 ? 's' : ''}`}
+      {info.actionCount} {`action${info.actionCount > 1 ? 's' : ''}`}
     </>
   )
 }
@@ -109,15 +111,11 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
   }
 
   if (isTransferTxInfo(info)) {
-    return (
-      <>
-        <TransferTx info={info} {...rest} />
-        <>
-          {info.direction === TransferDirection.OUTGOING ? 'to' : 'from'}
-          <EthHashInfo address={info.recipient.value} avatarSize={16} showName={false} showPrefix={false} />
-        </>
-      </>
-    )
+    return <TransferTx info={info} {...rest} />
+  }
+
+  if (isCustomTxInfo(info)) {
+    return <CustomTx info={info} />
   }
 
   if (isCreationTxInfo(info)) {
