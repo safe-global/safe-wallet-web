@@ -104,7 +104,6 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
     event: eventData.event || EventType.CLICK,
     eventCategory: eventData.category,
     eventAction: eventData.action,
-    chainId: eventData.chainId || commonEventParams.chainId,
   }
 
   if (eventData.event) {

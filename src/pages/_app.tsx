@@ -37,7 +37,6 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
-import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -45,7 +44,6 @@ const InitApp = (): null => {
   setGatewayBaseUrl(GATEWAY_URL)
   useAdjustUrl()
   useGtm()
-  useNotificationTracking()
   useInitSession()
   useLoadableStores()
   useInitOnboard()
