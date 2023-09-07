@@ -39,3 +39,11 @@
   position: absolute;
   right: 0;
 }
+
+@media (max-width: 599.95px) {
+  .popper :global .MuiAutocomplete-option,
+  .popper :global .MuiListSubheader-root {
+    padding-left: var(--space-2);
+    padding-right: var(--space-2);
+  }
+}

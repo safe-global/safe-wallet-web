@@ -21,14 +21,13 @@ import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import NumberField from '@/components/common/NumberField'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useAddressBook from '@/hooks/useAddressBook'
 import { getLatestTransactions } from '@/utils/tx-list'
-import { getTransactionType } from '@/hooks/useTransactionType'
 import usePreviousNonces from '@/hooks/usePreviousNonces'
 import { isRejectionTx } from '@/utils/transactions'
 
 import css from './styles.module.css'
 import classNames from 'classnames'
+import { TxDescription } from '@/components/transactions/TxSummary'
 
 const CustomPopper = function ({
   // Don't set width of Popper to that of the field
@@ -56,7 +55,6 @@ const NonceFormOption = memo(function NonceFormOption({
   nonce: string
   menuItemProps: MenuItemProps
 }): ReactElement {
-  const addressBook = useAddressBook()
   const transactions = useQueuedTxByNonce(Number(nonce))
 
   const txLabel = useMemo(() => {
@@ -67,14 +65,14 @@ const NonceFormOption = memo(function NonceFormOption({
     }
 
     const [{ transaction }] = latestTransactions
-    return transaction.txInfo.humanDescription || `${getTransactionType(transaction, addressBook).text} transaction`
-  }, [addressBook, transactions])
+    return <TxDescription tx={transaction} />
+  }, [transactions])
 
   const label = txLabel || 'New transaction'
 
   return (
     <MenuItem {...menuItemProps}>
-      <Typography variant="body2">
+      <Typography variant="body2" display="flex" alignItems="center" gap="0.5em">
         <b>{nonce}</b>&nbsp;- {label}
       </Typography>
     </MenuItem>
@@ -140,7 +138,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
       render={({ field, fieldState }) => {
         if (readOnly) {
           return (
-            <Typography variant="body2" fontWeight={700} ml={-1}>
+            <Typography fontWeight={700} ml={-1}>
               {nonce}
             </Typography>
           )
