@@ -4,15 +4,18 @@
 
 import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw'
 
-import { initializeFirebase } from '@/services/firebase/app'
-import { shouldShowNotification, parseFirebaseNotification } from '@/services/firebase/notifications'
+import { initializeFirebaseApp } from '@/services/push-notifications/firebase'
+import {
+  shouldShowServiceWorkerPushNotification,
+  parseServiceWorkerPushNotification,
+} from '@/service-workers/firebase-messaging/notifications'
 
 declare const self: ServiceWorkerGlobalScope
 
 export function firebaseMessagingSw() {
   const ICON_PATH = '/images/safe-logo-green.png'
 
-  const app = initializeFirebase()
+  const app = initializeFirebaseApp()
 
   if (!app) {
     return
@@ -38,19 +41,19 @@ export function firebaseMessagingSw() {
   const messaging = getMessaging(app)
 
   onBackgroundMessage(messaging, async (payload) => {
-    const shouldShow = await shouldShowNotification(payload)
+    const shouldShow = await shouldShowServiceWorkerPushNotification(payload)
 
     if (!shouldShow) {
       return
     }
 
-    const notification = await parseFirebaseNotification(payload)
+    const notification = await parseServiceWorkerPushNotification(payload)
 
     if (!notification) {
       return
     }
 
-    self.registration.showNotification(notification.title, {
+    self.registration.showNotification(notification.title || '', {
       icon: ICON_PATH,
       body: notification.body,
       image: notification.image,

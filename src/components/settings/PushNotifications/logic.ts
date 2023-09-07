@@ -4,10 +4,12 @@ import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import { FIREBASE_VAPID_KEY, initializeFirebase } from '@/services/firebase/app'
+import { FIREBASE_VAPID_KEY, initializeFirebaseApp } from '@/services/push-notifications/firebase'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import packageJson from '../../../../package.json'
+import { logError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
@@ -24,7 +26,7 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
   try {
     permission = await Notification.requestPermission()
   } catch (e) {
-    console.error('Error requesting notification permission', e)
+    logError(ErrorCodes._400, e)
   }
 
   const isGranted = permission === 'granted'
@@ -76,7 +78,7 @@ export const getRegisterDevicePayload = async ({
   const [serviceWorkerRegistration] = await navigator.serviceWorker.getRegistrations()
 
   // Get Firebase token
-  const app = initializeFirebase()
+  const app = initializeFirebaseApp()
   const messaging = getMessaging(app)
 
   const token = await getToken(messaging, {

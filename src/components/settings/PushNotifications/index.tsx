@@ -15,7 +15,7 @@ import type { ReactElement } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { WebhookType } from '@/services/firebase/webhooks'
+import { WebhookType } from '@/service-workers/firebase-messaging/webhook-types'
 import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
 import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { GlobalPushNotifications } from './GlobalPushNotifications'

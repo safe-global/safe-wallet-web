@@ -7,6 +7,8 @@ import { useNotificationPreferences } from './useNotificationPreferences'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { getRegisterDevicePayload } from '../logic'
+import { logError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import type { NotifiableSafes } from '../logic'
 
 const registrationFlow = async (registrationFn: Promise<void>, callback: () => void) => {
@@ -19,7 +21,7 @@ const registrationFlow = async (registrationFn: Promise<void>, callback: () => v
     // @see https://github.com/safe-global/safe-client-gateway-nest/blob/27b6b3846b4ecbf938cdf5d0595ca464c10e556b/src/routes/notifications/notifications.service.ts#L29
     success = response == null
   } catch (e) {
-    console.error('(Un-)registration error', e)
+    logError(ErrorCodes._633, e)
   }
 
   if (success) {

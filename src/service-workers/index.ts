@@ -2,6 +2,6 @@
 
 /// <reference lib="webworker" />
 
-import { firebaseMessagingSw } from './firebase-messaging-sw'
+import { firebaseMessagingSw } from './firebase-messaging/firebase-messaging-sw'
 
 firebaseMessagingSw()

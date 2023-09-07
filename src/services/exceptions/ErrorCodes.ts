@@ -17,6 +17,8 @@ enum ErrorCodes {
   _302 = '302: Error connecting to the wallet',
   _303 = '303: Error creating pairing session',
 
+  _400 = '400: Error requesting browser notification permissions',
+
   _600 = '600: Error fetching Safe info',
   _601 = '601: Error fetching balances',
   _602 = '602: Error fetching history txs',
@@ -35,6 +37,7 @@ enum ErrorCodes {
   _630 = '630: Error fetching remaining hourly relays',
   _631 = '631: Transaction failed to be relayed',
   _632 = '632: Error fetching relay task status',
+  _633 = '633: Notification (un-)registration failed',
 
   _700 = '700: Failed to read from local/session storage',
   _701 = '701: Failed to write to local/session storage',

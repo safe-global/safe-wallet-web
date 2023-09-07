@@ -26,7 +26,7 @@ import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notif
 import { requestNotificationPermission } from './logic'
 import type { NotifiableSafes } from './logic'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
-import type { NotificationPreferences } from '@/services/firebase/preferences'
+import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
@@ -42,7 +42,7 @@ export const transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafe
 }
 
 // Convert data structure of currently notified Safes
-const transformCurrentSubscribedSafes = (allPreferences?: NotificationPreferences): NotifiableSafes | undefined => {
+const transformCurrentSubscribedSafes = (allPreferences?: PushNotificationPreferences): NotifiableSafes | undefined => {
   if (!allPreferences) {
     return
   }

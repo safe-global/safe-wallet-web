@@ -3,37 +3,34 @@
 import { get as getFromIndexedDb } from 'idb-keyval'
 import { formatUnits } from '@ethersproject/units' // Increases bundle significantly but unavoidable
 import { getChainsConfig, getBalances, setBaseUrl } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { MessagePayload } from 'firebase/messaging'
 
 import { AppRoutes } from '@/config/routes' // Has no internal imports
-import { isWebhookEvent, WebhookType } from './webhooks'
-import { getSafeNotificationPrefsKey, createNotificationPrefsIndexedDb } from './preferences'
-import { FIREBASE_IS_PRODUCTION } from './app'
-import type { WebhookEvent } from './webhooks'
-import type { NotificationPreferences, SafeNotificationPrefsKey } from './preferences'
+import { isWebhookEvent, WebhookType } from './webhook-types'
+import {
+  getPushNotificationPrefsKey,
+  createPushNotificationPrefsIndexedDb,
+} from '@/services/push-notifications/preferences'
+import { FIREBASE_IS_PRODUCTION } from '@/services/push-notifications/firebase'
+import type { WebhookEvent } from './webhook-types'
+import type { PushNotificationPreferences, PushNotificationPrefsKey } from '@/services/push-notifications/preferences'
 
-const shortenAddress = (address: string, length = 4): string => {
-  if (!address) {
-    return ''
-  }
-
-  return `${address.slice(0, length + 2)}...${address.slice(-length)}`
-}
-
-export const shouldShowNotification = async (payload: MessagePayload): Promise<boolean> => {
+export const shouldShowServiceWorkerPushNotification = async (payload: MessagePayload): Promise<boolean> => {
   if (!isWebhookEvent(payload.data)) {
     return true
   }
 
   const { chainId, address, type } = payload.data
 
-  const key = getSafeNotificationPrefsKey(chainId, address)
-  const store = createNotificationPrefsIndexedDb()
+  const key = getPushNotificationPrefsKey(chainId, address)
+  const store = createPushNotificationPrefsIndexedDb()
 
-  const preferencesStore = await getFromIndexedDb<NotificationPreferences[SafeNotificationPrefsKey]>(key, store).catch(
-    () => null,
-  )
+  const preferencesStore = await getFromIndexedDb<PushNotificationPreferences[PushNotificationPrefsKey]>(
+    key,
+    store,
+  ).catch(() => null)
 
   if (!preferencesStore) {
     return false
@@ -69,9 +66,14 @@ const getTokenInfo = async (
     name: 'Token',
   }
 
-  const tokenInfo = await getBalances(chainId, safeAddress, DEFAULT_CURRENCY)
-    .then(({ items }) => items.find((token) => token.tokenInfo.address === tokenAddress)?.tokenInfo)
-    .catch(() => null)
+  let tokenInfo: TokenInfo | undefined
+
+  try {
+    const balances = await getBalances(chainId, safeAddress, DEFAULT_CURRENCY)
+    tokenInfo = balances.items.find((token) => token.tokenInfo.address === tokenAddress)?.tokenInfo
+  } catch {
+    // Swallow error
+  }
 
   if (!tokenInfo) {
     return DEFAULT_INFO
@@ -86,6 +88,14 @@ const getTokenInfo = async (
     value,
     name,
   }
+}
+
+const shortenAddress = (address: string, length = 4): string => {
+  if (!address) {
+    return ''
+  }
+
+  return `${address.slice(0, length + 2)}...${address.slice(-length)}`
 }
 
 const getLink = (data: WebhookEvent, shortName?: string) => {
@@ -106,13 +116,13 @@ const getLink = (data: WebhookEvent, shortName?: string) => {
   return withRoute(AppRoutes.transactions.history)
 }
 
-type NotificationsMap<T extends WebhookEvent = WebhookEvent> = {
+type PushNotificationsMap<T extends WebhookEvent = WebhookEvent> = {
   [P in T['type']]: (
     data: Extract<T, { type: P }>,
   ) => Promise<{ title: string; body: string }> | { title: string; body: string } | null
 }
 
-export const _parseWebhookNotification = async (
+export const _parseServiceWorkerWebhookPushNotification = async (
   data: WebhookEvent,
 ): Promise<{ title: string; body: string; link: string } | undefined> => {
   const chain = await getChain(data.chainId)
@@ -122,7 +132,7 @@ export const _parseWebhookNotification = async (
   const currencySymbol = chain?.nativeCurrency?.symbol ?? 'ETH'
   const currencyName = chain?.nativeCurrency?.name ?? 'Ether'
 
-  const Notifications: NotificationsMap = {
+  const Notifications: PushNotificationsMap = {
     [WebhookType.NEW_CONFIRMATION]: ({ address, owner, safeTxHash }) => {
       return {
         title: 'Transaction confirmation',
@@ -217,29 +227,14 @@ export const _parseWebhookNotification = async (
   }
 }
 
-export const parseFirebaseNotification = async (
+export const parseServiceWorkerPushNotification = async (
   payload: MessagePayload,
-): Promise<({ title: string; link?: string } & NotificationOptions) | undefined> => {
+): Promise<({ title?: string; link?: string } & NotificationOptions) | undefined> => {
+  // Manually dispatched notifications from the Firebase admin panel; displayed as is
+  if (!isWebhookEvent(payload.data)) {
+    return payload.notification
+  }
+
   // Transaction Service-dispatched notification
-  if (isWebhookEvent(payload.data)) {
-    const webhookNotification = await _parseWebhookNotification(payload.data)
-
-    if (webhookNotification) {
-      return {
-        title: webhookNotification.title,
-        body: webhookNotification.body,
-        link: webhookNotification.link,
-      }
-    }
-  }
-
-  // Manually dispatched notifications from the Firebase admin panel
-  // Displayed as is
-  if (payload.notification) {
-    return {
-      title: payload.notification.title || '',
-      body: payload.notification.body,
-      image: payload.notification.image,
-    }
-  }
+  return _parseServiceWorkerWebhookPushNotification(payload.data)
 }

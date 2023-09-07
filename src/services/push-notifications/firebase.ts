@@ -19,7 +19,7 @@ export const FIREBASE_OPTIONS: FirebaseOptions = (() => {
   }
 })()
 
-export const initializeFirebase = () => {
+export const initializeFirebaseApp = () => {
   const hasFirebaseOptions = Object.values(FIREBASE_OPTIONS).every(Boolean)
 
   if (!hasFirebaseOptions) {

@@ -1,8 +1,8 @@
 import { hexZeroPad } from 'ethers/lib/utils'
 import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 
-import { _parseWebhookNotification } from '../notifications'
-import { WebhookType } from '../webhooks'
+import { _parseServiceWorkerWebhookPushNotification } from '../notifications'
+import { WebhookType } from '../webhook-types'
 import type {
   ConfirmationRequestEvent,
   ExecutedMultisigTransactionEvent,
@@ -14,7 +14,7 @@ import type {
   OutgoingTokenEvent,
   PendingMultisigTransactionEvent,
   SafeCreatedEvent,
-} from '../webhooks'
+} from '../webhook-types'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk')
 
@@ -24,7 +24,7 @@ Object.defineProperty(self, 'location', {
   },
 })
 
-describe('parseWebhookNotification', () => {
+describe('parseWebhookPushNotification', () => {
   let getChainsConfigSpy: jest.SpyInstance<Promise<sdk.ChainListResponse>>
   let getBalancesMockSpy: jest.SpyInstance<Promise<sdk.SafeBalanceResponse>>
 
@@ -47,7 +47,7 @@ describe('parseWebhookNotification', () => {
         results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
       })
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Transaction confirmation',
@@ -59,7 +59,7 @@ describe('parseWebhookNotification', () => {
     it('without chain info', async () => {
       getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Transaction confirmation',
@@ -84,7 +84,7 @@ describe('parseWebhookNotification', () => {
           results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
         })
 
-        const notification = await _parseWebhookNotification({
+        const notification = await _parseServiceWorkerWebhookPushNotification({
           ...payload,
           failed: 'false',
         })
@@ -99,7 +99,7 @@ describe('parseWebhookNotification', () => {
       it('without chain info', async () => {
         getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
-        const notification = await _parseWebhookNotification({
+        const notification = await _parseServiceWorkerWebhookPushNotification({
           ...payload,
           failed: 'false',
         })
@@ -118,7 +118,7 @@ describe('parseWebhookNotification', () => {
           results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
         })
 
-        const notification = await _parseWebhookNotification({
+        const notification = await _parseServiceWorkerWebhookPushNotification({
           ...payload,
           failed: 'true',
         })
@@ -133,7 +133,7 @@ describe('parseWebhookNotification', () => {
       it('without chain info', async () => {
         getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
-        const notification = await _parseWebhookNotification({
+        const notification = await _parseServiceWorkerWebhookPushNotification({
           ...payload,
           failed: 'true',
         })
@@ -160,7 +160,7 @@ describe('parseWebhookNotification', () => {
         results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
       })
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Pending transaction',
@@ -172,7 +172,7 @@ describe('parseWebhookNotification', () => {
     it('without chain info', async () => {
       getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Pending transaction',
@@ -202,7 +202,7 @@ describe('parseWebhookNotification', () => {
           } as sdk.ChainInfo,
         ],
       })
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Matic received',
@@ -214,7 +214,7 @@ describe('parseWebhookNotification', () => {
     it('without chain info', async () => {
       getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Ether received',
@@ -244,7 +244,7 @@ describe('parseWebhookNotification', () => {
           } as sdk.ChainInfo,
         ],
       })
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Matic sent',
@@ -256,7 +256,7 @@ describe('parseWebhookNotification', () => {
     it('without chain info', async () => {
       getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Ether sent',
@@ -297,7 +297,7 @@ describe('parseWebhookNotification', () => {
         ],
       } as sdk.SafeBalanceResponse)
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Fake received',
@@ -321,7 +321,7 @@ describe('parseWebhookNotification', () => {
         ],
       } as sdk.SafeBalanceResponse)
 
-      const erc20Notification = await _parseWebhookNotification(erc20Payload)
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
 
       expect(erc20Notification).toEqual({
         title: 'Fake received',
@@ -345,7 +345,7 @@ describe('parseWebhookNotification', () => {
         ],
       } as sdk.SafeBalanceResponse)
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Fake received',
@@ -367,7 +367,7 @@ describe('parseWebhookNotification', () => {
         ],
       } as sdk.SafeBalanceResponse)
 
-      const erc20Notification = await _parseWebhookNotification(erc20Payload)
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
 
       expect(erc20Notification).toEqual({
         title: 'Fake received',
@@ -382,7 +382,7 @@ describe('parseWebhookNotification', () => {
       })
       getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Token received',
@@ -395,7 +395,7 @@ describe('parseWebhookNotification', () => {
       })
       getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
-      const erc20Notification = await _parseWebhookNotification(erc20Payload)
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
 
       expect(erc20Notification).toEqual({
         title: 'Token received',
@@ -408,7 +408,7 @@ describe('parseWebhookNotification', () => {
       getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
       getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Token received',
@@ -419,7 +419,7 @@ describe('parseWebhookNotification', () => {
       getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
       getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
-      const erc20Notification = await _parseWebhookNotification(erc20Payload)
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
 
       expect(erc20Notification).toEqual({
         title: 'Token received',
@@ -460,7 +460,7 @@ describe('parseWebhookNotification', () => {
         ],
       } as sdk.SafeBalanceResponse)
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Fake sent',
@@ -484,7 +484,7 @@ describe('parseWebhookNotification', () => {
         ],
       } as sdk.SafeBalanceResponse)
 
-      const erc20Notification = await _parseWebhookNotification(erc20Payload)
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
 
       expect(erc20Notification).toEqual({
         title: 'Fake sent',
@@ -501,7 +501,7 @@ describe('parseWebhookNotification', () => {
         items: [] as sdk.SafeBalanceResponse['items'], // Transaction sent all of the tokens
       } as sdk.SafeBalanceResponse)
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Token sent',
@@ -525,7 +525,7 @@ describe('parseWebhookNotification', () => {
         ],
       } as sdk.SafeBalanceResponse)
 
-      const erc20Notification = await _parseWebhookNotification(erc20Payload)
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
 
       expect(erc20Notification).toEqual({
         title: 'Fake sent',
@@ -549,7 +549,7 @@ describe('parseWebhookNotification', () => {
         ],
       } as sdk.SafeBalanceResponse)
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Fake sent',
@@ -571,7 +571,7 @@ describe('parseWebhookNotification', () => {
         ],
       } as sdk.SafeBalanceResponse)
 
-      const erc20Notification = await _parseWebhookNotification(erc20Payload)
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
 
       expect(erc20Notification).toEqual({
         title: 'Fake sent',
@@ -585,7 +585,7 @@ describe('parseWebhookNotification', () => {
       })
       getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Token sent',
@@ -598,7 +598,7 @@ describe('parseWebhookNotification', () => {
       })
       getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
-      const erc20Notification = await _parseWebhookNotification(erc20Payload)
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
 
       expect(erc20Notification).toEqual({
         title: 'Token sent',
@@ -611,7 +611,7 @@ describe('parseWebhookNotification', () => {
       getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
       getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Token sent',
@@ -622,7 +622,7 @@ describe('parseWebhookNotification', () => {
       getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
       getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
 
-      const erc20Notification = await _parseWebhookNotification(erc20Payload)
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
 
       expect(erc20Notification).toEqual({
         title: 'Token sent',
@@ -646,7 +646,7 @@ describe('parseWebhookNotification', () => {
         results: [{ chainName: 'Mainnet', chainId: '1', shortName: 'eth' } as sdk.ChainInfo],
       })
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Module transaction',
@@ -658,7 +658,7 @@ describe('parseWebhookNotification', () => {
     it('without chain info', async () => {
       getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Module transaction',
@@ -681,7 +681,7 @@ describe('parseWebhookNotification', () => {
         results: [{ chainName: 'Mainnet', chainId: '1', shortName: 'eth' } as sdk.ChainInfo],
       })
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Confirmation request',
@@ -693,7 +693,7 @@ describe('parseWebhookNotification', () => {
     it('without chain info', async () => {
       getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toEqual({
         title: 'Confirmation request',
@@ -716,7 +716,7 @@ describe('parseWebhookNotification', () => {
         results: [{ chainName: 'Mainnet', chainId: '1', shortName: 'eth' } as sdk.ChainInfo],
       })
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toBe(undefined)
     })
@@ -724,7 +724,7 @@ describe('parseWebhookNotification', () => {
     it('without chain info', async () => {
       getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
 
-      const notification = await _parseWebhookNotification(payload)
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toBe(undefined)
     })
