@@ -1,35 +1,14 @@
 import { Typography } from '@mui/material'
+import {
+  type RichAddressFragment,
+  type RichDecodedInfo,
+  type RichTokenValueFragment,
+  RichFragmentType,
+} from '@safe-global/safe-gateway-typescript-sdk/dist/types/human-description'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import TokenIcon from '@/components/common/TokenIcon'
-
 import css from './styles.module.css'
 import useAddressBook from '@/hooks/useAddressBook'
-
-// TODO: Export these to the gateway-sdk
-export enum ValueType {
-  Text = 'text',
-  TokenValue = 'tokenValue',
-  Address = 'address',
-}
-
-export interface RichTokenValueFragment {
-  type: ValueType.TokenValue
-  value: string
-  symbol: string | null
-  logoUri: string | null
-}
-
-export interface RichTextFragment {
-  type: ValueType.Text
-  value: string
-}
-
-export interface RichAddressFragment {
-  type: ValueType.Address
-  value: `0x${string}`
-}
-
-export type HumanDescriptionFragment = RichTextFragment | RichTokenValueFragment | RichAddressFragment
 
 const AddressFragment = ({ fragment }: { fragment: RichAddressFragment }) => {
   const addressBook = useAddressBook()
@@ -56,16 +35,16 @@ const TokenValueFragment = ({ fragment }: { fragment: RichTokenValueFragment }) 
   )
 }
 
-export const HumanDescription = ({ fragments }: { fragments: HumanDescriptionFragment[] }) => {
+export const HumanDescription = ({ fragments }: RichDecodedInfo) => {
   return (
     <div className={css.wrapper}>
       {fragments.map((fragment) => {
         switch (fragment.type) {
-          case ValueType.Text:
+          case RichFragmentType.Text:
             return <span>{fragment.value}</span>
-          case ValueType.Address:
+          case RichFragmentType.Address:
             return <AddressFragment fragment={fragment} />
-          case ValueType.TokenValue:
+          case RichFragmentType.TokenValue:
             return <TokenValueFragment fragment={fragment} />
         }
       })}

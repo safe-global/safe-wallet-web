@@ -3,8 +3,6 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, ButtonBase, ListIte
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import css from './styles.module.css'
 import { type DraftBatchItem } from '@/store/batchSlice'
-import TxType from '@/components/transactions/TxType'
-import TxInfo from '@/components/transactions/TxInfo'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import DragIcon from '@/public/images/common/drag.svg'
 import TxData from '@/components/transactions/TxDetails/TxData'
@@ -12,6 +10,7 @@ import { MethodDetails } from '@/components/transactions/TxDetails/TxData/Decode
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { dateString } from '@/utils/formatters'
 import { BATCH_EVENTS, trackEvent } from '@/services/analytics'
+import { TxDescription } from '@/components/transactions/TxSummary'
 
 type BatchTxItemProps = DraftBatchItem & {
   id: string
@@ -73,10 +72,8 @@ const BatchTxItem = ({
               />
             )}
 
-            <TxType tx={txSummary} />
-
             <Box flex={1}>
-              <TxInfo info={txDetails.txInfo} />
+              <TxDescription tx={txSummary} />
             </Box>
 
             {onDelete && (

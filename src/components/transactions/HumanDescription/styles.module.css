@@ -6,11 +6,10 @@
 }
 
 .address {
-}
-
-.address > div {
-  gap: 4px;
-  font-family: monospace;
+  background: var(--color-background-main);
+  padding: 2px 4px;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 /* TODO: This is a workaround to hide address in case there is a title */

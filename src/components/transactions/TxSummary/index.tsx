@@ -13,7 +13,7 @@ import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxConfirmations from '../TxConfirmations'
 import useIsPending from '@/hooks/useIsPending'
-import { HumanDescription, type HumanDescriptionFragment } from '@/components/transactions/HumanDescription'
+import { HumanDescription } from '@/components/transactions/HumanDescription'
 import { useTransactionDescription } from '@/hooks/useTransactionDescription'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
@@ -37,11 +37,10 @@ type TxSummaryProps = {
   item: Transaction
 }
 
-const TxDescription = ({ tx }: { tx: TransactionSummary }) => {
+export const TxDescription = ({ tx }: { tx: TransactionSummary }) => {
   const { text, icon } = useTransactionDescription(tx)
 
-  // @ts-ignore
-  const humanDescription = tx.txInfo.richDecodedInfo?.fragments as HumanDescriptionFragment[]
+  const humanDescription = tx.txInfo.richDecodedInfo?.fragments
 
   return (
     <Box className={css.description}>
