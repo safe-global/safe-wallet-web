@@ -30,7 +30,11 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const [dismissedBannerPerChain = {}, setDismissedBannerPerChain] = useLocalStorage<{
     [chainId: string]: boolean
   }>(DISMISS_NOTIFICATION_KEY)
+
+  const hasAddedSafesOnChain = Object.values(addedSafes[safe.chainId] || {}).length > 0
   const dismissedBanner = !!dismissedBannerPerChain[safe.chainId]
+
+  const shouldShowBanner = !dismissedBanner && hasAddedSafesOnChain
 
   const { registerNotifications } = useNotificationRegistrations()
 
@@ -45,7 +49,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
 
   // Click outside to dismiss banner
   useEffect(() => {
-    if (dismissedBanner) {
+    if (!shouldShowBanner) {
       return
     }
 
@@ -55,7 +59,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     return () => {
       document.removeEventListener('click', dismissBanner)
     }
-  }, [dismissBanner, dismissedBanner])
+  }, [dismissBanner, shouldShowBanner])
 
   const onEnableAll = async () => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.ENABLE_ALL)
@@ -72,7 +76,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     dismissBanner()
   }
 
-  if (dismissedBanner) {
+  if (!shouldShowBanner) {
     return children
   }
 
