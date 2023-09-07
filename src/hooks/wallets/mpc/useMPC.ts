@@ -67,4 +67,6 @@ export const useInitMPC = () => {
   }, [currentKey])
 }
 
+export const getThresholdKey = getStore
+
 export default useStore

@@ -12,23 +12,23 @@ import type { TorusServiceProvider } from '@tkey-mpc/service-provider-torus'
 import type { TorusLoginResponse, TorusVerifierResponse, LoginWindowResponse } from '@toruslabs/customauth'
 import useMPC from '@/hooks/wallets/mpc/useMPC'
 import { utils } from '@toruslabs/tss-client'
-import type { ConnectedWallet } from '../useOnboard'
-import { ethers } from 'ethers'
+import { connectWallet } from '../useOnboard'
 import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getRpcServiceUrl } from '../web3'
 import { useDeviceShare } from './recovery/useDeviceShare'
 import { usePasswordRecovery } from './recovery/usePasswordRecovery'
+import useOnboard from '../useOnboard'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import type { Web3Provider } from '@ethersproject/providers'
 
 const { getTSSPubKey } = utils
-
-export type MPCWallet = ConnectedWallet
 
 export const {
   getStore: getMPCProvider,
   setStore: setMPCProvider,
   useStore: useMPCProvider,
-} = new ExternalStore<MPCWallet>()
+} = new ExternalStore<Web3Provider>()
 
 const isMetadataPresent = async (tKey: ThresholdKey, privateKeyBN: BN) => {
   const metadata = (await (tKey.storageLayer as TorusStorageLayer).getMetadata({ privKey: privateKeyBN })) as any
@@ -66,6 +66,7 @@ export const useMPCWallet = () => {
   const { recoverPasswordFactorKey, upsertPasswordBackup } = usePasswordRecovery(localFactorKey)
   const tKey = useMPC()
   const chain = useCurrentChain()
+  const onboard = useOnboard()
 
   // sets up web3
   useEffect(() => {
@@ -92,13 +93,7 @@ export const useMPCWallet = () => {
       }
 
       if (web3Local) {
-        setMPCProvider({
-          provider: web3Local,
-          address: walletAddress ? ethers.utils.getAddress(walletAddress) : '',
-          label: 'Web3Auth',
-          ens: user?.email,
-          chainId: chain.chainId,
-        })
+        setMPCProvider(web3Local)
       }
     }
     if (signingParams) {
@@ -197,7 +192,6 @@ export const useMPCWallet = () => {
     setLocalFactorKey(factorKey)
 
     const nodeDetails = await tKey.serviceProvider.getTSSNodeDetails()
-
     // Filter out the null values from the signatures
     const signatures = loginResponse.sessionData.sessionTokenData
       .filter((i) => Boolean(i))
@@ -338,7 +332,19 @@ export const useMPCWallet = () => {
     if (walletState === MPCWalletState.CREATED_SECOND_FACTOR) {
       finalizeAccountCreation()
     }
-  }, [deriveSecondShare, finalizeAccountCreation, walletState])
+    if (walletState === MPCWalletState.READY) {
+      if (!onboard) {
+        return
+      }
+      console.log('Connecting to onboard MPC module')
+      connectWallet(onboard, {
+        autoSelect: {
+          label: ONBOARD_MPC_MODULE_LABEL,
+          disableModals: true,
+        },
+      }).catch((reason) => console.error('Error connecting to MPC module:', reason))
+    }
+  }, [deriveSecondShare, finalizeAccountCreation, onboard, walletState])
 
   return {
     upsertPasswordBackup,

@@ -24,7 +24,7 @@ import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
-import useWallet from '@/hooks/wallets/useWallet'
+import useOnboard from '@/hooks/wallets/useOnboard'
 
 export type SignMessageOnChainProps = {
   appId?: number
@@ -37,7 +37,7 @@ export type SignMessageOnChainProps = {
 const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnChainProps): ReactElement => {
   const chainId = useChainId()
   const { safe } = useSafeInfo()
-  const wallet = useWallet()
+  const onboard = useOnboard()
   const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
   useHighlightHiddenTab()
@@ -95,9 +95,9 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   ])
 
   const handleSubmit = async () => {
-    if (!safeTx || !wallet) return
+    if (!safeTx || !onboard) return
     try {
-      await dispatchSafeAppsTx(safeTx, requestId, wallet, safe.chainId)
+      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
       setSafeTxError(asError(error))
     }

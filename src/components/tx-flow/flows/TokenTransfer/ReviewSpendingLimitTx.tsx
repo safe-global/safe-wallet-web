@@ -22,7 +22,7 @@ import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { asError } from '@/services/exceptions/utils'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
-import useWallet from '@/hooks/wallets/useWallet'
+import useOnboard from '@/hooks/wallets/useOnboard'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -46,7 +46,7 @@ const ReviewSpendingLimitTx = ({
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const { setTxFlow } = useContext(TxModalContext)
   const currentChain = useCurrentChain()
-  const wallet = useWallet()
+  const onboard = useOnboard()
   const { safe, safeAddress } = useSafeInfo()
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
@@ -79,7 +79,7 @@ const ReviewSpendingLimitTx = ({
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
-    if (!wallet) return
+    if (!onboard) return
 
     trackEvent(MODALS_EVENTS.USE_SPENDING_LIMIT)
 
@@ -89,7 +89,7 @@ const ReviewSpendingLimitTx = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await dispatchSpendingLimitTxExecution(txParams, txOptions, wallet, safe.chainId, safeAddress)
+      await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress)
       onSubmit()
       setTxFlow(undefined)
     } catch (_err) {

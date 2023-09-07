@@ -12,6 +12,7 @@ import walletConnect from '@web3-onboard/walletconnect'
 import pairingModule from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
 import { CGW_NAMES, WALLET_KEYS } from './consts'
+import MpcModule from '@/services/mpc/module'
 
 const prefersDarkMode = (): boolean => {
   return window?.matchMedia('(prefers-color-scheme: dark)')?.matches
@@ -42,6 +43,7 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }
   [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain),
   [WALLET_KEYS.COINBASE]: () => coinbaseModule({ darkMode: prefersDarkMode() }),
   [WALLET_KEYS.PAIRING]: () => pairingModule(),
+  [WALLET_KEYS.SOCIAL]: () => MpcModule(),
   [WALLET_KEYS.LEDGER]: () => ledgerModule(),
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
   [WALLET_KEYS.KEYSTONE]: () => keystoneModule(),
@@ -64,7 +66,9 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   if (window.Cypress && CYPRESS_MNEMONIC) {
     return [e2eWalletModule(chain.rpcUri)]
   }
-  const enabledWallets = Object.entries(WALLET_MODULES).filter(([key]) => isWalletSupported(chain.disabledWallets, key))
+  const enabledWallets = Object.entries(WALLET_MODULES).filter(
+    ([key]) => key === WALLET_KEYS.SOCIAL || isWalletSupported(chain.disabledWallets, key),
+  )
 
   if (enabledWallets.length === 0) {
     return [WALLET_MODULES.INJECTED(chain)]

@@ -16,7 +16,7 @@ import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { getInteractionTitle, isTxValid } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
-import useWallet from '@/hooks/wallets/useWallet'
+import useOnboard from '@/hooks/wallets/useOnboard'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -26,7 +26,7 @@ const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
 }: ReviewSafeAppsTxProps): ReactElement => {
   const { safe } = useSafeInfo()
-  const wallet = useWallet()
+  const onboard = useOnboard()
   const chain = useCurrentChain()
   const [txList, setTxList] = useState(txs)
   const { safeTx, setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
@@ -51,11 +51,11 @@ const ReviewSafeAppsTx = ({
   }, [txList, setSafeTx, setSafeTxError, params])
 
   const handleSubmit = async () => {
-    if (!safeTx || !wallet) return
+    if (!safeTx || !onboard) return
     trackSafeAppTxCount(Number(appId))
 
     try {
-      await dispatchSafeAppsTx(safeTx, requestId, wallet, safe.chainId)
+      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
     } catch (error) {
       setSafeTxError(asError(error))
     }

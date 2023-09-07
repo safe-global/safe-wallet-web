@@ -7,6 +7,7 @@ import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
+import { createWeb3 } from '@/hooks/wallets/web3'
 import { hexValue } from 'ethers/lib/utils'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
@@ -57,11 +58,8 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): P
   })
 }
 
-export const assertWalletChain = async (
-  connectedWallet: ConnectedWallet,
-  chainId: string,
-): Promise<ConnectedWallet> => {
-  const wallet = connectedWallet
+export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): Promise<ConnectedWallet> => {
+  const wallet = getConnectedWallet(onboard.state.get().wallets)
 
   if (!wallet) {
     throw new Error('No wallet connected.')
@@ -71,14 +69,11 @@ export const assertWalletChain = async (
     return wallet
   }
 
-  const newWallet = wallet
-  //const newWallet = await switchWalletChain(onboard, chainId)
+  const newWallet = await switchWalletChain(onboard, chainId)
 
   if (!newWallet) {
     throw new Error('No wallet connected.')
   }
-
-  console.log(newWallet.chainId, chainId)
 
   if (newWallet.chainId !== chainId) {
     throw new Error('Wallet connected to wrong chain.')
@@ -88,11 +83,11 @@ export const assertWalletChain = async (
 }
 
 export const getAssertedChainSigner = async (
-  connectedWallet: ConnectedWallet,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
 ): Promise<JsonRpcSigner> => {
-  const wallet = await assertWalletChain(connectedWallet, chainId)
-  const provider = wallet.provider
+  const wallet = await assertWalletChain(onboard, chainId)
+  const provider = createWeb3(wallet.provider)
   return provider.getSigner()
 }
 
@@ -102,11 +97,8 @@ export const getAssertedChainSigner = async (
  * most of the values of transactionResponse which is needed when
  * dealing with smart-contract wallet owners
  */
-export const getUncheckedSafeSDK = async (
-  connectedWallet: ConnectedWallet,
-  chainId: SafeInfo['chainId'],
-): Promise<Safe> => {
-  const signer = await getAssertedChainSigner(connectedWallet, chainId)
+export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
+  const signer = await getAssertedChainSigner(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 
   const ethAdapter = new EthersAdapter({
@@ -117,11 +109,8 @@ export const getUncheckedSafeSDK = async (
   return sdk.connect({ ethAdapter })
 }
 
-export const getSafeSDKWithSigner = async (
-  connectedWallet: ConnectedWallet,
-  chainId: SafeInfo['chainId'],
-): Promise<Safe> => {
-  const signer = await getAssertedChainSigner(connectedWallet, chainId)
+export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
+  const signer = await getAssertedChainSigner(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 
   const ethAdapter = new EthersAdapter({

@@ -19,8 +19,9 @@ import {
   assertWalletChain,
   tryOffChainTxSigning,
 } from './sdk'
+import { createWeb3 } from '@/hooks/wallets/web3'
+import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
-import type { ConnectedWallet } from '@/services/onboard'
 
 /**
  * Propose a transaction
@@ -75,12 +76,12 @@ export const dispatchTxProposal = async ({
 export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
   safeVersion: SafeInfo['version'],
-  connectedWallet: ConnectedWallet,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   txId?: string,
   humanDescription?: string,
 ): Promise<SafeTransaction> => {
-  const sdk = await getSafeSDKWithSigner(connectedWallet, chainId)
+  const sdk = await getSafeSDKWithSigner(onboard, chainId)
 
   let signedTx: SafeTransaction | undefined
   try {
@@ -105,11 +106,11 @@ export const dispatchTxSigning = async (
 export const dispatchOnChainSigning = async (
   safeTx: SafeTransaction,
   txId: string,
-  connectedWallet: ConnectedWallet,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   humanDescription?: string,
 ) => {
-  const sdkUnchecked = await getUncheckedSafeSDK(connectedWallet, chainId)
+  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
   const eventParams = { txId, humanDescription }
 
@@ -136,12 +137,12 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
   txId: string,
-  connectedWallet: ConnectedWallet,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
   humanDescription?: string,
 ): Promise<string> => {
-  const sdkUnchecked = await getUncheckedSafeSDK(connectedWallet, chainId)
+  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
   const eventParams = { txId, humanDescription }
 
   // Execute the tx
@@ -183,7 +184,7 @@ export const dispatchBatchExecution = async (
   txs: TransactionDetails[],
   multiSendContract: MultiSendCallOnlyEthersContract,
   multiSendTxData: string,
-  connectedWallet: ConnectedWallet,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
   overrides?: PayableOverrides,
@@ -193,9 +194,9 @@ export const dispatchBatchExecution = async (
   let result: TransactionResult | undefined
 
   try {
-    const wallet = await assertWalletChain(connectedWallet, chainId)
+    const wallet = await assertWalletChain(onboard, chainId)
 
-    const provider = wallet.provider
+    const provider = createWeb3(wallet.provider)
     result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData, overrides)
 
     txs.forEach(({ txId }) => {
@@ -257,7 +258,7 @@ export const dispatchBatchExecution = async (
 export const dispatchSpendingLimitTxExecution = async (
   txParams: SpendingLimitTxParams,
   txOptions: TransactionOptions,
-  connectedWallet: ConnectedWallet,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
 ) => {
@@ -265,8 +266,8 @@ export const dispatchSpendingLimitTxExecution = async (
 
   let result: ContractTransaction | undefined
   try {
-    const wallet = await assertWalletChain(connectedWallet, chainId)
-    const provider = wallet.provider
+    const wallet = await assertWalletChain(onboard, chainId)
+    const provider = createWeb3(wallet.provider)
     const contract = getSpendingLimitContract(chainId, provider.getSigner())
 
     result = await contract.executeAllowanceTransfer(
@@ -313,10 +314,10 @@ export const dispatchSpendingLimitTxExecution = async (
 export const dispatchSafeAppsTx = async (
   safeTx: SafeTransaction,
   safeAppRequestId: RequestId,
-  connectedWallet: ConnectedWallet,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
 ) => {
-  const sdk = await getSafeSDKWithSigner(connectedWallet, chainId)
+  const sdk = await getSafeSDKWithSigner(onboard, chainId)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, safeTxHash })
 }

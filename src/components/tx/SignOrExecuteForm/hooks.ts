@@ -82,12 +82,13 @@ export const useTxActions = (): TxActions => {
       if (await isSmartContractWallet(wallet)) {
         throw new Error('Cannot relay an unsigned transaction from a smart contract wallet')
       }
-      return await dispatchTxSigning(safeTx, version, wallet, chainId, txId)
+      return await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
     }
 
     const signTx: TxActions['signTx'] = async (safeTx, txId, origin, transaction) => {
       assertTx(safeTx)
       assertWallet(wallet)
+      assertOnboard(onboard)
 
       const humanDescription = transaction?.transaction?.txInfo?.humanDescription
 
@@ -97,12 +98,12 @@ export const useTxActions = (): TxActions => {
         // Otherwise the backend won't pick up the tx
         // The signature will be added once the on-chain signature is indexed
         const id = txId || (await proposeTx(wallet.address, safeTx, txId, origin)).txId
-        await dispatchOnChainSigning(safeTx, id, wallet, chainId, humanDescription)
+        await dispatchOnChainSigning(safeTx, id, onboard, chainId, humanDescription)
         return id
       }
 
       // Otherwise, sign off-chain
-      const signedTx = await dispatchTxSigning(safeTx, version, wallet, chainId, txId, humanDescription)
+      const signedTx = await dispatchTxSigning(safeTx, version, onboard, chainId, txId, humanDescription)
       const tx = await proposeTx(wallet.address, signedTx, txId, origin)
       return tx.txId
     }
@@ -110,6 +111,7 @@ export const useTxActions = (): TxActions => {
     const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed, transaction) => {
       assertTx(safeTx)
       assertWallet(wallet)
+      assertOnboard(onboard)
 
       let tx: TransactionDetails | undefined
       // Relayed transactions must be fully signed, so request a final signature if needed
@@ -131,7 +133,7 @@ export const useTxActions = (): TxActions => {
       if (isRelayed) {
         await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit, humanDescription)
       } else {
-        await dispatchTxExecution(safeTx, txOptions, txId, wallet, chainId, safeAddress, humanDescription)
+        await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress, humanDescription)
       }
 
       return txId
