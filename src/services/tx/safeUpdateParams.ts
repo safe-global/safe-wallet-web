@@ -17,7 +17,7 @@ const getChangeFallbackHandlerCallData = (
     return '0x'
   }
 
-  const fallbackHandlerAddress = getReadOnlyFallbackHandlerContract(chain.chainId).getAddress()
+  const fallbackHandlerAddress = getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION).getAddress()
   return safeContractInstance.encode('setFallbackHandler', [fallbackHandlerAddress])
 }
 

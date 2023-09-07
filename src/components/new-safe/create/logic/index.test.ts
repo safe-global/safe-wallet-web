@@ -23,6 +23,7 @@ import {
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
 
@@ -230,8 +231,8 @@ describe('createNewSafeViaRelayer', () => {
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
-    const proxyFactoryAddress = getReadOnlyProxyFactoryContract('5').getAddress()
-    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract('5')
+    const proxyFactoryAddress = getReadOnlyProxyFactoryContract('5', LATEST_SAFE_VERSION).getAddress()
+    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract('5', LATEST_SAFE_VERSION)
     const safeContractAddress = getReadOnlyGnosisSafeContract(mockChainInfo).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [

@@ -9,7 +9,7 @@ import type { ConnectedWallet } from '@/services/onboard'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
-import { Errors, logError } from '@/services/exceptions'
+import { Errors, trackError } from '@/services/exceptions'
 import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
@@ -44,7 +44,7 @@ export const getSafeDeployProps = (
   callback: (txHash: string) => void,
   chainId: string,
 ): PredictSafeProps & { callback: DeploySafeProps['callback'] } => {
-  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chainId)
+  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chainId, LATEST_SAFE_VERSION)
 
   return {
     safeAccountConfig: {
@@ -90,8 +90,8 @@ export const encodeSafeCreationTx = ({
   chain,
 }: SafeCreationProps & { chain: ChainInfo }) => {
   const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
-  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId)
-  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
+  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId, LATEST_SAFE_VERSION)
+  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION)
 
   const setupData = readOnlySafeContract.encode('setup', [
     owners,
@@ -118,7 +118,7 @@ export const getSafeCreationTxInfo = async (
   chain: ChainInfo,
   wallet: ConnectedWallet,
 ): Promise<PendingSafeTx> => {
-  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId)
+  const readOnlyProxyContract = getReadOnlyProxyFactoryContract(chain.chainId, LATEST_SAFE_VERSION)
 
   const data = encodeSafeCreationTx({
     owners: owners.map((owner) => owner.address),
@@ -143,7 +143,7 @@ export const estimateSafeCreationGas = async (
   from: string,
   safeParams: SafeCreationProps,
 ): Promise<BigNumber> => {
-  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId)
+  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId, LATEST_SAFE_VERSION)
   const encodedSafeCreationTx = encodeSafeCreationTx({ ...safeParams, chain })
 
   return provider.estimateGas({
@@ -167,7 +167,7 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
 }
 
 export const handleSafeCreationError = (error: EthersError) => {
-  logError(Errors._800, error.message)
+  trackError(Errors._800, error.message)
 
   if (isWalletRejection(error)) {
     return SafeCreationStatus.WALLET_REJECTED
@@ -270,9 +270,9 @@ export const getRedirect = (
 }
 
 export const relaySafeCreation = async (chain: ChainInfo, owners: string[], threshold: number, saltNonce: number) => {
-  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId)
+  const readOnlyProxyFactoryContract = getReadOnlyProxyFactoryContract(chain.chainId, LATEST_SAFE_VERSION)
   const proxyFactoryAddress = readOnlyProxyFactoryContract.getAddress()
-  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
+  const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION)
   const fallbackHandlerAddress = readOnlyFallbackHandlerContract.getAddress()
   const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain)
   const safeContractAddress = readOnlySafeContract.getAddress()
