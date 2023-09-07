@@ -26,6 +26,7 @@ import classnames from 'classnames'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { BigNumber } from 'ethers'
 import { usePendingSafe } from '../StatusStep/usePendingSafe'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
@@ -78,7 +79,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const createSafe = async () => {
     if (!wallet || !provider || !chain) return
 
-    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
+    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION)
 
     const props = {
       safeAccountConfig: {

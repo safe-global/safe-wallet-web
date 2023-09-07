@@ -1,13 +1,26 @@
 import { Methods } from '@safe-global/safe-apps-sdk'
 import * as web3 from '@/hooks/wallets/web3'
+import * as useSafeInfo from '@/hooks/useSafeInfo'
 import { Web3Provider } from '@ethersproject/providers'
 import { render, screen } from '@/tests/test-utils'
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import ReviewSignMessageOnChain from '@/components/tx-flow/flows/SignMessageOnChain/ReviewSignMessageOnChain'
+import { hexZeroPad } from 'ethers/lib/utils'
 
 describe('ReviewSignMessageOnChain', () => {
   test('can handle messages with EIP712Domain type in the JSON-RPC payload', () => {
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => new Web3Provider(jest.fn()))
+    jest.spyOn(useSafeInfo, 'default').mockImplementation(
+      () =>
+        ({
+          safe: {
+            address: {
+              value: hexZeroPad('0x1', 20),
+            },
+            version: '1.3.0',
+          } as ReturnType<typeof useSafeInfo.default>['safe'],
+        } as ReturnType<typeof useSafeInfo.default>),
+    )
 
     render(
       <ReviewSignMessageOnChain
