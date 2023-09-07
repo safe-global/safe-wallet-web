@@ -33,6 +33,10 @@ describe('parseWebhookNotification', () => {
     getBalancesMockSpy = jest.spyOn(sdk, 'getBalances')
   })
 
+  afterAll(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('should parse NEW_CONFIRMATION payloads', () => {
     const payload: NewConfirmationEvent = {
       type: WebhookType.NEW_CONFIRMATION,
