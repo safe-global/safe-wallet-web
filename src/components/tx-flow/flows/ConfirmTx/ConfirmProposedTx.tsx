@@ -8,6 +8,7 @@ import { isExecutable, isMultisigExecutionInfo, isSignableBy } from '@/utils/tra
 import { Typography } from '@mui/material'
 import { createExistingTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
+import { TxDescription } from '@/components/transactions/TxSummary'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -41,6 +42,7 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
   return (
     <SignOrExecuteForm txId={txId} onSubmit={() => {}} isExecutable={canExecute} onlyExecute={!canSign}>
       <Typography mb={2}>{text}</Typography>
+      <TxDescription tx={txSummary} />
     </SignOrExecuteForm>
   )
 }

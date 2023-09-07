@@ -6,11 +6,10 @@ import ChevronRight from '@mui/icons-material/ChevronRight'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, SvgIcon, Typography } from '@mui/material'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import TxInfo from '@/components/transactions/TxInfo'
-import TxType from '@/components/transactions/TxType'
 import css from './styles.module.css'
 import OwnersIcon from '@/public/images/common/owners.svg'
 import { AppRoutes } from '@/config/routes'
+import { TxDescription } from '@/components/transactions/TxSummary'
 
 type PendingTxType = {
   transaction: TransactionSummary
@@ -37,11 +36,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
         {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
 
         <Box flex={1}>
-          <TxType tx={transaction} />
-        </Box>
-
-        <Box flex={1} className={css.txInfo}>
-          <TxInfo info={transaction.txInfo} />
+          <TxDescription tx={transaction} />
         </Box>
 
         {isMultisigExecutionInfo(transaction.executionInfo) ? (
