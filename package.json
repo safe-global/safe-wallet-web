@@ -29,7 +29,7 @@
     "static-serve": "yarn build && yarn serve"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "pre-commit": [
     "lint"

@@ -65,7 +65,7 @@ const NonceFormOption = memo(function NonceFormOption({
     }
 
     const [{ transaction }] = latestTransactions
-    return <TxDescription tx={transaction} />
+    return transaction.txInfo.humanDescription || <TxDescription tx={transaction} />
   }, [transactions])
 
   const label = txLabel || 'New transaction'
