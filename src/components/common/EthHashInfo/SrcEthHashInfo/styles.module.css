@@ -5,11 +5,6 @@
   line-height: 1.4;
 }
 
-:global(.MuiAccordionSummary-content) .container {
-  background-color: var(--color-background-main);
-  font-size: 14px;
-}
-
 .avatarContainer {
   flex-shrink: 0;
   position: relative;

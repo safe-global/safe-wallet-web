@@ -48,11 +48,15 @@ const TransferDescription = ({ txInfo, isSendTx }: { txInfo: Transfer; isSendTx:
   return (
     <>
       {isSendTx ? 'Send' : 'Receive'}
-      <TransferTx info={txInfo} omitSign={true} size={16} />
+      <TransferTx info={txInfo} omitSign={true} size={20} />
       <>
         {isSendTx ? 'to' : 'from'}
         <div className={humanDescriptionCss.address}>
-          <EthHashInfo address={txInfo.recipient.value} name={txInfo.recipient.name} avatarSize={20} />
+          <EthHashInfo
+            address={isSendTx ? txInfo.recipient.value : txInfo.sender.value}
+            name={isSendTx ? txInfo.recipient.name : txInfo.sender.name}
+            avatarSize={20}
+          />
         </div>
       </>
     </>
@@ -74,25 +78,19 @@ const SettingsChangeDescription = ({ info }: { info: SettingsChange }) => {
   return <>{info.dataDecoded.method}</>
 }
 
-const SafeAppTxDescription = ({
+const CustomTxDescription = ({
   info,
   safeAppInfo,
   addressName,
 }: {
   info: Custom | MultiSend
-  safeAppInfo: SafeAppInfo
+  safeAppInfo?: SafeAppInfo
   addressName?: string
 }) => {
-  const origin = addressName ? (
-    <>
-      on <b className={css.method}>{addressName}</b>
-    </>
-  ) : undefined
-
-  const name = safeAppInfo.name ? (
+  const safeAppName = safeAppInfo?.name ? (
     <>
       via
-      <b className={css.method}>
+      <span className={css.method}>
         <SafeAppIconCard
           src={safeAppInfo.logoUri}
           alt="Transaction icon"
@@ -101,34 +99,39 @@ const SafeAppTxDescription = ({
           fallback="/images/transactions/custom.svg"
         />
         {safeAppInfo.name}
-      </b>
+      </span>
     </>
   ) : undefined
 
-  const method = info.methodName ? (
-    <>
-      <span>Called </span>
-      <b className={css.method}>{info.methodName}</b>
-    </>
-  ) : undefined
+  if (!info.methodName) {
+    return (
+      <>
+        Interact with <EthHashInfo address={info.to.value} avatarSize={20} />
+        {safeAppName}
+      </>
+    )
+  }
 
   return (
     <>
-      {method}
-      {origin || name}
-      {isMultiSendTxInfo(info) && ` with ${info.actionCount} action${info.actionCount > 1 ? 's' : ''}`}
+      <span>Call</span>
+      <b className={css.method}>{info.methodName}</b>
+      {safeAppName ?? (
+        <>
+          <span>on</span>
+          {addressName || <EthHashInfo address={info.to.value} avatarSize={20} />}
+        </>
+      )}
+      {isMultiSendTxInfo(info) && <MultiSendDescription actionCount={info.actionCount} />}
     </>
   )
 }
 
-const CustomTxDescription = ({ info, addressName }: { info: Custom | MultiSend; addressName?: string }) => {
+const MultiSendDescription = ({ actionCount }: { actionCount: number }) => {
   return (
-    <>
-      {addressName || 'Contract interaction'}
-      {info.methodName && ': '}
-      {info.methodName ? <b className={css.method}>{info.methodName}</b> : ''}
-      {isMultiSendTxInfo(info) && `with ${info.actionCount} action${info.actionCount > 1 ? 's' : ''}`}
-    </>
+    <span>
+      with {actionCount} action{actionCount > 1 && 's'}
+    </span>
   )
 }
 
@@ -174,16 +177,9 @@ export const getTransactionDescription = (tx: TransactionSummary, addressBook: A
         }
       }
 
-      if (tx.safeAppInfo) {
-        return {
-          icon: '/images/transactions/custom.svg',
-          text: <SafeAppTxDescription info={tx.txInfo} safeAppInfo={tx.safeAppInfo} addressName={addressName} />,
-        }
-      }
-
       return {
-        icon: toAddress?.logoUri || '/images/transactions/custom.svg',
-        text: <CustomTxDescription info={tx.txInfo} addressName={addressName} />,
+        icon: '/images/transactions/custom.svg',
+        text: <CustomTxDescription info={tx.txInfo} safeAppInfo={tx.safeAppInfo} addressName={addressName} />,
       }
     }
 
