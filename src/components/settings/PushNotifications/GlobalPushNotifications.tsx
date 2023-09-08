@@ -299,13 +299,14 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     <Grid container>
       <Grid item xs={12} display="flex" alignItems="center" justifyContent="space-between" mb={1}>
         <Typography variant="h4" fontWeight={700} display="inline">
-          My Safes ({totalNotifiableSafes})
+          My Safes Accounts ({totalNotifiableSafes})
         </Typography>
 
         <div>
           {totalSignaturesRequired > 0 && (
-            <Typography display="inline" mr={1}>
-              We&apos;ll ask you to verify with your signature {totalSignaturesRequired} times
+            <Typography display="inline" mr={2}>
+              We&apos;ll ask you to verify your ownership of {totalSignaturesRequired} Safe Account
+              {totalSignaturesRequired > 1 ? 's' : ''} with your signature
             </Typography>
           )}
 
@@ -358,7 +359,10 @@ export const GlobalPushNotifications = (): ReactElement | null => {
                       <ListItemIcon className={css.icon}>
                         <Checkbox edge="start" checked={isChainSelected} disableRipple />
                       </ListItemIcon>
-                      <ListItemText primary={`${chain?.chainName} Safes`} primaryTypographyProps={{ variant: 'h5' }} />
+                      <ListItemText
+                        primary={`${chain?.chainName} Safe Accounts`}
+                        primaryTypographyProps={{ variant: 'h5' }}
+                      />
                     </ListItemButton>
                   </ListItem>
 
