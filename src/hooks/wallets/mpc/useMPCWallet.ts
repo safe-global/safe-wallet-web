@@ -68,7 +68,10 @@ export const useMPCWallet = () => {
   const chain = useCurrentChain()
   const onboard = useOnboard()
 
-  // sets up web3
+  /*
+   * Whenever the login response / signing params or chainId updates
+   * we initiate a new Web3Provider.
+   */
   useEffect(() => {
     const localSetup = async () => {
       const { setupWeb3 } = await import('@/hooks/wallets/mpc/utils')
@@ -93,6 +96,15 @@ export const useMPCWallet = () => {
       }
 
       if (web3Local) {
+        // Onboard uses the chainChanged event to update the connected chainId.
+        // Therefore we need to copy the listener and emit the event after we re-create the web3 provider
+        const oldProvider = getMPCProvider()
+        if (oldProvider && oldProvider.listenerCount('chainChanged') > 0) {
+          const previousListeners = oldProvider.listeners('chainChanged')
+          previousListeners.forEach((previousListener) => web3Local.addListener('chainChanged', previousListener))
+        }
+
+        web3Local.emit('chainChanged', `0x${Number(chainConfig.chainId).toString(16)}`)
         setMPCProvider(web3Local)
       }
     }

@@ -1,6 +1,5 @@
 import { Box, Button, CircularProgress, DialogContent, IconButton, TextField, Typography } from '@mui/material'
-import { useContext, useMemo, useState } from 'react'
-import useMPC from '@/hooks/wallets/mpc/useMPC'
+import { useContext, useState } from 'react'
 import { EthHashInfo } from '@safe-global/safe-react-components'
 import ModalDialog from '../ModalDialog'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
@@ -12,7 +11,6 @@ export const MPCWallet = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [recoveryPassword, setRecoveryPassword] = useState<string>('')
   const [showSetPassword, setShowSetPassword] = useState(false)
-  const tKey = useMPC()
   const {
     loginPending,
     walletAddress,
@@ -36,23 +34,6 @@ export const MPCWallet = () => {
     setShowSetPassword(false)
     setRecoveryPassword('')
   }
-
-  const hasManualBackup = useMemo(() => {
-    if (!tKey) {
-      return false
-    }
-
-    try {
-      console.log('Updating manual backup')
-
-      const shares = Object.values(tKey.getMetadata().getShareDescription())
-      console.log('Tkey data', tKey)
-      //return shares.some((share) => share.some((description) => description.includes('manual share')))
-      return false
-    } catch (err) {
-      return false
-    }
-  }, [tKey?.metadata, tKey])
 
   return (
     <>
@@ -80,11 +61,11 @@ export const MPCWallet = () => {
               </Button>
             </span>
             <span>
-              {!hasManualBackup && (
+              {
                 <Button variant="contained" size="small" onClick={openSetPasswordModal}>
                   Backup
                 </Button>
-              )}
+              }
             </span>
           </Box>
         </>

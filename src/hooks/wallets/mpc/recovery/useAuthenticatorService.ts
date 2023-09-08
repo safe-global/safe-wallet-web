@@ -83,4 +83,6 @@ class AuthenticatorService {
   }
 }
 
-export default new AuthenticatorService()
+const authenticatorService = new AuthenticatorService()
+
+export default authenticatorService

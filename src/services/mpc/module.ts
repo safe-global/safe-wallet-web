@@ -51,6 +51,12 @@ function MpcModule(): WalletInit {
                   return
                 }
 
+                if ('wallet_switchEthereumChain' === request.method) {
+                  // The MPC provider always uses the current chain as chain. Nothing to do here.
+                  resolve(null)
+                  return
+                }
+
                 // Default: we call the inner provider
                 web3.send(request.method, request.params ?? []).then(resolve)
                 return
