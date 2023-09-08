@@ -35,7 +35,10 @@ describe('Dashboard', () => {
       cy.contains('This Safe has no queued transactions').should('not.exist')
 
       // Queued txns
-      cy.contains(`a[href^="/transactions/tx?id=multisig_0x"]`, '13' + 'Send' + '-0.00002 GOR' + '1/1').should('exist')
+      cy.contains(
+        `a[href^="/transactions/tx?id=multisig_0x"]`,
+        '13' + 'Send' + '0.00002 GOR' + 'to' + 'gor:0xE297...9665' + '1/1',
+      ).should('exist')
 
       cy.contains(`a[href="/transactions/queue?safe=${encodeURIComponent(SAFE)}"]`, 'View all')
     })

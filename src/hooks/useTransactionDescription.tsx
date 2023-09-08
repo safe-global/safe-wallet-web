@@ -40,6 +40,7 @@ const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | un
 
 type TxType = {
   icon: string
+  iconAlt?: string
   text: ReactNode
 }
 
@@ -169,6 +170,7 @@ export const getTransactionDescription = (
 
       return {
         icon: isSendTx ? '/images/transactions/outgoing.svg' : '/images/transactions/incoming.svg',
+        iconAlt: isSendTx ? 'Send' : 'Receive',
         text: simple ? (
           <TransferDescriptionSimple txInfo={tx.txInfo} isSendTx={isSendTx} />
         ) : (

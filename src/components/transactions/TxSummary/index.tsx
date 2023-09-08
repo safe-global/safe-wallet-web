@@ -38,7 +38,7 @@ type TxSummaryProps = {
 }
 
 export const TxDescription = ({ tx }: { tx: TransactionSummary }) => {
-  const { text, icon } = useTransactionDescription(tx)
+  const { text, icon, iconAlt } = useTransactionDescription(tx)
 
   const humanDescription = tx.txInfo.richDecodedInfo?.fragments
 
@@ -46,7 +46,7 @@ export const TxDescription = ({ tx }: { tx: TransactionSummary }) => {
     <Box className={css.description}>
       <SafeAppIconCard
         src={icon}
-        alt="Transaction icon"
+        alt={iconAlt || 'Transaction icon'}
         width={16}
         height={16}
         fallback="/images/transactions/custom.svg"

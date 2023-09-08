@@ -52,7 +52,7 @@ describe('SingleTx', () => {
     const button = screen.queryByText('Details')
     expect(button).not.toBeInTheDocument()
 
-    expect(await screen.findByText('Contract interaction')).toBeInTheDocument()
+    expect(await screen.findByText('Interact with')).toBeInTheDocument()
   })
 
   it('shows an error when the transaction has failed to load', async () => {

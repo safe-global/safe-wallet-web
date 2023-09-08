@@ -1,7 +1,7 @@
 const SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 
-const INCOMING = 'Received'
-const OUTGOING = 'Sent'
+const INCOMING = 'Receive'
+const OUTGOING = 'Send'
 const CONTRACT_INTERACTION = 'Contract interaction'
 
 describe('Transaction history', () => {
@@ -32,7 +32,7 @@ describe('Transaction history', () => {
       .within(() => {
         // Type
         cy.get('img').should('have.attr', 'alt', INCOMING)
-        cy.contains('div', 'Received').should('exist')
+        cy.contains('div', INCOMING).should('exist')
 
         // Info
         cy.get('img[alt="GOR"]').should('be.visible')
@@ -91,7 +91,7 @@ describe('Transaction history', () => {
         cy.contains('2')
 
         // Type
-        cy.contains('div', 'Contract interaction').should('exist')
+        cy.contains('div', 'setPreSignature').should('exist')
 
         // Time
         cy.contains('span', '5:01 PM').should('exist')
@@ -104,10 +104,10 @@ describe('Transaction history', () => {
       .within(() => {
         // Type
         cy.get('img').should('have.attr', 'alt', OUTGOING)
-        cy.contains('div', 'Sent').should('exist')
+        cy.contains('div', 'Send').should('exist')
 
         // Info
-        cy.contains('span', '-0.11 WETH').should('exist')
+        cy.contains('span', '0.11 WETH').should('exist')
 
         // Time
         cy.contains('span', '5:01 PM').should('exist')
@@ -119,7 +119,7 @@ describe('Transaction history', () => {
       .prev()
       .within(() => {
         // Type
-        cy.contains('div', 'Received').should('exist')
+        cy.contains('div', 'Receive').should('exist')
 
         // Info
         cy.contains('span', '120,497.61 DAI').should('exist')
