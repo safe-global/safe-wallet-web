@@ -3,5 +3,5 @@ const gotItBtn = 'Got it'
 
 export function acceptCookies() {
   cy.contains(acceptSelection).click()
-  cy.contains('button', gotItBtn).click()
+  cy.contains(acceptSelection).should('not.exist')
 }

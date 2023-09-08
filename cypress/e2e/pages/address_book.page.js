@@ -64,11 +64,11 @@ export function verifyNewEntryAdded(name, address) {
 }
 
 export function clickOnEditEntryBtn() {
-  cy.get(addressBook.editEntryBtn).click({ force: true })
+  cy.get(editEntryBtn).click({ force: true })
 }
 
 export function typeInNameInput(name) {
-  cy.get(addressBook.nameInput).clear().type(name).should('have.value', name)
+  cy.get(nameInput).clear().type(name).should('have.value', name)
 }
 
 export function clickOnSaveButton() {
@@ -89,5 +89,5 @@ export function clickDeleteEntryModalDeleteButton() {
 }
 
 export function verifyEditedNameNotExists(name) {
-  cy.get(nae).should('not.exist')
+  cy.get(name).should('not.exist')
 }

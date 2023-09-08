@@ -1,5 +1,5 @@
 import * as constants from '../../support/constants'
-import * as balances from '../pages/balnces.pages'
+import * as balances from '../pages/balances.pages'
 
 const ASSETS_LENGTH = 8
 const ASSET_NAME_COLUMN = 0
