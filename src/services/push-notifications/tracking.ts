@@ -38,7 +38,7 @@ export const createNotificationTrackingIndexedDb = () => {
   return createIndexedDb(DB_NAME, STORE_NAME)
 }
 
-export const _DEFAULT_WEBHOOK_TRACKING: NotificationTracking[NotificationTrackingKey] = {
+export const DEFAULT_WEBHOOK_TRACKING: NotificationTracking[NotificationTrackingKey] = {
   shown: 0,
   opened: 0,
 }
@@ -56,15 +56,15 @@ export const cacheServiceWorkerPushNotificationTrackingEvent = (
 
   updateIndexedDb<NotificationTracking[NotificationTrackingKey] | undefined>(
     key,
-    (tracking) => {
-      if (tracking) {
+    (notificationCount) => {
+      if (notificationCount) {
         return {
-          ...tracking,
-          [property]: (tracking[property] ?? 0) + 1,
+          ...notificationCount,
+          [property]: (notificationCount[property] ?? 0) + 1,
         }
       }
 
-      return _DEFAULT_WEBHOOK_TRACKING
+      return DEFAULT_WEBHOOK_TRACKING
     },
     store,
   ).catch(() => null)

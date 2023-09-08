@@ -1,38 +1,40 @@
 import { keys as keysFromIndexedDb, update as updateIndexedDb } from 'idb-keyval'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import {
-  _DEFAULT_WEBHOOK_TRACKING,
+  DEFAULT_WEBHOOK_TRACKING,
   createNotificationTrackingIndexedDb,
   parseNotificationTrackingKey,
 } from '@/services/push-notifications/tracking'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import { logError } from '@/services/exceptions'
 import type { NotificationTracking, NotificationTrackingKey } from '@/services/push-notifications/tracking'
 import type { WebhookType } from '@/service-workers/firebase-messaging/webhook-types'
 
 const trackNotificationEvents = (
   chainId: string,
   type: WebhookType,
-  tracking: NotificationTracking[NotificationTrackingKey],
+  notificationCount: NotificationTracking[NotificationTrackingKey],
 ) => {
   // Shown notifications
-  Array.from({ length: tracking.shown }).forEach(() => {
+  for (let i = 0; i < notificationCount.shown; i++) {
     trackEvent({
       ...PUSH_NOTIFICATION_EVENTS.SHOW_NOTIFICATION,
       label: type,
       chainId,
     })
-  })
+  }
 
   // Opened notifications
-  Array.from({ length: tracking.opened }).forEach(() => {
+  for (let i = 0; i < notificationCount.opened; i++) {
     trackEvent({
       ...PUSH_NOTIFICATION_EVENTS.OPEN_NOTIFICATION,
       label: type,
       chainId,
     })
-  })
+  }
 }
 
 const handleTrackCachedNotificationEvents = async (
@@ -46,37 +48,29 @@ const handleTrackCachedNotificationEvents = async (
     const promises = trackedNotificationKeys.map((key) => {
       return updateIndexedDb<NotificationTracking[NotificationTrackingKey]>(
         key,
-        (tracking) => {
-          if (tracking) {
-            // If tracking occurred, track the events
+        (notificationCount) => {
+          if (notificationCount) {
             const { chainId, type } = parseNotificationTrackingKey(key)
-            trackNotificationEvents(chainId, type, tracking)
+            trackNotificationEvents(chainId, type, notificationCount)
           }
 
           // Return the default cache with 0 shown/opened events
-          return _DEFAULT_WEBHOOK_TRACKING
+          return DEFAULT_WEBHOOK_TRACKING
         },
         trackingStore,
       )
     })
 
     await Promise.all(promises)
-  } catch {
-    // Swallow error
+  } catch (e) {
+    logError(ErrorCodes._401, e)
   }
 }
 
 export const useNotificationTracking = (): void => {
-  // idb-keyval stores
-  const trackingStore = useMemo(() => {
+  useEffect(() => {
     if (typeof indexedDB !== 'undefined') {
-      return createNotificationTrackingIndexedDb()
+      handleTrackCachedNotificationEvents(createNotificationTrackingIndexedDb())
     }
   }, [])
-
-  useEffect(() => {
-    if (trackingStore) {
-      handleTrackCachedNotificationEvents(trackingStore)
-    }
-  }, [trackingStore])
 }
