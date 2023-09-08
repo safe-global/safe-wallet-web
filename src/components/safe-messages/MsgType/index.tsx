@@ -3,13 +3,13 @@ import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import ImageFallback from '@/components/common/ImageFallback'
 
-import txTypeCss from '@/components/transactions/TxType/styles.module.css'
+import css from './styles.module.css'
 
 const FALLBACK_LOGO_URI = '/images/transactions/custom.svg'
 
 const MsgType = ({ msg }: { msg: SafeMessage }) => {
   return (
-    <Box className={txTypeCss.txType}>
+    <Box className={css.type}>
       <ImageFallback
         src={msg.logoUri || FALLBACK_LOGO_URI}
         fallbackSrc={FALLBACK_LOGO_URI}

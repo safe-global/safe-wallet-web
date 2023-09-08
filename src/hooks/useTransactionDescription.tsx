@@ -18,7 +18,7 @@ import type { AddressBook } from '@/store/addressBookSlice'
 import css from '@/components/transactions/HumanDescription/styles.module.css'
 import { shortenAddress } from '@/utils/formatters'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { TransferTx } from '@/components/transactions/TxInfo'
+import { TransferTx } from '@/components/transactions/TxDetails/TxData/Transfer'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
