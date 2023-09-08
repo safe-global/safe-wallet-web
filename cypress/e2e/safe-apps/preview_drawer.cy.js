@@ -1,8 +1,8 @@
-import { TEST_SAFE } from './constants'
+import * as constants from '../../support/constants'
 
 describe('The Safe Apps info modal', () => {
   before(() => {
-    cy.visit(`/${TEST_SAFE}/apps`, { failOnStatusCode: false })
+    cy.visit(`/${constants.TEST_SAFE_2}/apps`, { failOnStatusCode: false })
     cy.findByText(/accept selection/i).click()
   })
 

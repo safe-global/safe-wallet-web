@@ -1,4 +1,4 @@
-const SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+import * as constants from '../../support/constants'
 
 const INCOMING = 'Received'
 const OUTGOING = 'Sent'
@@ -7,7 +7,7 @@ const CONTRACT_INTERACTION = 'Contract interaction'
 describe('Transaction history', () => {
   before(() => {
     // Go to the test Safe transaction history
-    cy.visit(`/transactions/history?safe=${SAFE}`)
+    cy.visit(`/transactions/history?safe=${constants.GOERLI_TEST_SAFE}`)
     cy.contains('button', 'Accept selection').click()
   })
 

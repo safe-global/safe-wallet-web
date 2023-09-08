@@ -1,4 +1,4 @@
-const SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
+import * as constants from '../../support/constants'
 
 describe('Pending actions', () => {
   before(() => {
@@ -22,7 +22,7 @@ describe('Pending actions', () => {
     cy.contains('Name, address & network')
 
     // Inputs the Safe address
-    cy.get('input[name="address"]').type(SAFE)
+    cy.get('input[name="address"]').type(constants.TEST_SAFE)
     cy.contains('Next').click()
 
     cy.contains('Owners and confirmations')

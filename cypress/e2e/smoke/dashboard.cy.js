@@ -1,9 +1,9 @@
-const SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
+import * as constants from '../../support/constants'
 
 describe('Dashboard', () => {
   before(() => {
     // Go to the test Safe home page
-    cy.visit(`/home?safe=${SAFE}`)
+    cy.visit(`/home?safe=${constants.TEST_SAFE}`)
 
     cy.contains('button', 'Accept selection').click()
 
@@ -17,9 +17,9 @@ describe('Dashboard', () => {
 
     cy.get('@overviewSection').within(() => {
       // Prefix is separated across elements in EthHashInfo
-      cy.contains(SAFE).should('exist')
+      cy.contains(constants.TEST_SAFE).should('exist')
       cy.contains('1/2')
-      cy.get(`a[href="/balances?safe=${encodeURIComponent(SAFE)}"]`).contains('View assets')
+      cy.get(`a[href="/balances?safe=${encodeURIComponent(constants.TEST_SAFE)}"]`).contains('View assets')
       // Text next to Tokens contains a number greater than 0
       cy.contains('p', 'Tokens').next().contains('1')
       cy.contains('p', 'NFTs').next().contains('0')
@@ -37,7 +37,7 @@ describe('Dashboard', () => {
       // Queued txns
       cy.contains(`a[href^="/transactions/tx?id=multisig_0x"]`, '13' + 'Send' + '-0.00002 GOR' + '1/1').should('exist')
 
-      cy.contains(`a[href="/transactions/queue?safe=${encodeURIComponent(SAFE)}"]`, 'View all')
+      cy.contains(`a[href="/transactions/queue?safe=${encodeURIComponent(constants.TEST_SAFE)}"]`, 'View all')
     })
   })
 
@@ -69,7 +69,10 @@ describe('Dashboard', () => {
     // Regular safe apps
     cy.get('@safeAppsSection').within(() => {
       // Find exactly 5 Safe Apps cards inside the Safe Apps section
-      cy.get(`a[href^="/apps/open?safe=${encodeURIComponent(SAFE)}&appUrl=http"]`).should('have.length', 5)
+      cy.get(`a[href^="/apps/open?safe=${encodeURIComponent(constants.TEST_SAFE)}&appUrl=http"]`).should(
+        'have.length',
+        5,
+      )
     })
   })
 })

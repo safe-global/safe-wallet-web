@@ -1,5 +1,4 @@
-const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'
-const OWNER_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
+import * as constants from '../../support/constants'
 
 describe('Create Safe form', () => {
   it('should navigate to the form', () => {
@@ -40,7 +39,7 @@ describe('Create Safe form', () => {
 
   it('should display a default owner and threshold', () => {
     // Default owner
-    cy.get('input[name="owners.0.address"]').should('have.value', DEFAULT_OWNER_ADDRESS)
+    cy.get('input[name="owners.0.address"]').should('have.value', constants.DEFAULT_OWNER_ADDRESS)
 
     // Default threshold
     cy.get('input[name="threshold"]').should('have.value', 1)
@@ -57,7 +56,7 @@ describe('Create Safe form', () => {
     // Add new owner
     cy.contains('button', 'Add new owner').click()
     cy.get('input[name="owners.1.address"]').should('exist')
-    cy.get('input[name="owners.1.address"]').type(OWNER_ADDRESS)
+    cy.get('input[name="owners.1.address"]').type(constants.EOA)
 
     // Update threshold
     cy.get('input[name="threshold"]').parent().click()
@@ -76,7 +75,7 @@ describe('Create Safe form', () => {
 
   it('should display summary on review page', () => {
     cy.contains('Test safe name')
-    cy.contains(DEFAULT_OWNER_ADDRESS)
+    cy.contains(constants.DEFAULT_OWNER_ADDRESS)
     cy.contains('1 out of 1')
   })
 })
