@@ -73,10 +73,12 @@ describe('Transaction history', () => {
         // Type
         // TODO: update next line after fixing the logo
         // cy.find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
-        cy.contains('div', 'Wrapped Ether').should('exist')
+        cy.contains('div', 'WETH').should('exist')
+
+        cy.contains('div', 'unlimited').should('exist')
 
         // Info
-        cy.contains('div', 'approve').should('exist')
+        cy.contains('div', 'Approve').should('exist')
 
         // Time
         cy.contains('span', '5:00 PM').should('exist')
