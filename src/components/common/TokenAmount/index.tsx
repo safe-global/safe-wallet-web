@@ -4,7 +4,7 @@ import css from './styles.module.css'
 import { formatVisualAmount } from '@/utils/formatters'
 import TokenIcon from '../TokenIcon'
 import classNames from 'classnames'
-import txSummaryCss from '@/components/transactions/TxSummary/styles.module.css'
+import hdCss from '@/components/transactions/HumanDescription/styles.module.css'
 
 const TokenAmount = ({
   value,
@@ -27,11 +27,11 @@ const TokenAmount = ({
   const amount = decimals ? formatVisualAmount(value, decimals) : value
 
   return (
-    <strong className={classNames(css.container, txSummaryCss.method, { [css.verticalAlign]: logoUri })}>
+    <span className={classNames(css.container, { [css.verticalAlign]: logoUri, [hdCss.method]: logoUri })}>
       {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} fallbackSrc={fallbackSrc} size={size} />}
       {sign}
       {amount} {tokenSymbol}
-    </strong>
+    </span>
   )
 }
 

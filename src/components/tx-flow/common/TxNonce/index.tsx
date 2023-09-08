@@ -21,13 +21,14 @@ import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import NumberField from '@/components/common/NumberField'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import useAddressBook from '@/hooks/useAddressBook'
 import { getLatestTransactions } from '@/utils/tx-list'
 import usePreviousNonces from '@/hooks/usePreviousNonces'
 import { isRejectionTx } from '@/utils/transactions'
 
 import css from './styles.module.css'
 import classNames from 'classnames'
-import { TxDescription } from '@/components/transactions/TxSummary'
+import { getTransactionDescription } from '@/hooks/useTransactionDescription'
 
 const CustomPopper = function ({
   // Don't set width of Popper to that of the field
@@ -55,6 +56,7 @@ const NonceFormOption = memo(function NonceFormOption({
   nonce: string
   menuItemProps: MenuItemProps
 }): ReactElement {
+  const addressBook = useAddressBook()
   const transactions = useQueuedTxByNonce(Number(nonce))
 
   const txLabel = useMemo(() => {
@@ -65,8 +67,8 @@ const NonceFormOption = memo(function NonceFormOption({
     }
 
     const [{ transaction }] = latestTransactions
-    return transaction.txInfo.humanDescription || <TxDescription tx={transaction} />
-  }, [transactions])
+    return transaction.txInfo.humanDescription || getTransactionDescription(transaction, addressBook, true).text
+  }, [addressBook, transactions])
 
   const label = txLabel || 'New transaction'
 

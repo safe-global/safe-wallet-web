@@ -28,12 +28,6 @@
   white-space: normal;
 }
 
-.method {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-}
-
 .description {
   display: flex;
   align-items: center;

@@ -15,8 +15,7 @@ import {
 import { isCancellationTxInfo, isModuleExecutionInfo, isMultiSendTxInfo } from '@/utils/transaction-guards'
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
-import css from '@/components/transactions/TxSummary/styles.module.css'
-import humanDescriptionCss from '@/components/transactions/HumanDescription/styles.module.css'
+import css from '@/components/transactions/HumanDescription/styles.module.css'
 import { shortenAddress } from '@/utils/formatters'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { TransferTx } from '@/components/transactions/TxInfo'
@@ -44,21 +43,35 @@ type TxType = {
   text: ReactNode
 }
 
-const TransferDescription = ({ txInfo, isSendTx }: { txInfo: Transfer; isSendTx: boolean }) => {
+const TransferDescriptionSimple = ({ txInfo, isSendTx }: { txInfo: Transfer; isSendTx: boolean }) => {
+  const action = isSendTx ? 'Send' : 'Receive'
+  const direction = isSendTx ? 'to' : 'from'
+  const address = isSendTx ? txInfo.recipient.value : txInfo.sender.value
+
   return (
     <>
-      {isSendTx ? 'Send' : 'Receive'}
+      {action}
+      <TransferTx info={txInfo} omitSign={true} withLogo={false} size={16} />
+      <span>{direction}</span>
+      {shortenAddress(address)}
+    </>
+  )
+}
+
+const TransferDescription = ({ txInfo, isSendTx }: { txInfo: Transfer; isSendTx: boolean }) => {
+  const action = isSendTx ? 'Send' : 'Receive'
+  const direction = isSendTx ? 'to' : 'from'
+  const address = isSendTx ? txInfo.recipient.value : txInfo.sender.value
+  const name = isSendTx ? txInfo.recipient.name : txInfo.sender.name
+
+  return (
+    <>
+      {action}
       <TransferTx info={txInfo} omitSign={true} size={20} />
-      <>
-        {isSendTx ? 'to' : 'from'}
-        <div className={humanDescriptionCss.address}>
-          <EthHashInfo
-            address={isSendTx ? txInfo.recipient.value : txInfo.sender.value}
-            name={isSendTx ? txInfo.recipient.name : txInfo.sender.name}
-            avatarSize={20}
-          />
-        </div>
-      </>
+      {direction}
+      <div className={css.address}>
+        <EthHashInfo address={address} name={name} avatarSize={20} />
+      </div>
     </>
   )
 }
@@ -135,7 +148,11 @@ const MultiSendDescription = ({ actionCount }: { actionCount: number }) => {
   )
 }
 
-export const getTransactionDescription = (tx: TransactionSummary, addressBook: AddressBook): TxType => {
+export const getTransactionDescription = (
+  tx: TransactionSummary,
+  addressBook: AddressBook,
+  simple?: boolean,
+): TxType => {
   const toAddress = getTxTo(tx)
   const addressName = addressBook[toAddress?.value || ''] || toAddress?.name
 
@@ -152,7 +169,11 @@ export const getTransactionDescription = (tx: TransactionSummary, addressBook: A
 
       return {
         icon: isSendTx ? '/images/transactions/outgoing.svg' : '/images/transactions/incoming.svg',
-        text: <TransferDescription txInfo={tx.txInfo} isSendTx={isSendTx} />,
+        text: simple ? (
+          <TransferDescriptionSimple txInfo={tx.txInfo} isSendTx={isSendTx} />
+        ) : (
+          <TransferDescription txInfo={tx.txInfo} isSendTx={isSendTx} />
+        ),
       }
     }
 
