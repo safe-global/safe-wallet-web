@@ -1,9 +1,9 @@
-const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+import * as constants from '../../support/constants'
 
 describe('Beamer', () => {
   it('should require accept "Updates" cookies to display Beamer', () => {
     // Disable PWA, otherwise it will throw a security error
-    cy.visit(`/address-book?safe=${TEST_SAFE}`)
+    cy.visit(`/address-book?safe=${constants.GOERLI_TEST_SAFE}`)
 
     // Way to select the cookies banner without an id
     cy.contains('Accept selection').click()

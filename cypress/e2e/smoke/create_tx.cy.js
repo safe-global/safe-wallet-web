@@ -1,12 +1,11 @@
-const SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
-const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
+import * as constants from '../../support/constants'
 
 const sendValue = 0.00002
 const currentNonce = 3
 
 describe('Queue a transaction on 1/N', () => {
   before(() => {
-    cy.visit(`/home?safe=${SAFE}`)
+    cy.visit(`/home?safe=${constants.TEST_SAFE}`)
 
     cy.contains('Accept selection').click()
   })
@@ -27,7 +26,7 @@ describe('Queue a transaction on 1/N', () => {
     cy.contains('Send tokens').click()
 
     // Fill transaction data
-    cy.get('input[name="recipient"]').type(EOA)
+    cy.get('input[name="recipient"]').type(constants.EOA)
     // Click on the Token selector
     cy.get('input[name="tokenAddress"]').prev().click()
     cy.get('ul[role="listbox"]')

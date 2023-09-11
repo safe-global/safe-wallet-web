@@ -1,8 +1,8 @@
-const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+import * as constants from '../../support/constants'
 
 describe('Assets > NFTs', () => {
   before(() => {
-    cy.visit(`/balances/nfts?safe=${TEST_SAFE}`)
+    cy.visit(`/balances/nfts?safe=${constants.GOERLI_TEST_SAFE}`)
     cy.contains('button', 'Accept selection').click()
     cy.contains(/E2E Wallet @ G(ö|oe)rli/)
   })

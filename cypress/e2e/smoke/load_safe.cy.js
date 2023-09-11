@@ -1,18 +1,18 @@
 import 'cypress-file-upload'
+import * as constants from '../../support/constants'
 
 // TODO
 const SAFE_ENS_NAME = 'test20.eth'
-const SAFE_ENS_NAME_TRANSLATED = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
+const SAFE_ENS_NAME_TRANSLATED = constants.EOA
 
-const SAFE_QR_CODE_ADDRESS = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
-const EOA_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
+const EOA_ADDRESS = constants.EOA
 
 const INVALID_INPUT_ERROR_MSG = 'Invalid address format'
 const INVALID_ADDRESS_ERROR_MSG = 'Address given is not a valid Safe address'
 
 // TODO
 const OWNER_ENS_DEFAULT_NAME = 'test20.eth'
-const OWNER_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
+const OWNER_ADDRESS = constants.EOA
 
 describe('Load existing Safe', () => {
   before(() => {
@@ -50,7 +50,7 @@ describe('Load existing Safe', () => {
     cy.get('input[name="address"]').type('RandomText')
     cy.get('@addressLabel').contains(INVALID_INPUT_ERROR_MSG)
 
-    cy.get('input[name="address"]').clear().type(SAFE_QR_CODE_ADDRESS)
+    cy.get('input[name="address"]').clear().type(constants.GOERLI_TEST_SAFE)
 
     // Type an invalid address
     // cy.get('input[name="address"]').clear().type(EOA_ADDRESS)
@@ -69,7 +69,7 @@ describe('Load existing Safe', () => {
     // cy.get('[type="file"]').attachFile('../fixtures/goerli_safe_QR.png')
 
     // The address field should be filled with the "bare" QR code's address
-    const [, address] = SAFE_QR_CODE_ADDRESS.split(':')
+    const [, address] = constants.GOERLI_TEST_SAFE.split(':')
     cy.get('input[name="address"]').should('have.value', address)
 
     cy.contains('Next').click()
@@ -101,7 +101,7 @@ describe('Load existing Safe', () => {
 
   it('should load successfully the custom Safe name', () => {
     // Safe loaded
-    cy.location('href', { timeout: 10000 }).should('include', `/home?safe=${SAFE_QR_CODE_ADDRESS}`)
+    cy.location('href', { timeout: 10000 }).should('include', `/home?safe=${constants.GOERLI_TEST_SAFE}`)
 
     // Finds Safe name in the sidebar
     cy.get('aside').contains('Test safe name')
