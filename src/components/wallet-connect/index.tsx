@@ -83,15 +83,14 @@ export const ConnectWC = () => {
   return (
     <>
       <IconButton onClick={handleWidgetIconClick} ref={anchorElem}>
-        <UnreadBadge
-          invisible={!isConnected}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-        >
-          <SvgIcon component={WcIcon} inheritViewBox fontSize="small" />
-        </UnreadBadge>
+        <SvgIcon component={WcIcon} inheritViewBox fontSize="small" />
+        <img
+          style={{ position: 'absolute', top: '16px', left: '16px', borderRadius: '12px', backgroundColor: '#FFFFFF' }}
+          width={16}
+          height={16}
+          src={wcClientData?.icons[0]}
+          alt="App logo"
+        ></img>
       </IconButton>
       <Popover
         open={openModal}

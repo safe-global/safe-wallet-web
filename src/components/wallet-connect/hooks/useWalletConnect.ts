@@ -178,6 +178,7 @@ const useWalletConnect = (): useWalletConnectType => {
 
       if (compatibleSession) {
         setWcSession(compatibleSession)
+        setWcState(WC_CONNECT_STATE.CONNECTED)
       }
 
       // events
