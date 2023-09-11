@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import type { SignClientTypes, SessionTypes } from '@walletconnect/types'
 import { Core } from '@walletconnect/core'
-import Web3WalletType, { Web3Wallet, Web3WalletTypes } from '@walletconnect/web3wallet'
+import type Web3WalletType from '@walletconnect/web3wallet'
+import { Web3Wallet, type Web3WalletTypes } from '@walletconnect/web3wallet'
 import { IS_PRODUCTION, WALLETCONNECT_V2_PROJECT_ID } from '@/config/constants'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -59,6 +60,7 @@ export type useWalletConnectType = {
   error: string | undefined
   sessionProposal: Web3WalletTypes.SessionProposal | undefined
   wcState: WC_CONNECT_STATE
+  acceptInvalidSession: () => void
 }
 
 // MOVE TO CONSTANTS
@@ -74,6 +76,7 @@ export enum WC_CONNECT_STATE {
   PAIRING_SESSION,
   PENDING_SESSION_REQUEST,
   APPROVING_SESSION,
+  APPROVE_INVALID_SESSION,
   REJECTING_SESSION,
   CONNECTED,
 }
@@ -214,6 +217,7 @@ const useWalletConnect = (): useWalletConnectType => {
       throw new Error('Cannot approve session without pending session proposal')
     }
 
+    console.log('Approving session', sessionProposal)
     const { id, params } = sessionProposal
     const { requiredNamespaces } = params
     const requiredNamespace = requiredNamespaces[EVMBasedNamespaces]
@@ -250,17 +254,23 @@ const useWalletConnect = (): useWalletConnectType => {
       }
 
       // Emit accountsChanged and chainChanged event
-      await web3wallet.updateSession({
-        topic: wcSession.topic,
-        namespaces: {
-          eip155: {
-            accounts: [safeAccount],
-            chains: requiredChains,
-            methods: compatibleSafeMethods,
-            events: safeEvents,
+      try {
+        await web3wallet.updateSession({
+          topic: wcSession.topic,
+          namespaces: {
+            eip155: {
+              accounts: [safeAccount],
+              chains: requiredChains,
+              methods: compatibleSafeMethods,
+              events: safeEvents,
+            },
           },
-        },
-      })
+        })
+      } catch (error) {
+        setWcState(WC_CONNECT_STATE.APPROVE_INVALID_SESSION)
+        setWcSession(wcSession)
+        return
+      }
     }
 
     //
@@ -269,6 +279,12 @@ const useWalletConnect = (): useWalletConnectType => {
     setError(undefined)
     setWcState(WC_CONNECT_STATE.CONNECTED)
   }, [safe.address, safe.chainId, sessionProposal, web3wallet])
+
+  const acceptInvalidSession = useCallback(() => {
+    setWcState(WC_CONNECT_STATE.CONNECTED)
+    setError(undefined)
+    setSessionProposal(undefined)
+  }, [])
 
   const wcDisconnect = useCallback<wcDisconnectType>(async () => {
     if (wcSession && web3wallet) {
@@ -297,6 +313,7 @@ const useWalletConnect = (): useWalletConnectType => {
     error,
     wcState,
     sessionProposal,
+    acceptInvalidSession,
   }
 }
 
