@@ -14,7 +14,7 @@
   color: var(--color-error-main);
 }
 .container a {
-  color: var(--color-primary-main) !important;
+  color: var(--color-success-main) !important;
 }
 
 .container label,

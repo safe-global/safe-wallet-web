@@ -18,6 +18,7 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  color: var(--color-text-primary);
 }
 
 .menuButton,
