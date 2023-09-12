@@ -298,6 +298,27 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
     ],
   },
   {
+    chainId: '169',
+    chainName: 'Manta Pacific',
+    shortName: 'manta',
+    l2: true,
+    description: '',
+    rpcUri: { authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION, value: 'https://pacific-rpc.manta.network/http' },
+    safeAppsRpcUri: { authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION, value: 'https://pacific-rpc.manta.network/http' },
+    publicRpcUri: { authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION, value: 'https://pacific-rpc.manta.network/http' },
+    blockExplorerUriTemplate: {
+      address: 'https://pacific-explorer.manta.network/address/{{address}}',
+      txHash: 'https://pacific-explorer.manta.network/tx/{{txHash}}',
+      api: 'https://pacific-explorer.manta.network/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}',
+    },
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'ETH',
+      decimals: 18,
+      logoUri: 'https://safe-transaction-assets.gnosis-safe.io/chains/1/currency_logo.png',
+    },
+  },
+  {
     transactionService: 'https://safe-transaction.aurora.gnosis.io',
     chainId: '1313161554',
     chainName: 'Aurora',
