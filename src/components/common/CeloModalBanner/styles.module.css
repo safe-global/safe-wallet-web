@@ -2,7 +2,7 @@
   position: fixed;
   z-index: 1300;
   bottom: var(--space-2);
-  right: var(--space-2);
+  left: var(--space-2);
   max-width: 400px;
 }
 
