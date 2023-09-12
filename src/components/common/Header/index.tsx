@@ -58,7 +58,7 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
           <img src={SafeLogo.src} alt="Celo Safe logo" />
         </Link>
         <span className={css.hideMobile}>
-          Celo Safe is now supported on the official{' '}
+          Celo is now supported on the official{' '}
           <a target="_blank" rel="noreferrer" href="https://app.safe.global/welcome?chain=celo">
             Safe app.
           </a>{' '}

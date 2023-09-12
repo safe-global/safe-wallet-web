@@ -29,6 +29,7 @@ import { safeAppsSlice } from './safeAppsSlice'
 import { safeMessagesListener, safeMessagesSlice } from './safeMessagesSlice'
 import { pendingSafeMessagesSlice } from './pendingSafeMessagesSlice'
 import { batchSlice } from './batchSlice'
+import { celoDisclaimerSlice } from './celoDisclaimerSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
   [addedSafesSlice.name]: addedSafesSlice.reducer,
   [settingsSlice.name]: settingsSlice.reducer,
   [cookiesSlice.name]: cookiesSlice.reducer,
+  [celoDisclaimerSlice.name]: celoDisclaimerSlice.reducer,
   [popupSlice.name]: popupSlice.reducer,
   [spendingLimitSlice.name]: spendingLimitSlice.reducer,
   [safeAppsSlice.name]: safeAppsSlice.reducer,
@@ -58,6 +60,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   addedSafesSlice.name,
   settingsSlice.name,
   cookiesSlice.name,
+  celoDisclaimerSlice.name,
   safeAppsSlice.name,
   pendingSafeMessagesSlice.name,
   batchSlice.name,

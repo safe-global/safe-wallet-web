@@ -37,6 +37,7 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
+import CeloDisclaimerBannerPopup from '@/components/common/CeloModalBanner'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -111,6 +112,7 @@ const WebCoreApp = ({
           </PageLayout>
 
           <CookieBanner />
+          <CeloDisclaimerBannerPopup />
 
           <Notifications />
         </AppProviders>
