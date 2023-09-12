@@ -1,12 +1,13 @@
 import BatchIndicator from '@/components/batch/BatchIndicator'
 import ConnectWallet from '@/components/common/ConnectWallet'
+import ExternalLink from '@/components/common/ExternalLink'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import SafeTokenWidget, { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import NotificationCenter from '@/components/notification-center/NotificationCenter'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import SafeLogo from '@/public/images/logo.svg'
+import SafeLogo from '@/public/images/safe-logo-celo.png'
 import MenuIcon from '@mui/icons-material/Menu'
 import { IconButton, Paper } from '@mui/material'
 import classnames from 'classnames'
@@ -54,21 +55,16 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
 
       <div className={classnames(css.element, css.hideMobile, css.logo)}>
         <Link href={logoHref} passHref>
-          <SafeLogo alt="Safe logo" />
+          <img src={SafeLogo.src} alt="Celo Safe logo" />
         </Link>
         <span className={css.hideMobile}>
           Celo Safe is now supported on the official{' '}
           <a target="_blank" rel="noreferrer" href="https://app.safe.global/welcome?chain=celo">
             Safe app.
           </a>{' '}
-          Learn more{' '}
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href="https://forum.celo.org/t/multisig-native-safe-launch-migration-guidance/5705"
-          >
-            here.
-          </a>
+          <ExternalLink noIcon href="https://forum.celo.org/t/multisig-native-safe-launch-migration-guidance/5705">
+            Learn more here.
+          </ExternalLink>
         </span>
       </div>
 
