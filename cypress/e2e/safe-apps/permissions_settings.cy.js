@@ -1,5 +1,4 @@
-import { BROWSER_PERMISSIONS_KEY, SAFE_PERMISSIONS_KEY } from './constants'
-import { TEST_SAFE } from './constants'
+import * as constants from '../../support/constants'
 
 let $dapps = []
 
@@ -7,7 +6,7 @@ describe('The Safe Apps permissions settings section', () => {
   before(() => {
     cy.on('window:before:load', (window) => {
       window.localStorage.setItem(
-        BROWSER_PERMISSIONS_KEY,
+        constants.BROWSER_PERMISSIONS_KEY,
         JSON.stringify({
           'https://app1.com': [
             { feature: 'camera', status: 'granted' },
@@ -19,7 +18,7 @@ describe('The Safe Apps permissions settings section', () => {
         }),
       )
       window.localStorage.setItem(
-        SAFE_PERMISSIONS_KEY,
+        constants.SAFE_PERMISSIONS_KEY,
         JSON.stringify({
           'https://app2.com': [
             {
@@ -41,7 +40,8 @@ describe('The Safe Apps permissions settings section', () => {
       )
     })
 
-    cy.visit(`${TEST_SAFE}/settings/safe-apps`, { failOnStatusCode: false })
+    cy.visit(`${constants.TEST_SAFE_2}/settings/safe-apps`, { failOnStatusCode: false })
+    cy.findByText(/accept selection/i).click()
   })
 
   it('should show the permissions configuration for each stored app', () => {
@@ -131,14 +131,14 @@ describe('The Safe Apps permissions settings section', () => {
         .last()
         .click()
         .should(() => {
-          const storedBrowserPermissions = JSON.parse(localStorage.getItem(BROWSER_PERMISSIONS_KEY))
+          const storedBrowserPermissions = JSON.parse(localStorage.getItem(constants.BROWSER_PERMISSIONS_KEY))
           const browserPermissions = Object.values(storedBrowserPermissions)
 
           expect(browserPermissions).to.have.length(1)
           expect(browserPermissions[0][0].feature).to.eq('microphone')
           expect(browserPermissions[0][0].status).to.eq('granted')
 
-          const storedSafePermissions = JSON.parse(localStorage.getItem(SAFE_PERMISSIONS_KEY))
+          const storedSafePermissions = JSON.parse(localStorage.getItem(constants.SAFE_PERMISSIONS_KEY))
           const safePermissions = Object.values(storedSafePermissions)
 
           expect(safePermissions).to.have.length(2)

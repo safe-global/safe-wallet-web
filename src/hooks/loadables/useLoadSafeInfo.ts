@@ -9,7 +9,6 @@ import { Errors, logError } from '@/services/exceptions'
 import { POLLING_INTERVAL } from '@/config/constants'
 
 export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
-  // setBaseUrl()
   const address = useSafeAddress()
   const chainId = useChainId()
   const [pollCount, resetPolling] = useIntervalCounter(POLLING_INTERVAL)
@@ -19,6 +18,7 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   const [data, error, loading] = useAsync<SafeInfo>(() => {
     if (!chainId || !address) return
     return getSafeInfo(chainId, address)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, address, pollCount])
 
   // Reset the counter when safe address/chainId changes

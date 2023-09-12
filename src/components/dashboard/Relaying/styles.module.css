@@ -1,0 +1,33 @@
+.relayingChip {
+  padding: var(--space-1);
+  border-radius: 6px;
+  height: 30px;
+  background-color: var(--color-secondary-light);
+  color: var(--color-static-main);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.relayingChip.unavailable {
+  background-color: var(--color-error-light);
+}
+
+.chipSkeleton {
+  height: 30px;
+  width: 80px;
+}
+
+.icon {
+  padding: 4px;
+  border-radius: 6px;
+  border: 1.3px solid var(--color-text-primary);
+  width: 34px;
+  height: 34px;
+  margin-right: 12px;
+}
+
+.gcLogo {
+  width: 16px;
+  height: 16px;
+}

@@ -1,4 +1,3 @@
-import { CircularProgress } from '@mui/material'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -10,7 +9,9 @@ import { sameAddress } from '@/utils/addresses'
 import type { ReactElement } from 'react'
 import { makeTxFromDetails } from '@/utils/transactions'
 import { TxListGrid } from '@/components/transactions/TxList'
-import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
+import ExpandableTransactionItem, {
+  TransactionSkeleton,
+} from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import GroupLabel from '../GroupLabel'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
@@ -46,11 +47,12 @@ const SingleTx = () => {
       return getTransactionDetails(safe.chainId, transactionId).then((details) => {
         // If the transaction is not related to the current safe, throw an error
         if (!sameAddress(details.safeAddress, safeAddress)) {
-          return Promise.reject(new Error('Transaction with this id was not found in this Safe'))
+          return Promise.reject(new Error('Transaction with this id was not found in this Safe Account'))
         }
         return details
       })
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [transactionId, safe.chainId, safe.txQueuedTag, safe.txHistoryTag, safeAddress],
     false,
   )
@@ -63,7 +65,8 @@ const SingleTx = () => {
     return <SingleTxGrid txDetails={txDetails} />
   }
 
-  return <CircularProgress />
+  // Loading skeleton
+  return <TransactionSkeleton />
 }
 
 export default SingleTx

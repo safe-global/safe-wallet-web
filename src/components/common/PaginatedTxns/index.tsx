@@ -11,6 +11,8 @@ import SkeletonTxList from './SkeletonTxList'
 import { type TxFilter, useTxFilter } from '@/utils/tx-history-filter'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
+import { useHasPendingTxs } from '@/hooks/usePendingTxs'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 const NoQueuedTxns = () => {
   return <PagePlaceholder img={<NoTransactionsIcon />} text="Queued transactions will appear here" />
@@ -36,6 +38,7 @@ const TxPage = ({
   const { page, error, loading } = useTxns(pageUrl)
   const [filter] = useTxFilter()
   const isQueue = useTxns === useTxQueue
+  const hasPending = useHasPendingTxs()
 
   return (
     <>
@@ -47,11 +50,12 @@ const TxPage = ({
 
       {page && page.results.length > 0 && <TxList items={page.results} />}
 
-      {isQueue && page?.results.length === 0 && <NoQueuedTxns />}
+      {isQueue && page?.results.length === 0 && !hasPending && <NoQueuedTxns />}
 
       {error && <ErrorMessage>Error loading transactions</ErrorMessage>}
 
-      {loading && <SkeletonTxList />}
+      {/* No skeletons for pending as they are shown above the queue which has them */}
+      {loading && !hasPending && <SkeletonTxList />}
 
       {page?.next && onNextPage && (
         <Box my={4} textAlign="center">
@@ -62,21 +66,15 @@ const TxPage = ({
   )
 }
 
-const PaginatedTxns = ({
-  useTxns,
-  disableTopActionMargins = false,
-}: {
-  useTxns: typeof useTxHistory | typeof useTxQueue
-  disableTopActionMargins?: boolean
-}): ReactElement => {
+const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useTxQueue }): ReactElement => {
   const [pages, setPages] = useState<string[]>([''])
   const [filter] = useTxFilter()
-  const isQueue = useTxns === useTxQueue
+  const { safeAddress, safe } = useSafeInfo()
 
-  // Reset the pages when the filter changes
+  // Reset the pages when the Safe Account or filter changes
   useEffect(() => {
     setPages([''])
-  }, [filter, useTxns])
+  }, [filter, safe.chainId, safeAddress, useTxns])
 
   // Trigger the next page load
   const onNextPage = (pageUrl: string) => {
@@ -84,7 +82,7 @@ const PaginatedTxns = ({
   }
 
   return (
-    <Box mb={4} position="relative">
+    <Box position="relative">
       {pages.map((pageUrl, index) => (
         <TxPage
           key={pageUrl}

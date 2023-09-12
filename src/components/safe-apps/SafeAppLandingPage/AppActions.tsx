@@ -56,12 +56,12 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
     case hasWallet && hasSafes && !!safeToUse:
       const safe = `${safeToUse?.shortName}:${safeToUse?.address}`
       const href: UrlObject = {
-        pathname: AppRoutes.apps,
+        pathname: AppRoutes.apps.open,
         query: { safe, appUrl },
       }
 
       button = (
-        <Link href={href} passHref>
+        <Link href={href} passHref legacyBehavior>
           <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse}>
             Use app
           </Button>
@@ -69,15 +69,15 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
       )
       break
     case shouldCreateSafe:
-      const redirect = `${AppRoutes.apps}?appUrl=${appUrl}`
+      const redirect = `${AppRoutes.apps.index}?appUrl=${appUrl}`
       const createSafeHrefWithRedirect: UrlObject = {
         pathname: AppRoutes.newSafe.create,
         query: { safeViewRedirectURL: redirect, chain: chain.shortName },
       }
       button = (
-        <Link href={createSafeHrefWithRedirect} passHref>
+        <Link href={createSafeHrefWithRedirect} passHref legacyBehavior>
           <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
-            Create new Safe
+            Create new Safe Account
           </Button>
         </Link>
       )
@@ -93,7 +93,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
   if (hasWallet && hasSafes) {
     body = (
       <FormControl>
-        <InputLabel id="safe-select-label">Select a Safe</InputLabel>
+        <InputLabel id="safe-select-label">Select a Safe Account</InputLabel>
         <Select
           labelId="safe-select-label"
           value={safeToUse?.address || ''}
@@ -102,7 +102,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
             setSafeToUse(safeToUse)
           }}
           autoWidth
-          label="Select a Safe"
+          label="Select a Safe Account"
           sx={({ spacing }) => ({
             width: '311px',
             minHeight: '56px',
@@ -139,7 +139,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
       height={CTA_HEIGHT}
     >
       <Typography variant="h5" fontWeight={700}>
-        Use the App with your Safe
+        Use the App with your Safe Account
       </Typography>
       {body}
       {button}

@@ -54,11 +54,12 @@
   gap: var(--space-2);
 }
 
-@media (max-width: 600px) {
-  .buttonContainer button {
-    font-size: 12px;
+@media (max-width: 599.95px) {
+  .buttonContainer {
+    transform: scale(0.8);
   }
 
+  .notConnected,
   .pairingDetails {
     display: none;
   }

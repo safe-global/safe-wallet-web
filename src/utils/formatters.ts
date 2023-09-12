@@ -76,10 +76,7 @@ export const dateString = (date: number) => {
 }
 
 export const camelCaseToSpaces = (str: string): string => {
-  return str
-    .replace(/([A-Z][a-z0-9]+)/g, ' $1 ')
-    .replace(/\s{2}/g, ' ')
-    .trim()
+  return str.replace(/[a-z0-9](?=[A-Z])/g, (str) => str + ' ')
 }
 
 export const ellipsis = (str: string, length: number): string => {
@@ -88,4 +85,12 @@ export const ellipsis = (str: string, length: number): string => {
 
 export const capitalize = (str: string): string => {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
+}
+
+// Format the error message
+export const formatError = (error: Error & { reason?: string }): string => {
+  let { reason } = error
+  if (!reason) return ''
+  if (!reason.endsWith('.')) reason += '.'
+  return ` ${capitalize(reason)}`
 }

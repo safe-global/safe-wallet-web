@@ -1,0 +1,18 @@
+.nestedMsg {
+  border: 1px var(--color-border-light) solid;
+  white-space: pre;
+  font-family: monospace;
+  font-size: 0.85rem;
+  overflow: auto;
+  padding: var(--space-1);
+}
+
+.container {
+  padding: var(--space-1);
+  border: 1px var(--color-border-light) solid;
+}
+
+.scrollable {
+  max-height: 300px;
+  overflow: auto;
+}

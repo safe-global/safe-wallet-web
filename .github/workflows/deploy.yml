@@ -8,9 +8,12 @@ on:
       - dev
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
-    if: ${{ false }} # disable in favor of deploy-preview/deploy-prod
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -18,11 +21,6 @@ jobs:
     name: Deploy to dev/staging
 
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.8.0
-        with:
-          access_token: ${{ github.token }}
-
       # Post a PR comment before deploying
       - name: Post a comment while building
         if: github.event.number
@@ -71,17 +69,17 @@ jobs:
         shell: bash
         ## Cut off "refs/heads/" and only allow alphanumeric characters,
         ## e.g. "refs/heads/features/hello-1.2.0" -> "features_hello_1_2_0"
-        run: echo "##[set-output name=branch;]$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/[^a-z0-9]/_/ig')"
+        run: echo "branch=$(echo $GITHUB_HEAD_REF | sed 's/refs\/heads\///' | sed 's/[^a-z0-9]/_/ig')" >> $GITHUB_OUTPUT
         id: extract_branch
 
       # Deploy to S3
       - name: Deploy PR branch
         if: github.event.number
         env:
-          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/webcore/${{ steps.extract_branch.outputs.branch }}
+          BUCKET: s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/walletweb/${{ steps.extract_branch.outputs.branch }}
         run: bash ./scripts/github/s3_upload.sh
 
-      # Comnment
+      # Comment
       - name: Post a deployment link in the PR
         if: always() && github.event.number
         uses: mshick/add-pr-comment@v2
@@ -91,7 +89,7 @@ jobs:
             ## Branch preview
             ✅  Deploy successful!
 
-            https://${{ steps.extract_branch.outputs.branch }}--webcore.review-web-core.5afe.dev
+            https://${{ steps.extract_branch.outputs.branch }}--walletweb.review-wallet-web.5afe.dev
           message-failure: |
             ## Branch preview
             ❌  Deploy failed!

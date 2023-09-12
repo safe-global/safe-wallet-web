@@ -1,7 +1,0 @@
-/:safe/balances /balances?safe=:safe
-/:safe/balances/* /balances/:splat?safe=:safe
-/:safe/settings /settings?safe=:safe
-/:safe/settings/* /settings/:splat?safe=:safe
-/:safe/transactions/queue /transactions/queue?safe=:safe
-/:safe/address-book /address-book?safe=:safe
-/:safe/home /home?safe=:safe

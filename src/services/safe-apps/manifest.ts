@@ -93,7 +93,7 @@ const fetchSafeAppFromManifest = async (
   const appManifest = await fetchAppManifest(appUrl)
 
   if (!isAppManifestValid(appManifest)) {
-    throw new Error('Invalid app manifest')
+    throw new Error('Invalid Safe App manifest')
   }
 
   const iconUrl = getAppLogoUrl(normalizedAppUrl, appManifest)
@@ -105,6 +105,9 @@ const fetchSafeAppFromManifest = async (
     description: appManifest.description,
     accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
     tags: [],
+    features: [],
+    socialProfiles: [],
+    developerWebsite: '',
     chainIds: [currentChainId],
     iconUrl,
     safeAppsPermissions: appManifest.safe_apps_permissions || [],

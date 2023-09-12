@@ -1,9 +1,9 @@
-import type { ModalProps } from '@mui/material'
-import { Dialog, DialogTitle, type DialogProps, IconButton, useMediaQuery } from '@mui/material'
+import { type ReactElement, type ReactNode } from 'react'
+import { IconButton, type ModalProps } from '@mui/material'
+import { Dialog, DialogTitle, type DialogProps, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import CloseIcon from '@mui/icons-material/Close'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import * as React from 'react'
+import CloseIcon from '@mui/icons-material/Close'
 
 import css from './styles.module.css'
 
@@ -13,7 +13,7 @@ interface ModalDialogProps extends DialogProps {
 }
 
 interface DialogTitleProps {
-  children: React.ReactNode
+  children: ReactNode
   onClose?: ModalProps['onClose']
   hideChainIndicator?: boolean
 }
@@ -47,15 +47,17 @@ const ModalDialog = ({
   dialogTitle,
   hideChainIndicator,
   children,
+  fullScreen = false,
   ...restProps
-}: ModalDialogProps): React.ReactElement => {
+}: ModalDialogProps): ReactElement => {
   const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const isFullScreen = fullScreen || isSmallScreen
 
   return (
     <Dialog
       {...restProps}
-      fullScreen={fullScreen}
+      fullScreen={isFullScreen}
       scroll={fullScreen ? 'paper' : 'body'}
       className={css.dialog}
       onClick={(e) => e.stopPropagation()}

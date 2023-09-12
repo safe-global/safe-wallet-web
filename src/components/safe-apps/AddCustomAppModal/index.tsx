@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useRouter } from 'next/router'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import {
@@ -23,9 +24,9 @@ import useDebounce from '@/hooks/useDebounce'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { isSameUrl, trimTrailingSlash } from '@/utils/url'
-import { AppRoutes } from '@/config/routes'
 import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
+import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -44,13 +45,15 @@ type CustomAppFormData = {
   safeApp: SafeAppData
 }
 
-const HELP_LINK = 'https://docs.safe.global/build/sdks/safe-apps'
-const APP_ALREADY_IN_THE_LIST_ERROR = 'This app is already in the list'
+const HELP_LINK = 'https://docs.safe.global/safe-core-aa-sdk/safe-apps/get-started'
+const APP_ALREADY_IN_THE_LIST_ERROR = 'This Safe App is already in the list'
 const MANIFEST_ERROR = "The app doesn't support Safe App functionality"
 const INVALID_URL_ERROR = 'The url is invalid'
 
 export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props) => {
   const currentChain = useCurrentChain()
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
@@ -87,20 +90,18 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
     [safeAppsList],
   )
 
-  const shareUrl = `${window.location.origin}${AppRoutes.share.safeApp}?appUrl=${encodeURIComponent(
-    safeApp?.url || '',
-  )}&chain=${currentChain?.shortName}`
+  const shareSafeAppUrl = useShareSafeAppUrl(safeApp?.url || '')
   const isSafeAppValid = isValid && safeApp
   const isCustomAppInTheDefaultList = errors?.appUrl?.type === 'alreadyExists'
 
   return (
-    <ModalDialog open={open} onClose={handleClose} dialogTitle="Add custom app">
+    <ModalDialog open={open} onClose={handleClose} dialogTitle="Add custom Safe App">
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent className={css.addCustomAppContainer}>
           <div className={css.addCustomAppFields}>
             <TextField
               required
-              label="App URL"
+              label="Safe App URL"
               error={errors?.appUrl?.type === 'validUrl'}
               helperText={errors?.appUrl?.type === 'validUrl' && errors?.appUrl?.message}
               autoComplete="off"
@@ -116,11 +117,11 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
             <Box mt={2}>
               {safeApp ? (
                 <>
-                  <CustomApp safeApp={safeApp} shareUrl={isCustomAppInTheDefaultList ? shareUrl : ''} />
+                  <CustomApp safeApp={safeApp} shareUrl={isCustomAppInTheDefaultList ? shareSafeAppUrl : ''} />
                   {isCustomAppInTheDefaultList ? (
                     <Box display="flex" mt={2} alignItems="center">
                       <CheckIcon color="success" />
-                      <Typography ml={1}>This app is already registered</Typography>
+                      <Typography ml={1}>This Safe App is already registered</Typography>
                     </Box>
                   ) : (
                     <>
@@ -133,7 +134,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
                             })}
                           />
                         }
-                        label="This app is not part of Safe and I agree to use it at my own risk."
+                        label="This Safe App is not part of Safe{Wallet} and I agree to use it at my own risk."
                         sx={{ mt: 2 }}
                       />
 

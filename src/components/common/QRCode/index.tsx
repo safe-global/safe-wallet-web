@@ -1,6 +1,6 @@
 import QRCodeReact from 'qrcode.react'
 import { Skeleton } from '@mui/material'
-import { useTheme } from '@mui/system'
+import { useTheme } from '@mui/material/styles'
 import type { ReactElement } from 'react'
 
 const QR_LOGO_SIZE = 20

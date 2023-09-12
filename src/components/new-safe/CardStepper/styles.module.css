@@ -33,7 +33,7 @@
   display: none;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .header {
     padding: var(--space-2);
     flex-direction: column;

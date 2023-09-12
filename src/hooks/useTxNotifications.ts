@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
+import { formatError } from '@/utils/formatters'
 import type { LinkProps } from 'next/link'
-import { capitalize } from '@/utils/formatters'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
@@ -10,29 +10,26 @@ import useTxQueue from './useTxQueue'
 import { isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
 import { type ChainInfo, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
-import useIsGranted from './useIsGranted'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
 
 const TxNotifications = {
-  [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
-  [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
-  [TxEvent.PROPOSE_FAILED]: 'Failed proposing the transaction. Please try again.',
-  [TxEvent.SIGNATURE_PROPOSED]: 'You successfully signed the transaction.',
-  [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send the signature. Please try again.',
-  [TxEvent.EXECUTING]: 'Please confirm the execution in your wallet.',
-  [TxEvent.PROCESSING]: 'Your transaction is being processed.',
-  [TxEvent.PROCESSING_MODULE]:
-    'Your transaction has been submitted and will appear in the interface only after it has been successfully processed and indexed.',
-  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]:
-    'An on-chain signature is required. Please confirm the transaction in your wallet.',
-  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]:
-    "The on-chain signature request was confirmed. Once it's on chain, the transaction will be signed.",
-  [TxEvent.PROCESSED]: 'Your transaction was successfully processed and is now being indexed.',
-  [TxEvent.REVERTED]: 'Transaction reverted. Please check your gas settings.',
-  [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',
-  [TxEvent.FAILED]: 'Your transaction was unsuccessful.',
+  [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
+  [TxEvent.PROPOSED]: 'Successfully added to queue.',
+  [TxEvent.PROPOSE_FAILED]: 'Failed to add to queue. Please try again.',
+  [TxEvent.SIGNATURE_PROPOSED]: 'Successfully signed.',
+  [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send signature. Please try again.',
+  [TxEvent.EXECUTING]: 'Confirm the execution in your wallet.',
+  [TxEvent.PROCESSING]: 'Validating...',
+  [TxEvent.PROCESSING_MODULE]: 'Validating module interaction...',
+  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: 'Confirm on-chain signature in your wallet.',
+  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: 'On-chain signature request confirmed.',
+  [TxEvent.PROCESSED]: 'Successfully validated. Indexing...',
+  [TxEvent.REVERTED]: 'Reverted. Please check your gas settings.',
+  [TxEvent.SUCCESS]: 'Successfully executed.',
+  [TxEvent.FAILED]: 'Failed.',
 }
 
 enum Variant {
@@ -43,29 +40,17 @@ enum Variant {
 
 const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
 
-// Format the error message
-export const formatError = (error: Error & { reason?: string }): string => {
-  let { reason } = error
-  if (!reason) return ''
-  if (!reason.endsWith('.')) reason += '.'
-  return capitalize(reason)
-}
-
-const getTxLink = (txId: string, chain: ChainInfo, safeAddress: string): { href: LinkProps['href']; title: string } => {
+export const getTxLink = (
+  txId: string,
+  chain: ChainInfo,
+  safeAddress: string,
+): { href: LinkProps['href']; title: string } => {
   return {
     href: {
       pathname: AppRoutes.transactions.tx,
       query: { id: txId, safe: `${chain?.shortName}:${safeAddress}` },
     },
     title: 'View transaction',
-  }
-}
-
-const getTxExplorerLink = (txHash: string, chain: ChainInfo): { href: LinkProps['href']; title: string } => {
-  const { href } = getExplorerLink(txHash, chain.blockExplorerUriTemplate)
-  return {
-    href,
-    title: 'View on explorer',
   }
 }
 
@@ -91,14 +76,21 @@ const useTxNotifications = (): void => {
         const txId = 'txId' in detail ? detail.txId : undefined
         const txHash = 'txHash' in detail ? detail.txHash : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
+        const humanDescription =
+          'humanDescription' in detail && detail.humanDescription ? detail.humanDescription : 'Transaction'
 
         dispatch(
           showNotification({
+            title: humanDescription,
             message,
             detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
-            link: txId ? getTxLink(txId, chain, safeAddress) : txHash ? getTxExplorerLink(txHash, chain) : undefined,
+            link: txId
+              ? getTxLink(txId, chain, safeAddress)
+              : txHash
+              ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
+              : undefined,
           }),
         )
       }),
@@ -114,7 +106,7 @@ const useTxNotifications = (): void => {
    */
 
   const { page } = useTxQueue()
-  const isGranted = useIsGranted()
+  const isOwner = useIsSafeOwner()
   const pendingTxs = useAppSelector(selectPendingTxs)
   const notifications = useAppSelector(selectNotifications)
   const wallet = useWallet()
@@ -133,7 +125,7 @@ const useTxNotifications = (): void => {
   }, [page?.results, pendingTxs, wallet?.address])
 
   useEffect(() => {
-    if (!isGranted || txsAwaitingConfirmation.length === 0) {
+    if (!isOwner || txsAwaitingConfirmation.length === 0) {
       return
     }
 
@@ -150,7 +142,7 @@ const useTxNotifications = (): void => {
         }),
       )
     }
-  }, [chain, dispatch, isGranted, notifications, safeAddress, txsAwaitingConfirmation])
+  }, [chain, dispatch, isOwner, notifications, safeAddress, txsAwaitingConfirmation])
 }
 
 export default useTxNotifications

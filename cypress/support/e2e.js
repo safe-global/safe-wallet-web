@@ -19,3 +19,14 @@ import './commands'
 import './safe-apps-commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+/*
+ FIXME: The terms banner is being displayed depending on the cookie banner local storage state.
+  However, in cypress the cookie banner state is evaluated after the banner has been dismissed not before
+  which displays the terms banner even though it shouldn't so we need to globally hide it in our tests.
+ */
+before(() => {
+  cy.on('window:before:load', (window) => {
+    window.localStorage.setItem('SAFE_v2__show_terms', false)
+  })
+})

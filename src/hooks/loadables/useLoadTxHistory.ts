@@ -9,11 +9,12 @@ export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
   const { chainId, txHistoryTag } = safe
 
   // Re-fetch when chainId/address, or txHistoryTag change
-  const [data, error, loading] = useAsync<TransactionListPage | undefined>(
-    async () => {
+  const [data, error, loading] = useAsync<TransactionListPage>(
+    () => {
       if (!safeLoaded) return
       return getTransactionHistory(chainId, safeAddress)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [safeLoaded, chainId, safeAddress, txHistoryTag],
     false,
   )

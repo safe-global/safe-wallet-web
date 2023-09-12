@@ -1,9 +1,10 @@
-const SAFE = 'gor:0xCD4FddB8FfA90012DFE11eD4bf258861204FeEAE'
+import * as constants from '../../support/constants'
 
 describe('Dashboard', () => {
   before(() => {
     // Go to the test Safe home page
-    cy.visit(`/${SAFE}/home`, { failOnStatusCode: false })
+    cy.visit(`/home?safe=${constants.TEST_SAFE}`)
+
     cy.contains('button', 'Accept selection').click()
 
     // Wait for dashboard to initialize
@@ -16,10 +17,11 @@ describe('Dashboard', () => {
 
     cy.get('@overviewSection').within(() => {
       // Prefix is separated across elements in EthHashInfo
-      cy.contains('0xCD4FddB8FfA90012DFE11eD4bf258861204FeEAE').should('exist')
-      cy.contains('1/1')
-      cy.get(`a[href="/balances?safe=${encodeURIComponent(SAFE)}"]`).contains('View assets')
-      cy.contains('p', 'Tokens').next().contains('3')
+      cy.contains(constants.TEST_SAFE).should('exist')
+      cy.contains('1/2')
+      cy.get(`a[href="/balances?safe=${encodeURIComponent(constants.TEST_SAFE)}"]`).contains('View assets')
+      // Text next to Tokens contains a number greater than 0
+      cy.contains('p', 'Tokens').next().contains('1')
       cy.contains('p', 'NFTs').next().contains('0')
     })
   })
@@ -33,10 +35,9 @@ describe('Dashboard', () => {
       cy.contains('This Safe has no queued transactions').should('not.exist')
 
       // Queued txns
-      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '0' + 'addOwnerWithThreshold' + '1/1').should('exist')
-      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, '2' + 'Send' + '-1 USDC' + '1/1').should('exist')
+      cy.contains(`a[href^="/transactions/tx?id=multisig_0x"]`, '13' + 'Send' + '-0.00002 GOR' + '1/1').should('exist')
 
-      cy.contains(`a[href="/transactions/queue?safe=${SAFE}"]`, 'View all')
+      cy.contains(`a[href="/transactions/queue?safe=${encodeURIComponent(constants.TEST_SAFE)}"]`, 'View all')
     })
   })
 
@@ -68,7 +69,10 @@ describe('Dashboard', () => {
     // Regular safe apps
     cy.get('@safeAppsSection').within(() => {
       // Find exactly 5 Safe Apps cards inside the Safe Apps section
-      cy.get(`a[href^="/apps?safe=${encodeURIComponent(SAFE)}&appUrl=http"]`).should('have.length', 5)
+      cy.get(`a[href^="/apps/open?safe=${encodeURIComponent(constants.TEST_SAFE)}&appUrl=http"]`).should(
+        'have.length',
+        5,
+      )
     })
   })
 })

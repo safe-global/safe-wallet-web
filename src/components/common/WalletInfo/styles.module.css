@@ -10,18 +10,25 @@
   justify-content: center;
 }
 
-[data-theme='dark'] .imageContainer img[alt*='Trezor'],
 [data-theme='dark'] .imageContainer img[alt*='Ledger'] {
   filter: invert(100%);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .buttonContainer button {
     font-size: 12px;
   }
 
-  .imageContainer,
   .walletDetails {
+    display: none;
+  }
+
+  .imageContainer img {
+    width: 22px;
+    height: auto;
+  }
+
+  .walletName {
     display: none;
   }
 }

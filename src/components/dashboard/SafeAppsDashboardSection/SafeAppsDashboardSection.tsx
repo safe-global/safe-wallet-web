@@ -1,17 +1,21 @@
 import { useRouter } from 'next/router'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 
 import { WidgetContainer } from '../styled'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
-import { AppCard, AppCardContainer } from '@/components/safe-apps/AppCard'
+import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
+import SafeAppPreviewDrawer from '@/components/safe-apps/SafeAppPreviewDrawer'
+import SafeAppCard, { SafeAppCardContainer } from '@/components/safe-apps/SafeAppCard'
 import { AppRoutes } from '@/config/routes'
 import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
 
+import css from './styles.module.css'
+
 const SafeAppsDashboardSection = () => {
   const { rankedSafeApps, togglePin, pinnedSafeAppIds } = useSafeApps()
+  const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
 
   return (
     <WidgetContainer>
@@ -22,7 +26,13 @@ const SafeAppsDashboardSection = () => {
       <Grid container spacing={3}>
         {rankedSafeApps.map((rankedSafeApp) => (
           <Grid key={rankedSafeApp.id} item xs={12} sm={6} md={4} xl={4}>
-            <AppCard safeApp={rankedSafeApp} onPin={togglePin} pinned={pinnedSafeAppIds.has(rankedSafeApp.id)} />
+            <SafeAppCard
+              safeApp={rankedSafeApp}
+              onBookmarkSafeApp={togglePin}
+              isBookmarked={pinnedSafeAppIds.has(rankedSafeApp.id)}
+              onClickSafeApp={() => openPreviewDrawer(rankedSafeApp)}
+              openPreviewDrawer={openPreviewDrawer}
+            />
           </Grid>
         ))}
 
@@ -30,6 +40,14 @@ const SafeAppsDashboardSection = () => {
           <ExploreSafeAppsCard />
         </Grid>
       </Grid>
+
+      <SafeAppPreviewDrawer
+        isOpen={isPreviewDrawerOpen}
+        safeApp={previewDrawerApp}
+        isBookmarked={previewDrawerApp && pinnedSafeAppIds.has(previewDrawerApp.id)}
+        onClose={closePreviewDrawer}
+        onBookmark={togglePin}
+      />
     </WidgetContainer>
   )
 }
@@ -38,17 +56,15 @@ export default SafeAppsDashboardSection
 
 const ExploreSafeAppsCard = () => {
   const router = useRouter()
-  const safeAppsLink = `${AppRoutes.apps}?safe=${router.query.safe}`
+  const safeAppsLink = `${AppRoutes.apps.index}?safe=${router.query.safe}`
 
   return (
-    <AppCardContainer url={safeAppsLink}>
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={1}>
-        <ExploreSafeAppsIcon alt="Explore Safe Apps icon" />
+    <SafeAppCardContainer safeAppUrl={safeAppsLink} className={css.container}>
+      <ExploreSafeAppsIcon alt="Explore Safe Apps icon" />
 
-        <Button variant="contained" size="small">
-          Explore Safe Apps
-        </Button>
-      </Box>
-    </AppCardContainer>
+      <Button variant="contained" size="small">
+        Explore Safe Apps
+      </Button>
+    </SafeAppCardContainer>
   )
 }

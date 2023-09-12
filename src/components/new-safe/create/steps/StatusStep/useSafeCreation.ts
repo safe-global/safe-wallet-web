@@ -4,7 +4,7 @@ import { useWeb3, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { EthersError } from '@/utils/ethers-utils'
-import type { PendingSafeData } from '@/components/new-safe/create/steps/StatusStep/index'
+import { getInitialCreationStatus } from '@/components/new-safe/create/steps/StatusStep/index'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
 import {
   createNewSafe,
@@ -14,10 +14,17 @@ import {
   handleSafeCreationError,
   SAFE_CREATION_ERROR_KEY,
   showSafeCreationError,
+  relaySafeCreation,
 } from '@/components/new-safe/create/logic'
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
+import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
+import useGasPrice from '@/hooks/useGasPrice'
+import { hasFeature } from '@/utils/chains'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DeploySafeProps } from '@safe-global/safe-core-sdk'
+import { usePendingSafe } from './usePendingSafe'
 
 export enum SafeCreationStatus {
   AWAITING,
@@ -32,50 +39,74 @@ export enum SafeCreationStatus {
 }
 
 export const useSafeCreation = (
-  pendingSafe: PendingSafeData | undefined,
-  setPendingSafe: Dispatch<SetStateAction<PendingSafeData | undefined>>,
   status: SafeCreationStatus,
   setStatus: Dispatch<SetStateAction<SafeCreationStatus>>,
+  willRelay: boolean,
 ) => {
   const [isCreating, setIsCreating] = useState(false)
   const [isWatching, setIsWatching] = useState(false)
   const dispatch = useAppDispatch()
+  const [pendingSafe, setPendingSafe] = usePendingSafe()
 
   const wallet = useWallet()
   const provider = useWeb3()
   const web3ReadOnly = useWeb3ReadOnly()
   const chain = useCurrentChain()
+  const [gasPrice, , gasPriceLoading] = useGasPrice()
+
+  const maxFeePerGas = gasPrice?.maxFeePerGas
+  const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
+
+  const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
 
   const createSafeCallback = useCallback(
     async (txHash: string, tx: PendingSafeTx) => {
       setStatus(SafeCreationStatus.PROCESSING)
       trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
-      setPendingSafe((prev) => (prev ? { ...prev, txHash, tx } : undefined))
+      setPendingSafe(pendingSafe ? { ...pendingSafe, txHash, tx } : undefined)
     },
-    [setStatus, setPendingSafe],
+    [setStatus, setPendingSafe, pendingSafe],
   )
 
-  const createSafe = useCallback(async () => {
-    if (!pendingSafe || !provider || !chain || !wallet || isCreating) return
+  const handleCreateSafe = useCallback(async () => {
+    if (!pendingSafe || !provider || !chain || !wallet || isCreating || gasPriceLoading) return
 
     setIsCreating(true)
     dispatch(closeByGroupKey({ groupKey: SAFE_CREATION_ERROR_KEY }))
 
+    const { owners, threshold, saltNonce } = pendingSafe
+    const ownersAddresses = owners.map((owner) => owner.address)
+
     try {
-      const tx = await getSafeCreationTxInfo(provider, pendingSafe, chain, wallet)
+      if (willRelay) {
+        const taskId = await relaySafeCreation(chain, ownersAddresses, threshold, saltNonce)
 
-      const safeParams = getSafeDeployProps(
-        {
-          threshold: pendingSafe.threshold,
-          owners: pendingSafe.owners.map((owner) => owner.address),
-          saltNonce: pendingSafe.saltNonce,
-        },
-        (txHash) => createSafeCallback(txHash, tx),
-        chain.chainId,
-      )
+        setPendingSafe(pendingSafe ? { ...pendingSafe, taskId } : undefined)
+        setStatus(SafeCreationStatus.PROCESSING)
+        waitForCreateSafeTx(taskId, setStatus)
+      } else {
+        const tx = await getSafeCreationTxInfo(provider, owners, threshold, saltNonce, chain, wallet)
 
-      await createNewSafe(provider, safeParams)
-      setStatus(SafeCreationStatus.SUCCESS)
+        const safeParams = getSafeDeployProps(
+          {
+            threshold,
+            owners: owners.map((owner) => owner.address),
+            saltNonce,
+          },
+          (txHash) => createSafeCallback(txHash, tx),
+          chain.chainId,
+        )
+
+        const options: DeploySafeProps['options'] = isEIP1559
+          ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
+          : { gasPrice: maxFeePerGas?.toString() }
+
+        await createNewSafe(provider, {
+          ...safeParams,
+          options,
+        })
+        setStatus(SafeCreationStatus.SUCCESS)
+      }
     } catch (err) {
       const _err = err as EthersError
       const status = handleSafeCreationError(_err)
@@ -88,7 +119,22 @@ export const useSafeCreation = (
     }
 
     setIsCreating(false)
-  }, [chain, createSafeCallback, dispatch, isCreating, pendingSafe, provider, setStatus, wallet])
+  }, [
+    chain,
+    createSafeCallback,
+    dispatch,
+    gasPriceLoading,
+    isCreating,
+    isEIP1559,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    pendingSafe,
+    provider,
+    setPendingSafe,
+    setStatus,
+    wallet,
+    willRelay,
+  ])
 
   const watchSafeTx = useCallback(async () => {
     if (!pendingSafe?.tx || !pendingSafe?.txHash || !web3ReadOnly || isWatching) return
@@ -101,18 +147,33 @@ export const useSafeCreation = (
     setIsWatching(false)
   }, [isWatching, pendingSafe, web3ReadOnly, setStatus, dispatch])
 
+  // Create or monitor Safe creation
   useEffect(() => {
-    if (status !== SafeCreationStatus.AWAITING) return
+    if (status !== getInitialCreationStatus(willRelay)) return
 
     if (pendingSafe?.txHash && !isCreating) {
       void watchSafeTx()
       return
     }
 
-    void createSafe()
-  }, [createSafe, watchSafeTx, isCreating, pendingSafe?.txHash, status])
+    if (pendingSafe?.taskId && !isCreating) {
+      waitForCreateSafeTx(pendingSafe.taskId, setStatus)
+      return
+    }
+
+    void handleCreateSafe()
+  }, [
+    handleCreateSafe,
+    isCreating,
+    pendingSafe?.taskId,
+    pendingSafe?.txHash,
+    setStatus,
+    status,
+    watchSafeTx,
+    willRelay,
+  ])
 
   return {
-    createSafe,
+    handleCreateSafe,
   }
 }

@@ -20,6 +20,9 @@ import { txFilter, useTxFilter, TxFilterType, type TxFilter } from '@/utils/tx-h
 import { useCurrentChain } from '@/hooks/useChains'
 import NumberField from '@/components/common/NumberField'
 
+import css from './styles.module.css'
+import inputCss from '@/styles/inputs.module.css'
+
 enum TxFilterFormFieldNames {
   FILTER_TYPE = 'type',
   DATE_FROM = 'execution_date__gte',
@@ -114,17 +117,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
   }
 
   return (
-    <Paper
-      elevation={0}
-      variant="outlined"
-      sx={{
-        borderWidth: '1px',
-        // Below page header
-        position: 'sticky',
-        top: 144,
-        zIndex: 2,
-      }}
-    >
+    <Paper elevation={0} variant="outlined" className={css.filterWrapper}>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container>
@@ -192,6 +185,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           }}
                           render={({ field, fieldState }) => (
                             <NumberField
+                              className={inputCss.input}
                               label={
                                 fieldState.error?.message ||
                                 `Amount${isMultisigFilter && chain ? ` (only ${chain.nativeCurrency.symbol})` : ''}`
@@ -240,6 +234,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           }}
                           render={({ field, fieldState }) => (
                             <NumberField
+                              className={inputCss.input}
                               label={fieldState.error?.message || 'Nonce'}
                               error={!!fieldState.error}
                               {...field}

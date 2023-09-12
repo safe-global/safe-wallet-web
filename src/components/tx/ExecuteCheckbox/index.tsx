@@ -1,48 +1,40 @@
 import type { ChangeEvent, ReactElement } from 'react'
-import { Checkbox, FormControlLabel, SvgIcon, Tooltip } from '@mui/material'
-import InfoIcon from '@/public/images/notifications/info.svg'
+import { FormControlLabel, RadioGroup, Radio, Typography } from '@mui/material'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectSettings, setTransactionExecution } from '@/store/settingsSlice'
 
-const ExecuteCheckbox = ({
-  checked,
-  onChange,
-  disabled = false,
-}: {
-  checked: boolean
-  onChange: (checked: boolean) => void
-  disabled?: boolean
-}): ReactElement => {
-  const handleChange = (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
+import css from './styles.module.css'
+
+const ExecuteCheckbox = ({ onChange }: { onChange: (checked: boolean) => void }): ReactElement => {
+  const settings = useAppSelector(selectSettings)
+  const dispatch = useAppDispatch()
+
+  const handleChange = (_: ChangeEvent<HTMLInputElement>, value: string) => {
+    const checked = value === 'true'
     trackEvent({ ...MODALS_EVENTS.EXECUTE_TX, label: checked })
+    dispatch(setTransactionExecution(checked))
     onChange(checked)
   }
 
-  const infoIcon = (
-    <Tooltip
-      title={
-        disabled
-          ? 'This transaction is fully signed and will be executed.'
-          : 'If you want to sign the transaction now but manually execute it later, uncheck this box.'
-      }
-    >
-      <span>
-        <SvgIcon
-          component={InfoIcon}
-          inheritViewBox
-          fontSize="small"
-          color="border"
-          sx={{ verticalAlign: 'middle', marginLeft: 0.5 }}
-        />
-      </span>
-    </Tooltip>
-  )
-
   return (
-    <FormControlLabel
-      control={<Checkbox checked={checked} onChange={handleChange} disabled={disabled} />}
-      label={<>Execute transaction {infoIcon}</>}
-      sx={{ mb: 1 }}
-    />
+    <>
+      <Typography>Would you like to execute the transaction immediately?</Typography>
+
+      <RadioGroup row value={String(settings.transactionExecution)} onChange={handleChange} className={css.group}>
+        <FormControlLabel
+          value="true"
+          label={
+            <>
+              Yes, <b>execute</b>
+            </>
+          }
+          control={<Radio />}
+          className={css.radio}
+        />
+        <FormControlLabel value="false" label={<>No, later</>} control={<Radio />} className={css.radio} />
+      </RadioGroup>
+    </>
   )
 }
 

@@ -5,6 +5,7 @@ import type { RootState } from '.'
 
 export enum PopupType {
   COOKIES = 'cookies',
+  CELO_DISCLAIMER = 'celo_disclaimer',
 }
 
 type PopupState = {
@@ -12,10 +13,16 @@ type PopupState = {
     open: boolean
     warningKey?: CookieType
   }
+  [PopupType.CELO_DISCLAIMER]: {
+    open: boolean
+  }
 }
 
 const initialState: PopupState = {
   [PopupType.COOKIES]: {
+    open: false,
+  },
+  [PopupType.CELO_DISCLAIMER]: {
     open: false,
   },
 }
@@ -33,9 +40,16 @@ export const popupSlice = createSlice({
     closeCookieBanner: (state) => {
       state[PopupType.COOKIES] = { open: false }
     },
+    openCeloDisclaimer: (state) => {
+      state[PopupType.CELO_DISCLAIMER] = { open: true }
+    },
+    closeCeloDisclaimer: (state) => {
+      state[PopupType.CELO_DISCLAIMER] = { open: false }
+    },
   },
 })
 
-export const { openCookieBanner, closeCookieBanner } = popupSlice.actions
+export const { openCookieBanner, closeCookieBanner, openCeloDisclaimer, closeCeloDisclaimer } = popupSlice.actions
 
 export const selectCookieBanner = (state: RootState) => state[popupSlice.name][PopupType.COOKIES]
+export const selectCeloDisclaimer = (state: RootState) => state[popupSlice.name][PopupType.CELO_DISCLAIMER]

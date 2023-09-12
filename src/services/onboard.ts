@@ -1,9 +1,9 @@
-// TODO: Upgrade onboard/core once https://github.com/blocknative/web3-onboard/issues/1385 is fixed
-import Onboard, { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { hexValue } from '@ethersproject/bytes'
 import { getAllWallets, getRecommendedInjectedWallets } from '@/hooks/wallets/wallets'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
+import type { EnvState } from '@/store/settingsSlice'
+import { hexValue } from '@ethersproject/bytes'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import Onboard, { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 
 export type ConnectedWallet = {
   label: string
@@ -15,15 +15,19 @@ export type ConnectedWallet = {
 
 let onboard: OnboardAPI | null = null
 
-export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
+export const createOnboard = (
+  chainConfigs: ChainInfo[],
+  currentChain: ChainInfo,
+  rpcConfig: EnvState['rpc'] | undefined,
+): OnboardAPI => {
   if (onboard) return onboard
 
-  const wallets = getAllWallets()
+  const wallets = getAllWallets(currentChain)
 
   const chains = chainConfigs.map((cfg) => ({
     id: hexValue(parseInt(cfg.chainId)),
     label: cfg.chainName,
-    rpcUrl: getRpcServiceUrl(cfg.rpcUri),
+    rpcUrl: rpcConfig?.[cfg.chainId] || getRpcServiceUrl(cfg.rpcUri),
     token: cfg.nativeCurrency.symbol,
     color: cfg.theme.backgroundColor,
     publicRpcUrl: cfg.publicRpcUri.value,
@@ -40,11 +44,21 @@ export const createOnboard = (chainConfigs: ChainInfo[]): OnboardAPI => {
       desktop: { enabled: false },
     },
 
+    notify: {
+      enabled: false,
+    },
+
     appMetadata: {
-      name: 'Safe',
-      icon: '/images/safe-logo-celo.png',
-      description: 'Please select a wallet to connect to Safe',
+      name: 'Celo Safe',
+      // Both heights need be set to correctly size the image in the connecting screen/modal
+      icon: '<svg height="100%"><image href="/images/safe-logo-green.png" height="100%" /></svg>',
+      description: 'Please select a wallet to connect to Celo Safe',
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
+    },
+
+    connect: {
+      removeWhereIsMyWalletWarning: true,
+      autoConnectLastWallet: true,
     },
   })
 

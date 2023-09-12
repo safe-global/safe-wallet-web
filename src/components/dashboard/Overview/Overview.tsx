@@ -83,7 +83,7 @@ const Overview = (): ReactElement => {
   const router = useRouter()
   const safeAddress = useSafeAddress()
   const { safe, safeLoading, safeLoaded } = useSafeInfo()
-  const { balances } = useVisibleBalances()
+  const { balances, loading: balancesLoading } = useVisibleBalances()
   const [nfts] = useCollectibles()
   const chain = useCurrentChain()
   const { chainId } = chain || {}
@@ -135,30 +135,26 @@ const Overview = (): ReactElement => {
             <Grid container>
               <Grid item xs={3}>
                 <Link href={assetsLink} passHref>
-                  <a>
-                    <Typography color="border.main" variant="body2">
-                      Tokens
-                    </Typography>
-                    <StyledText fontSize="lg">{tokenCount || <ValueSkeleton />}</StyledText>
-                  </a>
+                  <Typography color="border.main" variant="body2">
+                    Tokens
+                  </Typography>
+                  <StyledText fontSize="lg">{balancesLoading ? <ValueSkeleton /> : tokenCount}</StyledText>
                 </Link>
               </Grid>
 
               <Grid item xs={3}>
                 <Link href={nftsLink} passHref>
-                  <a>
-                    <Typography color="border.main" variant="body2">
-                      NFTs
-                    </Typography>
-                    <StyledText fontSize="lg">{nftsCount || <ValueSkeleton />}</StyledText>
-                  </a>
+                  <Typography color="border.main" variant="body2">
+                    NFTs
+                  </Typography>
+                  <StyledText fontSize="lg">{nftsCount || <ValueSkeleton />}</StyledText>
                 </Link>
               </Grid>
               <Grid item xs />
 
               <Grid item>
                 <Box display="flex" height={1} alignItems="flex-end" justifyContent="flex-end">
-                  <Link href={assetsLink} passHref>
+                  <Link href={assetsLink} passHref legacyBehavior>
                     <Button size="medium" variant="contained" color="primary">
                       View assets
                     </Button>

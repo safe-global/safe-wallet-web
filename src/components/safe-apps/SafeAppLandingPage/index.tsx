@@ -42,7 +42,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
 
     trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
 
-    onboard.connectWallet().catch((e) => logError(Errors._302, (e as Error).message))
+    onboard.connectWallet().catch((e) => logError(Errors._302, e))
   }
 
   const handleDemoClick = () => {
@@ -58,7 +58,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   }
 
   if (!safeApp) {
-    return <div>No safe app found</div>
+    return <div>No Safe App found</div>
   }
 
   return (
@@ -80,7 +80,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
               <Grid xs={12} sm={12} md={6}>
                 <TryDemo
                   demoUrl={{
-                    pathname: AppRoutes.apps,
+                    pathname: AppRoutes.apps.open,
                     query: { safe: SAFE_APPS_DEMO_SAFE_MAINNET, appUrl },
                   }}
                   onClick={handleDemoClick}

@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'
 import { parse, type ParsedUrlQuery } from 'querystring'
 import { IS_PRODUCTION } from '@/config/constants'
 import chains from '@/config/chains'
@@ -9,9 +9,9 @@ import { prefixedAddressRe } from '@/utils/url'
 import useWallet from './wallets/useWallet'
 import useChains from './useChains'
 
-const defaultChainId = IS_PRODUCTION ? chains.mainnet : chains.alfajores
+const defaultChainId = IS_PRODUCTION ? chains.eth : chains.gor
 
-// Use the location object directly because Next.js's router.query is available only in an effect
+// Use the location object directly because Next.js's router.query is available only on mount
 const getLocationQuery = (): ParsedUrlQuery => {
   if (typeof location === 'undefined') return {}
 
@@ -31,26 +31,30 @@ const getLocationQuery = (): ParsedUrlQuery => {
 }
 
 export const useUrlChainId = (): string | undefined => {
-  const router = useRouter()
-  // Dynamic query params are available only in an effect
-  const query = router && (router.query.safe || router.query.chain) ? router.query : getLocationQuery()
+  const queryParams = useParams()
+  const { configs } = useChains()
+
+  // Dynamic query params
+  const query = queryParams && (queryParams.safe || queryParams.chain) ? queryParams : getLocationQuery()
   const chain = query.chain?.toString() || ''
   const safe = query.safe?.toString() || ''
 
   const { prefix } = parsePrefixedAddress(safe)
   const shortName = prefix || chain
 
-  return Object.entries(chains).find(([key]) => key === shortName)?.[1]
+  if (!shortName) return undefined
+
+  return chains[shortName] || configs.find((item) => item.shortName === shortName)?.chainId
 }
 
 export const useChainId = (): string => {
   const session = useAppSelector(selectSession)
   const urlChainId = useUrlChainId()
   const wallet = useWallet()
-  const chains = useChains()
+  const { configs } = useChains()
 
   const walletChainId =
-    wallet?.chainId && chains?.configs.some(({ chainId }) => chainId === wallet.chainId) ? wallet.chainId : undefined
+    wallet?.chainId && configs.some(({ chainId }) => chainId === wallet.chainId) ? wallet.chainId : undefined
 
   return urlChainId || walletChainId || session.lastChainId || defaultChainId
 }

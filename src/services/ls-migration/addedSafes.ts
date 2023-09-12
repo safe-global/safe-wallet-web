@@ -15,10 +15,8 @@ const CHAIN_PREFIXES: Record<string, string> = {
   '246': 'ENERGY_WEB_CHAIN',
   '42161': 'ARBITRUM',
   '73799': 'VOLTA',
-  '42220': 'CELO',
-  '44787': 'ALFAJORES',
 }
-const ALL_CHAINS = ['42220', '44787']
+const ALL_CHAINS = ['1', '100', '137', '56', '246', '42161', '1313161554', '43114', '10', '5', '73799']
 
 const OLD_LS_KEY = '__SAFES'
 
@@ -63,7 +61,7 @@ export const migrateAddedSafes = (lsData: LOCAL_STORAGE_DATA): AddedSafesState |
     const legacyAddedSafes = parseLsValue<OldAddedSafes>(lsData[IMMORTAL_PREFIX + chainPrefix + OLD_LS_KEY])
 
     if (legacyAddedSafes && Object.keys(legacyAddedSafes).length > 0) {
-      console.log('Migrating added safes on chain', chainId)
+      console.log('Migrating added Safe Accounts on chain', chainId)
 
       const safesPerChain = Object.values(legacyAddedSafes).reduce<AddedSafesOnChain>((acc, oldItem) => {
         const migratedOwners = migrateAddedSafesOwners(oldItem.owners)

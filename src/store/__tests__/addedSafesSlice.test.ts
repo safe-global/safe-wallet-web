@@ -1,7 +1,16 @@
+import { createListenerMiddleware } from '@reduxjs/toolkit'
 import type { SafeBalanceResponse, SafeInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
-import { hexZeroPad } from 'ethers/lib/utils'
+import type { RootState } from '..'
 import type { AddedSafesState } from '../addedSafesSlice'
-import { addOrUpdateSafe, removeSafe, addedSafesSlice, updateAddedSafeBalance } from '../addedSafesSlice'
+import {
+  addOrUpdateSafe,
+  removeSafe,
+  addedSafesSlice,
+  updateAddedSafeBalance,
+  addedSafesListener,
+} from '../addedSafesSlice'
+import { balancesSlice } from '../balancesSlice'
+import { defaultSafeInfo } from '../safeInfoSlice'
 
 describe('addedSafesSlice', () => {
   describe('addOrUpdateSafe', () => {
@@ -131,232 +140,102 @@ describe('addedSafesSlice', () => {
     })
   })
 
-  describe('migrateLegacyOwners', () => {
-    const ADDRESS_1 = hexZeroPad('0x1', 20)
-    const ADDRESS_2 = hexZeroPad('0x2', 20)
+  describe('addedSafesListener', () => {
+    const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
 
-    it('should fix legacy owners', () => {
-      const state = addedSafesSlice.reducer(
-        {
-          '1': {
-            ['0x0']: {
-              owners: [
-                {
-                  value: ADDRESS_1,
-                  name: true,
-                } as unknown as SafeInfo['owners'][number],
-              ],
-            } as SafeInfo,
-            ['0x1']: {
-              owners: [
-                {
-                  value: { address: ADDRESS_1 },
-                },
-                { value: ADDRESS_2 },
-              ],
-            } as unknown as SafeInfo,
-          },
-          '4': {
-            ['0x0']: {
-              owners: [
-                {
-                  value: { address: ADDRESS_1, name: 'Test' },
-                },
-              ],
-            } as unknown as SafeInfo,
-          },
-        },
-        addedSafesSlice.actions.migrateLegacyOwners(),
-      )
-      expect(state).toEqual({
-        '1': {
-          ['0x0']: {
-            owners: [
-              {
-                value: ADDRESS_1,
-              },
-            ],
-          } as SafeInfo,
-          ['0x1']: {
-            owners: [
-              {
-                value: ADDRESS_1,
-              },
-              { value: ADDRESS_2 },
-            ],
-          } as SafeInfo,
-        },
-        '4': {
-          ['0x0']: {
-            owners: [
-              {
-                value: ADDRESS_1,
-                name: 'Test',
-              },
-            ],
-          } as SafeInfo,
-        },
-      })
+    beforeEach(() => {
+      listenerMiddlewareInstance.clearListeners()
+      addedSafesListener(listenerMiddlewareInstance)
     })
 
-    it('should remove corrupt owners', () => {
-      const state = addedSafesSlice.reducer(
-        {
-          '1': {
-            ['0x0']: {
-              owners: [
-                {
-                  value: ADDRESS_1,
-                },
-              ],
-            } as SafeInfo,
-            ['0x1']: {
-              owners: [
-                {
-                  value: { address: true },
-                },
-                { value: ADDRESS_2 },
-              ],
-            } as unknown as SafeInfo,
-          },
-          '4': {
-            ['0x0']: {
-              owners: [
-                {
-                  value: { address: ADDRESS_1, name: 'Test' },
-                },
-                {
-                  value: { address: null, name: 'Test' } as unknown as SafeInfo['owners'][number],
-                },
-              ],
-            } as unknown as SafeInfo,
+    it('should update the balance of an added Safe if a Safe is loaded', () => {
+      const state = {
+        safeInfo: {
+          data: {
+            chainId: '5',
+            address: {
+              value: '0x123',
+            },
           },
         },
-        addedSafesSlice.actions.migrateLegacyOwners(),
-      )
-      expect(state).toEqual({
-        '1': {
-          ['0x0']: {
-            owners: [
-              {
-                value: ADDRESS_1,
-              },
-            ],
-          } as SafeInfo,
-          ['0x1']: {
-            owners: [{ value: ADDRESS_2 }],
-          } as SafeInfo,
-        },
-        '4': {
-          ['0x0']: {
-            owners: [
-              {
-                name: 'Test',
-                value: ADDRESS_1,
-              },
-            ],
-          } as SafeInfo,
-        },
+      } as RootState
+
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
+      }
+
+      const payload: SafeBalanceResponse = {
+        items: [],
+        fiatTotal: '',
+      }
+
+      const action = balancesSlice.actions.set({
+        loading: false,
+        data: payload,
       })
+
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
+      expect(listenerApi.dispatch).toHaveBeenCalledWith(
+        updateAddedSafeBalance({
+          chainId: '5',
+          address: '0x123',
+          balances: payload,
+        }),
+      )
     })
 
-    it('should remove added Safe if all owners are corrupt', () => {
-      const state = addedSafesSlice.reducer(
-        {
-          '1': {
-            ['0x0']: {
-              owners: [
-                {
-                  value: ADDRESS_1,
-                },
-              ],
-            } as SafeInfo,
-            ['0x1']: {
-              owners: [
-                {
-                  value: { address: 123 },
-                },
-                { value: null },
-                { value: '0x123' },
-              ],
-            } as unknown as SafeInfo,
-          },
-          '4': {
-            ['0x0']: {
-              owners: [
-                {
-                  value: {
-                    address: ADDRESS_1,
-                    name: 'Test',
-                  },
-                },
-              ],
-            } as unknown as SafeInfo,
+    it('should not update the balance of an added Safe if a balance is cleared', () => {
+      const state = {
+        safeInfo: {
+          data: {
+            chainId: '5',
+            address: {
+              value: '0x123',
+            },
           },
         },
-        addedSafesSlice.actions.migrateLegacyOwners(),
-      )
-      expect(state).toEqual({
-        '1': {
-          ['0x0']: {
-            owners: [
-              {
-                value: ADDRESS_1,
-              },
-            ],
-          } as SafeInfo,
-        },
-        '4': {
-          ['0x0']: {
-            owners: [
-              {
-                value: ADDRESS_1,
-                name: 'Test',
-              },
-            ],
-          } as SafeInfo,
-        },
+      } as RootState
+
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
+      }
+
+      const action = balancesSlice.actions.set({
+        loading: false,
+        data: undefined, // Cleared
       })
+
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
+      expect(listenerApi.dispatch).not.toHaveBeenCalled()
     })
 
-    it('should remove the chain if all Safes are removed due to all corrupt owners', () => {
-      const state = addedSafesSlice.reducer(
-        {
-          '1': {
-            ['0x0']: {
-              owners: [
-                {
-                  value: 1234,
-                } as unknown as SafeInfo['owners'][number],
-              ],
-            } as SafeInfo,
-            ['0x1']: {
-              owners: [
-                {
-                  value: { address: 123 },
-                },
-                { value: null },
-                { value: '0x123' },
-              ],
-            } as unknown as SafeInfo,
-          },
-          '4': {
-            ['0x0']: {
-              owners: [
-                {
-                  value: {
-                    address: true,
-                    name: 'Test',
-                  },
-                },
-              ],
-            } as unknown as SafeInfo,
-          },
+    it('should not update the balance of an added Safe if a Safe is reset', () => {
+      const state = {
+        safeInfo: {
+          data: defaultSafeInfo, // Reset
         },
-        addedSafesSlice.actions.migrateLegacyOwners(),
-      )
+      } as RootState
 
-      expect(state).toEqual({})
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
+      }
+
+      const action = balancesSlice.actions.set({
+        loading: false,
+        data: {
+          items: [],
+          fiatTotal: '',
+        },
+      })
+
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
+      expect(listenerApi.dispatch).not.toHaveBeenCalled()
     })
   })
 })

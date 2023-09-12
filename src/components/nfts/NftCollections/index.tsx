@@ -1,65 +1,92 @@
-import { useState, useEffect } from 'react'
+import { type SyntheticEvent, type ReactElement, useCallback, useEffect, useState, useContext } from 'react'
 import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, CircularProgress } from '@mui/material'
-import useCollectibles from '@/hooks/useCollectibles'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import InfiniteScroll from '@/components/common/InfiniteScroll'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NftIcon from '@/public/images/common/nft.svg'
-import NftTransferModal from '@/components/tx/modals/NftTransferModal'
+import useCollectibles from '@/hooks/useCollectibles'
+import InfiniteScroll from '@/components/common/InfiniteScroll'
+import { NFT_EVENTS } from '@/services/analytics/events/nfts'
+import { trackEvent } from '@/services/analytics'
 import NftGrid from '../NftGrid'
-import useIsGranted from '@/hooks/useIsGranted'
+import NftSendForm from '../NftSendForm'
+import NftPreviewModal from '../NftPreviewModal'
+import { TxModalContext } from '@/components/tx-flow'
+import NftTransferFlow from '@/components/tx-flow/flows/NftTransfer'
 
-const NftCollections = () => {
+const NftCollections = (): ReactElement => {
+  // Track the current NFT page url
+  const [pageUrl, setPageUrl] = useState<string>()
+  // Load NFTs from the backend
+  const [nftPage, error, loading] = useCollectibles(pageUrl)
+  // Keep all loaded NFTs in one big array
   const [allNfts, setAllNfts] = useState<SafeCollectibleResponse[]>([])
-  const [currentPageUrl, setCurrentPageUrl] = useState<string | undefined>()
-  const [sendNft, setSendNft] = useState<SafeCollectibleResponse>()
-  const isGranted = useIsGranted()
+  // Selected NFTs
+  const [selectedNfts, setSelectedNfts] = useState<SafeCollectibleResponse[]>([])
+  // Preview
+  const [previewNft, setPreviewNft] = useState<SafeCollectibleResponse>()
+  // Tx modal
+  const { setTxFlow } = useContext(TxModalContext)
 
-  const [page, error, loading] = useCollectibles(currentPageUrl)
+  // On NFT preview click
+  const onPreview = useCallback((token: SafeCollectibleResponse) => {
+    setPreviewNft(token)
+    trackEvent(NFT_EVENTS.PREVIEW)
+  }, [])
 
-  /* Aggregate NFTs from all pages */
+  const onSendSubmit = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault()
+
+      if (selectedNfts.length) {
+        // Show the NFT transfer modal
+        setTxFlow(<NftTransferFlow tokens={selectedNfts} />)
+
+        // Track how many NFTs are being sent
+        trackEvent({ ...NFT_EVENTS.SEND, label: selectedNfts.length })
+      }
+    },
+    [selectedNfts, setTxFlow],
+  )
+
+  // Add new NFTs to the accumulated list
   useEffect(() => {
-    if (page) {
-      setAllNfts((prev) => prev.concat(page.results))
+    if (nftPage) {
+      setAllNfts((prev) => prev.concat(nftPage.results))
     }
-  }, [page])
+  }, [nftPage])
 
-  /* No NFTs to display */
-  if (!allNfts.length && !loading && !error) {
+  // No NFTs to display
+  if (nftPage && !nftPage.results.length) {
     return <PagePlaceholder img={<NftIcon />} text="No NFTs available or none detected" />
   }
 
   return (
     <>
-      {/* Aggregated NFTs grouped by collection */}
-      {allNfts.length > 0 && (
-        <NftGrid collectibles={allNfts} onSendClick={isGranted ? (nft) => setSendNft(nft) : undefined} />
+      {error ? (
+        /* Loading error */
+        <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>
+      ) : (
+        /* NFTs */
+        <form onSubmit={onSendSubmit}>
+          {/* Batch send form */}
+          <NftSendForm selectedNfts={selectedNfts} />
+
+          {/* NFTs table */}
+          <NftGrid
+            nfts={allNfts}
+            selectedNfts={selectedNfts}
+            setSelectedNfts={setSelectedNfts}
+            onPreview={onPreview}
+            isLoading={loading || !nftPage || !!nftPage?.next}
+          >
+            {/* Infinite scroll at the bottom of the table */}
+            {nftPage?.next ? <InfiniteScroll onLoadMore={() => setPageUrl(nftPage.next)} /> : null}
+          </NftGrid>
+        </form>
       )}
 
-      {/* Loading error */}
-      {error && <ErrorMessage error={error}>Failed to load NFTs</ErrorMessage>}
-
-      <Box py={4} textAlign="center">
-        {/* Loading */}
-        {loading && <CircularProgress size={40} />}
-
-        {/* Infinite scroll */}
-        {page?.next && <InfiniteScroll onLoadMore={() => setCurrentPageUrl(page?.next)} />}
-      </Box>
-
-      {/* Send NFT modal */}
-      {isGranted && sendNft && (
-        <NftTransferModal
-          onClose={() => setSendNft(undefined)}
-          initialData={[
-            {
-              recipient: '',
-              token: sendNft,
-            },
-          ]}
-        />
-      )}
+      {/* NFT preview */}
+      {<NftPreviewModal onClose={() => setPreviewNft(undefined)} nft={previewNft} />}
     </>
   )
 }

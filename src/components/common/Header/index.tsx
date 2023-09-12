@@ -1,29 +1,28 @@
-import type { Dispatch, SetStateAction } from 'react'
-import { type ReactElement } from 'react'
-import { useRouter } from 'next/router'
-import { IconButton, Paper } from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import classnames from 'classnames'
-import css from './styles.module.css'
-import ChainSwitcher from '@/components/common/ChainSwitcher'
+import BatchIndicator from '@/components/batch/BatchIndicator'
 import ConnectWallet from '@/components/common/ConnectWallet'
+import ExternalLink from '@/components/common/ExternalLink'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import SafeTokenWidget, { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import NotificationCenter from '@/components/notification-center/NotificationCenter'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
-import SafeLogo from '@/public/images/logo-celo.svg'
-import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import SafeLogo from '@/public/images/safe-logo-celo.png'
+import MenuIcon from '@mui/icons-material/Menu'
+import { IconButton, Paper } from '@mui/material'
+import classnames from 'classnames'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import type { Dispatch, SetStateAction } from 'react'
+import { type ReactElement } from 'react'
+import css from './styles.module.css'
 
 type HeaderProps = {
-  onMenuToggle: Dispatch<SetStateAction<boolean>>
+  onMenuToggle?: Dispatch<SetStateAction<boolean>>
+  onBatchToggle?: Dispatch<SetStateAction<boolean>>
 }
 
-const FORUM_POST_URL = 'https://forum.celo.org/t/multisig-celo-safe-re-launch/4529/25?u=0xarthurxyz'
-const OLD_SAFE_URL = 'https://old-safe.celo.org'
-
-const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
+const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
   const showSafeToken = safeAddress && !!getSafeTokenAddress(chainId)
@@ -33,12 +32,22 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const logoHref = router.pathname === AppRoutes.home ? AppRoutes.welcome : AppRoutes.index
 
   const handleMenuToggle = () => {
-    onMenuToggle((isOpen) => !isOpen)
+    if (onMenuToggle) {
+      onMenuToggle((isOpen) => !isOpen)
+    } else {
+      router.push(logoHref)
+    }
+  }
+
+  const handleBatchToggle = () => {
+    if (onBatchToggle) {
+      onBatchToggle((isOpen) => !isOpen)
+    }
   }
 
   return (
     <Paper className={css.container}>
-      <div className={classnames(css.element, css.menuButton)}>
+      <div className={classnames(css.element, css.menuButton, !onMenuToggle ? css.hideSidebarMobile : null)}>
         <IconButton onClick={handleMenuToggle} size="large" edge="start" color="default" aria-label="menu">
           <MenuIcon />
         </IconButton>
@@ -46,33 +55,17 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
 
       <div className={classnames(css.element, css.hideMobile, css.logo)}>
         <Link href={logoHref} passHref>
-          <a>
-            <SafeLogo alt="Safe logo" />
-          </a>
+          <img src={SafeLogo.src} alt="Celo Safe logo" />
         </Link>
         <span className={css.hideMobile}>
-          Celo Safe is now supported on the official{' '}
+          Celo is now supported on the official{' '}
           <a target="_blank" rel="noreferrer" href="https://app.safe.global/welcome?chain=celo">
             Safe app.
           </a>{' '}
-          Learn more{' '}
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href="https://forum.celo.org/t/multisig-native-safe-launch-migration-guidance/5705"
-          >
-            here.
-          </a>{' '}
-          Use the old version{' '}
-          <a target="_blank" rel="noreferrer" href={OLD_SAFE_URL}>
-            here
-          </a>
-          .
+          <ExternalLink noIcon href="https://forum.celo.org/t/multisig-native-safe-launch-migration-guidance/5705">
+            Learn more here.
+          </ExternalLink>
         </span>
-      </div>
-
-      <div className={classnames(css.element, css.hideMobile)}>
-        <ChainSwitcher />
       </div>
 
       {showSafeToken && (
@@ -81,11 +74,17 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
         </div>
       )}
 
-      <div className={classnames(css.element, css.hideMobile)}>
+      {safeAddress && (
+        <div className={classnames(css.element, css.hideMobile)}>
+          <BatchIndicator onClick={handleBatchToggle} />
+        </div>
+      )}
+
+      <div className={css.element}>
         <NotificationCenter />
       </div>
 
-      <div className={css.element}>
+      <div className={classnames(css.element, css.connectWallet)}>
         <ConnectWallet />
       </div>
 

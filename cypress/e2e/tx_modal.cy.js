@@ -1,12 +1,11 @@
+import * as constants from '../support/constants'
+
 const TEST_SAFE = 'rin:0x11Df0fa87b30080d59eba632570f620e37f2a8f7'
 const RECIPIENT_ENS = 'diogo.eth'
-const RECIPIENT_ADDRESS = '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC'
 const SAFE_NONCE = '6'
 
 describe('Tx Modal', () => {
   before(() => {
-    cy.connectE2EWallet()
-
     // Open the Safe used for testing
     cy.visit(`/${TEST_SAFE}`)
     cy.contains('a', 'Accept selection').click()
@@ -58,7 +57,7 @@ describe('Tx Modal', () => {
         cy.get('label[for="address-book-input"]').next().type(RECIPIENT_ENS)
 
         // Waits for resolving the ENS
-        cy.contains(RECIPIENT_ADDRESS).should('be.visible')
+        cy.contains(constants.RECIPIENT_ADDRESS).should('be.visible')
       })
 
       it('should have all tokens available in the token selector', () => {
@@ -129,7 +128,7 @@ describe('Tx Modal', () => {
         // Sender
         cy.contains('Sending from').parent().next().contains(TEST_SAFE)
         // Recipient
-        cy.contains('Recipient').parent().next().contains(RECIPIENT_ADDRESS)
+        cy.contains('Recipient').parent().next().contains(constants.RECIPIENT_ADDRESS)
 
         // Token value
         cy.contains('0.000004 GNO')

@@ -1,35 +1,64 @@
 import type { ReactElement } from 'react'
-import { useEffect, useCallback, useRef, useMemo, useState } from 'react'
-import { InputAdornment, TextField, type TextFieldProps, CircularProgress, Grid } from '@mui/material'
+import { useEffect, useCallback, useRef, useMemo } from 'react'
+import {
+  InputAdornment,
+  TextField,
+  type TextFieldProps,
+  CircularProgress,
+  IconButton,
+  SvgIcon,
+  Skeleton,
+} from '@mui/material'
 import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
-import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from './useNameResolver'
 import ScanQRButton from '../ScanQRModal/ScanQRButton'
-import { hasFeature } from '@/utils/chains'
-import { parsePrefixedAddress } from '@/utils/addresses'
+import { FEATURES, hasFeature } from '@/utils/chains'
+import { cleanInputValue, parsePrefixedAddress } from '@/utils/addresses'
 import useDebounce from '@/hooks/useDebounce'
+import CaretDownIcon from '@/public/images/common/caret-down.svg'
+import SaveAddressIcon from '@/public/images/common/save-address.svg'
+import classnames from 'classnames'
+import css from './styles.module.css'
+import inputCss from '@/styles/inputs.module.css'
+import Identicon from '../Identicon'
 
-export type AddressInputProps = TextFieldProps & { name: string; validate?: Validate<string>; deps?: string | string[] }
+export type AddressInputProps = TextFieldProps & {
+  name: string
+  address?: string
+  onOpenListClick?: () => void
+  isAutocompleteOpen?: boolean
+  validate?: Validate<string>
+  deps?: string | string[]
+  onAddressBookClick?: () => void
+}
 
-const AddressInput = ({ name, validate, required = true, deps, ...props }: AddressInputProps): ReactElement => {
+const AddressInput = ({
+  name,
+  validate,
+  required = true,
+  onOpenListClick,
+  isAutocompleteOpen,
+  onAddressBookClick,
+  deps,
+  ...props
+}: AddressInputProps): ReactElement => {
   const {
     register,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isValidating },
     trigger,
   } = useFormContext()
+
   const currentChain = useCurrentChain()
   const rawValueRef = useRef<string>('')
   const watchedValue = useWatch({ name, control })
   const currentShortName = currentChain?.shortName || ''
-  const [isValidating, setIsValidating] = useState<boolean>(false)
 
   // Fetch an ENS resolution for the current address
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
-  const label = `${props.label} address${isDomainLookupEnabled ? ' or ENS' : ''}`
   const { address, resolverError, resolving } = useNameResolver(isDomainLookupEnabled ? watchedValue : '')
 
   // errors[name] doesn't work with nested field names like 'safe.address', need to use the lodash get
@@ -56,71 +85,96 @@ const AddressInput = ({ name, validate, required = true, deps, ...props }: Addre
     }
   }, [address, currentShortName, setAddressValue])
 
-  return (
-    <Grid container alignItems="center" gap={1}>
-      <Grid item flexGrow={1}>
-        <TextField
-          {...props}
-          autoComplete="off"
-          label={<>{error?.message || label}</>}
-          error={!!error}
-          fullWidth
-          spellCheck={false}
-          InputProps={{
-            ...(props.InputProps || {}),
+  const endAdornment = (
+    <InputAdornment position="end">
+      {resolving || isValidating ? (
+        <CircularProgress size={20} />
+      ) : !props.disabled ? (
+        <>
+          {onAddressBookClick && (
+            <IconButton onClick={onAddressBookClick}>
+              <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" color="primary" />
+            </IconButton>
+          )}
 
-            // Display the current short name in the adornment, unless the value contains the same prefix
-            startAdornment: !error && !rawValueRef.current.startsWith(`${currentShortName}:`) && (
-              <InputAdornment position="end">{currentShortName}:</InputAdornment>
-            ),
-
-            endAdornment: (resolving || isValidating) && (
-              <InputAdornment position="end">
-                <CircularProgress size={20} />
-              </InputAdornment>
-            ),
-          }}
-          InputLabelProps={{
-            ...(props.InputLabelProps || {}),
-            shrink: !!watchedValue || props.focused,
-          }}
-          required={required}
-          {...register(name, {
-            deps,
-
-            required,
-
-            setValueAs: (value: string): string => {
-              rawValueRef.current = value
-              // This also checksums the address
-              return parsePrefixedAddress(value).address
-            },
-
-            validate: async () => {
-              const value = rawValueRef.current
-              if (value) {
-                setIsValidating(true)
-                const result = validatePrefixed(value) || (await validate?.(parsePrefixedAddress(value).address))
-                setIsValidating(false)
-                return result
-              }
-            },
-
-            // Workaround for a bug in react-hook-form that it restores a cached error state on blur
-            onBlur: () => setTimeout(() => trigger(name), 100),
-          })}
-          // Workaround for a bug in react-hook-form when `register().value` is cached after `setValueAs`
-          // Only seems to occur on the `/load` route
-          value={watchedValue}
-        />
-      </Grid>
-
-      {!props.disabled && (
-        <Grid item>
           <ScanQRButton onScan={setAddressValue} />
-        </Grid>
-      )}
-    </Grid>
+
+          {onOpenListClick && (
+            <IconButton
+              onClick={onOpenListClick}
+              className={classnames(css.openButton, { [css.rotated]: isAutocompleteOpen })}
+              color="primary"
+            >
+              <SvgIcon component={CaretDownIcon} inheritViewBox fontSize="small" />
+            </IconButton>
+          )}
+        </>
+      ) : null}
+    </InputAdornment>
+  )
+
+  return (
+    <>
+      <TextField
+        {...props}
+        className={inputCss.input}
+        autoComplete="off"
+        autoFocus={props.focused}
+        label={<>{error?.message || props.label}</>}
+        error={!!error}
+        fullWidth
+        spellCheck={false}
+        InputProps={{
+          ...(props.InputProps || {}),
+
+          // Display the current short name in the adornment, unless the value contains the same prefix
+          startAdornment: (
+            <InputAdornment position="end" sx={{ ml: 0, gap: 1 }}>
+              {watchedValue && !fieldError ? (
+                <Identicon address={watchedValue} size={32} />
+              ) : (
+                <Skeleton variant="circular" width={32} height={32} animation={false} />
+              )}
+
+              {!rawValueRef.current.startsWith(`${currentShortName}:`) && <>{currentShortName}:</>}
+            </InputAdornment>
+          ),
+
+          endAdornment,
+        }}
+        InputLabelProps={{
+          ...(props.InputLabelProps || {}),
+          shrink: true,
+        }}
+        {...register(name, {
+          deps,
+
+          required,
+
+          setValueAs: (value: string): string => {
+            // Clean the input value
+            const cleanValue = cleanInputValue(value)
+            rawValueRef.current = cleanValue
+            // This also checksums the address
+            return parsePrefixedAddress(cleanValue).address
+          },
+
+          validate: async () => {
+            const value = rawValueRef.current
+
+            if (value) {
+              return validatePrefixed(value) || (await validate?.(parsePrefixedAddress(value).address))
+            }
+          },
+
+          // Workaround for a bug in react-hook-form that it restores a cached error state on blur
+          onBlur: () => setTimeout(() => trigger(name), 100),
+        })}
+        // Workaround for a bug in react-hook-form when `register().value` is cached after `setValueAs`
+        // Only seems to occur on the `/load` route
+        value={watchedValue}
+      />
+    </>
   )
 }
 

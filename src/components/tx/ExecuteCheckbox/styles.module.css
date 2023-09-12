@@ -1,0 +1,37 @@
+.group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.radio {
+  margin: 0;
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  padding: 6px 3px;
+}
+
+.select {
+  margin-top: var(--space-2);
+}
+
+.select :global .MuiFormLabel-root {
+  color: var(--color-text-primary);
+  transform: translate(22px, 22px) scale(1);
+}
+
+.select :global .MuiSelect-select {
+  padding: 22px;
+  text-align: right;
+  font-weight: 700;
+  padding-right: 52px !important;
+}
+
+.select :global .MuiInputBase-root fieldset {
+  border-color: var(--color-border-light) !important;
+  border-width: 1px !important;
+}
+
+.select :global .MuiSvgIcon-root {
+  right: 22px;
+}

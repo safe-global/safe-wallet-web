@@ -8,7 +8,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import css from './styles.module.css'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import { SafeAppsTag, SAFE_APPS_SUPPORT_CHAT_URL } from '@/config/constants'
+import { DISCORD_URL, SafeAppsTag } from '@/config/constants'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { OpenInNew } from '@mui/icons-material'
 import NetworkError from '@/public/images/common/network-error.svg'
@@ -19,7 +19,7 @@ import type { UseAppCommunicatorHandlers } from '@/components/safe-apps/AppFrame
 import useAppCommunicator from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGetSafeInfo from '@/components/safe-apps/AppFrame/useGetSafeInfo'
-import type { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useAsync from '@/hooks/useAsync'
@@ -36,7 +36,7 @@ const WidgetLoadErrorFallback = () => (
         <SvgIcon component={NetworkError} inheritViewBox className={css.loadErroricon} />
         <Typography variant="body1" color="text.primary">
           You can try to reload the page and in case the problem persists, please reach out to us via{' '}
-          <Link target="_blank" href={SAFE_APPS_SUPPORT_CHAT_URL} fontSize="medium">
+          <Link target="_blank" href={DISCORD_URL} fontSize="medium">
             Discord
             <OpenInNew fontSize="small" color="primary" className={css.loadErroricon} />
           </Link>
@@ -69,7 +69,7 @@ const MiniAppFrame = ({ app, title }: { app: SafeAppData; title: string }) => {
   ) : (
     <SafeAppIframe
       key={theme}
-      appUrl={`${app.url}#widget+${theme}`}
+      appUrl={`${app.url}/widgets?theme=${theme}`}
       allowedFeaturesList={getAllowedFeaturesList(getOrigin(app.url))}
       title={title}
       iframeRef={iframeRef}
@@ -79,9 +79,9 @@ const MiniAppFrame = ({ app, title }: { app: SafeAppData; title: string }) => {
 
 // Entire section for the governance widgets
 const GovernanceSection = () => {
-  const [matchingApps, errorFetchingClaimingSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_CLAIMING_APP)
-  const claimingApp = matchingApps?.[0]
-  const fetchingSafeClaimingApp = !claimingApp && !errorFetchingClaimingSafeApp
+  const [matchingApps, errorFetchingGovernanceSafeApp] = useRemoteSafeApps(SafeAppsTag.SAFE_GOVERNANCE_APP)
+  const governanceApp = matchingApps?.[0]
+  const fetchingSafeGovernanceApp = !governanceApp && !errorFetchingGovernanceSafeApp
   const { safeLoading } = useSafeInfo()
 
   return (
@@ -104,11 +104,11 @@ const GovernanceSection = () => {
       </AccordionSummary>
 
       <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
-        {claimingApp || fetchingSafeClaimingApp ? (
+        {governanceApp || fetchingSafeGovernanceApp ? (
           <WidgetBody>
             <Card className={css.widgetWrapper}>
-              {claimingApp && !safeLoading ? (
-                <MiniAppFrame app={claimingApp} title="Safe Governance" />
+              {governanceApp && !safeLoading ? (
+                <MiniAppFrame app={governanceApp} title="Safe Governance" />
               ) : (
                 <Box
                   className={css.widgetWrapper}

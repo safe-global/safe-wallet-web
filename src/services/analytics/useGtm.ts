@@ -3,44 +3,77 @@
  * It won't initialize GTM if a consent wasn't given for analytics cookies.
  * The hook needs to be called when the app starts.
  */
-import { useEffect } from 'react'
-import { gtmClear, gtmInit, gtmTrackPageview, gtmSetChainId } from '@/services/analytics/gtm'
+import { useEffect, useState } from 'react'
+import { useTheme } from '@mui/material/styles'
+import {
+  gtmInit,
+  gtmTrackPageview,
+  gtmSetChainId,
+  gtmEnableCookies,
+  gtmDisableCookies,
+  gtmSetDeviceType,
+} from '@/services/analytics/gtm'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import useChainId from '@/hooks/useChainId'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import useMetaEvents from './useMetaEvents'
+import { useMediaQuery } from '@mui/material'
+import { DeviceType } from './types'
 
 const useGtm = () => {
   const chainId = useChainId()
   const cookies = useAppSelector(selectCookies)
-  const isAnalyticsEnabled = cookies[CookieType.ANALYTICS]
+  const isAnalyticsEnabled = cookies[CookieType.ANALYTICS] || false
+  const [, setPrevAnalytics] = useState(isAnalyticsEnabled)
   const router = useRouter()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'))
+  const deviceType = isMobile ? DeviceType.MOBILE : isTablet ? DeviceType.TABLET : DeviceType.DESKTOP
 
-  // Initialize GTM, or clear it if analytics is disabled
+  // Initialize GTM
   useEffect(() => {
-    // router.pathname doesn't contain the safe address
-    // so we can override the initial dataLayer
-    isAnalyticsEnabled ? gtmInit(router.pathname) : gtmClear()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    gtmInit()
+  }, [])
+
+  // Enable GA cookies if consent was given
+  useEffect(() => {
+    setPrevAnalytics((prev) => {
+      if (isAnalyticsEnabled === prev) return prev
+
+      if (isAnalyticsEnabled) {
+        gtmEnableCookies()
+      } else {
+        gtmDisableCookies()
+      }
+
+      return isAnalyticsEnabled
+    })
   }, [isAnalyticsEnabled])
 
-  // Set the chain ID for GTM
+  // Set the chain ID for all GTM events
   useEffect(() => {
     gtmSetChainId(chainId)
   }, [chainId])
 
+  // Set device type for all GTM events
+  useEffect(() => {
+    gtmSetDeviceType(deviceType)
+  }, [deviceType])
+
   // Track page views – anononimized by default.
   // Sensitive info, like the safe address or tx id, is always in the query string, which we DO NOT track.
   useEffect(() => {
-    if (isAnalyticsEnabled && router.pathname !== AppRoutes['404']) {
-      gtmTrackPageview(router.pathname)
-    }
-  }, [isAnalyticsEnabled, router.pathname])
+    // Don't track 404 because it's not a real page, it immediately does a client-side redirect
+    if (router.pathname === AppRoutes['404']) return
+
+    gtmTrackPageview(router.pathname)
+  }, [router.pathname])
 
   // Track meta events on app load
-  useMetaEvents(isAnalyticsEnabled)
+  useMetaEvents()
 }
 
 export default useGtm

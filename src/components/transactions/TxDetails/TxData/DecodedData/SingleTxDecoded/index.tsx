@@ -8,6 +8,7 @@ import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import css from './styles.module.css'
+import accordionCss from '@/styles/accordion.module.css'
 import CodeIcon from '@mui/icons-material/Code'
 import { DelegateCallWarning } from '@/components/transactions/Warning'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
@@ -19,6 +20,8 @@ type SingleTxDecodedProps = {
   actionTitle: string
   showDelegateCallWarning: boolean
   variant?: AccordionProps['variant']
+  expanded?: boolean
+  onChange?: AccordionProps['onChange']
 }
 
 export const SingleTxDecoded = ({
@@ -27,15 +30,17 @@ export const SingleTxDecoded = ({
   actionTitle,
   showDelegateCallWarning,
   variant,
+  expanded,
+  onChange,
 }: SingleTxDecodedProps) => {
   const chain = useCurrentChain()
   const method = tx.dataDecoded?.method || ''
-  const { decimals, symbol } = chain!.nativeCurrency
+  const { decimals, symbol } = chain?.nativeCurrency || {}
   const amount = tx.value ? formatVisualAmount(tx.value, decimals) : 0
 
   let details
   if (tx.dataDecoded) {
-    details = <MethodDetails data={tx.dataDecoded} />
+    details = <MethodDetails data={tx.dataDecoded} addressInfoIndex={txData.addressInfoIndex} />
   } else if (tx.data) {
     // If data is not decoded in the backend response
     details = <HexEncodedData title="Data (hex encoded)" hexData={tx.data} />
@@ -50,13 +55,14 @@ export const SingleTxDecoded = ({
   const isSpendingLimitMethod = isSetAllowance(tx.dataDecoded?.method) || isDeleteAllowance(tx.dataDecoded?.method)
 
   return (
-    <Accordion variant={variant} defaultExpanded={isDelegateCall}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <Accordion variant={variant} expanded={expanded} onChange={onChange}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />} className={accordionCss.accordion}>
         <div className={css.summary}>
-          <CodeIcon />
+          <CodeIcon color="border" fontSize="small" />
           <Typography>{actionTitle}</Typography>
           <Typography ml="8px">
-            <b>{method}</b>
+            {name ? name + ': ' : ''}
+            <b>{method || 'native transfer'}</b>
           </Typography>
         </div>
       </AccordionSummary>

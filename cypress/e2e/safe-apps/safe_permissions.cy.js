@@ -1,10 +1,9 @@
-import { SAFE_PERMISSIONS_KEY } from './constants'
-const appUrl = 'https://safe-test-app.com'
+import * as constants from '../../support/constants'
 
 describe('The Safe permissions system', () => {
   beforeEach(() => {
     cy.fixture('safe-app').then((html) => {
-      cy.intercept('GET', `${appUrl}/*`, html)
+      cy.intercept('GET', `${constants.appUrlProd}/*`, html)
       cy.intercept('GET', `*/manifest.json`, {
         name: 'Cypress Test App',
         description: 'Cypress Test App Description',
@@ -15,7 +14,7 @@ describe('The Safe permissions system', () => {
 
   describe('When requesting permissions with wallet_requestPermissions', () => {
     it('should show the permissions prompt and return the permissions on accept', () => {
-      cy.visitSafeApp(`${appUrl}/request-permissions`)
+      cy.visitSafeApp(`${constants.appUrlProd}/request-permissions`)
 
       cy.findByRole('heading', { name: /permissions request/i }).should('exist')
       cy.findByText(/access to your address book/i).should('exist')
@@ -39,11 +38,11 @@ describe('The Safe permissions system', () => {
     it('should return the current permissions', () => {
       cy.on('window:before:load', (window) => {
         window.localStorage.setItem(
-          SAFE_PERMISSIONS_KEY,
+          constants.SAFE_PERMISSIONS_KEY,
           JSON.stringify({
-            [appUrl]: [
+            [constants.appUrlProd]: [
               {
-                invoker: appUrl,
+                invoker: constants.appUrlProd,
                 parentCapability: 'requestAddressBook',
                 date: 1111111111111,
                 caveats: [],
@@ -53,12 +52,12 @@ describe('The Safe permissions system', () => {
         )
       })
 
-      cy.visitSafeApp(`${appUrl}/get-permissions`)
+      cy.visitSafeApp(`${constants.appUrlProd}/get-permissions`)
 
       cy.get('@safeAppsMessage').should('have.been.calledWithMatch', {
         data: [
           {
-            invoker: appUrl,
+            invoker: constants.appUrlProd,
             parentCapability: 'requestAddressBook',
             date: Cypress.sinon.match.number,
             caveats: [],

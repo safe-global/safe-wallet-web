@@ -48,6 +48,10 @@ export const SETTINGS_EVENTS = {
       action: 'Dark mode',
       category: SETTINGS_CATEGORY,
     },
+    ADDRESS_EMOJIS: {
+      action: 'Toggle address emojis',
+      category: SETTINGS_CATEGORY,
+    },
   },
   MODULES: {
     REMOVE_MODULE: {
@@ -79,8 +83,8 @@ export const SETTINGS_EVENTS = {
     },
   },
   DATA: {
-    IMPORT_ALL_BUTTON: {
-      action: 'Import all data button clicked',
+    EXPORT_ALL_BUTTON: {
+      action: 'Export all data button clicked',
       category: SETTINGS_CATEGORY,
     },
     IMPORT_ADDED_SAFES: {
@@ -89,6 +93,26 @@ export const SETTINGS_EVENTS = {
     },
     IMPORT_ADDRESS_BOOK: {
       action: 'Imported address book via Import all',
+      category: SETTINGS_CATEGORY,
+    },
+    IMPORT_SETTINGS: {
+      action: 'Imported settings via Import all',
+      category: SETTINGS_CATEGORY,
+    },
+    IMPORT_SAFE_APPS: {
+      action: 'Imported Safe apps via Import all',
+      category: SETTINGS_CATEGORY,
+    },
+  },
+  ENV_VARIABLES: {
+    SAVE: {
+      action: 'Environment variables changed',
+      category: SETTINGS_CATEGORY,
+    },
+  },
+  SAFE_APPS: {
+    CHANGE_SIGNING_METHOD: {
+      action: 'Safe apps signing method changed',
       category: SETTINGS_CATEGORY,
     },
   },

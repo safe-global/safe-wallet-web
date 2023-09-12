@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactElement } from 'react'
+import { useEffect, useRef, type ReactElement, type ComponentProps } from 'react'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListItem from '@mui/material/ListItem'
@@ -19,22 +19,29 @@ import Box from '@mui/material/Box'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
+import PendingActionButtons from '@/components/sidebar/PendingActions'
+import usePendingActions from '@/hooks/usePendingActions'
+import useOnceVisible from '@/hooks/useOnceVisible'
 
 const SafeListItem = ({
   address,
   chainId,
   closeDrawer,
   shouldScrollToSafe,
+  href,
   noActions = false,
+  isAdded = false,
   ...rest
 }: {
   address: string
   chainId: string
   shouldScrollToSafe: boolean
+  href: ComponentProps<typeof Link>['href']
   closeDrawer?: () => void
   threshold?: string | number
   owners?: string | number
   noActions?: boolean
+  isAdded?: boolean
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
@@ -44,6 +51,8 @@ const SafeListItem = ({
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const name = allAddressBooks[chainId]?.[address]
   const shortName = chain?.shortName || ''
+  const isVisible = useOnceVisible(safeRef)
+  const { totalQueued, totalToSign } = usePendingActions(chainId, isAdded && isVisible ? address : undefined)
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -54,9 +63,8 @@ const SafeListItem = ({
 
   return (
     <ListItem
-      className={css.container}
+      className={classnames(css.container, { [css.withPendingButtons]: totalQueued || totalToSign })}
       disablePadding
-      sx={{ '& .MuiListItemSecondaryAction-root': { right: 24 } }}
       secondaryAction={
         noActions ? undefined : (
           <Box display="flex" alignItems="center" gap={1}>
@@ -74,7 +82,7 @@ const SafeListItem = ({
         )
       }
     >
-      <Link href={{ pathname: AppRoutes.home, query: { safe: `${shortName}:${address}` } }} passHref>
+      <Link href={href} passHref legacyBehavior>
         <ListItemButton
           key={address}
           onClick={closeDrawer}
@@ -100,6 +108,14 @@ const SafeListItem = ({
           />
         </ListItemButton>
       </Link>
+
+      <PendingActionButtons
+        safeAddress={address}
+        closeDrawer={closeDrawer}
+        shortName={shortName}
+        totalQueued={totalQueued}
+        totalToSign={totalToSign}
+      />
     </ListItem>
   )
 }

@@ -7,12 +7,14 @@ export type Notification = {
   id: string
   message: string
   detailedMessage?: string
+  title?: string
   groupKey: string
   variant: AlertColor
   timestamp: number
   isDismissed?: boolean
   isRead?: boolean
   link?: { href: LinkProps['href']; title: string }
+  onClose?: () => void
 }
 
 export type NotificationState = Notification[]

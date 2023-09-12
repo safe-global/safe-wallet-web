@@ -17,6 +17,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { Errors, logError } from '@/services/exceptions'
 import FileUpload, { FileTypes, type FileInfo } from '@/components/common/FileUpload'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
 
@@ -151,10 +152,10 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <Typography>
-          Only CSV files exported from a Safe can be imported.
+          Only CSV files exported from a {'Safe{Wallet}'} can be imported.
           <br />
           <ExternalLink
-            href="https://help.safe.global/en/articles/5299068-address-book-export-and-import"
+            href={HelpCenterArticle.ADDRESS_BOOK_DATA}
             title="Learn about the address book import and export"
           >
             Learn about the address book import and export

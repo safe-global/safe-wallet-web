@@ -1,0 +1,15 @@
+.wrapper :global .MuiInputLabel-root.Mui-error[data-shrink='false'] {
+  padding: 5px 4px;
+}
+
+.wrapper :global .MuiInputAdornment-root {
+  margin-left: 0;
+}
+
+.openButton svg {
+  transition: transform 0.3s ease-in-out;
+}
+
+.rotated svg {
+  transform: rotate(180deg);
+}

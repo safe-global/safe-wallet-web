@@ -1,19 +1,16 @@
-const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'
-const OWNER_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
+import * as constants from '../../support/constants'
 
 describe('Create Safe form', () => {
   it('should navigate to the form', () => {
-    cy.connectE2EWallet()
-
     cy.visit('/welcome')
 
     // Close cookie banner
-    cy.contains('button', 'Accept all').click()
+    cy.contains('button', 'Accept selection').click()
 
     // Ensure wallet is connected to correct chain via header
-    cy.contains('E2E Wallet @ Görli')
+    cy.contains(/E2E Wallet @ G(ö|oe)rli/)
 
-    cy.contains('Create new Safe').click()
+    cy.contains('Create new Account').click()
   })
 
   it('should allow setting a name', () => {
@@ -31,20 +28,18 @@ describe('Create Safe form', () => {
     cy.get('[data-cy="create-safe-select-network"]').click()
     cy.contains('Ethereum').click()
 
-    // Network hint should be displayed
-    cy.contains('Change your wallet network').should('be.visible')
-    cy.contains('button', 'Next').should('be.disabled')
-
     // Switch back to Görli
     cy.get('[data-cy="create-safe-select-network"]').click()
-    cy.contains('li span', 'Görli').click()
+
+    // Prevent Base Mainnet Goerli from being selected
+    cy.contains('li span', /^G(ö|oe)rli$/).click()
 
     cy.contains('button', 'Next').click()
   })
 
   it('should display a default owner and threshold', () => {
     // Default owner
-    cy.get('input[name="owners.0.address"]').should('have.value', DEFAULT_OWNER_ADDRESS)
+    cy.get('input[name="owners.0.address"]').should('have.value', constants.DEFAULT_OWNER_ADDRESS)
 
     // Default threshold
     cy.get('input[name="threshold"]').should('have.value', 1)
@@ -61,7 +56,7 @@ describe('Create Safe form', () => {
     // Add new owner
     cy.contains('button', 'Add new owner').click()
     cy.get('input[name="owners.1.address"]').should('exist')
-    cy.get('input[name="owners.1.address"]').type(OWNER_ADDRESS)
+    cy.get('input[name="owners.1.address"]').type(constants.EOA)
 
     // Update threshold
     cy.get('input[name="threshold"]').parent().click()
@@ -80,7 +75,7 @@ describe('Create Safe form', () => {
 
   it('should display summary on review page', () => {
     cy.contains('Test safe name')
-    cy.contains(DEFAULT_OWNER_ADDRESS)
+    cy.contains(constants.DEFAULT_OWNER_ADDRESS)
     cy.contains('1 out of 1')
   })
 })

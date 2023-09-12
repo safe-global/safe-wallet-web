@@ -7,7 +7,6 @@ import {
   isMultisigDetailedExecutionInfo,
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
-  isSupportedMultiSendAddress,
   isSupportedSpendingLimitAddress,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
@@ -36,7 +35,7 @@ const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement 
     return <RejectionTxInfo nonce={txDetails.detailedExecutionInfo?.nonce} isTxExecuted={!!txDetails.executedAt} />
   }
 
-  if (isSupportedMultiSendAddress(txInfo, chainId) && isMultiSendTxInfo(txInfo)) {
+  if (isMultiSendTxInfo(txInfo)) {
     return <MultiSendTxInfo txInfo={txInfo} />
   }
 

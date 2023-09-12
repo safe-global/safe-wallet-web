@@ -1,12 +1,10 @@
-import { BROWSER_PERMISSIONS_KEY } from './constants'
-
-const appUrl = 'https://safe-test-app.com'
+import * as constants from '../../support/constants'
 
 describe('The Browser permissions system', () => {
   describe('When the safe app requires permissions', () => {
     beforeEach(() => {
       cy.fixture('safe-app').then((html) => {
-        cy.intercept('GET', `${appUrl}/*`, html)
+        cy.intercept('GET', `${constants.appUrlProd}/*`, html)
         cy.intercept('GET', `*/manifest.json`, {
           name: 'Cypress Test App',
           description: 'Cypress Test App Description',
@@ -17,7 +15,7 @@ describe('The Browser permissions system', () => {
     })
 
     it('should show a permissions slide to the user', () => {
-      cy.visitSafeApp(`${appUrl}/app`)
+      cy.visitSafeApp(`${constants.appUrlProd}/app`)
 
       cy.findByRole('checkbox', { name: /camera/i }).should('exist')
       cy.findByRole('checkbox', { name: /microphone/i }).should('exist')
@@ -30,7 +28,7 @@ describe('The Browser permissions system', () => {
       cy.findByRole('button', { name: /continue/i })
         .click()
         .should(() => {
-          expect(window.localStorage.getItem(BROWSER_PERMISSIONS_KEY)).to.eq(
+          expect(window.localStorage.getItem(constants.BROWSER_PERMISSIONS_KEY)).to.eq(
             '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}',
           )
         })

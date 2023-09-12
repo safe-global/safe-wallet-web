@@ -1,7 +1,3 @@
-.container {
-  overflow-y: auto;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
@@ -35,4 +31,10 @@
   overflow-x: hidden;
   overflow-y: hidden;
   padding: 0 0;
+}
+
+@media (max-width: 599.95px) {
+  .list {
+    overflow-x: auto;
+  }
 }

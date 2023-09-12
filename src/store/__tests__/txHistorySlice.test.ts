@@ -1,89 +1,177 @@
-import { txHistoryMiddleware, txHistorySlice } from '../txHistorySlice'
+import { createListenerMiddleware } from '@reduxjs/toolkit'
+import { LabelValue, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionListItem, Label, ConflictHeader, DateLabel } from '@safe-global/safe-gateway-typescript-sdk'
+
 import * as txEvents from '@/services/tx/txEvents'
-import * as mockPendingTxs from '../pendingTxsSlice'
+import { txHistoryListener, txHistorySlice } from '../txHistorySlice'
+import type { PendingTxsState } from '../pendingTxsSlice'
 import { PendingStatus } from '../pendingTxsSlice'
-import { TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
-import { TxEvent } from '@/services/tx/txEvents'
-
-const create = () => {
-  const store: any = {
-    getState: jest.fn(() => ({})),
-    dispatch: jest.fn(),
-  }
-  const next = jest.fn()
-
-  const invoke = (action: any) => txHistoryMiddleware(store)(next)(action)
-
-  return { store, next, invoke }
-}
-
-jest.mock('@/store/common', () => ({
-  makeLoadableSlice: jest.fn(() => ({
-    slice: {
-      actions: {
-        set: {
-          type: 'SET_HISTORY',
-        },
-      },
-    },
-    selector: jest.fn(() => ({ data: undefined })),
-  })),
-}))
+import type { RootState } from '..'
 
 describe('txHistorySlice', () => {
-  let txDispatchSpy: jest.SpyInstance
-  describe('txHistoryMiddleware', () => {
-    txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
-    txDispatchSpy.mockImplementation(() => {})
-    jest.spyOn(mockPendingTxs, 'selectPendingTxs').mockImplementation(() => ({
-      ['0x123']: {
-        chainId: '5',
-        status: PendingStatus.INDEXING,
-        groupKey: '0x123456',
-      },
-    }))
+  describe('txHistoryListener', () => {
+    const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
 
-    it('should not dispatch event if tx is not pending', () => {
-      const { next, invoke } = create()
-      const action = {
-        type: txHistorySlice.actions.set.type,
-        payload: {
-          data: {
-            results: [
-              {
-                type: TransactionListItemType.TRANSACTION,
-                transaction: {
-                  id: '0x234',
-                },
-              },
-            ],
+    const txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
+
+    beforeEach(() => {
+      listenerMiddlewareInstance.clearListeners()
+      txHistoryListener(listenerMiddlewareInstance)
+
+      jest.clearAllMocks()
+    })
+
+    it('should dispatch SUCCESS event if tx is pending', () => {
+      const state = {
+        pendingTxs: {
+          '0x123': {
+            chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000000',
+            status: PendingStatus.INDEXING,
+            groupKey: 'groupKey',
           },
-        },
+        } as PendingTxsState,
+      } as RootState
+
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
       }
-      invoke(action)
-      expect(next).toHaveBeenCalledWith(action)
+
+      const transaction = {
+        type: TransactionListItemType.TRANSACTION,
+        transaction: {
+          id: '0x123',
+        },
+      } as TransactionListItem
+
+      const action = txHistorySlice.actions.set({
+        loading: false,
+        data: {
+          results: [transaction],
+        },
+      })
+
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
+      expect(txDispatchSpy).toHaveBeenCalledWith(txEvents.TxEvent.SUCCESS, {
+        txId: '0x123',
+        groupKey: 'groupKey',
+      })
+    })
+
+    it('should not dispatch an event if the history slice is cleared', () => {
+      const state = {
+        pendingTxs: {
+          '0x123': {
+            chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000000',
+            status: PendingStatus.INDEXING,
+            groupKey: 'groupKey',
+          },
+        } as PendingTxsState,
+      } as RootState
+
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
+      }
+
+      const transaction = {
+        type: TransactionListItemType.TRANSACTION,
+        transaction: {
+          id: '0x123',
+        },
+      } as TransactionListItem
+
+      const action = txHistorySlice.actions.set({
+        loading: false,
+        data: undefined, // Cleared
+      })
+
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
       expect(txDispatchSpy).not.toHaveBeenCalled()
     })
-    it('should dispatch SUCCESS event if tx is pending', () => {
-      const { next, invoke } = create()
-      const action = {
-        type: txHistorySlice.actions.set.type,
-        payload: {
-          data: {
-            results: [
-              {
-                type: TransactionListItemType.TRANSACTION,
-                transaction: {
-                  id: '0x123',
-                },
-              },
-            ],
+
+    it('should not dispatch an event for date labels, labels or conflict headers', () => {
+      const state = {
+        pendingTxs: {
+          '0x123': {
+            chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000000',
+            status: PendingStatus.INDEXING,
+            groupKey: '',
           },
-        },
+        } as PendingTxsState,
+      } as RootState
+
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
       }
-      invoke(action)
-      expect(next).toHaveBeenCalledWith(action)
-      expect(txDispatchSpy).toHaveBeenCalledWith(TxEvent.SUCCESS, { txId: '0x123', groupKey: '0x123456' })
+
+      const dateLabel: DateLabel = {
+        type: TransactionListItemType.DATE_LABEL,
+        timestamp: 0,
+      }
+
+      const label: Label = {
+        label: LabelValue.Queued,
+        type: TransactionListItemType.LABEL,
+      }
+
+      const conflictHeader: ConflictHeader = {
+        nonce: 0,
+        type: TransactionListItemType.CONFLICT_HEADER,
+      }
+
+      const action = txHistorySlice.actions.set({
+        loading: false,
+        data: {
+          results: [dateLabel, label, conflictHeader],
+        },
+      })
+
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
+      expect(txDispatchSpy).not.toHaveBeenCalled()
+    })
+
+    it('should not dispatch an event if tx is not pending', () => {
+      const state = {
+        pendingTxs: {
+          '0x123': {
+            chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000000',
+            status: PendingStatus.INDEXING,
+            groupKey: '',
+          },
+        } as PendingTxsState,
+      } as RootState
+
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
+      }
+
+      const transaction = {
+        type: TransactionListItemType.TRANSACTION,
+        transaction: {
+          id: '0x456',
+        },
+      } as TransactionListItem
+
+      const action = txHistorySlice.actions.set({
+        loading: false,
+        data: {
+          results: [transaction],
+        },
+      })
+
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
+      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
   })
 })

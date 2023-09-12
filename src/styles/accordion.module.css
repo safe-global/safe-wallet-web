@@ -1,0 +1,5 @@
+/* TODO: Apply this style in the MUI theme once its part of this repository */
+
+.accordion {
+  min-height: 56px !important;
+}

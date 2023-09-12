@@ -1,10 +1,9 @@
+import * as constants from '../support/constants'
+
 const TEST_SAFE = 'rin:0x11Df0fa87b30080d59eba632570f620e37f2a8f7'
-const RECIPIENT_ADDRESS = '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC'
 
 describe('Tx Simulation', () => {
   before(() => {
-    cy.connectE2EWallet()
-
     // Open the Safe used for testing
     cy.visit(`/${TEST_SAFE}/home`, { failOnStatusCode: false })
     cy.contains('button', 'Accept selection').click()
@@ -15,7 +14,7 @@ describe('Tx Simulation', () => {
 
     // Choose recipient
     cy.get('input[name="recipient"]').should('be.visible')
-    cy.get('input[name="recipient"]').type(RECIPIENT_ADDRESS, { force: true })
+    cy.get('input[name="recipient"]').type(constants.RECIPIENT_ADDRESS, { force: true })
 
     // Select asset and amount
     cy.get('input[name="tokenAddress"]').parent().click()

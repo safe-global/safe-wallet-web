@@ -1,8 +1,8 @@
-import { TEST_SAFE } from './constants'
+import * as constants from '../../support/constants'
 
 describe('The Safe Apps list', () => {
   before(() => {
-    cy.visit(`/${TEST_SAFE}/apps`, { failOnStatusCode: false })
+    cy.visit(`/${constants.TEST_SAFE_2}/apps`, { failOnStatusCode: false })
     cy.findByText(/accept selection/i).click()
   })
 
@@ -22,7 +22,7 @@ describe('The Safe Apps list', () => {
 
     it('should show a not found text when no match', () => {
       cy.findByRole('textbox').clear().type('atextwithoutresults')
-      cy.findByText(/no apps found/i).should('exist')
+      cy.findByText(/no Safe Apps found/i).should('exist')
     })
   })
 
@@ -31,7 +31,8 @@ describe('The Safe Apps list', () => {
       cy.findByRole('textbox').clear()
       cy.findByLabelText(/pin walletconnect/i).click()
       cy.findByLabelText(/pin transaction builder/i).click()
-      cy.findByText('Pinned apps (2)').should('exist')
+      cy.findByText(/bookmarked Apps/i).click()
+      cy.findByText('ALL (2)').should('exist')
     })
 
     it('should allow to unpin apps', () => {
@@ -41,7 +42,7 @@ describe('The Safe Apps list', () => {
       cy.findAllByLabelText(/unpin transaction builder/i)
         .first()
         .click()
-      cy.findByText(/pinned apps.*0/i).should('exist')
+      cy.findByText('ALL (0)').should('exist')
     })
   })
 
@@ -50,9 +51,9 @@ describe('The Safe Apps list', () => {
       cy.intercept('GET', 'https://my-invalid-custom-app.com/manifest.json', {
         name: 'My Custom App',
       })
-
-      cy.findByText(/add custom app/i).click({ force: true })
-      cy.findByLabelText(/app url/i)
+      cy.findByText(/my custom Apps/i).click()
+      cy.findByText(/add custom Safe App/i).click({ force: true })
+      cy.findByLabelText(/Safe App url/i)
         .clear()
         .type('https://my-invalid-custom-app.com')
       cy.contains("The app doesn't support Safe App functionality").should('exist')
@@ -65,13 +66,14 @@ describe('The Safe Apps list', () => {
         icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
       })
 
-      cy.findByLabelText(/app url/i)
+      cy.findByLabelText(/Safe App url/i)
         .clear()
         .type('https://my-valid-custom-app.com')
       cy.findByRole('heading', { name: /my custom app/i }).should('exist')
       cy.findByRole('checkbox').click()
       cy.findByRole('button', { name: /add/i }).click()
-      cy.findByText(/pinned apps \(0\)/i).should('exist')
+      cy.findByText('ALL (1)').should('exist')
+      cy.findByText(/my custom app description/i).should('exist')
     })
   })
 })

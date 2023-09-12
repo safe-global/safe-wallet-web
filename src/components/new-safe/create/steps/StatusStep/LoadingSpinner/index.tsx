@@ -1,7 +1,6 @@
 import { Box } from '@mui/material'
 import css from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner/styles.module.css'
 import classnames from 'classnames'
-import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { useCallback, useEffect, useRef } from 'react'
 
 const rectTlEndTransform = 'translateX(0) translateY(20px) scaleY(1.1)'
@@ -30,9 +29,16 @@ const moveToEnd = (transformEnd: string, element: HTMLDivElement | null) => {
   }
 }
 
-const LoadingSpinner = ({ status }: { status: SafeCreationStatus }) => {
-  const isError = status >= SafeCreationStatus.WALLET_REJECTED && status <= SafeCreationStatus.TIMEOUT
-  const isSuccess = status >= SafeCreationStatus.SUCCESS
+export enum SpinnerStatus {
+  ERROR = 'isError',
+  SUCCESS = 'isSuccess',
+  PROCESSING = 'isProcessing',
+}
+
+const LoadingSpinner = ({ status }: { status: SpinnerStatus }) => {
+  // TODO: only monitoring the PendingTxs we can't determine the transaction's result
+  const isError = status === SpinnerStatus.ERROR
+  const isSuccess = status === SpinnerStatus.SUCCESS
 
   const rectTl = useRef<HTMLDivElement>(null)
   const rectTr = useRef<HTMLDivElement>(null)

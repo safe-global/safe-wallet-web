@@ -148,9 +148,15 @@ describe('EthHashInfo', () => {
 
   describe('name', () => {
     it('renders a name by default', () => {
-      const { queryByText } = render(<EthHashInfo address={MOCK_SAFE_ADDRESS} name="Test" />)
+      const { queryByText } = render(<EthHashInfo address="0x1234" name="Test name" />)
 
-      expect(queryByText('Test')).toBeInTheDocument()
+      expect(queryByText('Test name')).toBeInTheDocument()
+    })
+
+    it('renders a name from the address book even if a name is passed', () => {
+      const { queryByText } = render(<EthHashInfo address={MOCK_SAFE_ADDRESS} name="Fallback name" />)
+
+      expect(queryByText('Address book name')).toBeInTheDocument()
     })
 
     it('renders a name from the address book', () => {

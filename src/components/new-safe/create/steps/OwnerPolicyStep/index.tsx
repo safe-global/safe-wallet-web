@@ -1,4 +1,4 @@
-import { Button, SvgIcon, MenuItem, Select, Tooltip, Typography, Divider, Box } from '@mui/material'
+import { Button, SvgIcon, MenuItem, Tooltip, Typography, Divider, Box, Grid, TextField } from '@mui/material'
 import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import type { ReactElement } from 'react'
 
@@ -11,7 +11,6 @@ import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafe
 import { useSafeSetupHints } from '@/components/new-safe/create/steps/OwnerPolicyStep/useSafeSetupHints'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import css from '@/components/new-safe/create/steps/OwnerPolicyStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
@@ -113,9 +112,9 @@ const OwnerPolicyStep = ({
           </Button>
           <Box p={2} mt={3} sx={{ backgroundColor: 'background.main', borderRadius: '8px' }}>
             <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
-              Safe Mobile owner key (optional){' '}
+              {'Safe{Wallet}'} mobile owner key (optional){' '}
               <Tooltip
-                title="The Safe Mobile app allows for the generation of owner keys that you can add to this or an existing Safe."
+                title="The Safe{Wallet} mobile app allows for the generation of owner keys that you can add to this or an existing Safe Account."
                 arrow
                 placement="top"
               >
@@ -133,7 +132,7 @@ const OwnerPolicyStep = ({
           <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
             Threshold
             <Tooltip
-              title="The threshold of a Safe specifies how many owners need to confirm a Safe transaction before it can be executed."
+              title="The threshold of a Safe Account specifies how many owners need to confirm a Safe Account transaction before it can be executed."
               arrow
               placement="top"
             >
@@ -145,22 +144,26 @@ const OwnerPolicyStep = ({
           <Typography variant="body2" mb={2}>
             Any transaction requires the confirmation of:
           </Typography>
-          <Box display="flex" alignItems="center">
-            <Controller
-              name={OwnerPolicyStepFields.threshold}
-              control={control}
-              render={({ field }) => (
-                <Select {...field} className={css.select}>
-                  {ownerFields.map(({ id }, i) => (
-                    <MenuItem key={id} value={i + 1}>
-                      {i + 1}
-                    </MenuItem>
-                  ))}
-                </Select>
-              )}
-            />{' '}
-            out of {ownerFields.length} owner(s).
-          </Box>
+          <Grid container direction="row" alignItems="center" gap={2} pt={1}>
+            <Grid item>
+              <Controller
+                control={control}
+                name="threshold"
+                render={({ field }) => (
+                  <TextField select {...field}>
+                    {ownerFields.map((_, idx) => (
+                      <MenuItem key={idx + 1} value={idx + 1}>
+                        {idx + 1}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+            </Grid>
+            <Grid item>
+              <Typography>out of {ownerFields.length} owner(s)</Typography>
+            </Grid>
+          </Grid>
 
           {isWrongChain && <NetworkWarning />}
         </Box>

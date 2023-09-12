@@ -27,7 +27,9 @@ import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import { LOAD_SAFE_EVENTS, trackEvent } from '@/services/analytics'
-import ExternalLink from '@/components/common/ExternalLink'
+import { AppRoutes } from '@/config/routes'
+import MUILink from '@mui/material/Link'
+import Link from 'next/link'
 
 enum Field {
   name = 'name',
@@ -67,13 +69,13 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
 
   const validateSafeAddress = async (address: string) => {
     if (addedSafes && Object.keys(addedSafes).includes(address)) {
-      return 'Safe is already added'
+      return 'Safe Account is already added'
     }
 
     try {
       await getSafeInfo(currentChainId, address)
     } catch (error) {
-      return 'Address given is not a valid Safe address'
+      return 'Address given is not a valid Safe Account address'
     }
   }
 
@@ -133,11 +135,18 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
             </Grid>
           </Grid>
 
-          <AddressInput label="Safe" validate={validateSafeAddress} name={Field.address} />
+          <AddressInput label="Safe Account" validate={validateSafeAddress} name={Field.address} />
 
           <Typography mt={4}>
-            By continuing you consent to the <ExternalLink href="https://safe.global/terms">terms of use</ExternalLink>{' '}
-            and <ExternalLink href="https://safe.global/privacy">privacy policy</ExternalLink>.
+            By continuing you consent to the{' '}
+            <Link href={AppRoutes.terms} passHref legacyBehavior>
+              <MUILink>terms of use</MUILink>
+            </Link>{' '}
+            and{' '}
+            <Link href={AppRoutes.privacy} passHref legacyBehavior>
+              <MUILink>privacy policy</MUILink>
+            </Link>
+            .
           </Typography>
         </Box>
 

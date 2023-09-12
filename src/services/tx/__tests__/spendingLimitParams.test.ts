@@ -1,4 +1,4 @@
-import type { NewSpendingLimitData } from '@/components/settings/SpendingLimits/NewSpendingLimit'
+import type { NewSpendingLimitFlowProps } from '@/components/tx-flow/flows/NewSpendingLimit'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import * as safeCoreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import * as spendingLimit from '@/services/contracts/spendingLimitContracts'
@@ -8,7 +8,7 @@ import type Safe from '@safe-global/safe-core-sdk'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { createNewSpendingLimitTx } from '@/services/tx/tx-sender'
 
-const mockData: NewSpendingLimitData = {
+const mockData: NewSpendingLimitFlowProps = {
   beneficiary: ZERO_ADDRESS,
   tokenAddress: ZERO_ADDRESS,
   amount: '1',
@@ -72,7 +72,7 @@ describe('createNewSpendingLimitTx', () => {
     const mockSpendingLimits: SpendingLimitState[] = [
       {
         beneficiary: ZERO_ADDRESS,
-        token: '0x10',
+        token: { address: '0x10', decimals: 18, symbol: 'TST' },
         amount: '1',
         resetTimeMin: '0',
         lastResetMin: '0',
@@ -90,7 +90,7 @@ describe('createNewSpendingLimitTx', () => {
   it('creates a tx to reset an existing allowance if some of the allowance was already spent', async () => {
     const existingSpendingLimitMock = {
       beneficiary: ZERO_ADDRESS,
-      token: '0x10',
+      token: { address: '0x10', decimals: 18, symbol: 'TST' },
       amount: '1',
       resetTimeMin: '0',
       lastResetMin: '0',
@@ -107,7 +107,7 @@ describe('createNewSpendingLimitTx', () => {
   it('does not create a tx to reset an existing allowance if none was spent', async () => {
     const existingSpendingLimitMock = {
       beneficiary: ZERO_ADDRESS,
-      token: '0x10',
+      token: { address: '0x10', decimals: 18, symbol: 'TST' },
       amount: '1',
       resetTimeMin: '0',
       lastResetMin: '0',

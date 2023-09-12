@@ -1,10 +1,10 @@
 import { type ReactElement, memo } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Alert, AlertTitle, Box, Grid, Typography } from '@mui/material'
+import { Grid, Skeleton, Typography } from '@mui/material'
 import AssetsHeader from '@/components/balances/AssetsHeader'
 import NftCollections from '@/components/nfts/NftCollections'
-import { AppCard } from '@/components/safe-apps/AppCard'
+import SafeAppCard from '@/components/safe-apps/SafeAppCard'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
@@ -12,24 +12,30 @@ import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 const NftApps = memo(function NftApps(): ReactElement | null {
   const [nftApps] = useRemoteSafeApps(SafeAppsTag.NFT)
 
-  if (!nftApps?.length) {
+  if (nftApps?.length === 0) {
     return null
   }
 
   return (
-    <Box mb={4}>
-      <Typography component="h2" variant="subtitle1" fontWeight={700} my={2}>
+    <Grid item sm={12} lg={3} order={{ lg: 1 }}>
+      <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2} mt={0.75}>
         NFT Safe Apps
       </Typography>
 
       <Grid container spacing={3}>
-        {nftApps.map((nftApp) => (
-          <Grid item xs={12} md={4} lg={3} key={nftApp.id}>
-            <AppCard safeApp={nftApp} />
+        {nftApps ? (
+          nftApps.map((nftSafeApp) => (
+            <Grid item lg={12} md={4} xs={6} key={nftSafeApp.id}>
+              <SafeAppCard safeApp={nftSafeApp} />
+            </Grid>
+          ))
+        ) : (
+          <Grid item lg={12} md={4} xs={6}>
+            <Skeleton variant="rounded" height="245px" />
           </Grid>
-        ))}
+        )}
       </Grid>
-    </Box>
+    </Grid>
   )
 })
 
@@ -37,20 +43,19 @@ const NFTs: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Safe – NFTs</title>
+        <title>{'Safe{Wallet} – NFTs'}</title>
       </Head>
 
       <AssetsHeader />
 
       <main>
-        <Alert severity="info" sx={{ marginBottom: 6 }}>
-          <AlertTitle>Use Safe Apps to view your NFT portfolio</AlertTitle>
-          Get the most optimal experience with Safe Apps. View your collections, buy or sell NFTs, and more.
-        </Alert>
+        <Grid container spacing={3}>
+          <NftApps />
 
-        <NftApps />
-
-        <NftCollections />
+          <Grid item xs>
+            <NftCollections />
+          </Grid>
+        </Grid>
       </main>
     </>
   )

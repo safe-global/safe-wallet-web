@@ -17,12 +17,14 @@
   margin-top: 10px;
   margin-bottom: 16px;
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
 .iconButton {
   border-radius: 4px;
   padding: 6px;
+  color: var(--color-primary-main);
   background-color: var(--color-background-main);
   width: 32px;
   height: 32px;

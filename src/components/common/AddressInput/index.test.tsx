@@ -83,13 +83,6 @@ describe('AddressInput tests', () => {
     const { input, utils } = setup('')
 
     act(() => {
-      fireEvent.change(input, { target: { value: `xyz:${TEST_ADDRESS_A}` } })
-      jest.advanceTimersByTime(1000)
-    })
-
-    await waitFor(() => expect(utils.getByLabelText('Invalid chain prefix "xyz"', { exact: false })).toBeDefined())
-
-    act(() => {
       fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
       jest.advanceTimersByTime(1000)
     })
@@ -201,7 +194,7 @@ describe('AddressInput tests', () => {
     expect(input.previousElementSibling?.textContent).toBe('gor:')
   })
 
-  it('should not show adornment when the value contains correct prefix', async () => {
+  it('should not show the adornment prefix when the value contains correct prefix', async () => {
     ;(useCurrentChain as jest.Mock).mockImplementation(() => ({
       shortName: 'gor',
       chainId: '5',
@@ -215,7 +208,7 @@ describe('AddressInput tests', () => {
       fireEvent.change(input, { target: { value: `gor:${TEST_ADDRESS_B}` } })
     })
 
-    await waitFor(() => expect(input.previousElementSibling).toBe(null))
+    await waitFor(() => expect(input.previousElementSibling?.textContent).toBe(''))
   })
 
   it('should keep a bare address in the form state', async () => {
@@ -249,5 +242,22 @@ describe('AddressInput tests', () => {
     })
 
     expect(methods.getValues().recipient).toBe(TEST_ADDRESS_A)
+  })
+
+  it('should clean up the input value if it contains a valid address', async () => {
+    ;(useCurrentChain as jest.Mock).mockImplementation(() => ({
+      shortName: 'gor',
+      chainId: '5',
+      chainName: 'Goerli',
+      features: [],
+    }))
+
+    const { input } = setup(``)
+
+    act(() => {
+      fireEvent.change(input, { target: { value: `Here's my address: ${TEST_ADDRESS_A}` } })
+    })
+
+    await waitFor(() => expect(input.value).toBe(TEST_ADDRESS_A))
   })
 })

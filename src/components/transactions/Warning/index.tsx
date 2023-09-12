@@ -5,6 +5,7 @@ import type { AlertColor } from '@mui/material'
 import InfoOutlinedIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 const Warning = ({
   title,
@@ -29,20 +30,17 @@ const Warning = ({
   )
 }
 
-const UNEXPECTED_DELEGATE_ARTICLE =
-  'https://help.safe.global/en/articles/6302452-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction'
-
 export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): ReactElement => {
   const severity = showWarning ? 'warning' : 'success'
   return (
     <Warning
       title={
         <>
-          This transaction calls a smart contract that will be able to modify your Safe.
+          This transaction calls a smart contract that will be able to modify your Safe Account.
           {showWarning && (
             <>
               <br />
-              <ExternalLink href={UNEXPECTED_DELEGATE_ARTICLE}>Learn more</ExternalLink>
+              <ExternalLink href={HelpCenterArticle.UNEXPECTED_DELEGATE_CALL}>Learn more</ExternalLink>
             </>
           )}
         </>
@@ -52,6 +50,10 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
     />
   )
 }
+
+export const ApprovalWarning = ({ approvalTxCount }: { approvalTxCount: number }): ReactElement => (
+  <Warning title="" severity="warning" text={`${approvalTxCount} ERC20 approval${approvalTxCount > 1 ? 's' : ''}`} />
+)
 
 export const ThresholdWarning = (): ReactElement => (
   <Warning
