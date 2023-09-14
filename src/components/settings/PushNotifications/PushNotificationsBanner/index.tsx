@@ -41,11 +41,11 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const dismissBanner = useCallback(() => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.DISMISS_BANNER)
 
-    setDismissedBannerPerChain({
-      ...dismissedBannerPerChain,
+    setDismissedBannerPerChain((prev) => ({
+      ...prev,
       [safe.chainId]: true,
-    })
-  }, [dismissedBannerPerChain, safe.chainId, setDismissedBannerPerChain])
+    }))
+  }, [safe.chainId, setDismissedBannerPerChain])
 
   // Click outside to dismiss banner
   useEffect(() => {

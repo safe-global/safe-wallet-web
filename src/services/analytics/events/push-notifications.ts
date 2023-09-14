@@ -11,16 +11,6 @@ export const PUSH_NOTIFICATION_EVENTS = {
     action: 'Click notification',
     category,
   },
-  // User granted notification permissions
-  GRANT_PERMISSION: {
-    action: 'Allow notifications',
-    category,
-  },
-  // User refused notification permissions
-  REJECT_PERMISSION: {
-    action: 'Reject notifications',
-    category,
-  },
   // User registered Safe(s) for notifications
   REGISTER_SAFES: {
     action: 'Register Safe(s) notifications',

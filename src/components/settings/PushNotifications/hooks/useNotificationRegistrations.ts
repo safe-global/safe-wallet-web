@@ -11,7 +11,7 @@ import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import type { NotifiableSafes } from '../logic'
 
-const registrationFlow = async (registrationFn: Promise<void>, callback: () => void) => {
+const registrationFlow = async (registrationFn: Promise<void>, callback: () => void): Promise<boolean> => {
   let success = false
 
   try {
@@ -27,16 +27,19 @@ const registrationFlow = async (registrationFn: Promise<void>, callback: () => v
   if (success) {
     callback()
   }
+
+  return success
 }
+
 export const useNotificationRegistrations = (): {
-  registerNotifications: (safesToRegister: NotifiableSafes, withSignature?: boolean) => Promise<void>
-  unregisterSafeNotifications: (chainId: string, safeAddress: string) => Promise<void>
-  unregisterChainNotifications: (chainId: string) => Promise<void>
+  registerNotifications: (safesToRegister: NotifiableSafes, withSignature?: boolean) => Promise<boolean | undefined>
+  unregisterSafeNotifications: (chainId: string, safeAddress: string) => Promise<boolean | undefined>
+  unregisterChainNotifications: (chainId: string) => Promise<boolean | undefined>
 } => {
   const dispatch = useAppDispatch()
   const web3 = useWeb3()
 
-  const { uuid, _createPreferences, _deletePreferences, _clearPreferences } = useNotificationPreferences()
+  const { uuid, _createPreferences, _deletePreferences, _deleteAllPreferences } = useNotificationPreferences()
 
   const registerNotifications = async (safesToRegister: NotifiableSafes) => {
     if (!uuid || !web3) {
@@ -53,7 +56,7 @@ export const useNotificationRegistrations = (): {
       return registerDevice(payload)
     }
 
-    await registrationFlow(register(), () => {
+    return registrationFlow(register(), () => {
       _createPreferences(safesToRegister)
 
       const totalRegistered = Object.values(safesToRegister).reduce(
@@ -80,7 +83,7 @@ export const useNotificationRegistrations = (): {
 
   const unregisterSafeNotifications = async (chainId: string, safeAddress: string) => {
     if (uuid) {
-      await registrationFlow(unregisterSafe(chainId, safeAddress, uuid), () => {
+      return registrationFlow(unregisterSafe(chainId, safeAddress, uuid), () => {
         _deletePreferences({ [chainId]: [safeAddress] })
         trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_SAFE)
       })
@@ -89,8 +92,8 @@ export const useNotificationRegistrations = (): {
 
   const unregisterChainNotifications = async (chainId: string) => {
     if (uuid) {
-      await registrationFlow(unregisterDevice(chainId, uuid), () => {
-        _clearPreferences()
+      return registrationFlow(unregisterDevice(chainId, uuid), () => {
+        _deleteAllPreferences()
         trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_DEVICE)
       })
     }

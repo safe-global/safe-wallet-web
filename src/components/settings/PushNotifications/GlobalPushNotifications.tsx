@@ -261,13 +261,15 @@ export const GlobalPushNotifications = (): ReactElement | null => {
       return
     }
 
+    // Although the (un-)registration functions will request permission,
+    // we manually change beforehand prevent multiple promises from throwing
     const isGranted = await requestNotificationPermission()
 
     if (!isGranted) {
       return
     }
 
-    const registrationPromises: Array<Promise<void>> = []
+    const registrationPromises: Array<Promise<unknown>> = []
 
     const safesToRegister = getSafesToRegister(selectedSafes, currentNotifiedSafes)
     if (safesToRegister) {

@@ -302,13 +302,13 @@ describe('useNotificationRegistrations', () => {
       unregisterDeviceSpy.mockImplementation(() => Promise.resolve('Unregistration could not be completed.'))
 
       const uuid = self.crypto.randomUUID()
-      const clearPreferencesMock = jest.fn()
+      const deleteAllPreferencesMock = jest.fn()
 
       ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
         () =>
           ({
             uuid,
-            _clearPreferences: clearPreferencesMock,
+            _deleteAllPreferences: deleteAllPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -318,20 +318,20 @@ describe('useNotificationRegistrations', () => {
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
-      expect(clearPreferencesMock).not.toHaveBeenCalled()
+      expect(deleteAllPreferencesMock).not.toHaveBeenCalled()
     })
 
     it('does not clear preferences if unregistration throws', async () => {
       unregisterDeviceSpy.mockImplementation(() => Promise.reject())
 
       const uuid = self.crypto.randomUUID()
-      const clearPreferencesMock = jest.fn()
+      const deleteAllPreferencesMock = jest.fn()
 
       ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
         () =>
           ({
             uuid,
-            _clearPreferences: clearPreferencesMock,
+            _deleteAllPreferences: deleteAllPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -341,20 +341,20 @@ describe('useNotificationRegistrations', () => {
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
-      expect(clearPreferencesMock).not.toHaveBeenCalledWith()
+      expect(deleteAllPreferencesMock).not.toHaveBeenCalledWith()
     })
 
     it('clears preferences if unregistration succeeds', async () => {
       unregisterDeviceSpy.mockImplementation(() => Promise.resolve())
 
       const uuid = self.crypto.randomUUID()
-      const clearPreferencesMock = jest.fn()
+      const deleteAllPreferencesMock = jest.fn()
 
       ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
         () =>
           ({
             uuid,
-            _clearPreferences: clearPreferencesMock,
+            _deleteAllPreferences: deleteAllPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -364,7 +364,7 @@ describe('useNotificationRegistrations', () => {
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
-      expect(clearPreferencesMock).toHaveBeenCalled()
+      expect(deleteAllPreferencesMock).toHaveBeenCalled()
     })
   })
 })

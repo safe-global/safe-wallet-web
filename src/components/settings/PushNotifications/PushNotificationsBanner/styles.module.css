@@ -33,7 +33,6 @@
   font-size: 12px;
   width: var(--space-5);
   height: 24px;
-  z-index: 9999999;
   position: relative;
 }
 

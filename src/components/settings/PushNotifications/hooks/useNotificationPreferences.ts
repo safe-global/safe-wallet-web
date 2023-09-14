@@ -50,7 +50,7 @@ export const useNotificationPreferences = (): {
   ) => void
   _createPreferences: (safesToRegister: NotifiableSafes) => void
   _deletePreferences: (safesToUnregister: NotifiableSafes) => void
-  _clearPreferences: () => void
+  _deleteAllPreferences: () => void
 } => {
   // State
   const uuid = useUuid()
@@ -195,7 +195,7 @@ export const useNotificationPreferences = (): {
   }
 
   // Delete all preferences store entries
-  const clearPreferences = () => {
+  const deleteAllPreferences = () => {
     if (!preferencesStore) {
       return
     }
@@ -212,6 +212,6 @@ export const useNotificationPreferences = (): {
     updatePreferences,
     _createPreferences: createPreferences,
     _deletePreferences: deletePreferences,
-    _clearPreferences: clearPreferences,
+    _deleteAllPreferences: deleteAllPreferences,
   }
 }

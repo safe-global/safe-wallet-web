@@ -216,7 +216,7 @@ describe('useNotificationPreferences', () => {
       })
     })
 
-    it('should clearPreferences preferences, then hydrate the preferences state', async () => {
+    it('should delete all preferences, then hydrate the preferences state', async () => {
       const chainId1 = '1'
       const safeAddress1 = hexZeroPad('0x1', 20)
       const safeAddress2 = hexZeroPad('0x1', 20)

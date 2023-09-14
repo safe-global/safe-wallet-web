@@ -5,8 +5,6 @@ import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typ
 import type { Web3Provider } from '@ethersproject/providers'
 
 import { FIREBASE_VAPID_KEY, initializeFirebaseApp } from '@/services/push-notifications/firebase'
-import { trackEvent } from '@/services/analytics'
-import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import packageJson from '../../../../package.json'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
@@ -29,15 +27,7 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
     logError(ErrorCodes._400, e)
   }
 
-  const isGranted = permission === 'granted'
-
-  trackEvent(isGranted ? PUSH_NOTIFICATION_EVENTS.GRANT_PERMISSION : PUSH_NOTIFICATION_EVENTS.REJECT_PERMISSION)
-
-  if (!isGranted) {
-    alert('You must allow notifications to register your device.')
-  }
-
-  return isGranted
+  return permission === 'granted'
 }
 
 const getSafeRegistrationSignature = ({

@@ -22,11 +22,11 @@ import { GlobalPushNotifications } from './GlobalPushNotifications'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { IS_DEV } from '@/config/constants'
 import { useAppDispatch } from '@/store'
-import { showNotification } from '@/store/notificationsSlice'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { AppRoutes } from '@/config/routes'
 import CheckWallet from '@/components/common/CheckWallet'
+import { useIsMac } from '@/hooks/useIsMac'
 
 import css from './styles.module.css'
 
@@ -34,6 +34,7 @@ export const PushNotifications = (): ReactElement => {
   const dispatch = useAppDispatch()
   const { safe, safeLoaded } = useSafeInfo()
   const isOwner = useIsSafeOwner()
+  const isMac = useIsMac()
 
   const { updatePreferences, getPreferences, getAllPreferences } = useNotificationPreferences()
   const { unregisterSafeNotifications, unregisterChainNotifications, registerNotifications } =
@@ -45,7 +46,6 @@ export const PushNotifications = (): ReactElement => {
     updatePreferences(safe.chainId, safe.address.value, newPreferences)
   }
 
-  const isMac = typeof navigator !== 'undefined' && navigator.userAgent.includes('Mac')
   const shouldShowMacHelper = isMac || IS_DEV
 
   const handleOnChange = async () => {
@@ -216,28 +216,29 @@ export const PushNotifications = (): ReactElement => {
                   control={
                     <Checkbox
                       checked={preferences[WebhookType.CONFIRMATION_REQUEST]}
-                      onChange={async (_, checked) => {
-                        registerNotifications({
-                          [safe.chainId]: [safe.address.value],
-                        })
-                          .then(() => {
-                            setPreferences({
-                              ...preferences,
-                              [WebhookType.CONFIRMATION_REQUEST]: checked,
-                            })
-
-                            trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_CONFIRMATION_REQUEST, label: checked })
-
-                            dispatch(
-                              showNotification({
-                                message:
-                                  'You will now receive notifications about confirmation requests for this Safe Account in your browser.',
-                                variant: 'success',
-                                groupKey: 'notifications',
-                              }),
-                            )
+                      onChange={(_, checked) => {
+                        const updateConfirmationRequestPreferences = () => {
+                          setPreferences({
+                            ...preferences,
+                            [WebhookType.CONFIRMATION_REQUEST]: checked,
                           })
-                          .catch(() => null)
+
+                          trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_CONFIRMATION_REQUEST, label: checked })
+                        }
+
+                        if (checked) {
+                          registerNotifications({
+                            [safe.chainId]: [safe.address.value],
+                          })
+                            .then((registered) => {
+                              if (registered) {
+                                updateConfirmationRequestPreferences()
+                              }
+                            })
+                            .catch(() => null)
+                        } else {
+                          updateConfirmationRequestPreferences()
+                        }
                       }}
                     />
                   }
