@@ -29,6 +29,8 @@ export class SafeWalletProvider {
   async request(request: RpcRequest): Promise<unknown> {
     const { method, params = [] } = request
 
+    console.log('SafeWalletProvider request', request)
+
     switch (method) {
       case 'eth_accounts':
         return [this.safe.safeAddress]
@@ -78,6 +80,7 @@ export class SafeWalletProvider {
       }
 
       case 'eth_sendTransaction':
+        console.log(params)
         const tx = {
           value: '0',
           data: '0x',

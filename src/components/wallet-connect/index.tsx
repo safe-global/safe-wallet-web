@@ -39,24 +39,17 @@ const extractInformationFromProposal = (sessionProposal: Web3WalletTypes.Session
 export const ConnectWC = () => {
   const [openModal, setOpenModal] = useState(false)
   const [wcConnectUrl, setWcConnectUrl] = useState('')
-  const [isConnecting, setIsConnecting] = useState(false)
   const { wcConnect, wcDisconnect, wcClientData, wcApproveSession, acceptInvalidSession, wcState, sessionProposal } =
     useWalletConnect()
   const anchorElem = useRef<HTMLButtonElement | null>(null)
   const chains = useChains()
   const { safe } = useSafeInfo()
 
-  const isConnected = !!wcClientData
-
   const proposalInfo = extractInformationFromProposal(sessionProposal)
 
   const unsupportedChains = proposalInfo?.requiredNamespaces.chains?.find(
     (chain) => safe.chainId !== chain.slice(EVMBasedNamespaces.length + 1),
   )
-
-  console.log('Unsupported chains', unsupportedChains)
-
-  console.log('WcClientData', wcClientData)
 
   const handleWidgetIconClick = () => {
     setOpenModal((prev) => !prev)
@@ -65,7 +58,6 @@ export const ConnectWC = () => {
   const onConnect = useCallback(
     async (uri: string) => {
       await wcConnect(uri)
-      setIsConnecting(false)
     },
     [wcConnect],
   )
@@ -79,7 +71,6 @@ export const ConnectWC = () => {
     (event: React.ClipboardEvent) => {
       const connectWithUri = (data: string) => {
         if (data.startsWith('wc')) {
-          setIsConnecting(true)
           onConnect(data)
         }
       }

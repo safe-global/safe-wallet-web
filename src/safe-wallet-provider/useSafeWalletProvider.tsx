@@ -6,9 +6,11 @@ import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
 import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import SafeAppsTxFlow from '@/components/tx-flow/flows/SafeAppsTx'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
-import type { BaseTransaction, EIP712TypedData } from '@safe-global/safe-apps-sdk'
+import type { EIP712TypedData } from '@safe-global/safe-apps-sdk'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { getAddress } from 'ethers/lib/utils'
+import { BigNumber } from 'ethers'
 
 const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
   const { safe, safeAddress } = useSafeInfo()
@@ -40,15 +42,24 @@ const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
         return this.signMessage(typedData as EIP712TypedData)
       },
 
-      async send(params: { txs: unknown[]; params: { safeTxGas: number } }): Promise<{ safeTxHash: string }> {
+      async send(params: { txs: any[]; params: { safeTxGas: number } }): Promise<{ safeTxHash: string }> {
         const id = Math.random().toString(36).slice(2)
+        console.log('Opening tx flow', params)
+
+        const transactions = params.txs.map(({ to, value, data }) => {
+          return {
+            to: getAddress(to),
+            value: BigNumber.from(value).toString(),
+            data,
+          }
+        })
 
         setTxFlow(
           <SafeAppsTxFlow
             data={{
               appId: undefined,
               requestId: id,
-              txs: params.txs as BaseTransaction[],
+              txs: transactions,
               params: params.params,
             }}
           />,
