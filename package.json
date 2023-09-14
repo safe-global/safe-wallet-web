@@ -112,7 +112,6 @@
     "@types/react-qr-reader": "^2.1.4",
     "@types/semver": "^7.3.10",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
-    "@walletconnect/types": "^2.10.0",
     "cross-env": "^7.0.3",
     "cypress": "^11.1.0",
     "cypress-file-upload": "^5.0.8",
@@ -129,6 +128,7 @@
     "ts-prune": "^0.10.3",
     "typechain": "^8.0.0",
     "typescript": "4.9.4",
-    "typescript-plugin-css-modules": "^4.2.2"
+    "typescript-plugin-css-modules": "^4.2.2",
+    "walletconnect-v2-types": "npm:@walletconnect/types@^2.10.0"
   }
 }

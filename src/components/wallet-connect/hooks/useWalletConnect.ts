@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import type { SignClientTypes, SessionTypes } from '@walletconnect/types'
+import type { SignClientTypes, SessionTypes } from 'walletconnect-v2-types'
 import { Core } from '@walletconnect/core'
 import type Web3WalletType from '@walletconnect/web3wallet'
 import { Web3Wallet, type Web3WalletTypes } from '@walletconnect/web3wallet'
@@ -234,7 +234,6 @@ const useWalletConnect = (): useWalletConnectType => {
       (requiredChain) => `${requiredChain ?? safeChain}:${safe.address.value}`,
     )
 
-    console.log('Approving these safe addresses: ', safeOnRequiredChains)
     let wcSession: SessionTypes.Struct
     try {
       wcSession = await web3wallet.approveSession({
