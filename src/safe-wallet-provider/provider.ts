@@ -16,10 +16,6 @@ interface RpcRequest {
   params?: unknown[]
 }
 
-export type ProviderChainId = string
-
-export type ProviderAccounts = string[]
-
 export class SafeWalletProvider {
   private readonly safe: SafeInfo
   private readonly sdk: WalletSDK
