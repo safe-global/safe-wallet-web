@@ -27,11 +27,11 @@ const TokenAmount = ({
   const amount = decimals ? formatVisualAmount(value, decimals) : value
 
   return (
-    <span className={classNames(css.container, { [css.verticalAlign]: logoUri, [hdCss.method]: logoUri })}>
+    <strong className={classNames(css.container, { [css.verticalAlign]: logoUri, [hdCss.method]: logoUri })}>
       {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} fallbackSrc={fallbackSrc} size={size} />}
       {sign}
       {amount} {tokenSymbol}
-    </span>
+    </strong>
   )
 }
 

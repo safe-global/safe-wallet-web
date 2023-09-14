@@ -51,8 +51,8 @@ describe('Create batch transaction', () => {
     cy.contains('Confirm batch').click()
     cy.contains(`This batch contains ${transactionsInBatchList} transactions`).should('be.visible')
     cy.contains(funds_first_tx).parents('ul').as('TransactionList')
-    cy.get('@TransactionList').find('li').eq(0).find('span').eq(0).contains(funds_first_tx)
-    cy.get('@TransactionList').find('li').eq(1).find('span').eq(0).contains(funds_second_tx)
+    cy.get('@TransactionList').find('li').eq(0).find('strong').eq(0).contains(funds_first_tx)
+    cy.get('@TransactionList').find('li').eq(1).find('strong').eq(0).contains(funds_second_tx)
   })
 
   it('Should remove a transaction from the batch', () => {

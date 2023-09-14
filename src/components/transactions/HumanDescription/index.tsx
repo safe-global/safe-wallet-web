@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material'
 import {
   type RichAddressFragment,
   type RichDecodedInfo,
@@ -6,9 +5,10 @@ import {
   RichFragmentType,
 } from '@safe-global/safe-gateway-typescript-sdk/dist/types/human-description'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import TokenIcon from '@/components/common/TokenIcon'
 import css from './styles.module.css'
 import useAddressBook from '@/hooks/useAddressBook'
+import TokenAmount from '@/components/common/TokenAmount'
+import React from 'react'
 
 const AddressFragment = ({ fragment }: { fragment: RichAddressFragment }) => {
   const addressBook = useAddressBook()
@@ -21,23 +21,20 @@ const AddressFragment = ({ fragment }: { fragment: RichAddressFragment }) => {
 }
 
 const TokenValueFragment = ({ fragment }: { fragment: RichTokenValueFragment }) => {
-  const address = (
-    <>
-      <TokenIcon logoUri={fragment.logoUri || undefined} tokenSymbol={fragment.symbol || undefined} size={20} />
-      {fragment.symbol}
-    </>
-  )
-
   return (
-    <Typography className={css.value}>
-      {fragment.value} {address}
-    </Typography>
+    <TokenAmount
+      value={fragment.value}
+      direction={undefined}
+      logoUri={fragment.logoUri || undefined}
+      tokenSymbol={fragment.symbol || undefined}
+      size={20}
+    />
   )
 }
 
 export const HumanDescription = ({ fragments }: RichDecodedInfo) => {
   return (
-    <div className={css.wrapper}>
+    <>
       {fragments.map((fragment) => {
         switch (fragment.type) {
           case RichFragmentType.Text:
@@ -48,6 +45,6 @@ export const HumanDescription = ({ fragments }: RichDecodedInfo) => {
             return <TokenValueFragment fragment={fragment} />
         }
       })}
-    </div>
+    </>
   )
 }

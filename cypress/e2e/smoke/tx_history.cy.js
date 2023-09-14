@@ -36,7 +36,7 @@ describe('Transaction history', () => {
 
         // Info
         cy.get('img[alt="GOR"]').should('be.visible')
-        cy.contains('span', '0.25 GOR').should('exist')
+        cy.contains('0.25 GOR').should('exist')
 
         // Time
         cy.contains('span', '4:56 PM').should('exist')
@@ -109,7 +109,7 @@ describe('Transaction history', () => {
         cy.contains('div', 'Send').should('exist')
 
         // Info
-        cy.contains('span', '0.11 WETH').should('exist')
+        cy.contains('0.11 WETH').should('exist')
 
         // Time
         cy.contains('span', '5:01 PM').should('exist')
@@ -124,7 +124,7 @@ describe('Transaction history', () => {
         cy.contains('div', 'Receive').should('exist')
 
         // Info
-        cy.contains('span', '120,497.61 DAI').should('exist')
+        cy.contains('120,497.61 DAI').should('exist')
 
         // Time
         cy.contains('span', '5:01 PM').should('exist')
