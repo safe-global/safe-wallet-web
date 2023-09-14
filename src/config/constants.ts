@@ -3,7 +3,7 @@ import chains from './chains'
 export const IS_PRODUCTION = !!process.env.NEXT_PUBLIC_IS_PRODUCTION
 export const IS_DEV = process.env.NODE_ENV === 'development'
 
-export const GATEWAY_URL_PRODUCTION = 'http://localhost:3030'
+export const GATEWAY_URL_PRODUCTION = 'https://safe-client.safe.global'
 export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-client.staging.5afe.dev'
 
 // Magic numbers

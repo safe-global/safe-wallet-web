@@ -1,13 +1,13 @@
+import useSafeWalletProvider from '@/safe-wallet-provider/useSafeWalletProvider'
 import { useEffect, useState, useMemo } from 'react'
 import useSafeInfo from '../useSafeInfo'
-import { useWeb3ReadOnly } from '../wallets/web3'
 import WalletConnectWallet from './WalletConnectWallet'
 
 const useWalletConnect = () => {
   const { safe, safeAddress } = useSafeInfo()
   const chainId = safe?.chainId
   const [wallet, setWallet] = useState<WalletConnectWallet | null>(null)
-  const web3ReadOnly = useWeb3ReadOnly()
+  const safeWalletProvider = useSafeWalletProvider()
 
   // Initialize a WC wallet for the current Safe account
   useEffect(() => {
@@ -25,18 +25,14 @@ const useWalletConnect = () => {
 
   // Subscribe to RPC requests
   useEffect(() => {
-    if (!wallet || !web3ReadOnly) return
+    if (!wallet || !safeWalletProvider) return
 
     wallet.addOnRequest((method, params) => {
       console.log('WalletConnect request', method, params)
 
-      if (method === 'eth_accounts') {
-        return Promise.resolve([safeAddress])
-      }
-
-      return web3ReadOnly?.send(method, params)
+      return safeWalletProvider?.request({ method, params })
     })
-  }, [safeAddress, wallet, web3ReadOnly])
+  }, [safeAddress, wallet, safeWalletProvider])
 
   return useMemo(
     () => ({
