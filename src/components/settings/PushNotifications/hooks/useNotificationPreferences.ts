@@ -15,6 +15,8 @@ import {
   createPushNotificationUuidIndexedDb,
   getPushNotificationPrefsKey,
 } from '@/services/push-notifications/preferences'
+import { logError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import type { PushNotificationPreferences, PushNotificationPrefsKey } from '@/services/push-notifications/preferences'
 import type { NotifiableSafes } from '../logic'
 
@@ -101,7 +103,9 @@ export const useNotificationPreferences = (): {
       .then(() => {
         setUuid(_uuid)
       })
-      .catch(() => null)
+      .catch((e) => {
+        logError(ErrorCodes._705, e)
+      })
   }, [uuidStore])
 
   // Hydrate UUID state
@@ -121,7 +125,9 @@ export const useNotificationPreferences = (): {
       .then((preferencesEntries) => {
         setPreferences(Object.fromEntries(preferencesEntries))
       })
-      .catch(() => null)
+      .catch((e) => {
+        logError(ErrorCodes._705, e)
+      })
   }, [preferencesStore])
 
   // Hydrate preferences state
@@ -130,7 +136,7 @@ export const useNotificationPreferences = (): {
   }, [hydratePreferences])
 
   // Add store entry with default preferences for specified Safe(s)
-  const createPreferences = (safesToRegister: { [chain: string]: Array<string> }) => {
+  const createPreferences = (safesToRegister: NotifiableSafes) => {
     if (!preferencesStore) {
       return
     }
@@ -153,7 +159,9 @@ export const useNotificationPreferences = (): {
 
     setManyIndexedDb(defaultPreferencesEntries, preferencesStore)
       .then(hydratePreferences)
-      .catch(() => null)
+      .catch((e) => {
+        logError(ErrorCodes._706, e)
+      })
   }
 
   // Update preferences for specified Safe
@@ -176,11 +184,13 @@ export const useNotificationPreferences = (): {
 
     setIndexedDb(key, newPreferences, preferencesStore)
       .then(hydratePreferences)
-      .catch(() => null)
+      .catch((e) => {
+        logError(ErrorCodes._706, e)
+      })
   }
 
   // Delete preferences store entry for specified Safe(s)
-  const deletePreferences = (safesToUnregister: { [chain: string]: Array<string> }) => {
+  const deletePreferences = (safesToUnregister: NotifiableSafes) => {
     if (!preferencesStore) {
       return
     }
@@ -191,7 +201,9 @@ export const useNotificationPreferences = (): {
 
     deleteManyFromIndexedDb(keysToDelete, preferencesStore)
       .then(hydratePreferences)
-      .catch(() => null)
+      .catch((e) => {
+        logError(ErrorCodes._706, e)
+      })
   }
 
   // Delete all preferences store entries
@@ -202,7 +214,9 @@ export const useNotificationPreferences = (): {
 
     clearIndexedDb(preferencesStore)
       .then(hydratePreferences)
-      .catch(() => null)
+      .catch((e) => {
+        logError(ErrorCodes._706, e)
+      })
   }
 
   return {

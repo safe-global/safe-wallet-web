@@ -192,7 +192,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   const addedSafes = useAppSelector(selectAllAddedSafes)
 
   const { getAllPreferences } = useNotificationPreferences()
-  const { unregisterChainNotifications, unregisterSafeNotifications, registerNotifications } =
+  const { unregisterDeviceNotifications, unregisterSafeNotifications, registerNotifications } =
     useNotificationRegistrations()
 
   // Safes selected in the UI
@@ -261,8 +261,8 @@ export const GlobalPushNotifications = (): ReactElement | null => {
       return
     }
 
-    // Although the (un-)registration functions will request permission,
-    // we manually change beforehand prevent multiple promises from throwing
+    // Although the (un-)registration functions will request permission in getToken we manually
+    // check beforehand to prevent multiple promises in registrationPromises from throwing
     const isGranted = await requestNotificationPermission()
 
     if (!isGranted) {
@@ -280,7 +280,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     if (safesToUnregister) {
       const unregistrationPromises = Object.entries(safesToUnregister).flatMap(([chainId, safeAddresses]) => {
         if (shouldUnregisterDevice(chainId, safeAddresses, currentNotifiedSafes)) {
-          return unregisterChainNotifications(chainId)
+          return unregisterDeviceNotifications(chainId)
         }
         return safeAddresses.map((safeAddress) => unregisterSafeNotifications(chainId, safeAddress))
       })

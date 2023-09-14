@@ -137,6 +137,26 @@ describe('useNotificationPreferences', () => {
       })
     })
 
+    it('should not create preferences when passed an empty object', async () => {
+      const { result } = renderHook(() => useNotificationPreferences())
+
+      result.current._createPreferences({})
+
+      await waitFor(() => {
+        expect(result.current.getAllPreferences()).toEqual({})
+      })
+    })
+
+    it('should not create preferences when passed an empty array of Safes', async () => {
+      const { result } = renderHook(() => useNotificationPreferences())
+
+      result.current._createPreferences({ ['1']: [] })
+
+      await waitFor(() => {
+        expect(result.current.getAllPreferences()).toEqual({})
+      })
+    })
+
     it('should update preferences, then hydrate the preferences state', async () => {
       const chainId = '1'
       const safeAddress = hexZeroPad('0x1', 20)

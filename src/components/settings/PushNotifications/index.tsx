@@ -11,6 +11,7 @@ import {
   Link as MuiLink,
 } from '@mui/material'
 import Link from 'next/link'
+import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -21,7 +22,6 @@ import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { GlobalPushNotifications } from './GlobalPushNotifications'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { IS_DEV } from '@/config/constants'
-import { useAppDispatch } from '@/store'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { AppRoutes } from '@/config/routes'
@@ -31,27 +31,36 @@ import { useIsMac } from '@/hooks/useIsMac'
 import css from './styles.module.css'
 
 export const PushNotifications = (): ReactElement => {
-  const dispatch = useAppDispatch()
   const { safe, safeLoaded } = useSafeInfo()
   const isOwner = useIsSafeOwner()
   const isMac = useIsMac()
+  const [isRegistering, setIsRegistering] = useState(false)
+  const [isUpdatingIndexedDb, setIsUpdatingIndexedDb] = useState(false)
 
   const { updatePreferences, getPreferences, getAllPreferences } = useNotificationPreferences()
-  const { unregisterSafeNotifications, unregisterChainNotifications, registerNotifications } =
+  const { unregisterSafeNotifications, unregisterDeviceNotifications, registerNotifications } =
     useNotificationRegistrations()
 
   const preferences = getPreferences(safe.chainId, safe.address.value)
 
   const setPreferences = (newPreferences: NonNullable<ReturnType<typeof getPreferences>>) => {
+    setIsUpdatingIndexedDb(true)
+
     updatePreferences(safe.chainId, safe.address.value, newPreferences)
+
+    setIsUpdatingIndexedDb(false)
   }
 
   const shouldShowMacHelper = isMac || IS_DEV
+  const isCheckboxDisabled = isRegistering || isUpdatingIndexedDb
 
   const handleOnChange = async () => {
+    setIsRegistering(true)
+
     if (!preferences) {
       await registerNotifications({ [safe.chainId]: [safe.address.value] })
       trackEvent(PUSH_NOTIFICATION_EVENTS.ENABLE_SAFE)
+      setIsRegistering(false)
       return
     }
 
@@ -62,12 +71,13 @@ export const PushNotifications = (): ReactElement => {
     const shouldUnregisterDevice = totalRegisteredSafesOnChain === 1
 
     if (shouldUnregisterDevice) {
-      await unregisterChainNotifications(safe.chainId)
+      await unregisterDeviceNotifications(safe.chainId)
     } else {
       await unregisterSafeNotifications(safe.chainId, safe.address.value)
     }
 
     trackEvent(PUSH_NOTIFICATION_EVENTS.DISABLE_SAFE)
+    setIsRegistering(false)
   }
 
   return (
@@ -116,7 +126,7 @@ export const PushNotifications = (): ReactElement => {
                         <FormControlLabel
                           control={<Switch checked={!!preferences} onChange={handleOnChange} />}
                           label={preferences ? 'On' : 'Off'}
-                          disabled={!isOk}
+                          disabled={!isOk || isRegistering}
                         />
                       )}
                     </CheckWallet>
@@ -154,6 +164,7 @@ export const PushNotifications = (): ReactElement => {
                   control={
                     <Checkbox
                       checked={preferences[WebhookType.INCOMING_ETHER] && preferences[WebhookType.INCOMING_TOKEN]}
+                      disabled={isUpdatingIndexedDb}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
@@ -178,6 +189,7 @@ export const PushNotifications = (): ReactElement => {
                         preferences[WebhookType.EXECUTED_MULTISIG_TRANSACTION] &&
                         preferences[WebhookType.PENDING_MULTISIG_TRANSACTION]
                       }
+                      disabled={isUpdatingIndexedDb}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
@@ -199,6 +211,7 @@ export const PushNotifications = (): ReactElement => {
                   control={
                     <Checkbox
                       checked={preferences[WebhookType.NEW_CONFIRMATION]}
+                      disabled={isUpdatingIndexedDb}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
@@ -216,6 +229,7 @@ export const PushNotifications = (): ReactElement => {
                   control={
                     <Checkbox
                       checked={preferences[WebhookType.CONFIRMATION_REQUEST]}
+                      disabled={isUpdatingIndexedDb}
                       onChange={(_, checked) => {
                         const updateConfirmationRequestPreferences = () => {
                           setPreferences({

@@ -1,0 +1,136 @@
+/* This file is generated from the MUI theme colors. Do not edit directly. */
+
+:root {
+  --color-text-primary: #121312;
+  --color-text-secondary: #a1a3a7;
+  --color-text-disabled: #dddee0;
+  --color-primary-dark: #3c3c3c;
+  --color-primary-main: #121312;
+  --color-primary-light: #636669;
+  --color-secondary-dark: #0fda6d;
+  --color-secondary-main: #12ff80;
+  --color-secondary-light: #b0ffc9;
+  --color-secondary-background: #effff4;
+  --color-border-main: #a1a3a7;
+  --color-border-light: #dcdee0;
+  --color-border-background: #f4f4f4;
+  --color-error-dark: #ac2c3b;
+  --color-error-main: #ff5f72;
+  --color-error-light: #ffb4bd;
+  --color-error-background: #ffe6ea;
+  --color-success-dark: #028d4c;
+  --color-success-main: #00b460;
+  --color-success-light: #72f5b8;
+  --color-success-background: #f2fff9;
+  --color-info-dark: #52bfdc;
+  --color-info-main: #5fddff;
+  --color-info-light: #b7f0ff;
+  --color-info-background: #effcff;
+  --color-warning-dark: #cd674e;
+  --color-warning-main: #ff8061;
+  --color-warning-light: #ffb7a6;
+  --color-warning-background: #fff0ed;
+  --color-background-default: #f4f4f4;
+  --color-background-main: #f4f4f4;
+  --color-background-paper: #ffffff;
+  --color-background-light: #effff4;
+  --color-backdrop-main: #636669;
+  --color-logo-main: #121312;
+  --color-logo-background: #eeeff0;
+  --color-static-main: #121312;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-11: 88px;
+  --space-12: 96px;
+}
+
+[data-theme='dark'] {
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #636669;
+  --color-text-disabled: #636669;
+  --color-primary-dark: #0cb259;
+  --color-primary-main: #12ff80;
+  --color-primary-light: #a1a3a7;
+  --color-secondary-dark: #636669;
+  --color-secondary-main: #ffffff;
+  --color-secondary-light: #12ff80;
+  --color-secondary-background: #303033;
+  --color-border-main: #636669;
+  --color-border-light: #303033;
+  --color-border-background: #121312;
+  --color-error-dark: #ac2c3b;
+  --color-error-main: #ff5f72;
+  --color-error-light: #ffb4bd;
+  --color-error-background: #2f2527;
+  --color-success-dark: #028d4c;
+  --color-success-main: #00b460;
+  --color-success-light: #81c784;
+  --color-success-background: #1f2920;
+  --color-info-dark: #52bfdc;
+  --color-info-main: #5fddff;
+  --color-info-light: #b7f0ff;
+  --color-info-background: #19252c;
+  --color-warning-dark: #cd674e;
+  --color-warning-main: #ff8061;
+  --color-warning-light: #ffb7a6;
+  --color-warning-background: #2f2318;
+  --color-background-default: #121312;
+  --color-background-main: #121312;
+  --color-background-paper: #1c1c1c;
+  --color-background-light: #1b2a22;
+  --color-backdrop-main: #636669;
+  --color-logo-main: #ffffff;
+  --color-logo-background: #303033;
+  --color-static-main: #121312;
+}
+
+/* The same as above for the brief moment before JS loads */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #636669;
+    --color-text-disabled: #636669;
+    --color-primary-dark: #0cb259;
+    --color-primary-main: #12ff80;
+    --color-primary-light: #a1a3a7;
+    --color-secondary-dark: #636669;
+    --color-secondary-main: #ffffff;
+    --color-secondary-light: #12ff80;
+    --color-secondary-background: #303033;
+    --color-border-main: #636669;
+    --color-border-light: #303033;
+    --color-border-background: #121312;
+    --color-error-dark: #ac2c3b;
+    --color-error-main: #ff5f72;
+    --color-error-light: #ffb4bd;
+    --color-error-background: #2f2527;
+    --color-success-dark: #028d4c;
+    --color-success-main: #00b460;
+    --color-success-light: #81c784;
+    --color-success-background: #1f2920;
+    --color-info-dark: #52bfdc;
+    --color-info-main: #5fddff;
+    --color-info-light: #b7f0ff;
+    --color-info-background: #19252c;
+    --color-warning-dark: #cd674e;
+    --color-warning-main: #ff8061;
+    --color-warning-light: #ffb7a6;
+    --color-warning-background: #2f2318;
+    --color-background-default: #121312;
+    --color-background-main: #121312;
+    --color-background-paper: #1c1c1c;
+    --color-background-light: #1b2a22;
+    --color-backdrop-main: #636669;
+    --color-logo-main: #ffffff;
+    --color-logo-background: #303033;
+    --color-static-main: #121312;
+  }
+}

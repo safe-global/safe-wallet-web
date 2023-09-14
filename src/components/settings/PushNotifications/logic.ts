@@ -45,6 +45,12 @@ const getSafeRegistrationSignature = ({
 }) => {
   const MESSAGE_PREFIX = 'gnosis-safe'
 
+  // Signature must sign `keccack256('gnosis-safe{timestamp-epoch}{uuid}{cloud_messaging_token}{safes_sorted}':
+  //   - `{timestamp-epoch}` must be an integer (no milliseconds)
+  //   - `{safes_sorted}` must be checksummed safe addresses sorted and joined with no spaces
+
+  // @see https://github.com/safe-global/safe-transaction-service/blob/3644c08ac4b01b6a1c862567bc1d1c81b1a8c21f/safe_transaction_service/notifications/views.py#L19-L24
+
   const message = MESSAGE_PREFIX + timestamp + uuid + token + safeAddresses.join('')
   const hashedMessage = keccak256(toUtf8Bytes(message))
 
@@ -79,9 +85,6 @@ export const getRegisterDevicePayload = async ({
   // If uuid is not provided a new device will be created.
   // If a uuid for an existing Safe is provided the FirebaseDevice will be updated with all the new data provided.
   // Safes provided on the request are always added and never removed/replaced
-  // Signature must sign `keccack256('gnosis-safe{timestamp-epoch}{uuid}{cloud_messaging_token}{safes_sorted}':
-  //   - `{timestamp-epoch}` must be an integer (no milliseconds)
-  //   - `{safes_sorted}` must be checksummed safe addresses sorted and joined with no spaces
 
   // @see https://github.com/safe-global/safe-transaction-service/blob/3644c08ac4b01b6a1c862567bc1d1c81b1a8c21f/safe_transaction_service/notifications/views.py#L19-L24
 

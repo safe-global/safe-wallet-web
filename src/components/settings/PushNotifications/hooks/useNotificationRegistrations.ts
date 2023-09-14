@@ -11,7 +11,7 @@ import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import type { NotifiableSafes } from '../logic'
 
-const registrationFlow = async (registrationFn: Promise<void>, callback: () => void): Promise<boolean> => {
+const registrationFlow = async (registrationFn: Promise<unknown>, callback: () => void): Promise<boolean> => {
   let success = false
 
   try {
@@ -34,7 +34,7 @@ const registrationFlow = async (registrationFn: Promise<void>, callback: () => v
 export const useNotificationRegistrations = (): {
   registerNotifications: (safesToRegister: NotifiableSafes, withSignature?: boolean) => Promise<boolean | undefined>
   unregisterSafeNotifications: (chainId: string, safeAddress: string) => Promise<boolean | undefined>
-  unregisterChainNotifications: (chainId: string) => Promise<boolean | undefined>
+  unregisterDeviceNotifications: (chainId: string) => Promise<boolean | undefined>
 } => {
   const dispatch = useAppDispatch()
   const web3 = useWeb3()
@@ -90,7 +90,7 @@ export const useNotificationRegistrations = (): {
     }
   }
 
-  const unregisterChainNotifications = async (chainId: string) => {
+  const unregisterDeviceNotifications = async (chainId: string) => {
     if (uuid) {
       return registrationFlow(unregisterDevice(chainId, uuid), () => {
         _deleteAllPreferences()
@@ -102,6 +102,6 @@ export const useNotificationRegistrations = (): {
   return {
     registerNotifications,
     unregisterSafeNotifications,
-    unregisterChainNotifications,
+    unregisterDeviceNotifications,
   }
 }
