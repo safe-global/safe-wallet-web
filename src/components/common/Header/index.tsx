@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction } from 'react'
+import type { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import { IconButton, Paper } from '@mui/material'
@@ -15,6 +15,7 @@ import SafeLogo from '@/public/images/logo.svg'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import BatchIndicator from '@/components/batch/BatchIndicator'
+import useWalletConnect from '@/hooks/WalletConnect/useWalletConnect'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -26,6 +27,7 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
   const safeAddress = useSafeAddress()
   const showSafeToken = safeAddress && !!getSafeTokenAddress(chainId)
   const router = useRouter()
+  const { connect } = useWalletConnect()
 
   // Logo link: if on Dashboard, link to Welcome, otherwise to the root (which redirects to either Dashboard or Welcome)
   const logoHref = router.pathname === AppRoutes.home ? AppRoutes.welcome : AppRoutes.index
@@ -44,6 +46,10 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
     }
   }
 
+  const onInput = (e: ChangeEvent<HTMLInputElement>) => {
+    connect(e.target.value)
+  }
+
   return (
     <Paper className={css.container}>
       <div className={classnames(css.element, css.menuButton, !onMenuToggle ? css.hideSidebarMobile : null)}>
@@ -56,6 +62,10 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         <Link href={logoHref} passHref>
           <SafeLogo alt="Safe logo" />
         </Link>
+      </div>
+
+      <div className={css.element}>
+        <input onChange={onInput} />
       </div>
 
       {showSafeToken && (
