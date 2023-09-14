@@ -231,21 +231,38 @@ const useWalletConnect = (): useWalletConnectType => {
 
     // We first fake that our Safe is available on all required networks
     const safeOnRequiredChains = requiredChains.map(
-      (requiredChain) => `${requiredChains[0] ?? safeChain}:${safe.address.value}`,
+      (requiredChain) => `${requiredChain ?? safeChain}:${safe.address.value}`,
     )
-    const wcSession = await web3wallet.approveSession({
-      id,
-      namespaces: {
-        eip155: {
-          accounts: safeOnRequiredChains.includes(safeAccount)
-            ? safeOnRequiredChains
-            : [...safeOnRequiredChains, safeAccount], // only the Safe account
-          chains: requiredChains, // only the Safe chain
-          methods: compatibleSafeMethods, // only the Safe methods
-          events: safeEvents,
+
+    console.log('Approving these safe addresses: ', safeOnRequiredChains)
+    let wcSession: SessionTypes.Struct
+    try {
+      wcSession = await web3wallet.approveSession({
+        id,
+        namespaces: {
+          eip155: {
+            accounts: [safeAccount], // only the Safe account
+            chains: [safeChain], // only the Safe chain
+            methods: compatibleSafeMethods, // only the Safe methods
+            events: safeEvents,
+          },
         },
-      },
-    })
+      })
+    } catch (error) {
+      wcSession = await web3wallet.approveSession({
+        id,
+        namespaces: {
+          eip155: {
+            accounts: safeOnRequiredChains.includes(safeAccount)
+              ? safeOnRequiredChains
+              : [...safeOnRequiredChains, safeAccount], // Add all required chains on top
+            chains: requiredChains, // return the required Safes
+            methods: compatibleSafeMethods, // only the Safe methods
+            events: safeEvents,
+          },
+        },
+      })
+    }
 
     // Then we update the session and reduce the Safe to the requested network only
     if (!safeOnRequiredChains.includes(safeAccount) || safeOnRequiredChains.length > 1) {
