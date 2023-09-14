@@ -12,9 +12,18 @@ export const BROWSER_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__browserPermissi
 export const SAFE_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__safePermissions`
 export const INFO_MODAL_KEY = `${LS_NAMESPACE}SafeApps__infoModal`
 
+export const goerlyE2EWallet = /E2E Wallet @ G(ö|oe)rli/
+export const goerlySafeName = /g(ö|oe)rli-safe/
+export const goerliToken = /G(ö|oe)rli Ether/
+
 export const appUrlProd = 'https://safe-test-app.com'
 export const addressBookUrl = '/address-book?safe='
 export const BALANCE_URL = '/balances?safe='
+export const transactionQueueUrl = '/transactions/queue?safe='
+export const openAppsUrl = '/apps/open?safe='
+export const homeUrl = '/home?safe='
+export const welcomeUrl = '/welcome'
+export const proposeEndPoint = '/**/propose'
 
 export const GOERLI_CSV_ENTRY = {
   name: 'goerli user 1',
@@ -23,4 +32,14 @@ export const GOERLI_CSV_ENTRY = {
 export const GNO_CSV_ENTRY = {
   name: 'gno user 1',
   address: '0x61a0c717d18232711bC788F19C9Cd56a43cc8872',
+}
+
+export const networks = {
+  ethereum: 'Ethereum',
+  goerli: /^G(ö|oe)rli$/,
+  sepolia: 'Sepolia',
+}
+
+export const tokenAbbreviation = {
+  gor: 'GOR',
 }
