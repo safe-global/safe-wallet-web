@@ -1,4 +1,3 @@
-import { add } from 'lodash'
 import * as constants from '../../support/constants'
 
 const newAccountBtnStr = 'Create new Account'
