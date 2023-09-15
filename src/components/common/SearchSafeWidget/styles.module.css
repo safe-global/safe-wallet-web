@@ -1,0 +1,45 @@
+.autocomplete {
+  min-width: 400px;
+  font-size: 14px;
+}
+
+.option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px var(--space-1);
+  cursor: pointer;
+}
+
+.option:hover {
+  background: var(--color-background-main);
+}
+
+.tinyButton {
+  font-size: 12px;
+  font-weight: normal;
+  padding: 4px 8px;
+}
+
+.input {
+  background: var(--color-background-main);
+  border-radius: 8px;
+}
+
+.input > div {
+  padding: 4px 12px 4px 6px !important;
+}
+
+.input :global .MuiInputAdornment-root {
+  margin-right: 0;
+}
+
+.input fieldset {
+  border: 0;
+}
+
+.input input {
+  padding-right: 24px !important;
+  font-size: 14px !important;
+}

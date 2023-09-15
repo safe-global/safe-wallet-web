@@ -15,6 +15,7 @@ import SafeLogo from '@/public/images/logo.svg'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import BatchIndicator from '@/components/batch/BatchIndicator'
+import SearchSafeWidget from '@/components/common/SearchSafeWidget'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -56,6 +57,10 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         <Link href={logoHref} passHref>
           <SafeLogo alt="Safe logo" />
         </Link>
+      </div>
+
+      <div className={classnames(css.element, css.hideMobile)}>
+        <SearchSafeWidget />
       </div>
 
       {showSafeToken && (
