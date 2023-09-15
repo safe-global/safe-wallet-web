@@ -8,10 +8,11 @@ type WalletSDK = {
   signTypedMessage: (typedData: unknown) => Promise<{ signature?: string }>
   send: (params: { txs: unknown[]; params: { safeTxGas: number } }) => Promise<{ safeTxHash: string }>
   getBySafeTxHash: (safeTxHash: string) => Promise<{ txHash?: string }>
-  proxy: (method: string, params: unknown[]) => Promise<unknown>
+  proxy: (method: string, params: unknown[]) => Promise<{ result: unknown }>
 }
 
 interface RpcRequest {
+  id: number
   method: string
   params?: unknown[]
 }
@@ -26,10 +27,13 @@ export class SafeWalletProvider {
     this.sdk = sdk
   }
 
-  async request(request: RpcRequest): Promise<unknown> {
+  private async makeRequest(request: RpcRequest): Promise<unknown> {
     const { method, params = [] } = request
 
     switch (method) {
+      case 'wallet_switchEthereumChain':
+        return true
+
       case 'eth_accounts':
         return [this.safe.safeAddress]
 
@@ -135,6 +139,19 @@ export class SafeWalletProvider {
 
       default:
         return await this.sdk.proxy(method, params)
+    }
+  }
+
+  async request(request: RpcRequest): Promise<{
+    jsonrpc: string
+    id: number
+    result?: unknown
+  }> {
+    const result = await this.makeRequest(request)
+    return {
+      jsonrpc: '2.0',
+      id: request.id,
+      result,
     }
   }
 }
