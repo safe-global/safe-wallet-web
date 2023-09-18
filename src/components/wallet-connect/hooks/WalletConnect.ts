@@ -163,7 +163,7 @@ export class WalletConnect {
     // If the user accepts we always return all required namespaces and add the safe chain to it
     const safeAccount = `${EVMBasedNamespaces}:${this.#safe.chainId}:${this.#safe.address.value}`
 
-    // We first fake that our Safe is available on all required networks
+    // We first pretend that our Safe is available on all required networks
     const safeOnRequiredChains = requiredChains.map(
       (requiredChain) => `${requiredChain ?? safeChain}:${this.#safe.address.value}`,
     )
@@ -188,7 +188,7 @@ export class WalletConnect {
           eip155: {
             accounts: safeOnRequiredChains.includes(safeAccount)
               ? safeOnRequiredChains
-              : [...safeOnRequiredChains, safeAccount], // Add all required chains on top
+              : [safeAccount, ...safeOnRequiredChains], // Add all required chains on top
             chains: requiredChains, // return the required Safes
             methods: compatibleSafeMethods, // only the Safe methods
             events: safeEvents,
