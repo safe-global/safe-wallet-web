@@ -155,7 +155,10 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
           <Autocomplete
             value={field.value}
             freeSolo
-            onChange={(_, value) => field.onChange(value)}
+            onChange={(_, value) => {
+              field.onChange(value)
+              field.onBlur()
+            }}
             onInputChange={(_, value) => field.onChange(value)}
             onBlur={() => {
               field.onBlur()
