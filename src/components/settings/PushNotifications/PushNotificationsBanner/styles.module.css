@@ -17,6 +17,13 @@
   min-width: 100%;
 }
 
+.close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  color: var(--color-border-main);
+}
+
 .button {
   padding: 4px 10px;
 }

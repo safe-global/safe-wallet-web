@@ -1,4 +1,4 @@
-import { Button, Chip, Grid, SvgIcon, Typography } from '@mui/material'
+import { Button, Chip, Grid, SvgIcon, Typography, IconButton } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect } from 'react'
@@ -16,6 +16,7 @@ import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notif
 import { trackEvent } from '@/services/analytics'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import CheckWallet from '@/components/common/CheckWallet'
+import CloseIcon from '@/public/images/common/close.svg'
 
 import css from './styles.module.css'
 
@@ -47,18 +48,12 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     }))
   }, [safe.chainId, setDismissedBannerPerChain])
 
-  // Click outside to dismiss banner
   useEffect(() => {
     if (!shouldShowBanner) {
       return
     }
 
     trackEvent(PUSH_NOTIFICATION_EVENTS.DISPLAY_BANNER)
-
-    document.addEventListener('click', dismissBanner)
-    return () => {
-      document.removeEventListener('click', dismissBanner)
-    }
   }, [dismissBanner, shouldShowBanner])
 
   const onEnableAll = async () => {
@@ -93,6 +88,9 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
             <Typography variant="subtitle2" fontWeight={700}>
               Enable push notifications
             </Typography>
+            <IconButton onClick={dismissBanner} className={css.close}>
+              <SvgIcon component={CloseIcon} inheritViewBox color="border" fontSize="small" />
+            </IconButton>
             <Typography mt={0.5} mb={1.5} variant="body2">
               Get notified about pending signatures, incoming and outgoing transactions and more when Safe{`{Wallet}`}{' '}
               is in the background or closed.
