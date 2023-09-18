@@ -68,14 +68,9 @@ export const PUSH_NOTIFICATION_EVENTS = {
     category,
   },
   // User changed the outgoing transactions notifications setting
-  // (outgoing native currency/tokens, module/executed/pending multisig transactions)
+  // (module/executed multisig transactions)
   TOGGLE_OUTGOING_TXS: {
     action: 'Toggle outgoing assets notifications',
-    category,
-  },
-  // User changed the new confirmation notifications setting
-  TOGGLE_NEW_CONFIRMATION: {
-    action: 'Toggle new confirmation notifications',
     category,
   },
   // User changed the confirmation request notifications setting

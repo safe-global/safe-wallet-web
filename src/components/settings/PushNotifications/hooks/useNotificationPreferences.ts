@@ -17,20 +17,22 @@ import {
 } from '@/services/push-notifications/preferences'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import type { PushNotificationPreferences, PushNotificationPrefsKey } from '@/services/push-notifications/preferences'
 import type { NotifiableSafes } from '../logic'
 
 export const DEFAULT_NOTIFICATION_PREFERENCES: PushNotificationPreferences[PushNotificationPrefsKey]['preferences'] = {
-  [WebhookType.NEW_CONFIRMATION]: true,
   [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: true,
-  [WebhookType.PENDING_MULTISIG_TRANSACTION]: true,
   [WebhookType.INCOMING_ETHER]: true,
-  [WebhookType.OUTGOING_ETHER]: true,
   [WebhookType.INCOMING_TOKEN]: true,
-  [WebhookType.OUTGOING_TOKEN]: true,
   [WebhookType.MODULE_TRANSACTION]: true,
-  [WebhookType.CONFIRMATION_REQUEST]: true, // Requires signature
+  [WebhookType.CONFIRMATION_REQUEST]: false, // Requires signature
   [WebhookType.SAFE_CREATED]: false, // We do not preemptively subscribe to Safes before they are created
+  // Disabled on the Transaction Service but kept here for completeness
+  [WebhookType._PENDING_MULTISIG_TRANSACTION]: true,
+  [WebhookType._NEW_CONFIRMATION]: true,
+  [WebhookType._OUTGOING_ETHER]: true,
+  [WebhookType._OUTGOING_TOKEN]: true,
 }
 
 // ExternalStores are used to keep indexedDB state synced across hook instances
@@ -57,6 +59,7 @@ export const useNotificationPreferences = (): {
   // State
   const uuid = useUuid()
   const preferences = usePreferences()
+  const isOwner = useIsSafeOwner()
 
   // Getters
   const getPreferences = (chainId: string, safeAddress: string) => {
@@ -149,7 +152,10 @@ export const useNotificationPreferences = (): {
           const defaultPreferences: PushNotificationPreferences[PushNotificationPrefsKey] = {
             chainId,
             safeAddress,
-            preferences: DEFAULT_NOTIFICATION_PREFERENCES,
+            preferences: {
+              ...DEFAULT_NOTIFICATION_PREFERENCES,
+              [WebhookType.CONFIRMATION_REQUEST]: isOwner,
+            },
           }
 
           return [key, defaultPreferences]

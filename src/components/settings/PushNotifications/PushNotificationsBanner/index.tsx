@@ -17,10 +17,70 @@ import { trackEvent } from '@/services/analytics'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import CheckWallet from '@/components/common/CheckWallet'
 import CloseIcon from '@/public/images/common/close.svg'
+import type { AddedSafesState } from '@/store/addedSafesSlice'
+import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
+import type { NotifiableSafes } from '../logic'
 
 import css from './styles.module.css'
+import { useNotificationPreferences } from '../hooks/useNotificationPreferences'
+import { sameAddress } from '@/utils/addresses'
 
-const DISMISS_NOTIFICATION_KEY = 'dismissPushNotifications'
+const DISMISS_PUSH_NOTIFICATIONS_KEY = 'dismissPushNotifications'
+
+export const useDismissPushNotificationsBanner = () => {
+  const addedSafes = useAppSelector(selectAllAddedSafes)
+  const { safe } = useSafeInfo()
+
+  const [dismissedBannerPerChain = {}, setDismissedBannerPerChain] = useLocalStorage<{
+    [chainId: string]: { [safeAddress: string]: boolean }
+  }>(DISMISS_PUSH_NOTIFICATIONS_KEY)
+
+  const dismissPushNotificationBanner = (chainId: string) => {
+    const safesOnChain = Object.keys(addedSafes[chainId] || {})
+
+    if (safesOnChain.length === 0) {
+      return
+    }
+
+    const dismissedSafesOnChain = safesOnChain.reduce<{ [safeAddress: string]: boolean }>((acc, safeAddress) => {
+      acc[safeAddress] = true
+      return acc
+    }, {})
+
+    setDismissedBannerPerChain((prev) => ({
+      ...prev,
+      [safe.chainId]: dismissedSafesOnChain,
+    }))
+  }
+
+  const isPushNotificationBannerDismissed = !!dismissedBannerPerChain[safe.chainId]?.[safe.address.value]
+
+  return {
+    dismissPushNotificationBanner,
+    isPushNotificationBannerDismissed,
+  }
+}
+
+const getSafesToRegister = (addedSafes: AddedSafesState, allPreferences: PushNotificationPreferences | undefined) => {
+  // Regiser all added Safes
+  if (!allPreferences) {
+    return transformAddedSafes(addedSafes)
+  }
+
+  // Only register Safes that are not already registered
+  return Object.entries(addedSafes).reduce<NotifiableSafes>((acc, [chainId, addedSafesOnChain]) => {
+    const addedSafeAddressesOnChain = Object.keys(addedSafesOnChain)
+    const notificationRegistrations = Object.values(allPreferences)
+
+    const newlyAddedSafes = addedSafeAddressesOnChain.filter((safeAddress) => {
+      return notificationRegistrations.some((registration) => !sameAddress(registration.safeAddress, safeAddress))
+    })
+
+    acc[chainId] = newlyAddedSafes
+
+    return acc
+  }, {})
+}
 
 export const PushNotificationsBanner = ({ children }: { children: ReactElement }): ReactElement => {
   const addedSafes = useAppSelector(selectAllAddedSafes)
@@ -28,38 +88,31 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const { safe } = useSafeInfo()
   const { query } = useRouter()
 
-  const [dismissedBannerPerChain = {}, setDismissedBannerPerChain] = useLocalStorage<{
-    [chainId: string]: boolean
-  }>(DISMISS_NOTIFICATION_KEY)
+  const { dismissPushNotificationBanner, isPushNotificationBannerDismissed } = useDismissPushNotificationsBanner()
 
   const hasAddedSafesOnChain = Object.values(addedSafes[safe.chainId] || {}).length > 0
-  const dismissedBanner = !!dismissedBannerPerChain[safe.chainId]
-
-  const shouldShowBanner = !dismissedBanner && hasAddedSafesOnChain
+  const shouldShowBanner = !isPushNotificationBannerDismissed && hasAddedSafesOnChain
 
   const { registerNotifications } = useNotificationRegistrations()
+  const { getAllPreferences } = useNotificationPreferences()
 
   const dismissBanner = useCallback(() => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.DISMISS_BANNER)
-
-    setDismissedBannerPerChain((prev) => ({
-      ...prev,
-      [safe.chainId]: true,
-    }))
-  }, [safe.chainId, setDismissedBannerPerChain])
+    dismissPushNotificationBanner(safe.chainId)
+  }, [dismissPushNotificationBanner, safe.chainId])
 
   useEffect(() => {
-    if (!shouldShowBanner) {
-      return
+    if (shouldShowBanner) {
+      trackEvent(PUSH_NOTIFICATION_EVENTS.DISPLAY_BANNER)
     }
-
-    trackEvent(PUSH_NOTIFICATION_EVENTS.DISPLAY_BANNER)
   }, [dismissBanner, shouldShowBanner])
 
   const onEnableAll = async () => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.ENABLE_ALL)
 
-    const safesToRegister = transformAddedSafes(addedSafes)
+    const allPreferences = getAllPreferences()
+    const safesToRegister = getSafesToRegister(addedSafes, allPreferences)
+
     await registerNotifications(safesToRegister)
 
     dismissBanner()
@@ -112,12 +165,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
                 </CheckWallet>
               )}
               {safe && (
-                <Link
-                  passHref
-                  legacyBehavior
-                  href={{ pathname: AppRoutes.settings.notifications, query }}
-                  onClick={onCustomize}
-                >
+                <Link passHref href={{ pathname: AppRoutes.settings.notifications, query }} onClick={onCustomize}>
                   <Button variant="outlined" size="small" className={css.button}>
                     Customize
                   </Button>

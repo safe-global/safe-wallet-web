@@ -1,4 +1,5 @@
 import {
+  Box,
   Grid,
   Paper,
   Typography,
@@ -24,6 +25,7 @@ import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { requestNotificationPermission } from './logic'
+import { useDismissPushNotificationsBanner } from './PushNotificationsBanner'
 import type { NotifiableSafes } from './logic'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
@@ -125,7 +127,7 @@ const getSafesToRegister = (
     )
 
     if (safesToRegisterOnChain.length > 0) {
-      acc[chainId] = safeAddresses
+      acc[chainId] = safesToRegisterOnChain
     }
 
     return acc
@@ -154,7 +156,7 @@ const getSafesToUnregister = (
       )
 
       if (safesToUnregisterOnChain.length > 0) {
-        acc[chainId] = safeAddresses
+        acc[chainId] = safesToUnregisterOnChain
       }
       return acc
     },
@@ -191,6 +193,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   const chains = useChains()
   const addedSafes = useAppSelector(selectAllAddedSafes)
 
+  const { dismissPushNotificationBanner } = useDismissPushNotificationsBanner()
   const { getAllPreferences } = useNotificationPreferences()
   const { unregisterDeviceNotifications, unregisterSafeNotifications, registerNotifications } =
     useNotificationRegistrations()
@@ -274,6 +277,11 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     const safesToRegister = getSafesToRegister(selectedSafes, currentNotifiedSafes)
     if (safesToRegister) {
       registrationPromises.push(registerNotifications(safesToRegister))
+
+      // Dismiss the banner for all chains that have been registered
+      Object.keys(safesToRegister).forEach((chainId) => {
+        dismissPushNotificationBanner(chainId)
+      })
     }
 
     const safesToUnregister = getSafesToUnregister(selectedSafes, currentNotifiedSafes)
@@ -304,9 +312,9 @@ export const GlobalPushNotifications = (): ReactElement | null => {
           My Safes Accounts ({totalNotifiableSafes})
         </Typography>
 
-        <div>
+        <Box display="flex" alignItems="center">
           {totalSignaturesRequired > 0 && (
-            <Typography display="inline" mr={2}>
+            <Typography display="inline" mr={2} textAlign="right">
               We&apos;ll ask you to verify your ownership of {totalSignaturesRequired} Safe Account
               {totalSignaturesRequired > 1 ? 's' : ''} with your signature
             </Typography>
@@ -319,7 +327,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
               </Button>
             )}
           </CheckWallet>
-        </div>
+        </Box>
       </Grid>
 
       <Grid item xs={12}>

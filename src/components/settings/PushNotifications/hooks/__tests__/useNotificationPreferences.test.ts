@@ -175,7 +175,7 @@ describe('useNotificationPreferences', () => {
 
       result.current.updatePreferences(chainId, safeAddress, {
         ...DEFAULT_NOTIFICATION_PREFERENCES,
-        [WebhookType.NEW_CONFIRMATION]: false,
+        [WebhookType.CONFIRMATION_REQUEST]: false,
       })
 
       await waitFor(() => {
@@ -185,7 +185,7 @@ describe('useNotificationPreferences', () => {
             safeAddress: safeAddress,
             preferences: {
               ...DEFAULT_NOTIFICATION_PREFERENCES,
-              [WebhookType.NEW_CONFIRMATION]: false,
+              [WebhookType.CONFIRMATION_REQUEST]: false,
             },
           },
         })

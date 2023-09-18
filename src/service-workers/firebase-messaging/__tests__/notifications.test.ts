@@ -33,42 +33,6 @@ describe('parseWebhookPushNotification', () => {
     getBalancesMockSpy = jest.spyOn(sdk, 'getBalances')
   })
 
-  describe('should parse NEW_CONFIRMATION payloads', () => {
-    const payload: NewConfirmationEvent = {
-      type: WebhookType.NEW_CONFIRMATION,
-      chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      owner: hexZeroPad('0x2', 20),
-      safeTxHash: hexZeroPad('0x3', 32),
-    }
-
-    it('with chain info', async () => {
-      getChainsConfigSpy.mockResolvedValue({
-        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
-      })
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Transaction confirmation',
-        body: 'Safe 0x0000...0001 on Mainnet has a new confirmation from 0x0000...0002 on transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/tx?safe=eth:0x0000000000000000000000000000000000000001&id=0x0000000000000000000000000000000000000000000000000000000000000003',
-      })
-    })
-
-    it('without chain info', async () => {
-      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Transaction confirmation',
-        body: 'Safe 0x0000...0001 on chain 1 has a new confirmation from 0x0000...0002 on transaction 0x0000...0003.',
-        link: 'https://app.safe.global',
-      })
-    })
-  })
-
   describe('should parse EXECUTED_MULTISIG_TRANSACTION payloads', () => {
     const payload: Omit<ExecutedMultisigTransactionEvent, 'failed'> = {
       type: WebhookType.EXECUTED_MULTISIG_TRANSACTION,
@@ -147,41 +111,6 @@ describe('parseWebhookPushNotification', () => {
     })
   })
 
-  describe('should parse PENDING_MULTISIG_TRANSACTION payloads', () => {
-    const payload: PendingMultisigTransactionEvent = {
-      type: WebhookType.PENDING_MULTISIG_TRANSACTION,
-      chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      safeTxHash: hexZeroPad('0x3', 32),
-    }
-
-    it('with chain info', async () => {
-      getChainsConfigSpy.mockResolvedValue({
-        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
-      })
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Pending transaction',
-        body: 'Safe 0x0000...0001 on Mainnet has a pending transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/tx?safe=eth:0x0000000000000000000000000000000000000001&id=0x0000000000000000000000000000000000000000000000000000000000000003',
-      })
-    })
-
-    it('without chain info', async () => {
-      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Pending transaction',
-        body: 'Safe 0x0000...0001 on chain 1 has a pending transaction 0x0000...0003.',
-        link: 'https://app.safe.global',
-      })
-    })
-  })
-
   describe('should parse INCOMING_ETHER payloads', () => {
     const payload: IncomingEtherEvent = {
       type: WebhookType.INCOMING_ETHER,
@@ -219,48 +148,6 @@ describe('parseWebhookPushNotification', () => {
       expect(notification).toEqual({
         title: 'Ether received',
         body: 'Safe 0x0000...0001 on chain 137 received 1.0 ETH in transaction 0x0000...0003.',
-        link: 'https://app.safe.global',
-      })
-    })
-  })
-
-  describe('should parse OUTGOING_ETHER payloads', () => {
-    const payload: OutgoingEtherEvent = {
-      type: WebhookType.OUTGOING_ETHER,
-      chainId: '137',
-      address: hexZeroPad('0x1', 20),
-      txHash: hexZeroPad('0x3', 32),
-      value: '1000000000000000000',
-    }
-
-    it('with chain info', async () => {
-      getChainsConfigSpy.mockResolvedValue({
-        results: [
-          {
-            chainName: 'Polygon',
-            chainId: payload.chainId,
-            shortName: 'matic',
-            nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 },
-          } as sdk.ChainInfo,
-        ],
-      })
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Matic sent',
-        body: 'Safe 0x0000...0001 on Polygon sent 1.0 MATIC in transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/history?safe=matic:0x0000000000000000000000000000000000000001',
-      })
-    })
-
-    it('without chain info', async () => {
-      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Ether sent',
-        body: 'Safe 0x0000...0001 on chain 137 sent 1.0 ETH in transaction 0x0000...0003.',
         link: 'https://app.safe.global',
       })
     })
@@ -429,209 +316,6 @@ describe('parseWebhookPushNotification', () => {
     })
   })
 
-  describe('should parse OUTGOING_TOKEN payloads', () => {
-    const payload: OutgoingTokenEvent = {
-      type: WebhookType.OUTGOING_TOKEN,
-      chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      tokenAddress: hexZeroPad('0x2', 20),
-      txHash: hexZeroPad('0x3', 32),
-    }
-
-    const erc20Payload: OutgoingTokenEvent = {
-      ...payload,
-      value: '1000000000000000000',
-    }
-
-    it('with chain and token info', async () => {
-      getChainsConfigSpy.mockResolvedValue({
-        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
-      })
-      getBalancesMockSpy.mockResolvedValue({
-        items: [
-          {
-            tokenInfo: {
-              address: payload.tokenAddress,
-              decimals: 18,
-              name: 'Fake',
-              symbol: 'FAKE',
-            },
-          },
-        ],
-      } as sdk.SafeBalanceResponse)
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Fake sent',
-        body: 'Safe 0x0000...0001 on Mainnet sent some FAKE in transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
-      })
-
-      getChainsConfigSpy.mockResolvedValue({
-        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
-      })
-      getBalancesMockSpy.mockResolvedValue({
-        items: [
-          {
-            tokenInfo: {
-              address: payload.tokenAddress,
-              decimals: 18,
-              name: 'Fake',
-              symbol: 'FAKE',
-            },
-          },
-        ],
-      } as sdk.SafeBalanceResponse)
-
-      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
-
-      expect(erc20Notification).toEqual({
-        title: 'Fake sent',
-        body: 'Safe 0x0000...0001 on Mainnet sent 1.0 FAKE in transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
-      })
-    })
-
-    it('with chain and empty token info', async () => {
-      getChainsConfigSpy.mockResolvedValue({
-        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
-      })
-      getBalancesMockSpy.mockResolvedValue({
-        items: [] as sdk.SafeBalanceResponse['items'], // Transaction sent all of the tokens
-      } as sdk.SafeBalanceResponse)
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Token sent',
-        body: 'Safe 0x0000...0001 on Mainnet sent some tokens in transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
-      })
-
-      getChainsConfigSpy.mockResolvedValue({
-        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
-      })
-      getBalancesMockSpy.mockResolvedValue({
-        items: [
-          {
-            tokenInfo: {
-              address: payload.tokenAddress,
-              decimals: 18,
-              name: 'Fake',
-              symbol: 'FAKE',
-            },
-          },
-        ],
-      } as sdk.SafeBalanceResponse)
-
-      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
-
-      expect(erc20Notification).toEqual({
-        title: 'Fake sent',
-        body: 'Safe 0x0000...0001 on Mainnet sent 1.0 FAKE in transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
-      })
-    })
-
-    it('without chain info', async () => {
-      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
-      getBalancesMockSpy.mockResolvedValue({
-        items: [
-          {
-            tokenInfo: {
-              address: payload.tokenAddress,
-              decimals: 18,
-              name: 'Fake',
-              symbol: 'FAKE',
-            },
-          },
-        ],
-      } as sdk.SafeBalanceResponse)
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Fake sent',
-        body: 'Safe 0x0000...0001 on chain 1 sent some FAKE in transaction 0x0000...0003.',
-        link: 'https://app.safe.global',
-      })
-
-      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
-      getBalancesMockSpy.mockResolvedValue({
-        items: [
-          {
-            tokenInfo: {
-              address: payload.tokenAddress,
-              decimals: 18,
-              name: 'Fake',
-              symbol: 'FAKE',
-            },
-          },
-        ],
-      } as sdk.SafeBalanceResponse)
-
-      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
-
-      expect(erc20Notification).toEqual({
-        title: 'Fake sent',
-        body: 'Safe 0x0000...0001 on chain 1 sent 1.0 FAKE in transaction 0x0000...0003.',
-        link: 'https://app.safe.global',
-      })
-    })
-    it('without token info', async () => {
-      getChainsConfigSpy.mockResolvedValue({
-        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
-      })
-      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Token sent',
-        body: 'Safe 0x0000...0001 on Mainnet sent some tokens in transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
-      })
-
-      getChainsConfigSpy.mockResolvedValue({
-        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
-      })
-      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
-
-      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
-
-      expect(erc20Notification).toEqual({
-        title: 'Token sent',
-        body: 'Safe 0x0000...0001 on Mainnet sent some tokens in transaction 0x0000...0003.',
-        link: 'https://app.safe.global/transactions/history?safe=eth:0x0000000000000000000000000000000000000001',
-      })
-    })
-
-    it('without chain and balance info', async () => {
-      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
-      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
-
-      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
-
-      expect(notification).toEqual({
-        title: 'Token sent',
-        body: 'Safe 0x0000...0001 on chain 1 sent some tokens in transaction 0x0000...0003.',
-        link: 'https://app.safe.global',
-      })
-
-      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
-      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
-
-      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
-
-      expect(erc20Notification).toEqual({
-        title: 'Token sent',
-        body: 'Safe 0x0000...0001 on chain 1 sent some tokens in transaction 0x0000...0003.',
-        link: 'https://app.safe.global',
-      })
-    })
-  })
-
   describe('should parse MODULE_TRANSACTION payloads', () => {
     const payload: ModuleTransactionEvent = {
       type: WebhookType.MODULE_TRANSACTION,
@@ -703,6 +387,7 @@ describe('parseWebhookPushNotification', () => {
     })
   })
 
+  // We do not pre-emptively subscribe to Safes before they are created
   describe('should not parse SAFE_CREATED payloads', () => {
     const payload: SafeCreatedEvent = {
       type: WebhookType.SAFE_CREATED,
@@ -727,6 +412,263 @@ describe('parseWebhookPushNotification', () => {
       const notification = await _parseServiceWorkerWebhookPushNotification(payload)
 
       expect(notification).toBe(undefined)
+    })
+  })
+
+  // Not enabled in the Transaction Service
+  describe('should not parse NEW_CONFIRMATION payloads', () => {
+    const payload: NewConfirmationEvent = {
+      type: WebhookType._NEW_CONFIRMATION,
+      chainId: '1',
+      address: hexZeroPad('0x1', 20),
+      owner: hexZeroPad('0x2', 20),
+      safeTxHash: hexZeroPad('0x3', 32),
+    }
+
+    it('with chain info', async () => {
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+    })
+
+    it('without chain info', async () => {
+      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+    })
+  })
+
+  // Not enabled in the Transaction Service
+  describe('should not parse PENDING_MULTISIG_TRANSACTION payloads', () => {
+    const payload: PendingMultisigTransactionEvent = {
+      type: WebhookType._PENDING_MULTISIG_TRANSACTION,
+      chainId: '1',
+      address: hexZeroPad('0x1', 20),
+      safeTxHash: hexZeroPad('0x3', 32),
+    }
+
+    it('with chain info', async () => {
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+    })
+
+    it('without chain info', async () => {
+      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+    })
+  })
+
+  // Not enabled in the Transaction Service
+  describe('should not parse OUTGOING_ETHER payloads', () => {
+    const payload: OutgoingEtherEvent = {
+      type: WebhookType._OUTGOING_ETHER,
+      chainId: '137',
+      address: hexZeroPad('0x1', 20),
+      txHash: hexZeroPad('0x3', 32),
+      value: '1000000000000000000',
+    }
+
+    it('with chain info', async () => {
+      getChainsConfigSpy.mockResolvedValue({
+        results: [
+          {
+            chainName: 'Polygon',
+            chainId: payload.chainId,
+            shortName: 'matic',
+            nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 },
+          } as sdk.ChainInfo,
+        ],
+      })
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+    })
+
+    it('without chain info', async () => {
+      getChainsConfigSpy.mockImplementationOnce(() => Promise.reject()) // chains
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+    })
+  })
+
+  // Not enabled in the Transaction Service
+  describe('should not parse OUTGOING_TOKEN payloads', () => {
+    const payload: OutgoingTokenEvent = {
+      type: WebhookType._OUTGOING_TOKEN,
+      chainId: '1',
+      address: hexZeroPad('0x1', 20),
+      tokenAddress: hexZeroPad('0x2', 20),
+      txHash: hexZeroPad('0x3', 32),
+    }
+
+    const erc20Payload: OutgoingTokenEvent = {
+      ...payload,
+      value: '1000000000000000000',
+    }
+
+    it('with chain and token info', async () => {
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
+
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
+
+      expect(erc20Notification).toEqual(undefined)
+    })
+
+    it('with chain and empty token info', async () => {
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [] as sdk.SafeBalanceResponse['items'], // Transaction sent all of the tokens
+      } as sdk.SafeBalanceResponse)
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
+
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
+
+      expect(erc20Notification).toEqual(undefined)
+    })
+
+    it('without chain info', async () => {
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockResolvedValue({
+        items: [
+          {
+            tokenInfo: {
+              address: payload.tokenAddress,
+              decimals: 18,
+              name: 'Fake',
+              symbol: 'FAKE',
+            },
+          },
+        ],
+      } as sdk.SafeBalanceResponse)
+
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
+
+      expect(erc20Notification).toEqual(undefined)
+    })
+
+    it('without token info', async () => {
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+
+      getChainsConfigSpy.mockResolvedValue({
+        results: [{ chainName: 'Mainnet', chainId: payload.chainId, shortName: 'eth' } as sdk.ChainInfo],
+      })
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
+
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
+
+      expect(erc20Notification).toEqual(undefined)
+    })
+
+    it('without chain and balance info', async () => {
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
+
+      const notification = await _parseServiceWorkerWebhookPushNotification(payload)
+
+      expect(notification).toEqual(undefined)
+
+      getChainsConfigSpy.mockImplementation(() => Promise.reject()) // chains
+      getBalancesMockSpy.mockImplementation(() => Promise.reject()) // tokens
+
+      const erc20Notification = await _parseServiceWorkerWebhookPushNotification(erc20Payload)
+
+      expect(erc20Notification).toEqual(undefined)
     })
   })
 })

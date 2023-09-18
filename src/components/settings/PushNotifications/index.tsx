@@ -27,6 +27,8 @@ import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notif
 import { AppRoutes } from '@/config/routes'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useIsMac } from '@/hooks/useIsMac'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 
 import css from './styles.module.css'
 
@@ -36,6 +38,7 @@ export const PushNotifications = (): ReactElement => {
   const isMac = useIsMac()
   const [isRegistering, setIsRegistering] = useState(false)
   const [isUpdatingIndexedDb, setIsUpdatingIndexedDb] = useState(false)
+  const onboard = useOnboard()
 
   const { updatePreferences, getPreferences, getAllPreferences } = useNotificationPreferences()
   const { unregisterSafeNotifications, unregisterDeviceNotifications, registerNotifications } =
@@ -52,10 +55,15 @@ export const PushNotifications = (): ReactElement => {
   }
 
   const shouldShowMacHelper = isMac || IS_DEV
-  const isCheckboxDisabled = isRegistering || isUpdatingIndexedDb
 
   const handleOnChange = async () => {
+    if (!onboard) {
+      return
+    }
+
     setIsRegistering(true)
+
+    await assertWalletChain(onboard, safe.chainId)
 
     if (!preferences) {
       await registerNotifications({ [safe.chainId]: [safe.address.value] })
@@ -100,7 +108,7 @@ export const PushNotifications = (): ReactElement => {
               {shouldShowMacHelper && (
                 <Alert severity="info" className={css.macOsInfo}>
                   <Typography fontWeight={700} variant="body2" mb={1}>
-                    For MacOS users
+                    For macOS users
                   </Typography>
                   <Typography variant="body2">
                     Double-check that you have enabled your browser notifications under <b>System Settings</b> &gt;{' '}
@@ -121,7 +129,7 @@ export const PushNotifications = (): ReactElement => {
                       showName={true}
                       hasExplorer
                     />
-                    <CheckWallet>
+                    <CheckWallet allowNonOwner>
                       {(isOk) => (
                         <FormControlLabel
                           control={<Switch checked={!!preferences} onChange={handleOnChange} />}
@@ -183,21 +191,15 @@ export const PushNotifications = (): ReactElement => {
                   control={
                     <Checkbox
                       checked={
-                        preferences[WebhookType.OUTGOING_ETHER] &&
-                        preferences[WebhookType.OUTGOING_TOKEN] &&
                         preferences[WebhookType.MODULE_TRANSACTION] &&
-                        preferences[WebhookType.EXECUTED_MULTISIG_TRANSACTION] &&
-                        preferences[WebhookType.PENDING_MULTISIG_TRANSACTION]
+                        preferences[WebhookType.EXECUTED_MULTISIG_TRANSACTION]
                       }
                       disabled={isUpdatingIndexedDb}
                       onChange={(_, checked) => {
                         setPreferences({
                           ...preferences,
-                          [WebhookType.OUTGOING_ETHER]: checked,
-                          [WebhookType.OUTGOING_TOKEN]: checked,
                           [WebhookType.MODULE_TRANSACTION]: checked,
                           [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: checked,
-                          [WebhookType.PENDING_MULTISIG_TRANSACTION]: checked,
                         })
 
                         trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_OUTGOING_TXS, label: checked })
@@ -205,24 +207,6 @@ export const PushNotifications = (): ReactElement => {
                     />
                   }
                   label="Outgoing transactions"
-                />
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={preferences[WebhookType.NEW_CONFIRMATION]}
-                      disabled={isUpdatingIndexedDb}
-                      onChange={(_, checked) => {
-                        setPreferences({
-                          ...preferences,
-                          [WebhookType.NEW_CONFIRMATION]: checked,
-                        })
-
-                        trackEvent({ ...PUSH_NOTIFICATION_EVENTS.TOGGLE_NEW_CONFIRMATION, label: checked })
-                      }}
-                    />
-                  }
-                  label="New confirmations"
                 />
 
                 <FormControlLabel

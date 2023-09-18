@@ -7,24 +7,49 @@ export const isWebhookEvent = (data: MessagePayload['data']): data is WebhookEve
 }
 
 export enum WebhookType {
-  NEW_CONFIRMATION = 'NEW_CONFIRMATION',
   EXECUTED_MULTISIG_TRANSACTION = 'EXECUTED_MULTISIG_TRANSACTION',
-  PENDING_MULTISIG_TRANSACTION = 'PENDING_MULTISIG_TRANSACTION',
   INCOMING_ETHER = 'INCOMING_ETHER',
-  OUTGOING_ETHER = 'OUTGOING_ETHER',
   INCOMING_TOKEN = 'INCOMING_TOKEN',
-  OUTGOING_TOKEN = 'OUTGOING_TOKEN',
   MODULE_TRANSACTION = 'MODULE_TRANSACTION',
   CONFIRMATION_REQUEST = 'CONFIRMATION_REQUEST', // Notification-specific webhook
   SAFE_CREATED = 'SAFE_CREATED',
+  // Disabled on the Transaction Service
+  _PENDING_MULTISIG_TRANSACTION = 'PENDING_MULTISIG_TRANSACTION',
+  _NEW_CONFIRMATION = 'NEW_CONFIRMATION',
+  _OUTGOING_ETHER = 'OUTGOING_ETHER',
+  _OUTGOING_TOKEN = 'OUTGOING_TOKEN',
+}
+
+export type PendingMultisigTransactionEvent = {
+  type: WebhookType._PENDING_MULTISIG_TRANSACTION
+  chainId: string
+  address: string
+  safeTxHash: string
 }
 
 export type NewConfirmationEvent = {
-  type: WebhookType.NEW_CONFIRMATION
+  type: WebhookType._NEW_CONFIRMATION
   chainId: string
   address: string
   owner: string
   safeTxHash: string
+}
+
+export type OutgoingEtherEvent = {
+  type: WebhookType._OUTGOING_ETHER
+  chainId: string
+  address: string
+  txHash: string
+  value: string
+}
+
+export type OutgoingTokenEvent = {
+  type: WebhookType._OUTGOING_TOKEN
+  chainId: string
+  address: string
+  tokenAddress: string
+  txHash: string
+  value?: string // If ERC-20 token
 }
 
 export type ExecutedMultisigTransactionEvent = {
@@ -36,13 +61,6 @@ export type ExecutedMultisigTransactionEvent = {
   txHash: string
 }
 
-export type PendingMultisigTransactionEvent = {
-  type: WebhookType.PENDING_MULTISIG_TRANSACTION
-  chainId: string
-  address: string
-  safeTxHash: string
-}
-
 export type IncomingEtherEvent = {
   type: WebhookType.INCOMING_ETHER
   chainId: string
@@ -51,25 +69,8 @@ export type IncomingEtherEvent = {
   value: string
 }
 
-export type OutgoingEtherEvent = {
-  type: WebhookType.OUTGOING_ETHER
-  chainId: string
-  address: string
-  txHash: string
-  value: string
-}
-
 export type IncomingTokenEvent = {
   type: WebhookType.INCOMING_TOKEN
-  chainId: string
-  address: string
-  tokenAddress: string
-  txHash: string
-  value?: string // If ERC-20 token
-}
-
-export type OutgoingTokenEvent = {
-  type: WebhookType.OUTGOING_TOKEN
   chainId: string
   address: string
   tokenAddress: string

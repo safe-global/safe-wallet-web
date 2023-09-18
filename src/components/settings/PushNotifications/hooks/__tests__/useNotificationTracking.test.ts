@@ -27,17 +27,9 @@ describe('useNotificationTracking', () => {
         shown: 1,
         opened: 0,
       },
-      [`2:${WebhookType.OUTGOING_ETHER}`]: {
-        shown: 0,
-        opened: 1,
-      },
       [`3:${WebhookType.INCOMING_TOKEN}`]: {
         shown: 1,
         opened: 1,
-      },
-      [`137:${WebhookType.OUTGOING_TOKEN}`]: {
-        shown: 0,
-        opened: 0,
       },
     }
 
@@ -46,7 +38,7 @@ describe('useNotificationTracking', () => {
     renderHook(() => useNotificationTracking())
 
     await waitFor(() => {
-      expect(tracking.trackEvent).toHaveBeenCalledTimes(4)
+      expect(tracking.trackEvent).toHaveBeenCalledTimes(3)
 
       expect(tracking.trackEvent).toHaveBeenCalledWith({
         ...PUSH_NOTIFICATION_EVENTS.SHOW_NOTIFICATION,
@@ -55,16 +47,11 @@ describe('useNotificationTracking', () => {
       })
 
       expect(tracking.trackEvent).toHaveBeenCalledWith({
-        ...PUSH_NOTIFICATION_EVENTS.OPEN_NOTIFICATION,
-        label: WebhookType.OUTGOING_ETHER,
-        chainId: '2',
-      })
-
-      expect(tracking.trackEvent).toHaveBeenCalledWith({
         ...PUSH_NOTIFICATION_EVENTS.SHOW_NOTIFICATION,
         label: WebhookType.INCOMING_TOKEN,
         chainId: '3',
       })
+
       expect(tracking.trackEvent).toHaveBeenCalledWith({
         ...PUSH_NOTIFICATION_EVENTS.OPEN_NOTIFICATION,
         label: WebhookType.INCOMING_TOKEN,
@@ -78,15 +65,7 @@ describe('useNotificationTracking', () => {
         shown: 0,
         opened: 0,
       },
-      [`2:${WebhookType.OUTGOING_ETHER}`]: {
-        shown: 0,
-        opened: 0,
-      },
       [`3:${WebhookType.INCOMING_TOKEN}`]: {
-        shown: 0,
-        opened: 0,
-      },
-      [`137:${WebhookType.OUTGOING_TOKEN}`]: {
         shown: 0,
         opened: 0,
       },

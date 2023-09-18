@@ -19,9 +19,9 @@ export const getNotificationTrackingKey = (chainId: string, type: WebhookType): 
 }
 
 export const parseNotificationTrackingKey = (key: string): { chainId: string; type: WebhookType } => {
-  const [chainId, type] = key.split(':')
+  const [chainId, type] = key.split(':') as [string, WebhookType]
 
-  if (!Object.keys(WebhookType).includes(type)) {
+  if (!Object.values(WebhookType).includes(type)) {
     throw new Error(`Invalid notification tracking key: ${key}`)
   }
 

@@ -73,15 +73,6 @@ const shortenAddress = (address: string, length = 4): string => {
 }
 
 export const Notifications: PushNotificationsMap = {
-  [WebhookType.NEW_CONFIRMATION]: ({ address, owner, safeTxHash, chainId }, chain) => {
-    return {
-      title: 'Transaction confirmation',
-      body: `Safe ${shortenAddress(address)} on ${getChainName(
-        chainId,
-        chain,
-      )} has a new confirmation from ${shortenAddress(owner)} on transaction ${shortenAddress(safeTxHash)}.`,
-    }
-  },
   [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: ({ address, failed, txHash, chainId }, chain) => {
     const didFail = failed === 'true'
     return {
@@ -89,15 +80,6 @@ export const Notifications: PushNotificationsMap = {
       body: `Safe ${shortenAddress(address)} on ${getChainName(chainId, chain)} ${
         didFail ? 'failed to execute' : 'executed'
       } transaction ${shortenAddress(txHash)}.`,
-    }
-  },
-  [WebhookType.PENDING_MULTISIG_TRANSACTION]: ({ address, safeTxHash, chainId }, chain) => {
-    return {
-      title: 'Pending transaction',
-      body: `Safe ${shortenAddress(address)} on ${getChainName(
-        chainId,
-        chain,
-      )} has a pending transaction ${shortenAddress(safeTxHash)}.`,
     }
   },
   [WebhookType.INCOMING_ETHER]: ({ address, txHash, value, chainId }, chain) => {
@@ -109,29 +91,11 @@ export const Notifications: PushNotificationsMap = {
       ).toString()} ${getCurrencySymbol(chain)} in transaction ${shortenAddress(txHash)}.`,
     }
   },
-  [WebhookType.OUTGOING_ETHER]: ({ address, txHash, value, chainId }, chain) => {
-    return {
-      title: `${getCurrencyName(chain)} sent`,
-      body: `Safe ${shortenAddress(address)} on ${getChainName(chainId, chain)} sent ${formatUnits(
-        value,
-        chain?.nativeCurrency?.decimals,
-      ).toString()} ${getCurrencySymbol(chain)} in transaction ${shortenAddress(txHash)}.`,
-    }
-  },
   [WebhookType.INCOMING_TOKEN]: async ({ address, txHash, tokenAddress, value, chainId }, chain) => {
     const token = await getTokenInfo(chainId, address, tokenAddress, value)
     return {
       title: `${token.name} received`,
       body: `Safe ${shortenAddress(address)} on ${getChainName(chainId, chain)} received ${token.value} ${
-        token.symbol
-      } in transaction ${shortenAddress(txHash)}.`,
-    }
-  },
-  [WebhookType.OUTGOING_TOKEN]: async ({ address, txHash, tokenAddress, value, chainId }, chain) => {
-    const token = await getTokenInfo(chainId, address, tokenAddress, value)
-    return {
-      title: `${token.name} sent`,
-      body: `Safe ${shortenAddress(address)} on ${getChainName(chainId, chain)} sent ${token.value} ${
         token.symbol
       } in transaction ${shortenAddress(txHash)}.`,
     }
@@ -156,6 +120,27 @@ export const Notifications: PushNotificationsMap = {
   },
   [WebhookType.SAFE_CREATED]: () => {
     // We do not preemptively subscribe to Safes before they are created
+    return null
+  },
+  // Disabled on the Transaction Service
+  [WebhookType._PENDING_MULTISIG_TRANSACTION]: () => {
+    // We don't send notifications for pending transactions
+    // @see https://github.com/safe-global/safe-transaction-service/blob/master/safe_transaction_service/notifications/tasks.py#L34
+    return null
+  },
+  [WebhookType._NEW_CONFIRMATION]: () => {
+    // Disabled for now
+    // @see https://github.com/safe-global/safe-transaction-service/blob/master/safe_transaction_service/notifications/tasks.py#L43
+    return null
+  },
+  [WebhookType._OUTGOING_TOKEN]: () => {
+    // We don't sen as we have execution notifications
+    // @see https://github.com/safe-global/safe-transaction-service/blob/master/safe_transaction_service/notifications/tasks.py#L48
+    return null
+  },
+  [WebhookType._OUTGOING_ETHER]: () => {
+    // We don't sen as we have execution notifications
+    // @see https://github.com/safe-global/safe-transaction-service/blob/master/safe_transaction_service/notifications/tasks.py#L48
     return null
   },
 }
