@@ -9,7 +9,7 @@ import {
 } from '@/services/push-notifications/preferences'
 import {
   useNotificationPreferences,
-  _DEFAULT_NOTIFICATION_PREFERENCES,
+  DEFAULT_NOTIFICATION_PREFERENCES,
   _setPreferences,
   _setUuid,
 } from '../useNotificationPreferences'
@@ -66,7 +66,7 @@ describe('useNotificationPreferences', () => {
         [`${chainId}:${safeAddress}`]: {
           chainId,
           safeAddress,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
       }
 
@@ -87,7 +87,7 @@ describe('useNotificationPreferences', () => {
         [`${chainId}:${safeAddress}`]: {
           chainId,
           safeAddress,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
       }
 
@@ -121,17 +121,17 @@ describe('useNotificationPreferences', () => {
           [`${chainId1}:${safeAddress1}`]: {
             chainId: chainId1,
             safeAddress: safeAddress1,
-            preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+            preferences: DEFAULT_NOTIFICATION_PREFERENCES,
           },
           [`${chainId1}:${safeAddress2}`]: {
             chainId: chainId1,
             safeAddress: safeAddress2,
-            preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+            preferences: DEFAULT_NOTIFICATION_PREFERENCES,
           },
           [`${chainId2}:${safeAddress1}`]: {
             chainId: chainId2,
             safeAddress: safeAddress1,
-            preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+            preferences: DEFAULT_NOTIFICATION_PREFERENCES,
           },
         })
       })
@@ -165,7 +165,7 @@ describe('useNotificationPreferences', () => {
         [`${chainId}:${safeAddress}`]: {
           chainId: chainId,
           safeAddress: safeAddress,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
       }
 
@@ -174,7 +174,7 @@ describe('useNotificationPreferences', () => {
       const { result } = renderHook(() => useNotificationPreferences())
 
       result.current.updatePreferences(chainId, safeAddress, {
-        ..._DEFAULT_NOTIFICATION_PREFERENCES,
+        ...DEFAULT_NOTIFICATION_PREFERENCES,
         [WebhookType.NEW_CONFIRMATION]: false,
       })
 
@@ -184,7 +184,7 @@ describe('useNotificationPreferences', () => {
             chainId: chainId,
             safeAddress: safeAddress,
             preferences: {
-              ..._DEFAULT_NOTIFICATION_PREFERENCES,
+              ...DEFAULT_NOTIFICATION_PREFERENCES,
               [WebhookType.NEW_CONFIRMATION]: false,
             },
           },
@@ -203,17 +203,17 @@ describe('useNotificationPreferences', () => {
         [`${chainId1}:${safeAddress1}`]: {
           chainId: chainId1,
           safeAddress: safeAddress1,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
         [`${chainId1}:${safeAddress2}`]: {
           chainId: chainId1,
           safeAddress: safeAddress2,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
         [`${chainId2}:${safeAddress1}`]: {
           chainId: chainId2,
           safeAddress: safeAddress1,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
       }
 
@@ -230,7 +230,7 @@ describe('useNotificationPreferences', () => {
           [`${chainId2}:${safeAddress1}`]: {
             chainId: chainId2,
             safeAddress: safeAddress1,
-            preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+            preferences: DEFAULT_NOTIFICATION_PREFERENCES,
           },
         })
       })
@@ -247,17 +247,17 @@ describe('useNotificationPreferences', () => {
         [`${chainId1}:${safeAddress1}`]: {
           chainId: chainId1,
           safeAddress: safeAddress1,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
         [`${chainId1}:${safeAddress2}`]: {
           chainId: chainId1,
           safeAddress: safeAddress2,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
         [`${chainId2}:${safeAddress1}`]: {
           chainId: chainId2,
           safeAddress: safeAddress1,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
       }
 
@@ -292,17 +292,17 @@ describe('useNotificationPreferences', () => {
         [`${chainId1}:${safeAddress1}`]: {
           chainId: chainId1,
           safeAddress: safeAddress1,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
         [`${chainId1}:${safeAddress2}`]: {
           chainId: chainId1,
           safeAddress: safeAddress2,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
         [`${chainId2}:${safeAddress1}`]: {
           chainId: chainId2,
           safeAddress: safeAddress1,
-          preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
         },
       }
 

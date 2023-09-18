@@ -3,14 +3,20 @@
 /// <reference lib="webworker" />
 
 import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw'
+import type { MessagePayload } from 'firebase/messaging/sw'
 
 import { initializeFirebaseApp } from '@/services/push-notifications/firebase'
 import {
   shouldShowServiceWorkerPushNotification,
   parseServiceWorkerPushNotification,
 } from '@/service-workers/firebase-messaging/notifications'
+import { cacheServiceWorkerPushNotificationTrackingEvent } from '@/services/push-notifications/tracking'
 
 declare const self: ServiceWorkerGlobalScope
+
+type NotificationData = MessagePayload['data'] & {
+  link: string
+}
 
 export function firebaseMessagingSw() {
   const ICON_PATH = '/images/safe-logo-green.png'
@@ -27,13 +33,11 @@ export function firebaseMessagingSw() {
     (event) => {
       event.notification.close()
 
-      const link = event.notification.tag
+      const data: NotificationData = event.notification.data
 
-      if (!link) {
-        return
-      }
+      cacheServiceWorkerPushNotificationTrackingEvent('opened', data)
 
-      self.clients.openWindow(link)
+      self.clients.openWindow(data.link)
     },
     false,
   )
@@ -53,11 +57,18 @@ export function firebaseMessagingSw() {
       return
     }
 
+    const data: NotificationData = {
+      ...payload.data,
+      link: notification.link ?? self.location.origin,
+    }
+
+    cacheServiceWorkerPushNotificationTrackingEvent('shown', data)
+
     self.registration.showNotification(notification.title || '', {
       icon: ICON_PATH,
       body: notification.body,
       image: notification.image,
-      tag: notification.link ?? self.location.origin,
+      data,
     })
   })
 }

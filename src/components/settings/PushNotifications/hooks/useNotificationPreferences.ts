@@ -20,7 +20,7 @@ import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import type { PushNotificationPreferences, PushNotificationPrefsKey } from '@/services/push-notifications/preferences'
 import type { NotifiableSafes } from '../logic'
 
-export const _DEFAULT_NOTIFICATION_PREFERENCES: PushNotificationPreferences[PushNotificationPrefsKey]['preferences'] = {
+export const DEFAULT_NOTIFICATION_PREFERENCES: PushNotificationPreferences[PushNotificationPrefsKey]['preferences'] = {
   [WebhookType.NEW_CONFIRMATION]: true,
   [WebhookType.EXECUTED_MULTISIG_TRANSACTION]: true,
   [WebhookType.PENDING_MULTISIG_TRANSACTION]: true,
@@ -44,7 +44,7 @@ export const _setPreferences = setPreferences
 export const useNotificationPreferences = (): {
   uuid: string | undefined
   getAllPreferences: () => PushNotificationPreferences | undefined
-  getPreferences: (chainId: string, safeAddress: string) => typeof _DEFAULT_NOTIFICATION_PREFERENCES | undefined
+  getPreferences: (chainId: string, safeAddress: string) => typeof DEFAULT_NOTIFICATION_PREFERENCES | undefined
   updatePreferences: (
     chainId: string,
     safeAddress: string,
@@ -149,7 +149,7 @@ export const useNotificationPreferences = (): {
           const defaultPreferences: PushNotificationPreferences[PushNotificationPrefsKey] = {
             chainId,
             safeAddress,
-            preferences: _DEFAULT_NOTIFICATION_PREFERENCES,
+            preferences: DEFAULT_NOTIFICATION_PREFERENCES,
           }
 
           return [key, defaultPreferences]

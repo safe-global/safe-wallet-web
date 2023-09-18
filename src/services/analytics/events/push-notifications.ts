@@ -6,9 +6,9 @@ export const PUSH_NOTIFICATION_EVENTS = {
     action: 'Show notification',
     category,
   },
-  // User clicked on notification
-  CLICK_NOTIFICATION: {
-    action: 'Click notification',
+  // User opened on notification
+  OPEN_NOTIFICATION: {
+    action: 'Open notification',
     category,
   },
   // User registered Safe(s) for notifications
