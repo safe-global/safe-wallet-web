@@ -17,16 +17,25 @@ export const goerlyE2EWallet = /E2E Wallet @ G(ö|oe)rli/
 export const goerlySafeName = /g(ö|oe)rli-safe/
 export const goerliToken = /G(ö|oe)rli Ether/
 
-export const appUrlProd = 'https://safe-test-app.com'
+export const testAppUrl = 'https://safe-test-app.com'
 export const addressBookUrl = '/address-book?safe='
 export const BALANCE_URL = '/balances?safe='
 export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
+export const transactionsHistoryUrl = '/transactions/history?safe='
 export const openAppsUrl = '/apps/open?safe='
 export const homeUrl = '/home?safe='
 export const welcomeUrl = '/welcome'
 export const chainMaticUrl = '/welcome?chain=matic'
+export const appsUrl = '/apps'
+export const requestPermissionsUrl = '/request-permissions'
+export const getPermissionsUrl = '/get-permissions'
+export const invalidappUrl = 'https://my-invalid-custom-app.com/manifest.json'
+export const validappUrlJson = 'https://my-valid-custom-app.com/manifest.json'
+export const validappUrl = 'https://my-valid-custom-app.com'
+
 export const proposeEndPoint = '/**/propose'
+export const appsEndPoint = '/**/safe-apps'
 
 export const GOERLI_CSV_ENTRY = {
   name: 'goerli user 1',
@@ -46,4 +55,15 @@ export const networks = {
 
 export const tokenAbbreviation = {
   gor: 'GOR',
+}
+
+export const appNames = {
+  walletconnect: 'walletconnect',
+  customcontract: 'compose custom contract',
+  noresults: 'atextwithoutresults',
+}
+
+export const testAppData = {
+  name: 'Cypress Test App',
+  descr: 'Cypress Test App Description',
 }

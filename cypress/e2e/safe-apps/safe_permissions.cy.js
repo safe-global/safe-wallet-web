@@ -1,12 +1,14 @@
 import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
+import * as safeapps from '../pages/safeapps.pages'
 
 describe('The Safe permissions system', () => {
   beforeEach(() => {
     cy.fixture('safe-app').then((html) => {
-      cy.intercept('GET', `${constants.appUrlProd}/*`, html)
+      cy.intercept('GET', `${constants.testAppUrl}/*`, html)
       cy.intercept('GET', `*/manifest.json`, {
-        name: 'Cypress Test App',
-        description: 'Cypress Test App Description',
+        name: constants.testAppData.name,
+        description: constants.testAppData.descr,
         icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
       })
     })
@@ -14,17 +16,15 @@ describe('The Safe permissions system', () => {
 
   describe('When requesting permissions with wallet_requestPermissions', () => {
     it('should show the permissions prompt and return the permissions on accept', () => {
-      cy.visitSafeApp(`${constants.appUrlProd}/request-permissions`)
-
-      cy.findByRole('heading', { name: /permissions request/i }).should('exist')
-      cy.findByText(/access to your address book/i).should('exist')
-
-      cy.findByRole('button', { name: /accept/i }).click()
+      cy.visitSafeApp(constants.testAppUrl + constants.requestPermissionsUrl)
+      safeapps.verifyPermissionsRequestExists()
+      safeapps.verifyAccessToAddressBookExists()
+      safeapps.clickOnAcceptBtn()
 
       cy.get('@safeAppsMessage').should('have.been.calledWithMatch', {
         data: [
           {
-            invoker: 'https://safe-test-app.com',
+            invoker: constants.testAppUrl,
             parentCapability: 'requestAddressBook',
             date: Cypress.sinon.match.number,
             caveats: [],
@@ -40,9 +40,9 @@ describe('The Safe permissions system', () => {
         window.localStorage.setItem(
           constants.SAFE_PERMISSIONS_KEY,
           JSON.stringify({
-            [constants.appUrlProd]: [
+            [constants.testAppUrl]: [
               {
-                invoker: constants.appUrlProd,
+                invoker: constants.testAppUrl,
                 parentCapability: 'requestAddressBook',
                 date: 1111111111111,
                 caveats: [],
@@ -52,12 +52,12 @@ describe('The Safe permissions system', () => {
         )
       })
 
-      cy.visitSafeApp(`${constants.appUrlProd}/get-permissions`)
+      cy.visitSafeApp(constants.testAppUrl + constants.getPermissionsUrl)
 
       cy.get('@safeAppsMessage').should('have.been.calledWithMatch', {
         data: [
           {
-            invoker: constants.appUrlProd,
+            invoker: constants.testAppUrl,
             parentCapability: 'requestAddressBook',
             date: Cypress.sinon.match.number,
             caveats: [],
