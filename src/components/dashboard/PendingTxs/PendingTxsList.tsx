@@ -38,6 +38,7 @@ const LoadingState = () => (
 )
 
 const PendingTxsList = (): ReactElement | null => {
+  const router = useRouter()
   const { page, loading } = useTxQueue()
   const { safe } = useSafeInfo()
   const wallet = useWallet()
@@ -53,25 +54,23 @@ const PendingTxsList = (): ReactElement | null => {
 
   const txs = actionable.length ? actionable : queuedTxns
   const txsToDisplay = txs.slice(0, MAX_TXS)
-  const txsCount = txs.length
-  const router = useRouter()
 
   const queueUrl = useMemo(
     () => ({
       pathname: AppRoutes.transactions.queue,
       query: { safe: router.query.safe },
     }),
-    [router],
+    [router.query.safe],
   )
 
   return (
     <WidgetContainer>
       <div className={css.title}>
         <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
-          Pending transaction{txsCount > 1 ? 's' : ''}
+          Pending transactions
         </Typography>
 
-        {queuedTxns.length > 0 && <ViewAllLink url={queueUrl} text="View queue" />}
+        {queuedTxns.length > 0 && <ViewAllLink url={queueUrl} />}
       </div>
 
       <WidgetBody>
