@@ -15,6 +15,23 @@
   border-color: var(--color-secondary-light);
 }
 
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.skeleton {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
 .confirmationsCount {
   display: flex;
   align-items: center;

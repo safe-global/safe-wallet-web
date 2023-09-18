@@ -1,7 +1,7 @@
 import * as constants from '../../support/constants'
 
 const connectAndTransactStr = 'Connect & transact'
-const transactionQueueStr = 'Transaction queue'
+const transactionQueueStr = 'Pending transactions'
 const noTransactionStr = 'This Safe has no queued transactions'
 const overviewStr = 'Overview'
 const viewAssetsStr = 'View assets'
