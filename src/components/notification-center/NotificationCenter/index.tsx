@@ -8,7 +8,6 @@ import IconButton from '@mui/material/IconButton'
 import BellIcon from '@/public/images/notifications/bell.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-
 import { useAppDispatch, useAppSelector } from '@/store'
 import {
   selectNotifications,

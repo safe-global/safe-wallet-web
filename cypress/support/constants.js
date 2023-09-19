@@ -7,14 +7,26 @@ export const TEST_SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
 export const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
+export const SIDEBAR_ADDRESS = '0x04f8...1a91'
 
 export const BROWSER_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__browserPermissions`
 export const SAFE_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__safePermissions`
 export const INFO_MODAL_KEY = `${LS_NAMESPACE}SafeApps__infoModal`
 
+export const goerlyE2EWallet = /E2E Wallet @ G(ö|oe)rli/
+export const goerlySafeName = /g(ö|oe)rli-safe/
+export const goerliToken = /G(ö|oe)rli Ether/
+
 export const appUrlProd = 'https://safe-test-app.com'
 export const addressBookUrl = '/address-book?safe='
 export const BALANCE_URL = '/balances?safe='
+export const balanceNftsUrl = '/balances/nfts?safe='
+export const transactionQueueUrl = '/transactions/queue?safe='
+export const openAppsUrl = '/apps/open?safe='
+export const homeUrl = '/home?safe='
+export const welcomeUrl = '/welcome'
+export const chainMaticUrl = '/welcome?chain=matic'
+export const proposeEndPoint = '/**/propose'
 
 export const GOERLI_CSV_ENTRY = {
   name: 'goerli user 1',
@@ -23,4 +35,15 @@ export const GOERLI_CSV_ENTRY = {
 export const GNO_CSV_ENTRY = {
   name: 'gno user 1',
   address: '0x61a0c717d18232711bC788F19C9Cd56a43cc8872',
+}
+
+export const networks = {
+  ethereum: 'Ethereum',
+  goerli: /^G(ö|oe)rli$/,
+  sepolia: 'Sepolia',
+  polygon: 'Polygon',
+}
+
+export const tokenAbbreviation = {
+  gor: 'GOR',
 }

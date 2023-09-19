@@ -1,9 +1,11 @@
 import * as constants from '../../support/constants'
+import * as safe from '../pages/load_safe.pages'
+import * as main from '../pages/main.page'
 
 describe('Pending actions', () => {
   before(() => {
-    cy.visit(`/welcome`)
-    cy.contains('button', 'Accept selection').click()
+    cy.visit(constants.welcomeUrl)
+    main.acceptCookies()
   })
 
   beforeEach(() => {
@@ -17,41 +19,24 @@ describe('Pending actions', () => {
   })
 
   it('should add the Safe with the pending actions', () => {
-    // Enters Loading Safe form
-    cy.contains('button', 'Add').click()
-    cy.contains('Name, address & network')
-
-    // Inputs the Safe address
-    cy.get('input[name="address"]').type(constants.TEST_SAFE)
-    cy.contains('Next').click()
-
-    cy.contains('Owners and confirmations')
-    cy.contains('Next').click()
-
-    cy.contains('Add').click()
+    safe.openLoadSafeForm()
+    safe.inputAddress(constants.TEST_SAFE)
+    safe.clickOnNextBtn()
+    safe.verifyOwnersModalIsVisible()
+    safe.clickOnNextBtn()
+    safe.clickOnAddBtn()
   })
 
   it('should display the pending actions in the Safe list sidebar', () => {
-    cy.get('aside').within(() => {
-      cy.get('[data-testid=ChevronRightIcon]').click({ force: true })
-    })
-
-    cy.get('li').within(() => {
-      cy.contains('0x04f8...1a91').should('exist')
-
-      //cy.get('img[alt="E2E Wallet logo"]').next().contains('2').should('exist')
-      cy.get('[data-testid=CheckIcon]').next().contains('1').should('exist')
-
-      // click on the pending actions
-      cy.get('[data-testid=CheckIcon]').next().click()
-    })
+    safe.openSidebar()
+    safe.verifyAddressInsidebar(constants.SIDEBAR_ADDRESS)
+    safe.verifySidebarIconNumber(1)
+    safe.clickOnPendingActions()
+    //cy.get('img[alt="E2E Wallet logo"]').next().contains('2').should('exist')
   })
 
   it('should have the right number of queued and signable transactions', () => {
-    // Navigates to the tx queue
-    cy.contains('h3', 'Transactions').should('be.visible')
-
-    // contains 1 queued transaction
-    cy.get('span:contains("1 out of 1")').should('have.length', 1)
+    safe.verifyTransactionSectionIsVisible()
+    safe.verifyNumberOfTransactions(1, 1)
   })
 })
