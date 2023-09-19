@@ -11,7 +11,7 @@ describe('Queue a transaction on 1/N', () => {
     main.acceptCookies()
   })
 
-  it('should create and queue a transaction', () => {
+  it('should create a new send token transaction', () => {
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
     createtx.typeRecipientAddress(constants.EOA)
@@ -22,7 +22,7 @@ describe('Queue a transaction on 1/N', () => {
     createtx.clickOnNextBtn()
   })
 
-  it('should create a queued transaction', () => {
+  it('should review, edit and submit the tx', () => {
     createtx.verifySubmitBtnIsEnabled()
     cy.wait(1000)
     createtx.verifyNativeTokenTransfer()
@@ -35,7 +35,7 @@ describe('Queue a transaction on 1/N', () => {
     createtx.clickOnSignTransactionBtn()
   })
 
-  it('should click the notification and see the transaction queued', () => {
+  it('should click on the notification and see the transaction queued', () => {
     createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()
