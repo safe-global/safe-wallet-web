@@ -14,9 +14,15 @@ import { keccak256 } from 'ethereum-cryptography/keccak'
 
 const question = 'ENTER PASSWORD'
 
-export const answerToUserInputHashBN = (answerString: string): BN => {
+/**
+ * Creates private key for a user input password
+ * @param answerString password
+ * @returns private key as BN
+ */
+export const answerToUserInputHashBN = (password: string): BN => {
   // TODO: Should we use a proper password hashing algorithm?
-  return new BN(keccak256(Buffer.from(answerString, 'utf8')))
+  // keccak256
+  return new BN(keccak256(new Uint8Array(Buffer.from(password, 'utf8'))))
 }
 
 export const usePasswordRecovery = (localFactorKey: BN | null) => {
@@ -96,10 +102,13 @@ export const usePasswordRecovery = (localFactorKey: BN | null) => {
     }
 
     const passwordBN = answerToUserInputHashBN(password)
-    const factorKeyBuffer = await decrypt(toPrivKeyECC(passwordBN), passwordShare)
-    const factorKey = new BN(Buffer.from(factorKeyBuffer).toString('hex'), 'hex')
-
-    return factorKey
+    try {
+      const factorKeyBuffer = await decrypt(toPrivKeyECC(passwordBN), passwordShare)
+      const factorKey = new BN(Buffer.from(factorKeyBuffer).toString('hex'), 'hex')
+      return factorKey
+    } catch (error) {
+      throw new Error('Unable to decrypt using the entered password.')
+    }
   }
 
   return {

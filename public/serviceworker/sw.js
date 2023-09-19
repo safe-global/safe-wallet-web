@@ -248,11 +248,6 @@ self.addEventListener('fetch', function (event) {
                             bc.addEventListener("message", function (ev) {
                               if (ev.success) {
                                 bc.close();
-                                console.log("posted", {
-                                  queryParams,
-                                  instanceParams,
-                                  hashParams,
-                                });
                               } else {
                                 window.close();
                                 showCloseText();
@@ -318,7 +313,6 @@ self.addEventListener('fetch', function (event) {
       )
     }
   } catch (error) {
-    console.log('Hello')
     console.error(error)
   }
 })

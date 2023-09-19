@@ -1,0 +1,90 @@
+{
+  "fixtureInitializedLocalShare": {
+    "metadata": {
+      "pubKey": "0303baa38e308f1e6775c3d0ae66fa7dfe52f1fb8824ac9c85643f1872a8c9c467",
+      "polyIDList": [
+        "0303baa38e308f1e6775c3d0ae66fa7dfe52f1fb8824ac9c85643f1872a8c9c467|0269ba52992895dc8a91d383911b5e32420c5055930946c96ecd9d29e140457280|0x0|1|72e22f98592e2166ec6cbde1ad439b69cc33ead59e9416c38e3c7a92e0e1222a"
+      ],
+      "scopedStore": {},
+      "generalStore": {
+        "shareDescriptions": {
+          "044c7cc4da3ebd1f24bc9dac16d50ab7bee494f310646118713c7446c92076a433b6dcf5d2ff041e95ca630bf0c48e4d1759ea0f68203a3b0f3f2452d21b9c9e31": [
+            "{\"module\":\"local storage share\",\"dateAdded\":1695121500805,\"tssShareIndex\":2}"
+          ]
+        }
+      },
+      "tkeyStore": {},
+      "nonce": 1,
+      "tssNonces": {
+        "default": 0
+      },
+      "tssPolyCommits": {
+        "default": [
+          {
+            "x": "3da18b634da037495719ebc081ef78b25becec1e9fdc211526d545a389054c39",
+            "y": "43795322b08a296a0a47a9dd3c4b98dbde608fd4ba0e260ad659a31d1513ddff"
+          },
+          {
+            "x": "6b789875bc77890707dba902058579993ced32c1e1f6402a8c4b28ebc820f1ec",
+            "y": "4cdd97f4feac7e3103e3edc07209efc6a2aa98f1fee66b2e81739f9a458a76bb"
+          }
+        ]
+      },
+      "factorPubs": {
+        "default": [
+          {
+            "x": "4c7cc4da3ebd1f24bc9dac16d50ab7bee494f310646118713c7446c92076a433",
+            "y": "b6dcf5d2ff041e95ca630bf0c48e4d1759ea0f68203a3b0f3f2452d21b9c9e31"
+          }
+        ]
+      },
+      "factorEncs": {
+        "default": {
+          "4c7cc4da3ebd1f24bc9dac16d50ab7bee494f310646118713c7446c92076a433": {
+            "tssIndex": 2,
+            "type": "direct",
+            "userEnc": {
+              "ciphertext": "f5d18c9ad0bf6439270c30e178e3631a5bcce86e2fed02e0679c8dd5484e25b075919818d1a089be9e6d94190e278b2f",
+              "ephemPublicKey": "04c7302848a3fa9cfb2ce23578efb6cfe3e1618ebe90e7ef31c6af1a79c548507fbfbe537c838447d8d6f235e0dca10bed3d1d6bcd5b5083c9d15c3ddc89fdaa21",
+              "iv": "ec3eefa561a4d7b452d68e9eb632c173",
+              "mac": "b3ff0137e344f306cf04231030bcbe3301b5e82f6f6dfc189689687c6567199b"
+            },
+            "serverEncs": []
+          }
+        }
+      },
+      "publicPolynomials": {
+        "0303baa38e308f1e6775c3d0ae66fa7dfe52f1fb8824ac9c85643f1872a8c9c467|0269ba52992895dc8a91d383911b5e32420c5055930946c96ecd9d29e140457280": {
+          "polynomialCommitments": [
+            {
+              "x": "3baa38e308f1e6775c3d0ae66fa7dfe52f1fb8824ac9c85643f1872a8c9c467",
+              "y": "4e67bd28a72577e782f44216af96af715768aaa704dac7c57359748ee3705d3f"
+            },
+            {
+              "x": "69ba52992895dc8a91d383911b5e32420c5055930946c96ecd9d29e140457280",
+              "y": "7fee8884841cf0fa125a5baf30340d11efacfab5074bfc3d78621b478db30de"
+            }
+          ]
+        }
+      }
+    },
+    "shares": {
+      "1": {
+        "share": {
+          "share": "fc0d2f70bbe19c383d4daca07bf0b8ef4cd6054da84370c1f8150dc115a2f8ff",
+          "shareIndex": "1"
+        },
+        "polynomialID": "0303baa38e308f1e6775c3d0ae66fa7dfe52f1fb8824ac9c85643f1872a8c9c467|0269ba52992895dc8a91d383911b5e32420c5055930946c96ecd9d29e140457280"
+      },
+      "2": {
+        "share": {
+          "share": "790a32257536e02db04c18a8a5a0b04661dcc32c416c362e6ba689b83d42870b",
+          "shareIndex": "72e22f98592e2166ec6cbde1ad439b69cc33ead59e9416c38e3c7a92e0e1222a"
+        },
+        "polynomialID": "0303baa38e308f1e6775c3d0ae66fa7dfe52f1fb8824ac9c85643f1872a8c9c467|0269ba52992895dc8a91d383911b5e32420c5055930946c96ecd9d29e140457280"
+      }
+    },
+    "localFactorKey": "fc8c8451a4c02775b90dab5533372702774336b3256fd8f523ccfed04ab01107",
+    "privateKey": "310b11bc6da78b5faec249ecf18d2dd8bcabbf4e6abec65987ed0267a3f0d5ca"
+  }
+}

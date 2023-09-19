@@ -111,7 +111,7 @@ export const useMPCWallet = () => {
     if (signingParams) {
       localSetup().then(() => setWalletState(MPCWalletState.READY))
     }
-  }, [chain, loginResponse, signingParams, user?.email, walletAddress])
+  }, [chain, loginResponse, signingParams, tKey, user?.email, walletAddress])
 
   const resetAccount = async () => {
     if (!loginResponse || !tKey) {
@@ -348,7 +348,6 @@ export const useMPCWallet = () => {
       if (!onboard) {
         return
       }
-      console.log('Connecting to onboard MPC module')
       connectWallet(onboard, {
         autoSelect: {
           label: ONBOARD_MPC_MODULE_LABEL,
