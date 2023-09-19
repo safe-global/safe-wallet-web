@@ -134,15 +134,18 @@ export class WalletConnect {
   onSessionProposal = (handler: (proposal: Web3WalletTypes.SessionProposal) => void) => {
     // events
     this.#web3Wallet?.on('session_proposal', handler)
+    return () => this.#web3Wallet?.off('session_proposal', handler)
   }
 
   onSessionDelete = (handler: () => void) => {
     this.#web3Wallet?.on('session_delete', handler)
+    return () => this.#web3Wallet?.off('session_delete', handler)
   }
 
   onSessionRequest = (handler: (event: Web3WalletTypes.SessionRequest) => void) => {
     console.log('Registering session request handler')
     this.#web3Wallet?.on('session_request', handler)
+    return () => this.#web3Wallet?.off('session_request', handler)
   }
 
   approveSessionProposal = async (

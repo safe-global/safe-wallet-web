@@ -76,7 +76,7 @@ const useWalletConnect = (): useWalletConnectType => {
       return
     }
     console.log('Registering session request handler', currentSessionTopic)
-    walletConnect.onSessionRequest(async (event) => {
+    return walletConnect.onSessionRequest(async (event) => {
       const { topic, id } = event
       const { request, chainId: transactionChainId } = event.params
 
@@ -126,19 +126,23 @@ const useWalletConnect = (): useWalletConnectType => {
     if (walletConnect?.isConnected()) {
       setWcState(WC_CONNECT_STATE.CONNECTED)
     }
+  }, [walletConnect])
 
+  useEffect(() => {
     // events
-    walletConnect?.onSessionProposal(async (proposal) => {
+    return walletConnect?.onSessionProposal(async (proposal) => {
       setSessionProposal(proposal)
       setWcState(WC_CONNECT_STATE.PENDING_SESSION_REQUEST)
     })
+  }, [safe, chainInfo, walletConnect])
 
-    walletConnect?.onSessionDelete(async () => {
+  useEffect(() => {
+    return walletConnect?.onSessionDelete(async () => {
       walletConnect.resetSession()
       setWcState(WC_CONNECT_STATE.NOT_CONNECTED)
       setError(undefined)
     })
-  }, [safe, chainInfo, walletConnect])
+  }, [walletConnect])
 
   const wcConnect = useCallback<wcConnectType>(
     async (uri: string) => {
