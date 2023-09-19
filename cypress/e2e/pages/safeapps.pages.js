@@ -3,6 +3,7 @@ import * as constants from '../../support/constants'
 const searchappInput = 'input[id="search-by-name"]'
 const appUrlInput = 'input[name="appUrl"]'
 const closePreviewWindowBtn = 'button[aria-label*="Close"][aria-label*="preview"]'
+
 const addBtnStr = /add/i
 const noAppsStr = /no Safe Apps found/i
 const bookmarkedAppsStr = /bookmarked Apps/i
@@ -16,6 +17,9 @@ const microfoneCheckBoxStr = /microphone/i
 const permissionRequestStr = /permissions request/i
 const accessToAddressBookStr = /access to your address book/i
 const acceptBtnStr = /accept/i
+const clearAllBtnStr = /clear all/i
+const allowAllPermissions = /allow all/i
+
 const appNotSupportedMsg = "The app doesn't support Safe App functionality"
 
 export const pinWalletConnectStr = /pin walletconnect/i
@@ -26,9 +30,25 @@ export const availableNetworksPreview = /available networks/i
 export const connecttextPreview = 'Connect your Safe to any dApp that supports WalletConnect'
 export const localStorageItem =
   '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}'
-
+export const gridItem = 'main .MuiPaper-root > .MuiGrid-item'
 export const linkNames = {
   logo: /logo/i,
+}
+
+export const permissionCheckboxes = {
+  camera: 'input[name="camera"]',
+  addressbook: 'input[name="requestAddressBook"]',
+  microphone: 'input[name="microphone"]',
+  geolocation: 'input[name="geolocation"]',
+  fullscreen: 'input[name="fullscreen"]',
+}
+
+export const permissionCheckboxNames = {
+  camera: 'Camera',
+  addressbook: 'Address Book',
+  microphone: 'Microphone',
+  geolocation: 'Geolocation',
+  fullscreen: 'Fullscreen',
 }
 export function typeAppName(name) {
   cy.get(searchappInput).clear().type(name)
@@ -160,4 +180,12 @@ export function verifyAccessToAddressBookExists() {
 
 export function clickOnAcceptBtn() {
   cy.findByRole('button', { name: acceptBtnStr }).click()
+}
+
+export function uncheckAllPermissions(element) {
+  cy.wrap(element).findByText(clearAllBtnStr).click()
+}
+
+export function checkAllPermissions(element) {
+  cy.wrap(element).findByText(allowAllPermissions).click()
 }

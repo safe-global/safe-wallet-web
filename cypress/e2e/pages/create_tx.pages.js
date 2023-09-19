@@ -8,6 +8,7 @@ const amountInput = 'input[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
+const transactionItemExpandable = 'div[id^="transfer"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -26,6 +27,8 @@ const editBtnStr = 'Edit'
 const executionParamsStr = 'Execution parameters'
 const noLaterStr = 'No, later'
 const signBtnStr = 'Sign'
+const expandallbtnStr = 'Expand all'
+const collapseAllBtnStr = 'Collapse all'
 
 export function clickOnNewtransactionBtn() {
   // Assert that "New transaction" button is visible
@@ -148,4 +151,41 @@ export function verifyQueueLabel() {
 
 export function verifyTransactionSummary(sendValue) {
   cy.contains(TransactionSummary + `${sendValue} ${constants.tokenAbbreviation.gor}`).should('exist')
+}
+
+export function verifyDateExists(date) {
+  cy.contains('div', date).should('exist')
+}
+
+export function verifyImageAlttxt(index, text) {
+  cy.get('img').eq(index).should('have.attr', 'alt', text).should('be.visible')
+}
+
+export function verifyStatus(status) {
+  cy.contains('div', status).should('exist')
+}
+
+export function verifyTransactionStrExists(str) {
+  cy.contains(str).should('exist')
+}
+
+export function verifyTransactionStrNotVible(str) {
+  cy.contains(str).should('not.be.visible')
+}
+
+export function clickOnTransactionExpandableItem(name, actions) {
+  cy.contains('div', name)
+    .next()
+    .click()
+    .within(() => {
+      actions()
+    })
+}
+
+export function lickOnExpandAllBtn() {
+  cy.contains(expandallbtnStr).click()
+}
+
+export function lickOnCollapseAllBtn() {
+  cy.contains(collapseAllBtnStr).click()
 }
