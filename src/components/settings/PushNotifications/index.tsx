@@ -105,8 +105,6 @@ export const PushNotifications = (): ReactElement => {
                 with your signature. You will need to enable them again if you clear your browser cache.
               </Typography>
 
-              {!safeLoaded && <Typography color={({ palette }) => palette.primary.light}>No Safes added</Typography>}
-
               {shouldShowMacHelper && (
                 <Alert severity="info" className={css.macOsInfo}>
                   <Typography fontWeight={700} variant="body2" mb={1}>
