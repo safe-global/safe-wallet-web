@@ -17,13 +17,15 @@ import { trackEvent } from '@/services/analytics'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import CheckWallet from '@/components/common/CheckWallet'
 import CloseIcon from '@/public/images/common/close.svg'
+import { useNotificationPreferences } from '../hooks/useNotificationPreferences'
+import { sameAddress } from '@/utils/addresses'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import type { NotifiableSafes } from '../logic'
 
 import css from './styles.module.css'
-import { useNotificationPreferences } from '../hooks/useNotificationPreferences'
-import { sameAddress } from '@/utils/addresses'
 
 const DISMISS_PUSH_NOTIFICATIONS_KEY = 'dismissPushNotifications'
 
@@ -73,7 +75,10 @@ const getSafesToRegister = (addedSafes: AddedSafesState, allPreferences: PushNot
     const notificationRegistrations = Object.values(allPreferences)
 
     const newlyAddedSafes = addedSafeAddressesOnChain.filter((safeAddress) => {
-      return notificationRegistrations.some((registration) => !sameAddress(registration.safeAddress, safeAddress))
+      return (
+        notificationRegistrations.length === 0 ||
+        notificationRegistrations.some((registration) => !sameAddress(registration.safeAddress, safeAddress))
+      )
     })
 
     acc[chainId] = newlyAddedSafes
@@ -87,6 +92,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const totalAddedSafes = useAppSelector(selectTotalAdded)
   const { safe } = useSafeInfo()
   const { query } = useRouter()
+  const onboard = useOnboard()
 
   const { dismissPushNotificationBanner, isPushNotificationBannerDismissed } = useDismissPushNotificationsBanner()
 
@@ -108,10 +114,16 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   }, [dismissBanner, shouldShowBanner])
 
   const onEnableAll = async () => {
+    if (!onboard) {
+      return
+    }
+
     trackEvent(PUSH_NOTIFICATION_EVENTS.ENABLE_ALL)
 
     const allPreferences = getAllPreferences()
     const safesToRegister = getSafesToRegister(addedSafes, allPreferences)
+
+    await assertWalletChain(onboard, safe.chainId)
 
     await registerNotifications(safesToRegister)
 
@@ -157,7 +169,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
                       size="small"
                       className={css.button}
                       onClick={onEnableAll}
-                      disabled={!isOk}
+                      disabled={!isOk || !onboard}
                     >
                       Enable all
                     </Button>

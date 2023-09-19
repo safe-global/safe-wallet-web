@@ -315,8 +315,8 @@ export const GlobalPushNotifications = (): ReactElement | null => {
         <Box display="flex" alignItems="center">
           {totalSignaturesRequired > 0 && (
             <Typography display="inline" mr={2} textAlign="right">
-              We&apos;ll ask you to verify your ownership of {totalSignaturesRequired} Safe Account
-              {totalSignaturesRequired > 1 ? 's' : ''} with your signature
+              We&apos;ll ask you to verify ownership of each Safe Account with your signature per chain
+              {totalSignaturesRequired} time{totalSignaturesRequired > 1 ? 's' : ''}
             </Typography>
           )}
 

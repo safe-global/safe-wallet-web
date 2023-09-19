@@ -1,4 +1,4 @@
-import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
+import { arrayify, keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { getToken, getMessaging } from 'firebase/messaging'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk'
@@ -8,6 +8,7 @@ import { FIREBASE_VAPID_KEY, initializeFirebaseApp } from '@/services/push-notif
 import packageJson from '../../../../package.json'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import { checksumAddress } from '@/utils/addresses'
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
@@ -51,10 +52,11 @@ const getSafeRegistrationSignature = ({
 
   // @see https://github.com/safe-global/safe-transaction-service/blob/3644c08ac4b01b6a1c862567bc1d1c81b1a8c21f/safe_transaction_service/notifications/views.py#L19-L24
 
-  const message = MESSAGE_PREFIX + timestamp + uuid + token + safeAddresses.join('')
+  const message = MESSAGE_PREFIX + timestamp + uuid + token + safeAddresses.sort().join('')
   const hashedMessage = keccak256(toUtf8Bytes(message))
 
-  return web3.getSigner().signMessage(hashedMessage)
+  // TODO: Use `signMessage` when supported
+  return web3.getSigner()._legacySignMessage(arrayify(hashedMessage))
 }
 
 export type NotifiableSafes = { [chainId: string]: Array<string> }
@@ -92,12 +94,19 @@ export const getRegisterDevicePayload = async ({
 
   const safeRegistrations = await Promise.all(
     Object.entries(safesToRegister).map(async ([chainId, safeAddresses]) => {
+      const checksummedSafeAddresses = safeAddresses.map((address) => checksumAddress(address))
       // We require a signature for confirmation request notifications
-      const signature = await getSafeRegistrationSignature({ safeAddresses, web3, uuid, timestamp, token })
+      const signature = await getSafeRegistrationSignature({
+        safeAddresses: checksummedSafeAddresses,
+        web3,
+        uuid,
+        timestamp,
+        token,
+      })
 
       return {
         chainId,
-        safes: safeAddresses,
+        safes: checksummedSafeAddresses,
         signatures: [signature],
       }
     }),
