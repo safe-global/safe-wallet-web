@@ -28,20 +28,23 @@ export class SafeWalletProvider {
   }
 
   private async makeRequest(request: RpcRequest): Promise<unknown> {
-    const { method, params = [] } = request
+    const { id, method, params = [] } = request
+
+    const rpcResult = (result: unknown) => ({
+      jsonrpc: '2.0',
+      id,
+      result,
+    })
 
     console.log('SafeWalletProvider request', request)
 
     switch (method) {
-      case 'wallet_switchEthereumChain':
-        return true
-
       case 'eth_accounts':
-        return [this.safe.safeAddress]
+        return rpcResult([this.safe.safeAddress])
 
       case 'net_version':
       case 'eth_chainId':
-        return `0x${this.safe.chainId.toString(16)}`
+        return rpcResult(`0x${this.safe.chainId.toString(16)}`)
 
       case 'personal_sign': {
         const [message, address] = params as [string, string]
@@ -53,7 +56,7 @@ export class SafeWalletProvider {
         const response = await this.sdk.signMessage(message)
         const signature = 'signature' in response ? response.signature : undefined
 
-        return signature || '0x'
+        return rpcResult(signature || '0x')
       }
 
       case 'eth_sign': {
@@ -66,7 +69,7 @@ export class SafeWalletProvider {
         const response = await this.sdk.signMessage(messageHash)
         const signature = 'signature' in response ? response.signature : undefined
 
-        return signature || '0x'
+        return rpcResult(signature || '0x')
       }
 
       case 'eth_signTypedData':
@@ -80,11 +83,10 @@ export class SafeWalletProvider {
 
         const response = await this.sdk.signTypedMessage(parsedTypedData)
         const signature = 'signature' in response ? response.signature : undefined
-        return signature || '0x'
+        return rpcResult(signature || '0x')
       }
 
       case 'eth_sendTransaction':
-        console.log(params)
         const tx = {
           value: '0',
           data: '0x',
@@ -117,7 +119,8 @@ export class SafeWalletProvider {
           blockNumber: null,
           transactionIndex: null,
         })
-        return resp.safeTxHash
+
+        return rpcResult(resp.safeTxHash)
 
       case 'eth_getTransactionByHash':
         let txHash = params[0] as string
@@ -127,7 +130,7 @@ export class SafeWalletProvider {
         } catch (e) {}
         // Use fake transaction if we don't have a real tx hash
         if (this.submittedTxs.has(txHash)) {
-          return this.submittedTxs.get(txHash)
+          return rpcResult(this.submittedTxs.get(txHash))
         }
         return await this.sdk.proxy(method, [txHash])
 
@@ -148,7 +151,7 @@ export class SafeWalletProvider {
   async request(request: RpcRequest): Promise<{
     jsonrpc: string
     id: number
-    result?: unknown
+    result: unknown
   }> {
     const result = await this.makeRequest(request)
     return {

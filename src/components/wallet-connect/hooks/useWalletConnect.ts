@@ -67,15 +67,18 @@ const useWalletConnect = (): useWalletConnectType => {
       return
     }
 
-    walletConnect.updateSafeInfo(safe)
+    walletConnect.updateSafeInfo(safe).catch((e) => setError(e.message))
   }, [safe.address.value, safe.chainId, safe, walletConnect])
 
+  // Registering WC
   useEffect(() => {
     console.log('WC trying to register')
     if (!walletConnect || !safeWalletProvider) {
       return
     }
+
     console.log('WC registering session request handler', currentSessionTopic)
+
     return walletConnect.onSessionRequest(async (event) => {
       console.log('WC session request', event)
 
@@ -97,14 +100,14 @@ const useWalletConnect = (): useWalletConnectType => {
 
       try {
         setError(undefined)
-        const result = await safeWalletProvider.request(request)
+
+        const result = await safeWalletProvider.request({ ...request, id })
+
+        console.log('WC result', result)
+
         await walletConnect.sendSessionResponse({
           topic,
-          response: {
-            id,
-            jsonrpc: '2.0',
-            result,
-          },
+          response: result,
         })
 
         // TODO TRACKING
@@ -113,10 +116,15 @@ const useWalletConnect = (): useWalletConnectType => {
         setError(error?.message)
         const isUserRejection = error?.message?.includes?.('Transaction was rejected')
         const code = isUserRejection ? USER_REJECTED_REQUEST_CODE : INVALID_METHOD_ERROR_CODE
-        await walletConnect.sendSessionResponse({
-          topic,
-          response: rejectResponse(id, code, error.message),
-        })
+
+        try {
+          await walletConnect.sendSessionResponse({
+            topic,
+            response: rejectResponse(id, code, error.message),
+          })
+        } catch (e) {
+          console.error('WC error sending session response', e)
+        }
       }
     })
   }, [chainInfo?.chainName, safe.chainId, safeWalletProvider, walletConnect, currentSessionTopic])

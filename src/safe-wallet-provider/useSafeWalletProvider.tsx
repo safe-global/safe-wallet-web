@@ -80,8 +80,7 @@ const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
       },
 
       async proxy(method: string, params: unknown[]) {
-        const data = await web3ReadOnly?.send(method, params)
-        return data.result
+        return await web3ReadOnly?.send(method, params)
       },
     }
   }, [safeAddress, chainId, setTxFlow, web3ReadOnly])
