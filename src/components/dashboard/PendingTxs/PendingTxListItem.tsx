@@ -25,8 +25,8 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
   const { id } = transaction
   const { safe } = useSafeInfo()
   const wallet = useWallet()
-  const signable = wallet ? isSignableBy(transaction, wallet.address) : false
-  const executable = wallet ? isExecutable(transaction, wallet?.address, safe) : false
+  const canSign = wallet ? isSignableBy(transaction, wallet.address) : false
+  const canExecute = wallet ? isExecutable(transaction, wallet?.address, safe) : false
 
   const url = useMemo(
     () => ({
@@ -63,9 +63,9 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
           <Box flexGrow={1} />
         )}
 
-        {executable ? (
+        {canExecute ? (
           <ExecuteTxButton txSummary={transaction} compact />
-        ) : signable ? (
+        ) : canSign ? (
           <SignTxButton txSummary={transaction} compact />
         ) : (
           <ChevronRight color="border" />
