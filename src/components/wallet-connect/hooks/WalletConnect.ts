@@ -50,20 +50,16 @@ export const SAFE_WALLET_METADATA = {
 }
 
 export class WalletConnect {
-  #web3Wallet: Web3WalletType | undefined
-  #safe: SafeInfo
-  #currentSession: SessionTypes.Struct | undefined
+  private web3Wallet: Web3WalletType | undefined
+  private safe: SafeInfo
+  private currentSession: SessionTypes.Struct | undefined
 
   constructor(safe: SafeInfo) {
-    this.#safe = safe
+    this.safe = safe
     this.initializeWalletConnect()
   }
 
-  private initializeWalletConnect = async () => {
-    await this.initializeWalletConnectV2Client()
-  }
-
-  private initializeWalletConnectV2Client = async () => {
+  private async initializeWalletConnect() {
     const core = new Core({
       projectId: WC_PROJECT_ID,
       logger,
@@ -74,106 +70,113 @@ export class WalletConnect {
       metadata: SAFE_WALLET_METADATA,
     })
 
-    this.#web3Wallet = web3wallet
+    this.web3Wallet = web3wallet
   }
 
-  isConnected = () => !!this.#currentSession
+  isConnected() {
+    return !!this.currentSession
+  }
 
-  getMetadata = () => this.#currentSession?.peer.metadata
+  getMetadata() {
+    return this.currentSession?.peer.metadata
+  }
 
-  getSessionTopic = () => this.#currentSession?.topic
+  getSessionTopic() {
+    return this.currentSession?.topic
+  }
 
-  restoreExistingConnection = () => {
-    console.log('Trying to restore for safe', this.#safe)
-    if (!this.#web3Wallet) {
+  restoreExistingConnection() {
+    console.log('WC trying to restore for safe', this.safe)
+
+    if (!this.web3Wallet) {
       return
     }
     // we try to find a compatible active session
-    const activeSessions = this.#web3Wallet.getActiveSessions()
+    const activeSessions = this.web3Wallet.getActiveSessions()
     console.log('Active Sessions', activeSessions)
 
     const compatibleSession = Object.keys(activeSessions)
       .map((topic) => activeSessions[topic])
       .find((session) =>
         session.namespaces[EVMBasedNamespaces].accounts[0].includes(
-          `${EVMBasedNamespaces}:${this.#safe.chainId}:${this.#safe.address.value}`,
+          `${EVMBasedNamespaces}:${this.safe.chainId}:${this.safe.address.value}`,
         ),
       )
 
     if (compatibleSession) {
-      this.#currentSession = compatibleSession
+      this.currentSession = compatibleSession
     }
   }
 
-  connect = async (uri: string) => {
+  async connect(uri: string) {
     const isValidWalletConnectUri = uri && uri.startsWith('wc')
 
-    if (isValidWalletConnectUri && this.#web3Wallet) {
-      await this.#web3Wallet.core.pairing.pair({ uri })
+    if (isValidWalletConnectUri && this.web3Wallet) {
+      await this.web3Wallet.core.pairing.pair({ uri })
     }
   }
 
-  disconnect = async () => {
-    if (!this.#web3Wallet || !this.#currentSession) {
+  async disconnect() {
+    if (!this.web3Wallet || !this.currentSession) {
       throw Error('Cannot disconnect if no session is active')
     }
-    await this.#web3Wallet.disconnectSession({
-      topic: this.#currentSession.topic,
+
+    await this.web3Wallet.disconnectSession({
+      topic: this.currentSession.topic,
       reason: {
         code: USER_DISCONNECTED_CODE,
         message: 'User disconnected. Safe Wallet Session ended by the user',
       },
     })
-    this.#currentSession = undefined
+
+    this.currentSession = undefined
   }
 
-  resetSession = () => {
-    this.#currentSession = undefined
+  resetSession() {
+    this.currentSession = undefined
   }
 
-  onSessionProposal = (handler: (proposal: Web3WalletTypes.SessionProposal) => void) => {
+  onSessionProposal(handler: (proposal: Web3WalletTypes.SessionProposal) => void): () => void {
     // events
-    this.#web3Wallet?.on('session_proposal', handler)
-    return () => this.#web3Wallet?.off('session_proposal', handler)
+    this.web3Wallet?.on('session_proposal', handler)
+    return () => this.web3Wallet?.off('session_proposal', handler)
   }
 
-  onSessionDelete = (handler: () => void) => {
-    this.#web3Wallet?.on('session_delete', handler)
-    return () => this.#web3Wallet?.off('session_delete', handler)
+  onSessionDelete(handler: () => void): () => void {
+    this.web3Wallet?.on('session_delete', handler)
+    return () => this.web3Wallet?.off('session_delete', handler)
   }
 
-  onSessionRequest = (handler: (event: Web3WalletTypes.SessionRequest) => void) => {
+  onSessionRequest(handler: (event: Web3WalletTypes.SessionRequest) => void): () => void {
     console.log('Registering session request handler')
-    this.#web3Wallet?.on('session_request', handler)
-    return () => this.#web3Wallet?.off('session_request', handler)
+    this.web3Wallet?.on('session_request', handler)
+    return () => this.web3Wallet?.off('session_request', handler)
   }
 
-  approveSessionProposal = async (
-    sessionProposal: Web3WalletTypes.SessionProposal,
-    onMismatchingNamespaces: () => void,
-  ) => {
-    if (!this.#web3Wallet) {
+  async approveSessionProposal(sessionProposal: Web3WalletTypes.SessionProposal, onMismatchingNamespaces: () => void) {
+    if (!this.web3Wallet) {
       throw new Error('Web3Wallet needs to be initialized first')
     }
+
     const { id, params } = sessionProposal
     const { requiredNamespaces } = params
     const requiredNamespace = requiredNamespaces[EVMBasedNamespaces]
 
-    const safeChain = `${EVMBasedNamespaces}:${this.#safe.chainId}`
+    const safeChain = `${EVMBasedNamespaces}:${this.safe.chainId}`
     const safeEvents = requiredNamespace?.events || [] // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
 
     const requiredChains = [...(requiredNamespace.chains ?? [])]
     // If the user accepts we always return all required namespaces and add the safe chain to it
-    const safeAccount = `${EVMBasedNamespaces}:${this.#safe.chainId}:${this.#safe.address.value}`
+    const safeAccount = `${EVMBasedNamespaces}:${this.safe.chainId}:${this.safe.address.value}`
 
     // We first pretend that our Safe is available on all required networks
     const safeOnRequiredChains = requiredChains.map(
-      (requiredChain) => `${requiredChain ?? safeChain}:${this.#safe.address.value}`,
+      (requiredChain) => `${requiredChain ?? safeChain}:${this.safe.address.value}`,
     )
 
     let wcSession: SessionTypes.Struct
     try {
-      wcSession = await this.#web3Wallet.approveSession({
+      wcSession = await this.web3Wallet.approveSession({
         id,
         namespaces: {
           eip155: {
@@ -185,7 +188,7 @@ export class WalletConnect {
         },
       })
     } catch (error) {
-      wcSession = await this.#web3Wallet.approveSession({
+      wcSession = await this.web3Wallet.approveSession({
         id,
         namespaces: {
           eip155: {
@@ -200,7 +203,7 @@ export class WalletConnect {
       })
     }
 
-    this.#currentSession = wcSession
+    this.currentSession = wcSession
 
     // Then we update the session and reduce the Safe to the requested network only
     if (!safeOnRequiredChains.includes(safeAccount) || safeOnRequiredChains.length > 1) {
@@ -210,7 +213,7 @@ export class WalletConnect {
 
       // Emit accountsChanged and chainChanged event
       try {
-        await this.#web3Wallet.updateSession({
+        await this.web3Wallet.updateSession({
           topic: wcSession.topic,
           namespaces: {
             eip155: {
@@ -227,29 +230,29 @@ export class WalletConnect {
     }
   }
 
-  sendSessionResponse = async (params: { topic: string; response: JsonRpcResponse<any> }) => {
-    if (!this.#web3Wallet) {
+  async sendSessionResponse(params: { topic: string; response: JsonRpcResponse<any> }) {
+    if (!this.web3Wallet) {
       throw new Error('Web3Wallet needs to be initialized first')
     }
 
-    await this.#web3Wallet.respondSessionRequest(params)
+    await this.web3Wallet.respondSessionRequest(params)
   }
 
-  updateSafeInfo = async (safe: SafeInfo) => {
-    this.#safe = safe
+  async updateSafeInfo(safe: SafeInfo) {
+    this.safe = safe
 
-    if (!this.#currentSession || !this.#web3Wallet) {
+    if (!this.currentSession || !this.web3Wallet) {
       return
     }
 
     //  We have to update the active session
     const safeAccount = `${EVMBasedNamespaces}:${safe.chainId}:${safe.address.value}`
     const safeChain = `${EVMBasedNamespaces}:${safe.chainId}`
-    const currentNamespace = this.#currentSession.namespaces[EVMBasedNamespaces]
+    const currentNamespace = this.currentSession.namespaces[EVMBasedNamespaces]
     const chainIsSet = currentNamespace.chains?.includes(safeChain)
 
-    await this.#web3Wallet.updateSession({
-      topic: this.#currentSession.topic,
+    await this.web3Wallet.updateSession({
+      topic: this.currentSession.topic,
       namespaces: {
         eip155: {
           ...currentNamespace,

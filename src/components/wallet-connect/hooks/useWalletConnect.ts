@@ -71,12 +71,14 @@ const useWalletConnect = (): useWalletConnectType => {
   }, [safe.address.value, safe.chainId, safe, walletConnect])
 
   useEffect(() => {
-    console.log('Trying to register')
+    console.log('WC trying to register')
     if (!walletConnect || !safeWalletProvider) {
       return
     }
-    console.log('Registering session request handler', currentSessionTopic)
+    console.log('WC registering session request handler', currentSessionTopic)
     return walletConnect.onSessionRequest(async (event) => {
+      console.log('WC session request', event)
+
       const { topic, id } = event
       const { request, chainId: transactionChainId } = event.params
 
@@ -131,6 +133,7 @@ const useWalletConnect = (): useWalletConnectType => {
   useEffect(() => {
     // events
     return walletConnect?.onSessionProposal(async (proposal) => {
+      console.log('WC session proposal', proposal)
       setSessionProposal(proposal)
       setWcState(WC_CONNECT_STATE.PENDING_SESSION_REQUEST)
     })
