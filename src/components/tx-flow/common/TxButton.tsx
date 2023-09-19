@@ -49,7 +49,7 @@ export const TxBuilderButton = () => {
 
   if (!txBuilder?.app) return null
 
-  const isTxBuilder = router.pathname === AppRoutes.balances.nfts
+  const isTxBuilder = typeof txBuilder.link.query === 'object' && router.query.appUrl === txBuilder.link.query?.appUrl
   const onClick = isTxBuilder ? () => setTxFlow(undefined) : undefined
 
   return (
