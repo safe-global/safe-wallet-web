@@ -221,6 +221,8 @@ export const ConnectWC = () => {
                 label="Wallet Connect URI"
                 onPaste={onPaste}
                 onChange={onChangeWcUrl}
+                fullWidth
+                sx={{ mt: 2 }}
               ></TextField>
             </Box>
           )}

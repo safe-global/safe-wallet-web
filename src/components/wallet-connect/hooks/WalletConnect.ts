@@ -1,4 +1,4 @@
-import { IS_PRODUCTION, WALLETCONNECT_V2_PROJECT_ID } from '@/config/constants'
+import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
 import { Core } from '@walletconnect/core'
 import { Web3Wallet, type Web3WalletTypes } from '@walletconnect/web3wallet'
 import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
@@ -65,7 +65,7 @@ export class WalletConnect {
 
   private initializeWalletConnectV2Client = async () => {
     const core = new Core({
-      projectId: WALLETCONNECT_V2_PROJECT_ID,
+      projectId: WC_PROJECT_ID,
       logger,
     })
 
