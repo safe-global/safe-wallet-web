@@ -11,6 +11,7 @@ import TokenAmount from '@/components/common/TokenAmount'
 import React from 'react'
 import { type Transfer } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferTx } from '@/components/transactions/TxInfo'
+import { formatAmount } from '@/utils/formatNumber'
 
 const AddressFragment = ({ fragment }: { fragment: RichAddressFragment }) => {
   const addressBook = useAddressBook()
@@ -23,9 +24,12 @@ const AddressFragment = ({ fragment }: { fragment: RichAddressFragment }) => {
 }
 
 const TokenValueFragment = ({ fragment }: { fragment: RichTokenValueFragment }) => {
+  const isUnlimitedApproval = fragment.value === 'unlimited'
+
   return (
     <TokenAmount
-      value={fragment.value}
+      // formatAmount should ideally be done in the CGW or fragment should contain the raw value as well
+      value={isUnlimitedApproval ? fragment.value : formatAmount(fragment.value)}
       direction={undefined}
       logoUri={fragment.logoUri || undefined}
       tokenSymbol={fragment.symbol || undefined}
