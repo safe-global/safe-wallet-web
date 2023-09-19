@@ -67,7 +67,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   // Close the modal when the Safe changes
   useEffect(() => {
-    setFlow(undefined)
+    handleModalClose()
     // Could have same address but different chain
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [safe.chainId, safe.address.value])
