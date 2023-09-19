@@ -44,7 +44,7 @@ function fillTransactionData(EOA, amount) {
 }
 
 function setNonceAndProceed(currentNonce) {
-  cy.get(nonceInput).clear().type(currentNonce, { force: true }).type('{enter}', { force: true })
+  cy.get(nonceInput).clear().type(currentNonce, { force: true }).blur()
   cy.contains(executeBtn).scrollIntoView()
 }
 
