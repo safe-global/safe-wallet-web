@@ -7,7 +7,7 @@ const testAppDescr = 'Cypress Test App Description'
 describe('The transaction modal', () => {
   beforeEach(() => {
     cy.fixture('safe-app').then((html) => {
-      cy.intercept('GET', `${constants.appUrlProd}/*`, html)
+      cy.intercept('GET', `${constants.testAppUrl}/*`, html)
       cy.intercept('GET', `*/manifest.json`, {
         name: testAppName,
         description: testAppDescr,
@@ -18,7 +18,7 @@ describe('The transaction modal', () => {
 
   describe('When sending a transaction from an app', () => {
     it('should show the transaction popup', { defaultCommandTimeout: 12000 }, () => {
-      cy.visitSafeApp(`${constants.appUrlProd}/dummy`)
+      cy.visitSafeApp(`${constants.testAppUrl}/dummy`)
 
       main.acceptCookies()
       cy.findByRole('dialog').within(() => {

@@ -6,7 +6,7 @@ describe('The Browser permissions system', () => {
   describe('When the safe app requires permissions', () => {
     beforeEach(() => {
       cy.fixture('safe-app').then((html) => {
-        cy.intercept('GET', `${constants.appUrlProd}/*`, html)
+        cy.intercept('GET', `${constants.testAppUrl}/*`, html)
         cy.intercept('GET', `*/manifest.json`, {
           name: constants.testAppData.name,
           description: constants.testAppData.descr,
@@ -17,7 +17,7 @@ describe('The Browser permissions system', () => {
     })
 
     it('should show a permissions slide to the user', () => {
-      cy.visitSafeApp(`${constants.appUrlProd}/app`)
+      cy.visitSafeApp(`${constants.testAppUrl}/app`)
       safeapps.verifyCameraCheckBoxExists()
       safeapps.verifyMicrofoneCheckBoxExists()
     })

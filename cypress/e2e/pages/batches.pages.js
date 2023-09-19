@@ -23,6 +23,7 @@ const tokenAddressInput = 'input[name="tokenAddress"]'
 const listBox = 'ul[role="listbox"]'
 const amountInput = '[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
+const executeOptionsContainer = 'div[role="radiogroup"]'
 
 export function addToBatch(EOA, currentNonce, amount, verify = false) {
   fillTransactionData(EOA, amount)
@@ -49,8 +50,12 @@ function setNonceAndProceed(currentNonce) {
 }
 
 function executeTransaction() {
-  cy.contains(yesExecuteString, { timeout: 4000 }).click()
-  cy.contains(addToBatchBtn).should('not.exist')
+  cy.waitForSelector(() => {
+    return cy.get(executeOptionsContainer).then(() => {
+      cy.contains(yesExecuteString, { timeout: 4000 }).click()
+      cy.contains(addToBatchBtn).should('not.exist')
+    })
+  })
 }
 
 function addToBatchButton() {

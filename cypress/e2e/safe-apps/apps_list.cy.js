@@ -2,8 +2,8 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 
-const myCustomAppTitle = /my custom app/i
-const myCustomAppDescrAdded = /my custom app description/i
+const myCustomAppTitle = 'Cypress Test App'
+const myCustomAppDescrAdded = 'Cypress Test App Description'
 
 describe('The Safe Apps list', () => {
   before(() => {
