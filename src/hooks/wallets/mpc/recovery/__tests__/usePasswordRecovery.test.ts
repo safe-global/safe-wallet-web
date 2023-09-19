@@ -48,8 +48,8 @@ describe('usePasswordRecovery', () => {
     const restoredPubKey = getPubKeyPoint(recoveredFactorKey)
     const shareDescriptions = tKey.metadata.getShareDescription()
 
-    const x = restoredPubKey.x.toString('hex')
-    const y = restoredPubKey.y.toString('hex')
+    const x = restoredPubKey.x.toString('hex', 64)
+    const y = restoredPubKey.y.toString('hex', 64)
     expect(shareDescriptions[`04${x}${y}`]).toBeDefined()
   })
 
