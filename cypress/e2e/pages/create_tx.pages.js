@@ -86,7 +86,7 @@ export function verifyNativeTokenTransfer() {
 }
 
 export function changeNonce(value) {
-  cy.get(nonceInput).clear().type(value, { force: true }).type('{enter}', { force: true })
+  cy.get(nonceInput).clear().type(value, { force: true }).blur()
 }
 
 export function verifyConfirmTransactionData() {
