@@ -55,7 +55,7 @@ export const gtmSetDeviceType = (type: DeviceType): void => {
 }
 
 export const gtmSetSafeAddress = (safeAddress: string): void => {
-  commonEventParams.safeAddress = safeAddress
+  commonEventParams.safeAddress = safeAddress.slice(2)
 }
 
 export const gtmInit = (): void => {
