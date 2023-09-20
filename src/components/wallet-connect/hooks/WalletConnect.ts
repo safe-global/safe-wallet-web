@@ -6,48 +6,9 @@ import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 import type Web3WalletType from '@walletconnect/web3wallet'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SessionTypes } from 'walletconnect-v2-types'
+import { EVMBasedNamespaces, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA, WC_ERRORS } from './constants'
 
 const logger = IS_PRODUCTION ? undefined : 'debug'
-
-const USER_DISCONNECTED_CODE = 6000
-
-const EVMBasedNamespaces: string = 'eip155'
-
-// see full list here: https://github.com/safe-global/safe-apps-sdk/blob/main/packages/safe-apps-provider/src/provider.ts#L35
-export const compatibleSafeMethods: string[] = [
-  'eth_accounts',
-  'net_version',
-  'eth_chainId',
-  'personal_sign',
-  'eth_sign',
-  'eth_signTypedData',
-  'eth_signTypedData_v4',
-  'eth_sendTransaction',
-  'eth_blockNumber',
-  'eth_getBalance',
-  'eth_getCode',
-  'eth_getTransactionCount',
-  'eth_getStorageAt',
-  'eth_getBlockByNumber',
-  'eth_getBlockByHash',
-  'eth_getTransactionByHash',
-  'eth_getTransactionReceipt',
-  'eth_estimateGas',
-  'eth_call',
-  'eth_getLogs',
-  'eth_gasPrice',
-  'wallet_getPermissions',
-  'wallet_requestPermissions',
-  'safe_setSettings',
-]
-
-// MOVE TO CONSTANTS
-export const SAFE_WALLET_METADATA = {
-  name: 'Safe Wallet',
-  description: 'The most trusted platform to manage digital assets on Ethereum',
-  url: 'https://app.safe.global',
-  icons: ['https://app.safe.global/favicons/mstile-150x150.png', 'https://app.safe.global/favicons/logo_120x120.png'],
-}
 
 export class WalletConnect {
   private web3Wallet: Web3WalletType | undefined
@@ -124,7 +85,7 @@ export class WalletConnect {
     await this.web3Wallet.disconnectSession({
       topic: this.currentSession.topic,
       reason: {
-        code: USER_DISCONNECTED_CODE,
+        code: WC_ERRORS.USER_DISCONNECTED_CODE,
         message: 'User disconnected. Safe Wallet Session ended by the user',
       },
     })
@@ -182,7 +143,7 @@ export class WalletConnect {
           eip155: {
             accounts: [safeAccount], // only the Safe account
             chains: [safeChain], // only the Safe chain
-            methods: compatibleSafeMethods, // only the Safe methods
+            methods: SAFE_COMPATIBLE_METHODS, // only the Safe methods
             events: safeEvents,
           },
         },
@@ -196,7 +157,7 @@ export class WalletConnect {
               ? safeOnRequiredChains
               : [safeAccount, ...safeOnRequiredChains], // Add all required chains on top
             chains: requiredChains, // return the required Safes
-            methods: compatibleSafeMethods, // only the Safe methods
+            methods: SAFE_COMPATIBLE_METHODS, // only the Safe methods
             events: safeEvents,
           },
         },
@@ -219,7 +180,7 @@ export class WalletConnect {
             eip155: {
               accounts: [safeAccount],
               chains: requiredChains,
-              methods: compatibleSafeMethods,
+              methods: SAFE_COMPATIBLE_METHODS,
               events: safeEvents,
             },
           },
