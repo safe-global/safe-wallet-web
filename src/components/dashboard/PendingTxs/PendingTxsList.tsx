@@ -44,7 +44,7 @@ const PendingTxsList = (): ReactElement | null => {
   const wallet = useWallet()
   const queuedTxns = useMemo(() => getLatestTransactions(page?.results), [page?.results])
 
-  const actionable = useMemo(() => {
+  const actionableTxs = useMemo(() => {
     return wallet
       ? queuedTxns.filter(
           (tx) => isSignableBy(tx.transaction, wallet.address) || isExecutable(tx.transaction, wallet.address, safe),
@@ -52,7 +52,7 @@ const PendingTxsList = (): ReactElement | null => {
       : queuedTxns
   }, [wallet, queuedTxns, safe])
 
-  const txs = actionable.length ? actionable : queuedTxns
+  const txs = actionableTxs.length ? actionableTxs : queuedTxns
   const txsToDisplay = txs.slice(0, MAX_TXS)
 
   const queueUrl = useMemo(
