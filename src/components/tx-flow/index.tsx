@@ -24,7 +24,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   const [fullWidth, setFullWidth] = useState<boolean>(false)
   const pathname = usePathname()
   const [, setLastPath] = useState<string>(pathname)
-  const { safe } = useSafeInfo()
+  const { safeAddress, safe } = useSafeInfo()
 
   const handleModalClose = useCallback(() => {
     setOnClose((prevOnClose) => {
@@ -70,7 +70,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     handleModalClose()
     // Could have same address but different chain
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [safe.chainId, safe.address.value])
+  }, [safe.chainId, safeAddress])
 
   return (
     <TxModalContext.Provider value={{ txFlow, setTxFlow, setFullWidth }}>
