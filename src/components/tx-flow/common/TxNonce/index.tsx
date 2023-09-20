@@ -1,4 +1,4 @@
-import { memo, type ReactElement, useContext, useMemo } from 'react'
+import { memo, type ReactElement, useContext, useEffect, useMemo } from 'react'
 import {
   Autocomplete,
   Box,
@@ -104,11 +104,19 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
     defaultValues: {
       [TxNonceFormFieldNames.NONCE]: nonce,
     },
-    mode: 'onTouched',
+    mode: 'all',
     values: {
       [TxNonceFormFieldNames.NONCE]: nonce,
     },
   })
+
+  // Update the nonce in the form if the user hasn't changed the value manually
+  // and the recommendedNonce updated in the background
+  useEffect(() => {
+    if (formMethods.formState.touchedFields[TxNonceFormFieldNames.NONCE]) return
+
+    formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce)
+  }, [formMethods, recommendedNonce])
 
   const resetNonce = () => {
     formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce)
@@ -155,10 +163,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
           <Autocomplete
             value={field.value}
             freeSolo
-            onChange={(_, value) => {
-              field.onChange(value)
-              field.onBlur()
-            }}
+            onChange={(_, value) => field.onChange(value)}
             onInputChange={(_, value) => field.onChange(value)}
             onBlur={() => {
               field.onBlur()

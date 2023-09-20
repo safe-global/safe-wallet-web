@@ -42,11 +42,12 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
   const isSigned = safeTx && safeTx.signatures.size > 0
 
   // Recommended nonce and safeTxGas
-  const recommendedNonce = Math.max(safe.nonce, useRecommendedNonce() ?? 0)
+  const recommendedNonce = useRecommendedNonce()
+  const safeRecommendedNonce = recommendedNonce ? Math.max(safe.nonce, recommendedNonce) : undefined
   const recommendedSafeTxGas = useSafeTxGas(safeTx)
 
   // Priority to external nonce, then to the recommended one
-  const finalNonce = isSigned ? safeTx?.data.nonce : nonce ?? recommendedNonce ?? safeTx?.data.nonce
+  const finalNonce = isSigned ? safeTx?.data.nonce : nonce ?? safeRecommendedNonce ?? safeTx?.data.nonce
   const finalSafeTxGas = isSigned ? safeTx?.data.safeTxGas : safeTxGas ?? recommendedSafeTxGas ?? safeTx?.data.safeTxGas
 
   // Update the tx when the nonce or safeTxGas change
@@ -77,7 +78,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
         setNonceNeeded,
         safeTxGas: finalSafeTxGas,
         setSafeTxGas,
-        recommendedNonce,
+        recommendedNonce: safeRecommendedNonce,
       }}
     >
       {children}
