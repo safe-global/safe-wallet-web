@@ -164,13 +164,18 @@ const useWalletConnect = (): useWalletConnectType => {
   )
 
   const wcApproveSession = useCallback(async () => {
-    if (!sessionProposal || !walletConnect) {
-      throw new Error('Cannot approve session without pending session proposal')
-    }
+    try {
+      if (!sessionProposal || !walletConnect) {
+        throw new Error('Cannot approve session without pending session proposal')
+      }
 
-    await walletConnect.approveSessionProposal(sessionProposal, () => {
-      setWcState(WC_CONNECT_STATE.APPROVE_INVALID_SESSION)
-    })
+      await walletConnect.approveSessionProposal(sessionProposal, () => {
+        setWcState(WC_CONNECT_STATE.APPROVE_INVALID_SESSION)
+      })
+    } catch (e) {
+      setError((e as Error).message)
+      return
+    }
 
     setSessionProposal(undefined)
     setError(undefined)
