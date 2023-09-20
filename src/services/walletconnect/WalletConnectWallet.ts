@@ -39,6 +39,35 @@ class WalletConnectWallet {
     await this.web3Wallet?.core.pairing.pair({ uri })
   }
 
+  private approveSession(proposal: Web3WalletTypes.SessionProposal, eip155Chains: string[], safeAddress: string) {
+    if (!this.web3Wallet) {
+      throw new Error('WalletConnect not initialized')
+    }
+
+    // If the session proposal is approved, we need to respond with the approved namespaces
+    const safeEvents = proposal.params.requiredNamespaces[EIP155]?.events || []
+
+    const accounts = eip155Chains.map((chainId) => `${chainId}:${safeAddress}`)
+
+    const namespaces = buildApprovedNamespaces({
+      proposal: proposal.params,
+      supportedNamespaces: {
+        [EIP155]: {
+          chains: eip155Chains,
+          methods: SAFE_COMPATIBLE_METHODS,
+          events: safeEvents,
+          accounts,
+        },
+      },
+    })
+
+    // Approve the session proposal
+    return this.web3Wallet.approveSession({
+      id: proposal.id,
+      namespaces,
+    })
+  }
+
   /**
    * Subscribe to session proposals
    */
@@ -68,27 +97,19 @@ class WalletConnectWallet {
         return
       }
 
-      // If the session proposal is approved, we need to respond with the approved namespaces
-      const { requiredNamespaces } = event.params
-      const safeEvents = requiredNamespaces[EIP155]?.events || []
+      let session: SessionTypes.Struct | null = null
 
-      const namespaces = buildApprovedNamespaces({
-        proposal: event.params,
-        supportedNamespaces: {
-          [EIP155]: {
-            chains: [`${EIP155}:${chainId}`],
-            methods: SAFE_COMPATIBLE_METHODS,
-            events: safeEvents,
-            accounts: [`${EIP155}:${chainId}:${safeAddress}`],
-          },
-        },
-      })
+      const eip155Chain = `${EIP155}:${chainId}`
 
-      // Approve the session proposal
-      const session = await this.web3Wallet.approveSession({
-        id: event.id,
-        namespaces,
-      })
+      try {
+        session = await this.approveSession(event, [eip155Chain], safeAddress)
+      } catch {
+        session = await this.approveSession(
+          event,
+          [eip155Chain, ...(event.params.requiredNamespaces[EIP155].chains ?? [])],
+          safeAddress,
+        )
+      }
 
       // If approved, call the onSessionApprove callback
       onSessionApprove(session)

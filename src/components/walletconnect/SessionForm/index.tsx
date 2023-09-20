@@ -12,6 +12,10 @@ const SessionForm = () => {
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
 
   useEffect(() => {
+    if (!chainId || !safeAddress) {
+      return
+    }
+
     walletConnect.addOnSessionPropose(
       chainId,
       safeAddress,
