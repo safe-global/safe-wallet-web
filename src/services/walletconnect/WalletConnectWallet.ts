@@ -7,19 +7,18 @@ import { buildApprovedNamespaces } from '@walletconnect/utils'
 import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
 import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA, WC_ERRORS } from './constants'
 
-const logger = IS_PRODUCTION ? undefined : 'debug'
-
-export class WalletConnect {
+class WalletConnectWallet {
   private web3Wallet: Web3WalletType | null = null
 
-  constructor() {
-    this.initializeWalletConnect()
-  }
+  /**
+   * Initialize WalletConnect wallet SDK
+   */
+  public async init() {
+    if (this.web3Wallet) return
 
-  private async initializeWalletConnect() {
     const core = new Core({
       projectId: WC_PROJECT_ID,
-      logger,
+      logger: IS_PRODUCTION ? undefined : 'debug',
     })
 
     const web3wallet = await Web3Wallet.init({
@@ -30,6 +29,9 @@ export class WalletConnect {
     this.web3Wallet = web3wallet
   }
 
+  /**
+   * Connect using a wc-URI
+   */
   public async connect(uri: string) {
     if (!this.web3Wallet) {
       throw new Error('WalletConnect not initialized')
@@ -37,11 +39,14 @@ export class WalletConnect {
     await this.web3Wallet?.core.pairing.pair({ uri })
   }
 
+  /**
+   * Subscribe to session proposals
+   */
   public addOnSessionPropose(
     chainId: string,
     safeAddress: string,
     onSessionPropose: (e: Web3WalletTypes.SessionProposal) => Promise<boolean>,
-    onSessionApprove: (session: SessionTypes.Struct) => Promise<void>,
+    onSessionApprove: (session: SessionTypes.Struct) => void,
   ) {
     const handler = async (event: Web3WalletTypes.SessionProposal) => {
       if (!this.web3Wallet) {
@@ -95,4 +100,13 @@ export class WalletConnect {
     // Return the unsubscribe function
     return () => this.web3Wallet?.off('session_proposal', handler)
   }
+
+  /**
+   * Get active sessions
+   */
+  public getActiveSessions() {
+    return this.web3Wallet?.getActiveSessions()
+  }
 }
+
+export default WalletConnectWallet

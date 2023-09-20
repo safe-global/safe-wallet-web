@@ -37,6 +37,7 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
+import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -73,7 +74,9 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <TxModalProvider>{children}</TxModalProvider>
+            <WalletConnectProvider>
+              <TxModalProvider>{children}</TxModalProvider>
+            </WalletConnectProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}

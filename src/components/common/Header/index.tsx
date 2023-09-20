@@ -15,6 +15,7 @@ import SafeLogo from '@/public/images/logo.svg'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import BatchIndicator from '@/components/batch/BatchIndicator'
+import WalletConnectHeaderWidget from '@/components/walletconnect/HeaderWidget'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -69,6 +70,10 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
           <BatchIndicator onClick={handleBatchToggle} />
         </div>
       )}
+
+      <div className={classnames(css.element, css.hideMobile)}>
+        <WalletConnectHeaderWidget />
+      </div>
 
       <div className={css.element}>
         <NotificationCenter />
