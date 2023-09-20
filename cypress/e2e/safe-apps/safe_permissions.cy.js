@@ -1,5 +1,4 @@
 import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 
 describe('The Safe permissions system', () => {
