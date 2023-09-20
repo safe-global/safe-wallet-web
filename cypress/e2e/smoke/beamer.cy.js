@@ -14,7 +14,7 @@ describe('Beamer', () => {
     addressbook.verifyBeamerIsChecked()
     main.acceptCookies()
     // wait for Beamer cookies to be set
-    cy.wait(600)
+    cy.wait(1000)
     addressbook.clickOnWhatsNewBtn(true) // clicks through the "lastPostTitle"
     addressbook.verifyBeameriFrameExists()
   })

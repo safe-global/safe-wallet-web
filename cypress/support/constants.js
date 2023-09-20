@@ -68,3 +68,21 @@ export const testAppData = {
   name: 'Cypress Test App',
   descr: 'Cypress Test App Description',
 }
+
+export const checkboxStates = {
+  unchecked: 'not.be.checked',
+  checked: 'be.checked',
+}
+
+export const transactionStatus = {
+  received: 'Received',
+  sent: 'Sent',
+  deposit: 'deposit',
+  approve: 'approve',
+  success: 'Success',
+  interaction: 'Contract interaction',
+}
+
+export const tokenNames = {
+  wrapped_ether: 'Wrapped Ether',
+}

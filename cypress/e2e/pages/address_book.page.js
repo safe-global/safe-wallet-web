@@ -109,5 +109,6 @@ export function verifyBeamerIsChecked() {
 }
 
 export function verifyBeameriFrameExists() {
+  cy.wait(1000)
   cy.get(beameriFrameContainer).should('exist')
 }
