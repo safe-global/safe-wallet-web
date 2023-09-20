@@ -1,7 +1,7 @@
 import * as constants from '../../support/constants'
 
-const INCOMING = 'Received'
-const OUTGOING = 'Sent'
+const INCOMING = 'Receive'
+const OUTGOING = 'Send'
 const CONTRACT_INTERACTION = 'Contract interaction'
 
 describe('Transaction history', () => {
@@ -31,8 +31,8 @@ describe('Transaction history', () => {
       .last()
       .within(() => {
         // Type
-        cy.get('img').should('have.attr', 'alt', INCOMING)
-        cy.contains('div', 'Received').should('exist')
+        cy.get('img').should('have.attr', 'alt', 'Received')
+        cy.contains('div', INCOMING).should('exist')
 
         // Info
         cy.get('img[alt="GOR"]').should('be.visible')
@@ -73,10 +73,12 @@ describe('Transaction history', () => {
         // Type
         // TODO: update next line after fixing the logo
         // cy.find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
-        cy.contains('div', 'Wrapped Ether').should('exist')
+        cy.contains('div', 'WETH').should('exist')
+
+        cy.contains('div', 'unlimited').should('exist')
 
         // Info
-        cy.contains('div', 'approve').should('exist')
+        cy.contains('div', 'Approve').should('exist')
 
         // Time
         cy.contains('span', '5:00 PM').should('exist')
@@ -103,11 +105,11 @@ describe('Transaction history', () => {
       .prev()
       .within(() => {
         // Type
-        cy.get('img').should('have.attr', 'alt', OUTGOING)
-        cy.contains('div', 'Sent').should('exist')
+        cy.get('img').should('have.attr', 'alt', 'Sent')
+        cy.contains('div', 'Send').should('exist')
 
         // Info
-        cy.contains('span', '-0.11 WETH').should('exist')
+        cy.contains('span', '0.11 WETH').should('exist')
 
         // Time
         cy.contains('span', '5:01 PM').should('exist')
@@ -119,7 +121,7 @@ describe('Transaction history', () => {
       .prev()
       .within(() => {
         // Type
-        cy.contains('div', 'Received').should('exist')
+        cy.contains('div', INCOMING).should('exist')
 
         // Info
         cy.contains('span', '120,497.61 DAI').should('exist')

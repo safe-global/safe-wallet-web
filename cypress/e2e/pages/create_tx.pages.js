@@ -12,7 +12,7 @@ const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
-const TransactionSummary = 'Send-'
+const TransactionSummary = 'Send'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
