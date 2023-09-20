@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material'
 import WcIcon from '@/public/images/apps/wallet-connect.svg'
-import { type ChangeEvent, useCallback, useState, useRef } from 'react'
+import { type ChangeEvent, useState, useRef } from 'react'
 import useWalletConnect, { WC_CONNECT_STATE } from './hooks/useWalletConnect'
 import css from './styles.module.css'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
@@ -38,7 +38,6 @@ const extractInformationFromProposal = (sessionProposal: Web3WalletTypes.Session
 
 export const ConnectWC = () => {
   const [openModal, setOpenModal] = useState(false)
-  const [wcConnectUrl, setWcConnectUrl] = useState('')
   const { wcConnect, wcDisconnect, wcClientData, wcApproveSession, acceptInvalidSession, wcState, sessionProposal } =
     useWalletConnect()
   const anchorElem = useRef<HTMLButtonElement | null>(null)
@@ -55,44 +54,10 @@ export const ConnectWC = () => {
     setOpenModal((prev) => !prev)
   }
 
-  const onConnect = useCallback(
-    async (uri: string) => {
-      await wcConnect(uri)
-    },
-    [wcConnect],
-  )
-
-  const onChangeWcUrl = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const newValue = event.target.value
-    setWcConnectUrl(newValue)
+  const onChangeWcUrl = async (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const uri = event.target.value
+    await wcConnect(uri)
   }
-
-  const onPaste = useCallback(
-    (event: React.ClipboardEvent) => {
-      const connectWithUri = (data: string) => {
-        if (data.startsWith('wc')) {
-          onConnect(data)
-        }
-      }
-
-      setWcConnectUrl('')
-
-      if (wcClientData) {
-        return
-      }
-
-      const items = event.clipboardData.items
-
-      for (const index in items) {
-        const item = items[index]
-
-        if (item.kind === 'string' && item.type === 'text/plain') {
-          connectWithUri(event.clipboardData.getData('Text'))
-        }
-      }
-    },
-    [wcClientData, onConnect],
-  )
 
   return (
     <>
@@ -219,7 +184,6 @@ export const ConnectWC = () => {
               <TextField
                 placeholder="wc:"
                 label="Wallet Connect URI"
-                onPaste={onPaste}
                 onChange={onChangeWcUrl}
                 fullWidth
                 sx={{ mt: 2 }}

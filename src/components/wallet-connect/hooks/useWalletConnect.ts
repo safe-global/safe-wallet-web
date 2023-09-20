@@ -5,13 +5,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/safe-wallet-provider/useSafeWalletProvider'
 import { WalletConnect } from './WalletConnect'
-
-const EVMBasedNamespaces: string = 'eip155'
-
-// see https://docs.walletconnect.com/2.0/specs/sign/error-codes
-const UNSUPPORTED_CHAIN_ERROR_CODE = 5100
-const INVALID_METHOD_ERROR_CODE = 1001
-const USER_REJECTED_REQUEST_CODE = 4001
+import { WC_ERRORS, EVMBasedNamespaces } from './constants'
 
 export const errorLabel =
   'We were unable to create a connection due to compatibility issues with the latest WalletConnect v2 upgrade. We are actively working with the WalletConnect team and the dApps to get these issues resolved. Use Safe Apps instead wherever possible.'
@@ -93,7 +87,7 @@ const useWalletConnect = (): useWalletConnectType => {
         setError(errorMessage)
         await walletConnect.sendSessionResponse({
           topic,
-          response: rejectResponse(id, UNSUPPORTED_CHAIN_ERROR_CODE, errorMessage),
+          response: rejectResponse(id, WC_ERRORS.UNSUPPORTED_CHAIN_ERROR_CODE, errorMessage),
         })
         return
       }
@@ -115,7 +109,7 @@ const useWalletConnect = (): useWalletConnectType => {
       } catch (error: any) {
         setError(error?.message)
         const isUserRejection = error?.message?.includes?.('Transaction was rejected')
-        const code = isUserRejection ? USER_REJECTED_REQUEST_CODE : INVALID_METHOD_ERROR_CODE
+        const code = isUserRejection ? WC_ERRORS.USER_REJECTED_REQUEST_CODE : WC_ERRORS.INVALID_METHOD_ERROR_CODE
 
         try {
           await walletConnect.sendSessionResponse({
