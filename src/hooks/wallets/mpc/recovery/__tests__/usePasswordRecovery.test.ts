@@ -5,7 +5,7 @@ import fixtures from './fixtures.json'
 import BN from 'bn.js'
 import { getPubKeyPoint, ShareStore } from '@tkey-mpc/common-types'
 import { usePasswordRecovery } from '../usePasswordRecovery'
-import { MockThresholdKey, type TKeySetupParameters } from './mockTKey'
+import { MockThresholdKey, type TKeySetupParameters } from '@/tests/mocks/mockTKey'
 
 const localShareSetupParams: TKeySetupParameters = {
   metadata: Metadata.fromJSON(fixtures.fixtureInitializedLocalShare.metadata),
