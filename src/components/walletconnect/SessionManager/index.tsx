@@ -14,14 +14,19 @@ const SessionManager = () => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
-  const [sessions, setSessions] = useState<Record<string, SessionTypes.Struct>>(walletConnect.getActiveSessions() || {})
+  const [sessions, setSessions] = useState<Record<string, SessionTypes.Struct>>(walletConnect.getActiveSessions())
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [error, setError] = useState<Error>()
 
   // Subscribe to session proposals
   useEffect(() => {
-    return walletConnect.addOnSessionPropose(async (event) => {
-      setProposal(event)
+    return walletConnect.onSessionPropose(setProposal)
+  }, [walletConnect])
+
+  // Subscribe to session deletes
+  useEffect(() => {
+    return walletConnect.onSessionDelete(() => {
+      setSessions(walletConnect.getActiveSessions())
     })
   }, [walletConnect])
 
@@ -37,9 +42,8 @@ const SessionManager = () => {
     }
 
     setProposal(undefined)
-    // Update sessions
-    setSessions(walletConnect.getActiveSessions() || {})
-  }, [proposal, walletConnect])
+    setSessions(walletConnect.getActiveSessions())
+  }, [proposal, walletConnect, chainId, safeAddress])
 
   // On session reject
   const onReject = useCallback(async () => {
@@ -59,7 +63,7 @@ const SessionManager = () => {
   const onDisconnect = async (session: SessionTypes.Struct) => {
     try {
       await walletConnect.disconnectSession(session)
-      setSessions(walletConnect.getActiveSessions() || {})
+      setSessions(walletConnect.getActiveSessions())
     } catch (error) {
       setError(asError(error))
     }

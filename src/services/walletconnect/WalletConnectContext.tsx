@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react'
+import { type ReactNode, createContext, useEffect, useState } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
@@ -15,7 +15,7 @@ export const WalletConnectContext = createContext<{
   error: null,
 })
 
-export const WalletConnectProvider = ({ children }: { children: JSX.Element }) => {
+export const WalletConnectProvider = ({ children }: { children: ReactNode }) => {
   const {
     safe: { chainId },
     safeAddress,

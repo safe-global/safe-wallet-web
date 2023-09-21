@@ -144,13 +144,24 @@ class WalletConnectWallet {
   /**
    * Subscribe to session proposals
    */
-  public addOnSessionPropose(onSessionPropose: (e: Web3WalletTypes.SessionProposal) => void) {
+  public onSessionPropose(onSessionPropose: (e: Web3WalletTypes.SessionProposal) => void) {
     // Subscribe to the session proposal event
     this.web3Wallet?.on('session_proposal', onSessionPropose)
 
     // Return the unsubscribe function
     return () => {
       this.web3Wallet?.off('session_proposal', onSessionPropose)
+    }
+  }
+
+  /**
+   * Subscribe to session delete
+   */
+  public onSessionDelete(handler: () => void) {
+    this.web3Wallet?.on('session_delete', handler)
+
+    return () => {
+      this.web3Wallet?.off('session_delete', handler)
     }
   }
 

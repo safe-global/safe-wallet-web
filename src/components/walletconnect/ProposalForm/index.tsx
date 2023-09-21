@@ -20,10 +20,12 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps) => {
   const requiredChains = requiredNamespaces[EIP155].chains ?? []
   const optionalChains = optionalNamespaces[EIP155].chains ?? []
 
-  const chainIds = requiredChains
-    .concat(optionalChains)
-    .map((chain) => chain.split(':').pop())
-    .filter((chainId) => configs.some((chain) => chain.chainId === chainId))
+  const chainIds = configs
+    .filter((chain) => {
+      const eipChainId = `${EIP155}:${chain.chainId}`
+      return requiredChains.includes(eipChainId) || optionalChains.includes(eipChainId)
+    })
+    .map((chain) => chain.chainId)
 
   return (
     <div className={css.container}>
