@@ -44,6 +44,40 @@ class WalletConnectWallet {
     await this.web3Wallet.core.pairing.pair({ uri })
   }
 
+  public async chainChanged(chainId: string) {
+    const sessions = this.getActiveSessions()
+
+    await Promise.all(
+      Object.keys(sessions).map((topic) => {
+        return this.web3Wallet?.emitSessionEvent({
+          topic,
+          event: {
+            name: 'chainChanged',
+            data: Number(chainId),
+          },
+          chainId: `${EIP155}:${chainId}`,
+        })
+      }),
+    )
+  }
+
+  public async accountsChanged(chainId: string, address: string) {
+    const sessions = this.getActiveSessions()
+
+    await Promise.all(
+      Object.keys(sessions).map((topic) => {
+        return this.web3Wallet?.emitSessionEvent({
+          topic,
+          event: {
+            name: 'accountsChanged',
+            data: [address],
+          },
+          chainId: `${EIP155}:${chainId}`,
+        })
+      }),
+    )
+  }
+
   private async approveSession(proposal: Web3WalletTypes.SessionProposal, chainId: string, safeAddress: string) {
     assertWeb3Wallet(this.web3Wallet)
 
@@ -83,14 +117,7 @@ class WalletConnectWallet {
 
       // Immediately switch to the correct chain and set the actual namespace
       try {
-        await this.web3Wallet.emitSessionEvent({
-          topic: session.topic,
-          event: {
-            name: 'chainChanged',
-            data: Number(chainId),
-          },
-          chainId: safeChains[0],
-        })
+        await this.chainChanged(chainId)
 
         await this.web3Wallet.updateSession({
           topic: session.topic,

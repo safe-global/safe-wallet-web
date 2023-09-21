@@ -12,7 +12,7 @@ const SessionForm = ({ anchorEl }: { anchorEl: HTMLButtonElement | null }) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect } = useContext(WalletConnectContext)
-  const [sessions, setSessions] = useState<Record<string, SessionTypes.Struct>>({})
+  const [sessions, setSessions] = useState<Record<string, SessionTypes.Struct>>(walletConnect.getActiveSessions() || {})
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [error, setError] = useState<string>()
 
@@ -36,13 +36,6 @@ const SessionForm = ({ anchorEl }: { anchorEl: HTMLButtonElement | null }) => {
       },
     )
   }, [walletConnect, chainId, safeAddress])
-
-  // Set initial sessions
-  useEffect(() => {
-    walletConnect.init().then(() => {
-      setSessions(walletConnect.getActiveSessions() || {})
-    })
-  }, [walletConnect])
 
   // Log sessions
   useEffect(() => {
