@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: var(--space-2);
+  gap: var(--space-2);
+  border: 1px solid var(--color-border-light);
+  width: 350px;
+  text-align: center;
+}
+
+.requests {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.method {
+  background: var(--color-border-background);
+  color: var(--color-text-primary);
+  align-items: center;
+  justify-content: center;
+  display: inline-block;
+  font-size: 11px;
+  line-height: normal;
+  border-radius: 4px;
+  padding: 4px 8px;
+}

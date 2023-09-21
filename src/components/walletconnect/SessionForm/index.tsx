@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from 'react'
+import { forwardRef, useContext, useEffect, useState } from 'react'
 import { type Web3WalletTypes } from '@walletconnect/web3wallet'
 import { SessionTypes } from '@walletconnect/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
+import ConnectionCenter from '../ConnnectionCenter'
 
-const SessionForm = () => {
+const SessionForm = forwardRef<HTMLButtonElement>((_, ref) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect } = useContext(WalletConnectContext)
@@ -43,7 +44,13 @@ const SessionForm = () => {
     console.log('WC sessions', sessions)
   }, [sessions])
 
+  if (proposal) {
+    return <ConnectionCenter ref={ref} proposal={proposal} onClose={() => setProposal(undefined)} />
+  }
+
   return <></>
-}
+})
+
+SessionForm.displayName = 'SessionForm'
 
 export default SessionForm
