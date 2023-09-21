@@ -11,13 +11,11 @@ const isWalletConnectUrl = (text: string) => text.startsWith('wc:')
 const WalletConnectHeaderWidget = () => {
   const { walletConnect } = useContext(WalletConnectContext)
   const [error, setError] = useState<Error>()
-  const [inputValue, setInputValue] = useState('')
   const [popupOpen, setPopupOpen] = useState(false)
   const iconRef = useRef<HTMLButtonElement>(null)
 
   const onInput = async (e: ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value
-    setInputValue(text)
 
     if (isWalletConnectUrl(text)) {
       try {
@@ -30,15 +28,6 @@ const WalletConnectHeaderWidget = () => {
 
   const onClick = async () => {
     setPopupOpen(true)
-
-    try {
-      const text = await navigator.clipboard.readText()
-      if (isWalletConnectUrl(text)) {
-        setInputValue(text)
-      }
-    } catch (error) {
-      return
-    }
   }
 
   return (
@@ -48,7 +37,7 @@ const WalletConnectHeaderWidget = () => {
       <Popup anchorEl={iconRef.current} open={popupOpen} setOpen={setPopupOpen}>
         {error?.message}
 
-        <Input value={inputValue} onChange={onInput} />
+        <Input onChange={onInput} placeholder="wc:" fullWidth />
 
         <SessionForm />
       </Popup>

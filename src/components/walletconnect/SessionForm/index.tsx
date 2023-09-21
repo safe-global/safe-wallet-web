@@ -4,6 +4,8 @@ import { SessionTypes } from '@walletconnect/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import ConnectionCenter from '../ConnnectionCenter'
+import { Button } from '@mui/material'
+import { asError } from '@/services/exceptions/utils'
 
 const SessionForm = forwardRef<HTMLButtonElement>((_, ref) => {
   const { safe, safeAddress } = useSafeInfo()
@@ -11,13 +13,15 @@ const SessionForm = forwardRef<HTMLButtonElement>((_, ref) => {
   const { walletConnect } = useContext(WalletConnectContext)
   const [sessions, setSessions] = useState<Record<string, SessionTypes.Struct>>({})
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
+  const [error, setError] = useState<string>()
 
+  // Subscribe to session proposals
   useEffect(() => {
     if (!chainId || !safeAddress) {
       return
     }
 
-    walletConnect.addOnSessionPropose(
+    return walletConnect.addOnSessionPropose(
       chainId,
       safeAddress,
       (event) => {
@@ -27,28 +31,50 @@ const SessionForm = forwardRef<HTMLButtonElement>((_, ref) => {
       },
       (session) => {
         console.log('WC session', session)
-        const allSessions = walletConnect.getActiveSessions()
-        setSessions(allSessions || {})
+        setSessions(walletConnect.getActiveSessions() || {})
       },
     )
   }, [walletConnect, chainId, safeAddress])
 
+  // Set initial sessions
   useEffect(() => {
     walletConnect.init().then(() => {
-      const allSessions = walletConnect.getActiveSessions()
-      setSessions(allSessions || {})
+      setSessions(walletConnect.getActiveSessions() || {})
     })
   }, [walletConnect])
 
+  // Log sessions
   useEffect(() => {
     console.log('WC sessions', sessions)
   }, [sessions])
+
+  const onDisconnect = async (session: SessionTypes.Struct) => {
+    try {
+      await walletConnect.disconnectSession(session)
+      setSessions(walletConnect.getActiveSessions() || {})
+    } catch (error) {
+      setError(asError(error).message)
+    }
+  }
 
   if (proposal) {
     return <ConnectionCenter ref={ref} proposal={proposal} onClose={() => setProposal(undefined)} />
   }
 
-  return <></>
+  return (
+    <>
+      {error}
+
+      <ul>
+        {Object.values(sessions).map((session) => (
+          <li key={session.topic}>
+            {session.peer.metadata.name}
+            <Button onClick={() => onDisconnect(session)}>Disconnect</Button>
+          </li>
+        ))}
+      </ul>
+    </>
+  )
 })
 
 SessionForm.displayName = 'SessionForm'

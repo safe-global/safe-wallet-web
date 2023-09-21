@@ -23,7 +23,7 @@ const Popup = (props: PopupProps) => {
       }}
       onClose={() => props.setOpen(false)}
     >
-      <Paper>{props.children}</Paper>
+      <Paper sx={{ p: 2 }}>{props.children}</Paper>
     </Popover>
   )
 }
