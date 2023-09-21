@@ -1,4 +1,4 @@
-import { Input } from '@mui/material'
+import { TextField, Typography } from '@mui/material'
 import { useContext, useState } from 'react'
 import type { ChangeEvent } from 'react'
 
@@ -25,9 +25,17 @@ const WcInput = () => {
 
   return (
     <>
-      {error?.message}
+      <Typography variant="h5">New connection</Typography>
 
-      {!connecting && <Input onChange={onInput} placeholder="wc:" fullWidth inputProps={{ pattern: /^wc:/ }} />}
+      <TextField
+        onChange={onInput}
+        fullWidth
+        autoComplete="off"
+        disabled={connecting}
+        error={!!error}
+        label={error ? error.message : 'wc:'}
+        sx={{ my: 2 }}
+      ></TextField>
     </>
   )
 }

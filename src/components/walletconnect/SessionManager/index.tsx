@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { Button } from '@mui/material'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
 
@@ -9,6 +8,7 @@ import { asError } from '@/services/exceptions/utils'
 import ProposalForm from '../ProposalForm'
 import WcInput from '../WcInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import SessionList from '../SessionList'
 
 const SessionManager = () => {
   const { safe, safeAddress } = useSafeInfo()
@@ -76,14 +76,8 @@ const SessionManager = () => {
       ) : (
         <>
           <WcInput />
-          <ul>
-            {Object.values(sessions).map((session) => (
-              <li key={session.topic}>
-                {session.peer.metadata.name}
-                <Button onClick={() => onDisconnect(session)}>Disconnect</Button>
-              </li>
-            ))}
-          </ul>
+
+          <SessionList sessions={sessions} onDisconnect={onDisconnect} />
         </>
       )}
     </>

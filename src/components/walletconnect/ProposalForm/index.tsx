@@ -6,6 +6,7 @@ import useChains from '@/hooks/useChains'
 import ChainIndicator from '@/components/common/ChainIndicator'
 
 import css from './styles.module.css'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -30,7 +31,8 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps) => {
         WalletConnect
       </Typography>
 
-      <img width={32} height={32} src={proposer.metadata.icons[0]} alt={`${proposer.metadata.name} Logo`} />
+      <SafeAppIconCard src={proposer.metadata.icons[0]} width={32} height={32} alt={`${proposer.metadata.name} logo`} />
+
       <Typography>
         <Link href={proposal.verifyContext.verified.origin}>{proposer.metadata.name}</Link> wants to connect
       </Typography>
