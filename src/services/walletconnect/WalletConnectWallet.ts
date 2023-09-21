@@ -81,8 +81,17 @@ class WalletConnectWallet {
         namespaces: getNamespaces(chains, proposal.params.requiredNamespaces[EIP155].methods),
       })
 
-      // Immediately update the session with the actual namespaces
+      // Immediately switch to the correct chain and set the actual namespace
       try {
+        await this.web3Wallet.emitSessionEvent({
+          topic: session.topic,
+          event: {
+            name: 'chainChanged',
+            data: Number(chainId),
+          },
+          chainId: safeChains[0],
+        })
+
         await this.web3Wallet.updateSession({
           topic: session.topic,
           namespaces: getNamespaces(safeChains, SAFE_COMPATIBLE_METHODS),
