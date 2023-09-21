@@ -42,6 +42,7 @@ export const TransferDescription = ({ txInfo, isSendTx }: { txInfo: Transfer; is
   const direction = isSendTx ? 'to' : 'from'
   const address = isSendTx ? txInfo.recipient.value : txInfo.sender.value
   const name = isSendTx ? txInfo.recipient.name : txInfo.sender.name
+  const logoUri = isSendTx ? txInfo.recipient.logoUri : txInfo.sender.logoUri
 
   return (
     <>
@@ -49,7 +50,7 @@ export const TransferDescription = ({ txInfo, isSendTx }: { txInfo: Transfer; is
       <TransferTx info={txInfo} omitSign={true} />
       {direction}
       <div className={css.address}>
-        <EthHashInfo address={address} name={name} avatarSize={20} />
+        <EthHashInfo address={address} name={name} customAvatar={logoUri} avatarSize={20} />
       </div>
     </>
   )
