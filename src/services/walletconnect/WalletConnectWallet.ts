@@ -39,33 +39,72 @@ class WalletConnectWallet {
     await this.web3Wallet?.core.pairing.pair({ uri })
   }
 
-  private approveSession(proposal: Web3WalletTypes.SessionProposal, eip155Chains: string[], safeAddress: string) {
+  private async approveSession(proposal: Web3WalletTypes.SessionProposal, chainId: string, safeAddress: string) {
     if (!this.web3Wallet) {
       throw new Error('WalletConnect not initialized')
     }
 
-    // If the session proposal is approved, we need to respond with the approved namespaces
-    const safeEvents = proposal.params.requiredNamespaces[EIP155]?.events || []
+    // Actual safe chainId
+    const safeChains = [`${EIP155}:${chainId}`]
 
-    const accounts = eip155Chains.map((chainId) => `${chainId}:${safeAddress}`)
-
-    const namespaces = buildApprovedNamespaces({
-      proposal: proposal.params,
-      supportedNamespaces: {
-        [EIP155]: {
-          chains: eip155Chains,
-          methods: SAFE_COMPATIBLE_METHODS,
-          events: safeEvents,
-          accounts,
+    const getNamespaces = (chains: string[]) => {
+      return buildApprovedNamespaces({
+        proposal: proposal.params,
+        supportedNamespaces: {
+          [EIP155]: {
+            chains,
+            accounts: chains.map((chain) => `${chain}:${safeAddress}`),
+            events: proposal.params.requiredNamespaces[EIP155]?.events || [],
+            methods: SAFE_COMPATIBLE_METHODS,
+          },
         },
-      },
-    })
+      })
+    }
 
     // Approve the session proposal
-    return this.web3Wallet.approveSession({
+    try {
+      return await this.web3Wallet.approveSession({
+        id: proposal.id,
+        namespaces: getNamespaces(safeChains),
+      })
+    } catch (e) {
+      // Most dapps require mainnet, but we aren't always on mainnet
+      // A workaround, pretend to support all required chains
+      const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains || []
+      const chains = safeChains.concat(requiredChains)
+
+      const session = await this.web3Wallet.approveSession({
+        id: proposal.id,
+        namespaces: getNamespaces(chains),
+      })
+
+      // Immediately update the session with the actual namespaces
+      try {
+        await this.web3Wallet.updateSession({
+          topic: session.topic,
+          namespaces: getNamespaces(safeChains),
+        })
+      } catch (e) {
+        // Ignore
+      }
+
+      return session
+    }
+  }
+
+  private async rejectSession(proposal: Web3WalletTypes.SessionProposal) {
+    if (!this.web3Wallet) {
+      throw new Error('WalletConnect not initialized')
+    }
+
+    await this.web3Wallet.rejectSession({
       id: proposal.id,
-      namespaces,
+      reason: {
+        code: WC_ERRORS.UNSUPPORTED_CHAIN_ERROR_CODE,
+        message: 'User rejected session proposal',
+      },
     })
+    return
   }
 
   /**
@@ -87,29 +126,11 @@ class WalletConnectWallet {
 
       // If not approved, reject the session proposal
       if (!isApproved) {
-        await this.web3Wallet.rejectSession({
-          id: event.id,
-          reason: {
-            code: WC_ERRORS.UNSUPPORTED_CHAIN_ERROR_CODE,
-            message: 'User rejected session proposal',
-          },
-        })
+        await this.rejectSession(event)
         return
       }
 
-      let session: SessionTypes.Struct | null = null
-
-      const eip155Chain = `${EIP155}:${chainId}`
-
-      try {
-        session = await this.approveSession(event, [eip155Chain], safeAddress)
-      } catch {
-        session = await this.approveSession(
-          event,
-          [eip155Chain, ...(event.params.requiredNamespaces[EIP155].chains ?? [])],
-          safeAddress,
-        )
-      }
+      const session = await this.approveSession(event, chainId, safeAddress)
 
       // If approved, call the onSessionApprove callback
       onSessionApprove(session)
@@ -119,7 +140,26 @@ class WalletConnectWallet {
     this.web3Wallet?.on('session_proposal', handler)
 
     // Return the unsubscribe function
-    return () => this.web3Wallet?.off('session_proposal', handler)
+    return () => {
+      this.web3Wallet?.off('session_proposal', handler)
+    }
+  }
+
+  /**
+   * Disconnect a session
+   */
+  public async disconnectSession(session: SessionTypes.Struct) {
+    if (!this.web3Wallet) {
+      throw new Error('WalletConnect not initialized')
+    }
+
+    await this.web3Wallet.disconnectSession({
+      topic: session.topic,
+      reason: {
+        code: WC_ERRORS.USER_DISCONNECTED_CODE,
+        message: 'User disconnected session',
+      },
+    })
   }
 
   /**

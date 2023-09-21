@@ -3,6 +3,8 @@ import { type Web3WalletTypes } from '@walletconnect/web3wallet'
 import { SessionTypes } from '@walletconnect/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
+import { Button } from '@mui/material'
+import { asError } from '@/services/exceptions/utils'
 
 const SessionForm = () => {
   const { safe, safeAddress } = useSafeInfo()
@@ -10,13 +12,15 @@ const SessionForm = () => {
   const { walletConnect } = useContext(WalletConnectContext)
   const [sessions, setSessions] = useState<Record<string, SessionTypes.Struct>>({})
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
+  const [error, setError] = useState<string>()
 
+  // Subscribe to session proposals
   useEffect(() => {
     if (!chainId || !safeAddress) {
       return
     }
 
-    walletConnect.addOnSessionPropose(
+    return walletConnect.addOnSessionPropose(
       chainId,
       safeAddress,
       (event) => {
@@ -26,24 +30,48 @@ const SessionForm = () => {
       },
       (session) => {
         console.log('WC session', session)
-        const allSessions = walletConnect.getActiveSessions()
-        setSessions(allSessions || {})
+        setSessions(walletConnect.getActiveSessions() || {})
       },
     )
   }, [walletConnect, chainId, safeAddress])
 
+  // Set initial sessions
   useEffect(() => {
     walletConnect.init().then(() => {
-      const allSessions = walletConnect.getActiveSessions()
-      setSessions(allSessions || {})
+      setSessions(walletConnect.getActiveSessions() || {})
     })
   }, [walletConnect])
 
+  // Log sessions
   useEffect(() => {
     console.log('WC sessions', sessions)
   }, [sessions])
 
-  return <></>
+  const onDisconnect = async (session: SessionTypes.Struct) => {
+    try {
+      await walletConnect.disconnectSession(session)
+      setSessions(walletConnect.getActiveSessions() || {})
+    } catch (error) {
+      setError(asError(error).message)
+    }
+  }
+
+  return (
+    <>
+      {error}
+
+      <code>{JSON.stringify(proposal, null, 2)}</code>
+
+      <ul>
+        {Object.values(sessions).map((session) => (
+          <li key={session.topic}>
+            {session.peer.metadata.name}
+            <Button onClick={() => onDisconnect(session)}>Disconnect</Button>
+          </li>
+        ))}
+      </ul>
+    </>
+  )
 }
 
 export default SessionForm
