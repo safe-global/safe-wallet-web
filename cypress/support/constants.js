@@ -75,10 +75,10 @@ export const checkboxStates = {
 }
 
 export const transactionStatus = {
-  received: 'Received',
-  sent: 'Sent',
+  received: 'Receive',
+  sent: 'Send',
   deposit: 'deposit',
-  approve: 'approve',
+  approve: 'Approve',
   success: 'Success',
   interaction: 'Contract interaction',
 }

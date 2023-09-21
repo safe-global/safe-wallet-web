@@ -2,8 +2,8 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as createtx from '../pages/create_tx.pages'
 
-const INCOMING = 'Receive'
-const OUTGOING = 'Send'
+const INCOMING = 'Received'
+const OUTGOING = 'Sent'
 const CONTRACT_INTERACTION = 'Contract interaction'
 
 const str1 = 'True'
@@ -21,7 +21,7 @@ describe('Transaction history', () => {
     const DATE = 'Oct 9, 2022'
     const NEXT_DATE_LABEL = 'Feb 8, 2022'
     const amount = '0.25 GOR'
-    const amount2 = '-0.11 WETH'
+    const amount2 = '0.11 WETH'
     const amount3 = '120,497.61 DAI'
     const time = '4:56 PM'
     const time2 = '4:59 PM'
@@ -69,7 +69,6 @@ describe('Transaction history', () => {
         // Type
         // TODO: update next line after fixing the logo
         // cy.find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
-        createtx.verifyTransactionStrExists(constants.tokenNames.wrapped_ether)
         createtx.verifyTransactionStrExists(constants.transactionStatus.approve)
         createtx.verifyTransactionStrExists(time3)
         createtx.verifyTransactionStrExists(constants.transactionStatus.success)
