@@ -35,7 +35,6 @@ function MpcModule(): WalletInit {
           request: (request) => {
             return new Promise<any>((resolve, reject) => {
               try {
-                console.log('MPC Module RPC Request', request)
                 const web3 = assertDefined(getMPCProvider())
                 const web3ReadOnly = assertDefined(getWeb3ReadOnly())
                 /*
