@@ -13,7 +13,7 @@ const transactionItemExpandable = 'div[id^="transfer"]'
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
-const TransactionSummary = 'Send-'
+const TransactionSummary = 'Send'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
@@ -89,7 +89,7 @@ export function verifyNativeTokenTransfer() {
 }
 
 export function changeNonce(value) {
-  cy.get(nonceInput).clear().type(value, { force: true }).type('{enter}', { force: true })
+  cy.get(nonceInput).clear().type(value, { force: true }).blur()
 }
 
 export function verifyConfirmTransactionData() {

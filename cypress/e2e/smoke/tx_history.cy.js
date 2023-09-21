@@ -2,8 +2,8 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as createtx from '../pages/create_tx.pages'
 
-const INCOMING = 'Received'
-const OUTGOING = 'Sent'
+const INCOMING = 'Receive'
+const OUTGOING = 'Send'
 const CONTRACT_INTERACTION = 'Contract interaction'
 
 const str1 = 'True'

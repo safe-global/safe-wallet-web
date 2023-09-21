@@ -11,6 +11,7 @@ import TxType from '@/components/transactions/TxType'
 import css from './styles.module.css'
 import OwnersIcon from '@/public/images/common/owners.svg'
 import { AppRoutes } from '@/config/routes'
+import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 
 type PendingTxType = {
   transaction: TransactionSummary
@@ -31,6 +32,8 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
     [router, id],
   )
 
+  const displayInfo = !transaction.txInfo.richDecodedInfo && transaction.txInfo.type !== TransactionInfoType.TRANSFER
+
   return (
     <NextLink href={url} passHref>
       <Box className={css.container}>
@@ -40,9 +43,11 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
           <TxType tx={transaction} />
         </Box>
 
-        <Box flex={1} className={css.txInfo}>
-          <TxInfo info={transaction.txInfo} />
-        </Box>
+        {displayInfo && (
+          <Box flex={1} className={css.txInfo}>
+            <TxInfo info={transaction.txInfo} />
+          </Box>
+        )}
 
         {isMultisigExecutionInfo(transaction.executionInfo) ? (
           <Box className={css.confirmationsCount}>
