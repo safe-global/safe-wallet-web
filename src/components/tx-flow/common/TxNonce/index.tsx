@@ -1,4 +1,4 @@
-import { memo, type ReactElement, useContext, useEffect, useMemo } from 'react'
+import { memo, type ReactElement, useContext, useMemo } from 'react'
 import {
   Autocomplete,
   Box,
@@ -110,14 +110,6 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
     },
   })
 
-  // Update the nonce in the form if the user hasn't changed the value manually
-  // and the recommendedNonce updated in the background
-  useEffect(() => {
-    if (formMethods.formState.touchedFields[TxNonceFormFieldNames.NONCE]) return
-
-    formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce)
-  }, [formMethods, recommendedNonce])
-
   const resetNonce = () => {
     formMethods.setValue(TxNonceFormFieldNames.NONCE, recommendedNonce)
   }
@@ -130,6 +122,9 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
         required: 'Nonce is required',
         // Validation must be async to allow resetting invalid values onBlur
         validate: async (value) => {
+          // Skip initial validation so that setNonce is not called without user input
+          if (value === nonce) return
+
           const newNonce = Number(value)
 
           if (isNaN(newNonce)) {
