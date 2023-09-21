@@ -15,6 +15,9 @@ const customJestConfig = {
   },
   testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: { url: 'http://localhost/balances?safe=rin:0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A' },
+  globals: {
+    fetch: global.fetch
+  }
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

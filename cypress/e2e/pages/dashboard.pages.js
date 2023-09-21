@@ -45,8 +45,10 @@ export function verifyTxQueueWidget() {
     cy.contains(noTransactionStr).should('not.exist')
 
     // Queued txns
-    cy.contains(`a[href^="/transactions/tx?id=multisig_0x"]`, '13' + 'Send' + '-0.00002 GOR' + '1/1').should('exist')
-
+    cy.contains(
+      `a[href^="/transactions/tx?id=multisig_0x"]`,
+      '13' + 'Send' + '0.00002 GOR' + 'to' + 'gor:0xE297...9665' + '1/1',
+    ).should('exist')
     cy.contains(`a[href="${constants.transactionQueueUrl}${encodeURIComponent(constants.TEST_SAFE)}"]`, viewAllStr)
   })
 }
