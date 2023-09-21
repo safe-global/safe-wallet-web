@@ -1,13 +1,14 @@
-import { forwardRef, useContext, useEffect, useState } from 'react'
-import { type Web3WalletTypes } from '@walletconnect/web3wallet'
-import { SessionTypes } from '@walletconnect/types'
+import { useContext, useEffect, useState } from 'react'
+import { Button } from '@mui/material'
+import type { Web3WalletTypes } from '@walletconnect/web3wallet'
+import type { SessionTypes } from '@walletconnect/types'
+
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import ConnectionCenter from '../ConnnectionCenter'
-import { Button } from '@mui/material'
 import { asError } from '@/services/exceptions/utils'
 
-const SessionForm = forwardRef<HTMLButtonElement>((_, ref) => {
+const SessionForm = ({ anchorEl }: { anchorEl: HTMLButtonElement | null }) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect } = useContext(WalletConnectContext)
@@ -58,7 +59,7 @@ const SessionForm = forwardRef<HTMLButtonElement>((_, ref) => {
   }
 
   if (proposal) {
-    return <ConnectionCenter ref={ref} proposal={proposal} onClose={() => setProposal(undefined)} />
+    return <ConnectionCenter anchorEl={anchorEl} proposal={proposal} onClose={() => setProposal(undefined)} />
   }
 
   return (
@@ -75,8 +76,6 @@ const SessionForm = forwardRef<HTMLButtonElement>((_, ref) => {
       </ul>
     </>
   )
-})
-
-SessionForm.displayName = 'SessionForm'
+}
 
 export default SessionForm

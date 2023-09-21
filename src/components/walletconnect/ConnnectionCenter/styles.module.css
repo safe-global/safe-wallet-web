@@ -9,9 +9,9 @@
   text-align: center;
 }
 
-.requests {
-  display: flex;
-  gap: var(--space-1);
+.chain,
+.method {
+  margin: 2px;
 }
 
 .method {

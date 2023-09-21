@@ -1,5 +1,7 @@
-import { ChangeEvent, useContext, useRef, useState } from 'react'
 import { Box, Input } from '@mui/material'
+import { useContext, useState } from 'react'
+import type { ChangeEvent, MouseEvent } from 'react'
+
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
 import SessionForm from '../SessionForm'
@@ -11,8 +13,7 @@ const isWalletConnectUrl = (text: string) => text.startsWith('wc:')
 const WalletConnectHeaderWidget = () => {
   const { walletConnect } = useContext(WalletConnectContext)
   const [error, setError] = useState<Error>()
-  const [popupOpen, setPopupOpen] = useState(false)
-  const iconRef = useRef<HTMLButtonElement>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const onInput = async (e: ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value
@@ -26,20 +27,20 @@ const WalletConnectHeaderWidget = () => {
     }
   }
 
-  const onClick = async () => {
-    setPopupOpen(true)
+  const onClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
   }
 
   return (
     <Box display="flex">
-      <Icon onClick={onClick} ref={iconRef} />
+      <Icon onClick={onClick} />
 
-      <Popup anchorEl={iconRef.current} open={popupOpen} setOpen={setPopupOpen}>
+      <Popup anchorEl={anchorEl} open={!!anchorEl} onClose={() => setAnchorEl(null)}>
         {error?.message}
 
         <Input onChange={onInput} placeholder="wc:" fullWidth />
 
-        <SessionForm />
+        <SessionForm anchorEl={anchorEl} />
       </Popup>
     </Box>
   )

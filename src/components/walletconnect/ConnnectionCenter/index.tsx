@@ -1,4 +1,3 @@
-import { forwardRef } from 'react'
 import { Alert, Button, Divider, Link, Paper, Popover, Typography } from '@mui/material'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 
@@ -9,10 +8,15 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 
 import css from './styles.module.css'
 
-const ConnectionCenter = forwardRef<
-  HTMLButtonElement,
-  { proposal: Web3WalletTypes.SessionProposal; onClose: () => void }
->(({ proposal, onClose }, ref) => {
+const ConnectionCenter = ({
+  anchorEl,
+  proposal,
+  onClose,
+}: {
+  anchorEl: HTMLButtonElement | null
+  proposal: Web3WalletTypes.SessionProposal
+  onClose: () => void
+}) => {
   const { safe } = useSafeInfo()
   const chains = useChains()
 
@@ -20,13 +24,17 @@ const ConnectionCenter = forwardRef<
     // TODO:
   }
 
-  const hasUnsupportedChain = proposal.params.requiredNamespaces[EIP155].chains.some((chain) => {
+  const { requiredNamespaces, optionalNamespaces, proposer } = proposal.params
+  const requiredChains = requiredNamespaces[EIP155].chains ?? []
+  const optionalChains = optionalNamespaces[EIP155].chains ?? []
+
+  const hasUnsupportedChain = requiredChains.some((chain) => {
     const [, chainId] = chain.split(':')
     return safe.chainId !== chainId
   })
 
-  const chainIds = proposal.params.requiredNamespaces[EIP155].chains
-    .concat(proposal.params.optionalNamespaces[EIP155].chains)
+  const chainIds = requiredChains
+    .concat(optionalChains)
     .map((chain) => {
       const [, chainId] = chain.split(':')
       return chainId
@@ -38,7 +46,7 @@ const ConnectionCenter = forwardRef<
       <Popover
         open
         onClose={onClose}
-        anchorEl={ref?.current}
+        anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
@@ -49,24 +57,18 @@ const ConnectionCenter = forwardRef<
             WalletConnect
           </Typography>
 
-          <img
-            width={32}
-            height={32}
-            src={proposal.params.proposer.metadata.icons[0]}
-            alt={`${proposal.params.proposer.metadata.name} Logo`}
-          />
+          <img width={32} height={32} src={proposer.metadata.icons[0]} alt={`${proposer.metadata.name} Logo`} />
           <Typography>
-            <Link href={proposal.verifyContext.verified.origin}>{proposal.params.proposer.metadata.name}</Link> wants to
-            connect
+            <Link href={proposal.verifyContext.verified.origin}>{proposer.metadata.name}</Link> wants to connect
           </Typography>
 
           <Divider flexItem />
 
           <div>
             <Typography mb={1}>Requested chains</Typography>
-            <div className={css.requests}>
+            <div>
               {chainIds.map((chainId) => (
-                <ChainIndicator inline chainId={chainId} key={chainId} />
+                <ChainIndicator inline chainId={chainId} key={chainId} className={css.chain} />
               ))}
             </div>
           </div>
@@ -75,7 +77,7 @@ const ConnectionCenter = forwardRef<
 
           <div>
             <Typography mb={1}>Requested methods</Typography>
-            <div className={css.requests}>
+            <div>
               {proposal.params.requiredNamespaces[EIP155].methods.map((method) => (
                 <span className={css.method} key={method}>
                   {method}
@@ -104,8 +106,6 @@ const ConnectionCenter = forwardRef<
       </Popover>
     </>
   )
-})
-
-ConnectionCenter.displayName = 'ConnectionCenter'
+}
 
 export default ConnectionCenter

@@ -1,19 +1,13 @@
-import { forwardRef, type RefObject } from 'react'
 import { Button, SvgIcon, Typography } from '@mui/material'
+import type { MouseEvent } from 'react'
+
 import WalletConnectIcon from '@/public/images/common/walletconnect.svg'
 
-type IconProps = {
-  onClick: () => void
-  ref: RefObject<HTMLButtonElement>
-}
-
-const Icon = forwardRef<HTMLButtonElement, IconProps>((props, ref) => (
-  <Button onClick={props.onClick} ref={ref}>
+const Icon = (props: { onClick: (event: MouseEvent<HTMLButtonElement>) => void }) => (
+  <Button onClick={props.onClick}>
     <SvgIcon component={WalletConnectIcon} inheritViewBox />
     <Typography ml={1}>WalletConnect</Typography>
   </Button>
-))
-
-Icon.displayName = 'Icon'
+)
 
 export default Icon

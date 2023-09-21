@@ -1,18 +1,9 @@
-import type { ReactNode } from 'react'
 import { Paper, Popover } from '@mui/material'
+import type { PopoverProps } from '@mui/material'
 
-type PopupProps = {
-  anchorEl: HTMLElement | SVGSVGElement | null
-  open: boolean
-  setOpen: (open: boolean) => void
-  children: ReactNode
-}
-
-const Popup = (props: PopupProps) => {
+const Popup = ({ children, ...props }: PopoverProps) => {
   return (
     <Popover
-      anchorEl={props.anchorEl}
-      open={props.open}
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'center',
@@ -21,9 +12,9 @@ const Popup = (props: PopupProps) => {
         vertical: 'top',
         horizontal: 'center',
       }}
-      onClose={() => props.setOpen(false)}
+      {...props}
     >
-      <Paper sx={{ p: 2 }}>{props.children}</Paper>
+      <Paper sx={{ p: 2 }}>{children}</Paper>
     </Popover>
   )
 }
