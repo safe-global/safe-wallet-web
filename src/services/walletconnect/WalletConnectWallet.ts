@@ -3,9 +3,14 @@ import { Web3Wallet } from '@walletconnect/web3wallet'
 import type Web3WalletType from '@walletconnect/web3wallet'
 import { type Web3WalletTypes } from '@walletconnect/web3wallet'
 import { SessionTypes } from '@walletconnect/types'
-import { buildApprovedNamespaces } from '@walletconnect/utils'
+import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
-import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA, WC_ERRORS } from './constants'
+import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
+import { invariant } from '@/utils/helpers'
+
+function assertWeb3Wallet<T extends Web3WalletType | null>(web3Wallet: T): asserts web3Wallet {
+  return invariant(web3Wallet, 'WalletConnect not initialized')
+}
 
 class WalletConnectWallet {
   private web3Wallet: Web3WalletType | null = null
@@ -33,16 +38,13 @@ class WalletConnectWallet {
    * Connect using a wc-URI
    */
   public async connect(uri: string) {
-    if (!this.web3Wallet) {
-      throw new Error('WalletConnect not initialized')
-    }
+    assertWeb3Wallet(this.web3Wallet)
+
     await this.web3Wallet?.core.pairing.pair({ uri })
   }
 
   private async approveSession(proposal: Web3WalletTypes.SessionProposal, chainId: string, safeAddress: string) {
-    if (!this.web3Wallet) {
-      throw new Error('WalletConnect not initialized')
-    }
+    assertWeb3Wallet(this.web3Wallet)
 
     // Actual safe chainId
     const safeChains = [`${EIP155}:${chainId}`]
@@ -93,18 +95,12 @@ class WalletConnectWallet {
   }
 
   private async rejectSession(proposal: Web3WalletTypes.SessionProposal) {
-    if (!this.web3Wallet) {
-      throw new Error('WalletConnect not initialized')
-    }
+    assertWeb3Wallet(this.web3Wallet)
 
     await this.web3Wallet.rejectSession({
       id: proposal.id,
-      reason: {
-        code: WC_ERRORS.UNSUPPORTED_CHAIN_ERROR_CODE,
-        message: 'User rejected session proposal',
-      },
+      reason: getSdkError('UNSUPPORTED_CHAINS'),
     })
-    return
   }
 
   /**
@@ -117,9 +113,7 @@ class WalletConnectWallet {
     onSessionApprove: (session: SessionTypes.Struct) => void,
   ) {
     const handler = async (event: Web3WalletTypes.SessionProposal) => {
-      if (!this.web3Wallet) {
-        throw new Error('WalletConnect not initialized')
-      }
+      assertWeb3Wallet(this.web3Wallet)
 
       // Ask the user if we want to approve the session proposal
       const isApproved = await onSessionPropose(event)
@@ -149,16 +143,11 @@ class WalletConnectWallet {
    * Disconnect a session
    */
   public async disconnectSession(session: SessionTypes.Struct) {
-    if (!this.web3Wallet) {
-      throw new Error('WalletConnect not initialized')
-    }
+    assertWeb3Wallet(this.web3Wallet)
 
     await this.web3Wallet.disconnectSession({
       topic: session.topic,
-      reason: {
-        code: WC_ERRORS.USER_DISCONNECTED_CODE,
-        message: 'User disconnected session',
-      },
+      reason: getSdkError('USER_DISCONNECTED'),
     })
   }
 

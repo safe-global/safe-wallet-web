@@ -25,18 +25,11 @@ export const SAFE_COMPATIBLE_METHODS = [
   'safe_setSettings',
 ]
 
-export enum WC_ERRORS {
-  UNSUPPORTED_CHAIN_ERROR_CODE = 5100,
-  INVALID_METHOD_ERROR_CODE = 1001,
-  USER_REJECTED_REQUEST_CODE = 4001,
-  USER_DISCONNECTED_CODE = 6000,
-}
-
 export const SAFE_WALLET_METADATA = {
-  name: 'Safe Wallet',
+  name: 'Safe{Wallet}',
   description: 'The most trusted platform to manage digital assets on Ethereum',
   url: 'https://app.safe.global',
   icons: ['https://app.safe.global/favicons/mstile-150x150.png', 'https://app.safe.global/favicons/logo_120x120.png'],
 }
 
-export const EIP155 = 'eip155'
+export const EIP155 = 'eip155' as const
