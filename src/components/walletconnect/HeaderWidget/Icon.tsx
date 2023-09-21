@@ -1,5 +1,5 @@
 import { forwardRef, type RefObject } from 'react'
-import { Button, SvgIcon, Typography } from '@mui/material'
+import { IconButton, SvgIcon } from '@mui/material'
 import WalletConnectIcon from '@/public/images/common/walletconnect.svg'
 
 type IconProps = {
@@ -8,10 +8,9 @@ type IconProps = {
 }
 
 const Icon = forwardRef<HTMLButtonElement, IconProps>((props, ref) => (
-  <Button onClick={props.onClick} ref={ref}>
+  <IconButton onClick={props.onClick} ref={ref}>
     <SvgIcon component={WalletConnectIcon} inheritViewBox />
-    <Typography ml={1}>WalletConnect</Typography>
-  </Button>
+  </IconButton>
 ))
 
 Icon.displayName = 'Icon'

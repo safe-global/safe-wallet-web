@@ -40,7 +40,7 @@ class WalletConnectWallet {
   public async connect(uri: string) {
     assertWeb3Wallet(this.web3Wallet)
 
-    await this.web3Wallet?.core.pairing.pair({ uri })
+    await this.web3Wallet.core.pairing.pair({ uri })
   }
 
   private async approveSession(proposal: Web3WalletTypes.SessionProposal, chainId: string, safeAddress: string) {
@@ -49,15 +49,15 @@ class WalletConnectWallet {
     // Actual safe chainId
     const safeChains = [`${EIP155}:${chainId}`]
 
-    const getNamespaces = (chains: string[]) => {
+    const getNamespaces = (chains: string[], methods: string[]) => {
       return buildApprovedNamespaces({
         proposal: proposal.params,
         supportedNamespaces: {
           [EIP155]: {
             chains,
+            methods,
             accounts: chains.map((chain) => `${chain}:${safeAddress}`),
             events: proposal.params.requiredNamespaces[EIP155]?.events || [],
-            methods: SAFE_COMPATIBLE_METHODS,
           },
         },
       })
@@ -67,7 +67,7 @@ class WalletConnectWallet {
     try {
       return await this.web3Wallet.approveSession({
         id: proposal.id,
-        namespaces: getNamespaces(safeChains),
+        namespaces: getNamespaces(safeChains, SAFE_COMPATIBLE_METHODS),
       })
     } catch (e) {
       // Most dapps require mainnet, but we aren't always on mainnet
@@ -77,14 +77,14 @@ class WalletConnectWallet {
 
       const session = await this.web3Wallet.approveSession({
         id: proposal.id,
-        namespaces: getNamespaces(chains),
+        namespaces: getNamespaces(chains, proposal.params.requiredNamespaces[EIP155].methods),
       })
 
       // Immediately update the session with the actual namespaces
       try {
         await this.web3Wallet.updateSession({
           topic: session.topic,
-          namespaces: getNamespaces(safeChains),
+          namespaces: getNamespaces(safeChains, SAFE_COMPATIBLE_METHODS),
         })
       } catch (e) {
         // Ignore
@@ -155,7 +155,7 @@ class WalletConnectWallet {
    * Get active sessions
    */
   public getActiveSessions() {
-    return this.web3Wallet?.getActiveSessions()
+    return this.web3Wallet?.getActiveSessions() || {}
   }
 }
 
