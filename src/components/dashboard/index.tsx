@@ -25,7 +25,7 @@ const Dashboard = (): ReactElement => {
         </Grid>
 
         <Grid item xs={12} lg={6}>
-          <PendingTxsList size={4} />
+          <PendingTxsList />
         </Grid>
 
         <Grid item xs={12} lg={supportsRelaying ? 6 : undefined}>
