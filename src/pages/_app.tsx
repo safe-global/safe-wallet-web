@@ -74,9 +74,9 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <WalletConnectProvider>
-              <TxModalProvider>{children}</TxModalProvider>
-            </WalletConnectProvider>
+            <TxModalProvider>
+              <WalletConnectProvider>{children}</WalletConnectProvider>
+            </TxModalProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}

@@ -13,7 +13,7 @@ import SessionList from '../SessionList'
 const SessionManager = () => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
-  const { walletConnect } = useContext(WalletConnectContext)
+  const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
   const [sessions, setSessions] = useState<Record<string, SessionTypes.Struct>>(walletConnect.getActiveSessions() || {})
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [error, setError] = useState<Error>()
@@ -70,6 +70,8 @@ const SessionManager = () => {
       {error && (
         <ErrorMessage error={error}>Error establishing connection with WalletConnect. Please try again.</ErrorMessage>
       )}
+
+      {walletConnectError && <ErrorMessage error={walletConnectError}>Error with WalletConnect request.</ErrorMessage>}
 
       {proposal ? (
         <ProposalForm proposal={proposal} onApprove={onApprove} onReject={onReject} />

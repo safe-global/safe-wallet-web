@@ -4,6 +4,7 @@ import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import type Web3WalletType from '@walletconnect/web3wallet'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
+import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 
 import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
 import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
@@ -170,6 +171,26 @@ class WalletConnectWallet {
    */
   public getActiveSessions() {
     return this.web3Wallet?.getActiveSessions() || {}
+  }
+
+  /**
+   * Subscribe to requests
+   */
+  public onRequest = (handler: (event: Web3WalletTypes.SessionRequest) => void) => {
+    this.web3Wallet?.on('session_request', handler)
+
+    return () => {
+      this.web3Wallet?.off('session_request', handler)
+    }
+  }
+
+  /**
+   * Send a response to a request
+   */
+  public async sendSessionResponse(topic: string, response: JsonRpcResponse<unknown>) {
+    assertWeb3Wallet(this.web3Wallet)
+
+    return await this.web3Wallet.respondSessionRequest({ topic, response })
   }
 }
 
