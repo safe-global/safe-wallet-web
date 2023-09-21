@@ -78,7 +78,7 @@ class WalletConnectWallet {
     )
   }
 
-  private async approveSession(proposal: Web3WalletTypes.SessionProposal, chainId: string, safeAddress: string) {
+  public async approveSession(proposal: Web3WalletTypes.SessionProposal, chainId: string, safeAddress: string) {
     assertWeb3Wallet(this.web3Wallet)
 
     // Actual safe chainId
@@ -131,7 +131,7 @@ class WalletConnectWallet {
     }
   }
 
-  private async rejectSession(proposal: Web3WalletTypes.SessionProposal) {
+  public async rejectSession(proposal: Web3WalletTypes.SessionProposal) {
     assertWeb3Wallet(this.web3Wallet)
 
     await this.web3Wallet.rejectSession({
@@ -143,36 +143,13 @@ class WalletConnectWallet {
   /**
    * Subscribe to session proposals
    */
-  public addOnSessionPropose(
-    chainId: string,
-    safeAddress: string,
-    onSessionPropose: (e: Web3WalletTypes.SessionProposal) => Promise<boolean>,
-    onSessionApprove: (session: SessionTypes.Struct) => void,
-  ) {
-    const handler = async (event: Web3WalletTypes.SessionProposal) => {
-      assertWeb3Wallet(this.web3Wallet)
-
-      // Ask the user if we want to approve the session proposal
-      const isApproved = await onSessionPropose(event)
-
-      // If not approved, reject the session proposal
-      if (!isApproved) {
-        await this.rejectSession(event)
-        return
-      }
-
-      const session = await this.approveSession(event, chainId, safeAddress)
-
-      // If approved, call the onSessionApprove callback
-      onSessionApprove(session)
-    }
-
+  public addOnSessionPropose(onSessionPropose: (e: Web3WalletTypes.SessionProposal) => void) {
     // Subscribe to the session proposal event
-    this.web3Wallet?.on('session_proposal', handler)
+    this.web3Wallet?.on('session_proposal', onSessionPropose)
 
     // Return the unsubscribe function
     return () => {
-      this.web3Wallet?.off('session_proposal', handler)
+      this.web3Wallet?.off('session_proposal', onSessionPropose)
     }
   }
 

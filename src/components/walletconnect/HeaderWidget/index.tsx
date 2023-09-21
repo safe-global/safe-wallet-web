@@ -1,46 +1,28 @@
-import { Box, Input } from '@mui/material'
-import { useContext, useState } from 'react'
-import type { ChangeEvent, MouseEvent } from 'react'
+import { Box } from '@mui/material'
+import { useContext, useRef, useState } from 'react'
 
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
-import { asError } from '@/services/exceptions/utils'
-import SessionForm from '../SessionForm'
 import Popup from '../Popup'
 import Icon from './Icon'
-
-const isWalletConnectUrl = (text: string) => text.startsWith('wc:')
+import SessionManager from '../SessionManager'
 
 const WalletConnectHeaderWidget = () => {
   const { walletConnect } = useContext(WalletConnectContext)
-  const [error, setError] = useState<Error>()
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [popupOpen, setPopupOpen] = useState(false)
+  const iconRef = useRef<HTMLDivElement>(null)
 
-  const onInput = async (e: ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value
-
-    if (isWalletConnectUrl(text)) {
-      try {
-        await walletConnect.connect(text)
-      } catch (e) {
-        setError(asError(error))
-      }
-    }
-  }
-
-  const onClick = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
+  const onClick = () => {
+    setPopupOpen(true)
   }
 
   return (
     <Box display="flex">
-      <Icon onClick={onClick} />
+      <div ref={iconRef}>
+        <Icon onClick={onClick} />
+      </div>
 
-      <Popup anchorEl={anchorEl} open={!!anchorEl} onClose={() => setAnchorEl(null)}>
-        {error?.message}
-
-        <Input onChange={onInput} placeholder="wc:" fullWidth />
-
-        <SessionForm anchorEl={anchorEl} />
+      <Popup anchorEl={iconRef.current} open={popupOpen} onClose={() => setPopupOpen(false)}>
+        <SessionManager />
       </Popup>
     </Box>
   )

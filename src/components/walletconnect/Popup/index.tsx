@@ -14,7 +14,7 @@ const Popup = ({ children, ...props }: PopoverProps) => {
       }}
       {...props}
     >
-      <Paper sx={{ p: 2 }}>{children}</Paper>
+      <Paper sx={{ p: 4 }}>{children}</Paper>
     </Popover>
   )
 }
