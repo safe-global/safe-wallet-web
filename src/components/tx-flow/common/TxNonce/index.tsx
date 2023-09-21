@@ -122,7 +122,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
         required: 'Nonce is required',
         // Validation must be async to allow resetting invalid values onBlur
         validate: async (value) => {
-          // Skip initial validation so that setNonce is not called without user input
+          // nonce is always valid so no need to validate if the input is the same
           if (value === nonce) return
 
           const newNonce = Number(value)
