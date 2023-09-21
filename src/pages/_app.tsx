@@ -37,6 +37,8 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
+import { useInitMPC } from '@/hooks/wallets/mpc/useMPC'
+import { MpcWalletProvider } from '@/components/common/ConnectWallet/MPCWalletProvider'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -57,6 +59,7 @@ const InitApp = (): null => {
   useTxTracking()
   useSafeMsgTracking()
   useBeamer()
+  useInitMPC()
 
   return null
 }
@@ -73,7 +76,9 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <TxModalProvider>{children}</TxModalProvider>
+            <MpcWalletProvider>
+              <TxModalProvider>{children}</TxModalProvider>
+            </MpcWalletProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}
