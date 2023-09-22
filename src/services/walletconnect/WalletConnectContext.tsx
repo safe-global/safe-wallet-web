@@ -46,7 +46,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
   useEffect(() => {
     if (!safeWalletProvider || !chainId) return
 
-    return walletConnect.onRequest(async (event) => {
+    return walletConnect.onSessionRequest(async (event) => {
       const { topic } = event // TODO: use session topic to filter requests
       const requestChainId = event.params.chainId.split(':').pop()
 

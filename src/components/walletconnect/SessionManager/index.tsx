@@ -9,26 +9,19 @@ import ProposalForm from '../ProposalForm'
 import WcInput from '../WcInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import SessionList from '../SessionList'
-import Popup from '../Popup'
+import { useSessions } from './useSessions'
 
-const SessionManager = ({ anchorEl, open, onClose }: { anchorEl: Element; open: boolean; onClose: () => void }) => {
+const SessionManager = () => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
-  const [sessions, setSessions] = useState<Record<string, SessionTypes.Struct>>(walletConnect.getActiveSessions())
+  const sessions = useSessions()
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [error, setError] = useState<Error>()
 
   // Subscribe to session proposals
   useEffect(() => {
     return walletConnect.onSessionPropose(setProposal)
-  }, [walletConnect])
-
-  // Subscribe to session deletes
-  useEffect(() => {
-    return walletConnect.onSessionDelete(() => {
-      setSessions(walletConnect.getActiveSessions())
-    })
   }, [walletConnect])
 
   // On session approve
@@ -43,7 +36,6 @@ const SessionManager = ({ anchorEl, open, onClose }: { anchorEl: Element; open: 
     }
 
     setProposal(undefined)
-    setSessions(walletConnect.getActiveSessions())
   }, [proposal, walletConnect, chainId, safeAddress])
 
   // On session reject
@@ -64,21 +56,13 @@ const SessionManager = ({ anchorEl, open, onClose }: { anchorEl: Element; open: 
   const onDisconnect = async (session: SessionTypes.Struct) => {
     try {
       await walletConnect.disconnectSession(session)
-      setSessions(walletConnect.getActiveSessions())
     } catch (error) {
       setError(asError(error))
     }
   }
 
   return (
-    <Popup
-      anchorEl={anchorEl}
-      open={open}
-      onClose={async () => {
-        await onReject()
-        onClose()
-      }}
-    >
+    <>
       {error && (
         <ErrorMessage error={error}>Error establishing connection with WalletConnect. Please try again.</ErrorMessage>
       )}
@@ -94,7 +78,7 @@ const SessionManager = ({ anchorEl, open, onClose }: { anchorEl: Element; open: 
           <SessionList sessions={sessions} onDisconnect={onDisconnect} />
         </>
       )}
-    </Popup>
+    </>
   )
 }
 

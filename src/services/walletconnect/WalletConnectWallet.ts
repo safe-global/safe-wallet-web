@@ -148,13 +148,13 @@ class WalletConnectWallet {
   /**
    * Subscribe to session proposals
    */
-  public onSessionPropose(onSessionPropose: (e: Web3WalletTypes.SessionProposal) => void) {
+  public onSessionPropose(handler: (e: Web3WalletTypes.SessionProposal) => void) {
     // Subscribe to the session proposal event
-    this.web3Wallet?.on('session_proposal', onSessionPropose)
+    this.web3Wallet?.on('session_proposal', handler)
 
     // Return the unsubscribe function
     return () => {
-      this.web3Wallet?.off('session_proposal', onSessionPropose)
+      this.web3Wallet?.off('session_proposal', handler)
     }
   }
 
@@ -191,7 +191,7 @@ class WalletConnectWallet {
   /**
    * Subscribe to requests
    */
-  public onRequest = (handler: (event: Web3WalletTypes.SessionRequest) => void) => {
+  public onSessionRequest = (handler: (event: Web3WalletTypes.SessionRequest) => void) => {
     this.web3Wallet?.on('session_request', handler)
 
     return () => {
