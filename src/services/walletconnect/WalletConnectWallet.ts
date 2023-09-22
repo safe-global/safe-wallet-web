@@ -9,6 +9,8 @@ import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
 import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
 import { invariant } from '@/utils/helpers'
+import { getEip155ChainId } from './utils'
+import type { Eip155ChainId } from './utils'
 
 function assertWeb3Wallet<T extends Web3WalletType | null>(web3Wallet: T): asserts web3Wallet {
   return invariant(web3Wallet, 'WalletConnect not initialized')
@@ -47,6 +49,7 @@ class WalletConnectWallet {
 
   public async chainChanged(chainId: string) {
     const sessions = this.getActiveSessions()
+    const eipChainId = getEip155ChainId(chainId)
 
     await Promise.all(
       Object.keys(sessions).map((topic) => {
@@ -56,7 +59,7 @@ class WalletConnectWallet {
             name: 'chainChanged',
             data: Number(chainId),
           },
-          chainId: `${EIP155}:${chainId}`,
+          chainId: eipChainId,
         })
       }),
     )
@@ -64,6 +67,7 @@ class WalletConnectWallet {
 
   public async accountsChanged(chainId: string, address: string) {
     const sessions = this.getActiveSessions()
+    const eipChainId = getEip155ChainId(chainId)
 
     await Promise.all(
       Object.keys(sessions).map((topic) => {
@@ -73,7 +77,7 @@ class WalletConnectWallet {
             name: 'accountsChanged',
             data: [address],
           },
-          chainId: `${EIP155}:${chainId}`,
+          chainId: eipChainId,
         })
       }),
     )
@@ -83,9 +87,9 @@ class WalletConnectWallet {
     assertWeb3Wallet(this.web3Wallet)
 
     // Actual safe chainId
-    const safeChains = [`${EIP155}:${chainId}`]
+    const safeChains = [getEip155ChainId(chainId)]
 
-    const getNamespaces = (chains: string[], methods: string[]) => {
+    const getNamespaces = (chains: Array<Eip155ChainId>, methods: string[]) => {
       return buildApprovedNamespaces({
         proposal: proposal.params,
         supportedNamespaces: {
@@ -108,7 +112,7 @@ class WalletConnectWallet {
     } catch (e) {
       // Most dapps require mainnet, but we aren't always on mainnet
       // A workaround, pretend to support all required chains
-      const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains || []
+      const requiredChains = (proposal.params.requiredNamespaces[EIP155]?.chains as Array<Eip155ChainId>) || []
       const chains = safeChains.concat(requiredChains)
 
       const session = await this.web3Wallet.approveSession({

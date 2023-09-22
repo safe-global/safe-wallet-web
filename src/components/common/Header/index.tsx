@@ -59,15 +59,15 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         </Link>
       </div>
 
-      <div className={classnames(css.element, css.hideMobile)}>
-        <WalletConnectHeaderWidget />
-      </div>
-
       {showSafeToken && (
         <div className={classnames(css.element, css.hideMobile)}>
           <SafeTokenWidget />
         </div>
       )}
+
+      <div className={classnames(css.element, css.hideMobile)}>
+        <WalletConnectHeaderWidget />
+      </div>
 
       {safeAddress && (
         <div className={classnames(css.element, css.hideMobile)}>
