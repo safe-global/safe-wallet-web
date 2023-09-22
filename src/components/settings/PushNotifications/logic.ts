@@ -55,8 +55,7 @@ const getSafeRegistrationSignature = ({
   const message = MESSAGE_PREFIX + timestamp + uuid + token + safeAddresses.sort().join('')
   const hashedMessage = keccak256(toUtf8Bytes(message))
 
-  // TODO: Use `signMessage` when supported
-  return web3.getSigner()._legacySignMessage(arrayify(hashedMessage))
+  return web3.getSigner().signMessage(arrayify(hashedMessage))
 }
 
 export type NotifiableSafes = { [chainId: string]: Array<string> }
