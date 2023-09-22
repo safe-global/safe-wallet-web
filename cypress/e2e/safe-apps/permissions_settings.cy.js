@@ -8,6 +8,7 @@ const app3 = 'https://app3.com'
 
 describe('The Safe Apps permissions settings section', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.on('window:before:load', (window) => {
       window.localStorage.setItem(
         constants.BROWSER_PERMISSIONS_KEY,

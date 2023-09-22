@@ -2,6 +2,9 @@ import * as constants from '../../support/constants'
 import * as safeapps from '../pages/safeapps.pages'
 
 describe('The Safe permissions system', () => {
+  before(() => {
+    cy.clearLocalStorage()
+  })
   beforeEach(() => {
     cy.fixture('safe-app').then((html) => {
       cy.intercept('GET', `${constants.testAppUrl}/*`, html)

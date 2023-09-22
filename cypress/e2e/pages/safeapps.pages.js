@@ -123,7 +123,9 @@ export function verifyAppDescription(descr) {
 
 export function clickOnOpenSafeAppBtn() {
   cy.findByRole('link', { name: openSafeAppBtnStr }).click()
+  cy.wait(500)
   verifyDisclaimerIsVisible()
+  cy.wait(500)
 }
 
 function verifyDisclaimerIsVisible() {

@@ -12,6 +12,7 @@ describe('Assets > Coins', () => {
   const fiatRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2}`)
 
   before(() => {
+    cy.clearLocalStorage()
     // Open the Safe used for testing
     cy.visit(constants.BALANCE_URL + constants.GOERLI_TEST_SAFE)
     main.acceptCookies()

@@ -7,6 +7,7 @@ const myCustomAppDescrAdded = 'Cypress Test App Description'
 
 describe('The Safe Apps list', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.visit(constants.TEST_SAFE_2 + constants.appsUrl, { failOnStatusCode: false })
     main.acceptCookies()
   })

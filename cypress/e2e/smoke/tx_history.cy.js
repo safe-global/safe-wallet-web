@@ -12,6 +12,7 @@ const str3 = '5688'
 
 describe('Transaction history', () => {
   before(() => {
+    cy.clearLocalStorage()
     // Go to the test Safe transaction history
     cy.visit(constants.transactionsHistoryUrl + constants.GOERLI_TEST_SAFE)
     main.acceptCookies()

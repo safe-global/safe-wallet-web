@@ -9,6 +9,7 @@ const nftsLink = 'https://testnets.opensea.io/assets/0x000000000faE8c6069596c9C8
 
 describe('Assets > NFTs', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.visit(constants.balanceNftsUrl + constants.GOERLI_TEST_SAFE)
     main.acceptCookies()
     cy.contains(constants.goerlyE2EWallet)

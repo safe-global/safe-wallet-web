@@ -5,6 +5,7 @@ import * as safeapps from '../pages/safeapps.pages'
 describe('The Browser permissions system', () => {
   describe('When the safe app requires permissions', () => {
     beforeEach(() => {
+      cy.clearLocalStorage()
       cy.fixture('safe-app').then((html) => {
         cy.intercept('GET', `${constants.testAppUrl}/*`, html)
         cy.intercept('GET', `*/manifest.json`, {

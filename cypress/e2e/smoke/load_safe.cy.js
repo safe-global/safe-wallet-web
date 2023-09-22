@@ -20,14 +20,17 @@ const OWNER_ADDRESS = constants.EOA
 
 describe('Load existing Safe', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.visit(constants.welcomeUrl)
     main.acceptCookies()
     safe.openLoadSafeForm()
+    cy.wait(2000)
   })
 
   it('should allow choosing the network where the Safe exists', () => {
     safe.clickNetworkSelector(constants.networks.goerli)
     safe.selectPolygon()
+    cy.wait(2000)
     safe.clickNetworkSelector(constants.networks.polygon)
     safe.selectGoerli()
   })

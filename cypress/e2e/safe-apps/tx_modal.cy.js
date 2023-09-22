@@ -5,6 +5,9 @@ const testAppName = 'Cypress Test App'
 const testAppDescr = 'Cypress Test App Description'
 
 describe('The transaction modal', () => {
+  before(() => {
+    cy.clearLocalStorage()
+  })
   beforeEach(() => {
     cy.fixture('safe-app').then((html) => {
       cy.intercept('GET', `${constants.testAppUrl}/*`, html)

@@ -5,7 +5,7 @@ import * as main from '../pages/main.page'
 describe('Pending actions', () => {
   before(() => {
     cy.visit(constants.welcomeUrl)
-    main.acceptCookies()
+    // main.acceptCookies()
   })
 
   beforeEach(() => {

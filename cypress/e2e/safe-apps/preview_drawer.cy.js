@@ -4,6 +4,7 @@ import * as safeapps from '../pages/safeapps.pages'
 
 describe('The Safe Apps info modal', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.visit(`/${constants.TEST_SAFE_2}/apps`, { failOnStatusCode: false })
     main.acceptCookies()
   })

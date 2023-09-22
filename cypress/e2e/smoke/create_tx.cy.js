@@ -7,6 +7,7 @@ const currentNonce = 3
 
 describe('Queue a transaction on 1/N', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.visit(constants.homeUrl + constants.TEST_SAFE)
     main.acceptCookies()
   })

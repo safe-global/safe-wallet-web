@@ -93,7 +93,7 @@ export function changeNonce(value) {
 }
 
 export function verifyConfirmTransactionData() {
-  cy.contains(yesStr).should('exist')
+  cy.contains(yesStr).should('exist').click()
   cy.contains(estimatedFeeStr).should('exist')
 
   // Asserting the sponsored info is present
