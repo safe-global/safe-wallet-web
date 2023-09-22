@@ -9,8 +9,9 @@ import ProposalForm from '../ProposalForm'
 import WcInput from '../WcInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import SessionList from '../SessionList'
+import Popup from '../Popup'
 
-const SessionManager = () => {
+const SessionManager = ({ anchorEl, open, onClose }: { anchorEl: Element; open: boolean; onClose: () => void }) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
@@ -70,7 +71,14 @@ const SessionManager = () => {
   }
 
   return (
-    <>
+    <Popup
+      anchorEl={anchorEl}
+      open={open}
+      onClose={async () => {
+        await onReject()
+        onClose()
+      }}
+    >
       {error && (
         <ErrorMessage error={error}>Error establishing connection with WalletConnect. Please try again.</ErrorMessage>
       )}
@@ -86,7 +94,7 @@ const SessionManager = () => {
           <SessionList sessions={sessions} onDisconnect={onDisconnect} />
         </>
       )}
-    </>
+    </Popup>
   )
 }
 

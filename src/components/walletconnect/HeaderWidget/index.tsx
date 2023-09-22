@@ -2,7 +2,6 @@ import { Badge, Box } from '@mui/material'
 import { useContext, useRef, useState } from 'react'
 
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
-import Popup from '../Popup'
 import Icon from './Icon'
 import SessionManager from '../SessionManager'
 
@@ -22,9 +21,9 @@ const WalletConnectHeaderWidget = () => {
         <Badge color="error" variant="dot" invisible={!error} />
       </div>
 
-      <Popup anchorEl={iconRef.current} open={popupOpen} onClose={() => setPopupOpen(false)}>
-        <SessionManager />
-      </Popup>
+      {iconRef.current && (
+        <SessionManager anchorEl={iconRef.current} open={popupOpen} onClose={() => setPopupOpen(false)} />
+      )}
     </Box>
   )
 }
