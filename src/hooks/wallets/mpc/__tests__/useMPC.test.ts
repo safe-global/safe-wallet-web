@@ -2,21 +2,25 @@ import * as useOnboard from '@/hooks/wallets/useOnboard'
 import { renderHook, waitFor } from '@/tests/test-utils'
 import { getMPCCoreKitInstance, setMPCCoreKitInstance, useInitMPC } from '../useMPC'
 import * as useChains from '@/hooks/useChains'
-import { RPC_AUTHENTICATION } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, RPC_AUTHENTICATION } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { type Web3AuthMPCCoreKit, COREKIT_STATUS } from '@web3auth/mpc-core-kit'
+import { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 
 jest.mock('@web3auth/mpc-core-kit', () => ({
   ...jest.requireActual('@web3auth/mpc-core-kit'),
   Web3AuthMPCCoreKit: jest.fn(),
 }))
 
+type MPCProvider = Web3AuthMPCCoreKit['provider']
+
 /**
  * Mock for creating and initializing the MPC Core Kit
  */
 class MockMPCCoreKit {
-  provider = null
-  status = require('@web3auth/mpc-core-kit').COREKIT_STATUS.NOT_INITIALIZED
+  provider: MPCProvider | null = null
+  status = COREKIT_STATUS.NOT_INITIALIZED
   private mockState
   private mockProvider
 
@@ -26,7 +30,7 @@ class MockMPCCoreKit {
    * @param mockState
    * @param mockProvider
    */
-  constructor(mockState: any, mockProvider: any) {
+  constructor(mockState: COREKIT_STATUS, mockProvider: MPCProvider) {
     this.mockState = mockState
     this.mockProvider = mockProvider
   }
@@ -71,7 +75,7 @@ describe('useInitMPC', () => {
           walletModules: [],
         }),
       },
-    } as any)
+    } as unknown as OnboardAPI)
     jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({
       chainId: '5',
       chainName: 'Goerli',
@@ -90,11 +94,11 @@ describe('useInitMPC', () => {
         authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
         value: 'https://goerli.somerpc.io',
       },
-    } as any)
+    } as unknown as ChainInfo)
 
     const mockWeb3AuthMpcCoreKit = jest.spyOn(require('@web3auth/mpc-core-kit'), 'Web3AuthMPCCoreKit')
     mockWeb3AuthMpcCoreKit.mockImplementation(() => {
-      return new MockMPCCoreKit(require('@web3auth/mpc-core-kit').COREKIT_STATUS.INITIALIZED, null)
+      return new MockMPCCoreKit(COREKIT_STATUS.INITIALIZED, null)
     })
 
     renderHook(() => useInitMPC())
@@ -116,7 +120,7 @@ describe('useInitMPC', () => {
           walletModules: [],
         }),
       },
-    } as any)
+    } as unknown as OnboardAPI)
     jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({
       chainId: '5',
       chainName: 'Goerli',
@@ -135,12 +139,12 @@ describe('useInitMPC', () => {
         authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
         value: 'https://goerli.somerpc.io',
       },
-    } as any)
+    } as unknown as ChainInfo)
 
     const mockWeb3AuthMpcCoreKit = jest.spyOn(require('@web3auth/mpc-core-kit'), 'Web3AuthMPCCoreKit')
     const mockProvider = jest.fn()
     mockWeb3AuthMpcCoreKit.mockImplementation(() => {
-      return new MockMPCCoreKit(require('@web3auth/mpc-core-kit').COREKIT_STATUS.INITIALIZED, mockProvider)
+      return new MockMPCCoreKit(COREKIT_STATUS.INITIALIZED, mockProvider as unknown as MPCProvider)
     })
 
     renderHook(() => useInitMPC())
@@ -158,7 +162,7 @@ describe('useInitMPC', () => {
       address: hexZeroPad('0x1', 20),
       label: ONBOARD_MPC_MODULE_LABEL,
       chainId: '1',
-      provider: {} as any,
+      provider: {} as unknown as EIP1193Provider,
     })
     jest.spyOn(useOnboard, 'default').mockReturnValue({
       state: {
@@ -167,7 +171,7 @@ describe('useInitMPC', () => {
           walletModules: [],
         }),
       },
-    } as any)
+    } as unknown as OnboardAPI)
     jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({
       chainId: '5',
       chainName: 'Goerli',
@@ -186,7 +190,7 @@ describe('useInitMPC', () => {
         authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
         value: 'https://goerli.somerpc.io',
       },
-    } as any)
+    } as unknown as ChainInfo)
 
     const mockWeb3AuthMpcCoreKit = jest.spyOn(require('@web3auth/mpc-core-kit'), 'Web3AuthMPCCoreKit')
     const mockChainChangedListener = jest.fn()
@@ -200,11 +204,14 @@ describe('useInitMPC', () => {
 
     setMPCCoreKitInstance({
       provider: mockProviderBefore,
-    } as any)
+    } as unknown as Web3AuthMPCCoreKit)
 
     const mockProvider = new EventEmittingMockProvider()
     mockWeb3AuthMpcCoreKit.mockImplementation(() => {
-      return new MockMPCCoreKit(require('@web3auth/mpc-core-kit').COREKIT_STATUS.INITIALIZED, mockProvider)
+      return new MockMPCCoreKit(
+        require('@web3auth/mpc-core-kit').COREKIT_STATUS.INITIALIZED,
+        mockProvider as unknown as MPCProvider,
+      )
     })
 
     renderHook(() => useInitMPC())

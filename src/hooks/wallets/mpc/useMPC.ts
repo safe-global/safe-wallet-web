@@ -52,26 +52,26 @@ export const useInitMPC = () => {
       .then(() => {
         setStore(web3AuthCoreKit)
         // If rehydration was successful, connect to onboard
-        if (web3AuthCoreKit.provider) {
-          // await mpcCoreKit.enableMFA({})
-          const connectedWallet = getConnectedWallet(onboard.state.get().wallets)
-          if (!connectedWallet) {
-            connectWallet(onboard, {
-              autoSelect: {
-                label: ONBOARD_MPC_MODULE_LABEL,
-                disableModals: true,
-              },
-            }).catch((reason) => console.error('Error connecting to MPC module:', reason))
-          } else {
-            const newProvider = web3AuthCoreKit.provider
+        if (!web3AuthCoreKit.provider) {
+          return
+        }
+        const connectedWallet = getConnectedWallet(onboard.state.get().wallets)
+        if (!connectedWallet) {
+          connectWallet(onboard, {
+            autoSelect: {
+              label: ONBOARD_MPC_MODULE_LABEL,
+              disableModals: true,
+            },
+          }).catch((reason) => console.error('Error connecting to MPC module:', reason))
+        } else {
+          const newProvider = web3AuthCoreKit.provider
 
-            // To propagate the changedChain we disconnect and connect
-            if (previousChainChangedListeners.length > 0 && newProvider) {
-              previousChainChangedListeners.forEach((previousListener) =>
-                newProvider.addListener('chainChanged', (...args: []) => previousListener(...args)),
-              )
-              newProvider.emit('chainChanged', `0x${Number(chainConfig.chainId).toString(16)}`)
-            }
+          // To propagate the changedChain we disconnect and connect
+          if (previousChainChangedListeners.length > 0 && newProvider) {
+            previousChainChangedListeners.forEach((previousListener) =>
+              newProvider.addListener('chainChanged', (...args: []) => previousListener(...args)),
+            )
+            newProvider.emit('chainChanged', `0x${Number(chainConfig.chainId).toString(16)}`)
           }
         }
       })
