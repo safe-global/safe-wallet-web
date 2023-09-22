@@ -1,6 +1,5 @@
 import * as constants from '../../support/constants'
 import * as safe from '../pages/load_safe.pages'
-import * as main from '../pages/main.page'
 
 describe('Pending actions', () => {
   before(() => {
