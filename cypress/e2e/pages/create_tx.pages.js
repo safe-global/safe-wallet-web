@@ -157,7 +157,7 @@ export function verifyDateExists(date) {
   cy.contains('div', date).should('exist')
 }
 
-export function verifyImageAlttxt(index, text) {
+export function verifyImageAltTxt(index, text) {
   cy.get('img').eq(index).should('have.attr', 'alt', text).should('be.visible')
 }
 
