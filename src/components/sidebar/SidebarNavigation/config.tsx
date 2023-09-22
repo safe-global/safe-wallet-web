@@ -97,6 +97,10 @@ export const settingsNavItems = [
     href: AppRoutes.settings.safeApps.index,
   },
   {
+    label: 'Recovery',
+    href: AppRoutes.settings.recovery,
+  },
+  {
     label: 'Data',
     href: AppRoutes.settings.data,
   },
