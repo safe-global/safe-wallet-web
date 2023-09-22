@@ -31,12 +31,12 @@ export const appsUrl = '/apps'
 export const requestPermissionsUrl = '/request-permissions'
 export const getPermissionsUrl = '/get-permissions'
 export const appSettingsUrl = '/settings/safe-apps'
-export const invalidappUrl = 'https://my-invalid-custom-app.com/manifest.json'
-export const validappUrlJson = 'https://my-valid-custom-app.com/manifest.json'
-export const validappUrl = 'https://my-valid-custom-app.com'
+export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
+export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
+export const validAppUrl = 'https://my-valid-custom-app.com'
 
-export const proposeEndPoint = '/**/propose'
-export const appsEndPoint = '/**/safe-apps'
+export const proposeEndpoint = '/**/propose'
+export const appsEndpoint = '/**/safe-apps'
 
 export const GOERLI_CSV_ENTRY = {
   name: 'goerli user 1',
@@ -59,9 +59,9 @@ export const tokenAbbreviation = {
 }
 
 export const appNames = {
-  walletconnect: 'walletconnect',
-  customcontract: 'compose custom contract',
-  noresults: 'atextwithoutresults',
+  walletConnect: 'walletconnect',
+  customContract: 'compose custom contract',
+  noResults: 'atextwithoutresults',
 }
 
 export const testAppData = {
@@ -84,5 +84,5 @@ export const transactionStatus = {
 }
 
 export const tokenNames = {
-  wrapped_ether: 'Wrapped Ether',
+  wrappedEther: 'Wrapped Ether',
 }

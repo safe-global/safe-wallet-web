@@ -1,6 +1,6 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
-import * as createtx from '../pages/create_tx.pages'
+import * as createTx from '../pages/create_tx.pages'
 
 const INCOMING = 'Received'
 const OUTGOING = 'Sent'
@@ -30,8 +30,8 @@ describe('Transaction history', () => {
     const time4 = '5:01 PM'
     const success = 'Success'
 
-    createtx.verifyDateExists(DATE)
-    createtx.verifyDateExists(NEXT_DATE_LABEL)
+    createTx.verifyDateExists(DATE)
+    createTx.verifyDateExists(NEXT_DATE_LABEL)
 
     // Transaction summaries from October 9th
     const rows = cy.contains('div', DATE).nextUntil(`div:contains(${NEXT_DATE_LABEL})`)
@@ -43,77 +43,77 @@ describe('Transaction history', () => {
       .last()
       .within(() => {
         // Type
-        createtx.verifyImageAlttxt(0, INCOMING)
-        createtx.verifyStatus(constants.transactionStatus.received)
+        createTx.verifyImageAlttxt(0, INCOMING)
+        createTx.verifyStatus(constants.transactionStatus.received)
 
         // Info
-        createtx.verifyImageAlttxt(1, constants.tokenAbbreviation.gor)
-        createtx.verifyTransactionStrExists(amount)
-        createtx.verifyTransactionStrExists(time)
-        createtx.verifyTransactionStrExists(success)
+        createTx.verifyImageAlttxt(1, constants.tokenAbbreviation.gor)
+        createTx.verifyTransactionStrExists(amount)
+        createTx.verifyTransactionStrExists(time)
+        createTx.verifyTransactionStrExists(success)
       })
       // CowSwap deposit of Wrapped Ether
       .prev()
       .within(() => {
-        createtx.verifyTransactionStrExists('0')
+        createTx.verifyTransactionStrExists('0')
         // TODO: update next line after fixing the logo
         // cy.find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
-        createtx.verifyTransactionStrExists(constants.tokenNames.wrapped_ether)
-        createtx.verifyTransactionStrExists(constants.transactionStatus.deposit)
-        createtx.verifyTransactionStrExists(time2)
-        createtx.verifyTransactionStrExists(constants.transactionStatus.success)
+        createTx.verifyTransactionStrExists(constants.tokenNames.wrappedEther)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.deposit)
+        createTx.verifyTransactionStrExists(time2)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
       // CowSwap approval of Wrapped Ether
       .prev()
       .within(() => {
-        createtx.verifyTransactionStrExists('1')
+        createTx.verifyTransactionStrExists('1')
         // Type
         // TODO: update next line after fixing the logo
         // cy.find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
-        createtx.verifyTransactionStrExists(constants.transactionStatus.approve)
-        createtx.verifyTransactionStrExists(time3)
-        createtx.verifyTransactionStrExists(constants.transactionStatus.success)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.approve)
+        createTx.verifyTransactionStrExists(time3)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
       // Contract interaction
       .prev()
       .within(() => {
-        createtx.verifyTransactionStrExists('2')
-        createtx.verifyTransactionStrExists(constants.transactionStatus.interaction)
-        createtx.verifyTransactionStrExists(time4)
-        createtx.verifyTransactionStrExists(constants.transactionStatus.success)
+        createTx.verifyTransactionStrExists('2')
+        createTx.verifyTransactionStrExists(constants.transactionStatus.interaction)
+        createTx.verifyTransactionStrExists(time4)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
       // Send 0.11 WETH
       .prev()
       .within(() => {
-        createtx.verifyImageAlttxt(0, OUTGOING)
-        createtx.verifyTransactionStrExists(constants.transactionStatus.sent)
-        createtx.verifyTransactionStrExists(amount2)
-        createtx.verifyTransactionStrExists(time4)
-        createtx.verifyTransactionStrExists(constants.transactionStatus.success)
+        createTx.verifyImageAlttxt(0, OUTGOING)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.sent)
+        createTx.verifyTransactionStrExists(amount2)
+        createTx.verifyTransactionStrExists(time4)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
       // Receive 120 DAI
       .prev()
       .within(() => {
-        createtx.verifyTransactionStrExists(constants.transactionStatus.received)
-        createtx.verifyTransactionStrExists(amount3)
-        createtx.verifyTransactionStrExists(time4)
-        createtx.verifyTransactionStrExists(constants.transactionStatus.success)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.received)
+        createTx.verifyTransactionStrExists(amount3)
+        createTx.verifyTransactionStrExists(time4)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
   })
 
   it('should expand/collapse all actions', () => {
-    createtx.clickOnTransactionExpandableItem('Mar 24, 2023', () => {
-      createtx.verifyTransactionStrNotVible(str1)
-      createtx.verifyTransactionStrNotVible(str2)
-      createtx.verifyTransactionStrNotVible(str3)
-      createtx.lickOnExpandAllBtn()
-      createtx.verifyTransactionStrExists(str1)
-      createtx.verifyTransactionStrExists(str2)
-      createtx.verifyTransactionStrExists(str3)
-      createtx.lickOnCollapseAllBtn()
-      createtx.verifyTransactionStrNotVible(str1)
-      createtx.verifyTransactionStrNotVible(str2)
-      createtx.verifyTransactionStrNotVible(str3)
+    createTx.clickOnTransactionExpandableItem('Mar 24, 2023', () => {
+      createTx.verifyTransactionStrNotVible(str1)
+      createTx.verifyTransactionStrNotVible(str2)
+      createTx.verifyTransactionStrNotVible(str3)
+      createTx.clickOnExpandAllBtn()
+      createTx.verifyTransactionStrExists(str1)
+      createTx.verifyTransactionStrExists(str2)
+      createTx.verifyTransactionStrExists(str3)
+      createTx.clickOnCollapseAllBtn()
+      createTx.verifyTransactionStrNotVible(str1)
+      createTx.verifyTransactionStrNotVible(str2)
+      createTx.verifyTransactionStrNotVible(str3)
     })
   })
 })

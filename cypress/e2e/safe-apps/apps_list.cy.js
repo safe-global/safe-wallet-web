@@ -15,19 +15,19 @@ describe('The Safe Apps list', () => {
   describe('When searching apps', () => {
     it('should filter the list by app name', () => {
       // Wait for /safe-apps response
-      cy.intercept('GET', constants.appsEndPoint).then(() => {
-        safeapps.typeAppName(constants.appNames.walletconnect)
+      cy.intercept('GET', constants.appsEndpoint).then(() => {
+        safeapps.typeAppName(constants.appNames.walletConnect)
         safeapps.verifyLinkName(safeapps.linkNames.logo)
       })
     })
 
     it('should filter the list by app description', () => {
-      safeapps.typeAppName(constants.appNames.customcontract)
+      safeapps.typeAppName(constants.appNames.customContract)
       safeapps.verifyLinkName(safeapps.linkNames.logo)
     })
 
     it('should show a not found text when no match', () => {
-      safeapps.typeAppName(constants.appNames.noresults)
+      safeapps.typeAppName(constants.appNames.noResults)
       safeapps.verifyNoAppsTextPresent()
     })
   })
@@ -50,23 +50,23 @@ describe('The Safe Apps list', () => {
 
   describe('When adding a custom app', () => {
     it('should show an error when the app manifest is invalid', () => {
-      cy.intercept('GET', constants.invalidappUrl, {
+      cy.intercept('GET', constants.invalidAppUrl, {
         name: constants.testAppData.name,
       })
       safeapps.clickOnCustomAppsTab()
       safeapps.clickOnAddCustomApp()
-      safeapps.typeCustomAppUrl(constants.invalidappUrl)
+      safeapps.typeCustomAppUrl(constants.invalidAppUrl)
       safeapps.verifyAppNotSupportedMsg()
     })
 
     it('should be added to the list within the custom apps section', () => {
-      cy.intercept('GET', constants.validappUrlJson, {
+      cy.intercept('GET', constants.validAppUrlJson, {
         name: constants.testAppData.name,
         description: constants.testAppData.descr,
         icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
       })
 
-      safeapps.typeCustomAppUrl(constants.validappUrl)
+      safeapps.typeCustomAppUrl(constants.validAppUrl)
       safeapps.verifyAppTitle(myCustomAppTitle)
       safeapps.acceptTC()
       safeapps.clickOnAddBtn()

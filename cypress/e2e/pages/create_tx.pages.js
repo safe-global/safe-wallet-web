@@ -27,7 +27,7 @@ const editBtnStr = 'Edit'
 const executionParamsStr = 'Execution parameters'
 const noLaterStr = 'No, later'
 const signBtnStr = 'Sign'
-const expandallbtnStr = 'Expand all'
+const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
 
 export function clickOnNewtransactionBtn() {
@@ -133,7 +133,7 @@ export function clickOnSignTransactionBtn() {
 }
 
 export function waitForProposeRequest() {
-  cy.intercept('POST', constants.proposeEndPoint).as('ProposeTx')
+  cy.intercept('POST', constants.proposeEndpoint).as('ProposeTx')
   cy.wait('@ProposeTx')
 }
 
@@ -186,6 +186,6 @@ export function clickOnExpandAllBtn() {
   cy.contains(expandallbtnStr).click()
 }
 
-export function lickOnCollapseAllBtn() {
+export function clickOnCollapseAllBtn() {
   cy.contains(collapseAllBtnStr).click()
 }

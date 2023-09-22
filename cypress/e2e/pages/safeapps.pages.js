@@ -1,6 +1,6 @@
 import * as constants from '../../support/constants'
 
-const searchappInput = 'input[id="search-by-name"]'
+const searchAppInput = 'input[id="search-by-name"]'
 const appUrlInput = 'input[name="appUrl"]'
 const closePreviewWindowBtn = 'button[aria-label*="Close"][aria-label*="preview"]'
 
@@ -51,11 +51,11 @@ export const permissionCheckboxNames = {
   fullscreen: 'Fullscreen',
 }
 export function typeAppName(name) {
-  cy.get(searchappInput).clear().type(name)
+  cy.get(searchAppInput).clear().type(name)
 }
 
 export function clearSearchAppInput() {
-  cy.get(searchappInput).clear()
+  cy.get(searchAppInput).clear()
 }
 
 export function verifyLinkName(name) {
