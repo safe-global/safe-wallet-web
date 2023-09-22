@@ -183,7 +183,7 @@ export function clickOnTransactionExpandableItem(name, actions) {
 }
 
 export function clickOnExpandAllBtn() {
-  cy.contains(expandallbtnStr).click()
+  cy.contains(expandAllBtnStr).click()
 }
 
 export function clickOnCollapseAllBtn() {

@@ -43,11 +43,11 @@ describe('Transaction history', () => {
       .last()
       .within(() => {
         // Type
-        createTx.verifyImageAlttxt(0, INCOMING)
+        createTx.verifyImageAltTxt(0, INCOMING)
         createTx.verifyStatus(constants.transactionStatus.received)
 
         // Info
-        createTx.verifyImageAlttxt(1, constants.tokenAbbreviation.gor)
+        createTx.verifyImageAltTxt(1, constants.tokenAbbreviation.gor)
         createTx.verifyTransactionStrExists(amount)
         createTx.verifyTransactionStrExists(time)
         createTx.verifyTransactionStrExists(success)
@@ -85,7 +85,7 @@ describe('Transaction history', () => {
       // Send 0.11 WETH
       .prev()
       .within(() => {
-        createTx.verifyImageAlttxt(0, OUTGOING)
+        createTx.verifyImageAltTxt(0, OUTGOING)
         createTx.verifyTransactionStrExists(constants.transactionStatus.sent)
         createTx.verifyTransactionStrExists(amount2)
         createTx.verifyTransactionStrExists(time4)
