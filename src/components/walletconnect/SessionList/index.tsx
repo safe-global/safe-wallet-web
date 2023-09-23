@@ -3,7 +3,7 @@ import { Button, Typography } from '@mui/material'
 import type { SessionTypes } from '@walletconnect/types'
 
 type SesstionListProps = {
-  sessions: Record<string, SessionTypes.Struct>
+  sessions: SessionTypes.Struct[]
   onDisconnect: (session: SessionTypes.Struct) => void
 }
 

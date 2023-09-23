@@ -4,18 +4,18 @@ import type { SessionTypes } from '@walletconnect/types'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
+import useWalletConnectSessions from '@/services/walletconnect/useWalletConnectSessions'
 import { asError } from '@/services/exceptions/utils'
 import ProposalForm from '../ProposalForm'
 import WcInput from '../WcInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import SessionList from '../SessionList'
-import { useSessions } from './useSessions'
 
 const SessionManager = () => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
-  const sessions = useSessions()
+  const sessions = useWalletConnectSessions()
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [error, setError] = useState<Error>()
 

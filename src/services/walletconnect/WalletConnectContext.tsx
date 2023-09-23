@@ -31,14 +31,14 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
   // Update chainId
   useEffect(() => {
     if (chainId) {
-      walletConnect.chainChanged(chainId)
+      walletConnect.chainChanged(chainId).catch(setError)
     }
   }, [chainId])
 
   // Update accounts
   useEffect(() => {
     if (safeAddress && chainId) {
-      walletConnect.accountsChanged(chainId, safeAddress)
+      walletConnect.accountsChanged(chainId, safeAddress).catch(setError)
     }
   }, [chainId, safeAddress])
 

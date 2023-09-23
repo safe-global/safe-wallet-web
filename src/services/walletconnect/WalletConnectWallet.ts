@@ -12,10 +12,17 @@ import { invariant } from '@/utils/helpers'
 import { getEip155ChainId } from './utils'
 import type { Eip155ChainId } from './utils'
 
+const SESSION_ADD_EVENT = 'session_add' as 'session_delete' // Workaround: WalletConnect doesn't emit session_add event
+
 function assertWeb3Wallet<T extends Web3WalletType | null>(web3Wallet: T): asserts web3Wallet {
   return invariant(web3Wallet, 'WalletConnect not initialized')
 }
 
+/**
+ * An abstraction over the WalletConnect SDK to simplify event subscriptions
+ * and add workarounds for dapps requesting wrong required chains.
+ * Should be kept stateless exept for the web3Wallet instance.
+ */
 class WalletConnectWallet {
   private web3Wallet: Web3WalletType | null = null
 
@@ -52,7 +59,7 @@ class WalletConnectWallet {
     const eipChainId = getEip155ChainId(chainId)
 
     await Promise.all(
-      Object.keys(sessions).map((topic) => {
+      sessions.map(({ topic }) => {
         return this.web3Wallet?.emitSessionEvent({
           topic,
           event: {
@@ -70,7 +77,7 @@ class WalletConnectWallet {
     const eipChainId = getEip155ChainId(chainId)
 
     await Promise.all(
-      Object.keys(sessions).map((topic) => {
+      sessions.map(({ topic }) => {
         return this.web3Wallet?.emitSessionEvent({
           topic,
           event: {
@@ -132,6 +139,9 @@ class WalletConnectWallet {
         // Ignore
       }
 
+      // Workaround: WalletConnect doesn't have a session_add event
+      this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)
+
       return session
     }
   }
@@ -159,6 +169,17 @@ class WalletConnectWallet {
   }
 
   /**
+   * Subscribe to session add
+   */
+  public onSessionAdd(handler: () => void) {
+    this.web3Wallet?.on(SESSION_ADD_EVENT, handler)
+
+    return () => {
+      this.web3Wallet?.off(SESSION_ADD_EVENT, handler)
+    }
+  }
+
+  /**
    * Subscribe to session delete
    */
   public onSessionDelete(handler: () => void) {
@@ -179,13 +200,17 @@ class WalletConnectWallet {
       topic: session.topic,
       reason: getSdkError('USER_DISCONNECTED'),
     })
+
+    // Workaround: WalletConnect doesn't emit session_delete event when disconnecting from the wallet side
+    this.web3Wallet?.events.emit('session_delete', session)
   }
 
   /**
    * Get active sessions
    */
-  public getActiveSessions() {
-    return this.web3Wallet?.getActiveSessions() || {}
+  public getActiveSessions(): SessionTypes.Struct[] {
+    const sessionsMap = this.web3Wallet?.getActiveSessions() || {}
+    return Object.values(sessionsMap)
   }
 
   /**
