@@ -1,45 +1,14 @@
-import { Alert, Button, Divider, SvgIcon, Typography } from '@mui/material'
-import type { AlertColor } from '@mui/material'
+import { Button, Divider, Typography } from '@mui/material'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
-import type { Verify } from '@walletconnect/types'
-import type { ComponentType } from 'react'
 
 import { EIP155 } from '@/services/walletconnect/constants'
 import useChains from '@/hooks/useChains'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { getEip155ChainId } from '@/services/walletconnect/utils'
-import CloseIcon from '@/public/images/common/close.svg'
-import InfoIcon from '@/public/images/notifications/info.svg'
-import CheckIcon from '@/public/images/common/check.svg'
-import AlertIcon from '@/public/images/notifications/alert.svg'
 import type { Eip155ChainId } from '@/services/walletconnect/utils'
-
-import css from './styles.module.css'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-
-const Validation: {
-  [key in Verify.Context['verified']['validation']]: {
-    color: AlertColor
-    desc: string
-    Icon: ComponentType
-  }
-} = {
-  VALID: {
-    color: 'success',
-    desc: 'has been verified by WalletConnect.',
-    Icon: CheckIcon,
-  },
-  UNKNOWN: {
-    color: 'warning',
-    desc: 'has not been verified by WalletConnect.',
-    Icon: InfoIcon,
-  },
-  INVALID: {
-    color: 'error',
-    desc: 'has been flagged as a scam by WalletConnect. Only proceed if you trust this them.',
-    Icon: CloseIcon,
-  },
-}
+import css from './styles.module.css'
+import ProposalVerification from './ProposalVerification'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -50,6 +19,7 @@ type ProposalFormProps = {
 const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps) => {
   const { configs } = useChains()
   const { requiredNamespaces, optionalNamespaces, proposer } = proposal.params
+  const { isScam } = proposal.verifyContext.verified
   const requiredChains = (requiredNamespaces[EIP155].chains as Array<Eip155ChainId>) ?? []
   const optionalChains = (optionalNamespaces[EIP155].chains as Array<Eip155ChainId>) ?? []
 
@@ -59,12 +29,6 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps) => {
       return requiredChains.includes(eipChainId) || optionalChains.includes(eipChainId)
     })
     .map((chain) => chain.chainId)
-
-  const { isScam, validation } = proposal.verifyContext.verified
-  const _validation = Validation[validation]
-
-  const color = isScam ? 'error' : _validation.color
-  const Icon = isScam ? AlertIcon : _validation.Icon
 
   return (
     <div className={css.container}>
@@ -108,27 +72,7 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps) => {
 
       <Divider flexItem />
 
-      <Alert
-        severity={color}
-        sx={{ bgcolor: ({ palette }) => palette[color].background }}
-        className={css.alert}
-        icon={
-          <SvgIcon
-            component={Icon}
-            inheritViewBox
-            color={color}
-            sx={{
-              '& path': {
-                fill: ({ palette }) => palette[color].main,
-              },
-            }}
-          />
-        }
-      >
-        {isScam
-          ? `We prevent connecting to ${proposer.metadata.name} as they are a known scam.`
-          : `${proposer.metadata.name} ${_validation.desc}`}
-      </Alert>
+      <ProposalVerification proposal={proposal} />
 
       <Button variant="text" size="small" fullWidth onClick={onReject}>
         Reject
