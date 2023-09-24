@@ -1,5 +1,5 @@
 import { ContractVersions, getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
-import type { Delay } from '@gnosis.pm/zodiac'
+import type { Delay, SupportedNetworks } from '@gnosis.pm/zodiac'
 import type { Web3Provider } from '@ethersproject/providers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -9,7 +9,7 @@ import { getGenericProxyMasterCopy, getGnosisProxyMasterCopy, isGenericProxy, is
 export const MODULE_PAGE_SIZE = 100
 
 async function isOfficialDelayModifier(
-  chainId: number,
+  chainId: string,
   moduleAddress: string,
   provider: Web3Provider,
 ): Promise<boolean> {
@@ -26,23 +26,28 @@ async function isOfficialDelayModifier(
     return await isOfficialDelayModifier(chainId, masterCopy, provider)
   }
 
-  const entry = Object.entries(ContractVersions[chainId as keyof typeof ContractVersions]).find(([, addresses]) => {
+  const zodiacChainContracts = ContractVersions[Number(chainId) as SupportedNetworks]
+  const zodiacContract = Object.entries(zodiacChainContracts).find(([, addresses]) => {
     return Object.values(addresses).some((address) => {
       return sameAddress(address, moduleAddress)
     })
   })
 
-  return entry?.[0] === KnownContracts.DELAY
+  return zodiacContract?.[0] === KnownContracts.DELAY
 }
 
-export async function getDelayModifiers(safe: SafeInfo, provider: Web3Provider): Promise<Array<Delay>> {
-  if (!safe.modules) {
+export async function getDelayModifiers(
+  chainId: string,
+  modules: SafeInfo['modules'],
+  provider: Web3Provider,
+): Promise<Array<Delay>> {
+  if (!modules) {
     return []
   }
 
   const instances = await Promise.all(
-    safe.modules.map(async ({ value }) => {
-      const isDelayModifier = await isOfficialDelayModifier(Number(safe.chainId), value, provider)
+    modules.map(async ({ value }) => {
+      const isDelayModifier = await isOfficialDelayModifier(chainId, value, provider)
 
       if (!isDelayModifier) {
         return null

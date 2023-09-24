@@ -15,6 +15,8 @@ export function useDelayModifier() {
     }
 
     // TODO: Handle multiple delay modifiers
-    return getDelayModifiers(safe, web3).then((delayModifiers) => delayModifiers[0])
-  }, [safe, web3])
+    return getDelayModifiers(safe.chainId, safe.modules, web3).then((delayModifiers) => delayModifiers[0])
+    // Need to check length of modules array to prevent new request every time Safe info polls
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safe.chainId, safe.modules?.length, web3])
 }

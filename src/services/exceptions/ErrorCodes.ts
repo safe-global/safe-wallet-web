@@ -52,6 +52,7 @@ enum ErrorCodes {
   _809 = '809: Failed to enable recovery',
   _810 = '810: Failed to add recoverer',
   _811 = '811: Failed to remove recoverer',
+  _812 = '812: Failed to cancel recovery',
 
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',

@@ -26,20 +26,22 @@ export function Recovery(): ReactElement {
 
   const isRecoverer = !!wallet && recoverers?.includes(wallet.address)
 
+  if (!delayModifier) {
+    return (
+      <Paper sx={{ p: 4 }}>
+        <RecoverySetup />
+      </Paper>
+    )
+  }
+
   return (
     <Paper sx={{ p: 4 }}>
-      {delayModifier ? (
-        isRecoverer ? (
-          <RecoveryProposal delayModifier={delayModifier} />
-        ) : (
-          <>
-            <RecoverersList delayModifier={delayModifier} recoverers={recoverers ?? []} />
-            <RecoveryProposals delayModifier={delayModifier} />
-          </>
-        )
+      {isRecoverer ? (
+        <RecoveryProposal delayModifier={delayModifier} />
       ) : (
-        <RecoverySetup />
+        <RecoverersList delayModifier={delayModifier} recoverers={recoverers ?? []} />
       )}
+      <RecoveryProposals delayModifier={delayModifier} isRecoverer={isRecoverer} />
     </Paper>
   )
 }
