@@ -1,7 +1,9 @@
 /**
  * Holds current A/B test identifiers.
  */
-export const enum AbTest {}
+export const enum AbTest {
+  HUMAN_DESCRIPTION = 'human_description',
+}
 
 let _abTest: AbTest | null = null
 

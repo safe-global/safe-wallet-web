@@ -16,6 +16,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
+import useABTesting from '@/services/tracking/useAbTesting'
+import { AbTest } from '@/services/tracking/abTesting'
 
 type PendingTxType = {
   transaction: TransactionSummary
@@ -26,6 +28,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
   const { id } = transaction
   const { safe } = useSafeInfo()
   const wallet = useWallet()
+  const shouldDisplayHumanDescription = useABTesting(AbTest.HUMAN_DESCRIPTION)
   const canSign = wallet ? isSignableBy(transaction, wallet.address) : false
   const canExecute = wallet ? isExecutable(transaction, wallet?.address, safe) : false
 
@@ -40,7 +43,9 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
     [router, id],
   )
 
-  const displayInfo = !transaction.txInfo.richDecodedInfo && transaction.txInfo.type !== TransactionInfoType.TRANSFER
+  const displayInfo =
+    (!transaction.txInfo.richDecodedInfo && transaction.txInfo.type !== TransactionInfoType.TRANSFER) ||
+    !shouldDisplayHumanDescription
 
   return (
     <NextLink href={url} passHref>
