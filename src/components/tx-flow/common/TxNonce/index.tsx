@@ -104,7 +104,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
     defaultValues: {
       [TxNonceFormFieldNames.NONCE]: nonce,
     },
-    mode: 'onTouched',
+    mode: 'all',
     values: {
       [TxNonceFormFieldNames.NONCE]: nonce,
     },
@@ -122,6 +122,9 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
         required: 'Nonce is required',
         // Validation must be async to allow resetting invalid values onBlur
         validate: async (value) => {
+          // nonce is always valid so no need to validate if the input is the same
+          if (value === nonce) return
+
           const newNonce = Number(value)
 
           if (isNaN(newNonce)) {
