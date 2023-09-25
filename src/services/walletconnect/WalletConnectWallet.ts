@@ -1,9 +1,9 @@
-import { Core } from '@walletconnect/core'
+import { Core, RELAYER_EVENTS } from '@walletconnect/core'
 import { Web3Wallet } from '@walletconnect/web3wallet'
 import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import type Web3WalletType from '@walletconnect/web3wallet'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
-import type { SessionTypes } from '@walletconnect/types'
+import type { RelayerTypes, SessionTypes } from '@walletconnect/types'
 import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 
 import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
@@ -11,8 +11,6 @@ import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constan
 import { invariant } from '@/utils/helpers'
 import { getEip155ChainId, stripEip155Prefix } from './utils'
 import type { Eip155ChainId } from './utils'
-
-const SESSION_ADD_EVENT = 'session_add' as 'session_delete' // Workaround: WalletConnect doesn't emit session_add event
 
 function assertWeb3Wallet<T extends Web3WalletType | null>(web3Wallet: T): asserts web3Wallet {
   return invariant(web3Wallet, 'WalletConnect not initialized')
@@ -148,9 +146,6 @@ class WalletConnectWallet {
         // Ignore
       }
 
-      // Workaround: WalletConnect doesn't have a session_add event
-      this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)
-
       return session
     }
   }
@@ -181,10 +176,30 @@ class WalletConnectWallet {
    * Subscribe to session add
    */
   public onSessionAdd(handler: () => void) {
-    this.web3Wallet?.on(SESSION_ADD_EVENT, handler)
+    const onSessionSettle = async (event: RelayerTypes.MessageEvent) => {
+      // Decode relayer event payload
+      // @see https://github.com/WalletConnect/walletconnect-monorepo/blob/v2.0/packages/sign-client/src/controllers/engine.ts#L629
+      const payload = await this.web3Wallet?.engine.signClient.core.crypto.decode(event.topic, event.message)
+      if (!payload) {
+        return
+      }
+
+      // Get the session record
+      // @see https://github.com/WalletConnect/walletconnect-monorepo/blob/v2.0/packages/sign-client/src/controllers/engine.ts#L706
+      const record = await this.web3Wallet?.engine.signClient.core.history.get(event.topic, payload.id)
+      if (!record) {
+        return
+      }
+
+      if (record.request.method === 'wc_sessionSettle') {
+        handler()
+      }
+    }
+
+    this.web3Wallet?.engine.signClient.core.relayer.on(RELAYER_EVENTS.message, onSessionSettle)
 
     return () => {
-      this.web3Wallet?.off(SESSION_ADD_EVENT, handler)
+      this.web3Wallet?.engine.signClient.core.relayer.off(RELAYER_EVENTS.message, onSessionSettle)
     }
   }
 
