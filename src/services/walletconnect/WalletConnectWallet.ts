@@ -11,7 +11,6 @@ import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constan
 import { invariant } from '@/utils/helpers'
 import { getEip155ChainId, stripEip155Prefix } from './utils'
 import type { Eip155ChainId } from './utils'
-import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 
 const SESSION_ADD_EVENT = 'session_add' as 'session_delete' // Workaround: WalletConnect doesn't emit session_add event
 
@@ -91,12 +90,7 @@ class WalletConnectWallet {
     )
   }
 
-  public async approveSession(
-    proposal: Web3WalletTypes.SessionProposal,
-    currentChainId: string,
-    safeAddress: string,
-    ownedSafes: { [chainId: string]: string[] },
-  ) {
+  public async approveSession(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
     assertWeb3Wallet(this.web3Wallet)
 
     // Actual safe chainId
@@ -105,27 +99,8 @@ class WalletConnectWallet {
     const getNamespaces = (chainIds: string[], methods: string[]) => {
       const eip155ChainIds = chainIds.map(getEip155ChainId)
 
-      // TODO: Add tests
-      const eip155Accounts = chainIds.flatMap((chainId) => {
-        let ownedSafesOnChain = ownedSafes[chainId]
-        const isCurrentChain = chainId === currentChainId
-
-        // if (ownedSafesOnChain) {
-        //   // Ensure current Safe is present in owned Safes if not added
-        //   if (isCurrentChain && !ownedSafesOnChain.includes(safeAddress)) {
-        //     ownedSafesOnChain = [safeAddress].concat(ownedSafesOnChain)
-        //   }
-
-        //   // Format addresses to match that required by WC
-        //   return ownedSafesOnChain.map((address) => `${getEip155ChainId(chainId)}:${address}`)
-        // }
-
-        // If no owned Safes, return current Safe address or zero address on that chain
-        const fallbackAddress = isCurrentChain ? safeAddress : ownedSafesOnChain?.[0] ?? ZERO_ADDRESS
-        return [`${getEip155ChainId(chainId)}:${fallbackAddress}`]
-      })
-
-      console.log({ eip155Accounts, eip155ChainIds })
+      // Create a list of addresses for each chainId
+      const eip155Accounts = chainIds.map((chainId) => `${getEip155ChainId(chainId)}:${safeAddress}`)
 
       return buildApprovedNamespaces({
         proposal: proposal.params,

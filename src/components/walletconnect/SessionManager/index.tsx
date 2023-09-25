@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
 
@@ -10,15 +10,10 @@ import ProposalForm from '../ProposalForm'
 import WcInput from '../WcInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import SessionList from '../SessionList'
-import useWallet from '@/hooks/wallets/useWallet'
-import { selectOwnedSafes } from '@/store/addedSafesSlice'
-import { useAppSelector } from '@/store'
 
 const SessionManager = () => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
-  const wallet = useWallet()
-  const ownedSafes = useAppSelector((state) => selectOwnedSafes(state, wallet?.address))
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
   const sessions = useWalletConnectSessions()
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
@@ -34,14 +29,14 @@ const SessionManager = () => {
     if (!chainId || !safeAddress || !proposal) return
 
     try {
-      await walletConnect.approveSession(proposal, chainId, safeAddress, ownedSafes)
+      await walletConnect.approveSession(proposal, chainId, safeAddress)
     } catch (e) {
       setError(asError(e))
       return
     }
 
     setProposal(undefined)
-  }, [proposal, walletConnect, chainId, safeAddress, ownedSafes])
+  }, [proposal, walletConnect, chainId, safeAddress])
 
   // On session reject
   const onReject = useCallback(async () => {

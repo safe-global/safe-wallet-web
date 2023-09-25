@@ -8,12 +8,29 @@ type WalletSDK = {
   signTypedMessage: (typedData: unknown) => Promise<{ signature?: string }>
   send: (params: { txs: unknown[]; params: { safeTxGas: number } }) => Promise<{ safeTxHash: string }>
   getBySafeTxHash: (safeTxHash: string) => Promise<{ txHash?: string }>
+  switchChain: (chainId: string) => Promise<void>
   proxy: (method: string, params: unknown[]) => Promise<{ result: unknown }>
 }
 
 interface RpcRequest {
   method: string
   params?: unknown[]
+}
+
+enum RpcErrorCode {
+  INVALID_PARAMS = -32602,
+  USER_REJECTED = 4001,
+  UNSUPPORTED_METHOD = 4200,
+  UNSUPPORTED_CHAIN = 4901,
+}
+
+class RpcError extends Error {
+  code: RpcErrorCode
+
+  constructor(code: RpcErrorCode, message: string) {
+    super(message)
+    this.code = code
+  }
 }
 
 export class SafeWalletProvider {
@@ -38,6 +55,15 @@ export class SafeWalletProvider {
     console.log('SafeWalletProvider request', request)
 
     switch (method) {
+      case 'wallet_switchEthereumChain':
+        const [{ chainId }] = params as [{ chainId: string }]
+        try {
+          await this.sdk.switchChain(chainId)
+        } catch (e) {
+          throw new RpcError(RpcErrorCode.UNSUPPORTED_CHAIN, 'Unsupported chain')
+        }
+        return rpcResult(null)
+
       case 'eth_accounts':
         return rpcResult([this.safe.safeAddress])
 
@@ -49,7 +75,7 @@ export class SafeWalletProvider {
         const [message, address] = params as [string, string]
 
         if (this.safe.safeAddress.toLowerCase() !== address.toLowerCase()) {
-          throw new Error('The address or message hash is invalid')
+          throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'The address or message hash is invalid')
         }
 
         const response = await this.sdk.signMessage(message)
@@ -62,7 +88,7 @@ export class SafeWalletProvider {
         const [address, messageHash] = params as [string, string]
 
         if (this.safe.safeAddress.toLowerCase() !== address.toLowerCase() || !messageHash.startsWith('0x')) {
-          throw new Error('The address or message hash is invalid')
+          throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'The address or message hash is invalid')
         }
 
         const response = await this.sdk.signMessage(messageHash)
@@ -77,7 +103,7 @@ export class SafeWalletProvider {
         const parsedTypedData = typeof typedData === 'string' ? JSON.parse(typedData) : typedData
 
         if (this.safe.safeAddress.toLowerCase() !== address.toLowerCase()) {
-          throw new Error('The address is invalid')
+          throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'The address is invalid')
         }
 
         const response = await this.sdk.signTypedMessage(parsedTypedData)
@@ -150,16 +176,37 @@ export class SafeWalletProvider {
   async request(
     id: number,
     request: RpcRequest,
-  ): Promise<{
-    jsonrpc: string
-    id: number
-    result: unknown
-  }> {
-    const result = await this.makeRequest(id, request)
-    return {
-      jsonrpc: '2.0',
-      id,
-      result,
+  ): Promise<
+    | {
+        jsonrpc: string
+        id: number
+        result: unknown
+      }
+    | {
+        jsonrpc: string
+        id: number
+        error: {
+          code: number
+          message: string
+        }
+      }
+  > {
+    try {
+      const result = await this.makeRequest(id, request)
+      return {
+        jsonrpc: '2.0',
+        id,
+        result,
+      }
+    } catch (e) {
+      return {
+        jsonrpc: '2.0',
+        id,
+        error: {
+          code: -32000,
+          message: (e as Error).message,
+        },
+      }
     }
   }
 }

@@ -20,9 +20,8 @@ export const SAFE_COMPATIBLE_METHODS = [
   'eth_call',
   'eth_getLogs',
   'eth_gasPrice',
-  'wallet_getPermissions',
-  'wallet_requestPermissions',
-  'safe_setSettings',
+  'wallet_switchEthereumChain',
+  'safe_setSettings', // TODO: support it
 ]
 
 export const SAFE_WALLET_METADATA = {

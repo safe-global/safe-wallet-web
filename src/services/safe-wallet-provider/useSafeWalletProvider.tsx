@@ -1,4 +1,7 @@
 import { useContext, useMemo } from 'react'
+import { BigNumber } from 'ethers'
+import { useRouter } from 'next/router'
+
 import { SafeWalletProvider } from '.'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { TxModalContext } from '@/components/tx-flow'
@@ -10,13 +13,16 @@ import type { EIP712TypedData } from '@safe-global/safe-apps-sdk'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getAddress } from 'ethers/lib/utils'
-import { BigNumber } from 'ethers'
+import { AppRoutes } from '@/config/routes'
+import useChains from '@/hooks/useChains'
 
 const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { setTxFlow } = useContext(TxModalContext)
   const web3ReadOnly = useWeb3ReadOnly()
+  const router = useRouter()
+  const { configs } = useChains()
 
   const txFlowApi = useMemo(() => {
     if (!safeAddress || !chainId) {
@@ -78,11 +84,25 @@ const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
         return getTransactionDetails(chainId, safeTxHash)
       },
 
+      async switchChain(hexChainId: string) {
+        const chainId = parseInt(hexChainId, 16).toString()
+        const cfg = configs.find((c) => c.chainId === chainId)
+        if (!cfg) {
+          throw new Error(`Chain ${chainId} not supported`)
+        }
+        router.push({
+          pathname: AppRoutes.index,
+          query: {
+            chain: cfg.shortName,
+          },
+        })
+      },
+
       async proxy(method: string, params: unknown[]) {
         return await web3ReadOnly?.send(method, params)
       },
     }
-  }, [safeAddress, chainId, setTxFlow, web3ReadOnly])
+  }, [safeAddress, chainId, setTxFlow, web3ReadOnly, router, configs])
 
   return useMemo(() => {
     if (!safeAddress || !chainId || !txFlowApi) {
