@@ -1,88 +1,51 @@
-const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
+import * as nfts from '../pages/nfts.pages'
+
+const nftsName = 'BillyNFT721'
+const nftsAddress = '0x0000...816D'
+const nftsTokenID = 'Kitaro World #261'
+const nftsLink = 'https://testnets.opensea.io/assets/0x000000000faE8c6069596c9C805A1975C657816D/443'
 
 describe('Assets > NFTs', () => {
   before(() => {
-    cy.visit(`/balances/nfts?safe=${TEST_SAFE}`)
-    cy.contains('button', 'Accept selection').click()
-    cy.contains(/E2E Wallet @ G(ö|oe)rli/)
+    cy.clearLocalStorage()
+    cy.visit(constants.balanceNftsUrl + constants.GOERLI_TEST_SAFE)
+    main.acceptCookies()
+    cy.contains(constants.goerlyE2EWallet)
   })
 
   describe('should have NFTs', () => {
     it('should have NFTs in the table', () => {
-      cy.get('tbody tr').should('have.length', 5)
+      nfts.verifyNFTNumber(5)
     })
 
     it('should have info in the NFT row', () => {
-      cy.get('tbody tr:first-child').contains('td:first-child', 'BillyNFT721')
-      cy.get('tbody tr:first-child').contains('td:first-child', '0x0000...816D')
-
-      cy.get('tbody tr:first-child').contains('td:nth-child(2)', 'Kitaro World #261')
-
-      cy.get(
-        'tbody tr:first-child td:nth-child(3) a[href="https://testnets.opensea.io/assets/0x000000000faE8c6069596c9C805A1975C657816D/443"]',
-      )
+      nfts.verifyDataInTable(nftsName, nftsAddress, nftsTokenID, nftsLink)
     })
 
     it('should open an NFT preview', () => {
-      // Preview the first NFT
-      cy.get('tbody tr:first-child td:nth-child(2)').click()
-
-      // Modal
-      cy.get('div[role="dialog"]').contains('Kitaro World #261')
-
-      // Prevent Base Mainnet Goerli from being selected
-      cy.get('div[role="dialog"]').contains(/^G(ö|oe)rli$/)
-      cy.get('div[role="dialog"]').contains(
-        'a[href="https://testnets.opensea.io/assets/0x000000000faE8c6069596c9C805A1975C657816D/443"]',
-        'View on OpenSea',
-      )
-
-      // Close the modal
-      cy.get('div[role="dialog"] button').click()
-      cy.get('div[role="dialog"]').should('not.exist')
+      nfts.openFirstNFT()
+      nfts.verifyNameInNFTModal(nftsTokenID)
+      nfts.preventBaseMainnetGoerliFromBeingSelected()
+      nfts.verifyNFTModalLink(nftsLink)
+      nfts.closeNFTModal()
     })
 
     it('should not open an NFT preview for NFTs without one', () => {
-      // Click on the third NFT
-      cy.get('tbody tr:nth-child(3) td:nth-child(2)').click()
-      cy.get('div[role="dialog"]').should('not.exist')
+      nfts.clickOnThirdNFT()
+      nfts.verifyNFTModalDoesNotExist()
     })
 
     it('should select and send multiple NFTs', () => {
-      // Select three NFTs
-      cy.contains('0 NFTs selected')
-      cy.contains('button[disabled]', 'Send')
-      cy.get('tbody tr:first-child input[type="checkbox"]').click()
-      cy.contains('1 NFT selected')
-      cy.contains('button:not([disabled])', 'Send 1 NFT')
-      cy.get('tbody tr:nth-child(2) input[type="checkbox"]').click()
-      cy.contains('2 NFTs selected')
-      cy.contains('button', 'Send 2 NFTs')
-      cy.get('tbody tr:last-child input[type="checkbox"]').click()
-      cy.contains('3 NFTs selected')
-
-      // Deselect one NFT
-      cy.get('tbody tr:nth-child(2) input[type="checkbox"]').click()
-      cy.contains('2 NFTs selected')
-
-      // Send NFTs
-      cy.contains('button', 'Send 2 NFTs').click()
-
-      // Modal appears
-      cy.contains('Send NFTs')
-      cy.contains('Recipient address or ENS')
-      cy.contains('Selected NFTs')
-      cy.get('input[name="recipient"]').type('0x97d314157727D517A706B5D08507A1f9B44AaaE9')
-      cy.contains('button', 'Next').click()
-
-      // Review modal appears
-      cy.contains('Send')
-      cy.contains('To')
-      cy.wait(1000)
-      cy.contains('1')
-      cy.contains('2')
-      cy.get('b:contains("safeTransferFrom")').should('have.length', 2)
-      cy.contains('button:not([disabled])', 'Execute')
+      nfts.verifyInitialNFTData()
+      nfts.selectNFTs(3)
+      nfts.deselectNFTs([2], 3)
+      nfts.sendNFT(2)
+      nfts.verifyNFTModalData()
+      nfts.typeRecipientAddress(constants.GOERLI_TEST_SAFE)
+      nfts.clikOnNextBtn()
+      nfts.verifyReviewModalData(2)
     })
   })
 })

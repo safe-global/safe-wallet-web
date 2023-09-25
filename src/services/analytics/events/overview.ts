@@ -88,4 +88,8 @@ export const OVERVIEW_EVENTS = {
     action: 'Open relaying help article',
     category: OVERVIEW_CATEGORY,
   },
+  SEP5_ALLOCATION_BUTTON: {
+    action: 'Click on SEP5 allocation button',
+    category: OVERVIEW_CATEGORY,
+  },
 }

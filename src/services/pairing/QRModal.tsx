@@ -45,6 +45,7 @@ const close = () => {
   const wrapper = document.getElementById(WRAPPER_ID)
   if (wrapper) {
     document.body.removeChild(wrapper)
+    document.body.style.overflow = ''
   }
 }
 

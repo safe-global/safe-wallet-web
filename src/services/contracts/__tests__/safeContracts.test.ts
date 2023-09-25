@@ -1,5 +1,5 @@
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
-import { _getValidatedGetContractProps, isValidMasterCopy } from '../contracts/safeContracts'
+import { _getValidatedGetContractProps, isValidMasterCopy } from '../safeContracts'
 
 describe('safeContracts', () => {
   describe('isValidMasterCopy', () => {

@@ -19,4 +19,18 @@
   gap: var(--space-1);
   margin-left: 0;
   margin-right: 0;
+  align-self: stretch;
+}
+
+.sep5 {
+  height: 42px;
+}
+
+[data-theme='dark'] .allocationBadge :global .MuiBadge-dot {
+  background-color: var(--color-primary-main);
+}
+
+.redeemButton {
+  margin-left: var(--space-1);
+  padding: calc(var(--space-1) / 2) var(--space-1);
 }

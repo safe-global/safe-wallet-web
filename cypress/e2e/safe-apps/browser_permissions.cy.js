@@ -1,15 +1,16 @@
-import { BROWSER_PERMISSIONS_KEY } from './constants'
-
-const appUrl = 'https://safe-test-app.com'
+import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
+import * as safeapps from '../pages/safeapps.pages'
 
 describe('The Browser permissions system', () => {
   describe('When the safe app requires permissions', () => {
     beforeEach(() => {
+      cy.clearLocalStorage()
       cy.fixture('safe-app').then((html) => {
-        cy.intercept('GET', `${appUrl}/*`, html)
+        cy.intercept('GET', `${constants.testAppUrl}/*`, html)
         cy.intercept('GET', `*/manifest.json`, {
-          name: 'Cypress Test App',
-          description: 'Cypress Test App Description',
+          name: constants.testAppData.name,
+          description: constants.testAppData.descr,
           icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
           safe_apps_permissions: ['camera', 'microphone'],
         })
@@ -17,23 +18,18 @@ describe('The Browser permissions system', () => {
     })
 
     it('should show a permissions slide to the user', () => {
-      cy.visitSafeApp(`${appUrl}/app`)
-
-      cy.findByRole('checkbox', { name: /camera/i }).should('exist')
-      cy.findByRole('checkbox', { name: /microphone/i }).should('exist')
+      cy.visitSafeApp(`${constants.testAppUrl}/app`)
+      safeapps.verifyCameraCheckBoxExists()
+      safeapps.verifyMicrofoneCheckBoxExists()
     })
 
     it('should allow to change, accept and store the selection', () => {
-      cy.findByText(/accept selection/i).click()
+      main.acceptCookies()
+      safeapps.verifyMicrofoneCheckBoxExists().click()
 
-      cy.findByRole('checkbox', { name: /microphone/i }).click()
-      cy.findByRole('button', { name: /continue/i })
-        .click()
-        .should(() => {
-          expect(window.localStorage.getItem(BROWSER_PERMISSIONS_KEY)).to.eq(
-            '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}',
-          )
-        })
+      safeapps.clickOnContinueBtn().should(() => {
+        expect(window.localStorage.getItem(constants.BROWSER_PERMISSIONS_KEY)).to.eq(safeapps.localStorageItem)
+      })
     })
   })
 })

@@ -25,6 +25,11 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   getSafeApps: (chainId: string) => Promise.resolve(mockedSafeApps),
 }))
 
+jest.mock('next/navigation', () => ({
+  ...jest.requireActual('next/navigation'),
+  useParams: jest.fn(() => ({ safe: 'matic:0x0000000000000000000000000000000000000000' })),
+}))
+
 describe('AppsPage', () => {
   beforeEach(() => {
     jest.restoreAllMocks()

@@ -43,6 +43,7 @@ const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
 const commonEventParams = {
   chainId: '',
   deviceType: DeviceType.DESKTOP,
+  safeAddress: '',
 }
 
 export const gtmSetChainId = (chainId: string): void => {
@@ -51,6 +52,10 @@ export const gtmSetChainId = (chainId: string): void => {
 
 export const gtmSetDeviceType = (type: DeviceType): void => {
   commonEventParams.deviceType = type
+}
+
+export const gtmSetSafeAddress = (safeAddress: string): void => {
+  commonEventParams.safeAddress = safeAddress.slice(2)
 }
 
 export const gtmInit = (): void => {

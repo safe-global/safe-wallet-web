@@ -1,10 +1,10 @@
-const NEW_OWNER = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
-const TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+import * as constants from '../../support/constants'
+
 const offset = 7
 
 describe('Adding an owner', () => {
   before(() => {
-    cy.visit(`/${TEST_SAFE}/settings/setup`)
+    cy.visit(`/${constants.GOERLI_TEST_SAFE}/settings/setup`)
     cy.contains('button', 'Accept selection').click()
 
     // Advanced Settings page is loaded
@@ -21,7 +21,7 @@ describe('Adding an owner', () => {
 
       // Fills new owner data
       cy.get('input[placeholder="New owner"]').type('New Owner Name')
-      cy.get('input[name="address"]').type(NEW_OWNER)
+      cy.get('input[name="address"]').type(constants.EOA)
 
       // Advances to step 2
       cy.contains('Next').click()

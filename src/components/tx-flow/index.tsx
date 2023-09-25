@@ -1,6 +1,7 @@
 import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback } from 'react'
 import TxModalDialog from '@/components/common/TxModalDialog'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 const noop = () => {}
 
@@ -21,7 +22,9 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   const [shouldWarn, setShouldWarn] = useState<boolean>(true)
   const [, setOnClose] = useState<Parameters<TxModalContextType['setTxFlow']>[1]>(noop)
   const [fullWidth, setFullWidth] = useState<boolean>(false)
-  const router = useRouter()
+  const pathname = usePathname()
+  const [, setLastPath] = useState<string>(pathname)
+  const { safeAddress, safe } = useSafeInfo()
 
   const handleModalClose = useCallback(() => {
     setOnClose((prevOnClose) => {
@@ -38,13 +41,10 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     }
 
     const ok = confirm('Closing this window will discard your current progress.')
-    if (!ok) {
-      router.events.emit('routeChangeError')
-      throw 'routeChange aborted. This error can be safely ignored - https://github.com/zeit/next.js/issues/2476.'
+    if (ok) {
+      handleModalClose()
     }
-
-    handleModalClose()
-  }, [shouldWarn, handleModalClose, router])
+  }, [shouldWarn, handleModalClose])
 
   const setTxFlow = useCallback(
     (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
@@ -57,13 +57,20 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   // Show the confirmation dialog if user navigates
   useEffect(() => {
-    if (!txFlow) return
+    setLastPath((prev) => {
+      if (prev !== pathname && txFlow) {
+        handleShowWarning()
+      }
+      return pathname
+    })
+  }, [txFlow, handleShowWarning, pathname])
 
-    router.events.on('routeChangeStart', handleShowWarning)
-    return () => {
-      router.events.off('routeChangeStart', handleShowWarning)
-    }
-  }, [txFlow, handleShowWarning, router])
+  // Close the modal when the Safe changes
+  useEffect(() => {
+    handleModalClose()
+    // Could have same address but different chain
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safe.chainId, safeAddress])
 
   return (
     <TxModalContext.Provider value={{ txFlow, setTxFlow, setFullWidth }}>

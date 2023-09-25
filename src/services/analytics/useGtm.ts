@@ -12,6 +12,7 @@ import {
   gtmEnableCookies,
   gtmDisableCookies,
   gtmSetDeviceType,
+  gtmSetSafeAddress,
 } from '@/services/analytics/gtm'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
@@ -21,6 +22,7 @@ import { AppRoutes } from '@/config/routes'
 import useMetaEvents from './useMetaEvents'
 import { useMediaQuery } from '@mui/material'
 import { DeviceType } from './types'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 const useGtm = () => {
   const chainId = useChainId()
@@ -32,6 +34,7 @@ const useGtm = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const isTablet = useMediaQuery(theme.breakpoints.down('md'))
   const deviceType = isMobile ? DeviceType.MOBILE : isTablet ? DeviceType.TABLET : DeviceType.DESKTOP
+  const safeAddress = useSafeAddress()
 
   // Initialize GTM
   useEffect(() => {
@@ -62,6 +65,11 @@ const useGtm = () => {
   useEffect(() => {
     gtmSetDeviceType(deviceType)
   }, [deviceType])
+
+  // Set safe address for all GTM events
+  useEffect(() => {
+    gtmSetSafeAddress(safeAddress)
+  }, [safeAddress])
 
   // Track page views – anononimized by default.
   // Sensitive info, like the safe address or tx id, is always in the query string, which we DO NOT track.

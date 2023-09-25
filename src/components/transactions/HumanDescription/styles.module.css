@@ -1,0 +1,30 @@
+.summary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+/* TODO: This is a workaround to hide address in case there is a title */
+.address div[title] + div {
+  display: none;
+}
+
+.value {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  gap: 4px;
+}
+
+.method {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
