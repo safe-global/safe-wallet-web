@@ -5,6 +5,7 @@ import * as constants from '../../support/constants'
 
 describe('Import Export Data', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.visit(constants.welcomeUrl)
     main.acceptCookies()
     file.verifyImportBtnIsVisible()

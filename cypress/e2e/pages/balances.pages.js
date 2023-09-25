@@ -7,6 +7,7 @@ const hideAssetBtn = 'button[aria-label="Hide asset"]'
 const hiddeTokensBtn = '[data-testid="toggle-hidden-assets"]'
 const hiddenTokenCheckbox = 'input[type="checkbox"]'
 const paginationPageList = 'ul[role="listbox"]'
+const currencyDropDown = 'div[id="currency"]'
 const hiddenTokenSaveBtn = 'Save'
 const hideTokenDefaultString = 'Hide tokens'
 

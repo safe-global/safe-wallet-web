@@ -10,6 +10,7 @@ const EDITED_NAME = 'Edited Owner1'
 
 describe('Address book tests', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.visit(constants.addressBookUrl + constants.GOERLI_TEST_SAFE)
     main.acceptCookies()
   })
