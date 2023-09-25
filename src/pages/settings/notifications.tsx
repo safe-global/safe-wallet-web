@@ -3,8 +3,16 @@ import type { NextPage } from 'next'
 
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import { PushNotifications } from '@/components/settings/PushNotifications'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const NotificationsPage: NextPage = () => {
+  const isNotificationsEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
+
+  if (!isNotificationsEnabled) {
+    return null
+  }
+
   return (
     <>
       <Head>

@@ -12,6 +12,8 @@ import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { logError } from '@/services/exceptions'
 import type { NotificationTracking, NotificationTrackingKey } from '@/services/push-notifications/tracking'
 import type { WebhookType } from '@/service-workers/firebase-messaging/webhook-types'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const trackNotificationEvents = (
   chainId: string,
@@ -68,9 +70,11 @@ const handleTrackCachedNotificationEvents = async (
 }
 
 export const useNotificationTracking = (): void => {
+  const isNotificationsEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
+
   useEffect(() => {
-    if (typeof indexedDB !== 'undefined') {
+    if (typeof indexedDB !== 'undefined' && isNotificationsEnabled) {
       handleTrackCachedNotificationEvents(createNotificationTrackingIndexedDb())
     }
-  }, [])
+  }, [isNotificationsEnabled])
 }

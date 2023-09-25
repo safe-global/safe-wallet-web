@@ -21,6 +21,8 @@ import { useNotificationPreferences } from '../hooks/useNotificationPreferences'
 import { sameAddress } from '@/utils/addresses'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import type { NotifiableSafes } from '../logic'
@@ -88,6 +90,7 @@ const getSafesToRegister = (addedSafes: AddedSafesState, allPreferences: PushNot
 }
 
 export const PushNotificationsBanner = ({ children }: { children: ReactElement }): ReactElement => {
+  const isNotificationsEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
   const addedSafes = useAppSelector(selectAllAddedSafes)
   const totalAddedSafes = useAppSelector(selectTotalAdded)
   const { safe } = useSafeInfo()
@@ -136,7 +139,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     dismissBanner()
   }
 
-  if (!shouldShowBanner) {
+  if (!shouldShowBanner || !isNotificationsEnabled) {
     return children
   }
 
