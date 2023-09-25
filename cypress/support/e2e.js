@@ -29,6 +29,6 @@ before(() => {
   cy.on('window:before:load', (window) => {
     window.localStorage.setItem('SAFE_v2__show_terms', false)
     // So that tests that rely on this feature don't randomly fail
-    window.localStorage.setItem('SAFE_v2__AB_human_description', true)
+    window.localStorage.setItem('SAFE_v2__AB_human-readable', true)
   })
 })
