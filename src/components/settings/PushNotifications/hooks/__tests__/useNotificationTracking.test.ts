@@ -2,6 +2,7 @@ import 'fake-indexeddb/auto'
 import { entries, setMany } from 'idb-keyval'
 
 import * as tracking from '@/services/analytics'
+import * as useChains from '@/hooks/useChains'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { createNotificationTrackingIndexedDb } from '@/services/push-notifications/tracking'
 import { WebhookType } from '@/service-workers/firebase-messaging/webhook-types'
@@ -19,7 +20,17 @@ describe('useNotificationTracking', () => {
     jest.clearAllMocks()
   })
 
+  it('should not track if the feature flag is disabled', async () => {
+    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(false)
+    jest.spyOn(tracking, 'trackEvent')
+
+    renderHook(() => useNotificationTracking())
+
+    expect(tracking.trackEvent).not.toHaveBeenCalled()
+  })
+
   it('should track all cached events and clear the cache', async () => {
+    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
     jest.spyOn(tracking, 'trackEvent')
 
     const cache = {
@@ -73,6 +84,7 @@ describe('useNotificationTracking', () => {
   })
 
   it('should not track if no cache exists', async () => {
+    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
     jest.spyOn(tracking, 'trackEvent')
 
     const _entries = await entries(createNotificationTrackingIndexedDb())
