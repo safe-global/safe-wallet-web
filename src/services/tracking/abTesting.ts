@@ -2,7 +2,7 @@
  * Holds current A/B test identifiers.
  */
 export const enum AbTest {
-  HUMAN_DESCRIPTION = 'human_description',
+  HUMAN_DESCRIPTION = 'human-readable',
 }
 
 let _abTest: AbTest | null = null
