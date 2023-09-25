@@ -93,14 +93,14 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const isNotificationsEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
   const addedSafes = useAppSelector(selectAllAddedSafes)
   const totalAddedSafes = useAppSelector(selectTotalAdded)
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const { query } = useRouter()
   const onboard = useOnboard()
 
   const { dismissPushNotificationBanner, isPushNotificationBannerDismissed } = useDismissPushNotificationsBanner()
 
-  const hasAddedSafesOnChain = Object.values(addedSafes[safe.chainId] || {}).length > 0
-  const shouldShowBanner = !isPushNotificationBannerDismissed && hasAddedSafesOnChain
+  const isSafeAdded = !!addedSafes?.[safe.chainId]?.[safeAddress]
+  const shouldShowBanner = isNotificationsEnabled && !isPushNotificationBannerDismissed && isSafeAdded
 
   const { registerNotifications } = useNotificationRegistrations()
   const { getAllPreferences } = useNotificationPreferences()
@@ -139,7 +139,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     dismissBanner()
   }
 
-  if (!shouldShowBanner || !isNotificationsEnabled) {
+  if (!shouldShowBanner) {
     return children
   }
 
