@@ -8,11 +8,12 @@ const amountInput = 'input[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
+const transactionItemExpandable = 'div[id^="transfer"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
-const TransactionSummary = 'Send-'
+const TransactionSummary = 'Send'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
@@ -26,6 +27,8 @@ const editBtnStr = 'Edit'
 const executionParamsStr = 'Execution parameters'
 const noLaterStr = 'No, later'
 const signBtnStr = 'Sign'
+const expandAllBtnStr = 'Expand all'
+const collapseAllBtnStr = 'Collapse all'
 
 export function clickOnNewtransactionBtn() {
   // Assert that "New transaction" button is visible
@@ -90,7 +93,7 @@ export function changeNonce(value) {
 }
 
 export function verifyConfirmTransactionData() {
-  cy.contains(yesStr).should('exist')
+  cy.contains(yesStr).should('exist').click()
   cy.contains(estimatedFeeStr).should('exist')
 
   // Asserting the sponsored info is present
@@ -130,7 +133,7 @@ export function clickOnSignTransactionBtn() {
 }
 
 export function waitForProposeRequest() {
-  cy.intercept('POST', constants.proposeEndPoint).as('ProposeTx')
+  cy.intercept('POST', constants.proposeEndpoint).as('ProposeTx')
   cy.wait('@ProposeTx')
 }
 
@@ -148,4 +151,41 @@ export function verifyQueueLabel() {
 
 export function verifyTransactionSummary(sendValue) {
   cy.contains(TransactionSummary + `${sendValue} ${constants.tokenAbbreviation.gor}`).should('exist')
+}
+
+export function verifyDateExists(date) {
+  cy.contains('div', date).should('exist')
+}
+
+export function verifyImageAltTxt(index, text) {
+  cy.get('img').eq(index).should('have.attr', 'alt', text).should('be.visible')
+}
+
+export function verifyStatus(status) {
+  cy.contains('div', status).should('exist')
+}
+
+export function verifyTransactionStrExists(str) {
+  cy.contains(str).should('exist')
+}
+
+export function verifyTransactionStrNotVible(str) {
+  cy.contains(str).should('not.be.visible')
+}
+
+export function clickOnTransactionExpandableItem(name, actions) {
+  cy.contains('div', name)
+    .next()
+    .click()
+    .within(() => {
+      actions()
+    })
+}
+
+export function clickOnExpandAllBtn() {
+  cy.contains(expandAllBtnStr).click()
+}
+
+export function clickOnCollapseAllBtn() {
+  cy.contains(collapseAllBtnStr).click()
 }

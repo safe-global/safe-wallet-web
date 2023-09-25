@@ -29,6 +29,11 @@ export function selectGoerli() {
   cy.contains('span', constants.networks.goerli)
 }
 
+export function selectPolygon() {
+  cy.get('ul li').contains(constants.networks.polygon).click()
+  cy.contains('span', constants.networks.polygon)
+}
+
 export function verifyNameInputHasPlceholder() {
   cy.get(nameInput).should('have.attr', 'placeholder').should('match', constants.goerlySafeName)
 }

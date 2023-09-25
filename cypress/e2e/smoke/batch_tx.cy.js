@@ -8,6 +8,7 @@ const funds_second_tx = '0.002'
 
 describe('Create batch transaction', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.visit(constants.homeUrl + constants.TEST_SAFE)
     main.acceptCookies()
     cy.contains(constants.goerlyE2EWallet, { timeout: 10000 })
