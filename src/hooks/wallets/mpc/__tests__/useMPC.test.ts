@@ -144,7 +144,7 @@ describe('useInitMPC', () => {
     const mockWeb3AuthMpcCoreKit = jest.spyOn(require('@web3auth/mpc-core-kit'), 'Web3AuthMPCCoreKit')
     const mockProvider = jest.fn()
     mockWeb3AuthMpcCoreKit.mockImplementation(() => {
-      return new MockMPCCoreKit(COREKIT_STATUS.INITIALIZED, mockProvider as unknown as MPCProvider)
+      return new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, mockProvider as unknown as MPCProvider)
     })
 
     renderHook(() => useInitMPC())
@@ -208,10 +208,7 @@ describe('useInitMPC', () => {
 
     const mockProvider = new EventEmittingMockProvider()
     mockWeb3AuthMpcCoreKit.mockImplementation(() => {
-      return new MockMPCCoreKit(
-        require('@web3auth/mpc-core-kit').COREKIT_STATUS.INITIALIZED,
-        mockProvider as unknown as MPCProvider,
-      )
+      return new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, mockProvider as unknown as MPCProvider)
     })
 
     renderHook(() => useInitMPC())

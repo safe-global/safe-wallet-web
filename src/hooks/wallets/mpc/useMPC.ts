@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import ExternalStore from '@/services/ExternalStore'
-import { Web3AuthMPCCoreKit, WEB3AUTH_NETWORK } from '@web3auth/mpc-core-kit'
+import { COREKIT_STATUS, Web3AuthMPCCoreKit, WEB3AUTH_NETWORK } from '@web3auth/mpc-core-kit'
 import { CHAIN_NAMESPACES } from '@web3auth/base'
 
 import { WEB3_AUTH_CLIENT_ID } from '@/config/constants'
@@ -52,7 +52,7 @@ export const useInitMPC = () => {
       .then(() => {
         setStore(web3AuthCoreKit)
         // If rehydration was successful, connect to onboard
-        if (!web3AuthCoreKit.provider) {
+        if (web3AuthCoreKit.status !== COREKIT_STATUS.LOGGED_IN || !web3AuthCoreKit.provider) {
           return
         }
         const connectedWallet = getConnectedWallet(onboard.state.get().wallets)
