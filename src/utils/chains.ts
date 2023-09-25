@@ -14,6 +14,7 @@ export enum FEATURES {
   RELAYING = 'RELAYING',
   EIP1271 = 'EIP1271',
   RISK_MITIGATION = 'RISK_MITIGATION',
+  PUSH_NOTIFICATIONS = 'PUSH_NOTIFICATIONS',
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {

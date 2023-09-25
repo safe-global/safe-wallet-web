@@ -1,12 +1,14 @@
 import { format } from 'date-fns'
 const path = require('path')
 
+const enablePushNotificationsStr = 'Enable push notifications'
 const addressBookBtnStr = 'Address book'
 const dataImportModalStr = 'Data import'
 const appsBtnStr = 'Apps'
 const bookmarkedAppsBtnStr = 'Bookmarked apps'
 const settingsBtnStr = 'Settings'
 const appearenceTabStr = 'Appearance'
+const showMoreTabsBtn = '[data-testid="KeyboardArrowRightIcon"]'
 const dataTabStr = 'Data'
 const tab = 'div[role="tablist"] a'
 export const prependChainPrefixStr = 'Prepend chain prefix to addresses'
@@ -39,6 +41,12 @@ export function verifyImportModalData() {
 
 export function clickOnImportedSafe(safe) {
   cy.contains(safe).click()
+}
+
+export function clickOnClosePushNotificationsBanner() {
+  cy.waitForSelector(() => {
+    return cy.get('h6').contains(enablePushNotificationsStr).siblings('.MuiButtonBase-root').click({ force: true })
+  })
 }
 
 export function clickOnAddressBookBtn() {
@@ -82,6 +90,13 @@ export function clickOnAppearenceBtn() {
   cy.contains(tab, appearenceTabStr).click()
 }
 
+export function clickOnShowMoreTabsBtn() {
+  cy.get(showMoreTabsBtn).click()
+}
+
+export function verifDataTabBtnIsVisible() {
+  cy.contains(tab, dataTabStr).should('be.visible')
+}
 export function clickOnDataTab() {
   cy.contains(tab, dataTabStr).click()
 }
