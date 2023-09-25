@@ -243,7 +243,8 @@ class WalletConnectWallet {
    * Get active sessions
    */
   public getActiveSessions(): SessionTypes.Struct[] {
-    return this.web3Wallet?.engine.signClient.session.getAll() ?? []
+    const sessionsMap = this.web3Wallet?.getActiveSessions() || {}
+    return Object.values(sessionsMap)
   }
 
   /**
