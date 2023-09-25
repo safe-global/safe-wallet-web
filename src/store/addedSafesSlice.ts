@@ -6,6 +6,7 @@ import type { RootState } from '.'
 import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
 import { balancesSlice } from './balancesSlice'
 import { safeFormatUnits } from '@/utils/formatters'
+import { sameAddress } from '@/utils/addresses'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
@@ -113,6 +114,27 @@ export const selectAddedSafes = createSelector(
   [selectAllAddedSafes, (_: RootState, chainId: string) => chainId],
   (allAddedSafes, chainId): AddedSafesOnChain | undefined => {
     return allAddedSafes?.[chainId]
+  },
+)
+
+export const selectOwnedSafes = createSelector(
+  [selectAllAddedSafes, (_: RootState, walletAddress?: string) => walletAddress],
+  (addedSafes, walletAddress): { [chainId: string]: string[] } => {
+    if (!walletAddress) {
+      return {}
+    }
+
+    return Object.entries(addedSafes).reduce<{ [chainId: string]: string[] }>((acc, [chainId, safes]) => {
+      const ownedSafes = Object.entries(safes)
+        .filter(([, safe]) => safe.owners.some((owner) => sameAddress(owner.value, walletAddress)))
+        .map(([address]) => address)
+
+      if (ownedSafes.length > 0) {
+        acc[chainId] = ownedSafes
+      }
+
+      return acc
+    }, {})
   },
 )
 

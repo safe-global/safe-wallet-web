@@ -9,8 +9,9 @@ import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
 import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
 import { invariant } from '@/utils/helpers'
-import { getEip155ChainId } from './utils'
+import { getEip155ChainId, stripEip155Prefix } from './utils'
 import type { Eip155ChainId } from './utils'
+import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 
 const SESSION_ADD_EVENT = 'session_add' as 'session_delete' // Workaround: WalletConnect doesn't emit session_add event
 
@@ -90,20 +91,49 @@ class WalletConnectWallet {
     )
   }
 
-  public async approveSession(proposal: Web3WalletTypes.SessionProposal, chainId: string, safeAddress: string) {
+  public async approveSession(
+    proposal: Web3WalletTypes.SessionProposal,
+    currentChainId: string,
+    safeAddress: string,
+    ownedSafes: { [chainId: string]: string[] },
+  ) {
     assertWeb3Wallet(this.web3Wallet)
 
     // Actual safe chainId
-    const safeChains = [getEip155ChainId(chainId)]
+    const safeChains = [currentChainId]
 
-    const getNamespaces = (chains: Array<Eip155ChainId>, methods: string[]) => {
+    const getNamespaces = (chainIds: string[], methods: string[]) => {
+      const eip155ChainIds = chainIds.map(getEip155ChainId)
+
+      // TODO: Add tests
+      const eip155Accounts = chainIds.flatMap((chainId) => {
+        let ownedSafesOnChain = ownedSafes[chainId]
+        const isCurrentChain = chainId === currentChainId
+
+        // if (ownedSafesOnChain) {
+        //   // Ensure current Safe is present in owned Safes if not added
+        //   if (isCurrentChain && !ownedSafesOnChain.includes(safeAddress)) {
+        //     ownedSafesOnChain = [safeAddress].concat(ownedSafesOnChain)
+        //   }
+
+        //   // Format addresses to match that required by WC
+        //   return ownedSafesOnChain.map((address) => `${getEip155ChainId(chainId)}:${address}`)
+        // }
+
+        // If no owned Safes, return current Safe address or zero address on that chain
+        const fallbackAddress = isCurrentChain ? safeAddress : ownedSafesOnChain?.[0] ?? ZERO_ADDRESS
+        return [`${getEip155ChainId(chainId)}:${fallbackAddress}`]
+      })
+
+      console.log({ eip155Accounts, eip155ChainIds })
+
       return buildApprovedNamespaces({
         proposal: proposal.params,
         supportedNamespaces: {
           [EIP155]: {
-            chains,
+            chains: eip155ChainIds,
             methods,
-            accounts: chains.map((chain) => `${chain}:${safeAddress}`),
+            accounts: eip155Accounts,
             events: proposal.params.requiredNamespaces[EIP155]?.events || [],
           },
         },
@@ -119,17 +149,21 @@ class WalletConnectWallet {
     } catch (e) {
       // Most dapps require mainnet, but we aren't always on mainnet
       // A workaround, pretend to support all required chains
-      const requiredChains = (proposal.params.requiredNamespaces[EIP155]?.chains as Array<Eip155ChainId>) || []
-      const chains = safeChains.concat(requiredChains)
+      const requiredChains =
+        (proposal.params.requiredNamespaces[EIP155]?.chains as Array<Eip155ChainId> | undefined) || []
+      const chains = safeChains.concat(requiredChains.map(stripEip155Prefix))
 
       const session = await this.web3Wallet.approveSession({
         id: proposal.id,
-        namespaces: getNamespaces(chains, proposal.params.requiredNamespaces[EIP155].methods),
+        namespaces: getNamespaces(
+          chains,
+          proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS,
+        ),
       })
 
       // Immediately switch to the correct chain and set the actual namespace
       try {
-        await this.chainChanged(chainId)
+        await this.chainChanged(currentChainId)
 
         await this.web3Wallet.updateSession({
           topic: session.topic,
@@ -209,14 +243,13 @@ class WalletConnectWallet {
    * Get active sessions
    */
   public getActiveSessions(): SessionTypes.Struct[] {
-    const sessionsMap = this.web3Wallet?.getActiveSessions() || {}
-    return Object.values(sessionsMap)
+    return this.web3Wallet?.engine.signClient.session.getAll() ?? []
   }
 
   /**
    * Subscribe to requests
    */
-  public onSessionRequest = (handler: (event: Web3WalletTypes.SessionRequest) => void) => {
+  public onRequest = (handler: (event: Web3WalletTypes.SessionRequest) => void) => {
     this.web3Wallet?.on('session_request', handler)
 
     return () => {

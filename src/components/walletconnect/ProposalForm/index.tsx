@@ -20,8 +20,8 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps) => {
   const { configs } = useChains()
   const { requiredNamespaces, optionalNamespaces, proposer } = proposal.params
   const { isScam } = proposal.verifyContext.verified
-  const requiredChains = (requiredNamespaces[EIP155].chains as Array<Eip155ChainId>) ?? []
-  const optionalChains = (optionalNamespaces[EIP155].chains as Array<Eip155ChainId>) ?? []
+  const requiredChains = (requiredNamespaces[EIP155]?.chains as Array<Eip155ChainId> | undefined) ?? []
+  const optionalChains = (optionalNamespaces[EIP155]?.chains as Array<Eip155ChainId> | undefined) ?? []
 
   const chainIds = configs
     .filter((chain) => {
@@ -62,7 +62,7 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps) => {
       <div>
         <Typography mb={1}>Requested methods</Typography>
         <div>
-          {requiredNamespaces[EIP155].methods.map((method) => (
+          {requiredNamespaces[EIP155]?.methods.map((method) => (
             <span className={css.method} key={method}>
               {method}
             </span>
