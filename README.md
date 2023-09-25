@@ -42,6 +42,10 @@ Here's the list of all the required and optional variables:
 | `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING`    | optional     | Relay URL on staging
 | `NEXT_PUBLIC_IS_OFFICIAL_HOST`                         | optional     | Whether it's the official distribution of the app, or a fork; has legal implications. Set to true only if you also update the legal pages like Imprint and Terms of use
 | `NEXT_PUBLIC_REDEFINE_API`                             | optional     | Redefine API base URL
+| `NEXT_PUBLIC_FIREBASE_OPTIONS_PRODUCTION`              | optional     | Firebase Cloud Messaging (FCM) `initializeApp` options on production
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY_PRODUCTION`            | optional     | FCM vapid key on production
+| `NEXT_PUBLIC_FIREBASE_OPTIONS_STAGING`                 | optional     | FCM `initializeApp` options on staging
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING`               | optional     | FCM vapid key on staging
 
 If you don't provide some of the optional vars, the corresponding features will be disabled in the UI.
 

@@ -20,6 +20,7 @@ describe('Import Export Data', () => {
     file.verifyImportModalData()
     file.clickOnImportBtnDataImportModal()
     file.clickOnImportedSafe(safe)
+    file.clickOnClosePushNotificationsBanner()
   })
 
   it("Verify safe's address book imported data", () => {
@@ -45,6 +46,8 @@ describe('Import Export Data', () => {
   })
 
   it('Verifies data for export in Data tab', () => {
+    file.clickOnShowMoreTabsBtn()
+    file.verifDataTabBtnIsVisible()
     file.clickOnDataTab()
     file.verifyImportModalData()
     file.verifyFileDownload()
