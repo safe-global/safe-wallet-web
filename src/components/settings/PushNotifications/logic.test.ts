@@ -99,7 +99,7 @@ describe('Notifications', () => {
       jest.spyOn(mockProvider, 'getSigner').mockImplementation(
         () =>
           ({
-            _legacySignMessage: jest.fn().mockResolvedValueOnce(signature),
+            signMessage: jest.fn().mockResolvedValueOnce(signature),
           } as unknown as JsonRpcSigner),
       )
 
