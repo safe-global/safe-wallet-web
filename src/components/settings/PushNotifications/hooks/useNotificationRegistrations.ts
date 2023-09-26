@@ -9,6 +9,8 @@ import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notif
 import { getRegisterDevicePayload } from '../logic'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import useWallet from '@/hooks/wallets/useWallet'
+import { isLedger } from '@/utils/wallets'
 import type { NotifiableSafes } from '../logic'
 
 const registrationFlow = async (registrationFn: Promise<unknown>, callback: () => void): Promise<boolean> => {
@@ -38,11 +40,12 @@ export const useNotificationRegistrations = (): {
 } => {
   const dispatch = useAppDispatch()
   const web3 = useWeb3()
+  const wallet = useWallet()
 
   const { uuid, _createPreferences, _deletePreferences, _deleteAllPreferences } = useNotificationPreferences()
 
   const registerNotifications = async (safesToRegister: NotifiableSafes) => {
-    if (!uuid || !web3) {
+    if (!uuid || !web3 || !wallet) {
       return
     }
 
@@ -51,6 +54,7 @@ export const useNotificationRegistrations = (): {
         uuid,
         safesToRegister,
         web3,
+        isLedger: isLedger(wallet),
       })
 
       return registerDevice(payload)
