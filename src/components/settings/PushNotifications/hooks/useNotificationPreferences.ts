@@ -25,7 +25,7 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: PushNotificationPreferences[PushN
   [WebhookType.INCOMING_ETHER]: true,
   [WebhookType.INCOMING_TOKEN]: true,
   [WebhookType.MODULE_TRANSACTION]: true,
-  [WebhookType.CONFIRMATION_REQUEST]: false, // Requires signature
+  [WebhookType.CONFIRMATION_REQUEST]: true, // Requires signature
   [WebhookType.SAFE_CREATED]: false, // We do not preemptively subscribe to Safes before they are created
   // Disabled on the Transaction Service but kept here for completeness
   [WebhookType._PENDING_MULTISIG_TRANSACTION]: true,
