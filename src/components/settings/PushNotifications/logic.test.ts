@@ -5,7 +5,9 @@ import { Web3Provider } from '@ethersproject/providers'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 
 import * as logic from './logic'
+import * as web3 from '@/hooks/wallets/web3'
 import packageJson from '../../../../package.json'
+import type { ConnectedWallet } from '@/services/onboard'
 
 jest.mock('firebase/messaging')
 
@@ -128,6 +130,7 @@ describe('Notifications', () => {
             signMessage: jest.fn().mockResolvedValueOnce(MM_SIGNATURE),
           } as unknown as JsonRpcSigner),
       )
+      jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockProvider)
 
       const uuid = crypto.randomUUID()
 
@@ -137,8 +140,9 @@ describe('Notifications', () => {
           ['2']: [hexZeroPad('0x1', 20)],
         },
         uuid,
-        web3: mockProvider,
-        isLedger: false,
+        wallet: {
+          label: 'MetaMask',
+        } as ConnectedWallet,
       })
 
       expect(payload).toStrictEqual({
@@ -176,6 +180,7 @@ describe('Notifications', () => {
             signMessage: jest.fn().mockResolvedValueOnce(LEDGER_SIGNATURE),
           } as unknown as JsonRpcSigner),
       )
+      jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockProvider)
 
       const uuid = crypto.randomUUID()
 
@@ -185,8 +190,9 @@ describe('Notifications', () => {
           ['2']: [hexZeroPad('0x1', 20)],
         },
         uuid,
-        web3: mockProvider,
-        isLedger: true,
+        wallet: {
+          label: 'Ledger',
+        } as ConnectedWallet,
       })
 
       expect(payload).toStrictEqual({
