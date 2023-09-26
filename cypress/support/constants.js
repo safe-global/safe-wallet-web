@@ -17,16 +17,26 @@ export const goerlyE2EWallet = /E2E Wallet @ G(ö|oe)rli/
 export const goerlySafeName = /g(ö|oe)rli-safe/
 export const goerliToken = /G(ö|oe)rli Ether/
 
-export const appUrlProd = 'https://safe-test-app.com'
+export const testAppUrl = 'https://safe-test-app.com'
 export const addressBookUrl = '/address-book?safe='
 export const BALANCE_URL = '/balances?safe='
 export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
+export const transactionsHistoryUrl = '/transactions/history?safe='
 export const openAppsUrl = '/apps/open?safe='
 export const homeUrl = '/home?safe='
 export const welcomeUrl = '/welcome'
 export const chainMaticUrl = '/welcome?chain=matic'
-export const proposeEndPoint = '/**/propose'
+export const appsUrl = '/apps'
+export const requestPermissionsUrl = '/request-permissions'
+export const getPermissionsUrl = '/get-permissions'
+export const appSettingsUrl = '/settings/safe-apps'
+export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
+export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
+export const validAppUrl = 'https://my-valid-custom-app.com'
+
+export const proposeEndpoint = '/**/propose'
+export const appsEndpoint = '/**/safe-apps'
 
 export const GOERLI_CSV_ENTRY = {
   name: 'goerli user 1',
@@ -46,4 +56,33 @@ export const networks = {
 
 export const tokenAbbreviation = {
   gor: 'GOR',
+}
+
+export const appNames = {
+  walletConnect: 'walletconnect',
+  customContract: 'compose custom contract',
+  noResults: 'atextwithoutresults',
+}
+
+export const testAppData = {
+  name: 'Cypress Test App',
+  descr: 'Cypress Test App Description',
+}
+
+export const checkboxStates = {
+  unchecked: 'not.be.checked',
+  checked: 'be.checked',
+}
+
+export const transactionStatus = {
+  received: 'Receive',
+  sent: 'Send',
+  deposit: 'deposit',
+  approve: 'Approve',
+  success: 'Success',
+  interaction: 'Contract interaction',
+}
+
+export const tokenNames = {
+  wrappedEther: 'Wrapped Ether',
 }

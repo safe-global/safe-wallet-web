@@ -4,6 +4,7 @@ import * as main from '../pages/main.page'
 
 describe('Dashboard', () => {
   before(() => {
+    cy.clearLocalStorage()
     cy.visit(constants.homeUrl + constants.TEST_SAFE)
     main.acceptCookies()
     dashboard.verifyConnectTransactStrIsVisible()

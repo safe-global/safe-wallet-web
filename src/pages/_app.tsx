@@ -38,6 +38,9 @@ import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendin
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
 import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
+import useABTesting from '@/services/tracking/useAbTesting'
+import { AbTest } from '@/services/tracking/abTesting'
+import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -45,6 +48,7 @@ const InitApp = (): null => {
   setGatewayBaseUrl(GATEWAY_URL)
   useAdjustUrl()
   useGtm()
+  useNotificationTracking()
   useInitSession()
   useLoadableStores()
   useInitOnboard()
@@ -58,6 +62,7 @@ const InitApp = (): null => {
   useTxTracking()
   useSafeMsgTracking()
   useBeamer()
+  useABTesting(AbTest.HUMAN_DESCRIPTION)
 
   return null
 }
