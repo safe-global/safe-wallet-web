@@ -116,8 +116,9 @@ class WalletConnectWallet {
     }
 
     // Approve the session proposal
+    let session
     try {
-      return await this.web3Wallet.approveSession({
+      session = await this.web3Wallet.approveSession({
         id: proposal.id,
         namespaces: getNamespaces(safeChains, SAFE_COMPATIBLE_METHODS),
       })
@@ -128,7 +129,7 @@ class WalletConnectWallet {
         (proposal.params.requiredNamespaces[EIP155]?.chains as Array<Eip155ChainId> | undefined) || []
       const chains = safeChains.concat(requiredChains.map(stripEip155Prefix))
 
-      const session = await this.web3Wallet.approveSession({
+      session = await this.web3Wallet.approveSession({
         id: proposal.id,
         namespaces: getNamespaces(
           chains,
@@ -147,12 +148,12 @@ class WalletConnectWallet {
       } catch (e) {
         // Ignore
       }
-
-      // Workaround: WalletConnect doesn't have a session_add event
-      this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)
-
-      return session
     }
+
+    // Workaround: WalletConnect doesn't have a session_add event
+    this.web3Wallet?.events.emit(SESSION_ADD_EVENT)
+
+    return session
   }
 
   public async rejectSession(proposal: Web3WalletTypes.SessionProposal) {

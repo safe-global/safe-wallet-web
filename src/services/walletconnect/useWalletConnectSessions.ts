@@ -10,14 +10,15 @@ function useWalletConnectSessions(): SessionTypes.Struct[] {
     setSessions(walletConnect.getActiveSessions())
   }, [walletConnect])
 
-  useEffect(() => {
-    walletConnect.init().then(updateSessions)
-  }, [walletConnect, updateSessions])
+  // Initial sessions
+  useEffect(updateSessions, [updateSessions])
 
+  // On session add
   useEffect(() => {
     return walletConnect.onSessionAdd(updateSessions)
   }, [walletConnect, updateSessions])
 
+  // On session delete
   useEffect(() => {
     return walletConnect.onSessionDelete(updateSessions)
   }, [walletConnect, updateSessions])
