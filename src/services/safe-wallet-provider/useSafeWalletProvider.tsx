@@ -2,6 +2,7 @@ import { useContext, useMemo } from 'react'
 import { BigNumber } from 'ethers'
 import { useRouter } from 'next/router'
 
+import type { AppInfo, WalletSDK } from '.'
 import { SafeWalletProvider } from '.'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { TxModalContext } from '@/components/tx-flow'
@@ -24,31 +25,33 @@ const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
   const router = useRouter()
   const { configs } = useChains()
 
-  const txFlowApi = useMemo(() => {
-    if (!safeAddress || !chainId) {
-      return
+  const txFlowApi = useMemo<WalletSDK | undefined>(() => {
+    if (!safeAddress || !chainId) return
+
+    const signMessage = (message: string | EIP712TypedData, appInfo: AppInfo): Promise<{ signature: string }> => {
+      const id = Math.random().toString(36).slice(2)
+      setTxFlow(<SignMessageFlow logoUri={appInfo.iconUrl} name={appInfo.name} message={message} requestId={id} />)
+
+      return new Promise((resolve) => {
+        const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ requestId, signature }) => {
+          if (requestId === id) {
+            resolve({ signature })
+            unsubscribe()
+          }
+        })
+      })
     }
 
     return {
-      async signMessage(message: string | EIP712TypedData): Promise<{ signature: string }> {
-        const id = Math.random().toString(36).slice(2)
-        setTxFlow(<SignMessageFlow logoUri="" name="" message={message} requestId={id} />)
-
-        return new Promise((resolve) => {
-          const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ requestId, signature }) => {
-            if (requestId === id) {
-              resolve({ signature })
-              unsubscribe()
-            }
-          })
-        })
+      async signMessage(message, appInfo) {
+        return await signMessage(message, appInfo)
       },
 
-      async signTypedMessage(typedData: unknown): Promise<{ signature: string }> {
-        return this.signMessage(typedData as EIP712TypedData)
+      async signTypedMessage(typedData, appInfo) {
+        return await signMessage(typedData as EIP712TypedData, appInfo)
       },
 
-      async send(params: { txs: any[]; params: { safeTxGas: number } }): Promise<{ safeTxHash: string }> {
+      async send(params: { txs: any[]; params: { safeTxGas: number } }, appInfo) {
         const id = Math.random().toString(36).slice(2) // TODO: use JsonRpc id
 
         const transactions = params.txs.map(({ to, value, data }) => {
@@ -63,6 +66,10 @@ const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
           <SafeAppsTxFlow
             data={{
               appId: undefined,
+              app: {
+                name: appInfo.name,
+                iconUrl: appInfo.iconUrl,
+              },
               requestId: id,
               txs: transactions,
               params: params.params,
@@ -80,26 +87,36 @@ const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
         })
       },
 
-      async getBySafeTxHash(safeTxHash: string) {
+      async getBySafeTxHash(safeTxHash) {
         return getTransactionDetails(chainId, safeTxHash)
       },
 
-      async switchChain(hexChainId: string) {
-        const chainId = parseInt(hexChainId, 16).toString()
+      async switchChain(hexChainId, appInfo) {
+        const decimalChainId = parseInt(hexChainId, 16).toString()
+        if (decimalChainId === chainId) {
+          return null
+        }
+
         const cfg = configs.find((c) => c.chainId === chainId)
         if (!cfg) {
           throw new Error(`Chain ${chainId} not supported`)
         }
-        router.push({
-          pathname: AppRoutes.index,
-          query: {
-            chain: cfg.shortName,
-          },
-        })
+
+        if (prompt(`${appInfo.name} wants to switch to ${cfg.shortName}. Do you want to continue?`)) {
+          router.push({
+            pathname: AppRoutes.index,
+            query: {
+              chain: cfg.shortName,
+            },
+          })
+        }
+
+        return null
       },
 
-      async proxy(method: string, params: unknown[]) {
-        return await web3ReadOnly?.send(method, params)
+      async proxy(method, params) {
+        const data = await web3ReadOnly?.send(method, params)
+        return data.result
       },
     }
   }, [safeAddress, chainId, setTxFlow, web3ReadOnly, router, configs])

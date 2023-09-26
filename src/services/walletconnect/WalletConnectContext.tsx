@@ -4,6 +4,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
 import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
+import { stripEip155Prefix } from './utils'
 
 const walletConnect = new WalletConnectWallet()
 
@@ -47,14 +48,20 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     if (!safeWalletProvider || !chainId) return
 
     return walletConnect.onRequest(async (event) => {
-      const { topic } = event // TODO: use session topic to filter requests
-      const requestChainId = event.params.chainId.split(':').pop()
+      const { topic } = event
+      const session = walletConnect.getActiveSessions().find((s) => s.topic === topic)
+      const requestChainId = stripEip155Prefix(event.params.chainId)
 
-      if (requestChainId !== chainId) return
+      if (!session || requestChainId !== chainId) return
 
       try {
         // Get response from the Safe Wallet Provider
-        const response = await safeWalletProvider.request(event.id, event.params.request)
+        const response = await safeWalletProvider.request(event.id, event.params.request, {
+          name: session.peer.metadata.name,
+          description: session.peer.metadata.description,
+          url: session.peer.metadata.url,
+          iconUrl: session.peer.metadata.icons[0],
+        })
 
         // Send response to WalletConnect
         await walletConnect.sendSessionResponse(topic, response)

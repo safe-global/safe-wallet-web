@@ -19,11 +19,6 @@ const SessionManager = () => {
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [error, setError] = useState<Error>()
 
-  // Subscribe to session proposals
-  useEffect(() => {
-    return walletConnect.onSessionPropose(setProposal)
-  }, [walletConnect])
-
   // On session approve
   const onApprove = useCallback(async () => {
     if (!chainId || !safeAddress || !proposal) return
@@ -60,6 +55,11 @@ const SessionManager = () => {
       setError(asError(error))
     }
   }
+
+  // Subscribe to session proposals
+  useEffect(() => {
+    return walletConnect.onSessionPropose(setProposal)
+  }, [walletConnect])
 
   return (
     <>
