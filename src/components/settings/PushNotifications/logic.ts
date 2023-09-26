@@ -1,4 +1,4 @@
-import { arrayify, keccak256, toUtf8Bytes } from 'ethers/lib/utils'
+import { arrayify, joinSignature, keccak256, splitSignature, toUtf8Bytes } from 'ethers/lib/utils'
 import { getToken, getMessaging } from 'firebase/messaging'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk'
@@ -31,18 +31,34 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
   return permission === 'granted'
 }
 
-const getSafeRegistrationSignature = ({
+// Ledger produces vrs signatures with a canonical v value of {0,1}
+// Ethereum's ecrecover call only accepts a non-standard v value of {27,28}.
+
+// @see https://github.com/ethereum/go-ethereum/issues/19751
+export const _adjustLedgerSignatureV = (signature: string): string => {
+  const split = splitSignature(signature)
+
+  if (split.v === 0 || split.v === 1) {
+    split.v += 27
+  }
+
+  return joinSignature(split)
+}
+
+const getSafeRegistrationSignature = async ({
   safeAddresses,
   web3,
   timestamp,
   uuid,
   token,
+  isLedger,
 }: {
   safeAddresses: Array<string>
   web3: Web3Provider
   timestamp: string
   uuid: string
   token: string
+  isLedger: boolean
 }) => {
   const MESSAGE_PREFIX = 'gnosis-safe'
 
@@ -55,7 +71,13 @@ const getSafeRegistrationSignature = ({
   const message = MESSAGE_PREFIX + timestamp + uuid + token + safeAddresses.sort().join('')
   const hashedMessage = keccak256(toUtf8Bytes(message))
 
-  return web3.getSigner().signMessage(arrayify(hashedMessage))
+  const signature = await web3.getSigner().signMessage(arrayify(hashedMessage))
+
+  if (!isLedger) {
+    return signature
+  }
+
+  return _adjustLedgerSignatureV(signature)
 }
 
 export type NotifiableSafes = { [chainId: string]: Array<string> }
@@ -64,10 +86,12 @@ export const getRegisterDevicePayload = async ({
   safesToRegister,
   uuid,
   web3,
+  isLedger,
 }: {
   safesToRegister: NotifiableSafes
   uuid: string
   web3: Web3Provider
+  isLedger: boolean
 }): Promise<RegisterNotificationsRequest> => {
   const BUILD_NUMBER = '0' // Required value, but does not exist on web
   const BUNDLE = 'safe'
@@ -101,6 +125,7 @@ export const getRegisterDevicePayload = async ({
         uuid,
         timestamp,
         token,
+        isLedger,
       })
 
       return {
