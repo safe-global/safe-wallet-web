@@ -4,24 +4,22 @@ import type { SessionTypes } from '@walletconnect/types'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
-import useWalletConnectSessions from '@/services/walletconnect/useWalletConnectSessions'
 import { asError } from '@/services/exceptions/utils'
 import ProposalForm from '../ProposalForm'
 import WcInput from '../WcInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import SessionList from '../SessionList'
 
-const SessionManager = () => {
+const SessionManager = ({ sessions }: { sessions: SessionTypes.Struct[] }) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
-  const sessions = useWalletConnectSessions()
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [error, setError] = useState<Error>()
 
   // On session approve
   const onApprove = useCallback(async () => {
-    if (!chainId || !safeAddress || !proposal) return
+    if (!walletConnect || !chainId || !safeAddress || !proposal) return
 
     try {
       await walletConnect.approveSession(proposal, chainId, safeAddress)
@@ -35,7 +33,7 @@ const SessionManager = () => {
 
   // On session reject
   const onReject = useCallback(async () => {
-    if (!proposal) return
+    if (!walletConnect || !proposal) return
 
     try {
       await walletConnect.rejectSession(proposal)
@@ -49,6 +47,7 @@ const SessionManager = () => {
 
   // On session disconnect
   const onDisconnect = async (session: SessionTypes.Struct) => {
+    if (!walletConnect) return
     try {
       await walletConnect.disconnectSession(session)
     } catch (error) {
@@ -58,6 +57,7 @@ const SessionManager = () => {
 
   // Subscribe to session proposals
   useEffect(() => {
+    if (!walletConnect) return
     return walletConnect.onSessionPropose(setProposal)
   }, [walletConnect])
 

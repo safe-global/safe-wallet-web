@@ -1,6 +1,6 @@
-import { TextField, Typography } from '@mui/material'
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import type { ChangeEvent } from 'react'
+import { TextField, Typography } from '@mui/material'
 
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
@@ -10,18 +10,27 @@ const WcInput = () => {
   const [error, setError] = useState<Error>()
   const [connecting, setConnecting] = useState(false)
 
-  const onInput = async (e: ChangeEvent<HTMLInputElement>) => {
-    const uri = e.target.value
+  const onInput = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      if (!walletConnect) return
 
-    try {
-      await walletConnect.connect(uri)
-    } catch (e) {
-      setError(asError(e))
-      return
-    }
+      const uri = e.target.value
+      if (!uri) {
+        setError(undefined)
+        return
+      }
 
-    setConnecting(true)
-  }
+      try {
+        await walletConnect.connect(uri)
+      } catch (e) {
+        setError(asError(e))
+        return
+      }
+
+      setConnecting(true)
+    },
+    [walletConnect],
+  )
 
   return (
     <>

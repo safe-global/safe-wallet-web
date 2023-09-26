@@ -7,6 +7,7 @@ function useWalletConnectSessions(): SessionTypes.Struct[] {
   const [sessions, setSessions] = useState<SessionTypes.Struct[]>([])
 
   const updateSessions = useCallback(() => {
+    if (!walletConnect) return
     setSessions(walletConnect.getActiveSessions())
   }, [walletConnect])
 
@@ -15,11 +16,13 @@ function useWalletConnectSessions(): SessionTypes.Struct[] {
 
   // On session add
   useEffect(() => {
+    if (!walletConnect) return
     return walletConnect.onSessionAdd(updateSessions)
   }, [walletConnect, updateSessions])
 
   // On session delete
   useEffect(() => {
+    if (!walletConnect) return
     return walletConnect.onSessionDelete(updateSessions)
   }, [walletConnect, updateSessions])
 

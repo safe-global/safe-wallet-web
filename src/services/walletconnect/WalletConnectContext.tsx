@@ -6,13 +6,13 @@ import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
 import { stripEip155Prefix } from './utils'
 
-const walletConnect = new WalletConnectWallet()
+const walletConnectSingleton = new WalletConnectWallet()
 
 export const WalletConnectContext = createContext<{
-  walletConnect: WalletConnectWallet
+  walletConnect: WalletConnectWallet | null
   error: Error | null
 }>({
-  walletConnect,
+  walletConnect: null,
   error: null,
 })
 
@@ -21,31 +21,35 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     safe: { chainId },
     safeAddress,
   } = useSafeInfo()
+  const [walletConnect, setWalletConnect] = useState<WalletConnectWallet | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
 
   // Init WalletConnect
   useEffect(() => {
-    walletConnect.init().catch(setError)
+    walletConnectSingleton
+      .init()
+      .then(() => setWalletConnect(walletConnectSingleton))
+      .catch(setError)
   }, [])
 
   // Update chainId
   useEffect(() => {
-    if (chainId) {
-      walletConnect.chainChanged(chainId).catch(setError)
-    }
-  }, [chainId])
+    if (!walletConnect || !chainId) return
+
+    walletConnect.chainChanged(chainId).catch(setError)
+  }, [walletConnect, chainId])
 
   // Update accounts
   useEffect(() => {
-    if (safeAddress && chainId) {
-      walletConnect.accountsChanged(chainId, safeAddress).catch(setError)
-    }
-  }, [chainId, safeAddress])
+    if (!walletConnect || !chainId || !safeAddress) return
+
+    walletConnect.accountsChanged(chainId, safeAddress).catch(setError)
+  }, [walletConnect, chainId, safeAddress])
 
   // Subscribe to requests
   useEffect(() => {
-    if (!safeWalletProvider || !chainId) return
+    if (!walletConnect || !safeWalletProvider || !chainId) return
 
     return walletConnect.onRequest(async (event) => {
       const { topic } = event
@@ -69,7 +73,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
         setError(asError(e))
       }
     })
-  }, [chainId, safeWalletProvider])
+  }, [walletConnect, chainId, safeWalletProvider])
 
   return <WalletConnectContext.Provider value={{ walletConnect, error }}>{children}</WalletConnectContext.Provider>
 }
