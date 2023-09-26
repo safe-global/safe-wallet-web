@@ -68,6 +68,7 @@ const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
               appId: undefined,
               app: {
                 name: appInfo.name,
+                url: appInfo.url,
                 iconUrl: appInfo.iconUrl,
               },
               requestId: id,
