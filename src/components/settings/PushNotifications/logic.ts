@@ -9,6 +9,9 @@ import packageJson from '../../../../package.json'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { checksumAddress } from '@/utils/addresses'
+import { isLedger } from '@/utils/wallets'
+import { createWeb3 } from '@/hooks/wallets/web3'
+import type { ConnectedWallet } from '@/services/onboard'
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
@@ -85,13 +88,11 @@ export type NotifiableSafes = { [chainId: string]: Array<string> }
 export const getRegisterDevicePayload = async ({
   safesToRegister,
   uuid,
-  web3,
-  isLedger,
+  wallet,
 }: {
   safesToRegister: NotifiableSafes
   uuid: string
-  web3: Web3Provider
-  isLedger: boolean
+  wallet: ConnectedWallet
 }): Promise<RegisterNotificationsRequest> => {
   const BUILD_NUMBER = '0' // Required value, but does not exist on web
   const BUNDLE = 'safe'
@@ -106,6 +107,9 @@ export const getRegisterDevicePayload = async ({
     vapidKey: FIREBASE_VAPID_KEY,
     serviceWorkerRegistration,
   })
+
+  const web3 = createWeb3(wallet.provider)
+  const isLedgerWallet = isLedger(wallet)
 
   // If uuid is not provided a new device will be created.
   // If a uuid for an existing Safe is provided the FirebaseDevice will be updated with all the new data provided.
@@ -125,7 +129,7 @@ export const getRegisterDevicePayload = async ({
         uuid,
         timestamp,
         token,
-        isLedger,
+        isLedger: isLedgerWallet,
       })
 
       return {

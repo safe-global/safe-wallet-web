@@ -17,7 +17,6 @@ import {
 } from '@/services/push-notifications/preferences'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import type { PushNotificationPreferences, PushNotificationPrefsKey } from '@/services/push-notifications/preferences'
 import type { NotifiableSafes } from '../logic'
 
@@ -59,7 +58,6 @@ export const useNotificationPreferences = (): {
   // State
   const uuid = useUuid()
   const preferences = usePreferences()
-  const isOwner = useIsSafeOwner()
 
   // Getters
   const getPreferences = (chainId: string, safeAddress: string) => {
@@ -152,10 +150,7 @@ export const useNotificationPreferences = (): {
           const defaultPreferences: PushNotificationPreferences[PushNotificationPrefsKey] = {
             chainId,
             safeAddress,
-            preferences: {
-              ...DEFAULT_NOTIFICATION_PREFERENCES,
-              [WebhookType.CONFIRMATION_REQUEST]: isOwner,
-            },
+            preferences: DEFAULT_NOTIFICATION_PREFERENCES,
           }
 
           return [key, defaultPreferences]
