@@ -119,26 +119,28 @@ export const getRegisterDevicePayload = async ({
 
   const timestamp = Math.floor(new Date().getTime() / 1000).toString()
 
-  const safeRegistrations = await Promise.all(
-    Object.entries(safesToRegister).map(async ([chainId, safeAddresses]) => {
-      const checksummedSafeAddresses = safeAddresses.map((address) => checksumAddress(address))
-      // We require a signature for confirmation request notifications
-      const signature = await getSafeRegistrationSignature({
-        safeAddresses: checksummedSafeAddresses,
-        web3,
-        uuid,
-        timestamp,
-        token,
-        isLedger: isLedgerWallet,
-      })
+  let safeRegistrations: RegisterNotificationsRequest['safeRegistrations'] = []
 
-      return {
-        chainId,
-        safes: checksummedSafeAddresses,
-        signatures: [signature],
-      }
-    }),
-  )
+  // We cannot `Promise.all` here as Ledger/Trezor return a "busy" error when signing multiple messages at once
+  for await (const [chainId, safeAddresses] of Object.entries(safesToRegister)) {
+    const checksummedSafeAddresses = safeAddresses.map((address) => checksumAddress(address))
+
+    // We require a signature for confirmation request notifications
+    const signature = await getSafeRegistrationSignature({
+      safeAddresses: checksummedSafeAddresses,
+      web3,
+      uuid,
+      timestamp,
+      token,
+      isLedger: isLedgerWallet,
+    })
+
+    safeRegistrations.push({
+      chainId,
+      safes: checksummedSafeAddresses,
+      signatures: [signature],
+    })
+  }
 
   return {
     uuid,
