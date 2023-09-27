@@ -4,9 +4,9 @@ import { hexZeroPad } from 'ethers/lib/utils'
 import { Web3Provider } from '@ethersproject/providers'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 
-import * as logic from './logic'
+import * as logic from '../logic'
 import * as web3 from '@/hooks/wallets/web3'
-import packageJson from '../../../../package.json'
+import packageJson from '../../../../../package.json'
 import type { ConnectedWallet } from '@/services/onboard'
 
 jest.mock('firebase/messaging')

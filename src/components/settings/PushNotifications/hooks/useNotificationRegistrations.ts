@@ -39,7 +39,7 @@ export const useNotificationRegistrations = (): {
   const dispatch = useAppDispatch()
   const wallet = useWallet()
 
-  const { uuid, _createPreferences, _deletePreferences, _deleteAllPreferences } = useNotificationPreferences()
+  const { uuid, createPreferences, deletePreferences, deleteAllChainPreferences } = useNotificationPreferences()
 
   const registerNotifications = async (safesToRegister: NotifiableSafes) => {
     if (!uuid || !wallet) {
@@ -57,7 +57,7 @@ export const useNotificationRegistrations = (): {
     }
 
     return registrationFlow(register(), () => {
-      _createPreferences(safesToRegister)
+      createPreferences(safesToRegister)
 
       const totalRegistered = Object.values(safesToRegister).reduce(
         (acc, safeAddresses) => acc + safeAddresses.length,
@@ -84,7 +84,7 @@ export const useNotificationRegistrations = (): {
   const unregisterSafeNotifications = async (chainId: string, safeAddress: string) => {
     if (uuid) {
       return registrationFlow(unregisterSafe(chainId, safeAddress, uuid), () => {
-        _deletePreferences({ [chainId]: [safeAddress] })
+        deletePreferences({ [chainId]: [safeAddress] })
         trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_SAFE)
       })
     }
@@ -93,7 +93,7 @@ export const useNotificationRegistrations = (): {
   const unregisterDeviceNotifications = async (chainId: string) => {
     if (uuid) {
       return registrationFlow(unregisterDevice(chainId, uuid), () => {
-        _deleteAllPreferences()
+        deleteAllChainPreferences(chainId)
         trackEvent(PUSH_NOTIFICATION_EVENTS.UNREGISTER_DEVICE)
       })
     }
