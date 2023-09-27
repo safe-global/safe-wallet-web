@@ -5,7 +5,6 @@ import { EIP155 } from '@/services/walletconnect/constants'
 import useChains from '@/hooks/useChains'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { getEip155ChainId } from '@/services/walletconnect/utils'
-import type { Eip155ChainId } from '@/services/walletconnect/utils'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import css from './styles.module.css'
 import ProposalVerification from './ProposalVerification'
@@ -20,8 +19,8 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps) => {
   const { configs } = useChains()
   const { requiredNamespaces, optionalNamespaces, proposer } = proposal.params
   const { isScam } = proposal.verifyContext.verified
-  const requiredChains = (requiredNamespaces[EIP155]?.chains as Array<Eip155ChainId> | undefined) ?? []
-  const optionalChains = (optionalNamespaces[EIP155]?.chains as Array<Eip155ChainId> | undefined) ?? []
+  const requiredChains = requiredNamespaces[EIP155]?.chains ?? []
+  const optionalChains = optionalNamespaces[EIP155]?.chains ?? []
 
   const chainIds = configs
     .filter((chain) => {

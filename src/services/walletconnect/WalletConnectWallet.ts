@@ -10,9 +10,8 @@ import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
 import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
 import { invariant } from '@/utils/helpers'
 import { getEip155ChainId, stripEip155Prefix } from './utils'
-import type { Eip155ChainId } from './utils'
 
-const SESSION_ADD_EVENT = 'session_add' as 'session_delete' // Workaround: WalletConnect doesn't emit session_add event
+const SESSION_ADD_EVENT = 'session_add' as Web3WalletTypes.Event // Workaround: WalletConnect doesn't emit session_add event
 
 function assertWeb3Wallet<T extends Web3WalletType | null>(web3Wallet: T): asserts web3Wallet {
   return invariant(web3Wallet, 'WalletConnect not initialized')
@@ -54,40 +53,30 @@ class WalletConnectWallet {
     await this.web3Wallet.core.pairing.pair({ uri })
   }
 
-  public async chainChanged(chainId: string) {
-    const sessions = this.getActiveSessions()
+  public async chainChanged(topic: string, chainId: string) {
     const eipChainId = getEip155ChainId(chainId)
 
-    await Promise.all(
-      sessions.map(({ topic }) => {
-        return this.web3Wallet?.emitSessionEvent({
-          topic,
-          event: {
-            name: 'chainChanged',
-            data: Number(chainId),
-          },
-          chainId: eipChainId,
-        })
-      }),
-    )
+    return this.web3Wallet?.emitSessionEvent({
+      topic,
+      event: {
+        name: 'chainChanged',
+        data: Number(chainId),
+      },
+      chainId: eipChainId,
+    })
   }
 
-  public async accountsChanged(chainId: string, address: string) {
-    const sessions = this.getActiveSessions()
+  public async accountsChanged(topic: string, chainId: string, address: string) {
     const eipChainId = getEip155ChainId(chainId)
 
-    await Promise.all(
-      sessions.map(({ topic }) => {
-        return this.web3Wallet?.emitSessionEvent({
-          topic,
-          event: {
-            name: 'accountsChanged',
-            data: [address],
-          },
-          chainId: eipChainId,
-        })
-      }),
-    )
+    return this.web3Wallet?.emitSessionEvent({
+      topic,
+      event: {
+        name: 'accountsChanged',
+        data: [address],
+      },
+      chainId: eipChainId,
+    })
   }
 
   public async approveSession(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
@@ -116,44 +105,60 @@ class WalletConnectWallet {
     }
 
     // Approve the session proposal
-    let session
-    try {
-      session = await this.web3Wallet.approveSession({
-        id: proposal.id,
-        namespaces: getNamespaces(safeChains, SAFE_COMPATIBLE_METHODS),
-      })
-    } catch (e) {
-      // Most dapps require mainnet, but we aren't always on mainnet
-      // A workaround, pretend to support all required chains
-      const requiredChains =
-        (proposal.params.requiredNamespaces[EIP155]?.chains as Array<Eip155ChainId> | undefined) || []
-      const chains = safeChains.concat(requiredChains.map(stripEip155Prefix))
+    // Most dapps require mainnet, but we aren't always on mainnet
+    // A workaround, pretend to support all required chains
+    const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains || []
+    // TODO: Filter against those which we support
+    const optionalChains = proposal.params.optionalNamespaces[EIP155]?.chains || []
+    const chains = safeChains.concat(requiredChains.map(stripEip155Prefix), optionalChains.map(stripEip155Prefix))
 
-      session = await this.web3Wallet.approveSession({
-        id: proposal.id,
-        namespaces: getNamespaces(
-          chains,
-          proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS,
-        ),
-      })
+    const session = await this.web3Wallet.approveSession({
+      id: proposal.id,
+      namespaces: getNamespaces(chains, proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS),
+    })
 
-      // Immediately switch to the correct chain and set the actual namespace
-      try {
-        await this.chainChanged(currentChainId)
-
-        await this.web3Wallet.updateSession({
-          topic: session.topic,
-          namespaces: getNamespaces(safeChains, SAFE_COMPATIBLE_METHODS),
-        })
-      } catch (e) {
-        // Ignore
-      }
-    }
+    // TODO: Align session via update then filter "fake" addresses? If we filter in updateSession this would be covered
 
     // Workaround: WalletConnect doesn't have a session_add event
     this.web3Wallet?.events.emit(SESSION_ADD_EVENT)
 
     return session
+  }
+
+  private async updateSession(session: SessionTypes.Struct, chainId: string, safeAddress: string) {
+    const currentChains = session.namespaces[EIP155]?.chains || []
+    const currentAccounts = session.namespaces[EIP155]?.accounts || []
+
+    const eip155ChainIds = [...new Set([...currentChains, getEip155ChainId(chainId)])]
+    const eip155Accounts = [...new Set([...currentAccounts, `${getEip155ChainId(chainId)}:${safeAddress}`])]
+
+    const namespaces: SessionTypes.Namespaces = {
+      [EIP155]: {
+        ...session.namespaces[EIP155],
+        chains: eip155ChainIds,
+        accounts: eip155Accounts,
+      },
+    }
+
+    const { topic } = session
+
+    await this.web3Wallet?.updateSession({
+      topic,
+      namespaces,
+    })
+
+    // TODO: Only emit if new address doesn't match that of current one?
+    await this.accountsChanged(topic, chainId, safeAddress)
+
+    await this.chainChanged(topic, chainId)
+
+    // TODO: Filter "fake" addresses?
+  }
+
+  public async updateSessions(chainId: string, safeAddress: string) {
+    assertWeb3Wallet(this.web3Wallet)
+
+    await Promise.all(this.getActiveSessions().map((session) => this.updateSession(session, chainId, safeAddress)))
   }
 
   public async rejectSession(proposal: Web3WalletTypes.SessionProposal) {

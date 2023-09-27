@@ -33,18 +33,11 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
       .catch(setError)
   }, [])
 
-  // Update chainId
-  useEffect(() => {
-    if (!walletConnect || !chainId) return
-
-    walletConnect.chainChanged(chainId).catch(setError)
-  }, [walletConnect, chainId])
-
-  // Update accounts
+  // Update chainId/safeAddress
   useEffect(() => {
     if (!walletConnect || !chainId || !safeAddress) return
 
-    walletConnect.accountsChanged(chainId, safeAddress).catch(setError)
+    walletConnect.updateSessions(chainId, safeAddress).catch(setError)
   }, [walletConnect, chainId, safeAddress])
 
   // Subscribe to requests
