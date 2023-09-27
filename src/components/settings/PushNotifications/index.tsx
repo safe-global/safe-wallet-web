@@ -29,6 +29,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { useIsMac } from '@/hooks/useIsMac'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
+import ExternalLink from '@/components/common/ExternalLink'
 
 import css from './styles.module.css'
 
@@ -106,7 +107,8 @@ export const PushNotifications = (): ReactElement => {
             <Grid container gap={2.5} flexDirection="column">
               <Typography>
                 Enable push notifications for {safeLoaded ? 'this Safe Account' : 'your Safe Accounts'} in your browser
-                with your signature. You will need to enable them again if you clear your browser cache.
+                with your signature. You will need to enable them again if you clear your browser cache. Learn more
+                about push notifications <ExternalLink href="#">here</ExternalLink>
               </Typography>
 
               {shouldShowMacHelper && (
