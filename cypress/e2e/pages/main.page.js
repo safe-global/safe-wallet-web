@@ -25,3 +25,22 @@ export function checkTextsExistWithinElement(element, texts) {
 export function verifyCheckboxeState(element, index, state) {
   cy.get(element).eq(index).should(state)
 }
+
+export function verifyInputValue(selector, value) {
+  cy.get(selector)
+    .invoke('val')
+    .should(($value) => {
+      console.log($value)
+    })
+}
+
+export function generateRandomString(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZz0123456789'
+  let result = ''
+
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+
+  return result
+}
