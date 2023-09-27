@@ -1,6 +1,5 @@
 import { registerDevice, unregisterDevice, unregisterSafe } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 import { useNotificationPreferences } from './useNotificationPreferences'
@@ -9,6 +8,7 @@ import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notif
 import { getRegisterDevicePayload } from '../logic'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import useWallet from '@/hooks/wallets/useWallet'
 import type { NotifiableSafes } from '../logic'
 
 const registrationFlow = async (registrationFn: Promise<unknown>, callback: () => void): Promise<boolean> => {
@@ -37,12 +37,12 @@ export const useNotificationRegistrations = (): {
   unregisterDeviceNotifications: (chainId: string) => Promise<boolean | undefined>
 } => {
   const dispatch = useAppDispatch()
-  const web3 = useWeb3()
+  const wallet = useWallet()
 
   const { uuid, _createPreferences, _deletePreferences, _deleteAllPreferences } = useNotificationPreferences()
 
   const registerNotifications = async (safesToRegister: NotifiableSafes) => {
-    if (!uuid || !web3) {
+    if (!uuid || !wallet) {
       return
     }
 
@@ -50,7 +50,7 @@ export const useNotificationRegistrations = (): {
       const payload = await getRegisterDevicePayload({
         uuid,
         safesToRegister,
-        web3,
+        wallet,
       })
 
       return registerDevice(payload)

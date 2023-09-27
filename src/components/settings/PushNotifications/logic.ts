@@ -1,4 +1,4 @@
-import { arrayify, keccak256, toUtf8Bytes } from 'ethers/lib/utils'
+import { arrayify, joinSignature, keccak256, splitSignature, toUtf8Bytes } from 'ethers/lib/utils'
 import { getToken, getMessaging } from 'firebase/messaging'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk'
@@ -9,6 +9,9 @@ import packageJson from '../../../../package.json'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { checksumAddress } from '@/utils/addresses'
+import { isLedger } from '@/utils/wallets'
+import { createWeb3 } from '@/hooks/wallets/web3'
+import type { ConnectedWallet } from '@/services/onboard'
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
@@ -31,18 +34,34 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
   return permission === 'granted'
 }
 
-const getSafeRegistrationSignature = ({
+// Ledger produces vrs signatures with a canonical v value of {0,1}
+// Ethereum's ecrecover call only accepts a non-standard v value of {27,28}.
+
+// @see https://github.com/ethereum/go-ethereum/issues/19751
+export const _adjustLedgerSignatureV = (signature: string): string => {
+  const split = splitSignature(signature)
+
+  if (split.v === 0 || split.v === 1) {
+    split.v += 27
+  }
+
+  return joinSignature(split)
+}
+
+const getSafeRegistrationSignature = async ({
   safeAddresses,
   web3,
   timestamp,
   uuid,
   token,
+  isLedger,
 }: {
   safeAddresses: Array<string>
   web3: Web3Provider
   timestamp: string
   uuid: string
   token: string
+  isLedger: boolean
 }) => {
   const MESSAGE_PREFIX = 'gnosis-safe'
 
@@ -55,7 +74,13 @@ const getSafeRegistrationSignature = ({
   const message = MESSAGE_PREFIX + timestamp + uuid + token + safeAddresses.sort().join('')
   const hashedMessage = keccak256(toUtf8Bytes(message))
 
-  return web3.getSigner().signMessage(arrayify(hashedMessage))
+  const signature = await web3.getSigner().signMessage(arrayify(hashedMessage))
+
+  if (!isLedger) {
+    return signature
+  }
+
+  return _adjustLedgerSignatureV(signature)
 }
 
 export type NotifiableSafes = { [chainId: string]: Array<string> }
@@ -63,11 +88,11 @@ export type NotifiableSafes = { [chainId: string]: Array<string> }
 export const getRegisterDevicePayload = async ({
   safesToRegister,
   uuid,
-  web3,
+  wallet,
 }: {
   safesToRegister: NotifiableSafes
   uuid: string
-  web3: Web3Provider
+  wallet: ConnectedWallet
 }): Promise<RegisterNotificationsRequest> => {
   const BUILD_NUMBER = '0' // Required value, but does not exist on web
   const BUNDLE = 'safe'
@@ -83,6 +108,9 @@ export const getRegisterDevicePayload = async ({
     serviceWorkerRegistration,
   })
 
+  const web3 = createWeb3(wallet.provider)
+  const isLedgerWallet = isLedger(wallet)
+
   // If uuid is not provided a new device will be created.
   // If a uuid for an existing Safe is provided the FirebaseDevice will be updated with all the new data provided.
   // Safes provided on the request are always added and never removed/replaced
@@ -91,25 +119,28 @@ export const getRegisterDevicePayload = async ({
 
   const timestamp = Math.floor(new Date().getTime() / 1000).toString()
 
-  const safeRegistrations = await Promise.all(
-    Object.entries(safesToRegister).map(async ([chainId, safeAddresses]) => {
-      const checksummedSafeAddresses = safeAddresses.map((address) => checksumAddress(address))
-      // We require a signature for confirmation request notifications
-      const signature = await getSafeRegistrationSignature({
-        safeAddresses: checksummedSafeAddresses,
-        web3,
-        uuid,
-        timestamp,
-        token,
-      })
+  let safeRegistrations: RegisterNotificationsRequest['safeRegistrations'] = []
 
-      return {
-        chainId,
-        safes: checksummedSafeAddresses,
-        signatures: [signature],
-      }
-    }),
-  )
+  // We cannot `Promise.all` here as Ledger/Trezor return a "busy" error when signing multiple messages at once
+  for await (const [chainId, safeAddresses] of Object.entries(safesToRegister)) {
+    const checksummedSafeAddresses = safeAddresses.map((address) => checksumAddress(address))
+
+    // We require a signature for confirmation request notifications
+    const signature = await getSafeRegistrationSignature({
+      safeAddresses: checksummedSafeAddresses,
+      web3,
+      uuid,
+      timestamp,
+      token,
+      isLedger: isLedgerWallet,
+    })
+
+    safeRegistrations.push({
+      chainId,
+      safes: checksummedSafeAddresses,
+      signatures: [signature],
+    })
+  }
 
   return {
     uuid,

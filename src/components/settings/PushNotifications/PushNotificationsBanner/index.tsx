@@ -126,7 +126,11 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     const allPreferences = getAllPreferences()
     const safesToRegister = getSafesToRegister(addedSafes, allPreferences)
 
-    await assertWalletChain(onboard, safe.chainId)
+    try {
+      await assertWalletChain(onboard, safe.chainId)
+    } catch {
+      return
+    }
 
     await registerNotifications(safesToRegister)
 

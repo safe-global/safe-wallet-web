@@ -6,9 +6,11 @@ import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 import { renderHook } from '@/tests/test-utils'
 import { useNotificationRegistrations } from '../useNotificationRegistrations'
 import * as web3 from '@/hooks/wallets/web3'
+import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '../../logic'
 import * as preferences from '../useNotificationPreferences'
 import * as notificationsSlice from '@/store/notificationsSlice'
+import type { ConnectedWallet } from '@/services/onboard'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk')
 
@@ -28,7 +30,13 @@ describe('useNotificationRegistrations', () => {
   describe('registerNotifications', () => {
     beforeEach(() => {
       const mockProvider = new Web3Provider(jest.fn())
-      jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
+      jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockProvider)
+      jest.spyOn(wallet, 'default').mockImplementation(
+        () =>
+          ({
+            label: 'MetaMask',
+          } as ConnectedWallet),
+      )
     })
 
     const registerDeviceSpy = jest.spyOn(sdk, 'registerDevice')
