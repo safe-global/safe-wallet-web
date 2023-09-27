@@ -45,7 +45,9 @@ export const transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafe
 }
 
 // Convert data structure of currently notified Safes
-const transformCurrentSubscribedSafes = (allPreferences?: PushNotificationPreferences): NotifiableSafes | undefined => {
+export const _transformCurrentSubscribedSafes = (
+  allPreferences?: PushNotificationPreferences,
+): NotifiableSafes | undefined => {
   if (!allPreferences) {
     return
   }
@@ -61,7 +63,10 @@ const transformCurrentSubscribedSafes = (allPreferences?: PushNotificationPrefer
 }
 
 // Merges added Safes and currently notified Safes into a single data structure without duplicates
-const mergeNotifiableSafes = (addedSafes: AddedSafesState, currentSubscriptions?: NotifiableSafes): NotifiableSafes => {
+export const _mergeNotifiableSafes = (
+  addedSafes: AddedSafesState,
+  currentSubscriptions?: NotifiableSafes,
+): NotifiableSafes => {
   const notifiableSafes = transformAddedSafes(addedSafes)
 
   if (!currentSubscriptions) {
@@ -79,13 +84,19 @@ const mergeNotifiableSafes = (addedSafes: AddedSafesState, currentSubscriptions?
   return notifiableSafes
 }
 
-const getTotalNotifiableSafes = (notifiableSafes: NotifiableSafes): number => {
+export const _getTotalNotifiableSafes = (notifiableSafes: NotifiableSafes): number => {
   return Object.values(notifiableSafes).reduce((acc, safeAddresses) => {
     return (acc += safeAddresses.length)
   }, 0)
 }
 
-const areAllSafesSelected = (notifiableSafes: NotifiableSafes, selectedSafes: NotifiableSafes): boolean => {
+export const _areAllSafesSelected = (notifiableSafes: NotifiableSafes, selectedSafes: NotifiableSafes): boolean => {
+  const entries = Object.entries(notifiableSafes)
+
+  if (entries.length === 0) {
+    return false
+  }
+
   return Object.entries(notifiableSafes).every(([chainId, safeAddresses]) => {
     const hasChain = Object.keys(selectedSafes).includes(chainId)
     const hasEverySafe = safeAddresses?.every((safeAddress) => selectedSafes[chainId]?.includes(safeAddress))
@@ -94,13 +105,24 @@ const areAllSafesSelected = (notifiableSafes: NotifiableSafes, selectedSafes: No
 }
 
 // Total number of signatures required to register selected Safes
-const getTotalSignaturesRequired = (selectedSafes: NotifiableSafes, currentNotifiedSafes?: NotifiableSafes): number => {
-  return Object.keys(selectedSafes).filter((chainId) => {
-    return !Object.keys(currentNotifiedSafes || {}).includes(chainId)
-  }).length
+export const _getTotalSignaturesRequired = (
+  selectedSafes: NotifiableSafes,
+  currentNotifiedSafes?: NotifiableSafes,
+): number => {
+  return Object.entries(selectedSafes)
+    .filter(([, safeAddresses]) => safeAddresses.length > 0)
+    .reduce((acc, [chainId, safeAddresses]) => {
+      const isNewChain = !currentNotifiedSafes?.[chainId]
+      const isNewSafe = safeAddresses.some((safeAddress) => !currentNotifiedSafes?.[chainId]?.includes(safeAddress))
+
+      if (isNewChain || isNewSafe) {
+        acc += 1
+      }
+      return acc
+    }, 0)
 }
 
-const shouldRegisterSelectedSafes = (
+export const _shouldRegisterSelectedSafes = (
   selectedSafes: NotifiableSafes,
   currentNotifiedSafes?: NotifiableSafes,
 ): boolean => {
@@ -109,7 +131,10 @@ const shouldRegisterSelectedSafes = (
   })
 }
 
-const shouldUnregsiterSelectedSafes = (selectedSafes: NotifiableSafes, currentNotifiedSafes?: NotifiableSafes) => {
+export const _shouldUnregsiterSelectedSafes = (
+  selectedSafes: NotifiableSafes,
+  currentNotifiedSafes?: NotifiableSafes,
+) => {
   return Object.entries(currentNotifiedSafes || {}).some(([chainId, safeAddresses]) => {
     return safeAddresses.some((safeAddress) => !selectedSafes[chainId]?.includes(safeAddress))
   })
@@ -118,7 +143,7 @@ const shouldUnregsiterSelectedSafes = (selectedSafes: NotifiableSafes, currentNo
 // onSave logic
 
 // Safes that need to be registered with the service
-const getSafesToRegister = (
+export const _getSafesToRegister = (
   selectedSafes: NotifiableSafes,
   currentNotifiedSafes?: NotifiableSafes,
 ): NotifiableSafes | undefined => {
@@ -142,7 +167,7 @@ const getSafesToRegister = (
 }
 
 // Safes that need to be unregistered with the service
-const getSafesToUnregister = (
+export const _getSafesToUnregister = (
   selectedSafes: NotifiableSafes,
   currentNotifiedSafes?: NotifiableSafes,
 ): NotifiableSafes | undefined => {
@@ -172,7 +197,7 @@ const getSafesToUnregister = (
 }
 
 // Whether the device needs to be unregistered from the service
-const shouldUnregisterDevice = (
+export const _shouldUnregisterDevice = (
   chainId: string,
   safeAddresses: Array<string>,
   currentNotifiedSafes?: NotifiableSafes,
@@ -206,7 +231,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   // Current Safes registered for notifications in indexedDB
   const currentNotifiedSafes = useMemo(() => {
     const allPreferences = getAllPreferences()
-    return transformCurrentSubscribedSafes(allPreferences)
+    return _transformCurrentSubscribedSafes(allPreferences)
   }, [getAllPreferences])
 
   // `currentNotifiedSafes` is initially undefined until indexedDB resolves
@@ -224,15 +249,15 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
   // Merged added Safes and `currentNotifiedSafes` (in case subscriptions aren't added)
   const notifiableSafes = useMemo(() => {
-    return mergeNotifiableSafes(addedSafes, currentNotifiedSafes)
+    return _mergeNotifiableSafes(addedSafes, currentNotifiedSafes)
   }, [addedSafes, currentNotifiedSafes])
 
   const totalNotifiableSafes = useMemo(() => {
-    return getTotalNotifiableSafes(notifiableSafes)
+    return _getTotalNotifiableSafes(notifiableSafes)
   }, [notifiableSafes])
 
   const isAllSelected = useMemo(() => {
-    return areAllSafesSelected(notifiableSafes, selectedSafes)
+    return _areAllSafesSelected(notifiableSafes, selectedSafes)
   }, [notifiableSafes, selectedSafes])
 
   const onSelectAll = () => {
@@ -251,13 +276,13 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   }
 
   const totalSignaturesRequired = useMemo(() => {
-    return getTotalSignaturesRequired(selectedSafes, currentNotifiedSafes)
+    return _getTotalSignaturesRequired(selectedSafes, currentNotifiedSafes)
   }, [currentNotifiedSafes, selectedSafes])
 
   const canSave = useMemo(() => {
     return (
-      shouldRegisterSelectedSafes(selectedSafes, currentNotifiedSafes) ||
-      shouldUnregsiterSelectedSafes(selectedSafes, currentNotifiedSafes)
+      _shouldRegisterSelectedSafes(selectedSafes, currentNotifiedSafes) ||
+      _shouldUnregsiterSelectedSafes(selectedSafes, currentNotifiedSafes)
     )
   }, [selectedSafes, currentNotifiedSafes])
 
@@ -279,7 +304,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
     const registrationPromises: Array<Promise<unknown>> = []
 
-    const safesToRegister = getSafesToRegister(selectedSafes, currentNotifiedSafes)
+    const safesToRegister = _getSafesToRegister(selectedSafes, currentNotifiedSafes)
     if (safesToRegister) {
       registrationPromises.push(registerNotifications(safesToRegister))
 
@@ -289,10 +314,10 @@ export const GlobalPushNotifications = (): ReactElement | null => {
       })
     }
 
-    const safesToUnregister = getSafesToUnregister(selectedSafes, currentNotifiedSafes)
+    const safesToUnregister = _getSafesToUnregister(selectedSafes, currentNotifiedSafes)
     if (safesToUnregister) {
       const unregistrationPromises = Object.entries(safesToUnregister).flatMap(([chainId, safeAddresses]) => {
-        if (shouldUnregisterDevice(chainId, safeAddresses, currentNotifiedSafes)) {
+        if (_shouldUnregisterDevice(chainId, safeAddresses, currentNotifiedSafes)) {
           return unregisterDeviceNotifications(chainId)
         }
         return safeAddresses.map((safeAddress) => unregisterSafeNotifications(chainId, safeAddress))
