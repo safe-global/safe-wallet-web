@@ -11,6 +11,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  CircularProgress,
 } from '@mui/material'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
@@ -192,6 +193,7 @@ const shouldUnregisterDevice = (
 export const GlobalPushNotifications = (): ReactElement | null => {
   const chains = useChains()
   const addedSafes = useAppSelector(selectAllAddedSafes)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { dismissPushNotificationBanner } = useDismissPushNotificationsBanner()
   const { getAllPreferences } = useNotificationPreferences()
@@ -264,11 +266,14 @@ export const GlobalPushNotifications = (): ReactElement | null => {
       return
     }
 
+    setIsLoading(true)
+
     // Although the (un-)registration functions will request permission in getToken we manually
     // check beforehand to prevent multiple promises in registrationPromises from throwing
     const isGranted = await requestNotificationPermission()
 
     if (!isGranted) {
+      setIsLoading(false)
       return
     }
 
@@ -299,6 +304,8 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     await Promise.all(registrationPromises)
 
     trackEvent(PUSH_NOTIFICATION_EVENTS.SAVE_SETTINGS)
+
+    setIsLoading(false)
   }
 
   if (totalNotifiableSafes === 0) {
@@ -322,8 +329,8 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
           <CheckWallet allowNonOwner>
             {(isOk) => (
-              <Button variant="contained" disabled={!canSave || !isOk} onClick={onSave}>
-                Save
+              <Button variant="contained" disabled={!canSave || !isOk || isLoading} onClick={onSave}>
+                {isLoading ? <CircularProgress size={20} /> : 'Save'}
               </Button>
             )}
           </CheckWallet>
