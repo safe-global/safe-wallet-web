@@ -2,18 +2,13 @@ import { useState } from 'react'
 import useMPC from './useMPC'
 import BN from 'bn.js'
 import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
-import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
+import { COREKIT_STATUS, getWebBrowserFactor } from '@web3auth/mpc-core-kit'
 import useOnboard, { connectWallet } from '../useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 
 export enum MPCWalletState {
   NOT_INITIALIZED,
   AUTHENTICATING,
-  AUTHENTICATED,
-  CREATING_SECOND_FACTOR,
-  RECOVERING_ACCOUNT_PASSWORD,
-  CREATED_SECOND_FACTOR,
-  FINALIZING_ACCOUNT,
   READY,
 }
 
@@ -38,7 +33,7 @@ export const useMPCWallet = (): MPCWalletHook => {
     // Resetting your account means clearing all the metadata associated with it from the metadata server
     // The key details will be deleted from our server and you will not be able to recover your account
     if (!mpcCoreKit || !mpcCoreKit.metadataKey) {
-      throw new Error('coreKitInstance is not set or the user is not logged in')
+      throw new Error('MPC Core Kit  is not initialized or the user is not logged in')
     }
 
     // In web3auth an account is reset by overwriting the metadata with KEY_NOT_FOUND
@@ -50,13 +45,11 @@ export const useMPCWallet = (): MPCWalletHook => {
 
   const triggerLogin = async () => {
     if (!onboard) {
-      console.error('Onboard not initialized')
-      return
+      throw Error('Onboard is not initialized')
     }
 
     if (!mpcCoreKit) {
-      console.error('tKey not initialized yet')
-      return
+      throw Error('MPC Core Kit is not initialized')
     }
     try {
       setWalletState(MPCWalletState.AUTHENTICATING)
@@ -68,6 +61,18 @@ export const useMPCWallet = (): MPCWalletHook => {
         },
       })
 
+      if (mpcCoreKit.status === COREKIT_STATUS.REQUIRED_SHARE) {
+        // Check if we have a device share stored
+        const deviceFactor = await getWebBrowserFactor(mpcCoreKit)
+        if (deviceFactor) {
+          // Recover from device factor
+          const deviceFactorKey = new BN(deviceFactor, 'hex')
+          await mpcCoreKit.inputFactorKey(deviceFactorKey)
+        }
+      }
+
+      // TODO: IF still required share, trigger another recovery option (i.e. Security Questions) or throw error as unrecoverable
+
       if (mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
         connectWallet(onboard, {
           autoSelect: {
@@ -77,7 +82,7 @@ export const useMPCWallet = (): MPCWalletHook => {
         }).catch((reason) => console.error('Error connecting to MPC module:', reason))
       }
 
-      setWalletState(MPCWalletState.AUTHENTICATED)
+      setWalletState(MPCWalletState.READY)
     } catch (error) {
       setWalletState(MPCWalletState.NOT_INITIALIZED)
       console.error(error)

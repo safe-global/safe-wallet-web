@@ -27,6 +27,7 @@ export const AppRoutes = {
   },
   settings: {
     spendingLimits: '/settings/spending-limits',
+    signerAccount: '/settings/signer-account',
     setup: '/settings/setup',
     modules: '/settings/modules',
     index: '/settings',
