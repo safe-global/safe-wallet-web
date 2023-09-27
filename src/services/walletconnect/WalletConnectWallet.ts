@@ -117,8 +117,6 @@ class WalletConnectWallet {
       namespaces: getNamespaces(chains, proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS),
     })
 
-    // TODO: Align session via update then filter "fake" addresses? If we filter in updateSession this would be covered
-
     // Workaround: WalletConnect doesn't have a session_add event
     this.web3Wallet?.events.emit(SESSION_ADD_EVENT)
 
@@ -126,38 +124,44 @@ class WalletConnectWallet {
   }
 
   private async updateSession(session: SessionTypes.Struct, chainId: string, safeAddress: string) {
-    const currentChains = session.namespaces[EIP155]?.chains || []
-    const currentAccounts = session.namespaces[EIP155]?.accounts || []
+    assertWeb3Wallet(this.web3Wallet)
 
-    const eip155ChainIds = [...new Set([...currentChains, getEip155ChainId(chainId)])]
-    const eip155Accounts = [...new Set([...currentAccounts, `${getEip155ChainId(chainId)}:${safeAddress}`])]
+    const currentEip155ChainIds = session.namespaces[EIP155]?.chains || []
+    const currentEip155Accounts = session.namespaces[EIP155]?.accounts || []
 
-    const namespaces: SessionTypes.Namespaces = {
-      [EIP155]: {
-        ...session.namespaces[EIP155],
-        chains: eip155ChainIds,
-        accounts: eip155Accounts,
-      },
+    const newEip155ChainId = getEip155ChainId(chainId)
+    const newEip155Account = `${newEip155ChainId}:${safeAddress}`
+
+    const hasNewChainId = !currentEip155ChainIds.includes(newEip155ChainId)
+    const hasNewAccount = !currentEip155Accounts.includes(newEip155Account)
+
+    // Add new chainId and/or account to the session namespace
+    if (hasNewChainId || hasNewAccount) {
+      const uniqueEip155ChainIds = [...new Set([newEip155ChainId, ...currentEip155ChainIds])]
+      const unqiueEip155Accounts = [...new Set([newEip155Account, ...currentEip155Accounts])]
+
+      const namespaces: SessionTypes.Namespaces = {
+        [EIP155]: {
+          ...session.namespaces[EIP155],
+          chains: uniqueEip155ChainIds,
+          accounts: unqiueEip155Accounts,
+        },
+      }
+
+      await this.web3Wallet.updateSession({
+        topic: session.topic,
+        namespaces,
+      })
     }
 
-    const { topic } = session
+    // Switch to the new account
+    await this.accountsChanged(session.topic, chainId, safeAddress)
 
-    await this.web3Wallet?.updateSession({
-      topic,
-      namespaces,
-    })
-
-    // TODO: Only emit if new address doesn't match that of current one?
-    await this.accountsChanged(topic, chainId, safeAddress)
-
-    await this.chainChanged(topic, chainId)
-
-    // TODO: Filter "fake" addresses?
+    // Switch to the new chain
+    await this.chainChanged(session.topic, chainId)
   }
 
   public async updateSessions(chainId: string, safeAddress: string) {
-    assertWeb3Wallet(this.web3Wallet)
-
     await Promise.all(this.getActiveSessions().map((session) => this.updateSession(session, chainId, safeAddress)))
   }
 
