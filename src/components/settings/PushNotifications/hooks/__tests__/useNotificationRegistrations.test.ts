@@ -30,12 +30,12 @@ describe('useNotificationRegistrations', () => {
   describe('registerNotifications', () => {
     beforeEach(() => {
       const mockProvider = new Web3Provider(jest.fn())
-      jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
+      jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockProvider)
       jest.spyOn(wallet, 'default').mockImplementation(
         () =>
           ({
             label: 'MetaMask',
-          } as unknown as ConnectedWallet),
+          } as ConnectedWallet),
       )
     })
 
