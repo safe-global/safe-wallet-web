@@ -6,9 +6,11 @@ import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 import { renderHook } from '@/tests/test-utils'
 import { useNotificationRegistrations } from '../useNotificationRegistrations'
 import * as web3 from '@/hooks/wallets/web3'
+import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '../../logic'
 import * as preferences from '../useNotificationPreferences'
 import * as notificationsSlice from '@/store/notificationsSlice'
+import type { ConnectedWallet } from '@/services/onboard'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk')
 
@@ -28,7 +30,13 @@ describe('useNotificationRegistrations', () => {
   describe('registerNotifications', () => {
     beforeEach(() => {
       const mockProvider = new Web3Provider(jest.fn())
-      jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
+      jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockProvider)
+      jest.spyOn(wallet, 'default').mockImplementation(
+        () =>
+          ({
+            label: 'MetaMask',
+          } as ConnectedWallet),
+      )
     })
 
     const registerDeviceSpy = jest.spyOn(sdk, 'registerDevice')
@@ -96,7 +104,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid: self.crypto.randomUUID(),
-            _createPreferences: createPreferencesMock,
+            createPreferences: createPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -128,7 +136,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid: self.crypto.randomUUID(),
-            _createPreferences: createPreferencesMock,
+            createPreferences: createPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -159,7 +167,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid: self.crypto.randomUUID(),
-            _createPreferences: createPreferencesMock,
+            createPreferences: createPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -210,7 +218,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid,
-            _deletePreferences: deletePreferencesMock,
+            deletePreferences: deletePreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -236,7 +244,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid,
-            _deletePreferences: deletePreferencesMock,
+            deletePreferences: deletePreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -262,7 +270,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid,
-            _deletePreferences: deletePreferencesMock,
+            deletePreferences: deletePreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -302,13 +310,13 @@ describe('useNotificationRegistrations', () => {
       unregisterDeviceSpy.mockImplementation(() => Promise.resolve('Unregistration could not be completed.'))
 
       const uuid = self.crypto.randomUUID()
-      const deleteAllPreferencesMock = jest.fn()
+      const deleteAllChainPreferencesMock = jest.fn()
 
       ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
         () =>
           ({
             uuid,
-            _deleteAllPreferences: deleteAllPreferencesMock,
+            deleteAllChainPreferences: deleteAllChainPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -318,20 +326,20 @@ describe('useNotificationRegistrations', () => {
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
-      expect(deleteAllPreferencesMock).not.toHaveBeenCalled()
+      expect(deleteAllChainPreferencesMock).not.toHaveBeenCalled()
     })
 
     it('does not clear preferences if unregistration throws', async () => {
       unregisterDeviceSpy.mockImplementation(() => Promise.reject())
 
       const uuid = self.crypto.randomUUID()
-      const deleteAllPreferencesMock = jest.fn()
+      const deleteAllChainPreferencesMock = jest.fn()
 
       ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
         () =>
           ({
             uuid,
-            _deleteAllPreferences: deleteAllPreferencesMock,
+            deleteAllChainPreferences: deleteAllChainPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -341,20 +349,20 @@ describe('useNotificationRegistrations', () => {
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
-      expect(deleteAllPreferencesMock).not.toHaveBeenCalledWith()
+      expect(deleteAllChainPreferencesMock).not.toHaveBeenCalledWith()
     })
 
-    it('clears preferences if unregistration succeeds', async () => {
+    it('clears chain preferences if unregistration succeeds', async () => {
       unregisterDeviceSpy.mockImplementation(() => Promise.resolve())
 
       const uuid = self.crypto.randomUUID()
-      const deleteAllPreferencesMock = jest.fn()
+      const deleteAllChainPreferencesMock = jest.fn()
 
       ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
         () =>
           ({
             uuid,
-            _deleteAllPreferences: deleteAllPreferencesMock,
+            deleteAllChainPreferences: deleteAllChainPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -364,7 +372,7 @@ describe('useNotificationRegistrations', () => {
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
-      expect(deleteAllPreferencesMock).toHaveBeenCalled()
+      expect(deleteAllChainPreferencesMock).toHaveBeenCalledWith('1')
     })
   })
 })

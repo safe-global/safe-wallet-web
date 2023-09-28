@@ -63,7 +63,11 @@ export const PushNotifications = (): ReactElement => {
 
     setIsRegistering(true)
 
-    await assertWalletChain(onboard, safe.chainId)
+    try {
+      await assertWalletChain(onboard, safe.chainId)
+    } catch {
+      return
+    }
 
     if (!preferences) {
       await registerNotifications({ [safe.chainId]: [safe.address.value] })
