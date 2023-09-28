@@ -62,7 +62,7 @@ describe('Adding an owner', () => {
     it('Verify that Name field not mandatory', () => {
       owner.waitForConnectionStatus()
       owner.openAddOwnerWindow()
-      owner.typeOwnerAddress(constants.addresBookContacts.user2.address)
+      owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
       owner.clickOnNextBtn()
       owner.verifyConfirmTransactionWindowDisplayed()
     })
@@ -79,6 +79,9 @@ describe('Adding an owner', () => {
       owner.typeOwnerAddress(constants.SEPOLIA_TEST_SAFE_1)
       owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.ownSafe)
 
+      owner.typeOwnerAddress(constants.addresBookContacts.user1.address.replace('F', 'f'))
+      owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidChecksum)
+
       owner.typeOwnerAddress(constants.DEFAULT_OWNER_ADDRESS)
       owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.alreadyAdded)
     })
@@ -88,6 +91,20 @@ describe('Adding an owner', () => {
       owner.openAddOwnerWindow()
       owner.typeOwnerAddress(constants.DEFAULT_OWNER_ADDRESS)
       owner.verifyThreshold(1, 2)
+    })
+
+    it('Verify valid Address validation', () => {
+      owner.waitForConnectionStatus()
+      owner.openAddOwnerWindow()
+      owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
+      owner.clickOnNextBtn()
+      owner.verifyConfirmTransactionWindowDisplayed()
+      cy.reload()
+      owner.waitForConnectionStatus()
+      owner.openAddOwnerWindow()
+      owner.typeOwnerAddress(constants.SEPOLIA_TEST_SAFE_2)
+      owner.clickOnNextBtn()
+      owner.verifyConfirmTransactionWindowDisplayed()
     })
   })
 })

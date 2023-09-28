@@ -3,9 +3,18 @@ import * as constants from '../../support/constants'
 const acceptSelection = 'Accept selection'
 
 export function acceptCookies() {
-  cy.contains(acceptSelection).click()
-  cy.contains(acceptSelection).should('not.exist')
-  cy.wait(500)
+  cy.wait(1000)
+  cy.get('button')
+    .contains(acceptSelection)
+    .should(() => {})
+    .then(($button) => {
+      if (!$button.length) {
+        return
+      }
+      cy.wrap($button).click()
+      cy.contains(acceptSelection).should('not.exist')
+      cy.wait(500)
+    })
 }
 
 export function verifyGoerliWalletHeader() {
