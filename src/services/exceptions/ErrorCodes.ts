@@ -45,8 +45,8 @@ enum ErrorCodes {
   _702 = '702: Failed to remove from local/session storage',
   _703 = '703: Error importing an address book',
   _704 = '704: Error importing global data',
-  _705 = '704: Failed to read from IndexedDB',
-  _706 = '704: Failed to write to IndexedDB',
+  _705 = '705: Failed to read from IndexedDB',
+  _706 = '706: Failed to write to IndexedDB',
 
   _800 = '800: Safe creation tx failed',
   _801 = '801: Failed to send a tx with a spending limit',

@@ -104,7 +104,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid: self.crypto.randomUUID(),
-            _createPreferences: createPreferencesMock,
+            createPreferences: createPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -136,7 +136,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid: self.crypto.randomUUID(),
-            _createPreferences: createPreferencesMock,
+            createPreferences: createPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -167,7 +167,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid: self.crypto.randomUUID(),
-            _createPreferences: createPreferencesMock,
+            createPreferences: createPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -218,7 +218,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid,
-            _deletePreferences: deletePreferencesMock,
+            deletePreferences: deletePreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -244,7 +244,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid,
-            _deletePreferences: deletePreferencesMock,
+            deletePreferences: deletePreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -270,7 +270,7 @@ describe('useNotificationRegistrations', () => {
         () =>
           ({
             uuid,
-            _deletePreferences: deletePreferencesMock,
+            deletePreferences: deletePreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -310,13 +310,13 @@ describe('useNotificationRegistrations', () => {
       unregisterDeviceSpy.mockImplementation(() => Promise.resolve('Unregistration could not be completed.'))
 
       const uuid = self.crypto.randomUUID()
-      const deleteAllPreferencesMock = jest.fn()
+      const deleteAllChainPreferencesMock = jest.fn()
 
       ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
         () =>
           ({
             uuid,
-            _deleteAllPreferences: deleteAllPreferencesMock,
+            deleteAllChainPreferences: deleteAllChainPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -326,20 +326,20 @@ describe('useNotificationRegistrations', () => {
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
-      expect(deleteAllPreferencesMock).not.toHaveBeenCalled()
+      expect(deleteAllChainPreferencesMock).not.toHaveBeenCalled()
     })
 
     it('does not clear preferences if unregistration throws', async () => {
       unregisterDeviceSpy.mockImplementation(() => Promise.reject())
 
       const uuid = self.crypto.randomUUID()
-      const deleteAllPreferencesMock = jest.fn()
+      const deleteAllChainPreferencesMock = jest.fn()
 
       ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
         () =>
           ({
             uuid,
-            _deleteAllPreferences: deleteAllPreferencesMock,
+            deleteAllChainPreferences: deleteAllChainPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -349,20 +349,20 @@ describe('useNotificationRegistrations', () => {
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
-      expect(deleteAllPreferencesMock).not.toHaveBeenCalledWith()
+      expect(deleteAllChainPreferencesMock).not.toHaveBeenCalledWith()
     })
 
-    it('clears preferences if unregistration succeeds', async () => {
+    it('clears chain preferences if unregistration succeeds', async () => {
       unregisterDeviceSpy.mockImplementation(() => Promise.resolve())
 
       const uuid = self.crypto.randomUUID()
-      const deleteAllPreferencesMock = jest.fn()
+      const deleteAllChainPreferencesMock = jest.fn()
 
       ;(preferences.useNotificationPreferences as jest.Mock).mockImplementation(
         () =>
           ({
             uuid,
-            _deleteAllPreferences: deleteAllPreferencesMock,
+            deleteAllChainPreferences: deleteAllChainPreferencesMock,
           } as unknown as ReturnType<typeof preferences.useNotificationPreferences>),
       )
 
@@ -372,7 +372,7 @@ describe('useNotificationRegistrations', () => {
 
       expect(unregisterDeviceSpy).toHaveBeenCalledWith('1', uuid)
 
-      expect(deleteAllPreferencesMock).toHaveBeenCalled()
+      expect(deleteAllChainPreferencesMock).toHaveBeenCalledWith('1')
     })
   })
 })
