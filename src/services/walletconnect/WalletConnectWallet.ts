@@ -89,7 +89,7 @@ class WalletConnectWallet {
       const eip155ChainIds = chainIds.map(getEip155ChainId)
 
       // Create a list of addresses for each chainId
-      const eip155Accounts = chainIds.map((chainId) => `${getEip155ChainId(chainId)}:${safeAddress}`)
+      const eip155Accounts = eip155ChainIds.map((eip155ChainId) => `${eip155ChainId}:${safeAddress}`)
 
       return buildApprovedNamespaces({
         proposal: proposal.params,
@@ -98,6 +98,7 @@ class WalletConnectWallet {
             chains: eip155ChainIds,
             methods,
             accounts: eip155Accounts,
+            // Don't include optionalNamespaces events
             events: proposal.params.requiredNamespaces[EIP155]?.events || [],
           },
         },
@@ -137,14 +138,11 @@ class WalletConnectWallet {
 
     // Add new chainId and/or account to the session namespace
     if (hasNewChainId || hasNewAccount) {
-      const uniqueEip155ChainIds = [...new Set([newEip155ChainId, ...currentEip155ChainIds])]
-      const unqiueEip155Accounts = [...new Set([newEip155Account, ...currentEip155Accounts])]
-
       const namespaces: SessionTypes.Namespaces = {
         [EIP155]: {
           ...session.namespaces[EIP155],
-          chains: uniqueEip155ChainIds,
-          accounts: unqiueEip155Accounts,
+          chains: [newEip155ChainId, ...currentEip155ChainIds],
+          accounts: [newEip155Account, ...currentEip155Accounts],
         },
       }
 

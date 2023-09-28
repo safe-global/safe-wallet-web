@@ -1,6 +1,6 @@
 import { hexZeroPad } from 'ethers/lib/utils'
 import type { ProposalTypes, SessionTypes, SignClientTypes, Verify } from '@walletconnect/types'
-import type { IWeb3Wallet } from '@walletconnect/web3wallet'
+import type { IWeb3Wallet, Web3WalletTypes } from '@walletconnect/web3wallet'
 
 import WalletConnectWallet from './WalletConnectWallet'
 
@@ -22,37 +22,25 @@ jest.mock('@walletconnect/web3wallet', () => {
       },
     } as unknown as IWeb3Wallet['core']
 
-    on = jest.fn()
-
-    off = jest.fn()
-
+    approveSession = jest.fn()
+    updateSession = jest.fn()
     disconnectSession = jest.fn()
 
     getActiveSessions = jest.fn()
 
     respondSessionRequest = jest.fn()
 
-    emitSessionEvent = jest.fn()
-
-    updateSession = jest.fn()
-
-    approveSession = jest.fn()
-
     events = {
       emit: jest.fn(),
     } as unknown as IWeb3Wallet['events']
+    on = jest.fn()
+    off = jest.fn()
+
+    emitSessionEvent = jest.fn()
   }
 
   return {
     Web3Wallet: MockWeb3Wallet,
-  }
-})
-
-jest.mock('@walletconnect/utils', () => {
-  // TODO: Import actual utils from @walletconnect/utils in order to complete todo tests
-  return {
-    getSdkError: jest.fn(() => ({ message: 'error' })),
-    buildApprovedNamespaces: jest.fn(() => ({})),
   }
 })
 
@@ -110,10 +98,89 @@ describe('WalletConnectWallet', () => {
   })
 
   describe('approveSession', () => {
-    it.todo('should approve the session with the correct namespace')
+    it('should approve the session with proposed required/optional chains/methods and required events', async () => {
+      const approveSessionSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'approveSession')
+
+      const proposal = {
+        id: 123,
+        params: {
+          id: 456,
+          pairingTopic: 'pairingTopic',
+          expiry: 789,
+          requiredNamespaces: {
+            eip155: {
+              chains: ['eip155:1'],
+              methods: ['eth_sendTransaction', 'personal_sign'],
+              events: ['chainChanged', 'accountsChanged'],
+            },
+          },
+          optionalNamespaces: {
+            eip155: {
+              chains: ['eip155:43114', 'eip155:42161', 'eip155:8453', 'eip155:100', 'eip155:137', 'eip155:1101'],
+              // Not included as optional
+              methods: [
+                'eth_sendTransaction',
+                'personal_sign',
+                'eth_accounts',
+                'eth_requestAccounts',
+                'eth_sendRawTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+                'wallet_switchEthereumChain',
+                'wallet_addEthereumChain',
+                'wallet_getPermissions',
+                'wallet_requestPermissions',
+                'wallet_registerOnboarding',
+                'wallet_watchAsset',
+                'wallet_scanQRCode',
+              ],
+              events: ['chainChanged', 'accountsChanged', 'message', 'disconnect', 'connect'],
+            },
+          },
+        },
+      } as unknown as Web3WalletTypes.SessionProposal
+
+      await wallet.approveSession(
+        proposal,
+        '69420', // Not in proposal, therefore not supported
+        hexZeroPad('0x123', 20),
+      )
+
+      const namespaces = {
+        eip155: {
+          chains: [
+            'eip155:1',
+            'eip155:43114',
+            'eip155:42161',
+            'eip155:8453',
+            'eip155:100',
+            'eip155:137',
+            'eip155:1101',
+          ],
+          methods: ['eth_sendTransaction', 'personal_sign'],
+          events: ['chainChanged', 'accountsChanged'],
+          accounts: [
+            `eip155:1:${hexZeroPad('0x123', 20)}`,
+            `eip155:43114:${hexZeroPad('0x123', 20)}`,
+            `eip155:42161:${hexZeroPad('0x123', 20)}`,
+            `eip155:8453:${hexZeroPad('0x123', 20)}`,
+            `eip155:100:${hexZeroPad('0x123', 20)}`,
+            `eip155:137:${hexZeroPad('0x123', 20)}`,
+            `eip155:1101:${hexZeroPad('0x123', 20)}`,
+          ],
+        },
+      }
+
+      expect(approveSessionSpy).toHaveBeenCalledWith({
+        id: 123,
+        namespaces,
+      })
+    })
 
     it('should call emitSessionEvent with the correct parameters', async () => {
-      const approveSessionSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'approveSession')
       const emitSpy = jest.spyOn(((wallet as any).web3Wallet as IWeb3Wallet).events, 'emit')
 
       await wallet.approveSession(
@@ -136,19 +203,66 @@ describe('WalletConnectWallet', () => {
         hexZeroPad('0x123', 20),
       )
 
-      expect(approveSessionSpy).toHaveBeenCalled()
-
       expect(emitSpy).toHaveBeenCalledWith('session_add')
     })
   })
 
   describe('updateSession', () => {
-    it.todo('should update the session with the correct namespace')
+    it('should update the session with the correct namespace', async () => {
+      const updateSessionSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'updateSession')
+      const emitSessionEventSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'emitSessionEvent')
 
-    it.todo('should not update the session if the chainId or account is already in the namespace')
+      const session = {
+        topic: 'topic1',
+        namespaces: {
+          eip155: {
+            chains: ['eip155:1'],
+            accounts: [`eip155:1:${hexZeroPad('0x123', 20)}`],
+            events: ['chainChanged', 'accountsChanged'],
+            methods: [],
+          },
+        },
+      } as unknown as SessionTypes.Struct
+
+      await (wallet as any).updateSession(session, '69420', hexZeroPad('0x123', 20))
+
+      expect(updateSessionSpy).toHaveBeenCalledWith({
+        topic: 'topic1',
+        namespaces: {
+          eip155: {
+            chains: ['eip155:69420', 'eip155:1'],
+            accounts: [`eip155:69420:${hexZeroPad('0x123', 20)}`, `eip155:1:${hexZeroPad('0x123', 20)}`],
+            events: ['chainChanged', 'accountsChanged'],
+            methods: [],
+          },
+        },
+      })
+
+      expect(emitSessionEventSpy).toHaveBeenCalledTimes(2)
+    })
+
+    it('should not update the session if the chainId and account is already in the namespace', async () => {
+      const updateSessionSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'updateSession')
+      const emitSessionEventSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'emitSessionEvent')
+
+      const session = {
+        topic: 'topic1',
+        namespaces: {
+          eip155: {
+            chains: ['eip155:1'],
+            accounts: [`eip155:1:${hexZeroPad('0x123', 20)}`],
+          },
+        },
+      } as unknown as SessionTypes.Struct
+
+      await (wallet as any).updateSession(session, '1', hexZeroPad('0x123', 20))
+
+      expect(updateSessionSpy).not.toHaveBeenCalled()
+
+      expect(emitSessionEventSpy).toHaveBeenCalledTimes(2)
+    })
 
     it('should call emitSessionEvent with the correct parameters', async () => {
-      const updateSessionSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'updateSession')
       const emitSessionEventSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'emitSessionEvent')
 
       await (wallet as any).updateSession(
@@ -159,8 +273,6 @@ describe('WalletConnectWallet', () => {
         '1',
         hexZeroPad('0x123', 20),
       )
-
-      expect(updateSessionSpy).toHaveBeenCalled()
 
       expect(emitSessionEventSpy).toHaveBeenCalledWith({
         topic: 'topic1',
@@ -260,7 +372,10 @@ describe('WalletConnectWallet', () => {
 
       expect(disconnectSessionSpy).toHaveBeenCalledWith({
         topic: 'topic1',
-        reason: expect.any(Object),
+        reason: {
+          code: 6000,
+          message: 'User disconnected.',
+        },
       })
     })
   })
