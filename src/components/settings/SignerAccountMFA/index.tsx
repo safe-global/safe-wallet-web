@@ -13,10 +13,11 @@ const SignerAccountMFA = () => {
   const [enablingMFA, setEnablingMFA] = useState(false)
 
   const enableMFA = async () => {
-    setEnablingMFA(true)
     if (!mpcCoreKit) {
       return
     }
+
+    setEnablingMFA(true)
     try {
       // First enable MFA in mpcCoreKit
       const recoveryFactor = await mpcCoreKit.enableMFA({})
@@ -35,7 +36,7 @@ const SignerAccountMFA = () => {
   if (mpcCoreKit?.status !== COREKIT_STATUS.LOGGED_IN) {
     return (
       <Box>
-        <Typography>You are currently not logged in through a social account</Typography>
+        <Typography>You are currently not logged in with a social account</Typography>
       </Box>
     )
   }

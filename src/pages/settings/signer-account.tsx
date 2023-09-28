@@ -20,7 +20,7 @@ const SignerAccountPage: NextPage = () => {
           <Grid container spacing={3}>
             <Grid item lg={4} xs={12}>
               <Typography variant="h4" fontWeight="bold" mb={1}>
-                Multi factor Authentication
+                Multi-factor Authentication
               </Typography>
             </Grid>
 

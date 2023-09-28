@@ -14,18 +14,10 @@ const useMFASettings = () => {
 
   const { shareDescriptions } = mpcCoreKit?.getKeyDetails()
 
-  const hashedShareModuleFactor = Object.entries(shareDescriptions).find(([key, value]) =>
-    value[0]?.includes('hashedShare'),
-  )
-
-  if (hashedShareModuleFactor) {
-    return {
-      mfaEnabled: false,
-    }
-  }
+  const isMFAEnabled = !Object.entries(shareDescriptions).some(([key, value]) => value[0]?.includes('hashedShare'))
 
   return {
-    mfaEnabled: true,
+    mfaEnabled: isMFAEnabled,
   }
 }
 

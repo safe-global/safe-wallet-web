@@ -40,7 +40,7 @@ export const useInitMPC = () => {
     const web3AuthCoreKit = new Web3AuthMPCCoreKit({
       web3AuthClientId: WEB3_AUTH_CLIENT_ID,
       // Available networks are "sapphire_devnet", "sapphire_mainnet"
-      web3AuthNetwork: WEB3AUTH_NETWORK.DEVNET,
+      web3AuthNetwork: WEB3AUTH_NETWORK.MAINNET,
       baseUrl: `${window.location.origin}/serviceworker`,
       uxMode: 'popup',
       enableLogging: true,

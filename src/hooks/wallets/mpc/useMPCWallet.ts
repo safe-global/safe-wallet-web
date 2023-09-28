@@ -33,7 +33,7 @@ export const useMPCWallet = (): MPCWalletHook => {
     // Resetting your account means clearing all the metadata associated with it from the metadata server
     // The key details will be deleted from our server and you will not be able to recover your account
     if (!mpcCoreKit || !mpcCoreKit.metadataKey) {
-      throw new Error('MPC Core Kit  is not initialized or the user is not logged in')
+      throw new Error('MPC Core Kit is not initialized or the user is not logged in')
     }
 
     // In web3auth an account is reset by overwriting the metadata with KEY_NOT_FOUND
