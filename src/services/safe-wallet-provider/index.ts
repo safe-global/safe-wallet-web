@@ -124,7 +124,7 @@ export class SafeWalletProvider {
           tx.gas = parseInt(tx.gas, 16)
         }
 
-        const resp = await this.sdk.send(
+        const { safeTxHash } = await this.sdk.send(
           {
             txs: [tx],
             params: { safeTxGas: Number(tx.gas) },
@@ -133,9 +133,9 @@ export class SafeWalletProvider {
         )
 
         // Store fake transaction
-        this.submittedTxs.set(resp.safeTxHash, {
+        this.submittedTxs.set(safeTxHash, {
           from: this.safe.safeAddress,
-          hash: resp.safeTxHash,
+          hash: safeTxHash,
           gas: 0,
           gasPrice: '0x00',
           nonce: 0,
@@ -147,7 +147,7 @@ export class SafeWalletProvider {
           transactionIndex: null,
         })
 
-        return resp.safeTxHash
+        return safeTxHash
 
       case 'eth_getTransactionByHash':
         let txHash = params[0] as string
@@ -155,6 +155,7 @@ export class SafeWalletProvider {
           const resp = await this.sdk.getBySafeTxHash(txHash)
           txHash = resp.txHash || txHash
         } catch (e) {}
+
         // Use fake transaction if we don't have a real tx hash
         if (this.submittedTxs.has(txHash)) {
           return this.submittedTxs.get(txHash)
