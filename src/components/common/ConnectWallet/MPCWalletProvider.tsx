@@ -6,7 +6,7 @@ type MPCWalletContext = {
   triggerLogin: () => Promise<void>
   resetAccount: () => Promise<void>
   upsertPasswordBackup: (password: string) => Promise<void>
-  recoverFactorWithPassword: (password: string) => Promise<void>
+  recoverFactorWithPassword: (password: string, storeDeviceFactor: boolean) => Promise<void>
   walletState: MPCWalletState
   userInfo: {
     email: string | undefined

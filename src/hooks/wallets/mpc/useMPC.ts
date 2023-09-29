@@ -24,7 +24,7 @@ export const useInitMPC = () => {
       chainNamespace: CHAIN_NAMESPACES.EIP155,
       rpcTarget: getRpcServiceUrl(chain.rpcUri),
       displayName: chain.chainName,
-      blockExplorer: chain.blockExplorerUriTemplate.address,
+      blockExplorer: new URL(chain.blockExplorerUriTemplate.address).origin,
       ticker: chain.nativeCurrency.symbol,
       tickerName: chain.nativeCurrency.name,
     }
@@ -79,7 +79,7 @@ export const useInitMPC = () => {
   }, [chain, onboard])
 }
 
-export const getMPCCoreKitInstance = getStore
+export const _getMPCCoreKitInstance = getStore
 
 export const setMPCCoreKitInstance = setStore
 

@@ -1,13 +1,10 @@
-import useMPC from '@/hooks/wallets/mpc/useMPC'
-import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
+import { COREKIT_STATUS, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 
 export type MFASettings = {
   mfaEnabled: boolean
 } | null
 
-const useMFASettings = () => {
-  const mpcCoreKit = useMPC()
-
+const useMFASettings = (mpcCoreKit: Web3AuthMPCCoreKit | undefined) => {
   if (mpcCoreKit?.status !== COREKIT_STATUS.LOGGED_IN) {
     return null
   }

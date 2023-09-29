@@ -5,18 +5,22 @@ import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
 import { COREKIT_STATUS, getWebBrowserFactor } from '@web3auth/mpc-core-kit'
 import useOnboard, { connectWallet } from '../useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { useSecurityQuestions } from './recovery/useSecurityQuestions'
+import { useDeviceShare } from './recovery/useDeviceShare'
 
 export enum MPCWalletState {
   NOT_INITIALIZED,
   AUTHENTICATING,
+  MANUAL_RECOVERY,
   READY,
 }
 
 export type MPCWalletHook = {
   upsertPasswordBackup: (password: string) => Promise<void>
-  recoverFactorWithPassword: (password: string) => Promise<void>
+  recoverFactorWithPassword: (password: string, storeDeviceShare: boolean) => Promise<void>
   walletState: MPCWalletState
   triggerLogin: () => Promise<void>
+  isMFAEnabled: () => boolean
   resetAccount: () => Promise<void>
   userInfo: {
     email: string | undefined
@@ -27,6 +31,17 @@ export const useMPCWallet = (): MPCWalletHook => {
   const [walletState, setWalletState] = useState(MPCWalletState.NOT_INITIALIZED)
   const mpcCoreKit = useMPC()
   const onboard = useOnboard()
+  const securityQuestions = useSecurityQuestions(mpcCoreKit)
+  const deviceShareModule = useDeviceShare(mpcCoreKit)
+
+  const isMFAEnabled = () => {
+    if (!mpcCoreKit) {
+      return false
+    }
+    const { shareDescriptions } = mpcCoreKit?.getKeyDetails()
+
+    return !Object.entries(shareDescriptions).some(([key, value]) => value[0]?.includes('hashedShare'))
+  }
 
   const criticalResetAccount = async (): Promise<void> => {
     // This is a critical function that should only be used for testing purposes
@@ -62,37 +77,68 @@ export const useMPCWallet = (): MPCWalletHook => {
       })
 
       if (mpcCoreKit.status === COREKIT_STATUS.REQUIRED_SHARE) {
+        console.log('Share required')
         // Check if we have a device share stored
         const deviceFactor = await getWebBrowserFactor(mpcCoreKit)
         if (deviceFactor) {
+          console.log('Using device factor')
           // Recover from device factor
           const deviceFactorKey = new BN(deviceFactor, 'hex')
           await mpcCoreKit.inputFactorKey(deviceFactorKey)
+        } else {
+          console.log('using password')
+          // Check password recovery
+          if (securityQuestions.isEnabled()) {
+            setWalletState(MPCWalletState.MANUAL_RECOVERY)
+            return
+          }
         }
       }
 
-      // TODO: IF still required share, trigger another recovery option (i.e. Security Questions) or throw error as unrecoverable
-
-      if (mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
-        connectWallet(onboard, {
-          autoSelect: {
-            label: ONBOARD_MPC_MODULE_LABEL,
-            disableModals: true,
-          },
-        }).catch((reason) => console.error('Error connecting to MPC module:', reason))
-      }
-
-      setWalletState(MPCWalletState.READY)
+      finalizeLogin()
     } catch (error) {
       setWalletState(MPCWalletState.NOT_INITIALIZED)
       console.error(error)
     }
   }
 
+  const finalizeLogin = () => {
+    if (!mpcCoreKit || !onboard) {
+      return
+    }
+    if (mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
+      connectWallet(onboard, {
+        autoSelect: {
+          label: ONBOARD_MPC_MODULE_LABEL,
+          disableModals: true,
+        },
+      }).catch((reason) => console.error('Error connecting to MPC module:', reason))
+      setWalletState(MPCWalletState.READY)
+    }
+  }
+
+  const recoverFactorWithPassword = async (password: string, storeDeviceShare: boolean = false) => {
+    if (mpcCoreKit && securityQuestions.isEnabled()) {
+      const factorKeyString = await securityQuestions.recoverWithPassword(password)
+      if (!factorKeyString) {
+        throw new Error('The password is invalid')
+      }
+      const factorKey = new BN(factorKeyString, 'hex')
+      await mpcCoreKit.inputFactorKey(factorKey)
+
+      if (storeDeviceShare) {
+        await deviceShareModule.createAndStoreDeviceFactor()
+      }
+
+      finalizeLogin()
+    }
+  }
+
   return {
     triggerLogin,
     walletState,
-    recoverFactorWithPassword: () => Promise.resolve(),
+    isMFAEnabled,
+    recoverFactorWithPassword,
     resetAccount: criticalResetAccount,
     upsertPasswordBackup: () => Promise.resolve(),
     userInfo: {
