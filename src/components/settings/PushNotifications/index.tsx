@@ -21,7 +21,7 @@ import { useNotificationRegistrations } from './hooks/useNotificationRegistratio
 import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { GlobalPushNotifications } from './GlobalPushNotifications'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { IS_DEV } from '@/config/constants'
+import { HelpCenterArticle, IS_DEV } from '@/config/constants'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { AppRoutes } from '@/config/routes'
@@ -108,7 +108,7 @@ export const PushNotifications = (): ReactElement => {
               <Typography>
                 Enable push notifications for {safeLoaded ? 'this Safe Account' : 'your Safe Accounts'} in your browser
                 with your signature. You will need to enable them again if you clear your browser cache. Learn more
-                about push notifications <ExternalLink href="#">here</ExternalLink>
+                about push notifications <ExternalLink href={HelpCenterArticle.PUSH_NOTIFICATIONS}>here</ExternalLink>
               </Typography>
 
               {shouldShowMacHelper && (
