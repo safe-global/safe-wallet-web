@@ -3,7 +3,6 @@ import {
   entries as getEntriesFromIndexedDb,
   delMany as deleteManyFromIndexedDb,
   setMany as setManyIndexedDb,
-  clear as clearIndexedDb,
   update as updateIndexedDb,
 } from 'idb-keyval'
 import { useCallback, useEffect, useMemo } from 'react'
@@ -51,9 +50,13 @@ export const useNotificationPreferences = (): {
     safeAddress: string,
     preferences: PushNotificationPreferences[PushNotificationPrefsKey]['preferences'],
   ) => void
-  _createPreferences: (safesToRegister: NotifiableSafes) => void
-  _deletePreferences: (safesToUnregister: NotifiableSafes) => void
-  _deleteAllPreferences: () => void
+  createPreferences: (safesToRegister: NotifiableSafes) => void
+  deletePreferences: (safesToUnregister: NotifiableSafes) => void
+  deleteAllChainPreferences: (chainId: string) => void
+  _getAllPreferenceEntries: () => Promise<
+    [PushNotificationPrefsKey, PushNotificationPreferences[PushNotificationPrefsKey]][]
+  >
+  _deleteManyPreferenceKeys: (keysToDelete: PushNotificationPrefsKey[]) => void
 } => {
   // State
   const uuid = useUuid()
@@ -114,22 +117,38 @@ export const useNotificationPreferences = (): {
     hydrateUuidStore()
   }, [hydrateUuidStore, uuidStore])
 
+  const _getAllPreferenceEntries = useCallback(() => {
+    return getEntriesFromIndexedDb<PushNotificationPrefsKey, PushNotificationPreferences[PushNotificationPrefsKey]>(
+      preferencesStore,
+    )
+  }, [preferencesStore])
+
   // Preferences state hydrator
   const hydratePreferences = useCallback(() => {
     if (!preferencesStore) {
       return
     }
 
-    getEntriesFromIndexedDb<PushNotificationPrefsKey, PushNotificationPreferences[PushNotificationPrefsKey]>(
-      preferencesStore,
-    )
+    _getAllPreferenceEntries()
       .then((preferencesEntries) => {
         setPreferences(Object.fromEntries(preferencesEntries))
       })
       .catch((e) => {
         logError(ErrorCodes._705, e)
       })
-  }, [preferencesStore])
+  }, [_getAllPreferenceEntries, preferencesStore])
+
+  // Delete array of preferences store keys
+  const _deleteManyPreferenceKeys = useCallback(
+    (keysToDelete: PushNotificationPrefsKey[]) => {
+      deleteManyFromIndexedDb(keysToDelete, preferencesStore)
+        .then(hydratePreferences)
+        .catch((e) => {
+          logError(ErrorCodes._706, e)
+        })
+    },
+    [hydratePreferences, preferencesStore],
+  )
 
   // Hydrate preferences state
   useEffect(() => {
@@ -200,23 +219,27 @@ export const useNotificationPreferences = (): {
       return safeAddresses.map((safeAddress) => getPushNotificationPrefsKey(chainId, safeAddress))
     })
 
-    deleteManyFromIndexedDb(keysToDelete, preferencesStore)
-      .then(hydratePreferences)
-      .catch((e) => {
-        logError(ErrorCodes._706, e)
-      })
+    _deleteManyPreferenceKeys(keysToDelete)
   }
 
   // Delete all preferences store entries
-  const deleteAllPreferences = () => {
+  const deleteAllChainPreferences = (chainId: string) => {
     if (!preferencesStore) {
       return
     }
 
-    clearIndexedDb(preferencesStore)
-      .then(hydratePreferences)
+    _getAllPreferenceEntries()
+      .then((preferencesEntries) => {
+        const keysToDelete = preferencesEntries
+          .filter(([, prefs]) => {
+            return prefs.chainId === chainId
+          })
+          .map(([key]) => key)
+
+        _deleteManyPreferenceKeys(keysToDelete)
+      })
       .catch((e) => {
-        logError(ErrorCodes._706, e)
+        logError(ErrorCodes._705, e)
       })
   }
 
@@ -225,8 +248,10 @@ export const useNotificationPreferences = (): {
     getAllPreferences,
     getPreferences,
     updatePreferences,
-    _createPreferences: createPreferences,
-    _deletePreferences: deletePreferences,
-    _deleteAllPreferences: deleteAllPreferences,
+    createPreferences,
+    deletePreferences,
+    deleteAllChainPreferences,
+    _getAllPreferenceEntries,
+    _deleteManyPreferenceKeys,
   }
 }

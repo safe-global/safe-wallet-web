@@ -34,7 +34,7 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
 
   return (
-    <Box className={classNames(txSummaryCss.gridContainer, txSummaryCss.columnTemplateWithoutNonce)}>
+    <Box className={classNames(txSummaryCss.gridContainer, txSummaryCss.columnTemplate)}>
       <Box gridArea="type" className={txSummaryCss.columnWrap}>
         <MsgType msg={msg} />
       </Box>
