@@ -53,7 +53,7 @@ type AddressBookTableProps = {
   setTxFlow: TxModalContextType['setTxFlow']
 }
 
-const AddressBookTable = ({ chain, setTxFlow }: AddressBookTableProps) => {
+function AddressBookTable({ chain, setTxFlow }: AddressBookTableProps) {
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [searchQuery, setSearchQuery] = useState('')
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)

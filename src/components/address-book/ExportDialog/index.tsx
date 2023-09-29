@@ -36,13 +36,13 @@ export const _getCsvData = (addressBooks: AddressBookState): CsvData => {
   return csvData
 }
 
-const ExportDialog = ({
+function ExportDialog({
   allAddressBooks,
   handleClose,
 }: {
   allAddressBooks: AddressBookState
   handleClose: () => void
-}): ReactElement => {
+}): ReactElement {
   const length = Object.values(allAddressBooks).reduce<number>((acc, entries) => acc + Object.keys(entries).length, 0)
   const { CSVDownloader } = useCSVDownloader()
   // safe-address-book-1970-01-01

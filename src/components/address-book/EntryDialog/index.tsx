@@ -15,7 +15,7 @@ export type AddressEntry = {
   address: string
 }
 
-const EntryDialog = ({
+function EntryDialog({
   handleClose,
   defaultValues = {
     name: '',
@@ -30,7 +30,7 @@ const EntryDialog = ({
   disableAddressInput?: boolean
   chainId?: string
   currentChainId: string
-}): ReactElement => {
+}): ReactElement {
   const dispatch = useAppDispatch()
 
   const methods = useForm<AddressEntry>({

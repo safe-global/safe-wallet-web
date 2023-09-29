@@ -42,12 +42,12 @@ type Props = {
   onSearchQueryChange: (searchQuery: string) => void
 }
 
-const AddressBookHeader = ({
+function AddressBookHeader({
   allAddressBooks,
   handleOpenModal,
   searchQuery,
   onSearchQueryChange,
-}: Props): ReactElement => {
+}: Props): ReactElement {
   const canExport = Object.values(allAddressBooks).some((addressBook) => Object.keys(addressBook || {}).length > 0)
 
   return (
