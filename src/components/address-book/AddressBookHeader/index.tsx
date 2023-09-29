@@ -102,6 +102,8 @@ const AddressBookHeader = ({
   )
 }
 
+const useAllAddressBooks = () => useAppSelector(selectAllAddressBooks)
+
 export default mapProps(AddressBookHeader, {
-  allAddressBooks: () => useAppSelector(selectAllAddressBooks),
+  allAddressBooks: useAllAddressBooks,
 })

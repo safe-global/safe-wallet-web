@@ -93,6 +93,8 @@ const ExportDialog = ({
   )
 }
 
+const useAllAddressBooks = () => useAppSelector(selectAllAddressBooks)
+
 export default madProps(ExportDialog, {
-  allAddressBooks: () => useAppSelector(selectAllAddressBooks),
+  allAddressBooks: useAllAddressBooks,
 })

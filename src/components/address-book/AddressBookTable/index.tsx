@@ -175,7 +175,9 @@ const AddressBookTable = ({ chain, setTxFlow }: AddressBookTableProps) => {
   )
 }
 
+const useSetTxFlow = () => useContext(TxModalContext).setTxFlow
+
 export default madProps(AddressBookTable, {
   chain: useCurrentChain,
-  setTxFlow: () => useContext(TxModalContext).setTxFlow,
+  setTxFlow: useSetTxFlow,
 })
