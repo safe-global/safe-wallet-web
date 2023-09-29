@@ -8,6 +8,7 @@ import NameInput from '@/components/common/NameInput'
 import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import madProps from '@/utils/mad-props'
 
 export type AddressEntry = {
   name: string
@@ -22,14 +23,15 @@ const EntryDialog = ({
   },
   disableAddressInput = false,
   chainId,
+  currentChainId,
 }: {
   handleClose: () => void
   defaultValues?: AddressEntry
   disableAddressInput?: boolean
   chainId?: string
+  currentChainId: string
 }): ReactElement => {
   const dispatch = useAppDispatch()
-  const currentChainId = useChainId()
 
   const methods = useForm<AddressEntry>({
     defaultValues,
@@ -81,4 +83,6 @@ const EntryDialog = ({
   )
 }
 
-export default EntryDialog
+export default madProps(EntryDialog, {
+  currentChainId: useChainId,
+})
