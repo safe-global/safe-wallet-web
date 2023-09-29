@@ -1,4 +1,5 @@
 import type { ComponentType, FC } from 'react'
+import React, { memo } from 'react'
 
 type SinglePropHook<T> = () => T
 type HookMap<P> = {
@@ -28,7 +29,9 @@ const madProps = <P extends Record<string, unknown>, H extends keyof P>(
 
   MadComponent.displayName = Component.displayName || Component.name
 
-  return MadComponent
+  // Wrapping MadComponent with React.memo and casting to FC<Omit<P, H>>
+  // The casting is only needed because of memo, the component itself satisfies the type
+  return memo(MadComponent) as unknown as FC<Omit<P, H>>
 }
 
 export default madProps
