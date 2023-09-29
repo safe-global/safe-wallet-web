@@ -5,11 +5,11 @@ type HookMap<P> = {
   [K in keyof P]?: SinglePropHook<P[K]>
 }
 
-const MadProps = <P extends Record<string, unknown>, H extends keyof P>(
+const madProps = <P extends Record<string, unknown>, H extends keyof P>(
   Component: ComponentType<P>,
   useHook: SinglePropHook<Pick<P, H>> | HookMap<Pick<P, H>>,
 ): FC<Omit<P, H>> => {
-  const madComponent = (externalProps: Omit<P, H>) => {
+  const MadComponent = (externalProps: Omit<P, H>) => {
     let newProps: P = { ...externalProps } as P
 
     if (typeof useHook === 'function') {
@@ -26,9 +26,9 @@ const MadProps = <P extends Record<string, unknown>, H extends keyof P>(
     return <Component {...newProps} />
   }
 
-  madComponent.displayName = Component.displayName || Component.name
+  MadComponent.displayName = Component.displayName || Component.name
 
-  return madComponent
+  return MadComponent
 }
 
-export default MadProps
+export default madProps
