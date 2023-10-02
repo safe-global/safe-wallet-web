@@ -17,16 +17,14 @@ import { getAddress } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
 import useChains from '@/hooks/useChains'
 
-const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
-  const { safe, safeAddress } = useSafeInfo()
-  const { chainId } = safe
+export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { setTxFlow } = useContext(TxModalContext)
   const web3ReadOnly = useWeb3ReadOnly()
   const router = useRouter()
   const { configs } = useChains()
 
-  const txFlowApi = useMemo<WalletSDK | undefined>(() => {
-    if (!safeAddress || !chainId) return
+  return useMemo<WalletSDK | undefined>(() => {
+    if (!chainId || !safeAddress) return
 
     const signMessage = (message: string | EIP712TypedData, appInfo: AppInfo): Promise<{ signature: string }> => {
       const id = Math.random().toString(36).slice(2)
@@ -121,11 +119,16 @@ const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
       },
     }
   }, [safeAddress, chainId, setTxFlow, web3ReadOnly, router, configs])
+}
+
+const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId } = safe
+
+  const txFlowApi = _useTxFlowApi(chainId, safeAddress)
 
   return useMemo(() => {
-    if (!safeAddress || !chainId || !txFlowApi) {
-      return
-    }
+    if (!safeAddress || !chainId || !txFlowApi) return
 
     return new SafeWalletProvider(
       {
