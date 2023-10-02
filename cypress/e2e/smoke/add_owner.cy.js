@@ -3,6 +3,7 @@ import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
 import * as addressBook from '../pages/address_book.page'
 
+// TODO: Need to add tests to testRail
 describe('Adding an owner', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
