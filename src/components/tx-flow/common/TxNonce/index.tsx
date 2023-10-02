@@ -182,9 +182,11 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
             filterOptions={(options, params) => {
               const filtered = filter(options, params)
 
-              const isExisting = options.some((option) => params.inputValue === option)
+              // Prevent segments from showing recommended, e.g. if recommended is 250, don't show for 2, 5 or 25
+              const shouldShow = !recommendedNonce.includes(params.inputValue)
+              const isQueued = options.some((option) => params.inputValue === option)
 
-              if (params.inputValue !== '' && !isExisting) {
+              if (params.inputValue !== '' && !isQueued && shouldShow) {
                 filtered.push(recommendedNonce)
               }
 
