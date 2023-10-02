@@ -50,7 +50,7 @@ export function clickOnCreateEntryBtn() {
   cy.contains(createEntryBtn).click()
 }
 
-export function tyeInName(name) {
+export function typeInName(name) {
   cy.get(nameInput).type(name)
 }
 
