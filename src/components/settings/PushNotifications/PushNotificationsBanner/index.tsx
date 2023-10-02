@@ -143,9 +143,9 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     dismissBanner()
   }
 
-  // if (!shouldShowBanner) {
-  //   return children
-  // }
+  if (!shouldShowBanner) {
+    return children
+  }
 
   return (
     <CustomTooltip
