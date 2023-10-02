@@ -21,7 +21,7 @@ import { useNotificationRegistrations } from './hooks/useNotificationRegistratio
 import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { GlobalPushNotifications } from './GlobalPushNotifications'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { IS_DEV } from '@/config/constants'
+import { HelpCenterArticle, IS_DEV } from '@/config/constants'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { AppRoutes } from '@/config/routes'
@@ -29,6 +29,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { useIsMac } from '@/hooks/useIsMac'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
+import ExternalLink from '@/components/common/ExternalLink'
 
 import css from './styles.module.css'
 
@@ -106,7 +107,8 @@ export const PushNotifications = (): ReactElement => {
             <Grid container gap={2.5} flexDirection="column">
               <Typography>
                 Enable push notifications for {safeLoaded ? 'this Safe Account' : 'your Safe Accounts'} in your browser
-                with your signature. You will need to enable them again if you clear your browser cache.
+                with your signature. You will need to enable them again if you clear your browser cache. Learn more
+                about push notifications <ExternalLink href={HelpCenterArticle.PUSH_NOTIFICATIONS}>here</ExternalLink>
               </Typography>
 
               {shouldShowMacHelper && (
