@@ -60,6 +60,8 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
           iconUrl: session.peer.metadata.icons[0],
         })
 
+        console.log('============', response)
+
         // Send response to WalletConnect
         await walletConnect.sendSessionResponse(topic, response)
       } catch (e) {
