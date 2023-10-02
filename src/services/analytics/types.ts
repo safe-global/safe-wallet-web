@@ -15,6 +15,7 @@ export type AnalyticsEvent = {
   category: string
   action: string
   label?: EventLabel
+  chainId?: string
 }
 
 export type SafeAppSDKEvent = {

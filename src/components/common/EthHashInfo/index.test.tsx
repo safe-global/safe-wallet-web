@@ -1,4 +1,4 @@
-import makeBlockie from 'ethereum-blockies-base64'
+import { blo } from 'blo'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
@@ -179,7 +179,7 @@ describe('EthHashInfo', () => {
 
       expect(container.querySelector('.icon')).toHaveAttribute(
         'style',
-        `background-image: url(${makeBlockie(MOCK_SAFE_ADDRESS)}); width: 40px; height: 40px;`,
+        `background-image: url(${blo(MOCK_SAFE_ADDRESS)}); width: 40px; height: 40px;`,
       )
     })
 
@@ -188,7 +188,7 @@ describe('EthHashInfo', () => {
 
       expect(container.querySelector('.icon')).toHaveAttribute(
         'style',
-        `background-image: url(${makeBlockie(MOCK_SAFE_ADDRESS)}); width: 100px; height: 100px;`,
+        `background-image: url(${blo(MOCK_SAFE_ADDRESS)}); width: 100px; height: 100px;`,
       )
     })
 

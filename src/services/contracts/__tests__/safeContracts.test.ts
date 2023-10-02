@@ -1,5 +1,5 @@
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
-import { _getValidatedGetContractProps, isValidMasterCopy } from '../safeContracts'
+import { _getValidatedGetContractProps, isValidMasterCopy, _getMinimumMultiSendCallOnlyVersion } from '../safeContracts'
 
 describe('safeContracts', () => {
   describe('isValidMasterCopy', () => {
@@ -51,6 +51,20 @@ describe('safeContracts', () => {
       expect(() => _getValidatedGetContractProps('1', '0.0.1')).toThrow('0.0.1 is not a valid Safe Account version')
 
       expect(() => _getValidatedGetContractProps('1', '')).toThrow(' is not a valid Safe Account version')
+    })
+  })
+
+  describe('_getMinimumMultiSendCallOnlyVersion', () => {
+    it('should return the initial version if the Safe version is null', () => {
+      expect(_getMinimumMultiSendCallOnlyVersion(null)).toBe('1.3.0')
+    })
+
+    it('should return the initial version if the Safe version is lower than the initial version', () => {
+      expect(_getMinimumMultiSendCallOnlyVersion('1.0.0')).toBe('1.3.0')
+    })
+
+    it('should return the Safe version if the Safe version is higher than the initial version', () => {
+      expect(_getMinimumMultiSendCallOnlyVersion('1.4.1')).toBe('1.4.1')
     })
   })
 })

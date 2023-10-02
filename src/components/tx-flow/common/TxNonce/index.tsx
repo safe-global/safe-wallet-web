@@ -14,6 +14,7 @@ import {
   ListSubheader,
   type ListSubheaderProps,
 } from '@mui/material'
+import { createFilterOptions } from '@mui/material/Autocomplete'
 import { Controller, useForm } from 'react-hook-form'
 
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
@@ -81,12 +82,21 @@ const NonceFormOption = memo(function NonceFormOption({
   )
 })
 
-const getFieldMinWidth = (value: string): string => {
+const getFieldMinWidth = (value: string, showRecommendedNonceButton = false): string => {
   const MIN_CHARS = 5
   const MAX_WIDTH = '200px'
+  const ADORNMENT_PADDING = '24px'
 
-  return `clamp(calc(${MIN_CHARS}ch + 6px), calc(${Math.max(MIN_CHARS, value.length)}ch + 6px), ${MAX_WIDTH})`
+  const clamped = `clamp(calc(${MIN_CHARS}ch + 6px), calc(${Math.max(MIN_CHARS, value.length)}ch + 6px), ${MAX_WIDTH})`
+
+  if (showRecommendedNonceButton) {
+    return `calc(${clamped} + ${ADORNMENT_PADDING})`
+  }
+
+  return clamped
 }
+
+const filter = createFilterOptions<string>()
 
 enum TxNonceFormFieldNames {
   NONCE = 'nonce',
@@ -169,6 +179,19 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
             }}
             options={[recommendedNonce, ...previousNonces]}
             getOptionLabel={(option) => option.toString()}
+            filterOptions={(options, params) => {
+              const filtered = filter(options, params)
+
+              // Prevent segments from showing recommended, e.g. if recommended is 250, don't show for 2, 5 or 25
+              const shouldShow = !recommendedNonce.includes(params.inputValue)
+              const isQueued = options.some((option) => params.inputValue === option)
+
+              if (params.inputValue !== '' && !isQueued && shouldShow) {
+                filtered.push(recommendedNonce)
+              }
+
+              return filtered
+            }}
             renderOption={(props, option) => {
               const isRecommendedNonce = option === recommendedNonce
               const isInitialPreviousNonce = option === previousNonces[0]
@@ -213,7 +236,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
                       },
                     ])}
                     sx={{
-                      minWidth: getFieldMinWidth(field.value),
+                      minWidth: getFieldMinWidth(field.value, showRecommendedNonceButton),
                     }}
                   />
                 </Tooltip>

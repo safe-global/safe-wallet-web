@@ -2,7 +2,6 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
-import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, SvgIcon, Typography } from '@mui/material'
@@ -40,22 +39,18 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
     [router, id],
   )
 
-  const displayInfo = !transaction.txInfo.richDecodedInfo && transaction.txInfo.type !== TransactionInfoType.TRANSFER
-
   return (
     <NextLink href={url} passHref>
       <Box className={css.container}>
         {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
 
         <Box flex={1}>
-          <TxType tx={transaction} />
+          <TxType tx={transaction} short={true} />
         </Box>
 
-        {displayInfo && (
-          <Box flex={1} className={css.txInfo}>
-            <TxInfo info={transaction.txInfo} />
-          </Box>
-        )}
+        <Box flex={1} className={css.txInfo}>
+          <TxInfo info={transaction.txInfo} />
+        </Box>
 
         {isMultisigExecutionInfo(transaction.executionInfo) ? (
           <Box className={css.confirmationsCount}>

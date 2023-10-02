@@ -170,7 +170,7 @@ export const useRecommendedNonce = (): number | undefined => {
 
       const recommendedNonce = await getRecommendedNonce(safe.chainId, safeAddress)
 
-      return recommendedNonce ? Math.max(safe.nonce, recommendedNonce) : undefined
+      return recommendedNonce !== undefined ? Math.max(safe.nonce, recommendedNonce) : undefined
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [safeAddress, safe.chainId, safe.txQueuedTag], // update when tx queue changes

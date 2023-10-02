@@ -16,12 +16,12 @@ const thresHoldDropDownIcon = 'svg[data-testid="ArrowDropDownIcon"]'
 const thresholdList = 'ul[role="listbox"]'
 
 const disconnectBtnStr = 'Disconnect'
-const notConnectedStatus = 'Not connected'
 const e2eWalletStr = 'E2E Wallet'
 const max50charsLimitStr = 'Maximum 50 symbols'
 const nextBtnStr = 'Next'
 const executeBtnStr = 'Execute'
 const backbtnStr = 'Back'
+const notConnectedStatus = 'Connect'
 
 export const safeAccountNonceStr = 'Safe Account nonce'
 export const nonOwnerErrorMsg = 'Your connected wallet is not an owner of this Safe Account'
@@ -63,7 +63,7 @@ export function clickOnWalletExpandMoreIcon() {
 
 export function clickOnDisconnectBtn() {
   cy.get('button').contains(disconnectBtnStr).click()
-  cy.get('span').contains(notConnectedStatus)
+  cy.get('button').contains(notConnectedStatus)
 }
 
 export function waitForConnectionStatus() {

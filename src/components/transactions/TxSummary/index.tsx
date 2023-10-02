@@ -15,6 +15,8 @@ import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import TxConfirmations from '../TxConfirmations'
 import useIsPending from '@/hooks/useIsPending'
+import useABTesting from '@/services/tracking/useAbTesting'
+import { AbTest } from '@/services/tracking/abTesting'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette) => {
   switch (value) {
@@ -41,6 +43,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const wallet = useWallet()
   const txStatusLabel = useTransactionStatus(tx)
   const isPending = useIsPending(tx.id)
+  const shouldDisplayHumanDescription = useABTesting(AbTest.HUMAN_DESCRIPTION)
   const isQueue = isTxQueued(tx.txStatus)
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
@@ -52,7 +55,8 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
     : undefined
 
   const displayConfirmations = isQueue && !!submittedConfirmations && !!requiredConfirmations
-  const displayInfo = !tx.txInfo.richDecodedInfo && tx.txInfo.type !== TransactionInfoType.TRANSFER
+  const displayInfo =
+    (!tx.txInfo.richDecodedInfo && tx.txInfo.type !== TransactionInfoType.TRANSFER) || !shouldDisplayHumanDescription
 
   return (
     <Box
