@@ -57,3 +57,8 @@
   width: 18px;
   height: 18px;
 }
+
+.settingsLink {
+  margin-left: auto;
+  text-decoration: unset;
+}
