@@ -3,7 +3,6 @@ import ButtonBase from '@mui/material/ButtonBase'
 import Popover from '@mui/material/Popover'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import MuiLink from '@mui/material/Link'
 import BellIcon from '@/public/images/notifications/bell.svg'
@@ -21,6 +20,7 @@ import UnreadBadge from '@/components/common/UnreadBadge'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
+import SettingsIcon from '@/public/images/sidebar/settings.svg'
 
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
@@ -129,9 +129,9 @@ const NotificationCenter = (): ReactElement => {
               )}
             </div>
             {notifications.length > 0 && (
-              <Button variant="text" size="small" onClick={handleClear}>
+              <MuiLink onClick={handleClear} variant="body2" component="button" sx={{ textDecoration: 'unset' }}>
                 Clear all
-              </Button>
+              </MuiLink>
             )}
           </div>
           <div>
@@ -164,7 +164,9 @@ const NotificationCenter = (): ReactElement => {
               passHref
               legacyBehavior
             >
-              <MuiLink className={css.settingsLink}>Notification settings</MuiLink>
+              <MuiLink className={css.settingsLink} variant="body2">
+                <SvgIcon component={SettingsIcon} inheritViewBox fontSize="small" /> Settings
+              </MuiLink>
             </Link>
           </div>
         </Paper>
