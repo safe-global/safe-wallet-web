@@ -167,10 +167,11 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
               Get notified about pending signatures, incoming and outgoing transactions and more when Safe{`{Wallet}`}{' '}
               is in the background or closed.
             </Typography>
-            <div className={css.buttons}>
-              {totalAddedSafes > 0 && (
-                <CheckWallet>
-                  {(isOk) => (
+            {/* Cannot wrap singular button as it causes style inconsistencies */}
+            <CheckWallet>
+              {(isOk) => (
+                <div className={css.buttons}>
+                  {totalAddedSafes > 0 && (
                     <Button
                       variant="contained"
                       size="small"
@@ -181,16 +182,16 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
                       Enable all
                     </Button>
                   )}
-                </CheckWallet>
+                  {safe && (
+                    <Link passHref href={{ pathname: AppRoutes.settings.notifications, query }} onClick={onCustomize}>
+                      <Button variant="outlined" size="small" className={css.button}>
+                        Customize
+                      </Button>
+                    </Link>
+                  )}
+                </div>
               )}
-              {safe && (
-                <Link passHref href={{ pathname: AppRoutes.settings.notifications, query }} onClick={onCustomize}>
-                  <Button variant="outlined" size="small" className={css.button}>
-                    Customize
-                  </Button>
-                </Link>
-              )}
-            </div>
+            </CheckWallet>
           </Grid>
         </Grid>
       }
