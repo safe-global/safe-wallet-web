@@ -2,7 +2,7 @@ import { hexZeroPad } from 'ethers/lib/utils'
 import type { ProposalTypes, SessionTypes, SignClientTypes, Verify } from '@walletconnect/types'
 import type { IWeb3Wallet, Web3WalletTypes } from '@walletconnect/web3wallet'
 
-import WalletConnectWallet from './WalletConnectWallet'
+import type WalletConnectWallet from './WalletConnectWallet'
 
 jest.mock('@walletconnect/core', () => ({
   Core: jest.fn(),
@@ -45,12 +45,18 @@ jest.mock('@walletconnect/web3wallet', () => {
 })
 
 describe('WalletConnectWallet', () => {
-  let wallet: WalletConnectWallet
+  let wallet: typeof WalletConnectWallet
 
   beforeEach(async () => {
-    wallet = new WalletConnectWallet()
+    // Reset import
+    wallet = (await import('./WalletConnectWallet')).default
 
     await wallet.init()
+  })
+
+  afterEach(() => {
+    // Reset instance to avoid side leaking mocks
+    jest.resetModules()
   })
 
   describe('connect', () => {

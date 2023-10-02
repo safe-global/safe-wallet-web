@@ -6,10 +6,10 @@ import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
 import { stripEip155Prefix } from './utils'
 
-const walletConnectSingleton = new WalletConnectWallet()
+const walletConnectSingleton = WalletConnectWallet
 
 export const WalletConnectContext = createContext<{
-  walletConnect: WalletConnectWallet | null
+  walletConnect: typeof WalletConnectWallet | null
   error: Error | null
 }>({
   walletConnect: null,
@@ -21,7 +21,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     safe: { chainId },
     safeAddress,
   } = useSafeInfo()
-  const [walletConnect, setWalletConnect] = useState<WalletConnectWallet | null>(null)
+  const [walletConnect, setWalletConnect] = useState<typeof WalletConnectWallet | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
 
