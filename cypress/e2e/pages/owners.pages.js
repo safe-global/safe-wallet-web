@@ -1,6 +1,9 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 
+const copyToClipboardBtn = 'button[aria-label="Copy to clipboard"]'
+const tooltipLabel = (label) => `span[aria-label="${label}"]`
+const replaceOwnerBtn = 'button[aria-label="Replace owner"]'
 const addOwnerBtn = 'span[data-track="settings: Add owner"]'
 const tooltip = 'div[role="tooltip"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
@@ -21,6 +24,22 @@ const nextBtnStr = 'Next'
 export const safeAccountNonceStr = 'Safe Account nonce'
 export const nonOwnerErrorMsg = 'Your connected wallet is not an owner of this Safe Account'
 export const disconnectedUserErrorMsg = 'Please connect your wallet'
+
+export function openReplaceOwnerWindow() {
+  cy.get(replaceOwnerBtn).click({ force: true })
+  cy.get(newOwnerName).should('be.visible')
+  cy.get(newOwnerAddress).should('be.visible')
+}
+export function verifyTooltipLabel(label) {
+  cy.get(tooltipLabel(label)).should('be.visible')
+}
+export function verifyReplaceBtnIsEnabled() {
+  cy.get(replaceOwnerBtn).should('exist').and('not.be.disabled')
+}
+
+export function hoverOverReplaceOwnerBtn() {
+  cy.get(replaceOwnerBtn).trigger('mouseover', { force: true })
+}
 
 export function verifyAddOwnerBtnIsEnabled() {
   cy.get(addOwnerBtn).should('exist').and('not.be.disabled')
