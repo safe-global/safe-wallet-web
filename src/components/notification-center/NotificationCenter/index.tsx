@@ -18,16 +18,18 @@ import {
 } from '@/store/notificationsSlice'
 import NotificationCenterList from '@/components/notification-center/NotificationCenterList'
 import UnreadBadge from '@/components/common/UnreadBadge'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import SvgIcon from '@mui/icons-material/ExpandLess'
-import { AppRoutes } from '@/config/routes'
-import Link from 'next/link'
 
 const NOTIFICATION_CENTER_LIMIT = 4
 
 const NotificationCenter = (): ReactElement => {
+  const router = useRouter()
   const [showAll, setShowAll] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = Boolean(anchorEl)
@@ -154,7 +156,14 @@ const NotificationCenter = (): ReactElement => {
                 </Typography>
               </>
             )}
-            <Link href={AppRoutes.settings.notifications} passHref legacyBehavior>
+            <Link
+              href={{
+                pathname: AppRoutes.settings.notifications,
+                query: router.query,
+              }}
+              passHref
+              legacyBehavior
+            >
               <MuiLink className={css.settingsLink}>Notification settings</MuiLink>
             </Link>
           </div>
