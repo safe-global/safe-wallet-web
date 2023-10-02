@@ -3,7 +3,6 @@ import type {
   ExecutionInfo,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
-  SafeAppData,
   SafeInfo,
   Transaction,
   TransactionDetails,
@@ -182,7 +181,7 @@ export const getQueuedTransactionCount = (txPage?: TransactionListPage): string 
   return queuedTxsByNonce.length.toString()
 }
 
-export const getTxOrigin = (app?: Partial<SafeAppData>): string | undefined => {
+export const getTxOrigin = (app?: { name?: string; url?: string }): string | undefined => {
   if (!app) return
 
   const MAX_ORIGIN_LENGTH = 200

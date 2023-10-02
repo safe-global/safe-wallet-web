@@ -15,6 +15,7 @@ import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 const RecoveryWidget = dynamic(() => import('@/features/recovery/components/RecoveryWidget'))
+import WrappedEth from './WrappedEth'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
@@ -41,7 +42,7 @@ const Dashboard = (): ReactElement => {
         {safe.deployed && (
           <>
             <Grid item xs={12} lg={6}>
-              <PendingTxsList />
+              <WrappedEth />
             </Grid>
 
             {showRecoveryWidget ? (
@@ -49,6 +50,10 @@ const Dashboard = (): ReactElement => {
                 <RecoveryWidget />
               </Grid>
             ) : null}
+
+            <Grid item xs={12}>
+              <PendingTxsList />
+            </Grid>
 
             <Grid item xs={12} lg={showRecoveryWidget ? 12 : 6}>
               <FeaturedApps stackedLayout={!showRecoveryWidget} />
