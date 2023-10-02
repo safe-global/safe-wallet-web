@@ -18,7 +18,7 @@ describe('Address book tests', () => {
   describe('should add remove and edit entries in the address book', () => {
     it('should add an entry', () => {
       addressBook.clickOnCreateEntryBtn()
-      addressBook.tyeInName(NAME)
+      addressBook.typeInName(NAME)
       addressBook.typeInAddress(constants.RECIPIENT_ADDRESS)
       addressBook.clickOnSaveEntryBtn()
       addressBook.verifyNewEntryAdded(NAME, constants.RECIPIENT_ADDRESS)
