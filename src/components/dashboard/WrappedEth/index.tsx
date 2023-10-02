@@ -1,27 +1,9 @@
-import { type ReactElement, useContext } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
-import SafeAppsTxFlow from '@/components/tx-flow/flows/SafeAppsTx'
-import { TxModalContext } from '@/components/tx-flow'
+import useSafeTransactionFlow from './useSafeTransactionFlow'
 
-const WrappedEth = (): ReactElement => {
-  const { setTxFlow } = useContext(TxModalContext)
-
-  const onTxSubmit = (tx: { to: string; value: string; data: string }) => {
-    setTxFlow(
-      <SafeAppsTxFlow
-        data={{
-          requestId: Math.random().toString(36).slice(2),
-          txs: [tx],
-          params: { safeTxGas: 0 },
-          app: {
-            name: 'Wrapped ETH',
-            iconUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2396.png',
-          },
-        }}
-      />,
-    )
-  }
+const WrappedEth = () => {
+  const onTxSubmit = useSafeTransactionFlow()
 
   return (
     <WidgetContainer>
