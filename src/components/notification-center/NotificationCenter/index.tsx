@@ -37,7 +37,7 @@ const NotificationCenter = (): ReactElement => {
     return notifications.slice().sort((a, b) => b.timestamp - a.timestamp)
   }, [notifications])
 
-  const canExpand = notifications.length > NOTIFICATION_CENTER_LIMIT
+  const canExpand = notifications.length > NOTIFICATION_CENTER_LIMIT + 1
 
   const notificationsToShow =
     canExpand && showAll ? chronologicalNotifications : chronologicalNotifications.slice(0, NOTIFICATION_CENTER_LIMIT)
