@@ -77,16 +77,13 @@ export const useMPCWallet = (): MPCWalletHook => {
       })
 
       if (mpcCoreKit.status === COREKIT_STATUS.REQUIRED_SHARE) {
-        console.log('Share required')
         // Check if we have a device share stored
         const deviceFactor = await getWebBrowserFactor(mpcCoreKit)
         if (deviceFactor) {
-          console.log('Using device factor')
           // Recover from device factor
           const deviceFactorKey = new BN(deviceFactor, 'hex')
           await mpcCoreKit.inputFactorKey(deviceFactorKey)
         } else {
-          console.log('using password')
           // Check password recovery
           if (securityQuestions.isEnabled()) {
             setWalletState(MPCWalletState.MANUAL_RECOVERY)

@@ -156,7 +156,7 @@ describe('useMPCWallet', () => {
     it('should throw if mpcCoreKit is not initialized', () => {
       const { result } = renderHook(() => useMPCWallet())
       expect(result.current.resetAccount()).rejects.toEqual(
-        new Error('MPC Core Kit  is not initialized or the user is not logged in'),
+        new Error('MPC Core Kit is not initialized or the user is not logged in'),
       )
     })
     it('should reset an account by overwriting the metadata', async () => {

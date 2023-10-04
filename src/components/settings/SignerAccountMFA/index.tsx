@@ -64,15 +64,15 @@ const SignerAccountMFA = () => {
       }
 
       const hasDeviceShare = await deviceShareModule.isEnabled()
-      if (hasDeviceShare !== storeDeviceShare) {
-        if (storeDeviceShare) {
-          await deviceShareModule.createAndStoreDeviceFactor()
-        } else {
-          // Switch to password recovery factor such that we can delete the device factor
-          await mpcCoreKit.inputFactorKey(new BN(securityQuestionFactor, 'hex'))
 
-          await deviceShareModule.removeDeviceFactor()
-        }
+      if (!hasDeviceShare && storeDeviceShare) {
+        await deviceShareModule.createAndStoreDeviceFactor()
+      }
+
+      if (hasDeviceShare && !storeDeviceShare) {
+        // Switch to password recovery factor such that we can delete the device factor
+        await mpcCoreKit.inputFactorKey(new BN(securityQuestionFactor, 'hex'))
+        await deviceShareModule.removeDeviceFactor()
       }
     } catch (error) {
       console.error(error)
