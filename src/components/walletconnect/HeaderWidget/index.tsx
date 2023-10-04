@@ -6,10 +6,12 @@ import useWalletConnectSessions from '@/services/walletconnect/useWalletConnectS
 import Icon from './Icon'
 import SessionManager from '../SessionManager'
 import Popup from '../Popup'
+import { useWalletConnectSearchParamUri } from '@/services/walletconnect/useWalletConnectSearchParamUri'
 
 const WalletConnectHeaderWidget = () => {
   const { error } = useContext(WalletConnectContext)
   const [popupOpen, setPopupOpen] = useState(false)
+  const [wcUri] = useWalletConnectSearchParamUri()
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
 
@@ -31,7 +33,7 @@ const WalletConnectHeaderWidget = () => {
         <Badge color="error" variant="dot" invisible={!error} />
       </div>
 
-      <Popup anchorEl={iconRef.current} open={popupOpen} onClose={onClose}>
+      <Popup anchorEl={iconRef.current} open={popupOpen || !!wcUri} onClose={onClose} keepMounted>
         <SessionManager sessions={sessions} />
       </Popup>
     </Box>
