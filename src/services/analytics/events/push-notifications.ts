@@ -38,7 +38,7 @@ export const PUSH_NOTIFICATION_EVENTS = {
   },
   // User enabled all notifications from banner
   ENABLE_ALL: {
-    action: 'Enable all notifications',
+    action: 'Enable all notifications on chain',
     category,
   },
   // User opened Safe notification settings from banner
