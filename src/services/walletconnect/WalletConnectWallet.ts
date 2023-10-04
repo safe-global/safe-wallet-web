@@ -251,5 +251,4 @@ class WalletConnectWallet {
   }
 }
 
-// Instance needs to be exported for testing purposes
-export default new WalletConnectWallet()
+export default WalletConnectWallet

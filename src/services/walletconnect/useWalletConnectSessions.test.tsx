@@ -28,7 +28,7 @@ describe('useWalletConnectSessions', () => {
       getActiveSessions: jest.fn().mockReturnValue(sessions),
       onSessionAdd: jest.fn(),
       onSessionDelete: jest.fn(),
-    } as unknown as typeof WalletConnectWallet
+    } as unknown as WalletConnectWallet
 
     const wrapper = ({ children }: any) => (
       <WalletConnectContext.Provider value={{ walletConnect: mockWalletConnect, error: null }}>
@@ -46,7 +46,7 @@ describe('useWalletConnectSessions', () => {
       getActiveSessions: jest.fn().mockReturnValue([]),
       onSessionAdd: jest.fn(),
       onSessionDelete: jest.fn(),
-    } as unknown as typeof WalletConnectWallet
+    } as unknown as WalletConnectWallet
 
     const wrapper = ({ children }: any) => (
       <WalletConnectContext.Provider value={{ walletConnect: mockWalletConnect, error: null }}>
@@ -94,7 +94,7 @@ describe('useWalletConnectSessions', () => {
       getActiveSessions: jest.fn().mockReturnValue([]),
       onSessionAdd: jest.fn(),
       onSessionDelete: jest.fn(),
-    } as unknown as typeof WalletConnectWallet
+    } as unknown as WalletConnectWallet
 
     const wrapper = ({ children }: any) => (
       <WalletConnectContext.Provider value={{ walletConnect: mockWalletConnect, error: null }}>
