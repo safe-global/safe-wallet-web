@@ -2,7 +2,13 @@ import { act, renderHook, waitFor } from '@/tests/test-utils'
 import { MPCWalletState, useMPCWallet } from '../useMPCWallet'
 import * as useOnboard from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
-import { COREKIT_STATUS, type UserInfo, type OauthLoginParams, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
+import {
+  COREKIT_STATUS,
+  type UserInfo,
+  type OauthLoginParams,
+  type Web3AuthMPCCoreKit,
+  type TssSecurityQuestion,
+} from '@web3auth/mpc-core-kit'
 import * as mpcCoreKit from '@web3auth/mpc-core-kit'
 import { setMPCCoreKitInstance } from '../useMPC'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
@@ -54,6 +60,7 @@ describe('useMPCWallet', () => {
   })
   beforeEach(() => {
     jest.resetAllMocks()
+    setMPCCoreKitInstance(undefined)
   })
   afterAll(() => {
     jest.useRealTimers()
@@ -98,7 +105,9 @@ describe('useMPCWallet', () => {
       expect(result.current.walletState === MPCWalletState.AUTHENTICATING)
       expect(connectWalletSpy).not.toBeCalled()
 
-      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+      act(() => {
+        jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+      })
 
       await waitFor(() => {
         expect(result.current.walletState === MPCWalletState.READY)
@@ -137,8 +146,9 @@ describe('useMPCWallet', () => {
 
       expect(result.current.walletState === MPCWalletState.AUTHENTICATING)
       expect(connectWalletSpy).not.toBeCalled()
-
-      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+      act(() => {
+        jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+      })
 
       await waitFor(() => {
         expect(result.current.walletState === MPCWalletState.READY)
@@ -148,6 +158,42 @@ describe('useMPCWallet', () => {
             disableModals: true,
           },
         })
+      })
+    })
+
+    it('should require manual share for MFA account without device share', async () => {
+      jest.spyOn(useOnboard, 'default').mockReturnValue({} as unknown as OnboardAPI)
+      const connectWalletSpy = jest.fn().mockImplementation(() => Promise.resolve())
+      jest.spyOn(useOnboard, 'connectWallet').mockImplementation(connectWalletSpy)
+      setMPCCoreKitInstance(
+        new MockMPCCoreKit(COREKIT_STATUS.REQUIRED_SHARE, {
+          email: 'test@test.com',
+          name: 'Test',
+        } as unknown as UserInfo) as unknown as Web3AuthMPCCoreKit,
+      )
+
+      // TODO: remove unnecessary cast if mpc core sdk gets updated
+      jest.spyOn(mpcCoreKit, 'getWebBrowserFactor').mockReturnValue(Promise.resolve(undefined as unknown as string))
+      jest.spyOn(mpcCoreKit, 'TssSecurityQuestion').mockReturnValue({
+        getQuestion: () => 'SOME RANDOM QUESTION',
+      } as unknown as TssSecurityQuestion)
+
+      const { result } = renderHook(() => useMPCWallet())
+
+      act(() => {
+        result.current.triggerLogin()
+      })
+
+      expect(result.current.walletState === MPCWalletState.AUTHENTICATING)
+      expect(connectWalletSpy).not.toBeCalled()
+
+      act(() => {
+        jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+      })
+
+      await waitFor(() => {
+        expect(result.current.walletState === MPCWalletState.MANUAL_RECOVERY)
+        expect(connectWalletSpy).not.toBeCalled()
       })
     })
   })
@@ -182,6 +228,68 @@ describe('useMPCWallet', () => {
       expect(mockSetMetadata).toHaveBeenCalledWith({
         privKey: new BN(mockMPCCore.metadataKey, 'hex'),
         input: { message: 'KEY_NOT_FOUND' },
+      })
+    })
+  })
+
+  describe('recoverFactorWithPassword', () => {
+    it('should throw if mpcCoreKit is not initialized', () => {
+      const { result } = renderHook(() => useMPCWallet())
+      expect(result.current.recoverFactorWithPassword('test', false)).rejects.toEqual(
+        new Error('MPC Core Kit is not initialized'),
+      )
+    })
+
+    it('should not recover if wrong password is entered', () => {
+      setMPCCoreKitInstance({
+        state: {
+          userInfo: undefined,
+        },
+      } as unknown as Web3AuthMPCCoreKit)
+      const { result } = renderHook(() => useMPCWallet())
+      jest.spyOn(mpcCoreKit, 'TssSecurityQuestion').mockReturnValue({
+        getQuestion: () => 'SOME RANDOM QUESTION',
+        recoverFactor: () => {
+          throw new Error('Invalid answer')
+        },
+      } as unknown as TssSecurityQuestion)
+
+      expect(result.current.recoverFactorWithPassword('test', false)).rejects.toEqual(new Error('Invalid answer'))
+    })
+
+    it.only('should input recovered factor if correct password is entered', async () => {
+      const mockSecurityQuestionFactor = ethers.Wallet.createRandom().privateKey.slice(2)
+      const connectWalletSpy = jest.fn().mockImplementation(() => Promise.resolve())
+      jest.spyOn(useOnboard, 'default').mockReturnValue({} as unknown as OnboardAPI)
+      jest.spyOn(useOnboard, 'connectWallet').mockImplementation(connectWalletSpy)
+
+      setMPCCoreKitInstance(
+        new MockMPCCoreKit(
+          COREKIT_STATUS.REQUIRED_SHARE,
+          {
+            email: 'test@test.com',
+            name: 'Test',
+          } as unknown as UserInfo,
+          new BN(mockSecurityQuestionFactor, 'hex'),
+        ) as unknown as Web3AuthMPCCoreKit,
+      )
+
+      const { result } = renderHook(() => useMPCWallet())
+      jest.spyOn(mpcCoreKit, 'TssSecurityQuestion').mockReturnValue({
+        getQuestion: () => 'SOME RANDOM QUESTION',
+        recoverFactor: () => Promise.resolve(mockSecurityQuestionFactor),
+      } as unknown as TssSecurityQuestion)
+
+      act(() => result.current.recoverFactorWithPassword('test', false))
+
+      await waitFor(() => {
+        expect(result.current.walletState === MPCWalletState.READY)
+        expect(connectWalletSpy).toBeCalledWith(expect.anything(), {
+          autoSelect: {
+            label: ONBOARD_MPC_MODULE_LABEL,
+            disableModals: true,
+          },
+        })
       })
     })
   })

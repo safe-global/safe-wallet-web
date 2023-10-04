@@ -8,8 +8,6 @@ export const MPCWallet = () => {
   const { loginPending, triggerLogin, resetAccount, userInfo, walletState, recoverFactorWithPassword } =
     useContext(MpcWalletContext)
 
-  console.log(walletState)
-
   return (
     <>
       {userInfo.email ? (

@@ -5,8 +5,8 @@ import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
 import { COREKIT_STATUS, getWebBrowserFactor } from '@web3auth/mpc-core-kit'
 import useOnboard, { connectWallet } from '../useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
-import { useSecurityQuestions } from './recovery/useSecurityQuestions'
-import { useDeviceShare } from './recovery/useDeviceShare'
+import { SecurityQuestionRecovery } from './recovery/SecurityQuestionRecovery'
+import { DeviceShareRecovery } from './recovery/DeviceShareRecovery'
 
 export enum MPCWalletState {
   NOT_INITIALIZED,
@@ -31,14 +31,12 @@ export const useMPCWallet = (): MPCWalletHook => {
   const [walletState, setWalletState] = useState(MPCWalletState.NOT_INITIALIZED)
   const mpcCoreKit = useMPC()
   const onboard = useOnboard()
-  const securityQuestions = useSecurityQuestions(mpcCoreKit)
-  const deviceShareModule = useDeviceShare(mpcCoreKit)
 
   const isMFAEnabled = () => {
     if (!mpcCoreKit) {
       return false
     }
-    const { shareDescriptions } = mpcCoreKit?.getKeyDetails()
+    const { shareDescriptions } = mpcCoreKit.getKeyDetails()
 
     return !Object.entries(shareDescriptions).some(([key, value]) => value[0]?.includes('hashedShare'))
   }
@@ -85,6 +83,7 @@ export const useMPCWallet = (): MPCWalletHook => {
           await mpcCoreKit.inputFactorKey(deviceFactorKey)
         } else {
           // Check password recovery
+          const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
           if (securityQuestions.isEnabled()) {
             setWalletState(MPCWalletState.MANUAL_RECOVERY)
             return
@@ -115,16 +114,20 @@ export const useMPCWallet = (): MPCWalletHook => {
   }
 
   const recoverFactorWithPassword = async (password: string, storeDeviceShare: boolean = false) => {
-    if (mpcCoreKit && securityQuestions.isEnabled()) {
+    if (!mpcCoreKit) {
+      throw new Error('MPC Core Kit is not initialized')
+    }
+
+    const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
+
+    if (securityQuestions.isEnabled()) {
       const factorKeyString = await securityQuestions.recoverWithPassword(password)
-      if (!factorKeyString) {
-        throw new Error('The password is invalid')
-      }
       const factorKey = new BN(factorKeyString, 'hex')
       await mpcCoreKit.inputFactorKey(factorKey)
 
       if (storeDeviceShare) {
-        await deviceShareModule.createAndStoreDeviceFactor()
+        const deviceShareRecovery = new DeviceShareRecovery(mpcCoreKit)
+        await deviceShareRecovery.createAndStoreDeviceFactor()
       }
 
       finalizeLogin()

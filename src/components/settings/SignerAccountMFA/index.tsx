@@ -4,10 +4,10 @@ import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { getPubKeyPoint } from '@tkey-mpc/common-types'
 import { BN } from 'bn.js'
 import { useEffect, useMemo, useState } from 'react'
-import { useSecurityQuestions } from '@/hooks/wallets/mpc/recovery/useSecurityQuestions'
+import { SecurityQuestionRecovery } from '@/hooks/wallets/mpc/recovery/SecurityQuestionRecovery'
 import useMFASettings from './useMFASettings'
 import { useForm } from 'react-hook-form'
-import { useDeviceShare } from '@/hooks/wallets/mpc/recovery/useDeviceShare'
+import { DeviceShareRecovery } from '@/hooks/wallets/mpc/recovery/DeviceShareRecovery'
 
 type SignerAccountFormData = {
   oldPassword: string | undefined
@@ -19,8 +19,6 @@ type SignerAccountFormData = {
 const SignerAccountMFA = () => {
   const mpcCoreKit = useMPC()
   const mfaSettings = useMFASettings(mpcCoreKit)
-  const securityQuestions = useSecurityQuestions(mpcCoreKit)
-  const deviceShareModule = useDeviceShare(mpcCoreKit)
 
   const formMethods = useForm<SignerAccountFormData>({
     mode: 'all',
@@ -30,19 +28,27 @@ const SignerAccountMFA = () => {
 
   const [enablingMFA, setEnablingMFA] = useState(false)
 
-  const isPasswordSet = useMemo(() => securityQuestions.isEnabled(), [securityQuestions])
-
-  console.log(mpcCoreKit)
+  const isPasswordSet = useMemo(() => {
+    if (!mpcCoreKit) {
+      return false
+    }
+    const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
+    return securityQuestions.isEnabled()
+  }, [mpcCoreKit])
 
   useEffect(() => {
-    deviceShareModule.isEnabled().then((value) => setValue('storeDeviceShare', value))
-  }, [deviceShareModule, setValue])
+    if (!mpcCoreKit) {
+      return
+    }
+    new DeviceShareRecovery(mpcCoreKit).isEnabled().then((value) => setValue('storeDeviceShare', value))
+  }, [mpcCoreKit, setValue])
 
   const enableMFA = async () => {
     if (!mpcCoreKit) {
       return
     }
-
+    const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
+    const deviceShareRecovery = new DeviceShareRecovery(mpcCoreKit)
     setEnablingMFA(true)
     try {
       const { newPassword, oldPassword, storeDeviceShare } = formMethods.getValues()
@@ -63,16 +69,16 @@ const SignerAccountMFA = () => {
         await mpcCoreKit.deleteFactor(recoverPubKey, recoverKey)
       }
 
-      const hasDeviceShare = await deviceShareModule.isEnabled()
+      const hasDeviceShare = await deviceShareRecovery.isEnabled()
 
       if (!hasDeviceShare && storeDeviceShare) {
-        await deviceShareModule.createAndStoreDeviceFactor()
+        await deviceShareRecovery.createAndStoreDeviceFactor()
       }
 
       if (hasDeviceShare && !storeDeviceShare) {
         // Switch to password recovery factor such that we can delete the device factor
         await mpcCoreKit.inputFactorKey(new BN(securityQuestionFactor, 'hex'))
-        await deviceShareModule.removeDeviceFactor()
+        await deviceShareRecovery.removeDeviceFactor()
       }
     } catch (error) {
       console.error(error)
@@ -90,20 +96,17 @@ const SignerAccountMFA = () => {
   }
 
   const onSubmit = async () => {
-    console.log('submitting')
     await enableMFA()
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box display="flex" flexDirection="column" gap={3} alignItems="baseline">
-        {
-          /* TODO: Memoize this*/ securityQuestions.isEnabled() ? (
-            <Typography>You already have a recovery password setup.</Typography>
-          ) : (
-            <Typography>You have no password setup. Secure your account now!</Typography>
-          )
-        }
+        {isPasswordSet ? (
+          <Typography>You already have a recovery password setup.</Typography>
+        ) : (
+          <Typography>You have no password setup. Secure your account now!</Typography>
+        )}
         {isPasswordSet && (
           <TextField
             placeholder="Old password"
@@ -112,7 +115,7 @@ const SignerAccountMFA = () => {
             error={!!formState.errors['oldPassword']}
             helperText={formState.errors['oldPassword']?.message}
             {...register('oldPassword', {
-              required: securityQuestions.isEnabled(),
+              required: true,
             })}
           />
         )}
