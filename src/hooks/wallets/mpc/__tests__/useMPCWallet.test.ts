@@ -15,7 +15,12 @@ import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
 
+/** time until mock login resolves */
 const MOCK_LOGIN_TIME = 1000
+
+/**
+ * Helper class for mocking MPC Core Kit login flow
+ */
 class MockMPCCoreKit {
   status: COREKIT_STATUS = COREKIT_STATUS.INITIALIZED
   state: {
@@ -27,6 +32,12 @@ class MockMPCCoreKit {
   private stateAfterLogin: COREKIT_STATUS
   private userInfoAfterLogin: UserInfo | undefined
   private expectedFactorKey: BN
+  /**
+   *
+   * @param stateAfterLogin State after loginWithOauth resolves
+   * @param userInfoAfterLogin  User info to set in the state after loginWithOauth resolves
+   * @param expectedFactorKey For MFA login flow the expected factor key. If inputFactorKey gets called with the expected factor key the state switches to logged in
+   */
   constructor(stateAfterLogin: COREKIT_STATUS, userInfoAfterLogin: UserInfo, expectedFactorKey: BN = new BN(-1)) {
     this.stateAfterLogin = stateAfterLogin
     this.userInfoAfterLogin = userInfoAfterLogin
