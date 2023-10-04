@@ -112,6 +112,7 @@ export function waitForConnectionStatus() {
 
 export function openAddOwnerWindow() {
   cy.get(addOwnerBtn).click()
+  cy.wait(1000)
   cy.get(newOwnerName).should('be.visible')
   cy.get(newOwnerAddress).should('be.visible')
 }
