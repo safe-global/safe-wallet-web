@@ -1,11 +1,15 @@
 import { LS_NAMESPACE } from '../../src/config/constants'
 export const RECIPIENT_ADDRESS = '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC'
 export const GOERLI_TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+export const SEPOLIA_TEST_SAFE_1 = 'sep:0xBb26E3717172d5000F87DeFd391994f789D80aEB'
+// SEPOLIA_TEST_SAFE_2 Has no transactions, 1 owner, using for verificatons only
+export const SEPOLIA_TEST_SAFE_2 = 'sep:0x33C4AA5729D91FfB3B87AEf8a324bb6304Fb905c'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
 export const PAGINATION_TEST_SAFE = 'gor:0x850493a15914aAC05a821A3FAb973b4598889A7b'
 export const TEST_SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
 export const EOA = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
 export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'
+export const SEPOLIA_OWNER_2 = '0x96D4c6fFC338912322813a77655fCC926b9A5aC5'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
 export const SIDEBAR_ADDRESS = '0x04f8...1a91'
 
@@ -31,6 +35,7 @@ export const appsUrl = '/apps'
 export const requestPermissionsUrl = '/request-permissions'
 export const getPermissionsUrl = '/get-permissions'
 export const appSettingsUrl = '/settings/safe-apps'
+export const setupUrl = '/settings/setup?safe='
 export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
@@ -81,8 +86,31 @@ export const transactionStatus = {
   approve: 'Approve',
   success: 'Success',
   interaction: 'Contract interaction',
+  confirm: 'Confirm transaction',
 }
 
 export const tokenNames = {
   wrappedEther: 'Wrapped Ether',
+}
+
+export const addressBookErrrMsg = {
+  invalidFormat: 'Invalid address format',
+  invalidChecksum: 'Invalid address checksum',
+  exceedChars: 'Maximum 50 symbols',
+  ownSafe: 'Cannot use Safe Account itself as owner',
+  alreadyAdded: 'Address already added',
+}
+export const addresBookContacts = {
+  user1: {
+    address: '0x01A9F68e339da12565cfBc47fe7D6EdEcB11C46f',
+    name: 'David',
+  },
+  user2: {
+    address: 'francotest.eth',
+    name: 'Franco ESN',
+  },
+}
+
+export const localStorageKeys = {
+  SAFE_v2__addressBook: 'SAFE_v2__addressBook',
 }
