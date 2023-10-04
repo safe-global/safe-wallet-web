@@ -15,6 +15,7 @@ import {
 } from '@mui/material'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
@@ -37,7 +38,7 @@ import css from './styles.module.css'
 // UI logic
 
 // Convert data structure of added Safes
-export const transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafes => {
+export const _transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafes => {
   return Object.entries(addedSafes).reduce<NotifiableSafes>((acc, [chainId, addedSafesOnChain]) => {
     acc[chainId] = Object.keys(addedSafesOnChain)
     return acc
@@ -62,12 +63,28 @@ export const _transformCurrentSubscribedSafes = (
   }, {})
 }
 
+// Remove Safes that are not on a supported chain
+export const _sanitizeNotifiableSafes = (
+  chains: Array<ChainInfo>,
+  notifiableSafes: NotifiableSafes,
+): NotifiableSafes => {
+  return Object.entries(notifiableSafes).reduce<NotifiableSafes>((acc, [chainId, safeAddresses]) => {
+    const chain = chains.find((chain) => chain.chainId === chainId)
+
+    if (chain) {
+      acc[chainId] = safeAddresses
+    }
+
+    return acc
+  }, {})
+}
+
 // Merges added Safes and currently notified Safes into a single data structure without duplicates
 export const _mergeNotifiableSafes = (
   addedSafes: AddedSafesState,
   currentSubscriptions?: NotifiableSafes,
 ): NotifiableSafes => {
-  const notifiableSafes = transformAddedSafes(addedSafes)
+  const notifiableSafes = _transformAddedSafes(addedSafes)
 
   if (!currentSubscriptions) {
     return notifiableSafes
@@ -249,8 +266,9 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
   // Merged added Safes and `currentNotifiedSafes` (in case subscriptions aren't added)
   const notifiableSafes = useMemo(() => {
-    return _mergeNotifiableSafes(addedSafes, currentNotifiedSafes)
-  }, [addedSafes, currentNotifiedSafes])
+    const safes = _mergeNotifiableSafes(addedSafes, currentNotifiedSafes)
+    return _sanitizeNotifiableSafes(chains.configs, safes)
+  }, [chains.configs, addedSafes, currentNotifiedSafes])
 
   const totalNotifiableSafes = useMemo(() => {
     return _getTotalNotifiableSafes(notifiableSafes)
