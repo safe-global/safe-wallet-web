@@ -162,7 +162,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
               <SvgIcon component={CloseIcon} inheritViewBox color="border" fontSize="small" />
             </IconButton>
             <Typography mt={0.5} mb={1.5} variant="body2">
-              Get notified about pending signatures, incoming and outgoing transactions for all Safes on{' '}
+              Get notified about pending signatures, incoming and outgoing transactions for all Safe Accounts on{' '}
               {chain?.chainName} when Safe
               {`{Wallet}`} is in the background or closed.
             </Typography>
