@@ -20,7 +20,6 @@ export type MPCWalletHook = {
   recoverFactorWithPassword: (password: string, storeDeviceShare: boolean) => Promise<void>
   walletState: MPCWalletState
   triggerLogin: () => Promise<void>
-  isMFAEnabled: () => boolean
   resetAccount: () => Promise<void>
   userInfo: {
     email: string | undefined
@@ -31,15 +30,6 @@ export const useMPCWallet = (): MPCWalletHook => {
   const [walletState, setWalletState] = useState(MPCWalletState.NOT_INITIALIZED)
   const mpcCoreKit = useMPC()
   const onboard = useOnboard()
-
-  const isMFAEnabled = () => {
-    if (!mpcCoreKit) {
-      return false
-    }
-    const { shareDescriptions } = mpcCoreKit.getKeyDetails()
-
-    return !Object.entries(shareDescriptions).some(([key, value]) => value[0]?.includes('hashedShare'))
-  }
 
   const criticalResetAccount = async (): Promise<void> => {
     // This is a critical function that should only be used for testing purposes
@@ -137,7 +127,6 @@ export const useMPCWallet = (): MPCWalletHook => {
   return {
     triggerLogin,
     walletState,
-    isMFAEnabled,
     recoverFactorWithPassword,
     resetAccount: criticalResetAccount,
     upsertPasswordBackup: () => Promise.resolve(),

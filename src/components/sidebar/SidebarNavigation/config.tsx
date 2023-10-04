@@ -105,7 +105,7 @@ export const settingsNavItems = [
     href: AppRoutes.settings.environmentVariables,
   },
   {
-    label: 'Signer Account',
+    label: 'Signer account',
     href: AppRoutes.settings.signerAccount,
   },
 ]

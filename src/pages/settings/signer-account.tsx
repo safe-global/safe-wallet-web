@@ -10,7 +10,7 @@ const SignerAccountPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Signer Account'}</title>
+        <title>{'Safe{Wallet} – Settings – Signer account'}</title>
       </Head>
 
       <SettingsHeader />

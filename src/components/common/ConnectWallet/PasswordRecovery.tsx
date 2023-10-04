@@ -26,7 +26,7 @@ export const PasswordRecovery = ({
         <Box>
           <Typography>
             This browser is not registered with your Account yet. Please enter your recovery password to restore access
-            to this account.
+            to this Account.
           </Typography>
           <Box mt={2} display="flex" flexDirection="column" alignItems="baseline" gap={2}>
             <TextField

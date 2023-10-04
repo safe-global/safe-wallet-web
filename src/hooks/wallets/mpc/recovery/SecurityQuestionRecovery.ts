@@ -1,8 +1,9 @@
 import { TssSecurityQuestion, TssShareType, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 
-const DEFAULT_SECURITY_QUESTION = 'ENTER PASSWORD'
-
 export class SecurityQuestionRecovery {
+  /** This is only used internally in the metadata store of tKey. Not in the UI */
+  private static readonly DEFAULT_SECURITY_QUESTION = 'ENTER PASSWORD'
+
   private mpcCoreKit: Web3AuthMPCCoreKit
   private securityQuestions = new TssSecurityQuestion()
 
@@ -15,7 +16,6 @@ export class SecurityQuestionRecovery {
       const question = this.securityQuestions.getQuestion(this.mpcCoreKit)
       return !!question
     } catch (error) {
-      console.error(error)
       // It errors out if recovery is not setup currently
       return false
     }
@@ -30,11 +30,11 @@ export class SecurityQuestionRecovery {
         answer: oldPassword,
         mpcCoreKit: this.mpcCoreKit,
         newAnswer: newPassword,
-        newQuestion: DEFAULT_SECURITY_QUESTION,
+        newQuestion: SecurityQuestionRecovery.DEFAULT_SECURITY_QUESTION,
       })
     } else {
       await this.securityQuestions.setSecurityQuestion({
-        question: DEFAULT_SECURITY_QUESTION,
+        question: SecurityQuestionRecovery.DEFAULT_SECURITY_QUESTION,
         answer: newPassword,
         mpcCoreKit: this.mpcCoreKit,
         shareType: TssShareType.DEVICE,

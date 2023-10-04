@@ -39,7 +39,6 @@ export class DeviceShareRecovery {
     const pubKeyX = pubKey.x.toString('hex', 64)
     await this.mpcCoreKit.deleteFactor(pubKey)
     const currentStorage = BrowserStorage.getInstance('mpc_corekit_store')
-    debugger
     currentStorage.set(pubKeyX, undefined)
   }
 }

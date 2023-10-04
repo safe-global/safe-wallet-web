@@ -16,6 +16,7 @@ enum ErrorCodes {
 
   _302 = '302: Error connecting to the wallet',
   _303 = '303: Error creating pairing session',
+  _304 = '304: Error enabling MFA',
 
   _600 = '600: Error fetching Safe info',
   _601 = '601: Error fetching balances',
