@@ -268,7 +268,7 @@ describe('useMPCWallet', () => {
       expect(result.current.recoverFactorWithPassword('test', false)).rejects.toEqual(new Error('Invalid answer'))
     })
 
-    it.only('should input recovered factor if correct password is entered', async () => {
+    it('should input recovered factor if correct password is entered', async () => {
       const mockSecurityQuestionFactor = ethers.Wallet.createRandom().privateKey.slice(2)
       const connectWalletSpy = jest.fn().mockImplementation(() => Promise.resolve())
       jest.spyOn(useOnboard, 'default').mockReturnValue({} as unknown as OnboardAPI)
