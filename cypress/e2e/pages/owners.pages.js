@@ -3,6 +3,7 @@ import * as main from '../pages/main.page'
 
 const copyToClipboardBtn = 'button[aria-label="Copy to clipboard"]'
 const tooltipLabel = (label) => `span[aria-label="${label}"]`
+const removeOwnerBtn = 'button[aria-label="Remove owner"]'
 const replaceOwnerBtn = 'button[aria-label="Replace owner"]'
 const addOwnerBtn = 'span[data-track="settings: Add owner"]'
 const tooltip = 'div[role="tooltip"]'
@@ -14,6 +15,8 @@ const newOwnerNonceInput = 'input[name="nonce"]'
 const thresholdInput = 'input[name="threshold"]'
 const thresHoldDropDownIcon = 'svg[data-testid="ArrowDropDownIcon"]'
 const thresholdList = 'ul[role="listbox"]'
+const thresholdDropdown = 'div[aria-haspopup="listbox"]'
+const thresholdOption = 'li[role="option"]'
 
 const disconnectBtnStr = 'Disconnect'
 const notConnectedStatus = 'Connect'
@@ -22,10 +25,47 @@ const max50charsLimitStr = 'Maximum 50 symbols'
 const nextBtnStr = 'Next'
 const executeBtnStr = 'Execute'
 const backbtnStr = 'Back'
+const removeOwnerStr = 'Remove owner'
+const selectedOwnerStr = 'Selected owner'
 
 export const safeAccountNonceStr = 'Safe Account nonce'
 export const nonOwnerErrorMsg = 'Your connected wallet is not an owner of this Safe Account'
 export const disconnectedUserErrorMsg = 'Please connect your wallet'
+
+export function verifyOwnerDeletionWindowDisplayed() {
+  cy.get('div').contains(constants.transactionStatus.confirm).should('exist')
+  cy.get('button').contains(backbtnStr).should('exist')
+  cy.get('p').contains(selectedOwnerStr)
+}
+
+function clickOnThresholdDropdown() {
+  cy.get(thresholdDropdown).eq(1).click()
+}
+
+function getThresholdOptions() {
+  return cy.get('ul').find(thresholdOption)
+}
+
+export function verifyThresholdLimit(startValue, endValue) {
+  cy.get('p').contains(`out of ${endValue} owner(s)`)
+  clickOnThresholdDropdown()
+  getThresholdOptions().should('have.length', 1)
+  getThresholdOptions().eq(0).should('have.text', startValue)
+}
+
+export function verifyRemoveBtnIsEnabled() {
+  return cy.get(removeOwnerBtn).should('exist')
+}
+
+export function hoverOverDeleteOwnerBtn(index) {
+  cy.get(removeOwnerBtn).eq(index).trigger('mouseover', { force: true })
+}
+
+export function openRemoveOwnerWindow(btn) {
+  cy.get(removeOwnerBtn).eq(btn).click({ force: true })
+  cy.get(copyToClipboardBtn).parent().eq(2).find('span').contains('0x').should('be.visible')
+  cy.get('div').contains(removeOwnerStr).should('exist')
+}
 
 export function openReplaceOwnerWindow() {
   cy.get(replaceOwnerBtn).click({ force: true })

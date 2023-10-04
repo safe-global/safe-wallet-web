@@ -12,6 +12,7 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
     testIsolation: false,
+    hideXHR: true,
   },
 
   chromeWebSecurity: false,
