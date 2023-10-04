@@ -65,7 +65,10 @@ export const useDismissPushNotificationsBanner = () => {
   }
 }
 
-const getSafesToRegister = (addedSafes: AddedSafesState, allPreferences: PushNotificationPreferences | undefined) => {
+export const _getSafesToRegister = (
+  addedSafes: AddedSafesState,
+  allPreferences: PushNotificationPreferences | undefined,
+) => {
   // Regiser all added Safes
   if (!allPreferences) {
     return transformAddedSafes(addedSafes)
@@ -77,13 +80,14 @@ const getSafesToRegister = (addedSafes: AddedSafesState, allPreferences: PushNot
     const notificationRegistrations = Object.values(allPreferences)
 
     const newlyAddedSafes = addedSafeAddressesOnChain.filter((safeAddress) => {
-      return (
-        notificationRegistrations.length === 0 ||
-        notificationRegistrations.some((registration) => !sameAddress(registration.safeAddress, safeAddress))
+      return !notificationRegistrations.some(
+        (registration) => chainId === registration.chainId && sameAddress(registration.safeAddress, safeAddress),
       )
     })
 
-    acc[chainId] = newlyAddedSafes
+    if (newlyAddedSafes.length > 0) {
+      acc[chainId] = newlyAddedSafes
+    }
 
     return acc
   }, {})
@@ -124,7 +128,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     trackEvent(PUSH_NOTIFICATION_EVENTS.ENABLE_ALL)
 
     const allPreferences = getAllPreferences()
-    const safesToRegister = getSafesToRegister(addedSafes, allPreferences)
+    const safesToRegister = _getSafesToRegister(addedSafes, allPreferences)
 
     try {
       await assertWalletChain(onboard, safe.chainId)
