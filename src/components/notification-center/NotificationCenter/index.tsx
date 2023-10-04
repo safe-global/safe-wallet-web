@@ -164,7 +164,7 @@ const NotificationCenter = (): ReactElement => {
               passHref
               legacyBehavior
             >
-              <MuiLink className={css.settingsLink} variant="body2">
+              <MuiLink className={css.settingsLink} variant="body2" onClick={handleClose}>
                 <SvgIcon component={SettingsIcon} inheritViewBox fontSize="small" /> Settings
               </MuiLink>
             </Link>
