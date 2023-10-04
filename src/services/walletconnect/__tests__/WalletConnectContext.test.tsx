@@ -10,6 +10,7 @@ import WalletConnectWallet from '../WalletConnectWallet'
 import { safeInfoSlice } from '@/store/safeInfoSlice'
 import { useAppDispatch } from '@/store'
 import * as useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
+import * as useWalletConnectSearchParamUri from '../useWalletConnectSearchParamUri'
 
 jest.mock('../WalletConnectWallet')
 jest.mock('@/services/safe-wallet-provider/useSafeWalletProvider')
@@ -27,6 +28,7 @@ const TestComponent = () => {
 describe('WalletConnectProvider', () => {
   beforeEach(() => {
     jest.resetAllMocks()
+    jest.restoreAllMocks()
   })
 
   it('sets the walletConnect state', async () => {
@@ -85,6 +87,55 @@ describe('WalletConnectProvider', () => {
     await waitFor(() => {
       expect(getByText('Test init failed')).toBeInTheDocument()
     })
+  })
+
+  it('connects to the session present in the URL', async () => {
+    jest.spyOn(WalletConnectWallet.prototype, 'init').mockImplementation(() => Promise.resolve())
+    jest.spyOn(WalletConnectWallet.prototype, 'updateSessions').mockImplementation(() => Promise.resolve())
+    jest.spyOn(WalletConnectWallet.prototype, 'connect').mockImplementation(() => Promise.resolve())
+    jest.spyOn(WalletConnectWallet.prototype, 'onSessionAdd').mockImplementation(jest.fn())
+
+    const mockSetWcUri = jest.fn()
+    jest
+      .spyOn(useWalletConnectSearchParamUri, 'useWalletConnectSearchParamUri')
+      .mockImplementation(() => ['wc:123', mockSetWcUri])
+
+    const { getByText } = render(
+      <WalletConnectProvider>
+        <TestComponent />
+      </WalletConnectProvider>,
+      {
+        initialReduxState: {
+          safeInfo: {
+            loading: false,
+            data: {
+              address: {
+                value: hexZeroPad('0x123', 20),
+              },
+              chainId: '5',
+            } as SafeInfo,
+          },
+        },
+        routerProps: {
+          query: {
+            wc: 'wc:123',
+          },
+        },
+      },
+    )
+
+    await waitFor(() => {
+      expect(getByText('WalletConnect initialized')).toBeInTheDocument()
+      expect(WalletConnectWallet.prototype.connect).toHaveBeenCalledWith('wc:123')
+      expect(WalletConnectWallet.prototype.onSessionAdd).toHaveBeenCalled()
+    })
+
+    // Manually assert that handler will remove the search param
+    const onSessionAddHandler = (WalletConnectWallet.prototype.onSessionAdd as jest.Mock).mock.calls[0][0]
+
+    expect(mockSetWcUri).not.toHaveBeenCalled()
+    onSessionAddHandler()
+    expect(mockSetWcUri).toHaveBeenCalledWith(null)
   })
 
   describe('updateSessions', () => {

@@ -9,13 +9,11 @@ import ProposalForm from '../ProposalForm'
 import WcInput from '../WcInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import SessionList from '../SessionList'
-import { useWalletConnectSearchParamUri } from '@/services/walletconnect/useWalletConnectSearchParamUri'
 
 const SessionManager = ({ sessions }: { sessions: SessionTypes.Struct[] }) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
-  const [wcUri, setWcUri] = useWalletConnectSearchParamUri()
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [error, setError] = useState<Error>()
 
@@ -30,9 +28,8 @@ const SessionManager = ({ sessions }: { sessions: SessionTypes.Struct[] }) => {
       return
     }
 
-    setWcUri(null)
     setProposal(undefined)
-  }, [walletConnect, chainId, safeAddress, proposal, setWcUri])
+  }, [walletConnect, chainId, safeAddress, proposal])
 
   // On session reject
   const onReject = useCallback(async () => {
@@ -63,13 +60,6 @@ const SessionManager = ({ sessions }: { sessions: SessionTypes.Struct[] }) => {
     if (!walletConnect) return
     return walletConnect.onSessionPropose(setProposal)
   }, [walletConnect])
-
-  // Connect to session present in URL
-  useEffect(() => {
-    if (!walletConnect || !wcUri) return
-
-    walletConnect.connect(wcUri).catch(setError)
-  }, [walletConnect, wcUri])
 
   return (
     <>
