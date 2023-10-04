@@ -233,7 +233,7 @@ class WalletConnectWallet {
   /**
    * Subscribe to requests
    */
-  public onRequest = (handler: (event: Web3WalletTypes.SessionRequest) => void) => {
+  public onRequest(handler: (event: Web3WalletTypes.SessionRequest) => void) {
     this.web3Wallet?.on('session_request', handler)
 
     return () => {
