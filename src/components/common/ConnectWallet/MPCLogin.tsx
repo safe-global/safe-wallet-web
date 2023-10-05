@@ -7,6 +7,7 @@ import GoogleLogo from '@/public/images/welcome/logo-google.svg'
 
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 
 const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   const { loginPending, triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
@@ -22,7 +23,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
 
   // If login was triggered through the Button we immediately continue if logged in
   useEffect(() => {
-    if (loginTriggered && wallet && onLogin) {
+    if (loginTriggered && wallet && wallet.label === ONBOARD_MPC_MODULE_LABEL && onLogin) {
       onLogin()
     }
   }, [loginTriggered, onLogin, wallet])

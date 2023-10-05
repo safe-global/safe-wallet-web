@@ -41,6 +41,10 @@
   height: 100%;
 }
 
+.checkIcon {
+  color: var(--color-static-main);
+}
+
 .createAddCard {
   display: flex;
   flex-direction: column;

@@ -60,19 +60,19 @@ const NewSafe = () => {
 
           <Grid container spacing={2} mb="auto">
             <Grid item xs={12} display="flex" flexDirection="row" gap={1} alignItems="center">
-              <SvgIcon component={CheckFilled} inheritViewBox />
+              <SvgIcon className={css.checkIcon} component={CheckFilled} inheritViewBox />
               <Typography color="static.main" fontWeight={700}>
                 Stealth security with multiple owners
               </Typography>
             </Grid>
             <Grid item xs={12} display="flex" flexDirection="row" gap={1} alignItems="center">
-              <SvgIcon component={CheckFilled} inheritViewBox />
+              <SvgIcon className={css.checkIcon} component={CheckFilled} inheritViewBox />
               <Typography color="static.main" fontWeight={700}>
                 Make it yours with modules and guards
               </Typography>
             </Grid>
             <Grid item xs={12} display="flex" flexDirection="row" gap={1} alignItems="center">
-              <SvgIcon component={CheckFilled} inheritViewBox />
+              <SvgIcon className={css.checkIcon} component={CheckFilled} inheritViewBox />
               <Typography color="static.main" fontWeight={700}>
                 Access 130+ ecosystem apps
               </Typography>
