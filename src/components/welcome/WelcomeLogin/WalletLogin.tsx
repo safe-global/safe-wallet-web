@@ -34,7 +34,7 @@ const WalletLogin = ({ onLogin }: { onLogin?: () => void }) => {
 
   if (connectedWalletInfo) {
     return (
-      <Button variant="contained" sx={{ padding: '8px 16px' }} size="small" fullWidth onClick={onLogin}>
+      <Button variant="contained" sx={{ padding: '8px 16px' }} fullWidth onClick={onLogin}>
         <Box width="100%" justifyContent="space-between" display="flex" flexDirection="row" alignItems="center" gap={1}>
           <Box display="flex" flexDirection="column" alignItems="flex-start">
             <Typography variant="subtitle2" fontWeight={700}>
@@ -58,7 +58,7 @@ const WalletLogin = ({ onLogin }: { onLogin?: () => void }) => {
   }
 
   return (
-    <Button onClick={login} variant="contained" size="small" disableElevation fullWidth>
+    <Button onClick={login} sx={{ minHeight: '40px' }} variant="contained" size="small" disableElevation fullWidth>
       Connect wallet
     </Button>
   )

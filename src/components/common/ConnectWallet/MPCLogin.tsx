@@ -9,8 +9,7 @@ import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
 
 export const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
-  const { loginPending, triggerLogin, resetAccount, userInfo, walletState, recoverFactorWithPassword } =
-    useContext(MpcWalletContext)
+  const { loginPending, triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
 
   const wallet = useWallet()
 
