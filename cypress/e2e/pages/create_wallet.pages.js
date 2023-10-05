@@ -1,4 +1,5 @@
 import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
 
 const newAccountBtnStr = 'Create new Account'
 
@@ -19,7 +20,8 @@ export function typeWalletName(name) {
 }
 
 export function selectNetwork(network, regex = false) {
-  cy.get(selectNetworkBtn).click({ force: true })
+  cy.wait(1000)
+  cy.get(selectNetworkBtn).should('exist').click()
   cy.get('li').contains(network).click()
 
   if (regex) {
