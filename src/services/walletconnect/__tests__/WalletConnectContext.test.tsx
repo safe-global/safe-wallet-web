@@ -320,8 +320,14 @@ describe('WalletConnectProvider', () => {
         },
       } as unknown as Web3WalletTypes.SessionRequest)
 
-      expect(mockRequest).not.toHaveBeenCalled()
-      expect(sendSessionResponseSpy).not.toHaveBeenCalled()
+      await waitFor(() => {
+        expect(sendSessionResponseSpy).toHaveBeenCalledWith('topic', {
+          error: { code: 5100, message: 'Unsupported chains.' },
+          id: 1,
+          jsonrpc: '2.0',
+        })
+        expect(mockRequest).not.toHaveBeenCalled()
+      })
     })
 
     it('does not continue with the request if there is no matching chainId', async () => {
@@ -376,8 +382,14 @@ describe('WalletConnectProvider', () => {
         },
       } as unknown as Web3WalletTypes.SessionRequest)
 
-      expect(mockRequest).not.toHaveBeenCalled()
-      expect(sendSessionResponseSpy).not.toHaveBeenCalled()
+      await waitFor(() => {
+        expect(sendSessionResponseSpy).toHaveBeenCalledWith('topic', {
+          error: { code: 5100, message: 'Unsupported chains.' },
+          id: 1,
+          jsonrpc: '2.0',
+        })
+        expect(mockRequest).not.toHaveBeenCalled()
+      })
     })
 
     it('passes the request onto the Safe Wallet Provider and sends the response to WalletConnect', async () => {
