@@ -118,10 +118,13 @@ class WalletConnectWallet {
       namespaces: getNamespaces(chains, proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS),
     })
 
+    await this.updateSession(session, currentChainId, safeAddress)
+
     // Workaround: WalletConnect doesn't have a session_add event
     this.web3Wallet?.events.emit(SESSION_ADD_EVENT)
 
-    return session
+    // Return updated session as it may have changed
+    return this.getActiveSessions().find(({ topic }) => topic === session.topic) ?? session
   }
 
   private async updateSession(session: SessionTypes.Struct, chainId: string, safeAddress: string) {
