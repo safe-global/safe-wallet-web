@@ -36,7 +36,7 @@ describe('MPC Onboard module', () => {
       send: mockReadOnlySend,
     } as any)
 
-    jest.spyOn(useMPC, 'getMPCCoreKitInstance').mockImplementation(() => {
+    jest.spyOn(useMPC, '_getMPCCoreKitInstance').mockImplementation(() => {
       return {
         provider: {},
       } as any
@@ -85,7 +85,7 @@ describe('MPC Onboard module', () => {
       send: mockReadOnlySend,
     } as any)
 
-    jest.spyOn(useMPC, 'getMPCCoreKitInstance').mockImplementation(() => {
+    jest.spyOn(useMPC, '_getMPCCoreKitInstance').mockImplementation(() => {
       return {
         provider: {
           request: mockMPCProviderRequest,

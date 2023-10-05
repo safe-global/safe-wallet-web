@@ -24,7 +24,7 @@ export const useInitMPC = () => {
       chainNamespace: CHAIN_NAMESPACES.EIP155,
       rpcTarget: getRpcServiceUrl(chain.rpcUri),
       displayName: chain.chainName,
-      blockExplorer: chain.blockExplorerUriTemplate.address,
+      blockExplorer: new URL(chain.blockExplorerUriTemplate.address).origin,
       ticker: chain.nativeCurrency.symbol,
       tickerName: chain.nativeCurrency.name,
     }
@@ -40,7 +40,7 @@ export const useInitMPC = () => {
     const web3AuthCoreKit = new Web3AuthMPCCoreKit({
       web3AuthClientId: WEB3_AUTH_CLIENT_ID,
       // Available networks are "sapphire_devnet", "sapphire_mainnet"
-      web3AuthNetwork: WEB3AUTH_NETWORK.DEVNET,
+      web3AuthNetwork: WEB3AUTH_NETWORK.MAINNET,
       baseUrl: `${window.location.origin}/serviceworker`,
       uxMode: 'popup',
       enableLogging: true,
@@ -79,7 +79,7 @@ export const useInitMPC = () => {
   }, [chain, onboard])
 }
 
-export const getMPCCoreKitInstance = getStore
+export const _getMPCCoreKitInstance = getStore
 
 export const setMPCCoreKitInstance = setStore
 

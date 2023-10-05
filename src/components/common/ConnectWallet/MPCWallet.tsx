@@ -1,9 +1,12 @@
+import { MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
 import { Box, Button, CircularProgress } from '@mui/material'
 import { useContext } from 'react'
 import { MpcWalletContext } from './MPCWalletProvider'
+import { PasswordRecovery } from './PasswordRecovery'
 
 export const MPCWallet = () => {
-  const { loginPending, triggerLogin, resetAccount, userInfo } = useContext(MpcWalletContext)
+  const { loginPending, triggerLogin, resetAccount, userInfo, walletState, recoverFactorWithPassword } =
+    useContext(MpcWalletContext)
 
   return (
     <>
@@ -27,6 +30,10 @@ export const MPCWallet = () => {
             'Login with Socials'
           )}
         </Button>
+      )}
+
+      {walletState === MPCWalletState.MANUAL_RECOVERY && (
+        <PasswordRecovery recoverFactorWithPassword={recoverFactorWithPassword} />
       )}
     </>
   )

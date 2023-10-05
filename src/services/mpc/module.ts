@@ -1,9 +1,9 @@
-import { getMPCCoreKitInstance } from '@/hooks/wallets/mpc/useMPC'
+import { _getMPCCoreKitInstance } from '@/hooks/wallets/mpc/useMPC'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type WalletInit, ProviderRpcError } from '@web3-onboard/common'
 import { type EIP1193Provider } from '@web3-onboard/core'
 
-const getMPCProvider = () => getMPCCoreKitInstance()?.provider
+const getMPCProvider = () => _getMPCCoreKitInstance()?.provider
 
 const assertDefined = <T>(mpcProvider: T | undefined) => {
   if (!mpcProvider) {
@@ -78,7 +78,7 @@ function MpcModule(): WalletInit {
             return web3.removeListener(event, listener)
           },
           disconnect: () => {
-            getMPCCoreKitInstance()?.logout()
+            _getMPCCoreKitInstance()?.logout()
           },
         }
 

@@ -104,6 +104,10 @@ export const settingsNavItems = [
     label: 'Environment variables',
     href: AppRoutes.settings.environmentVariables,
   },
+  {
+    label: 'Signer account',
+    href: AppRoutes.settings.signerAccount,
+  },
 ]
 
 export const generalSettingsNavItems = [

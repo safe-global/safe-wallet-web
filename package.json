@@ -57,6 +57,7 @@
     "@safe-global/safe-react-components": "^2.0.6",
     "@sentry/react": "^7.28.1",
     "@sentry/tracing": "^7.28.1",
+    "@tkey-mpc/common-types": "^8.2.2",
     "@truffle/hdwallet-provider": "^2.1.4",
     "@web3-onboard/coinbase": "^2.2.4",
     "@web3-onboard/core": "^2.21.0",
