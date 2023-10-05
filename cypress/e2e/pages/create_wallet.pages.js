@@ -1,5 +1,4 @@
 import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
 
 const newAccountBtnStr = 'Create new Account'
 
