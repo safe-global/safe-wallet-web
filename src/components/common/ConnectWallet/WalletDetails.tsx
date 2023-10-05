@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
-import { MPCWallet } from './MPCWallet'
+import { MPCLogin } from './MPCLogin'
 
 const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement => {
   const connectWallet = useConnectWallet()
@@ -23,7 +23,7 @@ const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement 
         Connect
       </Button>
 
-      <MPCWallet />
+      <MPCLogin />
     </>
   )
 }

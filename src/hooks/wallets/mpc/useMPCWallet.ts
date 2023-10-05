@@ -23,6 +23,8 @@ export type MPCWalletHook = {
   resetAccount: () => Promise<void>
   userInfo: {
     email: string | undefined
+    profileImage: string | undefined
+    name: string | undefined
   }
 }
 
@@ -132,6 +134,8 @@ export const useMPCWallet = (): MPCWalletHook => {
     upsertPasswordBackup: () => Promise.resolve(),
     userInfo: {
       email: mpcCoreKit?.state.userInfo?.email,
+      profileImage: mpcCoreKit?.state.userInfo?.profileImage,
+      name: mpcCoreKit?.state.userInfo?.name,
     },
   }
 }

@@ -10,6 +10,8 @@ type MPCWalletContext = {
   walletState: MPCWalletState
   userInfo: {
     email: string | undefined
+    profileImage: string | undefined
+    name: string | undefined
   }
 }
 
@@ -22,6 +24,8 @@ export const MpcWalletContext = createContext<MPCWalletContext>({
   recoverFactorWithPassword: () => Promise.resolve(),
   userInfo: {
     email: undefined,
+    profileImage: undefined,
+    name: undefined,
   },
 })
 
