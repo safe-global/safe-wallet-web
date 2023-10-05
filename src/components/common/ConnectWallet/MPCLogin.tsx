@@ -8,7 +8,7 @@ import GoogleLogo from '@/public/images/welcome/logo-google.svg'
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
 
-export const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
+const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   const { loginPending, triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
 
   const wallet = useWallet()
@@ -25,7 +25,7 @@ export const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
     if (loginTriggered && wallet && onLogin) {
       onLogin()
     }
-  }, [loginTriggered, onLogin, walletState, wallet])
+  }, [loginTriggered, onLogin, wallet])
 
   return (
     <>
@@ -77,3 +77,5 @@ export const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
     </>
   )
 }
+
+export default MPCLogin

@@ -1,4 +1,4 @@
-import { MPCLogin } from '@/components/common/ConnectWallet/MPCLogin'
+import MPCLogin from '@/components/common/ConnectWallet/MPCLogin'
 import { AppRoutes } from '@/config/routes'
 import { Paper, SvgIcon, Typography, Divider, Link, Box } from '@mui/material'
 import SafeLogo from '@/public/images/logo-text.svg'
