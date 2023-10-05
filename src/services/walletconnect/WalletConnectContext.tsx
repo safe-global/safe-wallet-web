@@ -1,4 +1,3 @@
-import { getSdkError } from '@walletconnect/utils'
 import { type ReactNode, createContext, useEffect, useState } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -63,20 +62,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
       const session = walletConnect.getActiveSessions().find((s) => s.topic === topic)
       const requestChainId = stripEip155Prefix(event.params.chainId)
 
-      if (!session || requestChainId !== chainId) {
-        try {
-          // Send error to WalletConnect
-          await walletConnect.sendSessionResponse(topic, {
-            id: event.id,
-            jsonrpc: '2.0',
-            error: getSdkError('UNSUPPORTED_CHAINS'),
-          })
-        } catch (e) {
-          setError(asError(e))
-        }
-
-        return
-      }
+      if (!session || requestChainId !== chainId) return
 
       try {
         // Get response from the Safe Wallet Provider
