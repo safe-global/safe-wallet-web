@@ -26,10 +26,10 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
     defaultValues: async () => {
       const isDeviceShareStored = await new DeviceShareRecovery(mpcCoreKit).isEnabled()
       return {
-        confirmPassword: '',
-        oldPassword: undefined,
-        newPassword: '',
-        storeDeviceShare: isDeviceShareStored,
+        [PasswordFieldNames.confirmPassword]: '',
+        [PasswordFieldNames.oldPassword]: undefined,
+        [PasswordFieldNames.newPassword]: '',
+        [PasswordFieldNames.storeDeviceShare]: isDeviceShareStored,
       }
     },
   })

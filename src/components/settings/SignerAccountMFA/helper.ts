@@ -11,8 +11,8 @@ export const isMFAEnabled = (mpcCoreKit: Web3AuthMPCCoreKit) => {
   if (!mpcCoreKit) {
     return false
   }
-  const { shareDescriptions } = mpcCoreKit?.getKeyDetails()
-  return !Object.entries(shareDescriptions).some((value) => value[0]?.includes('hashedShare'))
+  const { shareDescriptions } = mpcCoreKit.getKeyDetails()
+  return !Object.values(shareDescriptions).some((value) => value[0]?.includes('hashedShare'))
 }
 
 export const enableMFA = async (
