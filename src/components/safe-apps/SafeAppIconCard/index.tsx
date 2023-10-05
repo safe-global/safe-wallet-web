@@ -5,7 +5,7 @@ const APP_LOGO_FALLBACK_IMAGE = `/images/apps/app-placeholder.svg`
 
 const getIframeContent = (url: string, width: number, height: number, fallback: string): string => {
   return `
-     <body style="margin: 0; overflow: hidden;">
+     <body style="margin: 0; overflow: hidden; display: flex;">
        <img src="${encodeURI(url)}" alt="Safe App logo" width="${width}" height="${height}" />
        <script>
           document.querySelector('img').onerror = (e) => {
