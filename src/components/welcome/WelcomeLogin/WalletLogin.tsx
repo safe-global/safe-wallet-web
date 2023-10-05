@@ -58,7 +58,7 @@ const WalletLogin = ({ onLogin }: { onLogin?: () => void }) => {
   }
 
   return (
-    <Button onClick={login} sx={{ minHeight: '40px' }} variant="contained" size="small" disableElevation fullWidth>
+    <Button onClick={login} sx={{ minHeight: '44px' }} variant="contained" size="small" disableElevation fullWidth>
       Connect wallet
     </Button>
   )
