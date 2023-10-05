@@ -122,7 +122,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
       sdkVersion: string,
     ) => {
       const isOffChainSigningSupported = isOffchainEIP1271Supported(safe, chain, sdkVersion)
-      const signOffChain = isOffChainSigningSupported && !onChainSigning
+      const signOffChain = isOffChainSigningSupported && !onChainSigning && !!settings.offChainSigning
 
       setCurrentRequestId(requestId)
 

@@ -18,6 +18,9 @@ enum ErrorCodes {
   _303 = '303: Error creating pairing session',
   _304 = '304: Error enabling MFA',
 
+  _400 = '400: Error requesting browser notification permissions',
+  _401 = '401: Error tracking push notifications',
+
   _600 = '600: Error fetching Safe info',
   _601 = '601: Error fetching balances',
   _602 = '602: Error fetching history txs',
@@ -36,12 +39,15 @@ enum ErrorCodes {
   _630 = '630: Error fetching remaining hourly relays',
   _631 = '631: Transaction failed to be relayed',
   _632 = '632: Error fetching relay task status',
+  _633 = '633: Notification (un-)registration failed',
 
   _700 = '700: Failed to read from local/session storage',
   _701 = '701: Failed to write to local/session storage',
   _702 = '702: Failed to remove from local/session storage',
   _703 = '703: Error importing an address book',
   _704 = '704: Error importing global data',
+  _705 = '705: Failed to read from IndexedDB',
+  _706 = '706: Failed to write to IndexedDB',
 
   _800 = '800: Safe creation tx failed',
   _801 = '801: Failed to send a tx with a spending limit',

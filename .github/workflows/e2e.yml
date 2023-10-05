@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     name: Smoke E2E tests
     steps:
       - uses: actions/checkout@v3

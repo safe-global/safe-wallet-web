@@ -59,8 +59,7 @@
     transform: scale(0.8);
   }
 
-  .notConnected,
-  .pairingDetails {
+  .notConnected {
     display: none;
   }
 }

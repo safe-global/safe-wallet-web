@@ -1,5 +1,6 @@
 import * as constants from '../../support/constants'
 import * as balances from '../pages/balances.pages'
+import * as main from '../../e2e/pages/main.page'
 
 const ASSETS_LENGTH = 8
 const ASSET_NAME_COLUMN = 0
@@ -11,9 +12,10 @@ describe('Assets > Coins', () => {
   const fiatRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2}`)
 
   before(() => {
+    cy.clearLocalStorage()
     // Open the Safe used for testing
-    cy.visit(`/balances?safe=${constants.GOERLI_TEST_SAFE}`)
-    cy.contains('button', 'Accept selection').click()
+    cy.visit(constants.BALANCE_URL + constants.GOERLI_TEST_SAFE)
+    main.acceptCookies()
     // Table is loaded
     cy.contains('Görli Ether')
 

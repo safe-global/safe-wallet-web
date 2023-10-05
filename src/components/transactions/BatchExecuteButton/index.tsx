@@ -60,7 +60,7 @@ const BatchExecuteButton = () => {
             disabled={isDisabled}
             onClick={handleOpenModal}
           >
-            Bulk execute{isBatchable && ` ${batchableTransactions.length} txs`}
+            Bulk execute{isBatchable && ` ${batchableTransactions.length} transactions`}
           </Button>
         </span>
       </Tooltip>
