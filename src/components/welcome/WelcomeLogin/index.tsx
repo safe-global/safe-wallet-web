@@ -22,10 +22,10 @@ const WelcomeLogin = () => {
       <Box className={css.loginContent}>
         <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '24px', width: '80px' }} />
         <Typography variant="h6" mt={6} fontWeight={700}>
-          Create account
+          Create Account
         </Typography>
         <Typography mb={2} textAlign="center">
-          Choose how you would like to create your Safe account
+          Choose how you would like to create your Safe Account
         </Typography>
         <WalletLogin onLogin={continueToCreation} />
 

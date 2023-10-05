@@ -8,14 +8,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { DataWidget } from '@/components/welcome/DataWidget'
 import WelcomeLogin from './WelcomeLogin'
 import { useAppSelector } from '@/store'
-import { selectAllAddedSafes } from '@/store/addedSafesSlice'
+import { selectTotalAdded } from '@/store/addedSafesSlice'
 
 const NewSafe = () => {
   const [expanded, setExpanded] = useState(false)
 
-  const addedSafes = useAppSelector(selectAllAddedSafes)
-
-  const numberOfSafes = Object.values(addedSafes).reduce<number>((prev, curr) => Object.keys(curr).length + prev, 0)
+  const addedSafes = useAppSelector(selectTotalAdded)
 
   const toggleSafeList = () => {
     return setExpanded((prev) => !prev)
@@ -28,14 +26,14 @@ const NewSafe = () => {
       </Grid>
       <Grid item xs={12} lg={6} flex={1}>
         <div className={css.content}>
-          {numberOfSafes > 0 && (
+          {addedSafes > 0 && (
             <Box minWidth={{ md: 480 }} className={css.sidebar}>
               <Box display="flex" flexDirection="column" height="100%">
                 <Box flex={1}>
                   <Accordion className={css.accordion} onClick={toggleSafeList} expanded={expanded}>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                       <Typography variant="h4" display="inline" fontWeight={700}>
-                        My Safe Accounts ({numberOfSafes})
+                        My Safe Accounts ({addedSafes})
                       </Typography>
                     </AccordionSummary>
 

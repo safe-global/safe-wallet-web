@@ -34,7 +34,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
         <>
           <Button
             variant="outlined"
-            sx={{ padding: '8px 16px' }}
+            sx={{ padding: '1 2' }}
             onClick={onLogin}
             size="small"
             disabled={loginPending}

@@ -29,7 +29,7 @@
 }
 
 .profileImg {
-  border-radius: 16px;
+  border-radius: var(--space-2);
   width: 32px;
   height: 32px;
 }
