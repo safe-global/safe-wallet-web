@@ -19,7 +19,7 @@ export function typeWalletName(name) {
 }
 
 export function selectNetwork(network, regex = false) {
-  cy.get(selectNetworkBtn).click()
+  cy.get(selectNetworkBtn).click({ force: true })
   cy.get('li').contains(network).click()
 
   if (regex) {
