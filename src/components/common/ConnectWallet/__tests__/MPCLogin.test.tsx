@@ -7,7 +7,7 @@ import { type EIP1193Provider } from '@web3-onboard/common'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { MpcWalletProvider } from '../MPCWalletProvider'
 
-describe('WalletLogin', () => {
+describe('MPCLogin', () => {
   beforeEach(() => {
     jest.resetAllMocks()
   })
@@ -50,7 +50,7 @@ describe('WalletLogin', () => {
     expect(mockOnLogin).toHaveBeenCalled()
   })
 
-  it('should render connect wallet and invoke the callback on connection if no wallet is connected', async () => {
+  it('should render google login button and invoke the callback on connection if no wallet is connected', async () => {
     const mockOnLogin = jest.fn()
     const walletAddress = hexZeroPad('0x1', 20)
     const mockUseWallet = jest.spyOn(useWallet, 'default').mockReturnValue(null)
