@@ -27,6 +27,7 @@ const executeBtnStr = 'Execute'
 const backbtnStr = 'Back'
 const removeOwnerStr = 'Remove owner'
 const selectedOwnerStr = 'Selected owner'
+const addNewOwnerStr = 'Add new owner'
 
 export const safeAccountNonceStr = 'Safe Account nonce'
 export const nonOwnerErrorMsg = 'Your connected wallet is not an owner of this Safe Account'
@@ -111,7 +112,7 @@ export function waitForConnectionStatus() {
 }
 
 export function openAddOwnerWindow() {
-  cy.get(addOwnerBtn).click()
+  cy.get('span').contains(addNewOwnerStr).click()
   cy.wait(1000)
   cy.get(newOwnerName).should('be.visible')
   cy.get(newOwnerAddress).should('be.visible')
