@@ -5,6 +5,7 @@
   border-radius: 6px;
   justify-content: center;
   align-items: center;
+  padding: var(--space-2);
 }
 
 .loginContent {
