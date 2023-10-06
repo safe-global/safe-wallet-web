@@ -26,9 +26,9 @@ export const PUSH_NOTIFICATION_EVENTS = {
     action: 'Unregister device notifications',
     category,
   },
-  // Notification banner displayed
-  DISPLAY_BANNER: {
-    action: 'Display notification banner',
+  // Notification banner shown
+  SHOW_BANNER: {
+    action: 'Show notification banner',
     category,
   },
   // User dismissed notfication banner

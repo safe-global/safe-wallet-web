@@ -1,7 +1,7 @@
 import { Button, Chip, Grid, SvgIcon, Typography, IconButton } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { ReactElement } from 'react'
 
 import { CustomTooltip } from '@/components/common/CustomTooltip'
@@ -86,6 +86,21 @@ export const _getSafesToRegister = (
   return { [chainId]: newlyAddedSafes }
 }
 
+const TrackBanner = (): null => {
+  const hasTracked = useRef(false)
+
+  useEffect(() => {
+    if (hasTracked.current) {
+      return
+    }
+
+    trackEvent(PUSH_NOTIFICATION_EVENTS.SHOW_BANNER)
+    hasTracked.current = true
+  }, [])
+
+  return null
+}
+
 export const PushNotificationsBanner = ({ children }: { children: ReactElement }): ReactElement => {
   const isNotificationFeatureEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
   const chain = useCurrentChain()
@@ -109,12 +124,6 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     trackEvent(PUSH_NOTIFICATION_EVENTS.DISMISS_BANNER)
     dismissPushNotificationBanner(safe.chainId)
   }, [dismissPushNotificationBanner, safe.chainId])
-
-  useEffect(() => {
-    if (shouldShowBanner) {
-      trackEvent(PUSH_NOTIFICATION_EVENTS.DISPLAY_BANNER)
-    }
-  }, [dismissBanner, shouldShowBanner])
 
   const onEnableAll = async () => {
     if (!onboard || !addedSafesOnChain) {
@@ -148,57 +157,60 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   }
 
   return (
-    <CustomTooltip
-      className={css.banner}
-      title={
-        <Grid container className={css.container}>
-          <Grid item xs={3}>
-            <Chip label="New" className={css.chip} />
-            <SvgIcon component={PushNotificationIcon} inheritViewBox fontSize="inherit" className={css.icon} />
-          </Grid>
-          <Grid item xs={9}>
-            <Typography variant="subtitle2" fontWeight={700}>
-              Enable push notifications
-            </Typography>
-            <IconButton onClick={dismissBanner} className={css.close}>
-              <SvgIcon component={CloseIcon} inheritViewBox color="border" fontSize="small" />
-            </IconButton>
-            <Typography mt={0.5} mb={1.5} variant="body2">
-              Get notified about pending signatures, incoming and outgoing transactions for all Safe Accounts on{' '}
-              {chain?.chainName} when Safe
-              {`{Wallet}`} is in the background or closed.
-            </Typography>
-            {/* Cannot wrap singular button as it causes style inconsistencies */}
-            <CheckWallet>
-              {(isOk) => (
-                <div className={css.buttons}>
-                  {totalAddedSafes > 0 && (
-                    <Button
-                      variant="contained"
-                      size="small"
-                      className={css.button}
-                      onClick={onEnableAll}
-                      disabled={!isOk || !onboard}
-                    >
-                      Enable all
-                    </Button>
-                  )}
-                  {safe && (
-                    <Link passHref href={{ pathname: AppRoutes.settings.notifications, query }} onClick={onCustomize}>
-                      <Button variant="outlined" size="small" className={css.button}>
-                        Customize
+    <>
+      <TrackBanner />
+      <CustomTooltip
+        className={css.banner}
+        title={
+          <Grid container className={css.container}>
+            <Grid item xs={3}>
+              <Chip label="New" className={css.chip} />
+              <SvgIcon component={PushNotificationIcon} inheritViewBox fontSize="inherit" className={css.icon} />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="subtitle2" fontWeight={700}>
+                Enable push notifications
+              </Typography>
+              <IconButton onClick={dismissBanner} className={css.close}>
+                <SvgIcon component={CloseIcon} inheritViewBox color="border" fontSize="small" />
+              </IconButton>
+              <Typography mt={0.5} mb={1.5} variant="body2">
+                Get notified about pending signatures, incoming and outgoing transactions for all Safe Accounts on{' '}
+                {chain?.chainName} when Safe
+                {`{Wallet}`} is in the background or closed.
+              </Typography>
+              {/* Cannot wrap singular button as it causes style inconsistencies */}
+              <CheckWallet>
+                {(isOk) => (
+                  <div className={css.buttons}>
+                    {totalAddedSafes > 0 && (
+                      <Button
+                        variant="contained"
+                        size="small"
+                        className={css.button}
+                        onClick={onEnableAll}
+                        disabled={!isOk || !onboard}
+                      >
+                        Enable all
                       </Button>
-                    </Link>
-                  )}
-                </div>
-              )}
-            </CheckWallet>
+                    )}
+                    {safe && (
+                      <Link passHref href={{ pathname: AppRoutes.settings.notifications, query }} onClick={onCustomize}>
+                        <Button variant="outlined" size="small" className={css.button}>
+                          Customize
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </CheckWallet>
+            </Grid>
           </Grid>
-        </Grid>
-      }
-      open
-    >
-      <span>{children}</span>
-    </CustomTooltip>
+        }
+        open
+      >
+        <span>{children}</span>
+      </CustomTooltip>
+    </>
   )
 }

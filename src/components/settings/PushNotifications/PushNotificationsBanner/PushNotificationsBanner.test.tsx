@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto'
-import { set } from 'idb-keyval'
 import { hexZeroPad } from 'ethers/lib/utils'
+import * as tracking from '@/services/analytics'
+import { set } from 'idb-keyval'
 import * as navigation from 'next/navigation'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -91,6 +92,56 @@ describe('PushNotificationsBanner', () => {
       })
     })
 
+    it('should only track display of the banner once', () => {
+      jest.spyOn(tracking, 'trackEvent')
+
+      const ui = (
+        <PushNotificationsBanner>
+          <></>
+        </PushNotificationsBanner>
+      )
+
+      const result = render(ui, {
+        routerProps: {
+          query: {
+            safe: `eth:${hexZeroPad('0x123', 20)}`,
+          },
+        },
+        initialReduxState: {
+          chains: {
+            loading: false,
+            error: undefined,
+            data: [
+              {
+                chainId: '1',
+                features: ['PUSH_NOTIFICATIONS'],
+              } as unknown as ChainInfo,
+            ],
+          },
+          addedSafes: {
+            '1': {
+              [hexZeroPad('0x123', 20)]: {},
+            } as unknown as AddedSafesOnChain,
+          },
+          safeInfo: {
+            loading: false,
+            error: undefined,
+            data: {
+              chainId: '1',
+              address: {
+                value: hexZeroPad('0x123', 20),
+              },
+            } as unknown as SafeInfo,
+          },
+        },
+      })
+
+      expect(tracking.trackEvent).toHaveBeenCalledTimes(1)
+
+      result.rerender(ui)
+
+      expect(tracking.trackEvent).toHaveBeenCalledTimes(1)
+    })
     it('should display the banner', () => {
       const result = render(
         <PushNotificationsBanner>
