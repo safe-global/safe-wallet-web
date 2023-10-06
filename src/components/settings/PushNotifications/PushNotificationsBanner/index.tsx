@@ -94,7 +94,7 @@ const TrackBanner = (): null => {
       return
     }
 
-    trackEvent(PUSH_NOTIFICATION_EVENTS.DISPLAY_BANNER)
+    trackEvent(PUSH_NOTIFICATION_EVENTS.SHOW_BANNER)
     hasTracked.current = true
   }, [])
 
