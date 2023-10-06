@@ -12,16 +12,27 @@ import { selectTotalAdded } from '@/store/addedSafesSlice'
 
 import drawerCSS from '@/components/sidebar/Sidebar/styles.module.css'
 
+const BulletListItem = ({ text }: { text: string }) => (
+  <li>
+    <SvgIcon className={css.checkIcon} component={CheckFilled} inheritViewBox />
+    <Typography color="static.main" fontWeight={700}>
+      {text}
+    </Typography>
+  </li>
+)
+
 const NewSafe = () => {
   const addedSafes = useAppSelector(selectTotalAdded)
 
   const [showSidebar, setShowSidebar] = useState(false)
 
+  const closeSidebar = () => setShowSidebar(false)
+
   return (
     <>
-      <Drawer variant="temporary" anchor="left" open={showSidebar} onClose={() => setShowSidebar(false)}>
+      <Drawer variant="temporary" anchor="left" open={showSidebar} onClose={closeSidebar}>
         <div className={drawerCSS.drawer}>
-          <SafeList closeDrawer={() => setShowSidebar(false)} />
+          <SafeList closeDrawer={closeSidebar} />
 
           <div className={drawerCSS.dataWidget}>
             <DataWidget />
@@ -62,26 +73,11 @@ const NewSafe = () => {
               The most trusted decentralized custody protocol and collective asset management platform.
             </Typography>
 
-            <Grid container spacing={2} mb="auto">
-              <Grid item xs={12} display="flex" flexDirection="row" gap={1} alignItems="center">
-                <SvgIcon className={css.checkIcon} component={CheckFilled} inheritViewBox />
-                <Typography color="static.main" fontWeight={700}>
-                  Stealth security with multiple owners
-                </Typography>
-              </Grid>
-              <Grid item xs={12} display="flex" flexDirection="row" gap={1} alignItems="center">
-                <SvgIcon className={css.checkIcon} component={CheckFilled} inheritViewBox />
-                <Typography color="static.main" fontWeight={700}>
-                  Make it yours with modules and guards
-                </Typography>
-              </Grid>
-              <Grid item xs={12} display="flex" flexDirection="row" gap={1} alignItems="center">
-                <SvgIcon className={css.checkIcon} component={CheckFilled} inheritViewBox />
-                <Typography color="static.main" fontWeight={700}>
-                  Access 130+ ecosystem apps
-                </Typography>
-              </Grid>
-            </Grid>
+            <ul className={css.bulletList}>
+              <BulletListItem text="Stealth security with multiple owners" />
+              <BulletListItem text="Make it yours with modules and guards" />
+              <BulletListItem text="Access 130+ ecosystem apps" />
+            </ul>
           </div>
         </Grid>
       </Grid>
