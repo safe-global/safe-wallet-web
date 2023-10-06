@@ -1,5 +1,5 @@
 import { Contract } from 'ethers'
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 export function isGenericProxy(bytecode: string): boolean {
   if (bytecode.length !== 92) {
@@ -20,7 +20,7 @@ export function isGnosisProxy(bytecode: string): boolean {
   )
 }
 
-export async function getGnosisProxyMasterCopy(address: string, provider: Web3Provider): Promise<string> {
+export async function getGnosisProxyMasterCopy(address: string, provider: JsonRpcProvider): Promise<string> {
   const gnosisProxyContract = new Contract(address, ['function masterCopy() external view returns (address)'], provider)
 
   const [masterCopy] = await gnosisProxyContract.masterCopy()

@@ -1,32 +1,22 @@
 import { Paper } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import { useDelayModifier } from './useDelayModifier'
 import { RecoverersList } from './RecoverersList'
 import { RecoverySetup } from './RecoverySetup'
-import useAsync from '@/hooks/useAsync'
-import { MODULE_PAGE_SIZE } from '@/services/recovery/delay-modifier'
-import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import useWallet from '@/hooks/wallets/useWallet'
 import { RecoveryProposal } from './RecoveryProposal'
 import { RecoveryProposals } from './RecoveryProposals'
+import { useAppSelector } from '@/store'
+import { selectRecovery } from '@/store/recoverySlice'
+import { useWeb3 } from '@/hooks/wallets/web3'
 
 export function Recovery(): ReactElement {
   const wallet = useWallet()
-  const [delayModifier] = useDelayModifier()
+  const recovery = useAppSelector(selectRecovery)
+  const web3 = useWeb3()
 
-  const [recoverers] = useAsync<Array<string> | undefined>(async () => {
-    if (!delayModifier) {
-      return
-    }
-
-    const [modules] = await delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MODULE_PAGE_SIZE)
-    return modules
-  }, [delayModifier])
-
-  const isRecoverer = !!wallet && recoverers?.includes(wallet.address)
-
-  if (!delayModifier) {
+  if (!recovery || !web3) {
     return (
       <Paper sx={{ p: 4 }}>
         <RecoverySetup />
@@ -34,12 +24,15 @@ export function Recovery(): ReactElement {
     )
   }
 
+  const isRecoverer = !!wallet && recovery.modules.includes(wallet.address)
+  const delayModifier = getModuleInstance(KnownContracts.DELAY, recovery.address, web3)
+
   return (
     <Paper sx={{ p: 4 }}>
       {isRecoverer ? (
         <RecoveryProposal delayModifier={delayModifier} />
       ) : (
-        <RecoverersList delayModifier={delayModifier} recoverers={recoverers ?? []} />
+        <RecoverersList delayModifier={delayModifier} recoverers={recovery.modules} />
       )}
       <RecoveryProposals delayModifier={delayModifier} isRecoverer={isRecoverer} />
     </Paper>

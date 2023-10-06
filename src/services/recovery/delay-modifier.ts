@@ -1,6 +1,6 @@
 import { ContractVersions, getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { Delay, SupportedNetworks } from '@gnosis.pm/zodiac'
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { sameAddress } from '@/utils/addresses'
@@ -11,7 +11,7 @@ export const MODULE_PAGE_SIZE = 100
 async function isOfficialDelayModifier(
   chainId: string,
   moduleAddress: string,
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
 ): Promise<boolean> {
   const bytecode = await provider.getCode(moduleAddress)
 
@@ -39,7 +39,7 @@ async function isOfficialDelayModifier(
 export async function getDelayModifiers(
   chainId: string,
   modules: SafeInfo['modules'],
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
 ): Promise<Array<Delay>> {
   if (!modules) {
     return []
