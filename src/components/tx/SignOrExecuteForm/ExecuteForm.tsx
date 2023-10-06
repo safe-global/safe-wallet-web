@@ -88,9 +88,9 @@ const ExecuteForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
+    let executedTxId: string
     try {
-      const executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay, tx)
-      setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
+      executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay, tx)
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._804, err)
@@ -99,7 +99,9 @@ const ExecuteForm = ({
       return
     }
 
-    onSubmit()
+    // On success
+    setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
+    onSubmit(executedTxId)
   }
 
   const cannotPropose = !isOwner && !onlyExecute

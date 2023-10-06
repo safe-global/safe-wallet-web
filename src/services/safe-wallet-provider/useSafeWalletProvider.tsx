@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { useContext, useEffect, useMemo, useRef } from 'react'
 import { BigNumber } from 'ethers'
 import { useRouter } from 'next/router'
 
@@ -22,6 +22,15 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
   const web3ReadOnly = useWeb3ReadOnly()
   const router = useRouter()
   const { configs } = useChains()
+  const pendingTxs = useRef<Record<string, string>>({})
+
+  useEffect(() => {
+    const unsubscribe = txSubscribe(TxEvent.PROCESSING, async ({ txId, txHash }) => {
+      if (!txId) return
+      pendingTxs.current[txId] = txHash
+    })
+    return unsubscribe
+  }, [])
 
   return useMemo<WalletSDK | undefined>(() => {
     if (!chainId || !safeAddress) return
@@ -50,7 +59,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
       },
 
       async send(params: { txs: any[]; params: { safeTxGas: number } }, appInfo) {
-        const id = Math.random().toString(36).slice(2) // TODO: use JsonRpc id
+        const id = Math.random().toString(36).slice(2)
 
         const transactions = params.txs.map(({ to, value, data }) => {
           return {
@@ -77,9 +86,10 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         )
 
         return new Promise((resolve) => {
-          const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash }) => {
+          const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash, txId }) => {
             if (safeAppRequestId === id) {
-              resolve({ safeTxHash })
+              const txHash = pendingTxs.current[txId]
+              resolve({ safeTxHash, txHash })
               unsubscribe()
             }
           })
