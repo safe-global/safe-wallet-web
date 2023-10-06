@@ -95,13 +95,15 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const { query } = useRouter()
   const onboard = useOnboard()
 
+  const { getPreferences, getAllPreferences } = useNotificationPreferences()
   const { dismissPushNotificationBanner, isPushNotificationBannerDismissed } = useDismissPushNotificationsBanner()
 
   const isSafeAdded = !!addedSafesOnChain?.[safeAddress]
-  const shouldShowBanner = isNotificationsEnabled && !isPushNotificationBannerDismissed && isSafeAdded
+  const isSafeRegistered = getPreferences(safe.chainId, safeAddress)
+  const shouldShowBanner =
+    isNotificationsEnabled && !isPushNotificationBannerDismissed && isSafeAdded && !isSafeRegistered
 
   const { registerNotifications } = useNotificationRegistrations()
-  const { getAllPreferences } = useNotificationPreferences()
 
   const dismissBanner = useCallback(() => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.DISMISS_BANNER)
