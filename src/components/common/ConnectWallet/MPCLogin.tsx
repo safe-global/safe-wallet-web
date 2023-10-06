@@ -30,7 +30,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
 
   return (
     <>
-      {wallet && userInfo.email ? (
+      {wallet && userInfo ? (
         <>
           <Button
             variant="outlined"

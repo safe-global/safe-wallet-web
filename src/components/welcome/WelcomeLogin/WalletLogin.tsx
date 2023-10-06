@@ -9,15 +9,6 @@ const WalletLogin = ({ onLogin }: { onLogin?: () => void }) => {
   const wallet = useWallet()
   const connectWallet = useConnectWallet()
 
-  const connectedWalletInfo =
-    wallet !== null && wallet?.label !== ONBOARD_MPC_MODULE_LABEL
-      ? {
-          address: wallet?.address,
-          label: wallet?.label,
-          icon: wallet?.icon,
-        }
-      : undefined
-
   const [loginTriggered, setLoginTriggered] = useState(false)
 
   const login = async () => {
@@ -32,23 +23,21 @@ const WalletLogin = ({ onLogin }: { onLogin?: () => void }) => {
     }
   }, [loginTriggered, onLogin, wallet])
 
-  if (connectedWalletInfo) {
+  if (wallet !== null && wallet?.label !== ONBOARD_MPC_MODULE_LABEL) {
     return (
       <Button variant="contained" sx={{ padding: '8px 16px' }} fullWidth onClick={onLogin}>
         <Box width="100%" justifyContent="space-between" display="flex" flexDirection="row" alignItems="center" gap={1}>
           <Box display="flex" flexDirection="column" alignItems="flex-start">
             <Typography variant="subtitle2" fontWeight={700}>
-              Continue with {connectedWalletInfo.label}
+              Continue with {wallet.label}
             </Typography>
-            {connectedWalletInfo.address && (
-              <EthHashInfo address={connectedWalletInfo.address} shortAddress avatarSize={16} />
-            )}
+            {wallet.address && <EthHashInfo address={wallet.address} shortAddress avatarSize={16} />}
           </Box>
-          {connectedWalletInfo.icon && (
+          {wallet.icon && (
             <img
               width="24px"
               height="24px"
-              src={`data:image/svg+xml;utf8,${encodeURIComponent(connectedWalletInfo.icon)}`}
+              src={`data:image/svg+xml;utf8,${encodeURIComponent(wallet.icon)}`}
               alt="icon"
             />
           )}
