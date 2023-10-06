@@ -39,6 +39,9 @@ export const enableMFA = async (
     if (!securityQuestionFactor) {
       throw Error('Could not recover using the new password recovery')
     }
+    // We commit the new password separately
+    // It is necessary to be able to input the password factor before removing the (active) device factor
+    await mpcCoreKit.commitChanges()
 
     if (!isMFAEnabled(mpcCoreKit)) {
       // 2. enable MFA in mpcCoreKit
@@ -61,6 +64,8 @@ export const enableMFA = async (
       await mpcCoreKit.inputFactorKey(new BN(securityQuestionFactor, 'hex'))
       await deviceShareRecovery.removeDeviceFactor()
     }
+
+    await mpcCoreKit.commitChanges()
   } catch (e) {
     const error = asError(e)
     logError(ErrorCodes._304, error.message)

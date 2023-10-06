@@ -34,11 +34,19 @@ export class DeviceShareRecovery {
 
   async removeDeviceFactor() {
     const deviceFactor = await getWebBrowserFactor(this.mpcCoreKit)
+    if (!deviceFactor) {
+      // No device factor exists. Nothing to do
+      return
+    }
+    // Delete factor
     const key = new BN(deviceFactor, 'hex')
     const pubKey = getPubKeyPoint(key)
-    const pubKeyX = pubKey.x.toString('hex', 64)
     await this.mpcCoreKit.deleteFactor(pubKey)
+
+    // Remove from local storage
+    const metadata = this.mpcCoreKit.tKey.getMetadata()
+    const tkeyPubX = metadata.pubKey.x.toString(16, 64)
     const currentStorage = BrowserStorage.getInstance('mpc_corekit_store')
-    currentStorage.set(pubKeyX, undefined)
+    currentStorage.remove(tkeyPubX)
   }
 }

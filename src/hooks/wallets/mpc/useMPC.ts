@@ -45,6 +45,7 @@ export const useInitMPC = () => {
       uxMode: 'popup',
       enableLogging: true,
       chainConfig,
+      manualSync: true,
     })
 
     web3AuthCoreKit
