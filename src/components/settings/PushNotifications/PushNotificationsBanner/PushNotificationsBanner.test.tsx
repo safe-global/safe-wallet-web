@@ -1,10 +1,12 @@
 import 'fake-indexeddb/auto'
 import { hexZeroPad } from 'ethers/lib/utils'
 import * as tracking from '@/services/analytics'
+import { set } from 'idb-keyval'
 import * as navigation from 'next/navigation'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { PushNotificationsBanner, _getSafesToRegister } from '.'
+import { createPushNotificationPrefsIndexedDb } from '@/services/push-notifications/preferences'
 import { render } from '@/tests/test-utils'
 import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
@@ -139,6 +141,221 @@ describe('PushNotificationsBanner', () => {
       result.rerender(ui)
 
       expect(tracking.trackEvent).toHaveBeenCalledTimes(1)
+    })
+    it('should display the banner', () => {
+      const result = render(
+        <PushNotificationsBanner>
+          <></>
+        </PushNotificationsBanner>,
+        {
+          routerProps: {
+            query: {
+              safe: `eth:${hexZeroPad('0x123', 20)}`,
+            },
+          },
+          initialReduxState: {
+            chains: {
+              loading: false,
+              error: undefined,
+              data: [
+                {
+                  chainId: '1',
+                  features: ['PUSH_NOTIFICATIONS'],
+                } as unknown as ChainInfo,
+              ],
+            },
+            addedSafes: {
+              '1': {
+                [hexZeroPad('0x123', 20)]: {},
+              } as unknown as AddedSafesOnChain,
+            },
+            safeInfo: {
+              loading: false,
+              error: undefined,
+              data: {
+                chainId: '1',
+                address: {
+                  value: hexZeroPad('0x123', 20),
+                },
+              } as unknown as SafeInfo,
+            },
+          },
+        },
+      )
+
+      expect(result.getByText('Get notified about pending signatures', { exact: false })).toBeInTheDocument()
+    })
+
+    it('should not show the banner if notifications are not enabled', () => {
+      const result = render(
+        <PushNotificationsBanner>
+          <></>
+        </PushNotificationsBanner>,
+        {
+          routerProps: {
+            query: {
+              safe: `eth:${hexZeroPad('0x123', 20)}`,
+            },
+          },
+          initialReduxState: {
+            chains: {
+              loading: false,
+              error: undefined,
+              data: [
+                {
+                  chainId: '1',
+                  features: [], // Not enabled
+                } as unknown as ChainInfo,
+              ],
+            },
+            addedSafes: {
+              '1': {
+                [hexZeroPad('0x123', 20)]: {},
+              } as unknown as AddedSafesOnChain,
+            },
+            safeInfo: {
+              loading: false,
+              error: undefined,
+              data: {
+                chainId: '1',
+                address: {
+                  value: hexZeroPad('0x123', 20),
+                },
+              } as unknown as SafeInfo,
+            },
+          },
+        },
+      )
+
+      expect(result.queryByText('Get notified about pending signatures', { exact: false })).not.toBeInTheDocument()
+    })
+
+    it('should not show the banner if the user has dismissed it', () => {
+      window.localStorage.setItem(
+        'SAFE_v2__dismissPushNotifications',
+        JSON.stringify({ '1': { [hexZeroPad('0x123', 20)]: true } }),
+      )
+
+      const result = render(
+        <PushNotificationsBanner>
+          <></>
+        </PushNotificationsBanner>,
+        {
+          initialReduxState: {
+            chains: {
+              loading: false,
+              error: undefined,
+              data: [
+                {
+                  chainId: '1',
+                  features: ['PUSH_NOTIFICATIONS'],
+                } as unknown as ChainInfo,
+              ],
+            },
+            addedSafes: {
+              '1': {
+                [hexZeroPad('0x123', 20)]: {},
+              } as unknown as AddedSafesOnChain,
+            },
+            safeInfo: {
+              loading: false,
+              error: undefined,
+              data: {
+                chainId: '1',
+                address: {
+                  value: hexZeroPad('0x123', 20),
+                },
+              } as unknown as SafeInfo,
+            },
+          },
+        },
+      )
+
+      expect(result.queryByText('Get notified about pending signatures', { exact: false })).not.toBeInTheDocument()
+    })
+
+    it('should not show the banner if the Safe is not added', () => {
+      const result = render(
+        <PushNotificationsBanner>
+          <></>
+        </PushNotificationsBanner>,
+        {
+          initialReduxState: {
+            chains: {
+              loading: false,
+              error: undefined,
+              data: [
+                {
+                  chainId: '1',
+                  features: ['PUSH_NOTIFICATIONS'],
+                } as unknown as ChainInfo,
+              ],
+            },
+            addedSafes: {}, // Not added
+            safeInfo: {
+              loading: false,
+              error: undefined,
+              data: {
+                chainId: '1',
+                address: {
+                  value: hexZeroPad('0x123', 20),
+                },
+              } as unknown as SafeInfo,
+            },
+          },
+        },
+      )
+
+      expect(result.queryByText('Get notified about pending signatures', { exact: false })).not.toBeInTheDocument()
+    })
+
+    it('should not show the banner if the user has already registered for notifications', () => {
+      set(
+        `1:${hexZeroPad('0x123', 20)}`, // Registered
+        {
+          safeAddress: hexZeroPad('0x123', 20),
+          chainId: '1',
+          preferences: {},
+        },
+        createPushNotificationPrefsIndexedDb(),
+      )
+
+      const result = render(
+        <PushNotificationsBanner>
+          <></>
+        </PushNotificationsBanner>,
+        {
+          initialReduxState: {
+            chains: {
+              loading: false,
+              error: undefined,
+              data: [
+                {
+                  chainId: '1',
+                  features: ['PUSH_NOTIFICATIONS'],
+                } as unknown as ChainInfo,
+              ],
+            },
+            addedSafes: {
+              '1': {
+                [hexZeroPad('0x123', 20)]: {},
+              } as unknown as AddedSafesOnChain,
+            },
+            safeInfo: {
+              loading: false,
+              error: undefined,
+              data: {
+                chainId: '1',
+                address: {
+                  value: hexZeroPad('0x123', 20),
+                },
+              } as unknown as SafeInfo,
+            },
+          },
+        },
+      )
+
+      expect(result.queryByText('Get notified about pending signatures', { exact: false })).not.toBeInTheDocument()
     })
   })
 })

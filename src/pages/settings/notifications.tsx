@@ -7,9 +7,9 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 
 const NotificationsPage: NextPage = () => {
-  const isNotificationsEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
+  const isNotificationFeatureEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
 
-  if (!isNotificationsEnabled) {
+  if (!isNotificationFeatureEnabled) {
     return null
   }
 
