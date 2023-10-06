@@ -20,9 +20,11 @@ import ConfirmTxFlow from '@/components/tx-flow/flows/ConfirmTx'
 const ExecuteTxButton = ({
   txSummary,
   compact = false,
+  size = 'stretched',
 }: {
   txSummary: TransactionSummary
   compact?: boolean
+  size: 'stretched' | 'small'
 }): ReactElement => {
   const { setTxFlow } = useContext(TxModalContext)
   const { safe } = useSafeInfo()
@@ -77,7 +79,7 @@ const ExecuteTxButton = ({
                 onMouseLeave={onMouseLeave}
                 variant="contained"
                 disabled={!isOk || isDisabled}
-                size="stretched"
+                size={size}
               >
                 Execute
               </Button>

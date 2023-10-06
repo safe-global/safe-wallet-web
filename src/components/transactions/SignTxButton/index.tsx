@@ -19,9 +19,11 @@ import ConfirmTxFlow from '@/components/tx-flow/flows/ConfirmTx'
 const SignTxButton = ({
   txSummary,
   compact = false,
+  size = 'stretched',
 }: {
   txSummary: TransactionSummary
   compact?: boolean
+  size?: 'stretched' | 'small'
 }): ReactElement => {
   const { setTxFlow } = useContext(TxModalContext)
   const wallet = useWallet()
@@ -52,7 +54,7 @@ const SignTxButton = ({
               </span>
             </Tooltip>
           ) : (
-            <Button onClick={onClick} variant="contained" disabled={!isOk || isDisabled} size="stretched">
+            <Button onClick={onClick} variant="contained" disabled={!isOk || isDisabled} size={size}>
               Confirm
             </Button>
           )}

@@ -9,7 +9,7 @@ import SignTxButton from '@/components/transactions/SignTxButton'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
-import { isAwaitingExecution, isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
+import { isAwaitingExecution, isMultisigExecutionInfo, isSignableBy, isTxQueued } from '@/utils/transaction-guards'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
@@ -96,17 +96,6 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      {wallet && isQueue && (
-        <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
-          {awaitingExecution ? (
-            <ExecuteTxButton txSummary={item.transaction} compact />
-          ) : (
-            <SignTxButton txSummary={item.transaction} compact />
-          )}
-          <RejectTxButton txSummary={item.transaction} compact />
-        </Box>
-      )}
-
       <Box
         gridArea="status"
         marginLeft={{ sm: 'auto' }}
@@ -116,11 +105,27 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         gap={1}
         color={({ palette }) => getStatusColor(tx.txStatus, palette)}
       >
-        {isPending && <CircularProgress size={14} color="inherit" />}
-
-        <Typography variant="caption" fontWeight="bold" color={({ palette }) => getStatusColor(tx.txStatus, palette)}>
-          {txStatusLabel}
-        </Typography>
+        {wallet && isQueue ? (
+          isPending ? (
+            <CircularProgress size={14} color="inherit" />
+          ) : awaitingExecution ? (
+            <ExecuteTxButton txSummary={item.transaction} size="small" />
+          ) : isSignableBy(item.transaction, wallet.address) ? (
+            <SignTxButton txSummary={item.transaction} size="small" />
+          ) : (
+            <Typography
+              variant="caption"
+              fontWeight="bold"
+              color={({ palette }) => getStatusColor(tx.txStatus, palette)}
+            >
+              {txStatusLabel}
+            </Typography>
+          )
+        ) : (
+          <Typography variant="caption" fontWeight="bold" color={({ palette }) => getStatusColor(tx.txStatus, palette)}>
+            {txStatusLabel}
+          </Typography>
+        )}
       </Box>
     </Box>
   )
