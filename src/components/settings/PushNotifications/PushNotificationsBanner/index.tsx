@@ -87,7 +87,7 @@ export const _getSafesToRegister = (
 }
 
 export const PushNotificationsBanner = ({ children }: { children: ReactElement }): ReactElement => {
-  const isNotificationsEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
+  const isNotificationFeatureEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
   const chain = useCurrentChain()
   const totalAddedSafes = useAppSelector(selectTotalAdded)
   const { safe, safeAddress } = useSafeInfo()
@@ -101,7 +101,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const isSafeAdded = !!addedSafesOnChain?.[safeAddress]
   const isSafeRegistered = getPreferences(safe.chainId, safeAddress)
   const shouldShowBanner =
-    isNotificationsEnabled && !isPushNotificationBannerDismissed && isSafeAdded && !isSafeRegistered
+    isNotificationFeatureEnabled && !isPushNotificationBannerDismissed && isSafeAdded && !isSafeRegistered
 
   const { registerNotifications } = useNotificationRegistrations()
 
