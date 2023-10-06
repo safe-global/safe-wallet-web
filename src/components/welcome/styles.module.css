@@ -9,9 +9,8 @@
 
 .accordion :global .MuiAccordionSummary-root {
   background: transparent !important;
-  padding: var(--space-3);
+  padding: var(--space-2);
   border-bottom: 1px solid var(--color-border-light);
-  pointer-events: none;
 }
 
 .accordion :global .MuiAccordionSummary-content {
@@ -22,7 +21,6 @@
   max-height: calc(100vh - var(--header-height) - var(--footer-height) - 8px);
   overflow-y: auto;
   align-self: flex-start;
-  margin-top: -24px;
   margin-bottom: auto;
   width: 100%;
 }
@@ -32,7 +30,7 @@
   background-size: 200% 200%;
   animation: gradient 15s ease infinite;
   border-radius: 6px;
-  padding: var(--space-8);
+  padding: var(--space-3) var(--space-3);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -82,10 +80,6 @@
 
   .accordion {
     height: auto;
-  }
-
-  .accordion :global .MuiAccordionSummary-root {
-    pointer-events: auto;
   }
 
   .accordion :global .MuiAccordionSummary-expandIconWrapper {
