@@ -70,11 +70,11 @@ const handleTrackCachedNotificationEvents = async (
 }
 
 export const useNotificationTracking = (): void => {
-  const isNotificationsEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
+  const isNotificationFeatureEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
 
   useEffect(() => {
-    if (typeof indexedDB !== 'undefined' && isNotificationsEnabled) {
+    if (typeof indexedDB !== 'undefined' && isNotificationFeatureEnabled) {
       handleTrackCachedNotificationEvents(createNotificationTrackingIndexedDb())
     }
-  }, [isNotificationsEnabled])
+  }, [isNotificationFeatureEnabled])
 }
