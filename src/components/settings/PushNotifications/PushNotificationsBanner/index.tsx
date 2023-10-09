@@ -27,6 +27,7 @@ import type { PushNotificationPreferences } from '@/services/push-notifications/
 import type { NotifiableSafes } from '../logic'
 
 import css from './styles.module.css'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const DISMISS_PUSH_NOTIFICATIONS_KEY = 'dismissPushNotifications'
 
@@ -109,6 +110,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const addedSafesOnChain = useAppSelector((state) => selectAddedSafes(state, safe.chainId))
   const { query } = useRouter()
   const onboard = useOnboard()
+  const wallet = useWallet()
 
   const { getPreferences, getAllPreferences } = useNotificationPreferences()
   const { dismissPushNotificationBanner, isPushNotificationBannerDismissed } = useDismissPushNotificationsBanner()
@@ -116,14 +118,18 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const isSafeAdded = !!addedSafesOnChain?.[safeAddress]
   const isSafeRegistered = getPreferences(safe.chainId, safeAddress)
   const shouldShowBanner =
-    isNotificationFeatureEnabled && !isPushNotificationBannerDismissed && isSafeAdded && !isSafeRegistered
+    isNotificationFeatureEnabled && !isPushNotificationBannerDismissed && isSafeAdded && !isSafeRegistered && !!wallet
 
   const { registerNotifications } = useNotificationRegistrations()
 
   const dismissBanner = useCallback(() => {
-    trackEvent(PUSH_NOTIFICATION_EVENTS.DISMISS_BANNER)
     dismissPushNotificationBanner(safe.chainId)
   }, [dismissPushNotificationBanner, safe.chainId])
+
+  const onDismiss = () => {
+    trackEvent(PUSH_NOTIFICATION_EVENTS.DISMISS_BANNER)
+    dismissBanner()
+  }
 
   const onEnableAll = async () => {
     if (!onboard || !addedSafesOnChain) {
@@ -171,7 +177,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
               <Typography variant="subtitle2" fontWeight={700}>
                 Enable push notifications
               </Typography>
-              <IconButton onClick={dismissBanner} className={css.close}>
+              <IconButton onClick={onDismiss} className={css.close}>
                 <SvgIcon component={CloseIcon} inheritViewBox color="border" fontSize="small" />
               </IconButton>
               <Typography mt={0.5} mb={1.5} variant="body2">
