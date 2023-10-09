@@ -13,7 +13,6 @@ import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
-import { MPCWallet } from './MPCWallet'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -115,8 +114,6 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           <Button onClick={handleDisconnect} variant="danger" size="small" fullWidth disableElevation>
             Disconnect
           </Button>
-
-          <MPCWallet />
         </Paper>
       </Popover>
     </>

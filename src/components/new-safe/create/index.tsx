@@ -5,7 +5,6 @@ import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '@/components/new-safe/create/OverviewWidget'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { TxStepperProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import ConnectWalletStep from '@/components/new-safe/create/steps/ConnectWalletStep'
 import SetNameStep from '@/components/new-safe/create/steps/SetNameStep'
 import OwnerPolicyStep from '@/components/new-safe/create/steps/OwnerPolicyStep'
 import ReviewStep from '@/components/new-safe/create/steps/ReviewStep'
@@ -111,13 +110,6 @@ const CreateSafe = () => {
   const [activeStep, setActiveStep] = useState(0)
 
   const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
-    {
-      title: 'Connect wallet',
-      subtitle: 'The connected wallet will pay the network fees for the Safe Account creation.',
-      render: (data, onSubmit, onBack, setStep) => (
-        <ConnectWalletStep data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
-      ),
-    },
     {
       title: 'Select network and name of your Safe Account',
       subtitle: 'Select the network on which to create your Safe Account',

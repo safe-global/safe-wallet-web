@@ -1,4 +1,5 @@
 import { useMPCWallet, MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
+import { type UserInfo } from '@web3auth/mpc-core-kit'
 import { createContext, type ReactElement } from 'react'
 
 type MPCWalletContext = {
@@ -8,9 +9,7 @@ type MPCWalletContext = {
   upsertPasswordBackup: (password: string) => Promise<void>
   recoverFactorWithPassword: (password: string, storeDeviceFactor: boolean) => Promise<void>
   walletState: MPCWalletState
-  userInfo: {
-    email: string | undefined
-  }
+  userInfo: UserInfo | undefined
 }
 
 export const MpcWalletContext = createContext<MPCWalletContext>({
@@ -20,9 +19,7 @@ export const MpcWalletContext = createContext<MPCWalletContext>({
   resetAccount: () => Promise.resolve(),
   upsertPasswordBackup: () => Promise.resolve(),
   recoverFactorWithPassword: () => Promise.resolve(),
-  userInfo: {
-    email: undefined,
-  },
+  userInfo: undefined,
 })
 
 export const MpcWalletProvider = ({ children }: { children: ReactElement }) => {

@@ -83,7 +83,7 @@ describe('useMPCWallet', () => {
   it('should have state NOT_INITIALIZED initially', () => {
     const { result } = renderHook(() => useMPCWallet())
     expect(result.current.walletState).toBe(MPCWalletState.NOT_INITIALIZED)
-    expect(result.current.userInfo.email).toBeUndefined()
+    expect(result.current.userInfo?.email).toBeUndefined()
   })
 
   describe('triggerLogin', () => {
