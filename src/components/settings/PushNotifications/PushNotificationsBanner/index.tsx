@@ -210,7 +210,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   // On dismiss, track the event and dismiss the banner
   const onDismiss = () => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.DISMISS_BANNER)
-    dismissBanner
+    dismissBanner()
   }
 
   // On enable all, track the event and enable all notifications
