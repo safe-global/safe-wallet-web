@@ -5,10 +5,11 @@ import TxSummary from '@/components/transactions/TxSummary'
 import TxDetails from '@/components/transactions/TxDetails'
 import CreateTxInfo from '@/components/transactions/SafeCreationTx'
 import { isCreationTxInfo } from '@/utils/transaction-guards'
-import { useContext } from 'react'
+import { useContext, useRef } from 'react'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import css from './styles.module.css'
 import classNames from 'classnames'
+import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 
 type ExpandableTransactionItemProps = {
   isGrouped?: boolean
@@ -22,6 +23,7 @@ export const ExpandableTransactionItem = ({
   txDetails,
   testId,
 }: ExpandableTransactionItemProps & { testId?: string }) => {
+  const wasOpened = useRef<boolean>(false)
   const hoverContext = useContext(BatchExecuteHoverContext)
 
   const isBatched = hoverContext.activeHover.includes(item.transaction.id)
@@ -37,6 +39,12 @@ export const ExpandableTransactionItem = ({
       defaultExpanded={!!txDetails}
       className={classNames({ [css.batched]: isBatched })}
       data-testid={testId}
+      onChange={() => {
+        if (!wasOpened.current) {
+          trackEvent(TX_LIST_EVENTS.EXPAND_TRANSACTION)
+          wasOpened.current = true
+        }
+      }}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
         <TxSummary item={item} isGrouped={isGrouped} />

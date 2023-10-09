@@ -40,8 +40,8 @@ export const TX_LIST_EVENTS = {
     action: 'Batch Execute',
     category: TX_LIST_CATEGORY,
   },
-  FETCH_DETAILS: {
-    action: 'Fetch transaction details',
+  EXPAND_TRANSACTION: {
+    action: 'Expand transaction item',
     category: TX_LIST_CATEGORY,
   },
 }
