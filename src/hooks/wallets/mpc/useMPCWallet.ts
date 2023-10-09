@@ -121,7 +121,6 @@ export const useMPCWallet = (): MPCWalletHook => {
       if (storeDeviceShare) {
         const deviceShareRecovery = new DeviceShareRecovery(mpcCoreKit)
         await deviceShareRecovery.createAndStoreDeviceFactor()
-        await mpcCoreKit.commitChanges()
       }
 
       finalizeLogin()

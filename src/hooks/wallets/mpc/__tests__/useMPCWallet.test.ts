@@ -63,6 +63,10 @@ class MockMPCCoreKit {
       Promise.reject()
     }
   }
+
+  commitChanges() {
+    return Promise.resolve()
+  }
 }
 
 describe('useMPCWallet', () => {
