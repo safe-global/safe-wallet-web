@@ -25,9 +25,9 @@ import { FEATURES } from '@/utils/chains'
 import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import type { NotifiableSafes } from '../logic'
+import useWallet from '@/hooks/wallets/useWallet'
 
 import css from './styles.module.css'
-import useWallet from '@/hooks/wallets/useWallet'
 
 const DISMISS_PUSH_NOTIFICATIONS_KEY = 'dismissPushNotifications'
 

@@ -10,12 +10,22 @@ import { createPushNotificationPrefsIndexedDb } from '@/services/push-notificati
 import { render } from '@/tests/test-utils'
 import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
+import * as useWallet from '@/hooks/wallets/useWallet'
+import type { EIP1193Provider } from '@web3-onboard/core'
 
 Object.defineProperty(globalThis, 'crypto', {
   value: {
     randomUUID: () => Math.random().toString(),
   },
 })
+
+jest.spyOn(useWallet, 'default').mockImplementation(() => ({
+  ens: '',
+  address: '0x1230000000000000000000000000000000000000',
+  provider: jest.fn() as unknown as EIP1193Provider,
+  label: 'Metamask',
+  chainId: '4',
+}))
 
 describe('PushNotificationsBanner', () => {
   describe('getSafesToRegister', () => {
