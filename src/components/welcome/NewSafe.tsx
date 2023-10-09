@@ -45,8 +45,8 @@ const NewSafe = () => {
         </Grid>
         <Grid item xs={12} lg={6} flex={1}>
           <div className={css.content}>
-            {addedSafes > 0 && (
-              <Box minWidth={{ md: 480 }} className={css.sidebar}>
+            <Box minWidth={{ md: 480 }} className={css.sidebar}>
+              {addedSafes > 0 && (
                 <Box display="flex" flexDirection="column">
                   <Box flex={1}>
                     <Accordion className={css.accordion} onClick={() => setShowSidebar(true)} expanded={false}>
@@ -63,8 +63,9 @@ const NewSafe = () => {
                     </Accordion>
                   </Box>
                 </Box>
-              </Box>
-            )}
+              )}
+            </Box>
+
             <Typography variant="h1" fontSize={[44, null, 52]} lineHeight={1} letterSpacing={-1.5} color="static.main">
               Unlock a new way of ownership
             </Typography>
