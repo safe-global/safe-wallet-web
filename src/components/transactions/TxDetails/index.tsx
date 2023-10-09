@@ -126,7 +126,9 @@ const TxDetails = ({
 
   const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
     async () => {
-      trackEvent(TX_LIST_EVENTS.FETCH_DETAILS)
+      if (!txDetails) {
+        trackEvent(TX_LIST_EVENTS.FETCH_DETAILS)
+      }
 
       return txDetails || getTransactionDetails(chainId, txSummary.id)
     },
