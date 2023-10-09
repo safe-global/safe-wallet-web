@@ -88,10 +88,13 @@ export const useMPCWallet = (): MPCWalletHook => {
     }
   }
 
-  const finalizeLogin = () => {
+  const finalizeLogin = async () => {
     if (!mpcCoreKit || !onboard) {
       return
     }
+
+    await mpcCoreKit.commitChanges()
+
     if (mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
       connectWallet(onboard, {
         autoSelect: {
