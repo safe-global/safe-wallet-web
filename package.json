@@ -68,7 +68,7 @@
     "@web3-onboard/ledger": "2.3.2",
     "@web3-onboard/trezor": "^2.4.2",
     "@web3-onboard/walletconnect": "^2.4.7",
-    "@web3auth/mpc-core-kit": "^1.0.2",
+    "@web3auth/mpc-core-kit": "^1.1.0",
     "blo": "^1.1.1",
     "bn.js": "^5.2.1",
     "classnames": "^2.3.1",

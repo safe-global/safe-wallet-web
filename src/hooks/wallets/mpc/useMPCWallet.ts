@@ -90,7 +90,10 @@ export const useMPCWallet = (): MPCWalletHook => {
     if (!mpcCoreKit || !onboard) {
       return
     }
+
     if (mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
+      await mpcCoreKit.commitChanges()
+
       await connectWallet(onboard, {
         autoSelect: {
           label: ONBOARD_MPC_MODULE_LABEL,

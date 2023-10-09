@@ -63,6 +63,10 @@ class MockMPCCoreKit {
       Promise.reject()
     }
   }
+
+  commitChanges() {
+    return Promise.resolve()
+  }
 }
 
 describe('useMPCWallet', () => {
@@ -190,8 +194,7 @@ describe('useMPCWallet', () => {
         } as unknown as UserInfo) as unknown as Web3AuthMPCCoreKit,
       )
 
-      // TODO: remove unnecessary cast if mpc core sdk gets updated
-      jest.spyOn(mpcCoreKit, 'getWebBrowserFactor').mockReturnValue(Promise.resolve(undefined as unknown as string))
+      jest.spyOn(mpcCoreKit, 'getWebBrowserFactor').mockReturnValue(Promise.resolve(undefined))
       jest.spyOn(mpcCoreKit, 'TssSecurityQuestion').mockReturnValue({
         getQuestion: () => 'SOME RANDOM QUESTION',
       } as unknown as TssSecurityQuestion)

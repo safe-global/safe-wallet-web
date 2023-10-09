@@ -5672,22 +5672,22 @@
     json-stable-stringify "^1.0.2"
     loglevel "^1.8.1"
 
-"@toruslabs/tss-client@^1.6.1-alpha.0":
-  version "1.6.1-alpha.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/tss-client/-/tss-client-1.6.1-alpha.0.tgz#876cdc3c1cae0889a29ad3ed7bf6460bf5055ee2"
-  integrity sha512-48nYPc/8v2LkbtgBJw3GRLM0Eb08ASFyK5i3nEDmLg1np7rDn/9TMovPckIKZNsqAb4Rwnsb6FmTNszg3UxYfw==
+"@toruslabs/tss-client@^1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@toruslabs/tss-client/-/tss-client-1.7.1.tgz#018511a75a1ee6094fbe74d2b7be968b92255e97"
+  integrity sha512-gaVjXy/eJKv59zdWW2lnAhjumw8DMMGlGHXEOipVywCylKqS8VvQVwwo+UyevR2VXUQsNkBr9deD5TGFH0OQHQ==
   dependencies:
-    "@toruslabs/eccrypto" "^2.1.1"
-    "@toruslabs/tss-lib" "^1.6.0-alpha.0"
+    "@toruslabs/eccrypto" "^4.0.0"
+    "@toruslabs/tss-lib" "^1.7.1"
     bn.js "^5.2.1"
     elliptic "^6.5.4"
     keccak256 "^1.0.6"
-    socket.io-client "^4.5.1"
+    socket.io-client "^4.7.2"
 
-"@toruslabs/tss-lib@^1.6.0-alpha.0":
-  version "1.6.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/tss-lib/-/tss-lib-1.6.0-alpha.0.tgz#3c896c3cd7cec04bc66f4bb240f65c5f4ffe4400"
-  integrity sha512-sCkAFRZYMDYDWDkMEo73fyz1NnPdXZTRiQWaUCywmtV8fWQBFgneq3bVZGIMAhUNYY62PD0BubW3XaV6mqMYTg==
+"@toruslabs/tss-lib@^1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@toruslabs/tss-lib/-/tss-lib-1.7.1.tgz#758c62b72b41450de5df90acb42d6c2ba5df0482"
+  integrity sha512-kdjBO95cPq4i7RaRMkjUJFH0aiSHrMZV/A4I42oUr0FkBd7e/RYyn1e1QH1pAAyidCIKbMkwqTxgPg4nuHEcDg==
 
 "@trezor/analytics@1.0.2":
   version "1.0.2"
@@ -7071,10 +7071,10 @@
     loglevel "^1.8.1"
     ts-custom-error "^3.3.1"
 
-"@web3auth/mpc-core-kit@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@web3auth/mpc-core-kit/-/mpc-core-kit-1.0.2.tgz#0d6ee19df4c30449d8e283532c1c4d8c8a034f5f"
-  integrity sha512-68qp8vwydpsZa9c7YCOSbFJ/HulgauSTMymJiNFQ0q/gssAK+rzUMi7GJq/1gWlY8DOozO9C+u5MJnt9XG3JDw==
+"@web3auth/mpc-core-kit@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@web3auth/mpc-core-kit/-/mpc-core-kit-1.1.0.tgz#b122a1ad2644e19f563679ee33c8cb6a9948d1a0"
+  integrity sha512-T7I9BB9hrZbpY9fwYXe7l0qNbKbbLlMvU4Gl1aPAyWXrnIP+bma9qqq0pVZaAx0DFehz023Yf5zgiwt6GR2F/g==
   dependencies:
     "@tkey-mpc/chrome-storage" "^8.2.2"
     "@tkey-mpc/common-types" "^8.2.2"
@@ -7091,8 +7091,8 @@
     "@toruslabs/metadata-helpers" "^5.x"
     "@toruslabs/openlogin-session-manager" "^3.0.0"
     "@toruslabs/torus.js" "^11.0.5"
-    "@toruslabs/tss-client" "^1.6.1-alpha.0"
-    "@toruslabs/tss-lib" "^1.6.0-alpha.0"
+    "@toruslabs/tss-client" "^1.7.1"
+    "@toruslabs/tss-lib" "^1.7.1"
     "@web3auth-mpc/ethereum-provider" "^2.3.0"
     "@web3auth/base" "^7.0.1"
     "@web3auth/base-provider" "^7.0.1"
@@ -15691,7 +15691,7 @@ smart-buffer@^4.2.0:
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-4.2.0.tgz#6e1d71fa4f18c05f7d0ff216dd16a481d0e8d9ae"
   integrity sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==
 
-socket.io-client@^4.5.1, socket.io-client@^4.6.1, socket.io-client@^4.7.2:
+socket.io-client@^4.6.1, socket.io-client@^4.7.2:
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/socket.io-client/-/socket.io-client-4.7.2.tgz#f2f13f68058bd4e40f94f2a1541f275157ff2c08"
   integrity sha512-vtA0uD4ibrYD793SOIAwlo8cj6haOeMHrGvwPxJsxH7CeIksqJ+3Zc06RvWTIFgiSqx4A3sOnTXpfAEE2Zyz6w==

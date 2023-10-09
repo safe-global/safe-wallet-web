@@ -1,40 +1,33 @@
-import { DeviceShareRecovery } from '@/hooks/wallets/mpc/recovery/DeviceShareRecovery'
 import { SecurityQuestionRecovery } from '@/hooks/wallets/mpc/recovery/SecurityQuestionRecovery'
-import { Typography, TextField, FormControlLabel, Checkbox, Button, Box } from '@mui/material'
+import { Typography, TextField, Button, Box } from '@mui/material'
 import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import { useState, useMemo } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { enableMFA } from './helper'
 
 enum PasswordFieldNames {
   oldPassword = 'oldPassword',
   newPassword = 'newPassword',
   confirmPassword = 'confirmPassword',
-  storeDeviceShare = 'storeDeviceShare',
 }
 
 type PasswordFormData = {
   [PasswordFieldNames.oldPassword]: string | undefined
   [PasswordFieldNames.newPassword]: string
   [PasswordFieldNames.confirmPassword]: string
-  [PasswordFieldNames.storeDeviceShare]: boolean
 }
 
 export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit }) => {
   const formMethods = useForm<PasswordFormData>({
     mode: 'all',
-    defaultValues: async () => {
-      const isDeviceShareStored = await new DeviceShareRecovery(mpcCoreKit).isEnabled()
-      return {
-        [PasswordFieldNames.confirmPassword]: '',
-        [PasswordFieldNames.oldPassword]: undefined,
-        [PasswordFieldNames.newPassword]: '',
-        [PasswordFieldNames.storeDeviceShare]: isDeviceShareStored,
-      }
+    defaultValues: {
+      [PasswordFieldNames.confirmPassword]: '',
+      [PasswordFieldNames.oldPassword]: undefined,
+      [PasswordFieldNames.newPassword]: '',
     },
   })
 
-  const { register, formState, getValues, control, handleSubmit } = formMethods
+  const { register, formState, getValues, handleSubmit } = formMethods
 
   const [enablingMFA, setEnablingMFA] = useState(false)
 
@@ -98,17 +91,6 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
               }
             },
           })}
-        />
-
-        <Controller
-          control={control}
-          name={PasswordFieldNames.storeDeviceShare}
-          render={({ field: { value, ...field } }) => (
-            <FormControlLabel
-              control={<Checkbox checked={value ?? false} {...field} />}
-              label="Do not ask for second factor on this device"
-            />
-          )}
         />
 
         <Button
