@@ -34,7 +34,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
         <>
           <Button
             variant="outlined"
-            sx={{ padding: '1 2' }}
+            sx={{ padding: '1 2', borderWidth: '1px !important' }}
             onClick={onLogin}
             size="small"
             disabled={loginPending}
@@ -65,7 +65,14 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
           </Button>
         </>
       ) : (
-        <Button variant="outlined" onClick={login} size="small" disabled={loginPending} fullWidth>
+        <Button
+          variant="outlined"
+          onClick={login}
+          size="small"
+          disabled={loginPending}
+          fullWidth
+          sx={{ borderWidth: '1px !important' }}
+        >
           <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
             <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" /> Continue with Google
           </Box>
