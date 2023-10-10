@@ -42,6 +42,7 @@ describe('Remove an owner tests', () => {
     owner.waitForConnectionStatus()
     owner.openRemoveOwnerWindow(1)
     owner.verifyThresholdLimit(1, 1)
+    owner.getThresholdOptions().should('have.length', 1)
   })
 
   it('Verify owner deletion confirmation is displayed ', () => {
