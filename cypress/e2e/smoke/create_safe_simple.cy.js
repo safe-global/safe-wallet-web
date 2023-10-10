@@ -3,11 +3,6 @@ import * as main from '../../e2e/pages/main.page'
 import * as createwallet from '../pages/create_wallet.pages'
 
 import * as owner from '../pages/owners.pages'
-import * as addressBook from '../pages/address_book.page'
-
-const safeName = 'Test safe name'
-const ownerName = 'Test Owner Name'
-const ownerName2 = 'Test Owner Name 2'
 
 describe('Create Safe tests', () => {
   beforeEach(() => {
