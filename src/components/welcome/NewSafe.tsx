@@ -11,6 +11,7 @@ import { useAppSelector } from '@/store'
 import { selectTotalAdded } from '@/store/addedSafesSlice'
 
 import drawerCSS from '@/components/sidebar/Sidebar/styles.module.css'
+import useOwnedSafes from '@/hooks/useOwnedSafes'
 
 const BulletListItem = ({ text }: { text: string }) => (
   <li>
@@ -22,7 +23,10 @@ const BulletListItem = ({ text }: { text: string }) => (
 )
 
 const NewSafe = () => {
-  const addedSafes = useAppSelector(selectTotalAdded)
+  const numberOfAddedSafes = useAppSelector(selectTotalAdded)
+  const ownedSafes = useOwnedSafes()
+  const numberOfOwnedSafes = Object.values(ownedSafes).reduce((acc, curr) => acc + curr.length, 0)
+  const totalNumberOfSafes = numberOfOwnedSafes + numberOfAddedSafes
 
   const [showSidebar, setShowSidebar] = useState(false)
 
@@ -46,7 +50,7 @@ const NewSafe = () => {
         <Grid item xs={12} lg={6} flex={1}>
           <div className={css.content}>
             <Box minWidth={{ md: 480 }} className={css.sidebar}>
-              {addedSafes > 0 && (
+              {totalNumberOfSafes > 0 ? (
                 <Box display="flex" flexDirection="column">
                   <Box flex={1}>
                     <Accordion className={css.accordion} onClick={() => setShowSidebar(true)} expanded={false}>
@@ -56,14 +60,14 @@ const NewSafe = () => {
                             <ChevronRightIcon />
                           </IconButton>
                           <Typography sx={{ mr: 'auto' }} variant="h4" display="inline" fontWeight={700}>
-                            My Safe Accounts ({addedSafes})
+                            My Safe Accounts ({totalNumberOfSafes})
                           </Typography>
                         </Box>
                       </AccordionSummary>
                     </Accordion>
                   </Box>
                 </Box>
-              )}
+              ) : null}
             </Box>
 
             <Typography variant="h1" fontSize={[44, null, 52]} lineHeight={1} letterSpacing={-1.5} color="static.main">
