@@ -88,8 +88,8 @@
 }
 
 @media (max-width: 599.95px) {
-  .buttonContainer {
-    transform: scale(0.8);
+  .socialLoginInfo > div > div {
+    display: none;
   }
 
   .notConnected {

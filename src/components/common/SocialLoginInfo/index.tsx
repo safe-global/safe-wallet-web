@@ -10,7 +10,15 @@ import { getBlockExplorerLink } from '@/utils/chains'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
 
-const SocialLoginInfo = ({ wallet, chainInfo }: { wallet: ConnectedWallet; chainInfo?: ChainInfo }) => {
+const SocialLoginInfo = ({
+  wallet,
+  chainInfo,
+  hideActions = false,
+}: {
+  wallet: ConnectedWallet
+  chainInfo?: ChainInfo
+  hideActions?: boolean
+}) => {
   const { userInfo } = useContext(MpcWalletContext)
   const prefix = chainInfo?.shortName
   const link = chainInfo ? getBlockExplorerLink(chainInfo, wallet.address) : undefined
@@ -29,12 +37,14 @@ const SocialLoginInfo = ({ wallet, chainInfo }: { wallet: ConnectedWallet; chain
           {userInfo.email}
         </Typography>
       </div>
-      <div className={css.actionButtons}>
-        <Box color="border.main">
-          <CopyAddressButton prefix={prefix} copyPrefix={settings.shortName.copy} address={wallet.address} />
-          <ExplorerButton title={link?.title || ''} href={link?.href || ''} />
-        </Box>
-      </div>
+      {!hideActions && (
+        <div className={css.actionButtons}>
+          <Box color="border.main">
+            <CopyAddressButton prefix={prefix} copyPrefix={settings.shortName.copy} address={wallet.address} />
+            <ExplorerButton title={link?.title || ''} href={link?.href || ''} />
+          </Box>
+        </div>
+      )}
     </Box>
   )
 }

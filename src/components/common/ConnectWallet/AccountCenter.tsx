@@ -55,7 +55,13 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
     <>
       <ButtonBase onClick={handleClick} aria-describedby={id} disableRipple sx={{ alignSelf: 'stretch' }}>
         <Box className={css.buttonContainer}>
-          <WalletInfo wallet={wallet} />
+          {wallet.label === ONBOARD_MPC_MODULE_LABEL ? (
+            <div className={css.socialLoginInfo}>
+              <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} hideActions={true} />
+            </div>
+          ) : (
+            <WalletInfo wallet={wallet} />
+          )}
 
           <Box display="flex" alignItems="center" justifyContent="flex-end" marginLeft="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
