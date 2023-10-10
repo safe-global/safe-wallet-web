@@ -5,6 +5,7 @@ const ASSETS_LENGTH = 8
 
 describe('Balance pagination tests', () => {
   before(() => {
+    cy.clearLocalStorage()
     // Open the Safe used for testing
     cy.visit(constants.BALANCE_URL + constants.PAGINATION_TEST_SAFE)
     cy.contains('button', 'Accept selection').click()

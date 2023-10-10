@@ -2,6 +2,8 @@ export const acceptSelection = 'Accept selection'
 export const addressBook = 'Address book'
 const createEntryBtn = 'Create entry'
 
+const beameriFrameContainer = '#beamerOverlay .iframeCointaner'
+const beamerInput = 'input[id="beamer"]'
 const nameInput = 'input[name="name"]'
 const addressInput = 'input[name="address"]'
 const saveBtn = 'Save'
@@ -13,6 +15,8 @@ const exportFileModalBtnSection = '.MuiDialogActions-root'
 const exportFileModalExportBtn = 'Export'
 const importBtn = 'Import'
 const exportBtn = 'Export'
+const whatsNewBtnStr = "What's new"
+const beamrCookiesStr = 'accept the "Beamer" cookies'
 
 export function clickOnImportFileBtn() {
   cy.contains(importBtn).click()
@@ -46,7 +50,7 @@ export function clickOnCreateEntryBtn() {
   cy.contains(createEntryBtn).click()
 }
 
-export function tyeInName(name) {
+export function typeInName(name) {
   cy.get(nameInput).type(name)
 }
 
@@ -90,4 +94,21 @@ export function clickDeleteEntryModalDeleteButton() {
 
 export function verifyEditedNameNotExists(name) {
   cy.get(name).should('not.exist')
+}
+
+export function clickOnWhatsNewBtn(force = false) {
+  cy.contains(whatsNewBtnStr).click({ force: force })
+}
+
+export function acceptBeamerCookies() {
+  cy.contains(beamrCookiesStr)
+}
+
+export function verifyBeamerIsChecked() {
+  cy.get(beamerInput).should('be.checked')
+}
+
+export function verifyBeameriFrameExists() {
+  cy.wait(1000)
+  cy.get(beameriFrameContainer).should('exist')
 }

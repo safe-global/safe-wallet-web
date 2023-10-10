@@ -5,13 +5,17 @@ import { Box } from '@mui/material'
 import css from './styles.module.css'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { HumanDescription, TransferDescription } from '@/components/transactions/HumanDescription'
+import useABTesting from '@/services/tracking/useAbTesting'
+import { AbTest } from '@/services/tracking/abTesting'
 
 type TxTypeProps = {
   tx: TransactionSummary
+  short?: boolean
 }
 
-const TxType = ({ tx }: TxTypeProps) => {
+const TxType = ({ tx, short = false }: TxTypeProps) => {
   const type = useTransactionType(tx)
+  const shouldDisplayHumanDescription = useABTesting(AbTest.HUMAN_DESCRIPTION)
 
   const humanDescription = tx.txInfo.richDecodedInfo?.fragments
 
@@ -24,9 +28,9 @@ const TxType = ({ tx }: TxTypeProps) => {
         height={16}
         fallback="/images/transactions/custom.svg"
       />
-      {humanDescription ? (
+      {humanDescription && shouldDisplayHumanDescription && !short ? (
         <HumanDescription fragments={humanDescription} />
-      ) : tx.txInfo.type === TransactionInfoType.TRANSFER ? (
+      ) : tx.txInfo.type === TransactionInfoType.TRANSFER && shouldDisplayHumanDescription && !short ? (
         <TransferDescription isSendTx={tx.txInfo.direction === TransferDirection.OUTGOING} txInfo={tx.txInfo} />
       ) : (
         type.text

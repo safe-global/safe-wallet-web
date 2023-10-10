@@ -71,8 +71,7 @@ const useGtm = () => {
     gtmSetSafeAddress(safeAddress)
   }, [safeAddress])
 
-  // Track page views – anononimized by default.
-  // Sensitive info, like the safe address or tx id, is always in the query string, which we DO NOT track.
+  // Track page views – anonymized by default.
   useEffect(() => {
     // Don't track 404 because it's not a real page, it immediately does a client-side redirect
     if (router.pathname === AppRoutes['404']) return

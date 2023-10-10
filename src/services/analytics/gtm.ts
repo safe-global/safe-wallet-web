@@ -21,6 +21,7 @@ import { EventType, DeviceType } from './types'
 import { SAFE_APPS_SDK_CATEGORY } from './events'
 import { getAbTest } from '../tracking/abTesting'
 import type { AbTest } from '../tracking/abTesting'
+import { AppRoutes } from '@/config/routes'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
@@ -109,6 +110,7 @@ export const gtmTrack = (eventData: AnalyticsEvent): void => {
     event: eventData.event || EventType.CLICK,
     eventCategory: eventData.category,
     eventAction: eventData.action,
+    chainId: eventData.chainId || commonEventParams.chainId,
   }
 
   if (eventData.event) {
@@ -154,6 +156,10 @@ export const normalizeAppName = (appName?: string): string => {
 }
 
 export const gtmTrackSafeApp = (eventData: AnalyticsEvent, appName?: string, sdkEventData?: SafeAppSDKEvent): void => {
+  if (!location.pathname.startsWith(AppRoutes.apps.index)) {
+    return
+  }
+
   const safeAppGtmEvent: SafeAppGtmEvent = {
     ...commonEventParams,
     event: EventType.SAFE_APP,

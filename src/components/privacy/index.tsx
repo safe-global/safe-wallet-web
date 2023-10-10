@@ -6,7 +6,7 @@ const SafePrivacyPolicy = () => {
   return (
     <div>
       <h1>Privacy Policy</h1>
-      <p>Last updated in August&nbsp;2023.</p>
+      <p>Last updated in September&nbsp;2023.</p>
       <p>
         Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
         regulation regarding any personal information we may collect about you, including across our website,{' '}
@@ -327,23 +327,35 @@ const SafePrivacyPolicy = () => {
         GIVEN TIME.
       </p>
       <h4>4.2. Tracking</h4>
-      <p>4.2.1 We may store the following personal data to analyze your behavior:</p>
+      <p>4.2.1 We will process the following personal data to analyze your behavior:</p>
       <ol start={1} className={css.romanList}>
-        <li>IP address (except for EU users), </li>
+        <li>IP address (will not be stored for EU users), </li>
         <li>session tracking, </li>
         <li>user behavior, </li>
         <li>wallet type, </li>
+        <li>Safe Account address,</li>
         <li>device and browser user agent,</li>
         <li>user consent, </li>
         <li>operating system, </li>
         <li>referrers, </li>
         <li>user behavior: subpage, duration, and revisit, the date and time of access,</li>
       </ol>
-      <p>This data may be processed in order to improve the product and user experience.</p>
       <p>
-        We may additionally store an analytics cookie on your device to identify you as a user and to track the app
-        usage across browsing sessions. The lawful basis for this processing is your consent (GDPR Art.6.1a) when
-        agreeing to accept cookies.
+        In the case you have given consent, we will additionally store an analytics cookie on your device to identify
+        you as a user across browsing sessions. The lawful basis for this processing is your consent (GDPR Art.6.1a)
+        when agreeing to accept cookies.
+      </p>
+      <p>
+        The collected data is solely used in the legitimate interest of improving our product and user experience. The
+        data is stored only temporarily and is deleted after 14 months.
+      </p>
+      <p>
+        We do not track any of the following:
+        <ol>
+          <li>Signer wallet addresses</li>
+          <li>Wallet signatures</li>
+          <li>Granular transaction details</li>
+        </ol>
       </p>
       <p>
         4.2.2 We conduct technical monitoring of your activity on the platform in order to ensure availability,
@@ -358,6 +370,22 @@ const SafePrivacyPolicy = () => {
       <p>
         The lawful basis for this processing is our legitimate interest (GDPR Art.6.1f) in ensuring the correctness of
         the service.
+      </p>
+      <p>4.2.3. Anonymized tracking</p>
+      <p>
+        We will anonymize the following personal data to gather anonymous user statistics on your browsing behavior on
+        our website:
+        <ol>
+          <li>daily active users,</li>
+          <li>new users acquired from a specific campaign,</li>
+          <li>user journeys,</li>
+          <li>number of users per country,</li>
+          <li>difference in user behavior between mobile vs. web visitors.</li>
+        </ol>
+      </p>
+      <p>
+        The lawful basis for this processing is our legitimate interest (GDPR Art.6.1f) in improving our product and
+        user experience.
       </p>
       <h4>4.3. When Participating in User Experience Research (UXR)</h4>
       <p>

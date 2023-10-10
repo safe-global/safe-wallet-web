@@ -1,25 +1,37 @@
 import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
+import * as createTx from '../pages/create_tx.pages'
 
-const INCOMING = 'Receive'
-const OUTGOING = 'Send'
+const INCOMING = 'Received'
+const OUTGOING = 'Sent'
 const CONTRACT_INTERACTION = 'Contract interaction'
+
+const str1 = 'True'
+const str2 = '1337'
+const str3 = '5688'
 
 describe('Transaction history', () => {
   before(() => {
+    cy.clearLocalStorage()
     // Go to the test Safe transaction history
-    cy.visit(`/transactions/history?safe=${constants.GOERLI_TEST_SAFE}`)
-    cy.contains('button', 'Accept selection').click()
+    cy.visit(constants.transactionsHistoryUrl + constants.GOERLI_TEST_SAFE)
+    main.acceptCookies()
   })
 
   it('should display October 9th transactions', () => {
     const DATE = 'Oct 9, 2022'
     const NEXT_DATE_LABEL = 'Feb 8, 2022'
+    const amount = '0.25 GOR'
+    const amount2 = '0.11 WETH'
+    const amount3 = '120,497.61 DAI'
+    const time = '4:56 PM'
+    const time2 = '4:59 PM'
+    const time3 = '5:00 PM'
+    const time4 = '5:01 PM'
+    const success = 'Success'
 
-    // Date label
-    cy.contains('div', DATE).should('exist')
-
-    // Next date label
-    cy.contains('div', NEXT_DATE_LABEL).scrollIntoView()
+    createTx.verifyDateExists(DATE)
+    createTx.verifyDateExists(NEXT_DATE_LABEL)
 
     // Transaction summaries from October 9th
     const rows = cy.contains('div', DATE).nextUntil(`div:contains(${NEXT_DATE_LABEL})`)
@@ -31,130 +43,77 @@ describe('Transaction history', () => {
       .last()
       .within(() => {
         // Type
-        cy.get('img').should('have.attr', 'alt', 'Received')
-        cy.contains('div', INCOMING).should('exist')
+        createTx.verifyImageAltTxt(0, INCOMING)
+        createTx.verifyStatus(constants.transactionStatus.received)
 
         // Info
-        cy.get('img[alt="GOR"]').should('be.visible')
-        cy.contains('span', '0.25 GOR').should('exist')
-
-        // Time
-        cy.contains('span', '4:56 PM').should('exist')
-
-        // Status
-        cy.contains('span', 'Success').should('exist')
+        createTx.verifyImageAltTxt(1, constants.tokenAbbreviation.gor)
+        createTx.verifyTransactionStrExists(amount)
+        createTx.verifyTransactionStrExists(time)
+        createTx.verifyTransactionStrExists(success)
       })
       // CowSwap deposit of Wrapped Ether
       .prev()
       .within(() => {
-        // Nonce
-        cy.contains('0')
-
-        // Type
+        createTx.verifyTransactionStrExists('0')
         // TODO: update next line after fixing the logo
         // cy.find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
-        cy.contains('div', 'Wrapped Ether').should('exist')
-
-        // Info
-        cy.contains('div', 'deposit').should('exist')
-
-        // Time
-        cy.contains('span', '4:59 PM').should('exist')
-
-        // Status
-        cy.contains('span', 'Success').should('exist')
+        createTx.verifyTransactionStrExists(constants.tokenNames.wrappedEther)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.deposit)
+        createTx.verifyTransactionStrExists(time2)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
       // CowSwap approval of Wrapped Ether
       .prev()
       .within(() => {
-        // Nonce
-        cy.contains('1')
-
+        createTx.verifyTransactionStrExists('1')
         // Type
         // TODO: update next line after fixing the logo
         // cy.find('img').should('have.attr', 'src').should('include', WRAPPED_ETH)
-        cy.contains('div', 'WETH').should('exist')
-
-        cy.contains('div', 'unlimited').should('exist')
-
-        // Info
-        cy.contains('div', 'Approve').should('exist')
-
-        // Time
-        cy.contains('span', '5:00 PM').should('exist')
-
-        // Status
-        cy.contains('span', 'Success').should('exist')
+        createTx.verifyTransactionStrExists(constants.transactionStatus.approve)
+        createTx.verifyTransactionStrExists(time3)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
       // Contract interaction
       .prev()
       .within(() => {
-        // Nonce
-        cy.contains('2')
-
-        // Type
-        cy.contains('div', 'Contract interaction').should('exist')
-
-        // Time
-        cy.contains('span', '5:01 PM').should('exist')
-
-        // Status
-        cy.contains('span', 'Success').should('exist')
+        createTx.verifyTransactionStrExists('2')
+        createTx.verifyTransactionStrExists(constants.transactionStatus.interaction)
+        createTx.verifyTransactionStrExists(time4)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
       // Send 0.11 WETH
       .prev()
       .within(() => {
-        // Type
-        cy.get('img').should('have.attr', 'alt', 'Sent')
-        cy.contains('div', 'Send').should('exist')
-
-        // Info
-        cy.contains('span', '0.11 WETH').should('exist')
-
-        // Time
-        cy.contains('span', '5:01 PM').should('exist')
-
-        // Status
-        cy.contains('span', 'Success').should('exist')
+        createTx.verifyImageAltTxt(0, OUTGOING)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.sent)
+        createTx.verifyTransactionStrExists(amount2)
+        createTx.verifyTransactionStrExists(time4)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
       // Receive 120 DAI
       .prev()
       .within(() => {
-        // Type
-        cy.contains('div', INCOMING).should('exist')
-
-        // Info
-        cy.contains('span', '120,497.61 DAI').should('exist')
-
-        // Time
-        cy.contains('span', '5:01 PM').should('exist')
-
-        // Status
-        cy.contains('span', 'Success').should('exist')
+        createTx.verifyTransactionStrExists(constants.transactionStatus.received)
+        createTx.verifyTransactionStrExists(amount3)
+        createTx.verifyTransactionStrExists(time4)
+        createTx.verifyTransactionStrExists(constants.transactionStatus.success)
       })
   })
 
   it('should expand/collapse all actions', () => {
-    // Open the tx details
-    cy.contains('div', 'Mar 24, 2023')
-      .next()
-      .click()
-      .within(() => {
-        cy.contains('True').should('not.be.visible')
-        cy.contains('1337').should('not.be.visible')
-        cy.contains('5688').should('not.be.visible')
-        cy.contains('Expand all').click()
-
-        // All the values in the actions must be visible
-        cy.contains('True').should('exist')
-        cy.contains('1337').should('exist')
-        cy.contains('5688').should('exist')
-
-        // After collapse all the same values should not be visible
-        cy.contains('Collapse all').click()
-        cy.contains('True').should('not.be.visible')
-        cy.contains('1337').should('not.be.visible')
-        cy.contains('5688').should('not.be.visible')
-      })
+    createTx.clickOnTransactionExpandableItem('Mar 24, 2023', () => {
+      createTx.verifyTransactionStrNotVible(str1)
+      createTx.verifyTransactionStrNotVible(str2)
+      createTx.verifyTransactionStrNotVible(str3)
+      createTx.clickOnExpandAllBtn()
+      createTx.verifyTransactionStrExists(str1)
+      createTx.verifyTransactionStrExists(str2)
+      createTx.verifyTransactionStrExists(str3)
+      createTx.clickOnCollapseAllBtn()
+      createTx.verifyTransactionStrNotVible(str1)
+      createTx.verifyTransactionStrNotVible(str2)
+      createTx.verifyTransactionStrNotVible(str3)
+    })
   })
 })

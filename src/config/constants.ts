@@ -1,6 +1,6 @@
 import chains from './chains'
 
-export const IS_PRODUCTION = !!process.env.NEXT_PUBLIC_IS_PRODUCTION
+export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === 'true'
 export const IS_DEV = process.env.NODE_ENV === 'development'
 
 export const GATEWAY_URL_PRODUCTION =
@@ -84,6 +84,7 @@ export const HelpCenterArticle = {
   TRANSACTION_GUARD: `${HELP_CENTER_URL}/en/articles/40809-what-is-a-transaction-guard`,
   UNEXPECTED_DELEGATE_CALL: `${HELP_CENTER_URL}/en/articles/40794-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction`,
   DELEGATES: `${HELP_CENTER_URL}/en/articles/40799-what-is-a-delegate-key`,
+  PUSH_NOTIFICATIONS: `${HELP_CENTER_URL}/en/articles/99197-how-to-start-receiving-web-push-notifications-in-the-web-wallet`,
 } as const
 
 // Social
@@ -91,7 +92,7 @@ export const DISCORD_URL = 'https://chat.safe.global'
 export const TWITTER_URL = 'https://twitter.com/safe'
 
 // Legal
-export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST || false
+export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST === 'true'
 
 // Risk mitigation (Redefine)
 export const REDEFINE_SIMULATION_URL = 'https://dashboard.redefine.net/reports/'
