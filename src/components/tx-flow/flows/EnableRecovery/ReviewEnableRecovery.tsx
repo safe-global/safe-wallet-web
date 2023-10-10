@@ -13,7 +13,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 
 export function ReviewEnableRecovery({ recoverers }: { recoverers: Array<string> }): ReactElement {
   const web3 = useWeb3()
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
 
   const recovery = useMemo(() => {
@@ -42,8 +42,37 @@ export function ReviewEnableRecovery({ recoverers }: { recoverers: Array<string>
     }
   }, [safeTxError])
 
+  const onSubmit = async () => {
+    if (!recovery) {
+      return
+    }
+
+    // TODO: Proxy
+    const ACCOUNT = ''
+    const PROJECT = ''
+    const API_KEY = ''
+
+    const URL = `https://api.tenderly.co/api/v2/accounts/${ACCOUNT}/projects/${PROJECT}/contracts`
+
+    fetch(URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        contracts: [
+          {
+            address: recovery.expectedModuleAddress,
+            display_name: `Delay Modifier for ${safeAddress}`,
+            network_id: safe.chainId,
+          },
+        ],
+      }),
+      headers: {
+        'X-Access-Key': API_KEY,
+      },
+    })
+  }
+
   return (
-    <SignOrExecuteForm onSubmit={() => null}>
+    <SignOrExecuteForm onSubmit={onSubmit}>
       <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Recovery module</Typography>
 
       <EthHashInfo address={recovery?.expectedModuleAddress ?? ''} showCopyButton hasExplorer shortAddress={false} />
