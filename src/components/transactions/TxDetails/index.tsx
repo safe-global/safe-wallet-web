@@ -29,6 +29,7 @@ import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsPending from '@/hooks/useIsPending'
+import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -125,6 +126,8 @@ const TxDetails = ({
 
   const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
     async () => {
+      trackEvent(TX_LIST_EVENTS.FETCH_DETAILS)
+
       return txDetails || getTransactionDetails(chainId, txSummary.id)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

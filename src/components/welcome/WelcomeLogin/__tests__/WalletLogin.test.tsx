@@ -1,0 +1,71 @@
+import { act, render, waitFor } from '@/tests/test-utils'
+import * as useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
+import * as useWallet from '@/hooks/wallets/useWallet'
+import WalletLogin from '../WalletLogin'
+import { hexZeroPad } from '@ethersproject/bytes'
+import { type EIP1193Provider } from '@web3-onboard/common'
+import { shortenAddress } from '@/utils/formatters'
+
+describe('WalletLogin', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('should render continue with connected wallet', async () => {
+    const mockOnLogin = jest.fn()
+    const walletAddress = hexZeroPad('0x1', 20)
+    jest.spyOn(useWallet, 'default').mockReturnValue({
+      address: walletAddress,
+      chainId: '5',
+      label: 'MetaMask',
+      provider: {} as unknown as EIP1193Provider,
+    })
+    jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn())
+
+    const result = render(<WalletLogin onLogin={mockOnLogin} />)
+
+    await waitFor(() => {
+      expect(result.findByText(shortenAddress(walletAddress))).resolves.toBeDefined()
+    })
+
+    // We do not automatically invoke the callback as the user did not actively connect
+    expect(mockOnLogin).not.toHaveBeenCalled()
+
+    const button = await result.findByRole('button')
+    button.click()
+
+    expect(mockOnLogin).toHaveBeenCalled()
+  })
+
+  it('should render connect wallet and invoke the callback on connection if no wallet is connected', async () => {
+    const mockOnLogin = jest.fn()
+    const walletAddress = hexZeroPad('0x1', 20)
+    const mockUseWallet = jest.spyOn(useWallet, 'default').mockReturnValue(null)
+    jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn())
+
+    const result = render(<WalletLogin onLogin={mockOnLogin} />)
+
+    await waitFor(() => {
+      expect(result.findByText('Connect wallet')).resolves.toBeDefined()
+    })
+
+    // We do not automatically invoke the callback as the user did not actively connect
+    expect(mockOnLogin).not.toHaveBeenCalled()
+
+    await act(async () => {
+      // Click the button and mock a wallet connection
+      const button = await result.findByRole('button')
+      button.click()
+      mockUseWallet.mockReset().mockReturnValue({
+        address: walletAddress,
+        chainId: '5',
+        label: 'MetaMask',
+        provider: {} as unknown as EIP1193Provider,
+      })
+    })
+
+    await waitFor(() => {
+      expect(mockOnLogin).toHaveBeenCalled()
+    })
+  })
+})

@@ -35,6 +35,7 @@ const SignTxButton = ({
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
+    e.preventDefault()
     setTxFlow(<ConfirmTxFlow txSummary={txSummary} />, undefined, false)
   }
 

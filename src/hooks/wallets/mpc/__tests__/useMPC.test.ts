@@ -1,6 +1,6 @@
 import * as useOnboard from '@/hooks/wallets/useOnboard'
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { getMPCCoreKitInstance, setMPCCoreKitInstance, useInitMPC } from '../useMPC'
+import { _getMPCCoreKitInstance, setMPCCoreKitInstance, useInitMPC } from '../useMPC'
 import * as useChains from '@/hooks/useChains'
 import { type ChainInfo, RPC_AUTHENTICATION } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
@@ -104,7 +104,7 @@ describe('useInitMPC', () => {
     renderHook(() => useInitMPC())
 
     await waitFor(() => {
-      expect(getMPCCoreKitInstance()).toBeDefined()
+      expect(_getMPCCoreKitInstance()).toBeDefined()
       expect(connectWalletSpy).not.toBeCalled()
     })
   })
@@ -151,7 +151,7 @@ describe('useInitMPC', () => {
 
     await waitFor(() => {
       expect(connectWalletSpy).toBeCalled()
-      expect(getMPCCoreKitInstance()).toBeDefined()
+      expect(_getMPCCoreKitInstance()).toBeDefined()
     })
   })
 
@@ -215,7 +215,7 @@ describe('useInitMPC', () => {
 
     await waitFor(() => {
       expect(mockChainChangedListener).toHaveBeenCalledWith('0x5')
-      expect(getMPCCoreKitInstance()).toBeDefined()
+      expect(_getMPCCoreKitInstance()).toBeDefined()
       expect(connectWalletSpy).not.toBeCalled()
     })
   })

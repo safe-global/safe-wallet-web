@@ -8,6 +8,7 @@ const ownerName2 = 'Test Owner Name 2'
 
 describe('Create Safe form', () => {
   it('should navigate to the form', () => {
+    cy.clearLocalStorage()
     cy.visit(constants.welcomeUrl)
     main.acceptCookies()
     main.verifyGoerliWalletHeader()

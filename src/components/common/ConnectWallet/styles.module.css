@@ -28,6 +28,18 @@
   width: 100%;
 }
 
+.profileImg {
+  border-radius: var(--space-2);
+  width: 32px;
+  height: 32px;
+}
+
+.profileData {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .rowContainer {
   align-self: stretch;
   margin-left: calc(var(--space-2) * -1);
@@ -59,8 +71,7 @@
     transform: scale(0.8);
   }
 
-  .notConnected,
-  .pairingDetails {
+  .notConnected {
     display: none;
   }
 }

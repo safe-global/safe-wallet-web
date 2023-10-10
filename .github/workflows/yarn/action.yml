@@ -13,3 +13,6 @@ runs:
     - name: Yarn install
       shell: bash
       run: yarn install --frozen-lockfile
+    - name: Yarn after install
+      shell: bash
+      run: yarn after-install
