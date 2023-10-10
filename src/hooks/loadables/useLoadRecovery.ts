@@ -5,6 +5,7 @@ import { getDelayModifiers, MODULE_PAGE_SIZE } from '@/services/recovery/delay-m
 import useAsync from '../useAsync'
 import useSafeInfo from '../useSafeInfo'
 import { useWeb3ReadOnly } from '../wallets/web3'
+import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import type { AsyncResult } from '../useAsync'
 import type { RecoveryState } from '@/store/recoverySlice'
 
@@ -31,7 +32,14 @@ const useLoadRecovery = (): AsyncResult<RecoveryState> => {
   const web3ReadOnly = useWeb3ReadOnly()
 
   const [delayModifiers, delayModifiersError, delayModifiersLoading] = useAsync<Array<Delay>>(() => {
-    if (!web3ReadOnly || safe.modules?.length === 0) {
+    if (!web3ReadOnly || !safe.modules || safe.modules.length === 0) {
+      return
+    }
+
+    const isOnlySpendingLimit =
+      safe.modules.length === 1 && safe.modules[0].value === getSpendingLimitModuleAddress(safe.chainId)
+
+    if (isOnlySpendingLimit) {
       return
     }
 
