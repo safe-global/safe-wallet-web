@@ -3,7 +3,8 @@ import * as file from '../pages/import_export.pages'
 import * as main from '../pages/main.page'
 import * as constants from '../../support/constants'
 
-describe('Import Export Data', () => {
+// TODO: This is currently removed from the welcome page
+describe.skip('Import Export Data', () => {
   before(() => {
     cy.clearLocalStorage()
     cy.visit(constants.welcomeUrl)

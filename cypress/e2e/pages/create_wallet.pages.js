@@ -1,6 +1,6 @@
 import * as constants from '../../support/constants'
 
-const newAccountBtnStr = 'Create new Account'
+const newAccountBtnStr = 'Continue with E2E Wallet'
 
 const nameInput = 'input[name="name"]'
 const selectNetworkBtn = '[data-cy="create-safe-select-network"]'
