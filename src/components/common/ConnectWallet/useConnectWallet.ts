@@ -1,19 +1,17 @@
-import { useMemo } from 'react'
+import { useCallback } from 'react'
 import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 
-const useConnectWallet = (): (() => void) => {
+const useConnectWallet = () => {
   const onboard = useOnboard()
 
-  return useMemo(() => {
+  return useCallback(() => {
     if (!onboard) {
-      return () => {}
+      return Promise.resolve(undefined)
     }
 
-    return () => {
-      trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
-      connectWallet(onboard)
-    }
+    trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
+    return connectWallet(onboard)
   }, [onboard])
 }
 
