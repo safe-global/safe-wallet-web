@@ -29,13 +29,14 @@ const SignerAccountPage: NextPage = () => {
               <SignerAccountMFA />
             </Grid>
           </Grid>
-          <Grid container spacing={3} mt={3}>
+        </Paper>
+        <Paper sx={{ p: 4, mt: 2 }}>
+          <Grid container spacing={3}>
             <Grid item lg={4} xs={12}>
               <Typography variant="h4" fontWeight="bold" mb={1}>
-                Export Account
+                Account export
               </Typography>
             </Grid>
-
             <Grid item xs>
               <ExportMPCAccount />
             </Grid>
