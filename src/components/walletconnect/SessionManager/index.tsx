@@ -1,16 +1,17 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
+import { Typography } from '@mui/material'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
+import type { ReactElement } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
 import ProposalForm from '../ProposalForm'
-import WcInput from '../WcInput'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import SessionList from '../SessionList'
+import { ConnectionForm } from '../ConnectionForm'
+import { WalletConnectHeader } from './Header'
 
-const SessionManager = ({ sessions }: { sessions: SessionTypes.Struct[] }) => {
+const SessionManager = ({ sessions }: { sessions: SessionTypes.Struct[] }): ReactElement => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
@@ -61,25 +62,20 @@ const SessionManager = ({ sessions }: { sessions: SessionTypes.Struct[] }) => {
     return walletConnect.onSessionPropose(setProposal)
   }, [walletConnect])
 
-  return (
-    <>
-      {error && (
-        <ErrorMessage error={error}>Error establishing connection with WalletConnect. Please try again.</ErrorMessage>
-      )}
+  if (walletConnectError || error) {
+    return (
+      <>
+        <WalletConnectHeader error />
+        <Typography>{walletConnectError?.message ?? error?.message}</Typography>
+      </>
+    )
+  }
 
-      {walletConnectError && <ErrorMessage error={walletConnectError}>Error with WalletConnect request.</ErrorMessage>}
+  if (!proposal) {
+    return <ConnectionForm sessions={sessions} onDisconnect={onDisconnect} />
+  }
 
-      {proposal ? (
-        <ProposalForm proposal={proposal} onApprove={onApprove} onReject={onReject} />
-      ) : (
-        <>
-          <WcInput />
-
-          <SessionList sessions={sessions} onDisconnect={onDisconnect} />
-        </>
-      )}
-    </>
-  )
+  return <ProposalForm proposal={proposal} onApprove={onApprove} onReject={onReject} />
 }
 
 export default SessionManager

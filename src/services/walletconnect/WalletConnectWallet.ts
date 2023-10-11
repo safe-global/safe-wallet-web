@@ -121,7 +121,7 @@ class WalletConnectWallet {
     await this.updateSession(session, currentChainId, safeAddress)
 
     // Workaround: WalletConnect doesn't have a session_add event
-    this.web3Wallet?.events.emit(SESSION_ADD_EVENT)
+    this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)
 
     // Return updated session as it may have changed
     return this.getActiveSessions().find(({ topic }) => topic === session.topic) ?? session
@@ -191,10 +191,12 @@ class WalletConnectWallet {
   /**
    * Subscribe to session add
    */
-  public onSessionAdd(handler: () => void) {
+  public onSessionAdd(handler: (e: SessionTypes.Struct) => void) {
+    // @ts-expect-error - custom event payload
     this.web3Wallet?.on(SESSION_ADD_EVENT, handler)
 
     return () => {
+      // @ts-expect-error
       this.web3Wallet?.off(SESSION_ADD_EVENT, handler)
     }
   }

@@ -66,10 +66,6 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         </div>
       )}
 
-      <div className={classnames(css.element, css.hideMobile)}>
-        <WalletConnectHeaderWidget />
-      </div>
-
       {safeAddress && (
         <div className={classnames(css.element, css.hideMobile)}>
           <BatchIndicator onClick={handleBatchToggle} />
@@ -80,6 +76,10 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         <PushNotificationsBanner>
           <NotificationCenter />
         </PushNotificationsBanner>
+      </div>
+
+      <div className={classnames(css.element, css.hideMobile)}>
+        <WalletConnectHeaderWidget />
       </div>
 
       <div className={classnames(css.element, css.connectWallet)}>

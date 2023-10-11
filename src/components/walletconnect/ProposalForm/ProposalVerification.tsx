@@ -4,7 +4,7 @@ import type { AlertColor } from '@mui/material'
 import AlertIcon from '@/public/images/notifications/alert.svg'
 
 import type { Verify } from '@walletconnect/types'
-import type { ComponentType } from 'react'
+import type { ComponentType, ReactElement } from 'react'
 import CloseIcon from '@/public/images/common/close.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckIcon from '@/public/images/common/check.svg'
@@ -34,9 +34,14 @@ const Validation: {
   },
 }
 
-const ProposalVerification = ({ proposal }: { proposal: Web3WalletTypes.SessionProposal }) => {
+const ProposalVerification = ({ proposal }: { proposal: Web3WalletTypes.SessionProposal }): ReactElement | null => {
   const { proposer } = proposal.params
   const { isScam, validation } = proposal.verifyContext.verified
+
+  if (validation === 'UNKNOWN') {
+    return null
+  }
+
   const _validation = Validation[validation]
   const color = isScam ? 'error' : _validation.color
   const Icon = isScam ? AlertIcon : _validation.Icon
