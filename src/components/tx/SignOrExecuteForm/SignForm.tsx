@@ -56,8 +56,9 @@ const SignForm = ({
     setIsSubmittable(false)
     setSubmitError(undefined)
 
+    let resultTxId: string
     try {
-      await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin, tx))
+      resultTxId = await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin, tx))
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._805, err)
@@ -66,8 +67,9 @@ const SignForm = ({
       return
     }
 
+    // On success
     setTxFlow(undefined)
-    onSubmit()
+    onSubmit(resultTxId)
   }
 
   const onBatchClick = (e: SyntheticEvent) => {

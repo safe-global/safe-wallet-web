@@ -13,7 +13,10 @@ export type AppInfo = {
 export type WalletSDK = {
   signMessage: (message: string, appInfo: AppInfo) => Promise<{ signature?: string }>
   signTypedMessage: (typedData: unknown, appInfo: AppInfo) => Promise<{ signature?: string }>
-  send: (params: { txs: unknown[]; params: { safeTxGas: number } }, appInfo: AppInfo) => Promise<{ safeTxHash: string }>
+  send: (
+    params: { txs: unknown[]; params: { safeTxGas: number } },
+    appInfo: AppInfo,
+  ) => Promise<{ safeTxHash: string; txHash?: string }>
   getBySafeTxHash: (safeTxHash: string) => Promise<{ txHash?: string }>
   switchChain: (chainId: string, appInfo: AppInfo) => Promise<null>
   proxy: (method: string, params: unknown[]) => Promise<unknown>
@@ -50,11 +53,11 @@ export class SafeWalletProvider {
     this.sdk = sdk
   }
 
-  private async makeRequest(id: number, request: RpcRequest, appInfo: AppInfo): Promise<unknown> {
+  private async makeRequest(request: RpcRequest, appInfo: AppInfo): Promise<unknown> {
     const { method, params = [] } = request
 
     switch (method) {
-      case 'wallet_switchEthereumChain':
+      case 'wallet_switchEthereumChain': {
         const [{ chainId }] = params as [{ chainId: string }]
         try {
           await this.sdk.switchChain(chainId, appInfo)
@@ -62,13 +65,16 @@ export class SafeWalletProvider {
           throw new RpcError(RpcErrorCode.UNSUPPORTED_CHAIN, 'Unsupported chain')
         }
         return null
+      }
 
-      case 'eth_accounts':
+      case 'eth_accounts': {
         return [this.safe.safeAddress]
+      }
 
       case 'net_version':
-      case 'eth_chainId':
+      case 'eth_chainId': {
         return `0x${this.safe.chainId.toString(16)}`
+      }
 
       case 'personal_sign': {
         const [message, address] = params as [string, string]
@@ -110,7 +116,7 @@ export class SafeWalletProvider {
         return signature || '0x'
       }
 
-      case 'eth_sendTransaction':
+      case 'eth_sendTransaction': {
         const tx = {
           value: '0',
           data: '0x',
@@ -124,13 +130,15 @@ export class SafeWalletProvider {
           tx.gas = parseInt(tx.gas, 16)
         }
 
-        const { safeTxHash } = await this.sdk.send(
+        const { safeTxHash, txHash } = await this.sdk.send(
           {
             txs: [tx],
             params: { safeTxGas: Number(tx.gas) },
           },
           appInfo,
         )
+
+        if (txHash) return txHash
 
         // Store fake transaction
         this.submittedTxs.set(safeTxHash, {
@@ -148,8 +156,9 @@ export class SafeWalletProvider {
         })
 
         return safeTxHash
+      }
 
-      case 'eth_getTransactionByHash':
+      case 'eth_getTransactionByHash': {
         let txHash = params[0] as string
         try {
           const resp = await this.sdk.getBySafeTxHash(txHash)
@@ -161,6 +170,7 @@ export class SafeWalletProvider {
           return this.submittedTxs.get(txHash)
         }
         return await this.sdk.proxy(method, [txHash])
+      }
 
       case 'eth_getTransactionReceipt': {
         let txHash = params[0] as string
@@ -171,8 +181,9 @@ export class SafeWalletProvider {
         return this.sdk.proxy(method, params)
       }
 
-      default:
+      default: {
         return await this.sdk.proxy(method, params)
+      }
     }
   }
 
@@ -199,7 +210,7 @@ export class SafeWalletProvider {
       return {
         jsonrpc: '2.0',
         id,
-        result: await this.makeRequest(id, request, appInfo),
+        result: await this.makeRequest(request, appInfo),
       }
     } catch (e) {
       return {
