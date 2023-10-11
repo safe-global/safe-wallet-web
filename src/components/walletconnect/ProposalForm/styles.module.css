@@ -2,29 +2,50 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: var(--space-2);
-  width: 350px;
   text-align: center;
 }
 
-.chain,
-.method {
+.icon {
+  padding: var(--space-2);
+}
+
+.chain {
   margin: 2px;
 }
 
-.method {
+.origin {
+  padding: var(--space-1) var(--space-2);
   background: var(--color-border-background);
-  color: var(--color-text-primary);
-  align-items: center;
-  justify-content: center;
-  display: inline-block;
-  font-size: 11px;
-  line-height: normal;
-  border-radius: 4px;
-  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 .alert {
   width: 100%;
   text-align: left;
+}
+
+.alert :global .MuiAlertTitle-root {
+  font-weight: 700;
+}
+
+.divider {
+  margin: var(--space-3) calc(-1 * var(--space-4));
+}
+
+.buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.button {
+  height: 36px;
+  padding: 6px var(--space-4);
+  width: 130px;
 }

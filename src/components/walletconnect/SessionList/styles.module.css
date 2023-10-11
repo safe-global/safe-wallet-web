@@ -1,0 +1,20 @@
+.sessionList {
+  width: 100%;
+  padding: 0;
+}
+
+.sessionListItem {
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  height: 56px;
+}
+
+.sessionListSecondaryAction {
+  /* InputAdornment */
+  right: 14px;
+}
+
+.button {
+  height: 30px;
+  width: 120px;
+}

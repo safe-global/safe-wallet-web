@@ -1,7 +1,8 @@
 import { Paper, Popover } from '@mui/material'
 import type { PopoverProps } from '@mui/material'
+import type { ReactElement } from 'react'
 
-const Popup = ({ children, ...props }: PopoverProps) => {
+const Popup = ({ children, ...props }: PopoverProps): ReactElement => {
   return (
     <Popover
       anchorOrigin={{
@@ -14,7 +15,7 @@ const Popup = ({ children, ...props }: PopoverProps) => {
       }}
       {...props}
     >
-      <Paper sx={{ p: 4 }}>{children}</Paper>
+      <Paper sx={{ p: 4, width: '454px' }}>{children}</Paper>
     </Popover>
   )
 }
