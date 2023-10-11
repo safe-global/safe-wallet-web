@@ -8,12 +8,18 @@ const ExportMPCAccount = () => {
   const mpcCoreKit = useMPC()
 
   const [pk, setPk] = useState<string | undefined>()
+  const [isExporting, setIsExporting] = useState(false)
 
   const isLoggedIn = mpcCoreKit?.status === COREKIT_STATUS.LOGGED_IN
 
   const exportPK = async () => {
-    const exportedPK = await mpcCoreKit?._UNSAFE_exportTssKey()
-    setPk(exportedPK)
+    try {
+      setIsExporting(true)
+      const exportedPK = await mpcCoreKit?._UNSAFE_exportTssKey()
+      setPk(exportedPK)
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   const hidePK = () => {
@@ -27,12 +33,12 @@ const ExportMPCAccount = () => {
     <Box>
       <Box>
         <Typography>
-          This action reveals the seedphrase / private key of your logged in signer account. This export can be used to
+          This action reveals the seed phrase / private key of your logged in signer account. This export can be used to
           move the account into a self-custodial wallet application.
         </Typography>
         <Alert severity="warning" sx={{ mt: 3 }}>
-          Anyone who has access to this seedphrase / key has <b>full access</b> over your Signer Account. You should
-          never disclose or share it with anyone and store it securely.
+          Anyone who has access to this seed phrase / private key has <b>full access</b> over your Signer Account. You
+          should never disclose or share it with anyone and store it securely.
         </Alert>
         {pk ? (
           <Box display="flex" flexDirection="row" alignItems="center" mt={3} gap={1}>
@@ -47,7 +53,7 @@ const ExportMPCAccount = () => {
             </Button>
           </Box>
         ) : (
-          <Button color="primary" variant="contained" onClick={exportPK} sx={{ mt: 3 }}>
+          <Button color="primary" variant="contained" disabled={isExporting} onClick={exportPK} sx={{ mt: 3 }}>
             Export
           </Button>
         )}
