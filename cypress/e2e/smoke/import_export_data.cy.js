@@ -3,23 +3,22 @@ import * as file from '../pages/import_export.pages'
 import * as main from '../pages/main.page'
 import * as constants from '../../support/constants'
 
-// TODO: This is currently removed from the welcome page
-describe.skip('Import Export Data', () => {
+describe('Import Export Data', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.welcomeUrl)
+    cy.visit(constants.dataSettingsUrl)
     main.acceptCookies()
-    file.verifyImportBtnIsVisible()
   })
 
   it('Uploads test file and access safe', () => {
     const filePath = '../fixtures/data_import.json'
     const safe = 'safe 1 goerli'
 
-    file.clickOnImportBtn()
     file.uploadFile(filePath)
     file.verifyImportModalData()
     file.clickOnImportBtnDataImportModal()
+    cy.visit(constants.welcomeUrl)
+    file.clickOnOpenSafeListSidebar()
     file.clickOnImportedSafe(safe)
     file.clickOnClosePushNotificationsBanner()
   })
