@@ -54,6 +54,8 @@ const WrappedEth = () => {
     if (!wethContract) return null
 
     const amount = isWrap ? wrapAmount : unwrapAmount
+    if (!amount) return null
+
     const amountInWei = ethers.utils.parseEther(amount)
 
     const encodedFunctionData = isWrap
