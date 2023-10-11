@@ -1,5 +1,7 @@
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+
 import {
-  transformAddedSafes,
+  _transformAddedSafes,
   _mergeNotifiableSafes,
   _transformCurrentSubscribedSafes,
   _getTotalNotifiableSafes,
@@ -10,6 +12,7 @@ import {
   _getSafesToRegister,
   _getSafesToUnregister,
   _shouldUnregisterDevice,
+  _sanitizeNotifiableSafes,
 } from '../GlobalPushNotifications'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 
@@ -31,7 +34,7 @@ describe('GlobalPushNotifications', () => {
         '4': ['0x789'],
       }
 
-      expect(transformAddedSafes(addedSafes)).toEqual(expectedNotifiableSafes)
+      expect(_transformAddedSafes(addedSafes)).toEqual(expectedNotifiableSafes)
     })
   })
 
@@ -71,7 +74,24 @@ describe('GlobalPushNotifications', () => {
         },
       } as unknown as AddedSafesState
 
-      expect(_mergeNotifiableSafes(addedSafes)).toEqual(transformAddedSafes(addedSafes))
+      expect(_mergeNotifiableSafes(addedSafes)).toEqual(_transformAddedSafes(addedSafes))
+    })
+  })
+
+  describe('sanitizeNotifiableSafes', () => {
+    it('should remove Safes that are not on a supported chain', () => {
+      const chains = [{ chainId: '1', name: 'Mainnet' }] as unknown as Array<ChainInfo>
+
+      const notifiableSafes = {
+        '1': ['0x123', '0x456'],
+        '4': ['0xabc'],
+      }
+
+      const expected = {
+        '1': ['0x123', '0x456'],
+      }
+
+      expect(_sanitizeNotifiableSafes(chains, notifiableSafes)).toEqual(expected)
     })
   })
 

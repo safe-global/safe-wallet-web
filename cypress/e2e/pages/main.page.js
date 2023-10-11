@@ -3,9 +3,18 @@ import * as constants from '../../support/constants'
 const acceptSelection = 'Accept selection'
 
 export function acceptCookies() {
-  cy.contains(acceptSelection).click()
-  cy.contains(acceptSelection).should('not.exist')
-  cy.wait(500)
+  cy.wait(1000)
+  cy.get('button')
+    .contains(acceptSelection)
+    .should(() => {})
+    .then(($button) => {
+      if (!$button.length) {
+        return
+      }
+      cy.wrap($button).click()
+      cy.contains(acceptSelection).should('not.exist')
+      cy.wait(500)
+    })
 }
 
 export function verifyGoerliWalletHeader() {
@@ -24,4 +33,23 @@ export function checkTextsExistWithinElement(element, texts) {
 
 export function verifyCheckboxeState(element, index, state) {
   cy.get(element).eq(index).should(state)
+}
+
+export function verifyInputValue(selector, value) {
+  cy.get(selector).invoke('val').should('include', value)
+}
+
+export function generateRandomString(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZz0123456789'
+  let result = ''
+
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+
+  return result
+}
+
+export function verifyElementsCount(element, count) {
+  cy.get(element).should('have.length', count)
 }
