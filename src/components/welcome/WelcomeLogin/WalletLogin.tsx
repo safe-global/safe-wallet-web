@@ -3,25 +3,15 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { Box, Button, Typography } from '@mui/material'
 import { EthHashInfo } from '@safe-global/safe-react-components'
-import { useState, useEffect } from 'react'
 
-const WalletLogin = ({ onLogin }: { onLogin?: () => void }) => {
+const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   const wallet = useWallet()
   const connectWallet = useConnectWallet()
 
-  const [loginTriggered, setLoginTriggered] = useState(false)
-
   const login = async () => {
-    setLoginTriggered(true)
     await connectWallet()
+    onLogin()
   }
-
-  // If login was triggered through the Button we immediately continue if logged in
-  useEffect(() => {
-    if (loginTriggered && wallet && onLogin) {
-      onLogin()
-    }
-  }, [loginTriggered, onLogin, wallet])
 
   if (wallet !== null && wallet?.label !== ONBOARD_MPC_MODULE_LABEL) {
     return (
@@ -47,7 +37,7 @@ const WalletLogin = ({ onLogin }: { onLogin?: () => void }) => {
   }
 
   return (
-    <Button onClick={login} sx={{ minHeight: '44px' }} variant="contained" size="small" disableElevation fullWidth>
+    <Button onClick={login} sx={{ minHeight: '42px' }} variant="contained" size="small" disableElevation fullWidth>
       Connect wallet
     </Button>
   )

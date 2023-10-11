@@ -17,9 +17,9 @@ export enum MPCWalletState {
 
 export type MPCWalletHook = {
   upsertPasswordBackup: (password: string) => Promise<void>
-  recoverFactorWithPassword: (password: string, storeDeviceShare: boolean) => Promise<void>
+  recoverFactorWithPassword: (password: string, storeDeviceShare: boolean) => Promise<boolean>
   walletState: MPCWalletState
-  triggerLogin: () => Promise<void>
+  triggerLogin: () => Promise<boolean>
   resetAccount: () => Promise<void>
   userInfo: UserInfo | undefined
 }
@@ -74,15 +74,17 @@ export const useMPCWallet = (): MPCWalletHook => {
           const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
           if (securityQuestions.isEnabled()) {
             setWalletState(MPCWalletState.MANUAL_RECOVERY)
-            return
+            return false
           }
         }
       }
 
       await finalizeLogin()
+      return mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
     } catch (error) {
       setWalletState(MPCWalletState.NOT_INITIALIZED)
       console.error(error)
+      return false
     }
   }
 
@@ -123,6 +125,8 @@ export const useMPCWallet = (): MPCWalletHook => {
 
       await finalizeLogin()
     }
+
+    return mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
   }
 
   return {

@@ -24,7 +24,7 @@ export function clickOnImportBtn() {
 }
 
 export function clickOnImportBtnDataImportModal() {
-  cy.contains(dataImportModalStr).parent().contains('button', 'Import').click()
+  cy.contains('button', 'Import').click()
 }
 
 export function uploadFile(filePath) {
@@ -41,6 +41,10 @@ export function verifyImportModalData() {
 
 export function clickOnImportedSafe(safe) {
   cy.contains(safe).click()
+}
+
+export function clickOnOpenSafeListSidebar() {
+  cy.contains('My Safe Accounts').click()
 }
 
 export function clickOnClosePushNotificationsBanner() {

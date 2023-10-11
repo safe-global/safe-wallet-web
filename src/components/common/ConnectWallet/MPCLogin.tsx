@@ -1,32 +1,34 @@
 import { MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
 import { Box, Button, SvgIcon, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useContext } from 'react'
 import { MpcWalletContext } from './MPCWalletProvider'
 import { PasswordRecovery } from './PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
 
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 
 const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
-  const { loginPending, triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
+  const { triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
 
   const wallet = useWallet()
-
-  const [loginTriggered, setLoginTriggered] = useState(false)
+  const loginPending = walletState === MPCWalletState.AUTHENTICATING
 
   const login = async () => {
-    setLoginTriggered(true)
-    await triggerLogin()
+    const success = await triggerLogin()
+
+    if (success) {
+      onLogin?.()
+    }
   }
 
-  // If login was triggered through the Button we immediately continue if logged in
-  useEffect(() => {
-    if (loginTriggered && wallet && wallet.label === ONBOARD_MPC_MODULE_LABEL && onLogin) {
-      onLogin()
+  const recoverPassword = async (password: string, storeDeviceFactor: boolean) => {
+    const success = await recoverFactorWithPassword(password, storeDeviceFactor)
+
+    if (success) {
+      onLogin?.()
     }
-  }, [loginTriggered, onLogin, wallet])
+  }
 
   return (
     <>
@@ -34,20 +36,13 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
         <>
           <Button
             variant="outlined"
-            sx={{ padding: '1 2' }}
+            sx={{ px: 2, py: 1, borderWidth: '1px !important' }}
             onClick={onLogin}
             size="small"
             disabled={loginPending}
             fullWidth
           >
-            <Box
-              width="100%"
-              justifyContent="space-between"
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-              gap={1}
-            >
+            <Box width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
               <img
                 src={userInfo.profileImage}
                 className={css.profileImg}
@@ -60,12 +55,19 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
                 </Typography>
                 <Typography variant="body2">{userInfo.email}</Typography>
               </div>
-              <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" />
+              <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" sx={{ marginLeft: 'auto' }} />
             </Box>
           </Button>
         </>
       ) : (
-        <Button variant="outlined" onClick={login} size="small" disabled={loginPending} fullWidth>
+        <Button
+          variant="outlined"
+          onClick={login}
+          size="small"
+          disabled={loginPending}
+          fullWidth
+          sx={{ borderWidth: '1px !important' }}
+        >
           <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
             <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" /> Continue with Google
           </Box>
@@ -73,7 +75,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
       )}
 
       {walletState === MPCWalletState.MANUAL_RECOVERY && (
-        <PasswordRecovery recoverFactorWithPassword={recoverFactorWithPassword} />
+        <PasswordRecovery recoverFactorWithPassword={recoverPassword} />
       )}
     </>
   )

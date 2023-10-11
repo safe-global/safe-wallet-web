@@ -54,7 +54,7 @@ describe('MPCLogin', () => {
     const mockOnLogin = jest.fn()
     const walletAddress = hexZeroPad('0x1', 20)
     const mockUseWallet = jest.spyOn(useWallet, 'default').mockReturnValue(null)
-    const mockTriggerLogin = jest.fn()
+    const mockTriggerLogin = jest.fn(() => true)
     const mockUseMPCWallet = jest.spyOn(useMPCWallet, 'useMPCWallet').mockReturnValue({
       userInfo: {
         email: undefined,
