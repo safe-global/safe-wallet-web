@@ -16,7 +16,7 @@ export const WalletConnectHeader = ({ error }: { error?: boolean }): ReactElemen
       />
 
       <Typography variant="h5" mt={2} mb={0.5}>
-        Safe via WalletConnect
+        Connect dApp to {`Safe{Wallet}`}
       </Typography>
     </>
   )
