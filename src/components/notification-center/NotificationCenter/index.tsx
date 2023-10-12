@@ -109,7 +109,11 @@ const NotificationCenter = (): ReactElement => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        sx={{ mt: 1 }}
+        sx={{
+          '& .MuiPaper-root': {
+            top: 'var(--header-height) !important',
+          },
+        }}
       >
         <Paper className={css.popoverContainer}>
           <div className={css.popoverHeader}>

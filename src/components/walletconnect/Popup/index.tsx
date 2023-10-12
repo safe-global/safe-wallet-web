@@ -13,6 +13,11 @@ const Popup = ({ children, ...props }: PopoverProps): ReactElement => {
         vertical: 'top',
         horizontal: 'center',
       }}
+      sx={{
+        '& .MuiPaper-root': {
+          top: 'var(--header-height) !important',
+        },
+      }}
       {...props}
     >
       <Paper sx={{ p: 4, width: '454px' }}>{children}</Paper>
