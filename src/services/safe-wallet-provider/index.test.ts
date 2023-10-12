@@ -72,42 +72,24 @@ describe('SafeWalletProvider', () => {
       })
     })
   })
+  ;['net_version', 'eth_chainId'].forEach((method) => {
+    describe(method, () => {
+      it(`should return the chain id when the method is ${method}`, async () => {
+        const sdk = {}
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
 
-  describe('eth_chainId', () => {
-    it('should return the chain id when the method is eth_chainId', async () => {
-      const sdk = {}
-      const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+        const result = await safeWalletProvider.request(1, { method } as any, {} as any)
 
-      const result = await safeWalletProvider.request(1, { method: 'eth_chainId' } as any, {} as any)
-
-      expect(result).toEqual({
-        id: 1,
-        jsonrpc: '2.0',
-        result: '0x1',
+        expect(result).toEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          result: '0x1',
+        })
       })
     })
   })
 
-  describe('eth_sign', () => {
-    it('should return the signature when the method is eth_sign', async () => {
-      const sdk = {
-        signMessage: jest.fn().mockResolvedValue({ signature: '0x123' }),
-      }
-      const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
-
-      const result = await safeWalletProvider.request(
-        1,
-        { method: 'eth_sign', params: ['0x123', '0x123'] } as any,
-        {} as any,
-      )
-
-      expect(result).toEqual({
-        id: 1,
-        jsonrpc: '2.0',
-        result: '0x123',
-      })
-    })
-
+  describe('personal_sign', () => {
     it('should throw an error when the address is invalid', async () => {
       const sdk = {
         signMessage: jest.fn().mockResolvedValue({ signature: '0x123' }),
@@ -165,31 +147,16 @@ describe('SafeWalletProvider', () => {
     })
   })
 
-  describe('eth_signTypedData', () => {
-    it('should return the signature when the method is eth_signTypedData', async () => {
+  describe('eth_sign', () => {
+    it('should return the signature when the method is eth_sign', async () => {
       const sdk = {
-        signTypedMessage: jest.fn().mockResolvedValue({ signature: '0x123' }),
+        signMessage: jest.fn().mockResolvedValue({ signature: '0x123' }),
       }
       const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
 
       const result = await safeWalletProvider.request(
         1,
-        {
-          method: 'eth_signTypedData',
-          params: [
-            '0x123',
-            {
-              domain: {
-                chainId: 1,
-                name: 'test',
-                version: '1',
-              },
-              message: {
-                test: 'test',
-              },
-            },
-          ],
-        } as any,
+        { method: 'eth_sign', params: ['0x123', '0x123'] } as any,
         {} as any,
       )
 
@@ -202,25 +169,153 @@ describe('SafeWalletProvider', () => {
 
     it('should throw an error when the address is invalid', async () => {
       const sdk = {
-        signTypedMessage: jest.fn().mockResolvedValue({ signature: '0x123' }),
+        signMessage: jest.fn().mockResolvedValue({ signature: '0x123' }),
       }
+
       const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
 
       await expect(
-        safeWalletProvider.request(1, { method: 'eth_signTypedData', params: ['0x456', {}] } as any, {} as any),
+        safeWalletProvider.request(1, { method: 'eth_sign', params: ['0x456', '0x456'] } as any, {} as any),
       ).resolves.toEqual({
         id: 1,
         jsonrpc: '2.0',
         error: {
           code: -32000,
-          message: 'The address is invalid',
+          message: 'The address or message hash is invalid',
         },
+      })
+    })
+
+    it('should throw an error when the message hash is invalid', async () => {
+      const sdk = {
+        signMessage: jest.fn().mockResolvedValue({ signature: '0x123' }),
+      }
+
+      const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+      await expect(
+        safeWalletProvider.request(1, { method: 'eth_sign', params: ['0x123', 'messageHash'] } as any, {} as any),
+      ).resolves.toEqual({
+        id: 1,
+        jsonrpc: '2.0',
+        error: {
+          code: -32000,
+          message: 'The address or message hash is invalid',
+        },
+      })
+    })
+
+    it('should return an empty string when the signature is undefined', async () => {
+      const sdk = {
+        signMessage: jest.fn().mockResolvedValue({}),
+      }
+      const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+      const result = await safeWalletProvider.request(
+        1,
+        { method: 'personal_sign', params: ['0x123', '0x123'] } as any,
+        {} as any,
+      )
+
+      expect(result).toEqual({
+        id: 1,
+        jsonrpc: '2.0',
+        result: '0x',
+      })
+    })
+  })
+  ;['eth_signTypedData', 'eth_signTypedData_v4'].forEach((method) => {
+    describe(method, () => {
+      it(`should return the signature when the method is ${method}`, async () => {
+        const sdk = {
+          signTypedMessage: jest.fn().mockResolvedValue({ signature: '0x123' }),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const result = await safeWalletProvider.request(
+          1,
+          {
+            method,
+            params: [
+              '0x123',
+              {
+                domain: {
+                  chainId: 1,
+                  name: 'test',
+                  version: '1',
+                },
+                message: {
+                  test: 'test',
+                },
+              },
+            ],
+          } as any,
+          {} as any,
+        )
+
+        expect(result).toEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          result: '0x123',
+        })
+      })
+
+      it('should throw an error when the address is invalid', async () => {
+        const sdk = {
+          signTypedMessage: jest.fn().mockResolvedValue({ signature: '0x123' }),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        await expect(
+          safeWalletProvider.request(1, { method, params: ['0x456', {}] } as any, {} as any),
+        ).resolves.toEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          error: {
+            code: -32000,
+            message: 'The address is invalid',
+          },
+        })
+      })
+
+      it('should return an empty string when the signature is undefined', async () => {
+        const sdk = {
+          signTypedMessage: jest.fn().mockResolvedValue({}),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const result = await safeWalletProvider.request(
+          1,
+          {
+            method,
+            params: [
+              '0x123',
+              {
+                domain: {
+                  chainId: 1,
+                  name: 'test',
+                  version: '1',
+                },
+                message: {
+                  test: 'test',
+                },
+              },
+            ],
+          } as any,
+          {} as any,
+        )
+
+        expect(result).toEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          result: '0x',
+        })
       })
     })
   })
 
   describe('eth_sendTransaction', () => {
-    it('should return the transaction hash when the method is eth_sendTransaction', async () => {
+    it('should return the transaction safeTxHash when the method is eth_sendTransaction', async () => {
       const sdk = {
         send: jest.fn().mockResolvedValue({ safeTxHash: '0x456' }),
       }
@@ -263,6 +358,40 @@ describe('SafeWalletProvider', () => {
           code: -32000,
           message: 'User rejected the transaction',
         },
+      })
+    })
+
+    it('should format the gas when it is passed as a hex-encoded string', async () => {
+      const sdk = {
+        send: jest.fn().mockResolvedValue({ safeTxHash: '0x456' }),
+      }
+      const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+      const result = await safeWalletProvider.request(
+        1,
+        {
+          method: 'eth_sendTransaction',
+          params: [
+            {
+              from: '0x123',
+              to: '0x123',
+              value: '0x123',
+              gas: 0x3e8, // 1000
+            },
+          ],
+        } as any,
+        appInfo,
+      )
+
+      expect(sdk.send).toHaveBeenCalledWith(
+        { txs: [{ from: '0x123', to: '0x123', value: '0x123', gas: 1000, data: '0x' }], params: { safeTxGas: 1000 } },
+        appInfo,
+      )
+
+      expect(result).toEqual({
+        id: 1,
+        jsonrpc: '2.0',
+        result: '0x456',
       })
     })
   })
@@ -348,6 +477,19 @@ describe('SafeWalletProvider', () => {
         jsonrpc: '2.0',
         result: { hash: '0x999' },
       })
+    })
+  })
+
+  describe('proxy', () => {
+    it('should default to using the proxy if the method is not supported by the provider', async () => {
+      const sdk = {
+        proxy: jest.fn(),
+      }
+      const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+      await safeWalletProvider.request(1, { method: 'web3_clientVersion', params: [''] } as any, appInfo)
+
+      expect(sdk.proxy).toHaveBeenCalledWith('web3_clientVersion', [''])
     })
   })
 })
