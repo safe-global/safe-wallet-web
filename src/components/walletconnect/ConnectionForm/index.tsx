@@ -8,6 +8,7 @@ import SessionList from '../SessionList'
 import WcInput from '../WcInput'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { WalletConnectHeader } from '../SessionManager/Header'
+import useDebounce from '@/hooks/useDebounce'
 
 import css from './styles.module.css'
 
@@ -21,19 +22,24 @@ export const ConnectionForm = ({
   onDisconnect: (session: SessionTypes.Struct) => Promise<void>
 }): ReactElement => {
   const [hideHints = false, setHideHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
+  const debouncedHideHints = useDebounce(hideHints, 300)
 
   return (
     <Grid className={css.container}>
       <Grid item textAlign="center">
-        {hideHints && (
-          <Tooltip title="How does WalletConnect work?" placement="top">
-            <span>
-              <IconButton onClick={() => setHideHints(false)} className={css.infoIcon}>
-                <SvgIcon component={InfoIcon} inheritViewBox color="border" />
-              </IconButton>
-            </span>
-          </Tooltip>
-        )}
+        <Tooltip
+          title="How does WalletConnect work?"
+          hidden={!debouncedHideHints}
+          placement="top"
+          arrow
+          className={css.infoIcon}
+        >
+          <span>
+            <IconButton onClick={() => setHideHints(false)}>
+              <SvgIcon component={InfoIcon} inheritViewBox color="border" />
+            </IconButton>
+          </span>
+        </Tooltip>
 
         <WalletConnectHeader />
 
@@ -50,7 +56,7 @@ export const ConnectionForm = ({
         <SessionList sessions={sessions} onDisconnect={onDisconnect} />
       </Grid>
 
-      {!hideHints && (
+      {!debouncedHideHints && (
         <>
           <Divider flexItem className={css.divider} />
 
