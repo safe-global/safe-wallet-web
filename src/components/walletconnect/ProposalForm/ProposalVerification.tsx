@@ -29,7 +29,7 @@ const Validation: {
   },
   INVALID: {
     color: 'error',
-    desc: 'has been flagged as a scam by WalletConnect. Only proceed if you trust this them.',
+    desc: 'has been flagged as a high risk by WalletConnect.',
     Icon: CloseIcon,
   },
 }

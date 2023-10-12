@@ -34,6 +34,11 @@
   font-weight: 700;
 }
 
+.checkbox {
+  text-align: left;
+  margin-top: var(--space-2);
+}
+
 .divider {
   margin: var(--space-3) calc(-1 * var(--space-4));
 }
