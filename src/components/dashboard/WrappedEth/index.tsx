@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { ethers } from 'ethers'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
@@ -24,20 +24,24 @@ const WrappedEth = () => {
   const wethABI = JSON.parse(wethABIString)
   const wethAddress = '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
 
-  const getWethContract = () => {
+  const getWethContract = useCallback(() => {
     if (!wallet) return null
     const provider = createWeb3(wallet.provider)
     const signer = provider.getSigner()
     return new ethers.Contract(wethAddress, wethABI, signer)
-  }
+  }, [wallet, wethABI])
 
   useEffect(() => {
     const getWethBalance = async () => {
       const wethContract = getWethContract()
       if (!safeAddress || !wethContract) return null
-      const weiBalance = await wethContract.balanceOf(safeAddress)
-      const balance = Number(ethers.utils.formatEther(weiBalance))
-      setWethBalance(`${balance}`)
+      try {
+        const weiBalance = await wethContract.balanceOf(safeAddress)
+        const balance = Number(ethers.utils.formatEther(weiBalance))
+        setWethBalance(`${balance}`)
+      } catch (error) {
+        console.log(error)
+      }
     }
     getWethBalance()
   }, [wallet, wethABI, safeAddress, getWethContract])
