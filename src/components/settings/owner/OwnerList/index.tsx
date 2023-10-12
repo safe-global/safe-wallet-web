@@ -49,7 +49,7 @@ export const OwnerList = () => {
                 <CheckWallet>
                   {(isOk) => (
                     <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
-                      <Tooltip title="Replace owner">
+                      <Tooltip title={isOk ? 'Replace owner' : undefined}>
                         <span>
                           <IconButton
                             onClick={() => setTxFlow(<ReplaceOwnerFlow address={address} />)}
@@ -70,7 +70,7 @@ export const OwnerList = () => {
                   <CheckWallet>
                     {(isOk) => (
                       <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
-                        <Tooltip title="Remove owner">
+                        <Tooltip title={isOk ? 'Remove owner' : undefined}>
                           <span>
                             <IconButton
                               onClick={() => setTxFlow(<RemoveOwnerFlow name={name} address={address} />)}
