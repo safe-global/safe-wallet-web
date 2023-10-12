@@ -30,10 +30,6 @@
   text-align: left;
 }
 
-.alert :global .MuiAlertTitle-root {
-  font-weight: 700;
-}
-
 .checkbox {
   text-align: left;
   margin-top: var(--space-2);
