@@ -5,7 +5,7 @@ const selectNetworkBtn = '[data-cy="create-safe-select-network"]'
 const ownerInput = 'input[name^="owners"][name$="name"]'
 const ownerAddress = 'input[name^="owners"][name$="address"]'
 const thresholdInput = 'input[name="threshold"]'
-export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
+export const removeOwnerBtn = 'span[aria-label="Remove owner"]'
 const connectingContainer = 'div[class*="connecting-container"]'
 const createNewSafeBtn = 'span[data-track="create-safe: Open stepper"]'
 
