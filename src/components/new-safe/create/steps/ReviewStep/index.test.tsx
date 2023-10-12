@@ -7,7 +7,7 @@ import { type ConnectedWallet } from '@/services/onboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 
 const mockChainInfo = {
-  chainId: '5',
+  chainId: '100',
   l2: false,
   nativeCurrency: {
     symbol: 'ETH',
@@ -15,7 +15,7 @@ const mockChainInfo = {
 } as ChainInfo
 
 describe('NetworkFee', () => {
-  it('displays the total fee if not social login', () => {
+  it('should display the total fee if not social login', () => {
     jest.spyOn(useWallet, 'default').mockReturnValue({ label: 'MetaMask' } as unknown as ConnectedWallet)
     const mockTotalFee = '0.0123'
     const result = render(<NetworkFee totalFee={mockTotalFee} chain={mockChainInfo} willRelay={true} />)
