@@ -25,15 +25,19 @@ export const ConnectionForm = ({
   return (
     <Grid className={css.container}>
       <Grid item textAlign="center">
-        {hideHints && (
-          <Tooltip title="How does WalletConnect work?" placement="top">
-            <span>
-              <IconButton onClick={() => setHideHints(false)} className={css.infoIcon}>
-                <SvgIcon component={InfoIcon} inheritViewBox color="border" />
-              </IconButton>
-            </span>
-          </Tooltip>
-        )}
+        <Tooltip
+          title="How does WalletConnect work?"
+          hidden={!hideHints}
+          placement="top"
+          arrow
+          className={css.infoIcon}
+        >
+          <span>
+            <IconButton onClick={() => setHideHints(false)}>
+              <SvgIcon component={InfoIcon} inheritViewBox color="border" />
+            </IconButton>
+          </span>
+        </Tooltip>
 
         <WalletConnectHeader />
 
