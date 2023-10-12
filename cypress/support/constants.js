@@ -14,6 +14,8 @@ export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED
 export const SEPOLIA_OWNER_2 = '0x96D4c6fFC338912322813a77655fCC926b9A5aC5'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
 export const SIDEBAR_ADDRESS = '0x04f8...1a91'
+export const ENS_TEST_SEPOLIA = 'testenssepolia.eth'
+export const ENS_TEST_SEPOLIA_INVALID = 'ivladitestenssepolia.eth'
 
 export const BROWSER_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__browserPermissions`
 export const SAFE_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__safePermissions`
@@ -33,6 +35,7 @@ export const openAppsUrl = '/apps/open?safe='
 export const homeUrl = '/home?safe='
 export const welcomeUrl = '/welcome'
 export const chainMaticUrl = '/welcome?chain=matic'
+export const createNewSafeSepoliaUrl = '/new-safe/create?chain=sep'
 export const appsUrl = '/apps'
 export const requestPermissionsUrl = '/request-permissions'
 export const getPermissionsUrl = '/get-permissions'
@@ -101,6 +104,9 @@ export const addressBookErrrMsg = {
   exceedChars: 'Maximum 50 symbols',
   ownSafe: 'Cannot use Safe Account itself as owner',
   alreadyAdded: 'Address already added',
+  ownerAdded: 'Owner is already added',
+  failedResolve: 'Failed to resolve the address',
+  emptyAddress: 'Owner',
 }
 export const addresBookContacts = {
   user1: {
@@ -115,4 +121,8 @@ export const addresBookContacts = {
 
 export const localStorageKeys = {
   SAFE_v2__addressBook: 'SAFE_v2__addressBook',
+}
+
+export const connectWalletNames = {
+  e2e: 'E2E Wallet',
 }

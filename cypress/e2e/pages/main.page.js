@@ -36,11 +36,7 @@ export function verifyCheckboxeState(element, index, state) {
 }
 
 export function verifyInputValue(selector, value) {
-  cy.get(selector)
-    .invoke('val')
-    .should(($value) => {
-      console.log($value)
-    })
+  cy.get(selector).invoke('val').should('include', value)
 }
 
 export function generateRandomString(length) {
@@ -52,4 +48,8 @@ export function generateRandomString(length) {
   }
 
   return result
+}
+
+export function verifyElementsCount(element, count) {
+  cy.get(element).should('have.length', count)
 }
