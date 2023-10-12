@@ -316,7 +316,7 @@ export const dispatchSafeAppsTx = async (
   safeAppRequestId: RequestId,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
-  txId: string,
+  txId?: string,
 ) => {
   const sdk = await getSafeSDKWithSigner(onboard, chainId)
   const safeTxHash = await sdk.getTransactionHash(safeTx)

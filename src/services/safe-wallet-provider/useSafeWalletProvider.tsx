@@ -88,7 +88,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         return new Promise((resolve) => {
           const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash, txId }) => {
             if (safeAppRequestId === id) {
-              const txHash = pendingTxs.current[txId]
+              const txHash = txId ? pendingTxs.current[txId] : undefined
               resolve({ safeTxHash, txHash })
               unsubscribe()
             }
