@@ -141,7 +141,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
     }
 
     setWarning(message)
-  }, [nonce])
+  }, [nonce, recommendedNonce, safe.nonce])
 
   return (
     <Controller
