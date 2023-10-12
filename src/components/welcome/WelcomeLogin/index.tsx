@@ -5,15 +5,13 @@ import SafeLogo from '@/public/images/logo-text.svg'
 import css from './styles.module.css'
 import { useRouter } from 'next/router'
 import WalletLogin from './WalletLogin'
-import { CREATE_SAFE_EVENTS, LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
+import { LOAD_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import Track from '@/components/common/Track'
-import { trackEvent } from '@/services/analytics'
 
 const WelcomeLogin = () => {
   const router = useRouter()
 
   const continueToCreation = () => {
-    trackEvent(CREATE_SAFE_EVENTS.CREATE_BUTTON)
     router.push(AppRoutes.newSafe.create)
   }
 

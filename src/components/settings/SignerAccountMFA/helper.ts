@@ -1,4 +1,6 @@
 import { SecurityQuestionRecovery } from '@/hooks/wallets/mpc/recovery/SecurityQuestionRecovery'
+import { trackEvent } from '@/services/analytics'
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { asError } from '@/services/exceptions/utils'
@@ -35,6 +37,7 @@ export const enableMFA = async (
     }
 
     if (!isMFAEnabled(mpcCoreKit)) {
+      trackEvent(MPC_WALLET_EVENTS.ENABLE_MFA)
       // 2. enable MFA in mpcCoreKit
       await mpcCoreKit.enableMFA({}, false)
     }
