@@ -12,7 +12,6 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material'
-import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 
 import { useCurrentChain } from '@/hooks/useChains'
@@ -46,6 +45,7 @@ const HintAccordion = ({ title, items }: { title: string; items: Array<string> }
   )
 }
 
+const ConnectionTitle = 'How do I connect to a dApp?'
 const ConnectionSteps = [
   'Open a WalletConnect supported dApp',
   'Select WalletConnect as the connection method',
@@ -54,22 +54,25 @@ const ConnectionSteps = [
   'dApp is now connected to the Safe',
 ]
 
+const InteractionTitle = 'How do I interact with a dApp?'
+const InteractionSteps = [
+  'Connect a dApp by following the above steps',
+  `Ensure the dApp is connected to %%chain%%`,
+  'Initiate a transaction/signature request via the dApp',
+  'Transact/sign as normal via the Safe',
+]
+
 export const Hints = (): ReactElement => {
   const chain = useCurrentChain()
 
-  const InteractionSteps = useMemo(() => {
-    return [
-      'Connect a dApp by following the above steps',
-      `Ensure the dApp is connected to ${chain?.chainName ?? 'this chain'}`,
-      'Initiate a transaction/signature request via the dApp',
-      'Transact/sign as normal via the Safe',
-    ]
-  }, [chain?.chainName])
+  if (chain?.chainName) {
+    InteractionSteps[1] = InteractionSteps[1].replace(/%%chain%%/, chain?.chainName)
+  }
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>
-      <HintAccordion title="How do I connect to a dApp?" items={ConnectionSteps} />
-      <HintAccordion title="How do I interact with a dApp?" items={InteractionSteps} />
+      <HintAccordion title={ConnectionTitle} items={ConnectionSteps} />
+      <HintAccordion title={InteractionTitle} items={InteractionSteps} />
     </Box>
   )
 }
