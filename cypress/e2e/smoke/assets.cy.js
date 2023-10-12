@@ -7,7 +7,7 @@ const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
 const FIAT_AMOUNT_COLUMN = 2
 
-describe('Replace an owner tests', () => {
+describe('Assets tests', () => {
   const fiatRegex = balances.fiatRegex
 
   beforeEach(() => {
