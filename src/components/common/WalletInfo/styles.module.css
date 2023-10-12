@@ -31,4 +31,8 @@
   .walletName {
     display: none;
   }
+
+  .socialLoginInfo > div > div {
+    display: none;
+  }
 }

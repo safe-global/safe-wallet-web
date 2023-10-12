@@ -24,6 +24,10 @@
   margin-right: var(--space-2);
 }
 
+.select :global .Mui-disabled {
+  pointer-events: none;
+}
+
 .newChip {
   font-weight: bold;
   letter-spacing: -0.1px;
