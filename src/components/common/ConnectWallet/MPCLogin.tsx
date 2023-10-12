@@ -4,15 +4,23 @@ import { useContext } from 'react'
 import { MpcWalletContext } from './MPCWalletProvider'
 import { PasswordRecovery } from './PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
+import InfoIcon from '@/public/images/notifications/info.svg'
 
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
+import { useCurrentChain } from '@/hooks/useChains'
+import chains from '@/config/chains'
 
 const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
+  const currentChain = useCurrentChain()
   const { triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
 
   const wallet = useWallet()
   const loginPending = walletState === MPCWalletState.AUTHENTICATING
+
+  // TODO: Replace with feature flag from config service
+  const isMPCLoginEnabled = currentChain?.chainId === chains.gno
+  const isDisabled = loginPending || !isMPCLoginEnabled
 
   const login = async () => {
     const success = await triggerLogin()
@@ -39,7 +47,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
             sx={{ px: 2, py: 1, borderWidth: '1px !important' }}
             onClick={onLogin}
             size="small"
-            disabled={loginPending}
+            disabled={isDisabled}
             fullWidth
           >
             <Box width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
@@ -64,7 +72,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
           variant="outlined"
           onClick={login}
           size="small"
-          disabled={loginPending}
+          disabled={isDisabled}
           fullWidth
           sx={{ borderWidth: '1px !important' }}
         >
@@ -72,6 +80,22 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
             <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" /> Continue with Google
           </Box>
         </Button>
+      )}
+
+      {!isMPCLoginEnabled && (
+        <Typography variant="body2" color="text.secondary" display="flex" gap={1} alignItems="center">
+          <SvgIcon
+            component={InfoIcon}
+            inheritViewBox
+            color="border"
+            fontSize="small"
+            sx={{
+              verticalAlign: 'middle',
+              ml: 0.5,
+            }}
+          />
+          Currently only supported on Gnosis Chain
+        </Typography>
       )}
 
       {walletState === MPCWalletState.MANUAL_RECOVERY && (

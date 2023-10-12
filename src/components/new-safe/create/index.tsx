@@ -19,6 +19,7 @@ import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 
 export type NewSafeFormData = {
   name: string
@@ -163,6 +164,9 @@ const CreateSafe = () => {
     saltNonce: Date.now(),
   }
 
+  // Jump to review screen when using social login
+  const initialStep = wallet?.label === ONBOARD_MPC_MODULE_LABEL ? 2 : 0
+
   const onClose = () => {
     router.push(AppRoutes.welcome)
   }
@@ -178,6 +182,7 @@ const CreateSafe = () => {
         <Grid item xs={12} md={8} order={[1, null, 0]}>
           <CardStepper
             initialData={initialData}
+            initialStep={initialStep}
             onClose={onClose}
             steps={CreateSafeSteps}
             eventCategory={CREATE_SAFE_CATEGORY}
