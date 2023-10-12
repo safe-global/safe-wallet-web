@@ -1,7 +1,8 @@
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { Grid, Typography, Divider, FormControlLabel, Checkbox, SvgIcon, IconButton, Tooltip } from '@mui/material'
-import type { SessionTypes } from '@walletconnect/types'
+import { useState } from 'react'
 import type { ReactElement } from 'react'
+import type { SessionTypes } from '@walletconnect/types'
 
 import { Hints } from '../Hints'
 import SessionList from '../SessionList'
@@ -21,8 +22,18 @@ export const ConnectionForm = ({
   sessions: SessionTypes.Struct[]
   onDisconnect: (session: SessionTypes.Struct) => Promise<void>
 }): ReactElement => {
-  const [hideHints = false, setHideHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
-  const debouncedHideHints = useDebounce(hideHints, 300)
+  const [dismissedHints = false, setDismissedHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
+  const debouncedHideHints = useDebounce(dismissedHints, 300)
+  const [showHints, setShowHints] = useState(dismissedHints)
+
+  const onToggle = () => {
+    setShowHints((prev) => !prev)
+  }
+
+  const onHide = () => {
+    setDismissedHints(true)
+    setShowHints(false)
+  }
 
   return (
     <Grid className={css.container}>
@@ -35,7 +46,7 @@ export const ConnectionForm = ({
           className={css.infoIcon}
         >
           <span>
-            <IconButton onClick={() => setHideHints(false)}>
+            <IconButton onClick={onToggle}>
               <SvgIcon component={InfoIcon} inheritViewBox color="border" />
             </IconButton>
           </span>
@@ -44,7 +55,7 @@ export const ConnectionForm = ({
         <WalletConnectHeader />
 
         <Typography variant="body2" color="text.secondary" mb={3}>
-          Connnect your Safe to any dApp via WalletConnect and trigger transactions
+          Paste the pairing URI below to connect to your {`Safe{Wallet}`} via WalletConnect
         </Typography>
 
         <WcInput />
@@ -56,18 +67,20 @@ export const ConnectionForm = ({
         <SessionList sessions={sessions} onDisconnect={onDisconnect} />
       </Grid>
 
-      {!debouncedHideHints && (
+      {(!debouncedHideHints || showHints) && (
         <>
           <Divider flexItem className={css.divider} />
 
           <Grid item>
             <Hints />
 
-            <FormControlLabel
-              control={<Checkbox checked={hideHints} onChange={(_, checked) => setHideHints(checked)} />}
-              label="Don't show this anymore"
-              sx={{ mt: 1 }}
-            />
+            {!debouncedHideHints && (
+              <FormControlLabel
+                control={<Checkbox checked={dismissedHints} onChange={onHide} />}
+                label="Don't show this anymore"
+                sx={{ mt: 1 }}
+              />
+            )}
           </Grid>
         </>
       )}

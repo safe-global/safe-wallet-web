@@ -46,7 +46,7 @@ const SessionList = ({ sessions, onDisconnect }: SesstionListProps): ReactElemen
   if (sessions.length === 0) {
     return (
       <Typography variant="body2" textAlign="center" color="text.secondary">
-        No dApps are connected
+        No dApps are connected yet
       </Typography>
     )
   }

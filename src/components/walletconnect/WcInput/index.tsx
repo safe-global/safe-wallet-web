@@ -21,27 +21,29 @@ const WcInput = (): ReactElement => {
     async (uri: string) => {
       if (!walletConnect) return
 
+      setValue(uri)
+
       if (!uri) {
         setError(undefined)
         return
       }
 
-      setValue(uri)
+      setConnecting(true)
 
       try {
         await walletConnect.connect(uri)
       } catch (e) {
         setError(asError(e))
-        return
       }
 
-      setConnecting(true)
+      setConnecting(false)
     },
     [walletConnect],
   )
 
   const onPaste = useCallback(async () => {
     let clipboard: string | null = null
+
     try {
       clipboard = await navigator.clipboard.readText()
     } catch (e) {

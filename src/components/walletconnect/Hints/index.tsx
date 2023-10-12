@@ -12,6 +12,7 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material'
+import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import { useCurrentChain } from '@/hooks/useChains'
@@ -19,9 +20,19 @@ import Question from '@/public/images/common/question.svg'
 
 import css from './styles.module.css'
 
-const HintAccordion = ({ title, items }: { title: string; items: Array<string> }): ReactElement => {
+const HintAccordion = ({
+  title,
+  items,
+  expanded,
+  onExpand,
+}: {
+  title: string
+  items: Array<string>
+  expanded: boolean
+  onExpand: () => void
+}): ReactElement => {
   return (
-    <Accordion>
+    <Accordion onClick={onExpand} expanded={expanded}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography className={css.title}>
           <SvgIcon component={Question} inheritViewBox className={css.questionIcon} />
@@ -63,7 +74,14 @@ const InteractionSteps = [
 ]
 
 export const Hints = (): ReactElement => {
+  const [expandedAccordion, setExpandedAccordion] = useState<'connection' | 'interaction' | null>(null)
   const chain = useCurrentChain()
+
+  const onExpand = (accordion: 'connection' | 'interaction') => {
+    setExpandedAccordion((prev) => {
+      return prev === accordion ? null : accordion
+    })
+  }
 
   if (chain?.chainName) {
     InteractionSteps[1] = InteractionSteps[1].replace(/%%chain%%/, chain?.chainName)
@@ -71,8 +89,18 @@ export const Hints = (): ReactElement => {
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>
-      <HintAccordion title={ConnectionTitle} items={ConnectionSteps} />
-      <HintAccordion title={InteractionTitle} items={InteractionSteps} />
+      <HintAccordion
+        title={ConnectionTitle}
+        items={ConnectionSteps}
+        onExpand={() => onExpand('connection')}
+        expanded={expandedAccordion === 'connection'}
+      />
+      <HintAccordion
+        title={InteractionTitle}
+        items={InteractionSteps}
+        onExpand={() => onExpand('interaction')}
+        expanded={expandedAccordion === 'interaction'}
+      />
     </Box>
   )
 }
