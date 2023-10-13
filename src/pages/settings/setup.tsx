@@ -8,6 +8,7 @@ import { RequiredConfirmation } from '@/components/settings/RequiredConfirmation
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import DelegatesList from '@/components/settings/DelegatesList'
+import { Email } from '@/components/settings/Email'
 
 const Setup: NextPage = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -55,6 +56,10 @@ const Setup: NextPage = () => {
               <ContractVersion />
             </Grid>
           </Grid>
+        </Paper>
+
+        <Paper sx={{ p: 4, mb: 2 }}>
+          <Email />
         </Paper>
 
         <Paper sx={{ p: 4 }}>
