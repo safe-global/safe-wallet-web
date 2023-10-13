@@ -18,7 +18,7 @@ import useIsPending from '@/hooks/useIsPending'
 import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 
-const getStatusColor = (value: TransactionStatus, palette: Palette) => {
+const getStatusColor = (value: TransactionStatus, palette: Palette | Record<string, Record<string, string>>) => {
   switch (value) {
     case TransactionStatus.SUCCESS:
       return palette.success.main
