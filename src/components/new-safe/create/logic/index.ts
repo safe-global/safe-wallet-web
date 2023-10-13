@@ -29,6 +29,7 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { formatError } from '@/utils/formatters'
 import { sponsoredCall } from '@/services/tx/relaying'
+import { contractNetworks, isL1SafeMasterCopy } from '@/config/custom_contract'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -65,7 +66,7 @@ export const getSafeDeployProps = (
 export const createNewSafe = async (ethersProvider: Web3Provider, props: DeploySafeProps): Promise<Safe> => {
   const ethAdapter = createEthersAdapter(ethersProvider)
 
-  const safeFactory = await SafeFactory.create({ ethAdapter })
+  const safeFactory = await SafeFactory.create({ ethAdapter, isL1SafeMasterCopy, contractNetworks })
   return safeFactory.deploySafe(props)
 }
 
@@ -75,7 +76,7 @@ export const createNewSafe = async (ethersProvider: Web3Provider, props: DeployS
 export const computeNewSafeAddress = async (ethersProvider: Web3Provider, props: PredictSafeProps): Promise<string> => {
   const ethAdapter = createEthersAdapter(ethersProvider)
 
-  const safeFactory = await SafeFactory.create({ ethAdapter })
+  const safeFactory = await SafeFactory.create({ ethAdapter, isL1SafeMasterCopy, contractNetworks })
   return safeFactory.predictSafeAddress(props)
 }
 

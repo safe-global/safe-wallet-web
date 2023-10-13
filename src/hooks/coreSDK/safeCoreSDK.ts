@@ -12,6 +12,7 @@ import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { contractNetworks } from '@/config/custom_contract'
 
 export const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
@@ -94,6 +95,7 @@ export const initSafeSDK = async ({
     ethAdapter: createReadOnlyEthersAdapter(provider),
     safeAddress: address,
     isL1SafeMasterCopy,
+    contractNetworks,
   })
 }
 
