@@ -12,7 +12,9 @@ const customJestConfig = {
     // Handle module aliases (this will be automatically configured for you soon)
     '^@/(.*)$': '<rootDir>/src/$1',
     '^.+\\.(svg)$': '<rootDir>/mocks/svg.js',
+    isows: '<rootDir>/node_modules/isows/_cjs/index.js',
   },
+  transformIgnorePatterns: ['node_modules/(?!isows/)'],
   testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: { url: 'http://localhost/balances?safe=rin:0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A' },
   globals: {
