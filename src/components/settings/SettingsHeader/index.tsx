@@ -11,10 +11,10 @@ import { FEATURES } from '@/utils/chains'
 
 const SettingsHeader = (): ReactElement => {
   const safeAddress = useSafeAddress()
-  const isNotificationsEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
+  const isNotificationFeatureEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
 
   const navItems = safeAddress ? settingsNavItems : generalSettingsNavItems
-  const filteredNavItems = isNotificationsEnabled
+  const filteredNavItems = isNotificationFeatureEnabled
     ? navItems
     : navItems.filter((item) => item.href !== AppRoutes.settings.notifications)
 

@@ -1,26 +1,62 @@
 import * as constants from '../../support/constants'
 
-const newAccountBtnStr = 'Create new Account'
-
 const nameInput = 'input[name="name"]'
 const selectNetworkBtn = '[data-cy="create-safe-select-network"]'
 const ownerInput = 'input[name^="owners"][name$="name"]'
 const ownerAddress = 'input[name^="owners"][name$="address"]'
 const thresholdInput = 'input[name="threshold"]'
-const removeOwnerBtn = 'button[aria-label="Remove owner"]'
+export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
+const connectingContainer = 'div[class*="connecting-container"]'
+const createNewSafeBtn = 'span[data-track="create-safe: Open stepper"]'
 
-export function clickOnCreateNewAccuntBtn() {
-  cy.contains(newAccountBtnStr).click()
+const changeNetworkWarningStr = 'Change your wallet network'
+const safeAccountSetupStr = 'Safe Account setup'
+const policy1_1 = '1/1 policy'
+export const walletName = 'test1-sepolia-safe'
+export const defaltSepoliaPlaceholder = 'sepolia-safe'
+
+export function verifyPolicy1_1() {
+  cy.contains(policy1_1).should('exist')
+  // TOD: Need data-cy for containers
+}
+
+export function verifyDefaultWalletName(name) {
+  cy.get(nameInput).invoke('attr', 'placeholder').should('include', name)
+}
+
+export function verifyNextBtnIsDisabled() {
+  cy.get('button').contains('Next').should('be.disabled')
+}
+
+export function verifyNextBtnIsEnabled() {
+  cy.get('button').contains('Next').should('not.be.disabled')
+}
+
+export function checkNetworkChangeWarningMsg() {
+  cy.get('div').contains(changeNetworkWarningStr).should('exist')
+}
+
+export function connectWallet() {
+  cy.get('onboard-v2')
+    .shadow()
+    .within(($modal) => {
+      cy.wrap($modal).contains('div', constants.connectWalletNames.e2e).click()
+      cy.wrap($modal).get(connectingContainer).should('exist')
+    })
+}
+
+export function clickOnCreateNewSafeBtn() {
+  cy.get(createNewSafeBtn).click().wait(1000)
 }
 
 export function typeWalletName(name) {
-  cy.get(nameInput).should('have.attr', 'placeholder').should('match', constants.goerlySafeName)
   cy.get(nameInput).type(name).should('have.value', name)
 }
 
 export function selectNetwork(network, regex = false) {
-  cy.get(selectNetworkBtn).click()
-  cy.contains(network).click()
+  cy.wait(1000)
+  cy.get(selectNetworkBtn).should('exist').click()
+  cy.get('li').contains(network).click()
 
   if (regex) {
     regex = constants.networks.goerli
@@ -51,11 +87,16 @@ export function typeOwnerName(name, index) {
   cy.get(getOwnerNameInput(index)).type(name).should('have.value', name)
 }
 
-function typeOwnerAddress(address, index) {
-  cy.get(getOwnerAddressInput(index)).type(address).should('have.value', address)
+export function typeOwnerAddress(address, index, clearOnly = false) {
+  if (clearOnly) {
+    cy.get(getOwnerAddressInput(index)).clear()
+    cy.get('body').click()
+    return
+  }
+  cy.get(getOwnerAddressInput(index)).clear().type(address).should('have.value', address)
 }
 
-function clickOnAddNewOwnerBtn() {
+export function clickOnAddNewOwnerBtn() {
   cy.contains('button', 'Add new owner').click()
 }
 
@@ -71,13 +112,39 @@ export function updateThreshold(number) {
 }
 
 export function removeOwner(index) {
+  // Index for remove owner btn which does not equal to number of owners
   cy.get(removeOwnerBtn).eq(index).click()
 }
 
-export function verifySummaryData(safeName, ownerAddress, startThreshold, endThreshold) {
-  cy.contains(safeName)
-  cy.contains(ownerAddress)
+export function verifySafeNameInSummaryStep(name) {
+  cy.contains(name)
+}
+
+export function verifyOwnerNameInSummaryStep(name) {
+  cy.contains(name)
+}
+
+export function verifyOwnerAddressInSummaryStep(address) {
+  cy.contains(address)
+}
+
+export function verifyThresholdStringInSummaryStep(startThreshold, endThreshold) {
   cy.contains(`${startThreshold} out of ${endThreshold}`)
+}
+
+export function verifyNetworkInSummaryStep(network) {
+  cy.get('div').contains('Name').parent().parent().contains(network)
+}
+
+export function verifyEstimatedFeeInSummaryStep() {
+  cy.get('b')
+    .contains('ETH')
+    .parent()
+    .should(($element) => {
+      const text = 'a' + $element.text()
+      const pattern = /\d/
+      expect(/\d/.test(text)).to.equal(true)
+    })
 }
 
 function getOwnerNameInput(index) {
