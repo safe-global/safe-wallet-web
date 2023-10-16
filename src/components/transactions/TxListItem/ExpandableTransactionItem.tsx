@@ -9,6 +9,7 @@ import { useContext } from 'react'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import css from './styles.module.css'
 import classNames from 'classnames'
+import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 
 type ExpandableTransactionItemProps = {
   isGrouped?: boolean
@@ -37,6 +38,11 @@ export const ExpandableTransactionItem = ({
       defaultExpanded={!!txDetails}
       className={classNames({ [css.batched]: isBatched })}
       data-testid={testId}
+      onChange={(_, expanded) => {
+        if (expanded) {
+          trackEvent(TX_LIST_EVENTS.EXPAND_TRANSACTION)
+        }
+      }}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
         <TxSummary item={item} isGrouped={isGrouped} />
