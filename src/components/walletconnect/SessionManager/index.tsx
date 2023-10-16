@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { Typography } from '@mui/material'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
 import type { ReactElement } from 'react'
@@ -9,7 +8,7 @@ import { WalletConnectContext } from '@/services/walletconnect/WalletConnectCont
 import { asError } from '@/services/exceptions/utils'
 import ProposalForm from '../ProposalForm'
 import { ConnectionForm } from '../ConnectionForm'
-import { WalletConnectHeader } from './Header'
+import { WalletConnectErrorMessage } from './ErrorMessage'
 
 const SessionManager = ({ sessions, uri }: { sessions: SessionTypes.Struct[]; uri: string }): ReactElement => {
   const { safe, safeAddress } = useSafeInfo()
@@ -62,13 +61,9 @@ const SessionManager = ({ sessions, uri }: { sessions: SessionTypes.Struct[]; ur
     return walletConnect.onSessionPropose(setProposal)
   }, [walletConnect])
 
-  if (walletConnectError || error) {
-    return (
-      <>
-        <WalletConnectHeader error />
-        <Typography>{walletConnectError?.message ?? error?.message}</Typography>
-      </>
-    )
+  const _error = walletConnectError || error
+  if (_error) {
+    return <WalletConnectErrorMessage error={_error} />
   }
 
   if (!proposal) {
