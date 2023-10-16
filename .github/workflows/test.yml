@@ -23,7 +23,6 @@ jobs:
 
       - name: Comment in failing tests
         uses: mattallty/jest-github-action@v1.0.3
-        if: failure()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
