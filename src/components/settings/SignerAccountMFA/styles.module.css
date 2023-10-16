@@ -1,0 +1,30 @@
+.list {
+  list-style: none;
+  counter-reset: item;
+  padding: 0;
+  margin: var(--space-2) 0;
+}
+
+.list li {
+  counter-increment: item;
+  margin-bottom: var(--space-2);
+  display: flex;
+}
+
+.list li:before {
+  margin-right: var(--space-1);
+  content: counter(item);
+  background: var(--color-primary-main);
+  border-radius: 100%;
+  color: white;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.list li:last-child {
+  margin-bottom: 0;
+}
