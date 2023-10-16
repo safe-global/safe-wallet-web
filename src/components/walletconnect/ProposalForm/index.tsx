@@ -25,10 +25,10 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
   const { isScam } = proposal.verifyContext.verified
 
   const chainIds = useMemo(() => getSupportedChainIds(configs, proposal.params), [configs, proposal.params])
-  const supportsSafe = chainIds.includes(safe.chainId)
+  const supportsCurrentChain = chainIds.includes(safe.chainId)
 
   const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID'
-  const disabled = !supportsSafe || isScam || (isHighRisk && !understandsRisk)
+  const disabled = !supportsCurrentChain || isScam || (isHighRisk && !understandsRisk)
 
   return (
     <div className={css.container}>
@@ -57,7 +57,7 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
         <ChainWarning proposal={proposal} chainIds={chainIds} />
       </div>
 
-      {supportsSafe && isHighRisk && (
+      {supportsCurrentChain && isHighRisk && (
         <FormControlLabel
           className={css.checkbox}
           control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}

@@ -15,7 +15,7 @@ const ChainInformation: Record<string, { severity: AlertColor; message: string }
   UNSUPPORTED: {
     severity: 'error',
     message:
-      'This dApp does not support the Safe Account network. If you want to interact with it, please switch to a Safe Account on a supported network.',
+      'This dApp does not support the Safe Account network. If you want to interact with this dApp, please switch to a Safe Account on a supported network.',
   },
   WRONG: {
     severity: 'info',
@@ -33,21 +33,21 @@ export const ChainWarning = ({
   const { configs } = useChains()
   const { safe } = useSafeInfo()
 
-  const supportsSafe = chainIds.includes(safe.chainId)
+  const supportsCurrentChain = chainIds.includes(safe.chainId)
 
   const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains ?? []
   const isCorrectChain = requiredChains.includes(getEip155ChainId(safe.chainId))
 
-  if (supportsSafe && isCorrectChain) {
+  if (supportsCurrentChain && isCorrectChain) {
     return null
   }
 
-  if (supportsSafe) {
+  if (supportsCurrentChain) {
     const chainName = configs.find((chain) => chain.chainId === safe.chainId)?.chainName ?? ''
     ChainInformation.WRONG.message = ChainInformation.WRONG.message.replace('%%chain%%', chainName)
   }
 
-  const { severity, message } = supportsSafe ? ChainInformation.WRONG : ChainInformation.UNSUPPORTED
+  const { severity, message } = supportsCurrentChain ? ChainInformation.WRONG : ChainInformation.UNSUPPORTED
 
   return (
     <>
@@ -55,7 +55,7 @@ export const ChainWarning = ({
         {message}
       </Alert>
 
-      {!supportsSafe && (
+      {!supportsCurrentChain && (
         <>
           <Typography mt={3} mb={1}>
             Supported chains
