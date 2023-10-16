@@ -1,8 +1,7 @@
 import { Alert, Typography } from '@mui/material'
-import { useMemo } from 'react'
+import type { AlertColor } from '@mui/material'
 import type { ReactElement } from 'react'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useChains from '@/hooks/useChains'
@@ -12,57 +11,54 @@ import { getEip155ChainId } from '@/services/walletconnect/utils'
 
 import css from './styles.module.css'
 
-const ChainInformation = {
-  UNSUPPORTED:
-    'This dApp does not support the Safe Account network. If you want to interact with it, please switch to a Safe Account on a supported network.',
-  WRONG: 'Please make sure that the dApp is connected to %%chain%%.',
+const ChainInformation: Record<string, { severity: AlertColor; message: string }> = {
+  UNSUPPORTED: {
+    severity: 'error',
+    message:
+      'This dApp does not support the Safe Account network. If you want to interact with this dApp, please switch to a Safe Account on a supported network.',
+  },
+  WRONG: {
+    severity: 'info',
+    message: 'Please make sure that the dApp is connected to %%chain%%.',
+  },
 }
 
-const getSupportedChainIds = (configs: Array<ChainInfo>, proposal: Web3WalletTypes.SessionProposal): Array<string> => {
-  const { requiredNamespaces, optionalNamespaces } = proposal.params
-
-  const requiredChains = requiredNamespaces[EIP155]?.chains ?? []
-  const optionalChains = optionalNamespaces[EIP155]?.chains ?? []
-
-  return configs
-    .filter((chain) => {
-      const eipChainId = getEip155ChainId(chain.chainId)
-      return requiredChains.includes(eipChainId) || optionalChains.includes(eipChainId)
-    })
-    .map((chain) => chain.chainId)
-}
-
-export const ChainWarning = ({ proposal }: { proposal: Web3WalletTypes.SessionProposal }): ReactElement | null => {
+export const ChainWarning = ({
+  proposal,
+  chainIds,
+}: {
+  proposal: Web3WalletTypes.SessionProposal
+  chainIds: Array<string>
+}): ReactElement | null => {
   const { configs } = useChains()
   const { safe } = useSafeInfo()
 
-  const chainIds = useMemo(() => getSupportedChainIds(configs, proposal), [configs, proposal])
-  const supportsSafe = chainIds.includes(safe.chainId)
+  const supportsCurrentChain = chainIds.includes(safe.chainId)
 
   const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains ?? []
   const isCorrectChain = requiredChains.includes(getEip155ChainId(safe.chainId))
 
-  if (supportsSafe && isCorrectChain) {
+  if (supportsCurrentChain && isCorrectChain) {
     return null
   }
 
-  if (supportsSafe) {
+  if (supportsCurrentChain) {
     const chainName = configs.find((chain) => chain.chainId === safe.chainId)?.chainName ?? ''
-    ChainInformation.WRONG = ChainInformation.WRONG.replace('%%chain%%', chainName)
+    ChainInformation.WRONG.message = ChainInformation.WRONG.message.replace('%%chain%%', chainName)
   }
 
-  const message = supportsSafe ? ChainInformation.WRONG : ChainInformation.UNSUPPORTED
+  const { severity, message } = supportsCurrentChain ? ChainInformation.WRONG : ChainInformation.UNSUPPORTED
 
   return (
     <>
-      <Alert severity="info" className={css.alert}>
+      <Alert severity={severity} className={css.alert}>
         {message}
       </Alert>
 
-      {!supportsSafe && (
+      {!supportsCurrentChain && (
         <>
           <Typography mt={3} mb={1}>
-            Supported chains
+            Supported networks
           </Typography>
 
           <div>

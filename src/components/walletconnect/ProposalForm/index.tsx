@@ -1,5 +1,5 @@
 import { Button, Checkbox, Divider, FormControlLabel, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 
@@ -7,6 +7,9 @@ import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import css from './styles.module.css'
 import ProposalVerification from './ProposalVerification'
 import { ChainWarning } from './ChainWarning'
+import useChains from '@/hooks/useChains'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { getSupportedChainIds } from '@/services/walletconnect/utils'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -15,12 +18,17 @@ type ProposalFormProps = {
 }
 
 const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): ReactElement => {
+  const { configs } = useChains()
+  const { safe } = useSafeInfo()
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const { proposer } = proposal.params
   const { isScam } = proposal.verifyContext.verified
 
+  const chainIds = useMemo(() => getSupportedChainIds(configs, proposal.params), [configs, proposal.params])
+  const supportsCurrentChain = chainIds.includes(safe.chainId)
+
   const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID'
-  const disabled = isScam || (isHighRisk && !understandsRisk)
+  const disabled = !supportsCurrentChain || isScam || (isHighRisk && !understandsRisk)
 
   return (
     <div className={css.container}>
@@ -46,10 +54,10 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
       <div className={css.info}>
         <ProposalVerification proposal={proposal} />
 
-        <ChainWarning proposal={proposal} />
+        <ChainWarning proposal={proposal} chainIds={chainIds} />
       </div>
 
-      {isHighRisk && (
+      {supportsCurrentChain && isHighRisk && (
         <FormControlLabel
           className={css.checkbox}
           control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
