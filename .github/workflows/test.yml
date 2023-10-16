@@ -28,4 +28,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           test-command: 'echo unit tests already executed'
-          coverage-comment: false
+          coverage-comment: true
