@@ -3,8 +3,8 @@ import * as main from '../pages/main.page'
 
 const copyToClipboardBtn = 'button[aria-label="Copy to clipboard"]'
 const tooltipLabel = (label) => `span[aria-label="${label}"]`
-const removeOwnerBtn = 'button[aria-label="Remove owner"]'
-const replaceOwnerBtn = 'button[aria-label="Replace owner"]'
+const removeOwnerBtn = 'span[data-track="settings: Remove owner"] > span > button'
+const replaceOwnerBtn = 'span[data-track="settings: Replace owner"] > span > button'
 const addOwnerBtn = 'span[data-track="settings: Add owner"]'
 const tooltip = 'div[role="tooltip"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
