@@ -1,14 +1,5 @@
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import {
-  Button,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  Typography,
-} from '@mui/material'
+import { Button, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import type { SessionTypes } from '@walletconnect/types'
 import type { ReactElement } from 'react'
 
