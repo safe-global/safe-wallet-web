@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import type { SetStateAction, Dispatch } from 'react'
 
 import { getClipboard, isClipboardGranted } from '@/utils/clipboard'
+import { Errors, logError } from '../exceptions'
 
-export const useWalletConnectClipboardUri = (): [string, Dispatch<SetStateAction<string>>] => {
+export const useWalletConnectClipboardUri = (): [string, (data: string) => Promise<void>] => {
   const [state, setState] = useState('')
 
   useEffect(() => {
@@ -34,5 +34,16 @@ export const useWalletConnectClipboardUri = (): [string, Dispatch<SetStateAction
     }
   }, [])
 
-  return [state, setState]
+  const setClipboard = async (data: string) => {
+    await navigator.clipboard
+      .writeText(data)
+      .then(() => {
+        setState(data)
+      })
+      .catch((e) => {
+        logError(Errors._709, e)
+      })
+  }
+
+  return [state, setClipboard]
 }
