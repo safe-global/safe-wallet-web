@@ -28,16 +28,21 @@ const useGetSupportedChains = () => {
   return _getSupportedChains(chains.configs)
 }
 
-const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
+const useIsSocialWalletEnabled = () => {
   const currentChain = useCurrentChain()
+
+  return isSocialWalletEnabled(currentChain)
+}
+
+const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   const { triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
 
   const wallet = useWallet()
   const loginPending = walletState === MPCWalletState.AUTHENTICATING
 
   const supportedChains = useGetSupportedChains()
+  const isMPCLoginEnabled = useIsSocialWalletEnabled()
 
-  const isMPCLoginEnabled = isSocialWalletEnabled(currentChain)
   const isDisabled = loginPending || !isMPCLoginEnabled
 
   const login = async () => {
