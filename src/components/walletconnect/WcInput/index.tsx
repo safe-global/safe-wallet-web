@@ -1,9 +1,10 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { Button, InputAdornment, TextField } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
+import { getClipboard } from '@/utils/clipboard'
 
 import css from '../SessionList/styles.module.css'
 
@@ -41,61 +42,14 @@ const WcInput = (): ReactElement => {
     [walletConnect],
   )
 
-  const getClipboard = useCallback(async () => {
-    let clipboard: string | null = null
-
-    try {
-      clipboard = await navigator.clipboard.readText()
-    } catch (e) {
-      setError(asError(e))
-      return
-    }
-
-    return clipboard
-  }, [])
-
   const onPaste = useCallback(async () => {
+    // Errors are handled by in getClipboard
     const clipboard = await getClipboard()
 
     if (clipboard) {
       onInput(clipboard)
     }
-  }, [getClipboard, onInput])
-
-  useEffect(() => {
-    if (!navigator || !window) {
-      return
-    }
-
-    const autofillUri = async () => {
-      let isGranted = false
-
-      try {
-        // @ts-expect-error navigator permissions types don't include clipboard
-        const permission = await navigator.permissions.query({ name: 'clipboard-read' })
-        isGranted = permission.state === 'granted'
-      } catch (e) {
-        setError(asError(e))
-        return
-      }
-
-      if (!isGranted) {
-        return
-      }
-
-      const clipboard = await getClipboard()
-
-      if (clipboard?.startsWith('wc:')) {
-        onInput(clipboard)
-      }
-    }
-
-    window.addEventListener('focus', autofillUri)
-
-    return () => {
-      window.removeEventListener('focus', autofillUri)
-    }
-  }, [getClipboard, onInput])
+  }, [onInput])
 
   return (
     <TextField

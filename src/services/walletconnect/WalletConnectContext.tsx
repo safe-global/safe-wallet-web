@@ -8,8 +8,11 @@ import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
 import { stripEip155Prefix } from './utils'
 import { useWalletConnectSearchParamUri } from './useWalletConnectSearchParamUri'
+import { useWalletConnectClipboardUri } from './useWalletConnectClipboardUri'
 
 const walletConnectSingleton = new WalletConnectWallet()
+
+const isWcUri = (uri: string) => uri.startsWith('wc:')
 
 export const WalletConnectContext = createContext<{
   walletConnect: WalletConnectWallet | null
@@ -25,7 +28,8 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     safeAddress,
   } = useSafeInfo()
   const [walletConnect, setWalletConnect] = useState<WalletConnectWallet | null>(null)
-  const [wcUri, setWcUri] = useWalletConnectSearchParamUri()
+  const [searchParamWcUri, setSearchParamWcUri] = useWalletConnectSearchParamUri()
+  const [clipboardWcUri, setClipboardWcUri] = useWalletConnectClipboardUri()
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
 
@@ -39,14 +43,25 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
 
   // Connect to session present in URL
   useEffect(() => {
-    if (!walletConnect || !wcUri) return
+    if (!walletConnect || !searchParamWcUri || !isWcUri(searchParamWcUri)) return
 
-    walletConnect.connect(wcUri).catch(setError)
+    walletConnect.connect(searchParamWcUri).catch(setError)
 
     return walletConnect.onSessionAdd(() => {
-      setWcUri(null)
+      setSearchParamWcUri(null)
     })
-  }, [setWcUri, walletConnect, wcUri])
+  }, [setSearchParamWcUri, walletConnect, searchParamWcUri])
+
+  // Connect to session present in clipboard on focus
+  useEffect(() => {
+    if (!walletConnect || !clipboardWcUri || !isWcUri(clipboardWcUri)) return
+
+    walletConnect.connect(clipboardWcUri).catch(setError)
+
+    return walletConnect.onSessionAdd(() => {
+      setClipboardWcUri('')
+    })
+  }, [setClipboardWcUri, walletConnect, clipboardWcUri])
 
   // Update chainId/safeAddress
   useEffect(() => {

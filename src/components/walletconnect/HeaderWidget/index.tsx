@@ -8,13 +8,11 @@ import useWalletConnectSessions from '@/services/walletconnect/useWalletConnectS
 import Icon from './Icon'
 import SessionManager from '../SessionManager'
 import Popup from '../Popup'
-import { useWalletConnectSearchParamUri } from '@/services/walletconnect/useWalletConnectSearchParamUri'
 import { SuccessBanner } from '../SuccessBanner'
 
 const WalletConnectHeaderWidget = (): ReactElement => {
   const { error, walletConnect } = useContext(WalletConnectContext)
   const [popupOpen, setPopupOpen] = useState(false)
-  const [wcUri] = useWalletConnectSearchParamUri()
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
   const [metadata, setMetadata] = useState<CoreTypes.Metadata>()
@@ -45,6 +43,15 @@ const WalletConnectHeaderWidget = (): ReactElement => {
     return walletConnect.onSessionAdd(onSuccess)
   }, [onSuccess, walletConnect])
 
+  // Display session manager if connection is attempted elsewhere, e.g. from URL or clipboard
+  useEffect(() => {
+    if (!walletConnect) {
+      return
+    }
+
+    return walletConnect.onSessionPropose(onOpenSessionManager)
+  }, [onOpenSessionManager, onSuccess, walletConnect])
+
   return (
     <>
       <div ref={iconRef}>
@@ -60,7 +67,13 @@ const WalletConnectHeaderWidget = (): ReactElement => {
         <Badge color="error" variant="dot" invisible={!error} />
       </div>
 
-      <Popup anchorEl={iconRef.current} open={popupOpen || !!wcUri} onClose={onCloseSessionManager} keepMounted>
+      <Popup
+        anchorEl={iconRef.current}
+        open={popupOpen}
+        onClose={onCloseSessionManager}
+        // Mount the popup immediately to display proposals immediately
+        keepMounted
+      >
         <SessionManager sessions={sessions} />
       </Popup>
 
