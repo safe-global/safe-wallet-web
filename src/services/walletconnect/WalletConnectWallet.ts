@@ -1,15 +1,15 @@
 import { Core } from '@walletconnect/core'
 import { Web3Wallet } from '@walletconnect/web3wallet'
-import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
+import { getSdkError } from '@walletconnect/utils'
 import type Web3WalletType from '@walletconnect/web3wallet'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
 import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 
 import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
-import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
+import { EIP155, SAFE_WALLET_METADATA } from './constants'
 import { invariant } from '@/utils/helpers'
-import { getEip155ChainId, stripEip155Prefix } from './utils'
+import { getEip155ChainId, getNamespaces } from './utils'
 
 const SESSION_ADD_EVENT = 'session_add' as Web3WalletTypes.Event // Workaround: WalletConnect doesn't emit session_add event
 
@@ -82,43 +82,16 @@ class WalletConnectWallet {
   public async approveSession(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
     assertWeb3Wallet(this.web3Wallet)
 
-    // Actual safe chainId
-    const safeChains = [currentChainId]
-
-    const getNamespaces = (chainIds: string[], methods: string[]) => {
-      const eip155ChainIds = chainIds.map(getEip155ChainId)
-
-      // Create a list of addresses for each chainId
-      const eip155Accounts = eip155ChainIds.map((eip155ChainId) => `${eip155ChainId}:${safeAddress}`)
-
-      return buildApprovedNamespaces({
-        proposal: proposal.params,
-        supportedNamespaces: {
-          [EIP155]: {
-            chains: eip155ChainIds,
-            methods,
-            accounts: eip155Accounts,
-            // Don't include optionalNamespaces events
-            events: proposal.params.requiredNamespaces[EIP155]?.events || [],
-          },
-        },
-      })
-    }
+    const namespaces = getNamespaces(proposal, currentChainId, safeAddress)
 
     // Approve the session proposal
-    // Most dapps require mainnet, but we aren't always on mainnet
-    // A workaround, pretend to support all required chains
-    const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains || []
-    // TODO: Filter against those which we support
-    const optionalChains = proposal.params.optionalNamespaces[EIP155]?.chains || []
-    const chains = safeChains.concat(requiredChains.map(stripEip155Prefix), optionalChains.map(stripEip155Prefix))
-
     const session = await this.web3Wallet.approveSession({
       id: proposal.id,
-      namespaces: getNamespaces(chains, proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS),
+      namespaces,
     })
 
-    await this.updateSession(session, currentChainId, safeAddress)
+    // Align the session with the current chainId
+    await this.chainChanged(session.topic, currentChainId)
 
     // Workaround: WalletConnect doesn't have a session_add event
     this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)
@@ -139,8 +112,13 @@ class WalletConnectWallet {
     const hasNewChainId = !currentEip155ChainIds.includes(newEip155ChainId)
     const hasNewAccount = !currentEip155Accounts.includes(newEip155Account)
 
-    // Add new chainId and/or account to the session namespace
-    if (hasNewChainId || hasNewAccount) {
+    // Switching to unsupported chain
+    if (hasNewChainId) {
+      return this.disconnectSession(session)
+    }
+
+    // Add new account to the session namespace
+    if (hasNewAccount) {
       const namespaces: SessionTypes.Namespaces = {
         [EIP155]: {
           ...session.namespaces[EIP155],
@@ -225,6 +203,18 @@ class WalletConnectWallet {
 
     // Workaround: WalletConnect doesn't emit session_delete event when disconnecting from the wallet side
     this.web3Wallet?.events.emit('session_delete', session)
+  }
+
+  /**
+   * Disconnect all sessions
+   */
+  public async disconnectAllSessions() {
+    assertWeb3Wallet(this.web3Wallet)
+
+    // We have to await previous session to be disconnected before disconnecting the next one
+    for await (const session of this.getActiveSessions()) {
+      await this.disconnectSession(session)
+    }
   }
 
   /**

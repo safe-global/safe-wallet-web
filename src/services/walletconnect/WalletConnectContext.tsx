@@ -8,6 +8,7 @@ import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
 import { stripEip155Prefix } from './utils'
 import { useWalletConnectSearchParamUri } from './useWalletConnectSearchParamUri'
+import { useRouter } from 'next/router'
 
 const walletConnectSingleton = new WalletConnectWallet()
 
@@ -28,6 +29,8 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
   const [wcUri, setWcUri] = useWalletConnectSearchParamUri()
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
+  const router = useRouter()
+  const isSafeConnected = router.isReady && router.query.safe
 
   // Init WalletConnect
   useEffect(() => {
@@ -54,6 +57,13 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
 
     walletConnect.updateSessions(chainId, safeAddress).catch(setError)
   }, [walletConnect, chainId, safeAddress])
+
+  // Disconnect all sessions if no Safe is loaded
+  useEffect(() => {
+    if (!walletConnect || isSafeConnected) return
+
+    walletConnect.disconnectAllSessions().catch(setError)
+  }, [walletConnect, isSafeConnected])
 
   // Subscribe to requests
   useEffect(() => {
