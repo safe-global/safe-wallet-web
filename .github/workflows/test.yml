@@ -18,11 +18,11 @@ jobs:
 
       - uses: ./.github/workflows/yarn
 
-      - name: Run tests
-        run: 'yarn test:ci'
-
       - name: Annotations and coverage report
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
-          coverage-file: jest.results.json
-          test-script: 'echo coverage generated'
+          package-manager: yarn
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          TZ: CET
+          DEBUG_PRINT_LIMIT: 30000
