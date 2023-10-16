@@ -16,6 +16,7 @@ import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getAddress } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
 import useChains from '@/hooks/useChains'
+import { NotificationMessages, showNotification } from './notifications'
 
 export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -38,6 +39,9 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
     const signMessage = (message: string | EIP712TypedData, appInfo: AppInfo): Promise<{ signature: string }> => {
       const id = Math.random().toString(36).slice(2)
       setTxFlow(<SignMessageFlow logoUri={appInfo.iconUrl} name={appInfo.name} message={message} requestId={id} />)
+
+      const { title, options } = NotificationMessages.SIGNATURE_REQUEST(appInfo)
+      showNotification(title, options)
 
       return new Promise((resolve) => {
         const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ requestId, signature }) => {
@@ -84,6 +88,9 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
             }}
           />,
         )
+
+        const { title, options } = NotificationMessages.TRANSACTION_REQUEST(appInfo)
+        showNotification(title, options)
 
         return new Promise((resolve) => {
           const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash, txId }) => {
