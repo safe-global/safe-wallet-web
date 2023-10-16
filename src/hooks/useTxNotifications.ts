@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { formatError } from '@/utils/formatters'
 import type { LinkProps } from 'next/link'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
@@ -110,6 +110,7 @@ const useTxNotifications = (): void => {
   const pendingTxs = useAppSelector(selectPendingTxs)
   const notifications = useAppSelector(selectNotifications)
   const wallet = useWallet()
+  const notifiedAwaitingTxIds = useRef<Array<string>>([])
 
   const txsAwaitingConfirmation = useMemo(() => {
     if (!page?.results) {
@@ -130,18 +131,22 @@ const useTxNotifications = (): void => {
     }
 
     const txId = txsAwaitingConfirmation[0].transaction.id
-    const hasNotified = notifications.some(({ groupKey }) => groupKey === txId)
+    const hasNotified = notifiedAwaitingTxIds.current.includes(txId)
 
-    if (!hasNotified) {
-      dispatch(
-        showNotification({
-          variant: 'info',
-          message: 'A transaction requires your confirmation.',
-          link: chain && getTxLink(txId, chain, safeAddress),
-          groupKey: txId,
-        }),
-      )
+    if (hasNotified) {
+      return
     }
+
+    dispatch(
+      showNotification({
+        variant: 'info',
+        message: 'A transaction requires your confirmation.',
+        link: chain && getTxLink(txId, chain, safeAddress),
+        groupKey: txId,
+      }),
+    )
+
+    notifiedAwaitingTxIds.current.push(txId)
   }, [chain, dispatch, isOwner, notifications, safeAddress, txsAwaitingConfirmation])
 }
 
