@@ -115,7 +115,7 @@ const NotificationCenter = (): ReactElement => {
           horizontal: 'left',
         }}
         sx={{
-          '& .MuiPaper-root': {
+          '& > .MuiPaper-root': {
             top: 'var(--header-height) !important',
           },
         }}

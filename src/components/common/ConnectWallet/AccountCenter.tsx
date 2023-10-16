@@ -75,7 +75,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           horizontal: 'center',
         }}
         sx={{
-          '& .MuiPaper-root': {
+          '& > .MuiPaper-root': {
             top: 'var(--header-height) !important',
           },
         }}

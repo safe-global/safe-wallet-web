@@ -3,6 +3,13 @@
   width: 40px;
 }
 
+.errorMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
 .errorBadge {
   color: var(--color-error-main);
   margin-left: -16px;

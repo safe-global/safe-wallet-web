@@ -1,13 +1,5 @@
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import {
-  Button,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
-  ListItemText,
-  Typography,
-} from '@mui/material'
+import { Button, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import type { SessionTypes } from '@walletconnect/types'
 import type { ReactElement } from 'react'
 
@@ -28,16 +20,16 @@ const SessionListItem = ({
   return (
     <ListItem className={css.sessionListItem}>
       {session.peer.metadata.icons[0] && (
-        <ListItemAvatar>
+        <ListItemAvatar className={css.sessionListAvatar}>
           <SafeAppIconCard src={session.peer.metadata.icons[0]} alt="icon" width={20} height={20} />
         </ListItemAvatar>
       )}
       <ListItemText primary={session.peer.metadata.name} />
-      <ListItemSecondaryAction className={css.sessionListSecondaryAction}>
+      <ListItemIcon className={css.sessionListSecondaryAction}>
         <Button variant="danger" onClick={onDisconnect} className={css.button}>
           Disconnect
         </Button>
-      </ListItemSecondaryAction>
+      </ListItemIcon>
     </ListItem>
   )
 }
