@@ -14,7 +14,7 @@ const Popup = ({ children, ...props }: PopoverProps): ReactElement => {
         horizontal: 'center',
       }}
       sx={{
-        '& .MuiPaper-root': {
+        '& > .MuiPaper-root': {
           top: 'var(--header-height) !important',
         },
       }}

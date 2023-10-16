@@ -9,6 +9,12 @@
   height: 56px;
 }
 
+.sessionListAvatar {
+  display: flex;
+  min-width: unset;
+  padding-right: var(--space-1);
+}
+
 .sessionListSecondaryAction {
   /* InputAdornment */
   right: 14px;
