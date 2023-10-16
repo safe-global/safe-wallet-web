@@ -58,7 +58,7 @@ export const ChainWarning = ({
       {!supportsCurrentChain && (
         <>
           <Typography mt={3} mb={1}>
-            Supported chains
+            Supported networks
           </Typography>
 
           <div>
