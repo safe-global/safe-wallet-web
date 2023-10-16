@@ -5,15 +5,23 @@ type HookMap<P> = {
   [K in keyof P]?: () => P[K]
 }
 
+/**
+ * Injects props into a component using hooks.
+ * This allows to keep the original component pure and testable.
+ *
+ * @param Component The component to wrap
+ * @param hookMap A map of hooks to use, keys are the props to inject, values are the hooks
+ * @returns A new component with the props injected
+ */
 const madProps = <P extends Record<string, unknown>, H extends keyof P>(
   Component: ComponentType<P>,
-  useHook: HookMap<Pick<P, H>>,
+  hookMap: HookMap<Pick<P, H>>,
 ): FC<Omit<P, H>> => {
   const MadComponent = (externalProps: Omit<P, H>) => {
     let newProps: P = { ...externalProps } as P
 
-    for (const key in useHook) {
-      const hook = useHook[key]
+    for (const key in hookMap) {
+      const hook = hookMap[key]
       if (hook !== undefined) {
         newProps[key as H] = hook()
       }
