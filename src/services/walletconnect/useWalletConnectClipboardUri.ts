@@ -11,13 +11,18 @@ export const useWalletConnectClipboardUri = (): [string, Dispatch<SetStateAction
       return
     }
 
-    // Errors handled in the clipboard utils
-    const setClipboard = () => {
-      isClipboardGranted().then((isGranted) => {
-        if (isGranted) {
-          getClipboard().then(setState)
-        }
-      })
+    const setClipboard = async () => {
+      // Errors handled in the clipboard utils
+      const isGranted = await isClipboardGranted()
+      if (!isGranted) {
+        return
+      }
+
+      const clipboard = await getClipboard()
+
+      if (clipboard.startsWith('wc:')) {
+        setState(clipboard)
+      }
     }
 
     setClipboard()

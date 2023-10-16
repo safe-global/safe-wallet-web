@@ -10,8 +10,6 @@ import { stripEip155Prefix } from './utils'
 
 const walletConnectSingleton = new WalletConnectWallet()
 
-const isWcUri = (uri: string) => uri.startsWith('wc:')
-
 export const WalletConnectContext = createContext<{
   walletConnect: WalletConnectWallet | null
   error: Error | null
