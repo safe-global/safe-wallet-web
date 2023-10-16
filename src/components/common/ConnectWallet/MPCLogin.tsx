@@ -8,8 +8,25 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useCurrentChain } from '@/hooks/useChains'
-import chains from '@/config/chains'
+import useChains, { useCurrentChain } from '@/hooks/useChains'
+import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { CGW_NAMES } from '@/hooks/wallets/consts'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+
+export const _getSupportedChains = (chains: ChainInfo[]) => {
+  return chains.reduce((result: string[], currentChain) => {
+    if (CGW_NAMES.SOCIAL_LOGIN && !currentChain.disabledWallets.includes(CGW_NAMES.SOCIAL_LOGIN)) {
+      result.push(currentChain.chainName)
+    }
+    return result
+  }, [])
+}
+const useGetSupportedChains = () => {
+  const chains = useChains()
+
+  return _getSupportedChains(chains.configs)
+}
 
 const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   const currentChain = useCurrentChain()
@@ -18,8 +35,9 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   const wallet = useWallet()
   const loginPending = walletState === MPCWalletState.AUTHENTICATING
 
-  // TODO: Replace with feature flag from config service
-  const isMPCLoginEnabled = currentChain?.chainId === chains.gno
+  const supportedChains = useGetSupportedChains()
+
+  const isMPCLoginEnabled = isSocialWalletEnabled(currentChain)
   const isDisabled = loginPending || !isMPCLoginEnabled
 
   const login = async () => {
@@ -40,7 +58,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
 
   return (
     <>
-      {wallet && userInfo ? (
+      {wallet?.label === ONBOARD_MPC_MODULE_LABEL && userInfo ? (
         <>
           <Button
             variant="outlined"
@@ -94,7 +112,13 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
               ml: 0.5,
             }}
           />
-          Currently only supported on Gnosis Chain
+          Currently only supported on{' '}
+          {supportedChains.map((chain, idx) => (
+            <>
+              {chain}
+              {idx < supportedChains.length - 1 && ', '}
+            </>
+          ))}
         </Typography>
       )}
 

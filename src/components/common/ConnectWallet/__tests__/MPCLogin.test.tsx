@@ -3,7 +3,7 @@ import * as useWallet from '@/hooks/wallets/useWallet'
 import * as useMPCWallet from '@/hooks/wallets/mpc/useMPCWallet'
 import * as chains from '@/hooks/useChains'
 
-import MPCLogin from '../MPCLogin'
+import MPCLogin, { _getSupportedChains } from '../MPCLogin'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { type EIP1193Provider } from '@web3-onboard/common'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
@@ -98,5 +98,28 @@ describe('MPCLogin', () => {
 
     expect(result.getByText('Currently only supported on Gnosis Chain')).toBeInTheDocument()
     expect(await result.findByRole('button')).toBeDisabled()
+  })
+
+  describe('getSupportedChains', () => {
+    it('returns chain names where social login is enabled', () => {
+      const mockEthereumChain = { chainId: '1', chainName: 'Ethereum', disabledWallets: ['socialLogin'] } as ChainInfo
+      const mockGnosisChain = { chainId: '100', chainName: 'Gnosis Chain', disabledWallets: ['Coinbase'] } as ChainInfo
+      const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: ['TallyHo'] } as ChainInfo
+
+      const mockChains = [mockEthereumChain, mockGnosisChain, mockGoerliChain]
+      const result = _getSupportedChains(mockChains)
+
+      expect(result).toEqual(['Gnosis Chain', 'Goerli'])
+    })
+
+    it('returns an empty if social login is not enabled on any chain', () => {
+      const mockEthereumChain = { chainId: '1', chainName: 'Ethereum', disabledWallets: ['socialLogin'] } as ChainInfo
+      const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: ['socialLogin'] } as ChainInfo
+
+      const mockChains = [mockEthereumChain, mockGoerliChain]
+      const result = _getSupportedChains(mockChains)
+
+      expect(result).toEqual([])
+    })
   })
 })
