@@ -99,7 +99,7 @@ enum ErrorMessages {
   NONCE_MUST_BE_NUMBER = 'Nonce must be a number',
   NONCE_TOO_LOW = "Nonce can't be lower than %%nonce%%",
   NONCE_TOO_HIGH = 'Nonce is too high',
-  NONCE_TOO_FAR = 'Nonce is very far from the current nonce',
+  NONCE_TOO_FAR = 'Nonce is much higher than the current nonce',
   NONCE_GT_RECOMMENDED = 'Nonce is higher than the recommended nonce',
 }
 
