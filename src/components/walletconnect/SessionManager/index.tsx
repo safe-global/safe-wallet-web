@@ -11,7 +11,7 @@ import ProposalForm from '../ProposalForm'
 import { ConnectionForm } from '../ConnectionForm'
 import { WalletConnectHeader } from './Header'
 
-const SessionManager = ({ sessions }: { sessions: SessionTypes.Struct[] }): ReactElement => {
+const SessionManager = ({ sessions, uri }: { sessions: SessionTypes.Struct[]; uri: string }): ReactElement => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
@@ -72,7 +72,7 @@ const SessionManager = ({ sessions }: { sessions: SessionTypes.Struct[] }): Reac
   }
 
   if (!proposal) {
-    return <ConnectionForm sessions={sessions} onDisconnect={onDisconnect} />
+    return <ConnectionForm sessions={sessions} onDisconnect={onDisconnect} uri={uri} />
   }
 
   return <ProposalForm proposal={proposal} onApprove={onApprove} onReject={onReject} />
