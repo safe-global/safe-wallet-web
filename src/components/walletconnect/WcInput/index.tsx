@@ -1,13 +1,14 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Button, InputAdornment, TextField } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
+import { getClipboard } from '@/utils/clipboard'
 
 import css from '../SessionList/styles.module.css'
 
-const WcInput = (): ReactElement => {
+const WcInput = ({ uri }: { uri: string }): ReactElement => {
   const { walletConnect } = useContext(WalletConnectContext)
   const [value, setValue] = useState('')
   const [error, setError] = useState<Error>()
@@ -41,17 +42,17 @@ const WcInput = (): ReactElement => {
     [walletConnect],
   )
 
+  useEffect(() => {
+    onInput(uri)
+  }, [onInput, uri])
+
   const onPaste = useCallback(async () => {
-    let clipboard: string | null = null
+    // Errors are handled by in getClipboard
+    const clipboard = await getClipboard()
 
-    try {
-      clipboard = await navigator.clipboard.readText()
-    } catch (e) {
-      setError(asError(e))
-      return
+    if (clipboard) {
+      onInput(clipboard)
     }
-
-    onInput(clipboard)
   }, [onInput])
 
   return (

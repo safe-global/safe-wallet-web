@@ -7,7 +7,6 @@ import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWallet
 import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
 import { stripEip155Prefix } from './utils'
-import { useWalletConnectSearchParamUri } from './useWalletConnectSearchParamUri'
 
 const walletConnectSingleton = new WalletConnectWallet()
 
@@ -25,7 +24,6 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     safeAddress,
   } = useSafeInfo()
   const [walletConnect, setWalletConnect] = useState<WalletConnectWallet | null>(null)
-  const [wcUri, setWcUri] = useWalletConnectSearchParamUri()
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
 
@@ -36,17 +34,6 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
       .then(() => setWalletConnect(walletConnectSingleton))
       .catch(setError)
   }, [])
-
-  // Connect to session present in URL
-  useEffect(() => {
-    if (!walletConnect || !wcUri) return
-
-    walletConnect.connect(wcUri).catch(setError)
-
-    return walletConnect.onSessionAdd(() => {
-      setWcUri(null)
-    })
-  }, [setWcUri, walletConnect, wcUri])
 
   // Update chainId/safeAddress
   useEffect(() => {

@@ -5,22 +5,40 @@ import type { ReactElement } from 'react'
 
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import useWalletConnectSessions from '@/services/walletconnect/useWalletConnectSessions'
+import { useWalletConnectClipboardUri } from '@/services/walletconnect/useWalletConnectClipboardUri'
+import { useWalletConnectSearchParamUri } from '@/services/walletconnect/useWalletConnectSearchParamUri'
 import Icon from './Icon'
 import SessionManager from '../SessionManager'
 import Popup from '../Popup'
-import { useWalletConnectSearchParamUri } from '@/services/walletconnect/useWalletConnectSearchParamUri'
 import { SuccessBanner } from '../SuccessBanner'
+
+const usePrepopulatedUri = (): [string, () => void] => {
+  const [searchParamWcUri, setSearchParamWcUri] = useWalletConnectSearchParamUri()
+  const [clipboardWcUri, setClipboardWcUri] = useWalletConnectClipboardUri()
+  const uri = searchParamWcUri || clipboardWcUri
+
+  const clearUri = useCallback(() => {
+    setSearchParamWcUri(null)
+    // This does not clear the system clipboard, just state
+    setClipboardWcUri('')
+  }, [setClipboardWcUri, setSearchParamWcUri])
+
+  return [uri, clearUri]
+}
 
 const WalletConnectHeaderWidget = (): ReactElement => {
   const { error, walletConnect } = useContext(WalletConnectContext)
   const [popupOpen, setPopupOpen] = useState(false)
-  const [wcUri] = useWalletConnectSearchParamUri()
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
+  const [uri, clearUri] = usePrepopulatedUri()
   const [metadata, setMetadata] = useState<CoreTypes.Metadata>()
 
   const onOpenSessionManager = useCallback(() => setPopupOpen(true), [])
-  const onCloseSessionManager = useCallback(() => setPopupOpen(false), [])
+  const onCloseSessionManager = useCallback(() => {
+    setPopupOpen(false)
+    clearUri()
+  }, [clearUri])
 
   const onCloseSuccesBanner = useCallback(() => setMetadata(undefined), [])
   const onSuccess = useCallback(
@@ -60,8 +78,8 @@ const WalletConnectHeaderWidget = (): ReactElement => {
         <Badge color="error" variant="dot" invisible={!error} />
       </div>
 
-      <Popup anchorEl={iconRef.current} open={popupOpen || !!wcUri} onClose={onCloseSessionManager} keepMounted>
-        <SessionManager sessions={sessions} />
+      <Popup anchorEl={iconRef.current} open={popupOpen || !!uri} onClose={onCloseSessionManager}>
+        <SessionManager sessions={sessions} uri={uri} />
       </Popup>
 
       <Popup anchorEl={iconRef.current} open={!!metadata} onClose={onCloseSuccesBanner}>

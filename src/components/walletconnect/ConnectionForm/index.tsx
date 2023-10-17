@@ -18,9 +18,11 @@ const WC_HINTS_KEY = 'wcHints'
 export const ConnectionForm = ({
   sessions,
   onDisconnect,
+  uri,
 }: {
   sessions: SessionTypes.Struct[]
   onDisconnect: (session: SessionTypes.Struct) => Promise<void>
+  uri: string
 }): ReactElement => {
   const [dismissedHints = false, setDismissedHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
   const debouncedHideHints = useDebounce(dismissedHints, 300)
@@ -58,7 +60,7 @@ export const ConnectionForm = ({
           Paste the pairing URI below to connect to your {`Safe{Wallet}`} via WalletConnect
         </Typography>
 
-        <WcInput />
+        <WcInput uri={uri} />
       </Grid>
 
       <Divider flexItem className={css.divider} />
