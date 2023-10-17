@@ -41,6 +41,11 @@ enum PasswordStrength {
   weak,
 }
 
+// At least 8 characters, one lowercase, one uppercase, one number, one symbol
+const strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})')
+// At least 8 characters without a symbol
+const mediumPassword = new RegExp('((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,}))')
+
 export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit }) => {
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(PasswordStrength.weak)
   const [passwordsMatch, setPasswordsMatch] = useState<boolean>(false)
@@ -56,20 +61,14 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
 
   const { formState, getValues, handleSubmit, reset } = formMethods
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   const isPasswordSet = useMemo(() => {
     const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
     return securityQuestions.isEnabled()
   }, [mpcCoreKit])
 
   const onSubmit = async (data: PasswordFormData) => {
-    setIsSubmitting(true)
-    try {
-      await enableMFA(mpcCoreKit, data)
-    } finally {
-      setIsSubmitting(false)
-    }
+    await enableMFA(mpcCoreKit, data)
+    reset()
   }
 
   const onReset = () => {
@@ -77,10 +76,10 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
   }
 
   const isSubmitDisabled =
-    !passwordsMatch || passwordStrength !== PasswordStrength.strong || isSubmitting || !formMethods.formState.isValid
-
-  const strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})')
-  const mediumPassword = new RegExp('((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,}))')
+    !passwordsMatch ||
+    passwordStrength !== PasswordStrength.strong ||
+    formState.isSubmitting ||
+    !formMethods.formState.isValid
 
   return (
     <FormProvider {...formMethods}>
@@ -123,21 +122,16 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
                       label="New password"
                       helperText={formState.errors[PasswordFieldNames.newPassword]?.message}
                       required
-                      validate={(value) => {
-                        if (strongPassword.test(value)) {
-                          setPasswordStrength(PasswordStrength.strong)
-                        } else if (mediumPassword.test(value)) {
-                          setPasswordStrength(PasswordStrength.medium)
-                        } else {
-                          setPasswordStrength(PasswordStrength.weak)
-                        }
-                        return undefined
-                      }}
                       inputProps={{
                         onChange: (event: ChangeEvent<HTMLInputElement>) => {
+                          const value = event.target.value
                           setPasswordsMatch(false)
 
-                          if (event.target.value === '') {
+                          if (strongPassword.test(value)) {
+                            setPasswordStrength(PasswordStrength.strong)
+                          } else if (mediumPassword.test(value)) {
+                            setPasswordStrength(PasswordStrength.medium)
+                          } else {
                             setPasswordStrength(PasswordStrength.weak)
                           }
                         },
@@ -176,11 +170,6 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
                       placeholder="Confirm new password"
                       label="Confirm new password"
                       helperText={formState.errors[PasswordFieldNames.confirmPassword]?.message}
-                      validate={(value) => {
-                        const currentNewPW = getValues(PasswordFieldNames.newPassword)
-                        setPasswordsMatch(value === currentNewPW)
-                        return undefined
-                      }}
                       inputProps={{
                         onChange: (event: ChangeEvent<HTMLInputElement>) => {
                           const currentNewPW = getValues(PasswordFieldNames.newPassword)

@@ -40,8 +40,10 @@ export const enableMFA = async (
     }
 
     await mpcCoreKit.commitChanges()
+    // TODO: Dispatch success notification
   } catch (e) {
     const error = asError(e)
     logError(ErrorCodes._304, error.message)
+    // TODO: Dispatch error notification
   }
 }
