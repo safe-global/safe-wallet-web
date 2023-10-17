@@ -61,7 +61,7 @@ const WcInput = ({ uri }: { uri: string }): ReactElement => {
       autoComplete="off"
       disabled={connecting || !safeLoaded}
       error={!!error}
-      label={error ? error.message : 'Pairing UI'}
+      label={error ? error.message : 'Pairing code'}
       placeholder="wc:"
       InputProps={{
         endAdornment: isPastingSupported() ? undefined : (
