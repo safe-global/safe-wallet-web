@@ -1,6 +1,5 @@
 import { getSdkError } from '@walletconnect/utils'
 import { formatJsonRpcError } from '@walletconnect/jsonrpc-utils'
-import { useRouter } from 'next/router'
 import { type ReactNode, createContext, useEffect, useState } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -27,8 +26,6 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
   const [walletConnect, setWalletConnect] = useState<WalletConnectWallet | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
-  const router = useRouter()
-  const isSafeConnected = router.isReady && router.query.safe
 
   // Init WalletConnect
   useEffect(() => {
@@ -44,13 +41,6 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
 
     walletConnect.updateSessions(chainId, safeAddress).catch(setError)
   }, [walletConnect, chainId, safeAddress])
-
-  // Disconnect all sessions if no Safe is loaded
-  useEffect(() => {
-    if (!walletConnect || isSafeConnected) return
-
-    walletConnect.disconnectAllSessions().catch(setError)
-  }, [walletConnect, isSafeConnected])
 
   // Subscribe to requests
   useEffect(() => {

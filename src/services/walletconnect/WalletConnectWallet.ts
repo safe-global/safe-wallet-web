@@ -153,7 +153,7 @@ class WalletConnectWallet {
       const namespaces: SessionTypes.Namespaces = {
         [EIP155]: {
           ...session.namespaces[EIP155],
-          chains: [newEip155ChainId, ...currentEip155ChainIds],
+          chains: currentEip155ChainIds,
           accounts: [newEip155Account, ...currentEip155Accounts],
         },
       }
@@ -234,18 +234,6 @@ class WalletConnectWallet {
 
     // Workaround: WalletConnect doesn't emit session_delete event when disconnecting from the wallet side
     this.web3Wallet?.events.emit('session_delete', session)
-  }
-
-  /**
-   * Disconnect all sessions
-   */
-  public async disconnectAllSessions() {
-    assertWeb3Wallet(this.web3Wallet)
-
-    // We have to await previous session to be disconnected before disconnecting the next one
-    for await (const session of this.getActiveSessions()) {
-      await this.disconnectSession(session)
-    }
   }
 
   /**

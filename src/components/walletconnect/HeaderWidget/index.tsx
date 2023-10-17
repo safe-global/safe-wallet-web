@@ -11,7 +11,6 @@ import Icon from './Icon'
 import SessionManager from '../SessionManager'
 import Popup from '../Popup'
 import { SuccessBanner } from '../SuccessBanner'
-import useSafeInfo from '@/hooks/useSafeInfo'
 
 const usePrepopulatedUri = (): [string, () => void] => {
   const [searchParamWcUri, setSearchParamWcUri] = useWalletConnectSearchParamUri()
@@ -29,7 +28,6 @@ const usePrepopulatedUri = (): [string, () => void] => {
 
 const WalletConnectHeaderWidget = (): ReactElement => {
   const { error, walletConnect } = useContext(WalletConnectContext)
-  const { safeLoaded } = useSafeInfo()
   const [popupOpen, setPopupOpen] = useState(false)
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
@@ -76,7 +74,6 @@ const WalletConnectHeaderWidget = (): ReactElement => {
               ? { name: sessions[0].peer.metadata.name, iconUrl: sessions[0].peer.metadata.icons[0] }
               : undefined
           }
-          disabled={!safeLoaded}
         />
         <Badge color="error" variant="dot" invisible={!error} />
       </div>

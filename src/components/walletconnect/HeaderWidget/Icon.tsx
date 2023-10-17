@@ -10,11 +10,10 @@ type IconProps = {
     name: string
     iconUrl: string
   }
-  disabled: boolean
 }
 
-const Icon = ({ sessionCount, sessionInfo, onClick, disabled }: IconProps): React.ReactElement => (
-  <ButtonBase disableRipple onClick={onClick} disabled={disabled}>
+const Icon = ({ sessionCount, sessionInfo, onClick }: IconProps): React.ReactElement => (
+  <ButtonBase disableRipple onClick={onClick}>
     <Badge
       badgeContent={
         sessionCount > 1

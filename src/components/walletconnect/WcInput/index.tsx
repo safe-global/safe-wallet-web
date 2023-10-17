@@ -5,10 +5,12 @@ import type { ReactElement } from 'react'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
 import { getClipboard } from '@/utils/clipboard'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 import css from '../SessionList/styles.module.css'
 
 const WcInput = ({ uri }: { uri: string }): ReactElement => {
+  const { safeLoaded } = useSafeInfo()
   const { walletConnect } = useContext(WalletConnectContext)
   const [value, setValue] = useState('')
   const [error, setError] = useState<Error>()
@@ -61,7 +63,7 @@ const WcInput = ({ uri }: { uri: string }): ReactElement => {
       onChange={(e) => onInput(e.target.value)}
       fullWidth
       autoComplete="off"
-      disabled={connecting}
+      disabled={connecting || !safeLoaded}
       error={!!error}
       label={error ? error.message : 'Pairing UI'}
       placeholder="wc:"
