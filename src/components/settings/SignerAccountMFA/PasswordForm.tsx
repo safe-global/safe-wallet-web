@@ -12,13 +12,16 @@ import {
   Divider,
 } from '@mui/material'
 import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, type ChangeEvent } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { enableMFA } from './helper'
 import CheckIcon from '@/public/images/common/check-filled.svg'
 import LockWarningIcon from '@/public/images/common/lock-warning.svg'
 import PasswordInput from '@/components/settings/SignerAccountMFA/PasswordInput'
 import css from './styles.module.css'
+import BarChartIcon from '@/public/images/common/bar-chart.svg'
+import ShieldIcon from '@/public/images/common/shield.svg'
+import ShieldOffIcon from '@/public/images/common/shield-off.svg'
 
 enum PasswordFieldNames {
   oldPassword = 'oldPassword',
@@ -32,7 +35,16 @@ type PasswordFormData = {
   [PasswordFieldNames.confirmPassword]: string
 }
 
+enum PasswordStrength {
+  strong,
+  medium,
+  weak,
+}
+
 export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit }) => {
+  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(PasswordStrength.weak)
+  const [passwordsMatch, setPasswordsMatch] = useState<boolean>(false)
+
   const formMethods = useForm<PasswordFormData>({
     mode: 'all',
     defaultValues: {
@@ -42,9 +54,9 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
     },
   })
 
-  const { formState, getValues, handleSubmit } = formMethods
+  const { formState, getValues, handleSubmit, reset } = formMethods
 
-  const [enablingMFA, setEnablingMFA] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const isPasswordSet = useMemo(() => {
     const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
@@ -52,23 +64,32 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
   }, [mpcCoreKit])
 
   const onSubmit = async (data: PasswordFormData) => {
-    setEnablingMFA(true)
+    setIsSubmitting(true)
     try {
       await enableMFA(mpcCoreKit, data)
     } finally {
-      setEnablingMFA(false)
+      setIsSubmitting(false)
     }
   }
+
+  const onReset = () => {
+    reset()
+  }
+
+  const isSubmitDisabled =
+    !passwordsMatch || passwordStrength !== PasswordStrength.strong || isSubmitting || !formMethods.formState.isValid
+
+  const strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})')
+  const mediumPassword = new RegExp('((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,}))')
 
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box display="flex" flexDirection="column" gap={3} alignItems="baseline">
-          {isPasswordSet ? (
-            <Typography>You already have a recovery password setup.</Typography>
-          ) : (
-            <Typography>You have no password setup. We suggest adding one to secure your Account.</Typography>
-          )}
+          <Typography>
+            Protect your account with a password. It will be used to restore access to your Safe in another browser or
+            on another device.
+          </Typography>
           <Accordion expanded={isPasswordSet}>
             <AccordionSummary>
               <Box display="flex" alignItems="center" gap={1}>
@@ -79,11 +100,9 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
             <AccordionDetails sx={{ p: 0 }}>
               <Grid container>
                 <Grid item container xs={12} md={7} gap={3} p={3}>
-                  <Typography>
-                    Your password will be used to access your social key and serve as a recovery factor.
-                  </Typography>
                   {isPasswordSet && (
                     <>
+                      <Typography>You already have a recovery password setup.</Typography>
                       <FormControl fullWidth>
                         <PasswordInput
                           name={PasswordFieldNames.oldPassword}
@@ -104,7 +123,51 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
                       label="New password"
                       helperText={formState.errors[PasswordFieldNames.newPassword]?.message}
                       required
+                      validate={(value) => {
+                        if (strongPassword.test(value)) {
+                          setPasswordStrength(PasswordStrength.strong)
+                        } else if (mediumPassword.test(value)) {
+                          setPasswordStrength(PasswordStrength.medium)
+                        } else {
+                          setPasswordStrength(PasswordStrength.weak)
+                        }
+                        return undefined
+                      }}
+                      inputProps={{
+                        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+                          setPasswordsMatch(false)
+
+                          if (event.target.value === '') {
+                            setPasswordStrength(PasswordStrength.weak)
+                          }
+                        },
+                      }}
                     />
+                    <Typography
+                      variant="body2"
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      mt={1}
+                      className={
+                        passwordStrength === PasswordStrength.strong
+                          ? css.strongPassword
+                          : passwordStrength === PasswordStrength.medium
+                          ? css.mediumPassword
+                          : css.weakPassword
+                      }
+                    >
+                      <BarChartIcon />
+                      {passwordStrength === PasswordStrength.strong
+                        ? 'Strong'
+                        : passwordStrength === PasswordStrength.medium
+                        ? 'Medium'
+                        : 'Weak'}{' '}
+                      password
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" mt={1}>
+                      Include at least 8 or more characters, a number, an uppercase letter and a symbol
+                    </Typography>
                   </FormControl>
 
                   <FormControl fullWidth>
@@ -113,19 +176,45 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
                       placeholder="Confirm new password"
                       label="Confirm new password"
                       helperText={formState.errors[PasswordFieldNames.confirmPassword]?.message}
-                      validate={(value: string) => {
+                      validate={(value) => {
                         const currentNewPW = getValues(PasswordFieldNames.newPassword)
-                        if (value !== currentNewPW) {
-                          return 'Passwords do not match'
-                        }
+                        setPasswordsMatch(value === currentNewPW)
+                        return undefined
+                      }}
+                      inputProps={{
+                        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+                          const currentNewPW = getValues(PasswordFieldNames.newPassword)
+                          setPasswordsMatch(event.target.value === currentNewPW)
+                        },
                       }}
                       required
                     />
+                    <Typography
+                      variant="body2"
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      mt={1}
+                      className={passwordsMatch ? css.passwordsMatch : css.passwordsNoMatch}
+                    >
+                      {passwordsMatch ? (
+                        <>
+                          <ShieldIcon /> Passwords match
+                        </>
+                      ) : (
+                        <>
+                          <ShieldOffIcon /> Passwords don&apos;t match
+                        </>
+                      )}
+                    </Typography>
                   </FormControl>
 
+                  <Button variant="text" onClick={onReset} disabled={!formState.isDirty}>
+                    Cancel
+                  </Button>
                   <Button
                     sx={{ justifySelf: 'flex-end', marginLeft: 'auto', fontSize: '14px' }}
-                    disabled={!formMethods.formState.isValid || enablingMFA}
+                    disabled={isSubmitDisabled}
                     type="submit"
                     variant="contained"
                   >

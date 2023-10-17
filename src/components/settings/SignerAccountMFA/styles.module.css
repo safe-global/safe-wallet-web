@@ -28,3 +28,36 @@
 .list li:last-child {
   margin-bottom: 0;
 }
+
+.weakPassword {
+  color: var(--color-error-main);
+}
+
+.weakPassword svg path:first-child {
+  stroke: var(--color-error-main);
+}
+
+.mediumPassword {
+  color: var(--color-warning-main);
+}
+
+.mediumPassword svg path:first-child,
+.mediumPassword svg path:nth-child(2) {
+  stroke: var(--color-warning-main);
+}
+
+.strongPassword {
+  color: var(--color-success-main);
+}
+
+.strongPassword svg path {
+  stroke: var(--color-success-main);
+}
+
+.passwordsMatch {
+  color: var(--color-success-main);
+}
+
+.passwordsNoMatch {
+  color: var(--color-error-main);
+}
