@@ -1,6 +1,8 @@
-import { useContext, useEffect, useMemo, useRef } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { BigNumber } from 'ethers'
 import { useRouter } from 'next/router'
+import { Methods } from '@safe-global/safe-apps-sdk'
+import type { EIP712TypedData, SafeSettings } from '@safe-global/safe-apps-sdk'
 
 import type { AppInfo, WalletSDK } from '.'
 import { SafeWalletProvider } from '.'
@@ -10,15 +12,18 @@ import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
 import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import SafeAppsTxFlow from '@/components/tx-flow/flows/SafeAppsTx'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
-import type { EIP712TypedData } from '@safe-global/safe-apps-sdk'
+import SignMessageOnChainFlow from '@/components/tx-flow/flows/SignMessageOnChain'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getAddress } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
-import useChains from '@/hooks/useChains'
+import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { NotificationMessages, showNotification } from './notifications'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import { selectOnChainSigning } from '@/store/settingsSlice'
+import { useAppSelector } from '@/store'
+import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
 
 const useWalletConnectApp = () => {
   const [matchingApps] = useRemoteSafeApps(SafeAppsTag.WALLET_CONNECT)
@@ -26,12 +31,19 @@ const useWalletConnectApp = () => {
 }
 
 export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
+  const { safe } = useSafeInfo()
+  const currentChain = useCurrentChain()
   const { setTxFlow } = useContext(TxModalContext)
   const web3ReadOnly = useWeb3ReadOnly()
   const router = useRouter()
   const { configs } = useChains()
   const pendingTxs = useRef<Record<string, string>>({})
   const wcApp = useWalletConnectApp()
+
+  const onChainSigning = useAppSelector(selectOnChainSigning)
+  const [settings, setSettings] = useState<SafeSettings>({
+    offChainSigning: true,
+  })
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.PROCESSING, async ({ txId, txHash }) => {
@@ -44,9 +56,21 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
   return useMemo<WalletSDK | undefined>(() => {
     if (!chainId || !safeAddress) return
 
-    const signMessage = (message: string | EIP712TypedData, appInfo: AppInfo): Promise<{ signature: string }> => {
+    const signMessage = (
+      message: string | EIP712TypedData,
+      appInfo: AppInfo,
+      method: Methods.signMessage | Methods.signTypedMessage,
+    ): Promise<{ signature: string }> => {
       const id = Math.random().toString(36).slice(2)
-      setTxFlow(<SignMessageFlow logoUri={appInfo.iconUrl} name={appInfo.name} message={message} requestId={id} />)
+
+      const shouldSignOffChain =
+        isOffchainEIP1271Supported(safe, currentChain) && !onChainSigning && settings.offChainSigning
+
+      if (shouldSignOffChain) {
+        setTxFlow(<SignMessageFlow logoUri={appInfo.iconUrl} name={appInfo.name} message={message} requestId={id} />)
+      } else {
+        setTxFlow(<SignMessageOnChainFlow props={{ appId: wcApp?.id, requestId: id, message, method }} />)
+      }
 
       const { title, options } = NotificationMessages.SIGNATURE_REQUEST(appInfo)
       showNotification(title, options)
@@ -63,11 +87,11 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
 
     return {
       async signMessage(message, appInfo) {
-        return await signMessage(message, appInfo)
+        return await signMessage(message, appInfo, Methods.signMessage)
       },
 
       async signTypedMessage(typedData, appInfo) {
-        return await signMessage(typedData as EIP712TypedData, appInfo)
+        return await signMessage(typedData as EIP712TypedData, appInfo, Methods.signTypedMessage)
       },
 
       async send(params: { txs: any[]; params: { safeTxGas: number } }, appInfo) {
@@ -139,12 +163,36 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         return null
       },
 
+      setSafeSettings(newSettings) {
+        const res = {
+          ...settings,
+          ...newSettings,
+        }
+
+        setSettings(newSettings)
+
+        return res
+      },
+
       async proxy(method, params) {
         const data = await web3ReadOnly?.send(method, params)
         return data.result
       },
     }
-  }, [chainId, safeAddress, setTxFlow, wcApp?.url, configs, router, web3ReadOnly])
+  }, [
+    chainId,
+    safeAddress,
+    safe,
+    currentChain,
+    onChainSigning,
+    settings,
+    setTxFlow,
+    wcApp?.id,
+    wcApp?.url,
+    configs,
+    router,
+    web3ReadOnly,
+  ])
 }
 
 const useSafeWalletProvider = (): SafeWalletProvider | undefined => {

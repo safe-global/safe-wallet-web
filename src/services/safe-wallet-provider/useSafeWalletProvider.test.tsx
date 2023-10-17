@@ -7,7 +7,9 @@ import { renderHook } from '@/tests/test-utils'
 import { TxModalContext } from '@/components/tx-flow'
 import useSafeWalletProvider, { _useTxFlowApi } from './useSafeWalletProvider'
 import { SafeWalletProvider } from '.'
-import { StoreHydrator } from '@/store'
+import { StoreHydrator, makeStore } from '@/store'
+import * as messages from '@/utils/safe-messages'
+import { createStoreHydrator } from '@/store/storeHydrator'
 
 const appInfo = {
   name: 'test',
@@ -61,8 +63,9 @@ describe('useSafeWalletProvider', () => {
       expect(result.current?.proxy).toBeDefined()
     })
 
-    it('should open signing window for messages', () => {
+    it('should open signing window for off-chain messages', () => {
       jest.spyOn(router, 'useRouter').mockReturnValue({} as unknown as router.NextRouter)
+      jest.spyOn(messages, 'isOffchainEIP1271Supported').mockReturnValue(true)
       const showNotificationSpy = jest.spyOn(notifications, 'showNotification')
 
       const mockSetTxFlow = jest.fn()
@@ -82,6 +85,7 @@ describe('useSafeWalletProvider', () => {
         body: 'test wants you to sign a message. Open the Safe{Wallet} to continue.',
       })
 
+      // SignMessageFlow props
       expect(mockSetTxFlow.mock.calls[0][0].props).toStrictEqual({
         logoUri: appInfo.iconUrl,
         name: appInfo.name,
@@ -92,8 +96,55 @@ describe('useSafeWalletProvider', () => {
       expect(resp).toBeInstanceOf(Promise)
     })
 
+    it('should open a signing window for on-chain messages', async () => {
+      jest.spyOn(router, 'useRouter').mockReturnValue({} as unknown as router.NextRouter)
+      jest.spyOn(messages, 'isOffchainEIP1271Supported').mockReturnValue(true)
+      const showNotificationSpy = jest.spyOn(notifications, 'showNotification')
+
+      const mockSetTxFlow = jest.fn()
+
+      const StoreHydrator = createStoreHydrator(() =>
+        makeStore({ settings: { signing: { useOnChainSigning: false } } }),
+      )
+
+      const { result, rerender } = renderHook(() => _useTxFlowApi('1', '0x1234567890000000000000000000000000000000'), {
+        // TODO: Improve render/renderHook to allow custom wrappers within the "defaults"
+        wrapper: ({ children }) => (
+          <StoreHydrator>
+            <TxModalContext.Provider value={{ setTxFlow: mockSetTxFlow } as any}>{children}</TxModalContext.Provider>
+          </StoreHydrator>
+        ),
+      })
+
+      // Set Safe settings to on-chain signing
+      const resp1 = result.current?.setSafeSettings({ offChainSigning: false })
+
+      expect(resp1).toStrictEqual({ offChainSigning: false })
+
+      rerender()
+
+      const resp2 = result?.current?.signMessage('message', appInfo)
+
+      expect(showNotificationSpy).toHaveBeenCalledWith('Signature request', {
+        body: 'test wants you to sign a message. Open the Safe{Wallet} to continue.',
+      })
+
+      // SignMessageOnChainFlow props
+      expect(mockSetTxFlow.mock.calls[0][0].props).toStrictEqual({
+        props: {
+          appId: undefined,
+          requestId: expect.any(String),
+          message: 'message',
+          method: 'signMessage',
+        },
+      })
+
+      expect(resp2).toBeInstanceOf(Promise)
+    })
+
     it('should open signing window for typed messages', () => {
       jest.spyOn(router, 'useRouter').mockReturnValue({} as unknown as router.NextRouter)
+      jest.spyOn(messages, 'isOffchainEIP1271Supported').mockReturnValue(true)
       const showNotificationSpy = jest.spyOn(notifications, 'showNotification')
 
       const mockSetTxFlow = jest.fn()
