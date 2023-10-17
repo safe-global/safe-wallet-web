@@ -1,15 +1,15 @@
 import { Core } from '@walletconnect/core'
 import { Web3Wallet } from '@walletconnect/web3wallet'
-import { getSdkError } from '@walletconnect/utils'
+import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import type Web3WalletType from '@walletconnect/web3wallet'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
 import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 
 import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
-import { EIP155, SAFE_WALLET_METADATA } from './constants'
+import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
 import { invariant } from '@/utils/helpers'
-import { getEip155ChainId, getNamespaces } from './utils'
+import { getEip155ChainId, stripEip155Prefix } from './utils'
 
 const SESSION_ADD_EVENT = 'session_add' as Web3WalletTypes.Event // Workaround: WalletConnect doesn't emit session_add event
 
@@ -79,10 +79,41 @@ class WalletConnectWallet {
     })
   }
 
+  private getNamespaces(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
+    // Most dApps require mainnet, but we aren't always on mainnet
+    // As workaround, we pretend include all required and optional chains with the Safe chainId
+    const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains || []
+    const optionalChains = proposal.params.optionalNamespaces[EIP155]?.chains || []
+
+    const supportedChainIds = [currentChainId].concat(
+      requiredChains.map(stripEip155Prefix),
+      optionalChains.map(stripEip155Prefix),
+    )
+
+    const eip155ChainIds = supportedChainIds.map(getEip155ChainId)
+    const eip155Accounts = eip155ChainIds.map((eip155ChainId) => `${eip155ChainId}:${safeAddress}`)
+
+    // Don't include optionalNamespaces methods/events
+    const methods = proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS
+    const events = proposal.params.requiredNamespaces[EIP155]?.events || []
+
+    return buildApprovedNamespaces({
+      proposal: proposal.params,
+      supportedNamespaces: {
+        [EIP155]: {
+          chains: eip155ChainIds,
+          accounts: eip155Accounts,
+          methods,
+          events,
+        },
+      },
+    })
+  }
+
   public async approveSession(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
     assertWeb3Wallet(this.web3Wallet)
 
-    const namespaces = getNamespaces(proposal, currentChainId, safeAddress)
+    const namespaces = this.getNamespaces(proposal, currentChainId, safeAddress)
 
     // Approve the session proposal
     const session = await this.web3Wallet.approveSession({
