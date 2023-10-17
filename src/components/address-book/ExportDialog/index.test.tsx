@@ -28,6 +28,6 @@ describe('ExportDialog', () => {
   it('should render the export dialog', () => {
     const onClose = jest.fn()
     render(<ExportDialog handleClose={onClose} />)
-    expect(screen.getByText('Export address book')).toBeInTheDocument()
+    expect(screen.getByText('Import address book')).toBeInTheDocument()
   })
 })
