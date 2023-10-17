@@ -1,68 +1,50 @@
-name: Release
+name: Docker
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - v*
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+  IMAGE_SOURCE: https://github.com/${{ github.repository }}
 
 jobs:
-  release:
+  # Push image to GitHub Packages.
+  push:
     runs-on: ubuntu-latest
-    name: Deploy release
-    env:
-      ARCHIVE_NAME: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
+    if: github.event_name == 'push'
+
     steps:
       - uses: actions/checkout@v3
 
-      - uses: ./.github/workflows/yarn
+      - name: Build image
+        run: |
+          docker build . \
+          --label "org.opencontainers.image.source=${IMAGE_SOURCE}" \
+          --label "org.opencontainers.image.revision=$(git rev-parse HEAD)" \
+          --label "org.opencontainers.image.version=$(git describe --tags --abbrev=0)" \
+          --label "org.opencontainers.image.licenses=AGPL-3.0" \
+          -f ./Dockerfile -t "${IMAGE_NAME}"
 
-      - uses: ./.github/workflows/build
+      - name: Login to GHCR
+        uses: docker/login-action@v2
         with:
-          secrets: ${{ toJSON(secrets) }}
-          prod: ${{ true }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create archive
-        run: tar -czf "$ARCHIVE_NAME".tar.gz out
-
-      - name: Create checksum
-        run: sha256sum "$ARCHIVE_NAME".tar.gz > ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-
-      - name: Upload archive
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ARCHIVE_NAME }}.tar.gz
-          asset_name: ${{ env.ARCHIVE_NAME }}.tar.gz
-          asset_content_type: application/gzip
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Upload checksum
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-          asset_name: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-          asset_content_type: text/plain
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-
-      # Script to upload release files
-      - name: 'Upload release build files for production'
-        env:
-          BUCKET: s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}
-          CHECKSUM_FILE: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-        run: bash ./scripts/github/s3_upload.sh
-
-      # Script to prepare production deployments
-      - run: bash ./scripts/github/prepare_production_deployment.sh
-        env:
-          PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
-          PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
-          VERSION_TAG: ${{ github.event.release.tag_name }}
+      - name: Push image
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+          echo IMAGE_NAME=$IMAGE_NAME
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_NAME:$VERSION
+          docker tag $IMAGE_NAME $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:$VERSION
+          docker push $IMAGE_NAME:latest

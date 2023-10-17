@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 
 # install deps
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 ENV NODE_ENV production
 
