@@ -14,8 +14,6 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 import BatchButton from './BatchButton'
-import { useAppSelector } from '@/store'
-import { selectQueuedTransactionById } from '@/store/txQueueSlice'
 
 const SignForm = ({
   safeTx,
@@ -40,8 +38,6 @@ const SignForm = ({
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
   const hasSigned = useAlreadySigned(safeTx)
 
-  const tx = useAppSelector((state) => selectQueuedTransactionById(state, txId))
-
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent, isAddingToBatch = false) => {
     e.preventDefault()
@@ -57,7 +53,7 @@ const SignForm = ({
     setSubmitError(undefined)
 
     try {
-      await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin, tx))
+      await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin))
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._805, err)
