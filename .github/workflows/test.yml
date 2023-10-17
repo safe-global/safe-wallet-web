@@ -21,8 +21,7 @@ jobs:
       - name: Annotations and coverage report
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
+          skip-step: install
           package-manager: yarn
+          test-script: yarn test:ci
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          TZ: CET
-          DEBUG_PRINT_LIMIT: 30000
