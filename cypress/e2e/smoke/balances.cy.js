@@ -9,7 +9,7 @@ const FIAT_AMOUNT_COLUMN = 2
 
 describe('Assets > Coins', () => {
   // Fiat balance regex
-  const fiatRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2}`)
+  const fiatRegex = balances.fiatRegex
 
   before(() => {
     cy.clearLocalStorage()
