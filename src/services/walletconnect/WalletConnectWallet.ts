@@ -12,6 +12,7 @@ import { invariant } from '@/utils/helpers'
 import { getEip155ChainId, stripEip155Prefix } from './utils'
 
 const SESSION_ADD_EVENT = 'session_add' as Web3WalletTypes.Event // Workaround: WalletConnect doesn't emit session_add event
+const SESSION_REJECT_EVENT = 'session_reject' as Web3WalletTypes.Event // Workaround: WalletConnect doesn't emit session_reject event
 
 function assertWeb3Wallet<T extends Web3WalletType | null>(web3Wallet: T): asserts web3Wallet {
   return invariant(web3Wallet, 'WalletConnect not initialized')
@@ -173,6 +174,9 @@ class WalletConnectWallet {
       id: proposal.id,
       reason: getSdkError('UNSUPPORTED_CHAINS'),
     })
+
+    // Workaround: WalletConnect doesn't have a session_reject event
+    this.web3Wallet?.events.emit(SESSION_REJECT_EVENT, proposal)
   }
 
   /**
@@ -185,6 +189,19 @@ class WalletConnectWallet {
     // Return the unsubscribe function
     return () => {
       this.web3Wallet?.off('session_proposal', handler)
+    }
+  }
+
+  /**
+   * Subscribe to session proposal rejections
+   */
+  public onSessionReject(handler: (e: Web3WalletTypes.SessionProposal) => void) {
+    // @ts-expect-error - custom event payload
+    this.web3Wallet?.on(SESSION_REJECT_EVENT, handler)
+
+    return () => {
+      // @ts-expect-error
+      this.web3Wallet?.off(SESSION_REJECT_EVENT, handler)
     }
   }
 
