@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Button, Grid, Typography, Divider, Box } from '@mui/material'
+import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
 import { lightPalette } from '@safe-global/safe-react-components'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -21,12 +21,75 @@ import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { ExecutionMethodSelector, ExecutionMethod } from '@/components/tx/ExecutionMethodSelector'
-import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
+import { MAX_HOUR_RELAYS, useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import classnames from 'classnames'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { BigNumber } from 'ethers'
 import { usePendingSafe } from '../StatusStep/usePendingSafe'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { SPONSOR_LOGOS } from '@/components/tx/SponsoredBy'
+import Image from 'next/image'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+
+export const NetworkFee = ({
+  totalFee,
+  chain,
+  willRelay,
+}: {
+  totalFee: string
+  chain: ChainInfo | undefined
+  willRelay: boolean
+}) => {
+  const wallet = useWallet()
+
+  const isSocialLogin = wallet?.label === ONBOARD_MPC_MODULE_LABEL
+
+  if (!isSocialLogin) {
+    return (
+      <Box
+        p={1}
+        sx={{
+          backgroundColor: lightPalette.secondary.background,
+          color: 'static.main',
+          width: 'fit-content',
+          borderRadius: '6px',
+        }}
+      >
+        <Typography variant="body1" className={classnames({ [css.sponsoredFee]: willRelay })}>
+          <b>
+            &asymp; {totalFee} {chain?.nativeCurrency.symbol}
+          </b>
+        </Typography>
+      </Box>
+    )
+  }
+
+  if (willRelay) {
+    return (
+      <>
+        <Typography fontWeight="bold">Free</Typography>
+        <Typography variant="body2">
+          Your account is sponsored by
+          <Image
+            src={SPONSOR_LOGOS[chain?.chainId || '']}
+            alt={chain?.chainName || ''}
+            width={16}
+            height={16}
+            style={{ margin: '-3px 0px -3px 4px' }}
+          />{' '}
+          Gnosis Chain
+        </Typography>
+      </>
+    )
+  }
+
+  return (
+    <Alert severity="error">
+      You have used up your {MAX_HOUR_RELAYS} free transactions per hour. Please try again later.
+    </Alert>
+  )
+}
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
@@ -105,12 +168,15 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     onSubmit(pendingSafe)
   }
 
+  const isSocialLogin = wallet?.label === ONBOARD_MPC_MODULE_LABEL
+  const isDisabled = isWrongChain || (isSocialLogin && !willRelay)
+
   return (
     <>
       <Box className={layoutCss.row}>
         <Grid container spacing={3}>
           <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
-          <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />
+          {data.name && <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />}
           <ReviewRow
             name="Owners"
             value={
@@ -142,62 +208,50 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       </Box>
 
       <Divider />
-      <Box className={layoutCss.row}>
-        <Grid container xs={12} spacing={3}>
-          {canRelay && (
-            <Grid item container spacing={3}>
-              <ReviewRow
-                name="Execution method"
-                value={
-                  <ExecutionMethodSelector
-                    executionMethod={executionMethod}
-                    setExecutionMethod={setExecutionMethod}
-                    relays={minRelays}
-                  />
-                }
-              />
-            </Grid>
-          )}
-          <Grid item container spacing={3}>
+      <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
+        {canRelay && !isSocialLogin && (
+          <Grid container spacing={3}>
             <ReviewRow
-              name="Est. network fee"
+              name="Execution method"
               value={
-                <>
-                  <Box
-                    p={1}
-                    sx={{
-                      backgroundColor: lightPalette.secondary.background,
-                      color: 'static.main',
-                      width: 'fit-content',
-                      borderRadius: '6px',
-                    }}
-                  >
-                    <Typography variant="body1" className={classnames({ [css.sponsoredFee]: willRelay })}>
-                      <b>
-                        &asymp; {totalFee} {chain?.nativeCurrency.symbol}
-                      </b>
-                    </Typography>
-                  </Box>
-                  {willRelay ? null : (
-                    <Typography variant="body2" color="text.secondary" mt={1}>
-                      You will have to confirm a transaction with your connected wallet.
-                    </Typography>
-                  )}
-                </>
+                <ExecutionMethodSelector
+                  executionMethod={executionMethod}
+                  setExecutionMethod={setExecutionMethod}
+                  relays={minRelays}
+                />
               }
             />
           </Grid>
+        )}
+
+        <Grid container spacing={3}>
+          <ReviewRow
+            name="Est. network fee"
+            value={
+              <>
+                <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
+
+                {!willRelay && !isSocialLogin && (
+                  <Typography variant="body2" color="text.secondary" mt={1}>
+                    You will have to confirm a transaction with your connected wallet.
+                  </Typography>
+                )}
+              </>
+            }
+          />
         </Grid>
 
         {isWrongChain && <NetworkWarning />}
       </Box>
+
       <Divider />
+
       <Box className={layoutCss.row}>
         <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
           <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
             Back
           </Button>
-          <Button onClick={createSafe} variant="contained" size="stretched" disabled={isWrongChain}>
+          <Button onClick={createSafe} variant="contained" size="stretched" disabled={isDisabled}>
             Next
           </Button>
         </Box>

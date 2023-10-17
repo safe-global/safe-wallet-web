@@ -5,7 +5,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 
 const noop = () => {}
 
-type TxModalContextType = {
+export type TxModalContextType = {
   txFlow: JSX.Element | undefined
   setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => void
   setFullWidth: (fullWidth: boolean) => void

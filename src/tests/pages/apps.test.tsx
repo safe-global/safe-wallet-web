@@ -599,7 +599,7 @@ describe('AppsPage', () => {
           expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
         })
 
-        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+        const categorySelector = screen.getByText('Select category')
 
         await act(() => fireEvent.mouseDown(categorySelector))
 
@@ -652,7 +652,7 @@ describe('AppsPage', () => {
           expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
         })
 
-        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+        const categorySelector = screen.getByText('Select category')
 
         await act(() => fireEvent.mouseDown(categorySelector))
 
@@ -707,7 +707,7 @@ describe('AppsPage', () => {
           expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
         })
 
-        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+        const categorySelector = screen.getByText('Select category')
 
         await act(() => fireEvent.mouseDown(categorySelector))
 

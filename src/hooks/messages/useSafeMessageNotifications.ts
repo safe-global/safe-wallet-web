@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessageListItem } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -80,6 +80,7 @@ const useSafeMessageNotifications = () => {
   const notifications = useAppSelector(selectNotifications)
   const chain = useCurrentChain()
   const safeAddress = useSafeAddress()
+  const notifiedAwaitingMessageHashes = useRef<Array<string>>([])
 
   const msgsNeedingConfirmation = useMemo(() => {
     if (!page?.results) {
@@ -95,21 +96,25 @@ const useSafeMessageNotifications = () => {
     }
 
     const messageHash = msgsNeedingConfirmation[0].messageHash
-    const hasNotified = notifications.some(({ groupKey }) => groupKey === messageHash)
+    const hasNotified = notifiedAwaitingMessageHashes.current.includes(messageHash)
 
-    if (!hasNotified) {
-      dispatch(
-        showNotification({
-          variant: 'info',
-          message: 'A message requires your confirmation.',
-          link: {
-            href: `${AppRoutes.transactions.messages}?safe=${chain?.shortName}:${safeAddress}`,
-            title: 'View messages',
-          },
-          groupKey: messageHash,
-        }),
-      )
+    if (hasNotified) {
+      return
     }
+
+    dispatch(
+      showNotification({
+        variant: 'info',
+        message: 'A message requires your confirmation.',
+        link: {
+          href: `${AppRoutes.transactions.messages}?safe=${chain?.shortName}:${safeAddress}`,
+          title: 'View messages',
+        },
+        groupKey: messageHash,
+      }),
+    )
+
+    notifiedAwaitingMessageHashes.current.push(messageHash)
   }, [dispatch, isOwner, notifications, msgsNeedingConfirmation, chain?.shortName, safeAddress])
 }
 
