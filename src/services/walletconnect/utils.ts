@@ -5,6 +5,10 @@ import type { ProposalTypes } from '@walletconnect/types'
 
 import { EIP155, SAFE_COMPATIBLE_METHODS } from './constants'
 
+export const isPairingUri = (uri: string): boolean => {
+  return uri.startsWith('wc:')
+}
+
 export const getEip155ChainId = (chainId: string): string => {
   return `${EIP155}:${chainId}`
 }
