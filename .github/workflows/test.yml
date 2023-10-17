@@ -18,14 +18,10 @@ jobs:
 
       - uses: ./.github/workflows/yarn
 
-      - name: Run tests
-        run: 'yarn test:ci'
-
-      - name: Comment in failing tests
-        uses: mattallty/jest-github-action@v1.0.3
-        if: failure()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Annotations and coverage report
+        uses: ArtiomTr/jest-coverage-report-action@v2
         with:
-          test-command: 'echo unit tests already executed'
-          coverage-comment: false
+          skip-step: install
+          package-manager: yarn
+          test-script: yarn test:ci
+          github-token: ${{ secrets.GITHUB_TOKEN }}

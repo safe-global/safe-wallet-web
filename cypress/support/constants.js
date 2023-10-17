@@ -4,6 +4,9 @@ export const GOERLI_TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 export const SEPOLIA_TEST_SAFE_1 = 'sep:0xBb26E3717172d5000F87DeFd391994f789D80aEB'
 // SEPOLIA_TEST_SAFE_2 Has no transactions, 1 owner, using for verificatons only
 export const SEPOLIA_TEST_SAFE_2 = 'sep:0x33C4AA5729D91FfB3B87AEf8a324bb6304Fb905c'
+export const SEPOLIA_TEST_SAFE_3 = 'sep:0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7'
+export const SEPOLIA_TEST_SAFE_4 = 'sep:0x03042B890b99552b60A073F808100517fb148F60'
+export const SEPOLIA_TEST_SAFE_5 = 'sep:0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b6415'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
 export const PAGINATION_TEST_SAFE = 'gor:0x850493a15914aAC05a821A3FAb973b4598889A7b'
 export const TEST_SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
@@ -12,6 +15,8 @@ export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED
 export const SEPOLIA_OWNER_2 = '0x96D4c6fFC338912322813a77655fCC926b9A5aC5'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
 export const SIDEBAR_ADDRESS = '0x04f8...1a91'
+export const ENS_TEST_SEPOLIA = 'testenssepolia.eth'
+export const ENS_TEST_SEPOLIA_INVALID = 'ivladitestenssepolia.eth'
 
 export const BROWSER_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__browserPermissions`
 export const SAFE_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__safePermissions`
@@ -31,6 +36,7 @@ export const openAppsUrl = '/apps/open?safe='
 export const homeUrl = '/home?safe='
 export const welcomeUrl = '/welcome'
 export const chainMaticUrl = '/welcome?chain=matic'
+export const createNewSafeSepoliaUrl = '/new-safe/create?chain=sep'
 export const appsUrl = '/apps'
 export const requestPermissionsUrl = '/request-permissions'
 export const getPermissionsUrl = '/get-permissions'
@@ -92,6 +98,7 @@ export const transactionStatus = {
 
 export const tokenNames = {
   wrappedEther: 'Wrapped Ether',
+  sepoliaEther: 'Sepolia Ether',
 }
 
 export const addressBookErrrMsg = {
@@ -100,6 +107,9 @@ export const addressBookErrrMsg = {
   exceedChars: 'Maximum 50 symbols',
   ownSafe: 'Cannot use Safe Account itself as owner',
   alreadyAdded: 'Address already added',
+  ownerAdded: 'Owner is already added',
+  failedResolve: 'Failed to resolve the address',
+  emptyAddress: 'Owner',
 }
 export const addresBookContacts = {
   user1: {
@@ -114,4 +124,8 @@ export const addresBookContacts = {
 
 export const localStorageKeys = {
   SAFE_v2__addressBook: 'SAFE_v2__addressBook',
+}
+
+export const connectWalletNames = {
+  e2e: 'E2E Wallet',
 }

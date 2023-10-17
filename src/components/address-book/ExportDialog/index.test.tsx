@@ -1,4 +1,6 @@
 import { _getCsvData } from '.'
+import ExportDialog from '.'
+import { render, screen } from '@/tests/test-utils'
 
 describe('ExportDialog', () => {
   describe('getCsvData', () => {
@@ -21,5 +23,11 @@ describe('ExportDialog', () => {
         { address: '0x2', name: 'Alice Cooper', chainId: '100' },
       ])
     })
+  })
+
+  it('should render the export dialog', () => {
+    const onClose = jest.fn()
+    render(<ExportDialog handleClose={onClose} />)
+    expect(screen.getByText('Export address book')).toBeInTheDocument()
   })
 })

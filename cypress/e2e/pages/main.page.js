@@ -36,11 +36,7 @@ export function verifyCheckboxeState(element, index, state) {
 }
 
 export function verifyInputValue(selector, value) {
-  cy.get(selector)
-    .invoke('val')
-    .should(($value) => {
-      console.log($value)
-    })
+  cy.get(selector).invoke('val').should('include', value)
 }
 
 export function generateRandomString(length) {
@@ -52,4 +48,42 @@ export function generateRandomString(length) {
   }
 
   return result
+}
+
+export function verifyElementsCount(element, count) {
+  cy.get(element).should('have.length', count)
+}
+
+export function verifyValuesDoNotExist(element, values) {
+  values.forEach((value) => {
+    cy.get(element).should('not.contain', value)
+  })
+}
+
+export function verifyValuesExist(element, values) {
+  values.forEach((value) => {
+    cy.get(element).should('contain', value)
+  })
+}
+
+export function verifyElementsExist(elements) {
+  elements.forEach((element) => {
+    cy.get(element).should('exist')
+  })
+}
+
+export function getTextToArray(selector, textArray) {
+  cy.get(selector).each(($element) => {
+    textArray.push($element.text())
+  })
+}
+
+export function extractDigitsToArray(selector, digitsArray) {
+  cy.get(selector).each(($element) => {
+    const text = $element.text()
+    const digits = text.match(/\d+\.\d+|\d+\b/g)
+    if (digits) {
+      digitsArray.push(...digits)
+    }
+  })
 }

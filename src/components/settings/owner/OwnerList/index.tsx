@@ -49,14 +49,16 @@ export const OwnerList = () => {
                 <CheckWallet>
                   {(isOk) => (
                     <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
-                      <Tooltip title="Replace owner">
-                        <IconButton
-                          onClick={() => setTxFlow(<ReplaceOwnerFlow address={address} />)}
-                          size="small"
-                          disabled={!isOk}
-                        >
-                          <SvgIcon component={ReplaceOwnerIcon} inheritViewBox color="border" fontSize="small" />
-                        </IconButton>
+                      <Tooltip title={isOk ? 'Replace owner' : undefined}>
+                        <span>
+                          <IconButton
+                            onClick={() => setTxFlow(<ReplaceOwnerFlow address={address} />)}
+                            size="small"
+                            disabled={!isOk}
+                          >
+                            <SvgIcon component={ReplaceOwnerIcon} inheritViewBox color="border" fontSize="small" />
+                          </IconButton>
+                        </span>
                       </Tooltip>
                     </Track>
                   )}
@@ -68,14 +70,16 @@ export const OwnerList = () => {
                   <CheckWallet>
                     {(isOk) => (
                       <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
-                        <Tooltip title="Remove owner">
-                          <IconButton
-                            onClick={() => setTxFlow(<RemoveOwnerFlow name={name} address={address} />)}
-                            size="small"
-                            disabled={!isOk}
-                          >
-                            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                          </IconButton>
+                        <Tooltip title={isOk ? 'Remove owner' : undefined}>
+                          <span>
+                            <IconButton
+                              onClick={() => setTxFlow(<RemoveOwnerFlow name={name} address={address} />)}
+                              size="small"
+                              disabled={!isOk}
+                            >
+                              <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                            </IconButton>
+                          </span>
                         </Tooltip>
                       </Track>
                     )}

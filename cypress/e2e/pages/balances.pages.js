@@ -1,4 +1,7 @@
-const etherscanLink = 'a[aria-label="View on goerli.etherscan.io"]'
+import * as main from '../pages/main.page'
+
+let etherscanLink = 'a[aria-label="View on goerli.etherscan.io"]'
+let etherscanLinkSepolia = 'a[aria-label="View on sepolia.etherscan.io"]'
 export const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 const currencyDropdown = '[id="currency"]'
 const currencyDropdownList = 'ul[role="listbox"]'
@@ -8,8 +11,20 @@ const hiddeTokensBtn = '[data-testid="toggle-hidden-assets"]'
 const hiddenTokenCheckbox = 'input[type="checkbox"]'
 const paginationPageList = 'ul[role="listbox"]'
 const currencyDropDown = 'div[id="currency"]'
-const hiddenTokenSaveBtn = 'Save'
+export const tokenListTable = 'table[aria-labelledby="tableTitle"]'
+const tokenListDropdown = 'div[id="tokenlist-select"]'
+
+const hiddenTokenSaveBtn = 'span[data-track="assets: Save hide dialog"]'
+const hiddenTokenCancelBtn = 'span[data-track="assets: Cancel hide dialog"]'
+const hiddenTokenDeselectAllBtn = 'span[data-track="assets: Deselect all hide dialog"]'
+const hiddenTokenIcon = 'svg[data-testid="VisibilityOffOutlinedIcon"]'
+
 const hideTokenDefaultString = 'Hide tokens'
+const gotItStr = 'Got it!'
+const assetNameSortBtnStr = 'Asset'
+const assetBalanceSortBtnStr = 'Balance'
+const sendBtnStr = 'Send'
+const sendTokensStr = 'Send tokens'
 
 const pageRowsDefault = '25'
 const rowsPerPage10 = '10'
@@ -21,12 +36,40 @@ const pageCountString1to25 = '1–25 of'
 const pageCountString1to10 = '1–10 of'
 const pageCountString10to20 = '11–20 of'
 
+export const fiatRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2}`)
+
+export const tokenListOptions = {
+  allTokens: 'span[data-track="assets: Show all tokens"]',
+  default: 'span[data-track="assets: Show default tokens"]',
+}
 export const currencyEUR = 'EUR'
 export const currencyUSD = 'USD'
 
+export const currencyAave = 'AAVE'
+export const currencyAaveAlttext = 'AAVE'
+export const currentcyAaveFormat = '27 AAVE'
+
+export const currencyTestTokenA = 'TestTokenA'
+export const currencyTestTokenAAlttext = 'TT_A'
+export const currentcyTestTokenAFormat = '15 TT_A'
+
+export const currencyTestTokenB = 'TestTokenB'
+export const currencyTestTokenBAlttext = 'TT_B'
+export const currentcyTestTokenBFormat = '21 TT_B'
+
+export const currencyUSDC = 'USDC'
+export const currencyTestUSDCAlttext = 'USDC'
+export const currentcyTestUSDCFormat = '73 USDC'
+
+export const currencyLink = 'LINK'
+export const currencyLinkAlttext = 'LINK'
+export const currentcyLinkFormat = '35.94 LINK'
+
 export const currencyDai = 'Dai'
+export const currencyDaiCap = 'DAI'
 export const currencyDaiAlttext = 'DAI'
 export const currentcyDaiFormat = '120,496.61 DAI'
+export const currencyDaiFormat_2 = '82 DAI'
 
 export const currencyEther = 'Wrapped Ether'
 export const currencyEtherAlttext = 'WETH'
@@ -48,6 +91,121 @@ export const currentcyGnosisFormat = '< 0.00001 GNO'
 export const currencyOx = /^0x$/
 export const currentcyOxFormat = '1.003 ZRX'
 
+export function clickOnSendBtn(index) {
+  cy.get('button')
+    .contains(sendBtnStr)
+    .then((elements) => {
+      cy.wrap(elements[index]).invoke('css', 'opacity', 100).click()
+    })
+  cy.get('div').contains(sendTokensStr).should('exist')
+}
+
+export function showSendBtn(index) {
+  cy.get('button')
+    .contains(sendBtnStr)
+    .then((elements) => {
+      cy.wrap(elements[index]).invoke('css', 'opacity', 100).trigger('mouseover', { force: true })
+    })
+}
+
+export function verifyTableRows(assetsLength) {
+  cy.get(balanceSingleRow).should('have.length', assetsLength)
+}
+
+export function clickOnTokenNameSortBtn() {
+  cy.get('span').contains(assetNameSortBtnStr).click()
+  cy.wait(500)
+}
+
+export function clickOnTokenBalanceSortBtn() {
+  cy.get('span').contains(assetBalanceSortBtnStr).click()
+  cy.wait(500)
+}
+
+export function verifyTokenNamesOrder(option = 'ascending') {
+  const tokens = []
+
+  main.getTextToArray('tr p', tokens)
+
+  cy.wrap(tokens).then((arr) => {
+    let sortedNames = [...arr].sort()
+    if (option == 'descending') sortedNames = [...arr].sort().reverse()
+    expect(arr).to.deep.equal(sortedNames)
+  })
+}
+
+export function verifyTokenBalanceOrder(option = 'ascending') {
+  const balances = []
+
+  main.extractDigitsToArray('tr td:nth-child(2) span', balances)
+
+  cy.wrap(balances).then((arr) => {
+    let sortedBalance = [...arr].sort()
+    if (option == 'descending') sortedBalance = [...arr].sort().reverse()
+    expect(arr).to.deep.equal(sortedBalance)
+  })
+}
+
+export function deselecAlltHiddenTokenSelection() {
+  cy.get(hiddenTokenDeselectAllBtn).click()
+}
+
+export function cancelSaveHiddenTokenSelection() {
+  cy.get(hiddenTokenCancelBtn).click()
+}
+
+export function checkTokenCounter(value) {
+  cy.get(hiddenTokenIcon)
+    .parent()
+    .within(() => {
+      cy.get('p').should('include.text', value)
+    })
+}
+
+export function checkHiddenTokenBtnCounter(value) {
+  cy.get(hiddeTokensBtn).within(() => {
+    cy.get('p').should('include.text', value)
+  })
+}
+
+export function verifyEachRowHasCheckbox(state) {
+  cy.get(tokenListTable).within(() => {
+    cy.get('tbody').within(() => {
+      cy.get('tr').each(($row) => {
+        if (state) {
+          cy.wrap($row).find('td').eq(3).find(hiddenTokenCheckbox).should('exist').should(state)
+          return
+        }
+        cy.wrap($row).find('td').eq(3).find(hiddenTokenCheckbox).should('exist')
+      })
+    })
+  })
+}
+
+export function acceptSpamWarning() {
+  cy.get('button').contains(gotItStr).click()
+  verifySpamWarningNotdisplayed()
+}
+
+export function verifySpamWarningNotdisplayed() {
+  cy.contains(gotItStr).should('not.exist')
+}
+export function verifyTokensTabIsSelected(option) {
+  cy.get(`a[aria-selected="${option}"]`).contains('Tokens')
+}
+
+export function verifyTokenIsPresent(token) {
+  cy.get(tokenListTable).contains(token)
+}
+
+export function selectTokenList(option) {
+  cy.get(tokenListDropdown)
+    .click()
+    .then(() => {
+      cy.get(option).click()
+    })
+}
+
 export function verityTokenAltImageIsVisible(currency, alttext) {
   cy.contains(currency)
     .parents('tr')
@@ -56,16 +214,35 @@ export function verityTokenAltImageIsVisible(currency, alttext) {
     })
 }
 
-export function verifyAssetNameHasExplorerLink(currency, columnName) {
-  cy.contains(currency).parents('tr').find('td').eq(columnName).find(etherscanLink).should('be.visible')
+export function verifyAssetNameHasExplorerLink(currency, columnName, sepolia = false) {
+  if (sepolia) etherscanLink = etherscanLinkSepolia
+  cy.get(tokenListTable)
+    .contains(currency)
+    .parents('tr')
+    .find('td')
+    .eq(columnName)
+    .find(etherscanLink)
+    .should('be.visible')
+}
+
+export function verifyAssetExplorerLinkNotAvailable(currency, columnName) {
+  cy.get(tokenListTable)
+    .contains(currency)
+    .parents('tr')
+    .find('td')
+    .eq(columnName)
+    .within(() => {
+      cy.get(etherscanLink).should('not.exist')
+    })
 }
 
 export function verifyBalance(currency, tokenAmountColumn, alttext) {
-  cy.contains(currency).parents('tr').find('td').eq(tokenAmountColumn).contains(alttext)
+  cy.get(tokenListTable).contains(currency).parents('tr').find('td').eq(tokenAmountColumn).contains(alttext)
 }
 
 export function verifyTokenBalanceFormat(currency, formatString, tokenAmountColumn, fiatAmountColumn, fiatRegex) {
-  cy.contains(currency)
+  cy.get(tokenListTable)
+    .contains(currency)
     .parents('tr')
     .within(() => {
       cy.get('td').eq(tokenAmountColumn).contains(formatString)
@@ -103,6 +280,12 @@ export function hideAsset(asset) {
 
 export function openHideTokenMenu() {
   cy.get(hiddeTokensBtn).click()
+  main.verifyElementsExist([hiddenTokenSaveBtn, hiddenTokenCancelBtn, hiddenTokenDeselectAllBtn, hiddenTokenIcon])
+  cy.get(hiddenTokenIcon)
+    .parent()
+    .within(() => {
+      cy.get('p')
+    })
 }
 
 export function clickOnTokenCheckbox(token) {
@@ -110,7 +293,7 @@ export function clickOnTokenCheckbox(token) {
 }
 
 export function saveHiddenTokenSelection() {
-  cy.contains(hiddenTokenSaveBtn).click()
+  cy.get(hiddenTokenSaveBtn).click()
 }
 
 export function verifyTokenIsVisible(token) {
