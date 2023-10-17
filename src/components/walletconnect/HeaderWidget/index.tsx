@@ -19,6 +19,7 @@ const usePrepopulatedUri = (): [string, () => void] => {
 
   const clearUri = useCallback(() => {
     setSearchParamWcUri(null)
+    // This does not clear the system clipboard, just state
     setClipboardWcUri('')
   }, [setClipboardWcUri, setSearchParamWcUri])
 

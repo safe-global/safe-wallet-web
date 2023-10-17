@@ -32,11 +32,3 @@ export const getClipboard = async (): Promise<string> => {
 
   return clipboard
 }
-
-export const setClipboard = async (data: string): Promise<void> => {
-  try {
-    await navigator.clipboard.writeText(data)
-  } catch (e) {
-    logError(Errors._709, e)
-  }
-}

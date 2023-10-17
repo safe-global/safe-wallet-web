@@ -43,9 +43,7 @@ const WcInput = ({ uri }: { uri: string }): ReactElement => {
   )
 
   useEffect(() => {
-    if (uri.startsWith('wc:')) {
-      onInput(uri)
-    }
+    onInput(uri)
   }, [onInput, uri])
 
   const onPaste = useCallback(async () => {

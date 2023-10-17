@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 
 import { getClipboard, isClipboardGranted } from '@/utils/clipboard'
-import { Errors, logError } from '../exceptions'
+import { isPairingUri } from './utils'
 
-export const useWalletConnectClipboardUri = (): [string, (data: string) => Promise<void>] => {
+export const useWalletConnectClipboardUri = (): [string, Dispatch<SetStateAction<string>>] => {
   const [state, setState] = useState('')
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export const useWalletConnectClipboardUri = (): [string, (data: string) => Promi
 
       const clipboard = await getClipboard()
 
-      if (clipboard.startsWith('wc:')) {
+      if (isPairingUri(clipboard)) {
         setState(clipboard)
       }
     }
@@ -34,16 +35,5 @@ export const useWalletConnectClipboardUri = (): [string, (data: string) => Promi
     }
   }, [])
 
-  const setClipboard = async (data: string) => {
-    await navigator.clipboard
-      .writeText(data)
-      .then(() => {
-        setState(data)
-      })
-      .catch((e) => {
-        logError(Errors._709, e)
-      })
-  }
-
-  return [state, setClipboard]
+  return [state, setState]
 }
