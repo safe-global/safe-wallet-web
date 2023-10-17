@@ -1,5 +1,4 @@
 import { Box, CircularProgress, Typography } from '@mui/material'
-import type { Palette } from '@mui/material'
 import type { ReactElement } from 'react'
 import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -15,7 +14,7 @@ import classNames from 'classnames'
 
 import txSummaryCss from '@/components/transactions/TxSummary/styles.module.css'
 
-const getStatusColor = (value: SafeMessageStatus, palette: Palette) => {
+const getStatusColor = (value: SafeMessageStatus, palette: Record<string, Record<string, string>>): string => {
   switch (value) {
     case SafeMessageStatus.CONFIRMED:
       return palette.success.main

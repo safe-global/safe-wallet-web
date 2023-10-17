@@ -45,7 +45,7 @@ const NotificationCenter = (): ReactElement => {
   const canExpand = notifications.length > NOTIFICATION_CENTER_LIMIT + 1
 
   const notificationsToShow =
-    canExpand && showAll ? chronologicalNotifications : chronologicalNotifications.slice(0, NOTIFICATION_CENTER_LIMIT)
+    showAll || !canExpand ? chronologicalNotifications : chronologicalNotifications.slice(0, NOTIFICATION_CENTER_LIMIT)
 
   const unreadCount = useMemo(() => notifications.filter(({ isRead }) => !isRead).length, [notifications])
   const hasUnread = unreadCount > 0

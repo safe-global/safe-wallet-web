@@ -12,6 +12,7 @@ import { useAppSelector } from '@/store'
 import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
+import madProps from '@/utils/mad-props'
 
 const COL_1 = 'address'
 const COL_2 = 'name'
@@ -35,14 +36,19 @@ export const _getCsvData = (addressBooks: AddressBookState): CsvData => {
   return csvData
 }
 
-const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElement => {
-  const addressBooks: AddressBookState = useAppSelector(selectAllAddressBooks)
-  const length = Object.values(addressBooks).reduce<number>((acc, entries) => acc + Object.keys(entries).length, 0)
+function ExportDialog({
+  allAddressBooks,
+  handleClose,
+}: {
+  allAddressBooks: AddressBookState
+  handleClose: () => void
+}): ReactElement {
+  const length = Object.values(allAddressBooks).reduce<number>((acc, entries) => acc + Object.keys(entries).length, 0)
   const { CSVDownloader } = useCSVDownloader()
   // safe-address-book-1970-01-01
   const filename = `safe-address-book-${new Date().toISOString().slice(0, 10)}`
 
-  const csvData = useMemo(() => _getCsvData(addressBooks), [addressBooks])
+  const csvData = useMemo(() => _getCsvData(allAddressBooks), [allAddressBooks])
 
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -87,4 +93,8 @@ const ExportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
   )
 }
 
-export default ExportDialog
+const useAllAddressBooks = () => useAppSelector(selectAllAddressBooks)
+
+export default madProps(ExportDialog, {
+  allAddressBooks: useAllAddressBooks,
+})
