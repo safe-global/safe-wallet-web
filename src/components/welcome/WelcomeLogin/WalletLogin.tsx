@@ -19,33 +19,35 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
 
   if (wallet !== null && wallet?.label !== ONBOARD_MPC_MODULE_LABEL) {
     return (
-      <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION} label={wallet.label}>
-        <Button variant="contained" sx={{ padding: '8px 16px' }} fullWidth onClick={onLogin}>
-          <Box
-            width="100%"
-            justifyContent="space-between"
-            display="flex"
-            flexDirection="row"
-            alignItems="center"
-            gap={1}
-          >
-            <Box display="flex" flexDirection="column" alignItems="flex-start">
-              <Typography variant="subtitle2" fontWeight={700}>
-                Continue with {wallet.label}
-              </Typography>
-              {wallet.address && <EthHashInfo address={wallet.address} shortAddress avatarSize={16} />}
+      <Box sx={{ width: '100%' }}>
+        <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION} label={wallet.label}>
+          <Button variant="contained" sx={{ padding: '8px 16px' }} fullWidth onClick={onLogin}>
+            <Box
+              width="100%"
+              justifyContent="space-between"
+              display="flex"
+              flexDirection="row"
+              alignItems="center"
+              gap={1}
+            >
+              <Box display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="subtitle2" fontWeight={700}>
+                  Continue with {wallet.label}
+                </Typography>
+                {wallet.address && <EthHashInfo address={wallet.address} shortAddress avatarSize={16} />}
+              </Box>
+              {wallet.icon && (
+                <img
+                  width="24px"
+                  height="24px"
+                  src={`data:image/svg+xml;utf8,${encodeURIComponent(wallet.icon)}`}
+                  alt="icon"
+                />
+              )}
             </Box>
-            {wallet.icon && (
-              <img
-                width="24px"
-                height="24px"
-                src={`data:image/svg+xml;utf8,${encodeURIComponent(wallet.icon)}`}
-                alt="icon"
-              />
-            )}
-          </Box>
-        </Button>
-      </Track>
+          </Button>
+        </Track>
+      </Box>
     )
   }
 

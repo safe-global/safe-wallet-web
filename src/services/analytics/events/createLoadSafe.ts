@@ -8,7 +8,7 @@ export const CREATE_SAFE_EVENTS = {
     category: CREATE_SAFE_CATEGORY,
     event: EventType.META,
   },
-  CREATE_BUTTON: {
+  OPEN_SAFE_CREATION: {
     action: 'Open stepper',
     category: CREATE_SAFE_CATEGORY,
   },
