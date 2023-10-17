@@ -11,7 +11,6 @@ import {
   SvgIcon,
   Divider,
 } from '@mui/material'
-import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import { useState, useMemo, type ChangeEvent } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { enableMFA } from './helper'
@@ -22,6 +21,8 @@ import css from './styles.module.css'
 import BarChartIcon from '@/public/images/common/bar-chart.svg'
 import ShieldIcon from '@/public/images/common/shield.svg'
 import ShieldOffIcon from '@/public/images/common/shield-off.svg'
+import useMPC from '@/hooks/wallets/mpc/useMPC'
+import { useAppDispatch } from '@/store'
 
 enum PasswordFieldNames {
   oldPassword = 'oldPassword',
@@ -46,7 +47,9 @@ const strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-
 // At least 8 characters without a symbol
 const mediumPassword = new RegExp('((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,}))')
 
-export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit }) => {
+export const PasswordForm = () => {
+  const dispatch = useAppDispatch()
+  const mpcCoreKit = useMPC()
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(PasswordStrength.weak)
   const [passwordsMatch, setPasswordsMatch] = useState<boolean>(false)
 
@@ -62,12 +65,16 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
   const { formState, getValues, handleSubmit, reset } = formMethods
 
   const isPasswordSet = useMemo(() => {
+    if (!mpcCoreKit) return false
+
     const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
     return securityQuestions.isEnabled()
   }, [mpcCoreKit])
 
   const onSubmit = async (data: PasswordFormData) => {
-    await enableMFA(mpcCoreKit, data)
+    if (!mpcCoreKit) return
+
+    await enableMFA(dispatch, mpcCoreKit, data)
     reset()
   }
 

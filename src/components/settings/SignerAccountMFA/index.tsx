@@ -1,13 +1,13 @@
-import useMPC from '@/hooks/wallets/mpc/useMPC'
 import { Box, Typography } from '@mui/material'
-import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 
 import { PasswordForm } from './PasswordForm'
+import useWallet from '@/hooks/wallets/useWallet'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 
 const SignerAccountMFA = () => {
-  const mpcCoreKit = useMPC()
+  const wallet = useWallet()
 
-  if (mpcCoreKit?.status !== COREKIT_STATUS.LOGGED_IN) {
+  if (wallet?.label !== ONBOARD_MPC_MODULE_LABEL) {
     return (
       <Box>
         <Typography>You are currently not logged in with a social account</Typography>
@@ -15,7 +15,7 @@ const SignerAccountMFA = () => {
     )
   }
 
-  return <PasswordForm mpcCoreKit={mpcCoreKit} />
+  return <PasswordForm />
 }
 
 export default SignerAccountMFA
