@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
-import { getClipboard, isFirefox } from '@/utils/clipboard'
+import { getClipboard, isPastingSupported } from '@/utils/clipboard'
 
 import css from '../SessionList/styles.module.css'
 
@@ -62,7 +62,7 @@ const WcInput = ({ uri }: { uri: string }): ReactElement => {
       label={error ? error.message : 'Pairing UI'}
       placeholder="wc:"
       InputProps={{
-        endAdornment: isFirefox() ? undefined : (
+        endAdornment: isPastingSupported() ? undefined : (
           <InputAdornment position="end">
             <Button variant="contained" onClick={onPaste} className={css.button}>
               Paste
