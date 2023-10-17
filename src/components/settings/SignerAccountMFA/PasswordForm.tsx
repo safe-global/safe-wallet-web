@@ -42,10 +42,10 @@ enum PasswordStrength {
   weak,
 }
 
-// At least 8 characters, one lowercase, one uppercase, one number, one symbol
-const strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})')
-// At least 8 characters without a symbol
-const mediumPassword = new RegExp('((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,}))')
+// At least 12 characters, one lowercase, one uppercase, one number, one symbol
+const strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{12,})')
+// At least 9 characters, one lowercase, one uppercase, one number, one symbol
+const mediumPassword = new RegExp('((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{9,}))')
 
 export const PasswordForm = () => {
   const dispatch = useAppDispatch()
@@ -84,7 +84,7 @@ export const PasswordForm = () => {
 
   const isSubmitDisabled =
     !passwordsMatch ||
-    passwordStrength !== PasswordStrength.strong ||
+    passwordStrength === PasswordStrength.weak ||
     formState.isSubmitting ||
     !formMethods.formState.isValid
 
