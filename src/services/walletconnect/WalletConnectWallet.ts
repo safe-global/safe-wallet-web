@@ -80,46 +80,50 @@ class WalletConnectWallet {
     })
   }
 
+  private getNamespaces(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
+    // Most dApps require mainnet, but we aren't always on mainnet
+    // As workaround, we pretend include all required and optional chains with the Safe chainId
+    const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains || []
+    const optionalChains = proposal.params.optionalNamespaces[EIP155]?.chains || []
+
+    const supportedChainIds = [currentChainId].concat(
+      requiredChains.map(stripEip155Prefix),
+      optionalChains.map(stripEip155Prefix),
+    )
+
+    const eip155ChainIds = supportedChainIds.map(getEip155ChainId)
+    const eip155Accounts = eip155ChainIds.map((eip155ChainId) => `${eip155ChainId}:${safeAddress}`)
+
+    // Don't include optionalNamespaces methods/events
+    const methods = proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS
+    const events = proposal.params.requiredNamespaces[EIP155]?.events || []
+
+    return buildApprovedNamespaces({
+      proposal: proposal.params,
+      supportedNamespaces: {
+        [EIP155]: {
+          chains: eip155ChainIds,
+          accounts: eip155Accounts,
+          methods,
+          events,
+        },
+      },
+    })
+  }
+
   public async approveSession(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
     assertWeb3Wallet(this.web3Wallet)
 
-    // Actual safe chainId
-    const safeChains = [currentChainId]
-
-    const getNamespaces = (chainIds: string[], methods: string[]) => {
-      const eip155ChainIds = chainIds.map(getEip155ChainId)
-
-      // Create a list of addresses for each chainId
-      const eip155Accounts = eip155ChainIds.map((eip155ChainId) => `${eip155ChainId}:${safeAddress}`)
-
-      return buildApprovedNamespaces({
-        proposal: proposal.params,
-        supportedNamespaces: {
-          [EIP155]: {
-            chains: eip155ChainIds,
-            methods,
-            accounts: eip155Accounts,
-            // Don't include optionalNamespaces events
-            events: proposal.params.requiredNamespaces[EIP155]?.events || [],
-          },
-        },
-      })
-    }
+    const namespaces = this.getNamespaces(proposal, currentChainId, safeAddress)
 
     // Approve the session proposal
-    // Most dapps require mainnet, but we aren't always on mainnet
-    // A workaround, pretend to support all required chains
-    const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains || []
-    // TODO: Filter against those which we support
-    const optionalChains = proposal.params.optionalNamespaces[EIP155]?.chains || []
-    const chains = safeChains.concat(requiredChains.map(stripEip155Prefix), optionalChains.map(stripEip155Prefix))
-
     const session = await this.web3Wallet.approveSession({
       id: proposal.id,
-      namespaces: getNamespaces(chains, proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS),
+      namespaces,
     })
 
-    await this.updateSession(session, currentChainId, safeAddress)
+    // Align the session with the current chainId
+    await this.chainChanged(session.topic, currentChainId)
 
     // Workaround: WalletConnect doesn't have a session_add event
     this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)
@@ -140,12 +144,17 @@ class WalletConnectWallet {
     const hasNewChainId = !currentEip155ChainIds.includes(newEip155ChainId)
     const hasNewAccount = !currentEip155Accounts.includes(newEip155Account)
 
-    // Add new chainId and/or account to the session namespace
-    if (hasNewChainId || hasNewAccount) {
+    // Switching to unsupported chain
+    if (hasNewChainId) {
+      return this.disconnectSession(session)
+    }
+
+    // Add new account to the session namespace
+    if (hasNewAccount) {
       const namespaces: SessionTypes.Namespaces = {
         [EIP155]: {
           ...session.namespaces[EIP155],
-          chains: [newEip155ChainId, ...currentEip155ChainIds],
+          chains: currentEip155ChainIds,
           accounts: [newEip155Account, ...currentEip155Accounts],
         },
       }
