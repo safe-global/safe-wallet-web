@@ -1815,13 +1815,6 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
-"@babel/runtime@^7.21.5":
-  version "7.22.10"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.10.tgz#ae3e9631fd947cb7e3610d3e9d8fef5f76696682"
-  integrity sha512-21t/fkKLMZI4pqP2wlmsQAWnYW1PDyKyyUV4vCi+B25ydmdaYTKXPwCj0BzSUnZf4seIiYvSA3jcZ3gdsMFkLQ==
-  dependencies:
-    regenerator-runtime "^0.14.0"
-
 "@babel/runtime@^7.22.10":
   version "7.23.1"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.1.tgz#72741dc4d413338a91dcb044a86f3c0bc402646d"
@@ -5206,12 +5199,12 @@
   resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.4.3.tgz#af975e367743fa91989cd666666aec31a8f50591"
   integrity sha512-kCUc5MEwaEMakkO5x7aoD+DLi02ehmEM2QCGWvNqAS1dV/fAvORWEjnjsEIvml59M7Y5kCkWN6fCCyPOe8OL6Q==
 
-"@tkey-mpc/chrome-storage@^8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@tkey-mpc/chrome-storage/-/chrome-storage-8.2.2.tgz#bc36b0cb35035024fd6f06d58184473e9c5d502b"
-  integrity sha512-1hBpoVsS9JYAdOskzlRjBKpJGLQFhrany6Htuw6U90gNIq8sf5u3rGK/faIJr2w5dARm5dqSwAnW6qPGsMjH1A==
+"@tkey-mpc/chrome-storage@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@tkey-mpc/chrome-storage/-/chrome-storage-9.0.2.tgz#77a0e46df75c844ee9c5f4b07963d22edb44b71b"
+  integrity sha512-3yeliKVCJP77OhG5J93uj2/0XwASO6H8WqSZgAgbVxXbC6oPazKTv84YVw0rkXmLE7gkHqagcjNiNOQaV29VRw==
   dependencies:
-    "@tkey-mpc/common-types" "^8.2.2"
+    "@tkey-mpc/common-types" "^9.0.2"
     webextension-polyfill "^0.10.0"
 
 "@tkey-mpc/common-types@^8.2.2":
@@ -5227,70 +5220,85 @@
     ts-custom-error "^3.3.1"
     web3-utils "^1.8.1"
 
-"@tkey-mpc/core@^8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@tkey-mpc/core/-/core-8.2.2.tgz#1aeb306b2cfa5a4980f423870d4882d9ed8b53a0"
-  integrity sha512-uy1jmvyXpoStEWp3GhYzpe/QJrdekXDMNt6tcugrm1sYk2E4cUoqcIRjB/HyduaONvqQK4i2AyCCdhgFeRUfWw==
+"@tkey-mpc/common-types@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@tkey-mpc/common-types/-/common-types-9.0.2.tgz#ad8fc7c905a27caf1c7f6fa724b14768b46e3de2"
+  integrity sha512-TJrij2Fq/klAcLlpECqxNUnzeLcChNmrjQdwYJXZKMBsyUo3jYmAGTAqA7/6leaHSZfW18DMHcLrsSeiHQw63g==
   dependencies:
-    "@tkey-mpc/common-types" "^8.2.2"
-    "@toruslabs/eccrypto" "^3.0.0"
-    "@toruslabs/http-helpers" "^4.0.0"
+    "@toruslabs/customauth" "^16.0.6"
+    "@toruslabs/eccrypto" "^4.0.0"
     "@toruslabs/rss-client" "^1.5.0"
+    "@toruslabs/torus.js" "^11.0.6"
+    bn.js "^5.2.1"
+    elliptic "^6.5.4"
+    serialize-error "^8.1.0"
+    ts-custom-error "^3.3.1"
+
+"@tkey-mpc/core@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@tkey-mpc/core/-/core-9.0.2.tgz#ca659d5288e5e818c36dd0618d2903fc6a9e1349"
+  integrity sha512-sc3w+rjc37OSQwff0bpVlmUDX58hBKY8AOSOsuWJoMfA7l8CFWyQp7iRBiVIxIgOojfeosu0RUcq2Z8HsTKK0g==
+  dependencies:
+    "@tkey-mpc/common-types" "^9.0.2"
+    "@toruslabs/eccrypto" "^4.0.0"
+    "@toruslabs/http-helpers" "^5.0.0"
+    "@toruslabs/rss-client" "^1.5.0"
+    "@toruslabs/torus.js" "^11.0.6"
     bn.js "^5.2.1"
     elliptic "^6.5.4"
     json-stable-stringify "^1.0.2"
-    web3-utils "^1.8.1"
 
-"@tkey-mpc/security-questions@^8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@tkey-mpc/security-questions/-/security-questions-8.2.2.tgz#bec69becec6956e50c65c26b4d65a5a29886b170"
-  integrity sha512-wyZtUvapwft82ehDEpy/g/Qo/3L7PqIZCXl3WiijD2pAyh4D+10J+EnqU7gEY89itIZQR3U8Vfl9yl5QULiHaA==
+"@tkey-mpc/security-questions@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@tkey-mpc/security-questions/-/security-questions-9.0.2.tgz#9ed6f944713f08d290bba920738488451db083fe"
+  integrity sha512-ekxMnmdbwuDRlEuXhZcG4U2W1Y1NFSo10Ctb8Mrw9FNz0XR7lTIAcLn3dlvCQHRmKLT1hlziW8oby4nsMpqsbA==
   dependencies:
-    "@tkey-mpc/common-types" "^8.2.2"
+    "@tkey-mpc/common-types" "^9.0.2"
     bn.js "^5.2.1"
-    web3-utils "^1.8.1"
+    ethereum-cryptography "^2.1.2"
 
-"@tkey-mpc/service-provider-base@^8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@tkey-mpc/service-provider-base/-/service-provider-base-8.2.2.tgz#a94ec561aa88064e7171ea19a1733f345dfd8f91"
-  integrity sha512-U8Pfnm+iQy+f7eSBTd5li286fLc1+ltnLIi3bo1qADV/KcCGMgWEljLaNY+RZGO1SJdIg1rKCOvWkO/lj4hJiQ==
+"@tkey-mpc/service-provider-base@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@tkey-mpc/service-provider-base/-/service-provider-base-9.0.2.tgz#03dc78cd3684bd261a1135ab0dfeb08c9b7b74c2"
+  integrity sha512-Gk3xF1NFV/BqmwMNKDB//DNoN9nff4kGeNxXiVnlxhQKZuX9phzd/sxJljKc6tutOK5YdOcvot7ZuwJg2/vZjA==
   dependencies:
-    "@tkey-mpc/common-types" "^8.2.2"
-    bn.js "^5.2.1"
-    elliptic "^6.5.4"
-
-"@tkey-mpc/service-provider-torus@^8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@tkey-mpc/service-provider-torus/-/service-provider-torus-8.2.2.tgz#b57d51a7c596cc69d5c2236e204a08ac0059ddf4"
-  integrity sha512-Ocq6xaRGKbQ6M91Dq3T2ude9ZdCnA2s4itifxtRtg+R2sJdAQpYB4sgqbbmgNUX7CsDbjmuGvSJyi4Oobpgmkw==
-  dependencies:
-    "@tkey-mpc/common-types" "^8.2.2"
-    "@tkey-mpc/service-provider-base" "^8.2.2"
-    "@toruslabs/customauth" "^15.0.3"
-    "@toruslabs/torus.js" "^10.0.5"
+    "@tkey-mpc/common-types" "^9.0.2"
     bn.js "^5.2.1"
     elliptic "^6.5.4"
 
-"@tkey-mpc/share-serialization@^8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@tkey-mpc/share-serialization/-/share-serialization-8.2.2.tgz#b0d0aed02aad6082957af7d9b302c00f61a71335"
-  integrity sha512-pqaaKYHF6kKAPC72X+xlptLBwiUfr/BW3v1UiJQOCviCa4GThPkAyrAX80yPjKSeabWQxt3eoIc9m3e+Ydt4bw==
+"@tkey-mpc/service-provider-torus@^9.0.3":
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/@tkey-mpc/service-provider-torus/-/service-provider-torus-9.0.3.tgz#fdfddf000c55fb22ac92c135db5d46c8d9615e2a"
+  integrity sha512-9/OjTqjruR5AWMwJPRuR+ZxsZXzt9jQfzfNtde13VHSjtogcLwT12U1QTHJ7tsIZYckBy3ZVDbNpIcTOzz70tQ==
   dependencies:
-    "@tkey-mpc/common-types" "^8.2.2"
+    "@tkey-mpc/common-types" "^9.0.2"
+    "@tkey-mpc/service-provider-base" "^9.0.2"
+    "@toruslabs/customauth" "^16.0.6"
+    "@toruslabs/torus.js" "^11.0.6"
+    bn.js "^5.2.1"
+    elliptic "^6.5.4"
+
+"@tkey-mpc/share-serialization@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@tkey-mpc/share-serialization/-/share-serialization-9.0.2.tgz#a303d5eed1e6d9665a8aede5324193682bf4760e"
+  integrity sha512-dtQFbWvV9A4y6SGpx72WaRcwSREf/Yld9f4+u7FWe81WY575N655SheqM08gYYEGZlcQ+TiCMN3C2rq9I+NpMw==
+  dependencies:
+    "@tkey-mpc/common-types" "^9.0.2"
     "@types/create-hash" "1.2.2"
     bn.js "^5.2.1"
-    create-hash "^1.2.0"
+    ethereum-cryptography "^2.1.2"
 
-"@tkey-mpc/storage-layer-torus@^8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@tkey-mpc/storage-layer-torus/-/storage-layer-torus-8.2.2.tgz#e01a8e1f53ffc360c2f3f4cb9cc82af1b7a9e33a"
-  integrity sha512-BCwNrijcwwY1Z7itF+ATiAPxSeJXrHlqa3kor5HfAGgrgZMG6UFCMWpgwTLfCqfjVqT1C6yjC1aG7L5TXLT/Rg==
+"@tkey-mpc/storage-layer-torus@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@tkey-mpc/storage-layer-torus/-/storage-layer-torus-9.0.2.tgz#a59067379ead3e110359209a004ab69356f7930e"
+  integrity sha512-qxQ+O9GerdaM66DVh8Qi7oIRjBbcsUcuP+F9P5YdH8J+XEFDMSjhuuBaQpU3xaMFxpTozkSv4Kh/zHWyQE2YeA==
   dependencies:
-    "@tkey-mpc/common-types" "^8.2.2"
-    "@toruslabs/http-helpers" "^4.0.0"
+    "@tkey-mpc/common-types" "^9.0.2"
+    "@toruslabs/http-helpers" "^5.0.0"
+    base64url "3.0.1"
     bn.js "^5.2.1"
+    ethereum-cryptography "^2.1.2"
     json-stable-stringify "^1.0.2"
-    web3-utils "^1.8.1"
 
 "@tootallnate/once@2":
   version "2.0.0"
@@ -5351,20 +5359,6 @@
     socket.io-client "^4.6.1"
     unload "^2.4.1"
 
-"@toruslabs/broadcast-channel@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/broadcast-channel/-/broadcast-channel-7.0.0.tgz#2e7f61cc0dceb16a6269a09f60a906f83462e26c"
-  integrity sha512-lyt2Els735qUXczPk743aHbIXZn+TeK/7YqKpUrY+xTyvXs9JyE6RahW+EY4yU90KAJx8+N9ZXZlcJP617T4bg==
-  dependencies:
-    "@babel/runtime" "^7.21.5"
-    "@toruslabs/eccrypto" "^3.0.0"
-    "@toruslabs/metadata-helpers" "^4.0.0"
-    bowser "^2.11.0"
-    loglevel "^1.8.1"
-    oblivious-set "1.1.1"
-    socket.io-client "^4.6.1"
-    unload "^2.4.1"
-
 "@toruslabs/broadcast-channel@^8.0.0":
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@toruslabs/broadcast-channel/-/broadcast-channel-8.0.0.tgz#904ee44fceeb861d16f282ca211d1e2adf16e2f8"
@@ -5379,39 +5373,15 @@
     socket.io-client "^4.7.2"
     unload "^2.4.1"
 
-"@toruslabs/constants@^11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/constants/-/constants-11.0.0.tgz#c4a0ed1528ec5bbd6f9d1c4cd415913c693034e2"
-  integrity sha512-ImSw2cFMCdJH2zZ9jAR2vfK03YXpEGxBuNctx2Mq7fDyx+h0FvFSOV/VHMcjKcYCsPZyw1WjRCP0rDVY+7lHZg==
-
 "@toruslabs/constants@^13.0.1":
   version "13.0.1"
   resolved "https://registry.yarnpkg.com/@toruslabs/constants/-/constants-13.0.1.tgz#c08bbf21f4efaad37cf5311d52b9ab9964aa8b9b"
   integrity sha512-haFppvgyHfKl2uTQKkrWOkgQmLgzbqxhIvaNvRGei4FgFNJNLr5+ju8/PwwbgKhQUi7adkeU0pjwFYITJyHEPw==
 
-"@toruslabs/customauth@^15.0.3":
-  version "15.0.5"
-  resolved "https://registry.yarnpkg.com/@toruslabs/customauth/-/customauth-15.0.5.tgz#f1c4ac0885662ca134213946fa10508cccb4fda8"
-  integrity sha512-qTbzvGjQyOZPvIlf2SEFj0dDhqc7ayd4ifZTa6ElmmoxrFLMdhnT4ckQrnS9T1w+y849kf7D+ijcsOSbLXErtg==
-  dependencies:
-    "@chaitanyapotti/register-service-worker" "^1.7.3"
-    "@toruslabs/broadcast-channel" "^7.0.0"
-    "@toruslabs/constants" "^11.0.0"
-    "@toruslabs/eccrypto" "^3.0.0"
-    "@toruslabs/fetch-node-details" "^11.0.1"
-    "@toruslabs/http-helpers" "^4.0.0"
-    "@toruslabs/metadata-helpers" "^4.0.0"
-    "@toruslabs/torus.js" "^10.0.5"
-    bowser "^2.11.0"
-    events "^3.3.0"
-    jwt-decode "^3.1.2"
-    lodash.merge "^4.6.2"
-    loglevel "^1.8.1"
-
-"@toruslabs/customauth@^16.0.4":
-  version "16.0.4"
-  resolved "https://registry.yarnpkg.com/@toruslabs/customauth/-/customauth-16.0.4.tgz#d5ce64d3b0401be75b27c2e096f8f8ed7cbc33ed"
-  integrity sha512-vi4BJQk5J30e/5OoKrl25aYma0diZxcd0EXKz7ywYiN7nMrkCoqqkAls8uHPbpz3YinkNW3TBePUa9pUI7Eb4A==
+"@toruslabs/customauth@^16.0.6":
+  version "16.0.6"
+  resolved "https://registry.yarnpkg.com/@toruslabs/customauth/-/customauth-16.0.6.tgz#cf3f0e614735fb799a9748b992026f81a9ee2ab6"
+  integrity sha512-4+Cxbxz3fxm750MMaMqMoJS0x8RZdD0y1tHLa/2T+b993cjRoQRixddTa3rWNYdbWsg2rgcmGkpXxywq3aLzwA==
   dependencies:
     "@chaitanyapotti/register-service-worker" "^1.7.3"
     "@toruslabs/broadcast-channel" "^8.0.0"
@@ -5421,6 +5391,7 @@
     "@toruslabs/http-helpers" "^5.0.0"
     "@toruslabs/metadata-helpers" "^5.0.0"
     "@toruslabs/torus.js" "^11.0.5"
+    base64url "^3.0.1"
     bowser "^2.11.0"
     events "^3.3.0"
     jwt-decode "^3.1.2"
@@ -5448,16 +5419,6 @@
   dependencies:
     elliptic "^6.5.4"
 
-"@toruslabs/fetch-node-details@^11.0.1":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@toruslabs/fetch-node-details/-/fetch-node-details-11.0.1.tgz#fb9542de5715a9bda5857fd47b5f38668e1ce29f"
-  integrity sha512-nkKWEDCBYinbLSWsL6ggbS4cdmis3Pk/SuVAzx29dhSaqW58QG+90KuvGqbiw42T8qaqC6kGtUmje7GOroCFgA==
-  dependencies:
-    "@toruslabs/constants" "^11.0.0"
-    "@toruslabs/fnd-base" "^11.0.1"
-    "@toruslabs/http-helpers" "^4.0.0"
-    loglevel "^1.8.1"
-
 "@toruslabs/fetch-node-details@^13.0.1":
   version "13.0.1"
   resolved "https://registry.yarnpkg.com/@toruslabs/fetch-node-details/-/fetch-node-details-13.0.1.tgz#4c9c4af44b3cdc961e36c84ce9af6886e1a0bf11"
@@ -5467,13 +5428,6 @@
     "@toruslabs/fnd-base" "^13.0.1"
     "@toruslabs/http-helpers" "^5.0.0"
     loglevel "^1.8.1"
-
-"@toruslabs/fnd-base@^11.0.1":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@toruslabs/fnd-base/-/fnd-base-11.0.1.tgz#7a8a5e733e3e59596e1885a315bcd424de1d7ce2"
-  integrity sha512-Dd3r5xXeyODpSA03AuD91iZnXVS2GAQlhr8zv6WaNRoX5PCo0+7VXA8e/DnPdpEWtwL9GTKpdulr5ShksM128w==
-  dependencies:
-    "@toruslabs/constants" "^11.0.0"
 
 "@toruslabs/fnd-base@^13.0.1":
   version "13.0.1"
@@ -5486,14 +5440,6 @@
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@toruslabs/http-helpers/-/http-helpers-3.4.0.tgz#6d1da9e6aba094af62e73cf639a69844c82202f3"
   integrity sha512-CoeJSL32mpp0gmYjxv48odu6pfjHk/rbJHDwCtYPcMHAl+qUQ/DTpVOOn9U0fGkD+fYZrQmZbRkXFgLhiT0ajQ==
-  dependencies:
-    lodash.merge "^4.6.2"
-    loglevel "^1.8.1"
-
-"@toruslabs/http-helpers@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/http-helpers/-/http-helpers-4.0.0.tgz#ca3341b7adb5f6795ded54967814850a9ff76d38"
-  integrity sha512-ef/Svevk54JANOn3Kf6UPf8X/vZlYHrusNFt8VV/LLahhVNXCXEcO8goC1bHkecu/u20CUyo9HJa0pn8fHh1sg==
   dependencies:
     lodash.merge "^4.6.2"
     loglevel "^1.8.1"
@@ -5526,17 +5472,6 @@
     "@toruslabs/http-helpers" "^3.4.0"
     elliptic "^6.5.4"
     ethereum-cryptography "^2.0.0"
-    json-stable-stringify "^1.0.2"
-
-"@toruslabs/metadata-helpers@^4.0.0":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@toruslabs/metadata-helpers/-/metadata-helpers-4.0.1.tgz#fe91ca8fd45deece2a0b930f329b62c46a8a2fdd"
-  integrity sha512-0DFPxaNqmuVwFaEddl94dR/rpin5X+Odl1HR8cnzcrbzjLrOuKkGOdWtB6gnIqCUD6onMFO3156crgbHvagrLg==
-  dependencies:
-    "@toruslabs/eccrypto" "^3.0.0"
-    "@toruslabs/http-helpers" "^4.0.0"
-    elliptic "^6.5.4"
-    ethereum-cryptography "^2.1.2"
     json-stable-stringify "^1.0.2"
 
 "@toruslabs/openlogin-jrpc@^2.6.0":
@@ -5644,24 +5579,24 @@
     web3-eth-contract "^1.8.1"
     web3-utils "^1.8.1"
 
-"@toruslabs/torus.js@^10.0.5":
-  version "10.0.5"
-  resolved "https://registry.yarnpkg.com/@toruslabs/torus.js/-/torus.js-10.0.5.tgz#32f7512cb70dee0284c1b1939b638522b1230060"
-  integrity sha512-dP2C1k/wxGFE+JrMavsFKucupPXjIBQwtaU++ENhsBGqkT8DWv4rzjlwwQj//VMf6ayELV7Jrr7yfOhEAeDzug==
-  dependencies:
-    "@toruslabs/constants" "^11.0.0"
-    "@toruslabs/eccrypto" "^3.0.0"
-    "@toruslabs/http-helpers" "^4.0.0"
-    bn.js "^5.2.1"
-    elliptic "^6.5.4"
-    ethereum-cryptography "^2.0.0"
-    json-stable-stringify "^1.0.2"
-    loglevel "^1.8.1"
-
 "@toruslabs/torus.js@^11.0.5":
   version "11.0.5"
   resolved "https://registry.yarnpkg.com/@toruslabs/torus.js/-/torus.js-11.0.5.tgz#89f6190ce004f269cd5a0941af1c5be2eba71bb8"
   integrity sha512-CrC7foZB/2HrvMN5qVI4mEpPbmRAX5/2cdn3pgvgxWpEXQTNnJcxIO8vb2eT7iO6GhBYADnMZyxxWPMdk8S11Q==
+  dependencies:
+    "@toruslabs/constants" "^13.0.1"
+    "@toruslabs/eccrypto" "^4.0.0"
+    "@toruslabs/http-helpers" "^5.0.0"
+    bn.js "^5.2.1"
+    elliptic "^6.5.4"
+    ethereum-cryptography "^2.1.2"
+    json-stable-stringify "^1.0.2"
+    loglevel "^1.8.1"
+
+"@toruslabs/torus.js@^11.0.6":
+  version "11.0.6"
+  resolved "https://registry.yarnpkg.com/@toruslabs/torus.js/-/torus.js-11.0.6.tgz#982f28555922e66822b38d265c6f8a38bc094db3"
+  integrity sha512-l+Ba/DX1L2cLngiL08r8zZmRQ/A3MJ4pl20MaTzQuwxS2OfOXSReKld4YOWHwo5NEd36PHZdZ43qbh0NrzrwVQ==
   dependencies:
     "@toruslabs/constants" "^13.0.1"
     "@toruslabs/eccrypto" "^4.0.0"
@@ -7071,26 +7006,26 @@
     loglevel "^1.8.1"
     ts-custom-error "^3.3.1"
 
-"@web3auth/mpc-core-kit@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@web3auth/mpc-core-kit/-/mpc-core-kit-1.1.0.tgz#b122a1ad2644e19f563679ee33c8cb6a9948d1a0"
-  integrity sha512-T7I9BB9hrZbpY9fwYXe7l0qNbKbbLlMvU4Gl1aPAyWXrnIP+bma9qqq0pVZaAx0DFehz023Yf5zgiwt6GR2F/g==
+"@web3auth/mpc-core-kit@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@web3auth/mpc-core-kit/-/mpc-core-kit-1.1.2.tgz#308f9d441b1275ebcc2c96be8ff976decee6dbcf"
+  integrity sha512-bx16zYdC3D2KPp5wv55fn6W3RcMGUUbHeoClaDI2czwbUrZyql71A4qQdyi6tMTzy/uAXWZrfB+U4NGk+ec9Pw==
   dependencies:
-    "@tkey-mpc/chrome-storage" "^8.2.2"
-    "@tkey-mpc/common-types" "^8.2.2"
-    "@tkey-mpc/core" "^8.2.2"
-    "@tkey-mpc/security-questions" "^8.2.2"
-    "@tkey-mpc/service-provider-torus" "^8.2.2"
-    "@tkey-mpc/share-serialization" "^8.2.2"
-    "@tkey-mpc/storage-layer-torus" "^8.2.2"
+    "@tkey-mpc/chrome-storage" "^9.0.2"
+    "@tkey-mpc/common-types" "^9.0.2"
+    "@tkey-mpc/core" "^9.0.2"
+    "@tkey-mpc/security-questions" "^9.0.2"
+    "@tkey-mpc/service-provider-torus" "^9.0.3"
+    "@tkey-mpc/share-serialization" "^9.0.2"
+    "@tkey-mpc/storage-layer-torus" "^9.0.2"
     "@toruslabs/constants" "^13.0.1"
-    "@toruslabs/customauth" "^16.0.4"
+    "@toruslabs/customauth" "^16.0.6"
     "@toruslabs/eccrypto" "4.0.0"
     "@toruslabs/fetch-node-details" "^13.0.1"
     "@toruslabs/fnd-base" "^13.0.1"
     "@toruslabs/metadata-helpers" "^5.x"
     "@toruslabs/openlogin-session-manager" "^3.0.0"
-    "@toruslabs/torus.js" "^11.0.5"
+    "@toruslabs/torus.js" "^11.0.6"
     "@toruslabs/tss-client" "^1.7.1"
     "@toruslabs/tss-lib" "^1.7.1"
     "@web3auth-mpc/ethereum-provider" "^2.3.0"
@@ -7856,7 +7791,7 @@ base64-js@^1.0.2, base64-js@^1.3.1:
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
 
-base64url@^3.0.1:
+base64url@3.0.1, base64url@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/base64url/-/base64url-3.0.1.tgz#6399d572e2bc3f90a9a8b22d5dbb0a32d33f788d"
   integrity sha512-ir1UPr3dkwexU7FdV8qBBbNDRUhMmIekYMFZfi+C/sLNnRESKPl23nB9b2pltqfOQNnGzsDdId90AEtG5tCx4A==
