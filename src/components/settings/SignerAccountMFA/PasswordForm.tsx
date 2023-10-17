@@ -131,8 +131,9 @@ export const PasswordForm = () => {
                       required
                       inputProps={{
                         onChange: (event: ChangeEvent<HTMLInputElement>) => {
+                          const confirmNewPW = getValues(PasswordFieldNames.confirmPassword)
                           const value = event.target.value
-                          setPasswordsMatch(false)
+                          setPasswordsMatch(value !== '' && value === confirmNewPW)
 
                           if (strongPassword.test(value)) {
                             setPasswordStrength(PasswordStrength.strong)
