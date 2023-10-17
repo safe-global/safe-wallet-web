@@ -2,6 +2,7 @@ import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 import * as router from 'next/router'
 
 import * as web3 from '@/hooks/wallets/web3'
+import * as notifications from './notifications'
 import { renderHook } from '@/tests/test-utils'
 import { TxModalContext } from '@/components/tx-flow'
 import useSafeWalletProvider, { _useTxFlowApi } from './useSafeWalletProvider'
@@ -14,6 +15,13 @@ const appInfo = {
   iconUrl: 'test',
   url: 'test',
 }
+
+jest.mock('./notifications', () => {
+  return {
+    ...jest.requireActual('./notifications'),
+    showNotification: jest.fn(),
+  }
+})
 
 describe('useSafeWalletProvider', () => {
   beforeEach(() => {
@@ -55,6 +63,7 @@ describe('useSafeWalletProvider', () => {
 
     it('should open signing window for messages', () => {
       jest.spyOn(router, 'useRouter').mockReturnValue({} as unknown as router.NextRouter)
+      const showNotificationSpy = jest.spyOn(notifications, 'showNotification')
 
       const mockSetTxFlow = jest.fn()
 
@@ -69,6 +78,10 @@ describe('useSafeWalletProvider', () => {
 
       const resp = result?.current?.signMessage('message', appInfo)
 
+      expect(showNotificationSpy).toHaveBeenCalledWith('Signature request', {
+        body: 'test wants you to sign a message. Open the Safe{Wallet} to continue.',
+      })
+
       expect(mockSetTxFlow.mock.calls[0][0].props).toStrictEqual({
         logoUri: appInfo.iconUrl,
         name: appInfo.name,
@@ -81,6 +94,7 @@ describe('useSafeWalletProvider', () => {
 
     it('should open signing window for typed messages', () => {
       jest.spyOn(router, 'useRouter').mockReturnValue({} as unknown as router.NextRouter)
+      const showNotificationSpy = jest.spyOn(notifications, 'showNotification')
 
       const mockSetTxFlow = jest.fn()
 
@@ -133,6 +147,10 @@ describe('useSafeWalletProvider', () => {
 
       const resp = result?.current?.signTypedMessage(typedMessage, appInfo)
 
+      expect(showNotificationSpy).toHaveBeenCalledWith('Signature request', {
+        body: 'test wants you to sign a message. Open the Safe{Wallet} to continue.',
+      })
+
       expect(mockSetTxFlow.mock.calls[0][0].props).toStrictEqual({
         logoUri: appInfo.iconUrl,
         name: appInfo.name,
@@ -145,6 +163,7 @@ describe('useSafeWalletProvider', () => {
 
     it('should should send (batched) transactions', () => {
       jest.spyOn(router, 'useRouter').mockReturnValue({} as unknown as router.NextRouter)
+      const showNotificationSpy = jest.spyOn(notifications, 'showNotification')
 
       const mockSetTxFlow = jest.fn()
 
@@ -176,6 +195,10 @@ describe('useSafeWalletProvider', () => {
         },
         appInfo,
       )
+
+      expect(showNotificationSpy).toHaveBeenCalledWith('Transaction request', {
+        body: 'test wants to submit a transaction. Open the Safe{Wallet} to continue.',
+      })
 
       expect(mockSetTxFlow.mock.calls[0][0].props).toStrictEqual({
         data: {
