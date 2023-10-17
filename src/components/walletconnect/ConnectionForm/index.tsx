@@ -1,6 +1,6 @@
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { Grid, Typography, Divider, FormControlLabel, Checkbox, SvgIcon, IconButton, Tooltip } from '@mui/material'
-import { useState } from 'react'
+import { Grid, Typography, Divider, SvgIcon, IconButton, Tooltip } from '@mui/material'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 import type { SessionTypes } from '@walletconnect/types'
 
@@ -9,7 +9,7 @@ import SessionList from '../SessionList'
 import WcInput from '../WcInput'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { WalletConnectHeader } from '../SessionManager/Header'
-import useDebounce from '@/hooks/useDebounce'
+import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 
 import css from './styles.module.css'
 
@@ -24,25 +24,33 @@ export const ConnectionForm = ({
   onDisconnect: (session: SessionTypes.Struct) => Promise<void>
   uri: string
 }): ReactElement => {
+  const { walletConnect } = useContext(WalletConnectContext)
   const [dismissedHints = false, setDismissedHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
-  const debouncedHideHints = useDebounce(dismissedHints, 300)
-  const [showHints, setShowHints] = useState(dismissedHints)
+  const [showHints, setShowHints] = useState(!dismissedHints)
 
   const onToggle = () => {
     setShowHints((prev) => !prev)
   }
 
-  const onHide = () => {
+  const onHide = useCallback(() => {
     setDismissedHints(true)
     setShowHints(false)
-  }
+  }, [setDismissedHints])
+
+  useEffect(() => {
+    if (!walletConnect) {
+      return
+    }
+
+    return walletConnect.onSessionPropose(onHide)
+  }, [onHide, walletConnect])
 
   return (
     <Grid className={css.container}>
       <Grid item textAlign="center">
         <Tooltip
           title="How does WalletConnect work?"
-          hidden={!debouncedHideHints}
+          hidden={!dismissedHints}
           placement="top"
           arrow
           className={css.infoIcon}
@@ -57,7 +65,7 @@ export const ConnectionForm = ({
         <WalletConnectHeader />
 
         <Typography variant="body2" color="text.secondary" mb={3}>
-          Paste the pairing URI below to connect to your {`Safe{Wallet}`} via WalletConnect
+          Paste the pairing code below to connect to your {`Safe{Wallet}`} via WalletConnect
         </Typography>
 
         <WcInput uri={uri} />
@@ -69,20 +77,12 @@ export const ConnectionForm = ({
         <SessionList sessions={sessions} onDisconnect={onDisconnect} />
       </Grid>
 
-      {(!debouncedHideHints || showHints) && (
+      {(!dismissedHints || showHints) && (
         <>
           <Divider flexItem className={css.divider} />
 
-          <Grid item>
+          <Grid item mt={1}>
             <Hints />
-
-            {!debouncedHideHints && (
-              <FormControlLabel
-                control={<Checkbox checked={dismissedHints} onChange={onHide} />}
-                label="Don't show this anymore"
-                sx={{ mt: 1 }}
-              />
-            )}
           </Grid>
         </>
       )}

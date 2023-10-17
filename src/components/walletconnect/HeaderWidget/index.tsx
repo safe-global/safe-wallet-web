@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { Badge } from '@mui/material'
 import type { CoreTypes, SessionTypes } from '@walletconnect/types'
 import type { ReactElement } from 'react'
 
@@ -27,7 +26,7 @@ const usePrepopulatedUri = (): [string, () => void] => {
 }
 
 const WalletConnectHeaderWidget = (): ReactElement => {
-  const { error, walletConnect } = useContext(WalletConnectContext)
+  const { walletConnect } = useContext(WalletConnectContext)
   const [popupOpen, setPopupOpen] = useState(false)
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
@@ -74,16 +73,7 @@ const WalletConnectHeaderWidget = (): ReactElement => {
   return (
     <>
       <div ref={iconRef}>
-        <Icon
-          onClick={onOpenSessionManager}
-          sessionCount={sessions.length}
-          sessionInfo={
-            sessions[0]
-              ? { name: sessions[0].peer.metadata.name, iconUrl: sessions[0].peer.metadata.icons[0] }
-              : undefined
-          }
-        />
-        <Badge color="error" variant="dot" invisible={!error} />
+        <Icon onClick={onOpenSessionManager} sessionCount={sessions.length} />
       </div>
 
       <Popup anchorEl={iconRef.current} open={popupOpen || !!uri} onClose={onCloseSessionManager}>

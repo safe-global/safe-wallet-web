@@ -6,8 +6,6 @@ import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { EIP155 } from '@/services/walletconnect/constants'
-import { getEip155ChainId } from '@/services/walletconnect/utils'
 
 import css from './styles.module.css'
 
@@ -29,18 +27,11 @@ export const ChainWarning = ({
 }: {
   proposal: Web3WalletTypes.SessionProposal
   chainIds: Array<string>
-}): ReactElement | null => {
+}): ReactElement => {
   const { configs } = useChains()
   const { safe } = useSafeInfo()
 
   const supportsCurrentChain = chainIds.includes(safe.chainId)
-
-  const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains ?? []
-  const isCorrectChain = requiredChains.includes(getEip155ChainId(safe.chainId))
-
-  if (supportsCurrentChain && isCorrectChain) {
-    return null
-  }
 
   if (supportsCurrentChain) {
     const chainName = configs.find((chain) => chain.chainId === safe.chainId)?.chainName ?? ''

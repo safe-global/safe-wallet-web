@@ -1,7 +1,9 @@
 import { Badge, ButtonBase, SvgIcon } from '@mui/material'
+import { useContext } from 'react'
 
 import WalletConnectIcon from '@/public/images/common/walletconnect.svg'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 
 type IconProps = {
   onClick: () => void
@@ -12,22 +14,25 @@ type IconProps = {
   }
 }
 
-const Icon = ({ sessionCount, sessionInfo, onClick }: IconProps): React.ReactElement => (
-  <ButtonBase disableRipple onClick={onClick}>
-    <Badge
-      badgeContent={
-        sessionCount > 1
-          ? sessionCount
-          : sessionInfo && <SafeAppIconCard alt={sessionInfo.name} src={sessionInfo.iconUrl} width={12} height={12} />
-      }
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-    >
-      <SvgIcon component={WalletConnectIcon} inheritViewBox fontSize="small" />
-    </Badge>
-  </ButtonBase>
-)
+const Icon = ({ sessionCount, sessionInfo, ...props }: IconProps): React.ReactElement => {
+  const { error } = useContext(WalletConnectContext)
+  const isDarkMode = useDarkMode()
+
+  return (
+    <ButtonBase disableRipple onClick={props.onClick} title="WalletConnect">
+      <Badge
+        variant={error ? 'dot' : 'standard'}
+        badgeContent={sessionCount}
+        color={error ? 'error' : isDarkMode ? 'primary' : 'secondary'}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      >
+        <SvgIcon component={WalletConnectIcon} inheritViewBox fontSize="small" />
+      </Badge>
+    </ButtonBase>
+  )
+}
 
 export default Icon

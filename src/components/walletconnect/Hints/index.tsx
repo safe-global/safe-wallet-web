@@ -59,8 +59,9 @@ const HintAccordion = ({
 const ConnectionTitle = 'How do I connect to a dApp?'
 const ConnectionSteps = [
   'Open a WalletConnect supported dApp',
-  'Select WalletConnect as the connection method',
-  'Copy the pairing URI and paste it into the input field above',
+  'Connect a wallet',
+  'Select WalletConnect as the wallet',
+  'Copy the pairing code and paste it into the input field above',
   'Approve the session',
   'dApp is now connected to the Safe',
 ]
