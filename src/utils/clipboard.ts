@@ -1,6 +1,16 @@
 import { logError, Errors } from '@/services/exceptions'
 
+export const isPastingSupported = (): boolean => {
+  // 'clipboard-read' and `readText` are not supported by Firefox
+  // @see https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#browser_compatibility
+  return navigator.userAgent.includes('Firefox')
+}
+
 export const isClipboardGranted = async (): Promise<boolean> => {
+  if (isPastingSupported()) {
+    return false
+  }
+
   let isGranted = false
 
   try {
@@ -15,10 +25,7 @@ export const isClipboardGranted = async (): Promise<boolean> => {
 }
 
 export const getClipboard = async (): Promise<string> => {
-  // readText is not supported by Firefox
-  // @see https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#browser_compatibility
-  const isFirefox = navigator.userAgent.includes('Firefox')
-  if (isFirefox) {
+  if (isPastingSupported()) {
     return ''
   }
 

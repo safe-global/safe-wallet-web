@@ -17,6 +17,13 @@ import { getAddress } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
 import useChains from '@/hooks/useChains'
 import { NotificationMessages, showNotification } from './notifications'
+import { SafeAppsTag } from '@/config/constants'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+
+const useWalletConnectApp = () => {
+  const [matchingApps] = useRemoteSafeApps(SafeAppsTag.WALLET_CONNECT)
+  return matchingApps?.[0]
+}
 
 export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -24,6 +31,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
   const router = useRouter()
   const { configs } = useChains()
   const pendingTxs = useRef<Record<string, string>>({})
+  const wcApp = useWalletConnectApp()
 
   useEffect(() => {
     const unsubscribe = txSubscribe(TxEvent.PROCESSING, async ({ txId, txHash }) => {
@@ -79,7 +87,8 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
               appId: undefined,
               app: {
                 name: appInfo.name,
-                url: appInfo.url,
+                // Show WC details in transaction list
+                url: wcApp?.url ?? appInfo.url,
                 iconUrl: appInfo.iconUrl,
               },
               requestId: id,
@@ -135,7 +144,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         return data.result
       },
     }
-  }, [safeAddress, chainId, setTxFlow, web3ReadOnly, router, configs])
+  }, [chainId, safeAddress, setTxFlow, wcApp?.url, configs, router, web3ReadOnly])
 }
 
 const useSafeWalletProvider = (): SafeWalletProvider | undefined => {

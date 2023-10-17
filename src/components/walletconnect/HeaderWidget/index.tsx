@@ -63,6 +63,14 @@ const WalletConnectHeaderWidget = (): ReactElement => {
     return walletConnect.onSessionAdd(onSuccess)
   }, [onSuccess, walletConnect])
 
+  useEffect(() => {
+    if (!walletConnect) {
+      return
+    }
+
+    return walletConnect.onSessionReject(clearUri)
+  }, [clearUri, walletConnect])
+
   return (
     <>
       <div ref={iconRef}>
