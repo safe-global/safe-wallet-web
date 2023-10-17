@@ -1,6 +1,6 @@
 import { MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
 import { Box, Button, SvgIcon, Typography } from '@mui/material'
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { MpcWalletContext } from './MPCWalletProvider'
 import { PasswordRecovery } from './PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -15,17 +15,16 @@ import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
-  return chains.reduce((result: string[], currentChain) => {
-    if (CGW_NAMES.SOCIAL_LOGIN && !currentChain.disabledWallets.includes(CGW_NAMES.SOCIAL_LOGIN)) {
-      result.push(currentChain.chainName)
-    }
-    return result
-  }, [])
+  return chains
+    .filter((chain) => CGW_NAMES.SOCIAL_LOGIN && !chain.disabledWallets.includes(CGW_NAMES.SOCIAL_LOGIN))
+    .map((chainConfig) => chainConfig.chainName)
 }
 const useGetSupportedChains = () => {
   const chains = useChains()
 
-  return _getSupportedChains(chains.configs)
+  return useMemo(() => {
+    return _getSupportedChains(chains.configs)
+  }, [chains.configs])
 }
 
 const useIsSocialWalletEnabled = () => {
@@ -117,13 +116,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
               ml: 0.5,
             }}
           />
-          Currently only supported on{' '}
-          {supportedChains.map((chain, idx) => (
-            <>
-              {chain}
-              {idx < supportedChains.length - 1 && ', '}
-            </>
-          ))}
+          Currently only supported on {supportedChains.join(', ')}
         </Typography>
       )}
 

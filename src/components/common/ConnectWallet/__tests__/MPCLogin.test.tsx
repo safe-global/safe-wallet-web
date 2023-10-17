@@ -114,7 +114,7 @@ describe('MPCLogin', () => {
     it('returns chain names where social login is enabled', () => {
       const mockEthereumChain = { chainId: '1', chainName: 'Ethereum', disabledWallets: ['socialLogin'] } as ChainInfo
       const mockGnosisChain = { chainId: '100', chainName: 'Gnosis Chain', disabledWallets: ['Coinbase'] } as ChainInfo
-      const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: ['TallyHo'] } as ChainInfo
+      const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: [] } as unknown as ChainInfo
 
       const mockChains = [mockEthereumChain, mockGnosisChain, mockGoerliChain]
       const result = _getSupportedChains(mockChains)
@@ -122,7 +122,7 @@ describe('MPCLogin', () => {
       expect(result).toEqual(['Gnosis Chain', 'Goerli'])
     })
 
-    it('returns an empty if social login is not enabled on any chain', () => {
+    it('returns an empty array if social login is not enabled on any chain', () => {
       const mockEthereumChain = { chainId: '1', chainName: 'Ethereum', disabledWallets: ['socialLogin'] } as ChainInfo
       const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: ['socialLogin'] } as ChainInfo
 
