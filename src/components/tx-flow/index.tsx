@@ -20,7 +20,7 @@ export const TxModalContext = createContext<TxModalContextType>({
 })
 
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [flow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
+  const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
   const [shouldWarn, setShouldWarn] = useState<boolean>(true)
   const [, setOnClose] = useState<Parameters<TxModalContextType['setTxFlow']>[1]>(noop)
   const [fullWidth, setFullWidth] = useState<boolean>(false)
@@ -43,9 +43,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     }
 
     const ok = confirm('Closing this window will discard your current progress.')
-    if (!ok) {
-      return
-    }
+    if (!ok) return
 
     // Reject if the flow is closed
     txDispatch(TxEvent.USER_QUIT, undefined)
@@ -54,29 +52,28 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   }, [shouldWarn, handleModalClose])
 
   const setTxFlow = useCallback(
-    (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
+    (newTxFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
       // Reject if a flow is open and the user changes to a different one
-      const isSuccesFlow = txFlow?.type === SuccessScreen
-      if (flow && flow !== txFlow && !isSuccesFlow) {
+      if (txFlow && txFlow !== newTxFlow && newTxFlow?.type !== SuccessScreen) {
         txDispatch(TxEvent.USER_QUIT, undefined)
       }
 
-      setFlow(txFlow)
+      setFlow(newTxFlow)
       setOnClose(() => onClose ?? noop)
       setShouldWarn(shouldWarn ?? true)
     },
-    [flow],
+    [txFlow],
   )
 
   // Show the confirmation dialog if user navigates
   useEffect(() => {
     setLastPath((prev) => {
-      if (prev !== pathname && flow) {
+      if (prev !== pathname && txFlow) {
         handleShowWarning()
       }
       return pathname
     })
-  }, [flow, handleShowWarning, pathname])
+  }, [txFlow, handleShowWarning, pathname])
 
   // Close the modal when the Safe changes
   useEffect(() => {
@@ -86,11 +83,11 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   }, [safe.chainId, safeAddress])
 
   return (
-    <TxModalContext.Provider value={{ txFlow: flow, setTxFlow, setFullWidth }}>
+    <TxModalContext.Provider value={{ txFlow, setTxFlow, setFullWidth }}>
       {children}
 
-      <TxModalDialog open={!!flow} onClose={handleShowWarning} fullWidth={fullWidth}>
-        {flow}
+      <TxModalDialog open={!!txFlow} onClose={handleShowWarning} fullWidth={fullWidth}>
+        {txFlow}
       </TxModalDialog>
     </TxModalContext.Provider>
   )

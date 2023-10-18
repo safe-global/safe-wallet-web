@@ -53,22 +53,22 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
       showNotification(title, options)
 
       return new Promise((resolve, reject) => {
-        let unsubscribeSignaturePrepared: (() => void) | null = null
-        let unsubscribeUserQuit: (() => void) | null = null
-
         const unsubscribe = () => {
-          unsubscribeSignaturePrepared?.()
-          unsubscribeUserQuit?.()
+          unsubscribeSignaturePrepared()
+          unsubscribeUserQuit()
         }
 
-        unsubscribeSignaturePrepared = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ requestId, signature }) => {
-          if (requestId === id) {
-            resolve({ signature })
-            unsubscribe()
-          }
-        })
+        const unsubscribeSignaturePrepared = safeMsgSubscribe(
+          SafeMsgEvent.SIGNATURE_PREPARED,
+          ({ requestId, signature }) => {
+            if (requestId === id) {
+              resolve({ signature })
+              unsubscribe()
+            }
+          },
+        )
 
-        unsubscribeUserQuit = txSubscribe(TxEvent.USER_QUIT, () => {
+        const unsubscribeUserQuit = txSubscribe(TxEvent.USER_QUIT, () => {
           reject({
             code: RpcErrorCode.USER_REJECTED,
             message: 'User rejected signature request',
@@ -119,15 +119,12 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         showNotification(title, options)
 
         return new Promise((resolve, reject) => {
-          let unsubscribeSignaturePrepared: (() => void) | null = null
-          let unsubscribeUserQuit: (() => void) | null = null
-
           const unsubscribe = () => {
-            unsubscribeSignaturePrepared?.()
-            unsubscribeUserQuit?.()
+            unsubscribeSignaturePrepared()
+            unsubscribeUserQuit()
           }
 
-          unsubscribeSignaturePrepared = txSubscribe(
+          const unsubscribeSignaturePrepared = txSubscribe(
             TxEvent.SAFE_APPS_REQUEST,
             async ({ safeAppRequestId, safeTxHash, txId }) => {
               if (safeAppRequestId === id) {
@@ -138,7 +135,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
             },
           )
 
-          unsubscribeUserQuit = txSubscribe(TxEvent.USER_QUIT, () => {
+          const unsubscribeUserQuit = txSubscribe(TxEvent.USER_QUIT, () => {
             reject({
               code: RpcErrorCode.USER_REJECTED,
               message: 'User rejected transaction',
