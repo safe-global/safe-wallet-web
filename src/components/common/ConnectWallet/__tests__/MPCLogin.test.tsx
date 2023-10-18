@@ -3,7 +3,7 @@ import * as useWallet from '@/hooks/wallets/useWallet'
 import * as useMPCWallet from '@/hooks/wallets/mpc/useMPCWallet'
 import * as chains from '@/hooks/useChains'
 
-import MPCLogin from '../MPCLogin'
+import MPCLogin, { _getSupportedChains } from '../MPCLogin'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { type EIP1193Provider } from '@web3-onboard/common'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
@@ -18,7 +18,9 @@ describe('MPCLogin', () => {
   it('should render continue with connected account when on gnosis chain', async () => {
     const mockOnLogin = jest.fn()
     const walletAddress = hexZeroPad('0x1', 20)
-    jest.spyOn(chains, 'useCurrentChain').mockReturnValue({ chainId: '100' } as unknown as ChainInfo)
+    jest
+      .spyOn(chains, 'useCurrentChain')
+      .mockReturnValue({ chainId: '100', disabledWallets: [] } as unknown as ChainInfo)
     jest.spyOn(useWallet, 'default').mockReturnValue({
       address: walletAddress,
       chainId: '5',
@@ -56,7 +58,9 @@ describe('MPCLogin', () => {
 
   it('should render google login button and invoke the callback on connection if no wallet is connected on gnosis chain', async () => {
     const mockOnLogin = jest.fn()
-    jest.spyOn(chains, 'useCurrentChain').mockReturnValue({ chainId: '100' } as unknown as ChainInfo)
+    jest
+      .spyOn(chains, 'useCurrentChain')
+      .mockReturnValue({ chainId: '100', disabledWallets: [] } as unknown as ChainInfo)
     jest.spyOn(useWallet, 'default').mockReturnValue(null)
     const mockTriggerLogin = jest.fn(() => true)
     jest.spyOn(useMPCWallet, 'useMPCWallet').mockReturnValue({
@@ -85,7 +89,13 @@ describe('MPCLogin', () => {
   })
 
   it('should disable the Google Login button with a message when not on gnosis chain', async () => {
-    jest.spyOn(chains, 'useCurrentChain').mockReturnValue({ chainId: '1' } as unknown as ChainInfo)
+    const mockEthereumChain = { chainId: '1', chainName: 'Ethereum', disabledWallets: ['socialLogin'] } as ChainInfo
+    const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: ['TallyHo'] } as ChainInfo
+
+    jest
+      .spyOn(chains, 'useCurrentChain')
+      .mockReturnValue({ chainId: '1', disabledWallets: ['socialLogin'] } as unknown as ChainInfo)
+    jest.spyOn(chains, 'default').mockReturnValue({ configs: [mockEthereumChain, mockGoerliChain] })
     jest.spyOn(useMPCWallet, 'useMPCWallet').mockReturnValue({
       triggerLogin: jest.fn(),
     } as unknown as useMPCWallet.MPCWalletHook)
@@ -96,7 +106,30 @@ describe('MPCLogin', () => {
       </MpcWalletProvider>,
     )
 
-    expect(result.getByText('Currently only supported on Gnosis Chain')).toBeInTheDocument()
+    expect(result.getByText('Currently only supported on Goerli')).toBeInTheDocument()
     expect(await result.findByRole('button')).toBeDisabled()
+  })
+
+  describe('getSupportedChains', () => {
+    it('returns chain names where social login is enabled', () => {
+      const mockEthereumChain = { chainId: '1', chainName: 'Ethereum', disabledWallets: ['socialLogin'] } as ChainInfo
+      const mockGnosisChain = { chainId: '100', chainName: 'Gnosis Chain', disabledWallets: ['Coinbase'] } as ChainInfo
+      const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: [] } as unknown as ChainInfo
+
+      const mockChains = [mockEthereumChain, mockGnosisChain, mockGoerliChain]
+      const result = _getSupportedChains(mockChains)
+
+      expect(result).toEqual(['Gnosis Chain', 'Goerli'])
+    })
+
+    it('returns an empty array if social login is not enabled on any chain', () => {
+      const mockEthereumChain = { chainId: '1', chainName: 'Ethereum', disabledWallets: ['socialLogin'] } as ChainInfo
+      const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: ['socialLogin'] } as ChainInfo
+
+      const mockChains = [mockEthereumChain, mockGoerliChain]
+      const result = _getSupportedChains(mockChains)
+
+      expect(result).toEqual([])
+    })
   })
 })
