@@ -8,12 +8,14 @@ import WalletLogin from './WalletLogin'
 import { LOAD_SAFE_EVENTS, CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import Track from '@/components/common/Track'
 import { trackEvent } from '@/services/analytics'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const WelcomeLogin = () => {
   const router = useRouter()
+  const wallet = useWallet()
 
   const continueToCreation = () => {
-    trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
+    trackEvent({ ...CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION, label: wallet?.label })
     router.push(AppRoutes.newSafe.create)
   }
 
