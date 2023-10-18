@@ -4,17 +4,17 @@ import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 
 import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isDangerousBridge, isRiskyBridge } from './bridges'
+import { isStrictAddressBridge, isDefaultAddressBridge } from './bridges'
 
 const NAME_PLACEHOLDER = '%%name%%'
 const CHAIN_PLACEHOLDER = '%%chain%%'
 
 const Warnings: Record<string, { severity: AlertColor; message: string }> = {
-  DANGEROUS_BRIDGE: {
+  BLOCKED_BRIDGE: {
     severity: 'error',
     message: `${NAME_PLACEHOLDER} is a bridge that is unusable in Safe{Wallet} due to the current implementation of WalletConnect — the bridged funds will be lost. Consider using a different bridge.`,
   },
-  RISKY_BRIDGE: {
+  WARNED_BRIDGE: {
     severity: 'warning',
     message: `While using ${NAME_PLACEHOLDER}, please make sure that the desination address you send funds to matches the Safe address you have on the respective chain. Otherwise, the funds will be lost.`,
   },
@@ -39,9 +39,9 @@ export const useCompatibilityWarning = (
     const { origin } = proposal.verifyContext.verified
     const { proposer } = proposal.params
 
-    let { message, severity } = isDangerousBridge(origin)
+    let { message, severity } = isStrictAddressBridge(origin)
       ? Warnings.DANGEROUS_BRIDGE
-      : isRiskyBridge(origin)
+      : isDefaultAddressBridge(origin)
       ? Warnings.RISKY_BRIDGE
       : isUnsupportedChain
       ? Warnings.UNSUPPORTED_CHAIN

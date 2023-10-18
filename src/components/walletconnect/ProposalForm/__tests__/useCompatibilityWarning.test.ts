@@ -7,7 +7,7 @@ import { useCompatibilityWarning } from '../useCompatibilityWarning'
 
 describe('useCompatibilityWarning', () => {
   it('should return an error for a dangerous bridge', () => {
-    jest.spyOn(bridges, 'isDangerousBridge').mockReturnValue(true)
+    jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(true)
 
     const proposal = {
       params: { proposer: { metadata: { name: 'Fake Bridge' } } },
@@ -24,8 +24,8 @@ describe('useCompatibilityWarning', () => {
   })
 
   it('should return a warning for a risky bridge', () => {
-    jest.spyOn(bridges, 'isDangerousBridge').mockReturnValue(false)
-    jest.spyOn(bridges, 'isRiskyBridge').mockReturnValue(true)
+    jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
+    jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(true)
 
     const proposal = {
       params: { proposer: { metadata: { name: 'Fake Bridge' } } },
@@ -42,8 +42,8 @@ describe('useCompatibilityWarning', () => {
   })
 
   it('should return an error for an unsupported chain', () => {
-    jest.spyOn(bridges, 'isDangerousBridge').mockReturnValue(false)
-    jest.spyOn(bridges, 'isRiskyBridge').mockReturnValue(false)
+    jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
+    jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(false)
 
     const proposal = {
       params: { proposer: { metadata: { name: 'Fake dApp' } } },
@@ -61,8 +61,8 @@ describe('useCompatibilityWarning', () => {
 
   describe('should otherwise return info', () => {
     it('if chains are loaded', () => {
-      jest.spyOn(bridges, 'isDangerousBridge').mockReturnValue(false)
-      jest.spyOn(bridges, 'isRiskyBridge').mockReturnValue(false)
+      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
+      jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(false)
 
       const proposal = {
         params: { proposer: { metadata: { name: 'Fake dApp' } } },
@@ -99,8 +99,8 @@ describe('useCompatibilityWarning', () => {
     })
 
     it("if chains aren't loaded", () => {
-      jest.spyOn(bridges, 'isDangerousBridge').mockReturnValue(false)
-      jest.spyOn(bridges, 'isRiskyBridge').mockReturnValue(false)
+      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
+      jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(false)
 
       const proposal = {
         params: { proposer: { metadata: { name: 'Fake dApp' } } },

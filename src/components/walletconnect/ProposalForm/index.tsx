@@ -10,7 +10,7 @@ import { CompatibilityWarning } from './CompatibilityWarning'
 import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getSupportedChainIds } from '@/services/walletconnect/utils'
-import { isDangerousBridge, isRiskyBridge } from './bridges'
+import { isStrictAddressBridge, isDefaultAddressBridge } from './bridges'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -28,8 +28,8 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
   const chainIds = useMemo(() => getSupportedChainIds(configs, proposal.params), [configs, proposal.params])
   const isUnsupportedChain = !chainIds.includes(safe.chainId)
 
-  const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isRiskyBridge(origin)
-  const disabled = isUnsupportedChain || isScam || isDangerousBridge(origin) || (isHighRisk && !understandsRisk)
+  const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isDefaultAddressBridge(origin)
+  const disabled = isUnsupportedChain || isScam || isStrictAddressBridge(origin) || (isHighRisk && !understandsRisk)
 
   return (
     <div className={css.container}>
