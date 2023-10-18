@@ -1,6 +1,6 @@
 import { MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
 import { Box, Button, SvgIcon, Typography } from '@mui/material'
-import { useContext, useMemo } from 'react'
+import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { MpcWalletContext } from './MPCWalletProvider'
 import { PasswordRecovery } from './PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -13,6 +13,7 @@ import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { TxModalContext } from '@/components/tx-flow'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -34,7 +35,9 @@ const useIsSocialWalletEnabled = () => {
 }
 
 const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
-  const { triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
+  const { triggerLogin, userInfo, walletState, setWalletState, recoverFactorWithPassword } =
+    useContext(MpcWalletContext)
+  const { setTxFlow } = useContext(TxModalContext)
 
   const wallet = useWallet()
   const loginPending = walletState === MPCWalletState.AUTHENTICATING
@@ -52,13 +55,26 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
     }
   }
 
-  const recoverPassword = async (password: string, storeDeviceFactor: boolean) => {
-    const success = await recoverFactorWithPassword(password, storeDeviceFactor)
+  const recoverPassword = useCallback(
+    async (password: string, storeDeviceFactor: boolean) => {
+      const success = await recoverFactorWithPassword(password, storeDeviceFactor)
 
-    if (success) {
-      onLogin?.()
+      if (success) {
+        onLogin?.()
+      }
+    },
+    [onLogin, recoverFactorWithPassword],
+  )
+
+  useEffect(() => {
+    if (walletState === MPCWalletState.MANUAL_RECOVERY) {
+      setTxFlow(
+        <PasswordRecovery recoverFactorWithPassword={recoverPassword} />,
+        () => setWalletState(MPCWalletState.NOT_INITIALIZED),
+        false,
+      )
     }
-  }
+  }, [recoverPassword, setTxFlow, setWalletState, walletState])
 
   return (
     <>
@@ -118,10 +134,6 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
           />
           Currently only supported on {supportedChains.join(', ')}
         </Typography>
-      )}
-
-      {walletState === MPCWalletState.MANUAL_RECOVERY && (
-        <PasswordRecovery recoverFactorWithPassword={recoverPassword} />
       )}
     </>
   )

@@ -3,6 +3,7 @@ import { createContext, type ReactElement } from 'react'
 
 export const MpcWalletContext = createContext<MPCWalletHook>({
   walletState: MPCWalletState.NOT_INITIALIZED,
+  setWalletState: () => {},
   triggerLogin: () => Promise.resolve(false),
   resetAccount: () => Promise.resolve(),
   upsertPasswordBackup: () => Promise.resolve(),

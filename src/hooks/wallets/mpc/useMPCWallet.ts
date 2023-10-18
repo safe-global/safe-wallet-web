@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { type Dispatch, type SetStateAction, useState } from 'react'
 import useMPC from './useMPC'
 import BN from 'bn.js'
 import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
@@ -19,6 +19,7 @@ export type MPCWalletHook = {
   upsertPasswordBackup: (password: string) => Promise<void>
   recoverFactorWithPassword: (password: string, storeDeviceShare: boolean) => Promise<boolean>
   walletState: MPCWalletState
+  setWalletState: Dispatch<SetStateAction<MPCWalletState>>
   triggerLogin: () => Promise<boolean>
   resetAccount: () => Promise<void>
   userInfo: UserInfo | undefined
@@ -132,6 +133,7 @@ export const useMPCWallet = (): MPCWalletHook => {
   return {
     triggerLogin,
     walletState,
+    setWalletState,
     recoverFactorWithPassword,
     resetAccount: criticalResetAccount,
     upsertPasswordBackup: () => Promise.resolve(),
