@@ -75,11 +75,13 @@ export const PasswordForm = () => {
     if (!mpcCoreKit) return
 
     await enableMFA(dispatch, mpcCoreKit, data)
-    reset()
+    onReset()
   }
 
   const onReset = () => {
     reset()
+    setPasswordsMatch(false)
+    setPasswordStrength(PasswordStrength.weak)
   }
 
   const isSubmitDisabled =
@@ -96,7 +98,7 @@ export const PasswordForm = () => {
             Protect your account with a password. It will be used to restore access to your Safe in another browser or
             on another device.
           </Typography>
-          <Accordion expanded={isPasswordSet}>
+          <Accordion defaultExpanded={isPasswordSet}>
             <AccordionSummary>
               <Box display="flex" alignItems="center" gap={1}>
                 <SvgIcon component={CheckIcon} sx={{ color: isPasswordSet ? 'success.main' : 'border.light' }} />
