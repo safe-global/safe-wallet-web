@@ -1,22 +1,36 @@
+import { MpcWalletContext } from '@/components/common/ConnectWallet/MPCWalletProvider'
 import CopyButton from '@/components/common/CopyButton'
-import useMPC from '@/hooks/wallets/mpc/useMPC'
 import { Alert, Box, Button, TextField, Typography } from '@mui/material'
-import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { useForm } from 'react-hook-form'
+
+enum ExportFieldNames {
+  password = 'password',
+}
+
+type ExportFormData = {
+  [ExportFieldNames.password]: string
+}
 
 const ExportMPCAccount = () => {
-  const mpcCoreKit = useMPC()
+  const { exportPk, walletState } = useContext(MpcWalletContext)
 
   const [pk, setPk] = useState<string | undefined>()
   const [isExporting, setIsExporting] = useState(false)
+  const formMethods = useForm<ExportFormData>({
+    mode: 'all',
+    defaultValues: {
+      [ExportFieldNames.password]: '',
+    },
+  })
+  const { register, formState, handleSubmit } = formMethods
 
-  const isLoggedIn = mpcCoreKit?.status === COREKIT_STATUS.LOGGED_IN
-
-  const exportPK = async () => {
+  const onSubmit = async (data: ExportFormData) => {
     try {
       setIsExporting(true)
-      const exportedPK = await mpcCoreKit?._UNSAFE_exportTssKey()
-      setPk(exportedPK)
+      const pk = await exportPk(data[ExportFieldNames.password])
+      setPk(pk)
+    } catch (err) {
     } finally {
       setIsExporting(false)
     }
@@ -26,22 +40,18 @@ const ExportMPCAccount = () => {
     setPk(undefined)
   }
 
-  if (!isLoggedIn) {
-    return null
-  }
   return (
-    <Box>
-      <Box>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Box display="flex" flexDirection="column" gap={1} alignItems="flex-start">
         <Typography>
-          This action reveals the seed phrase / private key of your logged in signer account. This export can be used to
-          move the account into a self-custodial wallet application.
+          Accounts created via Google can be exported and imported to any non-custodial wallet outside of Safe.
         </Typography>
-        <Alert severity="warning" sx={{ mt: 3 }}>
-          Anyone who has access to this seed phrase / private key has <b>full access</b> over your Signer Account. You
-          should never disclose or share it with anyone and store it securely.
+        <Alert severity="warning" sx={{ mt: 3, mb: 3 }}>
+          Never disclose your keys or seed phrase to anyone. If someone gains access to them, they have full access over
+          your signer account.
         </Alert>
         {pk ? (
-          <Box display="flex" flexDirection="row" alignItems="center" mt={3} gap={1}>
+          <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
             <TextField
               label="Signer account key"
               value={pk}
@@ -53,12 +63,24 @@ const ExportMPCAccount = () => {
             </Button>
           </Box>
         ) : (
-          <Button color="primary" variant="contained" disabled={isExporting} onClick={exportPK} sx={{ mt: 3 }}>
-            Export
-          </Button>
+          <>
+            <TextField
+              placeholder="Enter recovery password"
+              label="Password"
+              type="password"
+              error={!!formState.errors[ExportFieldNames.password]}
+              helperText={formState.errors[ExportFieldNames.password]?.message}
+              {...register(ExportFieldNames.password, {
+                required: true,
+              })}
+            />
+            <Button color="primary" variant="contained" disabled={isExporting} type="submit" sx={{ mt: 3 }}>
+              Export
+            </Button>
+          </>
         )}
       </Box>
-    </Box>
+    </form>
   )
 }
 

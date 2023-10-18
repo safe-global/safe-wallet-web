@@ -1,6 +1,6 @@
 import { useMPCWallet, MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
 import { type UserInfo } from '@web3auth/mpc-core-kit'
-import { createContext, type ReactElement } from 'react'
+import { createContext, useMemo, type ReactElement } from 'react'
 
 type MPCWalletContext = {
   loginPending: boolean
@@ -10,6 +10,7 @@ type MPCWalletContext = {
   recoverFactorWithPassword: (password: string, storeDeviceFactor: boolean) => Promise<void>
   walletState: MPCWalletState
   userInfo: UserInfo | undefined
+  exportPk: (password: string) => Promise<string | undefined>
 }
 
 export const MpcWalletContext = createContext<MPCWalletContext>({
@@ -20,16 +21,16 @@ export const MpcWalletContext = createContext<MPCWalletContext>({
   upsertPasswordBackup: () => Promise.resolve(),
   recoverFactorWithPassword: () => Promise.resolve(),
   userInfo: undefined,
+  exportPk: () => Promise.resolve(undefined),
 })
 
 export const MpcWalletProvider = ({ children }: { children: ReactElement }) => {
   const mpcValue = useMPCWallet()
 
-  return (
-    <MpcWalletContext.Provider
-      value={{ ...mpcValue, loginPending: mpcValue.walletState === MPCWalletState.AUTHENTICATING }}
-    >
-      {children}
-    </MpcWalletContext.Provider>
+  const providedValue = useMemo(
+    () => ({ ...mpcValue, loginPending: mpcValue.walletState === MPCWalletState.AUTHENTICATING }),
+    [mpcValue],
   )
+
+  return <MpcWalletContext.Provider value={providedValue}>{children}</MpcWalletContext.Provider>
 }

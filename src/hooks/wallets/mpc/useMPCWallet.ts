@@ -22,6 +22,7 @@ export type MPCWalletHook = {
   triggerLogin: () => Promise<void>
   resetAccount: () => Promise<void>
   userInfo: UserInfo | undefined
+  exportPk: (password: string) => Promise<string | undefined>
 }
 
 export const useMPCWallet = (): MPCWalletHook => {
@@ -33,7 +34,7 @@ export const useMPCWallet = (): MPCWalletHook => {
     // This is a critical function that should only be used for testing purposes
     // Resetting your account means clearing all the metadata associated with it from the metadata server
     // The key details will be deleted from our server and you will not be able to recover your account
-    if (!mpcCoreKit || !mpcCoreKit.metadataKey) {
+    if (!mpcCoreKit?.metadataKey) {
       throw new Error('MPC Core Kit is not initialized or the user is not logged in')
     }
 
@@ -125,6 +126,24 @@ export const useMPCWallet = (): MPCWalletHook => {
     }
   }
 
+  const exportPk = async (password: string): Promise<string | undefined> => {
+    if (!mpcCoreKit) {
+      throw new Error('MPC Core Kit is not initialized')
+    }
+    const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
+
+    try {
+      if (securityQuestions.isEnabled()) {
+        // Only export PK if recovery works
+        await securityQuestions.recoverWithPassword(password)
+      }
+      const exportedPK = await mpcCoreKit?._UNSAFE_exportTssKey()
+      return exportedPK
+    } catch (err) {
+      // TODO: Throw error through sentry
+    }
+  }
+
   return {
     triggerLogin,
     walletState,
@@ -132,5 +151,6 @@ export const useMPCWallet = (): MPCWalletHook => {
     resetAccount: criticalResetAccount,
     upsertPasswordBackup: () => Promise.resolve(),
     userInfo: mpcCoreKit?.state.userInfo,
+    exportPk,
   }
 }
