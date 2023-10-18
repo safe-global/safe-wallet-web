@@ -4,6 +4,8 @@ import type { Dispatch, SetStateAction } from 'react'
 import { getClipboard, isClipboardGranted } from '@/utils/clipboard'
 import { isPairingUri } from './utils'
 
+const stalePairingUris: Array<string> = []
+
 export const useWalletConnectClipboardUri = (): [string, Dispatch<SetStateAction<string>>] => {
   const [state, setState] = useState('')
 
@@ -21,7 +23,9 @@ export const useWalletConnectClipboardUri = (): [string, Dispatch<SetStateAction
 
       const clipboard = await getClipboard()
 
-      if (isPairingUri(clipboard)) {
+      // Ensure valid pairing URIs
+      if (isPairingUri(clipboard) && !stalePairingUris.includes(clipboard)) {
+        stalePairingUris.push(clipboard)
         setState(clipboard)
       }
     }
