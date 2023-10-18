@@ -1,4 +1,6 @@
+import Track from '@/components/common/Track'
 import { SecurityQuestionRecovery } from '@/hooks/wallets/mpc/recovery/SecurityQuestionRecovery'
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { Typography, TextField, Button, Box } from '@mui/material'
 import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import { useState, useMemo } from 'react'
@@ -92,14 +94,15 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
             },
           })}
         />
-
-        <Button
-          sx={{ justifySelf: 'flex-start' }}
-          disabled={!formMethods.formState.isValid || enablingMFA}
-          type="submit"
-        >
-          Change
-        </Button>
+        <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
+          <Button
+            sx={{ justifySelf: 'flex-start' }}
+            disabled={!formMethods.formState.isValid || enablingMFA}
+            type="submit"
+          >
+            Change
+          </Button>
+        </Track>
       </Box>
     </form>
   )
