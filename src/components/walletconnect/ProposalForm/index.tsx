@@ -6,10 +6,11 @@ import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import css from './styles.module.css'
 import ProposalVerification from './ProposalVerification'
-import { ChainWarning } from './ChainWarning'
+import { CompatibilityWarning } from './CompatibilityWarning'
 import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getSupportedChainIds } from '@/services/walletconnect/utils'
+import { isDangerousBridge, isRiskyBridge } from './bridges'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -22,13 +23,13 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
   const { safe } = useSafeInfo()
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const { proposer } = proposal.params
-  const { isScam } = proposal.verifyContext.verified
+  const { isScam, origin } = proposal.verifyContext.verified
 
   const chainIds = useMemo(() => getSupportedChainIds(configs, proposal.params), [configs, proposal.params])
-  const supportsCurrentChain = chainIds.includes(safe.chainId)
+  const isUnsupportedChain = !chainIds.includes(safe.chainId)
 
-  const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID'
-  const disabled = !supportsCurrentChain || isScam || (isHighRisk && !understandsRisk)
+  const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isRiskyBridge(origin)
+  const disabled = isUnsupportedChain || isScam || isDangerousBridge(origin) || (isHighRisk && !understandsRisk)
 
   return (
     <div className={css.container}>
@@ -54,14 +55,14 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
       <div className={css.info}>
         <ProposalVerification proposal={proposal} />
 
-        <ChainWarning proposal={proposal} chainIds={chainIds} />
+        <CompatibilityWarning proposal={proposal} chainIds={chainIds} />
       </div>
 
-      {supportsCurrentChain && isHighRisk && (
+      {!isUnsupportedChain && isHighRisk && (
         <FormControlLabel
           className={css.checkbox}
           control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
-          label="I understand the risks of interacting with this dApp and would like to continue."
+          label="I understand the risks associated with interacting with this dApp and would like to continue."
         />
       )}
 
