@@ -7,7 +7,7 @@ const nftsAddress = '0x0000...816D'
 const nftsTokenID = 'Kitaro World #261'
 const nftsLink = 'https://testnets.opensea.io/assets/0x000000000faE8c6069596c9C805A1975C657816D/443'
 
-describe('Assets > NFTs', () => {
+describe('NFTs tests', () => {
   before(() => {
     cy.clearLocalStorage()
     cy.visit(constants.balanceNftsUrl + constants.GOERLI_TEST_SAFE)
@@ -15,37 +15,35 @@ describe('Assets > NFTs', () => {
     cy.contains(constants.goerlyE2EWallet)
   })
 
-  describe('should have NFTs', () => {
-    it('should have NFTs in the table', () => {
-      nfts.verifyNFTNumber(5)
-    })
+  it('Verify that NFTs exist in the table [C56123]', () => {
+    nfts.verifyNFTNumber(5)
+  })
 
-    it('should have info in the NFT row', () => {
-      nfts.verifyDataInTable(nftsName, nftsAddress, nftsTokenID, nftsLink)
-    })
+  it('Verify NFT row contains data [C56124]', () => {
+    nfts.verifyDataInTable(nftsName, nftsAddress, nftsTokenID, nftsLink)
+  })
 
-    it('should open an NFT preview', () => {
-      nfts.openFirstNFT()
-      nfts.verifyNameInNFTModal(nftsTokenID)
-      nfts.preventBaseMainnetGoerliFromBeingSelected()
-      nfts.verifyNFTModalLink(nftsLink)
-      nfts.closeNFTModal()
-    })
+  it('Verify NFT preview window can be opened [C56125]', () => {
+    nfts.openFirstNFT()
+    nfts.verifyNameInNFTModal(nftsTokenID)
+    nfts.preventBaseMainnetGoerliFromBeingSelected()
+    nfts.verifyNFTModalLink(nftsLink)
+    nfts.closeNFTModal()
+  })
 
-    it('should not open an NFT preview for NFTs without one', () => {
-      nfts.clickOnThirdNFT()
-      nfts.verifyNFTModalDoesNotExist()
-    })
+  it('Verify NFT open does not open if no NFT exits [C56126]', () => {
+    nfts.clickOnThirdNFT()
+    nfts.verifyNFTModalDoesNotExist()
+  })
 
-    it('should select and send multiple NFTs', () => {
-      nfts.verifyInitialNFTData()
-      nfts.selectNFTs(3)
-      nfts.deselectNFTs([2], 3)
-      nfts.sendNFT(2)
-      nfts.verifyNFTModalData()
-      nfts.typeRecipientAddress(constants.GOERLI_TEST_SAFE)
-      nfts.clikOnNextBtn()
-      nfts.verifyReviewModalData(2)
-    })
+  it('Verify multipls NFTs can be selected and reviewed [C56127]', () => {
+    nfts.verifyInitialNFTData()
+    nfts.selectNFTs(3)
+    nfts.deselectNFTs([2], 3)
+    nfts.sendNFT(2)
+    nfts.verifyNFTModalData()
+    nfts.typeRecipientAddress(constants.GOERLI_TEST_SAFE)
+    nfts.clikOnNextBtn()
+    nfts.verifyReviewModalData(2)
   })
 })
