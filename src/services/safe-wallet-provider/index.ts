@@ -27,7 +27,7 @@ interface RpcRequest {
   params?: unknown[]
 }
 
-enum RpcErrorCode {
+export enum RpcErrorCode {
   INVALID_PARAMS = -32602,
   USER_REJECTED = 4001,
   UNSUPPORTED_METHOD = 4200,
