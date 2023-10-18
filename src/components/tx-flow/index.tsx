@@ -2,6 +2,8 @@ import { createContext, type ReactElement, type ReactNode, useState, useEffect, 
 import TxModalDialog from '@/components/common/TxModalDialog'
 import { usePathname } from 'next/navigation'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { SuccessScreen } from './flows/SuccessScreen'
 
 const noop = () => {}
 
@@ -41,18 +43,28 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     }
 
     const ok = confirm('Closing this window will discard your current progress.')
-    if (ok) {
-      handleModalClose()
-    }
+    if (!ok) return
+
+    // Reject if the flow is closed
+    txDispatch(TxEvent.USER_QUIT, {})
+
+    handleModalClose()
   }, [shouldWarn, handleModalClose])
 
   const setTxFlow = useCallback(
-    (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
-      setFlow(txFlow)
+    (newTxFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
+      setFlow((prevFlow) => {
+        // Reject if a flow is open and the user changes to a different one
+        if (prevFlow && prevFlow !== newTxFlow && newTxFlow?.type !== SuccessScreen) {
+          txDispatch(TxEvent.USER_QUIT, {})
+        }
+
+        return newTxFlow
+      })
       setOnClose(() => onClose ?? noop)
       setShouldWarn(shouldWarn ?? true)
     },
-    [setFlow, setOnClose],
+    [],
   )
 
   // Show the confirmation dialog if user navigates

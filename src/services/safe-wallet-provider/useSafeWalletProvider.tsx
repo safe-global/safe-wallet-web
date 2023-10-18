@@ -2,6 +2,7 @@ import { useContext, useEffect, useMemo, useRef } from 'react'
 import { BigNumber } from 'ethers'
 import { useRouter } from 'next/router'
 
+import { RpcErrorCode } from '.'
 import type { AppInfo, WalletSDK } from '.'
 import { SafeWalletProvider } from '.'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -51,12 +52,28 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
       const { title, options } = NotificationMessages.SIGNATURE_REQUEST(appInfo)
       showNotification(title, options)
 
-      return new Promise((resolve) => {
-        const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ requestId, signature }) => {
-          if (requestId === id) {
-            resolve({ signature })
-            unsubscribe()
-          }
+      return new Promise((resolve, reject) => {
+        const unsubscribe = () => {
+          unsubscribeSignaturePrepared()
+          unsubscribeUserQuit()
+        }
+
+        const unsubscribeSignaturePrepared = safeMsgSubscribe(
+          SafeMsgEvent.SIGNATURE_PREPARED,
+          ({ requestId, signature }) => {
+            if (requestId === id) {
+              resolve({ signature })
+              unsubscribe()
+            }
+          },
+        )
+
+        const unsubscribeUserQuit = txSubscribe(TxEvent.USER_QUIT, () => {
+          reject({
+            code: RpcErrorCode.USER_REJECTED,
+            message: 'User rejected signature request',
+          })
+          unsubscribe()
         })
       })
     }
@@ -101,13 +118,29 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         const { title, options } = NotificationMessages.TRANSACTION_REQUEST(appInfo)
         showNotification(title, options)
 
-        return new Promise((resolve) => {
-          const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash, txId }) => {
-            if (safeAppRequestId === id) {
-              const txHash = txId ? pendingTxs.current[txId] : undefined
-              resolve({ safeTxHash, txHash })
-              unsubscribe()
-            }
+        return new Promise((resolve, reject) => {
+          const unsubscribe = () => {
+            unsubscribeSignaturePrepared()
+            unsubscribeUserQuit()
+          }
+
+          const unsubscribeSignaturePrepared = txSubscribe(
+            TxEvent.SAFE_APPS_REQUEST,
+            async ({ safeAppRequestId, safeTxHash, txId }) => {
+              if (safeAppRequestId === id) {
+                const txHash = txId ? pendingTxs.current[txId] : undefined
+                resolve({ safeTxHash, txHash })
+                unsubscribe()
+              }
+            },
+          )
+
+          const unsubscribeUserQuit = txSubscribe(TxEvent.USER_QUIT, () => {
+            reject({
+              code: RpcErrorCode.USER_REJECTED,
+              message: 'User rejected transaction',
+            })
+            unsubscribe()
           })
         })
       },
