@@ -76,10 +76,6 @@ const useTxPendingStatuses = (): void => {
   useEffect(() => {
     const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
       txSubscribe(event as TxEvent, (detail) => {
-        if (!detail) {
-          return
-        }
-
         // All pending txns should have a txId
         const txId = 'txId' in detail && detail.txId
         if (!txId) return

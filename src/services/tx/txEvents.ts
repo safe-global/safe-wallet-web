@@ -28,7 +28,7 @@ type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: strin
 type HumanDescription = { humanDescription?: string }
 
 interface TxEvents {
-  [TxEvent.USER_QUIT]: undefined
+  [TxEvent.USER_QUIT]: {}
   [TxEvent.SIGNED]: { txId?: string }
   [TxEvent.SIGN_FAILED]: HumanDescription & { txId?: string; error: Error }
   [TxEvent.PROPOSE_FAILED]: HumanDescription & { error: Error }

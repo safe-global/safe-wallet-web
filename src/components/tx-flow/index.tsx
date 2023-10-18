@@ -46,23 +46,25 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     if (!ok) return
 
     // Reject if the flow is closed
-    txDispatch(TxEvent.USER_QUIT, undefined)
+    txDispatch(TxEvent.USER_QUIT, {})
 
     handleModalClose()
   }, [shouldWarn, handleModalClose])
 
   const setTxFlow = useCallback(
     (newTxFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
-      // Reject if a flow is open and the user changes to a different one
-      if (txFlow && txFlow !== newTxFlow && newTxFlow?.type !== SuccessScreen) {
-        txDispatch(TxEvent.USER_QUIT, undefined)
-      }
+      setFlow((prevFlow) => {
+        // Reject if a flow is open and the user changes to a different one
+        if (prevFlow && prevFlow !== newTxFlow && newTxFlow?.type !== SuccessScreen) {
+          txDispatch(TxEvent.USER_QUIT, {})
+        }
 
-      setFlow(newTxFlow)
+        return newTxFlow
+      })
       setOnClose(() => onClose ?? noop)
       setShouldWarn(shouldWarn ?? true)
     },
-    [txFlow],
+    [],
   )
 
   // Show the confirmation dialog if user navigates
