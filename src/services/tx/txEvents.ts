@@ -2,7 +2,7 @@ import EventBus from '@/services/EventBus'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
 
 export enum TxEvent {
-  CHANGE_FLOW = 'CLOSED_FLOW',
+  USER_QUIT = 'USER_QUIT',
   SIGNED = 'SIGNED',
   SIGN_FAILED = 'SIGN_FAILED',
   PROPOSED = 'PROPOSED',
@@ -28,7 +28,7 @@ type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: strin
 type HumanDescription = { humanDescription?: string }
 
 interface TxEvents {
-  [TxEvent.CHANGE_FLOW]: undefined
+  [TxEvent.USER_QUIT]: undefined
   [TxEvent.SIGNED]: { txId?: string }
   [TxEvent.SIGN_FAILED]: HumanDescription & { txId?: string; error: Error }
   [TxEvent.PROPOSE_FAILED]: HumanDescription & { error: Error }

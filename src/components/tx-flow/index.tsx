@@ -3,6 +3,7 @@ import TxModalDialog from '@/components/common/TxModalDialog'
 import { usePathname } from 'next/navigation'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { SuccessScreen } from './flows/SuccessScreen'
 
 const noop = () => {}
 
@@ -46,17 +47,18 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
       return
     }
 
-    // Reject if the flow is being closed
-    txDispatch(TxEvent.CHANGE_FLOW, undefined)
+    // Reject if the flow is closed
+    txDispatch(TxEvent.USER_QUIT, undefined)
 
     handleModalClose()
   }, [shouldWarn, handleModalClose])
 
   const setTxFlow = useCallback(
     (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
-      // Reject if there is a flow and the user opens another one
-      if (flow && flow !== txFlow) {
-        txDispatch(TxEvent.CHANGE_FLOW, undefined)
+      // Reject if a flow is open and the user changes to a different one
+      const isSuccesFlow = txFlow?.type === SuccessScreen
+      if (flow && flow !== txFlow && !isSuccesFlow) {
+        txDispatch(TxEvent.USER_QUIT, undefined)
       }
 
       setFlow(txFlow)
