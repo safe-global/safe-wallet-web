@@ -141,16 +141,16 @@ class WalletConnectWallet {
     const newEip155ChainId = getEip155ChainId(chainId)
     const newEip155Account = `${newEip155ChainId}:${safeAddress}`
 
-    const hasNewChainId = !currentEip155ChainIds.includes(newEip155ChainId)
-    const hasNewAccount = !currentEip155Accounts.includes(newEip155Account)
+    const isUnsupportedChain = !currentEip155ChainIds.includes(newEip155ChainId)
+    const isNewSessionSafe = !currentEip155Accounts.includes(newEip155Account)
 
     // Switching to unsupported chain
-    if (hasNewChainId) {
+    if (isUnsupportedChain) {
       return this.disconnectSession(session)
     }
 
-    // Add new account to the session namespace
-    if (hasNewAccount) {
+    // Add new Safe to the session namespace
+    if (isNewSessionSafe) {
       const namespaces: SessionTypes.Namespaces = {
         [EIP155]: {
           ...session.namespaces[EIP155],
@@ -165,7 +165,7 @@ class WalletConnectWallet {
       })
     }
 
-    // Switch to the new account
+    // Switch to the new Safe
     await this.accountsChanged(session.topic, chainId, safeAddress)
 
     // Switch to the new chain
@@ -173,7 +173,11 @@ class WalletConnectWallet {
   }
 
   public async updateSessions(chainId: string, safeAddress: string) {
-    await Promise.all(this.getActiveSessions().map((session) => this.updateSession(session, chainId, safeAddress)))
+    // If updating sessions disconnects multiple due to an unsupported chain,
+    // we need to wait for the previous session to disconnect before the next
+    for await (const session of this.getActiveSessions()) {
+      await this.updateSession(session, chainId, safeAddress)
+    }
   }
 
   public async rejectSession(proposal: Web3WalletTypes.SessionProposal) {
