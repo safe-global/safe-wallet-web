@@ -1,6 +1,6 @@
 import { MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
 import { Box, Button, SvgIcon, Typography } from '@mui/material'
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { MpcWalletContext } from './MPCWalletProvider'
 import { PasswordRecovery } from './PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -11,18 +11,40 @@ import useWallet from '@/hooks/wallets/useWallet'
 import Track from '../Track'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import { useCurrentChain } from '@/hooks/useChains'
-import chains from '@/config/chains'
+import useChains, { useCurrentChain } from '@/hooks/useChains'
+import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { CGW_NAMES } from '@/hooks/wallets/consts'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+
+export const _getSupportedChains = (chains: ChainInfo[]) => {
+  return chains
+    .filter((chain) => CGW_NAMES.SOCIAL_LOGIN && !chain.disabledWallets.includes(CGW_NAMES.SOCIAL_LOGIN))
+    .map((chainConfig) => chainConfig.chainName)
+}
+const useGetSupportedChains = () => {
+  const chains = useChains()
+
+  return useMemo(() => {
+    return _getSupportedChains(chains.configs)
+  }, [chains.configs])
+}
+
+const useIsSocialWalletEnabled = () => {
+  const currentChain = useCurrentChain()
+
+  return isSocialWalletEnabled(currentChain)
+}
 
 const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
-  const currentChain = useCurrentChain()
   const { triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
 
   const wallet = useWallet()
   const loginPending = walletState === MPCWalletState.AUTHENTICATING
 
-  // TODO: Replace with feature flag from config service
-  const isMPCLoginEnabled = currentChain?.chainId === chains.gno
+  const supportedChains = useGetSupportedChains()
+  const isMPCLoginEnabled = useIsSocialWalletEnabled()
+
   const isDisabled = loginPending || !isMPCLoginEnabled
 
   const login = async () => {
@@ -44,7 +66,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   return (
     <>
       <Box sx={{ width: '100%' }}>
-        {wallet && userInfo ? (
+        {wallet?.label === ONBOARD_MPC_MODULE_LABEL && userInfo ? (
           <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION} label={wallet.label}>
             <Button
               variant="outlined"
@@ -101,7 +123,7 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
               ml: 0.5,
             }}
           />
-          Currently only supported on Gnosis Chain
+          Currently only supported on {supportedChains.join(', ')}
         </Typography>
       )}
 

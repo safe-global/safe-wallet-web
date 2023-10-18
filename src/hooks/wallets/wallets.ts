@@ -66,13 +66,17 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   if (window.Cypress && CYPRESS_MNEMONIC) {
     return [e2eWalletModule(chain.rpcUri)]
   }
-  const enabledWallets = Object.entries(WALLET_MODULES).filter(
-    ([key]) => key === WALLET_KEYS.SOCIAL || isWalletSupported(chain.disabledWallets, key),
-  )
+  const enabledWallets = Object.entries(WALLET_MODULES).filter(([key]) => isWalletSupported(chain.disabledWallets, key))
 
   if (enabledWallets.length === 0) {
     return [WALLET_MODULES.INJECTED(chain)]
   }
 
   return enabledWallets.map(([, module]) => module(chain))
+}
+
+export const isSocialWalletEnabled = (chain: ChainInfo | undefined): boolean => {
+  if (!chain) return false
+
+  return chain.disabledWallets.every((label) => label !== CGW_NAMES.SOCIAL_LOGIN)
 }
