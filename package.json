@@ -13,7 +13,7 @@
     "prettier": "prettier -w \"{src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}\"",
     "fix": "yarn lint:fix && ts-prune && yarn prettier",
     "test": "cross-env TZ=CET DEBUG_PRINT_LIMIT=30000 jest",
-    "test:ci": "yarn test --ci --silent --coverage --json --watchAll=false --testLocationInResults --outputFile=jest.results.json",
+    "test:ci": "yarn test --ci --silent --coverage --json --watchAll=false --testLocationInResults --outputFile=report.json",
     "test:coverage": "yarn test --coverage --watchAll=false",
     "cmp": "./scripts/cmp.sh",
     "routes": "node scripts/generate-routes.js > src/config/routes.ts && prettier -w src/config/routes.ts && cat src/config/routes.ts",
@@ -32,9 +32,6 @@
   "engines": {
     "node": ">=16"
   },
-  "pre-commit": [
-    "lint"
-  ],
   "resolutions": {
     "@web3-onboard/trezor/**/protobufjs": "^7.2.4"
   },
@@ -127,7 +124,6 @@
     "fake-indexeddb": "^4.0.2",
     "jest": "^29.6.2",
     "jest-environment-jsdom": "^29.6.2",
-    "pre-commit": "^1.2.2",
     "prettier": "^2.7.0",
     "ts-node": "^10.8.2",
     "ts-prune": "^0.10.3",

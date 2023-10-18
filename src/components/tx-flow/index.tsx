@@ -7,7 +7,7 @@ import { SuccessScreen } from './flows/SuccessScreen'
 
 const noop = () => {}
 
-type TxModalContextType = {
+export type TxModalContextType = {
   txFlow: JSX.Element | undefined
   setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => void
   setFullWidth: (fullWidth: boolean) => void
