@@ -3,6 +3,10 @@ type SafeInfo = {
   chainId: number
 }
 
+type SafeSettings = {
+  offChainSigning?: boolean
+}
+
 export type AppInfo = {
   name: string
   description: string
@@ -19,6 +23,7 @@ export type WalletSDK = {
   ) => Promise<{ safeTxHash: string; txHash?: string }>
   getBySafeTxHash: (safeTxHash: string) => Promise<{ txHash?: string }>
   switchChain: (chainId: string, appInfo: AppInfo) => Promise<null>
+  setSafeSettings: (safeSettings: SafeSettings) => SafeSettings
   proxy: (method: string, params: unknown[]) => Promise<unknown>
 }
 
@@ -179,6 +184,10 @@ export class SafeWalletProvider {
           txHash = resp.txHash || txHash
         } catch (e) {}
         return this.sdk.proxy(method, params)
+      }
+
+      case 'safe_setSettings': {
+        return this.sdk.setSafeSettings(params[0] as SafeSettings)
       }
 
       default: {

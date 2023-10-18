@@ -336,5 +336,20 @@ describe('safe-messages', () => {
         ),
       ).toBeFalsy()
     })
+
+    it('true for no safeAppsSdk version', () => {
+      expect(
+        isOffchainEIP1271Supported(
+          {
+            chainId: '5',
+            version: '1.3.0',
+            fallbackHandler: { value: hexZeroPad('0x2222', 20) },
+          } as any,
+          {
+            features: [FEATURES.EIP1271],
+          } as any,
+        ),
+      ).toBeTruthy()
+    })
   })
 })

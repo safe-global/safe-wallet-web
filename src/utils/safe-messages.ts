@@ -73,7 +73,7 @@ export const generateSafeMessageHash = (safe: SafeInfo, message: SafeMessage['me
 export const isOffchainEIP1271Supported = (
   { version, fallbackHandler }: SafeInfo,
   chain: ChainInfo | undefined,
-  sdkVersion: string,
+  sdkVersion?: string,
 ): boolean => {
   if (!version) {
     return false
@@ -85,7 +85,7 @@ export const isOffchainEIP1271Supported = (
   }
 
   // If the Safe apps sdk does not support off-chain signing yet
-  if (!gte(sdkVersion, EIP1271_OFFCHAIN_SUPPORTED_SAFE_APPS_SDK_VERSION)) {
+  if (sdkVersion && !gte(sdkVersion, EIP1271_OFFCHAIN_SUPPORTED_SAFE_APPS_SDK_VERSION)) {
     return false
   }
 
