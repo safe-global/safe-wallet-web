@@ -43,7 +43,7 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
             src={proposer.metadata.icons[0]}
             width={32}
             height={32}
-            alt={`${proposer.metadata.name} logo`}
+            alt={`${proposer.metadata.name || 'dApp'} logo`}
           />
         </div>
       )}
