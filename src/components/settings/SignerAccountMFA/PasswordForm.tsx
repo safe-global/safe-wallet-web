@@ -36,7 +36,7 @@ type PasswordFormData = {
   [PasswordFieldNames.confirmPassword]: string
 }
 
-enum PasswordStrength {
+export enum PasswordStrength {
   strong,
   medium,
   weak,
@@ -47,11 +47,39 @@ const strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-
 // At least 9 characters, one lowercase, one uppercase, one number, one symbol
 const mediumPassword = new RegExp('((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{9,}))')
 
+export const _getPasswordStrength = (value: string): PasswordStrength => {
+  if (strongPassword.test(value)) {
+    return PasswordStrength.strong
+  }
+
+  if (mediumPassword.test(value)) {
+    return PasswordStrength.medium
+  }
+
+  return PasswordStrength.weak
+}
+
+type PasswordStrengthMap = Record<PasswordStrength, { label: string; className: string }>
+
+const passwordStrengthMap: PasswordStrengthMap = {
+  [PasswordStrength.strong]: {
+    label: 'Strong',
+    className: 'strongPassword',
+  },
+  [PasswordStrength.medium]: {
+    label: 'Medium',
+    className: 'mediumPassword',
+  },
+  [PasswordStrength.weak]: {
+    label: 'Weak',
+    className: 'weakPassword',
+  },
+}
+
 export const PasswordForm = () => {
   const dispatch = useAppDispatch()
   const mpcCoreKit = useMPC()
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(PasswordStrength.weak)
-  const [passwordsMatch, setPasswordsMatch] = useState<boolean>(false)
 
   const formMethods = useForm<PasswordFormData>({
     mode: 'all',
@@ -62,7 +90,7 @@ export const PasswordForm = () => {
     },
   })
 
-  const { formState, getValues, handleSubmit, reset } = formMethods
+  const { formState, handleSubmit, reset, watch } = formMethods
 
   const isPasswordSet = useMemo(() => {
     if (!mpcCoreKit) return false
@@ -80,9 +108,10 @@ export const PasswordForm = () => {
 
   const onReset = () => {
     reset()
-    setPasswordsMatch(false)
     setPasswordStrength(PasswordStrength.weak)
   }
+
+  const passwordsMatch = watch(PasswordFieldNames.newPassword) === watch(PasswordFieldNames.confirmPassword)
 
   const isSubmitDisabled =
     !passwordsMatch ||
@@ -133,17 +162,8 @@ export const PasswordForm = () => {
                       required
                       inputProps={{
                         onChange: (event: ChangeEvent<HTMLInputElement>) => {
-                          const confirmNewPW = getValues(PasswordFieldNames.confirmPassword)
                           const value = event.target.value
-                          setPasswordsMatch(value !== '' && value === confirmNewPW)
-
-                          if (strongPassword.test(value)) {
-                            setPasswordStrength(PasswordStrength.strong)
-                          } else if (mediumPassword.test(value)) {
-                            setPasswordStrength(PasswordStrength.medium)
-                          } else {
-                            setPasswordStrength(PasswordStrength.weak)
-                          }
+                          setPasswordStrength(_getPasswordStrength(value))
                         },
                       }}
                     />
@@ -153,21 +173,11 @@ export const PasswordForm = () => {
                       alignItems="center"
                       gap={1}
                       mt={1}
-                      className={
-                        passwordStrength === PasswordStrength.strong
-                          ? css.strongPassword
-                          : passwordStrength === PasswordStrength.medium
-                          ? css.mediumPassword
-                          : css.weakPassword
-                      }
+                      // @ts-ignore
+                      className={css[passwordStrengthMap[passwordStrength].className]}
                     >
                       <BarChartIcon />
-                      {passwordStrength === PasswordStrength.strong
-                        ? 'Strong'
-                        : passwordStrength === PasswordStrength.medium
-                        ? 'Medium'
-                        : 'Weak'}{' '}
-                      password
+                      {passwordStrengthMap[passwordStrength].label} password
                     </Typography>
                     <Typography variant="body2" color="text.secondary" mt={1}>
                       Include at least 8 or more characters, a number, an uppercase letter and a symbol
@@ -180,12 +190,6 @@ export const PasswordForm = () => {
                       placeholder="Confirm new password"
                       label="Confirm new password"
                       helperText={formState.errors[PasswordFieldNames.confirmPassword]?.message}
-                      inputProps={{
-                        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-                          const currentNewPW = getValues(PasswordFieldNames.newPassword)
-                          setPasswordsMatch(event.target.value === currentNewPW)
-                        },
-                      }}
                       required
                     />
                     <Typography
