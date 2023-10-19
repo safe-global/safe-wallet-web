@@ -32,13 +32,15 @@ const WalletConnectHeaderWidget = (): ReactElement => {
   const [uri, clearUri] = usePrepopulatedUri()
   const [metadata, setMetadata] = useState<CoreTypes.Metadata>()
 
-  const onOpenSessionManager = useCallback(() => setOpen(true), [])
+  const onOpenSessionManager = useCallback(() => setOpen(true), [setOpen])
+
   const onCloseSessionManager = useCallback(() => {
     setOpen(false)
     clearUri()
-  }, [clearUri])
+  }, [setOpen, clearUri])
 
   const onCloseSuccesBanner = useCallback(() => setMetadata(undefined), [])
+
   const onSuccess = useCallback(
     ({ peer }: SessionTypes.Struct) => {
       onCloseSessionManager()
@@ -72,7 +74,7 @@ const WalletConnectHeaderWidget = (): ReactElement => {
   // Open the popup when a prepopulated uri is found
   useEffect(() => {
     if (uri) setOpen(true)
-  }, [uri])
+  }, [uri, setOpen])
 
   return (
     <>

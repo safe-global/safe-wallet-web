@@ -1,6 +1,7 @@
-import { ReactElement, useContext } from 'react'
+import type { ReactElement } from 'react'
+import { useContext } from 'react'
 import { Box, Grid, Typography, Link } from '@mui/material'
-import type { SafeAppInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
@@ -10,7 +11,30 @@ import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 
-const WALLET_CONNECT = /wallet-connect/
+const isWalletConnectSafeApp = (app: SafeAppData): boolean => {
+  const WALLET_CONNECT = /wallet-connect/
+  return WALLET_CONNECT.test(app.url)
+}
+
+const FeaturedAppCard = ({ app }: { app: SafeAppData }) => (
+  <Card>
+    <Grid container alignItems="center" spacing={3}>
+      <Grid item xs={12} md={3}>
+        <SafeAppIconCard src={app.iconUrl} alt={app.name} width={64} height={64} />
+      </Grid>
+
+      <Grid item xs={12} md={9}>
+        <Box mb={1.01}>
+          <Typography fontSize="lg">{app.description}</Typography>
+        </Box>
+
+        <Link color="primary.main" fontWeight="bold" component="span">
+          Use {app.name}
+        </Link>
+      </Grid>
+    </Grid>
+  </Card>
+)
 
 export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): ReactElement | null => {
   const router = useRouter()
@@ -19,11 +43,8 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
 
   if (!featuredApps?.length && !remoteSafeAppsLoading) return null
 
-  const onWidgetClick = (e: Event, app: SafeAppInfo) => {
-    if (WALLET_CONNECT.test(app.url)) {
-      e.preventDefault()
-      setOpen(true)
-    }
+  const onWcWidgetClick = () => {
+    setOpen(true)
   }
 
   return (
@@ -41,29 +62,18 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
           >
             {featuredApps?.map((app) => (
               <Grid item xs md key={app.id}>
-                <NextLink
-                  passHref
-                  href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}
-                  onClick={(e) => onWidgetClick(e, app)}
-                >
-                  <Card>
-                    <Grid container alignItems="center" spacing={3}>
-                      <Grid item xs={12} md={3}>
-                        <SafeAppIconCard src={app.iconUrl} alt={app.name} width={64} height={64} />
-                      </Grid>
-
-                      <Grid item xs={12} md={9}>
-                        <Box mb={1.01}>
-                          <Typography fontSize="lg">{app.description}</Typography>
-                        </Box>
-
-                        <Link color="primary.main" fontWeight="bold" component="span">
-                          Use {app.name}
-                        </Link>
-                      </Grid>
-                    </Grid>
-                  </Card>
-                </NextLink>
+                {isWalletConnectSafeApp(app) ? (
+                  <a onClick={onWcWidgetClick} style={{ cursor: 'pointer' }}>
+                    <FeaturedAppCard app={app} />
+                  </a>
+                ) : (
+                  <NextLink
+                    passHref
+                    href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}
+                  >
+                    <FeaturedAppCard app={app} />
+                  </NextLink>
+                )}
               </Grid>
             ))}
           </Grid>
