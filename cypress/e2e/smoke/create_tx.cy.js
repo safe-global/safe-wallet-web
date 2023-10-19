@@ -5,14 +5,14 @@ import * as createtx from '../../e2e/pages/create_tx.pages'
 const sendValue = 0.00002
 const currentNonce = 3
 
-describe('Queue a transaction on 1/N', () => {
+describe('Create transactions tests', () => {
   before(() => {
     cy.clearLocalStorage()
     cy.visit(constants.homeUrl + constants.TEST_SAFE)
     main.acceptCookies()
   })
 
-  it('should create a new send token transaction', () => {
+  it('Verify a new send token transaction can be created [C56104]', () => {
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
     createtx.typeRecipientAddress(constants.EOA)
@@ -23,7 +23,7 @@ describe('Queue a transaction on 1/N', () => {
     createtx.clickOnNextBtn()
   })
 
-  it('should review, edit and submit the tx', () => {
+  it('Verify a transaction can be reviewed, edited and submitted [C56105]', () => {
     createtx.verifySubmitBtnIsEnabled()
     cy.wait(1000)
     createtx.verifyNativeTokenTransfer()
@@ -36,7 +36,7 @@ describe('Queue a transaction on 1/N', () => {
     createtx.clickOnSignTransactionBtn()
   })
 
-  it('should click on the notification and see the transaction queued', () => {
+  it('Verify that clicking on notification shows the transaction in queue [C56106]', () => {
     createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()

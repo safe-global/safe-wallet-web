@@ -3,7 +3,7 @@ import * as file from '../pages/import_export.pages'
 import * as main from '../pages/main.page'
 import * as constants from '../../support/constants'
 
-describe('Import Export Data', () => {
+describe('Import Export Data tests', () => {
   before(() => {
     cy.clearLocalStorage()
     cy.visit(constants.welcomeUrl)
@@ -11,7 +11,7 @@ describe('Import Export Data', () => {
     file.verifyImportBtnIsVisible()
   })
 
-  it('Uploads test file and access safe', () => {
+  it('Verify Safe can be accessed after test file upload [C56111]', () => {
     const filePath = '../fixtures/data_import.json'
     const safe = 'safe 1 goerli'
 
@@ -23,12 +23,12 @@ describe('Import Export Data', () => {
     file.clickOnClosePushNotificationsBanner()
   })
 
-  it("Verify safe's address book imported data", () => {
+  it('Verify address book imported data [C56112]', () => {
     file.clickOnAddressBookBtn()
     file.verifyImportedAddressBookData()
   })
 
-  it('Verify pinned apps', () => {
+  it('Verify pinned apps [C56113]', () => {
     const appNames = ['Drain Account', 'Transaction Builder']
 
     file.clickOnAppsBtn()
@@ -36,7 +36,7 @@ describe('Import Export Data', () => {
     file.verifyAppsAreVisible(appNames)
   })
 
-  it('Verify imported data in settings', () => {
+  it('Verify imported data in settings [C56114]', () => {
     const unchecked = [file.prependChainPrefixStr, file.copyAddressStr]
     const checked = [file.darkModeStr]
     file.clickOnSettingsBtn()
@@ -45,7 +45,7 @@ describe('Import Export Data', () => {
     file.verifyCheckboxes(checked, true)
   })
 
-  it('Verifies data for export in Data tab', () => {
+  it('Verifies data for export in Data tab [C56115]', () => {
     file.clickOnShowMoreTabsBtn()
     file.verifDataTabBtnIsVisible()
     file.clickOnDataTab()

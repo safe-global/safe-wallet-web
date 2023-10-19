@@ -15,69 +15,65 @@ describe('Address book tests', () => {
     main.acceptCookies()
   })
 
-  describe('should add remove and edit entries in the address book', () => {
-    it('should add an entry', () => {
-      addressBook.clickOnCreateEntryBtn()
-      addressBook.typeInName(NAME)
-      addressBook.typeInAddress(constants.RECIPIENT_ADDRESS)
-      addressBook.clickOnSaveEntryBtn()
-      addressBook.verifyNewEntryAdded(NAME, constants.RECIPIENT_ADDRESS)
-    })
-
-    it('should save an edited entry name', () => {
-      addressBook.clickOnEditEntryBtn()
-      addressBook.typeInNameInput(EDITED_NAME)
-      addressBook.clickOnSaveButton()
-      addressBook.verifyNameWasChanged(NAME, EDITED_NAME)
-    })
-
-    it('should delete an entry', () => {
-      // Click the delete button in the first entry
-      addressBook.clickDeleteEntryButton()
-      addressBook.clickDeleteEntryModalDeleteButton()
-      addressBook.verifyEditedNameNotExists(EDITED_NAME)
-    })
+  it('Verify entry can be added [C56061]', () => {
+    addressBook.clickOnCreateEntryBtn()
+    addressBook.typeInName(NAME)
+    addressBook.typeInAddress(constants.RECIPIENT_ADDRESS)
+    addressBook.clickOnSaveEntryBtn()
+    addressBook.verifyNewEntryAdded(NAME, constants.RECIPIENT_ADDRESS)
   })
 
-  describe('should import and export address book files', () => {
-    it('should import an address book csv file', () => {
-      addressBook.clickOnImportFileBtn()
-      addressBook.importFile()
-      addressBook.verifyImportModalIsClosed()
-      addressBook.verifyDataImported(constants.GOERLI_CSV_ENTRY.name, constants.GOERLI_CSV_ENTRY.address)
-    })
+  it('Verify entered entry in Name input can be saved [C56063]', () => {
+    addressBook.clickOnEditEntryBtn()
+    addressBook.typeInNameInput(EDITED_NAME)
+    addressBook.clickOnSaveButton()
+    addressBook.verifyNameWasChanged(NAME, EDITED_NAME)
+  })
 
-    it.skip('should find Gnosis Chain imported address', () => {
-      // Go to a Safe on Gnosis Chain
-      cy.get('header')
-        .contains(/^G(ö|oe)rli$/)
-        .click()
-      cy.contains('Gnosis Chain').click()
+  it('Verify entry can be deleted [C56062]', () => {
+    // Click the delete button in the first entry
+    addressBook.clickDeleteEntryButton()
+    addressBook.clickDeleteEntryModalDeleteButton()
+    addressBook.verifyEditedNameNotExists(EDITED_NAME)
+  })
 
-      // Navigate to the Address Book page
-      cy.visit(`/address-book?safe=${constants.GNO_TEST_SAFE}`)
+  it('Verify csv file can be imported (Goerli) [C56064]', () => {
+    addressBook.clickOnImportFileBtn()
+    addressBook.importFile()
+    addressBook.verifyImportModalIsClosed()
+    addressBook.verifyDataImported(constants.GOERLI_CSV_ENTRY.name, constants.GOERLI_CSV_ENTRY.address)
+  })
 
-      // Waits for the Address Book table to be in the page
-      cy.contains('p', 'Address book').should('be.visible')
+  it.skip('Verify Gnosis Chain imported address can be found [C56066]', () => {
+    // Go to a Safe on Gnosis Chain
+    cy.get('header')
+      .contains(/^G(ö|oe)rli$/)
+      .click()
+    cy.contains('Gnosis Chain').click()
 
-      // Finds the imported Gnosis Chain address
-      cy.contains(constants.GNO_CSV_ENTRY.name).should('exist')
-      cy.contains(constants.GNO_CSV_ENTRY.address).should('exist')
-    })
+    // Navigate to the Address Book page
+    cy.visit(`/address-book?safe=${constants.GNO_TEST_SAFE}`)
 
-    it('should download correctly the address book file', () => {
-      // Download the export file
-      const date = format(new Date(), 'yyyy-MM-dd', { timeZone: 'UTC' })
-      const fileName = `safe-address-book-${date}.csv` //name that is given to the file automatically
+    // Waits for the Address Book table to be in the page
+    cy.contains('p', 'Address book').should('be.visible')
 
-      addressBook.clickOnExportFileBtn()
-      //This is the submit button for the Export modal. It requires an actuall class or testId to differentiate
-      //from the Export button at the top of the AB table
-      addressBook.confirmExport()
+    // Finds the imported Gnosis Chain address
+    cy.contains(constants.GNO_CSV_ENTRY.name).should('exist')
+    cy.contains(constants.GNO_CSV_ENTRY.address).should('exist')
+  })
 
-      const downloadsFolder = Cypress.config('downloadsFolder')
-      //File reading is failing in the CI. Can be tested locally
-      cy.readFile(path.join(downloadsFolder, fileName)).should('exist')
-    })
+  it('Verify the address book file can be downloaded [C56065]', () => {
+    // Download the export file
+    const date = format(new Date(), 'yyyy-MM-dd', { timeZone: 'UTC' })
+    const fileName = `safe-address-book-${date}.csv` //name that is given to the file automatically
+
+    addressBook.clickOnExportFileBtn()
+    //This is the submit button for the Export modal. It requires an actuall class or testId to differentiate
+    //from the Export button at the top of the AB table
+    addressBook.confirmExport()
+
+    const downloadsFolder = Cypress.config('downloadsFolder')
+    //File reading is failing in the CI. Can be tested locally
+    cy.readFile(path.join(downloadsFolder, fileName)).should('exist')
   })
 })

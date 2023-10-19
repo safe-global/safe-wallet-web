@@ -10,7 +10,7 @@ const str1 = 'True'
 const str2 = '1337'
 const str3 = '5688'
 
-describe('Transaction history', () => {
+describe('Transaction history tests', () => {
   before(() => {
     cy.clearLocalStorage()
     // Go to the test Safe transaction history
@@ -18,7 +18,7 @@ describe('Transaction history', () => {
     main.acceptCookies()
   })
 
-  it('should display October 9th transactions', () => {
+  it('Verify October 9th transactions are displayed [C56128]', () => {
     const DATE = 'Oct 9, 2022'
     const NEXT_DATE_LABEL = 'Feb 8, 2022'
     const amount = '0.25 GOR'
@@ -101,7 +101,7 @@ describe('Transaction history', () => {
       })
   })
 
-  it('should expand/collapse all actions', () => {
+  it('Verify all actions can be expanded/collapsed [C56129]', () => {
     createTx.clickOnTransactionExpandableItem('Mar 24, 2023', () => {
       createTx.verifyTransactionStrNotVible(str1)
       createTx.verifyTransactionStrNotVible(str2)

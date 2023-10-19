@@ -4,7 +4,7 @@ import * as main from '../pages/main.page'
 const testAppName = 'Cypress Test App'
 const testAppDescr = 'Cypress Test App Description'
 
-describe('The transaction modal', () => {
+describe('Transaction modal tests', () => {
   before(() => {
     cy.clearLocalStorage()
   })
@@ -19,14 +19,16 @@ describe('The transaction modal', () => {
     })
   })
 
-  describe('When sending a transaction from an app', () => {
-    it('should show the transaction popup', { defaultCommandTimeout: 12000 }, () => {
+  it(
+    'Verify that the transaction popup is displayed when sending a transaction from an app [C56152]',
+    { defaultCommandTimeout: 12000 },
+    () => {
       cy.visitSafeApp(`${constants.testAppUrl}/dummy`)
 
       main.acceptCookies()
       cy.findByRole('dialog').within(() => {
         cy.findByText(testAppName)
       })
-    })
-  })
+    },
+  )
 })
