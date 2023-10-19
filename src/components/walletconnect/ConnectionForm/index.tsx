@@ -1,6 +1,6 @@
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { Grid, Typography, Divider, SvgIcon, IconButton, Tooltip } from '@mui/material'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
 import type { SessionTypes } from '@walletconnect/types'
 
