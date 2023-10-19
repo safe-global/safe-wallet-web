@@ -1,6 +1,6 @@
 import { getSdkError } from '@walletconnect/utils'
 import { formatJsonRpcError } from '@walletconnect/jsonrpc-utils'
-import { type ReactNode, createContext, useEffect, useState } from 'react'
+import { type ReactNode, createContext, useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
@@ -13,11 +13,13 @@ const walletConnectSingleton = new WalletConnectWallet()
 export const WalletConnectContext = createContext<{
   walletConnect: WalletConnectWallet | null
   error: Error | null
+  setError: Dispatch<SetStateAction<Error | null>>
   open: boolean
   setOpen: (open: boolean) => void
 }>({
   walletConnect: null,
   error: null,
+  setError: () => {},
   open: false,
   setOpen: (_open: boolean) => {},
 })
@@ -84,7 +86,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
   }, [walletConnect, chainId, safeWalletProvider])
 
   return (
-    <WalletConnectContext.Provider value={{ walletConnect, error, open, setOpen }}>
+    <WalletConnectContext.Provider value={{ walletConnect, error, setError, open, setOpen }}>
       {children}
     </WalletConnectContext.Provider>
   )

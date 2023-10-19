@@ -165,11 +165,11 @@ class WalletConnectWallet {
       })
     }
 
-    // Switch to the new Safe
-    await this.accountsChanged(session.topic, chainId, safeAddress)
-
     // Switch to the new chain
     await this.chainChanged(session.topic, chainId)
+
+    // Switch to the new Safe
+    await this.accountsChanged(session.topic, chainId, safeAddress)
   }
 
   public async updateSessions(chainId: string, safeAddress: string) {

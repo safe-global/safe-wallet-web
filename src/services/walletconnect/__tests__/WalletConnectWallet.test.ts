@@ -351,29 +351,29 @@ describe('WalletConnectWallet', () => {
         topic: 'topic',
         namespaces: {
           eip155: {
-            chains: ['eip155:1'],
+            chains: ['eip155:1', 'eip155:5'],
             accounts: [`eip155:1:${hexZeroPad('0x123', 20)}`],
           },
         },
       } as unknown as SessionTypes.Struct
 
-      await (wallet as any).updateSession(session, '1', hexZeroPad('0x456', 20))
+      await (wallet as any).updateSession(session, '5', hexZeroPad('0x456', 20))
 
       expect(emitSessionEventSpy).toHaveBeenCalledTimes(2)
 
       expect(emitSessionEventSpy).toHaveBeenNthCalledWith(1, {
         topic: 'topic',
-        event: {
-          name: 'accountsChanged',
-          data: [hexZeroPad('0x456', 20)],
-        },
-        chainId: 'eip155:1',
+        event: { data: 5, name: 'chainChanged' },
+        chainId: 'eip155:5',
       })
 
       expect(emitSessionEventSpy).toHaveBeenNthCalledWith(2, {
         topic: 'topic',
-        event: { data: 1, name: 'chainChanged' },
-        chainId: 'eip155:1',
+        event: {
+          name: 'accountsChanged',
+          data: [hexZeroPad('0x456', 20)],
+        },
+        chainId: 'eip155:5',
       })
     })
   })

@@ -32,7 +32,7 @@ describe('useWalletConnectSessions', () => {
 
     const wrapper = ({ children }: any) => (
       <WalletConnectContext.Provider
-        value={{ walletConnect: mockWalletConnect, error: null, open: false, setOpen: () => {} }}
+        value={{ walletConnect: mockWalletConnect, error: null, setError: () => {}, open: false, setOpen: () => {} }}
       >
         {children}
       </WalletConnectContext.Provider>
@@ -52,7 +52,7 @@ describe('useWalletConnectSessions', () => {
 
     const wrapper = ({ children }: any) => (
       <WalletConnectContext.Provider
-        value={{ walletConnect: mockWalletConnect, error: null, open: false, setOpen: () => {} }}
+        value={{ walletConnect: mockWalletConnect, error: null, setError: () => {}, open: false, setOpen: () => {} }}
       >
         {children}
       </WalletConnectContext.Provider>
@@ -102,7 +102,7 @@ describe('useWalletConnectSessions', () => {
 
     const wrapper = ({ children }: any) => (
       <WalletConnectContext.Provider
-        value={{ walletConnect: mockWalletConnect, error: null, open: false, setOpen: () => {} }}
+        value={{ walletConnect: mockWalletConnect, error: null, setError: () => {}, open: false, setOpen: () => {} }}
       >
         {children}
       </WalletConnectContext.Provider>

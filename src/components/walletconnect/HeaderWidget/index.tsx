@@ -26,7 +26,7 @@ const usePrepopulatedUri = (): [string, () => void] => {
 }
 
 const WalletConnectHeaderWidget = (): ReactElement => {
-  const { walletConnect, open, setOpen } = useContext(WalletConnectContext)
+  const { walletConnect, setError, open, setOpen } = useContext(WalletConnectContext)
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
   const [uri, clearUri] = usePrepopulatedUri()
@@ -37,7 +37,8 @@ const WalletConnectHeaderWidget = (): ReactElement => {
   const onCloseSessionManager = useCallback(() => {
     setOpen(false)
     clearUri()
-  }, [setOpen, clearUri])
+    setError(null)
+  }, [setOpen, clearUri, setError])
 
   const onCloseSuccesBanner = useCallback(() => setMetadata(undefined), [])
 
