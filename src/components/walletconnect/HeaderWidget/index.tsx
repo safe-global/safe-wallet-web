@@ -26,22 +26,22 @@ const usePrepopulatedUri = (): [string, () => void] => {
 }
 
 const WalletConnectHeaderWidget = (): ReactElement => {
-  const { walletConnect, setError } = useContext(WalletConnectContext)
-  const [popupOpen, setPopupOpen] = useState(false)
+  const { walletConnect, setError, open, setOpen } = useContext(WalletConnectContext)
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
   const [uri, clearUri] = usePrepopulatedUri()
   const [metadata, setMetadata] = useState<CoreTypes.Metadata>()
 
-  const onOpenSessionManager = useCallback(() => setPopupOpen(true), [])
-  const onCloseSessionManager = useCallback(() => {
-    setPopupOpen(false)
-    clearUri()
+  const onOpenSessionManager = useCallback(() => setOpen(true), [setOpen])
 
+  const onCloseSessionManager = useCallback(() => {
+    setOpen(false)
+    clearUri()
     setError(null)
-  }, [clearUri, setError])
+  }, [setOpen, clearUri, setError])
 
   const onCloseSuccesBanner = useCallback(() => setMetadata(undefined), [])
+
   const onSuccess = useCallback(
     ({ peer }: SessionTypes.Struct) => {
       onCloseSessionManager()
@@ -72,13 +72,18 @@ const WalletConnectHeaderWidget = (): ReactElement => {
     return walletConnect.onSessionReject(clearUri)
   }, [clearUri, walletConnect])
 
+  // Open the popup when a prepopulated uri is found
+  useEffect(() => {
+    if (uri) setOpen(true)
+  }, [uri, setOpen])
+
   return (
     <>
       <div ref={iconRef}>
         <Icon onClick={onOpenSessionManager} sessionCount={sessions.length} />
       </div>
 
-      <Popup anchorEl={iconRef.current} open={popupOpen || !!uri} onClose={onCloseSessionManager}>
+      <Popup anchorEl={iconRef.current} open={open} onClose={onCloseSessionManager}>
         <SessionManager sessions={sessions} uri={uri} />
       </Popup>
 
