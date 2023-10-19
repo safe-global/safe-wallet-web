@@ -13,9 +13,13 @@ const walletConnectSingleton = new WalletConnectWallet()
 export const WalletConnectContext = createContext<{
   walletConnect: WalletConnectWallet | null
   error: Error | null
+  open: boolean
+  setOpen: (open: boolean) => void
 }>({
   walletConnect: null,
   error: null,
+  open: false,
+  setOpen: (_open: boolean) => {},
 })
 
 export const WalletConnectProvider = ({ children }: { children: ReactNode }) => {
@@ -24,6 +28,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     safeAddress,
   } = useSafeInfo()
   const [walletConnect, setWalletConnect] = useState<WalletConnectWallet | null>(null)
+  const [open, setOpen] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
 
@@ -78,5 +83,9 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     })
   }, [walletConnect, chainId, safeWalletProvider])
 
-  return <WalletConnectContext.Provider value={{ walletConnect, error }}>{children}</WalletConnectContext.Provider>
+  return (
+    <WalletConnectContext.Provider value={{ walletConnect, error, open, setOpen }}>
+      {children}
+    </WalletConnectContext.Provider>
+  )
 }
