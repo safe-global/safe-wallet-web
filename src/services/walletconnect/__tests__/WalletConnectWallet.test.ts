@@ -344,7 +344,7 @@ describe('WalletConnectWallet', () => {
       expect(emitSessionEventSpy).toHaveBeenCalledTimes(2)
     })
 
-    it.only('should call emitSessionEvent with the correct parameters', async () => {
+    it('should call emitSessionEvent with the correct parameters', async () => {
       const emitSessionEventSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'emitSessionEvent')
 
       const session = {
