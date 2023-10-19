@@ -10,7 +10,7 @@ import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -60,9 +60,11 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
     }
   }
 
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+
   return (
     <>
-      {wallet?.label === ONBOARD_MPC_MODULE_LABEL && userInfo ? (
+      {isSocialLogin && userInfo ? (
         <>
           <Button
             variant="outlined"

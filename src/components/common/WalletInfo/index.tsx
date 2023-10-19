@@ -9,7 +9,7 @@ import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 
 import css from './styles.module.css'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 import SocialLoginInfo from '@/components/common/SocialLoginInfo'
 
 export const UNKNOWN_CHAIN_NAME = 'Unknown'
@@ -18,7 +18,7 @@ const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const prefix = walletChain?.shortName
 
-  const isSocialLogin = wallet.label === ONBOARD_MPC_MODULE_LABEL
+  const isSocialLogin = isSocialLoginWallet(wallet.label)
 
   if (isSocialLogin) {
     return (

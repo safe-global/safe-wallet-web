@@ -13,7 +13,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo from '../WalletInfo'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 import SocialLoginInfo from '@/components/common/SocialLoginInfo'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
@@ -51,6 +51,8 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
+  const isSocialLogin = isSocialLoginWallet(wallet.label)
+
   return (
     <>
       <ButtonBase onClick={handleClick} aria-describedby={id} disableRipple sx={{ alignSelf: 'stretch' }}>
@@ -82,7 +84,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           <Box className={css.accountContainer}>
             <ChainIndicator />
             <Box className={css.addressContainer}>
-              {wallet.label === ONBOARD_MPC_MODULE_LABEL ? (
+              {isSocialLogin ? (
                 <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} />
               ) : (
                 <EthHashInfo

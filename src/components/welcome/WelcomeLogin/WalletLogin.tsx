@@ -1,6 +1,6 @@
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import useWallet from '@/hooks/wallets/useWallet'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 import { Box, Button, Typography } from '@mui/material'
 import { EthHashInfo } from '@safe-global/safe-react-components'
 
@@ -13,7 +13,9 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
     onLogin()
   }
 
-  if (wallet !== null && wallet?.label !== ONBOARD_MPC_MODULE_LABEL) {
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+
+  if (wallet !== null && isSocialLogin) {
     return (
       <Button variant="contained" sx={{ padding: '8px 16px' }} fullWidth onClick={onLogin}>
         <Box width="100%" justifyContent="space-between" display="flex" flexDirection="row" alignItems="center" gap={1}>
