@@ -8,6 +8,9 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
+import Track from '../Track'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics'
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
 import { isSocialLoginWallet } from '@/services/mpc/module'
@@ -64,47 +67,51 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
 
   return (
     <>
-      {isSocialLogin && userInfo ? (
-        <>
-          <Button
-            variant="outlined"
-            sx={{ px: 2, py: 1, borderWidth: '1px !important' }}
-            onClick={onLogin}
-            size="small"
-            disabled={isDisabled}
-            fullWidth
-          >
-            <Box width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
-              <img
-                src={userInfo.profileImage}
-                className={css.profileImg}
-                alt="Profile Image"
-                referrerPolicy="no-referrer"
-              />
-              <div className={css.profileData}>
-                <Typography variant="subtitle2" fontWeight={700}>
-                  Continue as {userInfo.name}
-                </Typography>
-                <Typography variant="body2">{userInfo.email}</Typography>
-              </div>
-              <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" sx={{ marginLeft: 'auto' }} />
-            </Box>
-          </Button>
-        </>
-      ) : (
-        <Button
-          variant="outlined"
-          onClick={login}
-          size="small"
-          disabled={isDisabled}
-          fullWidth
-          sx={{ borderWidth: '1px !important' }}
-        >
-          <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-            <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" /> Continue with Google
-          </Box>
-        </Button>
-      )}
+      <Box sx={{ width: '100%' }}>
+        {isSocialLogin && userInfo ? (
+          <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
+            <Button
+              variant="outlined"
+              sx={{ px: 2, py: 1, borderWidth: '1px !important' }}
+              onClick={onLogin}
+              size="small"
+              disabled={isDisabled}
+              fullWidth
+            >
+              <Box width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
+                <img
+                  src={userInfo.profileImage}
+                  className={css.profileImg}
+                  alt="Profile Image"
+                  referrerPolicy="no-referrer"
+                />
+                <div className={css.profileData}>
+                  <Typography variant="subtitle2" fontWeight={700}>
+                    Continue as {userInfo.name}
+                  </Typography>
+                  <Typography variant="body2">{userInfo.email}</Typography>
+                </div>
+                <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" sx={{ marginLeft: 'auto' }} />
+              </Box>
+            </Button>
+          </Track>
+        ) : (
+          <Track {...MPC_WALLET_EVENTS.CONNECT_GOOGLE}>
+            <Button
+              variant="outlined"
+              onClick={login}
+              size="small"
+              disabled={isDisabled}
+              fullWidth
+              sx={{ borderWidth: '1px !important' }}
+            >
+              <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+                <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" /> Continue with Google
+              </Box>
+            </Button>
+          </Track>
+        )}
+      </Box>
 
       {!isMPCLoginEnabled && (
         <Typography variant="body2" color="text.secondary" display="flex" gap={1} alignItems="center">

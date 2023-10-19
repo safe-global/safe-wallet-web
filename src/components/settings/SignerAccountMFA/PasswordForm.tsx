@@ -1,3 +1,4 @@
+import Track from '@/components/common/Track'
 import { SecurityQuestionRecovery } from '@/hooks/wallets/mpc/recovery/SecurityQuestionRecovery'
 import {
   Typography,
@@ -11,6 +12,7 @@ import {
   SvgIcon,
   Divider,
 } from '@mui/material'
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { useState, useMemo, type ChangeEvent } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { enableMFA } from './helper'
@@ -215,14 +217,16 @@ export const PasswordForm = () => {
                   <Button variant="text" onClick={onReset} disabled={!formState.isDirty}>
                     Cancel
                   </Button>
-                  <Button
-                    sx={{ justifySelf: 'flex-end', marginLeft: 'auto', fontSize: '14px' }}
-                    disabled={isSubmitDisabled}
-                    type="submit"
-                    variant="contained"
-                  >
-                    {isPasswordSet ? 'Change' : 'Create'} Password
-                  </Button>
+                  <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
+                    <Button
+                      sx={{ justifySelf: 'flex-end', marginLeft: 'auto', fontSize: '14px' }}
+                      disabled={isSubmitDisabled}
+                      type="submit"
+                      variant="contained"
+                    >
+                      {isPasswordSet ? 'Change' : 'Create'} Password
+                    </Button>
+                  </Track>
                 </Grid>
                 <Grid item xs={12} md={5} p={3} sx={{ borderLeft: '1px solid #DCDEE0' }}>
                   <Box>
