@@ -40,9 +40,9 @@ export const useCompatibilityWarning = (
     const { proposer } = proposal.params
 
     let { message, severity } = isStrictAddressBridge(origin)
-      ? Warnings.DANGEROUS_BRIDGE
+      ? Warnings.BLOCKED_BRIDGE
       : isDefaultAddressBridge(origin)
-      ? Warnings.RISKY_BRIDGE
+      ? Warnings.WARNED_BRIDGE
       : isUnsupportedChain
       ? Warnings.UNSUPPORTED_CHAIN
       : Warnings.WRONG_CHAIN
