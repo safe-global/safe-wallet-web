@@ -234,10 +234,12 @@ class WalletConnectWallet {
   /**
    * Subscribe to session delete
    */
-  public onSessionDelete(handler: () => void) {
+  public onSessionDelete(handler: (session: SessionTypes.Struct) => void) {
+    // @ts-expect-error - custom event payload
     this.web3Wallet?.on('session_delete', handler)
 
     return () => {
+      // @ts-expect-error
       this.web3Wallet?.off('session_delete', handler)
     }
   }

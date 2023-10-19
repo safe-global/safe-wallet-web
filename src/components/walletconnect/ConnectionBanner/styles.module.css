@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: var(--space-2);
+}
+
+.errorDots circle:first-of-type,
+.errorDots circle:last-of-type {
+  fill: var(--color-error-dark);
+}
+
+.errorDots circle:nth-of-type(2),
+.errorDots circle:nth-of-type(5) {
+  fill: var(--color-error-main);
+}
+.errorDots circle:nth-of-type(3),
+.errorDots circle:nth-of-type(4) {
+  fill: var(--color-error-light);
+}
