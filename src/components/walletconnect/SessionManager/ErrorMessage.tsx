@@ -7,9 +7,11 @@ import css from './styles.module.css'
 
 export const WalletConnectErrorMessage = ({ error }: { error: Error }): ReactElement => {
   return (
-    <div className={css.errorMessage}>
+    <div className={css.errorContainer}>
       <WalletConnectHeader error />
-      <Typography>{error?.message}</Typography>
+      <Typography title={error.message} className={css.errorMessage}>
+        {error.message}
+      </Typography>
     </div>
   )
 }
