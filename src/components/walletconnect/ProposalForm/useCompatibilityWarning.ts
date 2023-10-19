@@ -5,6 +5,9 @@ import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isStrictAddressBridge, isDefaultAddressBridge } from './bridges'
+import { capitalize } from '@/utils/formatters'
+
+const NAME_FALLBACK = 'this dApp'
 
 const NAME_PLACEHOLDER = '%%name%%'
 const CHAIN_PLACEHOLDER = '%%chain%%'
@@ -28,6 +31,22 @@ const Warnings: Record<string, { severity: AlertColor; message: string }> = {
   },
 }
 
+export const _getWarning = (origin: string, isUnsupportedChain: boolean) => {
+  if (isStrictAddressBridge(origin)) {
+    return Warnings.BLOCKED_BRIDGE
+  }
+
+  if (isUnsupportedChain) {
+    return Warnings.UNSUPPORTED_CHAIN
+  }
+
+  if (isDefaultAddressBridge(origin)) {
+    return Warnings.WARNED_BRIDGE
+  }
+
+  return Warnings.WRONG_CHAIN
+}
+
 export const useCompatibilityWarning = (
   proposal: Web3WalletTypes.SessionProposal,
   isUnsupportedChain: boolean,
@@ -39,16 +58,13 @@ export const useCompatibilityWarning = (
     const { origin } = proposal.verifyContext.verified
     const { proposer } = proposal.params
 
-    let { message, severity } = isStrictAddressBridge(origin)
-      ? Warnings.BLOCKED_BRIDGE
-      : isDefaultAddressBridge(origin)
-      ? Warnings.WARNED_BRIDGE
-      : isUnsupportedChain
-      ? Warnings.UNSUPPORTED_CHAIN
-      : Warnings.WRONG_CHAIN
+    let { message, severity } = _getWarning(origin, isUnsupportedChain)
 
     if (message.includes(NAME_PLACEHOLDER)) {
-      message = message.replaceAll(NAME_PLACEHOLDER, proposer.metadata.name)
+      message = message.replaceAll(NAME_PLACEHOLDER, proposer.metadata.name || NAME_FALLBACK)
+      if (message.includes(NAME_FALLBACK)) {
+        message = capitalize(message)
+      }
     }
 
     if (message.includes(CHAIN_PLACEHOLDER)) {

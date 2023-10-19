@@ -39,7 +39,7 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
 
       <div className={css.icon}>
         <SafeAppIconCard
-          src={proposer.metadata.icons[0]}
+          src={proposer.metadata.icons[0] || ''}
           width={32}
           height={32}
           alt={`${proposer.metadata.name} logo`}
