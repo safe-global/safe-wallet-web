@@ -219,16 +219,8 @@ describe('WalletConnectWallet', () => {
         hexZeroPad('0x123', 20),
       )
 
-      expect(emitSessionEventSpy).toHaveBeenCalledTimes(2)
+      expect(emitSessionEventSpy).toHaveBeenCalledTimes(1)
       expect(emitSessionEventSpy).toHaveBeenNthCalledWith(1, {
-        topic: 'topic',
-        event: {
-          name: 'accountsChanged',
-          data: [hexZeroPad('0x123', 20)],
-        },
-        chainId: 'eip155:1',
-      })
-      expect(emitSessionEventSpy).toHaveBeenNthCalledWith(2, {
         topic: 'topic',
         event: { data: 1, name: 'chainChanged' },
         chainId: 'eip155:1',
@@ -264,11 +256,40 @@ describe('WalletConnectWallet', () => {
         hexZeroPad('0x123', 20),
       )
 
-      expect(emitSpy).toHaveBeenCalledWith('session_add')
+      expect(emitSpy).toHaveBeenCalledWith('session_add', { namespaces: { eip155: {} }, topic: 'topic' })
     })
   })
 
   describe('updateSession', () => {
+    it('should disconnect unsupported chains', async () => {
+      const disconnectSessionSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'disconnectSession')
+      const emitSpy = jest.spyOn(((wallet as any).web3Wallet as IWeb3Wallet).events, 'emit')
+
+      const session = {
+        topic: 'topic1',
+        namespaces: {
+          eip155: {
+            chains: ['eip155:1'],
+            accounts: [`eip155:1:${hexZeroPad('0x123', 20)}`],
+            events: ['chainChanged', 'accountsChanged'],
+            methods: [],
+          },
+        },
+      } as unknown as SessionTypes.Struct
+
+      await (wallet as any).updateSession(session, '69420', hexZeroPad('0x123', 20))
+
+      expect(disconnectSessionSpy).toHaveBeenCalledWith({
+        reason: {
+          code: 6000,
+          message: 'User disconnected.',
+        },
+        topic: 'topic1',
+      })
+
+      expect(emitSpy).toHaveBeenCalledWith('session_delete', session)
+    })
+
     it('should update the session with the correct namespace', async () => {
       const updateSessionSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'updateSession')
       const emitSessionEventSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'emitSessionEvent')
@@ -285,14 +306,14 @@ describe('WalletConnectWallet', () => {
         },
       } as unknown as SessionTypes.Struct
 
-      await (wallet as any).updateSession(session, '69420', hexZeroPad('0x123', 20))
+      await (wallet as any).updateSession(session, '1', hexZeroPad('0x456', 20))
 
       expect(updateSessionSpy).toHaveBeenCalledWith({
         topic: 'topic1',
         namespaces: {
           eip155: {
-            chains: ['eip155:69420', 'eip155:1'],
-            accounts: [`eip155:69420:${hexZeroPad('0x123', 20)}`, `eip155:1:${hexZeroPad('0x123', 20)}`],
+            chains: ['eip155:1'],
+            accounts: [`eip155:1:${hexZeroPad('0x456', 20)}`, `eip155:1:${hexZeroPad('0x123', 20)}`],
             events: ['chainChanged', 'accountsChanged'],
             methods: [],
           },
@@ -326,30 +347,32 @@ describe('WalletConnectWallet', () => {
     it('should call emitSessionEvent with the correct parameters', async () => {
       const emitSessionEventSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'emitSessionEvent')
 
-      await (wallet as any).updateSession(
-        {
-          topic: 'topic1',
-          namespaces: {},
-        } as SessionTypes.Struct,
-        '1',
-        hexZeroPad('0x123', 20),
-      )
+      const session = {
+        topic: 'topic',
+        namespaces: {
+          eip155: {
+            chains: ['eip155:1'],
+            accounts: [`eip155:1:${hexZeroPad('0x123', 20)}`],
+          },
+        },
+      } as unknown as SessionTypes.Struct
 
-      expect(emitSessionEventSpy).toHaveBeenCalledWith({
-        topic: 'topic1',
+      await (wallet as any).updateSession(session, '1', hexZeroPad('0x456', 20))
+
+      expect(emitSessionEventSpy).toHaveBeenCalledTimes(2)
+
+      expect(emitSessionEventSpy).toHaveBeenNthCalledWith(1, {
+        topic: 'topic',
         event: {
           name: 'accountsChanged',
-          data: [hexZeroPad('0x123', 20)],
+          data: [hexZeroPad('0x456', 20)],
         },
         chainId: 'eip155:1',
       })
 
-      expect(emitSessionEventSpy).toHaveBeenCalledWith({
-        topic: 'topic1',
-        event: {
-          name: 'chainChanged',
-          data: 1,
-        },
+      expect(emitSessionEventSpy).toHaveBeenNthCalledWith(2, {
+        topic: 'topic',
+        event: { data: 1, name: 'chainChanged' },
         chainId: 'eip155:1',
       })
     })
