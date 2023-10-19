@@ -25,17 +25,15 @@ export const ConnectionForm = ({
   uri: string
 }): ReactElement => {
   const { walletConnect } = useContext(WalletConnectContext)
-  const [dismissedHints = false, setDismissedHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
-  const [showHints, setShowHints] = useState(!dismissedHints)
+  const [showHints = false, setShowHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
 
   const onToggle = () => {
     setShowHints((prev) => !prev)
   }
 
   const onHide = useCallback(() => {
-    setDismissedHints(true)
     setShowHints(false)
-  }, [setDismissedHints])
+  }, [setShowHints])
 
   useEffect(() => {
     if (!walletConnect) {
@@ -49,8 +47,7 @@ export const ConnectionForm = ({
     <Grid className={css.container}>
       <Grid item textAlign="center">
         <Tooltip
-          title="How does WalletConnect work?"
-          hidden={!dismissedHints}
+          title={showHints ? 'Hide how WalletConnect works' : 'How does WalletConnect work?'}
           placement="top"
           arrow
           className={css.infoIcon}
@@ -77,7 +74,7 @@ export const ConnectionForm = ({
         <SessionList sessions={sessions} onDisconnect={onDisconnect} />
       </Grid>
 
-      {(!dismissedHints || showHints) && (
+      {showHints && (
         <>
           <Divider flexItem className={css.divider} />
 
