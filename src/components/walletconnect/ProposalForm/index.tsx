@@ -37,14 +37,16 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
         WalletConnect
       </Typography>
 
-      <div className={css.icon}>
-        <SafeAppIconCard
-          src={proposer.metadata.icons[0] || ''}
-          width={32}
-          height={32}
-          alt={`${proposer.metadata.name} logo`}
-        />
-      </div>
+      {proposer.metadata.icons[0] && (
+        <div className={css.icon}>
+          <SafeAppIconCard
+            src={proposer.metadata.icons[0]}
+            width={32}
+            height={32}
+            alt={`${proposer.metadata.name} logo`}
+          />
+        </div>
+      )}
 
       <Typography mb={1}>{proposer.metadata.name} wants to connect</Typography>
 
