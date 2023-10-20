@@ -1,6 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import type { Dispatch, SetStateAction } from 'react'
-import type { CoreTypes, SessionTypes } from '@walletconnect/types'
+import { useCallback, useContext, useEffect, useRef } from 'react'
 import type { ReactElement } from 'react'
 
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
@@ -12,7 +10,8 @@ import SessionManager from '../SessionManager'
 import Popup from '../Popup'
 import { ConnectionBanner } from '../ConnectionBanner'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { getEip155ChainId, getSupportedEip155ChainIds } from '@/services/walletconnect/utils'
+import { isUnsupportedChain } from '@/services/walletconnect/utils'
+import { useDeferredListener } from '@/hooks/useDefferedListener'
 
 const usePrepopulatedUri = (): [string, () => void] => {
   const [searchParamWcUri, setSearchParamWcUri] = useWalletConnectSearchParamUri()
@@ -30,87 +29,28 @@ const usePrepopulatedUri = (): [string, () => void] => {
 
 const BANNER_TIMEOUT = 2_000
 
-const useSuccessMetadata = (
-  onCloseSessionManager: () => void,
-): [CoreTypes.Metadata | undefined, Dispatch<SetStateAction<CoreTypes.Metadata | undefined>>] => {
+const useSuccessSession = (onCloseSessionManager: () => void) => {
   const { walletConnect } = useContext(WalletConnectContext)
-  const [metadata, setMetadata] = useState<CoreTypes.Metadata>()
 
-  const onSuccess = useCallback(
-    ({ peer }: SessionTypes.Struct) => {
-      onCloseSessionManager()
-
-      // Show success banner
-      setMetadata(peer.metadata)
-
-      return setTimeout(() => {
-        setMetadata(undefined)
-      }, BANNER_TIMEOUT)
-    },
-    [onCloseSessionManager],
-  )
-
-  useEffect(() => {
-    if (!walletConnect) return
-
-    let timeout: NodeJS.Timeout
-
-    walletConnect.onSessionAdd((session) => {
-      timeout = onSuccess(session)
-    })
-
-    return () => clearTimeout(timeout)
-  }, [onSuccess, walletConnect])
-
-  return [metadata, setMetadata]
+  return useDeferredListener({
+    listener: walletConnect?.onSessionAdd,
+    cb: onCloseSessionManager,
+    ms: BANNER_TIMEOUT,
+  })
 }
 
-const useDeleteMetadata = (): [
-  CoreTypes.Metadata | undefined,
-  Dispatch<SetStateAction<CoreTypes.Metadata | undefined>>,
-] => {
+const useDeleteSession = () => {
   const { walletConnect } = useContext(WalletConnectContext)
-  const { safe } = useSafeInfo()
-  const [metadata, setMetadata] = useState<CoreTypes.Metadata>()
 
-  const onDelete = useCallback(
-    ({ optionalNamespaces, requiredNamespaces, peer }: SessionTypes.Struct) => {
-      const supportedEip155ChainIds = getSupportedEip155ChainIds(requiredNamespaces, optionalNamespaces)
-
-      const eipChainId = getEip155ChainId(safe.chainId)
-      const isUnsupportedChain = !supportedEip155ChainIds.includes(eipChainId)
-
-      if (!isUnsupportedChain) {
-        return
-      }
-
-      // Show success banner
-      setMetadata(peer.metadata)
-
-      return setTimeout(() => {
-        setMetadata(undefined)
-      }, BANNER_TIMEOUT * 2)
-    },
-    [safe.chainId],
-  )
-
-  useEffect(() => {
-    if (!walletConnect) return
-
-    let timeout: NodeJS.Timeout | undefined
-
-    walletConnect.onSessionDelete((session) => {
-      timeout = onDelete(session)
-    })
-
-    return () => clearTimeout(timeout)
-  }, [onDelete, walletConnect])
-
-  return [metadata, setMetadata]
+  return useDeferredListener({
+    listener: walletConnect?.onSessionDelete,
+    ms: BANNER_TIMEOUT * 2,
+  })
 }
 
 const WalletConnectHeaderWidget = (): ReactElement => {
   const { walletConnect, setError, open, setOpen } = useContext(WalletConnectContext)
+  const { safe } = useSafeInfo()
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
   const [uri, clearUri] = usePrepopulatedUri()
@@ -123,15 +63,17 @@ const WalletConnectHeaderWidget = (): ReactElement => {
     setError(null)
   }, [setOpen, clearUri, setError])
 
-  const [successMetadata, setSuccessMetadata] = useSuccessMetadata(onCloseSessionManager)
-  const [deleteMetadata, setDeleteMetadata] = useDeleteMetadata()
+  const [successSession, setSuccessSession] = useSuccessSession(onCloseSessionManager)
+  const [deleteSession, setDeleteSession] = useDeleteSession()
 
-  const bannerMetadata = successMetadata || deleteMetadata
+  const session = successSession || deleteSession
+  const metadata = session?.peer?.metadata
+  const isUnsupported = deleteSession ? isUnsupportedChain(deleteSession, safe.chainId) : false
 
   const onCloseConnectionBanner = useCallback(() => {
-    setSuccessMetadata(undefined)
-    setDeleteMetadata(undefined)
-  }, [setDeleteMetadata, setSuccessMetadata])
+    setSuccessSession(undefined)
+    setDeleteSession(undefined)
+  }, [setSuccessSession, setDeleteSession])
 
   // Clear search param/clipboard state to prevent it being automatically entered again
   useEffect(() => {
@@ -155,8 +97,8 @@ const WalletConnectHeaderWidget = (): ReactElement => {
         <SessionManager sessions={sessions} uri={uri} />
       </Popup>
 
-      <Popup anchorEl={iconRef.current} open={!!bannerMetadata} onClose={onCloseConnectionBanner}>
-        <ConnectionBanner metadata={bannerMetadata} isDelete={!!deleteMetadata} />
+      <Popup anchorEl={iconRef.current} open={!!metadata} onClose={onCloseConnectionBanner}>
+        <ConnectionBanner metadata={metadata} isDelete={isUnsupported} />
       </Popup>
     </>
   )

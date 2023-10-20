@@ -1,5 +1,5 @@
 import type { ChainInfo } from '@safe-global/safe-apps-sdk'
-import type { ProposalTypes } from '@walletconnect/types'
+import type { ProposalTypes, SessionTypes } from '@walletconnect/types'
 
 import { EIP155 } from './constants'
 
@@ -37,4 +37,11 @@ export const getSupportedChainIds = (
       return supportedEip155ChainIds.includes(eipChainId)
     })
     .map((chain) => chain.chainId)
+}
+
+export const isUnsupportedChain = (session: SessionTypes.Struct, chainId: string) => {
+  const supportedEip155ChainIds = getSupportedEip155ChainIds(session.requiredNamespaces, session.optionalNamespaces)
+
+  const eipChainId = getEip155ChainId(chainId)
+  return !supportedEip155ChainIds.includes(eipChainId)
 }
