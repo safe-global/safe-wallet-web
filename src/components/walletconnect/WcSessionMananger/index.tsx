@@ -8,23 +8,22 @@ import { WalletConnectContext } from '@/services/walletconnect/WalletConnectCont
 import { asError } from '@/services/exceptions/utils'
 import WcConnectionForm from '../WcConnectionForm'
 import WcErrorMessage from '../WcErrorMessage'
-import usePrepopulatedUri from './usePrepopulatedUri'
 import WcProposalForm from '../WcProposalForm'
 import WcConnectionState from '../WcConnectionState'
 
 type WcSessionManagerProps = {
   sessions: SessionTypes.Struct[]
+  uri: string
 }
 
 const SESSION_INFO_TIMEOUT = 3000
 
-const WcSessionManager = ({ sessions }: WcSessionManagerProps): ReactElement => {
+const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps): ReactElement => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
-  const [error, setError] = useState<Error>()
-  const [uri, clearUri] = usePrepopulatedUri()
+  const [error, setError] = useState<Error | undefined>()
   const [changedSession, setChangedSession] = useState<SessionTypes.Struct>()
 
   // On session approve
@@ -71,9 +70,10 @@ const WcSessionManager = ({ sessions }: WcSessionManagerProps): ReactElement => 
   // Subscribe to session proposals
   useEffect(() => {
     if (!walletConnect) return
-    setChangedSession(undefined)
-    setError(undefined)
-    return walletConnect.onSessionPropose(setProposal)
+    return walletConnect.onSessionPropose((proposalData) => {
+      setError(undefined)
+      setProposal(proposalData)
+    })
   }, [walletConnect])
 
   // On session add
@@ -85,11 +85,6 @@ const WcSessionManager = ({ sessions }: WcSessionManagerProps): ReactElement => 
   useEffect(() => {
     return walletConnect?.onSessionDelete(setChangedSession)
   }, [walletConnect])
-
-  // Clear prepopulated uri on unmount
-  useEffect(() => {
-    return () => clearUri()
-  }, [clearUri])
 
   // Clear changed session after 3 seconds
   useEffect(() => {
@@ -110,14 +105,14 @@ const WcSessionManager = ({ sessions }: WcSessionManagerProps): ReactElement => 
     return <WcErrorMessage error={anyError} />
   }
 
-  // Session info
-  if (changedSession) {
-    return <WcConnectionState metadata={changedSession.peer.metadata} />
-  }
-
   // Session proposal
   if (proposal) {
     return <WcProposalForm proposal={proposal} onApprove={onApprove} onReject={onReject} />
+  }
+
+  // Session info
+  if (changedSession) {
+    return <WcConnectionState metadata={changedSession.peer.metadata} />
   }
 
   // Connection form (initial state)

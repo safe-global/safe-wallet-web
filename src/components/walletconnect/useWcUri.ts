@@ -2,10 +2,10 @@ import { useCallback } from 'react'
 import { useWalletConnectClipboardUri } from '@/services/walletconnect/useWalletConnectClipboardUri'
 import { useWalletConnectSearchParamUri } from '@/services/walletconnect/useWalletConnectSearchParamUri'
 
-const usePrepopulatedUri = (): [string, () => void] => {
+const useWcUri = (): [string, () => void] => {
   const [searchParamWcUri, setSearchParamWcUri] = useWalletConnectSearchParamUri()
   const [clipboardWcUri, setClipboardWcUri] = useWalletConnectClipboardUri()
-  const uri = searchParamWcUri || clipboardWcUri
+  const uri = searchParamWcUri || clipboardWcUri || ''
 
   const clearUri = useCallback(() => {
     setSearchParamWcUri(null)
@@ -16,4 +16,4 @@ const usePrepopulatedUri = (): [string, () => void] => {
   return [uri, clearUri]
 }
 
-export default usePrepopulatedUri
+export default useWcUri

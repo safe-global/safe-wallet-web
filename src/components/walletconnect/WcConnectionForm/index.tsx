@@ -9,6 +9,7 @@ import WcSessionList from '../WcSessionList'
 import WcInput from '../WcInput'
 import WcLogoHeader from '../WcLogoHeader'
 import css from './styles.module.css'
+import useSafeAddress from '@/hooks/useSafeAddress'
 
 const WC_HINTS_KEY = 'wcHints'
 
@@ -21,7 +22,8 @@ export const WcConnectionForm = ({
   onDisconnect: (session: SessionTypes.Struct) => Promise<void>
   uri: string
 }): ReactElement => {
-  const [showHints = false, setShowHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
+  const [showHints = true, setShowHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
+  const safeAddress = useSafeAddress()
 
   const onToggle = useCallback(() => {
     setShowHints((prev) => !prev)
@@ -53,7 +55,7 @@ export const WcConnectionForm = ({
           Paste the pairing code below to connect to your {`Safe{Wallet}`} via WalletConnect
         </Typography>
 
-        <WcInput uri={uri} />
+        <WcInput uri={uri} disabled={!safeAddress} />
       </Grid>
 
       <Divider flexItem className={css.divider} />
