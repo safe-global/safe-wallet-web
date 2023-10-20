@@ -1,4 +1,4 @@
-import { Box, Skeleton, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { Suspense } from 'react'
 import type { ReactElement } from 'react'
 
@@ -9,26 +9,31 @@ import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 
 import css from './styles.module.css'
-import useWalletBalance from '@/hooks/wallets/useWalletBalance'
-import { formatVisualAmount } from '@/utils/formatters'
+import Identicon from '@/components/common/Identicon'
+import classnames from 'classnames'
+import WalletBalance from '@/components/common/WalletBalance'
 
 export const UNKNOWN_CHAIN_NAME = 'Unknown'
 
-const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
+const WalletInfo = ({ wallet, balance }: { wallet: ConnectedWallet; balance: BigInt | undefined }): ReactElement => {
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const prefix = walletChain?.shortName
-  const [balance, balanceError, balanceLoading] = useWalletBalance()
+
+  const isMetaMask = wallet.label === 'MetaMask'
 
   return (
     <Box className={css.container}>
       <Box className={css.imageContainer}>
+        <Identicon address={wallet.address} size={34} />
         <Suspense>
-          <WalletIcon provider={wallet.label} icon={wallet.icon} />
-        </Suspense>{' '}
+          <Box className={classnames(css.walletIcon, { [css.animate]: isMetaMask })}>
+            <WalletIcon provider={wallet.label} icon={wallet.icon} width={16} height={16} />
+          </Box>
+        </Suspense>
       </Box>
 
       <Box className={css.walletDetails}>
-        <Typography variant="caption" fontWeight="bold" component="div">
+        <Typography variant="body2" component="div">
           {wallet.ens ? (
             <div>{wallet.ens}</div>
           ) : (
@@ -43,16 +48,8 @@ const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
         </Typography>
 
         <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-          <Typography variant="caption" component="div" className={css.balance}>
-            {balance !== undefined ? (
-              <>
-                {' '}
-                {formatVisualAmount(balance.toString(10), walletChain?.nativeCurrency.decimals ?? 18)}{' '}
-                {walletChain?.nativeCurrency.symbol ?? 'ETH'}
-              </>
-            ) : (
-              <Skeleton />
-            )}
+          <Typography variant="caption" component="div" fontWeight="bold" className={css.balance}>
+            <WalletBalance chainInfo={walletChain} balance={balance} />
           </Typography>
         </Box>
       </Box>

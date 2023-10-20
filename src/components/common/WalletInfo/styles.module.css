@@ -8,6 +8,37 @@
 .imageContainer {
   display: flex;
   justify-content: center;
+  position: relative;
+}
+
+.walletIcon {
+  position: absolute;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  bottom: -4px;
+  right: -4px;
+  border-radius: 50%;
+  outline: rgb(255, 255, 255) solid 2px;
+  outline-offset: -0.1px;
+  background-color: rgb(255, 255, 255);
+  overflow: hidden;
+}
+
+.animate img {
+  animation: 30s scale-up;
+}
+
+@keyframes scale-up {
+  from {
+    transform: scale(1) rotateZ(0deg);
+  }
+
+  to {
+    transform: scale(2) rotateZ(10deg);
+  }
 }
 
 [data-theme='dark'] .imageContainer img[alt*='Ledger'] {

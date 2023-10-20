@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
-import { Box, Button, ButtonBase, Paper, Popover, Skeleton, Typography } from '@mui/material'
+import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
@@ -13,12 +13,15 @@ import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
+import useWalletBalance from '@/hooks/wallets/useWalletBalance'
+import WalletBalance from '@/components/common/WalletBalance'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const onboard = useOnboard()
   const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const addressBook = useAddressBook()
+  const [balance] = useWalletBalance()
   const prefix = chainInfo?.shortName
 
   const handleSwitchWallet = () => {
@@ -53,7 +56,7 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
     <>
       <ButtonBase onClick={handleClick} aria-describedby={id} disableRipple sx={{ alignSelf: 'stretch' }}>
         <Box className={css.buttonContainer}>
-          <WalletInfo wallet={wallet} />
+          <WalletInfo wallet={wallet} balance={balance} />
 
           <Box display="flex" alignItems="center" justifyContent="flex-end" marginLeft="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
@@ -102,6 +105,12 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
             <Box className={css.row}>
               <Typography variant="caption">Connected network</Typography>
               <Typography variant="body2">{chainInfo?.chainName || UNKNOWN_CHAIN_NAME}</Typography>
+            </Box>
+            <Box className={css.row}>
+              <Typography variant="caption">Balance</Typography>
+              <Typography variant="body2">
+                <WalletBalance chainInfo={chainInfo} balance={balance} />
+              </Typography>
             </Box>
           </Box>
 
