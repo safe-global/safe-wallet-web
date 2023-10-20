@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
-import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
+import { Box, Button, ButtonBase, Paper, Popover, Skeleton, Typography } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
