@@ -24,6 +24,7 @@ export type MPCWalletHook = {
   triggerLogin: () => Promise<boolean>
   resetAccount: () => Promise<void>
   userInfo: UserInfo | undefined
+  exportPk: (password: string) => Promise<string | undefined>
 }
 
 export const useMPCWallet = (): MPCWalletHook => {
@@ -132,6 +133,24 @@ export const useMPCWallet = (): MPCWalletHook => {
     return mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
   }
 
+  const exportPk = async (password: string): Promise<string> => {
+    if (!mpcCoreKit) {
+      throw new Error('MPC Core Kit is not initialized')
+    }
+    const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
+
+    try {
+      if (securityQuestions.isEnabled()) {
+        // Only export PK if recovery works
+        await securityQuestions.recoverWithPassword(password)
+      }
+      const exportedPK = await mpcCoreKit?._UNSAFE_exportTssKey()
+      return exportedPK
+    } catch (err) {
+      throw new Error('Error exporting account. Make sure the password is correct.')
+    }
+  }
+
   return {
     triggerLogin,
     walletState,
@@ -139,5 +158,6 @@ export const useMPCWallet = (): MPCWalletHook => {
     resetAccount: criticalResetAccount,
     upsertPasswordBackup: () => Promise.resolve(),
     userInfo: mpcCoreKit?.state.userInfo,
+    exportPk,
   }
 }

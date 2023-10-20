@@ -6157,7 +6157,7 @@
     loglevel "^1.8.1"
     ts-custom-error "^3.3.1"
 
-"@web3auth/mpc-core-kit@^1.1.0":
+"@web3auth/mpc-core-kit@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@web3auth/mpc-core-kit/-/mpc-core-kit-1.1.2.tgz#308f9d441b1275ebcc2c96be8ff976decee6dbcf"
   integrity sha512-bx16zYdC3D2KPp5wv55fn6W3RcMGUUbHeoClaDI2czwbUrZyql71A4qQdyi6tMTzy/uAXWZrfB+U4NGk+ec9Pw==
