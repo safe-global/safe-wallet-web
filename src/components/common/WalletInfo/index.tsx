@@ -12,10 +12,19 @@ import css from './styles.module.css'
 import Identicon from '@/components/common/Identicon'
 import classnames from 'classnames'
 import WalletBalance from '@/components/common/WalletBalance'
+import { type BigNumber } from 'ethers'
 
 export const UNKNOWN_CHAIN_NAME = 'Unknown'
 
-const WalletInfo = ({ wallet, balance }: { wallet: ConnectedWallet; balance: BigInt | undefined }): ReactElement => {
+const WalletInfo = ({
+  wallet,
+  balance,
+  showBalance = false,
+}: {
+  wallet: ConnectedWallet
+  balance?: BigNumber | undefined
+  showBalance?: boolean
+}): ReactElement => {
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const prefix = walletChain?.shortName
 
@@ -47,11 +56,13 @@ const WalletInfo = ({ wallet, balance }: { wallet: ConnectedWallet; balance: Big
           )}
         </Typography>
 
-        <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-          <Typography variant="caption" component="div" fontWeight="bold" className={css.balance}>
-            <WalletBalance chainInfo={walletChain} balance={balance} />
-          </Typography>
-        </Box>
+        {showBalance && (
+          <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+            <Typography variant="caption" component="div" fontWeight="bold" className={css.balance}>
+              <WalletBalance balance={balance} />
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   )

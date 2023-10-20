@@ -1,0 +1,20 @@
+.sponsoredBy {
+  padding: 8px 12px;
+  background-color: var(--color-background-main);
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+}
+
+.icon {
+  margin-right: 8px;
+  margin-top: -1px;
+  color: var(--color-text-secondary);
+  width: 24px;
+}
+
+.logo {
+  width: 16px;
+  height: 16px;
+}

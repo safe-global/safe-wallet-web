@@ -1,19 +1,19 @@
 import useAsync from '../useAsync'
 import useWallet from './useWallet'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { type BigNumber } from 'ethers'
 
 const useWalletBalance = () => {
+  const web3ReadOnly = useWeb3ReadOnly()
   const wallet = useWallet()
 
-  return useAsync<BigInt | undefined>(async () => {
-    if (!wallet) {
+  return useAsync<BigNumber | undefined>(() => {
+    if (!wallet || !web3ReadOnly) {
       return undefined
     }
-    const balanceString = await wallet.provider.request({
-      method: 'eth_getBalance',
-      params: [wallet.address, 'latest'],
-    })
-    return BigInt(balanceString)
-  }, [wallet])
+
+    return web3ReadOnly.getBalance(wallet.address, 'latest')
+  }, [wallet, web3ReadOnly])
 }
 
 export default useWalletBalance
