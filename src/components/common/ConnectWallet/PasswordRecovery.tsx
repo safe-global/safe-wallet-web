@@ -9,6 +9,7 @@ import {
   Box,
   Divider,
   Grid,
+  LinearProgress,
 } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -52,6 +53,10 @@ export const PasswordRecovery = ({
             Verify your account
           </Typography>
           <Box bgcolor="background.paper" borderRadius={1}>
+            <LinearProgress
+              color="secondary"
+              sx={{ borderTopLeftRadius: '6px', borderTopRightRadius: '6px', opacity: isDisabled ? 1 : 0 }}
+            />
             <Box p={4}>
               <Typography variant="h6" fontWeight="bold" mb={0.5}>
                 Enter security password
@@ -70,6 +75,7 @@ export const PasswordRecovery = ({
                 type={showPassword ? 'text' : 'password'}
                 error={!!formState.errors['password']}
                 helperText={formState.errors['password']?.message}
+                disabled={isDisabled}
                 InputProps={{
                   endAdornment: (
                     <IconButton
@@ -86,6 +92,7 @@ export const PasswordRecovery = ({
                 })}
               />
               <FormControlLabel
+                disabled={isDisabled}
                 control={<Checkbox checked={storeDeviceFactor} onClick={() => setStoreDeviceFactor((prev) => !prev)} />}
                 label="Do not ask again on this device"
               />
