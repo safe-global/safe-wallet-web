@@ -14,14 +14,10 @@ export const WalletConnectContext = createContext<{
   walletConnect: WalletConnectWallet | null
   error: Error | null
   setError: Dispatch<SetStateAction<Error | null>>
-  open: boolean
-  setOpen: (open: boolean) => void
 }>({
   walletConnect: null,
   error: null,
   setError: () => {},
-  open: false,
-  setOpen: (_open: boolean) => {},
 })
 
 export const WalletConnectProvider = ({ children }: { children: ReactNode }) => {
@@ -30,7 +26,6 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     safeAddress,
   } = useSafeInfo()
   const [walletConnect, setWalletConnect] = useState<WalletConnectWallet | null>(null)
-  const [open, setOpen] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
 
@@ -86,8 +81,6 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
   }, [walletConnect, chainId, safeWalletProvider])
 
   return (
-    <WalletConnectContext.Provider value={{ walletConnect, error, setError, open, setOpen }}>
-      {children}
-    </WalletConnectContext.Provider>
+    <WalletConnectContext.Provider value={{ walletConnect, error, setError }}>{children}</WalletConnectContext.Provider>
   )
 }

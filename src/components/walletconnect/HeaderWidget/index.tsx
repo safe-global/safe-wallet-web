@@ -1,8 +1,9 @@
+import { ErrorBoundary } from '@sentry/react'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { CoreTypes, SessionTypes } from '@walletconnect/types'
 import type { ReactElement } from 'react'
 
-import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
+import { WalletConnectContext, WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
 import useWalletConnectSessions from '@/services/walletconnect/useWalletConnectSessions'
 import { useWalletConnectClipboardUri } from '@/services/walletconnect/useWalletConnectClipboardUri'
 import { useWalletConnectSearchParamUri } from '@/services/walletconnect/useWalletConnectSearchParamUri'
@@ -10,6 +11,9 @@ import Icon from './Icon'
 import SessionManager from '../SessionManager'
 import Popup from '../Popup'
 import { SuccessBanner } from '../SuccessBanner'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { closeWalletConnect, openWalletConnect, selectWalletConnectPopup } from '@/store/popupSlice'
+import { ErrorFalllback } from './ErrorFalllback'
 
 const usePrepopulatedUri = (): [string, () => void] => {
   const [searchParamWcUri, setSearchParamWcUri] = useWalletConnectSearchParamUri()
@@ -25,20 +29,22 @@ const usePrepopulatedUri = (): [string, () => void] => {
   return [uri, clearUri]
 }
 
-const WalletConnectHeaderWidget = (): ReactElement => {
-  const { walletConnect, setError, open, setOpen } = useContext(WalletConnectContext)
+const HeaderWidget = (): ReactElement => {
+  const { walletConnect, error, setError } = useContext(WalletConnectContext)
+  const { open } = useAppSelector(selectWalletConnectPopup)
+  const dispatch = useAppDispatch()
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
   const [uri, clearUri] = usePrepopulatedUri()
   const [metadata, setMetadata] = useState<CoreTypes.Metadata>()
 
-  const onOpenSessionManager = useCallback(() => setOpen(true), [setOpen])
+  const onOpenSessionManager = useCallback(() => dispatch(openWalletConnect()), [dispatch])
 
   const onCloseSessionManager = useCallback(() => {
-    setOpen(false)
+    dispatch(closeWalletConnect())
     clearUri()
     setError(null)
-  }, [setOpen, clearUri, setError])
+  }, [dispatch, clearUri, setError])
 
   const onCloseSuccesBanner = useCallback(() => setMetadata(undefined), [])
 
@@ -74,13 +80,17 @@ const WalletConnectHeaderWidget = (): ReactElement => {
 
   // Open the popup when a prepopulated uri is found
   useEffect(() => {
-    if (uri) setOpen(true)
-  }, [uri, setOpen])
+    if (uri) dispatch(openWalletConnect())
+  }, [uri, dispatch])
 
   return (
-    <>
+    <ErrorBoundary
+      fallback={({ error }) => (
+        <ErrorFalllback onOpen={onOpenSessionManager} onClose={onCloseSessionManager} open={open} error={error} />
+      )}
+    >
       <div ref={iconRef}>
-        <Icon onClick={onOpenSessionManager} sessionCount={sessions.length} />
+        <Icon onClick={onOpenSessionManager} sessionCount={sessions.length} error={!!error} />
       </div>
 
       <Popup anchorEl={iconRef.current} open={open} onClose={onCloseSessionManager}>
@@ -90,7 +100,16 @@ const WalletConnectHeaderWidget = (): ReactElement => {
       <Popup anchorEl={iconRef.current} open={!!metadata} onClose={onCloseSuccesBanner}>
         {metadata && <SuccessBanner metadata={metadata} />}
       </Popup>
-    </>
+    </ErrorBoundary>
+  )
+}
+
+const WalletConnectHeaderWidget = (): ReactElement => {
+  // Provider wraps widget so ErrorBoundary is isolated to this component
+  return (
+    <WalletConnectProvider>
+      <HeaderWidget />
+    </WalletConnectProvider>
   )
 }
 
