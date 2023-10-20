@@ -61,9 +61,10 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
 
       if (success) {
         onLogin?.()
+        setTxFlow(undefined)
       }
     },
-    [onLogin, recoverFactorWithPassword],
+    [onLogin, recoverFactorWithPassword, setTxFlow],
   )
 
   useEffect(() => {
