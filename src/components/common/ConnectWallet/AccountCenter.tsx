@@ -16,7 +16,13 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import SocialLoginInfo from '@/components/common/SocialLoginInfo'
 
+import LockIcon from '@/public/images/common/lock-small.svg'
+import Link from 'next/link'
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
+
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
+  const router = useRouter()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const onboard = useOnboard()
   const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
@@ -83,7 +89,23 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
             <ChainIndicator />
             <Box className={css.addressContainer}>
               {wallet.label === ONBOARD_MPC_MODULE_LABEL ? (
-                <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} />
+                <>
+                  <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} />
+                  <Link href={{ pathname: AppRoutes.settings.signerAccount, query: router.query }} passHref>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="warning"
+                      className={css.warningButton}
+                      disableElevation
+                      startIcon={<LockIcon />}
+                      sx={{ mt: 1 }}
+                      onClick={handleClose}
+                    >
+                      Add multifactor authentication
+                    </Button>
+                  </Link>
+                </>
               ) : (
                 <EthHashInfo
                   address={wallet.address}

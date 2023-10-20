@@ -87,6 +87,16 @@
   font-size: 14px;
 }
 
+.warningButton {
+  background-color: var(--color-warning-background);
+  color: var(--color-warning-main);
+  font-size: 12px;
+}
+
+.warningButton:global.MuiButton-root:hover {
+  background-color: var(--color-warning-background);
+}
+
 @media (max-width: 599.95px) {
   .socialLoginInfo > div > div {
     display: none;
