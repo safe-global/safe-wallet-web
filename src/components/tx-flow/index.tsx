@@ -53,7 +53,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   const setTxFlow = useCallback(
     (newTxFlow: TxModalContextType['txFlow'], onClose?: () => void, newShouldWarn?: boolean) => {
-      // If flow is open user opens a different one, show confirmation dialog if required
+      // If flow is open and user opens a different one, show confirmation dialog if required
       if (txFlow && newTxFlow && newTxFlow?.type !== SuccessScreen && shouldWarn) {
         if (!shouldClose()) return
 
