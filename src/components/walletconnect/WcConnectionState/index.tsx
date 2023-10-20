@@ -12,10 +12,10 @@ import css from './styles.module.css'
 
 const WcConnectionState = ({
   metadata,
-  isDelete = false,
+  isDelete,
 }: {
-  metadata?: CoreTypes.Metadata
-  isDelete?: boolean
+  metadata: CoreTypes.Metadata
+  isDelete: boolean
 }): ReactElement | null => {
   const chain = useCurrentChain()
 

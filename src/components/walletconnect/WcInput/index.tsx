@@ -24,6 +24,7 @@ const WcInput = ({ uri, disabled }: { uri: string; disabled: boolean }) => {
 
       try {
         await walletConnect.connect(val)
+        setValue('')
       } catch (e) {
         setError(asError(e))
       }

@@ -1,8 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
-import type { ReactElement } from 'react'
-
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
@@ -16,12 +14,12 @@ type WcSessionManagerProps = {
   uri: string
 }
 
-const SESSION_INFO_TIMEOUT = 3000
+const SESSION_INFO_TIMEOUT = 2000
 
-const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps): ReactElement => {
+const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
-  const { walletConnect, error: walletConnectError } = useContext(WalletConnectContext)
+  const { walletConnect, error: walletConnectError, setOpen } = useContext(WalletConnectContext)
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [error, setError] = useState<Error | undefined>()
   const [changedSession, setChangedSession] = useState<SessionTypes.Struct>()
@@ -86,14 +84,22 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps): ReactElemen
     return walletConnect?.onSessionDelete(setChangedSession)
   }, [walletConnect])
 
-  // Clear changed session after 3 seconds
+  // Hide session info after timeout
   useEffect(() => {
     if (!changedSession) return
-    const timer = setTimeout(() => {
-      setChangedSession(undefined)
+
+    setOpen(true)
+
+    let timer = setTimeout(() => {
+      setOpen(false)
+
+      timer = setTimeout(() => {
+        setChangedSession(undefined)
+      }, 500)
     }, SESSION_INFO_TIMEOUT)
+
     return () => clearTimeout(timer)
-  }, [changedSession])
+  }, [changedSession, setOpen])
 
   //
   // UI states
@@ -112,7 +118,12 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps): ReactElemen
 
   // Session info
   if (changedSession) {
-    return <WcConnectionState metadata={changedSession.peer.metadata} />
+    return (
+      <WcConnectionState
+        metadata={changedSession.peer.metadata}
+        isDelete={!sessions.some((s) => s.topic === changedSession.topic)}
+      />
+    )
   }
 
   // Connection form (initial state)
