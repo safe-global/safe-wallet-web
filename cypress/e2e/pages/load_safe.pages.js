@@ -1,5 +1,4 @@
 import * as constants from '../../support/constants'
-import * as createwallet from '../pages/create_wallet.pages'
 
 const addExistingAccountBtnStr = 'Add existing Account'
 const contactStr = 'Name, address & network'
