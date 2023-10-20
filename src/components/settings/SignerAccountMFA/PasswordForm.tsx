@@ -94,12 +94,11 @@ export const PasswordForm = ({ mpcCoreKit }: { mpcCoreKit: Web3AuthMPCCoreKit })
         />
 
         <Button
-          variant="contained"
           sx={{ justifySelf: 'flex-start' }}
           disabled={!formMethods.formState.isValid || enablingMFA}
           type="submit"
         >
-          {isPasswordSet ? 'Change' : 'Set'} Password
+          Change
         </Button>
       </Box>
     </form>

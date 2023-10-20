@@ -140,7 +140,7 @@ export const useMPCWallet = (): MPCWalletHook => {
       const exportedPK = await mpcCoreKit?._UNSAFE_exportTssKey()
       return exportedPK
     } catch (err) {
-      // TODO: Throw error through sentry
+      throw new Error('Error exporting account key. Password may be wrong')
     }
   }
 

@@ -3,3 +3,7 @@
   right: var(--space-1);
   top: var(--space-1);
 }
+
+.modalError {
+  width: 100%;
+}
