@@ -11,7 +11,7 @@ const EDITED_NAME = 'Edited Owner1'
 describe('Address book tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.addressBookUrl + constants.GOERLI_TEST_SAFE)
+    cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
     main.acceptCookies()
   })
 
@@ -41,7 +41,7 @@ describe('Address book tests', () => {
     addressBook.clickOnImportFileBtn()
     addressBook.importFile()
     addressBook.verifyImportModalIsClosed()
-    addressBook.verifyDataImported(constants.GOERLI_CSV_ENTRY.name, constants.GOERLI_CSV_ENTRY.address)
+    addressBook.verifyDataImported(constants.SEPOLIA_CSV_ENTRY.name, constants.SEPOLIA_CSV_ENTRY.address)
   })
 
   it.skip('Verify Gnosis Chain imported address can be found [C56066]', () => {

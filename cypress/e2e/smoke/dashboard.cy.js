@@ -5,8 +5,9 @@ import * as main from '../pages/main.page'
 describe('Dashboard tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.homeUrl + constants.TEST_SAFE)
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
+    main.clickOnSideMenuItem(constants.mainSideMenuOptions.home)
     dashboard.verifyConnectTransactStrIsVisible()
   })
 

@@ -5,7 +5,7 @@ import * as main from '../../e2e/pages/main.page'
 describe('Beamer tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.addressBookUrl + constants.GOERLI_TEST_SAFE)
+    cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
     main.acceptCookies()
   })
 

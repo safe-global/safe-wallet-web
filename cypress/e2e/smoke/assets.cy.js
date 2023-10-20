@@ -11,7 +11,7 @@ describe('Assets tests', () => {
   const fiatRegex = balances.fiatRegex
 
   beforeEach(() => {
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_4)
     cy.clearLocalStorage()
     main.acceptCookies()
     balances.acceptSpamWarning()

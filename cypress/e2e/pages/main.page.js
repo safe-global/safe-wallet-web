@@ -2,6 +2,10 @@ import * as constants from '../../support/constants'
 
 const acceptSelection = 'Accept selection'
 
+export function clickOnSideMenuItem(item) {
+  cy.get('p').contains(item).click()
+}
+
 export function acceptCookies() {
   cy.wait(1000)
   cy.get('button')

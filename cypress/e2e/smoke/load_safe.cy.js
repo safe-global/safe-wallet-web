@@ -21,28 +21,28 @@ const OWNER_ADDRESS = constants.EOA
 describe('Load Safe tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.welcomeUrl)
+    cy.visit(constants.loadNewSafeSepoliaUrl)
     main.acceptCookies()
-    safe.openLoadSafeForm()
     cy.wait(2000)
   })
 
   it('Verify a network can be selected in the Safe [C56117]', () => {
-    safe.clickNetworkSelector(constants.networks.goerli)
+    safe.clickNetworkSelector(constants.networks.sepolia)
     safe.selectPolygon()
     cy.wait(2000)
     safe.clickNetworkSelector(constants.networks.polygon)
-    safe.selectGoerli()
+    safe.selectSepolia()
   })
 
   it('Verify only valid Safe name can be accepted [C56118]', () => {
     // alias the address input label
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
-    safe.verifyNameInputHasPlceholder(testSafeName)
+    createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
+
     safe.inputName(testSafeName)
     safe.verifyIncorrectAddressErrorMessage()
-    safe.inputAddress(constants.GOERLI_TEST_SAFE)
+    safe.inputAddress(constants.SEPOLIA_TEST_SAFE_1)
 
     // Type an invalid address
     // cy.get('input[name="address"]').clear().type(EOA_ADDRESS)
@@ -75,7 +75,7 @@ describe('Load Safe tests', () => {
   })
 
   it('Verify the custom Safe name is successfully loaded [C56122]', () => {
-    main.verifyHomeSafeUrl(constants.GOERLI_TEST_SAFE)
+    main.verifyHomeSafeUrl(constants.SEPOLIA_TEST_SAFE_1)
     safe.veriySidebarSafeNameIsVisible(testSafeName)
     safe.verifyOwnerNamePresentInSettings(testOwnerName)
   })
