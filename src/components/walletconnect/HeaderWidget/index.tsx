@@ -1,5 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import type { CoreTypes, SessionTypes } from '@walletconnect/types'
+import { useCallback, useContext, useEffect, useRef } from 'react'
 import type { ReactElement } from 'react'
 
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
@@ -9,7 +8,10 @@ import { useWalletConnectSearchParamUri } from '@/services/walletconnect/useWall
 import Icon from './Icon'
 import SessionManager from '../SessionManager'
 import Popup from '../Popup'
-import { SuccessBanner } from '../SuccessBanner'
+import { ConnectionBanner } from '../ConnectionBanner'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { isUnsupportedChain } from '@/services/walletconnect/utils'
+import { useDeferredListener } from '@/hooks/useDefferedListener'
 
 const usePrepopulatedUri = (): [string, () => void] => {
   const [searchParamWcUri, setSearchParamWcUri] = useWalletConnectSearchParamUri()
@@ -25,12 +27,33 @@ const usePrepopulatedUri = (): [string, () => void] => {
   return [uri, clearUri]
 }
 
+const BANNER_TIMEOUT = 2_000
+
+const useSuccessSession = (onCloseSessionManager: () => void) => {
+  const { walletConnect } = useContext(WalletConnectContext)
+
+  return useDeferredListener({
+    listener: walletConnect?.onSessionAdd,
+    cb: onCloseSessionManager,
+    ms: BANNER_TIMEOUT,
+  })
+}
+
+const useDeleteSession = () => {
+  const { walletConnect } = useContext(WalletConnectContext)
+
+  return useDeferredListener({
+    listener: walletConnect?.onSessionDelete,
+    ms: BANNER_TIMEOUT * 2,
+  })
+}
+
 const WalletConnectHeaderWidget = (): ReactElement => {
   const { walletConnect, setError, open, setOpen } = useContext(WalletConnectContext)
+  const { safe } = useSafeInfo()
   const iconRef = useRef<HTMLDivElement>(null)
   const sessions = useWalletConnectSessions()
   const [uri, clearUri] = usePrepopulatedUri()
-  const [metadata, setMetadata] = useState<CoreTypes.Metadata>()
 
   const onOpenSessionManager = useCallback(() => setOpen(true), [setOpen])
 
@@ -40,36 +63,23 @@ const WalletConnectHeaderWidget = (): ReactElement => {
     setError(null)
   }, [setOpen, clearUri, setError])
 
-  const onCloseSuccesBanner = useCallback(() => setMetadata(undefined), [])
+  const [successSession, setSuccessSession] = useSuccessSession(onCloseSessionManager)
+  const [deleteSession, setDeleteSession] = useDeleteSession()
 
-  const onSuccess = useCallback(
-    ({ peer }: SessionTypes.Struct) => {
-      onCloseSessionManager()
+  const session = successSession || deleteSession
+  const metadata = session?.peer?.metadata
+  const isUnsupported = deleteSession ? isUnsupportedChain(deleteSession, safe.chainId) : false
 
-      // Show success banner
-      setMetadata(peer.metadata)
+  const onCloseConnectionBanner = useCallback(() => {
+    setSuccessSession(undefined)
+    setDeleteSession(undefined)
+  }, [setSuccessSession, setDeleteSession])
 
-      setTimeout(() => {
-        onCloseSuccesBanner()
-      }, 2_000)
-    },
-    [onCloseSessionManager, onCloseSuccesBanner],
-  )
-
+  // Clear search param/clipboard state to prevent it being automatically entered again
   useEffect(() => {
-    if (!walletConnect) {
-      return
+    if (walletConnect) {
+      return walletConnect.onSessionReject(clearUri)
     }
-
-    return walletConnect.onSessionAdd(onSuccess)
-  }, [onSuccess, walletConnect])
-
-  useEffect(() => {
-    if (!walletConnect) {
-      return
-    }
-
-    return walletConnect.onSessionReject(clearUri)
   }, [clearUri, walletConnect])
 
   // Open the popup when a prepopulated uri is found
@@ -87,8 +97,8 @@ const WalletConnectHeaderWidget = (): ReactElement => {
         <SessionManager sessions={sessions} uri={uri} />
       </Popup>
 
-      <Popup anchorEl={iconRef.current} open={!!metadata} onClose={onCloseSuccesBanner}>
-        {metadata && <SuccessBanner metadata={metadata} />}
+      <Popup anchorEl={iconRef.current} open={!!metadata} onClose={onCloseConnectionBanner}>
+        <ConnectionBanner metadata={metadata} isDelete={isUnsupported} />
       </Popup>
     </>
   )
