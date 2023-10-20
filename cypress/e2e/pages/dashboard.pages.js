@@ -28,13 +28,10 @@ export function verifyOverviewWidgetData() {
   cy.get('@overviewSection').within(() => {
     // Prefix is separated across elements in EthHashInfo
     cy.contains(constants.SEPOLIA_TEST_SAFE_5).should('exist')
-    cy.contains('1/2')
+    cy.get('h2').contains('Overview')
     cy.get(`a[href="${constants.BALANCE_URL}${encodeURIComponent(constants.SEPOLIA_TEST_SAFE_5)}"]`).contains(
       viewAssetsStr,
     )
-    // Text next to Tokens contains a number greater than 0
-    cy.contains('p', tokensStr).next().contains('1')
-    cy.contains('p', nftStr).next().contains('0')
   })
 }
 

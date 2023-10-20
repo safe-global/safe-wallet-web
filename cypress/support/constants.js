@@ -1,6 +1,7 @@
 import { LS_NAMESPACE } from '../../src/config/constants'
 export const RECIPIENT_ADDRESS = '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC'
 export const GOERLI_TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
+// SEPOLIA_TEST_SAFE_1 should always have no transactions, tokens and NFTs
 export const SEPOLIA_TEST_SAFE_1 = 'sep:0xBb26E3717172d5000F87DeFd391994f789D80aEB'
 // SEPOLIA_TEST_SAFE_2 Has no transactions, 1 owner, using for verificatons only
 export const SEPOLIA_TEST_SAFE_2 = 'sep:0x33C4AA5729D91FfB3B87AEf8a324bb6304Fb905c'
