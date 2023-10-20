@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Box, Button, ButtonBase, Paper, Popover } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -20,8 +20,14 @@ import LockIcon from '@/public/images/common/lock-small.svg'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
+import { MpcWalletContext } from '@/components/common/ConnectWallet/MPCWalletProvider'
+import { IS_PRODUCTION } from '@/config/constants'
+import useMPC from '@/hooks/wallets/mpc/useMPC'
+import { isMFAEnabled } from '@/components/settings/SignerAccountMFA/helper'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
+  const { resetAccount } = useContext(MpcWalletContext)
+  const mpcCoreKit = useMPC()
   const router = useRouter()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const onboard = useOnboard()
@@ -57,6 +63,8 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
+  const isSocialLogin = wallet.label === ONBOARD_MPC_MODULE_LABEL
+
   return (
     <>
       <ButtonBase onClick={handleClick} aria-describedby={id} disableRipple sx={{ alignSelf: 'stretch' }}>
@@ -88,23 +96,25 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           <Box className={css.accountContainer}>
             <ChainIndicator />
             <Box className={css.addressContainer}>
-              {wallet.label === ONBOARD_MPC_MODULE_LABEL ? (
+              {isSocialLogin ? (
                 <>
                   <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} />
-                  <Link href={{ pathname: AppRoutes.settings.signerAccount, query: router.query }} passHref>
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      color="warning"
-                      className={css.warningButton}
-                      disableElevation
-                      startIcon={<LockIcon />}
-                      sx={{ mt: 1 }}
-                      onClick={handleClose}
-                    >
-                      Add multifactor authentication
-                    </Button>
-                  </Link>
+                  {mpcCoreKit && !isMFAEnabled(mpcCoreKit) && (
+                    <Link href={{ pathname: AppRoutes.settings.signerAccount, query: router.query }} passHref>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        color="warning"
+                        className={css.warningButton}
+                        disableElevation
+                        startIcon={<LockIcon />}
+                        sx={{ mt: 1, p: 1 }}
+                        onClick={handleClose}
+                      >
+                        Add multifactor authentication
+                      </Button>
+                    </Link>
+                  )}
                 </>
               ) : (
                 <EthHashInfo
@@ -128,6 +138,12 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           <Button onClick={handleDisconnect} variant="danger" size="small" fullWidth disableElevation>
             Disconnect
           </Button>
+
+          {!IS_PRODUCTION && isSocialLogin && (
+            <Button onClick={resetAccount} variant="danger" size="small" fullWidth disableElevation>
+              Delete Account
+            </Button>
+          )}
         </Paper>
       </Popover>
     </>
