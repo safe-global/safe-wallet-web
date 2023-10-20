@@ -51,9 +51,11 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
     <>
       <Track {...SETTINGS_EVENTS.SETUP.EDIT_OWNER}>
         <Tooltip title="Edit owner">
-          <IconButton onClick={() => setOpen(true)} size="small">
-            <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
-          </IconButton>
+          <span>
+            <IconButton onClick={() => setOpen(true)} size="small">
+              <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
+            </IconButton>
+          </span>
         </Tooltip>
       </Track>
 

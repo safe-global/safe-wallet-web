@@ -7,6 +7,8 @@ import useOnboard, { connectWallet } from '../useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { SecurityQuestionRecovery } from './recovery/SecurityQuestionRecovery'
 import { DeviceShareRecovery } from './recovery/DeviceShareRecovery'
+import { trackEvent } from '@/services/analytics'
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 
 export enum MPCWalletState {
   NOT_INITIALIZED,
@@ -17,9 +19,9 @@ export enum MPCWalletState {
 
 export type MPCWalletHook = {
   upsertPasswordBackup: (password: string) => Promise<void>
-  recoverFactorWithPassword: (password: string, storeDeviceShare: boolean) => Promise<void>
+  recoverFactorWithPassword: (password: string, storeDeviceShare: boolean) => Promise<boolean>
   walletState: MPCWalletState
-  triggerLogin: () => Promise<void>
+  triggerLogin: () => Promise<boolean>
   resetAccount: () => Promise<void>
   userInfo: UserInfo | undefined
   exportPk: (password: string) => Promise<string | undefined>
@@ -74,16 +76,19 @@ export const useMPCWallet = (): MPCWalletHook => {
           // Check password recovery
           const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
           if (securityQuestions.isEnabled()) {
+            trackEvent(MPC_WALLET_EVENTS.MANUAL_RECOVERY)
             setWalletState(MPCWalletState.MANUAL_RECOVERY)
-            return
+            return false
           }
         }
       }
 
       await finalizeLogin()
+      return mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
     } catch (error) {
       setWalletState(MPCWalletState.NOT_INITIALIZED)
       console.error(error)
+      return false
     }
   }
 
@@ -124,9 +129,11 @@ export const useMPCWallet = (): MPCWalletHook => {
 
       await finalizeLogin()
     }
+
+    return mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
   }
 
-  const exportPk = async (password: string): Promise<string | undefined> => {
+  const exportPk = async (password: string): Promise<string> => {
     if (!mpcCoreKit) {
       throw new Error('MPC Core Kit is not initialized')
     }

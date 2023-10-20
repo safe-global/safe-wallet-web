@@ -1,3 +1,4 @@
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { VisibilityOff, Visibility } from '@mui/icons-material'
 import {
   DialogContent,
@@ -11,6 +12,7 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 import ModalDialog from '../ModalDialog'
+import Track from '../Track'
 
 export const PasswordRecovery = ({
   recoverFactorWithPassword,
@@ -52,10 +54,14 @@ export const PasswordRecovery = ({
               control={<Checkbox checked={storeDeviceFactor} onClick={() => setStoreDeviceFactor((prev) => !prev)} />}
               label="Do not ask again on this device"
             />
-
-            <Button variant="contained" onClick={() => recoverFactorWithPassword(recoveryPassword, storeDeviceFactor)}>
-              Submit
-            </Button>
+            <Track {...MPC_WALLET_EVENTS.RECOVER_PASSWORD}>
+              <Button
+                variant="contained"
+                onClick={() => recoverFactorWithPassword(recoveryPassword, storeDeviceFactor)}
+              >
+                Submit
+              </Button>
+            </Track>
           </Box>
         </Box>
       </DialogContent>

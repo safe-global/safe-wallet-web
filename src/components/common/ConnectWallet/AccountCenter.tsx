@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
-import { Box, Button, ButtonBase, Paper, Popover, Typography } from '@mui/material'
+import { Box, Button, ButtonBase, Paper, Popover } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
@@ -8,11 +8,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
-import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
+import WalletInfo from '../WalletInfo'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import SocialLoginInfo from '@/components/common/SocialLoginInfo'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -77,31 +79,21 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         sx={{ marginTop: 1 }}
       >
         <Paper className={css.popoverContainer}>
-          <Identicon address={wallet.address} />
-
-          <Typography variant="h5" className={css.addressName}>
-            {addressBook[wallet.address] || wallet.ens}
-          </Typography>
-
-          <Box bgcolor="border.background" px={2} py={1} fontSize={14}>
-            <EthHashInfo
-              address={wallet.address}
-              showAvatar={false}
-              showName={false}
-              hasExplorer
-              showCopyButton
-              prefix={prefix}
-            />
-          </Box>
-
-          <Box className={css.rowContainer}>
-            <Box className={css.row}>
-              <Typography variant="caption">Wallet</Typography>
-              <Typography variant="body2">{wallet.label}</Typography>
-            </Box>
-            <Box className={css.row}>
-              <Typography variant="caption">Connected network</Typography>
-              <Typography variant="body2">{chainInfo?.chainName || UNKNOWN_CHAIN_NAME}</Typography>
+          <Box className={css.accountContainer}>
+            <ChainIndicator />
+            <Box className={css.addressContainer}>
+              {wallet.label === ONBOARD_MPC_MODULE_LABEL ? (
+                <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} />
+              ) : (
+                <EthHashInfo
+                  address={wallet.address}
+                  name={addressBook[wallet.address] || wallet.ens}
+                  hasExplorer
+                  showCopyButton
+                  prefix={prefix}
+                  avatarSize={32}
+                />
+              )}
             </Box>
           </Box>
 

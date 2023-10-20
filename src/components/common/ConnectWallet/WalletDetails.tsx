@@ -1,27 +1,22 @@
-import { Button, Typography } from '@mui/material'
+import { Divider, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
+import LockIcon from '@/public/images/common/lock.svg'
 import MPCLogin from './MPCLogin'
+import WalletLogin from '@/components/welcome/WelcomeLogin/WalletLogin'
 
-const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement => {
-  const connectWallet = useConnectWallet()
-
-  const handleConnect = () => {
-    onConnect?.()
-    connectWallet()
-  }
-
+const WalletDetails = ({ onConnect }: { onConnect: () => void }): ReactElement => {
   return (
     <>
-      <Typography variant="h5">Connect a wallet</Typography>
+      <LockIcon />
 
-      <KeyholeIcon />
+      <WalletLogin onLogin={onConnect} />
 
-      <Button onClick={handleConnect} variant="contained" size="small" disableElevation fullWidth>
-        Connect
-      </Button>
+      <Divider sx={{ width: '100%' }}>
+        <Typography color="text.secondary" fontWeight={700} variant="overline">
+          or
+        </Typography>
+      </Divider>
 
       <MPCLogin />
     </>

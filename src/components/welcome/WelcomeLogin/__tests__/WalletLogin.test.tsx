@@ -41,7 +41,7 @@ describe('WalletLogin', () => {
     const mockOnLogin = jest.fn()
     const walletAddress = hexZeroPad('0x1', 20)
     const mockUseWallet = jest.spyOn(useWallet, 'default').mockReturnValue(null)
-    jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn())
+    jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn().mockReturnValue([{}]))
 
     const result = render(<WalletLogin onLogin={mockOnLogin} />)
 

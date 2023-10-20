@@ -9,10 +9,11 @@ import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
 import PageHeader from '@/components/common/PageHeader'
 import { ModalType } from '../AddressBookTable'
 import { useAppSelector } from '@/store'
-import { selectAllAddressBooks } from '@/store/addressBookSlice'
+import { type AddressBookState, selectAllAddressBooks } from '@/store/addressBookSlice'
 import ImportIcon from '@/public/images/common/import.svg'
 import ExportIcon from '@/public/images/common/export.svg'
 import AddCircleIcon from '@/public/images/common/add-outlined.svg'
+import mapProps from '@/utils/mad-props'
 
 const HeaderButton = ({
   icon,
@@ -35,13 +36,18 @@ const HeaderButton = ({
 }
 
 type Props = {
+  allAddressBooks: AddressBookState
   handleOpenModal: (type: ModalType) => () => void
   searchQuery: string
   onSearchQueryChange: (searchQuery: string) => void
 }
 
-const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }: Props): ReactElement => {
-  const allAddressBooks = useAppSelector(selectAllAddressBooks)
+function AddressBookHeader({
+  allAddressBooks,
+  handleOpenModal,
+  searchQuery,
+  onSearchQueryChange,
+}: Props): ReactElement {
   const canExport = Object.values(allAddressBooks).some((addressBook) => Object.keys(addressBook || {}).length > 0)
 
   return (
@@ -96,4 +102,8 @@ const AddressBookHeader = ({ handleOpenModal, searchQuery, onSearchQueryChange }
   )
 }
 
-export default AddressBookHeader
+const useAllAddressBooks = () => useAppSelector(selectAllAddressBooks)
+
+export default mapProps(AddressBookHeader, {
+  allAddressBooks: useAllAddressBooks,
+})

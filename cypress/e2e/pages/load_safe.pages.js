@@ -1,6 +1,6 @@
 import * as constants from '../../support/constants'
 
-const addExistingAccountBtnStr = 'Add existing Account'
+const addExistingAccountBtnStr = 'Add existing one'
 const contactStr = 'Name, address & network'
 const invalidAddressFormatErrorMsg = 'Invalid address format'
 
@@ -16,7 +16,7 @@ const ownersConfirmationsStr = 'Owners and confirmations'
 const transactionStr = 'Transactions'
 
 export function openLoadSafeForm() {
-  cy.contains('button', addExistingAccountBtnStr).click()
+  cy.contains('a', addExistingAccountBtnStr).click()
   cy.contains(contactStr)
 }
 

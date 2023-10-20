@@ -28,6 +28,7 @@
 .bulletList {
   list-style: none;
   margin-bottom: auto;
+  padding: 0;
 }
 
 .bulletList li {
