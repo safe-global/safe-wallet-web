@@ -74,8 +74,9 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
         () => setWalletState(MPCWalletState.NOT_INITIALIZED),
         false,
       )
+      onLogin?.()
     }
-  }, [recoverPassword, setTxFlow, setWalletState, walletState])
+  }, [onLogin, recoverPassword, setTxFlow, setWalletState, walletState])
 
   return (
     <>
