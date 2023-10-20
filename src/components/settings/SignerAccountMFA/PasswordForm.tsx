@@ -61,9 +61,7 @@ export const _getPasswordStrength = (value: string): PasswordStrength => {
   return PasswordStrength.weak
 }
 
-type PasswordStrengthMap = Record<PasswordStrength, { label: string; className: string }>
-
-const passwordStrengthMap: PasswordStrengthMap = {
+const passwordStrengthMap = {
   [PasswordStrength.strong]: {
     label: 'Strong',
     className: 'strongPassword',
@@ -76,7 +74,7 @@ const passwordStrengthMap: PasswordStrengthMap = {
     label: 'Weak',
     className: 'weakPassword',
   },
-}
+} as const
 
 export const PasswordForm = () => {
   const dispatch = useAppDispatch()
@@ -175,7 +173,6 @@ export const PasswordForm = () => {
                       alignItems="center"
                       gap={1}
                       mt={1}
-                      // @ts-ignore
                       className={css[passwordStrengthMap[passwordStrength].className]}
                     >
                       <BarChartIcon />
