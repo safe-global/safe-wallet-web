@@ -9,6 +9,7 @@ import css from './styles.module.css'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { asError } from '@/services/exceptions/utils'
 
 enum ExportFieldNames {
   password = 'password',
@@ -42,7 +43,7 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
       setValue(ExportFieldNames.pk, pk)
     } catch (err) {
       logError(ErrorCodes._305, err)
-      setError('Error exporting account. Your entered password might be invalid.')
+      setError(asError(err).message)
     }
   }
 
