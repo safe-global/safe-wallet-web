@@ -7,21 +7,15 @@ const ExportMPCAccount = () => {
 
   return (
     <>
-      <Box display="flex" flexDirection="column" gap={1} alignItems="flex-start">
+      <Box display="flex" flexDirection="column" gap={2} alignItems="flex-start">
         <Typography>
           Accounts created via Google can be exported and imported to any non-custodial wallet outside of Safe.
         </Typography>
-        <Alert severity="warning" sx={{ mt: 3, mb: 3 }}>
+        <Alert severity="warning">
           Never disclose your keys or seed phrase to anyone. If someone gains access to them, they have full access over
           your signer account.
         </Alert>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={isModalOpen}
-          onClick={() => setIsModalOpen(true)}
-          sx={{ mt: 3 }}
-        >
+        <Button color="primary" variant="contained" disabled={isModalOpen} onClick={() => setIsModalOpen(true)}>
           Reveal private key
         </Button>
       </Box>
