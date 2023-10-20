@@ -20,8 +20,10 @@ type PasswordFormData = {
 
 export const PasswordRecovery = ({
   recoverFactorWithPassword,
+  onSuccess,
 }: {
   recoverFactorWithPassword: (password: string, storeDeviceFactor: boolean) => Promise<void>
+  onSuccess: (() => void) | undefined
 }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [storeDeviceFactor, setStoreDeviceFactor] = useState(false)
@@ -38,6 +40,7 @@ export const PasswordRecovery = ({
   const onSubmit = async (data: PasswordFormData) => {
     try {
       await recoverFactorWithPassword(data.password, storeDeviceFactor)
+      onSuccess?.()
     } catch (e) {
       setError('password', { type: 'custom', message: 'Incorrect password' })
     }

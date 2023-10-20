@@ -1,6 +1,6 @@
 import { MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
 import { Box, Button, SvgIcon, Typography } from '@mui/material'
-import { useCallback, useContext, useEffect, useMemo } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import { MpcWalletContext } from './MPCWalletProvider'
 import { PasswordRecovery } from './PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -14,6 +14,7 @@ import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TxModalContext } from '@/components/tx-flow'
+import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -48,10 +49,18 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   const isDisabled = loginPending || !isMPCLoginEnabled
 
   const login = async () => {
-    const success = await triggerLogin()
+    const status = await triggerLogin()
 
-    if (success) {
+    if (status === COREKIT_STATUS.LOGGED_IN) {
       onLogin?.()
+    }
+
+    if (status === COREKIT_STATUS.REQUIRED_SHARE) {
+      setTxFlow(
+        <PasswordRecovery recoverFactorWithPassword={recoverPassword} onSuccess={onLogin} />,
+        () => setWalletState(MPCWalletState.NOT_INITIALIZED),
+        false,
+      )
     }
   }
 
@@ -66,17 +75,6 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
     },
     [onLogin, recoverFactorWithPassword, setTxFlow],
   )
-
-  useEffect(() => {
-    if (walletState === MPCWalletState.MANUAL_RECOVERY) {
-      setTxFlow(
-        <PasswordRecovery recoverFactorWithPassword={recoverPassword} />,
-        () => setWalletState(MPCWalletState.NOT_INITIALIZED),
-        false,
-      )
-      onLogin?.()
-    }
-  }, [onLogin, recoverPassword, setTxFlow, setWalletState, walletState])
 
   return (
     <>
