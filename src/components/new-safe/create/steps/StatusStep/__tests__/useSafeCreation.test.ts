@@ -9,7 +9,7 @@ import * as txMonitor from '@/services/tx/txMonitor'
 import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/usePendingSafe'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { chainBuilder } from '@/tests/builders/chains'
 import { BigNumber } from '@ethersproject/bignumber'
 import { waitFor } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
@@ -44,10 +44,7 @@ describe('useSafeCreation', () => {
   beforeEach(() => {
     jest.resetAllMocks()
 
-    const mockChain = {
-      chainId: '4',
-      features: [],
-    } as unknown as ChainInfo
+    const mockChain = chainBuilder().with('features', []).build()
 
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockProvider)
@@ -89,12 +86,11 @@ describe('useSafeCreation', () => {
         false,
       ])
 
-    jest.spyOn(chain, 'useCurrentChain').mockImplementation(
-      () =>
-        ({
-          chainId: '4',
-          features: [FEATURES.EIP1559],
-        } as unknown as ChainInfo),
+    jest.spyOn(chain, 'useCurrentChain').mockImplementation(() =>
+      chainBuilder()
+        // @ts-expect-error - we are using a local FEATURES enum
+        .with('features', [FEATURES.EIP1559])
+        .build(),
     )
     jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
 
