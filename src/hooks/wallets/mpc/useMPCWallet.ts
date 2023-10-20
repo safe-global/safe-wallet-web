@@ -9,6 +9,11 @@ import { SecurityQuestionRecovery } from './recovery/SecurityQuestionRecovery'
 import { DeviceShareRecovery } from './recovery/DeviceShareRecovery'
 import { trackEvent } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
+import useAddressBook from '@/hooks/useAddressBook'
+import { useCurrentChain } from '@/hooks/useChains'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { useAppDispatch } from '@/store'
+import { ethers } from 'ethers'
 
 export enum MPCWalletState {
   NOT_INITIALIZED,
@@ -30,6 +35,9 @@ export const useMPCWallet = (): MPCWalletHook => {
   const [walletState, setWalletState] = useState(MPCWalletState.NOT_INITIALIZED)
   const mpcCoreKit = useMPC()
   const onboard = useOnboard()
+  const addressBook = useAddressBook()
+  const currentChainId = useCurrentChain()
+  const dispatch = useAppDispatch()
 
   const criticalResetAccount = async (): Promise<void> => {
     // This is a critical function that should only be used for testing purposes
@@ -99,12 +107,21 @@ export const useMPCWallet = (): MPCWalletHook => {
     if (mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
       await mpcCoreKit.commitChanges()
 
-      await connectWallet(onboard, {
+      const wallets = await connectWallet(onboard, {
         autoSelect: {
           label: ONBOARD_MPC_MODULE_LABEL,
           disableModals: true,
         },
       }).catch((reason) => console.error('Error connecting to MPC module:', reason))
+
+      // If the signer is not in the address book => add it as the user's first name
+      if (wallets && currentChainId && wallets.length > 0) {
+        const signerAddress = ethers.utils.getAddress(wallets[0].accounts[0]?.address)
+        if (addressBook[signerAddress] === undefined) {
+          const email = mpcCoreKit.getUserInfo().email
+          dispatch(upsertAddressBookEntry({ address: signerAddress, chainId: currentChainId.chainId, name: email }))
+        }
+      }
       setWalletState(MPCWalletState.READY)
     }
   }

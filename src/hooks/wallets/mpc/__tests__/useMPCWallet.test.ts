@@ -14,9 +14,16 @@ import { setMPCCoreKitInstance } from '../useMPC'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
+import * as addressBookSlice from '@/store/addressBookSlice'
+import * as chains from '@/hooks/useChains'
+import { hexZeroPad } from 'ethers/lib/utils'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import * as useAddressBook from '@/hooks/useAddressBook'
 
 /** time until mock login resolves */
 const MOCK_LOGIN_TIME = 1000
+/** Mock address for successful login */
+const mockSignerAddress = hexZeroPad('0x1', 20)
 
 /**
  * Helper class for mocking MPC Core Kit login flow
@@ -67,6 +74,10 @@ class MockMPCCoreKit {
   commitChanges() {
     return Promise.resolve()
   }
+
+  getUserInfo() {
+    return this.state.userInfo
+  }
 }
 
 describe('useMPCWallet', () => {
@@ -76,6 +87,9 @@ describe('useMPCWallet', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     setMPCCoreKitInstance(undefined)
+    jest
+      .spyOn(chains, 'useCurrentChain')
+      .mockReturnValue({ chainId: '100', disabledWallets: [] } as unknown as ChainInfo)
   })
   afterAll(() => {
     jest.useRealTimers()
@@ -94,6 +108,7 @@ describe('useMPCWallet', () => {
     })
 
     it('should throw if MPC Core Kit is not initialized', () => {
+      jest.spyOn(useAddressBook, 'default').mockReturnValue({})
       jest.spyOn(useOnboard, 'default').mockReturnValue({} as unknown as OnboardAPI)
       const { result } = renderHook(() => useMPCWallet())
 
@@ -102,8 +117,10 @@ describe('useMPCWallet', () => {
     })
 
     it('should handle successful log in for SFA account', async () => {
+      jest.spyOn(useAddressBook, 'default').mockReturnValue({})
+      const upsertABSpy = jest.spyOn(addressBookSlice, 'upsertAddressBookEntry')
       jest.spyOn(useOnboard, 'default').mockReturnValue({} as unknown as OnboardAPI)
-      const connectWalletSpy = jest.fn().mockImplementation(() => Promise.resolve())
+      const connectWalletSpy = jest.fn().mockResolvedValue([{ accounts: [{ address: mockSignerAddress }] }])
       jest.spyOn(useOnboard, 'connectWallet').mockImplementation(connectWalletSpy)
       setMPCCoreKitInstance(
         new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, {
@@ -135,13 +152,17 @@ describe('useMPCWallet', () => {
             disableModals: true,
           },
         })
+        expect(upsertABSpy).toBeCalledWith({ address: mockSignerAddress, name: 'test@test.com', chainId: '100' })
       })
     })
 
     it('should handle successful log in for MFA account with device share', async () => {
+      jest.spyOn(useAddressBook, 'default').mockReturnValue({ [mockSignerAddress]: 'Some name' })
+      const upsertABSpy = jest.spyOn(addressBookSlice, 'upsertAddressBookEntry')
       const mockDeviceFactor = ethers.Wallet.createRandom().privateKey.slice(2)
       jest.spyOn(useOnboard, 'default').mockReturnValue({} as unknown as OnboardAPI)
-      const connectWalletSpy = jest.fn().mockImplementation(() => Promise.resolve())
+      const connectWalletSpy = jest.fn().mockResolvedValue([{ accounts: [{ address: mockSignerAddress }] }])
+
       jest.spyOn(useOnboard, 'connectWallet').mockImplementation(connectWalletSpy)
       setMPCCoreKitInstance(
         new MockMPCCoreKit(
@@ -180,6 +201,7 @@ describe('useMPCWallet', () => {
             disableModals: true,
           },
         })
+        expect(upsertABSpy).not.toHaveBeenCalled()
       })
     })
 
