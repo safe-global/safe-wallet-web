@@ -6,12 +6,12 @@ import type { ReactElement } from 'react'
 
 import css from './styles.module.css'
 
-type SesstionListProps = {
+type WcSesstionListProps = {
   sessions: SessionTypes.Struct[]
   onDisconnect: (session: SessionTypes.Struct) => void
 }
 
-const SessionListItem = ({
+const WcSessionListItem = ({
   session,
   onDisconnect,
 }: {
@@ -40,7 +40,7 @@ const SessionListItem = ({
   )
 }
 
-const SessionList = ({ sessions, onDisconnect }: SesstionListProps): ReactElement => {
+const WcSessionList = ({ sessions, onDisconnect }: WcSesstionListProps): ReactElement => {
   if (sessions.length === 0) {
     return (
       <Typography variant="body2" textAlign="center" color="text.secondary">
@@ -52,10 +52,10 @@ const SessionList = ({ sessions, onDisconnect }: SesstionListProps): ReactElemen
   return (
     <List className={css.sessionList}>
       {Object.values(sessions).map((session) => (
-        <SessionListItem key={session.topic} session={session} onDisconnect={() => onDisconnect(session)} />
+        <WcSessionListItem key={session.topic} session={session} onDisconnect={() => onDisconnect(session)} />
       ))}
     </List>
   )
 }
 
-export default SessionList
+export default WcSessionList

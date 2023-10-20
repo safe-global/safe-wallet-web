@@ -10,7 +10,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 
 import css from './styles.module.css'
 
-export const ConnectionBanner = ({
+const WcConnectionState = ({
   metadata,
   isDelete = false,
 }: {
@@ -46,3 +46,5 @@ export const ConnectionBanner = ({
     </div>
   )
 }
+
+export default WcConnectionState

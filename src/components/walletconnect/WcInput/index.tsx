@@ -1,16 +1,10 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { Button, InputAdornment, TextField } from '@mui/material'
-import type { ReactElement } from 'react'
-
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
 import { getClipboard, isPastingSupported } from '@/utils/clipboard'
-import useSafeInfo from '@/hooks/useSafeInfo'
 
-import css from '../SessionList/styles.module.css'
-
-const WcInput = ({ uri }: { uri: string }): ReactElement => {
-  const { safeLoaded } = useSafeInfo()
+const WcInput = ({ uri, disabled = false }: { uri: string; disabled?: boolean }) => {
   const { walletConnect } = useContext(WalletConnectContext)
   const [value, setValue] = useState('')
   const [error, setError] = useState<Error>()
@@ -59,14 +53,14 @@ const WcInput = ({ uri }: { uri: string }): ReactElement => {
       onChange={(e) => onInput(e.target.value)}
       fullWidth
       autoComplete="off"
-      disabled={connecting || !safeLoaded}
+      disabled={connecting || !disabled}
       error={!!error}
       label={error ? error.message : 'Pairing code'}
       placeholder="wc:"
       InputProps={{
         endAdornment: isPastingSupported() ? undefined : (
           <InputAdornment position="end">
-            <Button variant="contained" onClick={onPaste} className={css.button}>
+            <Button variant="contained" onClick={onPaste} sx={{ py: 0.8 }}>
               Paste
             </Button>
           </InputAdornment>

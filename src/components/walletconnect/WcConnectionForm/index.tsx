@@ -1,21 +1,18 @@
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { useCallback, useEffect } from 'react'
 import { Grid, Typography, Divider, SvgIcon, IconButton, Tooltip } from '@mui/material'
-import { useCallback, useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
 import type { SessionTypes } from '@walletconnect/types'
-
-import { Hints } from '../Hints'
-import SessionList from '../SessionList'
-import WcInput from '../WcInput'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import { WalletConnectHeader } from '../SessionManager/Header'
-import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
-
+import WcHints from '../WcHints'
+import WcSessionList from '../WcSessionList'
+import WcInput from '../WcInput'
+import WcLogoHeader from '../WcLogoHeader'
 import css from './styles.module.css'
 
 const WC_HINTS_KEY = 'wcHints'
 
-export const ConnectionForm = ({
+export const WcConnectionForm = ({
   sessions,
   onDisconnect,
   uri,
@@ -24,24 +21,15 @@ export const ConnectionForm = ({
   onDisconnect: (session: SessionTypes.Struct) => Promise<void>
   uri: string
 }): ReactElement => {
-  const { walletConnect } = useContext(WalletConnectContext)
   const [showHints = false, setShowHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
 
-  const onToggle = () => {
+  const onToggle = useCallback(() => {
     setShowHints((prev) => !prev)
-  }
-
-  const onHide = useCallback(() => {
-    setShowHints(false)
   }, [setShowHints])
 
   useEffect(() => {
-    if (!walletConnect) {
-      return
-    }
-
-    return walletConnect.onSessionPropose(onHide)
-  }, [onHide, walletConnect])
+    return () => setShowHints(false)
+  }, [setShowHints])
 
   return (
     <Grid className={css.container}>
@@ -59,7 +47,7 @@ export const ConnectionForm = ({
           </span>
         </Tooltip>
 
-        <WalletConnectHeader />
+        <WcLogoHeader />
 
         <Typography variant="body2" color="text.secondary" mb={3}>
           Paste the pairing code below to connect to your {`Safe{Wallet}`} via WalletConnect
@@ -71,7 +59,7 @@ export const ConnectionForm = ({
       <Divider flexItem className={css.divider} />
 
       <Grid item>
-        <SessionList sessions={sessions} onDisconnect={onDisconnect} />
+        <WcSessionList sessions={sessions} onDisconnect={onDisconnect} />
       </Grid>
 
       {showHints && (
@@ -79,10 +67,12 @@ export const ConnectionForm = ({
           <Divider flexItem className={css.divider} />
 
           <Grid item mt={1}>
-            <Hints />
+            <WcHints />
           </Grid>
         </>
       )}
     </Grid>
   )
 }
+
+export default WcConnectionForm

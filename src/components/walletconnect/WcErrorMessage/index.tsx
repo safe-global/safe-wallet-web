@@ -1,17 +1,17 @@
 import { Typography } from '@mui/material'
-import type { ReactElement } from 'react'
-
-import { WalletConnectHeader } from './Header'
-
+import WcLogoHeader from '../WcLogoHeader'
 import css from './styles.module.css'
 
-export const WalletConnectErrorMessage = ({ error }: { error: Error }): ReactElement => {
+const WcErrorMessage = ({ error }: { error: Error }) => {
   return (
     <div className={css.errorContainer}>
-      <WalletConnectHeader error />
+      <WcLogoHeader error />
+
       <Typography title={error.message} className={css.errorMessage}>
         {error.message}
       </Typography>
     </div>
   )
 }
+
+export default WcErrorMessage

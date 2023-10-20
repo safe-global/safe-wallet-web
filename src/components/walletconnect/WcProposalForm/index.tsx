@@ -8,9 +8,8 @@ import css from './styles.module.css'
 import ProposalVerification from './ProposalVerification'
 import { CompatibilityWarning } from './CompatibilityWarning'
 import useChains from '@/hooks/useChains'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { getSupportedChainIds } from '@/services/walletconnect/utils'
-import { isStrictAddressBridge, isDefaultAddressBridge } from './bridges'
+import { getSupportedChainIds, isBlockedBridge, isWarnedBridge } from '@/services/walletconnect/utils'
+import useChainId from '@/hooks/useChainId'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -18,18 +17,18 @@ type ProposalFormProps = {
   onReject?: () => void
 }
 
-const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): ReactElement => {
+const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): ReactElement => {
   const { configs } = useChains()
-  const { safe } = useSafeInfo()
+  const chainId = useChainId()
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const { proposer } = proposal.params
   const { isScam, origin } = proposal.verifyContext.verified
 
   const chainIds = useMemo(() => getSupportedChainIds(configs, proposal.params), [configs, proposal.params])
-  const isUnsupportedChain = !chainIds.includes(safe.chainId)
+  const isUnsupportedChain = !chainIds.includes(chainId)
 
-  const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isDefaultAddressBridge(origin)
-  const disabled = isUnsupportedChain || isScam || isStrictAddressBridge(origin) || (isHighRisk && !understandsRisk)
+  const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isBlockedBridge(origin)
+  const disabled = isUnsupportedChain || isScam || isWarnedBridge(origin) || (isHighRisk && !understandsRisk)
 
   return (
     <div className={css.container}>
@@ -83,4 +82,4 @@ const ProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): Rea
   )
 }
 
-export default ProposalForm
+export default WcProposalForm
