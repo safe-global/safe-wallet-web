@@ -7,7 +7,9 @@ import useNameResolver from '@/components/common/AddressInput/useNameResolver'
 import { chainBuilder } from '@/tests/builders/chains'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 
-const mockChain = chainBuilder().with('features', [FEATURES.DOMAIN_LOOKUP]).build()
+const mockChain = chainBuilder()
+  .with({ features: [FEATURES.DOMAIN_LOOKUP] })
+  .build()
 
 // mock useCurrentChain
 jest.mock('@/hooks/useChains', () => ({
@@ -194,7 +196,7 @@ describe('AddressInput tests', () => {
   })
 
   it('should not show the adornment prefix when the value contains correct prefix', async () => {
-    const mockChain = chainBuilder().with('features', []).build()
+    const mockChain = chainBuilder().with({ features: [] }).build()
     ;(useCurrentChain as jest.Mock).mockImplementation(() => mockChain)
 
     const { input } = setup(`${mockChain.shortName}:${TEST_ADDRESS_A}`)

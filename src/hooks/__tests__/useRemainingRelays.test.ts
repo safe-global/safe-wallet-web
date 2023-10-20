@@ -10,8 +10,8 @@ const SAFE_ADDRESS = '0x0000000000000000000000000000000000000001'
 
 describe('fetch remaining relays hooks', () => {
   const mockChain = chainBuilder()
-    // @ts-expect-error - we are using a local FEATURES enum
-    .with('features', [FEATURES.RELAYING])
+    // @ts-expect-error - using local FEATURES enum
+    .with({ features: [FEATURES.RELAYING] })
     .build()
   beforeEach(() => {
     jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(mockChain)
@@ -51,7 +51,7 @@ describe('fetch remaining relays hooks', () => {
     })
 
     it('should not do a network request if chain does not support relay', () => {
-      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainBuilder().with('features', []).build())
+      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainBuilder().with({ features: [] }).build())
 
       global.fetch = jest.fn()
       const mockFetch = jest.spyOn(global, 'fetch')
@@ -153,7 +153,7 @@ describe('fetch remaining relays hooks', () => {
     })
 
     it('should not do a network request if chain does not support relay', () => {
-      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainBuilder().with('features', []).build())
+      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainBuilder().with({ features: [] }).build())
       global.fetch = jest
         .fn()
         .mockResolvedValue({

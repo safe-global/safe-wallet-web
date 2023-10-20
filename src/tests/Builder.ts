@@ -1,5 +1,5 @@
 export interface IBuilder<T> {
-  with<K extends keyof T>(key: K, value: T[K]): IBuilder<T>
+  with(override: Partial<T>): IBuilder<T>
 
   build(): T
 }
@@ -10,11 +10,10 @@ export class Builder<T> implements IBuilder<T> {
   /**
    * Returns a new {@link Builder} with the property {@link key} set to {@link value}.
    *
-   * @param key - the name of the property from T to be set
-   * @param value - the value of the property from T to be set
+   * @param override - the override value to apply
    */
-  with<K extends keyof T>(key: K, value: T[K]): IBuilder<T> {
-    const target: Partial<T> = { ...this.target, [key]: value }
+  with(override: Partial<T>): IBuilder<T> {
+    const target: Partial<T> = { ...this.target, ...override }
     return new Builder<T>(target)
   }
 

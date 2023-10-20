@@ -15,7 +15,7 @@ import { waitFor } from '@testing-library/react'
 import type Safe from '@safe-global/safe-core-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
-import { FEATURES } from '@/utils/chains'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import * as gasPrice from '@/hooks/useGasPrice'
 
 const mockSafeInfo = {
@@ -44,7 +44,7 @@ describe('useSafeCreation', () => {
   beforeEach(() => {
     jest.resetAllMocks()
 
-    const mockChain = chainBuilder().with('features', []).build()
+    const mockChain = chainBuilder().with({ features: [] }).build()
 
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockProvider)
@@ -88,8 +88,7 @@ describe('useSafeCreation', () => {
 
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() =>
       chainBuilder()
-        // @ts-expect-error - we are using a local FEATURES enum
-        .with('features', [FEATURES.EIP1559])
+        .with({ features: [FEATURES.EIP1559] })
         .build(),
     )
     jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
