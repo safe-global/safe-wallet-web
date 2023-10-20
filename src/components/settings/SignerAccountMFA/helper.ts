@@ -58,6 +58,7 @@ export const enableMFA = async (
     const error = asError(e)
     logError(ErrorCodes._304, error.message)
 
+    // TODO: Check if we should use a notification or show an error inside the form
     dispatch(
       showNotification({
         variant: 'error',

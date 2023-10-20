@@ -103,7 +103,6 @@ export const PasswordForm = () => {
     if (!mpcCoreKit) return
 
     await enableMFA(dispatch, mpcCoreKit, data)
-    onReset()
   }
 
   const onReset = () => {
