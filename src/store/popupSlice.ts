@@ -5,6 +5,7 @@ import type { RootState } from '.'
 
 export enum PopupType {
   COOKIES = 'cookies',
+  WALLET_CONNECT = 'walletConnect',
 }
 
 type PopupState = {
@@ -12,10 +13,16 @@ type PopupState = {
     open: boolean
     warningKey?: CookieType
   }
+  [PopupType.WALLET_CONNECT]: {
+    open: boolean
+  }
 }
 
 const initialState: PopupState = {
   [PopupType.COOKIES]: {
+    open: false,
+  },
+  [PopupType.WALLET_CONNECT]: {
     open: false,
   },
 }
@@ -33,9 +40,16 @@ export const popupSlice = createSlice({
     closeCookieBanner: (state) => {
       state[PopupType.COOKIES] = { open: false }
     },
+    openWalletConnect: (state) => {
+      state[PopupType.WALLET_CONNECT] = { open: true }
+    },
+    closeWalletConnect: (state) => {
+      state[PopupType.WALLET_CONNECT] = { open: false }
+    },
   },
 })
 
-export const { openCookieBanner, closeCookieBanner } = popupSlice.actions
+export const { openCookieBanner, closeCookieBanner, openWalletConnect, closeWalletConnect } = popupSlice.actions
 
 export const selectCookieBanner = (state: RootState) => state[popupSlice.name][PopupType.COOKIES]
+export const selectWalletConnectPopup = (state: RootState) => state[popupSlice.name][PopupType.WALLET_CONNECT]

@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useContext } from 'react'
+import { useAppDispatch } from '@/store'
 import { Box, Grid, Typography, Link } from '@mui/material'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
@@ -9,7 +9,7 @@ import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
+import { openWalletConnect } from '@/store/popupSlice'
 
 const isWalletConnectSafeApp = (app: SafeAppData): boolean => {
   const WALLET_CONNECT = /wallet-connect/
@@ -39,12 +39,12 @@ const FeaturedAppCard = ({ app }: { app: SafeAppData }) => (
 export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): ReactElement | null => {
   const router = useRouter()
   const [featuredApps, _, remoteSafeAppsLoading] = useRemoteSafeApps(SafeAppsTag.DASHBOARD_FEATURED)
-  const { setOpen } = useContext(WalletConnectContext)
+  const dispatch = useAppDispatch()
 
   if (!featuredApps?.length && !remoteSafeAppsLoading) return null
 
   const onWcWidgetClick = () => {
-    setOpen(true)
+    dispatch(openWalletConnect())
   }
 
   return (

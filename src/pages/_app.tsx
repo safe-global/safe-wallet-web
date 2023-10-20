@@ -37,7 +37,6 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
-import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
 import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
@@ -79,9 +78,7 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <TxModalProvider>
-              <WalletConnectProvider>{children}</WalletConnectProvider>
-            </TxModalProvider>
+            <TxModalProvider>{children}</TxModalProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}

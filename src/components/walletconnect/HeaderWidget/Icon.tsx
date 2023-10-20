@@ -1,21 +1,15 @@
 import { Badge, ButtonBase, SvgIcon } from '@mui/material'
-import { useContext } from 'react'
 
 import WalletConnectIcon from '@/public/images/common/walletconnect.svg'
 import { useDarkMode } from '@/hooks/useDarkMode'
-import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 
 type IconProps = {
   onClick: () => void
   sessionCount: number
-  sessionInfo?: {
-    name: string
-    iconUrl: string
-  }
+  error: boolean
 }
 
-const Icon = ({ sessionCount, sessionInfo, ...props }: IconProps): React.ReactElement => {
-  const { error } = useContext(WalletConnectContext)
+const Icon = ({ sessionCount, error = false, ...props }: IconProps): React.ReactElement => {
   const isDarkMode = useDarkMode()
 
   return (
