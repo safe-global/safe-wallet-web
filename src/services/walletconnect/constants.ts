@@ -21,7 +21,7 @@ export const SAFE_COMPATIBLE_METHODS = [
   'eth_getLogs',
   'eth_gasPrice',
   'wallet_switchEthereumChain',
-  'safe_setSettings', // TODO: support it
+  'safe_setSettings',
 ]
 
 export const SAFE_WALLET_METADATA = {
@@ -48,7 +48,7 @@ export const BlockedBridges = [
 
 // Bridges that initially select the same address on the destination chain but allow changing it
 export const WarnedBridges = [
-  'across.to',
+  'across.to', // doesn't send their URL correctly, so it won't be detected
   'app.allbridge.io',
   'core.allbridge.io',
   'bungee.exchange',
