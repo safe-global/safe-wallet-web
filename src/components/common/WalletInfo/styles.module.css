@@ -14,16 +14,14 @@
 .walletIcon {
   position: absolute;
   display: flex;
-  -webkit-box-pack: center;
   justify-content: center;
-  -webkit-box-align: center;
   align-items: center;
   bottom: -4px;
   right: -4px;
   border-radius: 50%;
-  outline: rgb(255, 255, 255) solid 2px;
+  outline: var(--color-background-paper) solid 2px;
   outline-offset: -0.1px;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--color-background-paper);
   overflow: hidden;
 }
 
