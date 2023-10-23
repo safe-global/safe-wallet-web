@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { Grid, Typography, Divider, SvgIcon, IconButton, Tooltip } from '@mui/material'
+import { Grid, Typography, Divider, SvgIcon, IconButton, Tooltip, Box } from '@mui/material'
 import type { ReactElement } from 'react'
 import type { SessionTypes } from '@walletconnect/types'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
@@ -51,11 +51,17 @@ export const WcConnectionForm = ({
 
         <WcLogoHeader />
 
-        <Typography variant="body2" color="text.secondary" mb={3}>
-          Paste the pairing code below to connect to your {`Safe{Wallet}`} via WalletConnect
+        <Typography variant="body2" color="text.secondary">
+          {safeAddress
+            ? `Paste the pairing code below to connect to your Safe{Wallet} via WalletConnect`
+            : `Please open one of your Safe Accounts to connect to via WalletConnect`}
         </Typography>
 
-        <WcInput uri={uri} disabled={!safeAddress} />
+        {safeAddress ? (
+          <Box mt={3}>
+            <WcInput uri={uri} />
+          </Box>
+        ) : null}
       </Grid>
 
       <Divider flexItem className={css.divider} />

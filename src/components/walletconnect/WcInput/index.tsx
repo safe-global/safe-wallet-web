@@ -5,7 +5,7 @@ import { asError } from '@/services/exceptions/utils'
 import { getClipboard, isClipboardSupported } from '@/utils/clipboard'
 import { isPairingUri } from '@/services/walletconnect/utils'
 
-const WcInput = ({ uri, disabled }: { uri: string; disabled: boolean }) => {
+const WcInput = ({ uri }: { uri: string }) => {
   const { walletConnect } = useContext(WalletConnectContext)
   const [value, setValue] = useState('')
   const [error, setError] = useState<Error>()
@@ -53,14 +53,14 @@ const WcInput = ({ uri, disabled }: { uri: string; disabled: boolean }) => {
       onChange={(e) => onInput(e.target.value)}
       fullWidth
       autoComplete="off"
-      disabled={connecting || disabled}
+      disabled={connecting}
       error={!!error}
       label={error ? error.message : 'Pairing code'}
       placeholder="wc:"
       InputProps={{
         endAdornment: isClipboardSupported() ? undefined : (
           <InputAdornment position="end">
-            <Button variant="contained" onClick={onPaste} sx={{ py: 0.8 }} disabled={connecting || disabled}>
+            <Button variant="contained" onClick={onPaste} sx={{ py: 0.8 }} disabled={connecting}>
               Paste
             </Button>
           </InputAdornment>
