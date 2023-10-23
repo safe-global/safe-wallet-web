@@ -19,9 +19,8 @@ const SESSION_INFO_TIMEOUT = 2000
 const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
-  const { walletConnect, error: walletConnectError, setOpen } = useContext(WalletConnectContext)
+  const { walletConnect, error, setError, setOpen } = useContext(WalletConnectContext)
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
-  const [error, setError] = useState<Error | undefined>()
   const [changedSession, setChangedSession] = useState<SessionTypes.Struct>()
 
   // On session approve
@@ -36,7 +35,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     }
 
     setProposal(undefined)
-  }, [walletConnect, chainId, safeAddress, proposal])
+  }, [walletConnect, setError, chainId, safeAddress, proposal])
 
   // On session reject
   const onReject = useCallback(async () => {
@@ -50,7 +49,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     }
 
     setProposal(undefined)
-  }, [proposal, walletConnect])
+  }, [proposal, walletConnect, setError])
 
   // On session disconnect
   const onDisconnect = useCallback(
@@ -62,17 +61,22 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
         setError(asError(error))
       }
     },
-    [walletConnect],
+    [walletConnect, setError],
   )
+
+  // Reset error
+  const onErrorReset = useCallback(() => {
+    setError(null)
+  }, [setError])
 
   // Subscribe to session proposals
   useEffect(() => {
     if (!walletConnect) return
     return walletConnect.onSessionPropose((proposalData) => {
-      setError(undefined)
+      setError(null)
       setProposal(proposalData)
     })
-  }, [walletConnect])
+  }, [walletConnect, setError])
 
   // On session add
   useEffect(() => {
@@ -106,9 +110,8 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   //
 
   // Error
-  const anyError = walletConnectError || error
-  if (anyError) {
-    return <WcErrorMessage error={anyError} />
+  if (error) {
+    return <WcErrorMessage error={error} onClose={onErrorReset} />
   }
 
   // Session proposal

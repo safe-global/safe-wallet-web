@@ -24,6 +24,5 @@
 }
 
 .button {
-  max-height: 30px;
-  min-width: 120px;
+  padding: var(--space-1) var(--space-2);
 }

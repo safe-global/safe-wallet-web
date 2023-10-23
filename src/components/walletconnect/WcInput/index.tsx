@@ -28,7 +28,6 @@ const WcInput = ({ uri }: { uri: string }) => {
         setError(asError(e))
       }
 
-      setValue('')
       setConnecting(false)
     },
     [walletConnect],
@@ -60,7 +59,7 @@ const WcInput = ({ uri }: { uri: string }) => {
       InputProps={{
         endAdornment: isClipboardSupported() ? undefined : (
           <InputAdornment position="end">
-            <Button variant="contained" onClick={onPaste} sx={{ py: 0.8 }} disabled={connecting}>
+            <Button variant="contained" onClick={onPaste} sx={{ py: 1 }} disabled={connecting}>
               Paste
             </Button>
           </InputAdornment>

@@ -121,8 +121,10 @@ class WalletConnectWallet {
       namespaces,
     })
 
-    // Align the session with the current chainId
-    await this.chainChanged(session.topic, currentChainId)
+    try {
+      // Align the session with the current chainId
+      await this.chainChanged(session.topic, currentChainId)
+    } catch {}
 
     // Workaround: WalletConnect doesn't have a session_add event
     this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)

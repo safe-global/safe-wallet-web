@@ -46,7 +46,6 @@
 }
 
 .button {
-  height: 36px;
-  padding: 6px var(--space-4);
-  width: 130px;
+  padding: var(--space-1) var(--space-4);
+  min-width: 130px;
 }
