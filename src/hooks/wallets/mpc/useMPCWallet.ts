@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { type Dispatch, type SetStateAction, useState } from 'react'
 import useMPC from './useMPC'
 import BN from 'bn.js'
 import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
@@ -21,7 +21,8 @@ export type MPCWalletHook = {
   upsertPasswordBackup: (password: string) => Promise<void>
   recoverFactorWithPassword: (password: string, storeDeviceShare: boolean) => Promise<boolean>
   walletState: MPCWalletState
-  triggerLogin: () => Promise<boolean>
+  setWalletState: Dispatch<SetStateAction<MPCWalletState>>
+  triggerLogin: () => Promise<COREKIT_STATUS>
   resetAccount: () => Promise<void>
   userInfo: UserInfo | undefined
   exportPk: (password: string) => Promise<string | undefined>
@@ -78,17 +79,17 @@ export const useMPCWallet = (): MPCWalletHook => {
           if (securityQuestions.isEnabled()) {
             trackEvent(MPC_WALLET_EVENTS.MANUAL_RECOVERY)
             setWalletState(MPCWalletState.MANUAL_RECOVERY)
-            return false
+            return mpcCoreKit.status
           }
         }
       }
 
       await finalizeLogin()
-      return mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
+      return mpcCoreKit.status
     } catch (error) {
       setWalletState(MPCWalletState.NOT_INITIALIZED)
       console.error(error)
-      return false
+      return mpcCoreKit.status
     }
   }
 
@@ -154,6 +155,7 @@ export const useMPCWallet = (): MPCWalletHook => {
   return {
     triggerLogin,
     walletState,
+    setWalletState,
     recoverFactorWithPassword,
     resetAccount: criticalResetAccount,
     upsertPasswordBackup: () => Promise.resolve(),

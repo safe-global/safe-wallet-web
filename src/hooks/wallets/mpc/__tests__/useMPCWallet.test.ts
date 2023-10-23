@@ -113,8 +113,9 @@ describe('useMPCWallet', () => {
       )
       const { result } = renderHook(() => useMPCWallet())
 
+      let status: Promise<COREKIT_STATUS>
       act(() => {
-        result.current.triggerLogin()
+        status = result.current.triggerLogin()
       })
 
       // While the login resolves we are in Authenticating state
@@ -128,6 +129,7 @@ describe('useMPCWallet', () => {
 
       // We should be logged in and onboard should get connected
       await waitFor(() => {
+        expect(status).resolves.toEqual(COREKIT_STATUS.LOGGED_IN)
         expect(result.current.walletState === MPCWalletState.READY)
         expect(connectWalletSpy).toBeCalledWith(expect.anything(), {
           autoSelect: {
@@ -158,8 +160,9 @@ describe('useMPCWallet', () => {
 
       const { result } = renderHook(() => useMPCWallet())
 
+      let status: Promise<COREKIT_STATUS>
       act(() => {
-        result.current.triggerLogin()
+        status = result.current.triggerLogin()
       })
 
       // While the login resolves we are in Authenticating state
@@ -173,6 +176,7 @@ describe('useMPCWallet', () => {
 
       // We should be logged in and onboard should get connected
       await waitFor(() => {
+        expect(status).resolves.toEqual(COREKIT_STATUS.LOGGED_IN)
         expect(result.current.walletState === MPCWalletState.READY)
         expect(connectWalletSpy).toBeCalledWith(expect.anything(), {
           autoSelect: {
@@ -201,8 +205,9 @@ describe('useMPCWallet', () => {
 
       const { result } = renderHook(() => useMPCWallet())
 
+      let status: Promise<COREKIT_STATUS>
       act(() => {
-        result.current.triggerLogin()
+        status = result.current.triggerLogin()
       })
 
       // While the login resolves we are in Authenticating state
@@ -216,6 +221,7 @@ describe('useMPCWallet', () => {
 
       // A missing second factor should result in manual recovery state
       await waitFor(() => {
+        expect(status).resolves.toEqual(COREKIT_STATUS.REQUIRED_SHARE)
         expect(result.current.walletState === MPCWalletState.MANUAL_RECOVERY)
         expect(connectWalletSpy).not.toBeCalled()
       })
