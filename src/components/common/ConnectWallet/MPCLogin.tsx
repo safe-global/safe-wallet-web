@@ -13,7 +13,7 @@ import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -63,11 +63,13 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
     }
   }
 
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+
   return (
     <>
       <Box sx={{ width: '100%' }}>
-        {wallet?.label === ONBOARD_MPC_MODULE_LABEL && userInfo ? (
-          <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION} label={wallet.label}>
+        {isSocialLogin && userInfo ? (
+          <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
             <Button
               variant="outlined"
               sx={{ px: 2, py: 1, borderWidth: '1px !important' }}

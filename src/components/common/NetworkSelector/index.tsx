@@ -12,7 +12,7 @@ import { useCallback } from 'react'
 import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 
 const keepPathRoutes = [AppRoutes.welcome, AppRoutes.newSafe.create, AppRoutes.newSafe.load]
 
@@ -56,8 +56,10 @@ const NetworkSelector = (): ReactElement => {
     }
   }
 
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+
   return configs.length ? (
-    <FormControl disabled={wallet?.label === ONBOARD_MPC_MODULE_LABEL}>
+    <FormControl disabled={isSocialLogin}>
       <Select
         value={chainId}
         onChange={onChange}
