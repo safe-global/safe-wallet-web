@@ -50,8 +50,7 @@ class WalletConnectWallet {
    */
   public async connect(uri: string) {
     assertWeb3Wallet(this.web3Wallet)
-
-    await this.web3Wallet.core.pairing.pair({ uri })
+    return this.web3Wallet.core.pairing.pair({ uri })
   }
 
   public async chainChanged(topic: string, chainId: string) {

@@ -24,11 +24,11 @@ const WcInput = ({ uri }: { uri: string }) => {
 
       try {
         await walletConnect.connect(val)
-        setValue('')
       } catch (e) {
         setError(asError(e))
       }
 
+      setValue('')
       setConnecting(false)
     },
     [walletConnect],
