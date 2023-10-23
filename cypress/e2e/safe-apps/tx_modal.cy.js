@@ -1,5 +1,6 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
+import * as safeapps from '../pages/safeapps.pages'
 
 const testAppName = 'Cypress Test App'
 const testAppDescr = 'Cypress Test App Description'
@@ -24,8 +25,10 @@ describe('Transaction modal tests', () => {
     { defaultCommandTimeout: 12000 },
     () => {
       cy.visitSafeApp(`${constants.testAppUrl}/dummy`)
-
       main.acceptCookies()
+      safeapps.clickOnContinueBtn()
+      safeapps.verifyWarningDefaultAppMsgIsDisplayed()
+      safeapps.clickOnContinueBtn()
       cy.findByRole('dialog').within(() => {
         cy.findByText(testAppName)
       })
