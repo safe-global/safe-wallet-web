@@ -1,30 +1,14 @@
 import { SvgIcon, Typography } from '@mui/material'
 import classNames from 'classnames'
-import type { ReactElement } from 'react'
 import type { CoreTypes } from '@walletconnect/types'
-
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 import ConnectionDots from '@/public/images/common/connection-dots.svg'
-import { useCurrentChain } from '@/hooks/useChains'
-
 import css from './styles.module.css'
 
-const WcConnectionState = ({
-  metadata,
-  isDelete,
-}: {
-  metadata: CoreTypes.Metadata
-  isDelete: boolean
-}): ReactElement | null => {
-  const chain = useCurrentChain()
-
-  if (!metadata) {
-    return null
-  }
-
-  const name = metadata.name || 'dApp'
-  const icon = metadata.icons[0] || ''
+const WcConnectionState = ({ metadata, isDelete }: { metadata?: CoreTypes.Metadata; isDelete: boolean }) => {
+  const name = metadata?.name || 'dApp'
+  const icon = metadata?.icons[0] || ''
 
   return (
     <div className={css.container}>
@@ -39,9 +23,7 @@ const WcConnectionState = ({
         <SafeAppIconCard src={icon} width={28} height={28} alt={`${name} logo`} />
       </div>
       <Typography variant="h5" mt={3}>
-        {isDelete
-          ? `${name} was disconnected as it does not support ${chain?.chainName || 'this network'}.`
-          : `${name} successfully connected!`}
+        {isDelete ? `${name} has disconnected` : `${name} successfully connected!`}
       </Typography>
     </div>
   )

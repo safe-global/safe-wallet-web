@@ -120,7 +120,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   if (changedSession) {
     return (
       <WcConnectionState
-        metadata={changedSession.peer.metadata}
+        metadata={changedSession.peer?.metadata}
         isDelete={!sessions.some((s) => s.topic === changedSession.topic)}
       />
     )
