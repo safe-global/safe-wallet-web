@@ -9,6 +9,7 @@ export const MpcWalletContext = createContext<MPCWalletHook>({
   upsertPasswordBackup: () => Promise.resolve(),
   recoverFactorWithPassword: () => Promise.resolve(false),
   userInfo: undefined,
+  exportPk: () => Promise.resolve(undefined),
 })
 
 export const MpcWalletProvider = ({ children }: { children: ReactElement }) => {

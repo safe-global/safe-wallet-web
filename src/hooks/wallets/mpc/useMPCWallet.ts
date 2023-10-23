@@ -7,6 +7,8 @@ import useOnboard, { connectWallet } from '../useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { SecurityQuestionRecovery } from './recovery/SecurityQuestionRecovery'
 import { DeviceShareRecovery } from './recovery/DeviceShareRecovery'
+import { trackEvent } from '@/services/analytics'
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 
 export enum MPCWalletState {
   NOT_INITIALIZED,
@@ -23,6 +25,7 @@ export type MPCWalletHook = {
   triggerLogin: () => Promise<COREKIT_STATUS>
   resetAccount: () => Promise<void>
   userInfo: UserInfo | undefined
+  exportPk: (password: string) => Promise<string | undefined>
 }
 
 export const useMPCWallet = (): MPCWalletHook => {
@@ -34,7 +37,7 @@ export const useMPCWallet = (): MPCWalletHook => {
     // This is a critical function that should only be used for testing purposes
     // Resetting your account means clearing all the metadata associated with it from the metadata server
     // The key details will be deleted from our server and you will not be able to recover your account
-    if (!mpcCoreKit || !mpcCoreKit.metadataKey) {
+    if (!mpcCoreKit?.metadataKey) {
       throw new Error('MPC Core Kit is not initialized or the user is not logged in')
     }
 
@@ -74,6 +77,7 @@ export const useMPCWallet = (): MPCWalletHook => {
           // Check password recovery
           const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
           if (securityQuestions.isEnabled()) {
+            trackEvent(MPC_WALLET_EVENTS.MANUAL_RECOVERY)
             setWalletState(MPCWalletState.MANUAL_RECOVERY)
             return mpcCoreKit.status
           }
@@ -130,6 +134,24 @@ export const useMPCWallet = (): MPCWalletHook => {
     return mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
   }
 
+  const exportPk = async (password: string): Promise<string> => {
+    if (!mpcCoreKit) {
+      throw new Error('MPC Core Kit is not initialized')
+    }
+    const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
+
+    try {
+      if (securityQuestions.isEnabled()) {
+        // Only export PK if recovery works
+        await securityQuestions.recoverWithPassword(password)
+      }
+      const exportedPK = await mpcCoreKit?._UNSAFE_exportTssKey()
+      return exportedPK
+    } catch (err) {
+      throw new Error('Error exporting account. Make sure the password is correct.')
+    }
+  }
+
   return {
     triggerLogin,
     walletState,
@@ -138,5 +160,6 @@ export const useMPCWallet = (): MPCWalletHook => {
     resetAccount: criticalResetAccount,
     upsertPasswordBackup: () => Promise.resolve(),
     userInfo: mpcCoreKit?.state.userInfo,
+    exportPk,
   }
 }

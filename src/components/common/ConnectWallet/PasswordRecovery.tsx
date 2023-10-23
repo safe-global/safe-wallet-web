@@ -1,3 +1,4 @@
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { VisibilityOff, Visibility } from '@mui/icons-material'
 import {
   Typography,
@@ -12,6 +13,7 @@ import {
   LinearProgress,
 } from '@mui/material'
 import { useState } from 'react'
+import Track from '../Track'
 import { useForm } from 'react-hook-form'
 
 type PasswordFormData = {
@@ -102,9 +104,11 @@ export const PasswordRecovery = ({
             </Box>
             <Divider />
             <Box p={4} display="flex" justifyContent="flex-end">
-              <Button variant="contained" type="submit" disabled={isDisabled}>
-                Submit
-              </Button>
+              <Track {...MPC_WALLET_EVENTS.RECOVER_PASSWORD}>
+                <Button variant="contained" type="submit" disabled={isDisabled}>
+                  Submit
+                </Button>
+              </Track>
             </Box>
           </Box>
         </Grid>

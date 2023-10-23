@@ -14,6 +14,10 @@ const assertDefined = <T>(mpcProvider: T | undefined) => {
 
 export const ONBOARD_MPC_MODULE_LABEL = 'Social Login'
 
+export const isSocialLoginWallet = (walletLabel: string | undefined) => {
+  return walletLabel === ONBOARD_MPC_MODULE_LABEL
+}
+
 /**
  * Module for MPC wallet created by the Web3Auth tKey MPC.
  * We gain access to the provider created by tKey MPC after a successful login.

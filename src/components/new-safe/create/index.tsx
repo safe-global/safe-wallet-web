@@ -19,7 +19,7 @@ import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 
 export type NewSafeFormData = {
   name: string
@@ -165,7 +165,8 @@ const CreateSafe = () => {
   }
 
   // Jump to review screen when using social login
-  const initialStep = wallet?.label === ONBOARD_MPC_MODULE_LABEL ? 2 : 0
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+  const initialStep = isSocialLogin ? 2 : 0
 
   const onClose = () => {
     router.push(AppRoutes.welcome)
