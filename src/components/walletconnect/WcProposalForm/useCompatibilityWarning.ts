@@ -21,7 +21,7 @@ const Warnings: Record<string, { severity: AlertColor; message: string }> = {
   },
   UNSUPPORTED_CHAIN: {
     severity: 'error',
-    message: `${NAME_PLACEHOLDER} does not support the Safe Account network. If you want to interact with ${NAME_PLACEHOLDER}, please switch to a Safe Account on a supported network.`,
+    message: `${NAME_PLACEHOLDER} does not support this Safe Account's network (${CHAIN_PLACEHOLDER}). Please switch to a Safe Account on one of supported networks below.`,
   },
   WRONG_CHAIN: {
     severity: 'info',
