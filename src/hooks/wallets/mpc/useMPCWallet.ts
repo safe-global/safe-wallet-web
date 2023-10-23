@@ -10,10 +10,10 @@ import { DeviceShareRecovery } from './recovery/DeviceShareRecovery'
 import { trackEvent } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import useAddressBook from '@/hooks/useAddressBook'
-import { useCurrentChain } from '@/hooks/useChains'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
-import { ethers } from 'ethers'
+import useChainId from '@/hooks/useChainId'
+import { checksumAddress } from '@/utils/addresses'
 
 export enum MPCWalletState {
   NOT_INITIALIZED,
@@ -36,7 +36,7 @@ export const useMPCWallet = (): MPCWalletHook => {
   const mpcCoreKit = useMPC()
   const onboard = useOnboard()
   const addressBook = useAddressBook()
-  const currentChainId = useCurrentChain()
+  const currentChainId = useChainId()
   const dispatch = useAppDispatch()
 
   const criticalResetAccount = async (): Promise<void> => {
@@ -114,12 +114,15 @@ export const useMPCWallet = (): MPCWalletHook => {
         },
       }).catch((reason) => console.error('Error connecting to MPC module:', reason))
 
-      // If the signer is not in the address book => add it as the user's first name
+      // If the signer is not in the address book => add the user's email as name
       if (wallets && currentChainId && wallets.length > 0) {
-        const signerAddress = ethers.utils.getAddress(wallets[0].accounts[0]?.address)
-        if (addressBook[signerAddress] === undefined) {
-          const email = mpcCoreKit.getUserInfo().email
-          dispatch(upsertAddressBookEntry({ address: signerAddress, chainId: currentChainId.chainId, name: email }))
+        const address = wallets[0].accounts[0]?.address
+        if (address) {
+          const signerAddress = checksumAddress(address)
+          if (addressBook[signerAddress] === undefined) {
+            const email = mpcCoreKit.getUserInfo().email
+            dispatch(upsertAddressBookEntry({ address: signerAddress, chainId: currentChainId, name: email }))
+          }
         }
       }
       setWalletState(MPCWalletState.READY)

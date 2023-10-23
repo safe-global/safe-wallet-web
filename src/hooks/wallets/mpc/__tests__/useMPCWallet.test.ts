@@ -15,9 +15,8 @@ import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
 import * as addressBookSlice from '@/store/addressBookSlice'
-import * as chains from '@/hooks/useChains'
+import * as useChainId from '@/hooks/useChainId'
 import { hexZeroPad } from 'ethers/lib/utils'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import * as useAddressBook from '@/hooks/useAddressBook'
 
 /** time until mock login resolves */
@@ -87,9 +86,7 @@ describe('useMPCWallet', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     setMPCCoreKitInstance(undefined)
-    jest
-      .spyOn(chains, 'useCurrentChain')
-      .mockReturnValue({ chainId: '100', disabledWallets: [] } as unknown as ChainInfo)
+    jest.spyOn(useChainId, 'default').mockReturnValue('100')
   })
   afterAll(() => {
     jest.useRealTimers()
