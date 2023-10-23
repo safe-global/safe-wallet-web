@@ -5,6 +5,7 @@ import type Web3WalletType from '@walletconnect/web3wallet'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
 import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
+import uniq from 'lodash/uniq'
 
 import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
 import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
@@ -94,7 +95,7 @@ class WalletConnectWallet {
     const eip155Accounts = eip155ChainIds.map((eip155ChainId) => `${eip155ChainId}:${safeAddress}`)
 
     // Don't include optionalNamespaces methods/events
-    const methods = proposal.params.requiredNamespaces[EIP155]?.methods ?? SAFE_COMPATIBLE_METHODS
+    const methods = uniq((proposal.params.requiredNamespaces[EIP155]?.methods || []).concat(SAFE_COMPATIBLE_METHODS))
     const events = proposal.params.requiredNamespaces[EIP155]?.events || []
 
     return buildApprovedNamespaces({
