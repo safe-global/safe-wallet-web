@@ -19,7 +19,7 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
-  if (wallet !== null && isSocialLogin) {
+  if (wallet !== null && !isSocialLogin) {
     return (
       <Box sx={{ width: '100%' }}>
         <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION} label={wallet.label}>

@@ -97,6 +97,10 @@ export const settingsNavItems = [
     href: AppRoutes.settings.spendingLimits,
   },
   {
+    label: 'Security & Login',
+    href: AppRoutes.settings.securityLogin,
+  },
+  {
     label: 'Safe Apps',
     href: AppRoutes.settings.safeApps.index,
   },
@@ -107,10 +111,6 @@ export const settingsNavItems = [
   {
     label: 'Environment variables',
     href: AppRoutes.settings.environmentVariables,
-  },
-  {
-    label: 'Signer account',
-    href: AppRoutes.settings.signerAccount,
   },
 ]
 

@@ -15,16 +15,17 @@ import {
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { useState, useMemo, type ChangeEvent } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { enableMFA } from './helper'
+import { enableMFA } from '@/components/settings/SecurityLogin/SocialSignerMFA/helper'
 import CheckIcon from '@/public/images/common/check-filled.svg'
 import LockWarningIcon from '@/public/images/common/lock-warning.svg'
-import PasswordInput from '@/components/settings/SignerAccountMFA/PasswordInput'
-import css from './styles.module.css'
+import PasswordInput from '@/components/settings/SecurityLogin/SocialSignerMFA/PasswordInput'
+import css from '@/components/settings/SecurityLogin/SocialSignerMFA/styles.module.css'
 import BarChartIcon from '@/public/images/common/bar-chart.svg'
 import ShieldIcon from '@/public/images/common/shield.svg'
 import ShieldOffIcon from '@/public/images/common/shield-off.svg'
 import useMPC from '@/hooks/wallets/mpc/useMPC'
 import { useAppDispatch } from '@/store'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 enum PasswordFieldNames {
   oldPassword = 'oldPassword',
@@ -76,7 +77,7 @@ const passwordStrengthMap = {
   },
 } as const
 
-export const PasswordForm = () => {
+const SocialSignerMFA = () => {
   const dispatch = useAppDispatch()
   const mpcCoreKit = useMPC()
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(PasswordStrength.weak)
@@ -110,7 +111,8 @@ export const PasswordForm = () => {
     setPasswordStrength(PasswordStrength.weak)
   }
 
-  const passwordsMatch = watch(PasswordFieldNames.newPassword) === watch(PasswordFieldNames.confirmPassword)
+  const confirmPassword = watch(PasswordFieldNames.confirmPassword)
+  const passwordsMatch = watch(PasswordFieldNames.newPassword) === confirmPassword && confirmPassword !== ''
 
   const isSubmitDisabled =
     !passwordsMatch ||
@@ -123,11 +125,11 @@ export const PasswordForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box display="flex" flexDirection="column" gap={3} alignItems="baseline">
           <Typography>
-            Protect your account with a password. It will be used to restore access to your Safe in another browser or
-            on another device.
+            Protect your social login signer with a password. It will be used to restore access in another browser or on
+            another device.
           </Typography>
-          <Accordion defaultExpanded={isPasswordSet}>
-            <AccordionSummary>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Box display="flex" alignItems="center" gap={1}>
                 <SvgIcon component={CheckIcon} sx={{ color: isPasswordSet ? 'success.main' : 'border.light' }} />
                 <Typography fontWeight="bold">Password</Typography>
@@ -138,7 +140,7 @@ export const PasswordForm = () => {
                 <Grid item container xs={12} md={7} gap={3} p={3}>
                   {isPasswordSet && (
                     <>
-                      <Typography>You already have a recovery password setup.</Typography>
+                      <Typography>You already have a password setup.</Typography>
                       <FormControl fullWidth>
                         <PasswordInput
                           name={PasswordFieldNames.oldPassword}
@@ -178,7 +180,7 @@ export const PasswordForm = () => {
                       {passwordStrengthMap[passwordStrength].label} password
                     </Typography>
                     <Typography variant="body2" color="text.secondary" mt={1}>
-                      Include at least 8 or more characters, a number, an uppercase letter and a symbol
+                      Include at least 9 or more characters, a number, an uppercase letter and a symbol
                     </Typography>
                   </FormControl>
 
@@ -232,8 +234,8 @@ export const PasswordForm = () => {
                     </Typography>
                     <ol className={css.list}>
                       <Typography component="li" variant="body2">
-                        You will have to input this password if you need to recover access to Safe in another browser or
-                        on another device.
+                        You will have to input this password if you login with this social login signer in another
+                        browser or on another device.
                       </Typography>
                       <Typography component="li" variant="body2">
                         We suggest to use a password manager or to write the password down on a piece of paper and
@@ -250,3 +252,5 @@ export const PasswordForm = () => {
     </FormProvider>
   )
 }
+
+export default SocialSignerMFA
