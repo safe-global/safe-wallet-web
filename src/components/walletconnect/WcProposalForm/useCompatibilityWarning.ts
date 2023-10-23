@@ -1,14 +1,12 @@
 import { useMemo } from 'react'
 import type { AlertColor } from '@mui/material'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
-
 import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isStrictAddressBridge, isDefaultAddressBridge } from './bridges'
 import { capitalize } from '@/utils/formatters'
+import { isBlockedBridge, isWarnedBridge } from '@/services/walletconnect/utils'
 
 const NAME_FALLBACK = 'this dApp'
-
 const NAME_PLACEHOLDER = '%%name%%'
 const CHAIN_PLACEHOLDER = '%%chain%%'
 
@@ -32,15 +30,15 @@ const Warnings: Record<string, { severity: AlertColor; message: string }> = {
 }
 
 export const _getWarning = (origin: string, isUnsupportedChain: boolean) => {
-  if (isStrictAddressBridge(origin)) {
-    return Warnings.BLOCKED_BRIDGE
-  }
-
   if (isUnsupportedChain) {
     return Warnings.UNSUPPORTED_CHAIN
   }
 
-  if (isDefaultAddressBridge(origin)) {
+  if (isBlockedBridge(origin)) {
+    return Warnings.BLOCKED_BRIDGE
+  }
+
+  if (isWarnedBridge(origin)) {
     return Warnings.WARNED_BRIDGE
   }
 

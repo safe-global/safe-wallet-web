@@ -1,12 +1,10 @@
 import { SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
-
 import WalletConnect from '@/public/images/common/walletconnect.svg'
 import Alert from '@/public/images/notifications/alert.svg'
-
 import css from './styles.module.css'
 
-export const WalletConnectHeader = ({ error }: { error?: boolean }): ReactElement => {
+const WcLogoHeader = ({ error }: { error?: boolean }): ReactElement => {
   return (
     <>
       <div>
@@ -15,8 +13,10 @@ export const WalletConnectHeader = ({ error }: { error?: boolean }): ReactElemen
       </div>
 
       <Typography variant="h5" mt={2} mb={0.5}>
-        Connect dApp to {`Safe{Wallet}`}
+        Connect dApps to {`Safe{Wallet}`}
       </Typography>
     </>
   )
 }
+
+export default WcLogoHeader

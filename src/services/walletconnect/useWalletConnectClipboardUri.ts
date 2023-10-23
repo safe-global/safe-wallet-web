@@ -4,6 +4,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import { getClipboard, isClipboardGranted } from '@/utils/clipboard'
 import { isPairingUri } from './utils'
 
+// TODO: put this into session storage, otherwise it keeps pasting a stale pairing URI after refresh
 const stalePairingUris: Array<string> = []
 
 export const useWalletConnectClipboardUri = (): [string, Dispatch<SetStateAction<string>>] => {
@@ -30,10 +31,13 @@ export const useWalletConnectClipboardUri = (): [string, Dispatch<SetStateAction
       }
     }
 
-    setClipboard()
+    if (document.hasFocus()) {
+      setClipboard()
+    }
 
     // Update clipboard when returning to Safe
     window.addEventListener('focus', setClipboard)
+
     return () => {
       window.removeEventListener('focus', setClipboard)
     }

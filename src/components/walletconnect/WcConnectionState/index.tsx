@@ -10,12 +10,12 @@ import { useCurrentChain } from '@/hooks/useChains'
 
 import css from './styles.module.css'
 
-export const ConnectionBanner = ({
+const WcConnectionState = ({
   metadata,
-  isDelete = false,
+  isDelete,
 }: {
-  metadata?: CoreTypes.Metadata
-  isDelete?: boolean
+  metadata: CoreTypes.Metadata
+  isDelete: boolean
 }): ReactElement | null => {
   const chain = useCurrentChain()
 
@@ -46,3 +46,5 @@ export const ConnectionBanner = ({
     </div>
   )
 }
+
+export default WcConnectionState

@@ -74,7 +74,7 @@ const InteractionSteps = [
   'Transact/sign as normal via the Safe',
 ]
 
-export const Hints = (): ReactElement => {
+const WcHints = (): ReactElement => {
   const [expandedAccordion, setExpandedAccordion] = useState<'connection' | 'interaction' | null>(null)
   const chain = useCurrentChain()
 
@@ -105,3 +105,5 @@ export const Hints = (): ReactElement => {
     </Box>
   )
 }
+
+export default WcHints

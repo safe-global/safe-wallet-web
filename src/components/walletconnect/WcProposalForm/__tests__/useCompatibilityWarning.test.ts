@@ -1,14 +1,13 @@
 import { renderHook } from '@/tests/test-utils'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
-
-import * as bridges from '../bridges'
 import { useCompatibilityWarning } from '../useCompatibilityWarning'
+import * as wcUtils from '@/services/walletconnect/utils'
 
 describe('useCompatibilityWarning', () => {
   describe('should return an error for a dangerous bridge', () => {
     it('if the dApp is named', () => {
-      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(true)
+      jest.spyOn(wcUtils, 'isBlockedBridge').mockReturnValue(true)
 
       const proposal = {
         params: { proposer: { metadata: { name: 'Fake Bridge' } } },
@@ -25,7 +24,7 @@ describe('useCompatibilityWarning', () => {
     })
 
     it('if the dApp is not named', () => {
-      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(true)
+      jest.spyOn(wcUtils, 'isBlockedBridge').mockReturnValue(true)
 
       const proposal = {
         params: { proposer: { metadata: { name: '' } } },
@@ -44,8 +43,8 @@ describe('useCompatibilityWarning', () => {
 
   describe('should return a warning for a risky bridge', () => {
     it('if the dApp is named', () => {
-      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
-      jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(true)
+      jest.spyOn(wcUtils, 'isBlockedBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isWarnedBridge').mockReturnValue(true)
 
       const proposal = {
         params: { proposer: { metadata: { name: 'Fake Bridge' } } },
@@ -62,8 +61,8 @@ describe('useCompatibilityWarning', () => {
     })
 
     it('if the dApp is not named', () => {
-      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
-      jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(true)
+      jest.spyOn(wcUtils, 'isBlockedBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isWarnedBridge').mockReturnValue(true)
 
       const proposal = {
         params: { proposer: { metadata: { name: '' } } },
@@ -82,8 +81,8 @@ describe('useCompatibilityWarning', () => {
 
   describe('it should return an error for an unsupported chain', () => {
     it('if the dApp is named', () => {
-      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
-      jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isBlockedBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isWarnedBridge').mockReturnValue(false)
 
       const proposal = {
         params: { proposer: { metadata: { name: 'Fake dApp' } } },
@@ -100,8 +99,8 @@ describe('useCompatibilityWarning', () => {
     })
 
     it('if the dApp is not named', () => {
-      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
-      jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isBlockedBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isWarnedBridge').mockReturnValue(false)
 
       const proposal = {
         params: { proposer: { metadata: { name: '' } } },
@@ -120,8 +119,8 @@ describe('useCompatibilityWarning', () => {
 
   describe('should otherwise return info', () => {
     it('if chains are loaded', () => {
-      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
-      jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isBlockedBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isWarnedBridge').mockReturnValue(false)
 
       const proposal = {
         params: { proposer: { metadata: { name: 'Fake dApp' } } },
@@ -158,8 +157,8 @@ describe('useCompatibilityWarning', () => {
     })
 
     it("if chains aren't loaded", () => {
-      jest.spyOn(bridges, 'isStrictAddressBridge').mockReturnValue(false)
-      jest.spyOn(bridges, 'isDefaultAddressBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isBlockedBridge').mockReturnValue(false)
+      jest.spyOn(wcUtils, 'isWarnedBridge').mockReturnValue(false)
 
       const proposal = {
         params: { proposer: { metadata: { name: 'Fake dApp' } } },
