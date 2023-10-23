@@ -170,7 +170,15 @@ describe('WalletConnectWallet', () => {
             'eip155:137',
             'eip155:1101',
           ],
-          methods: ['eth_sendTransaction', 'personal_sign'],
+          methods: [
+            'eth_sendTransaction',
+            'personal_sign',
+            'eth_accounts',
+            'eth_sign',
+            'eth_signTypedData',
+            'eth_signTypedData_v4',
+            'wallet_switchEthereumChain',
+          ],
           events: ['chainChanged', 'accountsChanged'],
           accounts: [
             `eip155:1:${hexZeroPad('0x123', 20)}`,
