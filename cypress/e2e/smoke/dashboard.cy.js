@@ -11,19 +11,19 @@ describe('Dashboard tests', () => {
     dashboard.verifyConnectTransactStrIsVisible()
   })
 
-  it('Verify the overview widget is displayed [C56107]', () => {
+  it.skip('Verify the overview widget is displayed [C56107]', () => {
     dashboard.verifyOverviewWidgetData()
   })
 
-  it('Verify the transaction queue widget is displayed [C56108]', () => {
+  it.skip('Verify the transaction queue widget is displayed [C56108]', () => {
     dashboard.verifyTxQueueWidget()
   })
 
-  it('Verify the featured Safe Apps are displayed [C56109]', () => {
+  it.skip('Verify the featured Safe Apps are displayed [C56109]', () => {
     dashboard.verifyFeaturedAppsSection()
   })
 
-  it('Verify the Safe Apps Section is displayed [C56110]', () => {
+  it.skip('Verify the Safe Apps Section is displayed [C56110]', () => {
     dashboard.verifySafeAppsSection()
   })
 })

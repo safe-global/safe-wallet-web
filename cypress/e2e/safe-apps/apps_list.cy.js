@@ -6,9 +6,9 @@ const myCustomAppTitle = 'Cypress Test App'
 const myCustomAppDescrAdded = 'Cypress Test App Description'
 
 describe('Safe Apps tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.TEST_SAFE_2 + constants.appsUrl, { failOnStatusCode: false })
+    cy.visit(constants.SEPOLIA_TEST_SAFE_4 + constants.appsUrl, { failOnStatusCode: false })
     main.acceptCookies()
   })
 
@@ -41,6 +41,9 @@ describe('Safe Apps tests', () => {
   it('Verify apps can be unpinned [C56134]', () => {
     safeapps.pinApp(safeapps.pinWalletConnectStr)
     safeapps.pinApp(safeapps.transactionBuilderStr)
+    safeapps.pinApp(safeapps.pinWalletConnectStr, false)
+    safeapps.pinApp(safeapps.transactionBuilderStr, false)
+    safeapps.clickOnBookmarkedAppsTab()
     safeapps.verifyAppCount(0)
   })
 
@@ -61,6 +64,8 @@ describe('Safe Apps tests', () => {
       icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
     })
 
+    safeapps.clickOnCustomAppsTab()
+    safeapps.clickOnAddCustomApp()
     safeapps.typeCustomAppUrl(constants.validAppUrl)
     safeapps.verifyAppTitle(myCustomAppTitle)
     safeapps.acceptTC()

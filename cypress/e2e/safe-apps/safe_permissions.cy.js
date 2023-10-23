@@ -1,5 +1,6 @@
 import * as constants from '../../support/constants'
 import * as safeapps from '../pages/safeapps.pages'
+import * as main from '../pages/main.page'
 
 describe('Safe permissions system tests', () => {
   before(() => {
@@ -18,6 +19,11 @@ describe('Safe permissions system tests', () => {
 
   it('Verify that requesting permissions with wallet_requestPermissions shows the permissions prompt and return the permissions on accept [C56150]', () => {
     cy.visitSafeApp(constants.testAppUrl + constants.requestPermissionsUrl)
+    main.acceptCookies()
+    safeapps.clickOnContinueBtn()
+    safeapps.verifyWarningDefaultAppMsgIsDisplayed()
+    safeapps.clickOnContinueBtn()
+
     safeapps.verifyPermissionsRequestExists()
     safeapps.verifyAccessToAddressBookExists()
     safeapps.clickOnAcceptBtn()
@@ -52,6 +58,10 @@ describe('Safe permissions system tests', () => {
     })
 
     cy.visitSafeApp(constants.testAppUrl + constants.getPermissionsUrl)
+    main.acceptCookies()
+    safeapps.clickOnContinueBtn()
+    safeapps.verifyWarningDefaultAppMsgIsDisplayed()
+    safeapps.clickOnContinueBtn()
 
     cy.get('@safeAppsMessage').should('have.been.calledWithMatch', {
       data: [
