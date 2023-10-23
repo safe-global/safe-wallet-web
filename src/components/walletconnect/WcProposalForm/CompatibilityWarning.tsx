@@ -7,6 +7,7 @@ import { useCompatibilityWarning } from './useCompatibilityWarning'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
 import css from './styles.module.css'
+import NetworkSelector from '@/components/common/NetworkSelector'
 
 export const CompatibilityWarning = ({
   proposal,
@@ -36,6 +37,11 @@ export const CompatibilityWarning = ({
               <ChainIndicator inline chainId={chainId} key={chainId} className={css.chain} />
             ))}
           </div>
+
+          <Typography mt={3} component="div">
+            Switch network
+            <NetworkSelector />
+          </Typography>
         </>
       )}
     </>
