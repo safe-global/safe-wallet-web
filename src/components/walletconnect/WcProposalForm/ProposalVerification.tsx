@@ -2,12 +2,12 @@ import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { Alert, SvgIcon } from '@mui/material'
 import type { AlertColor } from '@mui/material'
 import AlertIcon from '@/public/images/notifications/alert.svg'
-
 import type { Verify } from '@walletconnect/types'
 import type { ComponentType, ReactElement } from 'react'
 import CloseIcon from '@/public/images/common/close.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckIcon from '@/public/images/common/check.svg'
+import { getPeerName } from '@/services/walletconnect/utils'
 import css from './styles.module.css'
 
 const Validation: {
@@ -65,8 +65,8 @@ const ProposalVerification = ({ proposal }: { proposal: Web3WalletTypes.SessionP
       }
     >
       {isScam
-        ? `We prevent connecting to ${proposer.metadata.name} as they are a known scam.`
-        : `${proposer.metadata.name} ${_validation.desc}`}
+        ? `We prevent connecting to ${getPeerName(proposer) || 'this dApp'} as they are a known scam.`
+        : `${getPeerName(proposer) || 'This dApp'} ${_validation.desc}`}
     </Alert>
   )
 }

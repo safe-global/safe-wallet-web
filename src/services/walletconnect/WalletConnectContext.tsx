@@ -6,7 +6,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
 import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
-import { stripEip155Prefix } from './utils'
+import { getPeerName, stripEip155Prefix } from './utils'
 
 const walletConnectSingleton = new WalletConnectWallet()
 
@@ -67,7 +67,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
 
         // Get response from Safe Wallet Provider
         return safeWalletProvider.request(event.id, event.params.request, {
-          name: session.peer.metadata.name,
+          name: getPeerName(session.peer) || 'Unknown dApp',
           description: session.peer.metadata.description,
           url: session.peer.metadata.url,
           iconUrl: session.peer.metadata.icons[0],

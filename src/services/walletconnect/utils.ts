@@ -54,3 +54,7 @@ export const isBlockedBridge = (origin: string) => {
 export const isWarnedBridge = (origin: string) => {
   return WarnedBridges.some((bridge) => origin.includes(bridge))
 }
+
+export const getPeerName = (peer: SessionTypes.Struct['peer'] | ProposalTypes.Struct['proposer']): string => {
+  return peer.metadata?.name ?? peer.metadata?.url ?? ''
+}

@@ -4,7 +4,7 @@ import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { capitalize } from '@/utils/formatters'
-import { isBlockedBridge, isWarnedBridge } from '@/services/walletconnect/utils'
+import { getPeerName, isBlockedBridge, isWarnedBridge } from '@/services/walletconnect/utils'
 
 const NAME_FALLBACK = 'this dApp'
 const NAME_PLACEHOLDER = '%%name%%'
@@ -54,13 +54,13 @@ export const useCompatibilityWarning = (
 
   return useMemo(() => {
     const { origin } = proposal.verifyContext.verified
-    const { proposer } = proposal.params
 
     let { message, severity } = _getWarning(origin, isUnsupportedChain)
 
     if (message.includes(NAME_PLACEHOLDER)) {
-      message = message.replaceAll(NAME_PLACEHOLDER, proposer.metadata.name || NAME_FALLBACK)
-      if (message.includes(NAME_FALLBACK)) {
+      const name = getPeerName(proposal.params.proposer) || NAME_FALLBACK
+      message = message.replaceAll(NAME_PLACEHOLDER, name)
+      if (message.startsWith(NAME_FALLBACK)) {
         message = capitalize(message)
       }
     }

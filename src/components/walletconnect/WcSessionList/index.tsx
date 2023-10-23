@@ -1,5 +1,6 @@
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { getPeerName } from '@/services/walletconnect/utils'
 import { Button, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import type { SessionTypes } from '@walletconnect/types'
 import type { ReactElement } from 'react'
@@ -19,6 +20,7 @@ const WcSessionListItem = ({
   onDisconnect: () => void
 }): ReactElement => {
   const { safeLoaded } = useSafeInfo()
+  const name = getPeerName(session.peer) || 'Unknown dApp'
 
   return (
     <ListItem className={css.sessionListItem}>
@@ -27,10 +29,7 @@ const WcSessionListItem = ({
           <SafeAppIconCard src={session.peer.metadata.icons[0]} alt="icon" width={20} height={20} />
         </ListItemAvatar>
       )}
-      <ListItemText
-        primary={session.peer.metadata.name}
-        primaryTypographyProps={{ color: safeLoaded ? undefined : 'text.secondary' }}
-      />
+      <ListItemText primary={name} primaryTypographyProps={{ color: safeLoaded ? undefined : 'text.secondary' }} />
       <ListItemIcon className={css.sessionListSecondaryAction}>
         <Button variant="danger" onClick={onDisconnect} className={css.button}>
           Disconnect

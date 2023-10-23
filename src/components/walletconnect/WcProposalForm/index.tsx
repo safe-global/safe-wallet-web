@@ -8,7 +8,7 @@ import css from './styles.module.css'
 import ProposalVerification from './ProposalVerification'
 import { CompatibilityWarning } from './CompatibilityWarning'
 import useChains from '@/hooks/useChains'
-import { getSupportedChainIds, isBlockedBridge, isWarnedBridge } from '@/services/walletconnect/utils'
+import { getPeerName, getSupportedChainIds, isBlockedBridge, isWarnedBridge } from '@/services/walletconnect/utils'
 import useChainId from '@/hooks/useChainId'
 
 type ProposalFormProps = {
@@ -29,6 +29,7 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
 
   const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isWarnedBridge(origin)
   const disabled = isUnsupportedChain || isScam || isBlockedBridge(origin) || (isHighRisk && !understandsRisk)
+  const name = getPeerName(proposer) || 'Unknown dApp'
 
   return (
     <div className={css.container}>
@@ -38,16 +39,13 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
 
       {proposer.metadata.icons[0] && (
         <div className={css.icon}>
-          <SafeAppIconCard
-            src={proposer.metadata.icons[0]}
-            width={32}
-            height={32}
-            alt={`${proposer.metadata.name || 'dApp'} logo`}
-          />
+          <SafeAppIconCard src={proposer.metadata.icons[0]} width={32} height={32} alt={`${name || 'dApp'} logo`} />
         </div>
       )}
 
-      <Typography mb={1}>{proposer.metadata.name} wants to connect</Typography>
+      <Typography mb={1}>
+        <b>{name}</b> wants to connect
+      </Typography>
 
       <Typography className={css.origin} mb={3}>
         {proposal.verifyContext.verified.origin}
