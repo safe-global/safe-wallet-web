@@ -29,7 +29,7 @@ const Warnings: Record<string, { severity: AlertColor; message: string }> = {
   },
 }
 
-export const _getWarning = (origin: string, isUnsupportedChain: boolean) => {
+export const _getWarning = (origin: string, name: string, isUnsupportedChain: boolean) => {
   if (isUnsupportedChain) {
     return Warnings.UNSUPPORTED_CHAIN
   }
@@ -38,7 +38,7 @@ export const _getWarning = (origin: string, isUnsupportedChain: boolean) => {
     return Warnings.BLOCKED_BRIDGE
   }
 
-  if (isWarnedBridge(origin)) {
+  if (isWarnedBridge(origin, name)) {
     return Warnings.WARNED_BRIDGE
   }
 
@@ -53,12 +53,11 @@ export const useCompatibilityWarning = (
   const { safe } = useSafeInfo()
 
   return useMemo(() => {
+    const name = getPeerName(proposal.params.proposer) || NAME_FALLBACK
     const { origin } = proposal.verifyContext.verified
-
-    let { message, severity } = _getWarning(origin, isUnsupportedChain)
+    let { message, severity } = _getWarning(origin, name, isUnsupportedChain)
 
     if (message.includes(NAME_PLACEHOLDER)) {
-      const name = getPeerName(proposal.params.proposer) || NAME_FALLBACK
       message = message.replaceAll(NAME_PLACEHOLDER, name)
       if (message.startsWith(NAME_FALLBACK)) {
         message = capitalize(message)

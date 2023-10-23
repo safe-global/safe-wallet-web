@@ -27,9 +27,9 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
   const chainIds = useMemo(() => getSupportedChainIds(configs, proposal.params), [configs, proposal.params])
   const isUnsupportedChain = !chainIds.includes(chainId)
 
-  const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isWarnedBridge(origin)
-  const disabled = isUnsupportedChain || isScam || isBlockedBridge(origin) || (isHighRisk && !understandsRisk)
   const name = getPeerName(proposer) || 'Unknown dApp'
+  const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isWarnedBridge(origin, name)
+  const disabled = isUnsupportedChain || isScam || isBlockedBridge(origin) || (isHighRisk && !understandsRisk)
 
   return (
     <div className={css.container}>

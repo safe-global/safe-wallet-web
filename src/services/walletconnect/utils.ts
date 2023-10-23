@@ -1,6 +1,6 @@
 import type { ChainInfo } from '@safe-global/safe-apps-sdk'
 import type { ProposalTypes, SessionTypes } from '@walletconnect/types'
-import { EIP155, BlockedBridges, WarnedBridges } from '@/services/walletconnect/constants'
+import { EIP155, BlockedBridges, WarnedBridges, WarnedBridgeNames } from '@/services/walletconnect/constants'
 
 export const isPairingUri = (uri: string): boolean => {
   return uri.startsWith('wc:')
@@ -51,10 +51,10 @@ export const isBlockedBridge = (origin: string) => {
 }
 
 // Bridge defaults to same address on destination chain but allows changing it
-export const isWarnedBridge = (origin: string) => {
-  return WarnedBridges.some((bridge) => origin.includes(bridge))
+export const isWarnedBridge = (origin: string, name: string) => {
+  return WarnedBridges.some((bridge) => origin.includes(bridge)) || WarnedBridgeNames.includes(name)
 }
 
 export const getPeerName = (peer: SessionTypes.Struct['peer'] | ProposalTypes.Struct['proposer']): string => {
-  return peer.metadata?.name ?? peer.metadata?.url ?? ''
+  return peer.metadata?.name || peer.metadata?.url || ''
 }

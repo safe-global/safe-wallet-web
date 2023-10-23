@@ -48,14 +48,14 @@ export const BlockedBridges = [
 
 // Bridges that initially select the same address on the destination chain but allow changing it
 export const WarnedBridges = [
-  'across.to', // doesn't send their URL correctly, so it won't be detected
+  'across.to', // doesn't send their URL in the session proposal
   'app.allbridge.io',
   'core.allbridge.io',
   'bungee.exchange',
   'www.carrier.so',
   'app.chainport.io',
   'bridge.gnosischain.com',
-  'app.hop.exchange',
+  'app.hop.exchange', // doesn't send their URL in the session proposal
   'app.interport.fi',
   'jumper.exchange',
   'www.layerswap.io',
@@ -70,3 +70,5 @@ export const WarnedBridges = [
   'bridge.wanchain.org',
   'app.xy.finance',
 ]
+
+export const WarnedBridgeNames = ['Across Bridge', 'Hop']
