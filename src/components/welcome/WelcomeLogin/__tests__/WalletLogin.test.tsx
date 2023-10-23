@@ -1,7 +1,6 @@
 import { act, render, waitFor } from '@/tests/test-utils'
 import * as useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import * as useWallet from '@/hooks/wallets/useWallet'
-import * as mpcModule from '@/services/mpc/module'
 import WalletLogin from '../WalletLogin'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { type EIP1193Provider } from '@web3-onboard/common'
@@ -21,7 +20,6 @@ describe('WalletLogin', () => {
       label: 'MetaMask',
       provider: {} as unknown as EIP1193Provider,
     })
-    jest.spyOn(mpcModule, 'isSocialLoginWallet').mockReturnValue(true)
     jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn())
 
     const result = render(<WalletLogin onLogin={mockOnLogin} />)
