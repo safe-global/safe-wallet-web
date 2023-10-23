@@ -16,7 +16,7 @@ const WcIcon = ({ sessionCount, sessionIcon, isError, onClick }: WcIconProps): R
   const showIcon = sessionCount === 1 && !!sessionIcon
 
   return (
-    <ButtonBase disableRipple onClick={onClick} title="WalletConnect">
+    <ButtonBase onClick={onClick} title="WalletConnect" sx={{ p: 2 }}>
       <Badge
         variant={isError ? 'dot' : 'standard'}
         badgeContent={

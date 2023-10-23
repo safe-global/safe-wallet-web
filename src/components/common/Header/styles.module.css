@@ -11,7 +11,6 @@
 }
 
 .element {
-  padding: 0 var(--space-2);
   height: 100%;
   border-right: 1px solid var(--color-border-light);
   display: flex;
@@ -42,8 +41,6 @@
 }
 
 .networkSelector {
-  padding-right: 0;
-  padding-left: 0;
   border-right: none;
 }
 
@@ -64,10 +61,6 @@
 @media (max-width: 599.95px) {
   .menuButton {
     padding-left: var(--space-2);
-  }
-
-  .networkSelector {
-    padding-right: 0;
   }
 
   .hideMobile {

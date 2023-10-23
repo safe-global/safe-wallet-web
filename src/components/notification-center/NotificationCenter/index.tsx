@@ -90,7 +90,7 @@ const NotificationCenter = (): ReactElement => {
 
   return (
     <>
-      <ButtonBase disableRipple className={css.bell} onClick={handleClick}>
+      <ButtonBase className={css.bell} onClick={handleClick}>
         <UnreadBadge
           invisible={!hasUnread}
           anchorOrigin={{
