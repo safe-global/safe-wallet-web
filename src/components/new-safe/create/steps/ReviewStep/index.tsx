@@ -27,7 +27,7 @@ import { hasRemainingRelays } from '@/utils/relaying'
 import { BigNumber } from 'ethers'
 import { usePendingSafe } from '../StatusStep/usePendingSafe'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 import { SPONSOR_LOGOS } from '@/components/tx/SponsoredBy'
 import Image from 'next/image'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -43,7 +43,7 @@ export const NetworkFee = ({
 }) => {
   const wallet = useWallet()
 
-  const isSocialLogin = wallet?.label === ONBOARD_MPC_MODULE_LABEL
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   if (!isSocialLogin) {
     return (
@@ -168,7 +168,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     onSubmit(pendingSafe)
   }
 
-  const isSocialLogin = wallet?.label === ONBOARD_MPC_MODULE_LABEL
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
   const isDisabled = isWrongChain || (isSocialLogin && !willRelay)
 
   return (

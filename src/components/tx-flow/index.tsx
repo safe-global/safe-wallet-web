@@ -17,6 +17,7 @@ export const TxModalContext = createContext<TxModalContextType>({
   setFullWidth: noop,
 })
 
+// TODO: Rename TxModalProvider, setTxFlow, TxModalDialog to not contain Tx since it can be used for any type of modal as a global provider
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
   const [shouldWarn, setShouldWarn] = useState<boolean>(true)

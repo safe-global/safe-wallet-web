@@ -1,8 +1,8 @@
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import Track from '@/components/common/Track'
 import useWallet from '@/hooks/wallets/useWallet'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { Box, Button, Typography } from '@mui/material'
 import { EthHashInfo } from '@safe-global/safe-react-components'
 
@@ -17,7 +17,9 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
     }
   }
 
-  if (wallet !== null && wallet?.label !== ONBOARD_MPC_MODULE_LABEL) {
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+
+  if (wallet !== null && isSocialLogin) {
     return (
       <Box sx={{ width: '100%' }}>
         <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION} label={wallet.label}>

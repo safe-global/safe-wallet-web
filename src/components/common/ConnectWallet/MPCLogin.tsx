@@ -1,6 +1,6 @@
 import { MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
 import { Box, Button, SvgIcon, Typography } from '@mui/material'
-import { useContext, useMemo } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import { MpcWalletContext } from './MPCWalletProvider'
 import { PasswordRecovery } from './PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -13,9 +13,11 @@ import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/module'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { TxModalContext } from '@/components/tx-flow'
+import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -37,7 +39,9 @@ const useIsSocialWalletEnabled = () => {
 }
 
 const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
-  const { triggerLogin, userInfo, walletState, recoverFactorWithPassword } = useContext(MpcWalletContext)
+  const { triggerLogin, userInfo, walletState, setWalletState, recoverFactorWithPassword } =
+    useContext(MpcWalletContext)
+  const { setTxFlow } = useContext(TxModalContext)
 
   const wallet = useWallet()
   const loginPending = walletState === MPCWalletState.AUTHENTICATING
@@ -48,26 +52,40 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   const isDisabled = loginPending || !isMPCLoginEnabled
 
   const login = async () => {
-    const success = await triggerLogin()
+    const status = await triggerLogin()
 
-    if (success) {
+    if (status === COREKIT_STATUS.LOGGED_IN) {
       onLogin?.()
+    }
+
+    if (status === COREKIT_STATUS.REQUIRED_SHARE) {
+      setTxFlow(
+        <PasswordRecovery recoverFactorWithPassword={recoverPassword} onSuccess={onLogin} />,
+        () => setWalletState(MPCWalletState.NOT_INITIALIZED),
+        false,
+      )
     }
   }
 
-  const recoverPassword = async (password: string, storeDeviceFactor: boolean) => {
-    const success = await recoverFactorWithPassword(password, storeDeviceFactor)
+  const recoverPassword = useCallback(
+    async (password: string, storeDeviceFactor: boolean) => {
+      const success = await recoverFactorWithPassword(password, storeDeviceFactor)
 
-    if (success) {
-      onLogin?.()
-    }
-  }
+      if (success) {
+        onLogin?.()
+        setTxFlow(undefined)
+      }
+    },
+    [onLogin, recoverFactorWithPassword, setTxFlow],
+  )
+
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   return (
     <>
       <Box sx={{ width: '100%' }}>
-        {wallet?.label === ONBOARD_MPC_MODULE_LABEL && userInfo ? (
-          <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION} label={wallet.label}>
+        {isSocialLogin && userInfo ? (
+          <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
             <Button
               variant="outlined"
               sx={{ px: 2, py: 1, borderWidth: '1px !important' }}
@@ -125,10 +143,6 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
           />
           Currently only supported on {supportedChains.join(', ')}
         </Typography>
-      )}
-
-      {walletState === MPCWalletState.MANUAL_RECOVERY && (
-        <PasswordRecovery recoverFactorWithPassword={recoverPassword} />
       )}
     </>
   )

@@ -9,6 +9,7 @@ import { type EIP1193Provider } from '@web3-onboard/common'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
 import { MpcWalletProvider } from '../MPCWalletProvider'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 
 describe('MPCLogin', () => {
   beforeEach(() => {
@@ -62,7 +63,7 @@ describe('MPCLogin', () => {
       .spyOn(chains, 'useCurrentChain')
       .mockReturnValue({ chainId: '100', disabledWallets: [] } as unknown as ChainInfo)
     jest.spyOn(useWallet, 'default').mockReturnValue(null)
-    const mockTriggerLogin = jest.fn(() => true)
+    const mockTriggerLogin = jest.fn(() => COREKIT_STATUS.LOGGED_IN)
     jest.spyOn(useMPCWallet, 'useMPCWallet').mockReturnValue({
       triggerLogin: mockTriggerLogin,
     } as unknown as useMPCWallet.MPCWalletHook)
