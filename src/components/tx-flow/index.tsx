@@ -36,6 +36,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
       return noop
     })
     setFlow(undefined)
+    txDispatch(TxEvent.USER_QUIT, {})
   }, [setFlow, setOnClose])
 
   const handleShowWarning = useCallback(() => {
@@ -46,17 +47,14 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
     if (!shouldClose()) return
 
-    txDispatch(TxEvent.USER_QUIT, {})
-
     handleModalClose()
   }, [shouldWarn, handleModalClose])
 
   const setTxFlow = useCallback(
     (newTxFlow: TxModalContextType['txFlow'], onClose?: () => void, newShouldWarn?: boolean) => {
       // If flow is open and user opens a different one, show confirmation dialog if required
-      if (txFlow && newTxFlow && newTxFlow?.type !== SuccessScreen && shouldWarn) {
-        if (!shouldClose()) return
-
+      if (txFlow && newTxFlow && newTxFlow?.type !== SuccessScreen) {
+        if (shouldWarn && !shouldClose()) return
         txDispatch(TxEvent.USER_QUIT, {})
       }
 
