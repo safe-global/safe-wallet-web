@@ -63,7 +63,6 @@ export const dispatchTxProposal = async ({
     txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
       txId: proposedTx.txId,
       signerAddress: txId ? sender : undefined,
-      humanDescription: proposedTx?.txInfo?.humanDescription,
     })
   }
 
@@ -79,7 +78,6 @@ export const dispatchTxSigning = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   txId?: string,
-  humanDescription?: string,
 ): Promise<SafeTransaction> => {
   const sdk = await getSafeSDKWithSigner(onboard, chainId)
 
@@ -90,7 +88,6 @@ export const dispatchTxSigning = async (
     txDispatch(TxEvent.SIGN_FAILED, {
       txId,
       error: asError(error),
-      humanDescription,
     })
     throw error
   }
@@ -108,11 +105,10 @@ export const dispatchOnChainSigning = async (
   txId: string,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
-  humanDescription?: string,
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
-  const eventParams = { txId, humanDescription }
+  const eventParams = { txId }
 
   try {
     // With the unchecked signer, the contract call resolves once the tx
@@ -140,10 +136,9 @@ export const dispatchTxExecution = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
-  humanDescription?: string,
 ): Promise<string> => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
-  const eventParams = { txId, humanDescription }
+  const eventParams = { txId }
 
   // Execute the tx
   let result: TransactionResult | undefined
@@ -328,7 +323,6 @@ export const dispatchTxRelay = async (
   safe: SafeInfo,
   txId: string,
   gasLimit?: string | number,
-  humanDescription?: string,
 ) => {
   const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(safe)
 
@@ -357,9 +351,9 @@ export const dispatchTxRelay = async (
     txDispatch(TxEvent.RELAYING, { taskId, txId })
 
     // Monitor relay tx
-    waitForRelayedTx(taskId, [txId], safe.address.value, humanDescription)
+    waitForRelayedTx(taskId, [txId], safe.address.value)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: asError(error), humanDescription })
+    txDispatch(TxEvent.FAILED, { txId, error: asError(error) })
     throw error
   }
 }

@@ -26,8 +26,6 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
-import { useAppSelector } from '@/store'
-import { selectQueuedTransactionById } from '@/store/txQueueSlice'
 
 const ExecuteForm = ({
   safeTx,
@@ -51,8 +49,6 @@ const ExecuteForm = ({
   const [relays] = useRelaysBySafe()
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
-
-  const tx = useAppSelector((state) => selectQueuedTransactionById(state, txId))
 
   // Check that the transaction is executable
   const isExecutionLoop = useIsExecutionLoop()
@@ -90,7 +86,7 @@ const ExecuteForm = ({
 
     let executedTxId: string
     try {
-      executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay, tx)
+      executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._804, err)
