@@ -26,6 +26,12 @@ import { DeviceType } from './types'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
 
+enum GA_USER_PROPERTIES {
+  WALLET_LABEL = 'walletLabel',
+}
+
+const WALLET_LABEL_NONE = 'NONE'
+
 const useGtm = () => {
   const chainId = useChainId()
   const cookies = useAppSelector(selectCookies)
@@ -83,7 +89,7 @@ const useGtm = () => {
   }, [router.pathname])
 
   useEffect(() => {
-    gtmSetUserProperty('walletLabel', walletLabel ?? 'NONE')
+    gtmSetUserProperty(GA_USER_PROPERTIES.WALLET_LABEL, walletLabel ?? WALLET_LABEL_NONE)
   }, [walletLabel])
 
   // Track meta events on app load
