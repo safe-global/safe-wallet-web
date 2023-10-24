@@ -40,6 +40,7 @@ import { TxModalProvider } from '@/components/tx-flow'
 import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
+import WalletProvider from '@/components/common/WalletProvider'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -78,7 +79,9 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <TxModalProvider>{children}</TxModalProvider>
+            <WalletProvider>
+              <TxModalProvider>{children}</TxModalProvider>
+            </WalletProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}

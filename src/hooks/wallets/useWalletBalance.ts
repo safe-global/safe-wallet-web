@@ -1,9 +1,9 @@
-import useAsync from '../useAsync'
+import useAsync, { type AsyncResult } from '../useAsync'
 import useWallet from './useWallet'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type BigNumber } from 'ethers'
 
-const useWalletBalance = () => {
+const useWalletBalance = (): AsyncResult<BigNumber | undefined> => {
   const web3ReadOnly = useWeb3ReadOnly()
   const wallet = useWallet()
 
