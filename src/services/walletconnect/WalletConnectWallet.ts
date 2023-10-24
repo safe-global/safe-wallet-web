@@ -11,6 +11,8 @@ import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
 import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
 import { invariant } from '@/utils/helpers'
 import { getEip155ChainId, stripEip155Prefix } from './utils'
+import { logError } from '../exceptions'
+import ErrorCodes from '../exceptions/ErrorCodes'
 
 const SESSION_ADD_EVENT = 'session_add' as Web3WalletTypes.Event // Workaround: WalletConnect doesn't emit session_add event
 const SESSION_REJECT_EVENT = 'session_reject' as Web3WalletTypes.Event // Workaround: WalletConnect doesn't emit session_reject event
@@ -111,6 +113,19 @@ class WalletConnectWallet {
     })
   }
 
+  /**
+   * Switch chain and catch errors.
+   * Just log the errors because they happen all the time.
+   */
+  private async switchChain(topic: string, chainId: string) {
+    try {
+      // Align the session with the current chainId
+      return await this.chainChanged(topic, chainId)
+    } catch (e) {
+      logError(ErrorCodes._910, e)
+    }
+  }
+
   public async approveSession(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
     assertWeb3Wallet(this.web3Wallet)
 
@@ -122,10 +137,7 @@ class WalletConnectWallet {
       namespaces,
     })
 
-    try {
-      // Align the session with the current chainId
-      await this.chainChanged(session.topic, currentChainId)
-    } catch {}
+    await this.switchChain(session.topic, currentChainId)
 
     // Workaround: WalletConnect doesn't have a session_add event
     this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)
@@ -168,7 +180,7 @@ class WalletConnectWallet {
     }
 
     // Switch to the new chain
-    await this.chainChanged(session.topic, chainId)
+    await this.switchChain(session.topic, chainId)
 
     // Switch to the new Safe
     await this.accountsChanged(session.topic, chainId, safeAddress)
