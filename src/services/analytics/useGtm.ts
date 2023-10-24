@@ -13,6 +13,7 @@ import {
   gtmDisableCookies,
   gtmSetDeviceType,
   gtmSetSafeAddress,
+  gtmSetUserProperty,
 } from '@/services/analytics/gtm'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
@@ -23,6 +24,7 @@ import useMetaEvents from './useMetaEvents'
 import { useMediaQuery } from '@mui/material'
 import { DeviceType } from './types'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const useGtm = () => {
   const chainId = useChainId()
@@ -35,6 +37,7 @@ const useGtm = () => {
   const isTablet = useMediaQuery(theme.breakpoints.down('md'))
   const deviceType = isMobile ? DeviceType.MOBILE : isTablet ? DeviceType.TABLET : DeviceType.DESKTOP
   const safeAddress = useSafeAddress()
+  const walletLabel = useWallet()?.label
 
   // Initialize GTM
   useEffect(() => {
@@ -78,6 +81,10 @@ const useGtm = () => {
 
     gtmTrackPageview(router.pathname)
   }, [router.pathname])
+
+  useEffect(() => {
+    gtmSetUserProperty('walletLabel', walletLabel ?? 'NONE')
+  }, [walletLabel])
 
   // Track meta events on app load
   useMetaEvents()

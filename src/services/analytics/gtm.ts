@@ -75,6 +75,7 @@ export const gtmInit = (): void => {
 
 export const gtmEnableCookies = TagManager.enableCookies
 export const gtmDisableCookies = TagManager.disableCookies
+export const gtmSetUserProperty = TagManager.setUserProperty
 
 type GtmEvent = {
   event: EventType
