@@ -251,10 +251,16 @@ export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransactio
     )}`
 
     // Decode operation, to, value, dataLength
-    const [, txTo, txValue, txDataBytesLength] = ethers.utils.defaultAbiCoder.decode(
-      ['uint8', 'address', 'uint256', 'uint256'],
-      ethers.utils.hexZeroPad(txDataEncoded, 32 * 4),
-    )
+    let txTo, txValue, txDataBytesLength
+    try {
+      ;[, txTo, txValue, txDataBytesLength] = ethers.utils.defaultAbiCoder.decode(
+        ['uint8', 'address', 'uint256', 'uint256'],
+        ethers.utils.hexZeroPad(txDataEncoded, 32 * 4),
+      )
+    } catch (e) {
+      logError(Errors._809, e)
+      continue
+    }
 
     // Each byte is represented by two characters
     const dataLength = Number(txDataBytesLength) * 2

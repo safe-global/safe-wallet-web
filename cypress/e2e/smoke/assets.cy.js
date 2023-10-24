@@ -17,15 +17,15 @@ describe('Assets tests', () => {
     balances.acceptSpamWarning()
   })
 
-  it('Verify that the token tab is selected by default and the table is visible', () => {
+  it('Verify that the token tab is selected by default and the table is visible [C56039]', () => {
     balances.verifyTokensTabIsSelected('true')
   })
 
-  it('Verify that the native token is visible', () => {
+  it('Verify that the native token is visible [C56040]', () => {
     balances.verifyTokenIsPresent(constants.tokenNames.sepoliaEther)
   })
 
-  it('Verify that non-native tokens are present and have balance', () => {
+  it('Verify that non-native tokens are present and have balance [C56041]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.verifyBalance(balances.currencyDaiCap, TOKEN_AMOUNT_COLUMN, balances.currencyDaiAlttext)
     balances.verifyTokenBalanceFormat(
@@ -82,7 +82,7 @@ describe('Assets tests', () => {
     )
   })
 
-  it('Verify that every token except the native token has a "go to blockexplorer link"', () => {
+  it('Verify that every token except the native token has a "go to blockexplorer link" [C56042]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     // Specifying true for Sepolia. Will delete the flag once completely migrate to Sepolia
     balances.verifyAssetNameHasExplorerLink(balances.currencyUSDC, ASSET_NAME_COLUMN, true)
@@ -94,7 +94,7 @@ describe('Assets tests', () => {
     balances.verifyAssetExplorerLinkNotAvailable(constants.tokenNames.sepoliaEther, ASSET_NAME_COLUMN)
   })
 
-  it('Verify that the default currency and the changing effects', () => {
+  it('Verify the default Fiat currency and the effects after changing it [C56043]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.verifyFirstRowDoesNotContainCurrency(balances.currencyEUR, FIAT_AMOUNT_COLUMN)
     balances.verifyFirstRowContainsCurrency(balances.currencyUSD, FIAT_AMOUNT_COLUMN)
@@ -104,13 +104,13 @@ describe('Assets tests', () => {
     balances.verifyFirstRowContainsCurrency(balances.currencyEUR, FIAT_AMOUNT_COLUMN)
   })
 
-  it('Verify that a tool tip is shown pointing to "Token list" dropdown', () => {
+  it('Verify that a tool tip is shown pointing to "Token list" dropdown [C56044]', () => {
     //Spam warning message is removed in beforeEach hook
     cy.reload()
     balances.verifySpamWarningNotdisplayed()
   })
 
-  it('Verify that Token list dropdown down options show/hide spam tokens', () => {
+  it('Verify that Token list dropdown down options show/hide spam tokens [C56045]', () => {
     let spamTokens = [
       balances.currencyAave,
       balances.currencyTestTokenA,
@@ -126,20 +126,20 @@ describe('Assets tests', () => {
     main.verifyValuesExist(balances.tokenListTable, spamTokens)
   })
 
-  it('Verify that "Hide token" button is present and opens the "Hide tokens menu"', () => {
+  it('Verify that "Hide token" button is present and opens the "Hide tokens menu" [C56046]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.openHideTokenMenu()
     balances.verifyEachRowHasCheckbox()
   })
 
-  it('Verify that checking the checkboxes increases the token selected counter', () => {
+  it('Verify that checking the checkboxes increases the token selected counter [C56047]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.openHideTokenMenu()
     balances.clickOnTokenCheckbox(balances.currencyLink)
     balances.checkTokenCounter(1)
   })
 
-  it('Verify that selecting tokens and saving hides them from the table', () => {
+  it('Verify that selecting tokens and saving hides them from the table [C56048]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.openHideTokenMenu()
     balances.clickOnTokenCheckbox(balances.currencyLink)
@@ -147,7 +147,7 @@ describe('Assets tests', () => {
     main.verifyValuesDoNotExist(balances.tokenListTable, [balances.currencyLink])
   })
 
-  it('Verify that Cancel closes the menu and does not change the table status', () => {
+  it('Verify that Cancel closes the menu and does not change the table status [C56049]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.openHideTokenMenu()
     balances.clickOnTokenCheckbox(balances.currencyLink)
@@ -161,7 +161,7 @@ describe('Assets tests', () => {
     main.verifyValuesDoNotExist(balances.tokenListTable, [balances.currencyLink, balances.currencyAave])
   })
 
-  it('Verify that Deselect All unchecks all tokens from the list', () => {
+  it('Verify that Deselect All unchecks all tokens from the list [C56050]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.openHideTokenMenu()
     balances.clickOnTokenCheckbox(balances.currencyLink)
@@ -170,7 +170,7 @@ describe('Assets tests', () => {
     balances.verifyEachRowHasCheckbox(constants.checkboxStates.unchecked)
   })
 
-  it('Verify the Hidden tokens counter works for spam tokens', () => {
+  it('Verify the Hidden tokens counter works for spam tokens [C56051]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.openHideTokenMenu()
     balances.clickOnTokenCheckbox(balances.currencyLink)
@@ -178,19 +178,19 @@ describe('Assets tests', () => {
     balances.checkHiddenTokenBtnCounter(1)
   })
 
-  it('Verify the Hidden tokens counter works for native tokens', () => {
+  it('Verify the Hidden tokens counter works for native tokens [C56056]', () => {
     balances.openHideTokenMenu()
     balances.clickOnTokenCheckbox(constants.tokenNames.sepoliaEther)
     balances.saveHiddenTokenSelection()
     balances.checkHiddenTokenBtnCounter(1)
   })
 
-  it('Verify you can hide tokens from the eye icon in the table rows', () => {
+  it('Verify you can hide tokens from the eye icon in the table rows [C56053]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.hideAsset(balances.currencyLink)
   })
 
-  it('Verify the sorting of "Assets" and "Balance" in the table', () => {
+  it('Verify the sorting of "Assets" and "Balance" in the table [C56052]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.verifyTableRows(7)
     balances.clickOnTokenNameSortBtn()
@@ -203,12 +203,12 @@ describe('Assets tests', () => {
     balances.verifyTokenBalanceOrder('descending')
   })
 
-  it('Verify that clicking the button with an owner opens the Send funds form ', () => {
+  it('Verify that clicking the button with an owner opens the Send funds form [C56055]', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.clickOnSendBtn(0)
   })
 
-  it('Verify that the Send button shows when hovering a row', () => {
+  it('Verify that the Send button shows when hovering a row [C56054]', () => {
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
     balances.selectTokenList(balances.tokenListOptions.allTokens)

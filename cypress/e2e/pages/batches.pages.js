@@ -1,3 +1,5 @@
+import * as constants from '../../support/constants'
+
 const tokenSelectorText = 'G(ö|oe)rli Ether'
 const noLaterString = 'No, later'
 const yesExecuteString = 'Yes, execute'
@@ -39,7 +41,7 @@ function fillTransactionData(EOA, amount) {
   cy.get(recipientInput).type(EOA, { delay: 1 })
   // Click on the Token selector
   cy.get(tokenAddressInput).prev().click()
-  cy.get(listBox).contains(new RegExp(tokenSelectorText)).click()
+  cy.get(listBox).contains(constants.tokenNames.sepoliaEther).click()
   cy.get(amountInput).type(amount)
   cy.contains(nextBtn).click()
 }
@@ -59,7 +61,6 @@ function executeTransaction() {
 }
 
 function addToBatchButton() {
-  cy.contains(noLaterString, { timeout: 4000 }).click()
   cy.contains(addToBatchBtn).should('be.visible').and('not.be.disabled').click()
 }
 
