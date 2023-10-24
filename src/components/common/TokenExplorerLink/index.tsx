@@ -1,8 +1,8 @@
 import { type ReactElement } from 'react'
-import { ExplorerButton } from '@safe-global/safe-react-components'
-
+import ExplorerButton from '@/components/common/ExplorerButton'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getBlockExplorerLink } from '@/utils/chains'
+import { Typography } from '@mui/material'
 
 const ExplorerLink = ({ address }: { address: string }): ReactElement | null => {
   const currentChain = useCurrentChain()
@@ -10,7 +10,11 @@ const ExplorerLink = ({ address }: { address: string }): ReactElement | null => 
 
   if (!link) return null
 
-  return <ExplorerButton href={link.href} title={link.title} />
+  return (
+    <Typography component="span" color="border.main">
+      <ExplorerButton href={link.href} title={link.title} />
+    </Typography>
+  )
 }
 
 export default ExplorerLink
