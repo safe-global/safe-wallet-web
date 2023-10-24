@@ -21,7 +21,7 @@ const BatchIndicator = ({ onClick }: { onClick?: () => void }) => {
               horizontal: 'right',
             }}
           >
-            <SvgIcon component={BatchIcon} inheritViewBox fontSize="small" />
+            <SvgIcon component={BatchIcon} inheritViewBox fontSize="medium" />
           </Badge>
         </ButtonBase>
       </Track>

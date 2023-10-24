@@ -33,7 +33,7 @@ const WcIcon = ({ sessionCount, sessionIcon, isError, onClick }: WcIconProps): R
             horizontal: 'right',
           }}
         >
-          <SvgIcon component={WalletConnectIcon} inheritViewBox fontSize="small" />
+          <SvgIcon component={WalletConnectIcon} inheritViewBox fontSize="medium" />
         </Badge>
       </ButtonBase>
     </Track>
