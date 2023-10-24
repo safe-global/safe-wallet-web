@@ -1,7 +1,6 @@
 import { type ReactElement } from 'react'
 import { Badge, ButtonBase, SvgIcon } from '@mui/material'
 import WalletConnectIcon from '@/public/images/common/walletconnect.svg'
-import { useDarkMode } from '@/hooks/useDarkMode'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 import Track from '@/components/common/Track'
@@ -14,7 +13,6 @@ type WcIconProps = {
 }
 
 const WcIcon = ({ sessionCount, sessionIcon, isError, onClick }: WcIconProps): ReactElement => {
-  const isDarkMode = useDarkMode()
   const showIcon = sessionCount === 1 && !!sessionIcon
 
   return (
@@ -29,7 +27,7 @@ const WcIcon = ({ sessionCount, sessionIcon, isError, onClick }: WcIconProps): R
               sessionCount
             )
           }
-          color={isError ? 'error' : showIcon ? undefined : isDarkMode ? 'primary' : 'secondary'}
+          color={isError ? 'error' : showIcon ? undefined : 'secondary'}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'right',

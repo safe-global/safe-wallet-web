@@ -93,6 +93,7 @@ const NotificationCenter = (): ReactElement => {
       <ButtonBase className={css.bell} onClick={handleClick}>
         <UnreadBadge
           invisible={!hasUnread}
+          count={unreadCount}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'right',

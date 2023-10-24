@@ -4,11 +4,9 @@ import { useDraftBatch } from '@/hooks/useDraftBatch'
 import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
 import BatchTooltip from './BatchTooltip'
-import { useDarkMode } from '@/hooks/useDarkMode'
 
 const BatchIndicator = ({ onClick }: { onClick?: () => void }) => {
   const { length } = useDraftBatch()
-  const isDarkMode = useDarkMode()
 
   return (
     <BatchTooltip>
@@ -17,7 +15,7 @@ const BatchIndicator = ({ onClick }: { onClick?: () => void }) => {
           <Badge
             variant="standard"
             badgeContent={length}
-            color={isDarkMode ? 'primary' : 'secondary'}
+            color={'secondary'}
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'right',
