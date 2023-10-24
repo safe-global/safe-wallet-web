@@ -66,17 +66,17 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         </div>
       )}
 
-      {safeAddress && (
-        <div className={classnames(css.element, css.hideMobile)}>
-          <BatchIndicator onClick={handleBatchToggle} />
-        </div>
-      )}
-
       <div className={css.element}>
         <PushNotificationsBanner>
           <NotificationCenter />
         </PushNotificationsBanner>
       </div>
+
+      {safeAddress && (
+        <div className={classnames(css.element, css.hideMobile)}>
+          <BatchIndicator onClick={handleBatchToggle} />
+        </div>
+      )}
 
       <div className={classnames(css.element, css.hideMobile)}>
         <WalletConnectUi />
