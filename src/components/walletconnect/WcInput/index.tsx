@@ -4,6 +4,8 @@ import { WalletConnectContext } from '@/services/walletconnect/WalletConnectCont
 import { asError } from '@/services/exceptions/utils'
 import { getClipboard, isClipboardSupported } from '@/utils/clipboard'
 import { isPairingUri } from '@/services/walletconnect/utils'
+import Track from '@/components/common/Track'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 const WcInput = ({ uri }: { uri: string }) => {
   const { walletConnect } = useContext(WalletConnectContext)
@@ -59,9 +61,11 @@ const WcInput = ({ uri }: { uri: string }) => {
       InputProps={{
         endAdornment: isClipboardSupported() ? undefined : (
           <InputAdornment position="end">
-            <Button variant="contained" onClick={onPaste} sx={{ py: 1 }} disabled={connecting}>
-              Paste
-            </Button>
+            <Track {...WALLETCONNECT_EVENTS.PASTE_CLICK}>
+              <Button variant="contained" onClick={onPaste} sx={{ py: 1 }} disabled={connecting}>
+                Paste
+              </Button>
+            </Track>
           </InputAdornment>
         ),
       }}

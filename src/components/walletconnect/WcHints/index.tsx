@@ -12,13 +12,15 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 
 import { useCurrentChain } from '@/hooks/useChains'
 import Question from '@/public/images/common/question.svg'
 
 import css from './styles.module.css'
+import { trackEvent } from '@/services/analytics'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 const HintAccordion = ({
   title,
@@ -82,11 +84,17 @@ const WcHints = (): ReactElement => {
     setExpandedAccordion((prev) => {
       return prev === accordion ? null : accordion
     })
+
+    trackEvent(WALLETCONNECT_EVENTS.HINTS_EXPAND)
   }
 
   if (chain?.chainName) {
     InteractionSteps[1] = InteractionSteps[1].replace(/%%chain%%/, chain?.chainName)
   }
+
+  useEffect(() => {
+    trackEvent(WALLETCONNECT_EVENTS.HINTS_SHOW)
+  }, [])
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>

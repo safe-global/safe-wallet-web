@@ -8,6 +8,8 @@ import WcConnectionForm from '../WcConnectionForm'
 import WcErrorMessage from '../WcErrorMessage'
 import WcProposalForm from '../WcProposalForm'
 import WcConnectionState from '../WcConnectionState'
+import { trackEvent } from '@/services/analytics'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 type WcSessionManagerProps = {
   sessions: SessionTypes.Struct[]
@@ -27,6 +29,9 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   const onApprove = useCallback(async () => {
     if (!walletConnect || !chainId || !safeAddress || !proposal) return
 
+    const label = proposal?.params.proposer.metadata.url
+    trackEvent({ ...WALLETCONNECT_EVENTS.APPROVE_CLICK, label })
+
     try {
       await walletConnect.approveSession(proposal, chainId, safeAddress)
     } catch (e) {
@@ -34,12 +39,17 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
       return
     }
 
+    trackEvent({ ...WALLETCONNECT_EVENTS.CONNECTED, label })
+
     setProposal(undefined)
   }, [walletConnect, setError, chainId, safeAddress, proposal])
 
   // On session reject
   const onReject = useCallback(async () => {
     if (!walletConnect || !proposal) return
+
+    const label = proposal?.params.proposer.metadata.url
+    trackEvent({ ...WALLETCONNECT_EVENTS.REJECT_CLICK, label })
 
     try {
       await walletConnect.rejectSession(proposal)
@@ -54,6 +64,9 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   // On session disconnect
   const onDisconnect = useCallback(
     async (session: SessionTypes.Struct) => {
+      const label = session.peer.metadata.url
+      trackEvent({ ...WALLETCONNECT_EVENTS.DISCONNECT_CLICK, label })
+
       if (!walletConnect) return
       try {
         await walletConnect.disconnectSession(session)
