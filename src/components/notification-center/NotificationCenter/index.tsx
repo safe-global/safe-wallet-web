@@ -90,9 +90,10 @@ const NotificationCenter = (): ReactElement => {
 
   return (
     <>
-      <ButtonBase disableRipple className={css.bell} onClick={handleClick}>
+      <ButtonBase className={css.bell} onClick={handleClick}>
         <UnreadBadge
           invisible={!hasUnread}
+          count={unreadCount}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'right',
@@ -114,7 +115,11 @@ const NotificationCenter = (): ReactElement => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        sx={{ mt: 1 }}
+        sx={{
+          '& > .MuiPaper-root': {
+            top: 'var(--header-height) !important',
+          },
+        }}
       >
         <Paper className={css.popoverContainer}>
           <div className={css.popoverHeader}>

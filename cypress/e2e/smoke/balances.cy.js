@@ -2,137 +2,123 @@ import * as constants from '../../support/constants'
 import * as balances from '../pages/balances.pages'
 import * as main from '../../e2e/pages/main.page'
 
-const ASSETS_LENGTH = 8
+const ASSETS_LENGTH = 7
 const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
 const FIAT_AMOUNT_COLUMN = 2
 
-describe('Assets > Coins', () => {
+describe('Balance tests', () => {
   // Fiat balance regex
   const fiatRegex = balances.fiatRegex
 
   before(() => {
     cy.clearLocalStorage()
-    // Open the Safe used for testing
-    cy.visit(constants.BALANCE_URL + constants.GOERLI_TEST_SAFE)
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
-    // Table is loaded
-    cy.contains('Görli Ether')
-
-    cy.contains('button', 'Got it').click()
-
+    balances.acceptSpamWarning()
+    cy.contains('Assets')
     cy.get(balances.balanceSingleRow).should('have.length.lessThan', ASSETS_LENGTH)
-    cy.contains('div', 'Default tokens').click()
-    cy.wait(100)
-    cy.contains('div', 'All tokens').click()
+    balances.selectTokenList(balances.tokenListOptions.allTokens)
     cy.get(balances.balanceSingleRow).should('have.length', ASSETS_LENGTH)
   })
 
-  describe('should have different tokens', () => {
-    it('should have Dai', () => {
-      balances.verityTokenAltImageIsVisible(balances.currencyDai, balances.currencyDaiAlttext)
-      balances.verifyAssetNameHasExplorerLink(balances.currencyDai, ASSET_NAME_COLUMN)
-      balances.verifyBalance(balances.currencyDai, TOKEN_AMOUNT_COLUMN, balances.currencyDaiAlttext)
-    })
-
-    it('should have Wrapped Ether', () => {
-      balances.verityTokenAltImageIsVisible(balances.currencyEther, balances.currencyEtherAlttext)
-      balances.verifyAssetNameHasExplorerLink(balances.currencyEther, ASSET_NAME_COLUMN)
-      balances.verifyBalance(balances.currencyEther, TOKEN_AMOUNT_COLUMN, balances.currencyEtherAlttext)
-    })
-
-    it('should have USD Coin', () => {
-      balances.verityTokenAltImageIsVisible(balances.currencyUSDCoin, balances.currencyUSDAlttext)
-      balances.verifyAssetNameHasExplorerLink(balances.currencyUSDCoin, ASSET_NAME_COLUMN)
-      balances.verifyBalance(balances.currencyUSDCoin, TOKEN_AMOUNT_COLUMN, balances.currencyUSDAlttext)
-    })
+  it('Verify that token is present: Dai [C56074]', () => {
+    balances.verityTokenAltImageIsVisible(balances.currencyDaiCap, balances.currencyDaiAlttext)
+    balances.verifyAssetNameHasExplorerLink(balances.currencyDaiCap, ASSET_NAME_COLUMN)
+    balances.verifyBalance(balances.currencyDaiCap, TOKEN_AMOUNT_COLUMN, balances.currencyDaiAlttext)
   })
 
-  describe('values should be formatted as per locale', () => {
-    it('should have Token and Fiat balances formated as per specification', () => {
-      balances.verifyTokenBalanceFormat(
-        balances.currencyDai,
-        balances.currentcyDaiFormat,
-        TOKEN_AMOUNT_COLUMN,
-        FIAT_AMOUNT_COLUMN,
-        fiatRegex,
-      )
-
-      balances.verifyTokenBalanceFormat(
-        balances.currencyEther,
-        balances.currentcyEtherFormat,
-        TOKEN_AMOUNT_COLUMN,
-        FIAT_AMOUNT_COLUMN,
-        fiatRegex,
-      )
-
-      balances.verifyTokenBalanceFormat(
-        balances.currencyGörliEther,
-        balances.currentcyGörliEtherFormat,
-        TOKEN_AMOUNT_COLUMN,
-        FIAT_AMOUNT_COLUMN,
-        fiatRegex,
-      )
-
-      balances.verifyTokenBalanceFormat(
-        balances.currencyUniswap,
-        balances.currentcyUniswapFormat,
-        TOKEN_AMOUNT_COLUMN,
-        FIAT_AMOUNT_COLUMN,
-        fiatRegex,
-      )
-
-      balances.verifyTokenBalanceFormat(
-        balances.currencyUSDCoin,
-        balances.currentcyUSDFormat,
-        TOKEN_AMOUNT_COLUMN,
-        FIAT_AMOUNT_COLUMN,
-        fiatRegex,
-      )
-
-      balances.verifyTokenBalanceFormat(
-        balances.currencyGnosis,
-        balances.currentcyGnosisFormat,
-        TOKEN_AMOUNT_COLUMN,
-        FIAT_AMOUNT_COLUMN,
-        fiatRegex,
-      )
-
-      balances.verifyTokenBalanceFormat(
-        balances.currencyOx,
-        balances.currentcyOxFormat,
-        TOKEN_AMOUNT_COLUMN,
-        FIAT_AMOUNT_COLUMN,
-        fiatRegex,
-      )
-    })
+  it('Verify that token is present: AAVE [C56075]', () => {
+    balances.verityTokenAltImageIsVisible(balances.currencyAave, balances.currencyAaveAlttext)
+    balances.verifyAssetNameHasExplorerLink(balances.currencyAave, ASSET_NAME_COLUMN)
+    balances.verifyBalance(balances.currencyAave, TOKEN_AMOUNT_COLUMN, balances.currencyAaveAlttext)
   })
 
-  describe('fiat currency can be changed', () => {
-    it('should have USD as default currency', () => {
-      balances.verifyFirstRowDoesNotContainCurrency(balances.currencyEUR, FIAT_AMOUNT_COLUMN)
-      balances.verifyFirstRowContainsCurrency(balances.currencyUSD, FIAT_AMOUNT_COLUMN)
-    })
-
-    it('should allow changing the currency to EUR', () => {
-      balances.clickOnCurrencyDropdown()
-      balances.selectCurrency(balances.currencyEUR)
-      balances.verifyFirstRowDoesNotContainCurrency(balances.currencyUSD, FIAT_AMOUNT_COLUMN)
-      balances.verifyFirstRowContainsCurrency(balances.currencyEUR, FIAT_AMOUNT_COLUMN)
-    })
+  it('Verify that token is present: LINK [C56076]', () => {
+    balances.verityTokenAltImageIsVisible(balances.currencyLink, balances.currencyLinkAlttext)
+    balances.verifyAssetNameHasExplorerLink(balances.currencyLink, ASSET_NAME_COLUMN)
+    balances.verifyBalance(balances.currencyLink, TOKEN_AMOUNT_COLUMN, balances.currencyLinkAlttext)
   })
 
-  describe('tokens can be manually hidden', () => {
-    it('hide single token', () => {
-      balances.hideAsset(balances.currencyDai)
-    })
+  it('Verify Token and Fiat balances formatted as per specification [C56077]', () => {
+    balances.verifyTokenBalanceFormat(
+      balances.currencyDaiCap,
+      balances.currentcyDaiFormat,
+      TOKEN_AMOUNT_COLUMN,
+      FIAT_AMOUNT_COLUMN,
+      fiatRegex,
+    )
 
-    it('unhide hidden token', () => {
-      balances.openHideTokenMenu()
-      balances.clickOnTokenCheckbox(balances.currencyDai)
-      balances.saveHiddenTokenSelection()
-      balances.verifyTokenIsVisible(balances.currencyDai)
-      balances.verifyMenuButtonLabelIsDefault()
-    })
+    balances.verifyTokenBalanceFormat(
+      balances.currencyAave,
+      balances.currentcyAaveFormat,
+      TOKEN_AMOUNT_COLUMN,
+      FIAT_AMOUNT_COLUMN,
+      fiatRegex,
+    )
+
+    balances.verifyTokenBalanceFormat(
+      balances.currencyLink,
+      balances.currentcyLinkFormat,
+      TOKEN_AMOUNT_COLUMN,
+      FIAT_AMOUNT_COLUMN,
+      fiatRegex,
+    )
+
+    balances.verifyTokenBalanceFormat(
+      balances.currencyTestTokenA,
+      balances.currentcyTestTokenAFormat,
+      TOKEN_AMOUNT_COLUMN,
+      FIAT_AMOUNT_COLUMN,
+      fiatRegex,
+    )
+
+    balances.verifyTokenBalanceFormat(
+      balances.currencyTestTokenB,
+      balances.currentcyTestTokenBFormat,
+      TOKEN_AMOUNT_COLUMN,
+      FIAT_AMOUNT_COLUMN,
+      fiatRegex,
+    )
+
+    balances.verifyTokenBalanceFormat(
+      balances.currencyUSDC,
+      balances.currentcyTestUSDCFormat,
+      TOKEN_AMOUNT_COLUMN,
+      FIAT_AMOUNT_COLUMN,
+      fiatRegex,
+    )
+
+    balances.verifyTokenBalanceFormat(
+      constants.tokenNames.sepoliaEther,
+      balances.currentcySepoliaFormat,
+      TOKEN_AMOUNT_COLUMN,
+      FIAT_AMOUNT_COLUMN,
+      fiatRegex,
+    )
+  })
+
+  it('Verify USD is default currency [C56078]', () => {
+    balances.verifyFirstRowDoesNotContainCurrency(balances.currencyEUR, FIAT_AMOUNT_COLUMN)
+    balances.verifyFirstRowContainsCurrency(balances.currencyUSD, FIAT_AMOUNT_COLUMN)
+  })
+
+  it('Verify currency can be changed to EUR [C56079]', () => {
+    balances.clickOnCurrencyDropdown()
+    balances.selectCurrency(balances.currencyEUR)
+    balances.verifyFirstRowDoesNotContainCurrency(balances.currencyUSD, FIAT_AMOUNT_COLUMN)
+    balances.verifyFirstRowContainsCurrency(balances.currencyEUR, FIAT_AMOUNT_COLUMN)
+  })
+
+  it('Verify a token can be hidden [C56080]', () => {
+    balances.hideAsset(balances.currencyDaiCap)
+  })
+
+  it('Verify a token can be unhidden [C56081]', () => {
+    balances.openHideTokenMenu()
+    balances.clickOnTokenCheckbox(balances.currencyDaiCap)
+    balances.saveHiddenTokenSelection()
+    balances.verifyTokenIsVisible(balances.currencyDaiCap)
+    balances.verifyMenuButtonLabelIsDefault()
   })
 })

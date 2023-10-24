@@ -1,3 +1,4 @@
+import * as constants from '../../support/constants'
 import { format } from 'date-fns'
 const path = require('path')
 
@@ -33,8 +34,8 @@ export function uploadFile(filePath) {
 
 export function verifyImportModalData() {
   //verifies that the modal says the amount of chains/addressbook values it uploaded for file ../fixtures/data_import.json
-  cy.contains('Added Safe Accounts on 3 chains').should('be.visible')
-  cy.contains('Address book for 3 chains').should('be.visible')
+  cy.contains('Added Safe Accounts on 4 chains').should('be.visible')
+  cy.contains('Address book for 4 chains').should('be.visible')
   cy.contains('Settings').should('be.visible')
   cy.contains('Bookmarked Safe Apps').should('be.visible')
 }
@@ -55,10 +56,8 @@ export function clickOnAddressBookBtn() {
 
 export function verifyImportedAddressBookData() {
   //Verifies imported owners in the Address book for file ../fixtures/data_import.json
-  cy.get('tbody tr:nth-child(1) td:nth-child(1)').contains('test1')
-  cy.get('tbody tr:nth-child(1) td:nth-child(2)').contains('0x61a0c717d18232711bC788F19C9Cd56a43cc8872')
-  cy.get('tbody tr:nth-child(2) td:nth-child(1)').contains('test2')
-  cy.get('tbody tr:nth-child(2) td:nth-child(2)').contains('0x7724b234c9099C205F03b458944942bcEBA13408')
+  cy.get('tbody tr:nth-child(1) td:nth-child(1)').contains(constants.SEPOLIA_CSV_ENTRY.name)
+  cy.get('tbody tr:nth-child(1) td:nth-child(2)').contains(constants.SEPOLIA_CSV_ENTRY.address.substring(4))
 }
 
 export function clickOnAppsBtn() {

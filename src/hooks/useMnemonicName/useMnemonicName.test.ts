@@ -1,11 +1,12 @@
 import { getRandomName, useMnemonicName, useMnemonicSafeName } from '.'
 import { renderHook } from '@/tests/test-utils'
+import { chainBuilder } from '@/tests/builders/chains'
+
+const mockChain = chainBuilder().build()
 
 // Mock useCurrentChain hook
 jest.mock('@/hooks/useChains', () => ({
-  useCurrentChain: () => ({
-    chainName: 'Rinkeby',
-  }),
+  useCurrentChain: () => mockChain,
 }))
 
 describe('useMnemonicName tests', () => {
@@ -37,6 +38,7 @@ describe('useMnemonicName tests', () => {
 
   it('should return a random safe name', () => {
     const { result } = renderHook(() => useMnemonicSafeName())
-    expect(result.current).toMatch(/^[a-z-]+-rinkeby-safe$/)
+    const regex = new RegExp(`^[a-z-]+-${mockChain.chainName.toLowerCase()}-safe$`)
+    expect(result.current).toMatch(regex)
   })
 })

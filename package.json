@@ -57,6 +57,8 @@
     "@sentry/react": "^7.74.0",
     "@sentry/tracing": "^7.74.0",
     "@truffle/hdwallet-provider": "^2.1.4",
+    "@walletconnect/utils": "^2.10.2",
+    "@walletconnect/web3wallet": "^1.9.2",
     "@web3-onboard/coinbase": "^2.2.6",
     "@web3-onboard/core": "^2.21.2",
     "@web3-onboard/injected-wallets": "^2.10.7",
@@ -89,6 +91,7 @@
     "semver": "^7.5.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.1.0",
     "@next/bundle-analyzer": "^13.1.1",
     "@openzeppelin/contracts": "^4.9.2",
     "@safe-global/safe-core-sdk-types": "^1.9.1",
@@ -110,6 +113,7 @@
     "@types/react-qr-reader": "^2.1.5",
     "@types/semver": "^7.3.10",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
+    "@walletconnect/types": "^2.10.1",
     "cross-env": "^7.0.3",
     "cypress": "^12.15.0",
     "cypress-file-upload": "^5.0.8",

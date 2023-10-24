@@ -18,31 +18,31 @@ const INVALID_ADDRESS_ERROR_MSG = 'Address given is not a valid Safe address'
 const OWNER_ENS_DEFAULT_NAME = 'test20.eth'
 const OWNER_ADDRESS = constants.EOA
 
-describe('Load existing Safe', () => {
+describe('Load Safe tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.welcomeUrl)
+    cy.visit(constants.loadNewSafeSepoliaUrl)
     main.acceptCookies()
-    safe.openLoadSafeForm()
     cy.wait(2000)
   })
 
-  it('should allow choosing the network where the Safe exists', () => {
-    safe.clickNetworkSelector(constants.networks.goerli)
+  it('Verify a network can be selected in the Safe [C56117]', () => {
+    safe.clickNetworkSelector(constants.networks.sepolia)
     safe.selectPolygon()
     cy.wait(2000)
     safe.clickNetworkSelector(constants.networks.polygon)
-    safe.selectGoerli()
+    safe.selectSepolia()
   })
 
-  it('should accept name the Safe', () => {
+  it('Verify only valid Safe name can be accepted [C56118]', () => {
     // alias the address input label
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
-    safe.verifyNameInputHasPlceholder(testSafeName)
+    createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
+
     safe.inputName(testSafeName)
     safe.verifyIncorrectAddressErrorMessage()
-    safe.inputAddress(constants.GOERLI_TEST_SAFE)
+    safe.inputAddress(constants.SEPOLIA_TEST_SAFE_1)
 
     // Type an invalid address
     // cy.get('input[name="address"]').clear().type(EOA_ADDRESS)
@@ -64,27 +64,18 @@ describe('Load existing Safe', () => {
     safe.clickOnNextBtn()
   })
 
-  // TODO: register the goerli ENS for the Safe owner when possible
-  it.skip('should resolve ENS names for Safe owners', () => {
-    // Finds ENS name as one of the owners (give some time to the resolver)
-    cy.findByPlaceholderText(OWNER_ENS_DEFAULT_NAME, { timeout: 20000 })
-      .parents('.MuiGrid-container')
-      // Name is matched by the correct address
-      .contains(OWNER_ADDRESS)
-  })
-
-  it('should set custom name in the first owner', () => {
+  it('Verify custom name in the first owner an be set [C56120]', () => {
     createwallet.typeOwnerName(testOwnerName, 0)
     safe.clickOnNextBtn()
   })
 
-  it('should have Safe and owner names in the Review step', () => {
+  it('Verify Safe and owner names are displayed in the Review step [C56121]', () => {
     safe.verifyDataInReviewSection(testSafeName, testOwnerName)
     safe.clickOnAddBtn()
   })
 
-  it('should load successfully the custom Safe name', () => {
-    main.verifyHomeSafeUrl(constants.GOERLI_TEST_SAFE)
+  it('Verify the custom Safe name is successfully loaded [C56122]', () => {
+    main.verifyHomeSafeUrl(constants.SEPOLIA_TEST_SAFE_1)
     safe.veriySidebarSafeNameIsVisible(testSafeName)
     safe.verifyOwnerNamePresentInSettings(testOwnerName)
   })

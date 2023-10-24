@@ -2,6 +2,8 @@ import { createContext, type ReactElement, type ReactNode, useState, useEffect, 
 import TxModalDialog from '@/components/common/TxModalDialog'
 import { usePathname } from 'next/navigation'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { SuccessScreen } from './flows/SuccessScreen'
 
 const noop = () => {}
 
@@ -17,9 +19,11 @@ export const TxModalContext = createContext<TxModalContextType>({
   setFullWidth: noop,
 })
 
+const shouldClose = () => confirm('Closing this window will discard your current progress.')
+
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
-  const [shouldWarn, setShouldWarn] = useState<boolean>(true)
+  const [shouldWarn, setShouldWarn] = useState<boolean>(false)
   const [, setOnClose] = useState<Parameters<TxModalContextType['setTxFlow']>[1]>(noop)
   const [fullWidth, setFullWidth] = useState<boolean>(false)
   const pathname = usePathname()
@@ -40,19 +44,27 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
       return
     }
 
-    const ok = confirm('Closing this window will discard your current progress.')
-    if (ok) {
-      handleModalClose()
-    }
+    if (!shouldClose()) return
+
+    txDispatch(TxEvent.USER_QUIT, {})
+
+    handleModalClose()
   }, [shouldWarn, handleModalClose])
 
   const setTxFlow = useCallback(
-    (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => {
-      setFlow(txFlow)
+    (newTxFlow: TxModalContextType['txFlow'], onClose?: () => void, newShouldWarn?: boolean) => {
+      // If flow is open and user opens a different one, show confirmation dialog if required
+      if (txFlow && newTxFlow && newTxFlow?.type !== SuccessScreen && shouldWarn) {
+        if (!shouldClose()) return
+
+        txDispatch(TxEvent.USER_QUIT, {})
+      }
+
+      setFlow(newTxFlow)
       setOnClose(() => onClose ?? noop)
-      setShouldWarn(shouldWarn ?? true)
+      setShouldWarn(newShouldWarn ?? true)
     },
-    [setFlow, setOnClose],
+    [txFlow, shouldWarn],
   )
 
   // Show the confirmation dialog if user navigates

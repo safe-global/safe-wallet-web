@@ -59,7 +59,7 @@ const SafeTokenWidget = () => {
   const flooredSafeBalance = formatVisualAmount(allocation || BigNumber.from(0), TOKEN_DECIMALS, 2)
 
   return (
-    <Box className={css.buttonContainer}>
+    <Box className={css.container}>
       <Tooltip
         title={
           url

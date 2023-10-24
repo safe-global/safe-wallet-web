@@ -1,4 +1,5 @@
 import type { Chain, ProviderAccounts, WalletInit, EIP1193Provider } from '@web3-onboard/common'
+// @ts-expect-error - with native WalletConnect v2, the type is no longer present
 import type { ITxData } from '@walletconnect/types'
 
 import { getPairingConnector, PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'

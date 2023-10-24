@@ -1,8 +1,10 @@
-import { INFO_MODAL_KEY, TEST_SAFE } from '../e2e/safe-apps/constants'
+import { INFO_MODAL_KEY } from '../e2e/safe-apps/constants'
+import * as constants from '../support/constants'
 
 const allowedApps = ['https://safe-test-app.com']
+const TEST_SAFE = constants.SEPOLIA_TEST_SAFE_5
 
-Cypress.Commands.add('visitSafeApp', (appUrl, testSafe = TEST_SAFE) => {
+Cypress.Commands.add('visitSafeApp', (appUrl) => {
   cy.on('window:before:load', (window) => {
     window.localStorage.setItem(
       INFO_MODAL_KEY,
