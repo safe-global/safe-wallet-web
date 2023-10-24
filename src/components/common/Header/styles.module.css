@@ -18,6 +18,17 @@
   justify-content: center;
 }
 
+.element :global(.MuiBadge-standard) {
+  font-size: 12px;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+}
+
+[data-theme="dark"] .element :global(.MuiBadge-standard) {
+  background-color: var(--color-primary-main);
+}
+
 .menuButton,
 .logo {
   flex: 1;
