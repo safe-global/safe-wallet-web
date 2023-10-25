@@ -10,6 +10,7 @@ import * as web3 from '@/hooks/wallets/web3'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { ethers } from 'ethers'
 import type { Web3Provider } from '@ethersproject/providers'
+import { TxModalProvider } from '@/components/tx-flow'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',
@@ -50,7 +51,11 @@ const getProviders: (options: {
       <StoreHydrator initialState={initialReduxState}>
         <RouterContext.Provider value={mockRouter(routerProps)}>
           <SafeThemeProvider mode="light">
-            {(safeTheme: Theme) => <ThemeProvider theme={safeTheme}>{children}</ThemeProvider>}
+            {(safeTheme: Theme) => (
+              <ThemeProvider theme={safeTheme}>
+                <TxModalProvider>{children}</TxModalProvider>
+              </ThemeProvider>
+            )}
           </SafeThemeProvider>
         </RouterContext.Provider>
       </StoreHydrator>

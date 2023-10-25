@@ -7,13 +7,15 @@ import { WEB3_AUTH_CLIENT_ID } from '@/config/constants'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getRpcServiceUrl } from '../web3'
 import useOnboard, { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { useInitSocialWallet } from './useSocialWallet'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 
 const { getStore, setStore, useStore } = new ExternalStore<Web3AuthMPCCoreKit>()
 
 export const useInitMPC = () => {
   const chain = useCurrentChain()
   const onboard = useOnboard()
+  useInitSocialWallet()
 
   useEffect(() => {
     if (!chain || !onboard) {

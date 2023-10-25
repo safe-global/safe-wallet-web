@@ -1,4 +1,4 @@
-import MpcModule, { ONBOARD_MPC_MODULE_LABEL } from '../module'
+import MpcModule, { ONBOARD_MPC_MODULE_LABEL } from '../SocialLoginModule'
 import { type WalletModule } from '@web3-onboard/common'
 
 import * as web3 from '@/hooks/wallets/web3'

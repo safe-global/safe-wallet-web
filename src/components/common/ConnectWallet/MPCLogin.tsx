@@ -13,12 +13,12 @@ import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
-import { isSocialLoginWallet } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TxModalContext } from '@/components/tx-flow'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
-
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
     .filter((chain) => CGW_NAMES.SOCIAL_LOGIN && !chain.disabledWallets.includes(CGW_NAMES.SOCIAL_LOGIN))
@@ -39,8 +39,8 @@ const useIsSocialWalletEnabled = () => {
 }
 
 const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
-  const { triggerLogin, userInfo, walletState, setWalletState, recoverFactorWithPassword } =
-    useContext(MpcWalletContext)
+  const socialWalletService = useSocialWallet()
+  const { triggerLogin, userInfo, walletState, setWalletState } = useContext(MpcWalletContext)
   const { setTxFlow } = useContext(TxModalContext)
 
   const wallet = useWallet()
@@ -51,8 +51,26 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
 
   const isDisabled = loginPending || !isMPCLoginEnabled
 
+  const recoverPassword = useCallback(
+    async (password: string, storeDeviceFactor: boolean) => {
+      if (!socialWalletService) {
+        return
+      }
+      const success = await socialWalletService.recoverAccountWithPassword(password, storeDeviceFactor)
+
+      if (success) {
+        onLogin?.()
+        setTxFlow(undefined)
+      }
+    },
+    [onLogin, setTxFlow, socialWalletService],
+  )
+
   const login = async () => {
+    console.log('LOGGING IN')
     const status = await triggerLogin()
+
+    console.log('Login done', status)
 
     if (status === COREKIT_STATUS.LOGGED_IN) {
       onLogin?.()
@@ -66,18 +84,6 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
       )
     }
   }
-
-  const recoverPassword = useCallback(
-    async (password: string, storeDeviceFactor: boolean) => {
-      const success = await recoverFactorWithPassword(password, storeDeviceFactor)
-
-      if (success) {
-        onLogin?.()
-        setTxFlow(undefined)
-      }
-    },
-    [onLogin, recoverFactorWithPassword, setTxFlow],
-  )
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 

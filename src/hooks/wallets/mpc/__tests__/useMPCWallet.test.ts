@@ -11,7 +11,7 @@ import {
 } from '@web3auth/mpc-core-kit'
 import * as mpcCoreKit from '@web3auth/mpc-core-kit'
 import { setMPCCoreKitInstance } from '../useMPC'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
 import * as addressBookSlice from '@/store/addressBookSlice'

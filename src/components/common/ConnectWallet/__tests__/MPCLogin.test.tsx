@@ -1,4 +1,4 @@
-import { render, waitFor } from '@/tests/test-utils'
+import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import * as useMPCWallet from '@/hooks/wallets/mpc/useMPCWallet'
 import * as chains from '@/hooks/useChains'
@@ -6,10 +6,12 @@ import * as chains from '@/hooks/useChains'
 import MPCLogin, { _getSupportedChains } from '../MPCLogin'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { type EIP1193Provider } from '@web3-onboard/common'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { MpcWalletProvider } from '../MPCWalletProvider'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
+
+jest.mock('@/services/mpc/SocialWalletService')
 
 describe('MPCLogin', () => {
   beforeEach(() => {
@@ -109,6 +111,99 @@ describe('MPCLogin', () => {
 
     expect(result.getByText('Currently only supported on Goerli')).toBeInTheDocument()
     expect(await result.findByRole('button')).toBeDisabled()
+  })
+
+  it('should display Password Recovery and recover with correct password', async () => {
+    const mockOnLogin = jest.fn()
+    jest
+      .spyOn(chains, 'useCurrentChain')
+      .mockReturnValue({ chainId: '100', disabledWallets: [] } as unknown as ChainInfo)
+    jest.spyOn(useWallet, 'default').mockReturnValue(null)
+    const mockTriggerLogin = jest.fn(() => COREKIT_STATUS.REQUIRED_SHARE)
+    jest.spyOn(useMPCWallet, 'useMPCWallet').mockReturnValue({
+      triggerLogin: mockTriggerLogin,
+    } as unknown as useMPCWallet.MPCWalletHook)
+
+    const result = render(
+      <MpcWalletProvider>
+        <MPCLogin onLogin={mockOnLogin} />
+      </MpcWalletProvider>,
+    )
+
+    await waitFor(() => {
+      expect(result.findByText('Continue with Google')).resolves.toBeDefined()
+    })
+
+    // We do not automatically invoke the callback as the user did not actively connect
+    expect(mockOnLogin).not.toHaveBeenCalled()
+
+    const button = await result.findByRole('button')
+    act(() => {
+      button.click()
+    })
+
+    await waitFor(() => {
+      expect(result.findByText('Enter security password')).resolves.toBeDefined()
+    })
+
+    const passwordField = await result.findByLabelText('Recovery password')
+    const submitButton = await result.findByText('Submit')
+
+    act(() => {
+      fireEvent.change(passwordField, { target: { value: 'Test1234!' } })
+      submitButton.click()
+    })
+
+    await waitFor(() => {
+      expect(mockOnLogin).toHaveBeenCalled()
+    })
+  })
+
+  it('should display Password Recovery and not recover with wrong password', async () => {
+    const mockOnLogin = jest.fn()
+    jest
+      .spyOn(chains, 'useCurrentChain')
+      .mockReturnValue({ chainId: '100', disabledWallets: [] } as unknown as ChainInfo)
+    jest.spyOn(useWallet, 'default').mockReturnValue(null)
+    const mockTriggerLogin = jest.fn(() => COREKIT_STATUS.REQUIRED_SHARE)
+    jest.spyOn(useMPCWallet, 'useMPCWallet').mockReturnValue({
+      triggerLogin: mockTriggerLogin,
+    } as unknown as useMPCWallet.MPCWalletHook)
+
+    const result = render(
+      <MpcWalletProvider>
+        <MPCLogin onLogin={mockOnLogin} />
+      </MpcWalletProvider>,
+    )
+
+    await waitFor(() => {
+      expect(result.findByText('Continue with Google')).resolves.toBeDefined()
+    })
+
+    // We do not automatically invoke the callback as the user did not actively connect
+    expect(mockOnLogin).not.toHaveBeenCalled()
+
+    const button = await result.findByRole('button')
+    act(() => {
+      button.click()
+    })
+
+    await waitFor(() => {
+      expect(result.findByText('Enter security password')).resolves.toBeDefined()
+    })
+
+    const passwordField = await result.findByLabelText('Recovery password')
+    const submitButton = await result.findByText('Submit')
+
+    act(() => {
+      fireEvent.change(passwordField, { target: { value: 'Invalid password' } })
+      submitButton.click()
+    })
+
+    await waitFor(() => {
+      expect(mockOnLogin).not.toHaveBeenCalled()
+      expect(result.findByText('Incorrect Password')).resolves.toBeDefined()
+    })
   })
 
   describe('getSupportedChains', () => {

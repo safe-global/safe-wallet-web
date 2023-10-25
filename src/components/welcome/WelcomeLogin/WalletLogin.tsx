@@ -1,7 +1,7 @@
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import Track from '@/components/common/Track'
 import useWallet from '@/hooks/wallets/useWallet'
-import { isSocialLoginWallet } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { Box, Button, Typography } from '@mui/material'
 import { EthHashInfo } from '@safe-global/safe-react-components'

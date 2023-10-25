@@ -9,7 +9,7 @@ import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 
 import css from './styles.module.css'
-import { isSocialLoginWallet } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import SocialLoginInfo from '@/components/common/SocialLoginInfo'
 
 export const UNKNOWN_CHAIN_NAME = 'Unknown'
