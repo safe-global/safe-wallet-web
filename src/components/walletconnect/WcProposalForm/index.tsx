@@ -9,9 +9,9 @@ import ProposalVerification from './ProposalVerification'
 import { CompatibilityWarning } from './CompatibilityWarning'
 import useChains from '@/hooks/useChains'
 import { getPeerName, getSupportedChainIds, isBlockedBridge, isWarnedBridge } from '@/services/walletconnect/utils'
-import useChainId from '@/hooks/useChainId'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -21,7 +21,8 @@ type ProposalFormProps = {
 
 const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): ReactElement => {
   const { configs } = useChains()
-  const chainId = useChainId()
+  const { safeLoaded, safe } = useSafeInfo()
+  const { chainId } = safe
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const { proposer } = proposal.params
   const { isScam, origin } = proposal.verifyContext.verified
@@ -33,7 +34,7 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
   const name = getPeerName(proposer) || 'Unknown dApp'
   const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isWarnedBridge(origin, name)
   const isBlocked = isUnsupportedChain || isScam || isBlockedBridge(origin)
-  const disabled = isBlocked || (isHighRisk && !understandsRisk)
+  const disabled = !safeLoaded || isBlocked || (isHighRisk && !understandsRisk)
 
   const onCheckboxClick = useCallback(
     (_: ChangeEvent, checked: boolean) => {
