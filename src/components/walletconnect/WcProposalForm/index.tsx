@@ -32,7 +32,8 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
 
   const name = getPeerName(proposer) || 'Unknown dApp'
   const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isWarnedBridge(origin, name)
-  const disabled = isUnsupportedChain || isScam || isBlockedBridge(origin) || (isHighRisk && !understandsRisk)
+  const isBlocked = isUnsupportedChain || isScam || isBlockedBridge(origin)
+  const disabled = isBlocked || (isHighRisk && !understandsRisk)
 
   const onCheckboxClick = useCallback(
     (_: ChangeEvent, checked: boolean) => {
@@ -49,13 +50,13 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
   )
 
   useEffect(() => {
-    if (isHighRisk || disabled) {
+    if (isHighRisk || isBlocked) {
       trackEvent({
         ...WALLETCONNECT_EVENTS.SHOW_RISK,
         label: url,
       })
     }
-  }, [isHighRisk, disabled, url])
+  }, [isHighRisk, isBlocked, url])
 
   return (
     <div className={css.container}>
@@ -83,7 +84,7 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
         <CompatibilityWarning proposal={proposal} chainIds={chainIds} />
       </div>
 
-      {!isUnsupportedChain && isHighRisk && (
+      {!isBlocked && isHighRisk && (
         <FormControlLabel
           className={css.checkbox}
           control={<Checkbox checked={understandsRisk} onChange={onCheckboxClick} />}

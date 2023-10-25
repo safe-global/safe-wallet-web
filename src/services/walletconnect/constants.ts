@@ -35,6 +35,7 @@ export const EIP155 = 'eip155' as const
 
 // Bridges enforcing same address on destination chains
 export const BlockedBridges = [
+  'app.chainport.io',
   'bridge.arbitrum.io',
   'bridge.base.org',
   'cbridge.celer.network',
