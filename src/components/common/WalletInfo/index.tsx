@@ -1,56 +1,130 @@
-import { Box, Typography } from '@mui/material'
-import { Suspense } from 'react'
-import type { ReactElement } from 'react'
-
+import { Box, Button } from '@mui/material'
+import css from './styles.module.css'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import SocialLoginInfo from '@/components/common/SocialLoginInfo'
+import { isMFAEnabled } from '@/components/settings/SecurityLogin/SocialSignerMFA/helper'
+import Link from 'next/link'
+import { AppRoutes } from '@/config/routes'
+import LockIcon from '@/public/images/common/lock-small.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import WalletIcon from '@/components/common/WalletIcon'
-import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import ChainSwitcher from '@/components/common/ChainSwitcher'
+import { IS_PRODUCTION } from '@/config/constants'
+import { isSocialLoginWallet } from '@/services/mpc/module'
+import useOnboard, { type ConnectedWallet, switchWallet } from '@/hooks/wallets/useOnboard'
+import { type MPCWalletHook } from '@/hooks/wallets/mpc/useMPCWallet'
+import useMPC from '@/hooks/wallets/mpc/useMPC'
+import { useRouter } from 'next/router'
+import useAddressBook from '@/hooks/useAddressBook'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
+import madProps from '@/utils/mad-props'
+import { useContext } from 'react'
+import { MpcWalletContext } from '@/components/common/ConnectWallet/MPCWalletProvider'
 
-import css from './styles.module.css'
-import { isSocialLoginWallet } from '@/services/mpc/module'
-import SocialLoginInfo from '@/components/common/SocialLoginInfo'
+type WalletInfoProps = {
+  wallet: ConnectedWallet
+  resetAccount: MPCWalletHook['resetAccount']
+  mpcCoreKit: ReturnType<typeof useMPC>
+  router: ReturnType<typeof useRouter>
+  onboard: ReturnType<typeof useOnboard>
+  addressBook: ReturnType<typeof useAddressBook>
+  handleClose: () => void
+}
 
-export const UNKNOWN_CHAIN_NAME = 'Unknown'
+export const WalletInfo = ({
+  wallet,
+  resetAccount,
+  mpcCoreKit,
+  router,
+  onboard,
+  addressBook,
+  handleClose,
+}: WalletInfoProps) => {
+  const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
+  const prefix = chainInfo?.shortName
 
-const WalletInfo = ({ wallet }: { wallet: ConnectedWallet }): ReactElement => {
-  const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
-  const prefix = walletChain?.shortName
+  const handleSwitchWallet = () => {
+    if (onboard) {
+      handleClose()
+      switchWallet(onboard)
+    }
+  }
+
+  const handleDisconnect = () => {
+    if (!wallet) return
+
+    onboard?.disconnectWallet({
+      label: wallet.label,
+    })
+
+    handleClose()
+  }
 
   const isSocialLogin = isSocialLoginWallet(wallet.label)
 
-  if (isSocialLogin) {
-    return (
-      <div className={css.socialLoginInfo}>
-        <SocialLoginInfo wallet={wallet} chainInfo={walletChain} hideActions={true} />
-      </div>
-    )
-  }
-
   return (
-    <Box className={css.container}>
-      <Box className={css.imageContainer}>
-        <Suspense>
-          <WalletIcon provider={wallet.label} icon={wallet.icon} />
-        </Suspense>
-      </Box>
-
-      <Box className={css.walletDetails}>
-        <Typography variant="caption" component="div" className={css.walletName}>
-          {wallet.label} @ {walletChain?.chainName || UNKNOWN_CHAIN_NAME}
-        </Typography>
-
-        <Typography variant="caption" fontWeight="bold" component="div">
-          {wallet.ens ? (
-            <div>{wallet.ens}</div>
+    <>
+      <Box className={css.accountContainer}>
+        <ChainIndicator />
+        <Box className={css.addressContainer}>
+          {isSocialLogin ? (
+            <>
+              <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} />
+              {mpcCoreKit && !isMFAEnabled(mpcCoreKit) && (
+                <Link href={{ pathname: AppRoutes.settings.securityLogin, query: router.query }} passHref>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="warning"
+                    className={css.warningButton}
+                    disableElevation
+                    startIcon={<LockIcon />}
+                    sx={{ mt: 1, p: 1 }}
+                    onClick={handleClose}
+                  >
+                    Add multifactor authentication
+                  </Button>
+                </Link>
+              )}
+            </>
           ) : (
-            <EthHashInfo prefix={prefix || ''} address={wallet.address} showName={false} showAvatar avatarSize={12} />
+            <EthHashInfo
+              address={wallet.address}
+              name={addressBook[wallet.address] || wallet.ens}
+              hasExplorer
+              showCopyButton
+              prefix={prefix}
+              avatarSize={32}
+            />
           )}
-        </Typography>
+        </Box>
       </Box>
-    </Box>
+
+      <ChainSwitcher fullWidth />
+
+      <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+        Switch wallet
+      </Button>
+
+      <Button onClick={handleDisconnect} variant="danger" size="small" fullWidth disableElevation>
+        Disconnect
+      </Button>
+
+      {!IS_PRODUCTION && isSocialLogin && (
+        <Button onClick={resetAccount} variant="danger" size="small" fullWidth disableElevation>
+          Delete Account
+        </Button>
+      )}
+    </>
   )
 }
 
-export default WalletInfo
+const useResetAccount = () => useContext(MpcWalletContext).resetAccount
+
+export default madProps(WalletInfo, {
+  resetAccount: useResetAccount,
+  mpcCoreKit: useMPC,
+  router: useRouter,
+  onboard: useOnboard,
+  addressBook: useAddressBook,
+})
