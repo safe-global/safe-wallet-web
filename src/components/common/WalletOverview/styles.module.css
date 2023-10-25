@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  justify-content: center;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+}
+
+[data-theme='dark'] .imageContainer img[alt*='Ledger'] {
+  filter: invert(100%);
+}
+
+@media (max-width: 599.95px) {
+  .buttonContainer button {
+    font-size: 12px;
+  }
+
+  .walletDetails {
+    display: none;
+  }
+
+  .imageContainer img {
+    width: 22px;
+    height: auto;
+  }
+
+  .walletName {
+    display: none;
+  }
+
+  .socialLoginInfo > div > div {
+    display: none;
+  }
+}
