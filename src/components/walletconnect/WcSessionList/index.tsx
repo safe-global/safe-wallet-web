@@ -1,10 +1,9 @@
+import type { SessionTypes } from '@walletconnect/types'
+import { Button, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText } from '@mui/material'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getPeerName } from '@/services/walletconnect/utils'
-import { Button, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Typography } from '@mui/material'
-import type { SessionTypes } from '@walletconnect/types'
-import type { ReactElement } from 'react'
-
+import WcNoSessions from './WcNoSessions'
 import css from './styles.module.css'
 
 type WcSesstionListProps = {
@@ -12,13 +11,7 @@ type WcSesstionListProps = {
   onDisconnect: (session: SessionTypes.Struct) => void
 }
 
-const WcSessionListItem = ({
-  session,
-  onDisconnect,
-}: {
-  session: SessionTypes.Struct
-  onDisconnect: () => void
-}): ReactElement => {
+const WcSessionListItem = ({ session, onDisconnect }: { session: SessionTypes.Struct; onDisconnect: () => void }) => {
   const { safeLoaded } = useSafeInfo()
   const name = getPeerName(session.peer) || 'Unknown dApp'
 
@@ -29,7 +22,9 @@ const WcSessionListItem = ({
           <SafeAppIconCard src={session.peer.metadata.icons[0]} alt="icon" width={20} height={20} />
         </ListItemAvatar>
       )}
+
       <ListItemText primary={name} primaryTypographyProps={{ color: safeLoaded ? undefined : 'text.secondary' }} />
+
       <ListItemIcon className={css.sessionListSecondaryAction}>
         <Button variant="danger" onClick={onDisconnect} className={css.button}>
           Disconnect
@@ -39,13 +34,9 @@ const WcSessionListItem = ({
   )
 }
 
-const WcSessionList = ({ sessions, onDisconnect }: WcSesstionListProps): ReactElement => {
+const WcSessionList = ({ sessions, onDisconnect }: WcSesstionListProps) => {
   if (sessions.length === 0) {
-    return (
-      <Typography variant="body2" textAlign="center" color="text.secondary">
-        No dApps are connected yet
-      </Typography>
-    )
+    return <WcNoSessions />
   }
 
   return (

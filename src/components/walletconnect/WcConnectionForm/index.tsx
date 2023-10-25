@@ -9,7 +9,7 @@ import WcSessionList from '../WcSessionList'
 import WcInput from '../WcInput'
 import WcLogoHeader from '../WcLogoHeader'
 import css from './styles.module.css'
-import useSafeAddress from '@/hooks/useSafeAddress'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 const WC_HINTS_KEY = 'wcHints'
 
@@ -23,12 +23,13 @@ export const WcConnectionForm = ({
   uri: string
 }): ReactElement => {
   const [showHints = true, setShowHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
-  const safeAddress = useSafeAddress()
+  const { safeLoaded } = useSafeInfo()
 
   const onToggle = useCallback(() => {
     setShowHints((prev) => !prev)
   }, [setShowHints])
 
+  // Show the hints only once
   useEffect(() => {
     return () => setShowHints(false)
   }, [setShowHints])
@@ -52,19 +53,19 @@ export const WcConnectionForm = ({
         <WcLogoHeader />
 
         <Typography variant="body2" color="text.secondary">
-          {safeAddress
+          {safeLoaded
             ? `Paste the pairing code below to connect to your Safe{Wallet} via WalletConnect`
             : `Please open one of your Safe Accounts to connect to via WalletConnect`}
         </Typography>
 
-        {safeAddress ? (
+        {safeLoaded ? (
           <Box mt={3}>
             <WcInput uri={uri} />
           </Box>
         ) : null}
       </Grid>
 
-      <Divider flexItem className={css.divider} />
+      <Divider flexItem />
 
       <Grid item>
         <WcSessionList sessions={sessions} onDisconnect={onDisconnect} />
@@ -72,7 +73,7 @@ export const WcConnectionForm = ({
 
       {showHints && (
         <>
-          <Divider flexItem className={css.divider} />
+          <Divider flexItem />
 
           <Grid item mt={1}>
             <WcHints />

@@ -25,7 +25,7 @@
   min-width: 18px;
 }
 
-[data-theme="dark"] .element :global(.MuiBadge-standard) {
+[data-theme='dark'] .element :global(.MuiBadge-standard) {
   background-color: var(--color-primary-main);
 }
 

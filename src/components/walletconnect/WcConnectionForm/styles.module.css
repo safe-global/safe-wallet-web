@@ -15,7 +15,3 @@
   top: var(--space-3);
   right: var(--space-3);
 }
-
-.divider {
-  margin: 0 calc(-1 * var(--space-4));
-}
