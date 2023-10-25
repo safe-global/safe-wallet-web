@@ -22,15 +22,9 @@ import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import useMetaEvents from './useMetaEvents'
 import { useMediaQuery } from '@mui/material'
-import { DeviceType } from './types'
+import { AnalyticsUserProperties, DeviceType, WALLET_LABEL_NONE } from './types'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
-
-enum GA_USER_PROPERTIES {
-  WALLET_LABEL = 'walletLabel',
-}
-
-const WALLET_LABEL_NONE = 'NONE'
 
 const useGtm = () => {
   const chainId = useChainId()
@@ -89,7 +83,7 @@ const useGtm = () => {
   }, [router.pathname])
 
   useEffect(() => {
-    gtmSetUserProperty(GA_USER_PROPERTIES.WALLET_LABEL, walletLabel ?? WALLET_LABEL_NONE)
+    gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, walletLabel ?? WALLET_LABEL_NONE)
   }, [walletLabel])
 
   // Track meta events on app load

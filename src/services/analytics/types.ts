@@ -29,3 +29,9 @@ export enum DeviceType {
   MOBILE = 'mobile',
   TABLET = 'tablet',
 }
+
+export enum AnalyticsUserProperties {
+  WALLET_LABEL = 'walletLabel',
+}
+
+export const WALLET_LABEL_NONE = 'NONE'
