@@ -13,12 +13,19 @@ import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import { isSocialLoginWallet, ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TxModalContext } from '@/components/tx-flow'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
+import useAddressBook from '@/hooks/useAddressBook'
+import useChainId from '@/hooks/useChainId'
+import { useAppDispatch } from '@/store'
+import { checksumAddress } from '@/utils/addresses'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
     .filter((chain) => CGW_NAMES.SOCIAL_LOGIN && !chain.disabledWallets.includes(CGW_NAMES.SOCIAL_LOGIN))
@@ -40,8 +47,12 @@ const useIsSocialWalletEnabled = () => {
 
 const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   const socialWalletService = useSocialWallet()
-  const { triggerLogin, userInfo, walletState, setWalletState } = useContext(MpcWalletContext)
+  const { userInfo, walletState, setWalletState } = useContext(MpcWalletContext)
   const { setTxFlow } = useContext(TxModalContext)
+  const onboard = useOnboard()
+  const addressBook = useAddressBook()
+  const currentChainId = useChainId()
+  const dispatch = useAppDispatch()
 
   const wallet = useWallet()
   const loginPending = walletState === MPCWalletState.AUTHENTICATING
@@ -51,26 +62,47 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
 
   const isDisabled = loginPending || !isMPCLoginEnabled
 
+  const onConnect = useCallback(async () => {
+    if (!onboard || !socialWalletService) return
+
+    const wallets = await connectWallet(onboard, {
+      autoSelect: {
+        label: ONBOARD_MPC_MODULE_LABEL,
+        disableModals: true,
+      },
+    }).catch((reason) => console.error('Error connecting to MPC module:', reason))
+
+    // If the signer is not in the address book => add the user's email as name
+    if (wallets && currentChainId && wallets.length > 0) {
+      const address = wallets[0].accounts[0]?.address
+      if (address) {
+        const signerAddress = checksumAddress(address)
+        if (addressBook[signerAddress] === undefined) {
+          const email = socialWalletService.getUserInfo().email
+          dispatch(upsertAddressBookEntry({ address: signerAddress, chainId: currentChainId, name: email }))
+        }
+      }
+    }
+  }, [addressBook, currentChainId, dispatch, onboard, socialWalletService])
+
   const recoverPassword = useCallback(
     async (password: string, storeDeviceFactor: boolean) => {
-      if (!socialWalletService) {
-        return
-      }
-      const success = await socialWalletService.recoverAccountWithPassword(password, storeDeviceFactor)
+      if (!socialWalletService) return
+
+      const success = await socialWalletService.recoverAccountWithPassword(onConnect, password, storeDeviceFactor)
 
       if (success) {
         onLogin?.()
         setTxFlow(undefined)
       }
     },
-    [onLogin, setTxFlow, socialWalletService],
+    [onConnect, onLogin, setTxFlow, socialWalletService],
   )
 
   const login = async () => {
-    console.log('LOGGING IN')
-    const status = await triggerLogin()
+    if (!socialWalletService) return
 
-    console.log('Login done', status)
+    const status = await socialWalletService.loginAndCreate(onConnect)
 
     if (status === COREKIT_STATUS.LOGGED_IN) {
       onLogin?.()
