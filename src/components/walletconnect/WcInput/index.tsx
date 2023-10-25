@@ -18,6 +18,12 @@ const WcInput = ({ uri }: { uri: string }) => {
       if (!walletConnect) return
 
       setValue(val)
+
+      if (val && !isPairingUri(val)) {
+        setError(new Error('Invalid pairing code'))
+        return
+      }
+
       setError(undefined)
 
       if (!val) return
