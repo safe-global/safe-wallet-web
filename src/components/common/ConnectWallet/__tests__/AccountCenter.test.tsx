@@ -1,7 +1,6 @@
 import { render } from '@/tests/test-utils'
 import { AccountCenter } from '@/components/common/ConnectWallet/AccountCenter'
-import { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
-import { type NextRouter } from 'next/router'
+import { type EIP1193Provider } from '@web3-onboard/core'
 import { act, waitFor } from '@testing-library/react'
 
 const mockWallet = {
@@ -10,17 +9,6 @@ const mockWallet = {
   label: '',
   provider: null as unknown as EIP1193Provider,
 }
-
-const mockRouter = {
-  query: {},
-  pathname: '',
-} as NextRouter
-
-const mockOnboard = {
-  connectWallet: jest.fn(),
-  disconnectWallet: jest.fn(),
-  setChain: jest.fn(),
-} as unknown as OnboardAPI
 
 describe('AccountCenter', () => {
   it('should open and close the account center on click', async () => {

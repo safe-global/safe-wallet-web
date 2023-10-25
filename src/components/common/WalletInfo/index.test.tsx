@@ -6,6 +6,7 @@ import * as mpcModule from '@/services/mpc/module'
 import * as constants from '@/config/constants'
 import * as mfaHelper from '@/components/settings/SignerAccountMFA/helper'
 import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
+import { act } from '@testing-library/react'
 
 const mockWallet = {
   address: '0x1234567890123456789012345678901234567890',
@@ -19,9 +20,11 @@ const mockRouter = {
   pathname: '',
 } as NextRouter
 
+const disconnectWalletMock = jest.fn()
+
 const mockOnboard = {
   connectWallet: jest.fn(),
-  disconnectWallet: jest.fn(),
+  disconnectWallet: disconnectWalletMock,
   setChain: jest.fn(),
 } as unknown as OnboardAPI
 
@@ -62,7 +65,7 @@ describe('WalletInfo', () => {
     expect(getByText('Switch wallet')).toBeInTheDocument()
   })
 
-  it('should display a Disconnect button', () => {
+  it('should disconnect the wallet when the button is clicked', () => {
     const { getByText } = render(
       <WalletInfo
         wallet={mockWallet}
@@ -75,7 +78,15 @@ describe('WalletInfo', () => {
       />,
     )
 
-    expect(getByText('Disconnect')).toBeInTheDocument()
+    const disconnectButton = getByText('Disconnect')
+
+    expect(disconnectButton).toBeInTheDocument()
+
+    act(() => {
+      disconnectButton.click()
+    })
+
+    expect(disconnectWalletMock).toHaveBeenCalled()
   })
 
   it('should display a Delete Account button on dev for social login', () => {
