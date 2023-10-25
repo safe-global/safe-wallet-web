@@ -5,7 +5,7 @@ import { Box, Button, DialogContent, DialogTitle, IconButton, TextField, Typogra
 import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Visibility, VisibilityOff, Close } from '@mui/icons-material'
-import css from './styles.module.css'
+import css from '@/components/settings/SecurityLogin/SocialSignerExport/styles.module.css'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'

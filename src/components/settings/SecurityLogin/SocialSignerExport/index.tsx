@@ -1,19 +1,19 @@
 import { Alert, Box, Button, Typography } from '@mui/material'
 import { useState } from 'react'
-import ExportMPCAccountModal from './ExportMPCAccountModal'
+import ExportMPCAccountModal from '@/components/settings/SecurityLogin/SocialSignerExport/ExportMPCAccountModal'
 
-const ExportMPCAccount = () => {
+const SocialSignerExport = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
     <>
       <Box display="flex" flexDirection="column" gap={2} alignItems="flex-start">
         <Typography>
-          Accounts created via Google can be exported and imported to any non-custodial wallet outside of Safe.
+          Signers created via Google can be exported and imported to any non-custodial wallet outside of Safe.
         </Typography>
         <Alert severity="warning">
           Never disclose your keys or seed phrase to anyone. If someone gains access to them, they have full access over
-          your signer account.
+          your social login signer.
         </Alert>
         <Button color="primary" variant="contained" disabled={isModalOpen} onClick={() => setIsModalOpen(true)}>
           Reveal private key
@@ -24,4 +24,4 @@ const ExportMPCAccount = () => {
   )
 }
 
-export default ExportMPCAccount
+export default SocialSignerExport

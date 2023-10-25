@@ -2,7 +2,7 @@ import { Box, Button } from '@mui/material'
 import css from './styles.module.css'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SocialLoginInfo from '@/components/common/SocialLoginInfo'
-import { isMFAEnabled } from '@/components/settings/SignerAccountMFA/helper'
+import { isMFAEnabled } from '@/components/settings/SecurityLogin/SocialSignerMFA/helper'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import LockIcon from '@/public/images/common/lock-small.svg'
@@ -71,7 +71,7 @@ export const WalletInfo = ({
             <>
               <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} />
               {mpcCoreKit && !isMFAEnabled(mpcCoreKit) && (
-                <Link href={{ pathname: AppRoutes.settings.signerAccount, query: router.query }} passHref>
+                <Link href={{ pathname: AppRoutes.settings.securityLogin, query: router.query }} passHref>
                   <Button
                     fullWidth
                     variant="contained"

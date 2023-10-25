@@ -1,4 +1,4 @@
-import { _getPasswordStrength, PasswordStrength } from '@/components/settings/SignerAccountMFA/PasswordForm'
+import { _getPasswordStrength, PasswordStrength } from '@/components/settings/SecurityLogin/SocialSignerMFA/index'
 
 describe('_getPasswordStrength', () => {
   it('should return weak if the value has fewer than 9 characters', () => {

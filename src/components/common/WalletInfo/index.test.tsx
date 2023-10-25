@@ -4,7 +4,7 @@ import { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 import { type NextRouter } from 'next/router'
 import * as mpcModule from '@/services/mpc/module'
 import * as constants from '@/config/constants'
-import * as mfaHelper from '@/components/settings/SignerAccountMFA/helper'
+import * as mfaHelper from '@/components/settings/SecurityLogin/SocialSignerMFA/helper'
 import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import { act } from '@testing-library/react'
 
