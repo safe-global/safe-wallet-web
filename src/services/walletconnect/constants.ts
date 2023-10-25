@@ -45,6 +45,21 @@ export const BlockedBridges = [
   'www.portalbridge.com',
   'wallet.polygon.technology',
   'app.rhino.fi',
+
+  // Unsupported chain bridges
+  'bridge.zora.energy',
+  'bridge.mantle.xyz',
+  'bridge.linea.build',
+  'bridge.metis.io',
+  'scroll.io',
+  'pacific-bridge.manta.network',
+  'tokenbridge.rsk.co',
+  'canto.io',
+  'gateway.boba.network',
+  'bttc.bittorrent.com',
+  'iotube.org',
+  'bridge.telos.net',
+  'ultronswap.com',
 ]
 
 // Bridges that initially select the same address on the destination chain but allow changing it
