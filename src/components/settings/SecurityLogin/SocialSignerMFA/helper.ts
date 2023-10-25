@@ -5,8 +5,6 @@ import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { asError } from '@/services/exceptions/utils'
 import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
-import { showNotification } from '@/store/notificationsSlice'
-import { type AppDispatch } from '@/store'
 
 export const isMFAEnabled = (mpcCoreKit: Web3AuthMPCCoreKit) => {
   if (!mpcCoreKit) {
