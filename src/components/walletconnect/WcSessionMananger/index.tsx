@@ -55,9 +55,9 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
       await walletConnect.rejectSession(proposal)
     } catch (e) {
       setError(asError(e))
-      return
     }
 
+    // Always clear the proposal, even if the rejection fails
     setProposal(undefined)
   }, [proposal, walletConnect, setError])
 
