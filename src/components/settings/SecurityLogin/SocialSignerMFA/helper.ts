@@ -17,14 +17,13 @@ export const isMFAEnabled = (mpcCoreKit: Web3AuthMPCCoreKit) => {
 }
 
 export const enableMFA = async (
-  dispatch: AppDispatch,
   mpcCoreKit: Web3AuthMPCCoreKit,
   {
     newPassword,
-    oldPassword,
+    currentPassword,
   }: {
     newPassword: string
-    oldPassword: string | undefined
+    currentPassword: string | undefined
   },
 ) => {
   if (!mpcCoreKit) {
@@ -33,7 +32,7 @@ export const enableMFA = async (
   const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
   try {
     // 1. setup device factor with password recovery
-    await securityQuestions.upsertPassword(newPassword, oldPassword)
+    await securityQuestions.upsertPassword(newPassword, currentPassword)
     const securityQuestionFactor = await securityQuestions.recoverWithPassword(newPassword)
     if (!securityQuestionFactor) {
       throw Error('Could not recover using the new password recovery')
@@ -46,25 +45,9 @@ export const enableMFA = async (
     }
 
     await mpcCoreKit.commitChanges()
-
-    dispatch(
-      showNotification({
-        variant: 'success',
-        groupKey: 'global-upsert-password',
-        message: 'Successfully created or updated password',
-      }),
-    )
   } catch (e) {
     const error = asError(e)
     logError(ErrorCodes._304, error.message)
-
-    // TODO: Check if we should use a notification or show an error inside the form
-    dispatch(
-      showNotification({
-        variant: 'error',
-        groupKey: 'global-upsert-password',
-        message: 'Failed to create or update password',
-      }),
-    )
+    throw error
   }
 }
