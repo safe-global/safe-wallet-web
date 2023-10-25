@@ -20,11 +20,9 @@ const mockRouter = {
   pathname: '',
 } as NextRouter
 
-const disconnectWalletMock = jest.fn()
-
 const mockOnboard = {
   connectWallet: jest.fn(),
-  disconnectWallet: disconnectWalletMock,
+  disconnectWallet: jest.fn(),
   setChain: jest.fn(),
 } as unknown as OnboardAPI
 
@@ -86,7 +84,7 @@ describe('WalletInfo', () => {
       disconnectButton.click()
     })
 
-    expect(disconnectWalletMock).toHaveBeenCalled()
+    expect(mockOnboard.disconnectWallet).toHaveBeenCalled()
   })
 
   it('should display a Delete Account button on dev for social login', () => {
