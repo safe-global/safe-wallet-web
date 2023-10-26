@@ -42,6 +42,10 @@ export const CREATE_SAFE_EVENTS = {
     action: 'Retry Safe creation',
     category: CREATE_SAFE_CATEGORY,
   },
+  CANCEL_CREATE_SAFE_FORM: {
+    action: 'Cancel safe creation form',
+    category: CREATE_SAFE_CATEGORY,
+  },
   CANCEL_CREATE_SAFE: {
     event: EventType.META,
     action: 'Cancel Safe creation',
