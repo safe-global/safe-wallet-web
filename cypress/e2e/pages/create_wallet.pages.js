@@ -8,6 +8,7 @@ const thresholdInput = 'input[name="threshold"]'
 export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
 const connectingContainer = 'div[class*="connecting-container"]'
 const createNewSafeBtn = 'span[data-track="create-safe: Continue to creation"]'
+const connectWalletBtn = 'Connect wallet'
 
 const changeNetworkWarningStr = 'Change your wallet network'
 const safeAccountSetupStr = 'Safe Account setup'
@@ -47,6 +48,10 @@ export function connectWallet() {
 
 export function clickOnCreateNewSafeBtn() {
   cy.get(createNewSafeBtn).click().wait(1000)
+}
+
+export function clickOnConnectWalletAndCreateBtn() {
+  cy.contains('[data-testid="welcome-login"]', connectWalletBtn).click().wait(1000)
 }
 
 export function typeWalletName(name) {

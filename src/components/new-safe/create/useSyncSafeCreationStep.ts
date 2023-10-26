@@ -22,7 +22,7 @@ const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setS
 
     // Jump to connect wallet step if there is no wallet and no pending Safe
     if (!wallet) {
-      router.push(AppRoutes.welcome)
+      router.push({ pathname: AppRoutes.welcome, query: router.query })
     }
 
     // Jump to choose name and network step if the wallet is connected to the wrong chain and there is no pending Safe

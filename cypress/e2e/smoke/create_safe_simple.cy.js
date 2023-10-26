@@ -13,15 +13,17 @@ describe('Create Safe tests', () => {
     main.acceptCookies()
   })
 
-  it('C55742: Verify a Wallet can be connected', () => {
-    /** TODO: Update this for the new safe creation flow
-     * e.g. connect and observe being navigated to the create safe page
-     * disconnect and observe being on the welcome page again
-     */
+  it.only('C55742: Verify a Wallet can be connected', () => {
     createwallet.clickOnCreateNewSafeBtn()
+    owner.clickOnWalletExpandMoreIcon()
+    owner.clickOnDisconnectBtn()
+    cy.url().should('include', constants.welcomeUrl)
+    createwallet.clickOnConnectWalletAndCreateBtn()
+    createwallet.connectWallet()
+    cy.url().should('include', constants.createNewSafeSepoliaUrl)
   })
 
-  it('C55743: Verify Next button is disabled until switching to network is done', () => {
+  it.only('C55743: Verify Next button is disabled until switching to network is done', () => {
     owner.waitForConnectionStatus()
     createwallet.selectNetwork(constants.networks.ethereum)
     createwallet.checkNetworkChangeWarningMsg()
@@ -30,12 +32,12 @@ describe('Create Safe tests', () => {
     createwallet.verifyNextBtnIsEnabled()
   })
 
-  it('C32378: Verify that a new Wallet has default name related to the selected network', () => {
+  it.only('C32378: Verify that a new Wallet has default name related to the selected network', () => {
     owner.waitForConnectionStatus()
     createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
   })
 
-  it('C4790: Verify error message is displayed if wallet name input exceeds 50 characters', () => {
+  it.only('C4790: Verify error message is displayed if wallet name input exceeds 50 characters', () => {
     owner.waitForConnectionStatus()
     createwallet.typeWalletName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
