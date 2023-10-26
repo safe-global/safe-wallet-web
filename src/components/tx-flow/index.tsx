@@ -1,7 +1,8 @@
 import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback, useRef } from 'react'
 import TxModalDialog from '@/components/common/TxModalDialog'
-import { useSearchParams } from 'next/navigation'
 import { SuccessScreen } from './flows/SuccessScreen'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import useChainId from '@/hooks/useChainId'
 
 const noop = () => {}
 
@@ -26,9 +27,8 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   const [fullWidth, setFullWidth] = useState<boolean>(false)
   const shouldWarn = useRef<boolean>(true)
   const onClose = useRef<() => void>(noop)
-  const searchParams = useSearchParams()
-  const safeQuery = searchParams.get('safe')
-  const prevQuery = useRef<string>(safeQuery ?? '')
+  const safeId = useChainId() + useSafeAddress()
+  const prevSafeId = useRef<string>(safeId ?? '')
 
   const handleModalClose = useCallback(() => {
     onClose.current()
@@ -67,14 +67,14 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
 
   // // Close the modal when the Safe changes
   useEffect(() => {
-    if (safeQuery === prevQuery.current) return
-    prevQuery.current = safeQuery ?? ''
+    if (safeId === prevSafeId.current) return
+    prevSafeId.current = safeId
 
     if (txFlow) {
       handleShowWarning()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [txFlow, safeQuery])
+  }, [txFlow, safeId])
 
   return (
     <TxModalContext.Provider value={{ txFlow, setTxFlow, setFullWidth }}>
