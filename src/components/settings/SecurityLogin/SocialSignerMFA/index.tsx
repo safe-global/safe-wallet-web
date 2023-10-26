@@ -83,6 +83,7 @@ const SocialSignerMFA = () => {
   const mpcCoreKit = useMPC()
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>()
   const [submitError, setSubmitError] = useState<string>()
+  const [open, setOpen] = useState<boolean>(false)
 
   const formMethods = useForm<PasswordFormData>({
     mode: 'all',
@@ -107,6 +108,8 @@ const SocialSignerMFA = () => {
 
     try {
       await enableMFA(mpcCoreKit, data)
+      onReset()
+      setOpen(false)
     } catch (e) {
       setSubmitError('The password you entered is incorrect. Please try again.')
     }
@@ -116,6 +119,10 @@ const SocialSignerMFA = () => {
     reset()
     setPasswordStrength(undefined)
     setSubmitError(undefined)
+  }
+
+  const toggleAccordion = () => {
+    setOpen((prev) => !prev)
   }
 
   const confirmPassword = watch(PasswordFieldNames.confirmPassword)
@@ -137,7 +144,7 @@ const SocialSignerMFA = () => {
             Protect your social login signer with a password. It will be used to restore access in another browser or on
             another device.
           </Typography>
-          <Accordion>
+          <Accordion expanded={open} defaultExpanded={false} onChange={toggleAccordion}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Box display="flex" alignItems="center" gap={1}>
                 <SvgIcon component={CheckIcon} sx={{ color: isPasswordSet ? 'success.main' : 'border.light' }} />
