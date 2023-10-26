@@ -66,18 +66,16 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
       const shouldSignOffChain =
         isOffchainEIP1271Supported(safe, currentChain) && !onChainSigning && settings.offChainSigning
 
-      if (shouldSignOffChain) {
-        setTxFlow(<SignMessageFlow logoUri={appInfo.iconUrl} name={appInfo.name} message={message} requestId={id} />)
-      } else {
-        setTxFlow(<SignMessageOnChainFlow props={{ appId: wcApp?.id, requestId: id, message, method }} />)
-      }
       const { title, options } = NotificationMessages.SIGNATURE_REQUEST(appInfo)
       showNotification(title, options)
 
       return new Promise((resolve, reject) => {
-        const unsubscribe = () => {
-          unsubscribeSignaturePrepared()
-          unsubscribeUserQuit()
+        let onClose = () => {
+          reject({
+            code: RpcErrorCode.USER_REJECTED,
+            message: 'User rejected signature',
+          })
+          unsubscribe()
         }
 
         const unsubscribeSignaturePrepared = safeMsgSubscribe(
@@ -90,13 +88,19 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
           },
         )
 
-        const unsubscribeUserQuit = txSubscribe(TxEvent.USER_QUIT, () => {
-          reject({
-            code: RpcErrorCode.USER_REJECTED,
-            message: 'User rejected signature request',
-          })
-          unsubscribe()
-        })
+        const unsubscribe = () => {
+          onClose = () => {}
+          unsubscribeSignaturePrepared()
+        }
+
+        if (shouldSignOffChain) {
+          setTxFlow(
+            <SignMessageFlow logoUri={appInfo.iconUrl} name={appInfo.name} message={message} requestId={id} />,
+            onClose,
+          )
+        } else {
+          setTxFlow(<SignMessageOnChainFlow props={{ appId: wcApp?.id, requestId: id, message, method }} />, onClose)
+        }
       })
     }
 
@@ -120,30 +124,16 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
           }
         })
 
-        setTxFlow(
-          <SafeAppsTxFlow
-            data={{
-              appId: undefined,
-              app: {
-                name: appInfo.name,
-                // Show WC details in transaction list
-                url: wcApp?.url ?? appInfo.url,
-                iconUrl: appInfo.iconUrl,
-              },
-              requestId: id,
-              txs: transactions,
-              params: params.params,
-            }}
-          />,
-        )
-
         const { title, options } = NotificationMessages.TRANSACTION_REQUEST(appInfo)
         showNotification(title, options)
 
         return new Promise((resolve, reject) => {
-          const unsubscribe = () => {
-            unsubscribeSignaturePrepared()
-            unsubscribeUserQuit()
+          let onClose = () => {
+            reject({
+              code: RpcErrorCode.USER_REJECTED,
+              message: 'User rejected transaction',
+            })
+            unsubscribe()
           }
 
           const unsubscribeSignaturePrepared = txSubscribe(
@@ -157,13 +147,28 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
             },
           )
 
-          const unsubscribeUserQuit = txSubscribe(TxEvent.USER_QUIT, () => {
-            reject({
-              code: RpcErrorCode.USER_REJECTED,
-              message: 'User rejected transaction',
-            })
-            unsubscribe()
-          })
+          const unsubscribe = () => {
+            onClose = () => {}
+            unsubscribeSignaturePrepared()
+          }
+
+          setTxFlow(
+            <SafeAppsTxFlow
+              data={{
+                appId: undefined,
+                app: {
+                  name: appInfo.name,
+                  // Show WC details in transaction list
+                  url: wcApp?.url ?? appInfo.url,
+                  iconUrl: appInfo.iconUrl,
+                },
+                requestId: id,
+                txs: transactions,
+                params: params.params,
+              }}
+            />,
+            onClose,
+          )
         })
       },
 

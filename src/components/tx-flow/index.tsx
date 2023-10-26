@@ -1,9 +1,9 @@
-import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback } from 'react'
-import TxModalDialog from '@/components/common/TxModalDialog'
+import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback, useRef } from 'react'
 import { usePathname } from 'next/navigation'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import TxModalDialog from '@/components/common/TxModalDialog'
 import { SuccessScreen } from './flows/SuccessScreen'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import useChainId from '@/hooks/useChainId'
 
 const noop = () => {}
 
@@ -19,68 +19,74 @@ export const TxModalContext = createContext<TxModalContextType>({
   setFullWidth: noop,
 })
 
-const shouldClose = () => confirm('Closing this window will discard your current progress.')
+const confirmClose = () => {
+  return confirm('Closing this window will discard your current progress.')
+}
 
 export const TxModalProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [txFlow, setFlow] = useState<TxModalContextType['txFlow']>(undefined)
-  const [shouldWarn, setShouldWarn] = useState<boolean>(false)
-  const [, setOnClose] = useState<Parameters<TxModalContextType['setTxFlow']>[1]>(noop)
   const [fullWidth, setFullWidth] = useState<boolean>(false)
+  const shouldWarn = useRef<boolean>(true)
+  const onClose = useRef<() => void>(noop)
+  const safeId = useChainId() + useSafeAddress()
+  const prevSafeId = useRef<string>(safeId ?? '')
   const pathname = usePathname()
-  const [, setLastPath] = useState<string>(pathname)
-  const { safeAddress, safe } = useSafeInfo()
+  const prevPathname = useRef<string>(pathname)
 
   const handleModalClose = useCallback(() => {
-    setOnClose((prevOnClose) => {
-      prevOnClose?.()
-      return noop
-    })
+    onClose.current()
+    onClose.current = noop
     setFlow(undefined)
-    txDispatch(TxEvent.USER_QUIT, {})
-  }, [setFlow, setOnClose])
+  }, [])
 
   const handleShowWarning = useCallback(() => {
-    if (!shouldWarn) {
-      handleModalClose()
+    if (shouldWarn.current && !confirmClose()) {
       return
     }
-
-    if (!shouldClose()) return
-
     handleModalClose()
-  }, [shouldWarn, handleModalClose])
+  }, [handleModalClose])
 
   const setTxFlow = useCallback(
-    (newTxFlow: TxModalContextType['txFlow'], onClose?: () => void, newShouldWarn?: boolean) => {
-      // If flow is open and user opens a different one, show confirmation dialog if required
-      if (txFlow && newTxFlow && newTxFlow?.type !== SuccessScreen) {
-        if (shouldWarn && !shouldClose()) return
-        txDispatch(TxEvent.USER_QUIT, {})
-      }
+    (newTxFlow: TxModalContextType['txFlow'], newOnClose?: () => void, newShouldWarn?: boolean) => {
+      setFlow((prev) => {
+        if (prev === newTxFlow) return prev
 
-      setFlow(newTxFlow)
-      setOnClose(() => onClose ?? noop)
-      setShouldWarn(newShouldWarn ?? true)
+        // If a new flow is triggered, close the current one
+        if (prev && newTxFlow?.type !== SuccessScreen) {
+          if (shouldWarn.current && !confirmClose()) {
+            return prev
+          }
+          onClose.current()
+        }
+
+        onClose.current = newOnClose ?? noop
+        shouldWarn.current = newShouldWarn ?? true
+
+        return newTxFlow
+      })
     },
-    [txFlow, shouldWarn],
+    [],
   )
 
-  // Show the confirmation dialog if user navigates
+  // // Close the modal when the Safe changes
   useEffect(() => {
-    setLastPath((prev) => {
-      if (prev !== pathname && txFlow) {
-        handleShowWarning()
-      }
-      return pathname
-    })
-  }, [txFlow, handleShowWarning, pathname])
+    if (safeId === prevSafeId.current) return
+    prevSafeId.current = safeId
 
-  // Close the modal when the Safe changes
+    if (txFlow) {
+      handleShowWarning()
+    }
+  }, [txFlow, safeId])
+
+  // // Close the modal when the path changes
   useEffect(() => {
-    handleModalClose()
-    // Could have same address but different chain
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [safe.chainId, safeAddress])
+    if (pathname === prevPathname.current) return
+    prevPathname.current = pathname
+
+    if (txFlow) {
+      handleShowWarning()
+    }
+  }, [txFlow, pathname])
 
   return (
     <TxModalContext.Provider value={{ txFlow, setTxFlow, setFullWidth }}>

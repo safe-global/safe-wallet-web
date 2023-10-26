@@ -2,7 +2,6 @@ import EventBus from '@/services/EventBus'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
 
 export enum TxEvent {
-  USER_QUIT = 'USER_QUIT',
   SIGNED = 'SIGNED',
   SIGN_FAILED = 'SIGN_FAILED',
   PROPOSED = 'PROPOSED',
@@ -27,7 +26,6 @@ export enum TxEvent {
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
 
 interface TxEvents {
-  [TxEvent.USER_QUIT]: {}
   [TxEvent.SIGNED]: { txId?: string }
   [TxEvent.SIGN_FAILED]: { txId?: string; error: Error }
   [TxEvent.PROPOSE_FAILED]: { error: Error }
