@@ -7,6 +7,7 @@ import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWallet
 import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
 import { getPeerName, stripEip155Prefix } from './utils'
+import { IS_PRODUCTION } from '@/config/constants'
 
 const walletConnectSingleton = new WalletConnectWallet()
 
@@ -54,6 +55,10 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     if (!walletConnect || !safeWalletProvider || !chainId) return
 
     return walletConnect.onRequest(async (event) => {
+      if (!IS_PRODUCTION) {
+        console.log('[WalletConnect] request', event)
+      }
+
       const { topic } = event
       const session = walletConnect.getActiveSessions().find((s) => s.topic === topic)
       const requestChainId = stripEip155Prefix(event.params.chainId)
