@@ -31,6 +31,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
   },
+  SIDEBAR_OPEN_SAFE: {
+    action: 'Sidebar open Safe',
+    category: OVERVIEW_CATEGORY,
+  },
   TOTAL_ADDED_SAFES: {
     event: EventType.META,
     action: 'Total added Safes',

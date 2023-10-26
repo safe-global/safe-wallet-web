@@ -6,6 +6,7 @@ import { getClipboard, isClipboardSupported } from '@/utils/clipboard'
 import { isPairingUri } from '@/services/walletconnect/utils'
 import Track from '@/components/common/Track'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
+import { trackEvent } from '@/services/analytics'
 
 const WcInput = ({ uri }: { uri: string }) => {
   const { walletConnect } = useContext(WalletConnectContext)
@@ -41,9 +42,17 @@ const WcInput = ({ uri }: { uri: string }) => {
     [walletConnect],
   )
 
+  // Insert a pre-filled uri
   useEffect(() => {
     onInput(uri)
   }, [onInput, uri])
+
+  // Track errors
+  useEffect(() => {
+    if (error) {
+      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: error.message })
+    }
+  }, [error])
 
   const onPaste = useCallback(async () => {
     // Errors are handled by in getClipboard

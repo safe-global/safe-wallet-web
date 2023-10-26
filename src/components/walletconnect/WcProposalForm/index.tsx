@@ -33,8 +33,8 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
 
   const name = getPeerName(proposer) || 'Unknown dApp'
   const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isWarnedBridge(origin, name)
-  const isBlocked = isUnsupportedChain || isScam || isBlockedBridge(origin)
-  const disabled = !safeLoaded || isBlocked || (isHighRisk && !understandsRisk)
+  const isBlocked = isScam || isBlockedBridge(origin)
+  const disabled = !safeLoaded || isUnsupportedChain || isBlocked || (isHighRisk && !understandsRisk)
 
   const onCheckboxClick = useCallback(
     (_: ChangeEvent, checked: boolean) => {
@@ -50,6 +50,7 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
     [url],
   )
 
+  // Track risk/scam/bridge warnings
   useEffect(() => {
     if (isHighRisk || isBlocked) {
       trackEvent({
@@ -58,6 +59,16 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
       })
     }
   }, [isHighRisk, isBlocked, url])
+
+  // Track unsupported chain warnings
+  useEffect(() => {
+    if (isUnsupportedChain) {
+      trackEvent({
+        ...WALLETCONNECT_EVENTS.UNSUPPORTED_CHAIN,
+        label: url,
+      })
+    }
+  }, [url, isUnsupportedChain])
 
   return (
     <div className={css.container}>

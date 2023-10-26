@@ -1,5 +1,5 @@
 import { Alert, Typography } from '@mui/material'
-import type { ReactElement } from 'react'
+import { useCallback } from 'react'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 
 import ChainIndicator from '@/components/common/ChainIndicator'
@@ -8,6 +8,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 
 import css from './styles.module.css'
 import NetworkSelector from '@/components/common/NetworkSelector'
+import { trackEvent } from '@/services/analytics'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 export const CompatibilityWarning = ({
   proposal,
@@ -15,10 +17,15 @@ export const CompatibilityWarning = ({
 }: {
   proposal: Web3WalletTypes.SessionProposal
   chainIds: Array<string>
-}): ReactElement => {
+}) => {
   const { safe } = useSafeInfo()
   const isUnsupportedChain = !chainIds.includes(safe.chainId)
   const { severity, message } = useCompatibilityWarning(proposal, isUnsupportedChain)
+  const peerUrl = proposal.params.proposer.metadata.url || proposal.verifyContext.verified.origin
+
+  const onChainChange = useCallback(() => {
+    trackEvent({ ...WALLETCONNECT_EVENTS.SWITCH_FROM_UNSUPPORTED_CHAIN, label: peerUrl })
+  }, [peerUrl])
 
   return (
     <>
@@ -40,7 +47,7 @@ export const CompatibilityWarning = ({
 
           <Typography mt={3} component="div">
             Switch network
-            <NetworkSelector />
+            <NetworkSelector onChainSelect={onChainChange} />
           </Typography>
         </>
       )}
