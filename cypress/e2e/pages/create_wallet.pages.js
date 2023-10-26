@@ -7,16 +7,16 @@ const ownerAddress = 'input[name^="owners"][name$="address"]'
 const thresholdInput = 'input[name="threshold"]'
 export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
 const connectingContainer = 'div[class*="connecting-container"]'
-const createNewSafeBtn = 'span[data-track="create-safe: Open stepper"]'
+const createNewSafeBtn = 'span[data-track="create-safe: Continue to creation"]'
 
 const changeNetworkWarningStr = 'Change your wallet network'
 const safeAccountSetupStr = 'Safe Account setup'
-const policy1_1 = '1/1 policy'
+const policy1_2 = '1/2 policy'
 export const walletName = 'test1-sepolia-safe'
 export const defaltSepoliaPlaceholder = 'sepolia-safe'
 
-export function verifyPolicy1_1() {
-  cy.contains(policy1_1).should('exist')
+export function verifyPolicy1_2() {
+  cy.contains(policy1_2).should('exist')
   // TOD: Need data-cy for containers
 }
 
@@ -51,6 +51,10 @@ export function clickOnCreateNewSafeBtn() {
 
 export function typeWalletName(name) {
   cy.get(nameInput).type(name).should('have.value', name)
+}
+
+export function clearWalletName() {
+  cy.get(nameInput).clear()
 }
 
 export function selectNetwork(network, regex = false) {
