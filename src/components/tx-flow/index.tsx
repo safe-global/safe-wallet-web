@@ -1,4 +1,5 @@
 import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import TxModalDialog from '@/components/common/TxModalDialog'
 import { SuccessScreen } from './flows/SuccessScreen'
 import useSafeAddress from '@/hooks/useSafeAddress'
@@ -29,6 +30,8 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   const onClose = useRef<() => void>(noop)
   const safeId = useChainId() + useSafeAddress()
   const prevSafeId = useRef<string>(safeId ?? '')
+  const pathname = usePathname()
+  const prevPathname = useRef<string>(pathname)
 
   const handleModalClose = useCallback(() => {
     onClose.current()
@@ -73,8 +76,17 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     if (txFlow) {
       handleShowWarning()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [txFlow, safeId])
+
+  // // Close the modal when the path changes
+  useEffect(() => {
+    if (pathname === prevPathname.current) return
+    prevPathname.current = pathname
+
+    if (txFlow) {
+      handleShowWarning()
+    }
+  }, [txFlow, pathname])
 
   return (
     <TxModalContext.Provider value={{ txFlow, setTxFlow, setFullWidth }}>
