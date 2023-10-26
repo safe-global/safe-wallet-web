@@ -51,11 +51,7 @@ const getProviders: (options: {
       <StoreHydrator initialState={initialReduxState}>
         <RouterContext.Provider value={mockRouter(routerProps)}>
           <SafeThemeProvider mode="light">
-            {(safeTheme: Theme) => (
-              <ThemeProvider theme={safeTheme}>
-                <TxModalProvider>{children}</TxModalProvider>
-              </ThemeProvider>
-            )}
+            {(safeTheme: Theme) => <ThemeProvider theme={safeTheme}>{children}</ThemeProvider>}
           </SafeThemeProvider>
         </RouterContext.Provider>
       </StoreHydrator>

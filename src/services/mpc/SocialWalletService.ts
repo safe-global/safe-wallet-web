@@ -1,51 +1,68 @@
-import { COREKIT_STATUS, getWebBrowserFactor, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
+import { COREKIT_STATUS, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import BN from 'bn.js'
 import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
-import { SecurityQuestionRecovery } from '@/hooks/wallets/mpc/recovery/SecurityQuestionRecovery'
+import { SecurityQuestionRecovery } from '@/services/mpc/recovery/SecurityQuestionRecovery'
 import { trackEvent } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import { MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
-import { DeviceShareRecovery } from '@/hooks/wallets/mpc/recovery/DeviceShareRecovery'
-
-export interface ISocialWalletService {
-  /**
-   * Opens a pop up with the google login and creates / restores the mpc wallet.
-   *
-   * @returns the follow up status of the mpcCoreKit.
-   */
-  loginAndCreate(onConnect: () => Promise<void>): Promise<COREKIT_STATUS>
-
-  /**
-   * Deletes the currently logged in account.
-   * This should only be used in dev environments and never in prod!
-   */
-  __deleteAccount(): void
-
-  /**
-   * Tries to recover a social signer through the Security Questions module
-   *
-   * @param onConnect
-   * @param password entered recovery password
-   * @param storeDeviceFactor if true a device factor will be added after successful recovery
-   */
-  recoverAccountWithPassword(
-    onConnect: () => Promise<void>,
-    password: string,
-    storeDeviceFactor: boolean,
-  ): Promise<boolean>
-}
+import { DeviceShareRecovery } from '@/services/mpc/recovery/DeviceShareRecovery'
+import { logError } from '../exceptions'
+import ErrorCodes from '../exceptions/ErrorCodes'
+import { asError } from '../exceptions/utils'
+import { type ISocialWalletService, MPCWalletState } from './interfaces'
 
 /**
  * Singleton Service for accessing the social login wallet
  */
 class SocialWalletService implements ISocialWalletService {
   private mpcCoreKit: Web3AuthMPCCoreKit
+  private onConnect: () => Promise<void> = () => Promise.resolve()
 
   public walletState: MPCWalletState
+
+  private deviceShareRecovery: DeviceShareRecovery
+  private securityQuestionRecovery: SecurityQuestionRecovery
 
   constructor(mpcCoreKit: Web3AuthMPCCoreKit) {
     this.mpcCoreKit = mpcCoreKit
     this.walletState = MPCWalletState.NOT_INITIALIZED
+    this.deviceShareRecovery = new DeviceShareRecovery(mpcCoreKit)
+    this.securityQuestionRecovery = new SecurityQuestionRecovery(mpcCoreKit)
+  }
+
+  isMFAEnabled() {
+    const { shareDescriptions } = this.mpcCoreKit.getKeyDetails()
+    return !Object.values(shareDescriptions).some((value) => value[0]?.includes('hashedShare'))
+  }
+
+  isRecoveryPasswordSet() {
+    return this.securityQuestionRecovery.isEnabled()
+  }
+
+  async enableMFA(oldPassword: string | undefined, newPassword: string): Promise<void> {
+    try {
+      // 1. setup device factor with password recovery
+      await this.securityQuestionRecovery.upsertPassword(newPassword, oldPassword)
+      const securityQuestionFactor = await this.securityQuestionRecovery.recoverWithPassword(newPassword)
+      if (!securityQuestionFactor) {
+        throw Error('Problem setting up the new password')
+      }
+
+      if (!this.isMFAEnabled()) {
+        trackEvent(MPC_WALLET_EVENTS.ENABLE_MFA)
+        // 2. enable MFA in mpcCoreKit
+        await this.mpcCoreKit.enableMFA({}, false)
+      }
+
+      await this.mpcCoreKit.commitChanges()
+    } catch (e) {
+      const error = asError(e)
+      logError(ErrorCodes._304, error.message)
+      throw error
+    }
+  }
+
+  setOnConnect(onConnect: () => Promise<void>) {
+    this.onConnect = onConnect
   }
 
   setWalletState(newState: MPCWalletState) {
@@ -53,10 +70,10 @@ class SocialWalletService implements ISocialWalletService {
   }
 
   getUserInfo() {
-    return this.mpcCoreKit.getUserInfo()
+    return this.mpcCoreKit.state.userInfo
   }
 
-  async loginAndCreate(onConnect: () => Promise<void>): Promise<COREKIT_STATUS> {
+  async loginAndCreate(): Promise<COREKIT_STATUS> {
     try {
       this.walletState = MPCWalletState.AUTHENTICATING
       await this.mpcCoreKit.loginWithOauth({
@@ -69,15 +86,11 @@ class SocialWalletService implements ISocialWalletService {
 
       if (this.mpcCoreKit.status === COREKIT_STATUS.REQUIRED_SHARE) {
         // Check if we have a device share stored
-        const deviceFactor = await getWebBrowserFactor(this.mpcCoreKit)
-        if (deviceFactor) {
-          // Recover from device factor
-          const deviceFactorKey = new BN(deviceFactor, 'hex')
-          await this.mpcCoreKit.inputFactorKey(deviceFactorKey)
+        if (await this.deviceShareRecovery.isEnabled()) {
+          await this.deviceShareRecovery.recoverWithDeviceFactor()
         } else {
           // Check password recovery
-          const securityQuestions = new SecurityQuestionRecovery(this.mpcCoreKit)
-          if (securityQuestions.isEnabled()) {
+          if (this.securityQuestionRecovery.isEnabled()) {
             trackEvent(MPC_WALLET_EVENTS.MANUAL_RECOVERY)
             this.walletState = MPCWalletState.MANUAL_RECOVERY
             return this.mpcCoreKit.status
@@ -85,7 +98,7 @@ class SocialWalletService implements ISocialWalletService {
         }
       }
 
-      await this.finalizeLogin(onConnect)
+      await this.finalizeLogin()
       return this.mpcCoreKit.status
     } catch (error) {
       this.walletState = MPCWalletState.NOT_INITIALIZED
@@ -94,37 +107,43 @@ class SocialWalletService implements ISocialWalletService {
     }
   }
 
-  private async finalizeLogin(onConnect: () => Promise<void>) {
+  private async finalizeLogin() {
     if (this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
       await this.mpcCoreKit.commitChanges()
-
-      await onConnect()
+      const address = await this.mpcCoreKit.provider?.request({ method: 'eth_accounts', params: [] })
+      await this.onConnect()
 
       this.walletState = MPCWalletState.READY
     }
   }
 
-  async recoverAccountWithPassword(
-    onConnect: () => Promise<void>,
-    password: string,
-    storeDeviceShare: boolean = false,
-  ) {
-    const securityQuestions = new SecurityQuestionRecovery(this.mpcCoreKit)
-
-    if (securityQuestions.isEnabled()) {
-      const factorKeyString = await securityQuestions.recoverWithPassword(password)
+  async recoverAccountWithPassword(password: string, storeDeviceShare: boolean = false) {
+    if (this.securityQuestionRecovery.isEnabled()) {
+      const factorKeyString = await this.securityQuestionRecovery.recoverWithPassword(password)
       const factorKey = new BN(factorKeyString, 'hex')
       await this.mpcCoreKit.inputFactorKey(factorKey)
 
       if (storeDeviceShare) {
-        const deviceShareRecovery = new DeviceShareRecovery(this.mpcCoreKit)
-        await deviceShareRecovery.createAndStoreDeviceFactor()
+        await this.deviceShareRecovery.createAndStoreDeviceFactor()
       }
 
-      await this.finalizeLogin(onConnect)
+      await this.finalizeLogin()
     }
 
     return this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
+  }
+
+  async exportSignerKey(password: string): Promise<string> {
+    try {
+      if (this.securityQuestionRecovery.isEnabled()) {
+        // Only export PK if recovery works
+        await this.securityQuestionRecovery.recoverWithPassword(password)
+      }
+      const exportedPK = await this.mpcCoreKit?._UNSAFE_exportTssKey()
+      return exportedPK
+    } catch (err) {
+      throw new Error('Error exporting account. Make sure the password is correct.')
+    }
   }
 
   async __deleteAccount() {

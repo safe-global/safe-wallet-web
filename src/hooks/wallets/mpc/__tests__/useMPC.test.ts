@@ -13,6 +13,8 @@ jest.mock('@web3auth/mpc-core-kit', () => ({
   Web3AuthMPCCoreKit: jest.fn(),
 }))
 
+jest.mock('@/hooks/wallets/mpc/useSocialWallet')
+
 type MPCProvider = Web3AuthMPCCoreKit['provider']
 
 /**

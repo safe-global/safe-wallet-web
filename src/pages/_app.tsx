@@ -38,7 +38,6 @@ import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendin
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
 import { useInitMPC } from '@/hooks/wallets/mpc/useMPC'
-import { MpcWalletProvider } from '@/components/common/ConnectWallet/MPCWalletProvider'
 import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
@@ -81,9 +80,7 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <MpcWalletProvider>
-              <TxModalProvider>{children}</TxModalProvider>
-            </MpcWalletProvider>
+            <TxModalProvider>{children}</TxModalProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}

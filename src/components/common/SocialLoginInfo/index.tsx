@@ -1,14 +1,13 @@
 import { Box, Typography } from '@mui/material'
 import css from './styles.module.css'
-import { useContext } from 'react'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/services/onboard'
-import { MpcWalletContext } from '@/components/common/ConnectWallet/MPCWalletProvider'
 import CopyAddressButton from '@/components/common/CopyAddressButton'
 import ExplorerButton from '@/components/common/ExplorerButton'
 import { getBlockExplorerLink } from '@/utils/chains'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 
 const SocialLoginInfo = ({
   wallet,
@@ -19,7 +18,8 @@ const SocialLoginInfo = ({
   chainInfo?: ChainInfo
   hideActions?: boolean
 }) => {
-  const { userInfo } = useContext(MpcWalletContext)
+  const socialWalletService = useSocialWallet()
+  const userInfo = socialWalletService?.getUserInfo()
   const prefix = chainInfo?.shortName
   const link = chainInfo ? getBlockExplorerLink(chainInfo, wallet.address) : undefined
   const settings = useAppSelector(selectSettings)

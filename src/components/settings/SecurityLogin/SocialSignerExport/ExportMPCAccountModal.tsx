@@ -1,8 +1,7 @@
-import { MpcWalletContext } from '@/components/common/ConnectWallet/MPCWalletProvider'
 import CopyButton from '@/components/common/CopyButton'
 import ModalDialog from '@/components/common/ModalDialog'
 import { Box, Button, DialogContent, DialogTitle, IconButton, TextField, Typography } from '@mui/material'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Visibility, VisibilityOff, Close } from '@mui/icons-material'
 import css from '@/components/settings/SecurityLogin/SocialSignerExport/styles.module.css'
@@ -10,6 +9,7 @@ import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 
 enum ExportFieldNames {
   password = 'password',
@@ -22,7 +22,7 @@ type ExportFormData = {
 }
 
 const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: boolean }) => {
-  const { exportPk } = useContext(MpcWalletContext)
+  const socialWalletService = useSocialWallet()
   const [error, setError] = useState<string>()
 
   const [showPassword, setShowPassword] = useState(false)
@@ -37,9 +37,12 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
   const exportedKey = watch(ExportFieldNames.pk)
 
   const onSubmit = async (data: ExportFormData) => {
+    if (!socialWalletService) {
+      return
+    }
     try {
       setError(undefined)
-      const pk = await exportPk(data[ExportFieldNames.password])
+      const pk = await socialWalletService.exportSignerKey(data[ExportFieldNames.password])
       setValue(ExportFieldNames.pk, pk)
     } catch (err) {
       logError(ErrorCodes._305, err)

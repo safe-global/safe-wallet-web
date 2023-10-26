@@ -1,5 +1,4 @@
 import Track from '@/components/common/Track'
-import { SecurityQuestionRecovery } from '@/hooks/wallets/mpc/recovery/SecurityQuestionRecovery'
 import {
   Typography,
   Button,
@@ -15,7 +14,6 @@ import {
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { useState, useMemo, type ChangeEvent } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { enableMFA } from '@/components/settings/SecurityLogin/SocialSignerMFA/helper'
 import CheckIcon from '@/public/images/common/check-filled.svg'
 import LockWarningIcon from '@/public/images/common/lock-warning.svg'
 import PasswordInput from '@/components/settings/SecurityLogin/SocialSignerMFA/PasswordInput'
@@ -23,9 +21,9 @@ import css from '@/components/settings/SecurityLogin/SocialSignerMFA/styles.modu
 import BarChartIcon from '@/public/images/common/bar-chart.svg'
 import ShieldIcon from '@/public/images/common/shield.svg'
 import ShieldOffIcon from '@/public/images/common/shield-off.svg'
-import useMPC from '@/hooks/wallets/mpc/useMPC'
 import { useAppDispatch } from '@/store'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 
 enum PasswordFieldNames {
   oldPassword = 'oldPassword',
@@ -79,7 +77,7 @@ const passwordStrengthMap = {
 
 const SocialSignerMFA = () => {
   const dispatch = useAppDispatch()
-  const mpcCoreKit = useMPC()
+  const socialWalletService = useSocialWallet()
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(PasswordStrength.weak)
 
   const formMethods = useForm<PasswordFormData>({
@@ -94,16 +92,12 @@ const SocialSignerMFA = () => {
   const { formState, handleSubmit, reset, watch } = formMethods
 
   const isPasswordSet = useMemo(() => {
-    if (!mpcCoreKit) return false
-
-    const securityQuestions = new SecurityQuestionRecovery(mpcCoreKit)
-    return securityQuestions.isEnabled()
-  }, [mpcCoreKit])
+    return socialWalletService?.isRecoveryPasswordSet()
+  }, [socialWalletService])
 
   const onSubmit = async (data: PasswordFormData) => {
-    if (!mpcCoreKit) return
-
-    await enableMFA(dispatch, mpcCoreKit, data)
+    if (!socialWalletService) return
+    await socialWalletService.enableMFA(data[PasswordFieldNames.oldPassword], data[PasswordFieldNames.newPassword])
   }
 
   const onReset = () => {

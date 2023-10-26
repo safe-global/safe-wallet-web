@@ -2,7 +2,6 @@ import { Box, Button } from '@mui/material'
 import css from './styles.module.css'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SocialLoginInfo from '@/components/common/SocialLoginInfo'
-import { isMFAEnabled } from '@/components/settings/SecurityLogin/SocialSignerMFA/helper'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import LockIcon from '@/public/images/common/lock-small.svg'
@@ -11,20 +10,16 @@ import ChainSwitcher from '@/components/common/ChainSwitcher'
 import { IS_PRODUCTION } from '@/config/constants'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import useOnboard, { type ConnectedWallet, switchWallet } from '@/hooks/wallets/useOnboard'
-import { type MPCWalletHook } from '@/hooks/wallets/mpc/useMPCWallet'
-import useMPC from '@/hooks/wallets/mpc/useMPC'
 import { useRouter } from 'next/router'
 import useAddressBook from '@/hooks/useAddressBook'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import madProps from '@/utils/mad-props'
-import { useContext } from 'react'
-import { MpcWalletContext } from '@/components/common/ConnectWallet/MPCWalletProvider'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 
 type WalletInfoProps = {
   wallet: ConnectedWallet
-  resetAccount: MPCWalletHook['resetAccount']
-  mpcCoreKit: ReturnType<typeof useMPC>
+  socialWalletService: ReturnType<typeof useSocialWallet>
   router: ReturnType<typeof useRouter>
   onboard: ReturnType<typeof useOnboard>
   addressBook: ReturnType<typeof useAddressBook>
@@ -33,8 +28,7 @@ type WalletInfoProps = {
 
 export const WalletInfo = ({
   wallet,
-  resetAccount,
-  mpcCoreKit,
+  socialWalletService,
   router,
   onboard,
   addressBook,
@@ -49,6 +43,8 @@ export const WalletInfo = ({
       switchWallet(onboard)
     }
   }
+
+  const resetAccount = socialWalletService?.__deleteAccount
 
   const handleDisconnect = () => {
     if (!wallet) return
@@ -70,7 +66,7 @@ export const WalletInfo = ({
           {isSocialLogin ? (
             <>
               <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} />
-              {mpcCoreKit && !isMFAEnabled(mpcCoreKit) && (
+              {socialWalletService && !socialWalletService.isMFAEnabled() && (
                 <Link href={{ pathname: AppRoutes.settings.securityLogin, query: router.query }} passHref>
                   <Button
                     fullWidth
@@ -119,11 +115,8 @@ export const WalletInfo = ({
   )
 }
 
-const useResetAccount = () => useContext(MpcWalletContext).resetAccount
-
 export default madProps(WalletInfo, {
-  resetAccount: useResetAccount,
-  mpcCoreKit: useMPC,
+  socialWalletService: useSocialWallet,
   router: useRouter,
   onboard: useOnboard,
   addressBook: useAddressBook,

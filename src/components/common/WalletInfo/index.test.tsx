@@ -4,9 +4,10 @@ import { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 import { type NextRouter } from 'next/router'
 import * as mpcModule from '@/services/mpc/SocialLoginModule'
 import * as constants from '@/config/constants'
-import * as mfaHelper from '@/components/settings/SecurityLogin/SocialSignerMFA/helper'
 import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import { act } from '@testing-library/react'
+import SocialWalletService from '@/services/mpc/SocialWalletService'
+import type { ISocialWalletService } from '@/services/mpc/interfaces'
 
 const mockWallet = {
   address: '0x1234567890123456789012345678901234567890',
@@ -26,17 +27,20 @@ const mockOnboard = {
   setChain: jest.fn(),
 } as unknown as OnboardAPI
 
+jest.mock('@/services/mpc/SocialWalletService')
+
 describe('WalletInfo', () => {
+  let socialWalletService: ISocialWalletService
   beforeEach(() => {
     jest.resetAllMocks()
+    socialWalletService = new SocialWalletService({} as unknown as Web3AuthMPCCoreKit)
   })
 
   it('should display the wallet address', () => {
     const { getByText } = render(
       <WalletInfo
         wallet={mockWallet}
-        resetAccount={jest.fn()}
-        mpcCoreKit={undefined}
+        socialWalletService={socialWalletService}
         router={mockRouter}
         onboard={mockOnboard}
         addressBook={{}}
@@ -51,8 +55,7 @@ describe('WalletInfo', () => {
     const { getByText } = render(
       <WalletInfo
         wallet={mockWallet}
-        resetAccount={jest.fn()}
-        mpcCoreKit={undefined}
+        socialWalletService={socialWalletService}
         router={mockRouter}
         onboard={mockOnboard}
         addressBook={{}}
@@ -67,8 +70,7 @@ describe('WalletInfo', () => {
     const { getByText } = render(
       <WalletInfo
         wallet={mockWallet}
-        resetAccount={jest.fn()}
-        mpcCoreKit={undefined}
+        socialWalletService={socialWalletService}
         router={mockRouter}
         onboard={mockOnboard}
         addressBook={{}}
@@ -94,8 +96,7 @@ describe('WalletInfo', () => {
     const { getByText } = render(
       <WalletInfo
         wallet={mockWallet}
-        resetAccount={jest.fn()}
-        mpcCoreKit={undefined}
+        socialWalletService={socialWalletService}
         router={mockRouter}
         onboard={mockOnboard}
         addressBook={{}}
@@ -113,8 +114,7 @@ describe('WalletInfo', () => {
     const { queryByText } = render(
       <WalletInfo
         wallet={mockWallet}
-        resetAccount={jest.fn()}
-        mpcCoreKit={undefined}
+        socialWalletService={socialWalletService}
         router={mockRouter}
         onboard={mockOnboard}
         addressBook={{}}
@@ -132,8 +132,7 @@ describe('WalletInfo', () => {
     const { queryByText } = render(
       <WalletInfo
         wallet={mockWallet}
-        resetAccount={jest.fn()}
-        mpcCoreKit={undefined}
+        socialWalletService={socialWalletService}
         router={mockRouter}
         onboard={mockOnboard}
         addressBook={{}}
@@ -146,13 +145,11 @@ describe('WalletInfo', () => {
 
   it('should display an enable mfa button if mfa is not enabled', () => {
     jest.spyOn(mpcModule, 'isSocialLoginWallet').mockReturnValue(true)
-    jest.spyOn(mfaHelper, 'isMFAEnabled').mockReturnValue(false)
 
     const { getByText } = render(
       <WalletInfo
         wallet={mockWallet}
-        resetAccount={jest.fn()}
-        mpcCoreKit={{} as Web3AuthMPCCoreKit}
+        socialWalletService={socialWalletService}
         router={mockRouter}
         onboard={mockOnboard}
         addressBook={{}}
@@ -165,13 +162,14 @@ describe('WalletInfo', () => {
 
   it('should not display an enable mfa button if mfa is already enabled', () => {
     jest.spyOn(mpcModule, 'isSocialLoginWallet').mockReturnValue(true)
-    jest.spyOn(mfaHelper, 'isMFAEnabled').mockReturnValue(true)
+
+    // Mock that MFA is enabled
+    socialWalletService.enableMFA('', '')
 
     const { queryByText } = render(
       <WalletInfo
         wallet={mockWallet}
-        resetAccount={jest.fn()}
-        mpcCoreKit={{} as Web3AuthMPCCoreKit}
+        socialWalletService={socialWalletService}
         router={mockRouter}
         onboard={mockOnboard}
         addressBook={{}}
