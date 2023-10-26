@@ -47,7 +47,7 @@ export interface ISocialWalletService {
    * @param oldPassword required if MFA is already enabled
    * @param newPassword new password to set
    */
-  enableMFA(oldPassword: string, newPassword: string): Promise<void>
+  enableMFA(oldPassword: string | undefined, newPassword: string): Promise<void>
 
   isRecoveryPasswordSet(): boolean
 
