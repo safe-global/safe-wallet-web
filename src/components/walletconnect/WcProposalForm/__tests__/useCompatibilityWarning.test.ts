@@ -18,7 +18,7 @@ describe('useCompatibilityWarning', () => {
 
       expect(result.current).toEqual({
         message:
-          'Fake Bridge is a bridge that is unusable in Safe{Wallet} due to the current implementation of WalletConnect — the bridged funds will be lost. Consider using a different bridge.',
+          'Fake Bridge is a bridge that is incompatible with Safe{Wallet} — the bridged funds will be lost. Consider using a different bridge.',
         severity: 'error',
       })
     })
@@ -35,7 +35,7 @@ describe('useCompatibilityWarning', () => {
 
       expect(result.current).toEqual({
         message:
-          'This dApp is a bridge that is unusable in Safe{Wallet} due to the current implementation of WalletConnect — the bridged funds will be lost. Consider using a different bridge.',
+          'This dApp is a bridge that is incompatible with Safe{Wallet} — the bridged funds will be lost. Consider using a different bridge.',
         severity: 'error',
       })
     })

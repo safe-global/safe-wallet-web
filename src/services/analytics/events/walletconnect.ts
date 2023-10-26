@@ -45,4 +45,18 @@ export const WALLETCONNECT_EVENTS = {
     action: 'WC accept risk',
     category: WALLETCONNECT_CATEGORY,
   },
+  UNSUPPORTED_CHAIN: {
+    action: 'WC unsupported chain',
+    category: WALLETCONNECT_CATEGORY,
+    event: EventType.META,
+  },
+  SHOW_ERROR: {
+    action: 'WC show error',
+    category: WALLETCONNECT_CATEGORY,
+    event: EventType.META,
+  },
+  SWITCH_FROM_UNSUPPORTED_CHAIN: {
+    action: 'WC switch from unsupported chain',
+    category: WALLETCONNECT_CATEGORY,
+  },
 }

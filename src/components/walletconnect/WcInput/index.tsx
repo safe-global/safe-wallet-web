@@ -6,12 +6,26 @@ import { getClipboard, isClipboardSupported } from '@/utils/clipboard'
 import { isPairingUri } from '@/services/walletconnect/utils'
 import Track from '@/components/common/Track'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
+import { trackEvent } from '@/services/analytics'
+import useDebounce from '@/hooks/useDebounce'
+
+const useTrackErrors = (error?: Error) => {
+  const debouncedErrorMessage = useDebounce(error?.message, 1000)
+
+  // Track errors
+  useEffect(() => {
+    if (debouncedErrorMessage) {
+      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: debouncedErrorMessage })
+    }
+  }, [debouncedErrorMessage])
+}
 
 const WcInput = ({ uri }: { uri: string }) => {
   const { walletConnect } = useContext(WalletConnectContext)
   const [value, setValue] = useState('')
   const [error, setError] = useState<Error>()
   const [connecting, setConnecting] = useState(false)
+  useTrackErrors(error)
 
   const onInput = useCallback(
     async (val: string) => {
@@ -41,6 +55,7 @@ const WcInput = ({ uri }: { uri: string }) => {
     [walletConnect],
   )
 
+  // Insert a pre-filled uri
   useEffect(() => {
     onInput(uri)
   }, [onInput, uri])

@@ -118,6 +118,11 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     return () => clearTimeout(timer)
   }, [changedSession, setOpen])
 
+  // Track errors
+  useEffect(() => {
+    if (error) trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: error.message })
+  }, [error])
+
   //
   // UI states
   //
