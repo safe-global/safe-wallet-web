@@ -15,7 +15,6 @@ import {
   within,
 } from '../test-utils'
 import AppsPage from '@/pages/apps'
-import BookmarkedSafeAppsPage from '@/pages/apps/bookmarked'
 import CustomSafeAppsPage from '@/pages/apps/custom'
 import * as safeAppsService from '@/services/safe-apps/manifest'
 import { LS_NAMESPACE } from '@/config/constants'
@@ -150,9 +149,9 @@ describe('AppsPage', () => {
 
       window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
 
-      render(<BookmarkedSafeAppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
-          pathname: '/apps/bookmarked',
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
@@ -161,10 +160,11 @@ describe('AppsPage', () => {
 
       // show Bookmarked Safe Apps only
       await waitFor(() => {
-        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
-        expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        expect(screen.queryByText('My pinned apps (2)')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Transaction Builder')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin ENS App')).not.toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Synthetix')).not.toBeInTheDocument()
       })
     })
 
@@ -176,28 +176,28 @@ describe('AppsPage', () => {
 
       window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
 
-      render(<BookmarkedSafeAppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
-          pathname: '/apps/bookmarked',
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
         },
       })
 
-      // show Bookmarked Safe Apps only
+      // show Bookmarked Safe Apps
       await waitFor(() => {
-        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Transaction Builder')).toBeInTheDocument()
       })
 
       // unpin Transaction Builder Safe App
       fireEvent.click(screen.getByLabelText('Unpin Transaction Builder'))
 
-      // show Bookmarked Safe Apps only
+      // show Bookmarked Safe Apps
       await waitFor(() => {
-        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).not.toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Transaction Builder')).not.toBeInTheDocument()
       })
     })
 
@@ -209,9 +209,9 @@ describe('AppsPage', () => {
 
       window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
 
-      render(<BookmarkedSafeAppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
-          pathname: '/apps/bookmarked',
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },

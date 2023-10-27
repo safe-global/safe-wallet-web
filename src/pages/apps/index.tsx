@@ -16,6 +16,7 @@ const SafeApps: NextPage = () => {
   const { remoteSafeApps, remoteSafeAppsLoading, pinnedSafeApps, pinnedSafeAppIds, togglePin } = useSafeApps()
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
     useSafeAppsFilters(remoteSafeApps)
+  const isFiltered = !!query || selectedCategories.length > 0
 
   const nonPinnedApps = useMemo(
     () => remoteSafeApps.filter((app) => !pinnedSafeAppIds.has(app.id)),
@@ -51,7 +52,7 @@ const SafeApps: NextPage = () => {
         />
 
         {/* Pinned apps */}
-        {!query && (
+        {!isFiltered && pinnedSafeApps.length > 0 && (
           <SafeAppList
             title="My pinned apps"
             safeAppsList={pinnedSafeApps}
@@ -63,7 +64,7 @@ const SafeApps: NextPage = () => {
         {/* All apps */}
         <SafeAppList
           title="All apps"
-          safeAppsList={query ? filteredApps : nonPinnedApps}
+          safeAppsList={isFiltered ? filteredApps : nonPinnedApps}
           safeAppsListLoading={remoteSafeAppsLoading}
           bookmarkedSafeAppsId={pinnedSafeAppIds}
           onBookmarkSafeApp={togglePin}
