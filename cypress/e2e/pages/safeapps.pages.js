@@ -28,6 +28,7 @@ export const logoWalletConnect = /logo.*walletconnect/i
 export const walletConnectHeadlinePreview = /walletconnect/i
 export const availableNetworksPreview = /available networks/i
 export const connecttextPreview = 'Connect your Safe to any dApp that supports WalletConnect'
+const warningDefaultAppStr = 'The application you are trying to access is not in the default Safe Apps list'
 export const localStorageItem =
   '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}'
 export const gridItem = 'main .MuiPaper-root > .MuiGrid-item'
@@ -50,6 +51,12 @@ export const permissionCheckboxNames = {
   geolocation: 'Geolocation',
   fullscreen: 'Fullscreen',
 }
+
+export function verifyWarningDefaultAppMsgIsDisplayed() {
+  cy.get('p').contains(warningDefaultAppStr).should('be.visible')
+  cy.wait(1000)
+}
+
 export function typeAppName(name) {
   cy.get(searchAppInput).clear().type(name)
 }
@@ -157,7 +164,7 @@ export function storeAndVerifyPermissions() {
 
         expect(browserPermissions.feature).to.eq('camera')
         expect(browserPermissions.status).to.eq('granted')
-        expect(storedInfoModal['5'].consentsAccepted).to.eq(true)
+        expect(storedInfoModal['11155111'].consentsAccepted).to.eq(true)
       })
   })
 }

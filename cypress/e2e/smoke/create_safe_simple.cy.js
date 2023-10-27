@@ -4,7 +4,7 @@ import * as createwallet from '../pages/create_wallet.pages'
 
 import * as owner from '../pages/owners.pages'
 
-describe('Create Safe tests', () => {
+describe('Safe creation tests', () => {
   before(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
   })
@@ -13,7 +13,7 @@ describe('Create Safe tests', () => {
     main.acceptCookies()
   })
 
-  it.only('C55742: Verify a Wallet can be connected', () => {
+  it('Verify a Wallet can be connected [C56101]', () => {
     createwallet.clickOnCreateNewSafeBtn()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
@@ -23,7 +23,7 @@ describe('Create Safe tests', () => {
     cy.url().should('include', constants.createNewSafeSepoliaUrl)
   })
 
-  it.only('C55743: Verify Next button is disabled until switching to network is done', () => {
+  it('Verify Next button is disabled until switching to network is done [C56102]', () => {
     owner.waitForConnectionStatus()
     createwallet.selectNetwork(constants.networks.ethereum)
     createwallet.checkNetworkChangeWarningMsg()
@@ -32,43 +32,43 @@ describe('Create Safe tests', () => {
     createwallet.verifyNextBtnIsEnabled()
   })
 
-  it.only('C32378: Verify that a new Wallet has default name related to the selected network', () => {
+  it('Verify that a new Wallet has default name related to the selected network [C56099]', () => {
     owner.waitForConnectionStatus()
     createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
   })
 
-  it.only('C4790: Verify error message is displayed if wallet name input exceeds 50 characters', () => {
+  it('Verify error message is displayed if wallet name input exceeds 50 characters [C56098]', () => {
     owner.waitForConnectionStatus()
     createwallet.typeWalletName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
     createwallet.clearWalletName()
   })
 
-  it('C55744: Verify there is no error message is displayed if wallet name input contains less than 50 characters', () => {
+  it('Verify there is no error message is displayed if wallet name input contains less than 50 characters [C56100]', () => {
     owner.waitForConnectionStatus()
     createwallet.typeWalletName(main.generateRandomString(50))
     owner.verifyValidWalletName(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('C852: Verify current connected account is shown as default owner', () => {
+  it('Verify current connected account is shown as default owner [C56091]', () => {
     owner.waitForConnectionStatus()
     owner.clickOnNextBtn()
     owner.verifyExistingOwnerAddress(0, constants.DEFAULT_OWNER_ADDRESS)
   })
 
-  it('C4791: Verify error message is displayed if owner name input exceeds 50 characters', () => {
+  it('Verify error message is displayed if owner name input exceeds 50 characters [C56092]', () => {
     owner.waitForConnectionStatus()
     owner.typeExistingOwnerName(0, main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('C55745: Verify there is no error message is displayed if owner name input contains less than 50 characters', () => {
+  it('Verify there is no error message is displayed if owner name input contains less than 50 characters [C56093]', () => {
     owner.waitForConnectionStatus()
     owner.typeExistingOwnerName(0, main.generateRandomString(50))
     owner.verifyValidWalletName(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('C55746: Verify Add and Remove Owner Row works as expected', () => {
+  it('Verify Add and Remove Owner Row works as expected [C56094]', () => {
     owner.waitForConnectionStatus()
     createwallet.clickOnAddNewOwnerBtn()
     owner.verifyNumberOfOwners(2)
@@ -80,7 +80,7 @@ describe('Create Safe tests', () => {
     owner.verifyNumberOfOwners(2)
   })
 
-  it('C55748: Verify Threshold Setup', () => {
+  it('Verify Threshold Setup [C56096]', () => {
     owner.waitForConnectionStatus()
     createwallet.clickOnAddNewOwnerBtn()
     owner.verifyNumberOfOwners(3)
@@ -95,9 +95,9 @@ describe('Create Safe tests', () => {
     createwallet.updateThreshold(1)
   })
 
-  it('C55749: Verify data persistence', () => {
-    owner.waitForConnectionStatus()
+  it('Verify data persistence [C56103]', () => {
     const ownerName = 'David'
+    owner.waitForConnectionStatus()
     createwallet.typeOwnerName(ownerName, 1)
     createwallet.typeOwnerAddress(constants.SEPOLIA_OWNER_2, 1)
     owner.clickOnBackBtn()
@@ -125,13 +125,13 @@ describe('Create Safe tests', () => {
     createwallet.verifyEstimatedFeeInSummaryStep()
   })
 
-  it('C55750: Verify tip is displayed on right side for threshold 1/2', () => {
+  it('Verify tip is displayed on right side for threshold 1/1 [C56097]', () => {
     owner.waitForConnectionStatus()
     owner.clickOnBackBtn()
     createwallet.verifyPolicy1_2()
   })
 
-  it('C55747: Verify address input validation rules', () => {
+  it('Verify address input validation rules [C56095]', () => {
     owner.waitForConnectionStatus()
     createwallet.clickOnAddNewOwnerBtn()
     createwallet.typeOwnerAddress(main.generateRandomString(10), 1)

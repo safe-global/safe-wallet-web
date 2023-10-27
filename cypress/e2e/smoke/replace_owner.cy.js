@@ -3,7 +3,7 @@ import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
 import * as addressBook from '../pages/address_book.page'
 
-describe('Replace an owner tests', () => {
+describe('Replace Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
     cy.clearLocalStorage()
@@ -11,18 +11,18 @@ describe('Replace an owner tests', () => {
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 
-  it('Verify that "Replace" icon is visible', () => {
+  it('Verify that "Replace" icon is visible [C55998]', () => {
     owner.verifyReplaceBtnIsEnabled()
   })
 
-  it('Verify Tooltip displays correct message for Non-Owner', () => {
+  it('Verify Tooltip displays correct message for Non-Owner [C56016]', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_2)
     owner.waitForConnectionStatus()
     owner.hoverOverReplaceOwnerBtn()
     owner.verifyTooltipLabel(owner.nonOwnerErrorMsg)
   })
 
-  it('Verify Tooltip displays correct message for disconnected user', () => {
+  it('Verify Tooltip displays correct message for disconnected user [C56006]', () => {
     owner.waitForConnectionStatus()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
@@ -30,19 +30,19 @@ describe('Replace an owner tests', () => {
     owner.verifyTooltipLabel(owner.disconnectedUserErrorMsg)
   })
 
-  it('Verify that the owner replacement form is opened', () => {
+  it('Verify that the owner replacement form is opened [C56007]', () => {
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
   })
 
-  it('Verify max characters in name field', () => {
+  it('Verify max characters in name field [C56008]', () => {
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('Verify that Address input auto-fills with related value', () => {
+  it('Verify that Address input auto-fills with related value [C56009]', () => {
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
     addressBook.clickOnCreateEntryBtn()
     addressBook.typeInName(constants.addresBookContacts.user1.name)
@@ -57,7 +57,7 @@ describe('Replace an owner tests', () => {
     owner.verifyNewOwnerName(constants.addresBookContacts.user1.name)
   })
 
-  it('Verify that Name field not mandatory. Verify confirmation for owner replacement is displayed', () => {
+  it('Verify that Name field not mandatory. Verify confirmation for owner replacement is displayed [C56011]', () => {
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
@@ -65,7 +65,7 @@ describe('Replace an owner tests', () => {
     owner.verifyConfirmTransactionWindowDisplayed()
   })
 
-  it('Verify that Name field not mandatory', () => {
+  it('Verify relevant error messages are displayed in Address input [C56012]', () => {
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerAddress(main.generateRandomString(10))

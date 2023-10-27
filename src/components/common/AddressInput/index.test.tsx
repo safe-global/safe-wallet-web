@@ -4,15 +4,16 @@ import { useForm, FormProvider } from 'react-hook-form'
 import AddressInput, { type AddressInputProps } from '.'
 import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from '@/components/common/AddressInput/useNameResolver'
+import { chainBuilder } from '@/tests/builders/chains'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+
+const mockChain = chainBuilder()
+  .with({ features: [FEATURES.DOMAIN_LOOKUP] })
+  .build()
 
 // mock useCurrentChain
 jest.mock('@/hooks/useChains', () => ({
-  useCurrentChain: jest.fn(() => ({
-    shortName: 'gor',
-    chainId: '5',
-    chainName: 'Goerli',
-    features: ['DOMAIN_LOOKUP'],
-  })),
+  useCurrentChain: jest.fn(() => mockChain),
 }))
 
 // mock useNameResolver
@@ -92,7 +93,7 @@ describe('AddressInput tests', () => {
     )
 
     act(() => {
-      fireEvent.change(input, { target: { value: 'gor:0x123' } })
+      fireEvent.change(input, { target: { value: `${mockChain.shortName}:0x123` } })
       jest.advanceTimersByTime(1000)
     })
 
@@ -103,14 +104,14 @@ describe('AddressInput tests', () => {
     const { input, utils } = setup('', (val) => `${val} is wrong`)
 
     act(() => {
-      fireEvent.change(input, { target: { value: `gor:${TEST_ADDRESS_A}` } })
+      fireEvent.change(input, { target: { value: `${mockChain.shortName}:${TEST_ADDRESS_A}` } })
       jest.advanceTimersByTime(1000)
     })
 
     await waitFor(() => expect(utils.getByLabelText(`${TEST_ADDRESS_A} is wrong`, { exact: false })).toBeDefined())
 
     act(() => {
-      fireEvent.change(input, { target: { value: `gor:${TEST_ADDRESS_B}` } })
+      fireEvent.change(input, { target: { value: `${mockChain.shortName}:${TEST_ADDRESS_B}` } })
       jest.advanceTimersByTime(1000)
     })
 
@@ -126,7 +127,7 @@ describe('AddressInput tests', () => {
     })
 
     act(() => {
-      fireEvent.change(input, { target: { value: `gor:${TEST_ADDRESS_A}` } })
+      fireEvent.change(input, { target: { value: `${mockChain.shortName}:${TEST_ADDRESS_A}` } })
       jest.advanceTimersByTime(1000)
     })
 
@@ -195,17 +196,13 @@ describe('AddressInput tests', () => {
   })
 
   it('should not show the adornment prefix when the value contains correct prefix', async () => {
-    ;(useCurrentChain as jest.Mock).mockImplementation(() => ({
-      shortName: 'gor',
-      chainId: '5',
-      chainName: 'Goerli',
-      features: [],
-    }))
+    const mockChain = chainBuilder().with({ features: [] }).build()
+    ;(useCurrentChain as jest.Mock).mockImplementation(() => mockChain)
 
-    const { input } = setup(`gor:${TEST_ADDRESS_A}`)
+    const { input } = setup(`${mockChain.shortName}:${TEST_ADDRESS_A}`)
 
     act(() => {
-      fireEvent.change(input, { target: { value: `gor:${TEST_ADDRESS_B}` } })
+      fireEvent.change(input, { target: { value: `${mockChain.shortName}:${TEST_ADDRESS_B}` } })
     })
 
     await waitFor(() => expect(input.previousElementSibling?.textContent).toBe(''))

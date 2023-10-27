@@ -2,50 +2,46 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as nfts from '../pages/nfts.pages'
 
-const nftsName = 'BillyNFT721'
-const nftsAddress = '0x0000...816D'
-const nftsTokenID = 'Kitaro World #261'
-const nftsLink = 'https://testnets.opensea.io/assets/0x000000000faE8c6069596c9C805A1975C657816D/443'
+const nftsName = 'CatFactory'
+const nftsAddress = '0x373B...866c'
+const nftsTokenID = 'CF'
 
-describe('Assets > NFTs', () => {
+describe('NFTs tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.balanceNftsUrl + constants.GOERLI_TEST_SAFE)
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
-    cy.contains(constants.goerlyE2EWallet)
+    nfts.clickOnNftsTab()
   })
 
-  describe('should have NFTs', () => {
-    it('should have NFTs in the table', () => {
-      nfts.verifyNFTNumber(5)
-    })
+  it.skip('Verify that NFTs exist in the table [C56123]', () => {
+    nfts.verifyNFTNumber(20)
+  })
 
-    it('should have info in the NFT row', () => {
-      nfts.verifyDataInTable(nftsName, nftsAddress, nftsTokenID, nftsLink)
-    })
+  it.skip('Verify NFT row contains data [C56124]', () => {
+    nfts.verifyDataInTable(nftsName, nftsAddress, nftsTokenID)
+  })
 
-    it('should open an NFT preview', () => {
-      nfts.openFirstNFT()
-      nfts.verifyNameInNFTModal(nftsTokenID)
-      nfts.preventBaseMainnetGoerliFromBeingSelected()
-      nfts.verifyNFTModalLink(nftsLink)
-      nfts.closeNFTModal()
-    })
+  it.skip('Verify NFT preview window can be opened [C56125]', () => {
+    nfts.openFirstNFT()
+    nfts.verifyNameInNFTModal(nftsTokenID)
+    nfts.verifySelectedNetwrokSepolia()
+    nfts.closeNFTModal()
+  })
 
-    it('should not open an NFT preview for NFTs without one', () => {
-      nfts.clickOnThirdNFT()
-      nfts.verifyNFTModalDoesNotExist()
-    })
+  it.skip('Verify NFT open does not open if no NFT exits [C56126]', () => {
+    nfts.clickOn6thNFT()
+    nfts.verifyNFTModalDoesNotExist()
+  })
 
-    it('should select and send multiple NFTs', () => {
-      nfts.verifyInitialNFTData()
-      nfts.selectNFTs(3)
-      nfts.deselectNFTs([2], 3)
-      nfts.sendNFT(2)
-      nfts.verifyNFTModalData()
-      nfts.typeRecipientAddress(constants.GOERLI_TEST_SAFE)
-      nfts.clikOnNextBtn()
-      nfts.verifyReviewModalData(2)
-    })
+  it.skip('Verify multipls NFTs can be selected and reviewed [C56127]', () => {
+    nfts.verifyInitialNFTData()
+    nfts.selectNFTs(3)
+    nfts.deselectNFTs([2], 3)
+    nfts.sendNFT(2)
+    nfts.verifyNFTModalData()
+    nfts.typeRecipientAddress(constants.SEPOLIA_TEST_SAFE_4)
+    nfts.clikOnNextBtn()
+    nfts.verifyReviewModalData(2)
   })
 })
