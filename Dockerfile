@@ -5,6 +5,7 @@ COPY . .
 
 # install deps
 RUN yarn install --frozen-lockfile
+RUN yarn after-install
 
 ENV NODE_ENV production
 
