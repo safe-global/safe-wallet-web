@@ -9,7 +9,7 @@ const BookmarkedSafeApps: NextPage = () => {
 
   // Redirect to /apps
   useEffect(() => {
-    router.push({ pathname: AppRoutes.apps.index, query: { safe: router.query.safe } })
+    router.replace({ pathname: AppRoutes.apps.index, query: { safe: router.query.safe } })
   }, [router])
 
   return (
