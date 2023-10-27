@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import classnames from 'classnames'
+import { motion, AnimatePresence } from 'framer-motion'
 
-import SafeAppCard, { GRID_VIEW_MODE } from '@/components/safe-apps/SafeAppCard'
-import type { SafeAppsViewMode } from '@/components/safe-apps/SafeAppCard'
+import SafeAppCard from '@/components/safe-apps/SafeAppCard'
 import AddCustomSafeAppCard from '@/components/safe-apps/AddCustomSafeAppCard'
 import SafeAppPreviewDrawer from '@/components/safe-apps/SafeAppPreviewDrawer'
 import SafeAppsListHeader from '@/components/safe-apps/SafeAppsListHeader'
@@ -11,9 +10,7 @@ import SafeAppsZeroResultsPlaceholder from '@/components/safe-apps/SafeAppsZeroR
 import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import css from './styles.module.css'
 import { Skeleton } from '@mui/material'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
-import { motion, AnimatePresence } from 'framer-motion'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -26,8 +23,6 @@ type SafeAppListProps = {
   query?: string
 }
 
-const VIEW_MODE_KEY = 'SafeApps_viewMode'
-
 const SafeAppList = ({
   safeAppsList,
   safeAppsListLoading,
@@ -38,7 +33,6 @@ const SafeAppList = ({
   title,
   query,
 }: SafeAppListProps) => {
-  const [safeAppsViewMode = GRID_VIEW_MODE, setSafeAppsViewMode] = useLocalStorage<SafeAppsViewMode>(VIEW_MODE_KEY)
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
   const { openedSafeAppIds } = useOpenedSafeApps()
 
@@ -58,20 +52,10 @@ const SafeAppList = ({
   return (
     <>
       {/* Safe Apps List Header */}
-      <SafeAppsListHeader
-        title={title}
-        amount={safeAppsList.length}
-        safeAppsViewMode={safeAppsViewMode}
-        setSafeAppsViewMode={setSafeAppsViewMode}
-      />
+      <SafeAppsListHeader title={title} amount={safeAppsList.length} />
 
       {/* Safe Apps List */}
-      <ul
-        className={classnames(
-          css.safeAppsContainer,
-          safeAppsViewMode === GRID_VIEW_MODE ? css.safeAppsGridViewContainer : css.safeAppsListViewContainer,
-        )}
-      >
+      <ul className={css.safeAppsContainer}>
         {/* Add Custom Safe App Card */}
         {addCustomApp && (
           <li>
@@ -98,7 +82,6 @@ const SafeAppList = ({
             >
               <SafeAppCard
                 safeApp={safeApp}
-                viewMode={safeAppsViewMode}
                 isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
                 onBookmarkSafeApp={onBookmarkSafeApp}
                 removeCustomApp={removeCustomApp}
