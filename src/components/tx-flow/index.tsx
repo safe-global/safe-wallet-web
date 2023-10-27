@@ -34,18 +34,15 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   const prevPathname = useRef<string>(pathname)
 
   const handleModalClose = useCallback(() => {
+    if (shouldWarn.current && !confirmClose()) {
+      return
+    }
     onClose.current()
     onClose.current = noop
     setFlow(undefined)
   }, [])
 
-  const handleShowWarning = useCallback(() => {
-    if (shouldWarn.current && !confirmClose()) {
-      return
-    }
-    handleModalClose()
-  }, [handleModalClose])
-
+  // Open a new tx flow, close the previous one if any
   const setTxFlow = useCallback(
     (newTxFlow: TxModalContextType['txFlow'], newOnClose?: () => void, newShouldWarn?: boolean) => {
       setFlow((prev) => {
@@ -68,31 +65,23 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     [],
   )
 
-  // // Close the modal when the Safe changes
+  // Close the modal when the user navigates to a different Safe or route
   useEffect(() => {
-    if (safeId === prevSafeId.current) return
+    if (safeId === prevSafeId.current && pathname === prevPathname.current) return
+
     prevSafeId.current = safeId
-
-    if (txFlow) {
-      handleShowWarning()
-    }
-  }, [txFlow, safeId])
-
-  // // Close the modal when the path changes
-  useEffect(() => {
-    if (pathname === prevPathname.current) return
     prevPathname.current = pathname
 
     if (txFlow) {
-      handleShowWarning()
+      handleModalClose()
     }
-  }, [txFlow, pathname])
+  }, [txFlow, safeId, pathname, handleModalClose])
 
   return (
     <TxModalContext.Provider value={{ txFlow, setTxFlow, setFullWidth }}>
       {children}
 
-      <TxModalDialog open={!!txFlow} onClose={handleShowWarning} fullWidth={fullWidth}>
+      <TxModalDialog open={!!txFlow} onClose={handleModalClose} fullWidth={fullWidth}>
         {txFlow}
       </TxModalDialog>
     </TxModalContext.Provider>
