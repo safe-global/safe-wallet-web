@@ -29,6 +29,19 @@
   margin-bottom: 0;
 }
 
+.defaultPassword,
+.passwordsShouldMatch {
+  color: var(--color-border-main);
+}
+
+.passwordsShouldMatch svg path {
+  stroke: var(--color-border-main);
+}
+
+.defaultPassword svg path {
+  stroke: var(--color-border-main);
+}
+
 .weakPassword {
   color: var(--color-error-main);
 }

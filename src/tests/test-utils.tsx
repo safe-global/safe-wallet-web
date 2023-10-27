@@ -10,7 +10,6 @@ import * as web3 from '@/hooks/wallets/web3'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { ethers } from 'ethers'
 import type { Web3Provider } from '@ethersproject/providers'
-import { TxModalProvider } from '@/components/tx-flow'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',

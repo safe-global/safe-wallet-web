@@ -110,7 +110,14 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
             )}
             {error && <ErrorMessage className={css.modalError}>{error}</ErrorMessage>}
 
-            <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="space-between"
+              alignItems="center"
+              width="100%"
+              mt={2}
+            >
               <Button variant="outlined" onClick={handleClose}>
                 Close
               </Button>

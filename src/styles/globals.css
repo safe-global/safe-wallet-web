@@ -70,6 +70,10 @@ input[type='number'] {
   stroke: var(--color-border-main);
 }
 
+.illustration-very-light-stroke {
+  stroke: var(--color-border-light);
+}
+
 .illustration-background-stroke {
   stroke: var(--color-logo-background);
 }
