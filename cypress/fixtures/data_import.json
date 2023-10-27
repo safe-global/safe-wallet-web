@@ -17,12 +17,34 @@
                 "0x8aEf2f5c3F17261F6F1C4dA058D022BE92776af8": "ow1",
                 "0x0D65139Da4B36a8A39BF1b63e950038D42231b2e": "ow 2"
             },
+            "11155111":{
+                "0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7":"test-sepolia-3"
+             },
             "137": {
                 "0xC680d44F526f4372693CAc21dcab255b77bc58F4": "Safe 1 Poly",
                 "0x61a0c717d18232711bC788F19C9Cd56a43cc8872": "Test1 Poly"
             }
         },
         "addedSafes": {
+            "11155111":{
+               
+                "0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7":{
+                   "owners":[
+                      {
+                         "value":"0xC16Db0251654C0a72E91B190d81eAD367d2C6fED",
+                         "name":null,
+                         "logoUri":null
+                      },
+                      {
+                         "value":"0x96D4c6fFC338912322813a77655fCC926b9A5aC5",
+                         "name":null,
+                         "logoUri":null
+                      }
+                   ],
+                   "threshold":1,
+                   "ethBalance":"0"
+                }
+             },
             "5": {
                 "0x10f999F150a2E7fd356Aa471bCBf0b75aA7b0e2A": {
                     "owners": [
@@ -135,6 +157,12 @@
             }
         },
         "safeApps": {
+            "11155111": {
+                "pinned": [
+                    24
+      
+                ]
+            },
             "5": {
                 "pinned": [
                     36,

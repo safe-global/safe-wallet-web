@@ -1,6 +1,6 @@
 import * as main from '../pages/main.page'
 
-let etherscanLink = 'a[aria-label="View on goerli.etherscan.io"]'
+let etherscanLink = 'a[aria-label="View on sepolia.etherscan.io"]'
 let etherscanLinkSepolia = 'a[aria-label="View on sepolia.etherscan.io"]'
 export const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 const currencyDropdown = '[id="currency"]'
@@ -45,6 +45,8 @@ export const tokenListOptions = {
 export const currencyEUR = 'EUR'
 export const currencyUSD = 'USD'
 
+export const currentcySepoliaFormat = '0.1 ETH'
+
 export const currencyAave = 'AAVE'
 export const currencyAaveAlttext = 'AAVE'
 export const currentcyAaveFormat = '27 AAVE'
@@ -68,7 +70,7 @@ export const currentcyLinkFormat = '35.94 LINK'
 export const currencyDai = 'Dai'
 export const currencyDaiCap = 'DAI'
 export const currencyDaiAlttext = 'DAI'
-export const currentcyDaiFormat = '120,496.61 DAI'
+export const currentcyDaiFormat = '82 DAI'
 export const currencyDaiFormat_2 = '82 DAI'
 
 export const currencyEther = 'Wrapped Ether'

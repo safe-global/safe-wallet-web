@@ -1,7 +1,8 @@
 import * as constants from '../../support/constants'
 import * as safeapps from '../pages/safeapps.pages'
+import * as main from '../pages/main.page'
 
-describe('The Safe permissions system', () => {
+describe('Safe permissions system tests', () => {
   before(() => {
     cy.clearLocalStorage()
   })
@@ -16,56 +17,61 @@ describe('The Safe permissions system', () => {
     })
   })
 
-  describe('When requesting permissions with wallet_requestPermissions', () => {
-    it('should show the permissions prompt and return the permissions on accept', () => {
-      cy.visitSafeApp(constants.testAppUrl + constants.requestPermissionsUrl)
-      safeapps.verifyPermissionsRequestExists()
-      safeapps.verifyAccessToAddressBookExists()
-      safeapps.clickOnAcceptBtn()
+  it('Verify that requesting permissions with wallet_requestPermissions shows the permissions prompt and return the permissions on accept [C56150]', () => {
+    cy.visitSafeApp(constants.testAppUrl + constants.requestPermissionsUrl)
+    main.acceptCookies()
+    safeapps.clickOnContinueBtn()
+    safeapps.verifyWarningDefaultAppMsgIsDisplayed()
+    safeapps.clickOnContinueBtn()
 
-      cy.get('@safeAppsMessage').should('have.been.calledWithMatch', {
-        data: [
-          {
-            invoker: constants.testAppUrl,
-            parentCapability: 'requestAddressBook',
-            date: Cypress.sinon.match.number,
-            caveats: [],
-          },
-        ],
-      })
+    safeapps.verifyPermissionsRequestExists()
+    safeapps.verifyAccessToAddressBookExists()
+    safeapps.clickOnAcceptBtn()
+
+    cy.get('@safeAppsMessage').should('have.been.calledWithMatch', {
+      data: [
+        {
+          invoker: constants.testAppUrl,
+          parentCapability: 'requestAddressBook',
+          date: Cypress.sinon.match.number,
+          caveats: [],
+        },
+      ],
     })
   })
 
-  describe('When trying to get the current permissions with wallet_getPermissions', () => {
-    it('should return the current permissions', () => {
-      cy.on('window:before:load', (window) => {
-        window.localStorage.setItem(
-          constants.SAFE_PERMISSIONS_KEY,
-          JSON.stringify({
-            [constants.testAppUrl]: [
-              {
-                invoker: constants.testAppUrl,
-                parentCapability: 'requestAddressBook',
-                date: 1111111111111,
-                caveats: [],
-              },
-            ],
-          }),
-        )
-      })
+  it('Verify that trying to get the current permissions with wallet_getPermissions returns the current permissions [C56151]', () => {
+    cy.on('window:before:load', (window) => {
+      window.localStorage.setItem(
+        constants.SAFE_PERMISSIONS_KEY,
+        JSON.stringify({
+          [constants.testAppUrl]: [
+            {
+              invoker: constants.testAppUrl,
+              parentCapability: 'requestAddressBook',
+              date: 1111111111111,
+              caveats: [],
+            },
+          ],
+        }),
+      )
+    })
 
-      cy.visitSafeApp(constants.testAppUrl + constants.getPermissionsUrl)
+    cy.visitSafeApp(constants.testAppUrl + constants.getPermissionsUrl)
+    main.acceptCookies()
+    safeapps.clickOnContinueBtn()
+    safeapps.verifyWarningDefaultAppMsgIsDisplayed()
+    safeapps.clickOnContinueBtn()
 
-      cy.get('@safeAppsMessage').should('have.been.calledWithMatch', {
-        data: [
-          {
-            invoker: constants.testAppUrl,
-            parentCapability: 'requestAddressBook',
-            date: Cypress.sinon.match.number,
-            caveats: [],
-          },
-        ],
-      })
+    cy.get('@safeAppsMessage').should('have.been.calledWithMatch', {
+      data: [
+        {
+          invoker: constants.testAppUrl,
+          parentCapability: 'requestAddressBook',
+          date: Cypress.sinon.match.number,
+          caveats: [],
+        },
+      ],
     })
   })
 })

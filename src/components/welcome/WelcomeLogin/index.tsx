@@ -14,11 +14,11 @@ const WelcomeLogin = () => {
 
   const continueToCreation = () => {
     trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
-    router.push(AppRoutes.newSafe.create)
+    router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
   }
 
   return (
-    <Paper className={css.loginCard}>
+    <Paper className={css.loginCard} data-testid="welcome-login">
       <Box className={css.loginContent}>
         <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '24px', width: '80px' }} />
         <Typography variant="h6" mt={6} fontWeight={700}>

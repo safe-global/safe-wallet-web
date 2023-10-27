@@ -2,17 +2,19 @@ import { renderHook, waitFor } from '@/tests/test-utils'
 import { useLeastRemainingRelays, useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as useChains from '@/hooks/useChains'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { chainBuilder } from '@/tests/builders/chains'
 import { FEATURES } from '@/utils/chains'
 import { SAFE_RELAY_SERVICE_URL } from '@/services/tx/relaying'
 
 const SAFE_ADDRESS = '0x0000000000000000000000000000000000000001'
 
 describe('fetch remaining relays hooks', () => {
+  const mockChain = chainBuilder()
+    // @ts-expect-error - using local FEATURES enum
+    .with({ features: [FEATURES.RELAYING] })
+    .build()
   beforeEach(() => {
-    jest
-      .spyOn(useChains, 'useCurrentChain')
-      .mockReturnValue({ chainId: '5', features: FEATURES.RELAYING } as unknown as ChainInfo)
+    jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(mockChain)
     jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       safe: {
         txHistoryTag: '0',
@@ -41,7 +43,7 @@ describe('fetch remaining relays hooks', () => {
       global.fetch = jest.fn()
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      const url = `${SAFE_RELAY_SERVICE_URL}/5/${SAFE_ADDRESS}`
+      const url = `${SAFE_RELAY_SERVICE_URL}/${mockChain.chainId}/${SAFE_ADDRESS}`
 
       renderHook(() => useRelaysBySafe())
       expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -49,7 +51,7 @@ describe('fetch remaining relays hooks', () => {
     })
 
     it('should not do a network request if chain does not support relay', () => {
-      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({ chainId: '5', features: [] } as unknown as ChainInfo)
+      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainBuilder().with({ features: [] }).build())
 
       global.fetch = jest.fn()
       const mockFetch = jest.spyOn(global, 'fetch')
@@ -151,7 +153,7 @@ describe('fetch remaining relays hooks', () => {
     })
 
     it('should not do a network request if chain does not support relay', () => {
-      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({ chainId: '5', features: [] } as unknown as ChainInfo)
+      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainBuilder().with({ features: [] }).build())
       global.fetch = jest
         .fn()
         .mockResolvedValue({

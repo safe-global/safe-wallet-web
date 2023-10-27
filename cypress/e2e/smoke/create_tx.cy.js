@@ -1,29 +1,31 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
+import * as balances from '../pages/balances.pages'
 
 const sendValue = 0.00002
-const currentNonce = 3
+const currentNonce = 1
 
-describe('Queue a transaction on 1/N', () => {
+describe('Create transactions tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.homeUrl + constants.TEST_SAFE)
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
+    balances.acceptSpamWarning()
   })
 
-  it('should create a new send token transaction', () => {
+  it('Verify a new send token transaction can be created [C56104]', () => {
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
     createtx.typeRecipientAddress(constants.EOA)
-    createtx.clickOnTokenselectorAndSelectGoerli()
+    createtx.clickOnTokenselectorAndSelectSepolia()
     createtx.setMaxAmount()
-    createtx.verifyMaxAmount(constants.goerliToken, constants.tokenAbbreviation.gor)
+    createtx.verifyMaxAmount(constants.tokenNames.sepoliaEther, constants.tokenAbbreviation.sep)
     createtx.setSendValue(sendValue)
     createtx.clickOnNextBtn()
   })
 
-  it('should review, edit and submit the tx', () => {
+  it('Verify a transaction can be reviewed, edited and submitted [C56105]', () => {
     createtx.verifySubmitBtnIsEnabled()
     cy.wait(1000)
     createtx.verifyNativeTokenTransfer()
@@ -36,7 +38,7 @@ describe('Queue a transaction on 1/N', () => {
     createtx.clickOnSignTransactionBtn()
   })
 
-  it('should click on the notification and see the transaction queued', () => {
+  it('Verify that clicking on notification shows the transaction in queue [C56106]', () => {
     createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()

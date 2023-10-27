@@ -7,6 +7,7 @@ import { updateAddressBook } from '@/components/new-safe/create/logic/address-bo
 import { useAppDispatch } from '@/store'
 import useChainId from '@/hooks/useChainId'
 import { usePendingSafe } from './usePendingSafe'
+import { gtmSetSafeAddress } from '@/services/analytics/gtm'
 
 const useSafeCreationEffects = ({
   status,
@@ -74,6 +75,7 @@ const useSafeCreationEffects = ({
   // Tracking
   useEffect(() => {
     if (status === SafeCreationStatus.SUCCESS) {
+      pendingSafe?.safeAddress && gtmSetSafeAddress(pendingSafe.safeAddress)
       trackEvent(CREATE_SAFE_EVENTS.CREATED_SAFE)
       return
     }
@@ -82,7 +84,7 @@ const useSafeCreationEffects = ({
       trackEvent(CREATE_SAFE_EVENTS.REJECT_CREATE_SAFE)
       return
     }
-  }, [status])
+  }, [pendingSafe?.safeAddress, status])
 }
 
 export default useSafeCreationEffects

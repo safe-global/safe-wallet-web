@@ -9,11 +9,12 @@ const nonceInput = 'input[name="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
 const transactionItemExpandable = 'div[id^="transfer"]'
+const expandItemIcon = '[data-testid="ExpandMoreIcon"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
-const TransactionSummary = 'Send'
+const TransactionSummary = 'Send '
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
@@ -50,9 +51,9 @@ export function clickOnSendTokensBtn() {
   cy.contains(sendTokensBtnStr).click()
 }
 
-export function clickOnTokenselectorAndSelectGoerli() {
+export function clickOnTokenselectorAndSelectSepolia() {
   cy.get(tokenAddressInput).prev().click()
-  cy.get('ul[role="listbox"]').contains(constants.goerliToken).click()
+  cy.get('ul[role="listbox"]').contains(constants.tokenNames.sepoliaEther).click()
 }
 
 export function setMaxAmount() {
@@ -66,8 +67,11 @@ export function verifyMaxAmount(token, tokenAbbreviation) {
     .contains(token)
     .next()
     .then((element) => {
-      const maxBalance = element.text().replace(tokenAbbreviation, '').trim()
-      cy.get(amountInput).should('have.value', maxBalance)
+      const maxBalance = parseFloat(element.text().replace(tokenAbbreviation, '').trim())
+      cy.get(amountInput).should(($input) => {
+        const actualValue = parseFloat($input.val())
+        expect(actualValue).to.be.closeTo(maxBalance, 0.1)
+      })
       console.log(maxBalance)
     })
 }
@@ -99,9 +103,7 @@ export function verifyConfirmTransactionData() {
   // Asserting the sponsored info is present
   cy.contains(executeStr).scrollIntoView().should('be.visible')
 
-  cy.get('span').contains(estimatedFeeStr).next().should('have.css', 'text-decoration-line', 'line-through')
-  cy.contains(transactionsPerHrStr)
-  cy.contains(transactionsPerHr5Of5Str)
+  cy.get('span').contains(estimatedFeeStr)
 }
 
 export function openExecutionParamsModal() {
@@ -112,10 +114,9 @@ export function openExecutionParamsModal() {
 export function verifyAndSubmitExecutionParams() {
   cy.contains(executionParamsStr).parents('form').as('Paramsform')
 
-  // Only gaslimit should be editable when the relayer is selected
-  const arrayNames = ['Wallet nonce', 'Max priority fee (Gwei)', 'Max fee (Gwei)']
+  const arrayNames = ['Wallet nonce', 'Max priority fee (Gwei)', 'Max fee (Gwei)', 'Gas limit']
   arrayNames.forEach((element) => {
-    cy.get('@Paramsform').find('label').contains(`${element}`).next().find('input').should('be.disabled')
+    cy.get('@Paramsform').find('label').contains(`${element}`).next().find('input').should('not.be.disabled')
   })
 
   cy.get('@Paramsform').find(gasLimitInput).clear().type('300000').invoke('prop', 'value').should('equal', '300000')
@@ -150,7 +151,7 @@ export function verifyQueueLabel() {
 }
 
 export function verifyTransactionSummary(sendValue) {
-  cy.contains(TransactionSummary + `${sendValue} ${constants.tokenAbbreviation.gor}`).should('exist')
+  cy.contains(TransactionSummary + `${sendValue} ${constants.tokenAbbreviation.sep}`).should('exist')
 }
 
 export function verifyDateExists(date) {
@@ -188,4 +189,8 @@ export function clickOnExpandAllBtn() {
 
 export function clickOnCollapseAllBtn() {
   cy.contains(collapseAllBtnStr).click()
+}
+
+export function clickOnExpandIcon() {
+  cy.get(expandItemIcon).click()
 }

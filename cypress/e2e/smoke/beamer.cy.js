@@ -2,14 +2,14 @@ import * as constants from '../../support/constants'
 import * as addressbook from '../pages/address_book.page'
 import * as main from '../../e2e/pages/main.page'
 
-describe('Beamer', () => {
+describe('Beamer tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.addressBookUrl + constants.GOERLI_TEST_SAFE)
+    cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
     main.acceptCookies()
   })
 
-  it.skip('should require accept "Updates" cookies to display Beamer', () => {
+  it.skip('Verify "Updates" cookie acceptance is required before displaying Beamer [C56090]', () => {
     addressbook.clickOnWhatsNewBtn()
     addressbook.acceptBeamerCookies()
     addressbook.verifyBeamerIsChecked()

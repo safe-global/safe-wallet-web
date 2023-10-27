@@ -22,6 +22,7 @@ jobs:
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
           skip-step: install
+          annotations: failed-tests
           package-manager: yarn
           test-script: yarn test:ci
           github-token: ${{ secrets.GITHUB_TOKEN }}

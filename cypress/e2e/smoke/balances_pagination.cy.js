@@ -3,7 +3,7 @@ import * as balances from '../pages/balances.pages'
 
 const ASSETS_LENGTH = 8
 
-describe('Balance pagination tests', () => {
+describe('Balance tests', () => {
   before(() => {
     cy.clearLocalStorage()
     // Open the Safe used for testing
@@ -18,7 +18,7 @@ describe('Balance pagination tests', () => {
     cy.contains('div', 'All tokens').click()
   })
 
-  it('should allow changing rows per page and navigate to next and previous page', () => {
+  it('Verify a user can change rows per page and navigate to next and previous page [C56073]', () => {
     balances.verifyInitialTableState()
     balances.changeTo10RowsPerPage()
     balances.verifyTableHas10Rows()
