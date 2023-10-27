@@ -2,7 +2,7 @@
   display: grid;
   grid-gap: var(--space-3);
   list-style-type: none;
-  padding: 0;
+  padding: 0 0 var(--space-1);
 }
 
 .safeAppsGridViewContainer {

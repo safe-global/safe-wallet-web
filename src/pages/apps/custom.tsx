@@ -38,6 +38,7 @@ const CustomSafeApps: NextPage = () => {
 
       <main>
         <SafeAppList
+          title="Custom apps"
           safeAppsList={customSafeApps}
           addCustomApp={addCustomApp}
           removeCustomApp={openRemoveCustomAppModal}

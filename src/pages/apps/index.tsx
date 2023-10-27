@@ -1,23 +1,26 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import SafeAppsSDKLink from '@/components/safe-apps/SafeAppsSDKLink'
 import SafeAppsHeader from '@/components/safe-apps/SafeAppsHeader'
 import SafeAppList from '@/components/safe-apps/SafeAppList'
 import { AppRoutes } from '@/config/routes'
+import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
+import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters'
 
 const SafeApps: NextPage = () => {
   const router = useRouter()
+  const { remoteSafeApps, remoteSafeAppsLoading, pinnedSafeApps, pinnedSafeAppIds, togglePin } = useSafeApps()
+  const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
+    useSafeAppsFilters(remoteSafeApps)
 
-  const {
-    remoteSafeApps,
-    remoteSafeAppsLoading,
-    pinnedSafeAppIds: bookmarkedSafeAppsId,
-    togglePin: onBookmarkSafeApp,
-  } = useSafeApps()
+  const nonPinnedApps = useMemo(
+    () => remoteSafeApps.filter((app) => !pinnedSafeAppIds.has(app.id)),
+    [remoteSafeApps, pinnedSafeAppIds],
+  )
 
   // Redirect to an individual safe app page if the appUrl is in the query params
   useEffect(() => {
@@ -38,12 +41,33 @@ const SafeApps: NextPage = () => {
       <SafeAppsHeader />
 
       <main>
-        <SafeAppList
+        {/* Safe Apps Filters */}
+        <SafeAppsFilters
+          onChangeQuery={setQuery}
+          onChangeFilterCategory={setSelectedCategories}
+          onChangeOptimizedWithBatch={setOptimizedWithBatchFilter}
+          selectedCategories={selectedCategories}
           safeAppsList={remoteSafeApps}
+        />
+
+        {/* Pinned apps */}
+        {!query && (
+          <SafeAppList
+            title="My pinned apps"
+            safeAppsList={pinnedSafeApps}
+            bookmarkedSafeAppsId={pinnedSafeAppIds}
+            onBookmarkSafeApp={togglePin}
+          />
+        )}
+
+        {/* All apps */}
+        <SafeAppList
+          title="All apps"
+          safeAppsList={query ? filteredApps : nonPinnedApps}
           safeAppsListLoading={remoteSafeAppsLoading}
-          bookmarkedSafeAppsId={bookmarkedSafeAppsId}
-          onBookmarkSafeApp={onBookmarkSafeApp}
-          showFilters
+          bookmarkedSafeAppsId={pinnedSafeAppIds}
+          onBookmarkSafeApp={togglePin}
+          query={query}
         />
       </main>
     </>

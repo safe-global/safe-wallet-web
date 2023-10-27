@@ -12,17 +12,18 @@ import css from './styles.module.css'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 
 type SafeAppsListHeaderProps = {
+  title: string
   amount?: number
   safeAppsViewMode: SafeAppsViewMode
   setSafeAppsViewMode: (viewMode: SafeAppsViewMode) => void
 }
 
-const SafeAppsListHeader = ({ amount, safeAppsViewMode, setSafeAppsViewMode }: SafeAppsListHeaderProps) => {
+const SafeAppsListHeader = ({ title, amount, safeAppsViewMode, setSafeAppsViewMode }: SafeAppsListHeaderProps) => {
   return (
-    <Stack display="flex" flexDirection="row" justifyContent="space-between">
+    <Stack display="flex" flexDirection="row" justifyContent="space-between" mt={3}>
       {/* Safe Apps count */}
-      <Typography variant="body2" color="primary.light" mb={2} mt={1.5} fontSize="12px" letterSpacing="0.4px">
-        ALL ({amount || 0})
+      <Typography variant="body2" color="primary.light" fontWeight="bold">
+        {title} ({amount || 0})
       </Typography>
 
       {/* switch Safe Apps view mode radio buttons */}

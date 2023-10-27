@@ -2,28 +2,28 @@ import { useCallback } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 
-import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters'
 import SafeAppCard, { GRID_VIEW_MODE } from '@/components/safe-apps/SafeAppCard'
 import type { SafeAppsViewMode } from '@/components/safe-apps/SafeAppCard'
 import AddCustomSafeAppCard from '@/components/safe-apps/AddCustomSafeAppCard'
 import SafeAppPreviewDrawer from '@/components/safe-apps/SafeAppPreviewDrawer'
 import SafeAppsListHeader from '@/components/safe-apps/SafeAppsListHeader'
 import SafeAppsZeroResultsPlaceholder from '@/components/safe-apps/SafeAppsZeroResultsPlaceholder'
-import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import css from './styles.module.css'
 import { Skeleton } from '@mui/material'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
+import { motion, AnimatePresence } from 'framer-motion'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
   safeAppsListLoading?: boolean
   bookmarkedSafeAppsId?: Set<number>
   onBookmarkSafeApp?: (safeAppId: number) => void
-  showFilters?: boolean
   addCustomApp?: (safeApp: SafeAppData) => void
   removeCustomApp?: (safeApp: SafeAppData) => void
+  title: string
+  query?: string
 }
 
 const VIEW_MODE_KEY = 'SafeApps_viewMode'
@@ -33,18 +33,16 @@ const SafeAppList = ({
   safeAppsListLoading,
   bookmarkedSafeAppsId,
   onBookmarkSafeApp,
-  showFilters,
   addCustomApp,
   removeCustomApp,
+  title,
+  query,
 }: SafeAppListProps) => {
   const [safeAppsViewMode = GRID_VIEW_MODE, setSafeAppsViewMode] = useLocalStorage<SafeAppsViewMode>(VIEW_MODE_KEY)
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
   const { openedSafeAppIds } = useOpenedSafeApps()
 
-  const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
-    useSafeAppsFilters(safeAppsList)
-
-  const showZeroResultsPlaceholder = query && filteredApps.length === 0
+  const showZeroResultsPlaceholder = query && safeAppsList.length === 0
 
   const handleSafeAppClick = useCallback(
     (safeApp: SafeAppData) => {
@@ -59,20 +57,10 @@ const SafeAppList = ({
 
   return (
     <>
-      {/* Safe Apps Filters */}
-      {showFilters && (
-        <SafeAppsFilters
-          onChangeQuery={setQuery}
-          onChangeFilterCategory={setSelectedCategories}
-          onChangeOptimizedWithBatch={setOptimizedWithBatchFilter}
-          selectedCategories={selectedCategories}
-          safeAppsList={safeAppsList}
-        />
-      )}
-
       {/* Safe Apps List Header */}
       <SafeAppsListHeader
-        amount={filteredApps.length}
+        title={title}
+        amount={safeAppsList.length}
         safeAppsViewMode={safeAppsViewMode}
         setSafeAppsViewMode={setSafeAppsViewMode}
       />
@@ -98,20 +86,28 @@ const SafeAppList = ({
             </li>
           ))}
 
-        {/* Flat list filtered by search query */}
-        {filteredApps.map((safeApp) => (
-          <li key={safeApp.id}>
-            <SafeAppCard
-              safeApp={safeApp}
-              viewMode={safeAppsViewMode}
-              isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
-              onBookmarkSafeApp={onBookmarkSafeApp}
-              removeCustomApp={removeCustomApp}
-              onClickSafeApp={handleSafeAppClick(safeApp)}
-              openPreviewDrawer={openPreviewDrawer}
-            />
-          </li>
-        ))}
+        <AnimatePresence>
+          {/* Flat list filtered by search query */}
+          {safeAppsList.map((safeApp) => (
+            <motion.li
+              key={safeApp.id}
+              layout
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <SafeAppCard
+                safeApp={safeApp}
+                viewMode={safeAppsViewMode}
+                isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
+                onBookmarkSafeApp={onBookmarkSafeApp}
+                removeCustomApp={removeCustomApp}
+                onClickSafeApp={handleSafeAppClick(safeApp)}
+                openPreviewDrawer={openPreviewDrawer}
+              />
+            </motion.li>
+          ))}
+        </AnimatePresence>
       </ul>
 
       {/* Zero results placeholder */}
