@@ -8,7 +8,7 @@ import { DeviceShareRecovery } from '@/services/mpc/recovery/DeviceShareRecovery
 import { logError } from '../exceptions'
 import ErrorCodes from '../exceptions/ErrorCodes'
 import { asError } from '../exceptions/utils'
-import { type ISocialWalletService, MPCWalletState } from './interfaces'
+import { type ISocialWalletService } from './interfaces'
 
 /**
  * Singleton Service for accessing the social login wallet
@@ -17,14 +17,11 @@ class SocialWalletService implements ISocialWalletService {
   private mpcCoreKit: Web3AuthMPCCoreKit
   private onConnect: () => Promise<void> = () => Promise.resolve()
 
-  public walletState: MPCWalletState
-
   private deviceShareRecovery: DeviceShareRecovery
   private securityQuestionRecovery: SecurityQuestionRecovery
 
   constructor(mpcCoreKit: Web3AuthMPCCoreKit) {
     this.mpcCoreKit = mpcCoreKit
-    this.walletState = MPCWalletState.NOT_INITIALIZED
     this.deviceShareRecovery = new DeviceShareRecovery(mpcCoreKit)
     this.securityQuestionRecovery = new SecurityQuestionRecovery(mpcCoreKit)
   }
@@ -65,17 +62,12 @@ class SocialWalletService implements ISocialWalletService {
     this.onConnect = onConnect
   }
 
-  setWalletState(newState: MPCWalletState) {
-    this.walletState = newState
-  }
-
   getUserInfo() {
     return this.mpcCoreKit.state.userInfo
   }
 
   async loginAndCreate(): Promise<COREKIT_STATUS> {
     try {
-      this.walletState = MPCWalletState.AUTHENTICATING
       await this.mpcCoreKit.loginWithOauth({
         subVerifierDetails: {
           typeOfLogin: 'google',
@@ -92,7 +84,6 @@ class SocialWalletService implements ISocialWalletService {
           // Check password recovery
           if (this.securityQuestionRecovery.isEnabled()) {
             trackEvent(MPC_WALLET_EVENTS.MANUAL_RECOVERY)
-            this.walletState = MPCWalletState.MANUAL_RECOVERY
             return this.mpcCoreKit.status
           }
         }
@@ -101,7 +92,6 @@ class SocialWalletService implements ISocialWalletService {
       await this.finalizeLogin()
       return this.mpcCoreKit.status
     } catch (error) {
-      this.walletState = MPCWalletState.NOT_INITIALIZED
       console.error(error)
       return this.mpcCoreKit.status
     }
@@ -110,10 +100,8 @@ class SocialWalletService implements ISocialWalletService {
   private async finalizeLogin() {
     if (this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
       await this.mpcCoreKit.commitChanges()
-      const address = await this.mpcCoreKit.provider?.request({ method: 'eth_accounts', params: [] })
+      await this.mpcCoreKit.provider?.request({ method: 'eth_accounts', params: [] })
       await this.onConnect()
-
-      this.walletState = MPCWalletState.READY
     }
   }
 

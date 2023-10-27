@@ -2,7 +2,7 @@ import { Divider, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import LockIcon from '@/public/images/common/lock.svg'
-import MPCLogin from './MPCLogin'
+import SocialSigner from '@/components/common/SocialSigner'
 import WalletLogin from '@/components/welcome/WelcomeLogin/WalletLogin'
 
 const WalletDetails = ({ onConnect }: { onConnect: () => void }): ReactElement => {
@@ -18,7 +18,7 @@ const WalletDetails = ({ onConnect }: { onConnect: () => void }): ReactElement =
         </Typography>
       </Divider>
 
-      <MPCLogin />
+      <SocialSigner />
     </>
   )
 }

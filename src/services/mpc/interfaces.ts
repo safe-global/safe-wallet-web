@@ -1,15 +1,8 @@
 import type { COREKIT_STATUS, UserInfo } from '@web3auth/mpc-core-kit'
 
-export enum MPCWalletState {
-  NOT_INITIALIZED,
-  AUTHENTICATING,
-  MANUAL_RECOVERY,
-  READY,
-}
-
 export interface ISocialWalletService {
   /**
-   * Opens a pop up with the google login and creates / restores the mpc wallet.
+   * Opens a popup with the Google login and creates / restores the mpc wallet.
    *
    * @returns the follow up status of the mpcCoreKit.
    */
@@ -24,7 +17,6 @@ export interface ISocialWalletService {
   /**
    * Tries to recover a social signer through the Security Questions module
    *
-   * @param onConnect
    * @param password entered recovery password
    * @param storeDeviceFactor if true a device factor will be added after successful recovery
    */
@@ -37,6 +29,9 @@ export interface ISocialWalletService {
    */
   exportSignerKey(password: string): Promise<string>
 
+  /**
+   * Returns true if MFA is enabled
+   */
   isMFAEnabled(): boolean
 
   /**
@@ -52,10 +47,6 @@ export interface ISocialWalletService {
   isRecoveryPasswordSet(): boolean
 
   getUserInfo(): UserInfo | undefined
-
-  walletState: MPCWalletState
-
-  setWalletState(state: MPCWalletState): void
 
   setOnConnect(onConnect: () => Promise<void>): void
 }

@@ -1,0 +1,16 @@
+.profileImg {
+  border-radius: var(--space-2);
+  width: 32px;
+  height: 32px;
+}
+
+.profileData {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.loginError {
+  width: 100%;
+  margin: 0;
+}

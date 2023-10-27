@@ -1,6 +1,6 @@
 import { COREKIT_STATUS, type UserInfo } from '@web3auth/mpc-core-kit'
 import { hexZeroPad } from 'ethers/lib/utils'
-import { MPCWalletState, type ISocialWalletService } from '../interfaces'
+import { type ISocialWalletService } from '../interfaces'
 
 /**
  * Manual mock for SocialWalletService
@@ -11,7 +11,6 @@ import { MPCWalletState, type ISocialWalletService } from '../interfaces'
 class TestSocialWalletService implements ISocialWalletService {
   private fakePassword = 'Test1234!'
   private postLoginState = COREKIT_STATUS.LOGGED_IN
-  public walletState = MPCWalletState.NOT_INITIALIZED
   private _isMfaEnabled = false
   private onConnect: () => Promise<void> = () => Promise.resolve()
   private userInfo: UserInfo = {
@@ -25,9 +24,6 @@ class TestSocialWalletService implements ISocialWalletService {
   }
 
   getUserInfo(): UserInfo | undefined {
-    if (this.walletState !== MPCWalletState.READY) {
-      return undefined
-    }
     return this.userInfo
   }
   isMFAEnabled(): boolean {
@@ -54,9 +50,6 @@ class TestSocialWalletService implements ISocialWalletService {
 
   async loginAndCreate(): Promise<COREKIT_STATUS> {
     return new Promise((resolve) => {
-      this.walletState = MPCWalletState.AUTHENTICATING
-      this.walletState =
-        this.postLoginState === COREKIT_STATUS.LOGGED_IN ? MPCWalletState.READY : MPCWalletState.MANUAL_RECOVERY
       this.onConnect().then(() => resolve(this.postLoginState))
     })
   }
@@ -66,7 +59,6 @@ class TestSocialWalletService implements ISocialWalletService {
   }
   async recoverAccountWithPassword(password: string, storeDeviceFactor: boolean): Promise<boolean> {
     if (this.fakePassword === password) {
-      this.walletState = MPCWalletState.READY
       await this.onConnect()
       return true
     }
@@ -75,15 +67,7 @@ class TestSocialWalletService implements ISocialWalletService {
   }
 
   exportSignerKey(password: string): Promise<string> {
-    if (this.walletState === MPCWalletState.READY) {
-      return Promise.resolve(hexZeroPad('0x1', 20))
-    }
-
-    throw new Error('Cannot export account if not logged in')
-  }
-
-  setWalletState(state: MPCWalletState): void {
-    this.walletState = state
+    return Promise.resolve(hexZeroPad('0x1', 20))
   }
 }
 

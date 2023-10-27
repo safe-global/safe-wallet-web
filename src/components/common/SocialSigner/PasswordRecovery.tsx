@@ -11,7 +11,7 @@ import {
   FormControl,
 } from '@mui/material'
 import { useState } from 'react'
-import Track from '../Track'
+import Track from '@/components/common/Track'
 import { FormProvider, useForm } from 'react-hook-form'
 import PasswordInput from '@/components/settings/SecurityLogin/SocialSignerMFA/PasswordInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'

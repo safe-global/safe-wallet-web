@@ -11,7 +11,6 @@ import { ethers } from 'ethers'
 import BN from 'bn.js'
 import { hexZeroPad } from 'ethers/lib/utils'
 import SocialWalletService from '../SocialWalletService'
-import { MPCWalletState } from '../interfaces'
 
 /** time until mock login resolves */
 const MOCK_LOGIN_TIME = 1000
@@ -81,14 +80,6 @@ describe('useMPCWallet', () => {
   afterAll(() => {
     jest.useRealTimers()
   })
-  it('should have state NOT_INITIALIZED initially', () => {
-    const testService = new SocialWalletService(
-      new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, {
-        email: 'test@testermann.com',
-      } as unknown as UserInfo) as unknown as Web3AuthMPCCoreKit,
-    )
-    expect(testService.walletState).toBe(MPCWalletState.NOT_INITIALIZED)
-  })
 
   describe('triggerLogin', () => {
     it('should handle successful log in for SFA account', async () => {
@@ -107,8 +98,6 @@ describe('useMPCWallet', () => {
         status = testService.loginAndCreate()
       })
 
-      // While the login resolves we are in Authenticating state
-      expect(testService.walletState === MPCWalletState.AUTHENTICATING)
       expect(mockOnConnect).not.toHaveBeenCalled()
 
       // Resolve mock login
@@ -119,7 +108,6 @@ describe('useMPCWallet', () => {
       // We should be logged in and onboard should get connected
       await waitFor(() => {
         expect(status).resolves.toEqual(COREKIT_STATUS.LOGGED_IN)
-        expect(testService.walletState === MPCWalletState.READY)
         expect(mockOnConnect).toHaveBeenCalled()
         expect(mockCoreKit.commitChanges).toHaveBeenCalled()
       })
@@ -150,7 +138,6 @@ describe('useMPCWallet', () => {
       })
 
       // While the login resolves we are in Authenticating state
-      expect(testService.walletState === MPCWalletState.AUTHENTICATING)
       expect(mockOnConnect).not.toHaveBeenCalled()
 
       // Resolve mock login
@@ -161,7 +148,6 @@ describe('useMPCWallet', () => {
       // We should be logged in and onboard should get connected
       await waitFor(() => {
         expect(status).resolves.toEqual(COREKIT_STATUS.LOGGED_IN)
-        expect(testService.walletState === MPCWalletState.READY)
         expect(mockOnConnect).toHaveBeenCalled()
         expect(mockCoreKit.commitChanges).toHaveBeenCalled()
       })
@@ -187,9 +173,6 @@ describe('useMPCWallet', () => {
         status = testService.loginAndCreate()
       })
 
-      // While the login resolves we are in Authenticating state
-      expect(testService.walletState === MPCWalletState.AUTHENTICATING)
-
       // Resolve mock login
       act(() => {
         jest.advanceTimersByTime(MOCK_LOGIN_TIME)
@@ -198,7 +181,6 @@ describe('useMPCWallet', () => {
       // A missing second factor should result in manual recovery state
       await waitFor(() => {
         expect(status).resolves.toEqual(COREKIT_STATUS.REQUIRED_SHARE)
-        expect(testService.walletState === MPCWalletState.MANUAL_RECOVERY)
         expect(mockOnConnect).not.toHaveBeenCalled()
         expect(mockCoreKit.commitChanges).not.toHaveBeenCalled()
       })
@@ -280,7 +262,6 @@ describe('useMPCWallet', () => {
       act(() => testService.recoverAccountWithPassword('test', false))
 
       await waitFor(() => {
-        expect(testService.walletState === MPCWalletState.READY)
         expect(mockOnConnect).toHaveBeenCalled()
       })
     })
