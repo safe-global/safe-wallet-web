@@ -21,7 +21,7 @@ const SESSION_INFO_TIMEOUT = 2000
 const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
-  const { walletConnect, error, setError, setOpen } = useContext(WalletConnectContext)
+  const { walletConnect, error, setError, open, setOpen } = useContext(WalletConnectContext)
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [changedSession, setChangedSession] = useState<SessionTypes.Struct>()
 
@@ -120,21 +120,21 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
 
   // Track errors
   useEffect(() => {
-    if (error) trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: error.message })
-  }, [error])
+    if (error && open) {
+      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: error.message })
+    }
+  }, [error, open])
 
   //
   // UI states
   //
 
+  // Nothing to show
+  if (!open) return null
+
   // Error
   if (error) {
     return <WcErrorMessage error={error} onClose={onErrorReset} />
-  }
-
-  // Session proposal
-  if (proposal) {
-    return <WcProposalForm proposal={proposal} onApprove={onApprove} onReject={onReject} />
   }
 
   // Session info
@@ -145,6 +145,11 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
         isDelete={!sessions.some((s) => s.topic === changedSession.topic)}
       />
     )
+  }
+
+  // Session proposal
+  if (proposal) {
+    return <WcProposalForm proposal={proposal} onApprove={onApprove} onReject={onReject} />
   }
 
   // Connection form (initial state)
