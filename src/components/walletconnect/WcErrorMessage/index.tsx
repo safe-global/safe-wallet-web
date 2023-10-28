@@ -8,7 +8,7 @@ const WcErrorMessage = ({ error, onClose }: { error: Error; onClose: () => void 
       <WcLogoHeader error />
 
       <Typography title={error.message} className={css.errorMessage} mb={3}>
-        {error.message}
+        {error.message || 'An error occurred'}
       </Typography>
 
       <Button variant="contained" onClick={onClose} className={css.button}>
