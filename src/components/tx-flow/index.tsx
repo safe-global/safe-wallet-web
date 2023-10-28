@@ -49,7 +49,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
         if (prev === newTxFlow) return prev
 
         // If a new flow is triggered, close the current one
-        if (prev && newTxFlow?.type !== SuccessScreen) {
+        if (prev && newTxFlow && newTxFlow.type !== SuccessScreen) {
           if (shouldWarn.current && !confirmClose()) {
             return prev
           }
