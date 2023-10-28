@@ -37,12 +37,4 @@ before(() => {
       }
     }
   })
-
-  cy.on('window:before:load', (window) => {
-    window.localStorage.setItem('SAFE_v2__show_terms', false)
-    // So that tests that rely on this feature don't randomly fail
-    window.localStorage.setItem('SAFE_v2__AB_human-readable', true)
-    // Hide the WC onboarding tooltip
-    window.localStorage.setItem('SAFE_v2__native_wc_onboarding', true)
-  })
 })
