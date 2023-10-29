@@ -1,7 +1,6 @@
 import * as batch from '../pages/batches.pages'
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
-import * as balances from '../pages/balances.pages'
 
 const currentNonce = 3
 const funds_first_tx = '0.001'
@@ -12,7 +11,6 @@ describe('Batch transaction tests', () => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
-    balances.acceptSpamWarning()
   })
 
   it('Verify empty batch list can be opened [C56082]', () => {

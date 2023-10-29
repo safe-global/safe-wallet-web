@@ -9,7 +9,9 @@ export function clickOnSideMenuItem(item) {
 export function acceptCookies() {
   cy.wait(1000)
 
-  cy.findAllByText('Got it!').each(($el) => $el.click())
+  cy.findAllByText('Got it!')
+    .should('have.length.at.least', 0)
+    .each(($el) => $el.click())
 
   cy.get('button')
     .contains(acceptSelection)

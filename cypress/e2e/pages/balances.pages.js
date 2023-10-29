@@ -20,7 +20,6 @@ const hiddenTokenDeselectAllBtn = 'span[data-track="assets: Deselect all hide di
 const hiddenTokenIcon = 'svg[data-testid="VisibilityOffOutlinedIcon"]'
 
 const hideTokenDefaultString = 'Hide tokens'
-const gotItStr = 'Got it!'
 const assetNameSortBtnStr = 'Asset'
 const assetBalanceSortBtnStr = 'Balance'
 const sendBtnStr = 'Send'
@@ -184,14 +183,6 @@ export function verifyEachRowHasCheckbox(state) {
   })
 }
 
-export function acceptSpamWarning() {
-  cy.get('button').contains(gotItStr).click()
-  verifySpamWarningNotdisplayed()
-}
-
-export function verifySpamWarningNotdisplayed() {
-  cy.contains(gotItStr).should('not.exist')
-}
 export function verifyTokensTabIsSelected(option) {
   cy.get(`a[aria-selected="${option}"]`).contains('Tokens')
 }

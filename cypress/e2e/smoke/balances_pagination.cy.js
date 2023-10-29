@@ -12,7 +12,6 @@ describe('Balance tests', () => {
     // Table is loaded
     cy.contains('Görli Ether')
 
-    cy.contains('button', 'Got it').click()
     cy.contains('div', 'Default tokens').click()
     cy.wait(100)
     cy.contains('div', 'All tokens').click()
