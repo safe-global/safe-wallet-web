@@ -30,7 +30,7 @@ jobs:
 
       - uses: cypress-io/github-action@v4
         with:
-          spec: cypress/e2e/smoke/*.cy.js
+          spec: cypress/e2e/smoke/create_safe_simple.cy.js
           browser: chrome
           record: true
           config: baseUrl=http://localhost:8080

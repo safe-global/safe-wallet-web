@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 
 const nameInput = 'input[name="name"]'
 const selectNetworkBtn = '[data-cy="create-safe-select-network"]'
+const overlay = 'div[data-testid="sentinelStart"]'
 const ownerInput = 'input[name^="owners"][name$="name"]'
 const ownerAddress = 'input[name^="owners"][name$="address"]'
 const thresholdInput = 'input[name="threshold"]'
@@ -65,6 +66,7 @@ export function clearWalletName() {
 export function selectNetwork(network, regex = false) {
   cy.wait(1000)
   cy.get(selectNetworkBtn).should('exist').click()
+  cy.get(overlay).invoke('attr', 'style', 'display: none')
   cy.get('li').contains(network).click()
 
   if (regex) {
