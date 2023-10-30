@@ -13,7 +13,7 @@ describe('Assets tests', () => {
   beforeEach(() => {
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     cy.clearLocalStorage()
-    main.acceptCookies()
+    main.acceptCookies(2)
   })
 
   it('Verify that the token tab is selected by default and the table is visible [C56039]', () => {

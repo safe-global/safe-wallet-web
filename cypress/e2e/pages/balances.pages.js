@@ -44,7 +44,7 @@ export const tokenListOptions = {
 export const currencyEUR = 'EUR'
 export const currencyUSD = 'USD'
 
-export const currentcySepoliaFormat = '0.1 ETH'
+export const currentcySepoliaFormat = '0.09996 ETH'
 
 export const currencyAave = 'AAVE'
 export const currencyAaveAlttext = 'AAVE'

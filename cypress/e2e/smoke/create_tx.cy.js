@@ -3,7 +3,7 @@ import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 
 const sendValue = 0.00002
-const currentNonce = 1
+const currentNonce = 11
 
 describe('Create transactions tests', () => {
   before(() => {
