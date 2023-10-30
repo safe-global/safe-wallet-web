@@ -83,7 +83,9 @@ const useGtm = () => {
   }, [router.pathname])
 
   useEffect(() => {
-    gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, walletLabel ?? WALLET_LABEL_NONE)
+    if (walletLabel) {
+      gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, walletLabel)
+    }
   }, [walletLabel])
 
   // Track meta events on app load

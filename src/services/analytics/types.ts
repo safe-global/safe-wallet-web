@@ -33,5 +33,3 @@ export enum DeviceType {
 export enum AnalyticsUserProperties {
   WALLET_LABEL = 'walletLabel',
 }
-
-export const WALLET_LABEL_NONE = 'NONE'
