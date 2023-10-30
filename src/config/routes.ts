@@ -1,6 +1,7 @@
 export const AppRoutes = {
   '404': '/404',
   welcome: '/welcome',
+  welcomeLp: '/welcome-lp',
   terms: '/terms',
   privacy: '/privacy',
   licenses: '/licenses',
