@@ -95,7 +95,10 @@ const SocialSignerMFA = () => {
   const { formState, handleSubmit, reset, watch } = formMethods
 
   const isPasswordSet = useMemo(() => {
-    return socialWalletService?.isRecoveryPasswordSet()
+    if (!socialWalletService) {
+      return false
+    }
+    return socialWalletService.isRecoveryPasswordSet()
   }, [socialWalletService])
 
   const onSubmit = async (data: PasswordFormData) => {

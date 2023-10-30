@@ -77,7 +77,7 @@ export const PasswordRecovery = ({
                 </Typography>
               </Box>
               <Divider />
-              <Box p={4} display="flex" flexDirection="column" alignItems="baseline" gap={1}>
+              <Box className={css.passwordWrapper}>
                 <FormControl fullWidth>
                   <PasswordInput
                     name="password"
@@ -86,7 +86,6 @@ export const PasswordRecovery = ({
                     disabled={isDisabled}
                     required
                   />
-                  <span>{formState.errors['password']?.message}</span>
                 </FormControl>
                 <FormControlLabel
                   disabled={isDisabled}
