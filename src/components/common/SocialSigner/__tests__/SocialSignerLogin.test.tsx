@@ -1,8 +1,6 @@
 import { act, render, waitFor } from '@/tests/test-utils'
 
 import { SocialSigner, _getSupportedChains } from '@/components/common/SocialSigner'
-import { hexZeroPad } from '@ethersproject/bytes'
-import { type EIP1193Provider } from '@web3-onboard/common'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { COREKIT_STATUS, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
@@ -10,15 +8,12 @@ import SocialWalletService from '@/services/mpc/SocialWalletService'
 import { TxModalProvider } from '@/components/tx-flow'
 import { fireEvent } from '@testing-library/react'
 import { type ISocialWalletService } from '@/services/mpc/interfaces'
+import { connectedWalletBuilder } from '@/tests/builders/wallet'
+import { chainBuilder } from '@/tests/builders/chains'
 
 jest.mock('@/services/mpc/SocialWalletService')
 
-const mockWallet = {
-  address: hexZeroPad('0x1', 20),
-  chainId: '5',
-  label: ONBOARD_MPC_MODULE_LABEL,
-  provider: {} as unknown as EIP1193Provider,
-}
+const mockWallet = connectedWalletBuilder().with({ chainId: '5', label: ONBOARD_MPC_MODULE_LABEL }).build()
 
 describe('SocialSignerLogin', () => {
   let mockSocialWalletService: ISocialWalletService
@@ -152,10 +147,18 @@ describe('SocialSignerLogin', () => {
   })
 
   describe('getSupportedChains', () => {
+    const mockEthereumChain = chainBuilder()
+      .with({
+        chainId: '1',
+        chainName: 'Ethereum',
+        disabledWallets: ['socialLogin'],
+      })
+      .build()
+    const mockGnosisChain = chainBuilder()
+      .with({ chainId: '100', chainName: 'Gnosis Chain', disabledWallets: ['Coinbase'] })
+      .build()
     it('returns chain names where social login is enabled', () => {
-      const mockEthereumChain = { chainId: '1', chainName: 'Ethereum', disabledWallets: ['socialLogin'] } as ChainInfo
-      const mockGnosisChain = { chainId: '100', chainName: 'Gnosis Chain', disabledWallets: ['Coinbase'] } as ChainInfo
-      const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: [] } as unknown as ChainInfo
+      const mockGoerliChain = chainBuilder().with({ chainId: '5', chainName: 'Goerli', disabledWallets: [] }).build()
 
       const mockChains = [mockEthereumChain, mockGnosisChain, mockGoerliChain]
       const result = _getSupportedChains(mockChains)
@@ -164,8 +167,9 @@ describe('SocialSignerLogin', () => {
     })
 
     it('returns an empty array if social login is not enabled on any chain', () => {
-      const mockEthereumChain = { chainId: '1', chainName: 'Ethereum', disabledWallets: ['socialLogin'] } as ChainInfo
-      const mockGoerliChain = { chainId: '5', chainName: 'Goerli', disabledWallets: ['socialLogin'] } as ChainInfo
+      const mockGoerliChain = chainBuilder()
+        .with({ chainId: '5', chainName: 'Goerli', disabledWallets: ['socialLogin'] })
+        .build()
 
       const mockChains = [mockEthereumChain, mockGoerliChain]
       const result = _getSupportedChains(mockChains)
