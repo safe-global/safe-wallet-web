@@ -2,7 +2,6 @@ import { act, render, waitFor } from '@/tests/test-utils'
 
 import { SocialSigner, _getSupportedChains } from '@/components/common/SocialSigner'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { COREKIT_STATUS, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import SocialWalletService from '@/services/mpc/SocialWalletService'
 import { TxModalProvider } from '@/components/tx-flow'
