@@ -179,22 +179,20 @@ export const getQueuedTransactionCount = (txPage?: TransactionListPage): string 
   return queuedTxsByNonce.length.toString()
 }
 
-export const getTxOrigin = (app?: SafeAppData): string | undefined => {
+export const getTxOrigin = (app?: Partial<SafeAppData>): string | undefined => {
+  if (!app) return
+
   const MAX_ORIGIN_LENGTH = 200
-
-  if (!app) {
-    return
-  }
-
+  const { url = '', name = '' } = app
   let origin: string | undefined
 
   try {
     // Must include empty string to avoid including the length of `undefined`
     const maxUrlLength = MAX_ORIGIN_LENGTH - JSON.stringify({ url: '', name: '' }).length
-    const trimmedUrl = app.url.slice(0, maxUrlLength)
+    const trimmedUrl = url.slice(0, maxUrlLength)
 
     const maxNameLength = Math.max(0, maxUrlLength - trimmedUrl.length)
-    const trimmedName = app.name.slice(0, maxNameLength)
+    const trimmedName = name.slice(0, maxNameLength)
 
     origin = JSON.stringify({ url: trimmedUrl, name: trimmedName })
   } catch (e) {

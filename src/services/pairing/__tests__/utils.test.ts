@@ -1,4 +1,5 @@
 import { addDays } from 'date-fns'
+// @ts-expect-error - with native WalletConnect v2, the type is no longer present
 import type { IWalletConnectSession } from '@walletconnect/types'
 
 import { formatPairingUri, isPairingSupported, hasValidPairingSession, _isPairingSessionExpired } from '../utils'

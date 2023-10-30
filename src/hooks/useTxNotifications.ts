@@ -14,6 +14,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
+import { getTxDetails } from '@/services/tx/txDetails'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
@@ -69,15 +70,22 @@ const useTxNotifications = (): void => {
     const entries = Object.entries(TxNotifications) as [keyof typeof TxNotifications, string][]
 
     const unsubFns = entries.map(([event, baseMessage]) =>
-      txSubscribe(event, (detail) => {
+      txSubscribe(event, async (detail) => {
         const isError = 'error' in detail
         const isSuccess = successEvents.includes(event)
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
         const txId = 'txId' in detail ? detail.txId : undefined
         const txHash = 'txHash' in detail ? detail.txHash : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
-        const humanDescription =
-          'humanDescription' in detail && detail.humanDescription ? detail.humanDescription : 'Transaction'
+
+        let humanDescription = 'Transaction'
+        const id = txId || txHash
+        if (id) {
+          try {
+            const txDetails = await getTxDetails(chain.chainId, id)
+            humanDescription = txDetails.txInfo.humanDescription || humanDescription
+          } catch {}
+        }
 
         dispatch(
           showNotification({

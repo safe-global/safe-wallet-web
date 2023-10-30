@@ -1,7 +1,6 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
-import * as balances from '../pages/balances.pages'
 
 const sendValue = 0.00002
 const currentNonce = 1
@@ -11,7 +10,6 @@ describe('Create transactions tests', () => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
-    balances.acceptSpamWarning()
   })
 
   it('Verify a new send token transaction can be created [C56104]', () => {
