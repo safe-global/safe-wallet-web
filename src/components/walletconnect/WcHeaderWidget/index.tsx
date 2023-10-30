@@ -3,6 +3,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import Popup from '@/components/common/Popup'
 import WcIcon from './WcIcon'
 import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type WcHeaderWidgetProps = {
   children: ReactNode
@@ -18,10 +19,11 @@ const TOOLTIP_ID = 'native_wc_onboarding'
 
 const WcHeaderWidget = ({ sessions, ...props }: WcHeaderWidgetProps) => {
   const iconRef = useRef<HTMLDivElement>(null)
+  const { safeLoaded } = useSafeInfo()
 
   return (
     <>
-      <OnboardingTooltip text={TOOLTIP_TEXT} widgetLocalStorageId={TOOLTIP_ID}>
+      <OnboardingTooltip text={safeLoaded ? TOOLTIP_TEXT : ''} widgetLocalStorageId={TOOLTIP_ID}>
         <div ref={iconRef}>
           <WcIcon
             onClick={props.onOpen}
