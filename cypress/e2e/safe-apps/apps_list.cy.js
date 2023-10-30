@@ -34,8 +34,7 @@ describe('Safe Apps tests', () => {
     safeapps.clearSearchAppInput()
     safeapps.pinApp(safeapps.pinWalletConnectStr)
     safeapps.pinApp(safeapps.transactionBuilderStr)
-    safeapps.clickOnBookmarkedAppsTab()
-    safeapps.verifyAppCount(2)
+    safeapps.verifyPinnedAppCount(2)
   })
 
   it('Verify apps can be unpinned [C56134]', () => {
@@ -43,8 +42,7 @@ describe('Safe Apps tests', () => {
     safeapps.pinApp(safeapps.transactionBuilderStr)
     safeapps.pinApp(safeapps.pinWalletConnectStr, false)
     safeapps.pinApp(safeapps.transactionBuilderStr, false)
-    safeapps.clickOnBookmarkedAppsTab()
-    safeapps.verifyAppCount(0)
+    safeapps.verifyPinnedAppCount(0)
   })
 
   it('Verify there is an error when the app manifest is invalid [C56135]', () => {
@@ -70,7 +68,7 @@ describe('Safe Apps tests', () => {
     safeapps.verifyAppTitle(myCustomAppTitle)
     safeapps.acceptTC()
     safeapps.clickOnAddBtn()
-    safeapps.verifyAppCount(1)
+    safeapps.verifyCustomAppCount(1)
     safeapps.verifyAppDescription(myCustomAppDescrAdded)
   })
 })

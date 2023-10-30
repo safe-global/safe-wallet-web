@@ -15,7 +15,6 @@ import {
   within,
 } from '../test-utils'
 import AppsPage from '@/pages/apps'
-import BookmarkedSafeAppsPage from '@/pages/apps/bookmarked'
 import CustomSafeAppsPage from '@/pages/apps/custom'
 import * as safeAppsService from '@/services/safe-apps/manifest'
 import { LS_NAMESPACE } from '@/config/constants'
@@ -82,63 +81,6 @@ describe('AppsPage', () => {
         expect(getByText(safeAppPreviewDrawer, 'Open Safe App'))
       })
     })
-
-    it('switches from Grid view mode to List view mode', async () => {
-      render(<AppsPage />, {
-        routerProps: {
-          pathname: '/apps',
-          query: {
-            safe: 'matic:0x0000000000000000000000000000000000000000',
-          },
-        },
-      })
-
-      await waitFor(() => {
-        // in the default grid view mode titles & descriptions are present
-        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-
-        expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
-      })
-
-      // switch list view mode
-      fireEvent.click(screen.getByLabelText('List view mode'))
-
-      await waitFor(() => {
-        // only titles are present
-        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-
-        // no description is present
-        expect(screen.queryByText(transactionBuilderSafeAppMock.description)).not.toBeInTheDocument()
-        expect(screen.queryByText(compopundSafeAppMock.description)).not.toBeInTheDocument()
-        expect(screen.queryByText(ensSafeAppMock.description)).not.toBeInTheDocument()
-        expect(screen.queryByText(synthetixSafeAppMock.description)).not.toBeInTheDocument()
-      })
-
-      // switch back to grid view mode
-      fireEvent.click(screen.getByLabelText('Grid view mode'))
-
-      await waitFor(() => {
-        // in the default grid view mode titles & descriptions are present
-        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-
-        expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
-      })
-    })
   })
 
   describe('Bookmarked Safe apps Page', () => {
@@ -150,9 +92,9 @@ describe('AppsPage', () => {
 
       window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
 
-      render(<BookmarkedSafeAppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
-          pathname: '/apps/bookmarked',
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
@@ -161,10 +103,11 @@ describe('AppsPage', () => {
 
       // show Bookmarked Safe Apps only
       await waitFor(() => {
-        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
-        expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        expect(screen.queryByText('My pinned apps (2)')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Transaction Builder')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin ENS App')).not.toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Synthetix')).not.toBeInTheDocument()
       })
     })
 
@@ -176,28 +119,28 @@ describe('AppsPage', () => {
 
       window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
 
-      render(<BookmarkedSafeAppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
-          pathname: '/apps/bookmarked',
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
         },
       })
 
-      // show Bookmarked Safe Apps only
+      // show Bookmarked Safe Apps
       await waitFor(() => {
-        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Transaction Builder')).toBeInTheDocument()
       })
 
       // unpin Transaction Builder Safe App
       fireEvent.click(screen.getByLabelText('Unpin Transaction Builder'))
 
-      // show Bookmarked Safe Apps only
+      // show Bookmarked Safe Apps
       await waitFor(() => {
-        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).not.toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Transaction Builder')).not.toBeInTheDocument()
       })
     })
 
@@ -209,9 +152,9 @@ describe('AppsPage', () => {
 
       window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
 
-      render(<BookmarkedSafeAppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
-          pathname: '/apps/bookmarked',
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
