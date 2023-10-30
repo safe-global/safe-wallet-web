@@ -29,6 +29,7 @@ class AppCommunicator {
   }
 
   private isValidMessage = (msg: SDKMessageEvent): boolean => {
+    if (!msg.data) return false
     if (msg.data.hasOwnProperty('isCookieEnabled')) {
       return true
     }
@@ -40,6 +41,7 @@ class AppCommunicator {
   }
 
   private canHandleMessage = (msg: SDKMessageEvent): boolean => {
+    if (!msg.data) return false
     return Boolean(this.handlers.get(msg.data.method))
   }
 

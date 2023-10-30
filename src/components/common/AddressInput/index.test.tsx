@@ -201,8 +201,9 @@ describe('AddressInput tests', () => {
 
     const { input } = setup(`${mockChain.shortName}:${TEST_ADDRESS_A}`)
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: `${mockChain.shortName}:${TEST_ADDRESS_B}` } })
+      return Promise.resolve()
     })
 
     await waitFor(() => expect(input.previousElementSibling?.textContent).toBe(''))

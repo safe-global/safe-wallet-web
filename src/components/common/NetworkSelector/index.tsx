@@ -27,7 +27,7 @@ const MenuWithTooltip = forwardRef<HTMLUListElement>(function MenuWithTooltip(pr
   )
 })
 
-const NetworkSelector = (): ReactElement => {
+const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const wallet = useWallet()
   const { configs } = useChains()
   const chainId = useChainId()
@@ -82,7 +82,6 @@ const NetworkSelector = (): ReactElement => {
         MenuListProps: { component: isSocialLogin ? MenuWithTooltip : undefined },
         sx: {
           '& .MuiPaper-root': {
-            mt: 2,
             overflow: 'auto',
           },
         },
@@ -99,7 +98,7 @@ const NetworkSelector = (): ReactElement => {
       {configs.map((chain) => {
         return (
           <MenuItem key={chain.chainId} value={chain.chainId} disabled={isSocialLogin && !isSocialWalletEnabled(chain)}>
-            <Link href={getNetworkLink(chain.shortName)} passHref>
+            <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} passHref>
               <ChainIndicator chainId={chain.chainId} inline />
             </Link>
           </MenuItem>

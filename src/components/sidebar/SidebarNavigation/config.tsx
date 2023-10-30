@@ -143,10 +143,6 @@ export const safeAppsNavItems = [
     href: AppRoutes.apps.index,
   },
   {
-    label: 'Bookmarked apps',
-    href: AppRoutes.apps.bookmarked,
-  },
-  {
     label: 'My custom apps',
     href: AppRoutes.apps.custom,
   },

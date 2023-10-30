@@ -23,15 +23,7 @@ const customJestConfig = {
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-// Jest does not allow modification of transformIgnorePatterns within createJestConfig, therefore we add one entry after initializing the config
-module.exports = async () => {
-  const jestConfig = await createJestConfig(customJestConfig)()
-  const existingTransformIgnorePatterns = jestConfig.transformIgnorePatterns.filter(
-    (pattern) => pattern !== '/node_modules/',
-  )
-
-  return {
-    ...jestConfig,
-    transformIgnorePatterns: [...existingTransformIgnorePatterns, '/node_modules/(?!(@web3-onboard/common)/)'],
-  }
-}
+module.exports = async () => ({
+  ...(await createJestConfig(customJestConfig)()),
+  transformIgnorePatterns: ['node_modules/(?!(uint8arrays|multiformats|@web3-onboard/common)/)'],
+})

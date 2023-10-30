@@ -1,36 +1,21 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
-import SafeAppsHeader from '@/components/safe-apps/SafeAppsHeader'
-import SafeAppList from '@/components/safe-apps/SafeAppList'
-import SafeAppsSDKLink from '@/components/safe-apps/SafeAppsSDKLink'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { AppRoutes } from '@/config/routes'
 
 const BookmarkedSafeApps: NextPage = () => {
-  const {
-    pinnedSafeApps: bookmarkedSafeApps,
-    pinnedSafeAppIds: bookmarkedSafeAppsId,
-    togglePin: onBookmarkSafeApp,
-  } = useSafeApps()
+  const router = useRouter()
+
+  // Redirect to /apps
+  useEffect(() => {
+    router.replace({ pathname: AppRoutes.apps.index, query: { safe: router.query.safe } })
+  }, [router])
 
   return (
-    <>
-      <Head>
-        <title>{'Bookmarked Safe Apps'}</title>
-      </Head>
-
-      <SafeAppsSDKLink />
-
-      <SafeAppsHeader />
-
-      <main>
-        <SafeAppList
-          safeAppsList={bookmarkedSafeApps}
-          bookmarkedSafeAppsId={bookmarkedSafeAppsId}
-          onBookmarkSafeApp={onBookmarkSafeApp}
-        />
-      </main>
-    </>
+    <Head>
+      <title>{'Safe{Wallet} – Safe Apps'}</title>
+    </Head>
   )
 }
 

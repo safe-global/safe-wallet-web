@@ -78,14 +78,12 @@ export function verifyNoAppsTextPresent() {
 }
 
 export function pinApp(app, pin = true) {
-  let str = 'Unpin'
-  if (!pin) str = 'Pin'
-  cy.findByLabelText(app)
-    .click()
-    .should(($el) => {
-      const ariaLabel = $el.attr('aria-label')
-      expect(ariaLabel).to.include(str)
-    })
+  cy.findByLabelText(app).click()
+  cy.wait(200)
+  cy.findByLabelText(app).should(($el) => {
+    const ariaLabel = $el.attr('aria-label')
+    expect(ariaLabel).to.include(pin ? 'Unpin' : 'Pin')
+  })
 }
 
 export function clickOnBookmarkedAppsTab() {
@@ -93,7 +91,15 @@ export function clickOnBookmarkedAppsTab() {
 }
 
 export function verifyAppCount(count) {
-  cy.findByText(`ALL (${count})`).should('be.visible')
+  cy.findByText(`All apps (${count})`).should('be.visible')
+}
+
+export function verifyCustomAppCount(count) {
+  cy.findByText(`Custom apps (${count})`).should('be.visible')
+}
+
+export function verifyPinnedAppCount(count) {
+  cy.findByText(`My pinned apps (${count})`).should(count ? 'be.visible' : 'not.exist')
 }
 
 export function clickOnCustomAppsTab() {
