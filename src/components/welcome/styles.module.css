@@ -38,7 +38,7 @@
 .numberList li:before {
   margin-right: var(--space-1);
   content: counter(item);
-  background: var(--color-primary-main);
+  background: var(--color-static-main);
   border-radius: 100%;
   color: white;
   width: 32px;
@@ -96,6 +96,10 @@
 }
 
 .checkIcon {
+  color: var(--color-static-main);
+}
+
+.button {
   color: var(--color-static-main);
 }
 

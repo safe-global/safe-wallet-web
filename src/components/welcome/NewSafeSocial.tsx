@@ -59,7 +59,9 @@ const NewSafeSocial = () => {
 
               {/* TODO: Replace with actual link and possibly add tracking */}
               <Link href="https://safe.global" passHref>
-                <Button startIcon={<ChevronLeftIcon />}>Back to landing page</Button>
+                <Button startIcon={<ChevronLeftIcon />} className={css.button}>
+                  Back to landing page
+                </Button>
               </Link>
             </Box>
 

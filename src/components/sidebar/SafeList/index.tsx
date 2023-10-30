@@ -82,7 +82,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   const hasWallet = !!wallet
   const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
-  const isWelcomePage = router.pathname === AppRoutes.welcome
+  const isWelcomePage = router.pathname === AppRoutes.welcome || router.pathname === AppRoutes.welcomeLp
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   /**
