@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 
 import * as gtm from '../TagManager'
+import { AnalyticsUserProperties } from '../types'
 
 const { default: TagManager } = gtm
 
@@ -133,6 +134,30 @@ describe('TagManager', () => {
       expect(Cookies.remove).toHaveBeenCalledWith('_gid', { path, domain })
 
       expect(global.location.reload).toHaveBeenCalled()
+    })
+  })
+
+  describe('TagManager.setUserProperty', () => {
+    it('should push new user properties to dataLayer', () => {
+      expect(window.dataLayer).toBeUndefined()
+
+      TagManager.initialize({
+        gtmId: MOCK_ID,
+        auth: MOCK_AUTH,
+        preview: MOCK_PREVIEW,
+      })
+
+      expect(window.dataLayer).toHaveLength(3)
+
+      TagManager.setUserProperty(AnalyticsUserProperties.WALLET_LABEL, 'Safe{Wallet}')
+
+      expect(window.dataLayer).toHaveLength(4)
+
+      expect(Array.from(window.dataLayer?.[3])).toEqual([
+        'set',
+        'user_properties',
+        { [AnalyticsUserProperties.WALLET_LABEL]: 'Safe{Wallet}' },
+      ])
     })
   })
 })

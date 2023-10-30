@@ -102,6 +102,16 @@ const TagManager = {
     // Injected script will remain in memory until new session
     location.reload()
   },
+
+  setUserProperty: (name: string, value: string) => {
+    window.gtag?.('set', 'user_properties', {
+      [name]: value,
+    })
+
+    if (!IS_PRODUCTION) {
+      console.info('[GTM] -', 'set user_properties', name, '=', value)
+    }
+  },
 }
 
 export default TagManager
