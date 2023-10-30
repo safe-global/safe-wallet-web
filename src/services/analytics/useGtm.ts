@@ -22,7 +22,7 @@ import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import useMetaEvents from './useMetaEvents'
 import { useMediaQuery } from '@mui/material'
-import { AnalyticsUserProperties, DeviceType, WALLET_LABEL_NONE } from './types'
+import { AnalyticsUserProperties, DeviceType } from './types'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
 
