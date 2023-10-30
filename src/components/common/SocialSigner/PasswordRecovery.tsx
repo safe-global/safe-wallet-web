@@ -11,9 +11,12 @@ import {
   FormControl,
 } from '@mui/material'
 import { useState } from 'react'
-import Track from '../Track'
+import Track from '@/components/common/Track'
 import { FormProvider, useForm } from 'react-hook-form'
 import PasswordInput from '@/components/settings/SecurityLogin/SocialSignerMFA/PasswordInput'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+
+import css from './styles.module.css'
 
 type PasswordFormData = {
   password: string
@@ -35,14 +38,17 @@ export const PasswordRecovery = ({
     },
   })
 
-  const { handleSubmit, formState, setError } = formMethods
+  const { handleSubmit, formState } = formMethods
+
+  const [error, setError] = useState<string>()
 
   const onSubmit = async (data: PasswordFormData) => {
+    setError(undefined)
     try {
       await recoverFactorWithPassword(data.password, storeDeviceFactor)
       onSuccess?.()
     } catch (e) {
-      setError('password', { type: 'custom', message: 'Incorrect password' })
+      setError('Incorrect password')
     }
   }
 
@@ -71,7 +77,7 @@ export const PasswordRecovery = ({
                 </Typography>
               </Box>
               <Divider />
-              <Box p={4} display="flex" flexDirection="column" alignItems="baseline" gap={1}>
+              <Box className={css.passwordWrapper}>
                 <FormControl fullWidth>
                   <PasswordInput
                     name="password"
@@ -88,7 +94,9 @@ export const PasswordRecovery = ({
                   }
                   label="Do not ask again on this device"
                 />
+                {error && <ErrorMessage className={css.loginError}>{error}</ErrorMessage>}
               </Box>
+
               <Divider />
               <Box p={4} display="flex" justifyContent="flex-end">
                 <Track {...MPC_WALLET_EVENTS.RECOVER_PASSWORD}>

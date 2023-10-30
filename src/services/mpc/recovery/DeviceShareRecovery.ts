@@ -16,9 +16,6 @@ export class DeviceShareRecovery {
   }
 
   async isEnabled() {
-    if (!this.mpcCoreKit.tKey.metadata) {
-      return false
-    }
     return !!(await getWebBrowserFactor(this.mpcCoreKit))
   }
 
@@ -30,6 +27,16 @@ export class DeviceShareRecovery {
       'hex',
     )
     await storeWebBrowserFactor(deviceFactorKey, this.mpcCoreKit)
+  }
+
+  async recoverWithDeviceFactor() {
+    // Recover from device factor
+    const deviceFactor = await getWebBrowserFactor(this.mpcCoreKit)
+    if (!deviceFactor) {
+      throw Error('Cannot recover from device factor. No device factor found')
+    }
+    const deviceFactorKey = new BN(deviceFactor, 'hex')
+    await this.mpcCoreKit.inputFactorKey(deviceFactorKey)
   }
 
   async removeDeviceFactor() {

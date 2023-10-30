@@ -4,7 +4,7 @@ import { _getMPCCoreKitInstance, setMPCCoreKitInstance, useInitMPC } from '../us
 import * as useChains from '@/hooks/useChains'
 import { type ChainInfo, RPC_AUTHENTICATION } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { type Web3AuthMPCCoreKit, COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 
@@ -12,6 +12,8 @@ jest.mock('@web3auth/mpc-core-kit', () => ({
   ...jest.requireActual('@web3auth/mpc-core-kit'),
   Web3AuthMPCCoreKit: jest.fn(),
 }))
+
+jest.mock('@/hooks/wallets/mpc/useSocialWallet')
 
 type MPCProvider = Web3AuthMPCCoreKit['provider']
 

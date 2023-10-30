@@ -19,7 +19,7 @@ import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
-import { isSocialLoginWallet } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 
 export type NewSafeFormData = {
   name: string

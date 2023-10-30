@@ -4,7 +4,7 @@ import { render } from '@/tests/test-utils'
 import { NetworkFee } from '@/components/new-safe/create/steps/ReviewStep/index'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { type ConnectedWallet } from '@/services/onboard'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/module'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 
 const mockChainInfo = {
   chainId: '100',

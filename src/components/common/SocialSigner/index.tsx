@@ -1,23 +1,23 @@
-import { MPCWalletState } from '@/hooks/wallets/mpc/useMPCWallet'
 import { Box, Button, SvgIcon, Typography } from '@mui/material'
-import { useCallback, useContext, useMemo } from 'react'
-import { MpcWalletContext } from './MPCWalletProvider'
-import { PasswordRecovery } from './PasswordRecovery'
+import { useCallback, useContext, useMemo, useState } from 'react'
+import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
-import Track from '../Track'
+import Track from '@/components/common/Track'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
-import { isSocialLoginWallet } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TxModalContext } from '@/components/tx-flow'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import madProps from '@/utils/mad-props'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -38,46 +38,66 @@ const useIsSocialWalletEnabled = () => {
   return isSocialWalletEnabled(currentChain)
 }
 
-const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
-  const { triggerLogin, userInfo, walletState, setWalletState, recoverFactorWithPassword } =
-    useContext(MpcWalletContext)
+type SocialSignerLoginProps = {
+  socialWalletService: ReturnType<typeof useSocialWallet>
+  wallet: ReturnType<typeof useWallet>
+  supportedChains: ReturnType<typeof useGetSupportedChains>
+  isMPCLoginEnabled: ReturnType<typeof useIsSocialWalletEnabled>
+  onLogin?: () => void
+}
+
+export const SocialSigner = ({
+  socialWalletService,
+  wallet,
+  supportedChains,
+  isMPCLoginEnabled,
+  onLogin,
+}: SocialSignerLoginProps) => {
+  const [loginPending, setLoginPending] = useState<boolean>(false)
   const { setTxFlow } = useContext(TxModalContext)
-
-  const wallet = useWallet()
-  const loginPending = walletState === MPCWalletState.AUTHENTICATING
-
-  const supportedChains = useGetSupportedChains()
-  const isMPCLoginEnabled = useIsSocialWalletEnabled()
-
+  const userInfo = socialWalletService?.getUserInfo()
   const isDisabled = loginPending || !isMPCLoginEnabled
-
-  const login = async () => {
-    const status = await triggerLogin()
-
-    if (status === COREKIT_STATUS.LOGGED_IN) {
-      onLogin?.()
-    }
-
-    if (status === COREKIT_STATUS.REQUIRED_SHARE) {
-      setTxFlow(
-        <PasswordRecovery recoverFactorWithPassword={recoverPassword} onSuccess={onLogin} />,
-        () => setWalletState(MPCWalletState.NOT_INITIALIZED),
-        false,
-      )
-    }
-  }
 
   const recoverPassword = useCallback(
     async (password: string, storeDeviceFactor: boolean) => {
-      const success = await recoverFactorWithPassword(password, storeDeviceFactor)
+      if (!socialWalletService) return
+
+      const success = await socialWalletService.recoverAccountWithPassword(password, storeDeviceFactor)
 
       if (success) {
         onLogin?.()
         setTxFlow(undefined)
       }
     },
-    [onLogin, recoverFactorWithPassword, setTxFlow],
+    [onLogin, setTxFlow, socialWalletService],
   )
+
+  const login = async () => {
+    if (!socialWalletService) return
+
+    setLoginPending(true)
+
+    const status = await socialWalletService.loginAndCreate()
+
+    if (status === COREKIT_STATUS.LOGGED_IN) {
+      onLogin?.()
+      setLoginPending(false)
+    }
+
+    if (status === COREKIT_STATUS.REQUIRED_SHARE) {
+      setTxFlow(
+        <PasswordRecovery
+          recoverFactorWithPassword={recoverPassword}
+          onSuccess={() => {
+            onLogin?.()
+            setLoginPending(false)
+          }}
+        />,
+        () => {},
+        false,
+      )
+    }
+  }
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
@@ -148,4 +168,9 @@ const MPCLogin = ({ onLogin }: { onLogin?: () => void }) => {
   )
 }
 
-export default MPCLogin
+export default madProps(SocialSigner, {
+  socialWalletService: useSocialWallet,
+  wallet: useWallet,
+  supportedChains: useGetSupportedChains,
+  isMPCLoginEnabled: useIsSocialWalletEnabled,
+})

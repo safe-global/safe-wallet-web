@@ -1,4 +1,4 @@
-import MPCLogin from '@/components/common/ConnectWallet/MPCLogin'
+import SocialSigner from '@/components/common/SocialSigner'
 import { AppRoutes } from '@/config/routes'
 import { Paper, SvgIcon, Typography, Divider, Link, Box } from '@mui/material'
 import SafeLogo from '@/public/images/logo-text.svg'
@@ -35,7 +35,7 @@ const WelcomeLogin = () => {
           </Typography>
         </Divider>
 
-        <MPCLogin onLogin={continueToCreation} />
+        <SocialSigner onLogin={continueToCreation} />
 
         <Typography mt={2} textAlign="center">
           Already have a Safe Account?

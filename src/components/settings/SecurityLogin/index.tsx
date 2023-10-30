@@ -2,7 +2,7 @@ import { Grid, Paper, Typography } from '@mui/material'
 import SocialSignerMFA from '@/components/settings/SecurityLogin/SocialSignerMFA'
 import SocialSignerExport from '@/components/settings/SecurityLogin/SocialSignerExport'
 import useWallet from '@/hooks/wallets/useWallet'
-import { isSocialLoginWallet } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 
 const SecurityLogin = () => {
   const wallet = useWallet()

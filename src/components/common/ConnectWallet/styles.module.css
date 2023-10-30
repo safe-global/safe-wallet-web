@@ -70,6 +70,11 @@
   min-height: 42px;
 }
 
+.loginError {
+  width: 100%;
+  margin: 0;
+}
+
 @media (max-width: 599.95px) {
   .socialLoginInfo > div > div {
     display: none;

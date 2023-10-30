@@ -13,7 +13,7 @@ import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
-import { isSocialLoginWallet } from '@/services/mpc/module'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 
 const keepPathRoutes = [AppRoutes.welcome, AppRoutes.newSafe.create, AppRoutes.newSafe.load]
 

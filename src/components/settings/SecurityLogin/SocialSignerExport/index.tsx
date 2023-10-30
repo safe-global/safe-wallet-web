@@ -1,9 +1,14 @@
-import { Alert, Box, Button, Typography } from '@mui/material'
+import { Alert, Box, Button, Tooltip, Typography } from '@mui/material'
 import { useState } from 'react'
 import ExportMPCAccountModal from '@/components/settings/SecurityLogin/SocialSignerExport/ExportMPCAccountModal'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 
 const SocialSignerExport = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const socialWalletService = useSocialWallet()
+
+  const isPasswordSet = socialWalletService?.isRecoveryPasswordSet() ?? false
 
   return (
     <>
@@ -15,9 +20,17 @@ const SocialSignerExport = () => {
           Never disclose your keys or seed phrase to anyone. If someone gains access to them, they have full access over
           your social login signer.
         </Alert>
-        <Button color="primary" variant="contained" disabled={isModalOpen} onClick={() => setIsModalOpen(true)}>
-          Reveal private key
-        </Button>
+        <Tooltip title={isPasswordSet ? '' : 'Private key export is only available if you set a recovery password'}>
+          <Button
+            color="primary"
+            variant="contained"
+            sx={{ pointerEvents: 'all !important' }}
+            disabled={isModalOpen || !isPasswordSet}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Reveal private key
+          </Button>
+        </Tooltip>
       </Box>
       <ExportMPCAccountModal onClose={() => setIsModalOpen(false)} open={isModalOpen} />
     </>
