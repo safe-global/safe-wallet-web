@@ -15,6 +15,7 @@ export enum FEATURES {
   EIP1271 = 'EIP1271',
   RISK_MITIGATION = 'RISK_MITIGATION',
   PUSH_NOTIFICATIONS = 'PUSH_NOTIFICATIONS',
+  NATIVE_WALLETCONNECT = 'NATIVE_WALLETCONNECT',
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {

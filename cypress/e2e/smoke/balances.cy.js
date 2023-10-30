@@ -15,7 +15,6 @@ describe('Balance tests', () => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
-    balances.acceptSpamWarning()
     cy.contains('Assets')
     cy.get(balances.balanceSingleRow).should('have.length.lessThan', ASSETS_LENGTH)
     balances.selectTokenList(balances.tokenListOptions.allTokens)

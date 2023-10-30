@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import MuiLink from '@mui/material/Link'
-import BellIcon from '@/public/images/notifications/bell.svg'
+import BellIcon from '@/public/images/common/notifications.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -90,15 +90,16 @@ const NotificationCenter = (): ReactElement => {
 
   return (
     <>
-      <ButtonBase disableRipple className={css.bell} onClick={handleClick}>
+      <ButtonBase className={css.bell} onClick={handleClick}>
         <UnreadBadge
           invisible={!hasUnread}
+          count={unreadCount}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'right',
           }}
         >
-          <SvgIcon component={BellIcon} inheritViewBox fontSize="small" />
+          <SvgIcon component={BellIcon} inheritViewBox fontSize="medium" />
         </UnreadBadge>
       </ButtonBase>
 
@@ -114,7 +115,11 @@ const NotificationCenter = (): ReactElement => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        sx={{ mt: 1 }}
+        sx={{
+          '& > .MuiPaper-root': {
+            top: 'var(--header-height) !important',
+          },
+        }}
       >
         <Paper className={css.popoverContainer}>
           <div className={css.popoverHeader}>

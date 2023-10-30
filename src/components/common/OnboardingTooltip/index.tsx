@@ -27,7 +27,7 @@ export const OnboardingTooltip = ({
   const [widgetHidden = !initiallyShown, setWidgetHidden] = useLocalStorage<boolean>(widgetLocalStorageId)
   const isDarkMode = useDarkMode()
 
-  return widgetHidden ? (
+  return widgetHidden || !text ? (
     children
   ) : (
     <Tooltip

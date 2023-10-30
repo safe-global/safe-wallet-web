@@ -22,7 +22,7 @@ import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
 
 export type SignOrExecuteProps = {
   txId?: string
-  onSubmit: () => void
+  onSubmit: (txId: string) => void
   children?: ReactNode
   isExecutable?: boolean
   isRejection?: boolean

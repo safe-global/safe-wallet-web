@@ -14,7 +14,6 @@ describe('Assets tests', () => {
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     cy.clearLocalStorage()
     main.acceptCookies()
-    balances.acceptSpamWarning()
   })
 
   it('Verify that the token tab is selected by default and the table is visible [C56039]', () => {
@@ -107,7 +106,6 @@ describe('Assets tests', () => {
   it('Verify that a tool tip is shown pointing to "Token list" dropdown [C56044]', () => {
     //Spam warning message is removed in beforeEach hook
     cy.reload()
-    balances.verifySpamWarningNotdisplayed()
   })
 
   it('Verify that Token list dropdown down options show/hide spam tokens [C56045]', () => {

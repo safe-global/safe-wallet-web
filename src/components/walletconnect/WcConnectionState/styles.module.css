@@ -1,0 +1,47 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: var(--space-2);
+}
+
+.errorDots circle:first-of-type,
+.errorDots circle:last-of-type {
+  fill: var(--color-error-dark);
+}
+
+.errorDots circle:nth-of-type(2),
+.errorDots circle:nth-of-type(5) {
+  fill: var(--color-error-main);
+}
+.errorDots circle:nth-of-type(3),
+.errorDots circle:nth-of-type(4) {
+  fill: var(--color-error-light);
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: 1;
+  }
+}
+
+.dots circle {
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+.dots circle:nth-of-type(1) {
+  animation-delay: 0;
+}
+.dots circle:nth-of-type(2),
+.dots circle:nth-of-type(5) {
+  animation-delay: 0.2s;
+}
+
+.dots circle:nth-of-type(3),
+.dots circle:nth-of-type(4) {
+  animation-delay: 0.3s;
+}
