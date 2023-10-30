@@ -14,10 +14,7 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
-
-import { useCurrentChain } from '@/hooks/useChains'
 import Question from '@/public/images/common/question.svg'
-
 import css from './styles.module.css'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
@@ -71,14 +68,13 @@ const ConnectionSteps = [
 const InteractionTitle = 'How do I interact with a dApp?'
 const InteractionSteps = [
   'Connect a dApp by following the above steps',
-  `Ensure the dApp is connected to %%chain%%`,
+  'Ensure the dApp is connected to the same chain as your Safe Account',
   'Initiate a transaction/signature request via the dApp',
   'Transact/sign as normal via the Safe',
 ]
 
 const WcHints = (): ReactElement => {
   const [expandedAccordion, setExpandedAccordion] = useState<'connection' | 'interaction' | null>(null)
-  const chain = useCurrentChain()
 
   const onExpand = (accordion: 'connection' | 'interaction') => {
     setExpandedAccordion((prev) => {
@@ -86,10 +82,6 @@ const WcHints = (): ReactElement => {
     })
 
     trackEvent(WALLETCONNECT_EVENTS.HINTS_EXPAND)
-  }
-
-  if (chain?.chainName) {
-    InteractionSteps[1] = InteractionSteps[1].replace(/%%chain%%/, chain?.chainName)
   }
 
   useEffect(() => {
