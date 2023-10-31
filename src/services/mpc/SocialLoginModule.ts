@@ -45,7 +45,10 @@ function MpcModule(): WalletInit {
                  * We have to fallback to web3ReadOnly for eth_estimateGas because the provider by Web3Auth does not expose / implement it.
                  */
                 if ('eth_estimateGas' === request.method) {
-                  web3ReadOnly?.send(request.method, request.params ?? []).then(resolve)
+                  web3ReadOnly
+                    ?.send(request.method, request.params ?? [])
+                    .then(resolve)
+                    .catch(reject)
                   return
                 }
 
@@ -53,7 +56,7 @@ function MpcModule(): WalletInit {
                  * If the provider is defined we already have access to the accounts. So we can just reply with the current account.
                  */
                 if ('eth_requestAccounts' === request.method) {
-                  web3.request({ method: 'eth_accounts' }).then(resolve)
+                  web3.request({ method: 'eth_accounts' }).then(resolve).catch(reject)
                   return
                 }
 
@@ -64,7 +67,7 @@ function MpcModule(): WalletInit {
                 }
 
                 // Default: we call the inner provider
-                web3.request(request).then(resolve)
+                web3.request(request).then(resolve).catch(reject)
                 return
               } catch (error) {
                 reject(

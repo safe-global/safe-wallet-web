@@ -82,6 +82,7 @@ export const SocialSigner = ({
     if (status === COREKIT_STATUS.LOGGED_IN) {
       onLogin?.()
       setLoginPending(false)
+      return
     }
 
     if (status === COREKIT_STATUS.REQUIRED_SHARE) {
@@ -96,7 +97,11 @@ export const SocialSigner = ({
         () => {},
         false,
       )
+      return
     }
+
+    // TODO: Show error if login fails
+    setLoginPending(false)
   }
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
