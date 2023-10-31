@@ -21,11 +21,11 @@ jobs:
         id: version
         run: |
           NEW_VERSION=$(node -p 'require("./package.json").version')
-          echo "version=v$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "version=\"v${NEW_VERSION}\"" >> $GITHUB_OUTPUT
 
       - name: Create a git tag
         if: github.event.pull_request.merged == true
-        run: git tag ${{ steps.version.outputs.version }} && git push --tags
+        run: git tag "${{ steps.version.outputs.version }}" && git push --tags
 
       - name: GitHub release
         if: success()
