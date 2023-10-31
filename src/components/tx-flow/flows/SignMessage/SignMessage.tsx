@@ -63,7 +63,7 @@ const MessageHashField = ({ label, hashValue }: { label: string; hashValue: stri
     <Typography variant="body2" fontWeight={700} mt={2}>
       {label}:
     </Typography>
-    <Typography variant="body2">
+    <Typography variant="body2" component="div">
       <EthHashInfo address={hashValue} showAvatar={false} shortAddress={false} showCopyButton />
     </Typography>
   </>
