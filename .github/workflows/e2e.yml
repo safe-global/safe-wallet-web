@@ -9,6 +9,8 @@ concurrency:
 
 jobs:
   e2e:
+    permissions: write-all
+
     runs-on: ubuntu-20.04
     name: Smoke E2E tests
     steps:

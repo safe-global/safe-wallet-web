@@ -10,6 +10,8 @@ concurrency:
 
 jobs:
   e2e:
+    permissions: write-all
+
     runs-on: ubuntu-latest
     name: Safe Apps E2E tests
     steps:

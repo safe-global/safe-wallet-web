@@ -6,6 +6,10 @@ on:
       - main
     types: [closed]
 
+permissions:
+  contents:
+    write
+
 jobs:
   tag-release:
     runs-on: ubuntu-latest
