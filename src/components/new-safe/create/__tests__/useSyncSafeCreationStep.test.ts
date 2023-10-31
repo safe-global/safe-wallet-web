@@ -1,3 +1,4 @@
+import { type PendingSafeData } from '@/components/new-safe/create/types'
 import { renderHook } from '@/tests/test-utils'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import * as wallet from '@/hooks/wallets/useWallet'
@@ -21,10 +22,9 @@ describe('useSyncSafeCreationStep', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    const setPendingSafeSpy = jest.fn()
   })
 
-  it('should go to the first step if no wallet is connected', async () => {
+  it('should go to the first step if no wallet is connected and there is no pending safe', async () => {
     const mockPushRoute = jest.fn()
     jest.spyOn(wallet, 'default').mockReturnValue(null)
     jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([undefined, setPendingSafeSpy])
@@ -37,6 +37,20 @@ describe('useSyncSafeCreationStep', () => {
 
     expect(mockSetStep).not.toHaveBeenCalled()
     expect(mockPushRoute).toHaveBeenCalledWith({ pathname: AppRoutes.welcome.index, query: undefined })
+  })
+
+  it('should not go to the first step if no wallet is connected but there is a pending safe', async () => {
+    const mockPushRoute = jest.fn()
+    jest.spyOn(wallet, 'default').mockReturnValue(null)
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([{} as PendingSafeData, setPendingSafeSpy])
+    jest.spyOn(useRouter, 'useRouter').mockReturnValue({
+      push: mockPushRoute,
+    } as unknown as NextRouter)
+    const mockSetStep = jest.fn()
+
+    renderHook(() => useSyncSafeCreationStep(mockSetStep))
+
+    expect(mockPushRoute).not.toHaveBeenCalled()
   })
 
   it('should go to the fourth step if there is a pending safe', async () => {
