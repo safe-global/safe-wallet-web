@@ -12,7 +12,8 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
 
   const login = async () => {
     const walletState = await connectWallet()
-    if (walletState) {
+
+    if (walletState && walletState.length > 0) {
       onLogin()
     }
   }
