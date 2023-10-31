@@ -8,6 +8,8 @@ import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
 import { getPeerName, stripEip155Prefix } from './utils'
 import { IS_PRODUCTION } from '@/config/constants'
+import { trackEvent } from '../analytics'
+import { WALLETCONNECT_EVENTS } from '../analytics/events/walletconnect'
 
 const walletConnectSingleton = new WalletConnectWallet()
 
@@ -62,6 +64,11 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
       const { topic } = event
       const session = walletConnect.getActiveSessions().find((s) => s.topic === topic)
       const requestChainId = stripEip155Prefix(event.params.chainId)
+
+      // Track all requests
+      if (session) {
+        trackEvent({ ...WALLETCONNECT_EVENTS.REQUEST, label: session.peer.metadata.url })
+      }
 
       const getResponse = () => {
         // Get error if wrong chain
