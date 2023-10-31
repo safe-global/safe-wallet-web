@@ -130,8 +130,19 @@ export const connectWallet = async (
   return wallets
 }
 
-export const switchWallet = (onboard: OnboardAPI) => {
-  connectWallet(onboard)
+export const switchWallet = async (onboard: OnboardAPI) => {
+  const oldWalletLabel = getConnectedWallet(onboard.state.get().wallets)?.label
+  const newWallets = await connectWallet(onboard)
+  const newWalletLabel = newWallets ? getConnectedWallet(newWallets)?.label : undefined
+
+  // If the wallet actually changed we disconnect the old connected wallet.
+  if (!newWalletLabel || !oldWalletLabel) {
+    return
+  }
+
+  if (newWalletLabel !== oldWalletLabel) {
+    await onboard.disconnectWallet({ label: oldWalletLabel })
+  }
 }
 
 // Disable/enable wallets according to chain
