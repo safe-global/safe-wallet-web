@@ -121,7 +121,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   // Track errors
   useEffect(() => {
     if (error && open) {
-      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: error.message })
+      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: (error.message || '').split(':')[0] })
     }
   }, [error, open])
 
