@@ -285,7 +285,9 @@ describe('WalletConnectProvider', () => {
       jest.spyOn(WalletConnectWallet.prototype, 'updateSessions').mockImplementation(() => Promise.resolve())
       jest
         .spyOn(WalletConnectWallet.prototype, 'getActiveSessions')
-        .mockImplementation(() => [{ topic: 'topic' } as unknown as SessionTypes.Struct])
+        .mockImplementation(() => [
+          { topic: 'topic', peer: { metadata: { url: 'https://test.com' } } } as unknown as SessionTypes.Struct,
+        ])
 
       const onRequestSpy = jest.spyOn(WalletConnectWallet.prototype, 'onRequest')
       const sendSessionResponseSpy = jest.spyOn(WalletConnectWallet.prototype, 'sendSessionResponse')
