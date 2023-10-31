@@ -41,10 +41,7 @@ describe('addressBookSlice', () => {
         name: '',
       }),
     )
-    expect(state).toEqual({
-      '1': { '0x0': 'Alice', '0x1': 'Bob' },
-      '4': { '0x0': 'Charlie', '0x1': 'Dave' },
-    })
+    expect(state).toEqual(initialState)
   })
 
   it('should edit an entry in the address book', () => {
