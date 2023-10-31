@@ -7,11 +7,8 @@ import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
 
 import css from '@/components/common/ConnectWallet/styles.module.css'
-import { useCurrentChain } from '@/hooks/useChains'
 
 const ConnectionCenter = (): ReactElement => {
-  const chain = useCurrentChain()
-
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = !!anchorEl
 
