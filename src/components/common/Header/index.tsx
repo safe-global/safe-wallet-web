@@ -29,7 +29,7 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
   const router = useRouter()
 
   // Logo link: if on Dashboard, link to Welcome, otherwise to the root (which redirects to either Dashboard or Welcome)
-  const logoHref = router.pathname === AppRoutes.home ? AppRoutes.welcome : AppRoutes.index
+  const logoHref = router.pathname === AppRoutes.home ? AppRoutes.welcome.index : AppRoutes.index
 
   const handleMenuToggle = () => {
     if (onMenuToggle) {

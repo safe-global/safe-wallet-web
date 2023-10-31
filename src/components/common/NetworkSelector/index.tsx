@@ -15,7 +15,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 
-const keepPathRoutes = [AppRoutes.welcome, AppRoutes.newSafe.create, AppRoutes.newSafe.load]
+const keepPathRoutes = [AppRoutes.welcome.index, AppRoutes.newSafe.create, AppRoutes.newSafe.load]
 
 const MenuWithTooltip = forwardRef<HTMLUListElement>(function MenuWithTooltip(props: any, ref) {
   return (

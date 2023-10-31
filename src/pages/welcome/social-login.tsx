@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import NewSafeSocial from '@/components/welcome/NewSafeSocial'
 
-const Welcome: NextPage = () => {
+const SocialLogin: NextPage = () => {
   return (
     <>
       <Head>
@@ -14,4 +14,4 @@ const Welcome: NextPage = () => {
   )
 }
 
-export default Welcome
+export default SocialLogin

@@ -63,7 +63,7 @@ function SetNameStep({
 
   const onCancel = () => {
     trackEvent(CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE_FORM)
-    router.push(AppRoutes.welcome)
+    router.push(AppRoutes.welcome.index)
   }
 
   const isDisabled = isWrongChain || !isValid

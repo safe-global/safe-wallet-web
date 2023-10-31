@@ -49,7 +49,7 @@ export const CreateSafeStatus = ({ data, setProgressColor, setStep }: StepRender
   const onClose = useCallback(() => {
     setPendingSafe(undefined)
 
-    router.push(AppRoutes.welcome)
+    router.push(AppRoutes.welcome.index)
   }, [router, setPendingSafe])
 
   const handleRetry = useCallback(() => {

@@ -1,7 +1,5 @@
 export const AppRoutes = {
   '404': '/404',
-  welcome: '/welcome',
-  welcomeLp: '/welcome-lp',
   terms: '/terms',
   privacy: '/privacy',
   licenses: '/licenses',
@@ -50,5 +48,9 @@ export const AppRoutes = {
     messages: '/transactions/messages',
     index: '/transactions',
     history: '/transactions/history',
+  },
+  welcome: {
+    socialLogin: '/welcome/social-login',
+    index: '/welcome',
   },
 }

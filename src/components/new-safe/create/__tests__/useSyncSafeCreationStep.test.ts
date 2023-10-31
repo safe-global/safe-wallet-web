@@ -36,7 +36,7 @@ describe('useSyncSafeCreationStep', () => {
     renderHook(() => useSyncSafeCreationStep(mockSetStep))
 
     expect(mockSetStep).not.toHaveBeenCalled()
-    expect(mockPushRoute).toHaveBeenCalledWith({ pathname: AppRoutes.welcome, query: undefined })
+    expect(mockPushRoute).toHaveBeenCalledWith({ pathname: AppRoutes.welcome.index, query: undefined })
   })
 
   it('should go to the fourth step if there is a pending safe', async () => {
