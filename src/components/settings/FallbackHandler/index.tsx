@@ -6,6 +6,7 @@ import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AlertIcon from '@/public/images/common/alert.svg'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getFallbackHandlerContractDeployment } from '@/services/contracts/deployments'
 import { HelpCenterArticle } from '@/config/constants'
@@ -49,7 +50,7 @@ export const FallbackHandler = (): ReactElement | null => {
     </>
   ) : !isOfficial ? (
     <>
-      An unofficial fallback handler is currently set.
+      A custom fallback handler is currently set.
       {txBuilder && (
         <>
           {' '}
@@ -74,10 +75,10 @@ export const FallbackHandler = (): ReactElement | null => {
                 <span>
                   <SvgIcon
                     data-testid="fallback-handler-warning"
-                    component={AlertIcon}
+                    component={safe.fallbackHandler ? InfoIcon : AlertIcon}
                     inheritViewBox
                     fontSize="small"
-                    color="warning"
+                    color={safe.fallbackHandler ? 'primary' : 'warning'}
                     sx={{ verticalAlign: 'middle', ml: 0.5 }}
                   />
                 </span>
