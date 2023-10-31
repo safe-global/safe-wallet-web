@@ -6,7 +6,7 @@ const tooltipLabel = (label) => `span[aria-label="${label}"]`
 const removeOwnerBtn = 'span[data-track="settings: Remove owner"] > span > button'
 const replaceOwnerBtn = 'span[data-track="settings: Replace owner"] > span > button'
 const addOwnerBtn = 'span[data-track="settings: Add owner"]'
-const tooltip = 'div[id=":rf:"]'
+const tooltip = 'div[role="tooltip"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
 const sentinelStart = 'div[data-testid="sentinelStart"]'
 const newOwnerName = 'input[name="newOwner.name"]'
