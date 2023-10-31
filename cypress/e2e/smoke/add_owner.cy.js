@@ -20,7 +20,7 @@ describe('Add Owners tests', () => {
     owner.verifyAddOwnerBtnIsDisabled()
   })
 
-  it.only('Verify Tooltip displays correct message for disconnected user [C56019]', () => {
+  it('Verify Tooltip displays correct message for disconnected user [C56019]', () => {
     owner.waitForConnectionStatus()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
