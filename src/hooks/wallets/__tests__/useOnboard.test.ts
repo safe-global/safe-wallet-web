@@ -72,7 +72,7 @@ describe('useOnboard', () => {
   })
 
   describe('switchWallet', () => {
-    it('should keep the previous wallet connected if connection fails', async () => {
+    it('should keep the social signer wallet connected if switching wallets fails', async () => {
       const mockOnboard = {
         state: {
           get: jest.fn().mockReturnValue({
@@ -100,11 +100,11 @@ describe('useOnboard', () => {
 
       await switchWallet(mockOnboard as unknown as OnboardAPI)
 
-      expect(mockOnboard.connectWallet).toBeCalled()
-      expect(mockOnboard.disconnectWallet).not.toBeCalled()
+      expect(mockOnboard.connectWallet).toHaveBeenCalled()
+      expect(mockOnboard.disconnectWallet).not.toHaveBeenCalled()
     })
 
-    it('should not disconnect the previous wallet label if the same label connects', async () => {
+    it('should not disconnect the social signer wallet label if the same label connects', async () => {
       const mockNewState = [
         {
           accounts: [
@@ -149,11 +149,60 @@ describe('useOnboard', () => {
 
       await switchWallet(mockOnboard as unknown as OnboardAPI)
 
-      expect(mockOnboard.connectWallet).toBeCalled()
-      expect(mockOnboard.disconnectWallet).not.toBeCalled()
+      expect(mockOnboard.connectWallet).toHaveBeenCalled()
+      expect(mockOnboard.disconnectWallet).not.toHaveBeenCalled()
     })
 
-    it('should disconnect the previous wallet label if new wallet connects', async () => {
+    it('should not disconnect non social signer wallets if new wallet connects', async () => {
+      const mockNewState = [
+        {
+          accounts: [
+            {
+              address: faker.finance.ethereumAddress(),
+              ens: undefined,
+            },
+          ],
+          chains: [
+            {
+              id: '5',
+            },
+          ],
+          label: 'MetaMask',
+        },
+      ]
+
+      const mockOnboard = {
+        state: {
+          get: jest.fn().mockReturnValue({
+            wallets: [
+              {
+                accounts: [
+                  {
+                    address: faker.finance.ethereumAddress(),
+                    ens: undefined,
+                  },
+                ],
+                chains: [
+                  {
+                    id: '5',
+                  },
+                ],
+                label: 'Wallet Connect',
+              },
+            ],
+          }),
+        },
+        connectWallet: jest.fn().mockResolvedValue(mockNewState),
+        disconnectWallet: jest.fn(),
+      }
+
+      await switchWallet(mockOnboard as unknown as OnboardAPI)
+
+      expect(mockOnboard.connectWallet).toBeCalled()
+      expect(mockOnboard.disconnectWallet).not.toHaveBeenCalled()
+    })
+
+    it('should disconnect the social signer wallet label if new wallet connects', async () => {
       const mockNewState = [
         {
           accounts: [
@@ -199,7 +248,7 @@ describe('useOnboard', () => {
       await switchWallet(mockOnboard as unknown as OnboardAPI)
 
       expect(mockOnboard.connectWallet).toBeCalled()
-      expect(mockOnboard.disconnectWallet).toBeCalledWith({ label: ONBOARD_MPC_MODULE_LABEL })
+      expect(mockOnboard.disconnectWallet).toHaveBeenCalledWith({ label: ONBOARD_MPC_MODULE_LABEL })
     })
   })
 })

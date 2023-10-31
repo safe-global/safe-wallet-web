@@ -10,6 +10,7 @@ import { useInitPairing } from '@/services/pairing/hooks'
 import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 
 const WALLETCONNECT = 'WalletConnect'
 
@@ -136,7 +137,7 @@ export const switchWallet = async (onboard: OnboardAPI) => {
   const newWalletLabel = newWallets ? getConnectedWallet(newWallets)?.label : undefined
 
   // If the wallet actually changed we disconnect the old connected wallet.
-  if (!newWalletLabel || !oldWalletLabel) {
+  if (!newWalletLabel || oldWalletLabel !== ONBOARD_MPC_MODULE_LABEL) {
     return
   }
 
