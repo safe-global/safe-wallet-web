@@ -58,3 +58,7 @@ export const isWarnedBridge = (origin: string, name: string) => {
 export const getPeerName = (peer: SessionTypes.Struct['peer'] | ProposalTypes.Struct['proposer']): string => {
   return peer.metadata?.name || peer.metadata?.url || ''
 }
+
+export const splitError = (message: string): string[] => {
+  return message.split(': ')
+}

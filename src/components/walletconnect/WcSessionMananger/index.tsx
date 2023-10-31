@@ -10,6 +10,7 @@ import WcProposalForm from '../WcProposalForm'
 import WcConnectionState from '../WcConnectionState'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
+import { splitError } from '@/services/walletconnect/utils'
 
 type WcSessionManagerProps = {
   sessions: SessionTypes.Struct[]
@@ -121,7 +122,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   // Track errors
   useEffect(() => {
     if (error && open) {
-      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: (error.message || '').split(':')[0] })
+      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: splitError(error.message || '')[0] })
     }
   }, [error, open])
 
