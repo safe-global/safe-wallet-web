@@ -68,4 +68,27 @@ describe('WalletLogin', () => {
       expect(mockOnLogin).toHaveBeenCalled()
     })
   })
+
+  it('should not invoke the callback if connection fails', async () => {
+    const mockOnLogin = jest.fn()
+    jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn().mockReturnValue([]))
+
+    const result = render(<WalletLogin onLogin={mockOnLogin} />)
+
+    await waitFor(() => {
+      expect(result.findByText('Connect wallet')).resolves.toBeDefined()
+    })
+
+    // We do not automatically invoke the callback as the user did not actively connect
+    expect(mockOnLogin).not.toHaveBeenCalled()
+
+    act(() => {
+      const button = result.getByRole('button')
+      button.click()
+    })
+
+    await waitFor(() => {
+      expect(mockOnLogin).not.toHaveBeenCalled()
+    })
+  })
 })
