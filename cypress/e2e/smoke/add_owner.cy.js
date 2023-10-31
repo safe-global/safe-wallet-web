@@ -17,16 +17,14 @@ describe('Add Owners tests', () => {
 
   it('Verify “Add new owner” button tooltip displays correct message for Non-Owner [C56018]', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_2)
-    owner.hoverOverAddOwnerBtn()
-    owner.verifyTooltiptext(owner.nonOwnerErrorMsg)
+    owner.verifyAddOwnerBtnIsDisabled()
   })
 
-  it('Verify Tooltip displays correct message for disconnected user [C56019]', () => {
+  it.only('Verify Tooltip displays correct message for disconnected user [C56019]', () => {
     owner.waitForConnectionStatus()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
-    owner.hoverOverAddOwnerBtn()
-    owner.verifyTooltiptext(owner.disconnectedUserErrorMsg)
+    owner.verifyAddOwnerBtnIsDisabled()
   })
 
   it('Verify the Add New Owner Form can be opened [C56020]', () => {

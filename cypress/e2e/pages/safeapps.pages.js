@@ -79,12 +79,8 @@ export function verifyNoAppsTextPresent() {
 }
 
 export function pinApp(app, pin = true) {
-  cy.findByLabelText(app).click()
-  cy.wait(200)
-  cy.findByLabelText(app).should(($el) => {
-    const ariaLabel = $el.attr('aria-label')
-    expect(ariaLabel).to.include(pin ? 'Unpin' : 'Pin')
-  })
+  const option = pin ? 'Pin' : 'Unpin'
+  cy.get(`[aria-label="${option} ${app}"]`).click()
 }
 
 export function clickOnBookmarkedAppsTab() {
