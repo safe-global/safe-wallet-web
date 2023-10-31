@@ -32,6 +32,21 @@ describe('addressBookSlice', () => {
     })
   })
 
+  it('should ignore empty names in the address book', () => {
+    const state = addressBookSlice.reducer(
+      initialState,
+      upsertAddressBookEntry({
+        chainId: '1',
+        address: '0x2',
+        name: '',
+      }),
+    )
+    expect(state).toEqual({
+      '1': { '0x0': 'Alice', '0x1': 'Bob' },
+      '4': { '0x0': 'Charlie', '0x1': 'Dave' },
+    })
+  })
+
   it('should edit an entry in the address book', () => {
     const state = addressBookSlice.reducer(
       initialState,
