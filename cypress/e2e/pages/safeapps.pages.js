@@ -23,11 +23,12 @@ const allowAllPermissions = /allow all/i
 const appNotSupportedMsg = "The app doesn't support Safe App functionality"
 
 export const pinWalletConnectStr = /pin walletconnect/i
-export const transactionBuilderStr = /pin transaction builder/i
+export const transactionBuilderStr = 'Transaction Builder'
 export const logoWalletConnect = /logo.*walletconnect/i
 export const walletConnectHeadlinePreview = /walletconnect/i
-export const availableNetworksPreview = /available networks/i
-export const connecttextPreview = 'Connect your Safe to any dApp that supports WalletConnect'
+export const transactiobUilderHeadlinePreview = 'Transaction Builder'
+export const availableNetworksPreview = 'Available networks'
+export const connecttextPreview = 'Compose custom contract interactions and batch them into a single transaction'
 const warningDefaultAppStr = 'The application you are trying to access is not in the default Safe Apps list'
 export const localStorageItem =
   '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}'
@@ -70,7 +71,7 @@ export function verifyLinkName(name) {
 }
 
 export function clickOnApp(app) {
-  cy.findByRole('link', { name: app }).click()
+  cy.contains(app).click()
 }
 
 export function verifyNoAppsTextPresent() {
