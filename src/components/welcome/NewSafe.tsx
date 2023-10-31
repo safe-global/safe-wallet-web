@@ -1,17 +1,10 @@
-import React, { useState } from 'react'
-import { Accordion, AccordionSummary, Box, Drawer, Grid, IconButton, SvgIcon, Typography } from '@mui/material'
-import SafeList from '@/components/sidebar/SafeList'
+import React from 'react'
+import { Box, Grid, SvgIcon, Typography } from '@mui/material'
 import css from './styles.module.css'
 import CheckFilled from '@/public/images/common/check-filled.svg'
 
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { DataWidget } from '@/components/welcome/DataWidget'
 import WelcomeLogin from './WelcomeLogin'
-import { useAppSelector } from '@/store'
-import { selectTotalAdded } from '@/store/addedSafesSlice'
-
-import drawerCSS from '@/components/sidebar/Sidebar/styles.module.css'
-import useOwnedSafes from '@/hooks/useOwnedSafes'
+import SafeListDrawer from '@/components/welcome/SafeListDrawer'
 
 const BulletListItem = ({ text }: { text: string }) => (
   <li>
@@ -23,26 +16,8 @@ const BulletListItem = ({ text }: { text: string }) => (
 )
 
 const NewSafe = () => {
-  const numberOfAddedSafes = useAppSelector(selectTotalAdded)
-  const ownedSafes = useOwnedSafes()
-  const numberOfOwnedSafes = Object.values(ownedSafes).reduce((acc, curr) => acc + curr.length, 0)
-  const totalNumberOfSafes = numberOfOwnedSafes + numberOfAddedSafes
-
-  const [showSidebar, setShowSidebar] = useState(false)
-
-  const closeSidebar = () => setShowSidebar(false)
-
   return (
     <>
-      <Drawer variant="temporary" anchor="left" open={showSidebar} onClose={closeSidebar}>
-        <div className={drawerCSS.drawer}>
-          <SafeList closeDrawer={closeSidebar} />
-
-          <div className={drawerCSS.dataWidget}>
-            <DataWidget />
-          </div>
-        </div>
-      </Drawer>
       <Grid container spacing={3} p={3} pb={0} flex={1} direction="row-reverse">
         <Grid item xs={12} lg={6}>
           <WelcomeLogin />
@@ -50,24 +25,7 @@ const NewSafe = () => {
         <Grid item xs={12} lg={6} flex={1}>
           <div className={css.content}>
             <Box minWidth={{ md: 480 }} className={css.sidebar}>
-              {totalNumberOfSafes > 0 ? (
-                <Box display="flex" flexDirection="column">
-                  <Box flex={1}>
-                    <Accordion className={css.accordion} onClick={() => setShowSidebar(true)} expanded={false}>
-                      <AccordionSummary>
-                        <Box display="flex" flexDirection="row" alignItems="center" width="100%" gap={2}>
-                          <IconButton sx={{ mr: 'auto', padding: '4px' }}>
-                            <ChevronRightIcon />
-                          </IconButton>
-                          <Typography sx={{ mr: 'auto' }} variant="h4" display="inline" fontWeight={700}>
-                            My Safe Accounts ({totalNumberOfSafes})
-                          </Typography>
-                        </Box>
-                      </AccordionSummary>
-                    </Accordion>
-                  </Box>
-                </Box>
-              ) : null}
+              <SafeListDrawer />
             </Box>
 
             <Typography variant="h1" fontSize={[44, null, 52]} lineHeight={1} letterSpacing={-1.5} color="static.main">

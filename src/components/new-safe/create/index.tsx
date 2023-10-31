@@ -169,7 +169,7 @@ const CreateSafe = () => {
   const initialStep = isSocialLogin ? 2 : 0
 
   const onClose = () => {
-    router.push(AppRoutes.welcome)
+    router.push(AppRoutes.welcome.index)
   }
 
   return (
