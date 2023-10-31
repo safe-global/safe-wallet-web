@@ -166,7 +166,7 @@ export const SocialSigner = ({
               ml: 0.5,
             }}
           />
-          Currently only supported on {supportedChains.join(', ')}
+          Currently only supported on {supportedChains.join(', ')}. More network support coming soon.
         </Typography>
       )}
     </>
