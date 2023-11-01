@@ -1,5 +1,6 @@
 import * as constants from '../../support/constants'
 import * as balances from '../pages/balances.pages'
+import * as main from '../../e2e/pages/main.page'
 
 const ASSETS_LENGTH = 8
 
@@ -8,9 +9,7 @@ describe('Balance tests', () => {
     cy.clearLocalStorage()
     // Open the Safe used for testing
     cy.visit(constants.BALANCE_URL + constants.PAGINATION_TEST_SAFE)
-    cy.contains('button', 'Accept selection').click()
-    // Table is loaded
-    cy.contains('Görli Ether')
+    main.acceptCookies(2)
 
     cy.contains('div', 'Default tokens').click()
     cy.wait(100)

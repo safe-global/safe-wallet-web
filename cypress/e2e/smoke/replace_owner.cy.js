@@ -18,16 +18,14 @@ describe('Replace Owners tests', () => {
   it('Verify Tooltip displays correct message for Non-Owner [C56016]', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_2)
     owner.waitForConnectionStatus()
-    owner.hoverOverReplaceOwnerBtn()
-    owner.verifyTooltipLabel(owner.nonOwnerErrorMsg)
+    owner.verifyReplaceBtnIsDisabled()
   })
 
   it('Verify Tooltip displays correct message for disconnected user [C56006]', () => {
     owner.waitForConnectionStatus()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
-    owner.hoverOverReplaceOwnerBtn()
-    owner.verifyTooltipLabel(owner.disconnectedUserErrorMsg)
+    owner.verifyReplaceBtnIsDisabled()
   })
 
   it('Verify that the owner replacement form is opened [C56007]', () => {

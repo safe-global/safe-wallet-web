@@ -7,34 +7,34 @@ const nftsAddress = '0x373B...866c'
 const nftsTokenID = 'CF'
 
 describe('NFTs tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
-    main.acceptCookies()
+    main.acceptCookies(2)
     nfts.clickOnNftsTab()
   })
 
-  it.skip('Verify that NFTs exist in the table [C56123]', () => {
+  it('Verify that NFTs exist in the table [C56123]', () => {
     nfts.verifyNFTNumber(20)
   })
 
-  it.skip('Verify NFT row contains data [C56124]', () => {
+  it('Verify NFT row contains data [C56124]', () => {
     nfts.verifyDataInTable(nftsName, nftsAddress, nftsTokenID)
   })
 
-  it.skip('Verify NFT preview window can be opened [C56125]', () => {
-    nfts.openFirstNFT()
+  it('Verify NFT preview window can be opened [C56125]', () => {
+    nfts.openNFT(1)
     nfts.verifyNameInNFTModal(nftsTokenID)
     nfts.verifySelectedNetwrokSepolia()
     nfts.closeNFTModal()
   })
 
-  it.skip('Verify NFT open does not open if no NFT exits [C56126]', () => {
+  it('Verify NFT open does not open if no NFT exits [C56126]', () => {
     nfts.clickOn6thNFT()
     nfts.verifyNFTModalDoesNotExist()
   })
 
-  it.skip('Verify multipls NFTs can be selected and reviewed [C56127]', () => {
+  it('Verify multipls NFTs can be selected and reviewed [C56127]', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(3)
     nfts.deselectNFTs([2], 3)
