@@ -60,5 +60,5 @@ export const getPeerName = (peer: SessionTypes.Struct['peer'] | ProposalTypes.St
 }
 
 export const splitError = (message: string): string[] => {
-  return message.split(': ')
+  return message.split(/: (.+)/).slice(0, 2)
 }

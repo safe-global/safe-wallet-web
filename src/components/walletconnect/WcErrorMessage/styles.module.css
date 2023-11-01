@@ -5,12 +5,7 @@
   text-align: center;
 }
 
-.errorMessage {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-}
-
 .button {
   padding: var(--space-1) var(--space-4);
+  margin-top: var(--space-3);
 }

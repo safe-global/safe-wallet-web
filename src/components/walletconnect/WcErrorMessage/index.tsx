@@ -9,13 +9,9 @@ const WcErrorMessage = ({ error, onClose }: { error: Error; onClose: () => void 
 
   return (
     <div className={css.errorContainer}>
-      <WcLogoHeader error />
+      <WcLogoHeader errorMessage={summary} />
 
-      <Typography title={error.message} className={css.errorMessage} mb={3}>
-        {summary}
-      </Typography>
-
-      {details && <Typography variant="body2">{details}</Typography>}
+      {details && <Typography mt={1}>{details}</Typography>}
 
       <Button variant="contained" onClick={onClose} className={css.button}>
         OK

@@ -11,3 +11,9 @@
   border-radius: 50%;
   border: 1px solid var(--color-background-paper);
 }
+
+.title {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
