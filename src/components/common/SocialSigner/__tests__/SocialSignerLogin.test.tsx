@@ -94,7 +94,9 @@ describe('SocialSignerLogin', () => {
       />,
     )
 
-    expect(result.getByText('Currently only supported on Goerli')).toBeInTheDocument()
+    expect(
+      result.getByText('Currently only supported on Goerli. More network support coming soon.'),
+    ).toBeInTheDocument()
     expect(await result.findByRole('button')).toBeDisabled()
   })
 
