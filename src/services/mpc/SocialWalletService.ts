@@ -1,6 +1,6 @@
 import { COREKIT_STATUS, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import BN from 'bn.js'
-import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
+import { GOOGLE_CLIENT_ID, WEB3AUTH_AGGREGATE_VERIFIER_ID, WEB3AUTH_SUBVERIFIER_ID } from '@/config/constants'
 import { SecurityQuestionRecovery } from '@/services/mpc/recovery/SecurityQuestionRecovery'
 import { trackEvent } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
@@ -69,11 +69,15 @@ class SocialWalletService implements ISocialWalletService {
   async loginAndCreate(): Promise<COREKIT_STATUS> {
     try {
       await this.mpcCoreKit.loginWithOauth({
-        subVerifierDetails: {
-          typeOfLogin: 'google',
-          verifier: WEB3AUTH_VERIFIER_ID,
-          clientId: GOOGLE_CLIENT_ID,
-        },
+        aggregateVerifierIdentifier: WEB3AUTH_AGGREGATE_VERIFIER_ID,
+        subVerifierDetailsArray: [
+          {
+            clientId: GOOGLE_CLIENT_ID,
+            typeOfLogin: 'google',
+            verifier: WEB3AUTH_SUBVERIFIER_ID,
+          },
+        ],
+        aggregateVerifierType: 'single_id_verifier',
       })
 
       if (this.mpcCoreKit.status === COREKIT_STATUS.REQUIRED_SHARE) {

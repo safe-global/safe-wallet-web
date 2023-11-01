@@ -71,6 +71,8 @@ describe('WalletLogin', () => {
 
   it('should not invoke the callback if connection fails', async () => {
     const mockOnLogin = jest.fn()
+    jest.spyOn(useWallet, 'default').mockReturnValue(null)
+
     jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn().mockReturnValue([]))
 
     const result = render(<WalletLogin onLogin={mockOnLogin} />)
