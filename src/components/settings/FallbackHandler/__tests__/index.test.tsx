@@ -1,4 +1,4 @@
-import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
+import { render, waitFor } from '@/tests/test-utils'
 
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useTxBuilderHook from '@/hooks/safe-apps/useTxBuilderApp'
@@ -104,7 +104,7 @@ describe('FallbackHandler', () => {
   })
 
   describe('No Fallback Handler', () => {
-    it('should render the Fallback Handler and warning tooltip when no Fallback Handler is set', async () => {
+    it('should render a warning when no Fallback Handler is set', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
         () =>
           ({
@@ -116,21 +116,6 @@ describe('FallbackHandler', () => {
       )
 
       const fbHandler = render(<FallbackHandler />)
-
-      await waitFor(() => {
-        expect(fbHandler.getByText('No fallback handler set')).toBeDefined()
-      })
-
-      const icon = fbHandler.getByTestId('fallback-handler-warning')
-
-      await act(() => {
-        fireEvent(
-          icon,
-          new MouseEvent('mouseover', {
-            bubbles: true,
-          }),
-        )
-      })
 
       await waitFor(() => {
         expect(
@@ -157,17 +142,6 @@ describe('FallbackHandler', () => {
 
       const fbHandler = render(<FallbackHandler />)
 
-      const icon = fbHandler.getByTestId('fallback-handler-warning')
-
-      await act(() => {
-        fireEvent(
-          icon,
-          new MouseEvent('mouseover', {
-            bubbles: true,
-          }),
-        )
-      })
-
       await waitFor(() => {
         expect(
           fbHandler.queryByText(
@@ -180,7 +154,7 @@ describe('FallbackHandler', () => {
   })
 
   describe('Unofficial Fallback Handler', () => {
-    it('should render placeholder and warning tooltip when an unofficial Fallback Handler is set', async () => {
+    it('should render placeholder and warning when an unofficial Fallback Handler is set', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
         () =>
           ({
@@ -206,17 +180,6 @@ describe('FallbackHandler', () => {
         expect(fbHandler.getByText('0x123')).toBeDefined()
       })
 
-      const icon = fbHandler.getByTestId('fallback-handler-warning')
-
-      await act(() => {
-        fireEvent(
-          icon,
-          new MouseEvent('mouseover', {
-            bubbles: true,
-          }),
-        )
-      })
-
       await waitFor(() => {
         expect(fbHandler.queryByText(new RegExp('An unofficial fallback handler is currently set.')))
         expect(fbHandler.queryByText('Transaction Builder')).toBeInTheDocument()
@@ -240,17 +203,6 @@ describe('FallbackHandler', () => {
       )
 
       const fbHandler = render(<FallbackHandler />)
-
-      const icon = fbHandler.getByTestId('fallback-handler-warning')
-
-      await act(() => {
-        fireEvent(
-          icon,
-          new MouseEvent('mouseover', {
-            bubbles: true,
-          }),
-        )
-      })
 
       await waitFor(() => {
         expect(fbHandler.queryByText(new RegExp('An unofficial fallback handler is currently set.')))
