@@ -32,6 +32,10 @@ export const WALLETCONNECT_EVENTS = {
     action: 'WC show hints',
     category: WALLETCONNECT_CATEGORY,
   },
+  HINTS_HIDE: {
+    action: 'WC hide hints',
+    category: WALLETCONNECT_CATEGORY,
+  },
   HINTS_EXPAND: {
     action: 'WC expand hints',
     category: WALLETCONNECT_CATEGORY,
@@ -58,5 +62,10 @@ export const WALLETCONNECT_EVENTS = {
   SWITCH_FROM_UNSUPPORTED_CHAIN: {
     action: 'WC switch from unsupported chain',
     category: WALLETCONNECT_CATEGORY,
+  },
+  REQUEST: {
+    action: 'WC request',
+    category: WALLETCONNECT_CATEGORY,
+    event: EventType.META,
   },
 }

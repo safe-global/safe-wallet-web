@@ -12,7 +12,7 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { ReactElement } from 'react'
 import Question from '@/public/images/common/question.svg'
 import css from './styles.module.css'
@@ -83,10 +83,6 @@ const WcHints = (): ReactElement => {
 
     trackEvent(WALLETCONNECT_EVENTS.HINTS_EXPAND)
   }
-
-  useEffect(() => {
-    trackEvent(WALLETCONNECT_EVENTS.HINTS_SHOW)
-  }, [])
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>

@@ -64,8 +64,6 @@ enum ErrorCodes {
   _902 = '902: Error loading Safe Apps list',
   _903 = '903: Error loading Safe App manifest',
   _905 = '905: Third party cookies are disabled',
-
-  _910 = '910: WalletConnect failed to switch chain',
 }
 
 export default ErrorCodes

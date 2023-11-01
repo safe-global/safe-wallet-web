@@ -12,6 +12,7 @@ import * as messages from '@/utils/safe-messages'
 import { createStoreHydrator } from '@/store/storeHydrator'
 
 const appInfo = {
+  id: 1,
   name: 'test',
   description: 'test',
   iconUrl: 'test',
@@ -90,6 +91,7 @@ describe('useSafeWalletProvider', () => {
         name: appInfo.name,
         message: 'message',
         requestId: expect.any(String),
+        safeAppId: 1,
       })
 
       expect(resp).toBeInstanceOf(Promise)
@@ -131,7 +133,6 @@ describe('useSafeWalletProvider', () => {
       // SignMessageOnChainFlow props
       expect(mockSetTxFlow.mock.calls[0][0].props).toStrictEqual({
         props: {
-          appId: undefined,
           requestId: expect.any(String),
           message: 'message',
           method: 'signMessage',
@@ -205,6 +206,7 @@ describe('useSafeWalletProvider', () => {
         name: appInfo.name,
         message: typedMessage,
         requestId: expect.any(String),
+        safeAppId: 1,
       })
 
       expect(resp).toBeInstanceOf(Promise)
@@ -252,11 +254,7 @@ describe('useSafeWalletProvider', () => {
       expect(mockSetTxFlow.mock.calls[0][0].props).toStrictEqual({
         data: {
           appId: undefined,
-          app: {
-            name: appInfo.name,
-            url: appInfo.url,
-            iconUrl: appInfo.iconUrl,
-          },
+          app: appInfo,
           requestId: expect.any(String),
           txs: [
             {
