@@ -20,8 +20,8 @@ const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setS
       return
     }
 
-    // Jump to the welcome page if there is no wallet and no pending Safe
-    if (!wallet && !pendingSafe) {
+    // Jump to the welcome page if there is no wallet
+    if (!wallet) {
       router.push({ pathname: AppRoutes.welcome.index, query: router.query })
     }
 
