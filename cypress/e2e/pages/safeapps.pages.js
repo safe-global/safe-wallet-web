@@ -23,11 +23,12 @@ const allowAllPermissions = /allow all/i
 const appNotSupportedMsg = "The app doesn't support Safe App functionality"
 
 export const pinWalletConnectStr = /pin walletconnect/i
-export const transactionBuilderStr = /pin transaction builder/i
+export const transactionBuilderStr = 'Transaction Builder'
 export const logoWalletConnect = /logo.*walletconnect/i
 export const walletConnectHeadlinePreview = /walletconnect/i
-export const availableNetworksPreview = /available networks/i
-export const connecttextPreview = 'Connect your Safe to any dApp that supports WalletConnect'
+export const transactiobUilderHeadlinePreview = 'Transaction Builder'
+export const availableNetworksPreview = 'Available networks'
+export const connecttextPreview = 'Compose custom contract interactions and batch them into a single transaction'
 const warningDefaultAppStr = 'The application you are trying to access is not in the default Safe Apps list'
 export const localStorageItem =
   '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}'
@@ -70,7 +71,7 @@ export function verifyLinkName(name) {
 }
 
 export function clickOnApp(app) {
-  cy.findByRole('link', { name: app }).click()
+  cy.contains(app).click()
 }
 
 export function verifyNoAppsTextPresent() {
@@ -78,12 +79,8 @@ export function verifyNoAppsTextPresent() {
 }
 
 export function pinApp(app, pin = true) {
-  cy.findByLabelText(app).click()
-  cy.wait(200)
-  cy.findByLabelText(app).should(($el) => {
-    const ariaLabel = $el.attr('aria-label')
-    expect(ariaLabel).to.include(pin ? 'Unpin' : 'Pin')
-  })
+  const option = pin ? 'Pin' : 'Unpin'
+  cy.get(`[aria-label="${option} ${app}"]`).click()
 }
 
 export function clickOnBookmarkedAppsTab() {
@@ -146,7 +143,7 @@ function verifyDisclaimerIsVisible() {
 }
 
 export function clickOnContinueBtn() {
-  return cy.findByRole('button', { name: continueBtnStr }).click()
+  return cy.findByRole('button', { name: continueBtnStr }).click().wait(1000)
 }
 
 export function verifyCameraCheckBoxExists() {

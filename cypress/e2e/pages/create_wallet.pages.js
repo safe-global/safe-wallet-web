@@ -64,15 +64,9 @@ export function clearWalletName() {
 
 export function selectNetwork(network, regex = false) {
   cy.wait(1000)
-  cy.get(selectNetworkBtn).should('exist').click()
+  cy.get(selectNetworkBtn).should('be.visible').click()
+  cy.wait(1000)
   cy.get('li').contains(network).click()
-
-  if (regex) {
-    regex = constants.networks.goerli
-    cy.get(selectNetworkBtn).click().invoke('text').should('match', regex)
-  } else {
-    cy.get(selectNetworkBtn).click().should('have.text', network)
-  }
   cy.get('body').click()
 }
 

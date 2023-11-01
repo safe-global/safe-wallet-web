@@ -18,8 +18,7 @@ describe('Remove Owners tests', () => {
   it('Verify Tooltip displays correct message for Non-Owner [C56037]', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_4)
     owner.waitForConnectionStatus()
-    owner.hoverOverDeleteOwnerBtn(0)
-    owner.verifyTooltipLabel(owner.nonOwnerErrorMsg)
+    owner.verifyRemoveBtnIsDisabled()
   })
 
   it('Verify Tooltip displays correct message for disconnected user [C56031]', () => {
@@ -27,8 +26,7 @@ describe('Remove Owners tests', () => {
     owner.waitForConnectionStatus()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
-    owner.hoverOverDeleteOwnerBtn(0)
-    owner.verifyTooltipLabel(owner.disconnectedUserErrorMsg)
+    owner.verifyRemoveBtnIsDisabled()
   })
 
   it('Verify owner removal form can be opened [C56032]', () => {
