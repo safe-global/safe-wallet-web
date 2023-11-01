@@ -19,7 +19,7 @@ describe('Transaction history tests', () => {
     // So that tests that rely on this feature don't randomly fail
     cy.window().then((win) => win.localStorage.setItem('SAFE_v2__AB_human-readable', true))
 
-    main.acceptCookies()
+    main.acceptCookies(1)
   })
 
   //Skipping this due to test data creation
@@ -129,7 +129,7 @@ describe('Transaction history tests', () => {
   })
 
   it('Verify transaction can be expanded/collapsed [C56129]', () => {
-    createTx.clickOnTransactionExpandableItem('Oct 9, 2023', () => {
+    createTx.clickOnTransactionExpandableItem('Oct 20, 2023', () => {
       createTx.verifyTransactionStrExists(str1)
       createTx.verifyTransactionStrExists(str2)
       createTx.verifyTransactionStrExists(str3)

@@ -10,16 +10,14 @@ describe('Safe Apps info modal tests', () => {
   })
 
   it('Verify the preview drawer is displayed when opening a Safe App from the app list [C56149]', () => {
-    safeapps.clickOnApp(safeapps.logoWalletConnect)
+    safeapps.clickOnApp(safeapps.transactionBuilderStr)
 
     cy.findByRole('presentation').within(() => {
       safeapps.verifyPreviewWindow(
-        safeapps.walletConnectHeadlinePreview,
+        safeapps.transactiobUilderHeadlinePreview,
         safeapps.connecttextPreview,
         safeapps.availableNetworksPreview,
       )
-      safeapps.pinApp(safeapps.pinWalletConnectStr)
-      safeapps.pinApp(safeapps.pinWalletConnectStr, false)
       safeapps.closePreviewWindow()
     })
     cy.findByRole('presentation').should('not.exist')
