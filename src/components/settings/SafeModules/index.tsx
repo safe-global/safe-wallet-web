@@ -2,13 +2,13 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Paper, Grid, Typography, Box, IconButton, SvgIcon } from '@mui/material'
 
-import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
 import RemoveModuleFlow from '@/components/tx-flow/flows/RemoveModule'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useContext } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
+import css from '../TransactionGuards/styles.module.css'
 
 const NoModules = () => {
   return (
@@ -22,7 +22,7 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
   const { setTxFlow } = useContext(TxModalContext)
 
   return (
-    <Box className={css.container}>
+    <Box className={css.guardDisplay}>
       <EthHashInfo
         name={name}
         shortAddress={false}
@@ -38,6 +38,7 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
             color="error"
             size="small"
             disabled={!isOk}
+            title="Remove module"
           >
             <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
           </IconButton>

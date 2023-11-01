@@ -1,6 +1,6 @@
 .guardDisplay {
   background-color: var(--color-secondary-background);
-  border: 1px solid var(--color-secondary-main);
+  border: 1px solid var(--color-success-dark);
   padding: 8px;
   border-radius: 4px;
   margin-top: 16px;
