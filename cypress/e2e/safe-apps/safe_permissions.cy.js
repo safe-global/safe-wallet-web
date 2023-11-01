@@ -3,10 +3,8 @@ import * as safeapps from '../pages/safeapps.pages'
 import * as main from '../pages/main.page'
 
 describe('Safe permissions system tests', () => {
-  before(() => {
-    cy.clearLocalStorage()
-  })
   beforeEach(() => {
+    cy.clearLocalStorage()
     cy.fixture('safe-app').then((html) => {
       cy.intercept('GET', `${constants.testAppUrl}/*`, html)
       cy.intercept('GET', `*/manifest.json`, {
@@ -58,7 +56,7 @@ describe('Safe permissions system tests', () => {
     })
 
     cy.visitSafeApp(constants.testAppUrl + constants.getPermissionsUrl)
-    main.acceptCookies()
+    main.acceptCookies(1)
     safeapps.clickOnContinueBtn()
     safeapps.verifyWarningDefaultAppMsgIsDisplayed()
     safeapps.clickOnContinueBtn()

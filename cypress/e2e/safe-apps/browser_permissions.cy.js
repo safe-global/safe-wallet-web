@@ -14,11 +14,11 @@ describe('Browser permissions tests', () => {
         safe_apps_permissions: ['camera', 'microphone'],
       })
     })
+    cy.visitSafeApp(`${constants.testAppUrl}/app`)
+    main.acceptCookies(1)
   })
 
   it('Verify a permissions slide to the user is displayed [C56137]', () => {
-    cy.visitSafeApp(`${constants.testAppUrl}/app`)
-    main.acceptCookies()
     safeapps.clickOnContinueBtn()
     safeapps.verifyCameraCheckBoxExists()
     safeapps.verifyMicrofoneCheckBoxExists()
@@ -29,6 +29,7 @@ describe('Browser permissions tests', () => {
     safeapps.clickOnContinueBtn()
     safeapps.verifyWarningDefaultAppMsgIsDisplayed()
     safeapps.verifyCameraCheckBoxExists()
+    safeapps.clickOnContinueBtn()
     safeapps.clickOnContinueBtn().should(() => {
       expect(window.localStorage.getItem(constants.BROWSER_PERMISSIONS_KEY)).to.eq(safeapps.localStorageItem)
     })
