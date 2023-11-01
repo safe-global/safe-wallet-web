@@ -31,7 +31,7 @@ export const FallbackHandler = (): ReactElement | null => {
   const isOfficial =
     hasFallbackHandler && safe.fallbackHandler?.value === fallbackHandlerDeployment?.networkAddresses[safe.chainId]
 
-  const tooltip = !hasFallbackHandler ? (
+  const warning = !hasFallbackHandler ? (
     <>
       The {'Safe{Wallet}'} may not work correctly as no fallback handler is currently set.
       {txBuilder && (
@@ -79,7 +79,7 @@ export const FallbackHandler = (): ReactElement | null => {
             </Typography>
 
             <Alert severity={!hasFallbackHandler ? 'warning' : isOfficial ? 'success' : 'info'} sx={{ mt: 2 }}>
-              {tooltip && <Typography mb={hasFallbackHandler ? 2 : 0}>{tooltip}</Typography>}
+              {warning && <Typography mb={hasFallbackHandler ? 2 : 0}>{warning}</Typography>}
 
               {safe.fallbackHandler && (
                 <EthHashInfo
