@@ -3,12 +3,12 @@ import ExternalStore from '@/services/ExternalStore'
 import { COREKIT_STATUS, Web3AuthMPCCoreKit, WEB3AUTH_NETWORK } from '@web3auth/mpc-core-kit'
 import { CHAIN_NAMESPACES } from '@web3auth/base'
 
-import { WEB3_AUTH_CLIENT_ID } from '@/config/constants'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getRpcServiceUrl } from '../web3'
 import useOnboard, { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useInitSocialWallet } from './useSocialWallet'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
+import { isSocialWalletOptions, SOCIAL_WALLET_OPTIONS } from '@/services/mpc/config'
 
 const { getStore, setStore, useStore } = new ExternalStore<Web3AuthMPCCoreKit>()
 
@@ -18,9 +18,10 @@ export const useInitMPC = () => {
   useInitSocialWallet()
 
   useEffect(() => {
-    if (!chain || !onboard) {
+    if (!chain || !onboard || !isSocialWalletOptions(SOCIAL_WALLET_OPTIONS)) {
       return
     }
+
     const chainConfig = {
       chainId: `0x${Number(chain.chainId).toString(16)}`,
       chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -40,7 +41,7 @@ export const useInitMPC = () => {
     }
 
     const web3AuthCoreKit = new Web3AuthMPCCoreKit({
-      web3AuthClientId: WEB3_AUTH_CLIENT_ID,
+      web3AuthClientId: SOCIAL_WALLET_OPTIONS.web3AuthClientId,
       // Available networks are "sapphire_devnet", "sapphire_mainnet"
       web3AuthNetwork: WEB3AUTH_NETWORK.MAINNET,
       baseUrl: `${window.location.origin}/serviceworker`,

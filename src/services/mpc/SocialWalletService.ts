@@ -1,6 +1,5 @@
 import { COREKIT_STATUS, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import BN from 'bn.js'
-import { GOOGLE_CLIENT_ID, WEB3AUTH_VERIFIER_ID } from '@/config/constants'
 import { SecurityQuestionRecovery } from '@/services/mpc/recovery/SecurityQuestionRecovery'
 import { trackEvent } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
@@ -9,6 +8,7 @@ import { logError } from '../exceptions'
 import ErrorCodes from '../exceptions/ErrorCodes'
 import { asError } from '../exceptions/utils'
 import { type ISocialWalletService } from './interfaces'
+import { isSocialWalletOptions, SOCIAL_WALLET_OPTIONS } from './config'
 
 /**
  * Singleton Service for accessing the social login wallet
@@ -67,13 +67,22 @@ class SocialWalletService implements ISocialWalletService {
   }
 
   async loginAndCreate(): Promise<COREKIT_STATUS> {
+    const config = SOCIAL_WALLET_OPTIONS
+    const isConfigured = isSocialWalletOptions(config)
+    if (!isConfigured) {
+      throw new Error('The Social signer wallet is not configured correctly')
+    }
     try {
       await this.mpcCoreKit.loginWithOauth({
-        subVerifierDetails: {
-          typeOfLogin: 'google',
-          verifier: WEB3AUTH_VERIFIER_ID,
-          clientId: GOOGLE_CLIENT_ID,
-        },
+        aggregateVerifierIdentifier: config.web3AuthAggregateVerifierId,
+        subVerifierDetailsArray: [
+          {
+            clientId: config.googleClientId,
+            typeOfLogin: 'google',
+            verifier: config.web3AuthSubverifierId,
+          },
+        ],
+        aggregateVerifierType: 'single_id_verifier',
       })
 
       if (this.mpcCoreKit.status === COREKIT_STATUS.REQUIRED_SHARE) {
