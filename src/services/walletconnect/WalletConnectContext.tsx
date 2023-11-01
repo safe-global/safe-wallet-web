@@ -13,6 +13,15 @@ import { WALLETCONNECT_EVENTS } from '../analytics/events/walletconnect'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
+enum Errors {
+  WRONG_CHAIN = '%%dappName%% made a request on a different chain than the one you are connected to',
+}
+
+const getWrongChainError = (dappName: string): Error => {
+  const message = Errors.WRONG_CHAIN.replace('%%dappName%%', dappName)
+  return new Error(message)
+}
+
 const walletConnectSingleton = new WalletConnectWallet()
 
 export const WalletConnectContext = createContext<{
@@ -81,8 +90,11 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
       const getResponse = () => {
         // Get error if wrong chain
         if (!session || requestChainId !== chainId) {
+          if (session) {
+            setError(getWrongChainError(getPeerName(session.peer)))
+          }
+
           const error = getSdkError('UNSUPPORTED_CHAINS')
-          setError(new Error(error.message))
           return formatJsonRpcError(event.id, error)
         }
 

@@ -108,12 +108,8 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
 
     setOpen(true)
 
-    let timer = setTimeout(() => {
-      setOpen(false)
-
-      timer = setTimeout(() => {
-        setChangedSession(undefined)
-      }, 500)
+    const timer = setTimeout(() => {
+      setChangedSession(undefined)
     }, SESSION_INFO_TIMEOUT)
 
     return () => clearTimeout(timer)
