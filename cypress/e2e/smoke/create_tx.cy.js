@@ -3,13 +3,13 @@ import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 
 const sendValue = 0.00002
-const currentNonce = 1
+const currentNonce = 11
 
 describe('Create transactions tests', () => {
   before(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
-    main.acceptCookies()
+    main.acceptCookies(2)
   })
 
   it('Verify a new send token transaction can be created [C56104]', () => {
