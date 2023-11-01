@@ -10,7 +10,7 @@ describe('NFTs tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
-    main.acceptCookies()
+    main.acceptCookies(2)
     nfts.clickOnNftsTab()
   })
 
