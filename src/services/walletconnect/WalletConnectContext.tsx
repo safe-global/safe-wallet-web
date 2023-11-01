@@ -74,6 +74,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
         // Get error if wrong chain
         if (!session || requestChainId !== chainId) {
           const error = getSdkError('UNSUPPORTED_CHAINS')
+          setError(new Error(error.message))
           return formatJsonRpcError(event.id, error)
         }
 
