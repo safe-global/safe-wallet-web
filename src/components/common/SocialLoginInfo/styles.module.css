@@ -1,7 +1,19 @@
 .profileImg {
   border-radius: var(--space-2);
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+.bubble {
+  content: '';
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+}
+
+.bubble span {
+  outline: 1px solid var(--color-background-paper);
 }
 
 .profileData {

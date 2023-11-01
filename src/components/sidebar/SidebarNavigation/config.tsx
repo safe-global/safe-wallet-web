@@ -128,6 +128,10 @@ export const generalSettingsNavItems = [
     href: AppRoutes.settings.notifications,
   },
   {
+    label: 'Security & Login',
+    href: AppRoutes.settings.securityLogin,
+  },
+  {
     label: 'Data',
     href: AppRoutes.settings.data,
   },

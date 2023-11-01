@@ -32,7 +32,7 @@
     display: none;
   }
 
-  .socialLoginInfo > div > div {
+  .socialLoginInfo > div > div:last-child {
     display: none;
   }
 }
