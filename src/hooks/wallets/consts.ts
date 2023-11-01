@@ -15,7 +15,7 @@ export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.WALLETCONNECT_V2]: 'walletConnect_v2',
   [WALLET_KEYS.COINBASE]: 'coinbase',
   [WALLET_KEYS.PAIRING]: 'safeMobile',
-  [WALLET_KEYS.SOCIAL]: 'socialLogin',
+  [WALLET_KEYS.SOCIAL]: 'socialSigner',
   [WALLET_KEYS.LEDGER]: 'ledger',
   [WALLET_KEYS.TREZOR]: 'trezor',
   [WALLET_KEYS.KEYSTONE]: 'keystone',
