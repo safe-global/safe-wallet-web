@@ -98,7 +98,7 @@ class SocialWalletService implements ISocialWalletService {
     } catch (err) {
       const error = asError(err)
       logError(ErrorCodes._306, error)
-      throw new Error('Error while logging in to your account or creating your Social signer wallet')
+      throw new Error('Something went wrong on our side. Please try to login again,')
     }
   }
 

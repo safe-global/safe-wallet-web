@@ -116,7 +116,6 @@ export const SocialSigner = ({
   return (
     <>
       <Box display="flex" flexDirection="column" gap={2} sx={{ width: '100%' }}>
-        {loginError && <ErrorMessage className={css.loginError}>{loginError}</ErrorMessage>}
         {isSocialLogin && userInfo ? (
           <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
             <Button
@@ -160,6 +159,7 @@ export const SocialSigner = ({
             </Button>
           </Track>
         )}
+        {loginError && <ErrorMessage className={css.loginError}>{loginError}</ErrorMessage>}
       </Box>
 
       {!isMPCLoginEnabled && (
