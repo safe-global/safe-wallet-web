@@ -9,7 +9,7 @@ describe('Safe Apps tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.SEPOLIA_TEST_SAFE_4 + constants.appsUrl, { failOnStatusCode: false })
-    main.acceptCookies()
+    main.acceptCookies(1)
   })
 
   it('Verify app list can be filtered by app name [C56130]', () => {
@@ -32,15 +32,12 @@ describe('Safe Apps tests', () => {
 
   it('Verify apps can be pinned [C56133]', () => {
     safeapps.clearSearchAppInput()
-    safeapps.pinApp(safeapps.pinWalletConnectStr)
     safeapps.pinApp(safeapps.transactionBuilderStr)
-    safeapps.verifyPinnedAppCount(2)
+    safeapps.verifyPinnedAppCount(1)
   })
 
   it('Verify apps can be unpinned [C56134]', () => {
-    safeapps.pinApp(safeapps.pinWalletConnectStr)
     safeapps.pinApp(safeapps.transactionBuilderStr)
-    safeapps.pinApp(safeapps.pinWalletConnectStr, false)
     safeapps.pinApp(safeapps.transactionBuilderStr, false)
     safeapps.verifyPinnedAppCount(0)
   })

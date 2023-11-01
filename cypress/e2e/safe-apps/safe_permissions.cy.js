@@ -19,7 +19,7 @@ describe('Safe permissions system tests', () => {
 
   it('Verify that requesting permissions with wallet_requestPermissions shows the permissions prompt and return the permissions on accept [C56150]', () => {
     cy.visitSafeApp(constants.testAppUrl + constants.requestPermissionsUrl)
-    main.acceptCookies()
+    main.acceptCookies(1)
     safeapps.clickOnContinueBtn()
     safeapps.verifyWarningDefaultAppMsgIsDisplayed()
     safeapps.clickOnContinueBtn()
