@@ -19,17 +19,10 @@ import { getAddress } from 'ethers/lib/utils'
 import { AppRoutes } from '@/config/routes'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { NotificationMessages, showNotification } from './notifications'
-import { SafeAppsTag } from '@/config/constants'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SignMessageOnChainFlow from '@/components/tx-flow/flows/SignMessageOnChain'
 import { useAppSelector } from '@/store'
 import { selectOnChainSigning } from '@/store/settingsSlice'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
-
-const useWalletConnectApp = () => {
-  const [matchingApps] = useRemoteSafeApps(SafeAppsTag.WALLET_CONNECT)
-  return matchingApps?.[0]
-}
 
 export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { safe } = useSafeInfo()
@@ -39,7 +32,6 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
   const router = useRouter()
   const { configs } = useChains()
   const pendingTxs = useRef<Record<string, string>>({})
-  const wcApp = useWalletConnectApp()
 
   const onChainSigning = useAppSelector(selectOnChainSigning)
   const [settings, setSettings] = useState<SafeSettings>({
@@ -99,7 +91,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
             onClose,
           )
         } else {
-          setTxFlow(<SignMessageOnChainFlow props={{ appId: wcApp?.id, requestId: id, message, method }} />, onClose)
+          setTxFlow(<SignMessageOnChainFlow props={{ requestId: id, message, method }} />, onClose)
         }
       })
     }
@@ -156,12 +148,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
             <SafeAppsTxFlow
               data={{
                 appId: undefined,
-                app: {
-                  name: appInfo.name,
-                  // Show WC details in transaction list
-                  url: wcApp?.url ?? appInfo.url,
-                  iconUrl: appInfo.iconUrl,
-                },
+                app: appInfo,
                 requestId: id,
                 txs: transactions,
                 params: params.params,
@@ -215,20 +202,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         return data.result
       },
     }
-  }, [
-    chainId,
-    safeAddress,
-    safe,
-    currentChain,
-    onChainSigning,
-    settings,
-    setTxFlow,
-    wcApp?.id,
-    wcApp?.url,
-    configs,
-    router,
-    web3ReadOnly,
-  ])
+  }, [chainId, safeAddress, safe, currentChain, onChainSigning, settings, setTxFlow, configs, router, web3ReadOnly])
 }
 
 const useSafeWalletProvider = (): SafeWalletProvider | undefined => {

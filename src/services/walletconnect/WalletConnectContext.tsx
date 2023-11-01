@@ -27,6 +27,10 @@ export const WalletConnectContext = createContext<{
   setOpen: (_open: boolean) => {},
 })
 
+// Always use this URL for the origin field of transactions
+// This will give the txs the right icon in the history
+const WC_SAFE_APP_URL = 'https://apps-portal.safe.global/wallet-connect'
+
 export const WalletConnectProvider = ({ children }: { children: ReactNode }) => {
   const {
     safe: { chainId },
@@ -82,7 +86,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
         return safeWalletProvider.request(event.id, event.params.request, {
           name: getPeerName(session.peer) || 'Unknown dApp',
           description: session.peer.metadata.description,
-          url: session.peer.metadata.url,
+          url: WC_SAFE_APP_URL,
           iconUrl: session.peer.metadata.icons[0],
         })
       }

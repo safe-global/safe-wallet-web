@@ -142,7 +142,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
           <SignMessageOnChainFlow
             props={{
               app: safeAppFromManifest,
-              appId: remoteApp?.id,
               requestId,
               message,
               method,
