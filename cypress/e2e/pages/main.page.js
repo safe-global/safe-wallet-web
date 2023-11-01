@@ -6,11 +6,11 @@ export function clickOnSideMenuItem(item) {
   cy.get('p').contains(item).click()
 }
 
-export function acceptCookies() {
+export function acceptCookies(index = 0) {
   cy.wait(1000)
 
   cy.findAllByText('Got it!')
-    .should('have.length.at.least', 0)
+    .should('have.length.at.least', index)
     .each(($el) => $el.click())
 
   cy.get('button')
