@@ -17,7 +17,7 @@ type WcSessionManagerProps = {
   uri: string
 }
 
-const SESSION_INFO_TIMEOUT = 2000
+const SESSION_INFO_TIMEOUT = 1000
 
 const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   const { safe, safeAddress } = useSafeInfo()
