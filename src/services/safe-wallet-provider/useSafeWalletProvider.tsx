@@ -87,7 +87,13 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
 
         if (shouldSignOffChain) {
           setTxFlow(
-            <SignMessageFlow logoUri={appInfo.iconUrl} name={appInfo.name} message={message} requestId={id} />,
+            <SignMessageFlow
+              logoUri={appInfo.iconUrl}
+              name={appInfo.name}
+              message={message}
+              requestId={id}
+              safeAppId={appInfo.id}
+            />,
             onClose,
           )
         } else {

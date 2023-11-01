@@ -4,7 +4,7 @@ import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
 
-import { fireEvent, render, waitFor } from '@/tests/test-utils'
+import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
 import { WalletConnectContext, WalletConnectProvider } from '../WalletConnectContext'
 import WalletConnectWallet from '../WalletConnectWallet'
 import { safeInfoSlice } from '@/store/safeInfoSlice'
@@ -13,6 +13,22 @@ import * as useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeW
 
 jest.mock('../WalletConnectWallet')
 jest.mock('@/services/safe-wallet-provider/useSafeWalletProvider')
+
+jest.mock('@/hooks/safe-apps/useRemoteSafeApps', () => ({
+  useRemoteSafeApps: () => [
+    [
+      {
+        id: 111,
+        url: 'https://apps-portal.safe.global/wallet-connect',
+        name: 'WC App',
+        iconUrl: 'https://test.com/icon.png',
+        description: 'Test App Description',
+      },
+    ],
+    undefined,
+    false,
+  ],
+}))
 
 const TestComponent = () => {
   const { walletConnect, error } = useContext(WalletConnectContext)
@@ -391,6 +407,8 @@ describe('WalletConnectProvider', () => {
         },
       )
 
+      await act(() => Promise.resolve())
+
       await waitFor(() => {
         expect(onRequestSpy).toHaveBeenCalled()
       })
@@ -410,6 +428,7 @@ describe('WalletConnectProvider', () => {
         1,
         { method: 'fake', params: [] },
         {
+          id: 111,
           name: 'name',
           description: 'description',
           url: 'https://apps-portal.safe.global/wallet-connect',

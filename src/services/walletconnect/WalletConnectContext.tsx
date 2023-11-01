@@ -10,6 +10,8 @@ import { getPeerName, stripEip155Prefix } from './utils'
 import { IS_PRODUCTION } from '@/config/constants'
 import { trackEvent } from '../analytics'
 import { WALLETCONNECT_EVENTS } from '../analytics/events/walletconnect'
+import { SafeAppsTag } from '@/config/constants'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
 const walletConnectSingleton = new WalletConnectWallet()
 
@@ -27,9 +29,10 @@ export const WalletConnectContext = createContext<{
   setOpen: (_open: boolean) => {},
 })
 
-// Always use this URL for the origin field of transactions
-// This will give the txs the right icon in the history
-const WC_SAFE_APP_URL = 'https://apps-portal.safe.global/wallet-connect'
+const useWalletConnectApp = () => {
+  const [matchingApps] = useRemoteSafeApps(SafeAppsTag.WALLET_CONNECT)
+  return matchingApps?.[0]
+}
 
 export const WalletConnectProvider = ({ children }: { children: ReactNode }) => {
   const {
@@ -40,6 +43,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
   const [open, setOpen] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
+  const wcApp = useWalletConnectApp()
 
   // Init WalletConnect
   useEffect(() => {
@@ -84,9 +88,10 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
 
         // Get response from Safe Wallet Provider
         return safeWalletProvider.request(event.id, event.params.request, {
+          id: wcApp?.id || -1,
+          url: wcApp?.url || '',
           name: getPeerName(session.peer) || 'Unknown dApp',
           description: session.peer.metadata.description,
-          url: WC_SAFE_APP_URL,
           iconUrl: session.peer.metadata.icons[0],
         })
       }
@@ -100,7 +105,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
         setError(asError(e))
       }
     })
-  }, [walletConnect, chainId, safeWalletProvider])
+  }, [walletConnect, chainId, safeWalletProvider, wcApp])
 
   return (
     <WalletConnectContext.Provider value={{ walletConnect, error, setError, open, setOpen }}>
