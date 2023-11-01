@@ -131,7 +131,6 @@ describe('useSafeWalletProvider', () => {
       // SignMessageOnChainFlow props
       expect(mockSetTxFlow.mock.calls[0][0].props).toStrictEqual({
         props: {
-          appId: undefined,
           requestId: expect.any(String),
           message: 'message',
           method: 'signMessage',
@@ -254,6 +253,7 @@ describe('useSafeWalletProvider', () => {
           appId: undefined,
           app: {
             name: appInfo.name,
+            description: appInfo.description,
             url: appInfo.url,
             iconUrl: appInfo.iconUrl,
           },
