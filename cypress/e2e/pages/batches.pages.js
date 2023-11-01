@@ -67,13 +67,17 @@ function addToBatchButton() {
 export function openBatchtransactionsModal() {
   cy.get(batchTxTopBar).should('be.visible').click()
   cy.contains(batchedTransactionsStr).should('be.visible')
-  cy.contains(addInitialTransactionStr)
 }
 
 export function openNewTransactionModal() {
   cy.get(addNewTxBatch).click()
-  cy.contains('h1', newTransactionTitle).should('be.visible')
   cy.contains(sendTokensButn).click()
+}
+
+export function addNewTransactionToBatch(EOA, currentNonce, funds_first_tx) {
+  openBatchtransactionsModal()
+  openNewTransactionModal()
+  addToBatch(EOA, currentNonce, funds_first_tx)
 }
 
 export function verifyAmountTransactionsInBatch(count) {

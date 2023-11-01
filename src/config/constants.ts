@@ -102,5 +102,5 @@ export const REDEFINE_ARTICLE = 'https://safe.mirror.xyz/rInLWZwD_sf7enjoFerj6FI
 // Social Login
 export const WEB3_AUTH_CLIENT_ID = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID || ''
 export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
-export const WEB3AUTH_VERIFIER_ID = process.env.NEXT_PUBLIC_WEB3AUTH_VERIFIER_ID || ''
-export const AUTHENTICATOR_APP_VERIFIER = process.env.NEXT_PUBLIC_AUTHENTICATOR_APP_VERIFIER || ''
+export const WEB3AUTH_SUBVERIFIER_ID = process.env.NEXT_PUBLIC_WEB3AUTH_SUBVERIFIER_ID || ''
+export const WEB3AUTH_AGGREGATE_VERIFIER_ID = process.env.NEXT_PUBLIC_WEB3AUTH_AGGREGATE_VERIFIER_ID || ''

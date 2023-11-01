@@ -32,8 +32,10 @@ export function verifyDataInTable(name, address, tokenID) {
   cy.get('tbody tr:first-child').contains('td:nth-child(2)', tokenID)
 }
 
-export function openFirstNFT() {
-  cy.get('tbody tr:first-child td:nth-child(2)').click()
+export function openNFT(index) {
+  cy.get('tbody').within(() => {
+    cy.get('tr').eq(index).click()
+  })
 }
 
 export function verifyNameInNFTModal(name) {

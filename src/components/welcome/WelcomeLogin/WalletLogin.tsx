@@ -23,7 +23,7 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   if (wallet !== null && !isSocialLogin) {
     return (
       <Box sx={{ width: '100%' }}>
-        <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION} label={wallet.label}>
+        <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
           <Button variant="contained" sx={{ padding: '8px 16px' }} fullWidth onClick={onLogin}>
             <Box
               width="100%"

@@ -5,7 +5,7 @@ const copyToClipboardBtn = 'button[aria-label="Copy to clipboard"]'
 const tooltipLabel = (label) => `span[aria-label="${label}"]`
 const removeOwnerBtn = 'span[data-track="settings: Remove owner"] > span > button'
 const replaceOwnerBtn = 'span[data-track="settings: Replace owner"] > span > button'
-const addOwnerBtn = 'span[data-track="settings: Add owner"]'
+const addOwnerBtn = 'span[data-track="settings: Add owner"] > button'
 const tooltip = 'div[role="tooltip"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
 const sentinelStart = 'div[data-testid="sentinelStart"]'
@@ -87,6 +87,10 @@ export function verifyRemoveBtnIsEnabled() {
   return cy.get(removeOwnerBtn).should('exist')
 }
 
+export function verifyRemoveBtnIsDisabled() {
+  return cy.get(removeOwnerBtn).should('exist').and('be.disabled')
+}
+
 export function hoverOverDeleteOwnerBtn(index) {
   cy.get(removeOwnerBtn).eq(index).trigger('mouseover', { force: true })
 }
@@ -110,12 +114,20 @@ export function verifyReplaceBtnIsEnabled() {
   cy.get(replaceOwnerBtn).should('exist').and('not.be.disabled')
 }
 
+export function verifyReplaceBtnIsDisabled() {
+  cy.get(replaceOwnerBtn).should('exist').and('be.disabled')
+}
+
 export function hoverOverReplaceOwnerBtn() {
   cy.get(replaceOwnerBtn).trigger('mouseover', { force: true })
 }
 
 export function verifyAddOwnerBtnIsEnabled() {
   cy.get(addOwnerBtn).should('exist').and('not.be.disabled')
+}
+
+export function verifyAddOwnerBtnIsDisabled() {
+  cy.get(addOwnerBtn).should('exist').and('be.disabled')
 }
 
 export function hoverOverAddOwnerBtn() {

@@ -94,7 +94,9 @@ describe('SocialSignerLogin', () => {
       />,
     )
 
-    expect(result.getByText('Currently only supported on Goerli')).toBeInTheDocument()
+    expect(
+      result.getByText('Currently only supported on Goerli. More network support coming soon.'),
+    ).toBeInTheDocument()
     expect(await result.findByRole('button')).toBeDisabled()
   })
 
@@ -150,7 +152,7 @@ describe('SocialSignerLogin', () => {
       .with({
         chainId: '1',
         chainName: 'Ethereum',
-        disabledWallets: ['socialLogin'],
+        disabledWallets: ['socialSigner'],
       })
       .build()
     const mockGnosisChain = chainBuilder()
@@ -167,7 +169,7 @@ describe('SocialSignerLogin', () => {
 
     it('returns an empty array if social login is not enabled on any chain', () => {
       const mockGoerliChain = chainBuilder()
-        .with({ chainId: '5', chainName: 'Goerli', disabledWallets: ['socialLogin'] })
+        .with({ chainId: '5', chainName: 'Goerli', disabledWallets: ['socialSigner'] })
         .build()
 
       const mockChains = [mockEthereumChain, mockGoerliChain]

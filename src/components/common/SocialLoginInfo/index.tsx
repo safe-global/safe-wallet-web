@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Badge, Box, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/services/onboard'
@@ -28,7 +28,10 @@ const SocialLoginInfo = ({
 
   return (
     <Box width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
-      <img src={userInfo.profileImage} className={css.profileImg} alt="Profile Image" referrerPolicy="no-referrer" />
+      <Box position="relative">
+        <img src={userInfo.profileImage} className={css.profileImg} alt="Profile Image" referrerPolicy="no-referrer" />
+        {!socialWalletService?.isMFAEnabled() && <Badge variant="dot" color="warning" className={css.bubble} />}
+      </Box>
       <div className={css.profileData}>
         <Typography className={css.text} variant="body2" fontWeight={700}>
           {userInfo.name}
