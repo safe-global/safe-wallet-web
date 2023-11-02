@@ -1,5 +1,4 @@
 import * as constants from '../../support/constants'
-import * as owner from '../pages/owners.pages'
 
 const welcomeLoginScreen = '[data-testid="welcome-login"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
