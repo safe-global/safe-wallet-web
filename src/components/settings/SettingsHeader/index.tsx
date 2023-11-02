@@ -20,7 +20,7 @@ type NavItem = {
 type HideConditions = Record<string, boolean>
 
 const filterRoutes = (navItems: NavItem[], hideConditions: HideConditions) => {
-  return navItems.filter((item) => !Boolean(hideConditions[item.href]))
+  return navItems.filter((item) => !hideConditions[item.href])
 }
 
 const SettingsHeader = (): ReactElement => {
