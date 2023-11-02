@@ -10,7 +10,11 @@ concurrency:
 jobs:
   e2e:
     runs-on: ubuntu-20.04
-    name: Smoke E2E tests
+    name: Cypress Smoke tests
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3]
     steps:
       - uses: actions/checkout@v3
 
@@ -30,9 +34,12 @@ jobs:
 
       - uses: cypress-io/github-action@v4
         with:
+          parallel: true
           spec: cypress/e2e/smoke/*.cy.js
           browser: chrome
           record: true
           config: baseUrl=http://localhost:8080
+          grou: 'Smoke tests'
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
