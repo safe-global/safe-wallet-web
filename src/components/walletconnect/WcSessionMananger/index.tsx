@@ -10,13 +10,14 @@ import WcProposalForm from '../WcProposalForm'
 import WcConnectionState from '../WcConnectionState'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
+import { splitError } from '@/services/walletconnect/utils'
 
 type WcSessionManagerProps = {
   sessions: SessionTypes.Struct[]
   uri: string
 }
 
-const SESSION_INFO_TIMEOUT = 2000
+const SESSION_INFO_TIMEOUT = 1000
 
 const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   const { safe, safeAddress } = useSafeInfo()
@@ -107,12 +108,8 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
 
     setOpen(true)
 
-    let timer = setTimeout(() => {
-      setOpen(false)
-
-      timer = setTimeout(() => {
-        setChangedSession(undefined)
-      }, 500)
+    const timer = setTimeout(() => {
+      setChangedSession(undefined)
     }, SESSION_INFO_TIMEOUT)
 
     return () => clearTimeout(timer)
@@ -120,10 +117,12 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
 
   // Track errors
   useEffect(() => {
-    if (error && open) {
-      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: error.message })
+    if (error) {
+      // The summary of the error
+      const label = splitError(error.message || '')[0]
+      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label })
     }
-  }, [error, open])
+  }, [error])
 
   //
   // UI states

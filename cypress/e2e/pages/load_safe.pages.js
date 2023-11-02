@@ -39,6 +39,10 @@ export function selectPolygon() {
   cy.contains('span', constants.networks.polygon)
 }
 
+export function inputNameAndAddress(name, address) {
+  inputName(name)
+  inputAddress(address)
+}
 export function inputName(name) {
   cy.get(nameInput).type(name).should('have.value', name)
 }

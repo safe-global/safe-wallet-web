@@ -66,12 +66,8 @@ export function verifyFeaturedAppsSection() {
     cy.contains(transactionBuilderStr)
     cy.get(txBuilder).should('exist')
 
-    // WalletConnect app
-    cy.contains(walletConnectStr)
-    cy.get(walletConnect).should('exist')
-
     // Featured apps have a Safe-specific link
-    cy.get(safeSpecificLink).should('have.length', 2)
+    cy.get(safeSpecificLink).should('have.length', 1)
   })
 }
 

@@ -67,6 +67,13 @@ export function verifyNewEntryAdded(name, address) {
   cy.contains(address).should('exist')
 }
 
+export function addEntry(name, address) {
+  typeInName(name)
+  typeInAddress(address)
+  clickOnSaveEntryBtn()
+  verifyNewEntryAdded(name, address)
+}
+
 export function clickOnEditEntryBtn() {
   cy.get(editEntryBtn).click({ force: true })
 }

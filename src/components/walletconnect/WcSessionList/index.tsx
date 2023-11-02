@@ -12,8 +12,13 @@ type WcSesstionListProps = {
 }
 
 const WcSessionListItem = ({ session, onDisconnect }: { session: SessionTypes.Struct; onDisconnect: () => void }) => {
+  const MAX_NAME_LENGTH = 23
   const { safeLoaded } = useSafeInfo()
-  const name = getPeerName(session.peer) || 'Unknown dApp'
+  let name = getPeerName(session.peer) || 'Unknown dApp'
+
+  if (name.length > MAX_NAME_LENGTH + 1) {
+    name = `${name.slice(0, MAX_NAME_LENGTH)}…`
+  }
 
   return (
     <ListItem className={css.sessionListItem}>

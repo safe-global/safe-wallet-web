@@ -143,7 +143,7 @@ function verifyDisclaimerIsVisible() {
 }
 
 export function clickOnContinueBtn() {
-  return cy.findByRole('button', { name: continueBtnStr }).click()
+  return cy.findByRole('button', { name: continueBtnStr }).click().wait(1000)
 }
 
 export function verifyCameraCheckBoxExists() {

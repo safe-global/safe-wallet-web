@@ -113,10 +113,7 @@ const FileUpload = ({
           sx={{ fill: 'none', color: ({ palette }) => palette.primary.light }}
         />
         <Typography>
-          Drag and drop a {fileType} file or{' '}
-          <Link href="#" color="secondary">
-            choose a file
-          </Link>
+          Drag and drop a {fileType} file or <Link color="secondary">choose a file</Link>
         </Typography>
       </Box>
     </Box>
