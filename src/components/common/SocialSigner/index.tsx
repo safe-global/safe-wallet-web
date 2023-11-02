@@ -46,6 +46,7 @@ type SocialSignerLoginProps = {
   supportedChains: ReturnType<typeof useGetSupportedChains>
   isMPCLoginEnabled: ReturnType<typeof useIsSocialWalletEnabled>
   onLogin?: () => void
+  onRequirePassword?: () => void
 }
 
 export const SocialSigner = ({
@@ -54,6 +55,7 @@ export const SocialSigner = ({
   supportedChains,
   isMPCLoginEnabled,
   onLogin,
+  onRequirePassword,
 }: SocialSignerLoginProps) => {
   const [loginPending, setLoginPending] = useState<boolean>(false)
   const [loginError, setLoginError] = useState<string | undefined>(undefined)
@@ -90,6 +92,8 @@ export const SocialSigner = ({
       }
 
       if (status === COREKIT_STATUS.REQUIRED_SHARE) {
+        onRequirePassword?.()
+
         setTxFlow(
           <PasswordRecovery recoverFactorWithPassword={recoverPassword} onSuccess={onLogin} />,
           () => setLoginPending(false),

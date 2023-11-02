@@ -18,7 +18,7 @@ const WalletDetails = ({ onConnect }: { onConnect: () => void }): ReactElement =
         </Typography>
       </Divider>
 
-      <SocialSigner />
+      <SocialSigner onRequirePassword={onConnect} />
     </>
   )
 }
