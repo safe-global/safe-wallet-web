@@ -53,7 +53,11 @@ export function clickOnCreateNewSafeBtn() {
 }
 
 export function clickOnConnectWalletBtn() {
-  cy.contains(welcomeLoginScreen, connectWalletBtn).click().wait(1000)
+  cy.get(welcomeLoginScreen).within(() => {
+    cy.get('button').contains(connectWalletBtn).should('be.visible').should('be.enabled').click().wait(1000)
+  })
+
+  // cy.contains(welcomeLoginScreen, connectWalletBtn).should('be.visible').should('be.enabled').click().wait(1000)
 }
 
 export function typeWalletName(name) {
