@@ -18,6 +18,8 @@ import { TxModalContext } from '@/components/tx-flow'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import madProps from '@/utils/mad-props'
+import { asError } from '@/services/exceptions/utils'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -54,6 +56,7 @@ export const SocialSigner = ({
   onLogin,
 }: SocialSignerLoginProps) => {
   const [loginPending, setLoginPending] = useState<boolean>(false)
+  const [loginError, setLoginError] = useState<string | undefined>(undefined)
   const { setTxFlow } = useContext(TxModalContext)
   const userInfo = socialWalletService?.getUserInfo()
   const isDisabled = loginPending || !isMPCLoginEnabled
@@ -76,39 +79,43 @@ export const SocialSigner = ({
     if (!socialWalletService) return
 
     setLoginPending(true)
+    setLoginError(undefined)
+    try {
+      const status = await socialWalletService.loginAndCreate()
 
-    const status = await socialWalletService.loginAndCreate()
+      if (status === COREKIT_STATUS.LOGGED_IN) {
+        onLogin?.()
+        setLoginPending(false)
+        return
+      }
 
-    if (status === COREKIT_STATUS.LOGGED_IN) {
-      onLogin?.()
+      if (status === COREKIT_STATUS.REQUIRED_SHARE) {
+        setTxFlow(
+          <PasswordRecovery
+            recoverFactorWithPassword={recoverPassword}
+            onSuccess={() => {
+              onLogin?.()
+              setLoginPending(false)
+            }}
+          />,
+          () => {},
+          false,
+        )
+        return
+      }
+    } catch (err) {
+      const error = asError(err)
+      setLoginError(error.message)
+    } finally {
       setLoginPending(false)
-      return
     }
-
-    if (status === COREKIT_STATUS.REQUIRED_SHARE) {
-      setTxFlow(
-        <PasswordRecovery
-          recoverFactorWithPassword={recoverPassword}
-          onSuccess={() => {
-            onLogin?.()
-            setLoginPending(false)
-          }}
-        />,
-        () => {},
-        false,
-      )
-      return
-    }
-
-    // TODO: Show error if login fails
-    setLoginPending(false)
   }
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   return (
     <>
-      <Box sx={{ width: '100%' }}>
+      <Box display="flex" flexDirection="column" gap={2} sx={{ width: '100%' }}>
         {isSocialLogin && userInfo ? (
           <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
             <Button
@@ -152,6 +159,7 @@ export const SocialSigner = ({
             </Button>
           </Track>
         )}
+        {loginError && <ErrorMessage className={css.loginError}>{loginError}</ErrorMessage>}
       </Box>
 
       {!isMPCLoginEnabled && (
