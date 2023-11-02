@@ -1,4 +1,4 @@
-import { Box, Button, SvgIcon, Typography } from '@mui/material'
+import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -46,6 +46,7 @@ type SocialSignerLoginProps = {
   supportedChains: ReturnType<typeof useGetSupportedChains>
   isMPCLoginEnabled: ReturnType<typeof useIsSocialWalletEnabled>
   onLogin?: () => void
+  onRequirePassword?: () => void
 }
 
 export const SocialSigner = ({
@@ -54,6 +55,7 @@ export const SocialSigner = ({
   supportedChains,
   isMPCLoginEnabled,
   onLogin,
+  onRequirePassword,
 }: SocialSignerLoginProps) => {
   const [loginPending, setLoginPending] = useState<boolean>(false)
   const [loginError, setLoginError] = useState<string | undefined>(undefined)
@@ -90,15 +92,11 @@ export const SocialSigner = ({
       }
 
       if (status === COREKIT_STATUS.REQUIRED_SHARE) {
+        onRequirePassword?.()
+
         setTxFlow(
-          <PasswordRecovery
-            recoverFactorWithPassword={recoverPassword}
-            onSuccess={() => {
-              onLogin?.()
-              setLoginPending(false)
-            }}
-          />,
-          () => {},
+          <PasswordRecovery recoverFactorWithPassword={recoverPassword} onSuccess={onLogin} />,
+          () => setLoginPending(false),
           false,
         )
         return
@@ -163,18 +161,22 @@ export const SocialSigner = ({
       </Box>
 
       {!isMPCLoginEnabled && (
-        <Typography variant="body2" color="text.secondary" display="flex" gap={1} alignItems="center">
-          <SvgIcon
-            component={InfoIcon}
-            inheritViewBox
-            color="border"
-            fontSize="small"
-            sx={{
-              verticalAlign: 'middle',
-              ml: 0.5,
-            }}
-          />
-          Currently only supported on {supportedChains.join(', ')}. More network support coming soon.
+        <Typography variant="body2" color="text.secondary" display="flex" gap={1}>
+          <Tooltip title="More network support coming soon." arrow placement="top">
+            <span>
+              <SvgIcon
+                component={InfoIcon}
+                inheritViewBox
+                color="border"
+                fontSize="small"
+                sx={{
+                  verticalAlign: 'middle',
+                  ml: 0.5,
+                }}
+              />
+            </span>
+          </Tooltip>
+          <span>Currently only supported on {supportedChains.join(supportedChains.length === 2 ? ' and ' : ', ')}</span>
         </Typography>
       )}
     </>
