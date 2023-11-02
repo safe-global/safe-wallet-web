@@ -8,10 +8,9 @@ import WalletConnectWallet from './WalletConnectWallet'
 import { asError } from '../exceptions/utils'
 import { getPeerName, stripEip155Prefix } from './utils'
 import { IS_PRODUCTION } from '@/config/constants'
-import { trackEvent } from '../analytics'
-import { WALLETCONNECT_EVENTS } from '../analytics/events/walletconnect'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import { trackRequest } from './tracking'
 
 enum Errors {
   WRONG_CHAIN = '%%dappName%% made a request on a different chain than the one you are connected to',
@@ -82,9 +81,9 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
       const session = walletConnect.getActiveSessions().find((s) => s.topic === topic)
       const requestChainId = stripEip155Prefix(event.params.chainId)
 
-      // Track all requests
+      // Track requests
       if (session) {
-        trackEvent({ ...WALLETCONNECT_EVENTS.REQUEST, label: session.peer.metadata.url })
+        trackRequest(session.peer.metadata.url, event.params.request.method)
       }
 
       const getResponse = () => {
