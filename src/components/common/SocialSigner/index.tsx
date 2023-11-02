@@ -91,14 +91,8 @@ export const SocialSigner = ({
 
       if (status === COREKIT_STATUS.REQUIRED_SHARE) {
         setTxFlow(
-          <PasswordRecovery
-            recoverFactorWithPassword={recoverPassword}
-            onSuccess={() => {
-              onLogin?.()
-              setLoginPending(false)
-            }}
-          />,
-          () => {},
+          <PasswordRecovery recoverFactorWithPassword={recoverPassword} onSuccess={onLogin} />,
+          () => setLoginPending(false),
           false,
         )
         return
