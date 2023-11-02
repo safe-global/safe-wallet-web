@@ -39,7 +39,7 @@ jobs:
           browser: chrome
           record: true
           config: baseUrl=http://localhost:8080
-          grou: 'Smoke tests'
+          group: 'Smoke tests'
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
