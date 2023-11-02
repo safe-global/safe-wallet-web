@@ -19,7 +19,7 @@ const OWNER_ENS_DEFAULT_NAME = 'test20.eth'
 const OWNER_ADDRESS = constants.EOA
 
 describe('Load Safe tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.loadNewSafeSepoliaUrl)
     main.acceptCookies()
@@ -39,10 +39,8 @@ describe('Load Safe tests', () => {
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
     createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
-
-    safe.inputName(testSafeName)
     safe.verifyIncorrectAddressErrorMessage()
-    safe.inputAddress(constants.SEPOLIA_TEST_SAFE_1)
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
 
     // Type an invalid address
     // cy.get('input[name="address"]').clear().type(EOA_ADDRESS)
@@ -65,17 +63,29 @@ describe('Load Safe tests', () => {
   })
 
   it('Verify custom name in the first owner an be set [C56120]', () => {
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
+    safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)
     safe.clickOnNextBtn()
   })
 
   it('Verify Safe and owner names are displayed in the Review step [C56121]', () => {
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
+    safe.clickOnNextBtn()
+    createwallet.typeOwnerName(testOwnerName, 0)
+    safe.clickOnNextBtn()
     safe.verifyDataInReviewSection(testSafeName, testOwnerName)
     safe.clickOnAddBtn()
   })
 
   it('Verify the custom Safe name is successfully loaded [C56122]', () => {
-    main.verifyHomeSafeUrl(constants.SEPOLIA_TEST_SAFE_1)
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_2)
+    safe.clickOnNextBtn()
+    createwallet.typeOwnerName(testOwnerName, 0)
+    safe.clickOnNextBtn()
+    safe.verifyDataInReviewSection(testSafeName, testOwnerName)
+    safe.clickOnAddBtn()
+    main.verifyHomeSafeUrl(constants.SEPOLIA_TEST_SAFE_2)
     safe.veriySidebarSafeNameIsVisible(testSafeName)
     safe.verifyOwnerNamePresentInSettings(testOwnerName)
   })

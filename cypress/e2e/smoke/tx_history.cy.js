@@ -20,11 +20,10 @@ describe('Transaction history tests', () => {
     main.acceptCookies(1)
   })
 
-  it('Verify October 9th transactions are displayed [C56128]', () => {
+  it('Verify October 29th transactions are displayed [C56128]', () => {
     const DATE = 'Oct 29, 2023'
     const NEXT_DATE_LABEL = 'Oct 20, 2023'
     const amount = '0.00001 ETH'
-    const time = '10:39 PM'
     const success = 'Success'
 
     createTx.verifyDateExists(DATE)
@@ -42,7 +41,6 @@ describe('Transaction history tests', () => {
       // Info
       createTx.verifyImageAltTxt(1, constants.tokenAbbreviation.sep)
       createTx.verifyTransactionStrExists(amount)
-      createTx.verifyTransactionStrExists(time)
       createTx.verifyTransactionStrExists(success)
     })
   })

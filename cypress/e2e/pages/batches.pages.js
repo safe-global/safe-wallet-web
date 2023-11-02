@@ -89,7 +89,7 @@ export function verifyAmountTransactionsInBatch(count) {
 }
 
 export function clickOnConfirmBatchBtn() {
-  cy.contains(confirmBatchBtn).click()
+  cy.get('button').contains(confirmBatchBtn).should('be.visible').should('be.enabled').click()
 }
 
 export function verifyBatchTransactionsCount(count) {
