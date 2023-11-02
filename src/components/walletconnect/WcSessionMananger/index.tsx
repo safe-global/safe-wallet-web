@@ -117,10 +117,12 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
 
   // Track errors
   useEffect(() => {
-    if (error && open) {
-      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label: splitError(error.message || '')[0] })
+    if (error) {
+      // The summary of the error
+      const label = splitError(error.message || '')[0]
+      trackEvent({ ...WALLETCONNECT_EVENTS.SHOW_ERROR, label })
     }
-  }, [error, open])
+  }, [error])
 
   //
   // UI states
