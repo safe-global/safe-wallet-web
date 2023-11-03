@@ -101,7 +101,6 @@ goshawk
 grasshopper
 grouse
 guanaco
-guinea-pig
 gull
 hamster
 hare
@@ -130,7 +129,6 @@ kangaroo
 kingfisher
 kinkajou
 koala
-komodo-dragon
 kookaburra
 kouprey
 kudu
@@ -188,7 +186,6 @@ pheasant
 pig
 pigeon
 pika
-polar-bear
 pony
 porcupine
 porpoise
@@ -201,18 +198,15 @@ raccoon
 ram
 rat
 raven
-red-deer
-red-panda
 reindeer
 rhea
 rhinoceros
 rook
 salamander
 salmon
-sand-dollar
+sand
 sandpiper
 sardine
-sea-lion
 seahorse
 seal
 shark
@@ -278,7 +272,6 @@ excellent
 merry
 amiable
 exceptional
-mild-mannered
 amused
 excited
 nice
@@ -322,10 +315,8 @@ calm
 good
 proud
 charming
-good-humored
 relaxed
 cheerful
-good-natured
 reliable
 cheery
 gracious
