@@ -7,6 +7,7 @@ const safe = {
 }
 
 const appInfo = {
+  id: 1,
   name: 'test',
   description: 'test',
   iconUrl: 'test',

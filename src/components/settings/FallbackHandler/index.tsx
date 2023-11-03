@@ -1,18 +1,15 @@
 import NextLink from 'next/link'
-import { Typography, Box, SvgIcon, Tooltip, Grid, Paper, Link } from '@mui/material'
+import { Typography, Box, Grid, Paper, Link, Alert } from '@mui/material'
 import semverSatisfies from 'semver/functions/satisfies'
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
-import AlertIcon from '@/public/images/common/alert.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getFallbackHandlerContractDeployment } from '@/services/contracts/deployments'
 import { HelpCenterArticle } from '@/config/constants'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
-
-import css from '../SafeModules/styles.module.css'
 
 const FALLBACK_HANDLER_VERSION = '>=1.1.1'
 
@@ -30,10 +27,11 @@ export const FallbackHandler = (): ReactElement | null => {
     return null
   }
 
+  const hasFallbackHandler = !!safe.fallbackHandler
   const isOfficial =
-    !!safe.fallbackHandler && safe.fallbackHandler.value === fallbackHandlerDeployment?.networkAddresses[safe.chainId]
+    hasFallbackHandler && safe.fallbackHandler?.value === fallbackHandlerDeployment?.networkAddresses[safe.chainId]
 
-  const tooltip = !safe.fallbackHandler ? (
+  const warning = !hasFallbackHandler ? (
     <>
       The {'Safe{Wallet}'} may not work correctly as no fallback handler is currently set.
       {txBuilder && (
@@ -49,7 +47,7 @@ export const FallbackHandler = (): ReactElement | null => {
     </>
   ) : !isOfficial ? (
     <>
-      An unofficial fallback handler is currently set.
+      An <b>unofficial</b> fallback handler is currently set.
       {txBuilder && (
         <>
           {' '}
@@ -69,20 +67,6 @@ export const FallbackHandler = (): ReactElement | null => {
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
             Fallback handler
-            {tooltip && (
-              <Tooltip placement="top" title={tooltip}>
-                <span>
-                  <SvgIcon
-                    data-testid="fallback-handler-warning"
-                    component={AlertIcon}
-                    inheritViewBox
-                    fontSize="small"
-                    color="warning"
-                    sx={{ verticalAlign: 'middle', ml: 0.5 }}
-                  />
-                </span>
-              </Tooltip>
-            )}
           </Typography>
         </Grid>
 
@@ -93,8 +77,11 @@ export const FallbackHandler = (): ReactElement | null => {
               contract. Learn more about the fallback handler{' '}
               <ExternalLink href={HelpCenterArticle.FALLBACK_HANDLER}>here</ExternalLink>
             </Typography>
-            {safe.fallbackHandler ? (
-              <Box className={css.container}>
+
+            <Alert severity={!hasFallbackHandler ? 'warning' : isOfficial ? 'success' : 'info'} sx={{ mt: 2 }}>
+              {warning && <Typography mb={hasFallbackHandler ? 2 : 0}>{warning}</Typography>}
+
+              {safe.fallbackHandler && (
                 <EthHashInfo
                   shortAddress={false}
                   name={safe.fallbackHandler.name || fallbackHandlerDeployment?.contractName}
@@ -103,12 +90,8 @@ export const FallbackHandler = (): ReactElement | null => {
                   showCopyButton
                   hasExplorer
                 />
-              </Box>
-            ) : (
-              <Typography mt={2} color={({ palette }) => palette.primary.light}>
-                No fallback handler set
-              </Typography>
-            )}
+              )}
+            </Alert>
           </Box>
         </Grid>
       </Grid>

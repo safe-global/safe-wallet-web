@@ -10,6 +10,8 @@ import WcInput from '../WcInput'
 import WcLogoHeader from '../WcLogoHeader'
 import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import Track from '@/components/common/Track'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 const WC_HINTS_KEY = 'wcHints'
 
@@ -44,9 +46,11 @@ export const WcConnectionForm = ({
           className={css.infoIcon}
         >
           <span>
-            <IconButton onClick={onToggle}>
-              <SvgIcon component={InfoIcon} inheritViewBox color="border" />
-            </IconButton>
+            <Track {...(showHints ? WALLETCONNECT_EVENTS.HINTS_HIDE : WALLETCONNECT_EVENTS.HINTS_SHOW)}>
+              <IconButton onClick={onToggle}>
+                <SvgIcon component={InfoIcon} inheritViewBox color="border" />
+              </IconButton>
+            </Track>
           </span>
         </Tooltip>
 

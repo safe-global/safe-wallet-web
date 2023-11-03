@@ -27,7 +27,6 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
 
 export type SignMessageOnChainProps = {
-  appId?: number
   app?: SafeAppData
   requestId: RequestId
   message: string | EIP712TypedData

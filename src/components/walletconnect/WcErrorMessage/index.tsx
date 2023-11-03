@@ -1,15 +1,21 @@
+import { splitError } from '@/services/walletconnect/utils'
 import { Button, Typography } from '@mui/material'
 import WcLogoHeader from '../WcLogoHeader'
 import css from './styles.module.css'
 
 const WcErrorMessage = ({ error, onClose }: { error: Error; onClose: () => void }) => {
+  const message = error.message || 'An error occurred'
+  const [summary, details] = splitError(message)
+
   return (
     <div className={css.errorContainer}>
-      <WcLogoHeader error />
+      <WcLogoHeader errorMessage={summary} />
 
-      <Typography title={error.message} className={css.errorMessage} mb={3}>
-        {error.message || 'An error occurred'}
-      </Typography>
+      {details && (
+        <Typography mt={1} className={css.details}>
+          {details}
+        </Typography>
+      )}
 
       <Button variant="contained" onClick={onClose} className={css.button}>
         OK

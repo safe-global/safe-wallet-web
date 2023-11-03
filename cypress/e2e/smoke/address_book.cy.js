@@ -9,21 +9,20 @@ const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
 
 describe('Address book tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
-    main.acceptCookies()
+    main.acceptCookies(1)
   })
 
   it('Verify entry can be added [C56061]', () => {
     addressBook.clickOnCreateEntryBtn()
-    addressBook.typeInName(NAME)
-    addressBook.typeInAddress(constants.RECIPIENT_ADDRESS)
-    addressBook.clickOnSaveEntryBtn()
-    addressBook.verifyNewEntryAdded(NAME, constants.RECIPIENT_ADDRESS)
+    addressBook.addEntry(NAME, constants.RECIPIENT_ADDRESS)
   })
 
   it('Verify entered entry in Name input can be saved [C56063]', () => {
+    addressBook.clickOnCreateEntryBtn()
+    addressBook.addEntry(NAME, constants.RECIPIENT_ADDRESS)
     addressBook.clickOnEditEntryBtn()
     addressBook.typeInNameInput(EDITED_NAME)
     addressBook.clickOnSaveButton()
@@ -31,6 +30,8 @@ describe('Address book tests', () => {
   })
 
   it('Verify entry can be deleted [C56062]', () => {
+    addressBook.clickOnCreateEntryBtn()
+    addressBook.addEntry(NAME, constants.RECIPIENT_ADDRESS)
     // Click the delete button in the first entry
     addressBook.clickDeleteEntryButton()
     addressBook.clickDeleteEntryModalDeleteButton()
@@ -63,6 +64,8 @@ describe('Address book tests', () => {
   })
 
   it('Verify the address book file can be downloaded [C56065]', () => {
+    addressBook.clickOnImportFileBtn()
+    addressBook.importFile()
     // Download the export file
     const date = format(new Date(), 'yyyy-MM-dd', { timeZone: 'UTC' })
     const fileName = `safe-address-book-${date}.csv` //name that is given to the file automatically
