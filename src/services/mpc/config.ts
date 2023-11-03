@@ -19,13 +19,10 @@ export const isSocialWalletOptions = (options: unknown): options is SocialWallet
     return false
   }
 
-  const hasRequiredKeys =
-    SocialWalletOptionsKeys.web3AuthClientId in options &&
-    SocialWalletOptionsKeys.web3AuthAggregateVerifierId in options &&
-    SocialWalletOptionsKeys.web3AuthSubverifierId in options &&
-    SocialWalletOptionsKeys.googleClientId in options
-
+  const requiredKeys = Object.values(SocialWalletOptionsKeys)
+  const hasRequiredKeys = requiredKeys.every((key) => key in options)
   const hasValues = Object.values(options).every(Boolean)
+
   return hasRequiredKeys && hasValues
 }
 

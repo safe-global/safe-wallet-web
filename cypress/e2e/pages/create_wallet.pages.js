@@ -1,5 +1,7 @@
 import * as constants from '../../support/constants'
 
+const welcomeLoginScreen = '[data-testid="welcome-login"]'
+const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
 const nameInput = 'input[name="name"]'
 const selectNetworkBtn = '[data-cy="create-safe-select-network"]'
 const ownerInput = 'input[name^="owners"][name$="name"]'
@@ -12,11 +14,11 @@ const connectWalletBtn = 'Connect wallet'
 
 const changeNetworkWarningStr = 'Change your wallet network'
 const safeAccountSetupStr = 'Safe Account setup'
-const policy1_2 = '1/2 policy'
+const policy1_2 = '1/1 policy'
 export const walletName = 'test1-sepolia-safe'
-export const defaltSepoliaPlaceholder = 'sepolia-safe'
+export const defaltSepoliaPlaceholder = 'Sepolia Safe'
 
-export function verifyPolicy1_2() {
+export function verifyPolicy1_1() {
   cy.contains(policy1_2).should('exist')
   // TOD: Need data-cy for containers
 }
@@ -50,8 +52,10 @@ export function clickOnCreateNewSafeBtn() {
   cy.get(createNewSafeBtn).click().wait(1000)
 }
 
-export function clickOnConnectWalletAndCreateBtn() {
-  cy.contains('[data-testid="welcome-login"]', connectWalletBtn).click().wait(1000)
+export function clickOnConnectWalletBtn() {
+  cy.get(welcomeLoginScreen).within(() => {
+    cy.get('button').contains(connectWalletBtn).should('be.visible').should('be.enabled').click().wait(1000)
+  })
 }
 
 export function typeWalletName(name) {
@@ -64,7 +68,7 @@ export function clearWalletName() {
 
 export function selectNetwork(network, regex = false) {
   cy.wait(1000)
-  cy.get(selectNetworkBtn).should('be.visible').click()
+  cy.get(expandMoreIcon).eq(1).parents('div').eq(1).click()
   cy.wait(1000)
   cy.get('li').contains(network).click()
   cy.get('body').click()
@@ -100,7 +104,7 @@ export function typeOwnerAddress(address, index, clearOnly = false) {
 }
 
 export function clickOnAddNewOwnerBtn() {
-  cy.contains('button', 'Add new owner').click()
+  cy.contains('button', 'Add new owner').click().wait(700)
 }
 
 export function addNewOwner(name, address, index) {

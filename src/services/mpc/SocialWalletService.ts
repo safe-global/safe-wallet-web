@@ -100,9 +100,10 @@ class SocialWalletService implements ISocialWalletService {
 
       await this.finalizeLogin()
       return this.mpcCoreKit.status
-    } catch (error) {
-      console.error(error)
-      return this.mpcCoreKit.status
+    } catch (err) {
+      const error = asError(err)
+      logError(ErrorCodes._306, error)
+      throw new Error('Something went wrong. Please try to login again.')
     }
   }
 

@@ -1,4 +1,4 @@
-import { Box, Button, SvgIcon, Typography } from '@mui/material'
+import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -18,6 +18,8 @@ import { TxModalContext } from '@/components/tx-flow'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import madProps from '@/utils/mad-props'
+import { asError } from '@/services/exceptions/utils'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -44,6 +46,7 @@ type SocialSignerLoginProps = {
   supportedChains: ReturnType<typeof useGetSupportedChains>
   isMPCLoginEnabled: ReturnType<typeof useIsSocialWalletEnabled>
   onLogin?: () => void
+  onRequirePassword?: () => void
 }
 
 export const SocialSigner = ({
@@ -52,8 +55,10 @@ export const SocialSigner = ({
   supportedChains,
   isMPCLoginEnabled,
   onLogin,
+  onRequirePassword,
 }: SocialSignerLoginProps) => {
   const [loginPending, setLoginPending] = useState<boolean>(false)
+  const [loginError, setLoginError] = useState<string | undefined>(undefined)
   const { setTxFlow } = useContext(TxModalContext)
   const userInfo = socialWalletService?.getUserInfo()
   const isDisabled = loginPending || !isMPCLoginEnabled
@@ -76,39 +81,39 @@ export const SocialSigner = ({
     if (!socialWalletService) return
 
     setLoginPending(true)
+    setLoginError(undefined)
+    try {
+      const status = await socialWalletService.loginAndCreate()
 
-    const status = await socialWalletService.loginAndCreate()
+      if (status === COREKIT_STATUS.LOGGED_IN) {
+        onLogin?.()
+        setLoginPending(false)
+        return
+      }
 
-    if (status === COREKIT_STATUS.LOGGED_IN) {
-      onLogin?.()
+      if (status === COREKIT_STATUS.REQUIRED_SHARE) {
+        onRequirePassword?.()
+
+        setTxFlow(
+          <PasswordRecovery recoverFactorWithPassword={recoverPassword} onSuccess={onLogin} />,
+          () => setLoginPending(false),
+          false,
+        )
+        return
+      }
+    } catch (err) {
+      const error = asError(err)
+      setLoginError(error.message)
+    } finally {
       setLoginPending(false)
-      return
     }
-
-    if (status === COREKIT_STATUS.REQUIRED_SHARE) {
-      setTxFlow(
-        <PasswordRecovery
-          recoverFactorWithPassword={recoverPassword}
-          onSuccess={() => {
-            onLogin?.()
-            setLoginPending(false)
-          }}
-        />,
-        () => {},
-        false,
-      )
-      return
-    }
-
-    // TODO: Show error if login fails
-    setLoginPending(false)
   }
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   return (
     <>
-      <Box sx={{ width: '100%' }}>
+      <Box display="flex" flexDirection="column" gap={2} sx={{ width: '100%' }}>
         {isSocialLogin && userInfo ? (
           <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
             <Button
@@ -152,21 +157,26 @@ export const SocialSigner = ({
             </Button>
           </Track>
         )}
+        {loginError && <ErrorMessage className={css.loginError}>{loginError}</ErrorMessage>}
       </Box>
 
       {!isMPCLoginEnabled && (
-        <Typography variant="body2" color="text.secondary" display="flex" gap={1} alignItems="center">
-          <SvgIcon
-            component={InfoIcon}
-            inheritViewBox
-            color="border"
-            fontSize="small"
-            sx={{
-              verticalAlign: 'middle',
-              ml: 0.5,
-            }}
-          />
-          Currently only supported on {supportedChains.join(', ')}. More network support coming soon.
+        <Typography variant="body2" color="text.secondary" display="flex" gap={1}>
+          <Tooltip title="More network support coming soon." arrow placement="top">
+            <span>
+              <SvgIcon
+                component={InfoIcon}
+                inheritViewBox
+                color="border"
+                fontSize="small"
+                sx={{
+                  verticalAlign: 'middle',
+                  ml: 0.5,
+                }}
+              />
+            </span>
+          </Tooltip>
+          <span>Currently only supported on {supportedChains.join(supportedChains.length === 2 ? ' and ' : ', ')}</span>
         </Typography>
       )}
     </>
