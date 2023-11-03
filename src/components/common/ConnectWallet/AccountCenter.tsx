@@ -8,13 +8,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
-import Identicon from '@/components/common/Identicon'
 import ChainSwitcher from '../ChainSwitcher'
 import useAddressBook from '@/hooks/useAddressBook'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import WalletInfo, { UNKNOWN_CHAIN_NAME } from '../WalletInfo'
+import WalletInfo, { UNKNOWN_CHAIN_NAME, WalletIdenticon } from '../WalletInfo'
 import useWalletBalance from '@/hooks/wallets/useWalletBalance'
 import WalletBalance from '@/components/common/WalletBalance'
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 
 const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -80,49 +80,62 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         sx={{ marginTop: 1 }}
       >
         <Paper className={css.popoverContainer}>
-          <Identicon address={wallet.address} />
-
-          <Typography variant="h5" className={css.addressName}>
-            {addressBook[wallet.address] || wallet.ens}
-          </Typography>
-
-          <Box bgcolor="border.background" px={2} py={1} fontSize={14}>
-            <EthHashInfo
-              address={wallet.address}
-              showAvatar={false}
-              showName={false}
-              hasExplorer
-              showCopyButton
-              prefix={prefix}
-            />
+          <Box display="flex" gap="12px">
+            <WalletIdenticon wallet={wallet} size={36} />
+            <Typography variant="body2" className={css.address}>
+              <EthHashInfo
+                address={wallet.address}
+                name={addressBook[wallet.address] || wallet.ens || wallet.label}
+                showAvatar={false}
+                showPrefix={false}
+                hasExplorer
+                showCopyButton
+                prefix={prefix}
+              />
+            </Typography>
           </Box>
 
           <Box className={css.rowContainer}>
             <Box className={css.row}>
-              <Typography variant="caption">Wallet</Typography>
-              <Typography variant="body2">{wallet.label}</Typography>
-            </Box>
-            <Box className={css.row}>
-              <Typography variant="caption">Connected network</Typography>
-              <Typography variant="body2">{chainInfo?.chainName || UNKNOWN_CHAIN_NAME}</Typography>
-            </Box>
-            <Box className={css.row}>
-              <Typography variant="caption">Balance</Typography>
+              <Typography variant="body2" color="primary.light">
+                Balance
+              </Typography>
               <Typography variant="body2">
                 <WalletBalance balance={balance} />
               </Typography>
             </Box>
+            <Box className={css.row}>
+              <Typography variant="body2" color="primary.light">
+                Wallet
+              </Typography>
+              <Typography variant="body2">{wallet.label}</Typography>
+            </Box>
+            <Box className={css.row}>
+              <Typography variant="body2" color="primary.light">
+                Network
+              </Typography>
+              <Typography variant="body2">{chainInfo?.chainName || UNKNOWN_CHAIN_NAME}</Typography>
+            </Box>
           </Box>
 
-          <ChainSwitcher fullWidth />
+          <Box display="flex" flexDirection="column" gap={1}>
+            <ChainSwitcher fullWidth />
 
-          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
-            Switch wallet
-          </Button>
+            <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+              Switch wallet
+            </Button>
 
-          <Button onClick={handleDisconnect} variant="danger" size="small" fullWidth disableElevation>
-            Disconnect
-          </Button>
+            <Button
+              onClick={handleDisconnect}
+              variant="danger"
+              size="small"
+              fullWidth
+              disableElevation
+              startIcon={<PowerSettingsNewIcon />}
+            >
+              Disconnect
+            </Button>
+          </Box>
         </Paper>
       </Popover>
     </>

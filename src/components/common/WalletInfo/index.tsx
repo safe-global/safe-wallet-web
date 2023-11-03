@@ -10,11 +10,23 @@ import { selectChainById } from '@/store/chainsSlice'
 
 import css from './styles.module.css'
 import Identicon from '@/components/common/Identicon'
-import classnames from 'classnames'
 import WalletBalance from '@/components/common/WalletBalance'
 import { type BigNumber } from 'ethers'
 
 export const UNKNOWN_CHAIN_NAME = 'Unknown'
+
+export const WalletIdenticon = ({ wallet, size = 32 }: { wallet: ConnectedWallet; size?: number }) => {
+  return (
+    <Box className={css.imageContainer}>
+      <Identicon address={wallet.address} size={size} />
+      <Suspense>
+        <Box className={css.walletIcon}>
+          <WalletIcon provider={wallet.label} icon={wallet.icon} width={size / 2} height={size / 2} />
+        </Box>
+      </Suspense>
+    </Box>
+  )
+}
 
 const WalletInfo = ({
   wallet,
@@ -28,18 +40,9 @@ const WalletInfo = ({
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const prefix = walletChain?.shortName
 
-  const isMetaMask = wallet.label === 'MetaMask'
-
   return (
     <Box className={css.container}>
-      <Box className={css.imageContainer}>
-        <Identicon address={wallet.address} size={34} />
-        <Suspense>
-          <Box className={classnames(css.walletIcon, { [css.animate]: isMetaMask })}>
-            <WalletIcon provider={wallet.label} icon={wallet.icon} width={16} height={16} />
-          </Box>
-        </Suspense>
-      </Box>
+      <WalletIdenticon wallet={wallet} />
 
       <Box className={css.walletDetails}>
         <Typography variant="body2" component="div">
