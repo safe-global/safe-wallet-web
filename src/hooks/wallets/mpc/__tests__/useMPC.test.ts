@@ -1,4 +1,5 @@
 import * as useOnboard from '@/hooks/wallets/useOnboard'
+import * as socialWalletOptions from '@/services/mpc/config'
 import { renderHook, waitFor } from '@/tests/test-utils'
 import { _getMPCCoreKitInstance, setMPCCoreKitInstance, useInitMPC } from '../useMPC'
 import * as useChains from '@/hooks/useChains'
@@ -65,6 +66,7 @@ class EventEmittingMockProvider {
 describe('useInitMPC', () => {
   beforeEach(() => {
     jest.resetAllMocks()
+    jest.spyOn(socialWalletOptions, 'isSocialWalletOptions').mockReturnValue(true)
   })
   it('should set the coreKit if user is not logged in yet', async () => {
     const connectWalletSpy = jest.fn().mockImplementation(() => Promise.resolve())
