@@ -98,9 +98,3 @@ export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST === 'tr
 export const REDEFINE_SIMULATION_URL = 'https://dashboard.redefine.net/reports/'
 export const REDEFINE_API = process.env.NEXT_PUBLIC_REDEFINE_API
 export const REDEFINE_ARTICLE = 'https://safe.mirror.xyz/rInLWZwD_sf7enjoFerj6FIzCYmVMGrrV8Nhg4THdwI'
-
-// Social Login
-export const WEB3_AUTH_CLIENT_ID = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID || ''
-export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
-export const WEB3AUTH_SUBVERIFIER_ID = process.env.NEXT_PUBLIC_WEB3AUTH_SUBVERIFIER_ID || ''
-export const WEB3AUTH_AGGREGATE_VERIFIER_ID = process.env.NEXT_PUBLIC_WEB3AUTH_AGGREGATE_VERIFIER_ID || ''
