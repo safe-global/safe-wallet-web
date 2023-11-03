@@ -93,13 +93,6 @@ const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 // Detect injected wallet
 const hasInjectedWallet = () => typeof window !== 'undefined' && !!window?.ethereum
 
-// Hide the Social login button
-const hideSocialLoginButton = (onboardRoot: ShadowRoot) => {
-  const walletButtons = onboardRoot.querySelectorAll('.wallet-button-container') || []
-  const socialButton = Array.from(walletButtons).find((el) => el.textContent?.includes(ONBOARD_MPC_MODULE_LABEL))
-  socialButton?.remove()
-}
-
 // `connectWallet` is called when connecting/switching wallets and on pairing `connect` event (when prev. session connects)
 // This re-entrant lock prevents multiple `connectWallet`/tracking calls that would otherwise occur for pairing module
 let isConnecting = false
@@ -207,20 +200,6 @@ export const useInitOnboard = () => {
 
     return () => {
       walletSubscription.unsubscribe()
-    }
-  }, [onboard])
-
-  // Hide social login when onboard pops up
-  useEffect(() => {
-    if (!onboard) return
-    const onboardRoot = document.querySelector('onboard-v2')?.shadowRoot
-    if (!onboardRoot) return
-
-    const observer = new MutationObserver(() => hideSocialLoginButton(onboardRoot))
-    observer.observe(onboardRoot, { childList: true })
-
-    return () => {
-      observer.disconnect()
     }
   }, [onboard])
 }
