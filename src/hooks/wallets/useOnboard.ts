@@ -178,6 +178,15 @@ export const useInitOnboard = () => {
           autoSelect: { label: E2E_WALLET_NAME, disableModals: true },
         })
       }
+
+      // Hide the social login button
+      {
+        const onboardRoot = document.querySelector('onboard-v2')?.shadowRoot
+        if (!onboardRoot) return
+        const walletButtons = onboardRoot?.querySelectorAll('.wallet-button-container')
+        const socialButton = Array.from(walletButtons).find((el) => /Social Login/.test(el.textContent || ''))
+        socialButton?.remove()
+      }
     })
   }, [chain, onboard])
 
