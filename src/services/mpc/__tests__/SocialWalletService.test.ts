@@ -7,6 +7,7 @@ import {
   type TssSecurityQuestion,
 } from '@web3auth/mpc-core-kit'
 import * as mpcCoreKit from '@web3auth/mpc-core-kit'
+import * as socialWalletOptions from '@/services/mpc/config'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
 import { hexZeroPad } from 'ethers/lib/utils'
@@ -76,6 +77,7 @@ describe('useMPCWallet', () => {
   })
   beforeEach(() => {
     jest.resetAllMocks()
+    jest.spyOn(socialWalletOptions, 'isSocialWalletOptions').mockReturnValue(true)
   })
   afterAll(() => {
     jest.useRealTimers()
