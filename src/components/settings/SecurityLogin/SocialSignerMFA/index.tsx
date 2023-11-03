@@ -13,6 +13,7 @@ import {
   Alert,
 } from '@mui/material'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
+import { useRouter } from 'next/router'
 import { useState, useMemo, type ChangeEvent } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import CheckIcon from '@/public/images/common/check-filled.svg'
@@ -78,6 +79,7 @@ const passwordStrengthMap = {
 } as const
 
 const SocialSignerMFA = () => {
+  const router = useRouter()
   const socialWalletService = useSocialWallet()
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>()
   const [submitError, setSubmitError] = useState<string>()
@@ -111,6 +113,9 @@ const SocialSignerMFA = () => {
       )
       onReset()
       setOpen(false)
+
+      // This is a workaround so that the isPasswordSet and isMFAEnabled state update
+      router.reload()
     } catch (e) {
       setSubmitError('The password you entered is incorrect. Please try again.')
     }
@@ -257,7 +262,13 @@ const SocialSignerMFA = () => {
                     </Track>
                   </Box>
                 </Grid>
-                <Grid item xs={12} md={5} p={3} sx={{ borderLeft: '1px solid #DCDEE0' }}>
+                <Grid
+                  item
+                  xs={12}
+                  md={5}
+                  p={3}
+                  sx={{ borderLeft: (theme) => `1px solid ${theme.palette.border.light}` }}
+                >
                   <Box>
                     <LockWarningIcon />
                     <Typography variant="subtitle1" fontWeight="bold">
