@@ -3,10 +3,11 @@ import * as dashboard from '../pages/dashboard.pages'
 import * as main from '../pages/main.page'
 
 describe('Dashboard tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.homeUrl + constants.TEST_SAFE)
-    main.acceptCookies()
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
+    main.acceptCookies(2)
+    main.clickOnSideMenuItem(constants.mainSideMenuOptions.home)
     dashboard.verifyConnectTransactStrIsVisible()
   })
 

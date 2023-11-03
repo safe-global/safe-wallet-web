@@ -77,7 +77,11 @@ const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
           vertical: 'top',
           horizontal: 'center',
         }}
-        sx={{ marginTop: 1 }}
+        sx={{
+          '& > .MuiPaper-root': {
+            top: 'var(--header-height) !important',
+          },
+        }}
       >
         <Paper className={css.popoverContainer}>
           <Box display="flex" gap="12px">

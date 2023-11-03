@@ -3,6 +3,7 @@ import CheckWallet from '.'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
+import { chainBuilder } from '@/tests/builders/chains'
 
 // mock useWallet
 jest.mock('@/hooks/wallets/useWallet', () => ({
@@ -27,9 +28,7 @@ jest.mock('@/hooks/useIsOnlySpendingLimitBeneficiary', () => ({
 // mock useCurrentChain
 jest.mock('@/hooks/useChains', () => ({
   __esModule: true,
-  useCurrentChain: jest.fn(() => ({
-    chainName: 'Optimism',
-  })),
+  useCurrentChain: jest.fn(() => chainBuilder().build()),
 }))
 
 const renderButton = () => render(<CheckWallet>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>)

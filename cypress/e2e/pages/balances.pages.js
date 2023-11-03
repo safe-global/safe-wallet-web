@@ -1,6 +1,6 @@
 import * as main from '../pages/main.page'
 
-let etherscanLink = 'a[aria-label="View on goerli.etherscan.io"]'
+let etherscanLink = 'a[aria-label="View on sepolia.etherscan.io"]'
 let etherscanLinkSepolia = 'a[aria-label="View on sepolia.etherscan.io"]'
 export const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 const currencyDropdown = '[id="currency"]'
@@ -20,7 +20,6 @@ const hiddenTokenDeselectAllBtn = 'span[data-track="assets: Deselect all hide di
 const hiddenTokenIcon = 'svg[data-testid="VisibilityOffOutlinedIcon"]'
 
 const hideTokenDefaultString = 'Hide tokens'
-const gotItStr = 'Got it!'
 const assetNameSortBtnStr = 'Asset'
 const assetBalanceSortBtnStr = 'Balance'
 const sendBtnStr = 'Send'
@@ -45,6 +44,8 @@ export const tokenListOptions = {
 export const currencyEUR = 'EUR'
 export const currencyUSD = 'USD'
 
+export const currentcySepoliaFormat = '0.09996 ETH'
+
 export const currencyAave = 'AAVE'
 export const currencyAaveAlttext = 'AAVE'
 export const currentcyAaveFormat = '27 AAVE'
@@ -68,7 +69,7 @@ export const currentcyLinkFormat = '35.94 LINK'
 export const currencyDai = 'Dai'
 export const currencyDaiCap = 'DAI'
 export const currencyDaiAlttext = 'DAI'
-export const currentcyDaiFormat = '120,496.61 DAI'
+export const currentcyDaiFormat = '82 DAI'
 export const currencyDaiFormat_2 = '82 DAI'
 
 export const currencyEther = 'Wrapped Ether'
@@ -182,14 +183,6 @@ export function verifyEachRowHasCheckbox(state) {
   })
 }
 
-export function acceptSpamWarning() {
-  cy.get('button').contains(gotItStr).click()
-  verifySpamWarningNotdisplayed()
-}
-
-export function verifySpamWarningNotdisplayed() {
-  cy.contains(gotItStr).should('not.exist')
-}
 export function verifyTokensTabIsSelected(option) {
   cy.get(`a[aria-selected="${option}"]`).contains('Tokens')
 }

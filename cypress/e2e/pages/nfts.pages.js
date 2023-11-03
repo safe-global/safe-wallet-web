@@ -9,11 +9,15 @@ const sendNFTStr = 'Send NFTs'
 const recipientAddressStr = 'Recipient address or ENS'
 const selectedNFTStr = 'Selected NFTs'
 const executeBtnStr = 'Execute'
+const signBtnStr = 'Sign'
 const nextBtnStr = 'Next'
 const sendStr = 'Send'
 const toStr = 'To'
 const transferFromStr = 'safeTransferFrom'
 
+export function clickOnNftsTab() {
+  cy.get('p').contains('NFTs').click()
+}
 function verifyTableRows(number) {
   cy.get('tbody tr').should('have.length', number)
 }
@@ -22,23 +26,24 @@ export function verifyNFTNumber(number) {
   verifyTableRows(number)
 }
 
-export function verifyDataInTable(name, address, tokenID, link) {
+export function verifyDataInTable(name, address, tokenID) {
   cy.get('tbody tr:first-child').contains('td:first-child', name)
   cy.get('tbody tr:first-child').contains('td:first-child', address)
   cy.get('tbody tr:first-child').contains('td:nth-child(2)', tokenID)
-  cy.get(`tbody tr:first-child td:nth-child(3) a[href="${link}"]`)
 }
 
-export function openFirstNFT() {
-  cy.get('tbody tr:first-child td:nth-child(2)').click()
+export function openNFT(index) {
+  cy.get('tbody').within(() => {
+    cy.get('tr').eq(index).click()
+  })
 }
 
 export function verifyNameInNFTModal(name) {
   cy.get(nftModal).contains(name)
 }
 
-export function preventBaseMainnetGoerliFromBeingSelected() {
-  cy.get(nftModal).contains(constants.networks.goerli)
+export function verifySelectedNetwrokSepolia() {
+  cy.get(nftModal).contains(constants.networks.sepolia)
 }
 
 export function verifyNFTModalLink(link) {
@@ -50,8 +55,8 @@ export function closeNFTModal() {
   cy.get(nftModal).should('not.exist')
 }
 
-export function clickOnThirdNFT() {
-  cy.get('tbody tr:nth-child(3) td:nth-child(2)').click()
+export function clickOn6thNFT() {
+  cy.get('tbody tr:nth-child(6) td:nth-child(2)').click()
 }
 export function verifyNFTModalDoesNotExist() {
   cy.get(nftModal).should('not.exist')
@@ -106,7 +111,7 @@ export function verifyReviewModalData(NFTcount) {
   cy.contains(toStr)
   cy.wait(1000)
   cy.get(`b:contains(${transferFromStr})`).should('have.length', NFTcount)
-  cy.contains('button:not([disabled])', executeBtnStr)
+  cy.contains('button:not([disabled])', signBtnStr)
   if (NFTcount > 1) {
     const numbersArr = Array.from({ length: NFTcount }, (_, index) => index + 1)
     numbersArr.forEach((number) => {

@@ -90,6 +90,8 @@ const useAppCommunicator = (
     const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onMessage: (msg) => {
+          if (!msg.data) return
+
           const isCustomApp = app && app.id < 1
 
           trackSafeAppEvent(

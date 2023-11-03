@@ -14,7 +14,7 @@ import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 
 const keepPathRoutes = [AppRoutes.welcome, AppRoutes.newSafe.create, AppRoutes.newSafe.load]
 
-const NetworkSelector = (): ReactElement => {
+const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
@@ -64,7 +64,6 @@ const NetworkSelector = (): ReactElement => {
       MenuProps={{
         sx: {
           '& .MuiPaper-root': {
-            mt: 2,
             overflow: 'auto',
           },
         },
@@ -81,7 +80,7 @@ const NetworkSelector = (): ReactElement => {
       {configs.map((chain) => {
         return (
           <MenuItem key={chain.chainId} value={chain.chainId}>
-            <Link href={getNetworkLink(chain.shortName)} passHref>
+            <Link href={getNetworkLink(chain.shortName)} passHref onClick={props.onChainSelect}>
               <ChainIndicator chainId={chain.chainId} inline />
             </Link>
           </MenuItem>

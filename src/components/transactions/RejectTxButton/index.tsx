@@ -33,7 +33,7 @@ const RejectTxButton = ({
 
   const openReplacementModal = () => {
     if (txNonce === undefined) return
-    setTxFlow(<ReplaceTxMenu txNonce={txNonce} />)
+    setTxFlow(<ReplaceTxMenu txNonce={txNonce} />, undefined, false)
   }
 
   return (

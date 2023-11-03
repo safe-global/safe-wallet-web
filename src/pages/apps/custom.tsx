@@ -29,7 +29,7 @@ const CustomSafeApps: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Custom Safe Apps'}</title>
+        <title>{'Safe{Wallet} – Custom Safe Apps'}</title>
       </Head>
 
       <SafeAppsSDKLink />
@@ -38,6 +38,7 @@ const CustomSafeApps: NextPage = () => {
 
       <main>
         <SafeAppList
+          title="Custom apps"
           safeAppsList={customSafeApps}
           addCustomApp={addCustomApp}
           removeCustomApp={openRemoveCustomAppModal}

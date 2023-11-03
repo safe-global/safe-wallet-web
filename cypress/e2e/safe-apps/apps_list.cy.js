@@ -6,10 +6,10 @@ const myCustomAppTitle = 'Cypress Test App'
 const myCustomAppDescrAdded = 'Cypress Test App Description'
 
 describe('Safe Apps tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.TEST_SAFE_2 + constants.appsUrl, { failOnStatusCode: false })
-    main.acceptCookies()
+    cy.visit(constants.SEPOLIA_TEST_SAFE_4 + constants.appsUrl, { failOnStatusCode: false })
+    main.acceptCookies(1)
   })
 
   it('Verify app list can be filtered by app name [C56130]', () => {
@@ -32,16 +32,14 @@ describe('Safe Apps tests', () => {
 
   it('Verify apps can be pinned [C56133]', () => {
     safeapps.clearSearchAppInput()
-    safeapps.pinApp(safeapps.pinWalletConnectStr)
     safeapps.pinApp(safeapps.transactionBuilderStr)
-    safeapps.clickOnBookmarkedAppsTab()
-    safeapps.verifyAppCount(2)
+    safeapps.verifyPinnedAppCount(1)
   })
 
   it('Verify apps can be unpinned [C56134]', () => {
-    safeapps.pinApp(safeapps.pinWalletConnectStr)
     safeapps.pinApp(safeapps.transactionBuilderStr)
-    safeapps.verifyAppCount(0)
+    safeapps.pinApp(safeapps.transactionBuilderStr, false)
+    safeapps.verifyPinnedAppCount(0)
   })
 
   it('Verify there is an error when the app manifest is invalid [C56135]', () => {
@@ -61,11 +59,13 @@ describe('Safe Apps tests', () => {
       icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
     })
 
+    safeapps.clickOnCustomAppsTab()
+    safeapps.clickOnAddCustomApp()
     safeapps.typeCustomAppUrl(constants.validAppUrl)
     safeapps.verifyAppTitle(myCustomAppTitle)
     safeapps.acceptTC()
     safeapps.clickOnAddBtn()
-    safeapps.verifyAppCount(1)
+    safeapps.verifyCustomAppCount(1)
     safeapps.verifyAppDescription(myCustomAppDescrAdded)
   })
 })

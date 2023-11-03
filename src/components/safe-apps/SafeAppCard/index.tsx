@@ -4,8 +4,6 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import CardActions from '@mui/material/CardActions'
-import Box from '@mui/material/Box'
 import { resolveHref } from 'next/dist/client/resolve-href'
 import classNames from 'classnames'
 import type { ReactNode, SyntheticEvent } from 'react'
@@ -21,15 +19,9 @@ import { AppRoutes } from '@/config/routes'
 import BatchIcon from '@/public/images/apps/batch-icon.svg'
 import css from './styles.module.css'
 
-export type SafeAppsViewMode = 'list-view' | 'grid-view'
-
-export const GRID_VIEW_MODE: SafeAppsViewMode = 'grid-view' // default view
-export const LIST_VIEW_MODE: SafeAppsViewMode = 'list-view'
-
 type SafeAppCardProps = {
   safeApp: SafeAppData
   onClickSafeApp?: () => void
-  viewMode?: SafeAppsViewMode
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
   removeCustomApp?: (safeApp: SafeAppData) => void
@@ -39,7 +31,6 @@ type SafeAppCardProps = {
 const SafeAppCard = ({
   safeApp,
   onClickSafeApp,
-  viewMode,
   isBookmarked,
   onBookmarkSafeApp,
   removeCustomApp,
@@ -49,23 +40,6 @@ const SafeAppCard = ({
 
   const safeAppUrl = getSafeAppUrl(router, safeApp.url)
 
-  const isListViewMode = viewMode === LIST_VIEW_MODE
-
-  if (isListViewMode) {
-    return (
-      <SafeAppCardListView
-        safeApp={safeApp}
-        safeAppUrl={safeAppUrl}
-        isBookmarked={isBookmarked}
-        onBookmarkSafeApp={onBookmarkSafeApp}
-        removeCustomApp={removeCustomApp}
-        onClickSafeApp={onClickSafeApp}
-        openPreviewDrawer={openPreviewDrawer}
-      />
-    )
-  }
-
-  // Grid view as fallback
   return (
     <SafeAppCardGridView
       safeApp={safeApp}
@@ -152,50 +126,6 @@ const SafeAppCardGridView = ({
 
         {/* Safe App Tags */}
         <SafeAppTags tags={safeApp.tags} />
-      </CardContent>
-    </SafeAppCardContainer>
-  )
-}
-
-const SafeAppCardListView = ({
-  safeApp,
-  onClickSafeApp,
-  safeAppUrl,
-  isBookmarked,
-  onBookmarkSafeApp,
-  removeCustomApp,
-  openPreviewDrawer,
-}: SafeAppCardViewProps) => {
-  return (
-    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp}>
-      <CardContent sx={{ pb: '16px !important' }}>
-        <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
-          <div className={css.safeAppIconContainer}>
-            {/* Batch transactions Icon */}
-            {isOptimizedForBatchTransactions(safeApp) && (
-              <BatchIcon className={css.safeAppBatchIcon} alt="batch transactions icon" />
-            )}
-
-            {/* Safe App Icon */}
-            <SafeAppIconCard src={safeApp.iconUrl} alt={`${safeApp.name} logo`} />
-          </div>
-
-          {/* Safe App Title */}
-          <Typography className={css.safeAppTitle} gutterBottom variant="h5">
-            {safeApp.name}
-          </Typography>
-
-          {/* Safe App Action Buttons */}
-          <CardActions>
-            <SafeAppActionButtons
-              safeApp={safeApp}
-              isBookmarked={isBookmarked}
-              onBookmarkSafeApp={onBookmarkSafeApp}
-              removeCustomApp={removeCustomApp}
-              openPreviewDrawer={openPreviewDrawer}
-            />
-          </CardActions>
-        </Box>
       </CardContent>
     </SafeAppCardContainer>
   )

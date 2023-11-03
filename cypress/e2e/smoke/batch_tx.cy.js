@@ -7,11 +7,10 @@ const funds_first_tx = '0.001'
 const funds_second_tx = '0.002'
 
 describe('Batch transaction tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.homeUrl + constants.TEST_SAFE)
-    main.acceptCookies()
-    cy.contains(constants.goerlyE2EWallet, { timeout: 10000 })
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
+    main.acceptCookies(2)
   })
 
   it('Verify empty batch list can be opened [C56082]', () => {
@@ -21,10 +20,11 @@ describe('Batch transaction tests', () => {
 
   it('Verify the Add batch button is present in a transaction form [C56084]', () => {
     //The "true" is to validate that the add to batch button is not visible if "Yes, execute" is selected
-    batch.addToBatch(constants.EOA, currentNonce, funds_first_tx, true)
+    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
   })
 
   it('Verify a transaction can be added to the batch [C56085]', () => {
+    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
     cy.contains(batch.transactionAddedToBatchStr).should('be.visible')
     //The batch button in the header shows the transaction count
     batch.verifyBatchIconCount(1)
@@ -33,26 +33,37 @@ describe('Batch transaction tests', () => {
   })
 
   it('Verify a second transaction can be added to the batch [C56086]', () => {
-    batch.openNewTransactionModal()
-    batch.addToBatch(constants.EOA, currentNonce, funds_second_tx)
+    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
+    cy.wait(1000)
+    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
     batch.verifyBatchIconCount(2)
     batch.clickOnBatchCounter()
     batch.verifyAmountTransactionsInBatch(2)
   })
 
   it('Verify the batch can be confirmed and related transactions exist in the form [C56088]', () => {
+    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
+    cy.wait(1000)
+    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
+    batch.clickOnBatchCounter()
+    batch.clickOnConfirmBatchBtn()
+    batch.clickOnBatchCounter()
     batch.clickOnConfirmBatchBtn()
     batch.verifyBatchTransactionsCount(2)
+    batch.clickOnBatchCounter()
     cy.contains(funds_first_tx).parents('ul').as('TransactionList')
     cy.get('@TransactionList').find('li').eq(0).find('span').eq(0).contains(funds_first_tx)
-    cy.get('@TransactionList').find('li').eq(1).find('span').eq(0).contains(funds_second_tx)
+    cy.get('@TransactionList').find('li').eq(1).find('span').eq(0).contains(funds_first_tx)
   })
 
   it('Verify a transaction can be removed from the batch [C56089]', () => {
+    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
+    cy.wait(1000)
+    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
     batch.clickOnBatchCounter()
     cy.contains(batch.batchedTransactionsStr).should('be.visible').parents('aside').find('ul > li').as('BatchList')
     cy.get('@BatchList').find(batch.deleteTransactionbtn).eq(0).click()
     cy.get('@BatchList').should('have.length', 1)
-    cy.get('@BatchList').contains(funds_first_tx).should('not.exist')
+    cy.get('@BatchList').contains(funds_second_tx).should('not.exist')
   })
 })

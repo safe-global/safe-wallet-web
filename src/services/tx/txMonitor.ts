@@ -91,13 +91,7 @@ const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStat
 
 const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
 
-export const waitForRelayedTx = (
-  taskId: string,
-  txIds: string[],
-  safeAddress: string,
-  groupKey?: string,
-  humanDescription?: string,
-): void => {
+export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: string, groupKey?: string): void => {
   let intervalId: NodeJS.Timeout
   let failAfterTimeoutId: NodeJS.Timeout
 
@@ -116,7 +110,6 @@ export const waitForRelayedTx = (
             txId,
             groupKey,
             safeAddress,
-            humanDescription,
           }),
         )
         break
@@ -126,7 +119,6 @@ export const waitForRelayedTx = (
             txId,
             error: new Error(`Relayed transaction reverted by EVM.`),
             groupKey,
-            humanDescription,
           }),
         )
         break
@@ -136,7 +128,6 @@ export const waitForRelayedTx = (
             txId,
             error: new Error(`Relayed transaction was blacklisted by relay provider.`),
             groupKey,
-            humanDescription,
           }),
         )
         break
@@ -146,7 +137,6 @@ export const waitForRelayedTx = (
             txId,
             error: new Error(`Relayed transaction was cancelled by relay provider.`),
             groupKey,
-            humanDescription,
           }),
         )
         break
@@ -156,7 +146,6 @@ export const waitForRelayedTx = (
             txId,
             error: new Error(`Relayed transaction was not found.`),
             groupKey,
-            humanDescription,
           }),
         )
         break
@@ -179,7 +168,6 @@ export const waitForRelayedTx = (
           } minutes. Be aware that it might still be relayed.`,
         ),
         groupKey,
-        humanDescription,
       }),
     )
 

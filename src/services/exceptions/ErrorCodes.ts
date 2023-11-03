@@ -47,6 +47,8 @@ enum ErrorCodes {
   _704 = '704: Error importing global data',
   _705 = '705: Failed to read from IndexedDB',
   _706 = '706: Failed to write to IndexedDB',
+  _707 = '707: Error requesting clipboard permissions',
+  _708 = '708: Failed to read clipboard',
 
   _800 = '800: Safe creation tx failed',
   _801 = '801: Failed to send a tx with a spending limit',
@@ -55,6 +57,7 @@ enum ErrorCodes {
   _806 = '806: Failed to remove module',
   _807 = '807: Failed to remove guard',
   _808 = '808: Failed to get transaction origin',
+  _809 = '809: Failed decoding transaction',
 
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',

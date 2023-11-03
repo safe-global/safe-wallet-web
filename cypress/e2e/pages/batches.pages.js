@@ -1,3 +1,5 @@
+import * as constants from '../../support/constants'
+
 const tokenSelectorText = 'G(ö|oe)rli Ether'
 const noLaterString = 'No, later'
 const yesExecuteString = 'Yes, execute'
@@ -39,7 +41,7 @@ function fillTransactionData(EOA, amount) {
   cy.get(recipientInput).type(EOA, { delay: 1 })
   // Click on the Token selector
   cy.get(tokenAddressInput).prev().click()
-  cy.get(listBox).contains(new RegExp(tokenSelectorText)).click()
+  cy.get(listBox).contains(constants.tokenNames.sepoliaEther).click()
   cy.get(amountInput).type(amount)
   cy.contains(nextBtn).click()
 }
@@ -59,20 +61,23 @@ function executeTransaction() {
 }
 
 function addToBatchButton() {
-  cy.contains(noLaterString, { timeout: 4000 }).click()
   cy.contains(addToBatchBtn).should('be.visible').and('not.be.disabled').click()
 }
 
 export function openBatchtransactionsModal() {
   cy.get(batchTxTopBar).should('be.visible').click()
   cy.contains(batchedTransactionsStr).should('be.visible')
-  cy.contains(addInitialTransactionStr)
 }
 
 export function openNewTransactionModal() {
   cy.get(addNewTxBatch).click()
-  cy.contains('h1', newTransactionTitle).should('be.visible')
   cy.contains(sendTokensButn).click()
+}
+
+export function addNewTransactionToBatch(EOA, currentNonce, funds_first_tx) {
+  openBatchtransactionsModal()
+  openNewTransactionModal()
+  addToBatch(EOA, currentNonce, funds_first_tx)
 }
 
 export function verifyAmountTransactionsInBatch(count) {
@@ -84,7 +89,7 @@ export function verifyAmountTransactionsInBatch(count) {
 }
 
 export function clickOnConfirmBatchBtn() {
-  cy.contains(confirmBatchBtn).click()
+  cy.get('button').contains(confirmBatchBtn).should('be.visible').should('be.enabled').click()
 }
 
 export function verifyBatchTransactionsCount(count) {

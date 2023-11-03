@@ -58,14 +58,14 @@ export const TransferDescription = ({ txInfo, isSendTx }: { txInfo: Transfer; is
 export const HumanDescription = ({ fragments }: RichDecodedInfo) => {
   return (
     <>
-      {fragments.map((fragment) => {
+      {fragments.map((fragment, index) => {
         switch (fragment.type) {
           case RichFragmentType.Text:
-            return <span>{fragment.value}</span>
+            return <span key={index}>{fragment.value}</span>
           case RichFragmentType.Address:
-            return <AddressFragment fragment={fragment} />
+            return <AddressFragment key={index} fragment={fragment} />
           case RichFragmentType.TokenValue:
-            return <TokenValueFragment fragment={fragment} />
+            return <TokenValueFragment key={index} fragment={fragment} />
         }
       })}
     </>

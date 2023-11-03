@@ -23,11 +23,13 @@ const allowAllPermissions = /allow all/i
 const appNotSupportedMsg = "The app doesn't support Safe App functionality"
 
 export const pinWalletConnectStr = /pin walletconnect/i
-export const transactionBuilderStr = /pin transaction builder/i
+export const transactionBuilderStr = 'Transaction Builder'
 export const logoWalletConnect = /logo.*walletconnect/i
 export const walletConnectHeadlinePreview = /walletconnect/i
-export const availableNetworksPreview = /available networks/i
-export const connecttextPreview = 'Connect your Safe to any dApp that supports WalletConnect'
+export const transactiobUilderHeadlinePreview = 'Transaction Builder'
+export const availableNetworksPreview = 'Available networks'
+export const connecttextPreview = 'Compose custom contract interactions and batch them into a single transaction'
+const warningDefaultAppStr = 'The application you are trying to access is not in the default Safe Apps list'
 export const localStorageItem =
   '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}'
 export const gridItem = 'main .MuiPaper-root > .MuiGrid-item'
@@ -50,6 +52,12 @@ export const permissionCheckboxNames = {
   geolocation: 'Geolocation',
   fullscreen: 'Fullscreen',
 }
+
+export function verifyWarningDefaultAppMsgIsDisplayed() {
+  cy.get('p').contains(warningDefaultAppStr).should('be.visible')
+  cy.wait(1000)
+}
+
 export function typeAppName(name) {
   cy.get(searchAppInput).clear().type(name)
 }
@@ -63,7 +71,7 @@ export function verifyLinkName(name) {
 }
 
 export function clickOnApp(app) {
-  cy.findByRole('link', { name: app }).click()
+  cy.contains(app).click()
 }
 
 export function verifyNoAppsTextPresent() {
@@ -71,14 +79,8 @@ export function verifyNoAppsTextPresent() {
 }
 
 export function pinApp(app, pin = true) {
-  let str = 'Unpin'
-  if (!pin) str = 'Pin'
-  cy.findByLabelText(app)
-    .click()
-    .should(($el) => {
-      const ariaLabel = $el.attr('aria-label')
-      expect(ariaLabel).to.include(str)
-    })
+  const option = pin ? 'Pin' : 'Unpin'
+  cy.get(`[aria-label="${option} ${app}"]`).click()
 }
 
 export function clickOnBookmarkedAppsTab() {
@@ -86,7 +88,15 @@ export function clickOnBookmarkedAppsTab() {
 }
 
 export function verifyAppCount(count) {
-  cy.findByText(`ALL (${count})`).should('be.visible')
+  cy.findByText(`All apps (${count})`).should('be.visible')
+}
+
+export function verifyCustomAppCount(count) {
+  cy.findByText(`Custom apps (${count})`).should('be.visible')
+}
+
+export function verifyPinnedAppCount(count) {
+  cy.findByText(`My pinned apps (${count})`).should(count ? 'be.visible' : 'not.exist')
 }
 
 export function clickOnCustomAppsTab() {
@@ -133,7 +143,7 @@ function verifyDisclaimerIsVisible() {
 }
 
 export function clickOnContinueBtn() {
-  return cy.findByRole('button', { name: continueBtnStr }).click()
+  return cy.findByRole('button', { name: continueBtnStr }).click().wait(1000)
 }
 
 export function verifyCameraCheckBoxExists() {
@@ -157,7 +167,7 @@ export function storeAndVerifyPermissions() {
 
         expect(browserPermissions.feature).to.eq('camera')
         expect(browserPermissions.status).to.eq('granted')
-        expect(storedInfoModal['5'].consentsAccepted).to.eq(true)
+        expect(storedInfoModal['11155111'].consentsAccepted).to.eq(true)
       })
   })
 }

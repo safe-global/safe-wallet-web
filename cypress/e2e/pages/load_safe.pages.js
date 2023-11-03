@@ -29,15 +29,20 @@ export function selectGoerli() {
   cy.contains('span', constants.networks.goerli)
 }
 
+export function selectSepolia() {
+  cy.get('ul li').contains(constants.networks.sepolia).click()
+  cy.contains('span', constants.networks.sepolia)
+}
+
 export function selectPolygon() {
   cy.get('ul li').contains(constants.networks.polygon).click()
   cy.contains('span', constants.networks.polygon)
 }
 
-export function verifyNameInputHasPlceholder() {
-  cy.get(nameInput).should('have.attr', 'placeholder').should('match', constants.goerlySafeName)
+export function inputNameAndAddress(name, address) {
+  inputName(name)
+  inputAddress(address)
 }
-
 export function inputName(name) {
   cy.get(nameInput).type(name).should('have.value', name)
 }
@@ -53,7 +58,7 @@ export function inputAddress(address) {
 
 export function verifyAddressInputValue() {
   // The address field should be filled with the "bare" QR code's address
-  const [, address] = constants.GOERLI_TEST_SAFE.split(':')
+  const [, address] = constants.SEPOLIA_TEST_SAFE_1.split(':')
   cy.get('input[name="address"]').should('have.value', address)
 }
 

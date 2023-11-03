@@ -4,7 +4,7 @@ import { Box, Typography } from '@mui/material'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
-const APP_NAME_FALLBACK = 'Sign message off-chain'
+const APP_NAME_FALLBACK = 'Sign message'
 
 export const AppTitle = ({ name, logoUri }: { name?: string | null; logoUri?: string | null }) => {
   const appName = name || APP_NAME_FALLBACK

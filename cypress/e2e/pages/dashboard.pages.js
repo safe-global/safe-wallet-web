@@ -27,12 +27,11 @@ export function verifyOverviewWidgetData() {
 
   cy.get('@overviewSection').within(() => {
     // Prefix is separated across elements in EthHashInfo
-    cy.contains(constants.TEST_SAFE).should('exist')
-    cy.contains('1/2')
-    cy.get(`a[href="${constants.BALANCE_URL}${encodeURIComponent(constants.TEST_SAFE)}"]`).contains(viewAssetsStr)
-    // Text next to Tokens contains a number greater than 0
-    cy.contains('p', tokensStr).next().contains('1')
-    cy.contains('p', nftStr).next().contains('0')
+    cy.contains(constants.SEPOLIA_TEST_SAFE_5).should('exist')
+    cy.get('h2').contains('Overview')
+    cy.get(`a[href="${constants.BALANCE_URL}${encodeURIComponent(constants.SEPOLIA_TEST_SAFE_5)}"]`).contains(
+      viewAssetsStr,
+    )
   })
 }
 
@@ -45,9 +44,15 @@ export function verifyTxQueueWidget() {
     cy.contains(noTransactionStr).should('not.exist')
 
     // Queued txns
-    cy.contains(`a[href^="/transactions/tx?id=multisig_0x"]`, '13' + 'Send' + '-0.00002 GOR' + '1/1').should('exist')
+    cy.contains(
+      `a[href^="/transactions/tx?id=multisig_0x"]`,
+      '13' + 'Send' + `-0.00002 ${constants.tokenAbbreviation.sep}` + '1/1',
+    ).should('exist')
 
-    cy.contains(`a[href="${constants.transactionQueueUrl}${encodeURIComponent(constants.TEST_SAFE)}"]`, viewAllStr)
+    cy.contains(
+      `a[href="${constants.transactionQueueUrl}${encodeURIComponent(constants.SEPOLIA_TEST_SAFE_5)}"]`,
+      viewAllStr,
+    )
   })
 }
 
@@ -61,27 +66,12 @@ export function verifyFeaturedAppsSection() {
     cy.contains(transactionBuilderStr)
     cy.get(txBuilder).should('exist')
 
-    // WalletConnect app
-    cy.contains(walletConnectStr)
-    cy.get(walletConnect).should('exist')
-
     // Featured apps have a Safe-specific link
-    cy.get(safeSpecificLink).should('have.length', 2)
+    cy.get(safeSpecificLink).should('have.length', 1)
   })
 }
 
 export function verifySafeAppsSection() {
-  // Create an alias for the Safe Apps section
   cy.contains('h2', safeAppStr).parents('section').as('safeAppsSection')
-
   cy.get('@safeAppsSection').contains(exploreSafeApps)
-
-  // Regular safe apps
-  cy.get('@safeAppsSection').within(() => {
-    // Find exactly 5 Safe Apps cards inside the Safe Apps section
-    cy.get(`a[href^="${constants.openAppsUrl}${encodeURIComponent(constants.TEST_SAFE)}&appUrl=http"]`).should(
-      'have.length',
-      5,
-    )
-  })
 }

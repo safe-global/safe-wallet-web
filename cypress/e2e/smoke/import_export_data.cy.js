@@ -13,7 +13,7 @@ describe('Import Export Data tests', () => {
 
   it('Verify Safe can be accessed after test file upload [C56111]', () => {
     const filePath = '../fixtures/data_import.json'
-    const safe = 'safe 1 goerli'
+    const safe = constants.SEPOLIA_CSV_ENTRY.name
 
     file.clickOnImportBtn()
     file.uploadFile(filePath)
@@ -24,15 +24,15 @@ describe('Import Export Data tests', () => {
   })
 
   it('Verify address book imported data [C56112]', () => {
+    main.acceptCookies(1)
     file.clickOnAddressBookBtn()
     file.verifyImportedAddressBookData()
   })
 
   it('Verify pinned apps [C56113]', () => {
-    const appNames = ['Drain Account', 'Transaction Builder']
+    const appNames = ['Transaction Builder']
 
     file.clickOnAppsBtn()
-    file.clickOnBookmarkedAppsBtn()
     file.verifyAppsAreVisible(appNames)
   })
 

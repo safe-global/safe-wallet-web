@@ -19,30 +19,28 @@ const OWNER_ENS_DEFAULT_NAME = 'test20.eth'
 const OWNER_ADDRESS = constants.EOA
 
 describe('Load Safe tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.welcomeUrl)
+    cy.visit(constants.loadNewSafeSepoliaUrl)
     main.acceptCookies()
-    safe.openLoadSafeForm()
     cy.wait(2000)
   })
 
   it('Verify a network can be selected in the Safe [C56117]', () => {
-    safe.clickNetworkSelector(constants.networks.goerli)
+    safe.clickNetworkSelector(constants.networks.sepolia)
     safe.selectPolygon()
     cy.wait(2000)
     safe.clickNetworkSelector(constants.networks.polygon)
-    safe.selectGoerli()
+    safe.selectSepolia()
   })
 
   it('Verify only valid Safe name can be accepted [C56118]', () => {
     // alias the address input label
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
-    safe.verifyNameInputHasPlceholder(testSafeName)
-    safe.inputName(testSafeName)
+    createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
     safe.verifyIncorrectAddressErrorMessage()
-    safe.inputAddress(constants.GOERLI_TEST_SAFE)
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
 
     // Type an invalid address
     // cy.get('input[name="address"]').clear().type(EOA_ADDRESS)
@@ -65,17 +63,29 @@ describe('Load Safe tests', () => {
   })
 
   it('Verify custom name in the first owner an be set [C56120]', () => {
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
+    safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)
     safe.clickOnNextBtn()
   })
 
   it('Verify Safe and owner names are displayed in the Review step [C56121]', () => {
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
+    safe.clickOnNextBtn()
+    createwallet.typeOwnerName(testOwnerName, 0)
+    safe.clickOnNextBtn()
     safe.verifyDataInReviewSection(testSafeName, testOwnerName)
     safe.clickOnAddBtn()
   })
 
   it('Verify the custom Safe name is successfully loaded [C56122]', () => {
-    main.verifyHomeSafeUrl(constants.GOERLI_TEST_SAFE)
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_2)
+    safe.clickOnNextBtn()
+    createwallet.typeOwnerName(testOwnerName, 0)
+    safe.clickOnNextBtn()
+    safe.verifyDataInReviewSection(testSafeName, testOwnerName)
+    safe.clickOnAddBtn()
+    main.verifyHomeSafeUrl(constants.SEPOLIA_TEST_SAFE_2)
     safe.veriySidebarSafeNameIsVisible(testSafeName)
     safe.verifyOwnerNamePresentInSettings(testOwnerName)
   })

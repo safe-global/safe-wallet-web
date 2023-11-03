@@ -22,6 +22,8 @@ import { sameAddress } from '@/utils/addresses'
 import PendingActionButtons from '@/components/sidebar/PendingActions'
 import usePendingActions from '@/hooks/usePendingActions'
 import useOnceVisible from '@/hooks/useOnceVisible'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS } from '@/services/analytics'
 
 const SafeListItem = ({
   address,
@@ -82,32 +84,34 @@ const SafeListItem = ({
         )
       }
     >
-      <Link href={href} passHref legacyBehavior>
-        <ListItemButton
-          key={address}
-          onClick={closeDrawer}
-          selected={isCurrentSafe}
-          className={classnames(css.safe, { [css.open]: isCurrentSafe })}
-          ref={safeRef}
-        >
-          <ListItemIcon>
-            <SafeIcon address={address} {...rest} />
-          </ListItemIcon>
-          <ListItemText
-            sx={noActions ? undefined : { pr: 10 }}
-            primaryTypographyProps={{
-              variant: 'body2',
-              component: 'div',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-            }}
-            secondaryTypographyProps={{ component: 'div', color: 'primary' }}
-            primary={name || ''}
-            secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
-          />
-        </ListItemButton>
-      </Link>
+      <Track {...OVERVIEW_EVENTS.SIDEBAR_OPEN_SAFE}>
+        <Link href={href} passHref legacyBehavior>
+          <ListItemButton
+            key={address}
+            onClick={closeDrawer}
+            selected={isCurrentSafe}
+            className={classnames(css.safe, { [css.open]: isCurrentSafe })}
+            ref={safeRef}
+          >
+            <ListItemIcon>
+              <SafeIcon address={address} {...rest} />
+            </ListItemIcon>
+            <ListItemText
+              sx={noActions ? undefined : { pr: 10 }}
+              primaryTypographyProps={{
+                variant: 'body2',
+                component: 'div',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+              }}
+              secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+              primary={name || ''}
+              secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
+            />
+          </ListItemButton>
+        </Link>
+      </Track>
 
       <PendingActionButtons
         safeAddress={address}

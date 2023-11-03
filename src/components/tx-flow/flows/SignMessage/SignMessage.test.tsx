@@ -1,5 +1,5 @@
 import { hexlify, hexZeroPad, toUtf8Bytes } from 'ethers/lib/utils'
-import type { ChainInfo, SafeInfo, SafeMessage, SafeMessageListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeInfo, SafeMessage, SafeMessageListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeMessageListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 
 import SignMessage from './SignMessage'
@@ -17,6 +17,7 @@ import type { EIP1193Provider, WalletState, AppState, OnboardAPI } from '@web3-o
 import { generateSafeMessageHash } from '@/utils/safe-messages'
 import { getSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeMessages from '@/hooks/messages/useSafeMessages'
+import { chainBuilder } from '@/tests/builders/chains'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
@@ -400,7 +401,7 @@ describe('SignMessage', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => true)
-    jest.spyOn(useChainsHook, 'useCurrentChain').mockReturnValue({ chainName: 'Goerli' } as ChainInfo)
+    jest.spyOn(useChainsHook, 'useCurrentChain').mockReturnValue(chainBuilder().build())
 
     const { getByText } = render(
       <SignMessage

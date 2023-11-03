@@ -39,7 +39,6 @@ describe('ReviewSignMessageOnChain', () => {
             type: SafeAppAccessPolicyTypes.NoRestrictions,
           },
         }}
-        appId={73}
         requestId="73"
         message={{
           types: {

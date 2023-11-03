@@ -2,8 +2,17 @@ import * as constants from '../../support/constants'
 
 const acceptSelection = 'Accept selection'
 
-export function acceptCookies() {
+export function clickOnSideMenuItem(item) {
+  cy.get('p').contains(item).click()
+}
+
+export function acceptCookies(index = 0) {
   cy.wait(1000)
+
+  cy.findAllByText('Got it!')
+    .should('have.length.at.least', index)
+    .each(($el) => $el.click())
+
   cy.get('button')
     .contains(acceptSelection)
     .should(() => {})

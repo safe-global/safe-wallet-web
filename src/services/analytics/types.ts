@@ -29,3 +29,7 @@ export enum DeviceType {
   MOBILE = 'mobile',
   TABLET = 'tablet',
 }
+
+export enum AnalyticsUserProperties {
+  WALLET_LABEL = 'walletLabel',
+}

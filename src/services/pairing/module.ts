@@ -1,9 +1,11 @@
 import type { Chain, ProviderAccounts, WalletInit, EIP1193Provider } from '@web3-onboard/common'
+// @ts-expect-error - with native WalletConnect v2, the type is no longer present
 import type { ITxData } from '@walletconnect/types'
 
 import { getPairingConnector, PAIRING_MODULE_STORAGE_ID } from '@/services/pairing/connector'
 import local from '@/services/local-storage/local'
 import { killPairingSession } from '@/services/pairing/utils'
+import * as QRModal from '@/services/pairing/QRModal'
 
 enum ProviderEvents {
   ACCOUNTS_CHANGED = 'accountsChanged',
@@ -42,8 +44,6 @@ const pairingModule = (): WalletInit => {
         const { ProviderRpcError, ProviderRpcErrorCode } = await import('@web3-onboard/common')
 
         const { default: WalletConnect } = await import('@walletconnect/client')
-
-        const { default: QRModal } = await import('@/services/pairing/QRModal')
 
         const { Subject, fromEvent } = await import('rxjs')
         const { takeUntil, take } = await import('rxjs/operators')
@@ -130,7 +130,7 @@ const pairingModule = (): WalletInit => {
                   return new Promise<ProviderAccounts>((resolve, reject) => {
                     if (!this.connector.connected) {
                       this.connector.createSession().then(() => {
-                        QRModal.open(this.connector.uri, () =>
+                        QRModal.open(() =>
                           reject(
                             new ProviderRpcError({
                               code: 4001,

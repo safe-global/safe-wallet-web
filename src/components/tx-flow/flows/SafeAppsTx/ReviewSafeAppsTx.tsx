@@ -50,12 +50,12 @@ const ReviewSafeAppsTx = ({
     createSafeTx().then(setSafeTx).catch(setSafeTxError)
   }, [txList, setSafeTx, setSafeTxError, params])
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (txId: string) => {
     if (!safeTx || !onboard) return
     trackSafeAppTxCount(Number(appId))
 
     try {
-      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
+      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId, txId)
     } catch (error) {
       setSafeTxError(asError(error))
     }

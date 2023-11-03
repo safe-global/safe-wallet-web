@@ -58,10 +58,6 @@ export const SAFE_APPS_EVENTS = {
     ...SAFE_APPS_EVENT_DATA,
     action: 'Open shared app after Safe creation',
   },
-  SWITCH_LIST_VIEW: {
-    ...SAFE_APPS_EVENT_DATA,
-    action: 'Switch list view',
-  },
 
   // SDK
   SAFE_APP_SDK_METHOD_CALL: {

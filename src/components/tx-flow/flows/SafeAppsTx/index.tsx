@@ -6,7 +6,7 @@ import { AppTitle } from '@/components/tx-flow/flows/SignMessage'
 
 export type SafeAppsTxParams = {
   appId?: string
-  app?: SafeAppData
+  app?: Partial<SafeAppData>
   requestId: RequestId
   txs: BaseTransaction[]
   params?: SendTransactionRequestParams
