@@ -34,7 +34,7 @@ export const SOCIAL_WALLET_OPTIONS: any = (() => {
   try {
     return JSON.parse(IS_PRODUCTION ? SOCIAL_WALLET_OPTIONS_PRODUCTION : SOCIAL_WALLET_OPTIONS_STAGING)
   } catch (error) {
-    console.error(error)
+    console.error('Error parsing SOCIAL_WALLET_OPTIONS', error)
     return {}
   }
 })()
