@@ -16,7 +16,7 @@
   content: counter(item);
   background: var(--color-primary-main);
   border-radius: 100%;
-  color: white;
+  color: var(--color-background-paper);
   width: 20px;
   height: 20px;
   line-height: 20px;
