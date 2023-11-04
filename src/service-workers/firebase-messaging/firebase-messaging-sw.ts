@@ -45,6 +45,7 @@ export function firebaseMessagingSw() {
   const messaging = getMessaging(app)
 
   onBackgroundMessage(messaging, async (payload) => {
+    console.log('onBackgroundMessage', payload)
     const shouldShow = await shouldShowServiceWorkerPushNotification(payload)
 
     if (!shouldShow) {
