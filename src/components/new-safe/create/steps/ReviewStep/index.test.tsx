@@ -8,6 +8,7 @@ import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 
 const mockChainInfo = {
   chainId: '100',
+  chainName: 'Gnosis Chain',
   l2: false,
   nativeCurrency: {
     symbol: 'ETH',

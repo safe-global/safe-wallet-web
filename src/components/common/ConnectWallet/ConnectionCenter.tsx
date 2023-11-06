@@ -1,6 +1,7 @@
 import { Popover, ButtonBase, Typography, Paper } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import classnames from 'classnames'
 import { useState, type MouseEvent, type ReactElement } from 'react'
 
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
@@ -29,7 +30,6 @@ const ConnectionCenter = (): ReactElement => {
 
         <Typography variant="caption" className={css.notConnected}>
           <b>Not connected</b>
-          <br />
           <Typography variant="inherit" sx={{ color: ({ palette }) => palette.error.main }}>
             Connect wallet
           </Typography>
@@ -52,7 +52,7 @@ const ConnectionCenter = (): ReactElement => {
         }}
         sx={{ mt: 1 }}
       >
-        <Paper className={css.popoverContainer}>
+        <Paper className={classnames(css.popoverContainer, css.largeGap)}>
           <WalletDetails onConnect={handleClose} />
         </Paper>
       </Popover>

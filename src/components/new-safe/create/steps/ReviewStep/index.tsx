@@ -78,7 +78,7 @@ export const NetworkFee = ({
             height={16}
             style={{ margin: '-3px 0px -3px 4px' }}
           />{' '}
-          Gnosis Chain
+          {chain?.chainName}
         </Typography>
       </>
     )
