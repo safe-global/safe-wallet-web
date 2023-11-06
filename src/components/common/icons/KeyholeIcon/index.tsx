@@ -15,14 +15,12 @@ const KeyholeIcon = ({ size = 28 }: { size?: number }) => {
       className={css.badge}
     >
       <SvgIcon
+        color="border"
         component={LockIcon}
         inheritViewBox
         sx={{
           height: size,
           width: size,
-          '& path': {
-            fill: ({ palette }) => palette.border.main,
-          },
         }}
       />
     </Badge>

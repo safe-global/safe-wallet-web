@@ -148,7 +148,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
           ) : (
             <Box display="flex" flexDirection="column" alignItems="center" gap={3} maxWidth={250}>
               <Box display="flex" alignItems="center" justifyContent="center">
-                <KeyholeIcon />
+                <KeyholeIcon size={40} />
               </Box>
 
               <Typography variant="body2" color="primary.light" textAlign="center" sx={{ textWrap: 'balance' }}>
