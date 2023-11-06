@@ -1,7 +1,10 @@
 import { _getMPCCoreKitInstance } from '@/hooks/wallets/mpc/useMPC'
+import { getSocialWalletService } from '@/hooks/wallets/mpc/useSocialWallet'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import * as PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
 import { type WalletInit, ProviderRpcError } from '@web3-onboard/common'
 import { type EIP1193Provider } from '@web3-onboard/core'
+import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 
 const getMPCProvider = () => _getMPCCoreKitInstance()?.provider
 
@@ -16,6 +19,18 @@ export const ONBOARD_MPC_MODULE_LABEL = 'Social Login'
 
 export const isSocialLoginWallet = (walletLabel: string | undefined) => {
   return walletLabel === ONBOARD_MPC_MODULE_LABEL
+}
+
+const getConnectedAccounts = async () => {
+  try {
+    const web3 = assertDefined(getMPCProvider())
+    return web3.request({ method: 'eth_accounts' })
+  } catch (e) {
+    throw new ProviderRpcError({
+      code: 4001,
+      message: 'Provider is unavailable',
+    })
+  }
 }
 
 /**
@@ -37,26 +52,42 @@ function MpcModule(): WalletInit {
             web3.on(event, listener)
           },
           request: (request) => {
-            return new Promise<any>((resolve, reject) => {
+            return new Promise<any>(async (resolve, reject) => {
               try {
-                const web3 = assertDefined(getMPCProvider())
-                const web3ReadOnly = assertDefined(getWeb3ReadOnly())
                 /*
                  * We have to fallback to web3ReadOnly for eth_estimateGas because the provider by Web3Auth does not expose / implement it.
                  */
                 if ('eth_estimateGas' === request.method) {
+                  const web3ReadOnly = assertDefined(getWeb3ReadOnly())
+
                   web3ReadOnly
                     ?.send(request.method, request.params ?? [])
                     .then(resolve)
                     .catch(reject)
+
                   return
                 }
 
-                /*
-                 * If the provider is defined we already have access to the accounts. So we can just reply with the current account.
-                 */
                 if ('eth_requestAccounts' === request.method) {
-                  web3.request({ method: 'eth_accounts' }).then(resolve).catch(reject)
+                  try {
+                    // If the provider is defined we already have access to the accounts.
+                    const web3 = assertDefined(getMPCProvider())
+                    web3.request({ method: 'eth_accounts' }).then(resolve).catch(reject)
+                  } catch (e) {
+                    // Otherwise try to log in the user
+                    const socialWalletService = getSocialWalletService()
+                    if (!socialWalletService) throw Error('Social Login not ready')
+
+                    const status = await socialWalletService.loginAndCreate()
+
+                    if (status === COREKIT_STATUS.REQUIRED_SHARE) {
+                      PasswordRecoveryModal.open(() => {
+                        getConnectedAccounts().then(resolve).catch(reject)
+                      })
+                    } else {
+                      getConnectedAccounts().then(resolve).catch(reject)
+                    }
+                  }
                   return
                 }
 
@@ -66,6 +97,7 @@ function MpcModule(): WalletInit {
                   return
                 }
 
+                const web3 = assertDefined(getMPCProvider())
                 // Default: we call the inner provider
                 web3.request(request).then(resolve).catch(reject)
                 return

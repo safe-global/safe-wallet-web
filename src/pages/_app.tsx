@@ -1,3 +1,4 @@
+import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
 import Sentry from '@/services/sentry' // needs to be imported first
 import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
@@ -126,6 +127,8 @@ const WebCoreApp = ({
           <Notifications />
 
           <MobilePairingModal />
+
+          <PasswordRecoveryModal />
         </AppProviders>
       </CacheProvider>
     </StoreHydrator>

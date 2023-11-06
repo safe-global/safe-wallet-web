@@ -13,23 +13,6 @@ import useMpc from './useMPC'
 
 const { getStore, setStore, useStore } = new ExternalStore<ISocialWalletService>()
 
-// Listen to onboard modal open and hide the social login button
-const hideOnboardButton = () => {
-  const onboardRoot = document.querySelector('onboard-v2')?.shadowRoot
-  if (!onboardRoot) return
-
-  const hideSocialLoginButton = () => {
-    const walletButtons = onboardRoot.querySelectorAll('.wallet-button-container') || []
-    const socialButton = Array.from(walletButtons).find((el) => el.textContent?.includes(ONBOARD_MPC_MODULE_LABEL))
-    socialButton?.remove()
-  }
-
-  const observer = new MutationObserver(hideSocialLoginButton)
-  observer.observe(onboardRoot, { childList: true })
-
-  return () => observer.disconnect()
-}
-
 export const useInitSocialWallet = () => {
   const mpcCoreKit = useMpc()
   const onboard = useOnboard()
@@ -71,13 +54,6 @@ export const useInitSocialWallet = () => {
       setStore(new SocialWalletService(mpcCoreKit))
     }
   }, [mpcCoreKit])
-
-  // Hide social login when onboard pops up
-  // @FIXME the button should work but atm it doesn't
-  useEffect(() => {
-    if (!onboard) return
-    return hideOnboardButton()
-  }, [onboard])
 }
 
 export const getSocialWalletService = getStore
