@@ -1,5 +1,7 @@
 import CopyButton from '@/components/common/CopyButton'
 import ModalDialog from '@/components/common/ModalDialog'
+import { trackEvent } from '@/services/analytics'
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { Box, Button, DialogContent, DialogTitle, IconButton, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -43,9 +45,11 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
     try {
       setError(undefined)
       const pk = await socialWalletService.exportSignerKey(data[ExportFieldNames.password])
+      trackEvent(MPC_WALLET_EVENTS.EXPORT_PK_SUCCESS)
       setValue(ExportFieldNames.pk, pk)
     } catch (err) {
       logError(ErrorCodes._305, err)
+      trackEvent(MPC_WALLET_EVENTS.EXPORT_PK_ERROR)
       setError(asError(err).message)
     }
   }
@@ -55,13 +59,19 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
     reset()
     onClose()
   }
+
+  const toggleShowPK = () => {
+    trackEvent(MPC_WALLET_EVENTS.SEE_PK)
+    setShowPassword((prev) => !prev)
+  }
+
+  const onCopy = () => {
+    trackEvent(MPC_WALLET_EVENTS.COPY_PK)
+  }
+
   return (
     <ModalDialog open={open} onClose={handleClose}>
-      <DialogTitle>
-        <Typography variant="h6" fontWeight={700}>
-          Export your account
-        </Typography>
-      </DialogTitle>
+      <DialogTitle fontWeight="bold">Export your account</DialogTitle>
       <IconButton className={css.close} aria-label="close" onClick={handleClose} size="small">
         <Close fontSize="large" />
       </IconButton>
@@ -83,10 +93,10 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
                     readOnly: true,
                     endAdornment: (
                       <>
-                        <IconButton size="small" onClick={() => setShowPassword((prev) => !prev)}>
+                        <IconButton size="small" onClick={toggleShowPK}>
                           {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
                         </IconButton>
-                        <CopyButton text={exportedKey} />
+                        <CopyButton text={exportedKey} onCopy={onCopy} />
                       </>
                     ),
                   }}
