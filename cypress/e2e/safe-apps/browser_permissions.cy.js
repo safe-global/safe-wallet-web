@@ -15,7 +15,7 @@ describe('Browser permissions tests', () => {
       })
     })
     cy.visitSafeApp(`${constants.testAppUrl}/app`)
-    main.acceptCookies(1)
+    main.acceptCookies()
   })
 
   it('Verify a permissions slide to the user is displayed [C56137]', () => {

@@ -9,7 +9,7 @@ describe('Balance tests', () => {
     cy.clearLocalStorage()
     // Open the Safe used for testing
     cy.visit(constants.BALANCE_URL + constants.PAGINATION_TEST_SAFE)
-    main.acceptCookies(2)
+    main.acceptCookies()
 
     cy.contains('div', 'Default tokens').click()
     cy.wait(100)
