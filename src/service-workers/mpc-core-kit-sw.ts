@@ -1,24 +1,30 @@
-/* eslint-disable */
-function getScope() {
-  return self.registration.scope
-}
+/// <reference lib="webworker" />
 
-self.addEventListener('message', function (event) {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting()
+declare const self: ServiceWorkerGlobalScope
+
+export const mpcCoreKitServiceWorker = () => {
+  /* eslint-disable */
+  function getScope() {
+    return self.registration.scope
   }
-})
 
-self.addEventListener('fetch', function (event) {
-  try {
-    const url = new URL(event.request.url)
-    const redirectURL = self.location.url
-    if (url.pathname.includes('redirect') && url.href.includes(getScope())) {
-      event.respondWith(
-        new Response(
-          new Blob(
-            [
-              `
+  self.addEventListener('message', function (event) {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+      self.skipWaiting()
+    }
+  })
+
+  self.addEventListener('fetch', function (event) {
+    try {
+      const url = new URL(event.request.url)
+      //@ts-expect-error
+      const redirectURL = self.location.url
+      if (url.pathname.includes('redirect') && url.href.includes(getScope())) {
+        event.respondWith(
+          new Response(
+            new Blob(
+              [
+                `
                 <!DOCTYPE html>
                 <html lang="en">
                   <head>
@@ -306,13 +312,14 @@ self.addEventListener('fetch', function (event) {
                                         
                 ${''}
                   `,
-            ],
-            { type: 'text/html' },
+              ],
+              { type: 'text/html' },
+            ),
           ),
-        ),
-      )
+        )
+      }
+    } catch (error) {
+      console.error(error)
     }
-  } catch (error) {
-    console.error(error)
-  }
-})
+  })
+}
