@@ -44,7 +44,7 @@ export const useInitMPC = () => {
       web3AuthClientId: SOCIAL_WALLET_OPTIONS.web3AuthClientId,
       // Available networks are "sapphire_devnet", "sapphire_mainnet"
       web3AuthNetwork: WEB3AUTH_NETWORK.MAINNET,
-      baseUrl: `${window.location.origin}/serviceworker`,
+      baseUrl: `${window.location.origin}/`,
       uxMode: 'popup',
       enableLogging: true,
       chainConfig,
