@@ -73,6 +73,7 @@ export const anotherChainStr = 'This batch is from another Chain (1)!'
 export const useImplementationABI = 'Use Implementation ABI'
 export const addressNotValidStr = 'The address is not valid'
 export const transferEverythingStr = 'Transfer everything'
+export const noTokensSelectedStr = 'No tokens selected'
 export const requiredStr = 'Required'
 export const e3eTestStr = 'E2E test'
 export const createBtnStr = 'Create'
@@ -98,6 +99,8 @@ export const gridItem = 'main .MuiPaper-root > .MuiGrid-item'
 export const linkNames = {
   logo: /logo/i,
 }
+export const abi =
+  '[{{}"inputs":[{{}"internalType":"address","name":"_singleton","type":"address"{}}],"stateMutability":"nonpayable","type":"constructor"{}},{{}"stateMutability":"payable","type":"fallback"{}}]'
 
 export const permissionCheckboxes = {
   camera: 'input[name="camera"]',

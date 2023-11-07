@@ -19,7 +19,7 @@ describe('Drain Account Safe App tests', { defaultCommandTimeout: 12000 }, () =>
     safeapps.clickOnContinueBtn()
   })
 
-  it('should allow to perform a drain', () => {
+  it('Verify drain can be created [C56627]', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.recipientStr).type(constants.SAFE_APP_ADDRESS_2)
       getBody().findAllByText(safeapps.transferEverythingStr).click()
@@ -28,7 +28,7 @@ describe('Drain Account Safe App tests', { defaultCommandTimeout: 12000 }, () =>
     cy.findByRole('button', { name: safeapps.testNativeTransfer2 })
   })
 
-  it('should allow to perform a partial drain', () => {
+  it('Verify partial drain can be created [C56628]', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.selectAllRowsChbxStr).click()
       getBody().findAllByLabelText(safeapps.selectRowChbxStr).eq(1).click()
@@ -40,7 +40,7 @@ describe('Drain Account Safe App tests', { defaultCommandTimeout: 12000 }, () =>
     cy.findByRole('button', { name: safeapps.testNativeTransfer1 })
   })
 
-  it('should allow to perform a drain when a ENS is specified', () => {
+  it('Verify a drain can be created when a ENS is specified [C56629]', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.recipientStr).type('goerli-test-safe.eth').wait(2000)
       getBody().findAllByText(safeapps.transferEverythingStr).click()
@@ -49,45 +49,45 @@ describe('Drain Account Safe App tests', { defaultCommandTimeout: 12000 }, () =>
     cy.findByRole('button', { name: safeapps.testNativeTransfer2 })
   })
 
-  // Adjust safe - owner
-  it.skip('should keep previous data when drain is cancelled', () => {
+  // TODO: Adjust safe - owner
+  it.skip('Verify when cancelling a drain, previous data is preserved [C56630]', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.recipientStr).type(constants.SAFE_APP_ADDRESS_2)
       getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
-    cy.findByRole('button', { name: 'Cancel' }).click()
+    cy.findByRole('button', { name: safeapps.cancelBtnStr }).click()
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findAllByText(safeapps.transferEverythingStr).should('be.visible')
     })
   })
 
-  it('should not allow to perform a drain when no recipient is selected', () => {
+  it('Verify a drain cannot be created with no recipient selected [C56631]', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findAllByText(safeapps.transferEverythingStr).click()
       getBody().findByText(safeapps.validRecipientAddressStr)
     })
   })
 
-  it('should not allow to perform a drain when an invalid recipient is selected', () => {
+  it('Verify a drain cannot be created with invalid recipient selected [C56632]', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.recipientStr).type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A')
+      getBody().findByLabelText(safeapps.recipientStr).type(constants.SAFE_APP_ADDRESS_2.substring(1))
       getBody().findAllByText(safeapps.transferEverythingStr).click()
       getBody().findByText(safeapps.validRecipientAddressStr)
     })
   })
 
-  it('should not allow to perform a drain when no assets are selected', () => {
+  it('Verify a drain cannot be created when no assets are selected [C56633]', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.selectAllRowsChbxStr).click()
       getBody().findByLabelText(safeapps.recipientStr).type(constants.SAFE_APP_ADDRESS_2)
-      getBody().findAllByText('No tokens selected').should('be.visible')
+      getBody().findAllByText(safeapps.noTokensSelectedStr).should('be.visible')
     })
   })
 
   it('should not allow to perform a drain when no assets and recipient are selected', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.selectAllRowsChbxStr).click()
-      getBody().findAllByText('No tokens selected').should('be.visible')
+      getBody().findAllByText(safeapps.noTokensSelectedStr).should('be.visible')
     })
   })
 })
