@@ -10,14 +10,6 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   const wallet = useWallet()
   const connectWallet = useConnectWallet()
 
-  const login = async () => {
-    const walletState = await connectWallet()
-
-    if (walletState && walletState.length > 0) {
-      onLogin()
-    }
-  }
-
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   if (wallet !== null && !isSocialLogin) {
@@ -55,7 +47,14 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   }
 
   return (
-    <Button onClick={login} sx={{ minHeight: '42px' }} variant="contained" size="small" disableElevation fullWidth>
+    <Button
+      onClick={connectWallet}
+      sx={{ minHeight: '42px' }}
+      variant="contained"
+      size="small"
+      disableElevation
+      fullWidth
+    >
       Connect wallet
     </Button>
   )

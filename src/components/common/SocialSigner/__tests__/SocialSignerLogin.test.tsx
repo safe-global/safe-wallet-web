@@ -2,7 +2,7 @@ import { act, render, waitFor } from '@/tests/test-utils'
 
 import { SocialSigner, _getSupportedChains } from '@/components/common/SocialSigner'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
-import { COREKIT_STATUS, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
+import { COREKIT_STATUS, type UserInfo, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import SocialWalletService from '@/services/mpc/SocialWalletService'
 import { TxModalProvider } from '@/components/tx-flow'
 import { fireEvent } from '@testing-library/react'
@@ -51,7 +51,7 @@ describe('SocialSignerLogin', () => {
     expect(mockOnLogin).toHaveBeenCalled()
   })
 
-  it('should render google login button and invoke the callback on connection if no wallet is connected on gnosis chain', async () => {
+  it('should render google login button if no wallet is connected on gnosis chain', async () => {
     const mockOnLogin = jest.fn()
 
     const result = render(
@@ -70,18 +70,30 @@ describe('SocialSignerLogin', () => {
       expect(result.findByText('Continue with Google')).resolves.toBeDefined()
       expect(await result.findByRole('button')).toBeEnabled()
     })
+  })
 
-    // We do not automatically invoke the callback as the user did not actively connect
-    expect(mockOnLogin).not.toHaveBeenCalled()
+  it('should display a Continue as button and call onLogin when clicked', () => {
+    const mockOnLogin = jest.fn()
+    mockSocialWalletService.loginAndCreate = jest.fn(() => Promise.resolve(COREKIT_STATUS.LOGGED_IN))
 
-    const button = await result.findByRole('button')
-    act(() => {
-      button.click()
-    })
+    const result = render(
+      <TxModalProvider>
+        <SocialSigner
+          socialWalletService={mockSocialWalletService}
+          wallet={mockWallet}
+          supportedChains={['Goerli']}
+          isMPCLoginEnabled={true}
+          onLogin={mockOnLogin}
+        />
+      </TxModalProvider>,
+    )
 
-    await waitFor(async () => {
-      expect(mockOnLogin).toHaveBeenCalled()
-    })
+    expect(result.getByText('Continue as Test Testermann')).toBeInTheDocument()
+
+    const button = result.getByRole('button')
+    button.click()
+
+    expect(mockOnLogin).toHaveBeenCalled()
   })
 
   it('should disable the Google Login button with a message when not on gnosis chain', async () => {
@@ -98,10 +110,11 @@ describe('SocialSignerLogin', () => {
     expect(await result.findByRole('button')).toBeDisabled()
   })
 
-  it('should display Password Recovery form and call onLogin if password recovery succeeds', async () => {
+  it('should display Password Recovery form and display a Continue as button when login succeeds', async () => {
     const mockOnLogin = jest.fn()
     mockSocialWalletService.loginAndCreate = jest.fn(() => Promise.resolve(COREKIT_STATUS.REQUIRED_SHARE))
     mockSocialWalletService.getUserInfo = jest.fn(undefined)
+    mockSocialWalletService.recoverAccountWithPassword = jest.fn(() => Promise.resolve(true))
 
     const result = render(
       <TxModalProvider>
@@ -140,8 +153,17 @@ describe('SocialSignerLogin', () => {
       submitButton.click()
     })
 
+    mockSocialWalletService.getUserInfo = jest.fn(
+      () =>
+        ({
+          email: 'test@testermann.com',
+          name: 'Test Testermann',
+          profileImage: 'test.testermann.local/profile.png',
+        } as unknown as UserInfo),
+    )
+
     await waitFor(() => {
-      expect(mockOnLogin).toHaveBeenCalled()
+      expect(result.getByText('Continue as Test Testermann')).toBeInTheDocument()
     })
   })
 
