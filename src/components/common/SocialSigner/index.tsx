@@ -63,6 +63,8 @@ export const SocialSigner = ({
   const userInfo = socialWalletService?.getUserInfo()
   const isDisabled = loginPending || !isMPCLoginEnabled
 
+  const isWelcomePage = onLogin !== undefined
+
   const recoverPassword = useCallback(
     async (password: string, storeDeviceFactor: boolean) => {
       if (!socialWalletService) return
@@ -142,7 +144,7 @@ export const SocialSigner = ({
             </Button>
           </Track>
         ) : (
-          <Track {...MPC_WALLET_EVENTS.CONNECT_GOOGLE}>
+          <Track {...MPC_WALLET_EVENTS.CONNECT_GOOGLE} label={isWelcomePage ? 'welcome' : 'navBar'}>
             <Button
               variant="outlined"
               onClick={login}
