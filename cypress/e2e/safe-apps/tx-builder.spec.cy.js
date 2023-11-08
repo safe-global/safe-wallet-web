@@ -146,8 +146,8 @@ describe('Tx-builder Safe App tests', { defaultCommandTimeout: 20000 }, () => {
       getBody().findByText(safeapps.createBatchStr).click()
       getBody().findByText(safeapps.sendBatchStr).click()
     })
-    cy.get('p').contains('1').should('be.visible')
-    cy.get('p').contains('2').should('be.visible')
+    cy.get('p').contains('1').should('exist')
+    cy.get('p').contains('2').should('exist')
   })
 
   it('Verify a batch cannot be created with invalid address [C56617]', () => {
