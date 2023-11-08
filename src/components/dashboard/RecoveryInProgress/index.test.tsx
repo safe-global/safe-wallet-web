@@ -1,4 +1,5 @@
 import { useBlockTimestamp } from '@/hooks/useBlockTimestamp'
+import { useHasFeature } from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { render } from '@testing-library/react'
 import { BigNumber } from 'ethers'
@@ -28,12 +29,25 @@ describe('getCountdown', () => {
 
 jest.mock('@/hooks/useBlockTimestamp')
 jest.mock('@/store')
+jest.mock('@/hooks/useChains')
 
 const mockUseBlockTimestamp = useBlockTimestamp as jest.MockedFunction<typeof useBlockTimestamp>
 const mockUseAppSelector = useAppSelector as jest.MockedFunction<typeof useAppSelector>
+const mockUseHasFeature = useHasFeature as jest.MockedFunction<typeof useHasFeature>
 
 describe('RecoveryInProgress', () => {
+  it('should return null if the chain does not support recovery', () => {
+    mockUseHasFeature.mockReturnValue(false)
+    mockUseBlockTimestamp.mockReturnValue(0)
+    mockUseAppSelector.mockReturnValue([{ queue: [{ timestamp: 0 }] }])
+
+    const result = render(<RecoveryInProgress />)
+
+    expect(result.container).toBeEmptyDOMElement()
+  })
+
   it('should return null if there is no block timestamp', () => {
+    mockUseHasFeature.mockReturnValue(true)
     mockUseBlockTimestamp.mockReturnValue(undefined)
     mockUseAppSelector.mockReturnValue([{ queue: [{ timestamp: 0 }] }])
 
@@ -43,6 +57,7 @@ describe('RecoveryInProgress', () => {
   })
 
   it('should return null if there are no delayed transactions', () => {
+    mockUseHasFeature.mockReturnValue(true)
     mockUseBlockTimestamp.mockReturnValue(undefined)
     mockUseAppSelector.mockReturnValue([{ queue: [] }])
 
@@ -52,6 +67,7 @@ describe('RecoveryInProgress', () => {
   })
 
   it('should return null if all the delayed transactions are expired and invalid', () => {
+    mockUseHasFeature.mockReturnValue(true)
     mockUseBlockTimestamp.mockReturnValue(69420)
     mockUseAppSelector.mockReturnValue([
       {
@@ -73,6 +89,7 @@ describe('RecoveryInProgress', () => {
   it('should return the countdown of the latest non-expired/invalid transactions if none are non-expired/valid', () => {
     const mockBlockTimestamp = 69420
 
+    mockUseHasFeature.mockReturnValue(true)
     mockUseBlockTimestamp.mockReturnValue(mockBlockTimestamp)
     mockUseAppSelector.mockReturnValue([
       {
@@ -113,6 +130,7 @@ describe('RecoveryInProgress', () => {
   it('should return the info of the latest non-expired/valid transactions', () => {
     const mockBlockTimestamp = 69420
 
+    mockUseHasFeature.mockReturnValue(true)
     mockUseBlockTimestamp.mockReturnValue(mockBlockTimestamp)
     mockUseAppSelector.mockReturnValue([
       {

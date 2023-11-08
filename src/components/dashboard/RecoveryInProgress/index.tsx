@@ -7,12 +7,15 @@ import { useBlockTimestamp } from '@/hooks/useBlockTimestamp'
 import { WidgetContainer, WidgetBody } from '../styled'
 import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 export function RecoveryInProgress(): ReactElement | null {
-  const blockTimestamp = 6942069 //useBlockTimestamp()
+  const blockTimestamp = useBlockTimestamp()
+  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
   const recovery = useAppSelector(selectRecovery)
 
-  if (!blockTimestamp) {
+  if (!blockTimestamp || !supportsRecovery) {
     return null
   }
 
