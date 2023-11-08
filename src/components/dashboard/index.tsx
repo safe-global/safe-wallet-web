@@ -11,6 +11,7 @@ import Relaying from '@/components/dashboard/Relaying'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
+import { RecoveryInProgress } from './RecoveryInProgress'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
@@ -20,6 +21,8 @@ const Dashboard = (): ReactElement => {
   return (
     <>
       <Grid container spacing={3}>
+        <RecoveryInProgress />
+
         <Grid item xs={12} lg={6}>
           <Overview />
         </Grid>

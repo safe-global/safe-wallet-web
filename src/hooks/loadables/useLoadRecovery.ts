@@ -63,31 +63,39 @@ const useLoadRecovery = (): AsyncResult<RecoveryState> => {
   const web3ReadOnly = useWeb3ReadOnly()
   const [counter] = useIntervalCounter(REFRESH_DELAY)
 
-  const [delayModifiers, delayModifiersError, delayModifiersLoading] = useAsync<Array<Delay>>(() => {
-    if (!web3ReadOnly || !safe.modules || safe.modules.length === 0) {
-      return
-    }
+  const [delayModifiers, delayModifiersError, delayModifiersLoading] = useAsync<Array<Delay>>(
+    () => {
+      if (!web3ReadOnly || !safe.modules || safe.modules.length === 0) {
+        return
+      }
 
-    const isOnlySpendingLimit =
-      safe.modules.length === 1 && safe.modules[0].value === getSpendingLimitModuleAddress(safe.chainId)
+      const isOnlySpendingLimit =
+        safe.modules.length === 1 && safe.modules[0].value === getSpendingLimitModuleAddress(safe.chainId)
 
-    if (isOnlySpendingLimit) {
-      return
-    }
+      if (isOnlySpendingLimit) {
+        return
+      }
 
-    return getDelayModifiers(safe.chainId, safe.modules, web3ReadOnly)
+      return getDelayModifiers(safe.chainId, safe.modules, web3ReadOnly)
+    },
     // Need to check length of modules array to prevent new request every time Safe info polls
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [safe.chainId, safe.modules?.length, web3ReadOnly])
+    [safe.chainId, safe.modules?.length, web3ReadOnly],
+    false,
+  )
 
-  const [recoveryState, recoveryStateError, recoveryStateLoading] = useAsync<RecoveryState>(() => {
-    if (!delayModifiers || delayModifiers.length === 0) {
-      return
-    }
+  const [recoveryState, recoveryStateError, recoveryStateLoading] = useAsync<RecoveryState>(
+    () => {
+      if (!delayModifiers || delayModifiers.length === 0) {
+        return
+      }
 
-    return Promise.all(delayModifiers.map(getRecoveryState))
+      return Promise.all(delayModifiers.map(getRecoveryState))
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delayModifiers, counter])
+    [delayModifiers, counter],
+    false,
+  )
 
   return [recoveryState, delayModifiersError || recoveryStateError, delayModifiersLoading || recoveryStateLoading]
 }
