@@ -2,6 +2,8 @@ import { _getMPCCoreKitInstance } from '@/hooks/wallets/mpc/useMPC'
 import { getSocialWalletService } from '@/hooks/wallets/mpc/useSocialWallet'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import * as PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
+import { FEATURES, hasFeature } from '@/utils/chains'
+import { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type WalletInit, ProviderRpcError } from '@web3-onboard/common'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
@@ -40,7 +42,9 @@ const getConnectedAccounts = async () => {
  *
  * @returns Custom Onboard MpcModule
  */
-function MpcModule(): WalletInit {
+function MpcModule(chain: ChainInfo): WalletInit {
+  if (!hasFeature(chain, FEATURES.SOCIAL_LOGIN)) return () => null
+
   return () => {
     return {
       label: ONBOARD_MPC_MODULE_LABEL,

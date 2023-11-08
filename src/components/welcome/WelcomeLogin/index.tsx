@@ -1,5 +1,7 @@
 import SocialSigner from '@/components/common/SocialSigner'
 import { AppRoutes } from '@/config/routes'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 import { Paper, SvgIcon, Typography, Divider, Link, Box } from '@mui/material'
 import SafeLogo from '@/public/images/logo-text.svg'
 import css from './styles.module.css'
@@ -11,6 +13,7 @@ import { trackEvent } from '@/services/analytics'
 
 const WelcomeLogin = () => {
   const router = useRouter()
+  const isSocialLoginEnabled = useHasFeature(FEATURES.SOCIAL_LOGIN)
 
   const continueToCreation = () => {
     trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
@@ -29,13 +32,17 @@ const WelcomeLogin = () => {
         </Typography>
         <WalletLogin onLogin={continueToCreation} />
 
-        <Divider sx={{ mt: 2, mb: 2, width: '100%' }}>
-          <Typography color="text.secondary" fontWeight={700} variant="overline">
-            or
-          </Typography>
-        </Divider>
+        {isSocialLoginEnabled && (
+          <>
+            <Divider sx={{ mt: 2, mb: 2, width: '100%' }}>
+              <Typography color="text.secondary" fontWeight={700} variant="overline">
+                or
+              </Typography>
+            </Divider>
 
-        <SocialSigner onLogin={continueToCreation} />
+            <SocialSigner onLogin={continueToCreation} />
+          </>
+        )}
 
         <Typography mt={2} textAlign="center">
           Already have a Safe Account?

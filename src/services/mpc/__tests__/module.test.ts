@@ -1,3 +1,5 @@
+import { chainBuilder } from '@/tests/builders/chains'
+import * as feature from '@/utils/chains'
 import MpcModule, { ONBOARD_MPC_MODULE_LABEL } from '../SocialLoginModule'
 import { type WalletModule } from '@web3-onboard/common'
 
@@ -5,9 +7,14 @@ import * as web3 from '@/hooks/wallets/web3'
 import * as useMPC from '@/hooks/wallets/mpc/useMPC'
 import { hexZeroPad } from 'ethers/lib/utils'
 
+const mockChain = chainBuilder().build()
+
 describe('MPC Onboard module', () => {
+  beforeAll(() => {
+    jest.spyOn(feature, 'hasFeature').mockReturnValue(true)
+  })
   it('should return correct metadata', async () => {
-    const mpcModule = MpcModule()({
+    const mpcModule = MpcModule(mockChain)({
       device: {
         browser: {
           name: 'Firefox',
@@ -42,7 +49,7 @@ describe('MPC Onboard module', () => {
       } as any
     })
 
-    const mpcModule = MpcModule()({
+    const mpcModule = MpcModule(mockChain)({
       device: {
         browser: {
           name: 'Firefox',
@@ -93,7 +100,7 @@ describe('MPC Onboard module', () => {
       } as any
     })
 
-    const mpcModule = MpcModule()({
+    const mpcModule = MpcModule(mockChain)({
       device: {
         browser: {
           name: 'Firefox',
