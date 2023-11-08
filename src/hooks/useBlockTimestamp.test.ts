@@ -31,7 +31,7 @@ describe('useBlockTimestamp', () => {
   })
 
   it('should return the latest block timestamp', async () => {
-    const timestamp = Date.now() / 1000
+    const timestamp = 69420
 
     mockGetBlock.mockResolvedValue({
       timestamp,
@@ -49,7 +49,7 @@ describe('useBlockTimestamp', () => {
   })
 
   it('should update the timestamp every INTERVAL', async () => {
-    const timestamp = Date.now() / 1000
+    const timestamp = 69420
 
     mockGetBlock.mockResolvedValue({
       timestamp,
