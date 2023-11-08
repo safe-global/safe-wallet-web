@@ -28,4 +28,29 @@ export const MPC_WALLET_EVENTS = {
     action: 'Enable MFA for account',
     category: MPC_WALLET_CATEGORY,
   },
+  REVEAL_PRIVATE_KEY: {
+    event: EventType.CLICK,
+    action: 'Reveal private key',
+    category: MPC_WALLET_CATEGORY,
+  },
+  EXPORT_PK_SUCCESS: {
+    event: EventType.META,
+    action: 'Export private key successful',
+    category: MPC_WALLET_CATEGORY,
+  },
+  EXPORT_PK_ERROR: {
+    event: EventType.META,
+    action: 'Export private key error',
+    category: MPC_WALLET_CATEGORY,
+  },
+  SEE_PK: {
+    event: EventType.CLICK,
+    action: 'Toggle see private key',
+    category: MPC_WALLET_CATEGORY,
+  },
+  COPY_PK: {
+    event: EventType.CLICK,
+    action: 'Copy private key',
+    category: MPC_WALLET_CATEGORY,
+  },
 }
