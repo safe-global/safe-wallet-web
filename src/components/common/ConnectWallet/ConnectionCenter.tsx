@@ -1,4 +1,8 @@
-import { Popover, ButtonBase, Typography, Paper } from '@mui/material'
+import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
+import madProps from '@/utils/mad-props'
+import { Popover, ButtonBase, Typography, Paper, Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import classnames from 'classnames'
@@ -9,7 +13,7 @@ import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
 
 import css from '@/components/common/ConnectWallet/styles.module.css'
 
-const ConnectionCenter = (): ReactElement => {
+export const ConnectionCenter = ({ isSocialLoginEnabled }: { isSocialLoginEnabled: boolean }): ReactElement => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = !!anchorEl
 
@@ -22,6 +26,14 @@ const ConnectionCenter = (): ReactElement => {
   }
 
   const ExpandIcon = open ? ExpandLessIcon : ExpandMoreIcon
+
+  if (!isSocialLoginEnabled) {
+    return (
+      <Box className={css.buttonContainer}>
+        <ConnectWalletButton />
+      </Box>
+    )
+  }
 
   return (
     <>
@@ -60,4 +72,8 @@ const ConnectionCenter = (): ReactElement => {
   )
 }
 
-export default ConnectionCenter
+const useIsSocialLoginEnabled = () => useHasFeature(FEATURES.SOCIAL_LOGIN)
+
+export default madProps(ConnectionCenter, {
+  isSocialLoginEnabled: useIsSocialLoginEnabled,
+})
