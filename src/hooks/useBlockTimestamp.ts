@@ -23,7 +23,7 @@ export function useBlockTimestamp(): number | undefined {
 
     const timeout = setInterval(() => {
       setTimestamp((prev) => {
-        return prev ? prev + 1 : prev
+        return prev ? prev + 1 : block.timestamp
       })
     }, INTERVAL)
 
@@ -32,5 +32,5 @@ export function useBlockTimestamp(): number | undefined {
     }
   }, [block])
 
-  return timestamp ?? block?.timestamp
+  return timestamp
 }

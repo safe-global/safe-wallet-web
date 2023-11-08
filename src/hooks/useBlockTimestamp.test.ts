@@ -49,6 +49,8 @@ describe('useBlockTimestamp', () => {
   })
 
   it('should update the timestamp every INTERVAL', async () => {
+    jest.useFakeTimers()
+
     const timestamp = 69420
 
     mockGetBlock.mockResolvedValue({
@@ -63,9 +65,13 @@ describe('useBlockTimestamp', () => {
       expect(result.current).toBe(timestamp)
     })
 
+    jest.advanceTimersByTime(1_000)
+
     await waitFor(() => {
       expect(result.current).toBe(timestamp + 1)
     })
+
+    jest.advanceTimersByTime(1_000)
 
     await waitFor(() => {
       expect(result.current).toBe(timestamp + 2)
@@ -73,5 +79,7 @@ describe('useBlockTimestamp', () => {
 
     // Interval is used to update the timestamp after initial getBlock call
     expect(mockGetBlock).toHaveBeenCalledTimes(1)
+
+    jest.useRealTimers()
   })
 })
