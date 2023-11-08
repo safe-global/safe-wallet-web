@@ -9,7 +9,7 @@ import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 
 export function RecoveryInProgress(): ReactElement | null {
-  const blockTimestamp = useBlockTimestamp()
+  const blockTimestamp = 6942069 //useBlockTimestamp()
   const recovery = useAppSelector(selectRecovery)
 
   if (!blockTimestamp) {
@@ -87,7 +87,7 @@ function Countdown({ seconds }: { seconds: number }): ReactElement | null {
   const { days, hours, minutes } = _getCountdown(seconds)
 
   return (
-    <Box display="flex" gap="1">
+    <Box display="flex" gap={1}>
       <TimeLeft value={days} unit="day" />
       <TimeLeft value={hours} unit="hr" />
       <TimeLeft value={minutes} unit="min" />
