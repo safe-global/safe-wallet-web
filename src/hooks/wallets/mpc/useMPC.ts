@@ -49,6 +49,7 @@ export const useInitMPC = () => {
       enableLogging: true,
       chainConfig,
       manualSync: true,
+      hashedFactorNonce: 'safe-global-sfa-nonce',
     })
 
     web3AuthCoreKit
