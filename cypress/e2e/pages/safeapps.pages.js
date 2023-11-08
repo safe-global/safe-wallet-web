@@ -3,6 +3,10 @@ import * as constants from '../../support/constants'
 const searchAppInput = 'input[id="search-by-name"]'
 const appUrlInput = 'input[name="appUrl"]'
 const closePreviewWindowBtn = 'button[aria-label*="Close"][aria-label*="preview"]'
+export const contractMethodIndex = '[name="contractMethodIndex"]'
+export const saveToLibraryBtn = 'button[title="Save to Library"]'
+export const downloadBatchBtn = 'button[title="Download batch"]'
+export const deleteBatchBtn = 'button[title="Delete Batch"]'
 
 const addBtnStr = /add/i
 const noAppsStr = /no Safe Apps found/i
@@ -19,13 +23,72 @@ const accessToAddressBookStr = /access to your address book/i
 const acceptBtnStr = /accept/i
 const clearAllBtnStr = /clear all/i
 const allowAllPermissions = /allow all/i
+export const enterAddressStr = /enter address or ens name/i
+export const addTransactionStr = /add transaction/i
+export const createBatchStr = /create batch/i
+export const sendBatchStr = /send batch/i
+export const transactionDetailsStr = /transaction details/i
+export const addOwnerWithThreshold = /add owner with threshold/i
+export const enterABIStr = /Enter ABI/i
+export const toAddressStr = /to address/i
+export const gorValue = /gor value */i
+export const dataStr = /data */i
+export const clearTransactionListStr = /Clear transaction list?/i
+export const confirmClearTransactionListStr = /Yes, clear/i
+export const cancelBtnStr = 'Cancel'
+export const confirmDeleteBtnStr = 'Yes, delete'
+export const backBtnStr = /Back/i
+export const simulateBtnStr = /Simulate/i
+export const reviewAndConfirmStr = /Review and confirm/i
+export const backToTransactionStr = /Back to Transaction Creation/i
+export const batchNameStr = /Batch name/i
+export const transactionLibraryStr = /Your transaction library/i
+export const noSavedBatchesStr = /You don't have any saved batches./i
+export const keepProxiABIStr = /Keep Proxy ABI/i
+export const selectAllRowsChbxStr = /Select All Rows checkbox/i
+export const selectRowChbxStr = /Select Row checkbox/i
+export const recipientStr = /recipient/i
+export const validRecipientAddressStr = /please enter a valid recipient address/i
+export const testAddressValue2 = 'testAddressValue'
+export const testBooleanValue = 'testBooleanValue'
+export const testBooleanValue1 = '1 testBooleanValue'
+export const testBooleanValue2 = '2 testBooleanValue'
+export const testBooleanValue3 = '3 testBooleanValue'
+export const transfer2AssetsStr = 'Transfer 2 assets'
+
+export const testTransfer1 = '1 transfer'
+export const testTransfer2 = '2 transfer'
+export const testNativeTransfer2 = '2 native transfer'
+export const testNativeTransfer1 = '1 native transfer'
+
+export const newValueBool = 'newValue(bool):'
+export const ownerAddressStr = 'owner (address)'
+export const ownerAddressStr2 = 'owner(address)'
+export const thresholdStr = '_threshold (uint256) *'
+export const thresholdStr2 = '_threshold(uint256):'
 
 const appNotSupportedMsg = "The app doesn't support Safe App functionality"
+export const changedPropertiesStr = 'This batch contains some changed properties since you saved or downloaded it'
+export const anotherChainStr = 'This batch is from another Chain (1)!'
+export const useImplementationABI = 'Use Implementation ABI'
+export const addressNotValidStr = 'The address is not valid'
+export const transferEverythingStr = 'Transfer everything'
+export const noTokensSelectedStr = 'No tokens selected'
+export const requiredStr = 'Required'
+export const e3eTestStr = 'E2E test'
+export const createBtnStr = 'Create'
+export const warningStr = 'Warning'
+export const transferStr = 'Transfer'
+export const successStr = 'Success'
+export const failedStr = 'Failed'
 
 export const pinWalletConnectStr = /pin walletconnect/i
 export const transactionBuilderStr = 'Transaction Builder'
+export const testAddressValueStr = 'test Address Value'
 export const logoWalletConnect = /logo.*walletconnect/i
 export const walletConnectHeadlinePreview = /walletconnect/i
+export const newAddressValueStr = 'newValue (address)'
+export const newAddressValueStr2 = 'newValue(address)'
 export const transactiobUilderHeadlinePreview = 'Transaction Builder'
 export const availableNetworksPreview = 'Available networks'
 export const connecttextPreview = 'Compose custom contract interactions and batch them into a single transaction'
@@ -36,6 +99,8 @@ export const gridItem = 'main .MuiPaper-root > .MuiGrid-item'
 export const linkNames = {
   logo: /logo/i,
 }
+export const abi =
+  '[{{}"inputs":[{{}"internalType":"address","name":"_singleton","type":"address"{}}],"stateMutability":"nonpayable","type":"constructor"{}},{{}"stateMutability":"payable","type":"fallback"{}}]'
 
 export const permissionCheckboxes = {
   camera: 'input[name="camera"]',

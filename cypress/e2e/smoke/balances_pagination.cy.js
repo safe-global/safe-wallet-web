@@ -8,12 +8,10 @@ describe('Balance tests', () => {
   before(() => {
     cy.clearLocalStorage()
     // Open the Safe used for testing
-    cy.visit(constants.BALANCE_URL + constants.PAGINATION_TEST_SAFE)
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_6)
     main.acceptCookies()
 
-    cy.contains('div', 'Default tokens').click()
-    cy.wait(100)
-    cy.contains('div', 'All tokens').click()
+    balances.selectTokenList(balances.tokenListOptions.allTokens)
   })
 
   it('Verify a user can change rows per page and navigate to next and previous page [C56073]', () => {

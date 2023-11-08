@@ -215,6 +215,6 @@ describe('Assets tests', () => {
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_4)
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.showSendBtn(0)
-    owner.verifyTooltiptext(owner.disconnectedUserErrorMsg)
+    owner.verifyTooltiptext(owner.nonOwnerErrorMsg)
   })
 })
