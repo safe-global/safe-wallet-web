@@ -31,14 +31,6 @@ describe('useWalletConnectSearchParamUri', () => {
   it('should return the wc uri search param value when present', () => {
     mockRouter.query = { wc: 'wc:123' }
 
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        pathname: window.location.pathname,
-        search: '?wc=wc:123',
-      },
-    })
-
     const { result } = renderHook(() => useWalletConnectSearchParamUri())
     const [wcUri] = result.current
 
@@ -48,14 +40,6 @@ describe('useWalletConnectSearchParamUri', () => {
   it('should update the wc uri search param value when setWcUri is called', () => {
     mockRouter.pathname = '/test'
     mockRouter.query = { test: 'example', wc: 'wc:123' }
-
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        pathname: window.location.pathname,
-        search: '?wc=wc:123&test=example',
-      },
-    })
 
     const { result } = renderHook(() => useWalletConnectSearchParamUri())
     const [wcUri, setWcUri] = result.current
@@ -76,14 +60,6 @@ describe('useWalletConnectSearchParamUri', () => {
   it('should remove the wc uri search param when setWcUri is called with null', async () => {
     mockRouter.pathname = '/test'
     mockRouter.query = { test: 'example', wc: 'wc:123' }
-
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        pathname: window.location.pathname,
-        search: '?wc=wc:123&test=example',
-      },
-    })
 
     const { result } = renderHook(() => useWalletConnectSearchParamUri())
     const [wcUri, setWcUri] = result.current

@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { parse } from 'querystring'
 import useLastSafe from '@/hooks/useLastSafe'
 import { AppRoutes } from '@/config/routes'
+import { WC_URI_SEARCH_PARAM } from '@/services/walletconnect/useWalletConnectSearchParamUri'
 
 const WcPage: NextPage = () => {
   const router = useRouter()
@@ -14,8 +14,7 @@ const WcPage: NextPage = () => {
       return
     }
 
-    // Don't use router.query because it cuts off internal paramters of the WC URI (e.g. symKey)
-    const { uri } = parse(window.location.search.slice(1))
+    const { uri } = router.query
 
     router.replace(
       lastSafe
@@ -23,13 +22,13 @@ const WcPage: NextPage = () => {
             pathname: AppRoutes.home,
             query: {
               safe: lastSafe,
-              wc: uri,
+              [WC_URI_SEARCH_PARAM]: uri,
             },
           }
         : {
             pathname: AppRoutes.welcome,
             query: {
-              wc: uri,
+              [WC_URI_SEARCH_PARAM]: uri,
             },
           },
     )
