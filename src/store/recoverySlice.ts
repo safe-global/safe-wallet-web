@@ -3,13 +3,20 @@ import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Del
 
 import { makeLoadableSlice } from './common'
 
+type QueuedTransactionAdded = TransactionAddedEvent & {
+  timestamp: number
+  validFrom: string
+  expiresAt: string | null
+}
+
 export type RecoveryState = Array<{
   address: string
   modules: Array<string>
+  txExpiration: string
   txCooldown: string
   txNonce: string
   queueNonce: string
-  transactionsAdded: Array<TransactionAddedEvent>
+  queue: Array<QueuedTransactionAdded>
 }>
 
 const initialState: RecoveryState = []

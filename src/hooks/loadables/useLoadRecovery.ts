@@ -1,4 +1,5 @@
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { BigNumber } from 'ethers'
 import type { Delay } from '@gnosis.pm/zodiac'
 
 import { getDelayModifiers } from '@/services/recovery/delay-modifier'
@@ -16,21 +17,44 @@ const REFRESH_DELAY = 5 * 60 * 1_000 // 5 minutes
 const getRecoveryState = async (delayModifier: Delay): Promise<RecoveryState[number]> => {
   const transactionAddedFilter = delayModifier.filters.TransactionAdded()
 
-  const [[modules], txCooldown, txNonce, queueNonce, transactionsAdded] = await Promise.all([
+  const [[modules], txExpiration, txCooldown, txNonce, queueNonce, transactionsAdded] = await Promise.all([
     delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_PAGE_SIZE),
+    delayModifier.txExpiration(),
     delayModifier.txCooldown(),
     delayModifier.txNonce(),
     delayModifier.queueNonce(),
     delayModifier.queryFilter(transactionAddedFilter),
   ])
 
+  const queue = await Promise.all(
+    transactionsAdded
+      // Only queued transactions with queueNonce >= current txNonce
+      .filter(({ args }) => args.queueNonce.gte(txNonce))
+      .map(async (event) => {
+        const txBlock = await event.getBlock()
+
+        const validFrom = BigNumber.from(txBlock.timestamp).add(txCooldown)
+        const expiresAt = txExpiration.isZero()
+          ? null // Never expires
+          : validFrom.add(txExpiration).toString()
+
+        return {
+          ...event,
+          timestamp: txBlock.timestamp,
+          validFrom: validFrom.toString(),
+          expiresAt,
+        }
+      }),
+  )
+
   return {
     address: delayModifier.address,
     modules,
+    txExpiration: txExpiration.toString(),
     txCooldown: txCooldown.toString(),
     txNonce: txNonce.toString(),
     queueNonce: queueNonce.toString(),
-    transactionsAdded: transactionsAdded.filter(({ args }) => args.queueNonce.gte(txNonce)),
+    queue,
   }
 }
 
