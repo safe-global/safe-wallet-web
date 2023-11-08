@@ -48,7 +48,7 @@ const NewSafeSocial = () => {
                 letterSpacing={-1.5}
                 color="static.main"
               >
-                Get started in 30 seconds with your Google Account
+                Get the most secure web3 account in {'<'}30 seconds
               </Typography>
 
               <ul className={css.numberList}>
@@ -57,8 +57,7 @@ const NewSafeSocial = () => {
                 <BulletListItem text="Add more signers later to level up your security" />
               </ul>
 
-              {/* TODO: Replace with actual link and possibly add tracking */}
-              <Link href="https://safe.global" passHref>
+              <Link href="https://safe.global/campaigns/social-login-gnosis" passHref>
                 <Button startIcon={<ChevronLeftIcon />} className={css.button}>
                   Back to landing page
                 </Button>
