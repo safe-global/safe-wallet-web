@@ -70,11 +70,10 @@ export const SocialSigner = ({
       const success = await socialWalletService.recoverAccountWithPassword(password, storeDeviceFactor)
 
       if (success) {
-        onLogin?.()
         setTxFlow(undefined)
       }
     },
-    [onLogin, setTxFlow, socialWalletService],
+    [setTxFlow, socialWalletService],
   )
 
   const login = async () => {
@@ -86,7 +85,6 @@ export const SocialSigner = ({
       const status = await socialWalletService.loginAndCreate()
 
       if (status === COREKIT_STATUS.LOGGED_IN) {
-        onLogin?.()
         setLoginPending(false)
         return
       }
@@ -94,11 +92,7 @@ export const SocialSigner = ({
       if (status === COREKIT_STATUS.REQUIRED_SHARE) {
         onRequirePassword?.()
 
-        setTxFlow(
-          <PasswordRecovery recoverFactorWithPassword={recoverPassword} onSuccess={onLogin} />,
-          () => setLoginPending(false),
-          false,
-        )
+        setTxFlow(<PasswordRecovery recoverFactorWithPassword={recoverPassword} />, () => setLoginPending(false), false)
         return
       }
     } catch (err) {

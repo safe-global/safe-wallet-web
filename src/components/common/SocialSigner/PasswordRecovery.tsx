@@ -27,7 +27,7 @@ export const PasswordRecovery = ({
   onSuccess,
 }: {
   recoverFactorWithPassword: (password: string, storeDeviceFactor: boolean) => Promise<void>
-  onSuccess: (() => void) | undefined
+  onSuccess?: (() => void) | undefined
 }) => {
   const [storeDeviceFactor, setStoreDeviceFactor] = useState(false)
 
