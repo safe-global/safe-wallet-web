@@ -34,5 +34,5 @@ export function useWalletConnectSearchParamUri(): [string | null, (wcUri: string
     [router],
   )
 
-  return [rawUrlParam, setWcUri]
+  return [rawUrlParam || null, setWcUri]
 }
