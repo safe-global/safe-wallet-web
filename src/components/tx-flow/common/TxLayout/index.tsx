@@ -55,6 +55,7 @@ type TxLayoutProps = {
   txSummary?: TransactionSummary
   onBack?: () => void
   hideNonce?: boolean
+  hideProgress?: boolean
   isBatch?: boolean
   isReplacement?: boolean
   isMessage?: boolean
@@ -69,6 +70,7 @@ const TxLayout = ({
   txSummary,
   onBack,
   hideNonce = false,
+  hideProgress = false,
   isBatch = false,
   isReplacement = false,
   isMessage = false,
@@ -117,9 +119,11 @@ const TxLayout = ({
                   </div>
 
                   <Paper className={css.header}>
-                    <Box className={css.progressBar}>
-                      <ProgressBar value={progress} />
-                    </Box>
+                    {!hideProgress && (
+                      <Box className={css.progressBar}>
+                        <ProgressBar value={progress} />
+                      </Box>
+                    )}
 
                     <TxLayoutHeader subtitle={subtitle} icon={icon} hideNonce={hideNonce} />
                   </Paper>

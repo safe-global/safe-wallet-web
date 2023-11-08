@@ -27,7 +27,7 @@ export function EnableRecoveryFlow(): ReactElement {
   })
 
   const steps = [
-    <EnableRecoveryFlowIntro key={0} />,
+    <EnableRecoveryFlowIntro key={0} onSubmit={() => nextStep(data)} />,
     <EnableRecoveryFlowSettings key={1} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
     <EnableRecoveryFlowReview key={1} params={data} />,
   ]
@@ -51,6 +51,7 @@ export function EnableRecoveryFlow(): ReactElement {
       step={step}
       onBack={prevStep}
       hideNonce={isIntro}
+      hideProgress={isIntro}
     >
       {steps}
     </TxLayout>
