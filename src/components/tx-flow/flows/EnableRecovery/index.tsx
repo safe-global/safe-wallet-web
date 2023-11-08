@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 
 import TxLayout from '@/components/tx-flow/common/TxLayout'
-import CodeIcon from '@/public/images/apps/code-icon.svg'
+import RecoveryPlus from '@/public/images/common/recovery-plus.svg'
 import useTxStepper from '../../useTxStepper'
 import { EnableRecoveryFlowReview } from './EnableRecoveryFlowReview'
 import { EnableRecoveryFlowSettings } from './EnableRecoveryFlowSettings'
@@ -38,10 +38,10 @@ export function EnableRecoveryFlow(): ReactElement {
   const subtitle = isIntro
     ? 'How does recovery work?'
     : isSettings
-    ? 'Set up account settings'
+    ? 'Set up account recovery settings'
     : 'Set up account recovery'
 
-  const icon = isIntro ? undefined : CodeIcon
+  const icon = isIntro ? undefined : RecoveryPlus
 
   return (
     <TxLayout
