@@ -28,6 +28,7 @@ export const AppRoutes = {
   settings: {
     spendingLimits: '/settings/spending-limits',
     setup: '/settings/setup',
+    recovery: '/settings/recovery',
     notifications: '/settings/notifications',
     modules: '/settings/modules',
     index: '/settings',

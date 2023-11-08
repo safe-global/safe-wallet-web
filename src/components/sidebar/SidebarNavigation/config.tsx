@@ -85,6 +85,10 @@ export const settingsNavItems = [
     href: AppRoutes.settings.appearance,
   },
   {
+    label: 'Recovery',
+    href: AppRoutes.settings.recovery,
+  },
+  {
     label: 'Notifications',
     href: AppRoutes.settings.notifications,
   },
