@@ -9,6 +9,7 @@ import useOnboard, { connectWallet, getConnectedWallet } from '@/hooks/wallets/u
 import { useInitSocialWallet } from './useSocialWallet'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { isSocialWalletOptions, SOCIAL_WALLET_OPTIONS } from '@/services/mpc/config'
+import { IS_PRODUCTION } from '@/config/constants'
 
 const { getStore, setStore, useStore } = new ExternalStore<Web3AuthMPCCoreKit>()
 
@@ -46,7 +47,7 @@ export const useInitMPC = () => {
       web3AuthNetwork: WEB3AUTH_NETWORK.MAINNET,
       baseUrl: `${window.location.origin}/`,
       uxMode: 'popup',
-      enableLogging: true,
+      enableLogging: !IS_PRODUCTION,
       chainConfig,
       manualSync: true,
       hashedFactorNonce: 'safe-global-sfa-nonce',
