@@ -1,16 +1,20 @@
 import { useRouter } from 'next/router'
-import { useCallback } from 'react'
-
-import { isPairingUri } from './utils'
+import { parse } from 'querystring'
+import { useCallback, useEffect, useState } from 'react'
 
 const WC_URI_SEARCH_PARAM = 'wc'
 
 export function useWalletConnectSearchParamUri(): [string | null, (wcUri: string | null) => void] {
   const router = useRouter()
+  const wcQuery = router.query[WC_URI_SEARCH_PARAM]
+  const [rawUrlParam, setRawUrlParam] = useState('')
 
-  const wcUriQuery = router.query[WC_URI_SEARCH_PARAM]
-  const value = wcUriQuery ? (Array.isArray(wcUriQuery) ? wcUriQuery[0] : wcUriQuery) : null
-  const wcUri = value && isPairingUri(value) ? value : null
+  useEffect(() => {
+    // Don't use router.query because it cuts off internal paramters of the WC URI (e.g. symKey)
+    const query = parse(window.location.search.slice(1))
+    const wcUri = query[WC_URI_SEARCH_PARAM] || ''
+    setRawUrlParam(wcUri.toString())
+  }, [wcQuery])
 
   const setWcUri = useCallback(
     (wcUri: string | null) => {
@@ -30,5 +34,5 @@ export function useWalletConnectSearchParamUri(): [string | null, (wcUri: string
     [router],
   )
 
-  return [wcUri, setWcUri]
+  return [rawUrlParam, setWcUri]
 }
