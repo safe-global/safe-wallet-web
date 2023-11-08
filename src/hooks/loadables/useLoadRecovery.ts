@@ -36,12 +36,12 @@ const getRecoveryState = async (delayModifier: Delay): Promise<RecoveryState[num
         const validFrom = BigNumber.from(txBlock.timestamp).add(txCooldown)
         const expiresAt = txExpiration.isZero()
           ? null // Never expires
-          : validFrom.add(txExpiration).toString()
+          : validFrom.add(txExpiration)
 
         return {
           ...event,
           timestamp: txBlock.timestamp,
-          validFrom: validFrom.toString(),
+          validFrom,
           expiresAt,
         }
       }),
@@ -50,10 +50,10 @@ const getRecoveryState = async (delayModifier: Delay): Promise<RecoveryState[num
   return {
     address: delayModifier.address,
     modules,
-    txExpiration: txExpiration.toString(),
-    txCooldown: txCooldown.toString(),
-    txNonce: txNonce.toString(),
-    queueNonce: queueNonce.toString(),
+    txExpiration,
+    txCooldown,
+    txNonce,
+    queueNonce,
     queue,
   }
 }
