@@ -1,6 +1,7 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import QRCode from '@/components/common/QRCode'
 import { AppRoutes } from '@/config/routes'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useAppSelector } from '@/store'
@@ -277,6 +278,9 @@ const NoAssets = () => {
   const settings = useAppSelector(selectSettings)
   const qrPrefix = settings.shortName.qr ? `${chain?.shortName}:` : ''
   const qrCode = `${qrPrefix}${safeAddress}`
+  const [apps] = useRemoteSafeApps()
+
+  const rampSafeApp = apps?.find((app) => app.name === 'Ramp Network')
 
   return (
     <Paper>
@@ -296,14 +300,18 @@ const NoAssets = () => {
           <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start" fontSize="14px">
             <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton hasExplorer avatarSize={24} />
           </Box>
-          <Box alignSelf="flex-start">
-            {/* TODO: Insert link for Ramp app */}
-            <Link href={{ pathname: AppRoutes.apps.index, query: router.query }} passHref>
-              <Button variant="contained" size="small" startIcon={<AddIcon />}>
-                Buy crypto
-              </Button>
-            </Link>
-          </Box>
+          {rampSafeApp && (
+            <Box alignSelf="flex-start">
+              <Link
+                href={{ pathname: AppRoutes.apps.index, query: { safe: router.query.safe, appUrl: rampSafeApp.url } }}
+                passHref
+              >
+                <Button variant="contained" size="small" startIcon={<AddIcon />}>
+                  Buy crypto
+                </Button>
+              </Link>
+            </Box>
+          )}
         </Grid>
       </Grid>
     </Paper>

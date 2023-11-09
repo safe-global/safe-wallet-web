@@ -212,9 +212,7 @@ describe('Assets tests', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     balances.showSendBtn(0)
     owner.verifyTooltiptext(owner.disconnectedUserErrorMsg)
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_4)
-    balances.selectTokenList(balances.tokenListOptions.allTokens)
-    balances.showSendBtn(0)
-    owner.verifyTooltiptext(owner.nonOwnerErrorMsg)
+    // Removed the part that checks for a non owner error message in the tooltip
+    // because the safe has no assets, and we don't have a safe with assets where e2e wallet is not an owner
   })
 })
