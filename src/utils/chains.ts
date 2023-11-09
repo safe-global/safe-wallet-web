@@ -16,6 +16,7 @@ export enum FEATURES {
   RISK_MITIGATION = 'RISK_MITIGATION',
   PUSH_NOTIFICATIONS = 'PUSH_NOTIFICATIONS',
   NATIVE_WALLETCONNECT = 'NATIVE_WALLETCONNECT',
+  SOCIAL_LOGIN = 'SOCIAL_LOGIN',
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {

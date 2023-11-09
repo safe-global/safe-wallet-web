@@ -6,19 +6,19 @@ import * as constants from '../../support/constants'
 describe('Import Export Data tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.welcomeUrl)
+    cy.visit(constants.dataSettingsUrl)
     main.acceptCookies()
-    file.verifyImportBtnIsVisible()
   })
 
   it('Verify Safe can be accessed after test file upload [C56111]', () => {
     const filePath = '../fixtures/data_import.json'
     const safe = constants.SEPOLIA_CSV_ENTRY.name
 
-    file.clickOnImportBtn()
     file.uploadFile(filePath)
     file.verifyImportModalData()
     file.clickOnImportBtnDataImportModal()
+    cy.visit(constants.welcomeUrl)
+    file.clickOnOpenSafeListSidebar()
     file.clickOnImportedSafe(safe)
     file.clickOnClosePushNotificationsBanner()
   })
