@@ -34,7 +34,33 @@ export const SAFE_WALLET_METADATA = {
 export const EIP155 = 'eip155' as const
 
 // Bridges enforcing same address on destination chains
-export const BlockedBridges = [
+export const BlockedBridges = []
+
+// Bridges that initially select the same address on the destination chain but allow changing it
+export const WarnedBridges = [
+  'across.to', // doesn't send their URL in the session proposal
+  'app.allbridge.io',
+  'core.allbridge.io',
+  'bungee.exchange',
+  'www.carrier.so',
+  'app.chainport.io',
+  'bridge.gnosischain.com',
+  'app.hop.exchange', // doesn't send their URL in the session proposal
+  'app.interport.fi',
+  'jumper.exchange',
+  'www.layerswap.io',
+  'meson.fi',
+  'satellite.money',
+  'stargate.finance',
+  'app.squidrouter.com',
+  'app.symbiosis.finance',
+  'www.synapseprotocol.com',
+  'app.thevoyager.io',
+  'portal.txsync.io',
+  'bridge.wanchain.org',
+  'app.xy.finance',
+
+  // Can't set a recipient address
   'app.chainport.io',
   'bridge.arbitrum.io',
   'bridge.base.org',
@@ -60,31 +86,6 @@ export const BlockedBridges = [
   'iotube.org',
   'bridge.telos.net',
   'ultronswap.com',
-]
-
-// Bridges that initially select the same address on the destination chain but allow changing it
-export const WarnedBridges = [
-  'across.to', // doesn't send their URL in the session proposal
-  'app.allbridge.io',
-  'core.allbridge.io',
-  'bungee.exchange',
-  'www.carrier.so',
-  'app.chainport.io',
-  'bridge.gnosischain.com',
-  'app.hop.exchange', // doesn't send their URL in the session proposal
-  'app.interport.fi',
-  'jumper.exchange',
-  'www.layerswap.io',
-  'meson.fi',
-  'satellite.money',
-  'stargate.finance',
-  'app.squidrouter.com',
-  'app.symbiosis.finance',
-  'www.synapseprotocol.com',
-  'app.thevoyager.io',
-  'portal.txsync.io',
-  'bridge.wanchain.org',
-  'app.xy.finance',
 ]
 
 export const WarnedBridgeNames = ['Across Bridge', 'Hop']
