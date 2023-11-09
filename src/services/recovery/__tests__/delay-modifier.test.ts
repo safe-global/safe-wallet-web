@@ -86,7 +86,7 @@ describe('delay-modifier', () => {
             getCode: jest.fn().mockResolvedValueOnce(gnosisGenericProxyBytecode).mockResolvedValue(bytecode),
           } as unknown as JsonRpcProvider
 
-          jest.spyOn(proxies, 'getGnosisGenericProxyMasterCopy').mockResolvedValue(moduleAddress)
+          jest.spyOn(proxies, 'getGnosisProxyMasterCopy').mockResolvedValue(moduleAddress)
 
           const isOfficial = await isOfficialDelayModifier(chainId, proxyAddress, provider)
           expect(isOfficial).toBe(true)
@@ -102,7 +102,7 @@ describe('delay-modifier', () => {
           getCode: jest.fn().mockResolvedValueOnce(gnosisGenericProxyBytecode).mockResolvedValue(bytecode),
         } as unknown as JsonRpcProvider
 
-        jest.spyOn(proxies, 'getGnosisGenericProxyMasterCopy').mockResolvedValue(moduleAddress)
+        jest.spyOn(proxies, 'getGnosisProxyMasterCopy').mockResolvedValue(moduleAddress)
 
         const isOfficial = await isOfficialDelayModifier(chainId, proxyAddress, provider)
         expect(isOfficial).toBe(false)
