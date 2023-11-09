@@ -11,6 +11,7 @@ import MinusIcon from '@/public/images/common/minus.svg'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { RemoveOwnerFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -29,6 +30,7 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
   const onFormSubmit = () => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
+    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.owner_remove })
   }
 
   return (

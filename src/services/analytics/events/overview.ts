@@ -96,4 +96,8 @@ export const OVERVIEW_EVENTS = {
     action: 'Click on SEP5 allocation button',
     category: OVERVIEW_CATEGORY,
   },
+  SAFE_VIEWED: {
+    action: 'Safe viewed',
+    category: OVERVIEW_CATEGORY,
+  },
 }

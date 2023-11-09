@@ -20,10 +20,12 @@ import { asError } from '@/services/exceptions/utils'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
+  onSubmit?: (txId: string, safeTxHash: string) => void
 }
 
 const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
+  onSubmit,
 }: ReviewSafeAppsTxProps): ReactElement => {
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
@@ -54,11 +56,14 @@ const ReviewSafeAppsTx = ({
     if (!safeTx || !onboard) return
     trackSafeAppTxCount(Number(appId))
 
+    let safeTxHash = ''
     try {
-      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId, txId)
+      safeTxHash = await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId, txId)
     } catch (error) {
       setSafeTxError(asError(error))
     }
+
+    onSubmit?.(txId, safeTxHash)
   }
 
   const origin = useMemo(() => getTxOrigin(app), [app])

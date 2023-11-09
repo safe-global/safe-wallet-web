@@ -23,6 +23,8 @@ import SignMessageOnChainFlow from '@/components/tx-flow/flows/SignMessageOnChai
 import { useAppSelector } from '@/store'
 import { selectOnChainSigning } from '@/store/settingsSlice'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
+import { TX_EVENTS, TX_TYPES } from '../analytics/events/transactions'
+import { trackEvent } from '../analytics'
 
 export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { safe } = useSafeInfo()
@@ -131,23 +133,15 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
               code: RpcErrorCode.USER_REJECTED,
               message: 'User rejected transaction',
             })
-            unsubscribe()
           }
 
-          const unsubscribeSignaturePrepared = txSubscribe(
-            TxEvent.SAFE_APPS_REQUEST,
-            async ({ safeAppRequestId, safeTxHash, txId }) => {
-              if (safeAppRequestId === id) {
-                const txHash = txId ? pendingTxs.current[txId] : undefined
-                resolve({ safeTxHash, txHash })
-                unsubscribe()
-              }
-            },
-          )
-
-          const unsubscribe = () => {
+          const onSubmit = (txId: string, safeTxHash: string) => {
+            const txHash = pendingTxs.current[txId]
             onClose = () => {}
-            unsubscribeSignaturePrepared()
+
+            trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.walletconnect })
+
+            resolve({ safeTxHash, txHash })
           }
 
           setTxFlow(
@@ -159,6 +153,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
                 txs: transactions,
                 params: params.params,
               }}
+              onSubmit={onSubmit}
             />,
             onClose,
           )
