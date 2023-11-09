@@ -9,7 +9,7 @@ describe('Beamer tests', () => {
     main.acceptCookies()
   })
 
-  it.skip('Verify "Updates" cookie acceptance is required before displaying Beamer ', () => {
+  it.skip('Verify "Updates" cookie acceptance is required before displaying Beamer', () => {
     addressbook.clickOnWhatsNewBtn()
     addressbook.acceptBeamerCookies()
     addressbook.verifyBeamerIsChecked()

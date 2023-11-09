@@ -26,7 +26,7 @@ describe('Load Safe tests', () => {
     cy.wait(2000)
   })
 
-  it('Verify a network can be selected in the Safe ', () => {
+  it('Verify a network can be selected in the Safe', () => {
     safe.clickNetworkSelector(constants.networks.sepolia)
     safe.selectPolygon()
     cy.wait(2000)
@@ -34,7 +34,7 @@ describe('Load Safe tests', () => {
     safe.selectSepolia()
   })
 
-  it('Verify only valid Safe name can be accepted ', () => {
+  it('Verify only valid Safe name can be accepted', () => {
     // alias the address input label
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
@@ -62,14 +62,14 @@ describe('Load Safe tests', () => {
     safe.clickOnNextBtn()
   })
 
-  it('Verify custom name in the first owner an be set ', () => {
+  it('Verify custom name in the first owner an be set', () => {
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
     safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)
     safe.clickOnNextBtn()
   })
 
-  it('Verify Safe and owner names are displayed in the Review step ', () => {
+  it('Verify Safe and owner names are displayed in the Review step', () => {
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
     safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)
@@ -78,7 +78,7 @@ describe('Load Safe tests', () => {
     safe.clickOnAddBtn()
   })
 
-  it('Verify the custom Safe name is successfully loaded ', () => {
+  it('Verify the custom Safe name is successfully loaded', () => {
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_2)
     safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)

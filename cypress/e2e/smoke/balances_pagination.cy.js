@@ -14,7 +14,7 @@ describe('Balance pagination tests', () => {
     balances.selectTokenList(balances.tokenListOptions.allTokens)
   })
 
-  it('Verify a user can change rows per page and navigate to next and previous page ', () => {
+  it('Verify a user can change rows per page and navigate to next and previous page', () => {
     balances.verifyInitialTableState()
     balances.changeTo10RowsPerPage()
     balances.verifyTableHas10Rows()

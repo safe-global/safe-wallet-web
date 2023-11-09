@@ -9,7 +9,7 @@ describe('Preview drawer tests', () => {
     main.acceptCookies()
   })
 
-  it('Verify the preview drawer is displayed when opening a Safe App from the app list ', () => {
+  it('Verify the preview drawer is displayed when opening a Safe App from the app list', () => {
     safeapps.clickOnApp(safeapps.transactionBuilderStr)
 
     cy.findByRole('presentation').within(() => {

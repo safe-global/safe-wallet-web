@@ -30,19 +30,19 @@ describe('Safe Apps list tests', () => {
     safeapps.verifyNoAppsTextPresent()
   })
 
-  it('Verify apps can be pinned ', () => {
+  it('Verify apps can be pinned', () => {
     safeapps.clearSearchAppInput()
     safeapps.pinApp(safeapps.transactionBuilderStr)
     safeapps.verifyPinnedAppCount(1)
   })
 
-  it('Verify apps can be unpinned ', () => {
+  it('Verify apps can be unpinned', () => {
     safeapps.pinApp(safeapps.transactionBuilderStr)
     safeapps.pinApp(safeapps.transactionBuilderStr, false)
     safeapps.verifyPinnedAppCount(0)
   })
 
-  it('Verify there is an error when the app manifest is invalid ', () => {
+  it('Verify there is an error when the app manifest is invalid', () => {
     cy.intercept('GET', constants.invalidAppUrl, {
       name: constants.testAppData.name,
     })
@@ -52,7 +52,7 @@ describe('Safe Apps list tests', () => {
     safeapps.verifyAppNotSupportedMsg()
   })
 
-  it('Verify an app can be added to the list within the custom apps section ', () => {
+  it('Verify an app can be added to the list within the custom apps section', () => {
     cy.intercept('GET', constants.validAppUrlJson, {
       name: constants.testAppData.name,
       description: constants.testAppData.descr,

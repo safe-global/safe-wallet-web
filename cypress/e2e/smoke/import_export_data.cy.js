@@ -11,7 +11,7 @@ describe('Import Export Data tests', () => {
     file.verifyImportBtnIsVisible()
   })
 
-  it('Verify Safe can be accessed after test file upload ', () => {
+  it('Verify Safe can be accessed after test file upload', () => {
     const filePath = '../fixtures/data_import.json'
     const safe = constants.SEPOLIA_CSV_ENTRY.name
 
@@ -23,20 +23,20 @@ describe('Import Export Data tests', () => {
     file.clickOnClosePushNotificationsBanner()
   })
 
-  it('Verify address book imported data ', () => {
+  it('Verify address book imported data', () => {
     main.acceptCookies(1)
     file.clickOnAddressBookBtn()
     file.verifyImportedAddressBookData()
   })
 
-  it('Verify pinned apps ', () => {
+  it('Verify pinned apps', () => {
     const appNames = ['Transaction Builder']
 
     file.clickOnAppsBtn()
     file.verifyAppsAreVisible(appNames)
   })
 
-  it('Verify imported data in settings ', () => {
+  it('Verify imported data in settings', () => {
     const unchecked = [file.prependChainPrefixStr, file.copyAddressStr]
     const checked = [file.darkModeStr]
     file.clickOnSettingsBtn()
@@ -45,7 +45,7 @@ describe('Import Export Data tests', () => {
     file.verifyCheckboxes(checked, true)
   })
 
-  it('Verifies data for export in Data tab ', () => {
+  it('Verifies data for export in Data tab', () => {
     file.clickOnShowMoreTabsBtn()
     file.verifDataTabBtnIsVisible()
     file.clickOnDataTab()

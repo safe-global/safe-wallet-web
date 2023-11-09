@@ -15,13 +15,13 @@ describe('Remove Owners tests', () => {
     owner.verifyRemoveBtnIsEnabled().should('have.length', 2)
   })
 
-  it('Verify Tooltip displays correct message for Non-Owner ', () => {
+  it('Verify Tooltip displays correct message for Non-Owner', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_4)
     owner.waitForConnectionStatus()
     owner.verifyRemoveBtnIsDisabled()
   })
 
-  it('Verify Tooltip displays correct message for disconnected user ', () => {
+  it('Verify Tooltip displays correct message for disconnected user', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
     owner.waitForConnectionStatus()
     owner.clickOnWalletExpandMoreIcon()
@@ -29,13 +29,13 @@ describe('Remove Owners tests', () => {
     owner.verifyRemoveBtnIsDisabled()
   })
 
-  it('Verify owner removal form can be opened ', () => {
+  it('Verify owner removal form can be opened', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
     owner.waitForConnectionStatus()
     owner.openRemoveOwnerWindow(1)
   })
 
-  it('Verify threshold input displays the upper limit as the current safe number of owners minus one ', () => {
+  it('Verify threshold input displays the upper limit as the current safe number of owners minus one', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
     owner.waitForConnectionStatus()
     owner.openRemoveOwnerWindow(1)
@@ -43,7 +43,7 @@ describe('Remove Owners tests', () => {
     owner.getThresholdOptions().should('have.length', 1)
   })
 
-  it('Verify owner deletion confirmation is displayed ', () => {
+  it('Verify owner deletion confirmation is displayed', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
     owner.waitForConnectionStatus()
     owner.openRemoveOwnerWindow(1)

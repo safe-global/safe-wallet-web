@@ -11,36 +11,36 @@ describe('Replace Owners tests', () => {
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 
-  it('Verify that "Replace" icon is visible ', () => {
+  it('Verify that "Replace" icon is visible', () => {
     owner.verifyReplaceBtnIsEnabled()
   })
 
-  it('Verify Tooltip displays correct message for Non-Owner ', () => {
+  it('Verify Tooltip displays correct message for Non-Owner', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_2)
     owner.waitForConnectionStatus()
     owner.verifyReplaceBtnIsDisabled()
   })
 
-  it('Verify Tooltip displays correct message for disconnected user ', () => {
+  it('Verify Tooltip displays correct message for disconnected user', () => {
     owner.waitForConnectionStatus()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
     owner.verifyReplaceBtnIsDisabled()
   })
 
-  it('Verify that the owner replacement form is opened ', () => {
+  it('Verify that the owner replacement form is opened', () => {
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
   })
 
-  it('Verify max characters in name field ', () => {
+  it('Verify max characters in name field', () => {
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('Verify that Address input auto-fills with related value ', () => {
+  it('Verify that Address input auto-fills with related value', () => {
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
     addressBook.clickOnCreateEntryBtn()
     addressBook.typeInName(constants.addresBookContacts.user1.name)
@@ -55,7 +55,7 @@ describe('Replace Owners tests', () => {
     owner.verifyNewOwnerName(constants.addresBookContacts.user1.name)
   })
 
-  it('Verify that Name field not mandatory. Verify confirmation for owner replacement is displayed ', () => {
+  it('Verify that Name field not mandatory. Verify confirmation for owner replacement is displayed', () => {
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
@@ -63,7 +63,7 @@ describe('Replace Owners tests', () => {
     owner.verifyConfirmTransactionWindowDisplayed()
   })
 
-  it('Verify relevant error messages are displayed in Address input ', () => {
+  it('Verify relevant error messages are displayed in Address input', () => {
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerAddress(main.generateRandomString(10))

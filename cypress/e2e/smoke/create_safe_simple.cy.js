@@ -11,7 +11,7 @@ describe('Safe creation tests', () => {
     main.acceptCookies()
   })
 
-  it('Verify a Wallet can be connected ', () => {
+  it('Verify a Wallet can be connected', () => {
     owner.waitForConnectionStatus()
     cy.visit(constants.welcomeUrl)
     owner.clickOnWalletExpandMoreIcon()
@@ -21,7 +21,7 @@ describe('Safe creation tests', () => {
     createwallet.connectWallet()
   })
 
-  it('Verify Next button is disabled until switching to network is done ', () => {
+  it('Verify Next button is disabled until switching to network is done', () => {
     owner.waitForConnectionStatus()
     createwallet.selectNetwork(constants.networks.ethereum)
     createwallet.checkNetworkChangeWarningMsg()
@@ -30,44 +30,44 @@ describe('Safe creation tests', () => {
     createwallet.verifyNextBtnIsEnabled()
   })
 
-  it('Verify that a new Wallet has default name related to the selected network ', () => {
+  it('Verify that a new Wallet has default name related to the selected network', () => {
     owner.waitForConnectionStatus()
     createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
   })
 
-  it('Verify error message is displayed if wallet name input exceeds 50 characters ', () => {
+  it('Verify error message is displayed if wallet name input exceeds 50 characters', () => {
     owner.waitForConnectionStatus()
     createwallet.typeWalletName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('Verify there is no error message is displayed if wallet name input contains less than 50 characters ', () => {
+  it('Verify there is no error message is displayed if wallet name input contains less than 50 characters', () => {
     owner.waitForConnectionStatus()
     createwallet.typeWalletName(main.generateRandomString(50))
     owner.verifyValidWalletName(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('Verify current connected account is shown as default owner ', () => {
+  it('Verify current connected account is shown as default owner', () => {
     owner.waitForConnectionStatus()
     owner.clickOnNextBtn()
     owner.verifyExistingOwnerAddress(0, constants.DEFAULT_OWNER_ADDRESS)
   })
 
-  it('Verify error message is displayed if owner name input exceeds 50 characters ', () => {
+  it('Verify error message is displayed if owner name input exceeds 50 characters', () => {
     owner.waitForConnectionStatus()
     owner.clickOnNextBtn()
     owner.typeExistingOwnerName(0, main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('Verify there is no error message is displayed if owner name input contains less than 50 characters ', () => {
+  it('Verify there is no error message is displayed if owner name input contains less than 50 characters', () => {
     owner.waitForConnectionStatus()
     owner.clickOnNextBtn()
     owner.typeExistingOwnerName(0, main.generateRandomString(50))
     owner.verifyValidWalletName(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('Verify Add and Remove Owner Row works as expected ', () => {
+  it('Verify Add and Remove Owner Row works as expected', () => {
     owner.waitForConnectionStatus()
     owner.clickOnNextBtn()
     createwallet.clickOnAddNewOwnerBtn()
@@ -80,7 +80,7 @@ describe('Safe creation tests', () => {
     owner.verifyNumberOfOwners(2)
   })
 
-  it('Verify Threshold Setup ', () => {
+  it('Verify Threshold Setup', () => {
     owner.waitForConnectionStatus()
     owner.clickOnNextBtn()
     createwallet.clickOnAddNewOwnerBtn()
@@ -93,7 +93,7 @@ describe('Safe creation tests', () => {
     owner.verifyThresholdLimit(1, 2)
   })
 
-  it('Verify data persistence ', () => {
+  it('Verify data persistence', () => {
     const ownerName = 'David'
     owner.waitForConnectionStatus()
     createwallet.typeWalletName(createwallet.walletName)
@@ -123,13 +123,13 @@ describe('Safe creation tests', () => {
     createwallet.verifyEstimatedFeeInSummaryStep()
   })
 
-  it('Verify tip is displayed on right side for threshold 1/1 ', () => {
+  it('Verify tip is displayed on right side for threshold 1/1', () => {
     owner.waitForConnectionStatus()
     owner.clickOnNextBtn()
     createwallet.verifyPolicy1_1()
   })
 
-  it('Verify address input validation rules ', () => {
+  it('Verify address input validation rules', () => {
     owner.waitForConnectionStatus()
     owner.clickOnNextBtn()
     createwallet.clickOnAddNewOwnerBtn()
