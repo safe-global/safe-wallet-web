@@ -9,7 +9,7 @@ describe('Balance tests', () => {
     cy.clearLocalStorage()
     // Open the Safe used for testing
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_6)
-    main.acceptCookies(2)
+    main.acceptCookies()
 
     balances.selectTokenList(balances.tokenListOptions.allTokens)
   })

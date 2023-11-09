@@ -6,7 +6,7 @@ describe('Dashboard tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
-    main.acceptCookies(2)
+    main.acceptCookies()
     main.clickOnSideMenuItem(constants.mainSideMenuOptions.home)
     dashboard.verifyConnectTransactStrIsVisible()
   })

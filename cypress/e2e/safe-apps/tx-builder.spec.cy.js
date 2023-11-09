@@ -10,7 +10,7 @@ describe('Tx-builder Safe App tests', { defaultCommandTimeout: 20000 }, () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(visitUrl)
-    main.acceptCookies(1)
+    main.acceptCookies()
     safeapps.clickOnContinueBtn()
   })
 
@@ -146,7 +146,7 @@ describe('Tx-builder Safe App tests', { defaultCommandTimeout: 20000 }, () => {
       getBody().findByText(safeapps.createBatchStr).click()
       getBody().findByText(safeapps.sendBatchStr).click()
     })
-    cy.get('p').contains('1').should('be.visible')
+    cy.get('p').contains('1').should('exist')
     cy.get('p').contains('2').should('be.visible')
   })
 

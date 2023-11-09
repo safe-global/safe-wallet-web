@@ -12,7 +12,7 @@ describe('Address book tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
-    main.acceptCookies(1)
+    main.acceptCookies()
   })
 
   it('Verify entry can be added [C56061]', () => {

@@ -10,7 +10,7 @@ describe('Batch transaction tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
-    main.acceptCookies(2)
+    main.acceptCookies()
   })
 
   it('Verify empty batch list can be opened [C56082]', () => {

@@ -15,7 +15,7 @@ describe('Drain Account Safe App tests', { defaultCommandTimeout: 12000 }, () =>
 
     cy.clearLocalStorage()
     cy.visit(visitUrl)
-    main.acceptCookies(1)
+    main.acceptCookies()
     safeapps.clickOnContinueBtn()
   })
 
