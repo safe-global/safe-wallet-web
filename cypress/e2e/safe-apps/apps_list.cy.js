@@ -5,7 +5,7 @@ import * as safeapps from '../pages/safeapps.pages'
 const myCustomAppTitle = 'Cypress Test App'
 const myCustomAppDescrAdded = 'Cypress Test App Description'
 
-describe('Safe Apps tests', () => {
+describe('Safe Apps list tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.SEPOLIA_TEST_SAFE_4 + constants.appsUrl, { failOnStatusCode: false })

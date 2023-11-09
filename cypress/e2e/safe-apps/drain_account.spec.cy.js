@@ -3,7 +3,7 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 
-describe('Drain Account Safe App tests', { defaultCommandTimeout: 12000 }, () => {
+describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
   const appUrl = constants.drainAccount_url
   const iframeSelector = `iframe[id="iframe-${appUrl}"]`
   const visitUrl = `/apps/open?safe=${constants.GOERLI_SAFE_APPS_SAFE}&appUrl=${encodeURIComponent(appUrl)}`

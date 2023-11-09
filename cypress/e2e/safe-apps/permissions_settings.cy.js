@@ -6,7 +6,7 @@ let $dapps = []
 const app1 = 'https://app1.com'
 const app3 = 'https://app3.com'
 
-describe('Safe Apps permissions settings tests', () => {
+describe('Permissions settings tests', () => {
   before(() => {
     cy.clearLocalStorage()
     cy.on('window:before:load', (window) => {
@@ -53,7 +53,7 @@ describe('Safe Apps permissions settings tests', () => {
     cy.findAllByRole('heading', { level: 5 }).should('have.length', 4)
   })
 
-  describe('Permissions for each app', () => {
+  describe('Permissions for each Safe app', () => {
     before(() => {
       cy.get(safeapps.gridItem).then((items) => {
         $dapps = items
