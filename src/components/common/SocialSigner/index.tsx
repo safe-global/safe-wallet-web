@@ -1,4 +1,4 @@
-import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Button, LinearProgress, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -118,6 +118,13 @@ export const SocialSigner = ({
               disabled={isDisabled}
               fullWidth
             >
+              <LinearProgress
+                color="secondary"
+                className={css.loginProgress}
+                sx={{
+                  opacity: loginPending ? 1 : 0,
+                }}
+              />
               <Box width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
                 <img
                   src={userInfo.profileImage}
@@ -145,6 +152,13 @@ export const SocialSigner = ({
               fullWidth
               sx={{ borderWidth: '1px !important' }}
             >
+              <LinearProgress
+                color="secondary"
+                className={css.loginProgress}
+                sx={{
+                  opacity: loginPending ? 1 : 0,
+                }}
+              />
               <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
                 <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" /> Continue with Google
               </Box>
