@@ -45,7 +45,7 @@ class SocialWalletService implements ISocialWalletService {
       }
 
       if (!this.isMFAEnabled()) {
-        trackEvent(MPC_WALLET_EVENTS.ENABLE_MFA)
+        trackEvent({ ...MPC_WALLET_EVENTS.ENABLE_MFA, label: 'password' })
         // 2. enable MFA in mpcCoreKit
         await this.mpcCoreKit.enableMFA({}, false)
       }
@@ -126,6 +126,10 @@ class SocialWalletService implements ISocialWalletService {
       }
 
       await this.finalizeLogin()
+    }
+
+    if (this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
+      trackEvent({ ...MPC_WALLET_EVENTS.RECOVERED_SOCIAL_SIGNER, label: 'password' })
     }
 
     return this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
