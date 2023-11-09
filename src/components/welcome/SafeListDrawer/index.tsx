@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import SafeList from '@/components/sidebar/SafeList'
 import { DataWidget } from '@/components/welcome/SafeListDrawer/DataWidget'
 import { Button, Drawer, Typography } from '@mui/material'
@@ -8,15 +8,22 @@ import { selectTotalAdded } from '@/store/addedSafesSlice'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import drawerCSS from '@/components/sidebar/Sidebar/styles.module.css'
 import css from './styles.module.css'
+import ExternalStore from '@/services/ExternalStore'
+
+const { useStore, setStore } = new ExternalStore<boolean>(false)
+
+export const openSafeListDrawer = () => {
+  setStore(true)
+}
 
 const SafeListDrawer = () => {
   const numberOfAddedSafes = useAppSelector(selectTotalAdded)
   const ownedSafes = useOwnedSafes()
   const numberOfOwnedSafes = Object.values(ownedSafes).reduce((acc, curr) => acc + curr.length, 0)
   const totalNumberOfSafes = numberOfOwnedSafes + numberOfAddedSafes
-  const [showSidebar, setShowSidebar] = useState(false)
+  const showSidebar = useStore()
 
-  const closeSidebar = () => setShowSidebar(false)
+  const closeSidebar = () => setStore(false)
 
   if (totalNumberOfSafes <= 0) {
     return null
@@ -39,7 +46,7 @@ const SafeListDrawer = () => {
         variant="contained"
         color="background"
         startIcon={<ChevronRightIcon />}
-        onClick={() => setShowSidebar(true)}
+        onClick={() => setStore(true)}
       >
         <Typography className={css.buttonText} fontWeight="bold">
           My Safe Accounts{' '}
