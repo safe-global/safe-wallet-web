@@ -26,7 +26,7 @@ const WcPage: NextPage = () => {
             },
           }
         : {
-            pathname: AppRoutes.welcome,
+            pathname: AppRoutes.welcome.index,
             query: {
               [WC_URI_SEARCH_PARAM]: uri,
             },
