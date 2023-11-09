@@ -1,6 +1,7 @@
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { BigNumber } from 'ethers'
 import type { Delay } from '@gnosis.pm/zodiac'
+import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 
 import { getDelayModifiers } from '@/services/recovery/delay-modifier'
 import useAsync from '../useAsync'
@@ -11,12 +12,40 @@ import useIntervalCounter from '../useIntervalCounter'
 import { useHasFeature } from '../useChains'
 import { FEATURES } from '@/utils/chains'
 import type { AsyncResult } from '../useAsync'
-import type { RecoveryState } from '@/store/recoverySlice'
+import type { RecoveryQueueItem, RecoveryState } from '@/store/recoverySlice'
 
 const MAX_PAGE_SIZE = 100
 const REFRESH_DELAY = 5 * 60 * 1_000 // 5 minutes
 
-const getRecoveryState = async (delayModifier: Delay): Promise<RecoveryState[number]> => {
+export const _getQueuedTransactionsAdded = (
+  transactionsAdded: Array<TransactionAddedEvent>,
+  txNonce: BigNumber,
+): Array<TransactionAddedEvent> => {
+  // Only queued transactions with queueNonce >= current txNonce
+  return transactionsAdded.filter(({ args }) => args.queueNonce.gte(txNonce))
+}
+
+export const _getRecoveryQueueItem = async (
+  transactionAdded: TransactionAddedEvent,
+  txCooldown: BigNumber,
+  txExpiration: BigNumber,
+): Promise<RecoveryQueueItem> => {
+  const txBlock = await transactionAdded.getBlock()
+
+  const validFrom = BigNumber.from(txBlock.timestamp).add(txCooldown)
+  const expiresAt = txExpiration.isZero()
+    ? null // Never expires
+    : validFrom.add(txExpiration)
+
+  return {
+    ...transactionAdded,
+    timestamp: txBlock.timestamp,
+    validFrom,
+    expiresAt,
+  }
+}
+
+export const _getRecoveryState = async (delayModifier: Delay): Promise<RecoveryState[number]> => {
   const transactionAddedFilter = delayModifier.filters.TransactionAdded()
 
   const [[modules], txExpiration, txCooldown, txNonce, queueNonce, transactionsAdded] = await Promise.all([
@@ -28,25 +57,12 @@ const getRecoveryState = async (delayModifier: Delay): Promise<RecoveryState[num
     delayModifier.queryFilter(transactionAddedFilter),
   ])
 
+  const queuedTransactionsAdded = _getQueuedTransactionsAdded(transactionsAdded, txNonce)
+
   const queue = await Promise.all(
-    transactionsAdded
-      // Only queued transactions with queueNonce >= current txNonce
-      .filter(({ args }) => args.queueNonce.gte(txNonce))
-      .map(async (event) => {
-        const txBlock = await event.getBlock()
-
-        const validFrom = BigNumber.from(txBlock.timestamp).add(txCooldown)
-        const expiresAt = txExpiration.isZero()
-          ? null // Never expires
-          : validFrom.add(txExpiration)
-
-        return {
-          ...event,
-          timestamp: txBlock.timestamp,
-          validFrom,
-          expiresAt,
-        }
-      }),
+    queuedTransactionsAdded.map((transactionAdded) =>
+      _getRecoveryQueueItem(transactionAdded, txCooldown, txExpiration),
+    ),
   )
 
   return {
@@ -61,7 +77,7 @@ const getRecoveryState = async (delayModifier: Delay): Promise<RecoveryState[num
 }
 
 const useLoadRecovery = (): AsyncResult<RecoveryState> => {
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const web3ReadOnly = useWeb3ReadOnly()
   const [counter] = useIntervalCounter(REFRESH_DELAY)
   const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
@@ -81,14 +97,14 @@ const useLoadRecovery = (): AsyncResult<RecoveryState> => {
     return getDelayModifiers(safe.chainId, safe.modules, web3ReadOnly)
     // Need to check length of modules array to prevent new request every time Safe info polls
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [safe.chainId, safe.modules?.length, web3ReadOnly, supportsRecovery])
+  }, [safeAddress, safe.chainId, safe.modules?.length, web3ReadOnly, supportsRecovery])
 
   const [recoveryState, recoveryStateError, recoveryStateLoading] = useAsync<RecoveryState>(() => {
     if (!delayModifiers || delayModifiers.length === 0) {
       return
     }
 
-    return Promise.all(delayModifiers.map(getRecoveryState))
+    return Promise.all(delayModifiers.map(_getRecoveryState))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [delayModifiers, counter])
 
