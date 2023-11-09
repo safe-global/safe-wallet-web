@@ -14,27 +14,27 @@ describe('NFTs tests', () => {
     nfts.clickOnNftsTab()
   })
 
-  it('Verify that NFTs exist in the table [C56123]', () => {
+  it('Verify that NFTs exist in the table ', () => {
     nfts.verifyNFTNumber(20)
   })
 
-  it('Verify NFT row contains data [C56124]', () => {
+  it('Verify NFT row contains data ', () => {
     nfts.verifyDataInTable(nftsName, nftsAddress, nftsTokenID)
   })
 
-  it('Verify NFT preview window can be opened [C56125]', () => {
+  it('Verify NFT preview window can be opened ', () => {
     nfts.openNFT(1)
     nfts.verifyNameInNFTModal(nftsTokenID)
     nfts.verifySelectedNetwrokSepolia()
     nfts.closeNFTModal()
   })
 
-  it('Verify NFT open does not open if no NFT exits [C56126]', () => {
+  it('Verify NFT open does not open if no NFT exits ', () => {
     nfts.clickOn6thNFT()
     nfts.verifyNFTModalDoesNotExist()
   })
 
-  it('Verify multipls NFTs can be selected and reviewed [C56127]', () => {
+  it('Verify multipls NFTs can be selected and reviewed ', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(3)
     nfts.deselectNFTs([2], 3)

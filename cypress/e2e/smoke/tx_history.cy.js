@@ -20,7 +20,7 @@ describe('Transaction history tests', () => {
     main.acceptCookies(1)
   })
 
-  it('Verify October 29th transactions are displayed [C56128]', () => {
+  it('Verify October 29th transactions are displayed ', () => {
     const DATE = 'Oct 29, 2023'
     const NEXT_DATE_LABEL = 'Oct 20, 2023'
     const amount = '0.00001 ETH'
@@ -45,7 +45,7 @@ describe('Transaction history tests', () => {
     })
   })
 
-  it('Verify transaction can be expanded/collapsed [C56129]', () => {
+  it('Verify transaction can be expanded/collapsed ', () => {
     createTx.clickOnTransactionExpandableItem('Oct 20, 2023', () => {
       createTx.verifyTransactionStrExists(str1)
       createTx.verifyTransactionStrExists(str2)

@@ -15,12 +15,12 @@ describe('Address book tests', () => {
     main.acceptCookies(1)
   })
 
-  it('Verify entry can be added [C56061]', () => {
+  it('Verify entry can be added ', () => {
     addressBook.clickOnCreateEntryBtn()
     addressBook.addEntry(NAME, constants.RECIPIENT_ADDRESS)
   })
 
-  it('Verify entered entry in Name input can be saved [C56063]', () => {
+  it('Verify entered entry in Name input can be saved ', () => {
     addressBook.clickOnCreateEntryBtn()
     addressBook.addEntry(NAME, constants.RECIPIENT_ADDRESS)
     addressBook.clickOnEditEntryBtn()
@@ -29,7 +29,7 @@ describe('Address book tests', () => {
     addressBook.verifyNameWasChanged(NAME, EDITED_NAME)
   })
 
-  it('Verify entry can be deleted [C56062]', () => {
+  it('Verify entry can be deleted ', () => {
     addressBook.clickOnCreateEntryBtn()
     addressBook.addEntry(NAME, constants.RECIPIENT_ADDRESS)
     // Click the delete button in the first entry
@@ -38,14 +38,14 @@ describe('Address book tests', () => {
     addressBook.verifyEditedNameNotExists(EDITED_NAME)
   })
 
-  it('Verify csv file can be imported (Goerli) [C56064]', () => {
+  it('Verify csv file can be imported (Goerli) ', () => {
     addressBook.clickOnImportFileBtn()
     addressBook.importFile()
     addressBook.verifyImportModalIsClosed()
     addressBook.verifyDataImported(constants.SEPOLIA_CSV_ENTRY.name, constants.SEPOLIA_CSV_ENTRY.address)
   })
 
-  it.skip('Verify Gnosis Chain imported address can be found [C56066]', () => {
+  it.skip('Verify Gnosis Chain imported address can be found ', () => {
     // Go to a Safe on Gnosis Chain
     cy.get('header')
       .contains(/^G(ö|oe)rli$/)
@@ -63,7 +63,7 @@ describe('Address book tests', () => {
     cy.contains(constants.GNO_CSV_ENTRY.address).should('exist')
   })
 
-  it('Verify the address book file can be downloaded [C56065]', () => {
+  it('Verify the address book file can be downloaded ', () => {
     addressBook.clickOnImportFileBtn()
     addressBook.importFile()
     // Download the export file

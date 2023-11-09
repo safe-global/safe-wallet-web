@@ -19,7 +19,7 @@ describe('Transaction modal tests', () => {
   })
 
   it(
-    'Verify that the transaction popup is displayed when sending a transaction from an app [C56152]',
+    'Verify that the transaction popup is displayed when sending a transaction from an app ',
     { defaultCommandTimeout: 12000 },
     () => {
       cy.visitSafeApp(`${constants.testAppUrl}/dummy`)
