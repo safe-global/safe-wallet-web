@@ -10,7 +10,6 @@ import useLoadRecovery, {
   _getRecoveryState,
 } from '../loadables/useLoadRecovery'
 import { useHasFeature } from '../useChains'
-import useIntervalCounter from '../useIntervalCounter'
 import useSafeInfo from '../useSafeInfo'
 import { useWeb3ReadOnly } from '../wallets/web3'
 import { renderHook, waitFor } from '@testing-library/react'
@@ -159,13 +158,11 @@ describe('getRecoveryState', () => {
 
 jest.mock('@/hooks/useSafeInfo')
 jest.mock('@/hooks/wallets/web3')
-jest.mock('@/hooks/useIntervalCounter')
 jest.mock('@/hooks/useChains')
 jest.mock('@/services/recovery/delay-modifier')
 
 const mockUseSafeInfo = useSafeInfo as jest.MockedFunction<typeof useSafeInfo>
 const mockUseWeb3ReadOnly = useWeb3ReadOnly as jest.MockedFunction<typeof useWeb3ReadOnly>
-const mockUseIntervalCounter = useIntervalCounter as jest.MockedFunction<typeof useIntervalCounter>
 const mockUseHasFeature = useHasFeature as jest.MockedFunction<typeof useHasFeature>
 const mockGetDelayModifiers = getDelayModifiers as jest.MockedFunction<typeof getDelayModifiers>
 
@@ -191,9 +188,6 @@ describe('useLoadRecovery', () => {
     // useWeb3ReadOnly
     const provider = new JsonRpcProvider()
     mockUseWeb3ReadOnly.mockReturnValue(provider)
-
-    // useIntervalCounter
-    mockUseIntervalCounter.mockReturnValue([0, jest.fn()])
 
     // useHasFeature
     mockUseHasFeature.mockReturnValue(true)
@@ -297,9 +291,6 @@ describe('useLoadRecovery', () => {
     const provider = new JsonRpcProvider()
     mockUseWeb3ReadOnly.mockReturnValue(provider)
 
-    // useIntervalCounter
-    mockUseIntervalCounter.mockReturnValue([0, jest.fn()])
-
     // useHasFeature
     mockUseHasFeature.mockReturnValue(true)
 
@@ -347,9 +338,6 @@ describe('useLoadRecovery', () => {
     // useWeb3ReadOnly
     const provider = new JsonRpcProvider()
     mockUseWeb3ReadOnly.mockReturnValue(provider)
-
-    // useIntervalCounter
-    mockUseIntervalCounter.mockReturnValue([0, jest.fn()])
 
     // useHasFeature
     mockUseHasFeature.mockReturnValue(true)
@@ -399,9 +387,6 @@ describe('useLoadRecovery', () => {
     const provider = new JsonRpcProvider()
     mockUseWeb3ReadOnly.mockReturnValue(provider)
 
-    // useIntervalCounter
-    mockUseIntervalCounter.mockReturnValue([0, jest.fn()])
-
     // useHasFeature
     mockUseHasFeature.mockReturnValue(true)
 
@@ -434,7 +419,7 @@ describe('useLoadRecovery', () => {
     })
   })
 
-  it.skip('should poll the recovery state every 5 minutes', async () => {
+  it('should poll the recovery state every 5 minutes', async () => {
     jest.useFakeTimers()
 
     // useSafeInfo
@@ -454,23 +439,61 @@ describe('useLoadRecovery', () => {
     const provider = new JsonRpcProvider()
     mockUseWeb3ReadOnly.mockReturnValue(provider)
 
-    // useIntervalCounter
-    mockUseIntervalCounter.mockImplementation(useIntervalCounter) // TODO: Fix this
-
     // useHasFeature
     mockUseHasFeature.mockReturnValue(true)
 
     // getDelayModifiers
-    mockGetDelayModifiers.mockImplementation(jest.fn())
+    const delayModules = [faker.finance.ethereumAddress()]
+    const txExpiration = BigNumber.from(0)
+    const txCooldown = BigNumber.from(69420)
+    const txNonce = BigNumber.from(2)
+    const queueNonce = BigNumber.from(3)
+    const transactionsAdded = [
+      {
+        getBlock: () => Promise.resolve({ timestamp: 69 }),
+        args: {
+          queueNonce: BigNumber.from(1),
+        },
+      } as unknown,
+      {
+        getBlock: () => Promise.resolve({ timestamp: 420 }),
+        args: {
+          queueNonce: BigNumber.from(2),
+        },
+      } as unknown,
+      {
+        getBlock: () => Promise.resolve({ timestamp: 69420 }),
+        args: {
+          queueNonce: BigNumber.from(3),
+        },
+      } as unknown,
+    ] as Array<TransactionAddedEvent>
+    const delayModifier = {
+      filters: {
+        TransactionAdded: () => ({}),
+      },
+      address: faker.finance.ethereumAddress(),
+      getModulesPaginated: () => Promise.resolve([delayModules]),
+      txExpiration: () => Promise.resolve(txExpiration),
+      txCooldown: () => Promise.resolve(txCooldown),
+      txNonce: () => Promise.resolve(txNonce),
+      queueNonce: () => Promise.resolve(queueNonce),
+      queryFilter: () => Promise.resolve(transactionsAdded),
+    } as unknown as Delay
+    mockGetDelayModifiers.mockResolvedValue([delayModifier])
 
-    renderHook(() => useLoadRecovery())
-
-    expect(mockGetDelayModifiers).toHaveBeenCalledTimes(1)
-
-    jest.advanceTimersByTime(5 * 60 * 1_000)
+    const { result } = renderHook(() => useLoadRecovery())
 
     await waitFor(() => {
-      expect(mockGetDelayModifiers).toHaveBeenCalledTimes(2)
+      expect(result.current[0]).toBeDefined()
+    })
+
+    const firstPoll = result.current[0]
+
+    jest.advanceTimersByTime(5 * 60 * 1_000) // 5m
+
+    await waitFor(() => {
+      expect(result.current[0] === firstPoll).toBe(false)
     })
 
     jest.useRealTimers()
@@ -493,9 +516,6 @@ describe('useLoadRecovery', () => {
     // useWeb3ReadOnly
     const provider = new JsonRpcProvider()
     mockUseWeb3ReadOnly.mockReturnValue(provider)
-
-    // useIntervalCounter
-    mockUseIntervalCounter.mockReturnValue([0, jest.fn()])
 
     // useHasFeature
     mockUseHasFeature.mockReturnValue(false) // Does not support recovery
@@ -524,9 +544,6 @@ describe('useLoadRecovery', () => {
     // useWeb3ReadOnly
     mockUseWeb3ReadOnly.mockReturnValue(undefined) // No provider
 
-    // useIntervalCounter
-    mockUseIntervalCounter.mockReturnValue([0, jest.fn()])
-
     // useHasFeature
     mockUseHasFeature.mockReturnValue(true)
 
@@ -550,9 +567,6 @@ describe('useLoadRecovery', () => {
     // useWeb3ReadOnly
     const provider = new JsonRpcProvider()
     mockUseWeb3ReadOnly.mockReturnValue(provider)
-
-    // useIntervalCounter
-    mockUseIntervalCounter.mockReturnValue([0, jest.fn()])
 
     // useHasFeature
     mockUseHasFeature.mockReturnValue(true)
@@ -584,9 +598,6 @@ describe('useLoadRecovery', () => {
     const provider = new JsonRpcProvider()
     mockUseWeb3ReadOnly.mockReturnValue(provider)
 
-    // useIntervalCounter
-    mockUseIntervalCounter.mockReturnValue([0, jest.fn()])
-
     // useHasFeature
     mockUseHasFeature.mockReturnValue(true)
 
@@ -614,9 +625,6 @@ describe('useLoadRecovery', () => {
     // useWeb3ReadOnly
     const provider = new JsonRpcProvider()
     mockUseWeb3ReadOnly.mockReturnValue(provider)
-
-    // useIntervalCounter
-    mockUseIntervalCounter.mockReturnValue([0, jest.fn()])
 
     // useHasFeature
     mockUseHasFeature.mockReturnValue(true)
