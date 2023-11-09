@@ -17,7 +17,7 @@ describe('Transaction history tests', () => {
     // So that tests that rely on this feature don't randomly fail
     cy.window().then((win) => win.localStorage.setItem('SAFE_v2__AB_human-readable', true))
 
-    main.acceptCookies(1)
+    main.acceptCookies()
   })
 
   it('Verify October 29th transactions are displayed [C56128]', () => {

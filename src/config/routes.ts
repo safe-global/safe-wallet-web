@@ -1,5 +1,6 @@
 export const AppRoutes = {
   '404': '/404',
+  wc: '/wc',
   terms: '/terms',
   privacy: '/privacy',
   licenses: '/licenses',

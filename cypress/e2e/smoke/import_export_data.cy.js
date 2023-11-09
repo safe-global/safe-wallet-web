@@ -24,7 +24,7 @@ describe('Import Export Data tests', () => {
   })
 
   it('Verify address book imported data [C56112]', () => {
-    main.acceptCookies(1)
+    main.acceptCookies()
     file.clickOnAddressBookBtn()
     file.verifyImportedAddressBookData()
   })
