@@ -49,4 +49,6 @@ export interface ISocialWalletService {
   getUserInfo(): UserInfo | undefined
 
   setOnConnect(onConnect: () => Promise<void>): void
+
+  getSignerAddress(): Promise<string | undefined>
 }

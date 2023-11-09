@@ -45,7 +45,7 @@ type SocialSignerLoginProps = {
   wallet: ReturnType<typeof useWallet>
   supportedChains: ReturnType<typeof useGetSupportedChains>
   isMPCLoginEnabled: ReturnType<typeof useIsSocialWalletEnabled>
-  onLogin?: () => void
+  onLogin?: (address: string) => void
   onRequirePassword?: () => void
 }
 
@@ -76,6 +76,15 @@ export const SocialSigner = ({
     [setTxFlow, socialWalletService],
   )
 
+  const afterLogin = async () => {
+    if (!socialWalletService) return
+
+    const address = await socialWalletService.getSignerAddress()
+    if (address) {
+      onLogin?.(address)
+    }
+  }
+
   const login = async () => {
     if (!socialWalletService) return
 
@@ -86,13 +95,18 @@ export const SocialSigner = ({
 
       if (status === COREKIT_STATUS.LOGGED_IN) {
         setLoginPending(false)
+        afterLogin()
         return
       }
 
       if (status === COREKIT_STATUS.REQUIRED_SHARE) {
         onRequirePassword?.()
 
-        setTxFlow(<PasswordRecovery recoverFactorWithPassword={recoverPassword} />, () => setLoginPending(false), false)
+        setTxFlow(
+          <PasswordRecovery recoverFactorWithPassword={recoverPassword} onSuccess={afterLogin} />,
+          () => setLoginPending(false),
+          false,
+        )
         return
       }
     } catch (err) {
@@ -108,12 +122,12 @@ export const SocialSigner = ({
   return (
     <>
       <Box display="flex" flexDirection="column" gap={2} sx={{ width: '100%' }}>
-        {isSocialLogin && userInfo ? (
+        {isSocialLogin && userInfo && wallet ? (
           <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
             <Button
               variant="outlined"
               sx={{ px: 2, py: 1, borderWidth: '1px !important' }}
-              onClick={onLogin}
+              onClick={() => onLogin?.(wallet.address)}
               size="small"
               disabled={isDisabled}
               fullWidth

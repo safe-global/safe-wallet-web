@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Grid, Typography } from '@mui/material'
 import css from './styles.module.css'
 import Link from 'next/link'
@@ -28,16 +28,18 @@ const MarqueeItem = () => {
 }
 
 const NewSafeSocial = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
   return (
     <>
       <Grid container spacing={3} p={3} pb={0} flex={1} direction="row-reverse">
         <Grid item xs={12} lg={6}>
-          <WelcomeLogin />
+          <WelcomeLogin setOpenSafeList={setDrawerOpen} />
         </Grid>
         <Grid item xs={12} lg={6} flex={1}>
           <div className={css.content}>
             <Box minWidth={{ md: 480 }} className={css.sidebar}>
-              <SafeListDrawer />
+              <SafeListDrawer open={drawerOpen} setOpen={setDrawerOpen} />
             </Box>
 
             <Box pt={5} alignSelf="center" margin="auto">

@@ -10,12 +10,21 @@ import WalletLogin from './WalletLogin'
 import { LOAD_SAFE_EVENTS, CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import Track from '@/components/common/Track'
 import { trackEvent } from '@/services/analytics'
+import { getOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
+import useChainId from '@/hooks/useChainId'
+import { checksumAddress } from '@/utils/addresses'
 
-const WelcomeLogin = () => {
+const WelcomeLogin = ({ setOpenSafeList }: { setOpenSafeList: (open: boolean) => void }) => {
   const router = useRouter()
   const isSocialLoginEnabled = useHasFeature(FEATURES.SOCIAL_LOGIN)
+  const currentChainId = useChainId()
 
-  const continueToCreation = () => {
+  const continueToCreation = async (address: string) => {
+    const ownedSafes = await getOwnedSafes(currentChainId, checksumAddress(address))
+    if (ownedSafes.safes.length > 0) {
+      setOpenSafeList(true)
+      return
+    }
     trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
     router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
   }

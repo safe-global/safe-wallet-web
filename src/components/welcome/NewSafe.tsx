@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Grid, SvgIcon, Typography } from '@mui/material'
 import css from './styles.module.css'
 import CheckFilled from '@/public/images/common/check-filled.svg'
@@ -16,16 +16,17 @@ const BulletListItem = ({ text }: { text: string }) => (
 )
 
 const NewSafe = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false)
   return (
     <>
       <Grid container spacing={3} p={3} pb={0} flex={1} direction="row-reverse">
         <Grid item xs={12} lg={6}>
-          <WelcomeLogin />
+          <WelcomeLogin setOpenSafeList={setDrawerOpen} />
         </Grid>
         <Grid item xs={12} lg={6} flex={1}>
           <div className={css.content}>
             <Box minWidth={{ md: 480 }} className={css.sidebar}>
-              <SafeListDrawer />
+              <SafeListDrawer open={drawerOpen} setOpen={setDrawerOpen} />
             </Box>
 
             <Typography variant="h1" fontSize={[44, null, 52]} lineHeight={1} letterSpacing={-1.5} color="static.main">

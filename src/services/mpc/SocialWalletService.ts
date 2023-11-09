@@ -35,6 +35,14 @@ class SocialWalletService implements ISocialWalletService {
     return this.securityQuestionRecovery.isEnabled()
   }
 
+  async getSignerAddress(): Promise<string | undefined> {
+    if (!this.mpcCoreKit.provider) {
+      return undefined
+    }
+    const accounts = await this.mpcCoreKit.provider.request({ method: 'eth_accounts', params: [] })
+    return (accounts as string[])[0]
+  }
+
   async enableMFA(oldPassword: string | undefined, newPassword: string): Promise<void> {
     try {
       // 1. setup device factor with password recovery
@@ -110,7 +118,6 @@ class SocialWalletService implements ISocialWalletService {
   private async finalizeLogin() {
     if (this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
       await this.mpcCoreKit.commitChanges()
-      await this.mpcCoreKit.provider?.request({ method: 'eth_accounts', params: [] })
       await this.onConnect()
     }
   }

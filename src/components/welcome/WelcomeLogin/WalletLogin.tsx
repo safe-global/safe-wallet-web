@@ -6,17 +6,25 @@ import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { Box, Button, Typography } from '@mui/material'
 import { EthHashInfo } from '@safe-global/safe-react-components'
 
-const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
+const WalletLogin = ({ onLogin }: { onLogin: (address: string) => void }) => {
   const wallet = useWallet()
   const connectWallet = useConnectWallet()
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
+  const login = async () => {
+    const walletState = await connectWallet()
+
+    if (walletState && walletState.length > 0 && walletState[0].accounts.length > 0) {
+      onLogin(walletState[0].accounts[0].address)
+    }
+  }
+
   if (wallet !== null && !isSocialLogin) {
     return (
       <Box sx={{ width: '100%' }}>
         <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
-          <Button variant="contained" sx={{ padding: '8px 16px' }} fullWidth onClick={onLogin}>
+          <Button variant="contained" sx={{ padding: '8px 16px' }} fullWidth onClick={() => onLogin(wallet.address)}>
             <Box
               width="100%"
               justifyContent="space-between"
@@ -47,14 +55,7 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   }
 
   return (
-    <Button
-      onClick={connectWallet}
-      sx={{ minHeight: '42px' }}
-      variant="contained"
-      size="small"
-      disableElevation
-      fullWidth
-    >
+    <Button onClick={login} sx={{ minHeight: '42px' }} variant="contained" size="small" disableElevation fullWidth>
       Connect wallet
     </Button>
   )
