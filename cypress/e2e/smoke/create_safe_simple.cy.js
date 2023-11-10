@@ -9,8 +9,6 @@ describe('Safe creation tests', () => {
     cy.clearLocalStorage()
     main.acceptCookies()
   })
-
-
   it('Verify a Wallet can be connected', () => {
     createwallet.clickOnCreateNewSafeBtn()
     owner.clickOnWalletExpandMoreIcon()

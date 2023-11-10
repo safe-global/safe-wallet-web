@@ -22,7 +22,7 @@ describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
   it('Verify drain can be created', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.recipientStr).type(constants.SAFE_APP_ADDRESS_2)
-      getBody().findAllByText('Test invalid string').click()
+      getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
     cy.findByRole('button', { name: safeapps.testTransfer1 })
     cy.findByRole('button', { name: safeapps.testNativeTransfer2 })
