@@ -22,7 +22,7 @@ export enum TX_TYPES {
   // Other
   batch = 'batch',
   rejection = 'rejection',
-  message = 'message',
+  typed_message = 'typed_message',
   safeapps = 'safeapps',
   walletconnect = 'walletconnect',
 }

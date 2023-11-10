@@ -101,7 +101,10 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const handleSubmit = async () => {
     if (!safeTx || !onboard) return
 
-    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.message })
+    // Track the creation of a typed message
+    if (isTypedMessage && safeTx.signatures.size === 1) {
+      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.typed_message })
+    }
 
     try {
       await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
