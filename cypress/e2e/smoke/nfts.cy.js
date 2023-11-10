@@ -23,7 +23,7 @@ describe('NFTs tests', () => {
   })
 
   it('Verify NFT preview window can be opened', () => {
-    nfts.openNFT(1)
+    nfts.openNFT(0)
     nfts.verifyNameInNFTModal(nftsTokenID)
     nfts.verifySelectedNetwrokSepolia()
     nfts.closeNFTModal()
