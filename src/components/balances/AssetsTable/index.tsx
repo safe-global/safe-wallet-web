@@ -1,5 +1,15 @@
+import EthHashInfo from '@/components/common/EthHashInfo'
+import QRCode from '@/components/common/QRCode'
+import { AppRoutes } from '@/config/routes'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import { useAppSelector } from '@/store'
+import { selectSettings } from '@/store/settingsSlice'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { type ReactElement, useMemo, useContext } from 'react'
-import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
+import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton, Paper, Grid } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
@@ -20,6 +30,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
 import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
+import AddIcon from '@mui/icons-material/Add'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -137,6 +148,8 @@ const AssetsTable = ({
     [hiddenAssets, balances.items, showHiddenAssets],
   )
 
+  const hasNoAssets = balances.items.length === 1 && balances.items[0].balance === '0'
+
   const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
 
   const onSendClick = (tokenAddress: string) => {
@@ -247,10 +260,61 @@ const AssetsTable = ({
         showHiddenAssets={showHiddenAssets}
       />
 
-      <div className={css.container}>
-        <EnhancedTable rows={rows} headCells={headCells} />
-      </div>
+      {hasNoAssets ? (
+        <NoAssets />
+      ) : (
+        <div className={css.container}>
+          <EnhancedTable rows={rows} headCells={headCells} />
+        </div>
+      )}
     </>
+  )
+}
+
+const NoAssets = () => {
+  const router = useRouter()
+  const safeAddress = useSafeAddress()
+  const chain = useCurrentChain()
+  const settings = useAppSelector(selectSettings)
+  const qrPrefix = settings.shortName.qr ? `${chain?.shortName}:` : ''
+  const qrCode = `${qrPrefix}${safeAddress}`
+  const [apps] = useRemoteSafeApps()
+
+  const rampSafeApp = apps?.find((app) => app.name === 'Ramp Network')
+
+  return (
+    <Paper>
+      <Grid container gap={3} alignItems="center" justifyContent="center" py={10} px={2}>
+        <Grid item>
+          <Box p={2} border="1px solid" borderColor="border.light" borderRadius={1}>
+            <QRCode value={qrCode} size={195} />
+          </Box>
+        </Grid>
+        <Grid item container xs={12} md={6} gap={2} flexDirection="column">
+          <Typography variant="h3" fontWeight="bold">
+            Add funds to get started
+          </Typography>
+          <Typography>
+            Add funds directly from your bank account or copy your address to send tokens from a different account.
+          </Typography>
+          <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start" fontSize="14px">
+            <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton hasExplorer avatarSize={24} />
+          </Box>
+          {rampSafeApp && (
+            <Box alignSelf="flex-start">
+              <Link
+                href={{ pathname: AppRoutes.apps.index, query: { safe: router.query.safe, appUrl: rampSafeApp.url } }}
+                passHref
+              >
+                <Button variant="contained" size="small" startIcon={<AddIcon />}>
+                  Buy crypto
+                </Button>
+              </Link>
+            </Box>
+          )}
+        </Grid>
+      </Grid>
+    </Paper>
   )
 }
 

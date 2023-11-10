@@ -1,6 +1,7 @@
 import * as batch from '../pages/batches.pages'
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
+import * as owner from '../../e2e/pages/owners.pages.js'
 
 const currentNonce = 3
 const funds_first_tx = '0.001'
@@ -10,6 +11,7 @@ describe('Batch transaction tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
+    owner.waitForConnectionStatus()
     main.acceptCookies()
   })
 
