@@ -52,13 +52,14 @@ const ExecuteForm = ({
   // Check that the transaction is executable
   const isExecutionLoop = useIsExecutionLoop()
 
-  // We default to relay, but the option is only shown if we canRelay
-  const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
-
   // SC wallets can relay fully signed transactions
-  const [canRelay] = useWalletCanRelay(safeTx)
+  const [canWalletRelay] = useWalletCanRelay(safeTx)
+  // We default to relay
+  const [executionMethod, setExecutionMethod] = useState(
+    canWalletRelay ? ExecutionMethod.RELAY : ExecutionMethod.WALLET,
+  )
   // The transaction can/will be relayed
-  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
+  const willRelay = executionMethod === ExecutionMethod.RELAY
   const hasRelays = !!relays?.remaining
 
   // Estimate gas limit
@@ -111,7 +112,7 @@ const ExecuteForm = ({
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className={classNames(css.params, { [css.noBottomBorderRadius]: canRelay })}>
+        <div className={classNames(css.params, { [css.noBottomBorderRadius]: canWalletRelay })}>
           <AdvancedParams
             willExecute
             params={advancedParams}
@@ -121,7 +122,7 @@ const ExecuteForm = ({
             willRelay={willRelay}
           />
 
-          {canRelay && (
+          {canWalletRelay && (
             <div className={css.noTopBorder}>
               <ExecutionMethodSelector
                 executionMethod={executionMethod}
