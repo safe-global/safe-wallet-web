@@ -1,0 +1,10 @@
+.close {
+  position: absolute;
+  right: var(--space-1);
+  top: var(--space-1);
+}
+
+.modalError {
+  width: 100%;
+  margin: 0;
+}

@@ -21,8 +21,8 @@ const IndexPage: NextPage = () => {
       safeAddress
         ? `${AppRoutes.home}?safe=${safeAddress}`
         : chain
-        ? `${AppRoutes.welcome}?chain=${chain}`
-        : AppRoutes.welcome,
+        ? `${AppRoutes.welcome.index}?chain=${chain}`
+        : AppRoutes.welcome.index,
     )
   }, [router, safeAddress, chain])
 

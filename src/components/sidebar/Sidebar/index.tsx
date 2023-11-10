@@ -10,7 +10,7 @@ import SidebarFooter from '@/components/sidebar/SidebarFooter'
 
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
-import { DataWidget } from '@/components/welcome/DataWidget'
+import { DataWidget } from '@/components/welcome/SafeListDrawer/DataWidget'
 
 const Sidebar = (): ReactElement => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
