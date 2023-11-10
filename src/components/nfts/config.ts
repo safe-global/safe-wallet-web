@@ -70,6 +70,14 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
     },
   ],
 
+  [chains.sep]: [
+    {
+      title: 'OpenSea',
+      logo: '/images/common/nft-opensea.svg',
+      getUrl: (item) => `https://testnets.opensea.io/assets/${item.address}/${item.id}`,
+    },
+  ],
+
   [chains.oeth]: [
     {
       title: 'OpenSea',
