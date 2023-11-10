@@ -21,25 +21,25 @@ describe('Balance tests', () => {
     cy.get(balances.balanceSingleRow).should('have.length', ASSETS_LENGTH)
   })
 
-  it('Verify that token is present: Dai [C56074]', () => {
+  it('Verify that token is present: Dai', () => {
     balances.verityTokenAltImageIsVisible(balances.currencyDaiCap, balances.currencyDaiAlttext)
     balances.verifyAssetNameHasExplorerLink(balances.currencyDaiCap, ASSET_NAME_COLUMN)
     balances.verifyBalance(balances.currencyDaiCap, TOKEN_AMOUNT_COLUMN, balances.currencyDaiAlttext)
   })
 
-  it('Verify that token is present: AAVE [C56075]', () => {
+  it('Verify that token is present: AAVE', () => {
     balances.verityTokenAltImageIsVisible(balances.currencyAave, balances.currencyAaveAlttext)
     balances.verifyAssetNameHasExplorerLink(balances.currencyAave, ASSET_NAME_COLUMN)
     balances.verifyBalance(balances.currencyAave, TOKEN_AMOUNT_COLUMN, balances.currencyAaveAlttext)
   })
 
-  it('Verify that token is present: LINK [C56076]', () => {
+  it('Verify that token is present: LINK', () => {
     balances.verityTokenAltImageIsVisible(balances.currencyLink, balances.currencyLinkAlttext)
     balances.verifyAssetNameHasExplorerLink(balances.currencyLink, ASSET_NAME_COLUMN)
     balances.verifyBalance(balances.currencyLink, TOKEN_AMOUNT_COLUMN, balances.currencyLinkAlttext)
   })
 
-  it('Verify Token and Fiat balances formatted as per specification [C56077]', () => {
+  it('Verify Token and Fiat balances formatted as per specification', () => {
     balances.verifyTokenBalanceFormat(
       balances.currencyDaiCap,
       balances.currentcyDaiFormat,
@@ -97,23 +97,23 @@ describe('Balance tests', () => {
     )
   })
 
-  it('Verify USD is default currency [C56078]', () => {
+  it('Verify USD is default currency', () => {
     balances.verifyFirstRowDoesNotContainCurrency(balances.currencyEUR, FIAT_AMOUNT_COLUMN)
     balances.verifyFirstRowContainsCurrency(balances.currencyUSD, FIAT_AMOUNT_COLUMN)
   })
 
-  it('Verify currency can be changed to EUR [C56079]', () => {
+  it('Verify currency can be changed to EUR', () => {
     balances.clickOnCurrencyDropdown()
     balances.selectCurrency(balances.currencyEUR)
     balances.verifyFirstRowDoesNotContainCurrency(balances.currencyUSD, FIAT_AMOUNT_COLUMN)
     balances.verifyFirstRowContainsCurrency(balances.currencyEUR, FIAT_AMOUNT_COLUMN)
   })
 
-  it('Verify a token can be hidden [C56080]', () => {
+  it('Verify a token can be hidden', () => {
     balances.hideAsset(balances.currencyDaiCap)
   })
 
-  it('Verify a token can be unhidden [C56081]', () => {
+  it('Verify a token can be unhidden', () => {
     balances.hideAsset(balances.currencyDaiCap)
     balances.openHideTokenMenu()
     balances.clickOnTokenCheckbox(balances.currencyDaiCap)
