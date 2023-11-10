@@ -66,7 +66,7 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
     {
       title: 'OpenSea',
       logo: '/images/common/nft-opensea.svg',
-      getUrl: (item) => `https://testnets.opensea.io/assets/${item.address}/${item.id}`,
+      getUrl: (item) => `https://testnets.opensea.io/assets/goerli/${item.address}/${item.id}`,
     },
   ],
 
@@ -74,7 +74,7 @@ export const nftPlatforms: Record<keyof typeof chains, Array<NftPlatform>> = {
     {
       title: 'OpenSea',
       logo: '/images/common/nft-opensea.svg',
-      getUrl: (item) => `https://testnets.opensea.io/assets/${item.address}/${item.id}`,
+      getUrl: (item) => `https://testnets.opensea.io/assets/sepolia/${item.address}/${item.id}`,
     },
   ],
 
