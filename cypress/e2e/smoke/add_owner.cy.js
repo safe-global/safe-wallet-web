@@ -7,39 +7,39 @@ describe('Add Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
     cy.clearLocalStorage()
-    main.acceptCookies(1)
+    main.acceptCookies()
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 
-  it('Verify the presence of "Add Owner" button [C56017]', () => {
+  it('Verify the presence of "Add Owner" button', () => {
     owner.verifyAddOwnerBtnIsEnabled()
   })
 
-  it('Verify “Add new owner” button tooltip displays correct message for Non-Owner [C56018]', () => {
+  it('Verify “Add new owner” button tooltip displays correct message for Non-Owner', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_2)
     owner.verifyAddOwnerBtnIsDisabled()
   })
 
-  it('Verify Tooltip displays correct message for disconnected user [C56019]', () => {
+  it('Verify Tooltip displays correct message for disconnected user', () => {
     owner.waitForConnectionStatus()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
     owner.verifyAddOwnerBtnIsDisabled()
   })
 
-  it('Verify the Add New Owner Form can be opened [C56020]', () => {
+  it('Verify the Add New Owner Form can be opened', () => {
     owner.waitForConnectionStatus()
     owner.openAddOwnerWindow()
   })
 
-  it('Verify error message displayed if character limit is exceeded in Name input [C56022]', () => {
+  it('Verify error message displayed if character limit is exceeded in Name input', () => {
     owner.waitForConnectionStatus()
     owner.openAddOwnerWindow()
     owner.typeOwnerName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
 
-  it('Verify that the "Name" field is auto-filled with the relevant name from Address Book [C56023]', () => {
+  it('Verify that the "Name" field is auto-filled with the relevant name from Address Book', () => {
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
     addressBook.clickOnCreateEntryBtn()
     addressBook.typeInName(constants.addresBookContacts.user1.name)
@@ -54,7 +54,7 @@ describe('Add Owners tests', () => {
     owner.verifyNewOwnerName(constants.addresBookContacts.user1.name)
   })
 
-  it('Verify that Name field not mandatory [C56024]', () => {
+  it('Verify that Name field not mandatory', () => {
     owner.waitForConnectionStatus()
     owner.openAddOwnerWindow()
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
@@ -62,7 +62,7 @@ describe('Add Owners tests', () => {
     owner.verifyConfirmTransactionWindowDisplayed()
   })
 
-  it('Verify relevant error messages are displayed in Address input [C56025]', () => {
+  it('Verify relevant error messages are displayed in Address input', () => {
     owner.waitForConnectionStatus()
     owner.openAddOwnerWindow()
     owner.typeOwnerAddress(main.generateRandomString(10))
@@ -81,14 +81,14 @@ describe('Add Owners tests', () => {
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.alreadyAdded)
   })
 
-  it('Verify default threshold value. Verify correct threshold calculation [C56028]', () => {
+  it('Verify default threshold value. Verify correct threshold calculation', () => {
     owner.waitForConnectionStatus()
     owner.openAddOwnerWindow()
     owner.typeOwnerAddress(constants.DEFAULT_OWNER_ADDRESS)
     owner.verifyThreshold(1, 2)
   })
 
-  it('Verify valid Address validation [C56027]', () => {
+  it('Verify valid Address validation', () => {
     owner.waitForConnectionStatus()
     owner.openAddOwnerWindow()
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)

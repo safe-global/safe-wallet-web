@@ -19,6 +19,7 @@ const thresholdDropdown = 'div[aria-haspopup="listbox"]'
 const thresholdOption = 'li[role="option"]'
 const existingOwnerAddressInput = (index) => `input[name="owners.${index}.address"]`
 const existingOwnerNameInput = (index) => `input[name="owners.${index}.name"]`
+const singleOwnerNameInput = 'input[name="name"]'
 
 const disconnectBtnStr = 'Disconnect'
 const notConnectedStatus = 'Connect'
@@ -57,9 +58,9 @@ export function verifyExistingOwnerName(index, name) {
   cy.get(existingOwnerNameInput(index)).should('have.value', name)
 }
 
-export function typeExistingOwnerName(index, name) {
-  cy.get(existingOwnerNameInput(index)).clear().type(name)
-  main.verifyInputValue(existingOwnerNameInput(index), name)
+export function typeExistingOwnerName(name) {
+  cy.get(singleOwnerNameInput).clear().type(name)
+  main.verifyInputValue(singleOwnerNameInput, name)
 }
 
 export function verifyOwnerDeletionWindowDisplayed() {

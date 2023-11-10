@@ -5,7 +5,6 @@ import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '@/components/new-safe/create/OverviewWidget'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { TxStepperProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import ConnectWalletStep from '@/components/new-safe/create/steps/ConnectWalletStep'
 import SetNameStep from '@/components/new-safe/create/steps/SetNameStep'
 import OwnerPolicyStep from '@/components/new-safe/create/steps/OwnerPolicyStep'
 import ReviewStep from '@/components/new-safe/create/steps/ReviewStep'
@@ -20,6 +19,8 @@ import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 
 export type NewSafeFormData = {
   name: string
@@ -112,13 +113,6 @@ const CreateSafe = () => {
 
   const CreateSafeSteps: TxStepperProps<NewSafeFormData>['steps'] = [
     {
-      title: 'Connect wallet',
-      subtitle: 'The connected wallet will pay the network fees for the Safe Account creation.',
-      render: (data, onSubmit, onBack, setStep) => (
-        <ConnectWalletStep data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
-      ),
-    },
-    {
       title: 'Select network and name of your Safe Account',
       subtitle: 'Select the network on which to create your Safe Account',
       render: (data, onSubmit, onBack, setStep) => (
@@ -164,15 +158,21 @@ const CreateSafe = () => {
 
   const staticHint = useMemo(() => staticHints[activeStep], [activeStep])
 
+  const mnemonicSafeName = useMnemonicSafeName()
+
+  // Jump to review screen when using social login
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+  const initialStep = isSocialLogin ? 2 : 0
+
   const initialData: NewSafeFormData = {
-    name: '',
+    name: isSocialLogin ? mnemonicSafeName : '',
     owners: [defaultOwner],
     threshold: 1,
     saltNonce: Date.now(),
   }
 
   const onClose = () => {
-    router.push(AppRoutes.welcome)
+    router.push(AppRoutes.welcome.index)
   }
 
   return (
@@ -186,6 +186,7 @@ const CreateSafe = () => {
         <Grid item xs={12} md={8} order={[1, null, 0]}>
           <CardStepper
             initialData={initialData}
+            initialStep={initialStep}
             onClose={onClose}
             steps={CreateSafeSteps}
             eventCategory={CREATE_SAFE_CATEGORY}
@@ -195,7 +196,7 @@ const CreateSafe = () => {
 
         <Grid item xs={12} md={4} mb={[3, null, 0]} order={[0, null, 1]}>
           <Grid container spacing={3}>
-            {activeStep < 3 && <OverviewWidget safeName={safeName} />}
+            {activeStep < 2 && <OverviewWidget safeName={safeName} />}
             {wallet?.address && <CreateSafeInfos staticHint={staticHint} dynamicHint={dynamicHint} />}
           </Grid>
         </Grid>

@@ -71,7 +71,7 @@ const SrcEthHashInfo = ({
 
       <Box overflow="hidden">
         {name && (
-          <Box sx={{ fontSize: 'body2' }} textOverflow="ellipsis" overflow="hidden" title={name}>
+          <Box textOverflow="ellipsis" overflow="hidden" title={name}>
             {name}
           </Box>
         )}

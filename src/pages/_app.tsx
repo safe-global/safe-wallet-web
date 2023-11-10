@@ -1,3 +1,4 @@
+import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
 import Sentry from '@/services/sentry' // needs to be imported first
 import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
@@ -37,6 +38,7 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
+import { useInitMPC } from '@/hooks/wallets/mpc/useMPC'
 import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
 import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
@@ -64,6 +66,7 @@ const InitApp = (): null => {
   useTxTracking()
   useSafeMsgTracking()
   useBeamer()
+  useInitMPC()
   useABTesting(AbTest.HUMAN_DESCRIPTION)
 
   return null
@@ -127,6 +130,8 @@ const WebCoreApp = ({
           <Notifications />
 
           <MobilePairingModal />
+
+          <PasswordRecoveryModal />
         </AppProviders>
       </CacheProvider>
     </StoreHydrator>

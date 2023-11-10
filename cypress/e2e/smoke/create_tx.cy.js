@@ -9,10 +9,10 @@ describe('Create transactions tests', () => {
   before(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
-    main.acceptCookies(2)
+    main.acceptCookies()
   })
 
-  it('Verify a new send token transaction can be created [C56104]', () => {
+  it('Verify a new send token transaction can be created', () => {
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
     createtx.typeRecipientAddress(constants.EOA)
@@ -23,7 +23,7 @@ describe('Create transactions tests', () => {
     createtx.clickOnNextBtn()
   })
 
-  it('Verify a transaction can be reviewed, edited and submitted [C56105]', () => {
+  it('Verify a transaction can be reviewed, edited and submitted', () => {
     createtx.verifySubmitBtnIsEnabled()
     cy.wait(1000)
     createtx.verifyNativeTokenTransfer()
@@ -36,7 +36,7 @@ describe('Create transactions tests', () => {
     createtx.clickOnSignTransactionBtn()
   })
 
-  it('Verify that clicking on notification shows the transaction in queue [C56106]', () => {
+  it('Verify that clicking on notification shows the transaction in queue', () => {
     createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()

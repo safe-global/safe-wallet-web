@@ -5,6 +5,8 @@ const transactionQueueStr = 'Pending transactions'
 const noTransactionStr = 'This Safe has no queued transactions'
 const overviewStr = 'Overview'
 const viewAssetsStr = 'View assets'
+const sendStr = 'Send'
+const receiveStr = 'Receive'
 const tokensStr = 'Tokens'
 const nftStr = 'NFTs'
 const viewAllStr = 'View all'
@@ -27,11 +29,10 @@ export function verifyOverviewWidgetData() {
 
   cy.get('@overviewSection').within(() => {
     // Prefix is separated across elements in EthHashInfo
-    cy.contains(constants.SEPOLIA_TEST_SAFE_5).should('exist')
     cy.get('h2').contains('Overview')
-    cy.get(`a[href="${constants.BALANCE_URL}${encodeURIComponent(constants.SEPOLIA_TEST_SAFE_5)}"]`).contains(
-      viewAssetsStr,
-    )
+    cy.get(`a[href="${constants.BALANCE_URL}${encodeURIComponent(constants.SEPOLIA_TEST_SAFE_5)}"]`).contains('Tokens')
+    cy.get('button').contains(sendStr)
+    cy.get('button').contains(receiveStr)
   })
 }
 

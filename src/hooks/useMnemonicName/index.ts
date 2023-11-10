@@ -5,13 +5,15 @@ import { animalsDict, adjectivesDict } from './dict'
 const animals: string[] = animalsDict.trim().split(/\s+/)
 const adjectives: string[] = adjectivesDict.trim().split(/\s+/)
 
+const capitalize = (word: string) => (word.length > 0 ? `${word.charAt(0).toUpperCase()}${word.slice(1)}` : word)
+
 const getRandomItem = <T>(arr: T[]): T => {
   return arr[Math.floor(arr.length * Math.random())]
 }
 
-export const getRandomName = (noun = getRandomItem<string>(animals)): string => {
-  const adj = getRandomItem<string>(adjectives)
-  return `${adj}-${noun}`
+export const getRandomName = (noun = capitalize(getRandomItem<string>(animals))): string => {
+  const adj = capitalize(getRandomItem<string>(adjectives))
+  return `${adj} ${noun}`
 }
 
 export const useMnemonicName = (noun?: string): string => {
@@ -19,6 +21,6 @@ export const useMnemonicName = (noun?: string): string => {
 }
 
 export const useMnemonicSafeName = (): string => {
-  const networkName = useCurrentChain()?.chainName.toLowerCase()
-  return useMnemonicName(`${networkName}-safe`)
+  const networkName = useCurrentChain()?.chainName
+  return useMnemonicName(`${networkName} Safe`)
 }
