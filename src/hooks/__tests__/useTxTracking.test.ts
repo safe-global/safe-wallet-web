@@ -5,10 +5,8 @@ import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 jest.mock('@/services/analytics', () => ({
+  ...jest.requireActual('@/services/analytics'),
   trackEvent: jest.fn(),
-  WALLET_EVENTS: {
-    ONCHAIN_INTERACTION: { category: 'Wallet', action: 'Onchain interaction' },
-  },
 }))
 
 jest.mock('@/services/tx/txDetails', () => ({
@@ -27,5 +25,40 @@ describe('useTxTracking', () => {
       ...WALLET_EVENTS.ONCHAIN_INTERACTION,
       label: 'google.com',
     })
+  })
+
+  beforeEach(() => {
+    // jest.resetAllMocks()
+  })
+
+  it('should track relayed executions', () => {
+    renderHook(() => useTxTracking())
+
+    txDispatch(TxEvent.RELAYING, {
+      taskId: '0x123',
+      groupKey: '0x234',
+    })
+    expect(trackEvent).toBeCalledWith({ ...WALLET_EVENTS.ONCHAIN_INTERACTION, label: 'google.com' })
+  })
+
+  it('should track tx signing', async () => {
+    renderHook(() => useTxTracking())
+
+    txDispatch(TxEvent.SIGNED, {
+      txId: '0x123',
+    })
+    await act(() => Promise.resolve())
+
+    expect(trackEvent).toBeCalledWith({ ...WALLET_EVENTS.OFFCHAIN_SIGNATURE, label: 'google.com' })
+  })
+
+  it('should track tx execution', () => {
+    renderHook(() => useTxTracking())
+
+    txDispatch(TxEvent.PROCESSING, {
+      txId: '0x123',
+      txHash: '0x234',
+    })
+    expect(trackEvent).toBeCalledWith({ ...WALLET_EVENTS.ONCHAIN_INTERACTION, label: 'google.com' })
   })
 })

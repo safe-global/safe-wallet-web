@@ -7,7 +7,7 @@ describe('Add Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
     cy.clearLocalStorage()
-    main.acceptCookies(1)
+    main.acceptCookies()
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 

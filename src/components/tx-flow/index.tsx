@@ -19,6 +19,7 @@ export const TxModalContext = createContext<TxModalContextType>({
   setFullWidth: noop,
 })
 
+// TODO: Rename TxModalProvider, setTxFlow, TxModalDialog to not contain Tx since it can be used for any type of modal as a global provider
 const confirmClose = () => {
   return confirm('Closing this window will discard your current progress.')
 }
