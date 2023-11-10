@@ -184,36 +184,50 @@ const Overview = (): ReactElement => {
               </Grid>
             </Grid>
             <Grid item mt="auto">
-              <Box display="flex" mt={3} gap={1} flexWrap="wrap">
+              <Grid container mt={3} spacing={1} flexWrap="wrap">
                 {rampSafeApp && (
-                  <Link
-                    href={{
-                      pathname: AppRoutes.apps.open,
-                      query: { safe: router.query.safe, appUrl: rampSafeApp.url },
-                    }}
-                    passHref
-                    legacyBehavior
-                  >
-                    <Button size="small" variant="contained" color="primary" startIcon={<AddIcon />}>
-                      Buy crypto
-                    </Button>
-                  </Link>
+                  <Grid item xs={12} sm="auto">
+                    <Link
+                      href={{
+                        pathname: AppRoutes.apps.open,
+                        query: { safe: router.query.safe, appUrl: rampSafeApp.url },
+                      }}
+                      passHref
+                      legacyBehavior
+                    >
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        startIcon={<AddIcon />}
+                        sx={{ height: 1 }}
+                        fullWidth
+                      >
+                        Buy crypto
+                      </Button>
+                    </Link>
+                  </Grid>
                 )}
-                <Button
-                  onClick={handleOnSend}
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<ArrowIconNW />}
-                >
-                  Send
-                </Button>
-                <QrCodeButton>
-                  <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconSE />}>
-                    Receive
+                <Grid item xs={6} sm="auto">
+                  <Button
+                    onClick={handleOnSend}
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<ArrowIconNW />}
+                    fullWidth
+                  >
+                    Send
                   </Button>
-                </QrCodeButton>
-              </Box>
+                </Grid>
+                <Grid item xs={6} sm="auto">
+                  <QrCodeButton>
+                    <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconSE />} fullWidth>
+                      Receive
+                    </Button>
+                  </QrCodeButton>
+                </Grid>
+              </Grid>
             </Grid>
           </Card>
         )}
