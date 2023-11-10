@@ -12,12 +12,10 @@ describe('Safe creation tests', () => {
   })
 
   it('Verify a Wallet can be connected', () => {
-    owner.waitForConnectionStatus()
-    cy.visit(constants.welcomeUrl)
+    createwallet.clickOnCreateNewSafeBtn()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
-    createwallet.clickOnCreateNewSafeBtn()
-    owner.clickOnConnectBtn()
+    createwallet.clickOnConnectWalletBtn()
     createwallet.connectWallet()
   })
 

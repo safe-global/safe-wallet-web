@@ -24,7 +24,7 @@ describe('Import Export Data tests', () => {
   })
 
   it('Verify address book imported data', () => {
-    main.acceptCookies(1)
+    main.acceptCookies()
     file.clickOnAddressBookBtn()
     file.verifyImportedAddressBookData()
   })
