@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, Divider } from '@mui/material'
+import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { trackError, Errors } from '@/services/exceptions'
@@ -103,8 +103,8 @@ const SignForm = ({
           {/* Submit button */}
           <CheckWallet>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-                Sign
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ width: '82px' }}>
+                {submitDisabled ? <CircularProgress size={20} /> : 'Sign'}
               </Button>
             )}
           </CheckWallet>

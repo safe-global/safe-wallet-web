@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, Divider } from '@mui/material'
+import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -159,8 +159,8 @@ const ExecuteForm = ({
           {/* Submit button */}
           <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-                Execute
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ width: '112px' }}>
+                {submitDisabled ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}
           </CheckWallet>
