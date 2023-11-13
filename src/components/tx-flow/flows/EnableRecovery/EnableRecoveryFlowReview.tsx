@@ -59,7 +59,6 @@ export function EnableRecoveryFlowReview({ params }: { params: EnableRecoveryFlo
         <EthHashInfo address={guardian} showName={false} hasExplorer showCopyButton avatarSize={24} />
       </TxDataRow>
 
-      {/* TODO: Info */}
       <TxDataRow
         title={
           <>
@@ -83,7 +82,7 @@ export function EnableRecoveryFlowReview({ params }: { params: EnableRecoveryFlo
       >
         {delay}
       </TxDataRow>
-      {/* TODO: Info */}
+
       <TxDataRow
         title={
           <>
