@@ -90,7 +90,7 @@ const NftGrid = ({
   onPreview,
 }: NftsTableProps): ReactElement => {
   const chainId = useChainId()
-  const linkTemplates = nftPlatforms[chainId]
+  const linkTemplates = nftPlatforms[chainId] || []
   // Filter string
   const [filter, setFilter] = useState<string>('')
 

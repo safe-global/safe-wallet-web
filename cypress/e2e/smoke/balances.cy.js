@@ -16,6 +16,7 @@ describe('Balance tests', () => {
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
     cy.contains('Assets')
+    balances.selectTokenList(balances.tokenListOptions.default)
     cy.get(balances.balanceSingleRow).should('have.length.lessThan', ASSETS_LENGTH)
     balances.selectTokenList(balances.tokenListOptions.allTokens)
     cy.get(balances.balanceSingleRow).should('have.length', ASSETS_LENGTH)

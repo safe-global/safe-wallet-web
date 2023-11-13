@@ -200,7 +200,7 @@ const Overview = (): ReactElement => {
                         variant="contained"
                         color="primary"
                         startIcon={<AddIcon />}
-                        sx={{ height: 1 }}
+                        sx={{ minHeight: '40px' }}
                         fullWidth
                       >
                         Buy crypto
