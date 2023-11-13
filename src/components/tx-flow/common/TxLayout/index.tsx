@@ -109,7 +109,13 @@ const TxLayout = ({
                 {/* Main content */}
                 <Grid item xs={12} md={7}>
                   <div className={css.titleWrapper}>
-                    <Typography data-testid="modal-title" variant="h3" component="div" fontWeight="700" className={css.title}>
+                    <Typography
+                      data-testid="modal-title"
+                      variant="h3"
+                      component="div"
+                      fontWeight="700"
+                      className={css.title}
+                    >
                       {title}
                     </Typography>
 
@@ -128,7 +134,12 @@ const TxLayout = ({
                     {steps[step]}
 
                     {onBack && step > 0 && (
-                      <Button data-testid="modal-back-btn" variant="contained" onClick={onBack} className={css.backButton}>
+                      <Button
+                        data-testid="modal-back-btn"
+                        variant="contained"
+                        onClick={onBack}
+                        className={css.backButton}
+                      >
                         Back
                       </Button>
                     )}

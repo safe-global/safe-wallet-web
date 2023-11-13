@@ -25,7 +25,8 @@ export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false
       <span style={{ flex: 1 }} />
       {!hideChainIndicator && <ChainIndicator inline />}
       {onClose ? (
-        <IconButton data-testid="modal-dialog-close-btn"
+        <IconButton
+          data-testid="modal-dialog-close-btn"
           aria-label="close"
           onClick={(e) => {
             onClose(e, 'backdropClick')
@@ -55,7 +56,8 @@ const ModalDialog = ({
   const isFullScreen = fullScreen || isSmallScreen
 
   return (
-    <Dialog data-testid="modal-view"
+    <Dialog
+      data-testid="modal-view"
       {...restProps}
       fullScreen={isFullScreen}
       scroll={fullScreen ? 'paper' : 'body'}
