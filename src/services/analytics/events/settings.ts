@@ -44,6 +44,10 @@ export const SETTINGS_EVENTS = {
       action: 'Copy EIP-3770 prefixes',
       category: SETTINGS_CATEGORY,
     },
+    QR_PREFIXES: {
+      action: 'QR code EIP-3770 prefixes',
+      category: SETTINGS_CATEGORY,
+    },
     DARK_MODE: {
       action: 'Dark mode',
       category: SETTINGS_CATEGORY,

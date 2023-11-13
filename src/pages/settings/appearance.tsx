@@ -9,6 +9,7 @@ import {
   setCopyShortName,
   setDarkMode,
   setShowShortName,
+  setQrShortName,
   setAddressEmojis,
 } from '@/store/settingsSlice'
 import SettingsHeader from '@/components/settings/SettingsHeader'
@@ -23,15 +24,26 @@ const Appearance: NextPage = () => {
   const isDarkMode = useDarkMode()
 
   const handleToggle = (
-    action: typeof setCopyShortName | typeof setDarkMode | typeof setShowShortName | typeof setAddressEmojis,
+    action:
+      | typeof setCopyShortName
+      | typeof setQrShortName
+      | typeof setDarkMode
+      | typeof setShowShortName
+      | typeof setAddressEmojis,
     event:
       | typeof SETTINGS_EVENTS.APPEARANCE.PREPEND_PREFIXES
       | typeof SETTINGS_EVENTS.APPEARANCE.COPY_PREFIXES
+      | typeof SETTINGS_EVENTS.APPEARANCE.QR_PREFIXES
       | typeof SETTINGS_EVENTS.APPEARANCE.DARK_MODE
       | typeof SETTINGS_EVENTS.APPEARANCE.ADDRESS_EMOJIS,
   ) => {
     return (_: ChangeEvent<HTMLInputElement>, checked: boolean) => {
       dispatch(action(checked))
+
+      if (action === setShowShortName && !checked) {
+        dispatch(setCopyShortName(checked))
+        dispatch(setQrShortName(checked))
+      }
 
       trackEvent({
         ...event,
@@ -71,7 +83,7 @@ const Appearance: NextPage = () => {
                       onChange={handleToggle(setShowShortName, SETTINGS_EVENTS.APPEARANCE.PREPEND_PREFIXES)}
                     />
                   }
-                  label="Prepend chain prefix to addresses"
+                  label="Prepend a chain prefix to addresses"
                 />
                 <FormControlLabel
                   control={
@@ -80,7 +92,18 @@ const Appearance: NextPage = () => {
                       onChange={handleToggle(setCopyShortName, SETTINGS_EVENTS.APPEARANCE.COPY_PREFIXES)}
                     />
                   }
-                  label="Copy addresses with chain prefix"
+                  label="Copy addresses with a chain prefix"
+                  disabled={!settings.shortName.show}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={settings.shortName.qr}
+                      onChange={handleToggle(setQrShortName, SETTINGS_EVENTS.APPEARANCE.QR_PREFIXES)}
+                    />
+                  }
+                  label="Scan QR codes with a chain prefix"
+                  disabled={!settings.shortName.show}
                 />
               </FormGroup>
             </Grid>
