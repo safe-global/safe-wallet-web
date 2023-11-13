@@ -29,7 +29,7 @@ const Validation: {
   },
   INVALID: {
     color: 'error',
-    desc: 'has been flagged as a high risk by WalletConnect.',
+    desc: 'has a domain that does not match the sender of this request. Approving it may result in a loss of funds.',
     Icon: CloseIcon,
   },
 }
