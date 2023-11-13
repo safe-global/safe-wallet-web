@@ -3,10 +3,13 @@ import type { ReactElement } from 'react'
 
 import RecoveryLogo from '@/public/images/common/recovery.svg'
 import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 import css from './styles.module.css'
 
 export function Recovery(): ReactElement {
+  const isDarkMode = useDarkMode()
+
   const onClick = () => {
     // TODO: Open enable recovery flow
   }
@@ -28,7 +31,7 @@ export function Recovery(): ReactElement {
                 <Typography variant="h4" className={css.title}>
                   Introducing account recovery{' '}
                 </Typography>
-                <Chip label="New" color="primary" size="small" className={css.chip} />
+                <Chip label="New" color={isDarkMode ? 'primary' : 'secondary'} size="small" className={css.chip} />
               </Box>
               <Typography mt={1} mb={3}>
                 Ensure that you never lose access to your funds by choosing a guardian to recover your account.
