@@ -71,7 +71,7 @@ export const ExecutionMethodSelector = ({
         </FormControl>
       </div>
 
-      {shouldRelay && relays ? <SponsoredBy relays={relays} tooltip={tooltip} /> : null}
+      <SponsoredBy relays={relays} tooltip={tooltip} shouldRelay={shouldRelay} />
     </Box>
   )
 }

@@ -12,7 +12,6 @@ import { useIsExecutionLoop, useTxActions } from './hooks'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
-import { hasRemainingRelays } from '@/utils/relaying'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
@@ -53,15 +52,13 @@ const ExecuteForm = ({
   // Check that the transaction is executable
   const isExecutionLoop = useIsExecutionLoop()
 
-  // We default to relay, but the option is only shown if we canRelay
-  const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
-
   // SC wallets can relay fully signed transactions
-  const [walletCanRelay] = useWalletCanRelay(safeTx)
-
+  const [canWalletRelay] = useWalletCanRelay(safeTx)
+  // We default to relay
+  const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
   // The transaction can/will be relayed
-  const canRelay = walletCanRelay && hasRemainingRelays(relays)
-  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
+  const willRelay = executionMethod === ExecutionMethod.RELAY
+  const hasRelays = !!relays?.remaining
 
   // Estimate gas limit
   const { gasLimit, gasLimitError } = useGasLimit(safeTx)
@@ -102,12 +99,18 @@ const ExecuteForm = ({
 
   const cannotPropose = !isOwner && !onlyExecute
   const submitDisabled =
-    !safeTx || !isSubmittable || disableSubmit || isValidExecutionLoading || isExecutionLoop || cannotPropose
+    !safeTx ||
+    !isSubmittable ||
+    disableSubmit ||
+    isValidExecutionLoading ||
+    isExecutionLoop ||
+    cannotPropose ||
+    (willRelay && !hasRelays)
 
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className={classNames(css.params, { [css.noBottomBorderRadius]: canRelay })}>
+        <div className={classNames(css.params, { [css.noBottomBorderRadius]: canWalletRelay })}>
           <AdvancedParams
             willExecute
             params={advancedParams}
@@ -117,7 +120,7 @@ const ExecuteForm = ({
             willRelay={willRelay}
           />
 
-          {canRelay && (
+          {canWalletRelay && (
             <div className={css.noTopBorder}>
               <ExecutionMethodSelector
                 executionMethod={executionMethod}
