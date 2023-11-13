@@ -4,9 +4,11 @@ import type { ReactElement } from 'react'
 
 import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
 import { TxModalContext } from '@/components/tx-flow'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
+  const isDarkMode = useDarkMode()
 
   return (
     <Paper sx={{ p: 4 }}>
@@ -18,7 +20,12 @@ export function Recovery(): ReactElement {
             </Typography>
 
             {/* TODO: Extract when widget is merged https://github.com/safe-global/safe-wallet-web/pull/2768  */}
-            <Chip label="New" color="primary" size="small" sx={{ borderRadius: '4px', fontSize: '12px' }} />
+            <Chip
+              label="New"
+              color={isDarkMode ? 'primary' : 'secondary'}
+              size="small"
+              sx={{ borderRadius: '4px', fontSize: '12px' }}
+            />
           </Box>
         </Grid>
 
