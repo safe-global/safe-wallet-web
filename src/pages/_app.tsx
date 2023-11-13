@@ -43,7 +43,6 @@ import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectCon
 import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
-import MobilePairingModal from '@/services/pairing/QRModal'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -125,8 +124,6 @@ const WebCoreApp = ({
           <CookieBanner />
 
           <Notifications />
-
-          <MobilePairingModal />
 
           <PasswordRecoveryModal />
         </AppProviders>

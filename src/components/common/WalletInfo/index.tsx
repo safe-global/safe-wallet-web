@@ -59,9 +59,10 @@ export const WalletInfo = ({
   const isSocialLogin = isSocialLoginWallet(wallet.label)
 
   return (
-    <>
+    <Box className={css.container}>
       <Box className={css.accountContainer}>
         <ChainIndicator />
+
         <Box className={css.addressContainer}>
           {isSocialLogin ? (
             <>
@@ -108,10 +109,10 @@ export const WalletInfo = ({
 
       {!IS_PRODUCTION && isSocialLogin && (
         <Button onClick={resetAccount} variant="danger" size="small" fullWidth disableElevation>
-          Delete Account
+          Delete account
         </Button>
       )}
-    </>
+    </Box>
   )
 }
 
