@@ -3,7 +3,12 @@ import { EventType } from '@/services/analytics/types'
 export const CREATE_SAFE_CATEGORY = 'create-safe'
 
 export const CREATE_SAFE_EVENTS = {
-  CREATE_BUTTON: {
+  CONTINUE_TO_CREATION: {
+    action: 'Continue to creation',
+    category: CREATE_SAFE_CATEGORY,
+    event: EventType.META,
+  },
+  OPEN_SAFE_CREATION: {
     action: 'Open stepper',
     category: CREATE_SAFE_CATEGORY,
   },
@@ -35,6 +40,10 @@ export const CREATE_SAFE_EVENTS = {
   RETRY_CREATE_SAFE: {
     event: EventType.META,
     action: 'Retry Safe creation',
+    category: CREATE_SAFE_CATEGORY,
+  },
+  CANCEL_CREATE_SAFE_FORM: {
+    action: 'Cancel safe creation form',
     category: CREATE_SAFE_CATEGORY,
   },
   CANCEL_CREATE_SAFE: {

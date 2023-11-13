@@ -79,7 +79,9 @@ const WcInput = ({ uri }: { uri: string }) => {
       error={!!error}
       label={error ? error.message : 'Pairing code'}
       placeholder="wc:"
+      spellCheck={false}
       InputProps={{
+        autoComplete: 'off',
         endAdornment: isClipboardSupported() ? undefined : (
           <InputAdornment position="end">
             <Track {...WALLETCONNECT_EVENTS.PASTE_CLICK}>

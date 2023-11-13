@@ -15,16 +15,16 @@ describe('Browser permissions tests', () => {
       })
     })
     cy.visitSafeApp(`${constants.testAppUrl}/app`)
-    main.acceptCookies(1)
+    main.acceptCookies()
   })
 
-  it('Verify a permissions slide to the user is displayed [C56137]', () => {
+  it('Verify a permissions slide to the user is displayed', () => {
     safeapps.clickOnContinueBtn()
     safeapps.verifyCameraCheckBoxExists()
     safeapps.verifyMicrofoneCheckBoxExists()
   })
 
-  it('Verify the selection can be changed, accepted and stored [C56138]', () => {
+  it('Verify the selection can be changed, accepted and stored', () => {
     safeapps.verifyMicrofoneCheckBoxExists().click()
     safeapps.clickOnContinueBtn()
     safeapps.verifyWarningDefaultAppMsgIsDisplayed()

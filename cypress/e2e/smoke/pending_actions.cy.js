@@ -1,7 +1,7 @@
 import * as constants from '../../support/constants'
 import * as safe from '../pages/load_safe.pages'
 
-describe('Pending actions', () => {
+describe('Pending actions tests', () => {
   before(() => {
     cy.visit(constants.welcomeUrl)
     // main.acceptCookies()

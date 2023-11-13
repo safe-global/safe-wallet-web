@@ -12,6 +12,7 @@ import walletConnect from '@web3-onboard/walletconnect'
 import pairingModule from '@/services/pairing/module'
 import e2eWalletModule from '@/tests/e2e-wallet'
 import { CGW_NAMES, WALLET_KEYS } from './consts'
+import MpcModule from '@/services/mpc/SocialLoginModule'
 
 const prefersDarkMode = (): boolean => {
   return window?.matchMedia('(prefers-color-scheme: dark)')?.matches
@@ -42,6 +43,7 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }
   [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain),
   [WALLET_KEYS.COINBASE]: () => coinbaseModule({ darkMode: prefersDarkMode() }),
   [WALLET_KEYS.PAIRING]: () => pairingModule(),
+  [WALLET_KEYS.SOCIAL]: (chain) => MpcModule(chain),
   [WALLET_KEYS.LEDGER]: () => ledgerModule(),
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
   [WALLET_KEYS.KEYSTONE]: () => keystoneModule(),
@@ -71,4 +73,10 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
   }
 
   return enabledWallets.map(([, module]) => module(chain))
+}
+
+export const isSocialWalletEnabled = (chain: ChainInfo | undefined): boolean => {
+  if (!chain) return false
+
+  return chain.disabledWallets.every((label) => label !== CGW_NAMES.SOCIAL_LOGIN)
 }
