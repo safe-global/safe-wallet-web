@@ -55,9 +55,7 @@ const ExecuteForm = ({
   // SC wallets can relay fully signed transactions
   const [canWalletRelay] = useWalletCanRelay(safeTx)
   // We default to relay
-  const [executionMethod, setExecutionMethod] = useState(
-    canWalletRelay ? ExecutionMethod.RELAY : ExecutionMethod.WALLET,
-  )
+  const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
   // The transaction can/will be relayed
   const willRelay = executionMethod === ExecutionMethod.RELAY
   const hasRelays = !!relays?.remaining
