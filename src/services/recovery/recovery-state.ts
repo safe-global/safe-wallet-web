@@ -1,7 +1,10 @@
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { BigNumber } from 'ethers'
+import { memoize } from 'lodash'
 import type { Delay } from '@gnosis.pm/zodiac'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
+import type { JsonRpcProvider } from '@ethersproject/providers'
+import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import type { RecoveryQueueItem, RecoveryState } from '@/store/recoverySlice'
 
@@ -35,7 +38,42 @@ export const _getRecoveryQueueItem = async (
   }
 }
 
-export const getRecoveryState = async (delayModifier: Delay): Promise<RecoveryState[number]> => {
+export const _getSafeCreationReceipt = memoize(
+  async ({
+    transactionService,
+    safeAddress,
+    provider,
+  }: {
+    transactionService: string
+    safeAddress: string
+    provider: JsonRpcProvider
+  }): Promise<TransactionReceipt> => {
+    const url = `${transactionService}/v1/${safeAddress}/creation/`
+
+    const { transactionHash } = await fetch(url).then((res) => {
+      if (res.ok && res.status === 200) {
+        return res.json() as Promise<{ transactionHash: string } & unknown>
+      } else {
+        throw new Error('Error fetching Safe creation details')
+      }
+    })
+
+    return provider.getTransactionReceipt(transactionHash)
+  },
+  ({ transactionService, safeAddress }) => transactionService + safeAddress,
+)
+
+export const getRecoveryState = async ({
+  delayModifier,
+  ...rest
+}: {
+  delayModifier: Delay
+  transactionService: string
+  safeAddress: string
+  provider: JsonRpcProvider
+}): Promise<RecoveryState[number]> => {
+  const { blockHash } = await _getSafeCreationReceipt(rest)
+
   const transactionAddedFilter = delayModifier.filters.TransactionAdded()
 
   const [[modules], txExpiration, txCooldown, txNonce, queueNonce, transactionsAdded] = await Promise.all([
@@ -44,7 +82,8 @@ export const getRecoveryState = async (delayModifier: Delay): Promise<RecoverySt
     delayModifier.txCooldown(),
     delayModifier.txNonce(),
     delayModifier.queueNonce(),
-    delayModifier.queryFilter(transactionAddedFilter),
+    // TODO: Improve log retrieval
+    delayModifier.queryFilter(transactionAddedFilter, blockHash),
   ])
 
   const queuedTransactionsAdded = _getQueuedTransactionsAdded(transactionsAdded, txNonce)

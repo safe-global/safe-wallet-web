@@ -7,7 +7,7 @@ import useSafeInfo from '../useSafeInfo'
 import { useWeb3ReadOnly } from '../wallets/web3'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import useIntervalCounter from '../useIntervalCounter'
-import { useHasFeature } from '../useChains'
+import { useCurrentChain, useHasFeature } from '../useChains'
 import { FEATURES } from '@/utils/chains'
 import type { AsyncResult } from '../useAsync'
 import type { RecoveryState } from '@/store/recoverySlice'
@@ -16,6 +16,7 @@ const REFRESH_DELAY = 5 * 60 * 1_000 // 5 minutes
 
 const useLoadRecovery = (): AsyncResult<RecoveryState> => {
   const { safe, safeAddress } = useSafeInfo()
+  const chain = useCurrentChain()
   const web3ReadOnly = useWeb3ReadOnly()
   const [counter] = useIntervalCounter(REFRESH_DELAY)
   const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
@@ -38,13 +39,22 @@ const useLoadRecovery = (): AsyncResult<RecoveryState> => {
   }, [safeAddress, safe.chainId, safe.modules?.length, web3ReadOnly, supportsRecovery])
 
   const [recoveryState, recoveryStateError, recoveryStateLoading] = useAsync<RecoveryState>(() => {
-    if (!delayModifiers || delayModifiers.length === 0) {
+    if (!delayModifiers || delayModifiers.length === 0 || !chain?.transactionService || !web3ReadOnly) {
       return
     }
 
-    return Promise.all(delayModifiers.map(getRecoveryState))
+    return Promise.all(
+      delayModifiers.map((delayModifier) =>
+        getRecoveryState({
+          delayModifier,
+          transactionService: chain.transactionService,
+          safeAddress,
+          provider: web3ReadOnly,
+        }),
+      ),
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delayModifiers, counter])
+  }, [delayModifiers, counter, chain?.transactionService, web3ReadOnly, safeAddress])
 
   return [recoveryState, delayModifiersError || recoveryStateError, delayModifiersLoading || recoveryStateLoading]
 }
