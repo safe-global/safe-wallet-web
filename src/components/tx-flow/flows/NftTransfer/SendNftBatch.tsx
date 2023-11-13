@@ -37,7 +37,7 @@ const NftItem = ({ image, name, description }: { image: string; name: string; de
     </Grid>
 
     <Grid item overflow="hidden">
-      <Typography variant="body2" fontWeight={700} whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+      <Typography data-testid="nft-item-name" variant="body2" fontWeight={700} whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
         {name}
       </Typography>
 
@@ -59,7 +59,7 @@ const NftItem = ({ image, name, description }: { image: string; name: string; de
 
 export const NftItems = ({ tokens }: { tokens: SafeCollectibleResponse[] }) => {
   return (
-    <Box display="flex" flexDirection="column" gap={2} overflow="auto" maxHeight="20vh" minHeight="40px">
+    <Box data-testid="nft-item-list" display="flex" flexDirection="column" gap={2} overflow="auto" maxHeight="20vh" minHeight="40px">
       {tokens.map((token) => (
         <NftItem
           key={`${token.address}-${token.id}`}
@@ -124,7 +124,7 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
             )}
           </FormControl>
 
-          <Typography variant="body2" color="text.secondary" mb={2}>
+          <Typography data-testid="selected-nfts" variant="body2" color="text.secondary" mb={2}>
             Selected NFTs
           </Typography>
 

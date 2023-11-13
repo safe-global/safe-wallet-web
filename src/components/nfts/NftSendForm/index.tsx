@@ -31,7 +31,7 @@ const NftSendForm = ({ selectedNfts }: NftSendFormProps): ReactElement => {
         <Grid item>
           <CheckWallet>
             {(isOk) => (
-              <Button
+              <Button data-testid={`nft-send-btn-${!isOk || noSelected}`}
                 type="submit"
                 variant="contained"
                 size="small"
