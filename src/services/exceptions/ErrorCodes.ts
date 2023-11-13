@@ -16,6 +16,9 @@ enum ErrorCodes {
 
   _302 = '302: Error connecting to the wallet',
   _303 = '303: Error creating pairing session',
+  _304 = '304: Error enabling MFA',
+  _305 = '305: Error exporting account key',
+  _306 = '306: Error logging in',
 
   _400 = '400: Error requesting browser notification permissions',
   _401 = '401: Error tracking push notifications',

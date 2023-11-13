@@ -1,34 +1,26 @@
-.container {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  justify-content: center;
+.accountContainer {
+  width: 100%;
+  margin-bottom: var(--space-1);
 }
 
-.imageContainer {
-  display: flex;
-  justify-content: center;
+.accountContainer > span {
+  border-radius: 8px 8px 0 0;
 }
 
-[data-theme='dark'] .imageContainer img[alt*='Ledger'] {
-  filter: invert(100%);
+.addressContainer {
+  border-radius: 0 0 8px 8px;
+  padding: 12px;
+  border: 1px solid var(--color-border-light);
+  border-top: 0;
+  font-size: 14px;
 }
 
-@media (max-width: 599.95px) {
-  .buttonContainer button {
-    font-size: 12px;
-  }
+.warningButton {
+  background-color: var(--color-warning-background);
+  color: var(--color-warning-main);
+  font-size: 12px;
+}
 
-  .walletDetails {
-    display: none;
-  }
-
-  .imageContainer img {
-    width: 22px;
-    height: auto;
-  }
-
-  .walletName {
-    display: none;
-  }
+.warningButton:global.MuiButton-root:hover {
+  background-color: var(--color-warning-background);
 }

@@ -36,8 +36,6 @@ export const EIP155 = 'eip155' as const
 // Bridges enforcing same address on destination chains
 export const BlockedBridges = [
   'app.chainport.io',
-  'bridge.arbitrum.io',
-  'bridge.base.org',
   'cbridge.celer.network',
   'www.orbiter.finance',
   'zksync-era.l2scan.co',
@@ -66,6 +64,8 @@ export const BlockedBridges = [
 export const WarnedBridges = [
   'across.to', // doesn't send their URL in the session proposal
   'app.allbridge.io',
+  'bridge.arbitrum.io',
+  'bridge.base.org',
   'core.allbridge.io',
   'bungee.exchange',
   'www.carrier.so',

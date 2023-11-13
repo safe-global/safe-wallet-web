@@ -5,6 +5,9 @@ import * as localStorage from '@/services/local-storage/useLocalStorage'
 import type { ConnectedWallet } from '@/services/onboard'
 import * as usePendingSafe from '../steps/StatusStep/usePendingSafe'
 import * as useIsWrongChain from '@/hooks/useIsWrongChain'
+import * as useRouter from 'next/router'
+import { type NextRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 
 describe('useSyncSafeCreationStep', () => {
   const mockPendingSafe = {
@@ -18,29 +21,39 @@ describe('useSyncSafeCreationStep', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    const setPendingSafeSpy = jest.fn()
   })
 
-  it('should go to the first step if no wallet is connected', async () => {
+  it('should go to the first step if no wallet is connected and there is no pending safe', async () => {
+    const mockPushRoute = jest.fn()
     jest.spyOn(wallet, 'default').mockReturnValue(null)
     jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([undefined, setPendingSafeSpy])
+    jest.spyOn(useRouter, 'useRouter').mockReturnValue({
+      push: mockPushRoute,
+    } as unknown as NextRouter)
     const mockSetStep = jest.fn()
 
     renderHook(() => useSyncSafeCreationStep(mockSetStep))
 
-    expect(mockSetStep).toHaveBeenCalledWith(0)
+    expect(mockSetStep).not.toHaveBeenCalled()
+    expect(mockPushRoute).toHaveBeenCalledWith({ pathname: AppRoutes.welcome.index, query: undefined })
   })
 
   it('should go to the fourth step if there is a pending safe', async () => {
+    const mockPushRoute = jest.fn()
     jest.spyOn(localStorage, 'default').mockReturnValue([{}, jest.fn()])
     jest.spyOn(wallet, 'default').mockReturnValue({ address: '0x1' } as ConnectedWallet)
     jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, setPendingSafeSpy])
+    jest.spyOn(useRouter, 'useRouter').mockReturnValue({
+      push: mockPushRoute,
+    } as unknown as NextRouter)
 
     const mockSetStep = jest.fn()
 
     renderHook(() => useSyncSafeCreationStep(mockSetStep))
 
-    expect(mockSetStep).toHaveBeenCalledWith(4)
+    expect(mockSetStep).toHaveBeenCalledWith(3)
+
+    expect(mockPushRoute).not.toHaveBeenCalled()
   })
 
   it('should go to the second step if the wrong chain is connected', async () => {
@@ -53,7 +66,7 @@ describe('useSyncSafeCreationStep', () => {
 
     renderHook(() => useSyncSafeCreationStep(mockSetStep))
 
-    expect(mockSetStep).toHaveBeenCalledWith(1)
+    expect(mockSetStep).toHaveBeenCalledWith(0)
   })
 
   it('should not do anything if wallet is connected and there is no pending safe', async () => {
