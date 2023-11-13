@@ -4,7 +4,7 @@ import type { BigNumber } from 'ethers'
 
 import { makeLoadableSlice } from './common'
 
-type QueuedTransactionAdded = TransactionAddedEvent & {
+export type RecoveryQueueItem = TransactionAddedEvent & {
   timestamp: number
   validFrom: BigNumber
   expiresAt: BigNumber | null
@@ -17,7 +17,7 @@ export type RecoveryState = Array<{
   txCooldown: BigNumber
   txNonce: BigNumber
   queueNonce: BigNumber
-  queue: Array<QueuedTransactionAdded>
+  queue: Array<RecoveryQueueItem>
 }>
 
 const initialState: RecoveryState = []

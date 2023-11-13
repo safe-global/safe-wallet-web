@@ -1,5 +1,5 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
-import WalletInfo from '@/components/common/WalletInfo'
+import WalletOverview from 'src/components/common/WalletOverview'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import { Card, Grid, Typography } from '@mui/material'
@@ -14,7 +14,7 @@ const OverviewWidget = ({ safeName }: { safeName: string }): ReactElement | null
   const wallet = useWallet()
   const chain = useCurrentChain()
   const rows = [
-    ...(wallet ? [{ title: 'Wallet', component: <WalletInfo wallet={wallet} /> }] : []),
+    ...(wallet ? [{ title: 'Wallet', component: <WalletOverview wallet={wallet} /> }] : []),
     ...(chain ? [{ title: 'Network', component: <ChainIndicator chainId={chain.chainId} inline /> }] : []),
     ...(safeName !== '' ? [{ title: 'Name', component: <Typography>{safeName}</Typography> }] : []),
   ]

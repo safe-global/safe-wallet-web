@@ -17,7 +17,6 @@ const isNoSidebarRoute = (pathname: string): boolean => {
     AppRoutes.share.safeApp,
     AppRoutes.newSafe.create,
     AppRoutes.newSafe.load,
-    AppRoutes.welcome,
     AppRoutes.index,
     AppRoutes.imprint,
     AppRoutes.privacy,

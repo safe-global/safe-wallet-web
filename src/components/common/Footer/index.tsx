@@ -11,7 +11,7 @@ import MUILink from '@mui/material/Link'
 import { IS_DEV, IS_OFFICIAL_HOST } from '@/config/constants'
 
 const footerPages = [
-  AppRoutes.welcome,
+  AppRoutes.welcome.index,
   AppRoutes.settings.index,
   AppRoutes.imprint,
   AppRoutes.privacy,
