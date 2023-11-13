@@ -9,7 +9,7 @@ const nftsTokenID = 'CF'
 describe('NFTs tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
+    cy.visit(constants.balanceNftsUrl + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
     nfts.clickOnNftsTab()
   })
