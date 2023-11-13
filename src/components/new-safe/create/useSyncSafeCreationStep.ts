@@ -4,31 +4,33 @@ import type { NewSafeFormData } from '@/components/new-safe/create/index'
 import useWallet from '@/hooks/wallets/useWallet'
 import { usePendingSafe } from './steps/StatusStep/usePendingSafe'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 
 const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => {
   const [pendingSafe] = usePendingSafe()
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
+  const router = useRouter()
 
   useEffect(() => {
     // Jump to the status screen if there is already a tx submitted
     if (pendingSafe) {
-      setStep(4)
+      setStep(3)
       return
     }
 
-    // Jump to connect wallet step if there is no wallet and no pending Safe
+    // Jump to the welcome page if there is no wallet
     if (!wallet) {
-      setStep(0)
-      return
+      router.push({ pathname: AppRoutes.welcome.index, query: router.query })
     }
 
     // Jump to choose name and network step if the wallet is connected to the wrong chain and there is no pending Safe
     if (isWrongChain) {
-      setStep(1)
+      setStep(0)
       return
     }
-  }, [wallet, setStep, pendingSafe, isWrongChain])
+  }, [wallet, setStep, pendingSafe, isWrongChain, router])
 }
 
 export default useSyncSafeCreationStep

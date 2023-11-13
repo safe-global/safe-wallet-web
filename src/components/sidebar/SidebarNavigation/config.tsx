@@ -101,6 +101,10 @@ export const settingsNavItems = [
     href: AppRoutes.settings.spendingLimits,
   },
   {
+    label: 'Security & Login',
+    href: AppRoutes.settings.securityLogin,
+  },
+  {
     label: 'Safe Apps',
     href: AppRoutes.settings.safeApps.index,
   },
@@ -126,6 +130,10 @@ export const generalSettingsNavItems = [
   {
     label: 'Notifications',
     href: AppRoutes.settings.notifications,
+  },
+  {
+    label: 'Security & Login',
+    href: AppRoutes.settings.securityLogin,
   },
   {
     label: 'Data',

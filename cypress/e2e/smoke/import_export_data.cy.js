@@ -6,37 +6,37 @@ import * as constants from '../../support/constants'
 describe('Import Export Data tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.welcomeUrl)
+    cy.visit(constants.dataSettingsUrl)
     main.acceptCookies()
-    file.verifyImportBtnIsVisible()
   })
 
-  it('Verify Safe can be accessed after test file upload [C56111]', () => {
+  it('Verify Safe can be accessed after test file upload', () => {
     const filePath = '../fixtures/data_import.json'
     const safe = constants.SEPOLIA_CSV_ENTRY.name
 
-    file.clickOnImportBtn()
     file.uploadFile(filePath)
     file.verifyImportModalData()
     file.clickOnImportBtnDataImportModal()
+    cy.visit(constants.welcomeUrl)
+    file.clickOnOpenSafeListSidebar()
     file.clickOnImportedSafe(safe)
     file.clickOnClosePushNotificationsBanner()
   })
 
-  it('Verify address book imported data [C56112]', () => {
-    main.acceptCookies(1)
+  it('Verify address book imported data', () => {
+    main.acceptCookies()
     file.clickOnAddressBookBtn()
     file.verifyImportedAddressBookData()
   })
 
-  it('Verify pinned apps [C56113]', () => {
+  it('Verify pinned apps', () => {
     const appNames = ['Transaction Builder']
 
     file.clickOnAppsBtn()
     file.verifyAppsAreVisible(appNames)
   })
 
-  it('Verify imported data in settings [C56114]', () => {
+  it('Verify imported data in settings', () => {
     const unchecked = [file.prependChainPrefixStr, file.copyAddressStr]
     const checked = [file.darkModeStr]
     file.clickOnSettingsBtn()
@@ -45,7 +45,7 @@ describe('Import Export Data tests', () => {
     file.verifyCheckboxes(checked, true)
   })
 
-  it('Verifies data for export in Data tab [C56115]', () => {
+  it('Verifies data for export in Data tab', () => {
     file.clickOnShowMoreTabsBtn()
     file.verifDataTabBtnIsVisible()
     file.clickOnDataTab()

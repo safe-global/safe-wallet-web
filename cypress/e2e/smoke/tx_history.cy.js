@@ -17,10 +17,10 @@ describe('Transaction history tests', () => {
     // So that tests that rely on this feature don't randomly fail
     cy.window().then((win) => win.localStorage.setItem('SAFE_v2__AB_human-readable', true))
 
-    main.acceptCookies(1)
+    main.acceptCookies()
   })
 
-  it('Verify October 29th transactions are displayed [C56128]', () => {
+  it('Verify October 29th transactions are displayed', () => {
     const DATE = 'Oct 29, 2023'
     const NEXT_DATE_LABEL = 'Oct 20, 2023'
     const amount = '0.00001 ETH'
@@ -45,7 +45,7 @@ describe('Transaction history tests', () => {
     })
   })
 
-  it('Verify transaction can be expanded/collapsed [C56129]', () => {
+  it('Verify transaction can be expanded/collapsed', () => {
     createTx.clickOnTransactionExpandableItem('Oct 20, 2023', () => {
       createTx.verifyTransactionStrExists(str1)
       createTx.verifyTransactionStrExists(str2)

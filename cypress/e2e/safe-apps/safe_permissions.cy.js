@@ -15,9 +15,9 @@ describe('Safe permissions system tests', () => {
     })
   })
 
-  it('Verify that requesting permissions with wallet_requestPermissions shows the permissions prompt and return the permissions on accept [C56150]', () => {
+  it('Verify that requesting permissions with wallet_requestPermissions shows the permissions prompt and return the permissions on accept', () => {
     cy.visitSafeApp(constants.testAppUrl + constants.requestPermissionsUrl)
-    main.acceptCookies(1)
+    main.acceptCookies()
     safeapps.clickOnContinueBtn()
     safeapps.verifyWarningDefaultAppMsgIsDisplayed()
     safeapps.clickOnContinueBtn()
@@ -38,7 +38,7 @@ describe('Safe permissions system tests', () => {
     })
   })
 
-  it('Verify that trying to get the current permissions with wallet_getPermissions returns the current permissions [C56151]', () => {
+  it('Verify that trying to get the current permissions with wallet_getPermissions returns the current permissions', () => {
     cy.on('window:before:load', (window) => {
       window.localStorage.setItem(
         constants.SAFE_PERMISSIONS_KEY,
@@ -56,7 +56,7 @@ describe('Safe permissions system tests', () => {
     })
 
     cy.visitSafeApp(constants.testAppUrl + constants.getPermissionsUrl)
-    main.acceptCookies(1)
+    main.acceptCookies()
     safeapps.clickOnContinueBtn()
     safeapps.verifyWarningDefaultAppMsgIsDisplayed()
     safeapps.clickOnContinueBtn()
