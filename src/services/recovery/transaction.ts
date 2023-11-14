@@ -33,7 +33,7 @@ export function getRecoveryProposalTransactions({
   const ownersToAdd = newOwners.filter(
     (newOwner) => !_owners.some((oldOwner) => sameAddress(oldOwner.value, newOwner.value)),
   )
-  const ownersToRemove = safe.owners.filter(
+  const ownersToRemove = _owners.filter(
     (oldOwner) => !newOwners.some((newOwner) => sameAddress(newOwner.value, oldOwner.value)),
   )
 
@@ -49,19 +49,13 @@ export function getRecoveryProposalTransactions({
     const ownerToRemove = ownersToRemove[index]?.value
 
     const ownerIndex = _owners.findIndex((owner) => sameAddress(owner.value, ownerToRemove))
-    const prevOwner = ownerIndex === 0 ? SENTINEL_ADDRESS : _owners[ownerIndex - 1]?.value
+    const prevOwner = ownerIndex === 0 ? SENTINEL_ADDRESS : _owners[ownerIndex - 1].value
 
     // Swap owner if possible
     if (ownerToRemove && ownerToAdd) {
       txData.push(safeInterface.encodeFunctionData('swapOwner', [prevOwner, ownerToRemove, ownerToAdd]))
+      _owners = _owners.map((owner) => (sameAddress(owner.value, ownerToRemove) ? ownersToAdd[index] : owner))
 
-      // Update cache to reflect swap
-      _owners = _owners.map((owner) => {
-        if (sameAddress(owner.value, ownerToRemove)) {
-          return ownersToAdd[index]
-        }
-        return owner
-      })
       continue
     }
 
@@ -70,13 +64,9 @@ export function getRecoveryProposalTransactions({
 
     if (!ownerToRemove) {
       txData.push(safeInterface.encodeFunctionData('addOwnerWithThreshold', [ownerToAdd, threshold]))
-
-      // Update cache to reflect addition
       _owners.push(ownersToAdd[index])
     } else {
       txData.push(safeInterface.encodeFunctionData('removeOwner', [prevOwner, ownerToRemove, threshold]))
-
-      // Update cache to reflect removal
       _owners = _owners.filter((owner) => !sameAddress(owner.value, ownerToRemove))
     }
 
