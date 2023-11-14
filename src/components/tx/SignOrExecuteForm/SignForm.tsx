@@ -103,8 +103,8 @@ const SignForm = ({
           {/* Submit button */}
           <CheckWallet>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ width: '82px' }}>
-                {submitDisabled ? <CircularProgress size={20} /> : 'Sign'}
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '82px' }}>
+                {!isSubmittable ? <CircularProgress size={20} /> : 'Sign'}
               </Button>
             )}
           </CheckWallet>

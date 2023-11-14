@@ -159,8 +159,8 @@ const ExecuteForm = ({
           {/* Submit button */}
           <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ width: '112px' }}>
-                {submitDisabled ? <CircularProgress size={20} /> : 'Execute'}
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
+                {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}
           </CheckWallet>
