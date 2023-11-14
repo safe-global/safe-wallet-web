@@ -97,6 +97,7 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
   },
   SAFE_VIEWED: {
+    event: EventType.META,
     action: 'Safe viewed',
     category: OVERVIEW_CATEGORY,
   },

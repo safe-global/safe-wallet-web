@@ -1,3 +1,5 @@
+import { EventType } from '../types'
+
 export enum TX_TYPES {
   // Owner txs
   owner_add = 'owner_add',
@@ -31,6 +33,7 @@ const TX_CATEGORY = 'transactions'
 
 export const TX_EVENTS = {
   CREATE: {
+    event: EventType.META,
     action: 'Create transaction',
     category: TX_CATEGORY,
     // label: TX_TYPES,
