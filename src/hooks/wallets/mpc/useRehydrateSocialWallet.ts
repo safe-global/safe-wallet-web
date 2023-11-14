@@ -5,7 +5,9 @@ import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { useEffect } from 'react'
+import { type WalletState } from '@web3-onboard/core'
+import { type UserInfo } from '@web3auth/mpc-core-kit'
+import { useCallback, useEffect } from 'react'
 import { checksumAddress } from '@/utils/addresses'
 
 const useRehydrateSocialWallet = () => {
@@ -14,6 +16,22 @@ const useRehydrateSocialWallet = () => {
   const currentChainId = useChainId()
   const addressBook = useAddressBook()
   const dispatch = useAppDispatch()
+
+  const updateAddressBook = useCallback(
+    (userInfo: UserInfo | undefined, wallets: WalletState[] | undefined | void) => {
+      if (!userInfo || !wallets || !currentChainId || wallets.length === 0) return
+
+      const address = wallets[0].accounts[0]?.address
+      if (address) {
+        const signerAddress = checksumAddress(address)
+        if (addressBook[signerAddress] === undefined) {
+          const email = userInfo.email
+          dispatch(upsertAddressBookEntry({ address: signerAddress, chainId: currentChainId, name: email }))
+        }
+      }
+    },
+    [addressBook, currentChainId, dispatch],
+  )
 
   useEffect(() => {
     if (!chain || !onboard) return
@@ -37,23 +55,14 @@ const useRehydrateSocialWallet = () => {
 
         // If the signer is not in the address book => add the user's email as name
         const userInfo = socialWalletService?.getUserInfo()
-        if (userInfo && wallets && currentChainId && wallets.length > 0) {
-          const address = wallets[0].accounts[0]?.address
-          if (address) {
-            const signerAddress = checksumAddress(address)
-            if (addressBook[signerAddress] === undefined) {
-              const email = userInfo.email
-              dispatch(upsertAddressBookEntry({ address: signerAddress, chainId: currentChainId, name: email }))
-            }
-          }
-        }
+        updateAddressBook(userInfo, wallets)
       }
 
       socialWalletService.setOnConnect(onConnect)
     }
 
     void rehydrate()
-  }, [addressBook, chain, currentChainId, dispatch, onboard])
+  }, [chain, onboard, updateAddressBook])
 }
 
 export default useRehydrateSocialWallet

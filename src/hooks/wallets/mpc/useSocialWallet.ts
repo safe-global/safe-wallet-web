@@ -7,7 +7,7 @@ const { getStore, setStore, useStore } = new ExternalStore<ISocialWalletService>
 export const initSocialWallet = async (mpcCoreKit: Web3AuthMPCCoreKit) => {
   const SocialWalletService = (await import('@/services/mpc/SocialWalletService')).default
   const socialWalletService = new SocialWalletService(mpcCoreKit)
-  setStore(new SocialWalletService(mpcCoreKit))
+  setStore(socialWalletService)
 
   return socialWalletService
 }
