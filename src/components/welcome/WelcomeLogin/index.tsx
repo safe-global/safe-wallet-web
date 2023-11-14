@@ -1,15 +1,19 @@
-import SocialSigner from '@/components/common/SocialSigner'
 import { AppRoutes } from '@/config/routes'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { Paper, SvgIcon, Typography, Divider, Link, Box } from '@mui/material'
+import { Paper, SvgIcon, Typography, Divider, Link, Box, Skeleton } from '@mui/material'
 import SafeLogo from '@/public/images/logo-text.svg'
+import dynamic from 'next/dynamic'
 import css from './styles.module.css'
 import { useRouter } from 'next/router'
 import WalletLogin from './WalletLogin'
 import { LOAD_SAFE_EVENTS, CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import Track from '@/components/common/Track'
 import { trackEvent } from '@/services/analytics'
+
+const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
+  loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
+})
 
 const WelcomeLogin = () => {
   const router = useRouter()

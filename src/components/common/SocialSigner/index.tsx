@@ -1,4 +1,7 @@
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { Box, Button, LinearProgress, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -15,8 +18,6 @@ import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TxModalContext } from '@/components/tx-flow'
-import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import madProps from '@/utils/mad-props'
 import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -41,7 +42,7 @@ const useIsSocialWalletEnabled = () => {
 }
 
 type SocialSignerLoginProps = {
-  socialWalletService: ReturnType<typeof useSocialWallet>
+  socialWalletService: ISocialWalletService | undefined
   wallet: ReturnType<typeof useWallet>
   supportedChains: ReturnType<typeof useGetSupportedChains>
   isMPCLoginEnabled: ReturnType<typeof useIsSocialWalletEnabled>
