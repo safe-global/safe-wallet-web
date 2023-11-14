@@ -8,10 +8,9 @@ import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import type { RecoveryQueueItem, RecoveryState } from '@/store/recoverySlice'
 import { hexZeroPad } from 'ethers/lib/utils'
+import { trimTrailingSlash } from '@/utils/url'
 
 const MAX_PAGE_SIZE = 100
-
-export const normalizeTxServiceUrl = (url: string): string => (url.endsWith('/') ? url : `${url}/`)
 
 export const _getRecoveryQueueItem = async (
   transactionAdded: TransactionAddedEvent,
@@ -43,7 +42,7 @@ export const _getSafeCreationReceipt = memoize(
     safeAddress: string
     provider: JsonRpcProvider
   }): Promise<TransactionReceipt> => {
-    const url = `${normalizeTxServiceUrl(transactionService)}api/v1/safes/${safeAddress}/creation/`
+    const url = `${trimTrailingSlash(transactionService)}/api/v1/safes/${safeAddress}/creation/`
 
     const { transactionHash } = await fetch(url).then((res) => {
       if (res.ok && res.status === 200) {

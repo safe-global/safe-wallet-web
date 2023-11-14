@@ -4,12 +4,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import type { Delay, TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 
-import {
-  getRecoveryState,
-  normalizeTxServiceUrl,
-  _getRecoveryQueueItem,
-  _getSafeCreationReceipt,
-} from '../recovery-state'
+import { getRecoveryState, _getRecoveryQueueItem, _getSafeCreationReceipt } from '../recovery-state'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { cloneDeep } from 'lodash'
 
@@ -294,18 +289,6 @@ describe('recovery-state', () => {
         queue: [],
       })
       expect(queryFilterMock).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('normalizeTxServiceUrl', () => {
-    it('should append slash if missing', () => {
-      const urlWithoutSlash = faker.internet.url({ appendSlash: false })
-      expect(normalizeTxServiceUrl(urlWithoutSlash)).toEqual(urlWithoutSlash + '/')
-    })
-
-    it('should not change urls with ending slash ', () => {
-      const urlWithSlash = faker.internet.url({ appendSlash: true })
-      expect(normalizeTxServiceUrl(urlWithSlash)).toEqual(urlWithSlash)
     })
   })
 })
