@@ -1,8 +1,22 @@
 import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
 
-const nftModal = 'div[role="dialog"]'
-const nftModalCloseBtn = 'button[aria-label="close"]'
+const nftModalTitle = '[data-testid="modal-title"]'
+const nftModal = '[data-testid="modal-view"]'
+
+const nftModalCloseBtn = main.modalDialogCloseBtn
 const recipientInput = 'input[name="recipient"]'
+const nftsRow = '[data-testid^="nfts-table-row"]'
+const inactiveNftIcon = '[data-testid="nft-icon-border"]'
+const activeNftIcon = '[data-testid="nft-icon-primary"]'
+const nftCheckBox = (index) => `[data-testid="nft-checkbox-${index}"] > input`
+const activeSendNFTBtn = '[data-testid="nft-send-btn-false"]'
+const modalTitle = '[data-testid="modal-title"]'
+const modalHeader = '[data-testid="modal-header"]'
+const modalSelectedNFTs = '[data-testid="selected-nfts"]'
+const nftItemList = '[data-testid="nft-item-list"]'
+const nftItemNane = '[data-testid="nft-item-name"]'
+const signBtn = '[data-testid="sign-btn"]'
 
 const noneNFTSelected = '0 NFTs selected'
 const sendNFTStr = 'Send NFTs'
@@ -19,7 +33,8 @@ export function clickOnNftsTab() {
   cy.get('p').contains('NFTs').click()
 }
 function verifyTableRows(number) {
-  cy.get('tbody tr').should('have.length', number)
+  cy.scrollTo('bottom').wait(500)
+  cy.get(nftsRow).should('have.length.at.least', number)
 }
 
 export function verifyNFTNumber(number) {
@@ -27,44 +42,48 @@ export function verifyNFTNumber(number) {
 }
 
 export function verifyDataInTable(name, address, tokenID) {
-  cy.get('tbody tr:first-child').contains('td:first-child', name)
-  cy.get('tbody tr:first-child').contains('td:first-child', address)
-  cy.get('tbody tr:first-child').contains('td:nth-child(2)', tokenID)
+  cy.get(nftsRow).contains(name)
+  cy.get(nftsRow).contains(address)
+  cy.get(nftsRow).contains(tokenID)
 }
 
-export function openNFT(index) {
-  cy.get('tbody').within(() => {
-    cy.get('tr').eq(index).click()
-  })
+export function waitForNftItems(count) {
+  cy.get(nftsRow).should('have.length.at.least', count)
+}
+
+export function openActiveNFT(index) {
+  cy.get(activeNftIcon).eq(index).click()
 }
 
 export function verifyNameInNFTModal(name) {
-  cy.get(nftModal).contains(name)
+  cy.get(nftModalTitle).contains(name)
 }
 
 export function verifySelectedNetwrokSepolia() {
-  cy.get(nftModal).contains(constants.networks.sepolia)
+  cy.get(nftModal).within(() => {
+    cy.get(nftModalTitle).contains(constants.networks.sepolia)
+  })
 }
 
 export function verifyNFTModalLink(link) {
-  cy.get(nftModal).contains(`a[href="${link}"]`, 'View on OpenSea')
+  cy.get(nftModalTitle).contains(`a[href="${link}"]`, 'View on OpenSea')
 }
 
 export function closeNFTModal() {
   cy.get(nftModalCloseBtn).click()
-  cy.get(nftModal).should('not.exist')
+  cy.get(nftModalTitle).should('not.exist')
 }
 
-export function clickOn6thNFT() {
-  cy.get('tbody tr:nth-child(6) td:nth-child(2)').click()
+export function clickOnInactiveNFT() {
+  cy.get(inactiveNftIcon).eq(0).click()
 }
 export function verifyNFTModalDoesNotExist() {
-  cy.get(nftModal).should('not.exist')
+  cy.get(nftModalTitle).should('not.exist')
 }
 
 export function selectNFTs(numberOfNFTs) {
   for (let i = 1; i <= numberOfNFTs; i++) {
-    cy.get(`tbody tr:nth-child(${i}) input[type="checkbox"]`).click()
+    cy.get(nftCheckBox(i)).click()
     cy.contains(`${i} NFT${i > 1 ? 's' : ''} selected`)
   }
   cy.contains('button', `Send ${numberOfNFTs} NFT${numberOfNFTs > 1 ? 's' : ''}`)
@@ -73,8 +92,8 @@ export function selectNFTs(numberOfNFTs) {
 export function deselectNFTs(checkboxIndexes, checkedItems) {
   let total = checkedItems - checkboxIndexes.length
 
-  checkboxIndexes.forEach((index) => {
-    cy.get(`tbody tr:nth-child(${index}) input[type="checkbox"]`).uncheck()
+  checkboxIndexes.forEach((i) => {
+    cy.get(nftCheckBox(i)).uncheck()
   })
 
   cy.contains(`${total} NFT${total !== 1 ? 's' : ''} selected`)
@@ -88,14 +107,12 @@ export function verifyInitialNFTData() {
   cy.contains('button[disabled]', 'Send')
 }
 
-export function sendNFT(numberOfCheckedNFTs) {
-  cy.contains('button', `Send ${numberOfCheckedNFTs} NFT${numberOfCheckedNFTs !== 1 ? 's' : ''}`).click()
+export function sendNFT() {
+  cy.get(activeSendNFTBtn).click()
 }
 
 export function verifyNFTModalData() {
-  cy.contains(sendNFTStr)
-  cy.contains(recipientAddressStr)
-  cy.contains(selectedNFTStr)
+  main.verifyElementsExist([modalTitle, modalHeader, modalSelectedNFTs])
 }
 
 export function typeRecipientAddress(address) {
@@ -107,11 +124,10 @@ export function clikOnNextBtn() {
 }
 
 export function verifyReviewModalData(NFTcount) {
-  cy.contains(sendStr)
-  cy.contains(toStr)
-  cy.wait(1000)
-  cy.get(`b:contains(${transferFromStr})`).should('have.length', NFTcount)
-  cy.contains('button:not([disabled])', signBtnStr)
+  main.verifyElementsExist([nftItemList])
+  main.verifyElementsCount(nftItemNane, NFTcount)
+  cy.get(signBtn).should('not.be.disabled')
+
   if (NFTcount > 1) {
     const numbersArr = Array.from({ length: NFTcount }, (_, index) => index + 1)
     numbersArr.forEach((number) => {
