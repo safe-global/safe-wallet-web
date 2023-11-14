@@ -7,16 +7,10 @@ import type { JsonRpcProvider } from '@ethersproject/providers'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import type { RecoveryQueueItem, RecoveryState } from '@/store/recoverySlice'
+import { hexZeroPad } from 'ethers/lib/utils'
+import { trimTrailingSlash } from '@/utils/url'
 
 const MAX_PAGE_SIZE = 100
-
-export const _getQueuedTransactionsAdded = (
-  transactionsAdded: Array<TransactionAddedEvent>,
-  txNonce: BigNumber,
-): Array<TransactionAddedEvent> => {
-  // Only queued transactions with queueNonce >= current txNonce
-  return transactionsAdded.filter(({ args }) => args.queueNonce.gte(txNonce))
-}
 
 export const _getRecoveryQueueItem = async (
   transactionAdded: TransactionAddedEvent,
@@ -48,7 +42,7 @@ export const _getSafeCreationReceipt = memoize(
     safeAddress: string
     provider: JsonRpcProvider
   }): Promise<TransactionReceipt> => {
-    const url = `${transactionService}/v1/${safeAddress}/creation/`
+    const url = `${trimTrailingSlash(transactionService)}/api/v1/safes/${safeAddress}/creation/`
 
     const { transactionHash } = await fetch(url).then((res) => {
       if (res.ok && res.status === 200) {
@@ -63,30 +57,61 @@ export const _getSafeCreationReceipt = memoize(
   ({ transactionService, safeAddress }) => transactionService + safeAddress,
 )
 
+const queryAddedTransactions = async (
+  delayModifier: Delay,
+  queueNonce: BigNumber,
+  txNonce: BigNumber,
+  transactionService: string,
+  provider: JsonRpcProvider,
+  safeAddress: string,
+) => {
+  if (queueNonce.eq(txNonce)) {
+    // There are no queued txs
+    return []
+  }
+
+  const transactionAddedFilter = delayModifier.filters.TransactionAdded()
+
+  if (transactionAddedFilter.topics) {
+    // We filter for the valid nonces while fetching the event logs.
+    // The nonce has to be one between the current queueNonce and the txNonce.
+    const diff = queueNonce.sub(txNonce).toNumber()
+    const queueNonceFilter = Array.from({ length: diff }, (_, idx) => hexZeroPad(txNonce.add(idx).toHexString(), 32))
+    transactionAddedFilter.topics[1] = queueNonceFilter
+  }
+
+  const { blockNumber } = await _getSafeCreationReceipt({ transactionService, provider, safeAddress })
+
+  return await delayModifier.queryFilter(transactionAddedFilter, blockNumber, 'latest')
+}
+
 export const getRecoveryState = async ({
   delayModifier,
-  ...rest
+  transactionService,
+  safeAddress,
+  provider,
 }: {
   delayModifier: Delay
   transactionService: string
   safeAddress: string
   provider: JsonRpcProvider
 }): Promise<RecoveryState[number]> => {
-  const { blockHash } = await _getSafeCreationReceipt(rest)
-
-  const transactionAddedFilter = delayModifier.filters.TransactionAdded()
-
-  const [[modules], txExpiration, txCooldown, txNonce, queueNonce, transactionsAdded] = await Promise.all([
+  const [[modules], txExpiration, txCooldown, txNonce, queueNonce] = await Promise.all([
     delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_PAGE_SIZE),
     delayModifier.txExpiration(),
     delayModifier.txCooldown(),
     delayModifier.txNonce(),
     delayModifier.queueNonce(),
-    // TODO: Improve log retrieval
-    delayModifier.queryFilter(transactionAddedFilter, blockHash),
   ])
 
-  const queuedTransactionsAdded = _getQueuedTransactionsAdded(transactionsAdded, txNonce)
+  const queuedTransactionsAdded = await queryAddedTransactions(
+    delayModifier,
+    queueNonce,
+    txNonce,
+    transactionService,
+    provider,
+    safeAddress,
+  )
 
   const queue = await Promise.all(
     queuedTransactionsAdded.map((transactionAdded) =>
