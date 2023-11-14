@@ -42,7 +42,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   const primaryWallet = wallets[0]
   if (!primaryWallet) return null
 
-  const account = primaryWallet.accounts[primaryWallet.accounts.length - 1]
+  const account = primaryWallet.accounts[0]
   if (!account) return null
 
   try {
