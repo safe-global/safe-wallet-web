@@ -10,12 +10,17 @@ export const MPC_WALLET_EVENTS = {
   },
   MANUAL_RECOVERY: {
     event: EventType.META,
-    action: 'Account recovery started',
+    action: 'MFA login started',
     category: MPC_WALLET_CATEGORY,
   },
   RECOVER_PASSWORD: {
     event: EventType.CLICK,
     action: 'Recover account using password',
+    category: MPC_WALLET_CATEGORY,
+  },
+  RECOVERED_SOCIAL_SIGNER: {
+    event: EventType.META,
+    action: 'Recovered social signer',
     category: MPC_WALLET_CATEGORY,
   },
   UPSERT_PASSWORD: {

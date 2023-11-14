@@ -68,7 +68,15 @@ const headCells = [
 const stopPropagation = (e: SyntheticEvent) => e.stopPropagation()
 
 const NftIndicator = ({ color }: { color: SvgIconProps['color'] }) => (
-  <SvgIcon component={NftIcon} inheritViewBox width={20} height={20} color={color} sx={{ ml: 0.25 }} />
+  <SvgIcon
+    data-testid={`nft-icon-${color}`}
+    component={NftIcon}
+    inheritViewBox
+    width={20}
+    height={20}
+    color={color}
+    sx={{ ml: 0.25 }}
+  />
 )
 
 const activeNftIcon = <NftIndicator color="primary" />
@@ -90,7 +98,7 @@ const NftGrid = ({
   onPreview,
 }: NftsTableProps): ReactElement => {
   const chainId = useChainId()
-  const linkTemplates = nftPlatforms[chainId]
+  const linkTemplates = nftPlatforms[chainId] || []
   // Filter string
   const [filter, setFilter] = useState<string>('')
 
@@ -191,7 +199,7 @@ const NftGrid = ({
               const sx = item.imageUri ? { cursor: 'pointer' } : undefined
 
               return (
-                <TableRow tabIndex={-1} key={`${item.address}-${item.id}`}>
+                <TableRow data-testid={`nfts-table-row-${index + 1}`} tabIndex={-1} key={`${item.address}-${item.id}`}>
                   {/* Collection name */}
                   <TableCell onClick={onClick} sx={sx}>
                     <Box display="flex" alignItems="center" gap={2}>
@@ -233,7 +241,11 @@ const NftGrid = ({
 
                   {/* Checkbox */}
                   <TableCell align="right">
-                    <Checkbox checked={selectedNfts.includes(item)} onChange={(e) => onCheckboxClick(e, item)} />
+                    <Checkbox
+                      data-testid={`nft-checkbox-${index + 1}`}
+                      checked={selectedNfts.includes(item)}
+                      onChange={(e) => onCheckboxClick(e, item)}
+                    />
 
                     {/* Insert the children at the end of the table */}
                     {index === filteredNfts.length - 1 && children}

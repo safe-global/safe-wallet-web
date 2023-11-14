@@ -1,6 +1,7 @@
 import * as batch from '../pages/batches.pages'
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
+import * as owner from '../../e2e/pages/owners.pages.js'
 
 const currentNonce = 3
 const funds_first_tx = '0.001'
@@ -10,20 +11,21 @@ describe('Batch transaction tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
+    owner.waitForConnectionStatus()
     main.acceptCookies()
   })
 
-  it('Verify empty batch list can be opened [C56082]', () => {
+  it('Verify empty batch list can be opened', () => {
     batch.openBatchtransactionsModal()
     batch.openNewTransactionModal()
   })
 
-  it('Verify the Add batch button is present in a transaction form [C56084]', () => {
+  it('Verify the Add batch button is present in a transaction form', () => {
     //The "true" is to validate that the add to batch button is not visible if "Yes, execute" is selected
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
   })
 
-  it('Verify a transaction can be added to the batch [C56085]', () => {
+  it('Verify a transaction can be added to the batch', () => {
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
     cy.contains(batch.transactionAddedToBatchStr).should('be.visible')
     //The batch button in the header shows the transaction count
@@ -32,7 +34,7 @@ describe('Batch transaction tests', () => {
     batch.verifyAmountTransactionsInBatch(1)
   })
 
-  it('Verify a second transaction can be added to the batch [C56086]', () => {
+  it('Verify a second transaction can be added to the batch', () => {
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
     cy.wait(1000)
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
@@ -41,7 +43,7 @@ describe('Batch transaction tests', () => {
     batch.verifyAmountTransactionsInBatch(2)
   })
 
-  it('Verify the batch can be confirmed and related transactions exist in the form [C56088]', () => {
+  it('Verify the batch can be confirmed and related transactions exist in the form', () => {
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
     cy.wait(1000)
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
@@ -56,7 +58,7 @@ describe('Batch transaction tests', () => {
     cy.get('@TransactionList').find('li').eq(1).find('span').eq(0).contains(funds_first_tx)
   })
 
-  it('Verify a transaction can be removed from the batch [C56089]', () => {
+  it('Verify a transaction can be removed from the batch', () => {
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
     cy.wait(1000)
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)

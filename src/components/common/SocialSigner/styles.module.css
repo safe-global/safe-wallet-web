@@ -10,6 +10,16 @@
   align-items: flex-start;
 }
 
+.loginProgress {
+  margin-bottom: -16px;
+  top: 0;
+  width: 100%;
+  height: 2px;
+  position: absolute;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
 .passwordWrapper {
   padding: var(--space-4) var(--space-4) var(--space-2) var(--space-4);
   display: flex;
