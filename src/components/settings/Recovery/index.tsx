@@ -5,10 +5,16 @@ import type { ReactElement } from 'react'
 import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
 import { TxModalContext } from '@/components/tx-flow'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import { RecoverAccountFlow } from '@/components/tx-flow/flows/RecoverAccount'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useAppSelector } from '@/store'
+import { selectRecoveryByGuardian } from '@/store/recoverySlice'
 
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
   const isDarkMode = useDarkMode()
+  const wallet = useWallet()
+  const recovery = useAppSelector((state) => selectRecoveryByGuardian(state, wallet?.address ?? ''))
 
   return (
     <Paper sx={{ p: 4 }}>
@@ -35,9 +41,16 @@ export function Recovery(): ReactElement {
             Enabling the Account recovery module will require a transactions.
           </Typography>
 
-          <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)}>
-            Set up recovery
-          </Button>
+          {recovery ? (
+            // TODO: Move to correct location when widget is ready
+            <Button variant="contained" onClick={() => setTxFlow(<RecoverAccountFlow />)}>
+              Propose recovery
+            </Button>
+          ) : (
+            <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)}>
+              Set up recovery
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Paper>
