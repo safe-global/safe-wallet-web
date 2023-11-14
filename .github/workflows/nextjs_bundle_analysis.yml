@@ -9,11 +9,6 @@ on:
     branches:
       - dev
 
-defaults:
-  run:
-    # change this if your nextjs app does not live at the root of the repo
-    working-directory: ./
-
 permissions:
   contents: read # for checkout repository
   actions: read # for fetching base branch bundle stats
