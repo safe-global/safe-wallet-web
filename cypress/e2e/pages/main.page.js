@@ -1,6 +1,7 @@
 import * as constants from '../../support/constants'
 
 const acceptSelection = 'Accept selection'
+export const modalDialogCloseBtn = '[data-testid="modal-dialog-close-btn"]'
 
 export function clickOnSideMenuItem(item) {
   cy.get('p').contains(item).click()

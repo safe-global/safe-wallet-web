@@ -11,11 +11,11 @@ describe('NFTs tests', () => {
     cy.clearLocalStorage()
     cy.visit(constants.balanceNftsUrl + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
-    nfts.clickOnNftsTab()
+    nfts.waitForNftItems(2)
   })
 
   it('Verify that NFTs exist in the table', () => {
-    nfts.verifyNFTNumber(20)
+    nfts.verifyNFTNumber(10)
   })
 
   it('Verify NFT row contains data', () => {
@@ -23,14 +23,14 @@ describe('NFTs tests', () => {
   })
 
   it('Verify NFT preview window can be opened', () => {
-    nfts.openNFT(0)
+    nfts.openActiveNFT(0)
     nfts.verifyNameInNFTModal(nftsTokenID)
     nfts.verifySelectedNetwrokSepolia()
     nfts.closeNFTModal()
   })
 
   it('Verify NFT open does not open if no NFT exits', () => {
-    nfts.clickOn6thNFT()
+    nfts.clickOnInactiveNFT()
     nfts.verifyNFTModalDoesNotExist()
   })
 
@@ -38,7 +38,7 @@ describe('NFTs tests', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(3)
     nfts.deselectNFTs([2], 3)
-    nfts.sendNFT(2)
+    nfts.sendNFT()
     nfts.verifyNFTModalData()
     nfts.typeRecipientAddress(constants.SEPOLIA_TEST_SAFE_4)
     nfts.clikOnNextBtn()
