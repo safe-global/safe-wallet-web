@@ -111,7 +111,8 @@ const SafeAppsInfoModal = ({
 
   return (
     <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" height="calc(100vh - 52px)">
-      <Box data-testid="app-info-modal"
+      <Box
+        data-testid="app-info-modal"
         sx={({ palette }) => ({
           width: '450px',
           backgroundColor: palette.background.paper,
