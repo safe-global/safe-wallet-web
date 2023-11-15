@@ -20,6 +20,7 @@ const thresholdOption = 'li[role="option"]'
 const existingOwnerAddressInput = (index) => `input[name="owners.${index}.address"]`
 const existingOwnerNameInput = (index) => `input[name="owners.${index}.name"]`
 const singleOwnerNameInput = 'input[name="name"]'
+const finishTransactionBtn = '[data-testid="finish-transaction-btn"]'
 
 const disconnectBtnStr = 'Disconnect'
 const notConnectedStatus = 'Connect'
@@ -31,11 +32,16 @@ const backbtnStr = 'Back'
 const removeOwnerStr = 'Remove owner'
 const selectedOwnerStr = 'Selected owner'
 const addNewOwnerStr = 'Add new owner'
+const processedTransactionStr = 'Transaction was successful'
 
 export const safeAccountNonceStr = 'Safe Account nonce'
 export const nonOwnerErrorMsg = 'Your connected wallet is not an owner of this Safe Account'
 export const disconnectedUserErrorMsg = 'Please connect your wallet'
 
+export function verifyOwnerTransactionComplted() {
+  cy.get(processedTransactionStr).should('exist')
+  cy.get(finishTransactionBtn).should('exist')
+}
 export function verifyNumberOfOwners(count) {
   const indices = Array.from({ length: count }, (_, index) => index)
   const names = indices.map(existingOwnerNameInput)

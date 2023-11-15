@@ -112,7 +112,7 @@ export const SocialSigner = ({
       <Box display="flex" flexDirection="column" gap={2} sx={{ width: '100%' }}>
         {isSocialLogin && userInfo ? (
           <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
-            <Button
+            <Button data-testid="signed-in-account-btn"
               variant="outlined"
               sx={{ px: 2, py: 1, borderWidth: '1px !important' }}
               onClick={onLogin}
@@ -146,7 +146,7 @@ export const SocialSigner = ({
           </Track>
         ) : (
           <Track {...MPC_WALLET_EVENTS.CONNECT_GOOGLE} label={isWelcomePage ? 'welcomePage' : 'navBar'}>
-            <Button
+            <Button data-testid="google-connect-btn"
               variant="outlined"
               onClick={login}
               size="small"

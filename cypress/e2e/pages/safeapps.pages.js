@@ -7,6 +7,7 @@ export const contractMethodIndex = '[name="contractMethodIndex"]'
 export const saveToLibraryBtn = 'button[title="Save to Library"]'
 export const downloadBatchBtn = 'button[title="Download batch"]'
 export const deleteBatchBtn = 'button[title="Delete Batch"]'
+const appModal = '[data-testid="app-info-modal"]'
 
 const addBtnStr = /add/i
 const noAppsStr = /no Safe Apps found/i
@@ -208,7 +209,8 @@ function verifyDisclaimerIsVisible() {
 }
 
 export function clickOnContinueBtn() {
-  return cy.findByRole('button', { name: continueBtnStr }).click().wait(1000)
+  cy.get(appModal).should('exist')
+  cy.findByRole('button', { name: continueBtnStr }).click().wait(1000)
 }
 
 export function verifyCameraCheckBoxExists() {
