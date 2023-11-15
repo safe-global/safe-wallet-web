@@ -16,8 +16,6 @@ export function getRecoveryProposalTransactions({
   newThreshold: number
   newOwners: Array<AddressEx>
 }): Array<MetaTransactionData> {
-  const INTERMEDIARY_THRESHOLD = 1
-
   const safeDeployment = getSafeSingletonDeployment({ network: safe.chainId, version: safe.version ?? undefined })
 
   if (!safeDeployment) {
@@ -40,40 +38,70 @@ export function getRecoveryProposalTransactions({
   // Check whether threshold should be changed after owner management
   let changeThreshold = newThreshold !== safe.threshold
 
+  // Owner management transaction data
   const txData: Array<string> = []
 
+  // Minimum number of owner management transactions required
   const length = Math.max(ownersToAdd.length, ownersToRemove.length)
 
+  // Iterate of existing/new owners and swap, add, remove accordingly
   for (let index = 0; index < length; index++) {
     const ownerToAdd = ownersToAdd[index]?.value
     const ownerToRemove = ownersToRemove[index]?.value
 
-    const ownerIndex = _owners.findIndex((owner) => sameAddress(owner.value, ownerToRemove))
-    const prevOwner = ownerIndex === 0 ? SENTINEL_ADDRESS : _owners[ownerIndex - 1].value
+    const prevOwner = (() => {
+      const ownerIndex = _owners.findIndex((owner) => sameAddress(owner.value, ownerToRemove))
+      return ownerIndex === 0 ? SENTINEL_ADDRESS : _owners[ownerIndex - 1]?.value
+    })()
 
-    // Swap owner if possible
+    // Swap existing owner with new one
     if (ownerToRemove && ownerToAdd) {
-      txData.push(safeInterface.encodeFunctionData('swapOwner', [prevOwner, ownerToRemove, ownerToAdd]))
+      const swapOwner = safeInterface.encodeFunctionData('swapOwner', [prevOwner, ownerToRemove, ownerToAdd])
+      txData.push(swapOwner)
+
+      // Swap owner in cache
       _owners = _owners.map((owner) => (sameAddress(owner.value, ownerToRemove) ? ownersToAdd[index] : owner))
 
       continue
     }
 
-    // Add or remove owner, finally setting threshold (intermediary value prevents threshold > owner length)
-    const threshold = index === length - 1 ? newThreshold : INTERMEDIARY_THRESHOLD
+    const threshold = (() => {
+      const newOwnerLength = ownerToAdd ? _owners.length + 1 : _owners.length - 1
 
-    if (!ownerToRemove) {
-      txData.push(safeInterface.encodeFunctionData('addOwnerWithThreshold', [ownerToAdd, threshold]))
-      _owners.push(ownersToAdd[index])
-    } else {
-      txData.push(safeInterface.encodeFunctionData('removeOwner', [prevOwner, ownerToRemove, threshold]))
+      // Final transaction
+      if (index === length - 1) {
+        if (newThreshold > newOwnerLength) {
+          throw new Error('New threshold is higher than desired owners')
+        }
+        return newThreshold
+      }
+
+      // Prevent intermediary threshold > number of owners
+      return newThreshold > newOwnerLength ? newOwnerLength : newThreshold
+    })()
+
+    // Add new owner and set threshold
+    if (ownerToAdd) {
+      const addOwnerWithThreshold = safeInterface.encodeFunctionData('addOwnerWithThreshold', [ownerToAdd, threshold])
+      txData.push(addOwnerWithThreshold)
+
+      // Add owner to cache
+      _owners.push({ value: ownerToAdd })
+    }
+    // Remove existing owner and set threshold
+    else {
+      const removeOwner = safeInterface.encodeFunctionData('removeOwner', [prevOwner, ownerToRemove, threshold])
+      txData.push(removeOwner)
+
+      // Remove owner from cache
       _owners = _owners.filter((owner) => !sameAddress(owner.value, ownerToRemove))
     }
 
+    // addOwnerWithThreshold/removeOwner changed threshold
     changeThreshold = false
   }
 
-  // If only swapOwners exist but there is a threshold change, changeThreshold
+  // Only swapOwner will be called
   if (changeThreshold) {
     txData.push(safeInterface.encodeFunctionData('changeThreshold', [newThreshold]))
   }
