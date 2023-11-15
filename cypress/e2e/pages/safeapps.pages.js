@@ -210,7 +210,13 @@ function verifyDisclaimerIsVisible() {
 
 export function clickOnContinueBtn() {
   cy.get(appModal).should('exist')
-  cy.findByRole('button', { name: continueBtnStr }).click().wait(1000)
+  return cy.findByRole('button', { name: continueBtnStr }).click().wait(1000)
+}
+
+export function checkLocalStorage() {
+  clickOnContinueBtn().should(() => {
+    expect(window.localStorage.getItem(constants.BROWSER_PERMISSIONS_KEY)).to.eq(localStorageItem)
+  })
 }
 
 export function verifyCameraCheckBoxExists() {
