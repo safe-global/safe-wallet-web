@@ -30,8 +30,6 @@ describe('Browser permissions tests', () => {
     safeapps.verifyWarningDefaultAppMsgIsDisplayed()
     safeapps.verifyCameraCheckBoxExists()
     safeapps.clickOnContinueBtn()
-    safeapps.clickOnContinueBtn().should(() => {
-      expect(window.localStorage.getItem(constants.BROWSER_PERMISSIONS_KEY)).to.eq(safeapps.localStorageItem)
-    })
+    safeapps.checkLocalStorage()
   })
 })

@@ -1,4 +1,5 @@
 import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
 
 const welcomeLoginScreen = '[data-testid="welcome-login"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
@@ -11,12 +12,64 @@ export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
 const connectingContainer = 'div[class*="connecting-container"]'
 const createNewSafeBtn = 'span[data-track="create-safe: Continue to creation"]'
 const connectWalletBtn = 'Connect wallet'
+const googleConnectBtn = '[data-testid="google-connect-btn"]'
+const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
+const googleAccountInfoHeader = '[data-testid="open-account-center"]'
+const reviewStepOwnerInfo = '[data-testid="review-step-owner-info"]'
+const reviewStepNextBtn = '[data-testid="review-step-next-btn"]'
+const safeCreationStatusInfo = '[data-testid="safe-status-info"]'
+const startUsingSafeBtn = '[data-testid="start-using-safe-btn"]'
+const sponsorIcon = '[data-testid="sponsor-icon"]'
+const networkFeeSection = '[data-tetid="network-fee-section"]'
 
+const sponsorStr = 'Your account is sponsored by Goerli'
+const safeCreationProcessing = 'Transaction is being executed'
+const safeCreationComplete = 'Your Safe Account is being indexed'
 const changeNetworkWarningStr = 'Change your wallet network'
 const safeAccountSetupStr = 'Safe Account setup'
 const policy1_2 = '1/1 policy'
 export const walletName = 'test1-sepolia-safe'
 export const defaltSepoliaPlaceholder = 'Sepolia Safe'
+const welcomeToSafeStr = 'Welcome to Safe'
+
+export function verifySafeIsBeingCreated() {
+  cy.get(safeCreationStatusInfo).should('have.text', safeCreationProcessing)
+}
+
+export function verifySafeCreationIsComplete() {
+  cy.get(safeCreationStatusInfo).should('exist').and('have.text', safeCreationComplete)
+  cy.get(startUsingSafeBtn).should('exist').click()
+  cy.get(welcomeToSafeStr).should('exist')
+}
+
+export function clickOnReviewStepNextBtn() {
+  cy.get(reviewStepNextBtn).click()
+}
+export function verifyOwnerInfoIsPresent() {
+  return cy.get(reviewStepOwnerInfo).shoul('exist')
+}
+
+export function verifySponsorMessageIsPresent() {
+  main.verifyElementsExist([sponsorIcon, networkFeeSection])
+  // Goerli is generated
+  cy.get(networkFeeSection).contains(sponsorStr).should('exist')
+}
+
+export function verifyGoogleConnectBtnIsDisabled() {
+  cy.get(googleConnectBtn).should('be.disabled')
+}
+
+export function verifyGoogleConnectBtnIsEnabled() {
+  cy.get(googleConnectBtn).should('not.be.disabled')
+}
+
+export function verifyGoogleSignin() {
+  return cy.get(googleSignedinBtn).should('exist')
+}
+
+export function verifyGoogleAccountInfoInHeader() {
+  return cy.get(googleAccountInfoHeader).should('exist')
+}
 
 export function verifyPolicy1_1() {
   cy.contains(policy1_2).should('exist')
