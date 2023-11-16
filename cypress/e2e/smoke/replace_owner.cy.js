@@ -1,7 +1,6 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
-import * as addressBook from '../pages/address_book.page'
 
 describe('[SMOKE] Replace Owners tests', () => {
   beforeEach(() => {
