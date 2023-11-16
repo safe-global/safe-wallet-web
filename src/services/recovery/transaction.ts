@@ -67,17 +67,8 @@ export function getRecoveryProposalTransactions({
 
     const threshold = (() => {
       const newOwnerLength = ownerToAdd ? _owners.length + 1 : _owners.length - 1
-
-      // Final transaction
-      if (index === length - 1) {
-        if (newThreshold > newOwnerLength) {
-          throw new Error('New threshold is higher than desired owners')
-        }
-        return newThreshold
-      }
-
       // Prevent intermediary threshold > number of owners
-      return newThreshold > newOwnerLength ? newOwnerLength : newThreshold
+      return index === length - 1 ? newThreshold : newThreshold > newOwnerLength ? newOwnerLength : newThreshold
     })()
 
     // Add new owner and set threshold
@@ -104,6 +95,10 @@ export function getRecoveryProposalTransactions({
   // Only swapOwner will be called
   if (changeThreshold) {
     txData.push(safeInterface.encodeFunctionData('changeThreshold', [newThreshold]))
+  }
+
+  if (newThreshold > _owners.length) {
+    throw new Error('New threshold is higher than desired owners')
   }
 
   return txData.map((data) => ({
