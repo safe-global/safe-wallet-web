@@ -1,13 +1,15 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
+import * as navigation from '../pages/navigation.page'
 
 describe('[SMOKE] Add Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
     cy.clearLocalStorage()
+    main.waitForTrnsactionHistoryToComplete()
     main.acceptCookies()
-    cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
+    main.verifyElementsExist([navigation.setupSection])
   })
 
   it('[SMOKE] Verify the presence of "Add Owner" button', () => {
@@ -16,6 +18,7 @@ describe('[SMOKE] Add Owners tests', () => {
 
   it('[SMOKE] Verify “Add new owner” button tooltip displays correct message for Non-Owner', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_2)
+    main.waitForTrnsactionHistoryToComplete()
     owner.verifyAddOwnerBtnIsDisabled()
   })
 
@@ -52,9 +55,7 @@ describe('[SMOKE] Add Owners tests', () => {
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
     owner.clickOnNextBtn()
     owner.verifyConfirmTransactionWindowDisplayed()
-    cy.reload()
-    owner.waitForConnectionStatus()
-    owner.openAddOwnerWindow()
+    owner.clickOnBackBtn()
     owner.typeOwnerAddress(constants.SEPOLIA_TEST_SAFE_2)
     owner.clickOnNextBtn()
     owner.verifyConfirmTransactionWindowDisplayed()

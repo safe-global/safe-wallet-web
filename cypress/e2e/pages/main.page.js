@@ -11,6 +11,10 @@ export function clickOnSideMenuItem(item) {
   cy.get('p').contains(item).click()
 }
 
+export function waitForTrnsactionHistoryToComplete() {
+  cy.intercept('GET', constants.transactionHistoryEndpoint).as('History')
+  cy.wait('@History')
+}
 export function acceptCookies(index = 0) {
   cy.wait(1000)
 

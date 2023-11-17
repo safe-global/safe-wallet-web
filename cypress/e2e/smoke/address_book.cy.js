@@ -10,6 +10,7 @@ describe('[SMOKE] Address book tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
+    main.waitForTrnsactionHistoryToComplete()
     main.acceptCookies()
   })
 
@@ -28,7 +29,6 @@ describe('[SMOKE] Address book tests', () => {
     addressBook.verifyEditedNameNotExists(EDITED_NAME)
   })
 
-  // TODO: Update Goerli title in TestRail
   it('[SMOKE] Verify csv file can be imported', () => {
     addressBook.clickOnImportFileBtn()
     addressBook.importFile()

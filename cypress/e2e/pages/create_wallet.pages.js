@@ -14,7 +14,7 @@ const createNewSafeBtn = 'span[data-track="create-safe: Continue to creation"]'
 const connectWalletBtn = 'Connect wallet'
 const googleConnectBtn = '[data-testid="google-connect-btn"]'
 const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
-const googleAccountInfoHeader = '[data-testid="open-account-center"]'
+export const accountInfoHeader = '[data-testid="open-account-center"]'
 const reviewStepOwnerInfo = '[data-testid="review-step-owner-info"]'
 const reviewStepNextBtn = '[data-testid="review-step-next-btn"]'
 const safeCreationStatusInfo = '[data-testid="safe-status-info"]'
@@ -68,7 +68,7 @@ export function verifyGoogleSignin() {
 }
 
 export function verifyGoogleAccountInfoInHeader() {
-  return cy.get(googleAccountInfoHeader).should('exist')
+  return cy.get(accountInfoHeader).should('exist')
 }
 
 export function verifyPolicy1_1() {
