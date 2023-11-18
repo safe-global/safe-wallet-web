@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo } from 'react'
+import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -20,36 +20,33 @@ export function EnableRecoveryFlowReview({ params }: { params: EnableRecoveryFlo
   const { safe } = useSafeInfo()
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
 
-  const recoverySetup = useMemo(() => {
+  const guardian = params[EnableRecoveryFlowFields.guardians]
+  const delay = RecoveryDelayPeriods.find(({ value }) => value === params[EnableRecoveryFlowFields.txCooldown])!.label
+  const expiration = RecoveryExpirationPeriods.find(
+    ({ value }) => value === params[EnableRecoveryFlowFields.txExpiration],
+  )!.label
+  const emailAddress = params[EnableRecoveryFlowFields.emailAddress]
+
+  useEffect(() => {
     if (!web3) {
       return
     }
 
-    return getRecoverySetup({
+    const { transactions } = getRecoverySetup({
       ...params,
+      guardians: [guardian],
       safe,
       provider: web3,
     })
-  }, [params, safe, web3])
 
-  useEffect(() => {
-    if (recoverySetup) {
-      createMultiSendCallOnlyTx(recoverySetup.transactions).then(setSafeTx).catch(setSafeTxError)
-    }
-  }, [recoverySetup, setSafeTx, setSafeTxError])
+    createMultiSendCallOnlyTx(transactions).then(setSafeTx).catch(setSafeTxError)
+  }, [guardian, params, safe, setSafeTx, setSafeTxError, web3])
 
   useEffect(() => {
     if (safeTxError) {
       logError(Errors._809, safeTxError.message)
     }
   }, [safeTxError])
-
-  const guardian = params[EnableRecoveryFlowFields.guardians][0]
-  const delay = RecoveryDelayPeriods.find(({ value }) => value === params[EnableRecoveryFlowFields.txCooldown])!.label
-  const expiration = RecoveryExpirationPeriods.find(
-    ({ value }) => value === params[EnableRecoveryFlowFields.txExpiration],
-  )!.label
-  const emailAddress = params[EnableRecoveryFlowFields.emailAddress]
 
   return (
     <SignOrExecuteForm onSubmit={() => null}>

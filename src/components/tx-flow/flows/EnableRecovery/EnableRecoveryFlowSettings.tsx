@@ -59,12 +59,7 @@ export function EnableRecoveryFlowSettings({
               recovery process in the future.
             </Typography>
 
-            <AddressBookInput
-              label="Guardian address"
-              name={`${EnableRecoveryFlowFields.guardians}.0`}
-              required
-              fullWidth
-            />
+            <AddressBookInput label="Guardian address" name={EnableRecoveryFlowFields.guardians} required fullWidth />
 
             <Typography variant="h5">Recovery delay</Typography>
 

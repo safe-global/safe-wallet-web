@@ -40,6 +40,8 @@ export const RecoveryExpirationPeriods = [
   ...RecoveryDelayPeriods,
 ] as const
 
+const Subtitles = ['How does recovery work?', 'Set up recovery settings', 'Set up account recovery']
+
 export enum EnableRecoveryFlowFields {
   guardians = 'guardians',
   txCooldown = 'txCooldown',
@@ -48,7 +50,7 @@ export enum EnableRecoveryFlowFields {
 }
 
 export type EnableRecoveryFlowProps = {
-  [EnableRecoveryFlowFields.guardians]: Array<string>
+  [EnableRecoveryFlowFields.guardians]: string
   [EnableRecoveryFlowFields.txCooldown]: string
   [EnableRecoveryFlowFields.txExpiration]: string
   [EnableRecoveryFlowFields.emailAddress]: string
@@ -56,8 +58,8 @@ export type EnableRecoveryFlowProps = {
 
 export function EnableRecoveryFlow(): ReactElement {
   const { data, step, nextStep, prevStep } = useTxStepper<EnableRecoveryFlowProps>({
-    [EnableRecoveryFlowFields.guardians]: [''],
-    [EnableRecoveryFlowFields.txCooldown]: `${60 * 60 * 24 * 28}`, // 28 days in seconds
+    [EnableRecoveryFlowFields.guardians]: '',
+    [EnableRecoveryFlowFields.txCooldown]: `${DAY_SECONDS * 28}`, // 28 days in seconds
     [EnableRecoveryFlowFields.txExpiration]: '0',
     [EnableRecoveryFlowFields.emailAddress]: '',
   })
@@ -65,24 +67,17 @@ export function EnableRecoveryFlow(): ReactElement {
   const steps = [
     <EnableRecoveryFlowIntro key={0} onSubmit={() => nextStep(data)} />,
     <EnableRecoveryFlowSettings key={1} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
-    <EnableRecoveryFlowReview key={1} params={data} />,
+    <EnableRecoveryFlowReview key={2} params={data} />,
   ]
 
   const isIntro = step === 0
-  const isSettings = step === 1
-
-  const subtitle = isIntro
-    ? 'How does recovery work?'
-    : isSettings
-    ? 'Set up account recovery settings'
-    : 'Set up account recovery'
 
   const icon = isIntro ? undefined : RecoveryPlus
 
   return (
     <TxLayout
       title="Account recovery"
-      subtitle={subtitle}
+      subtitle={Subtitles[step]}
       icon={icon}
       step={step}
       onBack={prevStep}

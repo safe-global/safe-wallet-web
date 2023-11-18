@@ -20,7 +20,7 @@ describe('getRecoverySetup', () => {
     jest.clearAllMocks()
   })
 
-  it('should deploy Delay Modifier, enable it on Safe and add a Guardian', () => {
+  it('should return deploy Delay Modifier, enable Safe guardian and add a Guardian transactions', () => {
     const txCooldown = faker.string.numeric()
     const txExpiration = faker.string.numeric()
     const guardians = [faker.finance.ethereumAddress()]
