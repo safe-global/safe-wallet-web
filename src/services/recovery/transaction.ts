@@ -137,10 +137,13 @@ export function getRecoveryProposalTransaction({
     throw new Error('MultiSend deployment not found')
   }
 
+  const multiSendInterface = new Interface(multiSendDeployment.abi)
+  const multiSendData = encodeMultiSendData(transactions)
+
   return {
     to: multiSendDeployment.networkAddresses[safe.chainId] ?? multiSendDeployment.defaultAddress,
     value: '0',
     operation: OperationType.Call,
-    data: encodeMultiSendData(transactions),
+    data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
   }
 }
