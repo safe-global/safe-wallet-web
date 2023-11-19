@@ -170,7 +170,13 @@ const OwnerPolicyStep = ({
         <Divider />
         <Box className={layoutCss.row}>
           <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-            <Button data-testid="back-btn" variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
+            <Button
+              data-testid="back-btn"
+              variant="outlined"
+              size="small"
+              onClick={handleBack}
+              startIcon={<ArrowBackIcon fontSize="small" />}
+            >
               Back
             </Button>
             <Button data-testid="next-btn" type="submit" variant="contained" size="stretched" disabled={isDisabled}>
