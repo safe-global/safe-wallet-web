@@ -6,6 +6,7 @@ import * as owner from '../pages/owners.pages'
 describe('[SMOKE] Safe creation tests', () => {
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
+    main.waitForSafeListRequestToComplete()
     cy.clearLocalStorage()
     main.acceptCookies()
   })
@@ -26,7 +27,7 @@ describe('[SMOKE] Safe creation tests', () => {
   it('[SMOKE] Verify Add and Remove Owner Row works as expected', () => {
     owner.waitForConnectionStatus()
     createwallet.clickOnCreateNewSafeBtn()
-    owner.clickOnNextBtn()
+    createwallet.clickOnNextBtn()
     createwallet.clickOnAddNewOwnerBtn()
     owner.verifyNumberOfOwners(2)
     owner.verifyExistingOwnerAddress(1, '')
@@ -40,7 +41,7 @@ describe('[SMOKE] Safe creation tests', () => {
   it('[SMOKE] Verify Threshold Setup', () => {
     owner.waitForConnectionStatus()
     createwallet.clickOnCreateNewSafeBtn()
-    owner.clickOnNextBtn()
+    createwallet.clickOnNextBtn()
     createwallet.clickOnAddNewOwnerBtn()
     createwallet.clickOnAddNewOwnerBtn()
     owner.verifyNumberOfOwners(3)

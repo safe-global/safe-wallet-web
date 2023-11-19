@@ -21,6 +21,8 @@ const safeCreationStatusInfo = '[data-testid="safe-status-info"]'
 const startUsingSafeBtn = '[data-testid="start-using-safe-btn"]'
 const sponsorIcon = '[data-testid="sponsor-icon"]'
 const networkFeeSection = '[data-tetid="network-fee-section"]'
+const nextBtn = '[data-testid="next-btn"]'
+const backBtn = '[data-testid="back-btn"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -32,6 +34,9 @@ export const walletName = 'test1-sepolia-safe'
 export const defaltSepoliaPlaceholder = 'Sepolia Safe'
 const welcomeToSafeStr = 'Welcome to Safe'
 
+export function clickOnBackBtn() {
+  cy.get(backBtn).should('be.enabled').click()
+}
 export function verifySafeIsBeingCreated() {
   cy.get(safeCreationStatusInfo).should('have.text', safeCreationProcessing)
 }
@@ -128,7 +133,7 @@ export function selectNetwork(network, regex = false) {
 }
 
 export function clickOnNextBtn() {
-  cy.contains('button', 'Next').click()
+  cy.get(nextBtn).should('be.enabled').click()
 }
 
 export function verifyOwnerName(name, index) {

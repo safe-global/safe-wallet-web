@@ -15,6 +15,12 @@ export function waitForTrnsactionHistoryToComplete() {
   cy.intercept('GET', constants.transactionHistoryEndpoint).as('History')
   cy.wait('@History')
 }
+
+export function waitForSafeListRequestToComplete() {
+  cy.intercept('GET', constants.safeListEndpoint).as('Safes')
+  cy.wait('@Safes')
+}
+
 export function acceptCookies(index = 0) {
   cy.wait(1000)
 

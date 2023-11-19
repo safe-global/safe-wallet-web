@@ -1,6 +1,7 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
+import * as createwallet from '../pages/create_wallet.pages'
 
 describe('[SMOKE] Remove Owners tests', () => {
   beforeEach(() => {
@@ -15,7 +16,7 @@ describe('[SMOKE] Remove Owners tests', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
     owner.waitForConnectionStatus()
     owner.openRemoveOwnerWindow(1)
-    owner.clickOnNextBtn()
+    createwallet.clickOnNextBtn()
     owner.verifyOwnerDeletionWindowDisplayed()
   })
 })
