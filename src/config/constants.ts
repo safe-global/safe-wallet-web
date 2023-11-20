@@ -19,7 +19,6 @@ export const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN || ''
 export const BEAMER_ID = process.env.NEXT_PUBLIC_BEAMER_ID || ''
 
 // Wallets
-export const WC_BRIDGE = process.env.NEXT_PUBLIC_WC_BRIDGE || 'https://bridge.walletconnect.org'
 export const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WC_PROJECT_ID || ''
 export const TREZOR_APP_URL = 'app.safe.global'
 export const TREZOR_EMAIL = 'support@safe.global'

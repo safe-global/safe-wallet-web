@@ -6,7 +6,6 @@ import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
-import { useInitPairing } from '@/services/pairing/hooks'
 import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
@@ -93,21 +92,11 @@ const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 // Detect injected wallet
 const hasInjectedWallet = () => typeof window !== 'undefined' && !!window?.ethereum
 
-// `connectWallet` is called when connecting/switching wallets and on pairing `connect` event (when prev. session connects)
-// This re-entrant lock prevents multiple `connectWallet`/tracking calls that would otherwise occur for pairing module
-let isConnecting = false
-
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = async (
   onboard: OnboardAPI,
   options?: Parameters<OnboardAPI['connectWallet']>[0],
 ): Promise<WalletState[] | undefined> => {
-  if (isConnecting) {
-    return
-  }
-
-  isConnecting = true
-
   // On mobile, automatically choose WalletConnect if there is no injected wallet
   if (!options && isMobile() && !hasInjectedWallet()) {
     options = {
@@ -121,12 +110,8 @@ export const connectWallet = async (
     wallets = await onboard.connectWallet(options)
   } catch (e) {
     logError(Errors._302, e)
-
-    isConnecting = false
     return
   }
-
-  isConnecting = false
 
   return wallets
 }
@@ -152,8 +137,6 @@ export const useInitOnboard = () => {
   const chain = useCurrentChain()
   const onboard = useStore()
   const customRpc = useAppSelector(selectRpc)
-
-  useInitPairing()
 
   useEffect(() => {
     if (configs.length > 0 && chain) {
