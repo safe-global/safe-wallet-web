@@ -104,7 +104,7 @@ describe('WalletInfo', () => {
       />,
     )
 
-    expect(getByText('Delete Account')).toBeInTheDocument()
+    expect(getByText('Delete account')).toBeInTheDocument()
   })
 
   it('should not display a Delete Account on prod', () => {
