@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
-import { Typography } from '@mui/material'
+import { SvgIcon, Typography } from '@mui/material'
+import GitHubIcon from '@mui/icons-material/GitHub'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
@@ -68,7 +69,9 @@ const Footer = (): ReactElement | null => {
               <FooterLink href={getHref(AppRoutes.settings.index)}>Preferences</FooterLink>
             </li>
             <li>
-              <FooterLink href={HELP_CENTER_URL}>Help</FooterLink>
+              <ExternalLink href={HELP_CENTER_URL} noIcon>
+                Help
+              </ExternalLink>
             </li>
           </>
         ) : (
@@ -76,8 +79,8 @@ const Footer = (): ReactElement | null => {
         )}
 
         <li>
-          <ExternalLink href={`${packageJson.homepage}/releases/tag/v${packageJson.version}`}>
-            v{packageJson.version}
+          <ExternalLink href={`${packageJson.homepage}/releases/tag/v${packageJson.version}`} noIcon>
+            <SvgIcon component={GitHubIcon} inheritViewBox fontSize="inherit" sx={{ mr: 0.5 }} /> v{packageJson.version}
           </ExternalLink>
         </li>
         <li>
