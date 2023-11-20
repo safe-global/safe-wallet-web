@@ -8,7 +8,7 @@ import packageJson from '../../../../package.json'
 import AppstoreButton from '../AppStoreButton'
 import ExternalLink from '../ExternalLink'
 import MUILink from '@mui/material/Link'
-import { IS_DEV, IS_OFFICIAL_HOST } from '@/config/constants'
+import { HELP_CENTER_URL, IS_DEV, IS_OFFICIAL_HOST } from '@/config/constants'
 
 const footerPages = [
   AppRoutes.welcome.index,
@@ -66,6 +66,9 @@ const Footer = (): ReactElement | null => {
             </li>
             <li>
               <FooterLink href={getHref(AppRoutes.settings.index)}>Preferences</FooterLink>
+            </li>
+            <li>
+              <FooterLink href={HELP_CENTER_URL}>Help</FooterLink>
             </li>
           </>
         ) : (
