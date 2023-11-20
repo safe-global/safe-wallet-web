@@ -250,7 +250,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       <Box className={layoutCss.row}>
         <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
           <Button
-            data-testid="review-step-back-btn"
+            data-testid="back-btn"
             variant="outlined"
             size="small"
             onClick={handleBack}
