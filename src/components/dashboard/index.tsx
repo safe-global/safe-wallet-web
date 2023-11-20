@@ -7,14 +7,14 @@ import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSe
 import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
-import Relaying from '@/components/dashboard/Relaying'
+import { Recovery } from './Recovery'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
-  const supportsRelaying = useHasFeature(FEATURES.RELAYING)
+  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
   const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
 
   return (
@@ -28,13 +28,13 @@ const Dashboard = (): ReactElement => {
           <PendingTxsList />
         </Grid>
 
-        <Grid item xs={12} lg={supportsRelaying ? 6 : undefined}>
-          <FeaturedApps stackedLayout={!!supportsRelaying} />
+        <Grid item xs={12} lg={supportsRecovery ? 6 : undefined}>
+          <FeaturedApps stackedLayout={!!supportsRecovery} />
         </Grid>
 
-        {supportsRelaying ? (
+        {supportsRecovery ? (
           <Grid item xs={12} lg={6}>
-            <Relaying />
+            <Recovery />
           </Grid>
         ) : null}
 

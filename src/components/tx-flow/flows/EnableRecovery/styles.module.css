@@ -5,6 +5,22 @@
   color: var(--color-primary-light);
 }
 
+.icon {
+  outline: 9px solid var(--color-background-paper);
+  outline-offset: -3px;
+  border-radius: 100%;
+  position: relative;
+}
+
+.connector::before {
+  content: '';
+  position: absolute;
+  border-left: 1px dashed var(--color-border-light);
+  left: 60px;
+  height: 70%;
+  margin-top: var(--space-1);
+}
+
 .recommended {
   color: var(--color-text-primary);
   display: flex;

@@ -1,10 +1,11 @@
-import { Box, Button, Chip, Grid, Paper, Typography } from '@mui/material'
+import { Alert, Box, Button, Grid, Paper, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
 import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
 import { TxModalContext } from '@/components/tx-flow'
-import { useDarkMode } from '@/hooks/useDarkMode'
+import { Chip } from '@/components/common/Chip'
+import ExternalLink from '@/components/common/ExternalLink'
 import { RecoverAccountFlow } from '@/components/tx-flow/flows/RecoverAccount'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useAppSelector } from '@/store'
@@ -12,7 +13,6 @@ import { selectRecoveryByGuardian } from '@/store/recoverySlice'
 
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
-  const isDarkMode = useDarkMode()
   const wallet = useWallet()
   const recovery = useAppSelector((state) => selectRecoveryByGuardian(state, wallet?.address ?? ''))
 
@@ -25,21 +25,22 @@ export function Recovery(): ReactElement {
               Account recovery
             </Typography>
 
-            {/* TODO: Extract when widget is merged https://github.com/safe-global/safe-wallet-web/pull/2768  */}
-            <Chip
-              label="New"
-              color={isDarkMode ? 'primary' : 'secondary'}
-              size="small"
-              sx={{ borderRadius: '4px', fontSize: '12px' }}
-            />
+            <Chip label="New" />
           </Box>
         </Grid>
 
-        <Grid item xs>
-          <Typography mb={3}>
+        <Grid item xs display="flex" flexDirection="column" gap={2}>
+          <Typography>
             Choose a trusted guardian to recover your Safe Account, in case you should ever lose access to your Account.
             Enabling the Account recovery module will require a transactions.
           </Typography>
+
+          <Alert severity="info">
+            Unhappy with the provided option? {/* TODO: Add link */}
+            <ExternalLink noIcon href="#">
+              Give us feedback
+            </ExternalLink>
+          </Alert>
 
           {recovery ? (
             // TODO: Move to correct location when widget is ready

@@ -52,25 +52,28 @@ export function EnableRecoveryFlowSettings({
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit)} className={commonCss.form}>
           <TxCard>
-            <Typography variant="h5">Trusted guardian</Typography>
+            <div>
+              <Typography variant="h5" gutterBottom>
+                Trusted guardian
+              </Typography>
 
-            <Typography variant="body2">
-              Choose a guardian, such as a hardware wallet or family member&apos;s wallet, that can initiate the
-              recovery process in the future.
-            </Typography>
+              <Typography variant="body2">
+                Choose a guardian, such as a hardware wallet or family member&apos;s wallet, that can initiate the
+                recovery process in the future.
+              </Typography>
+            </div>
 
-            <AddressBookInput
-              label="Guardian address"
-              name={`${EnableRecoveryFlowFields.guardians}.0`}
-              required
-              fullWidth
-            />
+            <AddressBookInput label="Guardian address" name={EnableRecoveryFlowFields.guardians} required fullWidth />
 
-            <Typography variant="h5">Recovery delay</Typography>
+            <div>
+              <Typography variant="h5" gutterBottom>
+                Recovery delay
+              </Typography>
 
-            <Typography variant="body2">
-              You can cancel any recovery attempt when it is not needed or wanted within the delay period.
-            </Typography>
+              <Typography variant="body2">
+                You can cancel any recovery attempt when it is not needed or wanted within the delay period.
+              </Typography>
+            </div>
 
             <Controller
               control={formMethods.control}
