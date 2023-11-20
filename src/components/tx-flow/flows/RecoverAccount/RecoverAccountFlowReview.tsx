@@ -24,6 +24,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '../..'
 import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
+import { getCountdown } from '@/utils/date'
 import type { RecoverAccountFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -44,6 +45,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
   // Proposal
   const txCooldown = recovery?.txCooldown?.toNumber()
+  const txCooldownCountdown = txCooldown ? getCountdown(txCooldown) : undefined
   const newThreshold = Number(params[RecoverAccountFlowFields.threshold])
   const newOwners = params[RecoverAccountFlowFields.owners]
 
@@ -136,9 +138,11 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
         <WrongChainWarning />
 
         <ErrorMessage level="info">
-          {/* // TODO: Convert txCooldown to days, minutes, seconds when https://github.com/safe-global/safe-wallet-web/pull/2772 is merged */}
-          Recovery will be {txCooldown === 0 ? 'immediately possible' : `possible ${txCooldown}`} after this transaction
-          is executed.
+          Recovery will be{' '}
+          {txCooldown === 0
+            ? 'immediately possible'
+            : `possible ${txCooldownCountdown?.days} day${txCooldownCountdown?.days === 1 ? '' : 's'}`}{' '}
+          after this transaction is executed.
         </ErrorMessage>
 
         <Divider className={commonCss.nestedDivider} />
