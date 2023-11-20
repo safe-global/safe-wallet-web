@@ -6,15 +6,13 @@ import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 import { TxModalContext } from '@/components/tx-flow'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
-import useWallet from '@/hooks/wallets/useWallet'
 import { useAppSelector } from '@/store'
-import { selectRecoveryByGuardian } from '@/store/recoverySlice'
+import { selectRecovery } from '@/store/recoverySlice'
 
 // TODO: Migrate section
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
-  const wallet = useWallet()
-  const recovery = useAppSelector((state) => selectRecoveryByGuardian(state, wallet?.address ?? ''))
+  const recovery = useAppSelector(selectRecovery)
 
   return (
     <Paper sx={{ p: 4 }}>
@@ -44,7 +42,19 @@ export function Recovery(): ReactElement {
 
           <Box mt={2}>
             {recovery ? (
-              <Button variant="contained" onClick={() => setTxFlow(<UpsertRecoveryFlow recovery={recovery} />)}>
+              <Button
+                variant="contained"
+                onClick={() =>
+                  setTxFlow(
+                    <UpsertRecoveryFlow
+                      recovery={
+                        // TODO: Change to selected module when implementing https://github.com/safe-global/safe-wallet-web/issues/2756
+                        recovery[0]
+                      }
+                    />,
+                  )
+                }
+              >
                 Edit recovery
               </Button>
             ) : (
