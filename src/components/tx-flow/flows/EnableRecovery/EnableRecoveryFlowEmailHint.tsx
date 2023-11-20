@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 
 import LightbulbIcon from '@/public/images/common/lightbulb.svg'
 
-import infoWidgetCss from 'src/components/new-safe/create/InfoWidget/styles.module.css'
+import infoWidgetCss from '@/components/new-safe/create/InfoWidget/styles.module.css'
 
 export function EnableRecoveryFlowEmailHint(): ReactElement {
   return (

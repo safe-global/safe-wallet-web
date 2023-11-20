@@ -1,27 +1,26 @@
 import { getModuleInstance, KnownContracts, deployAndSetUpModule } from '@gnosis.pm/zodiac'
 import { Interface } from 'ethers/lib/utils'
 import type { Web3Provider } from '@ethersproject/providers'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 export function getRecoverySetup({
   txCooldown,
   txExpiration,
   guardians,
-  safe,
+  chainId,
+  safeAddress,
   provider,
 }: {
   txCooldown: string
   txExpiration: string
   guardians: Array<string>
-  safe: SafeInfo
+  chainId: string
+  safeAddress: string
   provider: Web3Provider
 }): {
   expectedModuleAddress: string
   transactions: Array<MetaTransactionData>
 } {
-  const safeAddress = safe.address.value
-
   const setupArgs: Parameters<typeof deployAndSetUpModule>[1] = {
     types: ['address', 'address', 'address', 'uint256', 'uint256'],
     values: [
@@ -39,7 +38,7 @@ export function getRecoverySetup({
     KnownContracts.DELAY,
     setupArgs,
     provider,
-    Number(safe.chainId),
+    Number(chainId),
     saltNonce,
   )
 
