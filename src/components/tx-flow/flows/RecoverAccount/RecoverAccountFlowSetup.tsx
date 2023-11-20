@@ -51,14 +51,16 @@ export function RecoverAccountFlowSetup({
     <FormProvider {...formMethods}>
       <form onSubmit={formMethods.handleSubmit(onSubmit)} className={commonCss.form}>
         <TxCard>
-          <Typography variant="h6" fontWeight={700}>
-            Add owner(s)
-          </Typography>
+          <div>
+            <Typography variant="h6" fontWeight={700} gutterBottom>
+              Add owner(s)
+            </Typography>
 
-          <Typography variant="body2" mb={1}>
-            Set the new owner wallet(s) of this Safe Account and how many need to confirm a transaction before it can be
-            executed.
-          </Typography>
+            <Typography variant="body2" mb={1}>
+              Set the new owner wallet(s) of this Safe Account and how many need to confirm a transaction before it can
+              be executed.
+            </Typography>
+          </div>
 
           <Grid container spacing={3} direction="row">
             {fields.map((field, index) => (
@@ -105,27 +107,29 @@ export function RecoverAccountFlowSetup({
 
           <Divider className={commonCss.nestedDivider} />
 
-          <Typography variant="h6" fontWeight={700}>
-            Threshold
-            <Tooltip title={TOOLTIP_TITLES.THRESHOLD} arrow placement="top">
-              <span>
-                <SvgIcon
-                  component={InfoIcon}
-                  inheritViewBox
-                  color="border"
-                  fontSize="small"
-                  sx={{
-                    verticalAlign: 'middle',
-                    ml: 0.5,
-                  }}
-                />
-              </span>
-            </Tooltip>
-          </Typography>
+          <div>
+            <Typography variant="h6" fontWeight={700} gutterBottom>
+              Threshold
+              <Tooltip title={TOOLTIP_TITLES.THRESHOLD} arrow placement="top">
+                <span>
+                  <SvgIcon
+                    component={InfoIcon}
+                    inheritViewBox
+                    color="border"
+                    fontSize="small"
+                    sx={{
+                      verticalAlign: 'middle',
+                      ml: 0.5,
+                    }}
+                  />
+                </span>
+              </Tooltip>
+            </Typography>
 
-          <Typography variant="body2" mb={1}>
-            After recovery, Safe Account transactions will require:
-          </Typography>
+            <Typography variant="body2" mb={1}>
+              After recovery, Safe Account transactions will require:
+            </Typography>
+          </div>
 
           <Grid container direction="row" alignItems="center" gap={2} mb={1}>
             <Grid item>

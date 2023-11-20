@@ -29,8 +29,8 @@ export function Recovery(): ReactElement {
           </Box>
         </Grid>
 
-        <Grid item xs display="flex" flexDirection="column" gap={2}>
-          <Typography>
+        <Grid item xs>
+          <Typography mb={2}>
             Choose a trusted guardian to recover your Safe Account, in case you should ever lose access to your Account.
             Enabling the Account recovery module will require a transactions.
           </Typography>
@@ -42,16 +42,18 @@ export function Recovery(): ReactElement {
             </ExternalLink>
           </Alert>
 
-          {recovery ? (
-            // TODO: Move to correct location when widget is ready
-            <Button variant="contained" onClick={() => setTxFlow(<RecoverAccountFlow />)}>
-              Propose recovery
-            </Button>
-          ) : (
-            <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)}>
-              Set up recovery
-            </Button>
-          )}
+          <Box mt={2}>
+            {recovery ? (
+              // TODO: Move to correct location when widget is ready
+              <Button variant="contained" onClick={() => setTxFlow(<RecoverAccountFlow />)}>
+                Propose recovery
+              </Button>
+            ) : (
+              <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)}>
+                Set up recovery
+              </Button>
+            )}
+          </Box>
         </Grid>
       </Grid>
     </Paper>
