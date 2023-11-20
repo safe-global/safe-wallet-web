@@ -7,22 +7,23 @@ import RecoveryGuardian from '@/public/images/transactions/recovery-guardian.svg
 import RecoveryDelay from '@/public/images/settings/spending-limit/time.svg'
 import RecoveryExecution from '@/public/images/transactions/recovery-execution.svg'
 
+import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
-const RecoverySteps: Array<{ icon: ReactElement; title: string; subtitle: ReactNode }> = [
+const RecoverySteps: Array<{ Icon: ReactElement; title: string; subtitle: ReactNode }> = [
   {
-    icon: <RecoveryGuardians />,
+    Icon: RecoveryGuardians,
     title: 'Choose a guardian and set a delay',
     subtitle:
       'Only your chosen guardian can initiate the recovery process. The process can be cancelled at any time during the delay period.',
   },
   {
-    icon: <RecoveryGuardian />,
+    Icon: RecoveryGuardian,
     title: 'Lost access? Let the guardian connect',
     subtitle: 'The recovery process can be initiated by a trusted guardian when connected to your Safe Account.',
   },
   {
-    icon: <RecoveryDelay />,
+    Icon: RecoveryDelay,
     title: 'Start the recovery process',
     subtitle: (
       <>
@@ -32,7 +33,7 @@ const RecoverySteps: Array<{ icon: ReactElement; title: string; subtitle: ReactN
     ),
   },
   {
-    icon: <RecoveryExecution />,
+    Icon: RecoveryExecution,
     title: 'All done! The Account is yours again',
     subtitle:
       'Once the delay period has passed, you can execute the recovery transaction and regain access to your Safe Account.',
@@ -42,11 +43,13 @@ const RecoverySteps: Array<{ icon: ReactElement; title: string; subtitle: ReactN
 export function EnableRecoveryFlowIntro({ onSubmit }: { onSubmit: () => void }): ReactElement {
   return (
     <TxCard>
-      <Grid container display="flex" gap={4}>
-        {RecoverySteps.map(({ icon, title, subtitle }, index) => (
+      <Grid container display="flex" gap={4} className={css.connector}>
+        {RecoverySteps.map(({ Icon, title, subtitle }, index) => (
           <Grid item xs={12} key={index}>
             <Grid container display="flex" gap={3}>
-              <Grid item>{icon}</Grid>
+              <Grid item>
+                <Icon className={css.icon} />
+              </Grid>
               <Grid item xs>
                 <Typography variant="h5" mb={0.5}>
                   {title}

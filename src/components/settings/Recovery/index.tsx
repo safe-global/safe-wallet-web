@@ -1,10 +1,11 @@
-import { Box, Button, Chip, Grid, Paper, Typography } from '@mui/material'
+import { Alert, Box, Button, Chip, Grid, Paper, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
 import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
 import { TxModalContext } from '@/components/tx-flow'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import ExternalLink from '@/components/common/ExternalLink'
 
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
@@ -30,12 +31,19 @@ export function Recovery(): ReactElement {
         </Grid>
 
         <Grid item xs>
-          <Typography mb={3}>
+          <Typography mb={2}>
             Choose a trusted guardian to recover your Safe Account, in case you should ever lose access to your Account.
             Enabling the Account recovery module will require a transactions.
           </Typography>
 
-          <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)}>
+          <Alert severity="info">
+            Unhappy with the provided option? {/* TODO: Add link */}
+            <ExternalLink noIcon href="#">
+              Give us feedback
+            </ExternalLink>
+          </Alert>
+
+          <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)} sx={{ mt: 2 }}>
             Set up recovery
           </Button>
         </Grid>
