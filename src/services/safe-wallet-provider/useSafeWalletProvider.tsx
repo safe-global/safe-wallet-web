@@ -23,8 +23,6 @@ import SignMessageOnChainFlow from '@/components/tx-flow/flows/SignMessageOnChai
 import { useAppSelector } from '@/store'
 import { selectOnChainSigning } from '@/store/settingsSlice'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
-import { TX_EVENTS, TX_TYPES } from '../analytics/events/transactions'
-import { trackEvent } from '../analytics'
 
 export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { safe } = useSafeInfo()
@@ -138,9 +136,6 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
           const onSubmit = (txId: string, safeTxHash: string) => {
             const txHash = pendingTxs.current[txId]
             onClose = () => {}
-
-            trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.walletconnect })
-
             resolve({ safeTxHash, txHash })
           }
 
