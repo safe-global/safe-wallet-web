@@ -5,14 +5,14 @@ import * as createtx from '../../e2e/pages/create_tx.pages'
 const sendValue = 0.00002
 const currentNonce = 11
 
-describe('Create transactions tests', () => {
+describe('[SMOKE] Create transactions tests', () => {
   before(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     main.acceptCookies()
   })
 
-  it('Verify a new send token transaction can be created', () => {
+  it('[SMOKE] Verify a new send token transaction can be created', () => {
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
     createtx.typeRecipientAddress(constants.EOA)
@@ -23,7 +23,7 @@ describe('Create transactions tests', () => {
     createtx.clickOnNextBtn()
   })
 
-  it('Verify a transaction can be reviewed, edited and submitted', () => {
+  it('[SMOKE] Verify a transaction can be reviewed, edited and submitted', () => {
     createtx.verifySubmitBtnIsEnabled()
     cy.wait(1000)
     createtx.verifyNativeTokenTransfer()
@@ -36,7 +36,7 @@ describe('Create transactions tests', () => {
     createtx.clickOnSignTransactionBtn()
   })
 
-  it('Verify that clicking on notification shows the transaction in queue', () => {
+  it('[SMOKE] Verify that clicking on notification shows the transaction in queue', () => {
     createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()

@@ -26,9 +26,9 @@ export const SAFE_COMPATIBLE_METHODS = [
 
 export const SAFE_WALLET_METADATA = {
   name: 'Safe{Wallet}',
-  description: 'The most trusted platform to manage digital assets on Ethereum',
   url: 'https://app.safe.global',
-  icons: ['https://app.safe.global/favicons/mstile-150x150.png', 'https://app.safe.global/favicons/logo_120x120.png'],
+  description: 'Smart contract wallet for Ethereum',
+  icons: ['https://app.safe.global/images/logo-round.svg'],
 }
 
 export const EIP155 = 'eip155' as const
