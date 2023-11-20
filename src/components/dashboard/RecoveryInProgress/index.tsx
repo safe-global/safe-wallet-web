@@ -1,30 +1,47 @@
-import { Box, Card, Grid, Typography } from '@mui/material'
+import { Box, Card, Grid, Skeleton, Typography } from '@mui/material'
+import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 
 import { useAppSelector } from '@/store'
-import { selectRecovery } from '@/store/recoverySlice'
 import { useBlockTimestamp } from '@/hooks/useBlockTimestamp'
 import { WidgetContainer, WidgetBody } from '../styled'
 import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { selectRecovery, selectRecoverySlice } from '@/store/recoverySlice'
+import type { RecoveryState } from '@/store/recoverySlice'
+import madProps from '@/utils/mad-props'
 
-export function RecoveryInProgress(): ReactElement | null {
-  const blockTimestamp = useBlockTimestamp()
-  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
-  const recovery = useAppSelector(selectRecovery)
+export function _RecoveryInProgress({
+  blockTimestamp,
+  supportsRecovery,
+  recovery,
+}: {
+  blockTimestamp?: number
+  supportsRecovery: boolean
+  recovery: RecoveryState
+}): ReactElement | null {
+  const recoverySlice = useAppSelector(selectRecoverySlice)
+  const allRecoveryTxs = useMemo(() => {
+    return recoverySlice.data.flatMap(({ queue }) => queue).sort((a, b) => a.timestamp - b.timestamp)
+  }, [recoverySlice.data])
 
-  if (!blockTimestamp || !supportsRecovery) {
+  if (!supportsRecovery) {
     return null
   }
 
-  const nonExpiredTxs = recovery
-    .flatMap(({ queue }) => queue)
-    .sort((a, b) => a.timestamp - b.timestamp)
-    .filter((delayedTx) => {
-      return delayedTx.expiresAt ? delayedTx.expiresAt.gt(blockTimestamp) : true
-    })
+  if (!blockTimestamp || recoverySlice.loading) {
+    return (
+      <Grid item xs={12}>
+        <Skeleton variant="rounded" height="137px" width="100%" />
+      </Grid>
+    )
+  }
+
+  const nonExpiredTxs = allRecoveryTxs.filter((delayedTx) => {
+    return delayedTx.expiresAt ? delayedTx.expiresAt.gt(blockTimestamp) : true
+  })
 
   if (nonExpiredTxs.length === 0) {
     return null
@@ -54,7 +71,7 @@ export function RecoveryInProgress(): ReactElement | null {
                     ? 'The recovery process is possible. This Account can be recovered.'
                     : 'The recovery process has started. This Account will be ready to recover in:'}
                 </Typography>
-                {isValid ? null : <Countdown seconds={secondsUntilValid} />}
+                <Countdown seconds={secondsUntilValid} />
               </Grid>
               <Grid item>
                 <ExternalLink
@@ -73,20 +90,24 @@ export function RecoveryInProgress(): ReactElement | null {
 }
 
 export function _getCountdown(seconds: number): { days: number; hours: number; minutes: number } {
-  const minute = 60
-  const hour = 60 * minute
-  const day = 24 * hour
+  const MINUTE_IN_SECONDS = 60
+  const HOUR_IN_SECONDS = 60 * MINUTE_IN_SECONDS
+  const DAY_IN_SECONDS = 24 * HOUR_IN_SECONDS
 
-  const days = Math.floor(seconds / day)
+  const days = Math.floor(seconds / DAY_IN_SECONDS)
 
-  const remainingSeconds = seconds % day
-  const hours = Math.floor(remainingSeconds / hour)
-  const minutes = Math.floor((remainingSeconds % hour) / minute)
+  const remainingSeconds = seconds % DAY_IN_SECONDS
+  const hours = Math.floor(remainingSeconds / HOUR_IN_SECONDS)
+  const minutes = Math.floor((remainingSeconds % HOUR_IN_SECONDS) / MINUTE_IN_SECONDS)
 
   return { days, hours, minutes }
 }
 
 function Countdown({ seconds }: { seconds: number }): ReactElement | null {
+  if (seconds <= 0) {
+    return null
+  }
+
   const { days, hours, minutes } = _getCountdown(seconds)
 
   return (
@@ -114,3 +135,13 @@ function TimeLeft({ value, unit }: { value: number; unit: string }): ReactElemen
     </div>
   )
 }
+
+// Appease React TypeScript warnings
+const _useSupportsRecovery = () => useHasFeature(FEATURES.RECOVERY)
+const _useRecovery = () => useAppSelector(selectRecovery)
+
+export const RecoveryInProgress = madProps(_RecoveryInProgress, {
+  blockTimestamp: useBlockTimestamp,
+  supportsRecovery: _useSupportsRecovery,
+  recovery: _useRecovery,
+})

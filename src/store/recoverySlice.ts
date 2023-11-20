@@ -26,4 +26,6 @@ const { slice, selector } = makeLoadableSlice('recovery', initialState)
 
 export const recoverySlice = slice
 
+export const selectRecoverySlice = selector
+
 export const selectRecovery = createSelector(selector, (recovery) => recovery.data)
