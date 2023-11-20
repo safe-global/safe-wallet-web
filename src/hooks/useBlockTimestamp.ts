@@ -4,9 +4,7 @@ import useAsync from './useAsync'
 
 import { useWeb3ReadOnly } from './wallets/web3'
 
-const INTERVAL = 1_000
-
-export function useBlockTimestamp(): number | undefined {
+export function useBlockTimestamp(interval = 1_000): number | undefined {
   const web3ReadOnly = useWeb3ReadOnly()
   const [timestamp, setTimestamp] = useState<number>()
 
@@ -25,12 +23,12 @@ export function useBlockTimestamp(): number | undefined {
       setTimestamp((prev) => {
         return prev ? prev + 1 : block.timestamp
       })
-    }, INTERVAL)
+    }, interval)
 
     return () => {
       clearInterval(timeout)
     }
-  }, [block])
+  }, [interval, block])
 
   return timestamp
 }

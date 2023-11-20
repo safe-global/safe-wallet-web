@@ -1,4 +1,4 @@
-import { Box, Card, Grid, Skeleton, Typography } from '@mui/material'
+import { Box, Card, Grid, Typography } from '@mui/material'
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 
@@ -9,34 +9,25 @@ import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { selectRecoverySlice } from '@/store/recoverySlice'
-import madProps from '@/utils/mad-props'
+import { selectRecovery } from '@/store/recoverySlice'
 import type { RecoveryState } from '@/store/recoverySlice'
-import type { Loadable } from '@/store/common'
+import madProps from '@/utils/mad-props'
 
 export function _RecoveryInProgress({
   blockTimestamp,
   supportsRecovery,
-  recoverySlice,
+  recovery,
 }: {
   blockTimestamp?: number
   supportsRecovery: boolean
-  recoverySlice: Loadable<RecoveryState>
+  recovery: RecoveryState
 }): ReactElement | null {
   const allRecoveryTxs = useMemo(() => {
-    return recoverySlice.data.flatMap(({ queue }) => queue).sort((a, b) => a.timestamp - b.timestamp)
-  }, [recoverySlice.data])
+    return recovery.flatMap(({ queue }) => queue).sort((a, b) => a.timestamp - b.timestamp)
+  }, [recovery])
 
-  if (!supportsRecovery) {
+  if (!supportsRecovery || !blockTimestamp) {
     return null
-  }
-
-  if (!blockTimestamp || recoverySlice.loading) {
-    return (
-      <Grid item xs={12}>
-        <Skeleton variant="rounded" height="137px" width="100%" />
-      </Grid>
-    )
   }
 
   const nonExpiredTxs = allRecoveryTxs.filter((delayedTx) => {
@@ -137,11 +128,12 @@ function TimeLeft({ value, unit }: { value: number; unit: string }): ReactElemen
 }
 
 // Appease React TypeScript warnings
+const _useBlockTimestamp = () => useBlockTimestamp(60_000) // Countdown does not display
 const _useSupportsRecovery = () => useHasFeature(FEATURES.RECOVERY)
-const _useRecoverySlice = () => useAppSelector(selectRecoverySlice)
+const _useRecovery = () => useAppSelector(selectRecovery)
 
 export const RecoveryInProgress = madProps(_RecoveryInProgress, {
-  blockTimestamp: useBlockTimestamp,
+  blockTimestamp: _useBlockTimestamp,
   supportsRecovery: _useSupportsRecovery,
-  recoverySlice: _useRecoverySlice,
+  recovery: _useRecovery,
 })
