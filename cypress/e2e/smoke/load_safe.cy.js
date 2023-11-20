@@ -42,24 +42,33 @@ describe('Load Safe tests', () => {
     safe.verifyIncorrectAddressErrorMessage()
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
 
-    // Type an invalid address
-    // cy.get('input[name="address"]').clear().type(EOA_ADDRESS)
-    // cy.get('@addressLabel').contains(INVALID_ADDRESS_ERROR_MSG)
-
-    // Type a ENS name
-    // TODO: register a goerli ENS name for the test Safe
-    // cy.get('input[name="address"]').clear().type(SAFE_ENS_NAME)
-    // giving time to the ENS name to be translated
-    // cy.get('input[name="address"]', { timeout: 10000 }).should('have.value', `rin:${SAFE_ENS_NAME_TRANSLATED}`)
-
-    // Uploading a QR code
-    // TODO: fix this
-    // cy.findByTestId('QrCodeIcon').click()
-    // cy.contains('Upload an image').click()
-    // cy.get('[type="file"]').attachFile('../fixtures/goerli_safe_QR.png')
-
-    safe.verifyAddressInputValue()
+    safe.verifyAddressInputValue(constants.SEPOLIA_TEST_SAFE_1)
+    safe.verifyNextButtonStatus('be.enabled')
     safe.clickOnNextBtn()
+  })
+
+  it('Verify names cannot have more than 50 chars', () => {
+    safe.inputName(main.generateRandomString(51))
+    safe.verifyNameLengthErrorMessage()
+  })
+
+  it('Verify ENS name is translated to a valid address', () => {
+    safe.inputAddress(constants.ENS_TEST_ETH)
+    safe.verifyAddressInputValue(constants.ETH_ENS_SAFE_ADDRESS_7)
+    safe.verifyNextButtonStatus('be.enabled')
+    safe.clickOnNextBtn()
+  })
+
+  it('Verify a valid QR code is accepted', () => {
+    safe.ScanQRCode(constants.VALID_QR_CODE_PATH)
+    // safe.verifyAddressInputValue(constants.ETH_ENS_SAFE_ADDRESS_6)
+    // safe.verifyNextButtonStatus('be.enabled')
+    // safe.clickOnNextBtn()
+  })
+
+  it.only('Verify a non QR code is not accepted', () => { 
+    safe.ScanQRCode(constants.INVALID_QR_CODE_PATH)
+    cy.contains('The QR could not be read')
   })
 
   it('Verify custom name in the first owner an be set', () => {
