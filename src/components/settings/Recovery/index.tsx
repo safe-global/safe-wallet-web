@@ -2,13 +2,19 @@ import { Alert, Box, Button, Grid, Paper, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
-import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
+import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 import { TxModalContext } from '@/components/tx-flow'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useAppSelector } from '@/store'
+import { selectRecoveryByGuardian } from '@/store/recoverySlice'
 
+// TODO: Migrate section
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
+  const wallet = useWallet()
+  const recovery = useAppSelector((state) => selectRecoveryByGuardian(state, wallet?.address ?? ''))
 
   return (
     <Paper sx={{ p: 4 }}>
@@ -36,9 +42,17 @@ export function Recovery(): ReactElement {
             </ExternalLink>
           </Alert>
 
-          <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)} sx={{ mt: 2 }}>
-            Set up recovery
-          </Button>
+          <Box mt={2}>
+            {recovery ? (
+              <Button variant="contained" onClick={() => setTxFlow(<UpsertRecoveryFlow recovery={recovery} />)}>
+                Edit recovery
+              </Button>
+            ) : (
+              <Button variant="contained" onClick={() => setTxFlow(<UpsertRecoveryFlow />)}>
+                Set up recovery
+              </Button>
+            )}
+          </Box>
         </Grid>
       </Grid>
     </Paper>

@@ -10,7 +10,7 @@ import type { RecoveryQueueItem, RecoveryState } from '@/store/recoverySlice'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { trimTrailingSlash } from '@/utils/url'
 
-const MAX_PAGE_SIZE = 100
+export const MAX_GUARDIAN_PAGE_SIZE = 100
 
 export const _getRecoveryQueueItem = async (
   transactionAdded: TransactionAddedEvent,
@@ -95,9 +95,9 @@ export const getRecoveryState = async ({
   transactionService: string
   safeAddress: string
   provider: JsonRpcProvider
-}): Promise<RecoveryState[number]> => {
+}): Promise<Array<RecoveryState>> => {
   const [[modules], txExpiration, txCooldown, txNonce, queueNonce] = await Promise.all([
-    delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_PAGE_SIZE),
+    delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_GUARDIAN_PAGE_SIZE),
     delayModifier.txExpiration(),
     delayModifier.txCooldown(),
     delayModifier.txNonce(),
@@ -121,7 +121,7 @@ export const getRecoveryState = async ({
 
   return {
     address: delayModifier.address,
-    modules,
+    guardians: modules,
     txExpiration,
     txCooldown,
     txNonce,

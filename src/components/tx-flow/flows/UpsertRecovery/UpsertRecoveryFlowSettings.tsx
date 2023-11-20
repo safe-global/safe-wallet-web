@@ -18,32 +18,32 @@ import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
-import { EnableRecoveryFlowFields, RecoveryDelayPeriods, RecoveryExpirationPeriods } from '.'
+import { UpsertRecoveryFlowFields, RecoveryDelayPeriods, RecoveryExpirationPeriods } from '.'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import CircleCheckIcon from '@/public/images/common/circle-check.svg'
 import { useDarkMode } from '@/hooks/useDarkMode'
-import type { EnableRecoveryFlowProps } from '.'
+import type { UpsertRecoveryFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 
-export function EnableRecoveryFlowSettings({
+export function UpsertRecoveryFlowSettings({
   params,
   onSubmit,
 }: {
-  params: EnableRecoveryFlowProps
-  onSubmit: (formData: EnableRecoveryFlowProps) => void
+  params: UpsertRecoveryFlowProps
+  onSubmit: (formData: UpsertRecoveryFlowProps) => void
 }): ReactElement {
-  const [showAdvanced, setShowAdvanced] = useState(params[EnableRecoveryFlowFields.txExpiration] !== '0')
+  const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.txExpiration] !== '0')
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const isDarkMode = useDarkMode()
 
-  const formMethods = useForm<EnableRecoveryFlowProps>({
+  const formMethods = useForm<UpsertRecoveryFlowProps>({
     defaultValues: params,
     mode: 'onChange',
   })
 
-  const emailAddress = formMethods.watch(EnableRecoveryFlowFields.emailAddress)
+  const emailAddress = formMethods.watch(UpsertRecoveryFlowFields.emailAddress)
 
   const onShowAdvanced = () => setShowAdvanced((prev) => !prev)
 
@@ -63,7 +63,7 @@ export function EnableRecoveryFlowSettings({
               </Typography>
             </div>
 
-            <AddressBookInput label="Guardian address" name={EnableRecoveryFlowFields.guardians} required fullWidth />
+            <AddressBookInput label="Guardian address" name={UpsertRecoveryFlowFields.guardian} required fullWidth />
 
             <div>
               <Typography variant="h5" gutterBottom>
@@ -77,7 +77,7 @@ export function EnableRecoveryFlowSettings({
 
             <Controller
               control={formMethods.control}
-              name={EnableRecoveryFlowFields.txCooldown}
+              name={UpsertRecoveryFlowFields.txCooldown}
               render={({ field }) => (
                 <SelectField label="Recovery delay" fullWidth {...field}>
                   {RecoveryDelayPeriods.map(({ label, value }, index) => (
@@ -100,7 +100,7 @@ export function EnableRecoveryFlowSettings({
 
               <Controller
                 control={formMethods.control}
-                name={EnableRecoveryFlowFields.txExpiration}
+                name={UpsertRecoveryFlowFields.txExpiration}
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field }) => (
@@ -134,7 +134,7 @@ export function EnableRecoveryFlowSettings({
 
             <Controller
               control={formMethods.control}
-              name={EnableRecoveryFlowFields.emailAddress}
+              name={UpsertRecoveryFlowFields.emailAddress}
               render={({ field }) => (
                 <TextField
                   label="Enter email address"

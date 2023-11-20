@@ -3,6 +3,8 @@ import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Del
 import type { BigNumber } from 'ethers'
 
 import { makeLoadableSlice } from './common'
+import { sameAddress } from '@/utils/addresses'
+import type { RootState } from '.'
 
 export type RecoveryQueueItem = TransactionAddedEvent & {
   timestamp: number
@@ -12,7 +14,7 @@ export type RecoveryQueueItem = TransactionAddedEvent & {
 
 export type RecoveryState = Array<{
   address: string
-  modules: Array<string>
+  guardians: Array<string>
   txExpiration: BigNumber
   txCooldown: BigNumber
   txNonce: BigNumber
@@ -27,3 +29,10 @@ const { slice, selector } = makeLoadableSlice('recovery', initialState)
 export const recoverySlice = slice
 
 export const selectRecovery = createSelector(selector, (recovery) => recovery.data)
+
+export const selectRecoveryByGuardian = createSelector(
+  [selectRecovery, (_: RootState, walletAddress: string) => walletAddress],
+  (recovery, walletAddress) => {
+    return recovery.find(({ guardians }) => guardians.some((guardian) => sameAddress(guardian, walletAddress)))
+  },
+)

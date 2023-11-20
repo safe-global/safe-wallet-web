@@ -5,7 +5,7 @@ import LightbulbIcon from '@/public/images/common/lightbulb.svg'
 
 import infoWidgetCss from '@/components/new-safe/create/InfoWidget/styles.module.css'
 
-export function EnableRecoveryFlowEmailHint(): ReactElement {
+export function UpsertRecoveryFlowEmailHint(): ReactElement {
   return (
     <Alert severity="info" sx={{ border: 'unset', p: 3 }} icon={false}>
       <Box className={infoWidgetCss.title} sx={{ backgroundColor: ({ palette }) => palette.info.main }}>

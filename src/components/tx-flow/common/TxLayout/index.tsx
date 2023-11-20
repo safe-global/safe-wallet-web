@@ -13,7 +13,7 @@ import SafeLogo from '@/public/images/logo-no-text.svg'
 import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SecurityWarnings from '@/components/tx/security/SecurityWarnings'
-import { EnableRecoveryFlowEmailHint } from '../../flows/EnableRecovery/EnableRecoveryFlowEmailHint'
+import { UpsertRecoveryFlowEmailHint } from '../../flows/UpsertRecovery/UpsertRecoveryFlowEmailHint'
 
 const TxLayoutHeader = ({
   hideNonce,
@@ -158,7 +158,7 @@ const TxLayout = ({
                   <Box className={css.sticky}>
                     <SecurityWarnings />
 
-                    {isRecovery && <EnableRecoveryFlowEmailHint />}
+                    {isRecovery && <UpsertRecoveryFlowEmailHint />}
                   </Box>
                 </Grid>
               </Grid>

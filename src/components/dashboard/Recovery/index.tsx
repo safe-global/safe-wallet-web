@@ -6,7 +6,7 @@ import RecoveryLogo from '@/public/images/common/recovery.svg'
 import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Chip } from '@/components/common/Chip'
 import { TxModalContext } from '@/components/tx-flow'
-import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
+import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 
 import css from './styles.module.css'
 
@@ -14,7 +14,7 @@ export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
 
   const onClick = () => {
-    setTxFlow(<EnableRecoveryFlow />)
+    setTxFlow(<UpsertRecoveryFlow />)
   }
 
   return (
