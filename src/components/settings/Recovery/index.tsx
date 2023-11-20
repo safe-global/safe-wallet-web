@@ -6,9 +6,15 @@ import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
 import { TxModalContext } from '@/components/tx-flow'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
+import { RecoverAccountFlow } from '@/components/tx-flow/flows/RecoverAccount'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useAppSelector } from '@/store'
+import { selectRecoveryByGuardian } from '@/store/recoverySlice'
 
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
+  const wallet = useWallet()
+  const recovery = useAppSelector((state) => selectRecoveryByGuardian(state, wallet?.address ?? ''))
 
   return (
     <Paper sx={{ p: 4 }}>
@@ -36,9 +42,18 @@ export function Recovery(): ReactElement {
             </ExternalLink>
           </Alert>
 
-          <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)} sx={{ mt: 2 }}>
-            Set up recovery
-          </Button>
+          <Box mt={2}>
+            {recovery ? (
+              // TODO: Move to correct location when widget is ready
+              <Button variant="contained" onClick={() => setTxFlow(<RecoverAccountFlow />)}>
+                Propose recovery
+              </Button>
+            ) : (
+              <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)}>
+                Set up recovery
+              </Button>
+            )}
+          </Box>
         </Grid>
       </Grid>
     </Paper>

@@ -1,4 +1,5 @@
-import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { AddressEx, SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { OperationType } from '@safe-global/safe-core-sdk-types'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
 import type { EthersError } from '@/utils/ethers-utils'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
@@ -22,6 +23,8 @@ import {
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
+import { getRecoveryProposalTransaction } from '@/services/recovery/transaction'
+import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 
 /**
  * Propose a transaction
@@ -399,4 +402,32 @@ export const dispatchBatchExecutionRelay = async (
     safeAddress,
     groupKey,
   )
+}
+
+export async function dispatchRecoveryProposal({
+  onboard,
+  safe,
+  newThreshold,
+  newOwners,
+  delayModifierAddress,
+}: {
+  onboard: OnboardAPI
+  safe: SafeInfo
+  newThreshold: number
+  newOwners: Array<AddressEx>
+  delayModifierAddress: string
+}) {
+  const wallet = await assertWalletChain(onboard, safe.chainId)
+  const provider = createWeb3(wallet.provider)
+
+  const { to, value, data } = getRecoveryProposalTransaction({
+    safe,
+    newThreshold,
+    newOwners,
+  })
+
+  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
+
+  const signer = provider.getSigner()
+  await delayModifier.connect(signer).execTransactionFromModule(to, value, data, OperationType.Call)
 }

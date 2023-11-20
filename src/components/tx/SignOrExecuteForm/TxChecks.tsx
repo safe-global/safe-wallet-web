@@ -6,14 +6,14 @@ import { Redefine, RedefineMessage } from '@/components/tx/security/redefine'
 
 import css from './styles.module.css'
 
-const TxChecks = (): ReactElement => {
+const TxChecks = ({ isRecovery = false }: { isRecovery?: boolean }): ReactElement => {
   const { safeTx } = useContext(SafeTxContext)
 
   return (
     <>
       <Typography variant="h5">Transaction checks</Typography>
 
-      <TxSimulation disabled={false} transactions={safeTx} />
+      <TxSimulation disabled={false} transactions={safeTx} isRecovery={isRecovery} />
 
       <Box className={css.mobileTxCheckMessages}>
         <TxSimulationMessage />
