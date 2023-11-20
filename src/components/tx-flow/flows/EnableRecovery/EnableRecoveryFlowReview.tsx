@@ -17,7 +17,7 @@ import type { EnableRecoveryFlowProps } from '.'
 
 export function EnableRecoveryFlowReview({ params }: { params: EnableRecoveryFlowProps }): ReactElement {
   const web3 = useWeb3()
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
 
   const guardian = params[EnableRecoveryFlowFields.guardians]
@@ -35,12 +35,13 @@ export function EnableRecoveryFlowReview({ params }: { params: EnableRecoveryFlo
     const { transactions } = getRecoverySetup({
       ...params,
       guardians: [guardian],
-      safe,
+      chainId: safe.chainId,
+      safeAddress,
       provider: web3,
     })
 
     createMultiSendCallOnlyTx(transactions).then(setSafeTx).catch(setSafeTxError)
-  }, [guardian, params, safe, setSafeTx, setSafeTxError, web3])
+  }, [guardian, params, safe.chainId, safeAddress, setSafeTx, setSafeTxError, web3])
 
   useEffect(() => {
     if (safeTxError) {

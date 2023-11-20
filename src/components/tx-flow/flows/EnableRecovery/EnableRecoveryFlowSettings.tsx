@@ -122,11 +122,15 @@ export function EnableRecoveryFlowSettings({
               <Typography variant="caption">Recommended</Typography>
             </div>
 
-            <Typography variant="h5">Receive email updates</Typography>
+            <div>
+              <Typography variant="h5" gutterBottom>
+                Receive email updates
+              </Typography>
 
-            <Typography variant="body2" mb={1}>
-              Get notified about any recovery initiations and their statuses.
-            </Typography>
+              <Typography variant="body2" mb={1}>
+                Get notified about any recovery initiations and their statuses.
+              </Typography>
+            </div>
 
             <Controller
               control={formMethods.control}

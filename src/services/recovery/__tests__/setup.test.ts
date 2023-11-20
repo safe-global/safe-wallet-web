@@ -2,7 +2,6 @@ import { getModuleInstance, KnownContracts, deployAndSetUpModule } from '@gnosis
 import { faker } from '@faker-js/faker'
 import { BigNumber } from 'ethers'
 import type { Web3Provider } from '@ethersproject/providers'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { getRecoverySetup } from '@/services/recovery/setup'
 
@@ -26,12 +25,6 @@ describe('getRecoverySetup', () => {
     const guardians = [faker.finance.ethereumAddress()]
     const safeAddress = faker.finance.ethereumAddress()
     const chainId = faker.string.numeric()
-    const safe = {
-      address: {
-        value: safeAddress,
-      },
-      chainId,
-    } as SafeInfo
     const provider = {} as Web3Provider
 
     const expectedModuleAddress = faker.finance.ethereumAddress()
@@ -54,7 +47,8 @@ describe('getRecoverySetup', () => {
       txCooldown,
       txExpiration,
       guardians,
-      safe,
+      chainId,
+      safeAddress,
       provider,
     })
 
@@ -72,7 +66,7 @@ describe('getRecoverySetup', () => {
         ],
       },
       provider,
-      Number(safe.chainId),
+      Number(chainId),
       expect.any(String),
     )
 
