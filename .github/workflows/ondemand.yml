@@ -1,7 +1,7 @@
-name: e2e
+name: Regression on demand tests
 
 on:
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,11 +10,11 @@ concurrency:
 jobs:
   e2e:
     runs-on: ubuntu-20.04
-    name: Cypress Smoke tests
+    name: Cypress Regression on demand tests
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3]
+        containers: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v3
 
@@ -35,11 +35,11 @@ jobs:
       - uses: cypress-io/github-action@v4
         with:
           parallel: true
-          spec: cypress/e2e/smoke/*.cy.js
+          spec: cypress/e2e/**/*.cy.js
           browser: chrome
           record: true
           config: baseUrl=http://localhost:8080
-          group: 'Smoke tests'
+          group: 'Regression on demand tests'
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

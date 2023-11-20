@@ -117,10 +117,10 @@ function SetNameStep({
         <Divider />
         <Box className={layoutCss.row}>
           <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-            <Button variant="outlined" onClick={onCancel} size="small">
+            <Button data-testid="cancel-btn" variant="outlined" onClick={onCancel} size="small">
               Cancel
             </Button>
-            <Button type="submit" variant="contained" size="stretched" disabled={isDisabled}>
+            <Button data-testid="next-btn" type="submit" variant="contained" size="stretched" disabled={isDisabled}>
               Next
             </Button>
           </Box>

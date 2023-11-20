@@ -71,13 +71,13 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
       <div className={classnames(css.row, css.buttons)}>
         {txLink && (
           <Link {...txLink} passHref target="_blank" rel="noreferrer" legacyBehavior>
-            <Button variant="outlined" size="small">
+            <Button data-testid="view-transaction-btn" variant="outlined" size="small">
               View transaction
             </Button>
           </Link>
         )}
 
-        <Button variant="contained" size="small" onClick={onFinishClick}>
+        <Button data-testid="finish-transaction-btn" variant="contained" size="small" onClick={onFinishClick}>
           Finish
         </Button>
       </div>

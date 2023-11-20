@@ -103,7 +103,7 @@ const SignForm = ({
           {/* Submit button */}
           <CheckWallet>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+              <Button data-testid="sign-btn" variant="contained" type="submit" disabled={!isOk || submitDisabled}>
                 Sign
               </Button>
             )}
