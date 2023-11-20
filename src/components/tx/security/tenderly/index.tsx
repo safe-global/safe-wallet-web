@@ -23,18 +23,13 @@ export type TxSimulationProps = {
   transactions?: SimulationTxParams['transactions']
   gasLimit?: number
   disabled: boolean
-  isRecovery?: boolean
+  executionOwner?: string
 }
 
 // TODO: Investigate resetting on gasLimit change as we are not simulating with the gasLimit of the tx
 // otherwise remove all usage of gasLimit in simulation. Note: this was previously being done.
 // TODO: Test this component
-const TxSimulationBlock = ({
-  transactions,
-  disabled,
-  gasLimit,
-  isRecovery = false,
-}: TxSimulationProps): ReactElement => {
+const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const isDarkMode = useDarkMode()
@@ -51,7 +46,7 @@ const TxSimulationBlock = ({
 
     simulateTransaction({
       safe,
-      executionOwner: isRecovery ? safe.owners[0].value : wallet.address,
+      executionOwner: executionOwner ?? wallet.address,
       transactions,
       gasLimit,
     } as SimulationTxParams)

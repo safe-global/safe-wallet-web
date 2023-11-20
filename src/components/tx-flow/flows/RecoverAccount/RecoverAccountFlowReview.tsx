@@ -119,7 +119,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
       </TxCard>
 
       <TxCard>
-        <TxChecks isRecovery />
+        <TxChecks executionOwner={safe.owners[0].value} />
       </TxCard>
 
       <TxCard>
