@@ -128,6 +128,12 @@ describe('useLoadRecovery', () => {
             queueNonce,
             queue: [
               {
+                ...transactionsAdded[0],
+                timestamp: 69,
+                validFrom: BigNumber.from(69).add(txCooldown),
+                expiresAt: null,
+              },
+              {
                 ...transactionsAdded[1],
                 timestamp: 420,
                 validFrom: BigNumber.from(420).add(txCooldown),
