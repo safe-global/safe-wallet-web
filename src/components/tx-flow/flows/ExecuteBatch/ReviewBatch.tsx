@@ -201,7 +201,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
                   onClick={handleSubmit}
                   sx={{ minWidth: '114px' }}
                 >
-                  {!isSubmittable ? <CircularProgress size={20} /> : 'Submit'}
+                  {!isSubmittable ? <CircularProgress size={20} /> : 'Submitt'}
                 </Button>
               )}
             </CheckWallet>
