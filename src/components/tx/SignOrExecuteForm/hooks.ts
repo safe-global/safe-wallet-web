@@ -15,7 +15,7 @@ import {
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import type { ConnectedWallet } from '@/services/onboard'
 import type { OnboardAPI } from '@web3-onboard/core'
-import { getSafeTxGas, getRecommendedNonce } from '@/services/tx/tx-sender/recommendedNonce'
+import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -163,9 +163,9 @@ export const useRecommendedNonce = (): number | undefined => {
     async () => {
       if (!safe.chainId || !safeAddress) return
 
-      const recommendedNonce = await getRecommendedNonce(safe.chainId, safeAddress)
+      const nonces = await getNonces(safe.chainId, safeAddress)
 
-      return recommendedNonce !== undefined ? Math.max(safe.nonce, recommendedNonce) : undefined
+      return nonces?.recommendedNonce
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [safeAddress, safe.chainId, safe.txQueuedTag], // update when tx queue changes

@@ -153,7 +153,7 @@ export const ChooseOwner = ({
                     control={control}
                     name="threshold"
                     render={({ field }) => (
-                      <TextField select {...field}>
+                      <TextField data-testid="owner-number-dropdown" select {...field}>
                         {safe.owners.map((_, idx) => (
                           <MenuItem key={idx + 1} value={idx + 1}>
                             {idx + 1}
@@ -178,7 +178,7 @@ export const ChooseOwner = ({
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions>
-            <Button variant="contained" type="submit" disabled={!isValid || resolving}>
+            <Button data-testid="add-owner-next-btn" variant="contained" type="submit" disabled={!isValid || resolving}>
               Next
             </Button>
           </CardActions>

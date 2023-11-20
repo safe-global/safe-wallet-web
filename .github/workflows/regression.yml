@@ -1,9 +1,10 @@
-name: Safe Apps e2e
+name: Regression tests
 
 on:
-  issue_comment:
-    types: [created]
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - 'release**'
+      - 'release/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -11,20 +12,12 @@ concurrency:
 
 jobs:
   e2e:
-    if: >
-      github.event_name == 'workflow_dispatch' || 
-      (github.event_name == 'issue_comment' && 
-      github.event.issue.pull_request && 
-      contains(github.event.comment.body, '/run-action') && 
-      (github.event.comment.author_association == 'COLLABORATOR' || 
-      github.event.comment.author_association == 'MEMBER' || 
-      github.event.comment.author_association == 'OWNER'))
-    runs-on: ubuntu-latest
-    name: Cypress Safe Apps tests
+    runs-on: ubuntu-20.04
+    name: Cypress Regression tests
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2]
+        containers: [1, 2, 3]
     steps:
       - uses: actions/checkout@v3
 
@@ -45,12 +38,11 @@ jobs:
       - uses: cypress-io/github-action@v4
         with:
           parallel: true
-          spec: cypress/e2e/safe-apps/*.cy.js
+          spec: cypress/e2e/**/*.cy.js
           browser: chrome
           record: true
           config: baseUrl=http://localhost:8080
-          group: 'Safe Apps tests'
+          group: 'Regression tests'
         env:
-          CYPRESS_PROJECT_ID: okn21k
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_SAFE_APPS_RECORD_KEY }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

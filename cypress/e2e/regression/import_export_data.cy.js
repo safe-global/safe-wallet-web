@@ -36,6 +36,7 @@ describe('Import Export Data tests', () => {
     file.verifyAppsAreVisible(appNames)
   })
 
+  // TODO: Revisit logic
   it('Verify imported data in settings', () => {
     const unchecked = [file.prependChainPrefixStr, file.copyAddressStr]
     const checked = [file.darkModeStr]
@@ -45,7 +46,7 @@ describe('Import Export Data tests', () => {
     file.verifyCheckboxes(checked, true)
   })
 
-  it('Verifies data for export in Data tab', () => {
+  it('Verify data for export in Data tab', () => {
     file.clickOnShowMoreTabsBtn()
     file.verifDataTabBtnIsVisible()
     file.clickOnDataTab()

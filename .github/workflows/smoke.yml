@@ -1,4 +1,4 @@
-name: e2e
+name: Smoke tests
 
 on:
   issue_comment:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3]
+        containers: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v3
 
