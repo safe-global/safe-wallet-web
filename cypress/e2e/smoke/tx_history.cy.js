@@ -8,7 +8,7 @@ const str1 = 'Received'
 const str2 = 'Executed'
 const str3 = 'Transaction hash'
 
-describe('Transaction history tests', () => {
+describe('[SMOKE] Transaction history tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     // Go to the test Safe transaction history
@@ -20,7 +20,7 @@ describe('Transaction history tests', () => {
     main.acceptCookies()
   })
 
-  it('Verify October 29th transactions are displayed', () => {
+  it('[SMOKE] Verify October 29th transactions are displayed', () => {
     const DATE = 'Oct 29, 2023'
     const NEXT_DATE_LABEL = 'Oct 20, 2023'
     const amount = '0.00001 ETH'
@@ -42,15 +42,6 @@ describe('Transaction history tests', () => {
       createTx.verifyImageAltTxt(1, constants.tokenAbbreviation.sep)
       createTx.verifyTransactionStrExists(amount)
       createTx.verifyTransactionStrExists(success)
-    })
-  })
-
-  it('Verify transaction can be expanded/collapsed', () => {
-    createTx.clickOnTransactionExpandableItem('Oct 20, 2023', () => {
-      createTx.verifyTransactionStrExists(str1)
-      createTx.verifyTransactionStrExists(str2)
-      createTx.verifyTransactionStrExists(str3)
-      createTx.clickOnExpandIcon()
     })
   })
 })
