@@ -1,15 +1,14 @@
-import { Alert, Box, Button, Chip, Grid, Paper, Typography } from '@mui/material'
+import { Alert, Box, Button, Grid, Paper, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
 import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
 import { TxModalContext } from '@/components/tx-flow'
-import { useDarkMode } from '@/hooks/useDarkMode'
+import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
 
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
-  const isDarkMode = useDarkMode()
 
   return (
     <Paper sx={{ p: 4 }}>
@@ -20,13 +19,7 @@ export function Recovery(): ReactElement {
               Account recovery
             </Typography>
 
-            {/* TODO: Extract when widget is merged https://github.com/safe-global/safe-wallet-web/pull/2768  */}
-            <Chip
-              label="New"
-              color={isDarkMode ? 'primary' : 'secondary'}
-              size="small"
-              sx={{ borderRadius: '4px', fontSize: '12px' }}
-            />
+            <Chip label="New" />
           </Box>
         </Grid>
 
