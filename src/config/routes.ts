@@ -1,5 +1,6 @@
 export const AppRoutes = {
   '404': '/404',
+  _offline: '/_offline',
   wc: '/wc',
   terms: '/terms',
   privacy: '/privacy',
@@ -10,7 +11,6 @@ export const AppRoutes = {
   cookie: '/cookie',
   addressBook: '/address-book',
   addOwner: '/addOwner',
-  _offline: '/_offline',
   apps: {
     open: '/apps/open',
     index: '/apps',
@@ -29,6 +29,7 @@ export const AppRoutes = {
     spendingLimits: '/settings/spending-limits',
     setup: '/settings/setup',
     securityLogin: '/settings/security-login',
+    recovery: '/settings/recovery',
     notifications: '/settings/notifications',
     modules: '/settings/modules',
     index: '/settings',

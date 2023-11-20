@@ -13,6 +13,7 @@ import SafeLogo from '@/public/images/logo-no-text.svg'
 import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SecurityWarnings from '@/components/tx/security/SecurityWarnings'
+import { EnableRecoveryFlowEmailHint } from '../../flows/EnableRecovery/EnableRecoveryFlowEmailHint'
 
 const TxLayoutHeader = ({
   hideNonce,
@@ -55,9 +56,11 @@ type TxLayoutProps = {
   txSummary?: TransactionSummary
   onBack?: () => void
   hideNonce?: boolean
+  hideProgress?: boolean
   isBatch?: boolean
   isReplacement?: boolean
   isMessage?: boolean
+  isRecovery?: boolean
 }
 
 const TxLayout = ({
@@ -69,9 +72,11 @@ const TxLayout = ({
   txSummary,
   onBack,
   hideNonce = false,
+  hideProgress = false,
   isBatch = false,
   isReplacement = false,
   isMessage = false,
+  isRecovery = false,
 }: TxLayoutProps): ReactElement => {
   const [statusVisible, setStatusVisible] = useState<boolean>(true)
 
@@ -117,9 +122,11 @@ const TxLayout = ({
                   </div>
 
                   <Paper className={css.header}>
-                    <Box className={css.progressBar}>
-                      <ProgressBar value={progress} />
-                    </Box>
+                    {!hideProgress && (
+                      <Box className={css.progressBar}>
+                        <ProgressBar value={progress} />
+                      </Box>
+                    )}
 
                     <TxLayoutHeader subtitle={subtitle} icon={icon} hideNonce={hideNonce} />
                   </Paper>
@@ -150,6 +157,8 @@ const TxLayout = ({
 
                   <Box className={css.sticky}>
                     <SecurityWarnings />
+
+                    {isRecovery && <EnableRecoveryFlowEmailHint />}
                   </Box>
                 </Grid>
               </Grid>
