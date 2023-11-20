@@ -2,7 +2,7 @@ import * as constants from '../../support/constants'
 import * as dashboard from '../pages/dashboard.pages'
 import * as main from '../pages/main.page'
 
-describe('Dashboard tests', () => {
+describe('[SMOKE] Dashboard tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
@@ -11,19 +11,19 @@ describe('Dashboard tests', () => {
     dashboard.verifyConnectTransactStrIsVisible()
   })
 
-  it('Verify the overview widget is displayed', () => {
+  it('[SMOKE] Verify the overview widget is displayed', () => {
     dashboard.verifyOverviewWidgetData()
   })
 
-  it('Verify the transaction queue widget is displayed', () => {
+  it('[SMOKE] Verify the transaction queue widget is displayed', () => {
     dashboard.verifyTxQueueWidget()
   })
 
-  it('Verify the featured Safe Apps are displayed', () => {
+  it('[SMOKE] Verify the featured Safe Apps are displayed', () => {
     dashboard.verifyFeaturedAppsSection()
   })
 
-  it('Verify the Safe Apps Section is displayed', () => {
+  it('[SMOKE] Verify the Safe Apps Section is displayed', () => {
     dashboard.verifySafeAppsSection()
   })
 })

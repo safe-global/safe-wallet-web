@@ -82,7 +82,7 @@ export const SetThreshold = ({
         <Divider className={commonCss.nestedDivider} />
 
         <CardActions>
-          <Button variant="contained" type="submit">
+          <Button data-testid="next-btn" variant="contained" type="submit">
             Next
           </Button>
         </CardActions>
