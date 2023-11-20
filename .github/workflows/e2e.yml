@@ -1,7 +1,8 @@
 name: e2e
 
 on:
-  pull_request:
+  issue_comment:
+    types: [created]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -9,6 +10,8 @@ concurrency:
 
 jobs:
   e2e:
+    if: github.event.issue.pull_request && contains(github.event.comment.body, 'Cypress run') && github.event.comment.author_association == 'COLLABORATOR' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER'
+
     runs-on: ubuntu-20.04
     name: Cypress Smoke tests
     strategy:

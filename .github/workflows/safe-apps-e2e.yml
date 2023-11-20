@@ -1,7 +1,8 @@
 name: Safe Apps e2e
 
 on:
-  pull_request:
+  issue_comment:
+    types: [created]
   workflow_dispatch:
 
 concurrency:
@@ -10,6 +11,14 @@ concurrency:
 
 jobs:
   e2e:
+    if: >
+      github.event_name == 'workflow_dispatch' || 
+      (github.event_name == 'issue_comment' && 
+      github.event.issue.pull_request && 
+      contains(github.event.comment.body, '/run-action') && 
+      (github.event.comment.author_association == 'COLLABORATOR' || 
+      github.event.comment.author_association == 'MEMBER' || 
+      github.event.comment.author_association == 'OWNER'))
     runs-on: ubuntu-latest
     name: Cypress Safe Apps tests
     strategy:
