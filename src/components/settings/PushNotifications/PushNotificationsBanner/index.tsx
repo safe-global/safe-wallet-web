@@ -27,7 +27,7 @@ import type { PushNotificationPreferences } from '@/services/push-notifications/
 import type { NotifiableSafes } from '../logic'
 import useWallet from '@/hooks/wallets/useWallet'
 import CircularProgress from '@mui/material/CircularProgress'
-
+import useDebounce from '@/hooks/useDebounce'
 import css from './styles.module.css'
 
 const DISMISS_PUSH_NOTIFICATIONS_KEY = 'dismissPushNotifications'
@@ -119,8 +119,10 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
 
   const isSafeAdded = !!addedSafesOnChain?.[safeAddress]
   const isSafeRegistered = getPreferences(safe.chainId, safeAddress)
-  const shouldShowBanner =
-    isNotificationFeatureEnabled && !isPushNotificationBannerDismissed && isSafeAdded && !isSafeRegistered && !!wallet
+  const shouldShowBanner = useDebounce(
+    isNotificationFeatureEnabled && !isPushNotificationBannerDismissed && isSafeAdded && !isSafeRegistered && !!wallet,
+    3000,
+  )
 
   const { registerNotifications } = useNotificationRegistrations()
 
