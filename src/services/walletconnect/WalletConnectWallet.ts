@@ -7,7 +7,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 import uniq from 'lodash/uniq'
 
-import { IS_PRODUCTION, WC_PROJECT_ID } from '@/config/constants'
+import { IS_PRODUCTION, LS_NAMESPACE, WC_PROJECT_ID } from '@/config/constants'
 import { EIP155, SAFE_COMPATIBLE_METHODS, SAFE_WALLET_METADATA } from './constants'
 import { invariant } from '@/utils/helpers'
 import { getEip155ChainId, stripEip155Prefix } from './utils'
@@ -36,6 +36,7 @@ class WalletConnectWallet {
     const core = new Core({
       projectId: WC_PROJECT_ID,
       logger: IS_PRODUCTION ? undefined : 'debug',
+      customStoragePrefix: LS_NAMESPACE,
     })
 
     const web3wallet = await Web3Wallet.init({
