@@ -1,5 +1,5 @@
 import { Button, CardActions, Divider, Grid, Typography } from '@mui/material'
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
 import RecoveryGuardians from '@/public/images/settings/spending-limit/beneficiary.svg'
@@ -10,7 +10,7 @@ import RecoveryExecution from '@/public/images/transactions/recovery-execution.s
 import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
-const RecoverySteps: Array<{ Icon: ReactElement; title: string; subtitle: ReactNode }> = [
+const RecoverySteps = [
   {
     Icon: RecoveryGuardians,
     title: 'Choose a guardian and set a delay',

@@ -28,7 +28,7 @@ const { slice, selector } = makeLoadableSlice('recovery', initialState)
 
 export const recoverySlice = slice
 
-const selectRecovery = createSelector(selector, (recovery) => recovery.data)
+export const selectRecovery = createSelector(selector, (recovery) => recovery.data)
 
 export const selectRecoveryByGuardian = createSelector(
   [selectRecovery, (_: RootState, walletAddress: string) => walletAddress],
