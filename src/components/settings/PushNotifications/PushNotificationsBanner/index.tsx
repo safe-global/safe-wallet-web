@@ -31,6 +31,7 @@ import useDebounce from '@/hooks/useDebounce'
 import css from './styles.module.css'
 
 const DISMISS_PUSH_NOTIFICATIONS_KEY = 'dismissPushNotifications'
+const BANNER_DELAY = 3000
 
 export const useDismissPushNotificationsBanner = () => {
   const addedSafes = useAppSelector(selectAllAddedSafes)
@@ -121,7 +122,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const isSafeRegistered = getPreferences(safe.chainId, safeAddress)
   const shouldShowBanner = useDebounce(
     isNotificationFeatureEnabled && !isPushNotificationBannerDismissed && isSafeAdded && !isSafeRegistered && !!wallet,
-    3000,
+    BANNER_DELAY,
   )
 
   const { registerNotifications } = useNotificationRegistrations()
@@ -166,7 +167,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
     dismissBanner()
   }
 
-  if (!shouldShowBanner) {
+  if (!shouldShowBanner || isPushNotificationBannerDismissed) {
     return children
   }
 
