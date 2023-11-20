@@ -36,7 +36,7 @@ describe('RecoveryInProgress', () => {
       <_RecoveryInProgress
         supportsRecovery={false}
         blockTimestamp={0}
-        recovery={[{ queue: [{ timestamp: 0 } as RecoveryQueueItem] }] as RecoveryState}
+        recoverySlice={{ loading: false, data: [{ queue: [{ timestamp: 0 } as RecoveryQueueItem] }] as RecoveryState }}
       />,
     )
 
@@ -48,11 +48,23 @@ describe('RecoveryInProgress', () => {
       <_RecoveryInProgress
         supportsRecovery={true}
         blockTimestamp={undefined}
-        recovery={[{ queue: [{ timestamp: 0 } as RecoveryQueueItem] }] as RecoveryState}
+        recoverySlice={{ loading: false, data: [{ queue: [{ timestamp: 0 } as RecoveryQueueItem] }] as RecoveryState }}
       />,
     )
 
-    expect(result.container).toBeEmptyDOMElement()
+    expect(result.container.getElementsByClassName('MuiSkeleton-root').length).toBe(1)
+  })
+
+  it('should return a loader if the recovery proposals are loading', () => {
+    const result = render(
+      <_RecoveryInProgress
+        supportsRecovery={true}
+        blockTimestamp={0}
+        recoverySlice={{ loading: true, data: [{ queue: [{ timestamp: 0 } as RecoveryQueueItem] }] as RecoveryState }}
+      />,
+    )
+
+    expect(result.container.getElementsByClassName('MuiSkeleton-root').length).toBe(1)
   })
 
   it('should return null if there are no delayed transactions', () => {
@@ -60,7 +72,7 @@ describe('RecoveryInProgress', () => {
       <_RecoveryInProgress
         supportsRecovery={true}
         blockTimestamp={69420}
-        recovery={[{ queue: [] as Array<RecoveryQueueItem> }] as RecoveryState}
+        recoverySlice={{ loading: false, data: [{ queue: [] as Array<RecoveryQueueItem> }] as RecoveryState }}
       />,
     )
 
@@ -72,8 +84,9 @@ describe('RecoveryInProgress', () => {
       <_RecoveryInProgress
         supportsRecovery={true}
         blockTimestamp={69420}
-        recovery={
-          [
+        recoverySlice={{
+          loading: false,
+          data: [
             {
               queue: [
                 {
@@ -83,8 +96,8 @@ describe('RecoveryInProgress', () => {
                 } as RecoveryQueueItem,
               ],
             },
-          ] as RecoveryState
-        }
+          ] as RecoveryState,
+        }}
       />,
     )
 
@@ -98,8 +111,9 @@ describe('RecoveryInProgress', () => {
       <_RecoveryInProgress
         supportsRecovery={true}
         blockTimestamp={mockBlockTimestamp}
-        recovery={
-          [
+        recoverySlice={{
+          loading: false,
+          data: [
             {
               queue: [
                 {
@@ -115,8 +129,8 @@ describe('RecoveryInProgress', () => {
                 } as RecoveryQueueItem,
               ],
             },
-          ] as RecoveryState
-        }
+          ] as RecoveryState,
+        }}
       />,
     )
 
@@ -143,8 +157,9 @@ describe('RecoveryInProgress', () => {
       <_RecoveryInProgress
         supportsRecovery={true}
         blockTimestamp={mockBlockTimestamp}
-        recovery={
-          [
+        recoverySlice={{
+          loading: false,
+          data: [
             {
               queue: [
                 {
@@ -160,8 +175,8 @@ describe('RecoveryInProgress', () => {
                 } as RecoveryQueueItem,
               ],
             },
-          ] as RecoveryState
-        }
+          ] as RecoveryState,
+        }}
       />,
     )
 

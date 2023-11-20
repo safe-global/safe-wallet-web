@@ -1,4 +1,3 @@
-import { createSelector } from '@reduxjs/toolkit'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { BigNumber } from 'ethers'
 
@@ -27,5 +26,3 @@ const { slice, selector } = makeLoadableSlice('recovery', initialState)
 export const recoverySlice = slice
 
 export const selectRecoverySlice = selector
-
-export const selectRecovery = createSelector(selector, (recovery) => recovery.data)

@@ -9,20 +9,20 @@ import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { selectRecovery, selectRecoverySlice } from '@/store/recoverySlice'
-import type { RecoveryState } from '@/store/recoverySlice'
+import { selectRecoverySlice } from '@/store/recoverySlice'
 import madProps from '@/utils/mad-props'
+import type { RecoveryState } from '@/store/recoverySlice'
+import type { Loadable } from '@/store/common'
 
 export function _RecoveryInProgress({
   blockTimestamp,
   supportsRecovery,
-  recovery,
+  recoverySlice,
 }: {
   blockTimestamp?: number
   supportsRecovery: boolean
-  recovery: RecoveryState
+  recoverySlice: Loadable<RecoveryState>
 }): ReactElement | null {
-  const recoverySlice = useAppSelector(selectRecoverySlice)
   const allRecoveryTxs = useMemo(() => {
     return recoverySlice.data.flatMap(({ queue }) => queue).sort((a, b) => a.timestamp - b.timestamp)
   }, [recoverySlice.data])
@@ -138,10 +138,10 @@ function TimeLeft({ value, unit }: { value: number; unit: string }): ReactElemen
 
 // Appease React TypeScript warnings
 const _useSupportsRecovery = () => useHasFeature(FEATURES.RECOVERY)
-const _useRecovery = () => useAppSelector(selectRecovery)
+const _useRecoverySlice = () => useAppSelector(selectRecoverySlice)
 
 export const RecoveryInProgress = madProps(_RecoveryInProgress, {
   blockTimestamp: useBlockTimestamp,
   supportsRecovery: _useSupportsRecovery,
-  recovery: _useRecovery,
+  recoverySlice: _useRecoverySlice,
 })
