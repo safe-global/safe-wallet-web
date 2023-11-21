@@ -1,4 +1,4 @@
-import { Box, SvgIcon } from '@mui/material'
+import { Box, SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import RecoveryPlusIcon from '@/public/images/common/recovery-plus.svg'
@@ -14,7 +14,9 @@ export function RecoveryType({ isMalicious }: { isMalicious: boolean }): ReactEl
         fontSize="inherit"
         sx={{ '& path': { fill: ({ palette }) => palette.warning.main } }}
       />
-      {isMalicious ? 'Malicious' : 'Account'} recovery
+      <Typography color={isMalicious ? 'error.main' : undefined}>
+        {isMalicious ? 'Malicious transaction' : 'Account recovery'}
+      </Typography>
     </Box>
   )
 }

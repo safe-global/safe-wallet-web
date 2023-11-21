@@ -2,7 +2,7 @@ import { Card, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import { useAppSelector } from '@/store'
-import { useTimestamp } from '@/hooks/useTimestamp'
+import { useClock } from '@/hooks/useClock'
 import { WidgetContainer, WidgetBody } from '../styled'
 import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -80,7 +80,7 @@ function _RecoveryInProgressWidget({ nextTx }: { nextTx: RecoveryQueueItem }): R
 }
 
 // Appease React TypeScript warnings
-const _useTimestamp = () => useTimestamp(60_000) // Countdown does not display
+const _useTimestamp = () => useClock(60_000) // Countdown does not display
 const _useSupportsRecovery = () => useHasFeature(FEATURES.RECOVERY)
 const _useQueuedRecoveryTxs = () => useAppSelector(selectAllRecoveryQueues)
 

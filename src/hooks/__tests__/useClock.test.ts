@@ -1,14 +1,14 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { useTimestamp } from '../useTimestamp'
+import { useClock } from '../useClock'
 
-describe('useTimestamp', () => {
+describe('useClock', () => {
   it('should update the timestamp every INTERVAL', async () => {
     jest.useFakeTimers()
 
     const timestamp = 69_420
     jest.setSystemTime(timestamp)
 
-    const { result } = renderHook(() => useTimestamp(1_000))
+    const { result } = renderHook(() => useClock(1_000))
 
     jest.advanceTimersByTime(1_000)
 

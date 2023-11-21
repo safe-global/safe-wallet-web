@@ -1,4 +1,4 @@
-import { useTimestamp } from './useTimestamp'
+import { useClock } from './useClock'
 import { useAppSelector } from '@/store'
 import { selectDelayModifierByTxHash } from '@/store/recoverySlice'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
@@ -13,7 +13,7 @@ export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args
   const recovery = useAppSelector((state) => selectDelayModifierByTxHash(state, transactionHash))
 
   // We don't display seconds in the interface, so we can use a 60s interval
-  const timestamp = useTimestamp(60_000)
+  const timestamp = useClock(60_000)
   const remainingMs = validFrom.sub(timestamp)
 
   const isValid = remainingMs.lte(0)

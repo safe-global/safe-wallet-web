@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-export function useTimestamp(interval = 1_000): number {
+export function useClock(interval = 1_000): number {
   const [timestamp, setTimestamp] = useState(Date.now())
 
   useEffect(() => {
