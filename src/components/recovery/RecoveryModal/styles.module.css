@@ -1,0 +1,13 @@
+.backdrop {
+  z-index: 3;
+  background-color: var(--color-background-main);
+}
+
+.card {
+  max-width: 576px;
+  padding: var(--space-4);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
