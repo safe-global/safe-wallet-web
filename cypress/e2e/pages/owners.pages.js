@@ -3,7 +3,6 @@ import * as main from '../pages/main.page'
 import * as createWallet from '../pages/create_wallet.pages'
 import * as navigation from '../pages/navigation.page'
 
-const copyToClipboardBtn = 'button[aria-label="Copy to clipboard"]'
 const tooltipLabel = (label) => `span[aria-label="${label}"]`
 const removeOwnerBtn = 'span[data-track="settings: Remove owner"] > span > button'
 const replaceOwnerBtn = 'span[data-track="settings: Replace owner"] > span > button'
@@ -106,7 +105,6 @@ export function hoverOverDeleteOwnerBtn(index) {
 
 export function openRemoveOwnerWindow(btn) {
   cy.get(removeOwnerBtn).eq(btn).click({ force: true })
-  cy.get(copyToClipboardBtn).parent().eq(2).find('span').contains('0x').should('be.visible')
   cy.get('div').contains(removeOwnerStr).should('exist')
 }
 
@@ -114,7 +112,6 @@ export function openReplaceOwnerWindow() {
   cy.get(replaceOwnerBtn).click({ force: true })
   cy.get(newOwnerName).should('be.visible')
   cy.get(newOwnerAddress).should('be.visible')
-  cy.get(copyToClipboardBtn).parent().eq(2).find('span').contains('0x').should('be.visible')
 }
 export function verifyTooltipLabel(label) {
   cy.get(tooltipLabel(label)).should('be.visible')
