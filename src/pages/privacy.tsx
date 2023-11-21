@@ -60,43 +60,43 @@ const SafePrivacyPolicy = () => (
     <p>If you are viewing this policy online, you can click on the below links to jump to the relevant section:</p>
     <ol style={{ listStyle: 'arabic' }} start={2}>
       <li>
-        <Link href="#2">Glossary</Link>
+        <Link href="/privacy#2">Glossary</Link>
       </li>
       <li>
-        <Link href="#3">Your information and the Blockchain</Link>
+        <Link href="/privacy#3">Your information and the Blockchain</Link>
       </li>
       <li>
-        <Link href="#4">How We Use Personal Data</Link>
+        <Link href="/privacy#4">How We Use Personal Data</Link>
       </li>
       <li>
-        <Link href="#5">Use of Third Party Applications</Link>
+        <Link href="/privacy#5">Use of Third Party Applications</Link>
       </li>
       <li>
-        <Link href="#6">Sharing Your Personal Data</Link>
+        <Link href="/privacy#6">Sharing Your Personal Data</Link>
       </li>
       <li>
-        <Link href="#7">Transferring Your data outside of the EU</Link>
+        <Link href="/privacy#7">Transferring Your data outside of the EU</Link>
       </li>
       <li>
-        <Link href="#8">Existence of Automated Decision-making</Link>
+        <Link href="/privacy#8">Existence of Automated Decision-making</Link>
       </li>
       <li>
-        <Link href="#9">Data Security</Link>
+        <Link href="/privacy#9">Data Security</Link>
       </li>
       <li>
-        <Link href="#10">Your Rights as a Data Subject</Link>
+        <Link href="/privacy#10">Your Rights as a Data Subject</Link>
       </li>
       <li>
-        <Link href="#11">Storing Personal Data</Link>
+        <Link href="/privacy#11">Storing Personal Data</Link>
       </li>
       <li>
-        <Link href="#12">Children’s data</Link>
+        <Link href="/privacy#12">Children’s data</Link>
       </li>
       <li>
-        <Link href="#13">Changes to this Privacy Policy</Link>
+        <Link href="/privacy#13">Changes to this Privacy Policy</Link>
       </li>
       <li>
-        <Link href="#14">Contacts us</Link>
+        <Link href="/privacy#14">Contacts us</Link>
       </li>
     </ol>
     <h3 id="2">2. Glossary</h3>
