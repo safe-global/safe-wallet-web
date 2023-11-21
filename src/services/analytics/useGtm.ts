@@ -37,7 +37,7 @@ const useGtm = () => {
   const isTablet = useMediaQuery(theme.breakpoints.down('md'))
   const deviceType = isMobile ? DeviceType.MOBILE : isTablet ? DeviceType.TABLET : DeviceType.DESKTOP
   const safeAddress = useSafeAddress()
-  const walletLabel = useWallet()?.label
+  const wallet = useWallet()
 
   // Initialize GTM
   useEffect(() => {
@@ -83,10 +83,16 @@ const useGtm = () => {
   }, [router.pathname])
 
   useEffect(() => {
-    if (walletLabel) {
-      gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, walletLabel)
+    if (wallet?.label) {
+      gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, wallet?.label)
     }
-  }, [walletLabel])
+  }, [wallet?.label])
+
+  useEffect(() => {
+    if (wallet?.address) {
+      gtmSetUserProperty(AnalyticsUserProperties.WALLET_ADDRESS, wallet?.address)
+    }
+  }, [wallet?.address])
 
   // Track meta events on app load
   useMetaEvents()
