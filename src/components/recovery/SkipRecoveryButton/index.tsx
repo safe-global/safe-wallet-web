@@ -6,6 +6,7 @@ import ErrorIcon from '@/public/images/notifications/error.svg'
 import IconButton from '@mui/material/IconButton'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
+import { SkipRecoveryFlow } from '@/components/tx-flow/flows/SkipRecovery'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
 
 export function SkipRecoveryButton({
@@ -21,8 +22,7 @@ export function SkipRecoveryButton({
     e.stopPropagation()
     e.preventDefault()
 
-    // TODO: Implement skip recovery flow
-    setTxFlow(undefined)
+    setTxFlow(<SkipRecoveryFlow recovery={recovery} />)
   }
 
   return (
