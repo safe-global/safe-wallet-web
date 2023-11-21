@@ -175,13 +175,7 @@ export function Recovery(): ReactElement {
               </Button>
             </>
           ) : (
-            <>
-              <EnhancedTable rows={rows} headCells={headCells} />
-              {/* TODO: Move to correct location when widget is ready */}
-              <Button variant="contained" onClick={() => setTxFlow(<RecoverAccountFlow />)}>
-                Propose recovery
-              </Button>
-            </>
+            <EnhancedTable rows={rows} headCells={headCells} />
           )}
         </Grid>
       </Grid>
