@@ -101,7 +101,7 @@ const SafePrivacyPolicy = () => (
     </ol>
     <h3 id="2">2. Glossary</h3>
     <p>What do some of the capitalized terms mean in this policy?</p>
-    <ol start={1}>
+    <ol>
       <li>
         &ldquo;Blockchain&rdquo; means a mathematically secured consensus ledger such as the Ethereum Virtual Machine,
         an Ethereum Virtual Machine compatible validation mechanism, or other decentralized validation mechanisms.
@@ -195,7 +195,7 @@ const SafePrivacyPolicy = () => (
       <li>
         We connect the Wallet&nbsp;to the web app to identify the user via their public Wallet address. For this purpose
         we process:
-        <ol start={1}>
+        <ol>
           <li>public Wallet address and</li>
           <li>WalletConnect connection data</li>
         </ol>
@@ -203,7 +203,7 @@ const SafePrivacyPolicy = () => (
       <li>
         When you create a new Safe Account we process the following data to compose a Transaction based on your entered
         data to be approved by your Wallet:
-        <ol start={1}>
+        <ol>
           <li>your public Wallet address, </li>
           <li>account balance, </li>
           <li>smart contract address of the Safe Account,</li>
@@ -216,7 +216,7 @@ const SafePrivacyPolicy = () => (
       <li>
         When you create a Profile for a new Safe Account we process the following data for the purpose of enabling you
         to view your Safe Account after creation as well as enabling you to view all co-owned Safe Accounts:
-        <ol start={1}>
+        <ol>
           <li>your public Wallet address and </li>
           <li>account balance</li>
         </ol>
@@ -226,7 +226,7 @@ const SafePrivacyPolicy = () => (
       <li>
         When you create a Profile for an existing Safe Account for the purpose of allowing you to view and use them in
         the {'Safe{Wallet}'}, we process your
-        <ol start={1}>
+        <ol>
           <li>public Wallet address, </li>
           <li>Safe Account balance, </li>
           <li>smart contract address of the Safe Account and</li>
@@ -238,7 +238,7 @@ const SafePrivacyPolicy = () => (
       <li>
         When you initiate a Safe Account Transaction&nbsp;we process the following data to compose the Transaction for
         you based on your entered data:{' '}
-        <ol start={1}>
+        <ol>
           <li>your public Wallet address and </li>
           <li>smart contract address of the Safe Account</li>
         </ol>
@@ -248,7 +248,7 @@ const SafePrivacyPolicy = () => (
       <li>
         When you sign a Safe Account Transaction&nbsp;we process the following data to enable you to sign the
         Transaction using your Wallet:
-        <ol start={1}>
+        <ol>
           <li>Safe Account balance, </li>
           <li>smart contract address of Safe Account and</li>
           <li>Safe Account owner&apos;s public Wallet addresses</li>
@@ -258,7 +258,7 @@ const SafePrivacyPolicy = () => (
     <ol start={7}>
       <li>
         To enable you to execute The transaction on the Blockchain we process:
-        <ol start={1}>
+        <ol>
           <li>your public Wallet address, </li>
           <li>Safe Account balance, </li>
           <li>smart contract address of the Safe Account, </li>
@@ -272,7 +272,7 @@ const SafePrivacyPolicy = () => (
         When we collect relevant&nbsp;data&nbsp;from the Blockchain to display context information in the
         {`Safe{Wallet}`}
         we process:
-        <ol start={1}>
+        <ol>
           <li>your public Wallet address, </li>
           <li>account balance,</li>
           <li>account activity and</li>
@@ -284,7 +284,7 @@ const SafePrivacyPolicy = () => (
       <li>
         When we decode Transactions from the Blockchain for the purpose of providing Transaction information in a
         conveniently readable format, we process:
-        <ol start={1}>
+        <ol>
           <li>your public Wallet address </li>
           <li>account balance and </li>
           <li>account activity</li>
@@ -295,7 +295,7 @@ const SafePrivacyPolicy = () => (
       <li>
         When we maintain a user profile&nbsp;to provide you with a good user experience through Profiles and an address
         book we process:
-        <ol start={1}>
+        <ol>
           <li>your public Wallet address, </li>
           <li>label, </li>
           <li>smart contract address of the Safe Account, </li>
@@ -316,7 +316,7 @@ const SafePrivacyPolicy = () => (
     </p>
     <h4>4.2. Tracking</h4>
     <p>4.2.1 We will process the following personal data to analyze your behavior:</p>
-    <ol start={1}>
+    <ol>
       <li>IP address (will not be stored for EU users), </li>
       <li>session tracking, </li>
       <li>user behavior, </li>
@@ -349,7 +349,7 @@ const SafePrivacyPolicy = () => (
       4.2.2 We conduct technical monitoring of your activity on the platform in order to ensure availability, integrity
       and robustness of the service. For this purpose we process your:
     </p>
-    <ol start={1}>
+    <ol>
       <li>IP addresses, </li>
       <li>meta and communication data, </li>
       <li>website access and </li>
@@ -380,7 +380,7 @@ const SafePrivacyPolicy = () => (
       When you participate in our user experience research we may collect and process some personal data. This data may
       include:
     </p>
-    <ol start={1}>
+    <ol>
       <li>your name</li>
       <li>your email</li>
       <li>your phone type</li>
@@ -398,13 +398,13 @@ const SafePrivacyPolicy = () => (
     <h4>4.4. Publishing the app</h4>
     <p>4.4.1 Publishing the app on Google Play Store.</p>
     <p>We process the following information to enable you to download the app on smartphones running Android:</p>
-    <ol start={1}>
+    <ol>
       <li>google account and </li>
       <li>e-mail address</li>
     </ol>
     <p>4.4.2 Publishing the app on Apple App Store</p>
     <p>We process the following information to enable you to download the app on smartphones running iOS:</p>
-    <ol start={1}>
+    <ol>
       <li>apple account and </li>
       <li>e-mail address</li>
     </ol>
@@ -414,7 +414,7 @@ const SafePrivacyPolicy = () => (
     </p>
     <h4>4.5. Use of the app</h4>
     <p>4.5.1 We provide the app to you to enable you to use it. For this purpose we process your:</p>
-    <ol start={1}>
+    <ol>
       <li>mobile device information, </li>
       <li>http request caches and </li>
       <li>http request cookies</li>
@@ -423,7 +423,7 @@ const SafePrivacyPolicy = () => (
       4.5.2 In order to update you about changes in the app, we need to send you push notifications. For this purpose we
       process your:
     </p>
-    <ol start={1}>
+    <ol>
       <li>Transactions executed and failed, </li>
       <li>assets sent, </li>
       <li>assets received </li>
@@ -432,14 +432,14 @@ const SafePrivacyPolicy = () => (
       4.5.3 To provide support to you and notify you about outage resulting in unavailability of the service, we process
       your:
     </p>
-    <ol start={1}>
+    <ol>
       <li>pseudonymized user identifier</li>
     </ol>
     <p>
       4.5.4 In order to provide remote client configuration and control whether to inform about, recommend or force you
       to update your app or enable/disable certain app features we process your:
     </p>
-    <ol start={1}>
+    <ol>
       <li>User agent, </li>
       <li>app information (version, build number etc.), </li>
       <li>language, </li>
@@ -461,7 +461,7 @@ const SafePrivacyPolicy = () => (
       you.{' '}
     </p>
     <p>4.5.5 Finally, to report errors and improve user experience we process your:</p>
-    <ol start={1}>
+    <ol>
       <li>User agent info (Browser, OS, device), </li>
       <li>URL that you were on (Can contain Safe Account address) and </li>
       <li>Error info: Time, stacktrace</li>
@@ -471,7 +471,7 @@ const SafePrivacyPolicy = () => (
       4.5.6 We process your personal data to allow you to authenticate using your gmail account or AppleID and to create
       a signer wallet/owner account . For that purpose following personal data is processed:
     </p>
-    <ol start={1}>
+    <ol>
       <li>Anonymised device information and identifiers, e.g. IP address, cookie IDs, device type</li>
       <li>User account authentication information (e.g. username, password)</li>
       <li>
@@ -488,7 +488,7 @@ const SafePrivacyPolicy = () => (
       4.5.7 Providing on and off-ramp services to enable you to top up your Safe Account with e.g. bank transfer, debit
       card, credit card. For this purpose MoonPay may process your:
     </p>
-    <ol start={1}>
+    <ol>
       <li>full name</li>
       <li>date of birth</li>
       <li>nationality</li>
@@ -805,7 +805,7 @@ const SafePrivacyPolicy = () => (
     </ul>
     <h5>Right to restrict processing and right to object to processing</h5>
     <p>You have a right to restrict processing of your personal information, such as where:</p>
-    <ol start={1}>
+    <ol>
       <li>you contest the accuracy of the personal information;</li>
       <li>
         where processing is unlawful you may request, instead of requesting erasure, that we restrict the use of the
