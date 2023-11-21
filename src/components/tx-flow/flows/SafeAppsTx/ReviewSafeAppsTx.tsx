@@ -67,7 +67,7 @@ const ReviewSafeAppsTx = ({
     }
 
     // Track tx creation
-    if (safeTx.signatures.size === 1) {
+    if (safeTx.signatures.size === 0) {
       trackEvent({
         ...TX_EVENTS.CREATE,
         label: isWalletConnectSafeApp(app?.url || '') ? TX_TYPES.walletconnect : TX_TYPES.safeapps,
