@@ -1,33 +1,77 @@
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { BigNumber } from 'ethers'
 import { memoize } from 'lodash'
+import { getMultiSendCallOnlyDeployment } from '@safe-global/safe-deployments'
+import { hexZeroPad } from 'ethers/lib/utils'
+import type { BigNumber } from 'ethers'
+import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Delay } from '@gnosis.pm/zodiac'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 
-import type { RecoveryQueueItem, RecoveryState } from '@/store/recoverySlice'
-import { hexZeroPad } from 'ethers/lib/utils'
 import { trimTrailingSlash } from '@/utils/url'
+import { sameAddress } from '@/utils/addresses'
+import { isMultiSendCalldata } from '@/utils/transaction-calldata'
+import { decodeMultiSendTxs } from '@/utils/transactions'
+import type { RecoveryQueueItem, RecoveryState } from '@/store/recoverySlice'
 
 const MAX_PAGE_SIZE = 100
 
-export const _getRecoveryQueueItem = async (
-  transactionAdded: TransactionAddedEvent,
-  txCooldown: BigNumber,
-  txExpiration: BigNumber,
-): Promise<RecoveryQueueItem> => {
-  const txBlock = await transactionAdded.getBlock()
+export function _isMaliciousRecovery({
+  chainId,
+  version,
+  safeAddress,
+  transaction,
+}: {
+  chainId: string
+  version: SafeInfo['version']
+  safeAddress: string
+  transaction: Pick<TransactionAddedEvent['args'], 'to' | 'data'>
+}) {
+  const isMultiSend = isMultiSendCalldata(transaction.data)
+  const transactions = isMultiSend ? decodeMultiSendTxs(transaction.data) : [transaction]
 
-  const validFrom = BigNumber.from(txBlock.timestamp).add(txCooldown)
+  if (!isMultiSend) {
+    // Calling the Safe itself
+    return !sameAddress(transaction.to, safeAddress)
+  }
+
+  const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId, version: version ?? undefined })
+
+  if (!multiSendDeployment) {
+    return true
+  }
+
+  const multiSendAddress = multiSendDeployment.networkAddresses[chainId] ?? multiSendDeployment.defaultAddress
+
+  // Calling official MultiSend contract with a batch of transactions to the Safe itself
+  return (
+    !sameAddress(transaction.to, multiSendAddress) ||
+    transactions.some((transaction) => !sameAddress(transaction.to, safeAddress))
+  )
+}
+
+export const _getRecoveryQueueItemTimestamps = async ({
+  delayModifier,
+  transactionAdded,
+  txCooldown,
+  txExpiration,
+}: {
+  delayModifier: Delay
+  transactionAdded: TransactionAddedEvent
+  txCooldown: BigNumber
+  txExpiration: BigNumber
+}): Promise<Pick<RecoveryQueueItem, 'timestamp' | 'validFrom' | 'expiresAt'>> => {
+  const timestamp = await delayModifier.txCreatedAt(transactionAdded.args.queueNonce)
+
+  const validFrom = timestamp.add(txCooldown)
   const expiresAt = txExpiration.isZero()
     ? null // Never expires
-    : validFrom.add(txExpiration)
+    : validFrom.add(txExpiration).mul(1_000)
 
   return {
-    ...transactionAdded,
-    timestamp: txBlock.timestamp,
-    validFrom,
+    timestamp: timestamp.mul(1_000),
+    validFrom: validFrom.mul(1_000),
     expiresAt,
   }
 }
@@ -85,18 +129,66 @@ const queryAddedTransactions = async (
   return await delayModifier.queryFilter(transactionAddedFilter, blockNumber, 'latest')
 }
 
+const getRecoveryQueueItem = async ({
+  delayModifier,
+  transactionAdded,
+  txCooldown,
+  txExpiration,
+  provider,
+  chainId,
+  version,
+  safeAddress,
+}: {
+  delayModifier: Delay
+  transactionAdded: TransactionAddedEvent
+  txCooldown: BigNumber
+  txExpiration: BigNumber
+  provider: JsonRpcProvider
+  chainId: string
+  version: SafeInfo['version']
+  safeAddress: string
+}): Promise<RecoveryQueueItem> => {
+  const [timestamps, receipt] = await Promise.all([
+    _getRecoveryQueueItemTimestamps({
+      delayModifier,
+      transactionAdded,
+      txCooldown,
+      txExpiration,
+    }),
+    provider.getTransactionReceipt(transactionAdded.transactionHash),
+  ])
+
+  const isMalicious = _isMaliciousRecovery({
+    chainId,
+    version,
+    safeAddress,
+    transaction: transactionAdded.args,
+  })
+
+  return {
+    ...transactionAdded,
+    ...timestamps,
+    isMalicious,
+    executor: receipt.from,
+  }
+}
+
 export const getRecoveryState = async ({
   delayModifier,
   transactionService,
   safeAddress,
   provider,
+  chainId,
+  version,
 }: {
   delayModifier: Delay
   transactionService: string
   safeAddress: string
   provider: JsonRpcProvider
+  chainId: string
+  version: SafeInfo['version']
 }): Promise<RecoveryState[number]> => {
-  const [[modules], txExpiration, txCooldown, txNonce, queueNonce] = await Promise.all([
+  const [[guardians], txExpiration, txCooldown, txNonce, queueNonce] = await Promise.all([
     delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_PAGE_SIZE),
     delayModifier.txExpiration(),
     delayModifier.txCooldown(),
@@ -114,18 +206,27 @@ export const getRecoveryState = async ({
   )
 
   const queue = await Promise.all(
-    queuedTransactionsAdded.map((transactionAdded) =>
-      _getRecoveryQueueItem(transactionAdded, txCooldown, txExpiration),
-    ),
+    queuedTransactionsAdded.map((transactionAdded) => {
+      return getRecoveryQueueItem({
+        delayModifier,
+        transactionAdded,
+        txCooldown,
+        txExpiration,
+        provider,
+        chainId,
+        version,
+        safeAddress,
+      })
+    }),
   )
 
   return {
     address: delayModifier.address,
-    modules,
+    guardians,
     txExpiration,
     txCooldown,
     txNonce,
     queueNonce,
-    queue,
+    queue: queue.filter((item) => !item.removed),
   }
 }

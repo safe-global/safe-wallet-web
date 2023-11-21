@@ -7,14 +7,16 @@ import { sameAddress } from '@/utils/addresses'
 import type { RootState } from '.'
 
 export type RecoveryQueueItem = TransactionAddedEvent & {
-  timestamp: number
+  timestamp: BigNumber
   validFrom: BigNumber
   expiresAt: BigNumber | null
+  isMalicious: boolean
+  executor: string
 }
 
 export type RecoveryState = Array<{
   address: string
-  modules: Array<string>
+  guardians: Array<string>
   txExpiration: BigNumber
   txCooldown: BigNumber
   txNonce: BigNumber
@@ -30,9 +32,20 @@ export const recoverySlice = slice
 
 export const selectRecovery = createSelector(selector, (recovery) => recovery.data)
 
-export const selectRecoveryByGuardian = createSelector(
+export const selectDelayModifierByGuardian = createSelector(
   [selectRecovery, (_: RootState, walletAddress: string) => walletAddress],
   (recovery, walletAddress) => {
-    return recovery.find(({ modules }) => modules.some((module) => sameAddress(module, walletAddress)))
+    return recovery.find(({ guardians }) => guardians.some((guardian) => sameAddress(guardian, walletAddress)))
+  },
+)
+
+export const selectAllRecoveryQueues = createSelector(selectRecovery, (recovery) => {
+  return recovery.flatMap(({ queue }) => queue).sort((a, b) => a.timestamp.sub(b.timestamp).toNumber())
+})
+
+export const selectDelayModifierByTxHash = createSelector(
+  [selectRecovery, (_: RootState, txHash: string) => txHash],
+  (recovery, txHash) => {
+    return recovery.find(({ queue }) => queue.some((item) => item.transactionHash === txHash))
   },
 )

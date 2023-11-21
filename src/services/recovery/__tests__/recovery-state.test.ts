@@ -1,12 +1,20 @@
 import { faker } from '@faker-js/faker'
 import { BigNumber, ethers } from 'ethers'
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { cloneDeep } from 'lodash'
 import type { Delay, TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 
-import { getRecoveryState, _getRecoveryQueueItem, _getSafeCreationReceipt } from '../recovery-state'
+import {
+  getRecoveryState,
+  _getRecoveryQueueItemTimestamps,
+  _getSafeCreationReceipt,
+  _isMaliciousRecovery,
+} from '../recovery-state'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { cloneDeep } from 'lodash'
+import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
+import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@safe-global/safe-deployments'
+import { Interface } from 'ethers/lib/utils'
 
 jest.mock('@/hooks/wallets/web3')
 
@@ -18,37 +26,189 @@ describe('recovery-state', () => {
     _getSafeCreationReceipt.cache.clear?.()
   })
 
-  describe('getRecoveryQueueItem', () => {
-    it('should return a recovery queue item', async () => {
+  describe('isMaliciousRecovery', () => {
+    describe('non-MultiSend', () => {
+      it('should return true if the transaction is not calling the Safe itself', () => {
+        const chainId = '5'
+        const version = '1.3.0'
+        const safeAddress = faker.finance.ethereumAddress()
+
+        const transaction = {
+          to: faker.finance.ethereumAddress(), // Not Safe
+          data: '0x',
+        }
+
+        expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(true)
+      })
+
+      it('should return false if the transaction is calling the Safe itself', () => {
+        const chainId = '5'
+        const version = '1.3.0'
+        const safeAddress = faker.finance.ethereumAddress()
+
+        const transaction = {
+          to: safeAddress, // Safe
+          data: '0x',
+        }
+
+        expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(false)
+      })
+    })
+
+    describe('MultiSend', () => {
+      it('should return true if the transaction is a not and official MultiSend address', () => {
+        const chainId = '5'
+        const version = '1.3.0'
+        const safeAddress = faker.finance.ethereumAddress()
+
+        const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
+        const safeInterface = new Interface(safeAbi)
+
+        const multiSendAbi = getMultiSendCallOnlyDeployment({ network: chainId, version })!.abi
+        const multiSendInterface = new Interface(multiSendAbi)
+
+        const multiSendData = encodeMultiSendData([
+          {
+            to: safeAddress,
+            value: '0',
+            data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 1]),
+            operation: 0,
+          },
+          {
+            to: safeAddress,
+            value: '0',
+            data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 2]),
+            operation: 0,
+          },
+        ])
+
+        const transaction = {
+          to: faker.finance.ethereumAddress(), // Not official MultiSend
+          data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
+        }
+
+        expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(true)
+      })
+
+      it('should return true if the transaction is an official MultiSend call and not every transaction in the batch calls the Safe itself', () => {
+        const chainId = '5'
+        const version = '1.3.0'
+        const safeAddress = faker.finance.ethereumAddress()
+
+        const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
+        const safeInterface = new Interface(safeAbi)
+
+        const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId, version })!
+        const multiSendInterface = new Interface(multiSendDeployment.abi)
+
+        const multiSendData = encodeMultiSendData([
+          {
+            to: faker.finance.ethereumAddress(), // Not Safe
+            value: '0',
+            data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 1]),
+            operation: 0,
+          },
+          {
+            to: faker.finance.ethereumAddress(), // Not Safe
+            value: '0',
+            data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 2]),
+            operation: 0,
+          },
+        ])
+
+        const transaction = {
+          to: multiSendDeployment.networkAddresses[chainId],
+          data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
+        }
+
+        expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(true)
+      })
+
+      it('should return false if the transaction is an official MultiSend call and every transaction in the batch calls the Safe itself', () => {
+        const chainId = '5'
+        const version = '1.3.0'
+        const safeAddress = faker.finance.ethereumAddress()
+
+        const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
+        const safeInterface = new Interface(safeAbi)
+
+        const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId, version })!
+        const multiSendInterface = new Interface(multiSendDeployment.abi)
+
+        const multiSendData = encodeMultiSendData([
+          {
+            to: safeAddress,
+            value: '0',
+            data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 1]),
+            operation: 0,
+          },
+          {
+            to: safeAddress,
+            value: '0',
+            data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 2]),
+            operation: 0,
+          },
+        ])
+
+        const transaction = {
+          to: multiSendDeployment.networkAddresses[chainId],
+          data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
+        }
+
+        expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(false)
+      })
+    })
+  })
+
+  describe('getRecoveryQueueItemTimestamps', () => {
+    it('should return a recovery queue item timestamps', async () => {
+      const delayModifier = {
+        txCreatedAt: () => Promise.resolve(BigNumber.from(1)),
+      } as unknown as Delay
       const transactionAdded = {
-        getBlock: () => Promise.resolve({ timestamp: 1 }),
+        args: {
+          queueNonce: BigNumber.from(0),
+        },
       } as TransactionAddedEvent
       const txCooldown = BigNumber.from(1)
       const txExpiration = BigNumber.from(2)
 
-      const item = await _getRecoveryQueueItem(transactionAdded, txCooldown, txExpiration)
+      const item = await _getRecoveryQueueItemTimestamps({
+        delayModifier,
+        transactionAdded,
+        txCooldown,
+        txExpiration,
+      })
 
       expect(item).toStrictEqual({
-        ...transactionAdded,
-        timestamp: 1,
-        validFrom: BigNumber.from(2),
-        expiresAt: BigNumber.from(4),
+        timestamp: BigNumber.from(1_000),
+        validFrom: BigNumber.from(2_000),
+        expiresAt: BigNumber.from(4_000),
       })
     })
 
-    it('should return a recovery queue item with expiresAt null if txExpiration is zero', async () => {
+    it('should return a recovery queue item timestamps with expiresAt null if txExpiration is zero', async () => {
+      const delayModifier = {
+        txCreatedAt: () => Promise.resolve(BigNumber.from(1)),
+      } as unknown as Delay
       const transactionAdded = {
-        getBlock: () => Promise.resolve({ timestamp: 1 }),
+        args: {
+          queueNonce: BigNumber.from(0),
+        },
       } as TransactionAddedEvent
       const txCooldown = BigNumber.from(1)
       const txExpiration = BigNumber.from(0)
 
-      const item = await _getRecoveryQueueItem(transactionAdded, txCooldown, txExpiration)
+      const item = await _getRecoveryQueueItemTimestamps({
+        delayModifier,
+        transactionAdded,
+        txCooldown,
+        txExpiration,
+      })
 
       expect(item).toStrictEqual({
-        ...transactionAdded,
-        timestamp: 1,
-        validFrom: BigNumber.from(2),
+        timestamp: BigNumber.from(1_000),
+        validFrom: BigNumber.from(2_000),
         expiresAt: null,
       })
     })
@@ -148,11 +308,21 @@ describe('recovery-state', () => {
   describe('getRecoveryState', () => {
     it('should return the recovery state from the Safe creation block', async () => {
       const safeAddress = faker.finance.ethereumAddress()
+      const chainId = '5'
+      const version = '1.3.0'
       const transactionService = faker.internet.url({ appendSlash: false })
       const transactionHash = `0x${faker.string.hexadecimal()}`
-      const blockNumber = faker.number.int()
+      const safeCreationReceipt = {
+        blockNumber: faker.number.int(),
+      } as TransactionReceipt
+      const transactionAddedReceipt = {
+        from: faker.finance.ethereumAddress(),
+      } as TransactionReceipt
       const provider = {
-        getTransactionReceipt: () => Promise.resolve({ blockNumber } as TransactionReceipt),
+        getTransactionReceipt: jest
+          .fn()
+          .mockResolvedValueOnce(safeCreationReceipt)
+          .mockResolvedValue(transactionAddedReceipt),
       } as unknown as JsonRpcProvider
 
       global.fetch = jest.fn().mockImplementation((_url: string) => {
@@ -163,23 +333,36 @@ describe('recovery-state', () => {
         })
       })
 
-      const modules = [faker.finance.ethereumAddress()]
+      const guardians = [faker.finance.ethereumAddress()]
       const txExpiration = BigNumber.from(0)
       const txCooldown = BigNumber.from(69420)
       const txNonce = BigNumber.from(2)
       const queueNonce = BigNumber.from(4)
       const transactionsAdded = [
         {
-          getBlock: () => Promise.resolve({ timestamp: 420 }),
           args: {
             queueNonce: BigNumber.from(2),
+            to: safeAddress,
+            value: BigNumber.from(0),
+            data: '0x',
           },
         } as unknown,
         {
-          getBlock: () => Promise.resolve({ timestamp: 69420 }),
           args: {
             queueNonce: BigNumber.from(3),
+            to: faker.finance.ethereumAddress(), // Malicious
+            value: BigNumber.from(0),
+            data: '0x',
           },
+        } as unknown,
+        {
+          args: {
+            queueNonce: BigNumber.from(4),
+            to: safeAddress,
+            value: BigNumber.from(0),
+            data: '0x',
+          },
+          removed: true, // Reorg
         } as unknown,
       ] as Array<TransactionAddedEvent>
 
@@ -193,10 +376,15 @@ describe('recovery-state', () => {
           TransactionAdded: () => cloneDeep(defaultTransactionAddedFilter),
         },
         address: faker.finance.ethereumAddress(),
-        getModulesPaginated: () => Promise.resolve([modules]),
+        getModulesPaginated: () => Promise.resolve([guardians]),
         txExpiration: () => Promise.resolve(txExpiration),
         txCooldown: () => Promise.resolve(txCooldown),
         txNonce: () => Promise.resolve(txNonce),
+        txCreatedAt: jest
+          .fn()
+          .mockResolvedValueOnce(BigNumber.from(420))
+          .mockResolvedValueOnce(BigNumber.from(69420))
+          .mockResolvedValueOnce(BigNumber.from(6942069)),
         queueNonce: () => Promise.resolve(queueNonce),
         queryFilter: queryFilterMock.mockImplementation(() => Promise.resolve(transactionsAdded)),
       }
@@ -206,11 +394,13 @@ describe('recovery-state', () => {
         safeAddress,
         transactionService,
         provider,
+        chainId,
+        version,
       })
 
       expect(recoveryState).toStrictEqual({
         address: delayModifier.address,
-        modules,
+        guardians,
         txExpiration,
         txCooldown,
         txNonce,
@@ -218,15 +408,19 @@ describe('recovery-state', () => {
         queue: [
           {
             ...transactionsAdded[0],
-            timestamp: 420,
-            validFrom: BigNumber.from(420).add(txCooldown),
+            timestamp: BigNumber.from(420).mul(1_000),
+            validFrom: BigNumber.from(420).add(txCooldown).mul(1_000),
             expiresAt: null,
+            isMalicious: false,
+            executor: transactionAddedReceipt.from,
           },
           {
             ...transactionsAdded[1],
-            timestamp: 69420,
-            validFrom: BigNumber.from(69420).add(txCooldown),
+            timestamp: BigNumber.from(69420).mul(1_000),
+            validFrom: BigNumber.from(69420).add(txCooldown).mul(1_000),
             expiresAt: null,
+            isMalicious: true,
+            executor: transactionAddedReceipt.from,
           },
         ],
       })
@@ -238,17 +432,19 @@ describe('recovery-state', () => {
             [ethers.utils.hexZeroPad('0x2', 32), ethers.utils.hexZeroPad('0x3', 32)],
           ],
         },
-        blockNumber,
+        safeCreationReceipt.blockNumber,
         'latest',
       )
     })
 
     it('should not query data if the queueNonce equals the txNonce', async () => {
       const safeAddress = faker.finance.ethereumAddress()
+      const chainId = '5'
+      const version = '1.3.0'
       const transactionService = faker.internet.url({ appendSlash: true })
       const provider = {} as unknown as JsonRpcProvider
 
-      const modules = [faker.finance.ethereumAddress()]
+      const guardians = [faker.finance.ethereumAddress()]
       const txExpiration = BigNumber.from(0)
       const txCooldown = BigNumber.from(69420)
       const txNonce = BigNumber.from(2)
@@ -264,7 +460,7 @@ describe('recovery-state', () => {
           TransactionAdded: () => cloneDeep(defaultTransactionAddedFilter),
         },
         address: faker.finance.ethereumAddress(),
-        getModulesPaginated: () => Promise.resolve([modules]),
+        getModulesPaginated: () => Promise.resolve([guardians]),
         txExpiration: () => Promise.resolve(txExpiration),
         txCooldown: () => Promise.resolve(txCooldown),
         txNonce: () => Promise.resolve(txNonce),
@@ -277,11 +473,13 @@ describe('recovery-state', () => {
         safeAddress,
         transactionService,
         provider,
+        chainId,
+        version,
       })
 
       expect(recoveryState).toStrictEqual({
         address: delayModifier.address,
-        modules,
+        guardians,
         txExpiration,
         txCooldown,
         txNonce,

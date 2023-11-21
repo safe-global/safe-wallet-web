@@ -9,12 +9,12 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { RecoverAccountFlow } from '@/components/tx-flow/flows/RecoverAccount'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useAppSelector } from '@/store'
-import { selectRecoveryByGuardian } from '@/store/recoverySlice'
+import { selectDelayModifierByGuardian } from '@/store/recoverySlice'
 
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
   const wallet = useWallet()
-  const recovery = useAppSelector((state) => selectRecoveryByGuardian(state, wallet?.address ?? ''))
+  const recovery = useAppSelector((state) => selectDelayModifierByGuardian(state, wallet?.address ?? ''))
 
   return (
     <Paper sx={{ p: 4 }}>
