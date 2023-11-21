@@ -25,6 +25,7 @@ import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
 import { getRecoveryProposalTransaction } from '@/services/recovery/transaction'
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
+import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 
 /**
  * Propose a transaction
@@ -430,4 +431,24 @@ export async function dispatchRecoveryProposal({
 
   const signer = provider.getSigner()
   await delayModifier.connect(signer).execTransactionFromModule(to, value, data, OperationType.Call)
+}
+
+export async function dispatchRecoveryExecution({
+  onboard,
+  chainId,
+  args,
+  delayModifierAddress,
+}: {
+  onboard: OnboardAPI
+  chainId: string
+  args: TransactionAddedEvent['args']
+  delayModifierAddress: string
+}) {
+  const wallet = await assertWalletChain(onboard, chainId)
+  const provider = createWeb3(wallet.provider)
+
+  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
+
+  const signer = provider.getSigner()
+  await delayModifier.connect(signer).executeNextTx(args.to, args.value, args.data, args.operation)
 }

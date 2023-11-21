@@ -3,9 +3,12 @@ import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@saf
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
+import { sameAddress } from '@/utils/addresses'
+import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import type { AddressEx, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { sameAddress } from '@/utils/addresses'
+import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 export function getRecoveryProposalTransactions({
   safe,
@@ -138,5 +141,21 @@ export function getRecoveryProposalTransaction({
     value: '0',
     operation: OperationType.Call,
     data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
+  }
+}
+
+export function getRecoverySkipTransaction(
+  recovery: RecoveryQueueItem,
+  provider: JsonRpcProvider,
+): MetaTransactionData {
+  const delayModifier = getModuleInstance(KnownContracts.DELAY, recovery.address, provider)
+
+  const newTxNonce = recovery.args.queueNonce.add(1)
+
+  return {
+    to: delayModifier.address,
+    value: '0',
+    operation: OperationType.Call,
+    data: delayModifier.interface.encodeFunctionData('setTxNonce', [newTxNonce]),
   }
 }

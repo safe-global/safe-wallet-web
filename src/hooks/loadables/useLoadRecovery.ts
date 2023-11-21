@@ -21,40 +21,50 @@ const useLoadRecovery = (): AsyncResult<RecoveryState> => {
   const [counter] = useIntervalCounter(REFRESH_DELAY)
   const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
 
-  const [delayModifiers, delayModifiersError, delayModifiersLoading] = useAsync<Array<Delay>>(() => {
-    if (!supportsRecovery || !web3ReadOnly || !safe.modules || safe.modules.length === 0) {
-      return
-    }
+  const [delayModifiers, delayModifiersError, delayModifiersLoading] = useAsync<Array<Delay>>(
+    () => {
+      if (!supportsRecovery || !web3ReadOnly || !safe.modules || safe.modules.length === 0) {
+        return
+      }
 
-    const isOnlySpendingLimit =
-      safe.modules.length === 1 && safe.modules[0].value === getSpendingLimitModuleAddress(safe.chainId)
+      const isOnlySpendingLimit =
+        safe.modules.length === 1 && safe.modules[0].value === getSpendingLimitModuleAddress(safe.chainId)
 
-    if (isOnlySpendingLimit) {
-      return
-    }
+      if (isOnlySpendingLimit) {
+        return
+      }
 
-    return getDelayModifiers(safe.chainId, safe.modules, web3ReadOnly)
+      return getDelayModifiers(safe.chainId, safe.modules, web3ReadOnly)
+    },
     // Need to check length of modules array to prevent new request every time Safe info polls
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [safeAddress, safe.chainId, safe.modules?.length, web3ReadOnly, supportsRecovery])
+    [safeAddress, safe.chainId, safe.modules?.length, web3ReadOnly, supportsRecovery],
+    false,
+  )
 
-  const [recoveryState, recoveryStateError, recoveryStateLoading] = useAsync<RecoveryState>(() => {
-    if (!delayModifiers || delayModifiers.length === 0 || !chain?.transactionService || !web3ReadOnly) {
-      return
-    }
+  const [recoveryState, recoveryStateError, recoveryStateLoading] = useAsync<RecoveryState>(
+    () => {
+      if (!delayModifiers || delayModifiers.length === 0 || !chain?.transactionService || !web3ReadOnly) {
+        return
+      }
 
-    return Promise.all(
-      delayModifiers.map((delayModifier) =>
-        getRecoveryState({
-          delayModifier,
-          transactionService: chain.transactionService,
-          safeAddress,
-          provider: web3ReadOnly,
-        }),
-      ),
-    )
+      return Promise.all(
+        delayModifiers.map((delayModifier) =>
+          getRecoveryState({
+            delayModifier,
+            transactionService: chain.transactionService,
+            safeAddress,
+            provider: web3ReadOnly,
+            chainId: safe.chainId,
+            version: safe.version,
+          }),
+        ),
+      )
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delayModifiers, counter, chain?.transactionService, web3ReadOnly, safeAddress])
+    [delayModifiers, counter, chain?.transactionService, web3ReadOnly, safeAddress, safe.chainId, safe.version],
+    false,
+  )
 
   return [recoveryState, delayModifiersError || recoveryStateError, delayModifiersLoading || recoveryStateLoading]
 }

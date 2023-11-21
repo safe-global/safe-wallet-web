@@ -8,13 +8,11 @@ import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useAppSelector } from '@/store'
 import { selectRecovery } from '@/store/recoverySlice'
-import useWallet from '@/hooks/wallets/useWallet'
 
 // TODO: Migrate section
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
   const recovery = useAppSelector(selectRecovery)
-  const wallet = useWallet()
 
   return (
     <Paper sx={{ p: 4 }}>
