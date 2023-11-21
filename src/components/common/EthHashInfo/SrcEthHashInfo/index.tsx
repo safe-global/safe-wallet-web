@@ -50,8 +50,8 @@ const SrcEthHashInfo = ({
   const shouldPrefix = isAddress(address)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
   const identicon = <Identicon address={address} size={avatarSize} />
+  const shouldCopyPrefix = shouldPrefix && copyPrefix
 
   return (
     <div className={css.container}>
@@ -78,13 +78,13 @@ const SrcEthHashInfo = ({
 
         <div className={css.addressContainer}>
           <Box fontWeight="inherit" fontSize="inherit">
-            {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
-            <span>{shortAddress || isMobile ? shortenAddress(address) : address}</span>
+            <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix}>
+              {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
+              <span>{shortAddress || isMobile ? shortenAddress(address) : address}</span>
+            </CopyAddressButton>
           </Box>
 
-          {showCopyButton && (
-            <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldPrefix && copyPrefix} />
-          )}
+          {showCopyButton && <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} />}
 
           {hasExplorer && ExplorerButtonProps && (
             <Box color="border.main">
