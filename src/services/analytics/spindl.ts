@@ -1,9 +1,11 @@
 import spindl from '@spindl-xyz/attribution-lite'
-import { IS_PRODUCTION, SPINDL_SDK_KEY } from '@/config/constants'
+import { IS_PRODUCTION } from '@/config/constants'
 
 const spindlInit = () => {
+  const SPINDL_SDK_KEY = process.env.NEXT_PUBLIC_SPINDL_SDK_KEY
+
   spindl.configure({
-    sdkKey: SPINDL_SDK_KEY,
+    sdkKey: SPINDL_SDK_KEY || '',
     debugMode: !IS_PRODUCTION,
   })
 }
