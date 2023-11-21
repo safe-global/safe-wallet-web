@@ -1,8 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { IS_OFFICIAL_HOST } from '@/config/constants'
-import Link from 'next/link'
-import MUILink from '@mui/material/Link'
+import Link from '@mui/material/Link'
 
 const SafePrivacyPolicy = () => (
   <div>
@@ -11,19 +10,26 @@ const SafePrivacyPolicy = () => (
         list-style: lower-alpha;
       }
 
-      ol > ol {
+      ol ol {
         list-style: lower-roman;
+      }
+
+      h4 {
+        font-size: 1.1em;
+      }
+
+      h5 {
+        font-size: 1em;
+        margin-bottom: 0;
       }
     `}</style>
 
     <h1>Privacy Policy</h1>
-    <p>Last updated in September&nbsp;2023.</p>
+    <p>Last updated in November&nbsp;2023.</p>
     <p>
       Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
       regulation regarding any personal information we may collect about you, including across our website,{' '}
-      <Link href="https://app.safe.global" passHref legacyBehavior>
-        <MUILink>https://app.safe.global</MUILink>
-      </Link>
+      <Link href="https://app.safe.global">https://app.safe.global</Link>
       ,&nbsp;and other sites we own and operate as well as mobile applications we offer. Wherever possible, we have
       designed our website so that you may navigate and use our website without having to provide Personal Data.
     </p>
@@ -52,66 +58,45 @@ const SafePrivacyPolicy = () => (
     </p>
     <h3>1. Navigating this Policy</h3>
     <p>If you are viewing this policy online, you can click on the below links to jump to the relevant section:</p>
-    <ol start={2}>
+    <ol style={{ listStyle: 'arabic' }} start={2}>
       <li>
-        <Link href="#2" passHref legacyBehavior>
-          <MUILink>Glossary</MUILink>
-        </Link>
+        <Link href="#2">Glossary</Link>
       </li>
       <li>
-        <Link href="#3" passHref legacyBehavior>
-          <MUILink>Your information and the Blockchain</MUILink>
-        </Link>
+        <Link href="#3">Your information and the Blockchain</Link>
       </li>
       <li>
-        <Link href="#4" passHref legacyBehavior>
-          <MUILink>How We Use Personal Data</MUILink>
-        </Link>
+        <Link href="#4">How We Use Personal Data</Link>
       </li>
       <li>
-        <Link href="#5" passHref legacyBehavior>
-          <MUILink>Use of Third Party Applications</MUILink>
-        </Link>
+        <Link href="#5">Use of Third Party Applications</Link>
       </li>
       <li>
-        <Link href="#6" passHref legacyBehavior>
-          <MUILink>Sharing Your Personal Data</MUILink>
-        </Link>
+        <Link href="#6">Sharing Your Personal Data</Link>
       </li>
       <li>
-        <Link href="#7" passHref legacyBehavior>
-          <MUILink>Transferring Your data outside of the EU</MUILink>
-        </Link>
+        <Link href="#7">Transferring Your data outside of the EU</Link>
       </li>
       <li>
-        <Link href="#8" passHref legacyBehavior>
-          <MUILink>Existence of Automated Decision-making</MUILink>
-        </Link>
+        <Link href="#8">Existence of Automated Decision-making</Link>
       </li>
       <li>
-        <Link href="#9" passHref legacyBehavior>
-          <MUILink>Data Security</MUILink>
-        </Link>
+        <Link href="#9">Data Security</Link>
       </li>
       <li>
-        <Link href="#10" passHref legacyBehavior>
-          <MUILink>Your Rights as a Data Subject</MUILink>
-        </Link>
+        <Link href="#10">Your Rights as a Data Subject</Link>
       </li>
       <li>
-        <Link href="#11" passHref legacyBehavior>
-          <MUILink>Storing Personal Data</MUILink>
-        </Link>
+        <Link href="#11">Storing Personal Data</Link>
       </li>
       <li>
-        <Link href="#12" passHref legacyBehavior>
-          <MUILink>Changes to this Privacy Policy</MUILink>
-        </Link>
+        <Link href="#12">Children’s data</Link>
       </li>
       <li>
-        <Link href="#13" passHref legacyBehavior>
-          <MUILink>Contacts us</MUILink>
-        </Link>
+        <Link href="#13">Changes to this Privacy Policy</Link>
+      </li>
+      <li>
+        <Link href="#14">Contacts us</Link>
       </li>
     </ol>
     <h3 id="2">2. Glossary</h3>
@@ -151,10 +136,8 @@ const SafePrivacyPolicy = () => (
       <li>
         &ldquo;Safe Account&rdquo; is a modular, self-custodial (i.e. not supervised by us) smart contract-based
         multi-signature Wallet. Safe Accounts are{' '}
-        <Link href="https://github.com/safe-global/safe-contracts/" passHref legacyBehavior>
-          <MUILink target="_blank" rel="noreferrer">
-            open-source
-          </MUILink>
+        <Link href="https://github.com/safe-global/safe-contracts/" target="_blank" rel="noreferrer">
+          open-source
         </Link>
         &nbsp;released under LGPL-3.0.
       </li>
@@ -208,7 +191,7 @@ const SafePrivacyPolicy = () => (
       When visiting our website or using {'Safe{Wallet}'}, we may collect and process personal data. The data will be
       stored in different instances
     </p>
-    <ol start={1}>
+    <ol>
       <li>
         We connect the Wallet&nbsp;to the web app to identify the user via their public Wallet address. For this purpose
         we process:
@@ -217,8 +200,6 @@ const SafePrivacyPolicy = () => (
           <li>WalletConnect connection data</li>
         </ol>
       </li>
-    </ol>
-    <ol start={2}>
       <li>
         When you create a new Safe Account we process the following data to compose a Transaction based on your entered
         data to be approved by your Wallet:
@@ -341,6 +322,7 @@ const SafePrivacyPolicy = () => (
       <li>user behavior, </li>
       <li>wallet type, </li>
       <li>Safe Account address,</li>
+      <li>Signer wallet address,</li>
       <li>device and browser user agent,</li>
       <li>user consent, </li>
       <li>operating system, </li>
@@ -359,7 +341,6 @@ const SafePrivacyPolicy = () => (
     <p>
       We do not track any of the following:
       <ol>
-        <li>Signer wallet addresses</li>
         <li>Wallet signatures</li>
         <li>Granular transaction details</li>
       </ol>
@@ -555,36 +536,28 @@ const SafePrivacyPolicy = () => (
     <h4>5.2. Amazon Web Services</h4>
     <p>
       We use{' '}
-      <Link href="https://aws.amazon.com/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Amazon Web Services (AWS)
-        </MUILink>
+      <Link href="https://aws.amazon.com/" target="_blank" rel="noreferrer">
+        Amazon Web Services (AWS)
       </Link>
       &nbsp;to store log and database data as described in section 4.1.
     </p>
     <h4>5.3. Datadog</h4>
     <p>
       We use{' '}
-      <Link href="https://www.datadoghq.com/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Datadog
-        </MUILink>
+      <Link href="https://www.datadoghq.com/" target="_blank" rel="noreferrer">
+        Datadog
       </Link>
       &nbsp;to store log data as described in section 4.1.
     </p>
     <h4>5.4. Mobile app stores</h4>
     <p>
       {'Safe{Wallet}'} mobile apps are distributed via{' '}
-      <Link href="https://www.apple.com/app-store/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Apple AppStore
-        </MUILink>
+      <Link href="https://www.apple.com/app-store/" target="_blank" rel="noreferrer">
+        Apple AppStore
       </Link>
       &nbsp;and{' '}
-      <Link href="https://play.google.com/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Google Play Store
-        </MUILink>
+      <Link href="https://play.google.com/" target="_blank" rel="noreferrer">
+        Google Play Store
       </Link>
       . They most likely track user behavior when downloading apps from their stores as well as when using apps. We only
       have very limited access to that data. We can view aggregated statistics on installs and uninstalls. Grouping by
@@ -600,10 +573,8 @@ const SafePrivacyPolicy = () => (
     <h4>5.6. Google Firebase</h4>
     <p>
       We use the following{' '}
-      <Link href="https://firebase.google.com/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Google Firebase
-        </MUILink>
+      <Link href="https://firebase.google.com/" target="_blank" rel="noreferrer">
+        Google Firebase
       </Link>
       &nbsp;services:
     </p>
@@ -620,10 +591,8 @@ const SafePrivacyPolicy = () => (
     </ul>
     <h4>5.7. WalletConnect</h4>
     <p>
-      <Link href="https://walletconnect.com/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          WalletConnect
-        </MUILink>
+      <Link href="https://walletconnect.com/" target="_blank" rel="noreferrer">
+        WalletConnect
       </Link>
       &nbsp;is used to connect wallets to dapps using end-to-end encryption by scanning a QR code. We do not store any
       information collected by WalletConnect.{' '}
@@ -631,27 +600,21 @@ const SafePrivacyPolicy = () => (
     <h4>5.8. Sentry</h4>
     <p>
       We use{' '}
-      <Link href="https://sentry.io/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Sentry
-        </MUILink>
+      <Link href="https://sentry.io/" target="_blank" rel="noreferrer">
+        Sentry
       </Link>
       &nbsp;to collect error reports and crashes to improve product and user experience.{' '}
     </p>
     <h4>5.9. Beamer</h4>
     <p>
       We use{' '}
-      <Link href="https://www.getbeamer.com/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Beamer
-        </MUILink>
+      <Link href="https://www.getbeamer.com/" target="_blank" rel="noreferrer">
+        Beamer
       </Link>
       &nbsp;providing updates to the user about changes in the app. Beamer&apos;s purpose and function are further
       explained under the following link{' '}
-      <Link href="https://www.getbeamer.com/showcase/notification-center" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          https://www.getbeamer.com/showcase/notification-center
-        </MUILink>
+      <Link href="https://www.getbeamer.com/showcase/notification-center" target="_blank" rel="noreferrer">
+        https://www.getbeamer.com/showcase/notification-center
       </Link>
       .
     </p>
@@ -659,16 +622,12 @@ const SafePrivacyPolicy = () => (
     <h4>5.10. Node providers</h4>
     <p>
       We use{' '}
-      <Link href="https://www.infura.io/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Infura
-        </MUILink>
+      <Link href="https://www.infura.io/" target="_blank" rel="noreferrer">
+        Infura
       </Link>
       &nbsp;and{' '}
-      <Link href="https://nodereal.io/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Nodereal
-        </MUILink>
+      <Link href="https://nodereal.io/" target="_blank" rel="noreferrer">
+        Nodereal
       </Link>
       &nbsp;to query public blockchain data from our backend services. All Safe Accounts are monitored, no
       personalization is happening and no user IP addresses are forwarded. Personal data processed are:
@@ -681,10 +640,8 @@ const SafePrivacyPolicy = () => (
     <h4>5.11. Tenderly</h4>
     <p>
       We use{' '}
-      <Link href="https://tenderly.co/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Tenderly
-        </MUILink>
+      <Link href="https://tenderly.co/" target="_blank" rel="noreferrer">
+        Tenderly
       </Link>
       &nbsp;to simulate blockchain transactions before they are executed. For that we send your smart contract address
       of your Safe Account and transaction data to Tenderly.
@@ -693,47 +650,47 @@ const SafePrivacyPolicy = () => (
     <p>We use the following tools for internal communication. </p>
     <ul>
       <li>
-        <Link href="https://slack.com/" passHref legacyBehavior>
-          <MUILink target="_blank" rel="noreferrer">
-            Slack
-          </MUILink>
+        <Link href="https://slack.com/" target="_blank" rel="noreferrer">
+          Slack
         </Link>
       </li>
       <li>
-        <Link href="https://workspace.google.com/" passHref legacyBehavior>
-          <MUILink target="_blank" rel="noreferrer">
-            Google Workspace
-          </MUILink>
+        <Link href="https://workspace.google.com/" target="_blank" rel="noreferrer">
+          Google Workspace
         </Link>
       </li>
       <li>
-        <Link href="https://notion.so" passHref legacyBehavior>
-          <MUILink target="_blank" rel="noreferrer">
-            Notion
-          </MUILink>
+        <Link href="https://notion.so" target="_blank" rel="noreferrer">
+          Notion
         </Link>
       </li>
     </ul>
     <h4>5.13. Web3Auth</h4>
     <p>
       We use{' '}
-      <Link href="https://web3auth.io/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          Web3Auth
-        </MUILink>
+      <Link href="https://web3auth.io/" target="_blank" rel="noreferrer">
+        Web3Auth
       </Link>{' '}
       to create a signer wallet/an owner account by using the user&apos;s Gmail account or Apple ID information.
     </p>
     <h4>5.14. MoonPay</h4>
     <p>
       We use{' '}
-      <Link href="https://www.moonpay.com/" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          MoonPay
-        </MUILink>
+      <Link href="https://www.moonpay.com/" target="_blank" rel="noreferrer">
+        MoonPay
       </Link>{' '}
       to offer on-ramp and off-ramp services. For that purpose personal data is required for KYC/AML or other financial
       regulatory requirements. This data is encrypted by MoonPay.
+    </p>
+    <h4>5.15. Spindl</h4>
+    <p>
+      We use{' '}
+      <Link href="https://www.spindl.xyz" target="_blank" rel="noreferrer">
+        Spindl
+      </Link>
+      , a measurement and attribution solution for web3 that assists us in comprehending how users interact with
+      different decentralized applications and our app and to enhance your experience with {`Safe{Wallet}`}. For
+      enhanced privacy, data is stored for a period of 7 days after which it is securely deleted.
     </p>
     <h3 id="6">6. Sharing Your Personal Data</h3>
     <p>
@@ -796,10 +753,8 @@ const SafePrivacyPolicy = () => (
       You have certain rights under applicable legislation, and in particular under Regulation EU 2016/679 (General Data
       Protection Regulation or &lsquo;GDPR&rsquo;). We explain these below. You can find out more about the GDPR and
       your rights by accessing the{' '}
-      <Link href="https://ec.europa.eu/info/law/law-topic/data-protection_en" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          European Commission&rsquo;s website
-        </MUILink>
+      <Link href="https://ec.europa.eu/info/law/law-topic/data-protection_en" target="_blank" rel="noreferrer">
+        European Commission&rsquo;s website
       </Link>
       . If you wish to exercise your data subject rights, please contact us by post or at privacy@cc0x.dev.
     </p>
@@ -948,10 +903,8 @@ const SafePrivacyPolicy = () => (
       Phone: 030/138 89-0
     </p>
     <p>
-      <Link href="https://www.datenschutz-berlin.de" passHref legacyBehavior>
-        <MUILink target="_blank" rel="noreferrer">
-          https://www.datenschutz-berlin.de
-        </MUILink>
+      <Link href="https://www.datenschutz-berlin.de" target="_blank" rel="noreferrer">
+        https://www.datenschutz-berlin.de
       </Link>
       &nbsp;
     </p>
@@ -970,7 +923,13 @@ const SafePrivacyPolicy = () => (
       compliance with a legal obligation to which we are subject, or in order to protect your vital interests or the
       vital interests of another natural person.
     </p>
-    <h3 id="12">12. Changes to this Privacy Policy</h3>
+    <h3 id="12">12. Children’s data</h3>
+    <p>
+      Our products and services are neither designed nor intended for use by children and persons under the age of 18.
+      If you suspect or discover that our products and services are being used by a child, please contact us immediately
+      at <Link href="mailto:privacy@cc0x.dev">privacy@cc0x.dev</Link>
+    </p>
+    <h3 id="13">13. Changes to this Privacy Policy</h3>
     <p>
       We may modify this privacy policy at any time to comply with legal requirements as well as developments within our
       organization. When we do, we will revise the date at the top of this page. Each visit or interaction with our
@@ -979,7 +938,7 @@ const SafePrivacyPolicy = () => (
       you about, you acknowledge that it is your responsibility to review our privacy policy to be aware of
       modifications. If you do not agree to the revised policy, you should discontinue your use of this website.
     </p>
-    <h3 id="13">13. Contact Us</h3>
+    <h3 id="14">14. Contact Us</h3>
     <h5>Contact us by post or email at:</h5>
     <p>
       Core Contributors GmbH
@@ -1004,9 +963,7 @@ const SafePrivacyPolicy = () => (
       Germany
     </p>
     <p>
-      <Link href="mailto:corecontributors.dpo@techgdpr.com" passHref legacyBehavior>
-        <MUILink>corecontributors.dpo@techgdpr.com</MUILink>
-      </Link>
+      <Link href="mailto:corecontributors.dpo@techgdpr.com">corecontributors.dpo@techgdpr.com</Link>
     </p>
   </div>
 )
