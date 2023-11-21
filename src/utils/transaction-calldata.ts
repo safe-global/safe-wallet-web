@@ -6,6 +6,7 @@ import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/sa
 import { ERC20__factory } from '@/types/contracts/factories/@openzeppelin/contracts/build/contracts/ERC20__factory'
 import { ERC721__factory } from '@/types/contracts/factories/@openzeppelin/contracts/build/contracts/ERC721__factory'
 import { decodeMultiSendTxs } from '@/utils/transactions'
+import { Safe__factory } from '@/types/contracts'
 
 export const isCalldata = (data: string, fragment: FunctionFragment): boolean => {
   const signature = fragment.format()
@@ -35,6 +36,29 @@ const isErc721SafeTransferFromCalldata = (data: string): boolean => {
 const safeTransferFromWithBytesFragment = erc721Interface.getFunction('safeTransferFrom(address,address,uint256,bytes)')
 const isErc721SafeTransferFromWithBytesCalldata = (data: string): boolean => {
   return isCalldata(data, safeTransferFromWithBytesFragment)
+}
+
+// Safe
+const safeInterface = Safe__factory.createInterface()
+
+const addOwnerWithThresholdFragment = safeInterface.getFunction('addOwnerWithThreshold')
+export function isAddOwnerWithThresholdCalldata(data: string): boolean {
+  return isCalldata(data, addOwnerWithThresholdFragment)
+}
+
+const removeOwnerFragment = safeInterface.getFunction('removeOwner')
+export function isRemoveOwnerCalldata(data: string): boolean {
+  return isCalldata(data, removeOwnerFragment)
+}
+
+const swapOwnerFagment = safeInterface.getFunction('swapOwner')
+export function isSwapOwnerCalldata(data: string): boolean {
+  return isCalldata(data, swapOwnerFagment)
+}
+
+const changeThresholdFragment = safeInterface.getFunction('changeThreshold')
+export function isChangeThresholdCalldata(data: string): boolean {
+  return isCalldata(data, changeThresholdFragment)
 }
 
 // MultiSend

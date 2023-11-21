@@ -18,7 +18,7 @@ import { createMultiSendCallOnlyTx, createTx, dispatchRecoveryProposal } from '@
 import { RecoverAccountFlowFields } from '.'
 import { NewOwnerList } from '../../common/NewOwnerList'
 import { useAppSelector } from '@/store'
-import { selectRecoveryByGuardian } from '@/store/recoverySlice'
+import { selectDelayModifierByGuardian } from '@/store/recoverySlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '../..'
@@ -41,7 +41,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const onboard = useOnboard()
-  const recovery = useAppSelector((state) => selectRecoveryByGuardian(state, wallet?.address ?? ''))
+  const recovery = useAppSelector((state) => selectDelayModifierByGuardian(state, wallet?.address ?? ''))
 
   // Proposal
   const txCooldown = recovery?.txCooldown?.toNumber()
