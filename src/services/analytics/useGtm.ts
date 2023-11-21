@@ -1,12 +1,9 @@
 /**
- * This hook is used to initialize GTM and for anonymized page view tracking.
- * It won't initialize GTM if a consent wasn't given for analytics cookies.
- * The hook needs to be called when the app starts.
+ * Track analytics events using Google Tag Manager
  */
 import { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material/styles'
 import {
-  gtmInit,
   gtmTrackPageview,
   gtmSetChainId,
   gtmEnableCookies,
@@ -38,11 +35,6 @@ const useGtm = () => {
   const deviceType = isMobile ? DeviceType.MOBILE : isTablet ? DeviceType.TABLET : DeviceType.DESKTOP
   const safeAddress = useSafeAddress()
   const walletLabel = useWallet()?.label
-
-  // Initialize GTM
-  useEffect(() => {
-    gtmInit()
-  }, [])
 
   // Enable GA cookies if consent was given
   useEffect(() => {
