@@ -14,6 +14,7 @@ export type RecoveryQueueItem = TransactionAddedEvent & {
   executor: string
 }
 
+// State of current Safe, populated on load
 export type RecoveryState = Array<{
   address: string
   guardians: Array<string>
@@ -39,7 +40,7 @@ export const selectDelayModifierByGuardian = createSelector(
   },
 )
 
-export const selectAllRecoveryQueues = createSelector(selectRecovery, (recovery) => {
+export const selectRecoveryQueues = createSelector(selectRecovery, (recovery) => {
   return recovery.flatMap(({ queue }) => queue).sort((a, b) => a.timestamp.sub(b.timestamp).toNumber())
 })
 

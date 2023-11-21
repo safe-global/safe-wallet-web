@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers'
 import { faker } from '@faker-js/faker'
 
-import { selectDelayModifierByGuardian, selectAllRecoveryQueues, selectDelayModifierByTxHash } from '../recoverySlice'
+import { selectDelayModifierByGuardian, selectRecoveryQueues, selectDelayModifierByTxHash } from '../recoverySlice'
 import type { RecoveryState } from '../recoverySlice'
 import type { RootState } from '..'
 
@@ -34,7 +34,7 @@ describe('recoverySlice', () => {
     })
   })
 
-  describe('selectAllRecoveryQueues', () => {
+  describe('selectRecoveryQueues', () => {
     it('should return all recovery queues sorted by timestamp', () => {
       const delayModifier1 = {
         queue: [{ timestamp: BigNumber.from(1) }, { timestamp: BigNumber.from(3) }],
@@ -51,7 +51,7 @@ describe('recoverySlice', () => {
       const data = [delayModifier1, delayModifier2, delayModifier3]
 
       expect(
-        selectAllRecoveryQueues({
+        selectRecoveryQueues({
           recovery: { data },
         } as unknown as RootState),
       ).toStrictEqual([

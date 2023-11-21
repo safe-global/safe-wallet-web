@@ -8,7 +8,7 @@ import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { selectAllRecoveryQueues } from '@/store/recoverySlice'
+import { selectRecoveryQueues } from '@/store/recoverySlice'
 import madProps from '@/utils/mad-props'
 import { Countdown } from '@/components/common/Countdown'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
@@ -82,7 +82,7 @@ function _RecoveryInProgressWidget({ nextTx }: { nextTx: RecoveryQueueItem }): R
 // Appease React TypeScript warnings
 const _useTimestamp = () => useClock(60_000) // Countdown does not display
 const _useSupportsRecovery = () => useHasFeature(FEATURES.RECOVERY)
-const _useQueuedRecoveryTxs = () => useAppSelector(selectAllRecoveryQueues)
+const _useQueuedRecoveryTxs = () => useAppSelector(selectRecoveryQueues)
 
 export const RecoveryInProgress = madProps(_RecoveryInProgress, {
   timestamp: _useTimestamp,

@@ -2,13 +2,13 @@ import type { ReactElement } from 'react'
 
 import { TxListGrid } from '@/components/transactions/TxList'
 import { RecoveryListItem } from '@/components/recovery/RecoveryListItem'
-import { selectAllRecoveryQueues } from '@/store/recoverySlice'
+import { selectRecoveryQueues } from '@/store/recoverySlice'
 import { useAppSelector } from '@/store'
 
 import labelCss from '@/components/transactions/GroupLabel/styles.module.css'
 
 export function RecoveryList(): ReactElement | null {
-  const queue = useAppSelector(selectAllRecoveryQueues)
+  const queue = useAppSelector(selectRecoveryQueues)
 
   if (queue.length === 0) {
     return null
