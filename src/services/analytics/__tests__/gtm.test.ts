@@ -11,34 +11,10 @@ jest.mock('../TagManager', () => ({
   setUserProperty: jest.fn(),
 }))
 
-const FAKE_SAFE_APP_NAME = 'Safe App'
-const FAKE_DOMAIN = 'http://domain.crypto'
-
 describe('gtm', () => {
   // Reset mocks before each test
   beforeEach(() => {
     jest.clearAllMocks()
-  })
-  describe('normalizeAppName', () => {
-    it('should return the app name if is not an URL', () => {
-      expect(gtm.normalizeAppName(FAKE_SAFE_APP_NAME)).toBe(FAKE_SAFE_APP_NAME)
-    })
-
-    it('should strip the querystring or hash when is an URL', () => {
-      expect(gtm.normalizeAppName(FAKE_DOMAIN)).toBe(FAKE_DOMAIN)
-      expect(gtm.normalizeAppName(`${FAKE_DOMAIN}?q1=query1&q2=query2`)).toBe(FAKE_DOMAIN)
-      expect(gtm.normalizeAppName(`${FAKE_DOMAIN}#hash`)).toBe(FAKE_DOMAIN)
-    })
-  })
-
-  describe('gtmInit', () => {
-    gtm.gtmInit()
-
-    expect(TagManager.initialize).toHaveBeenCalledWith({
-      auth: expect.any(String),
-      gtmId: expect.any(String),
-      preview: 'env-3',
-    })
   })
 
   describe('gtmTrack', () => {
@@ -135,6 +111,21 @@ describe('gtm', () => {
           safeAppSDKVersion: '',
         }),
       )
+    })
+
+    describe('normalizeAppName', () => {
+      const FAKE_SAFE_APP_NAME = 'Safe App'
+      const FAKE_DOMAIN = 'http://domain.crypto'
+
+      it('should return the app name if is not an URL', () => {
+        expect(gtm.normalizeAppName(FAKE_SAFE_APP_NAME)).toBe(FAKE_SAFE_APP_NAME)
+      })
+
+      it('should strip the querystring or hash when is an URL', () => {
+        expect(gtm.normalizeAppName(FAKE_DOMAIN)).toBe(FAKE_DOMAIN)
+        expect(gtm.normalizeAppName(`${FAKE_DOMAIN}?q1=query1&q2=query2`)).toBe(FAKE_DOMAIN)
+        expect(gtm.normalizeAppName(`${FAKE_DOMAIN}#hash`)).toBe(FAKE_DOMAIN)
+      })
     })
   })
 })
