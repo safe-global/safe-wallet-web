@@ -18,10 +18,13 @@ import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
-import { UpsertRecoveryFlowFields, RecoveryDelayPeriods, RecoveryExpirationPeriods } from '.'
+import { UpsertRecoveryFlowFields } from '.'
+import { useRecoveryPeriods } from './useRecoveryPeriods'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import CircleCheckIcon from '@/public/images/common/circle-check.svg'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import { sameAddress } from '@/utils/addresses'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import type { UpsertRecoveryFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -34,14 +37,22 @@ export function UpsertRecoveryFlowSettings({
   params: UpsertRecoveryFlowProps
   onSubmit: (formData: UpsertRecoveryFlowProps) => void
 }): ReactElement {
+  const { safeAddress } = useSafeInfo()
   const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.txExpiration] !== '0')
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const isDarkMode = useDarkMode()
+  const periods = useRecoveryPeriods()
 
   const formMethods = useForm<UpsertRecoveryFlowProps>({
     defaultValues: params,
     mode: 'onChange',
   })
+
+  const validateGuardian = (guardian: string) => {
+    if (sameAddress(guardian, safeAddress)) {
+      return 'The Safe Account cannot be a guardian of itself'
+    }
+  }
 
   const emailAddress = formMethods.watch(UpsertRecoveryFlowFields.emailAddress)
 
@@ -63,7 +74,13 @@ export function UpsertRecoveryFlowSettings({
               </Typography>
             </div>
 
-            <AddressBookInput label="Guardian address" name={UpsertRecoveryFlowFields.guardian} required fullWidth />
+            <AddressBookInput
+              label="Guardian address"
+              name={UpsertRecoveryFlowFields.guardian}
+              required
+              fullWidth
+              validate={validateGuardian}
+            />
 
             <div>
               <Typography variant="h5" gutterBottom>
@@ -80,7 +97,7 @@ export function UpsertRecoveryFlowSettings({
               name={UpsertRecoveryFlowFields.txCooldown}
               render={({ field }) => (
                 <SelectField label="Recovery delay" fullWidth {...field}>
-                  {RecoveryDelayPeriods.map(({ label, value }, index) => (
+                  {periods.delay.map(({ label, value }, index) => (
                     <MenuItem key={index} value={value}>
                       {label}
                     </MenuItem>
@@ -105,7 +122,7 @@ export function UpsertRecoveryFlowSettings({
                 shouldUnregister={false}
                 render={({ field }) => (
                   <SelectField label="Transaction expiry" fullWidth {...field}>
-                    {RecoveryExpirationPeriods.map(({ label, value }, index) => (
+                    {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
                       </MenuItem>

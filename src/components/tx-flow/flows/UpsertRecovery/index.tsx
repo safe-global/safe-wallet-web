@@ -6,40 +6,8 @@ import useTxStepper from '../../useTxStepper'
 import { UpsertRecoveryFlowReview as UpsertRecoveryFlowReview } from './UpsertRecoveryFlowReview'
 import { UpsertRecoveryFlowSettings as UpsertRecoveryFlowSettings } from './UpsertRecoveryFlowSettings'
 import { UpsertRecoveryFlowIntro as UpsertRecoveryFlowIntro } from './UpsertRecoveryFlowIntro'
+import { DAY_IN_SECONDS } from './useRecoveryPeriods'
 import type { RecoveryState } from '@/store/recoverySlice'
-
-const DAY_SECONDS = 60 * 60 * 24
-
-export const RecoveryDelayPeriods = [
-  {
-    label: '2 days',
-    value: `${DAY_SECONDS}`,
-  },
-  {
-    label: '7 days',
-    value: `${DAY_SECONDS * 7}`,
-  },
-  {
-    label: '14 days',
-    value: `${DAY_SECONDS * 14}`,
-  },
-  {
-    label: '28 days',
-    value: `${DAY_SECONDS * 28}`,
-  },
-  {
-    label: '56 days',
-    value: `${DAY_SECONDS * 56}`,
-  },
-] as const
-
-export const RecoveryExpirationPeriods = [
-  {
-    label: 'Never',
-    value: '0',
-  },
-  ...RecoveryDelayPeriods,
-] as const
 
 const Subtitles = ['How does recovery work?', 'Set up recovery settings', 'Set up account recovery']
 
@@ -60,7 +28,7 @@ export type UpsertRecoveryFlowProps = {
 export function UpsertRecoveryFlow({ recovery }: { recovery?: RecoveryState[number] }): ReactElement {
   const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>({
     [UpsertRecoveryFlowFields.guardian]: recovery?.guardians?.[0] ?? '',
-    [UpsertRecoveryFlowFields.txCooldown]: recovery?.txCooldown?.toString() ?? `${DAY_SECONDS * 28}`, // 28 days in seconds
+    [UpsertRecoveryFlowFields.txCooldown]: recovery?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
     [UpsertRecoveryFlowFields.txExpiration]: recovery?.txExpiration?.toString() ?? '0',
     [UpsertRecoveryFlowFields.emailAddress]: '',
   })

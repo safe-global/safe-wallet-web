@@ -9,10 +9,11 @@ import { getRecoveryUpsertTransactions } from '@/services/recovery/setup'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { SvgIcon, Tooltip, Typography } from '@mui/material'
-import { UpsertRecoveryFlowFields, RecoveryDelayPeriods, RecoveryExpirationPeriods } from '.'
+import { useRecoveryPeriods } from './useRecoveryPeriods'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { UpsertRecoveryFlowFields } from '.'
 import type { UpsertRecoveryFlowProps } from '.'
 
 export function UpsertRecoveryFlowReview({
@@ -26,9 +27,10 @@ export function UpsertRecoveryFlowReview({
   const { safe, safeAddress } = useSafeInfo()
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
 
+  const periods = useRecoveryPeriods()
   const guardian = params[UpsertRecoveryFlowFields.guardian]
-  const delay = RecoveryDelayPeriods.find(({ value }) => value === params[UpsertRecoveryFlowFields.txCooldown])!.label
-  const expiration = RecoveryExpirationPeriods.find(
+  const delay = periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.txCooldown])!.label
+  const expiration = periods.expiration.find(
     ({ value }) => value === params[UpsertRecoveryFlowFields.txExpiration],
   )!.label
   const emailAddress = params[UpsertRecoveryFlowFields.emailAddress]
