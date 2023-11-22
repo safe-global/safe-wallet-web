@@ -1,4 +1,5 @@
 import { Paper, Typography, SvgIcon } from '@mui/material'
+import type { SxProps } from '@mui/material'
 import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 
@@ -7,14 +8,22 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 
 import css from './styles.module.css'
 
-export function NewOwnerList({ newOwners }: { newOwners: Array<AddressEx> }): ReactElement {
+export function OwnerList({
+  title,
+  owners,
+  sx,
+}: {
+  owners: Array<AddressEx>
+  title?: string
+  sx?: SxProps
+}): ReactElement {
   return (
-    <Paper className={css.container}>
+    <Paper className={css.container} sx={sx}>
       <Typography color="text.secondary" display="flex" alignItems="center">
         <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-        New owner{newOwners.length > 1 ? 's' : ''}
+        {title ?? `New owner{owners.length > 1 ? 's' : ''}`}
       </Typography>
-      {newOwners.map((newOwner) => (
+      {owners.map((newOwner) => (
         <EthHashInfo
           key={newOwner.value}
           address={newOwner.value}
