@@ -169,9 +169,18 @@ export function Recovery(): ReactElement {
                   Give us feedback
                 </ExternalLink>
               </Alert>
-              <Button variant="contained" onClick={() => setTxFlow(<EnableRecoveryFlow />)} sx={{ mt: 2 }}>
-                Set up recovery
-              </Button>
+              <CheckWallet>
+                {(isOk) => (
+                  <Button
+                    variant="contained"
+                    disabled={!isOk}
+                    onClick={() => setTxFlow(<EnableRecoveryFlow />)}
+                    sx={{ mt: 2 }}
+                  >
+                    Set up recovery
+                  </Button>
+                )}
+              </CheckWallet>
             </>
           ) : (
             <EnhancedTable rows={rows} headCells={headCells} />
