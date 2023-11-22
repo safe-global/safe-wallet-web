@@ -32,4 +32,5 @@ export enum DeviceType {
 
 export enum AnalyticsUserProperties {
   WALLET_LABEL = 'walletLabel',
+  WALLET_ADDRESS = 'walletAddress',
 }
