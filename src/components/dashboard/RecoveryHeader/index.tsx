@@ -9,6 +9,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import { RecoveryProposalCard } from '@/components/recovery/RecoveryCards/RecoveryProposalCard'
 import { RecoveryInProgressCard } from '@/components/recovery/RecoveryCards/RecoveryInProgressCard'
 import { WidgetContainer, WidgetBody } from '../styled'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
 
 export function _RecoveryHeader({
@@ -28,9 +29,9 @@ export function _RecoveryHeader({
   }
 
   const modal = next ? (
-    <RecoveryInProgressCard orientation="widget" recovery={next} />
+    <RecoveryInProgressCard orientation="horizontal" recovery={next} />
   ) : isGuardian ? (
-    <RecoveryProposalCard variant="widget" />
+    <RecoveryProposalCard orientation="horizontal" />
   ) : null
 
   if (modal) {
@@ -49,6 +50,7 @@ export function _RecoveryHeader({
 const _useSupportedRecovery = () => useHasFeature(FEATURES.RECOVERY)
 
 export const RecoveryHeader = madProps(_RecoveryHeader, {
+  isOwner: useIsSafeOwner,
   isGuardian: useIsGuardian,
   supportsRecovery: _useSupportedRecovery,
   queue: useRecoveryQueue,

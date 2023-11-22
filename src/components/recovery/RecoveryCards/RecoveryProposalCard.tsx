@@ -49,7 +49,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   )
 
   const recoveryButton = (
-    <Button orientation="contained" onClick={onRecover}>
+    <Button variant="contained" onClick={onRecover}>
       Start recovery
     </Button>
   )
@@ -61,7 +61,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
           <Grid item>{icon}</Grid>
 
           <Grid item xs>
-            <Typography orientation="h6" fontWeight={700} mb={1}>
+            <Typography variant="h6" fontWeight={700} mb={1}>
               {title}
             </Typography>
 
@@ -88,7 +88,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
         </Grid>
 
         <Grid item xs={12}>
-          <Typography orientation="h6" fontWeight={700} mb={2}>
+          <Typography variant="h6" fontWeight={700} mb={2}>
             {title}
           </Typography>
 
