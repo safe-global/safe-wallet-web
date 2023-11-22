@@ -96,8 +96,8 @@ const ExecuteForm = ({
     }
 
     // On success
-    setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
     onSubmit(executedTxId)
+    setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
   }
 
   const cannotPropose = !isOwner && !onlyExecute

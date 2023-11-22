@@ -14,6 +14,7 @@ import {
   gtmSetDeviceType,
   gtmSetSafeAddress,
   gtmSetUserProperty,
+  gtmTrack,
 } from '@/services/analytics/gtm'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
@@ -25,6 +26,7 @@ import { useMediaQuery } from '@mui/material'
 import { AnalyticsUserProperties, DeviceType } from './types'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
+import { OVERVIEW_EVENTS } from './events'
 
 const useGtm = () => {
   const chainId = useChainId()
@@ -72,6 +74,10 @@ const useGtm = () => {
   // Set safe address for all GTM events
   useEffect(() => {
     gtmSetSafeAddress(safeAddress)
+
+    if (safeAddress) {
+      gtmTrack(OVERVIEW_EVENTS.SAFE_VIEWED)
+    }
   }, [safeAddress])
 
   // Track page views – anonymized by default.

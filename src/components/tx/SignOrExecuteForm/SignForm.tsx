@@ -63,9 +63,12 @@ const SignForm = ({
       return
     }
 
-    // On success
+    // On successful sign
+    if (!isAddingToBatch) {
+      onSubmit(resultTxId)
+    }
+
     setTxFlow(undefined)
-    onSubmit(resultTxId)
   }
 
   const onBatchClick = (e: SyntheticEvent) => {

@@ -22,6 +22,7 @@ import { SAFE_APPS_SDK_CATEGORY } from './events'
 import { getAbTest } from '../tracking/abTesting'
 import type { AbTest } from '../tracking/abTesting'
 import { AppRoutes } from '@/config/routes'
+import packageJson from '../../../package.json'
 
 type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
 type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
@@ -42,6 +43,7 @@ const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
 }
 
 const commonEventParams = {
+  appVersion: packageJson.version,
   chainId: '',
   deviceType: DeviceType.DESKTOP,
   safeAddress: '',

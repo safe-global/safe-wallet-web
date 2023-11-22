@@ -1,9 +1,10 @@
-import { type ReactElement } from 'react'
+import { useCallback, type ReactElement } from 'react'
 import { type TokenTransferParams, TokenTransferType } from '@/components/tx-flow/flows/TokenTransfer/index'
 import ReviewTokenTransfer from '@/components/tx-flow/flows/TokenTransfer/ReviewTokenTransfer'
 import ReviewSpendingLimitTx from '@/components/tx-flow/flows/TokenTransfer/ReviewSpendingLimitTx'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { trackEvent } from '@/services/analytics'
 
-// TODO: Split this into separate flows
 const ReviewTokenTx = ({
   params,
   onSubmit,
@@ -15,10 +16,15 @@ const ReviewTokenTx = ({
 }): ReactElement => {
   const isSpendingLimitTx = params.type === TokenTransferType.spendingLimit
 
+  const onTxSubmit = useCallback(() => {
+    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.transfer_token })
+    onSubmit()
+  }, [onSubmit])
+
   return isSpendingLimitTx ? (
-    <ReviewSpendingLimitTx params={params} onSubmit={onSubmit} />
+    <ReviewSpendingLimitTx params={params} onSubmit={onTxSubmit} />
   ) : (
-    <ReviewTokenTransfer params={params} onSubmit={onSubmit} txNonce={txNonce} />
+    <ReviewTokenTransfer params={params} onSubmit={onTxSubmit} txNonce={txNonce} />
   )
 }
 
