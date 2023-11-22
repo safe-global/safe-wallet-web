@@ -12,6 +12,7 @@ const sideBarIcon = '[data-testid="ChevronRightIcon"]'
 const sidebarCheckIcon = '[data-testid="CheckIcon"]'
 const addressStepNextBtn = '[data-testid="load-safe-next-btn"]'
 const qrCodeBtn = '[data-testid="address-qr-scan"]'
+const typeFile = '[type="file"]'
 const nextBtnStr = 'Next'
 const addBtnStr = 'Add'
 const settingsBtnStr = 'Settings'
@@ -60,9 +61,9 @@ export function verifyNameLengthErrorMessage() {
 }
 
 export function ScanQRCode(image) {
-  cy.get('[data-testid="address-qr-scan"]').click()
+  cy.get(qrCodeBtn).click()
   cy.contains('Upload an image').click()
-  cy.get('[type="file"]').attachFile(image)
+  cy.get(typeFile).attachFile(image)
 }
 
 export function inputAddress(address) {
@@ -72,7 +73,7 @@ export function inputAddress(address) {
 export function verifyAddressInputValue(safeAddress) {
   // The address field should be filled with the "bare" QR code's address
   const [, address] = safeAddress.split(':')
-  cy.get('input[name="address"]').should('have.value', address)
+  cy.get(addressInput).should('have.value', address)
 }
 
 export function clickOnNextBtn() {
