@@ -16,7 +16,7 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import CheckWallet from '@/components/common/CheckWallet'
 import { createMultiSendCallOnlyTx, createTx, dispatchRecoveryProposal } from '@/services/tx/tx-sender'
 import { RecoverAccountFlowFields } from '.'
-import { NewOwnerList } from '../../common/NewOwnerList'
+import { OwnerList } from '../../common/OwnerList'
 import { useAppSelector } from '@/store'
 import { selectDelayModifierByGuardian } from '@/store/recoverySlice'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -93,7 +93,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           {newThreshold !== safe.threshold ? ' and threshold' : ''}.
         </Typography>
 
-        <NewOwnerList newOwners={newOwners} />
+        <OwnerList owners={newOwners} />
 
         <Divider className={commonCss.nestedDivider} sx={{ mt: 'var(--space-2) !important' }} />
 
