@@ -188,7 +188,7 @@ export const getRecoveryState = async ({
   chainId: string
   version: SafeInfo['version']
 }): Promise<RecoveryState[number]> => {
-  const [[modules], txExpiration, txCooldown, txNonce, queueNonce] = await Promise.all([
+  const [[guardians], txExpiration, txCooldown, txNonce, queueNonce] = await Promise.all([
     delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_GUARDIAN_PAGE_SIZE),
     delayModifier.txExpiration(),
     delayModifier.txCooldown(),
@@ -222,7 +222,7 @@ export const getRecoveryState = async ({
 
   return {
     address: delayModifier.address,
-    guardians: modules,
+    guardians,
     txExpiration,
     txCooldown,
     txNonce,

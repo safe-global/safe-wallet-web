@@ -7,8 +7,9 @@ import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 import { sameAddress } from '@/utils/addresses'
 import { MAX_GUARDIAN_PAGE_SIZE } from './recovery-state'
+import type { UpsertRecoveryFlowProps } from '@/components/tx-flow/flows/UpsertRecovery'
 
-export function getRecoverySetupTransactions({
+export function _getRecoverySetupTransactions({
   txCooldown,
   txExpiration,
   guardians,
@@ -88,7 +89,7 @@ export function getRecoverySetupTransactions({
   }
 }
 
-export async function getEditRecoveryTransactions({
+export async function _getEditRecoveryTransactions({
   newTxCooldown,
   newTxExpiration,
   newGuardians,
@@ -164,4 +165,40 @@ export async function getEditRecoveryTransactions({
     operation: OperationType.Call,
     data,
   }))
+}
+
+export async function getRecoveryUpsertTransactions({
+  txCooldown,
+  txExpiration,
+  guardian,
+  provider,
+  moduleAddress,
+  chainId,
+  safeAddress,
+}: UpsertRecoveryFlowProps & {
+  moduleAddress?: string
+  provider: Web3Provider
+  chainId: string
+  safeAddress: string
+}): Promise<Array<MetaTransactionData>> {
+  if (moduleAddress) {
+    return _getEditRecoveryTransactions({
+      moduleAddress,
+      newTxCooldown: txCooldown,
+      newTxExpiration: txExpiration,
+      newGuardians: [guardian],
+      provider,
+    })
+  }
+
+  const { transactions } = _getRecoverySetupTransactions({
+    txCooldown,
+    txExpiration,
+    guardians: [guardian],
+    chainId,
+    safeAddress,
+    provider,
+  })
+
+  return transactions
 }

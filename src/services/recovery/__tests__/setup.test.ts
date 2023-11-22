@@ -5,7 +5,7 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import { getEditRecoveryTransactions, getRecoverySetupTransactions } from '@/services/recovery/setup'
+import { _getEditRecoveryTransactions, _getRecoverySetupTransactions } from '@/services/recovery/setup'
 
 jest.mock('@gnosis.pm/zodiac', () => ({
   ...jest.requireActual('@gnosis.pm/zodiac'),
@@ -45,7 +45,7 @@ describe('getRecoverySetupTransactions', () => {
       transaction: deployDelayModifierTx,
     })
 
-    const result = getRecoverySetupTransactions({
+    const result = _getRecoverySetupTransactions({
       txCooldown,
       txExpiration,
       guardians,
@@ -115,7 +115,7 @@ describe('getEditRecoveryTransactions', () => {
       },
     } as any)
 
-    const transactions = await getEditRecoveryTransactions({
+    const transactions = await _getEditRecoveryTransactions({
       provider: {} as Web3Provider,
       newTxCooldown: txCooldown,
       newTxExpiration,
@@ -155,7 +155,7 @@ describe('getEditRecoveryTransactions', () => {
       },
     } as any)
 
-    const transactions = await getEditRecoveryTransactions({
+    const transactions = await _getEditRecoveryTransactions({
       provider: {} as Web3Provider,
       newTxCooldown,
       newTxExpiration: txExpiration,
@@ -195,7 +195,7 @@ describe('getEditRecoveryTransactions', () => {
       },
     } as any)
 
-    const transactions = await getEditRecoveryTransactions({
+    const transactions = await _getEditRecoveryTransactions({
       provider: {} as Web3Provider,
       newTxCooldown: txCooldown,
       newTxExpiration: txExpiration,
@@ -241,7 +241,7 @@ describe('getEditRecoveryTransactions', () => {
       },
     } as any)
 
-    const transactions = await getEditRecoveryTransactions({
+    const transactions = await _getEditRecoveryTransactions({
       provider: {} as Web3Provider,
       newTxCooldown: txCooldown,
       newTxExpiration: txExpiration,
@@ -285,7 +285,7 @@ describe('getEditRecoveryTransactions', () => {
         },
       } as any)
 
-      const transactions = await getEditRecoveryTransactions({
+      const transactions = await _getEditRecoveryTransactions({
         provider: {} as Web3Provider,
         newTxCooldown,
         newTxExpiration,
@@ -344,7 +344,7 @@ describe('getEditRecoveryTransactions', () => {
         },
       } as any)
 
-      const transactions = await getEditRecoveryTransactions({
+      const transactions = await _getEditRecoveryTransactions({
         provider: {} as Web3Provider,
         newTxCooldown: txCooldown,
         newTxExpiration: txExpiration,

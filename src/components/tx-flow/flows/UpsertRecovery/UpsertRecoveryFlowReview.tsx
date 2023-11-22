@@ -5,7 +5,7 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { Errors, logError } from '@/services/exceptions'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { getEditRecoveryTransactions, getRecoverySetupTransactions } from '@/services/recovery/setup'
+import { getRecoveryUpsertTransactions } from '@/services/recovery/setup'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { SvgIcon, Tooltip, Typography } from '@mui/material'
@@ -14,43 +14,6 @@ import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow
 import InfoIcon from '@/public/images/notifications/info.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import type { UpsertRecoveryFlowProps } from '.'
-import type { Web3Provider } from '@ethersproject/providers'
-
-const getSafeTx = async ({
-  txCooldown,
-  txExpiration,
-  guardian,
-  provider,
-  moduleAddress,
-  chainId,
-  safeAddress,
-}: UpsertRecoveryFlowProps & {
-  moduleAddress?: string
-  provider: Web3Provider
-  chainId: string
-  safeAddress: string
-}) => {
-  if (moduleAddress) {
-    return getEditRecoveryTransactions({
-      moduleAddress,
-      newTxCooldown: txCooldown,
-      newTxExpiration: txExpiration,
-      newGuardians: [guardian],
-      provider,
-    })
-  }
-
-  const { transactions } = getRecoverySetupTransactions({
-    txCooldown,
-    txExpiration,
-    guardians: [guardian],
-    chainId,
-    safeAddress,
-    provider,
-  })
-
-  return transactions
-}
 
 export function UpsertRecoveryFlowReview({
   params,
@@ -75,7 +38,7 @@ export function UpsertRecoveryFlowReview({
       return
     }
 
-    getSafeTx({
+    getRecoveryUpsertTransactions({
       ...params,
       provider: web3,
       chainId: safe.chainId,
