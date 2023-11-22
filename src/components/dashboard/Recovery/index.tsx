@@ -9,8 +9,11 @@ import { TxModalContext } from '@/components/tx-flow'
 import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 import { useAppSelector } from '@/store'
 import { selectRecovery } from '@/store/recoverySlice'
-import { useRouter } from 'next/dist/client/router'
+import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
+import CheckWallet from '@/components/common/CheckWallet'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 import css from './styles.module.css'
 
@@ -18,6 +21,7 @@ export function Recovery(): ReactElement {
   const router = useRouter()
   const { setTxFlow } = useContext(TxModalContext)
   const recovery = useAppSelector(selectRecovery)
+  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
 
   const onEnable = () => {
     setTxFlow(<UpsertRecoveryFlow />)
@@ -52,14 +56,24 @@ export function Recovery(): ReactElement {
               <Typography mt={1} mb={3}>
                 Ensure that you never lose access to your funds by choosing a guardian to recover your account.
               </Typography>
-              {recovery.length === 0 ? (
-                <Button variant="contained" onClick={onEnable}>
-                  Set up recovery
-                </Button>
-              ) : (
-                <Button variant="contained" onClick={onEdit}>
-                  Edit recovery setup
-                </Button>
+              {supportsRecovery && (
+                <CheckWallet>
+                  {(isOk) => {
+                    if (recovery.length === 0) {
+                      return (
+                        <Button variant="contained" disabled={!isOk} onClick={onEnable}>
+                          Set up recovery
+                        </Button>
+                      )
+                    }
+
+                    return (
+                      <Button variant="contained" disabled={!isOk} onClick={onEdit}>
+                        Edit recovery
+                      </Button>
+                    )
+                  }}
+                </CheckWallet>
               )}
             </Grid>
           </Grid>

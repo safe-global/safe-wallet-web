@@ -1,7 +1,12 @@
 import { BigNumber } from 'ethers'
 import { faker } from '@faker-js/faker'
 
-import { selectDelayModifierByGuardian, selectRecoveryQueues, selectDelayModifierByTxHash } from '../recoverySlice'
+import {
+  selectDelayModifierByGuardian,
+  selectRecoveryQueues,
+  selectDelayModifierByTxHash,
+  selectDelayModifierByAddress,
+} from '../recoverySlice'
 import type { RecoveryState } from '../recoverySlice'
 import type { RootState } from '..'
 
@@ -91,6 +96,33 @@ describe('recoverySlice', () => {
           txHash,
         ),
       ).toStrictEqual(delayModifier1)
+    })
+  })
+
+  describe('selectDelayModifierByAddress', () => {
+    it('should return the Delay Modifier for the given txHash', () => {
+      const delayModifier1 = {
+        address: faker.finance.ethereumAddress(),
+      } as unknown as RecoveryState[number]
+
+      const delayModifier2 = {
+        address: faker.finance.ethereumAddress(),
+      } as unknown as RecoveryState[number]
+
+      const delayModifier3 = {
+        address: faker.finance.ethereumAddress(),
+      } as unknown as RecoveryState[number]
+
+      const data = [delayModifier1, delayModifier2, delayModifier3]
+
+      expect(
+        selectDelayModifierByAddress(
+          {
+            recovery: { data },
+          } as unknown as RootState,
+          delayModifier2.address,
+        ),
+      ).toStrictEqual(delayModifier2)
     })
   })
 })
