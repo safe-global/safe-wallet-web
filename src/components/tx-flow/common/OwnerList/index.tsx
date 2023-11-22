@@ -1,5 +1,5 @@
 import { Paper, Typography, SvgIcon } from '@mui/material'
-import type { SxProps } from '@mui/material'
+import type { PaperProps } from '@mui/material'
 import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 
@@ -15,7 +15,7 @@ export function OwnerList({
 }: {
   owners: Array<AddressEx>
   title?: string
-  sx?: SxProps
+  sx?: PaperProps['sx']
 }): ReactElement {
   return (
     <Paper className={css.container} sx={sx}>

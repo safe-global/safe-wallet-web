@@ -42,7 +42,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
   return (
     <NextLink href={url} passHref>
       <Box className={css.container}>
-        <Box gridAra="nonce">
+        <Box gridArea="nonce">
           {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
         </Box>
 
