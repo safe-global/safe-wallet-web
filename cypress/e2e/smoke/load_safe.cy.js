@@ -47,26 +47,27 @@ describe('Load Safe tests', () => {
     safe.clickOnNextBtn()
   })
 
-  it('Verify names cannot have more than 50 chars', () => {
+  it('Verify names cannot have more than 50 characters', () => {
     safe.inputName(main.generateRandomString(51))
     safe.verifyNameLengthErrorMessage()
   })
 
   it('Verify ENS name is translated to a valid address', () => {
+    cy.visit(constants.loadNewSafeEthUrl)
     safe.inputAddress(constants.ENS_TEST_ETH)
-    safe.verifyAddressInputValue(constants.ETH_ENS_SAFE_ADDRESS_7)
+    safe.verifyAddressInputValue(constants.ETH_ENS_SAFE_ADDRESS_1)
     safe.verifyNextButtonStatus('be.enabled')
     safe.clickOnNextBtn()
   })
 
   it('Verify a valid QR code is accepted', () => {
     safe.ScanQRCode(constants.VALID_QR_CODE_PATH)
-    // safe.verifyAddressInputValue(constants.ETH_ENS_SAFE_ADDRESS_6)
-    // safe.verifyNextButtonStatus('be.enabled')
-    // safe.clickOnNextBtn()
+    safe.verifyAddressInputValue(constants.SEPOLIA_TEST_SAFE_6)
+    safe.verifyNextButtonStatus('be.enabled')
+    safe.clickOnNextBtn()
   })
 
-  it.only('Verify a non QR code is not accepted', () => { 
+  it('Verify a non QR code is not accepted', () => {
     safe.ScanQRCode(constants.INVALID_QR_CODE_PATH)
     cy.contains('The QR could not be read')
   })
