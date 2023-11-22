@@ -131,23 +131,12 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
               code: RpcErrorCode.USER_REJECTED,
               message: 'User rejected transaction',
             })
-            unsubscribe()
           }
 
-          const unsubscribeSignaturePrepared = txSubscribe(
-            TxEvent.SAFE_APPS_REQUEST,
-            async ({ safeAppRequestId, safeTxHash, txId }) => {
-              if (safeAppRequestId === id) {
-                const txHash = txId ? pendingTxs.current[txId] : undefined
-                resolve({ safeTxHash, txHash })
-                unsubscribe()
-              }
-            },
-          )
-
-          const unsubscribe = () => {
+          const onSubmit = (txId: string, safeTxHash: string) => {
+            const txHash = pendingTxs.current[txId]
             onClose = () => {}
-            unsubscribeSignaturePrepared()
+            resolve({ safeTxHash, txHash })
           }
 
           setTxFlow(
@@ -159,6 +148,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
                 txs: transactions,
                 params: params.params,
               }}
+              onSubmit={onSubmit}
             />,
             onClose,
           )

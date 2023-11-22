@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, Divider } from '@mui/material'
+import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { trackError, Errors } from '@/services/exceptions'
@@ -63,9 +63,12 @@ const SignForm = ({
       return
     }
 
-    // On success
+    // On successful sign
+    if (!isAddingToBatch) {
+      onSubmit(resultTxId)
+    }
+
     setTxFlow(undefined)
-    onSubmit(resultTxId)
   }
 
   const onBatchClick = (e: SyntheticEvent) => {
@@ -103,8 +106,14 @@ const SignForm = ({
           {/* Submit button */}
           <CheckWallet>
             {(isOk) => (
-              <Button data-testid="sign-btn" variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-                Sign
+              <Button
+                data-testid="sign-btn"
+                variant="contained"
+                type="submit"
+                disabled={!isOk || submitDisabled}
+                sx={{ minWidth: '82px' }}
+              >
+                {!isSubmittable ? <CircularProgress size={20} /> : 'Sign'}
               </Button>
             )}
           </CheckWallet>

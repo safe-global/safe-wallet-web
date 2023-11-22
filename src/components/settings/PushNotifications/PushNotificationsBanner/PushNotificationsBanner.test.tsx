@@ -7,7 +7,7 @@ import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-s
 
 import { PushNotificationsBanner, _getSafesToRegister } from '.'
 import { createPushNotificationPrefsIndexedDb } from '@/services/push-notifications/preferences'
-import { render } from '@/tests/test-utils'
+import { act, render } from '@/tests/test-utils'
 import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import * as useWallet from '@/hooks/wallets/useWallet'
@@ -28,6 +28,10 @@ jest.spyOn(useWallet, 'default').mockImplementation(() => ({
 }))
 
 describe('PushNotificationsBanner', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+  })
+
   describe('getSafesToRegister', () => {
     it('should return all added safes if no preferences exist', () => {
       const addedSafesOnChain = {
@@ -152,6 +156,7 @@ describe('PushNotificationsBanner', () => {
 
       expect(tracking.trackEvent).toHaveBeenCalledTimes(1)
     })
+
     it('should display the banner', () => {
       const result = render(
         <PushNotificationsBanner>
@@ -192,6 +197,8 @@ describe('PushNotificationsBanner', () => {
           },
         },
       )
+
+      jest.advanceTimersByTime(3000)
 
       expect(result.getByText('Get notified about pending signatures', { exact: false })).toBeInTheDocument()
     })
@@ -240,7 +247,7 @@ describe('PushNotificationsBanner', () => {
       expect(result.queryByText('Get notified about pending signatures', { exact: false })).not.toBeInTheDocument()
     })
 
-    it('should not show the banner if the user has dismissed it', () => {
+    it('should not show the banner if the user has dismissed it', async () => {
       window.localStorage.setItem(
         'SAFE_v2__dismissPushNotifications',
         JSON.stringify({ '1': { [hexZeroPad('0x123', 20)]: true } }),
@@ -280,6 +287,11 @@ describe('PushNotificationsBanner', () => {
           },
         },
       )
+
+      await act(() => {
+        jest.advanceTimersByTime(3000)
+        return Promise.resolve()
+      })
 
       expect(result.queryByText('Get notified about pending signatures', { exact: false })).not.toBeInTheDocument()
     })

@@ -62,3 +62,8 @@ export const getPeerName = (peer: SessionTypes.Struct['peer'] | ProposalTypes.St
 export const splitError = (message: string): string[] => {
   return message.split(/: (.+)/).slice(0, 2)
 }
+
+export const isWalletConnectSafeApp = (url: string): boolean => {
+  const WALLET_CONNECT = /wallet-connect/
+  return WALLET_CONNECT.test(url)
+}

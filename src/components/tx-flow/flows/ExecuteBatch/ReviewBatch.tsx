@@ -1,4 +1,4 @@
-import { Typography, Button, CardActions, Divider, Alert } from '@mui/material'
+import { CircularProgress, Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -194,8 +194,14 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           <CardActions>
             <CheckWallet allowNonOwner={true}>
               {(isOk) => (
-                <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} onClick={handleSubmit}>
-                  Submit
+                <Button
+                  variant="contained"
+                  type="submit"
+                  disabled={!isOk || submitDisabled}
+                  onClick={handleSubmit}
+                  sx={{ minWidth: '114px' }}
+                >
+                  {!isSubmittable ? <CircularProgress size={20} /> : 'Submit'}
                 </Button>
               )}
             </CheckWallet>
