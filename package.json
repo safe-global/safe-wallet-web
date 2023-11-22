@@ -56,6 +56,7 @@
     "@safe-global/safe-react-components": "^2.0.6",
     "@sentry/react": "^7.74.0",
     "@sentry/tracing": "^7.74.0",
+    "@spindl-xyz/attribution-lite": "^1.4.0",
     "@tkey-mpc/common-types": "^8.2.2",
     "@truffle/hdwallet-provider": "^2.1.4",
     "@walletconnect/utils": "^2.10.2",
