@@ -5,7 +5,6 @@ import ReviewSpendingLimitTx from '@/components/tx-flow/flows/TokenTransfer/Revi
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
 
-// TODO: Split this into separate flows
 const ReviewTokenTx = ({
   params,
   onSubmit,
@@ -22,13 +21,8 @@ const ReviewTokenTx = ({
     onSubmit()
   }, [onSubmit])
 
-  const onSpendingLimitTxSubmit = useCallback(() => {
-    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.spending_limit_transfer })
-    onSubmit()
-  }, [onSubmit])
-
   return isSpendingLimitTx ? (
-    <ReviewSpendingLimitTx params={params} onSubmit={onSpendingLimitTxSubmit} />
+    <ReviewSpendingLimitTx params={params} onSubmit={onTxSubmit} />
   ) : (
     <ReviewTokenTransfer params={params} onSubmit={onTxSubmit} txNonce={txNonce} />
   )

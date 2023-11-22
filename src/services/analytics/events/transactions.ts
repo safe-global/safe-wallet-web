@@ -12,7 +12,6 @@ export enum TX_TYPES {
   module_remove = 'module_remove',
   spending_limit_remove = 'spending_limit_remove',
   spending_limit_add = 'spending_limit_add',
-  spending_limit_transfer = 'spending_limit_transfer',
 
   // Safe txs
   safe_update = 'safe_update',
