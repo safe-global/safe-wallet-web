@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 import { fireEvent, waitFor } from '@testing-library/react'
 
 import { render } from '@/tests/test-utils'
-import { RecoveryInProgress } from '../RecoveryInProgress'
+import { RecoveryInProgressCard } from '../RecoveryInProgressCard'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
 
@@ -10,12 +10,12 @@ jest.mock('@/hooks/useRecoveryTxState')
 
 const mockUseRecoveryTxState = useRecoveryTxState as jest.MockedFunction<typeof useRecoveryTxState>
 
-describe('RecoveryInProgress', () => {
+describe('RecoveryInProgressCard', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  describe('modal', () => {
+  describe('vertical', () => {
     it('should render executable recovery state correctly', async () => {
       mockUseRecoveryTxState.mockReturnValue({
         isExecutable: true,
@@ -25,8 +25,8 @@ describe('RecoveryInProgress', () => {
       const mockClose = jest.fn()
 
       const { queryByText } = render(
-        <RecoveryInProgress
-          variant="modal"
+        <RecoveryInProgressCard
+          orientation="vertical"
           onClose={mockClose}
           recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
         />,
@@ -58,8 +58,8 @@ describe('RecoveryInProgress', () => {
       const mockClose = jest.fn()
 
       const { queryByText } = render(
-        <RecoveryInProgress
-          variant="modal"
+        <RecoveryInProgressCard
+          orientation="vertical"
           onClose={mockClose}
           recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
         />,
@@ -82,7 +82,7 @@ describe('RecoveryInProgress', () => {
       })
     })
   })
-  describe('widget', () => {
+  describe('horizontal', () => {
     it('should render executable recovery state correctly', () => {
       mockUseRecoveryTxState.mockReturnValue({
         isExecutable: true,
@@ -90,7 +90,10 @@ describe('RecoveryInProgress', () => {
       } as any)
 
       const { queryByText } = render(
-        <RecoveryInProgress variant="widget" recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem} />,
+        <RecoveryInProgressCard
+          orientation="horizontal"
+          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
+        />,
       )
 
       ;['days', 'hrs', 'mins'].forEach((unit) => {
@@ -109,7 +112,10 @@ describe('RecoveryInProgress', () => {
       } as any)
 
       const { queryByText } = render(
-        <RecoveryInProgress variant="widget" recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem} />,
+        <RecoveryInProgressCard
+          orientation="horizontal"
+          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
+        />,
       )
 
       expect(queryByText('Go to dashboard')).toBeFalsy()

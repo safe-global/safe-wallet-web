@@ -15,19 +15,19 @@ import css from './styles.module.css'
 
 type Props =
   | {
-      variant?: 'modal'
+      orientation?: 'vertical'
       onClose: () => void
       safe: SafeInfo
       setTxFlow: TxModalContextType['setTxFlow']
     }
   | {
-      variant: 'widget'
+      orientation: 'horizontal'
       onClose?: never
       safe: SafeInfo
       setTxFlow: TxModalContextType['setTxFlow']
     }
 
-export function _RecoveryProposal({ variant = 'modal', onClose, safe, setTxFlow }: Props): ReactElement {
+export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe, setTxFlow }: Props): ReactElement {
   const onRecover = async () => {
     onClose?.()
     setTxFlow(<RecoverAccountFlow />)
@@ -49,19 +49,19 @@ export function _RecoveryProposal({ variant = 'modal', onClose, safe, setTxFlow 
   )
 
   const recoveryButton = (
-    <Button variant="contained" onClick={onRecover}>
+    <Button orientation="contained" onClick={onRecover}>
       Start recovery
     </Button>
   )
 
-  if (variant === 'widget') {
+  if (orientation === 'horizontal') {
     return (
       <Card sx={{ py: 3, px: 4 }}>
         <Grid container display="flex" alignItems="center" gap={3}>
           <Grid item>{icon}</Grid>
 
           <Grid item xs>
-            <Typography variant="h6" fontWeight={700} mb={1}>
+            <Typography orientation="h6" fontWeight={700} mb={1}>
               {title}
             </Typography>
 
@@ -88,7 +88,7 @@ export function _RecoveryProposal({ variant = 'modal', onClose, safe, setTxFlow 
         </Grid>
 
         <Grid item xs={12}>
-          <Typography variant="h6" fontWeight={700} mb={2}>
+          <Typography orientation="h6" fontWeight={700} mb={2}>
             {title}
           </Typography>
 
@@ -112,7 +112,7 @@ export function _RecoveryProposal({ variant = 'modal', onClose, safe, setTxFlow 
 const _useSafe = () => useSafeInfo().safe
 const _useSetTxFlow = () => useContext(TxModalContext).setTxFlow
 
-export const RecoveryProposal = madProps(_RecoveryProposal, {
+export const RecoveryProposalCard = madProps(_RecoveryProposalCard, {
   safe: _useSafe,
   setTxFlow: _useSetTxFlow,
 })

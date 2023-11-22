@@ -6,8 +6,8 @@ import { useIsGuardian } from '@/hooks/useIsGuardian'
 import madProps from '@/utils/mad-props'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
-import { RecoveryProposal } from '@/components/recovery/RecoveryModal/RecoveryProposal'
-import { RecoveryInProgress } from '@/components/recovery/RecoveryModal/RecoveryInProgress'
+import { RecoveryProposalCard } from '@/components/recovery/RecoveryCards/RecoveryProposalCard'
+import { RecoveryInProgressCard } from '@/components/recovery/RecoveryCards/RecoveryInProgressCard'
 import { WidgetContainer, WidgetBody } from '../styled'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
 
@@ -28,9 +28,9 @@ export function _RecoveryHeader({
   }
 
   const modal = next ? (
-    <RecoveryInProgress variant="widget" recovery={next} />
+    <RecoveryInProgressCard orientation="widget" recovery={next} />
   ) : isGuardian ? (
-    <RecoveryProposal variant="widget" />
+    <RecoveryProposalCard variant="widget" />
   ) : null
 
   if (modal) {

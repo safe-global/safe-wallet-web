@@ -13,17 +13,17 @@ import css from './styles.module.css'
 
 type Props =
   | {
-      variant?: 'modal'
+      orientation?: 'vertical'
       onClose: () => void
       recovery: RecoveryQueueItem
     }
   | {
-      variant: 'widget'
+      orientation: 'horizontal'
       onClose?: never
       recovery: RecoveryQueueItem
     }
 
-export function RecoveryInProgress({ variant = 'modal', onClose, recovery }: Props): ReactElement {
+export function RecoveryInProgressCard({ orientation = 'vertical', onClose, recovery }: Props): ReactElement {
   const { isExecutable, remainingSeconds } = useRecoveryTxState(recovery)
   const router = useRouter()
 
@@ -50,7 +50,7 @@ export function RecoveryInProgress({ variant = 'modal', onClose, recovery }: Pro
     </ExternalLink>
   )
 
-  if (variant === 'widget') {
+  if (orientation === 'horizontal') {
     return (
       <Card sx={{ py: 3, px: 4 }}>
         <Grid container display="flex" alignItems="center" gap={3}>

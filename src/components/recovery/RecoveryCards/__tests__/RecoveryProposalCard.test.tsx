@@ -2,17 +2,17 @@ import { faker } from '@faker-js/faker'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { fireEvent, render } from '@/tests/test-utils'
-import { _RecoveryProposal } from '../RecoveryProposal'
+import { _RecoveryProposalCard } from '../RecoveryProposalCard'
 
-describe('RecoveryProposal', () => {
-  describe('modal', () => {
+describe('RecoveryProposalCard', () => {
+  describe('vertical', () => {
     it('should render correctly', () => {
       const mockClose = jest.fn()
       const mockSetTxFlow = jest.fn()
 
       const { queryByText } = render(
-        <_RecoveryProposal
-          variant="modal"
+        <_RecoveryProposalCard
+          orientation="vertical"
           onClose={mockClose}
           safe={{ owners: [{ value: faker.finance.ethereumAddress() }] } as SafeInfo}
           setTxFlow={mockSetTxFlow}
@@ -36,13 +36,13 @@ describe('RecoveryProposal', () => {
       expect(mockSetTxFlow).toHaveBeenCalled()
     })
   })
-  describe('widget', () => {})
+  describe('horizontal', () => {})
   it('should render correctly', () => {
     const mockSetTxFlow = jest.fn()
 
     const { queryByText } = render(
-      <_RecoveryProposal
-        variant="widget"
+      <_RecoveryProposalCard
+        orientation="horizontal"
         safe={{ owners: [{ value: faker.finance.ethereumAddress() }] } as SafeInfo}
         setTxFlow={mockSetTxFlow}
       />,
