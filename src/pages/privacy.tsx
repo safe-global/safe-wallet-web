@@ -1,9 +1,25 @@
+import type { MouseEventHandler, ReactNode } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { IS_OFFICIAL_HOST } from '@/config/constants'
 
+const SmoothScroll = ({ children }: { children: ReactNode }) => {
+  const onClick: MouseEventHandler = (e) => {
+    const anchor = (e.target as HTMLAnchorElement).getAttribute('href')
+    if (anchor?.startsWith('#')) {
+      e.preventDefault()
+      const element = document.querySelector(anchor)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }
+
+  return <div onClick={onClick}>{children}</div>
+}
+
 const SafePrivacyPolicy = () => (
-  <div>
+  <SmoothScroll>
     <style jsx>{`
       ol {
         list-style: lower-alpha;
@@ -25,6 +41,10 @@ const SafePrivacyPolicy = () => (
       a {
         font-weight: 600;
         text-decoration: underline;
+      }
+
+      [id^='section-'] {
+        scroll-margin-top: 60px;
       }
     `}</style>
 
@@ -969,7 +989,7 @@ const SafePrivacyPolicy = () => (
     <p>
       <a href="mailto:corecontributors.dpo@techgdpr.com">corecontributors.dpo@techgdpr.com</a>
     </p>
-  </div>
+  </SmoothScroll>
 )
 
 const PrivacyPolicy: NextPage = () => {
