@@ -3,7 +3,6 @@ import { useAppSelector } from '@/store'
 import { selectDelayModifierByTxHash } from '@/store/recoverySlice'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
 
-// TODO: Test
 export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args }: RecoveryQueueItem): {
   isNext: boolean
   isExecutable: boolean
