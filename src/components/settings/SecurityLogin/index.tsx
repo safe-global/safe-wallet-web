@@ -1,8 +1,9 @@
 import { Grid, Paper, Typography } from '@mui/material'
-import SocialSignerMFA from '@/components/settings/SecurityLogin/SocialSignerMFA'
+import PasswordMfaForm from '@/components/settings/SecurityLogin/PasswordMfaForm'
 import SocialSignerExport from '@/components/settings/SecurityLogin/SocialSignerExport'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import SmsMfaForm from './SmsMfaForm'
 
 const SecurityLogin = () => {
   const wallet = useWallet()
@@ -28,7 +29,14 @@ const SecurityLogin = () => {
           </Grid>
 
           <Grid item xs>
-            <SocialSignerMFA />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <PasswordMfaForm />
+              </Grid>
+              <Grid item xs={12}>
+                <SmsMfaForm />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Paper>

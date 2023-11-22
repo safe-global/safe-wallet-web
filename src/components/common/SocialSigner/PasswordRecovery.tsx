@@ -13,7 +13,7 @@ import {
 import { useState } from 'react'
 import Track from '@/components/common/Track'
 import { FormProvider, useForm } from 'react-hook-form'
-import PasswordInput from '@/components/settings/SecurityLogin/SocialSignerMFA/PasswordInput'
+import PasswordInput from '@/components/settings/SecurityLogin/PasswordMfaForm/PasswordInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 
 import css from './styles.module.css'

@@ -49,4 +49,12 @@ export interface ISocialWalletService {
   getUserInfo(): UserInfo | undefined
 
   setOnConnect(onConnect: () => Promise<void>): void
+
+  registerSmsOtp(mobileNumber: string): Promise<boolean>
+
+  verifySmsOtp(number: string, code: string): Promise<boolean>
+
+  isSmsOtpEnabled(): boolean
+
+  getSmsRecoveryNumber(): string | undefined
 }

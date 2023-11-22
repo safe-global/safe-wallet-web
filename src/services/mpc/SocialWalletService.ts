@@ -9,6 +9,7 @@ import ErrorCodes from '../exceptions/ErrorCodes'
 import { asError } from '../exceptions/utils'
 import { type ISocialWalletService } from './interfaces'
 import { isSocialWalletOptions, SOCIAL_WALLET_OPTIONS } from './config'
+import { SmsOtpRecovery } from './recovery/SmsOtpRecovery'
 
 /**
  * Singleton Service for accessing the social login wallet
@@ -19,11 +20,13 @@ class SocialWalletService implements ISocialWalletService {
 
   private deviceShareRecovery: DeviceShareRecovery
   private securityQuestionRecovery: SecurityQuestionRecovery
+  private smsRecovery: SmsOtpRecovery
 
   constructor(mpcCoreKit: Web3AuthMPCCoreKit) {
     this.mpcCoreKit = mpcCoreKit
     this.deviceShareRecovery = new DeviceShareRecovery(mpcCoreKit)
     this.securityQuestionRecovery = new SecurityQuestionRecovery(mpcCoreKit)
+    this.smsRecovery = new SmsOtpRecovery(mpcCoreKit)
   }
 
   isMFAEnabled() {
@@ -133,6 +136,25 @@ class SocialWalletService implements ISocialWalletService {
     }
 
     return this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
+  }
+
+  isSmsOtpEnabled(): boolean {
+    return this.smsRecovery.isEnabled()
+  }
+
+  getSmsRecoveryNumber(): string | undefined {
+    return this.smsRecovery.getSmsRecoveryNumber()
+  }
+
+  async registerSmsOtp(mobileNumber: string): Promise<boolean> {
+    await this.smsRecovery.registerDevice(mobileNumber)
+    await this.smsRecovery.startVerification()
+    return true
+  }
+
+  verifySmsOtp(number: string, code: string): Promise<boolean> {
+    // TODO: Check if this is the first time
+    return this.smsRecovery.verifyNumber(number, code, true)
   }
 
   async exportSignerKey(password: string): Promise<string> {
