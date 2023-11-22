@@ -13,6 +13,7 @@ import { selectRecovery } from '@/store/recoverySlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import CheckWallet from '@/components/common/CheckWallet'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
