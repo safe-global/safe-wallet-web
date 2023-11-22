@@ -1,7 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { IS_OFFICIAL_HOST } from '@/config/constants'
-import Link from '@mui/material/Link'
 
 const SafePrivacyPolicy = () => (
   <div>
@@ -22,6 +21,11 @@ const SafePrivacyPolicy = () => (
         font-size: 1em;
         margin-bottom: 0;
       }
+
+      a {
+        font-weight: 600;
+        text-decoration: underline;
+      }
     `}</style>
 
     <h1>Privacy Policy</h1>
@@ -29,7 +33,7 @@ const SafePrivacyPolicy = () => (
     <p>
       Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
       regulation regarding any personal information we may collect about you, including across our website,{' '}
-      <Link href="https://app.safe.global">https://app.safe.global</Link>
+      <a href="https://app.safe.global">https://app.safe.global</a>
       ,&nbsp;and other sites we own and operate as well as mobile applications we offer. Wherever possible, we have
       designed our website so that you may navigate and use our website without having to provide Personal Data.
     </p>
@@ -60,46 +64,46 @@ const SafePrivacyPolicy = () => (
     <p>If you are viewing this policy online, you can click on the below links to jump to the relevant section:</p>
     <ol style={{ listStyle: 'arabic' }} start={2}>
       <li>
-        <Link href="/privacy#2">Glossary</Link>
+        <a href="#section-2">Glossary</a>
       </li>
       <li>
-        <Link href="/privacy#3">Your information and the Blockchain</Link>
+        <a href="#section-3">Your information and the Blockchain</a>
       </li>
       <li>
-        <Link href="/privacy#4">How We Use Personal Data</Link>
+        <a href="#section-4">How We Use Personal Data</a>
       </li>
       <li>
-        <Link href="/privacy#5">Use of Third Party Applications</Link>
+        <a href="#section-5">Use of Third Party Applications</a>
       </li>
       <li>
-        <Link href="/privacy#6">Sharing Your Personal Data</Link>
+        <a href="#section-6">Sharing Your Personal Data</a>
       </li>
       <li>
-        <Link href="/privacy#7">Transferring Your data outside of the EU</Link>
+        <a href="#section-7">Transferring Your data outside of the EU</a>
       </li>
       <li>
-        <Link href="/privacy#8">Existence of Automated Decision-making</Link>
+        <a href="#section-8">Existence of Automated Decision-making</a>
       </li>
       <li>
-        <Link href="/privacy#9">Data Security</Link>
+        <a href="#section-9">Data Security</a>
       </li>
       <li>
-        <Link href="/privacy#10">Your Rights as a Data Subject</Link>
+        <a href="#section-10">Your Rights as a Data Subject</a>
       </li>
       <li>
-        <Link href="/privacy#11">Storing Personal Data</Link>
+        <a href="#section-11">Storing Personal Data</a>
       </li>
       <li>
-        <Link href="/privacy#12">Children’s data</Link>
+        <a href="#section-12">Children’s data</a>
       </li>
       <li>
-        <Link href="/privacy#13">Changes to this Privacy Policy</Link>
+        <a href="#section-13">Changes to this Privacy Policy</a>
       </li>
       <li>
-        <Link href="/privacy#14">Contacts us</Link>
+        <a href="#section-14">Contacts us</a>
       </li>
     </ol>
-    <h3 id="2">2. Glossary</h3>
+    <h3 id="section-2">2. Glossary</h3>
     <p>What do some of the capitalized terms mean in this policy?</p>
     <ol>
       <li>
@@ -136,9 +140,9 @@ const SafePrivacyPolicy = () => (
       <li>
         &ldquo;Safe Account&rdquo; is a modular, self-custodial (i.e. not supervised by us) smart contract-based
         multi-signature Wallet. Safe Accounts are{' '}
-        <Link href="https://github.com/safe-global/safe-contracts/" target="_blank" rel="noreferrer">
+        <a href="https://github.com/safe-global/safe-contracts/" target="_blank" rel="noreferrer">
           open-source
-        </Link>
+        </a>
         &nbsp;released under LGPL-3.0.
       </li>
       <li>
@@ -154,7 +158,7 @@ const SafePrivacyPolicy = () => (
         user&apos;s device.
       </li>
     </ol>
-    <h3 id="3">3. Your information and the Blockchain</h3>
+    <h3 id="section-3">3. Your information and the Blockchain</h3>
     <p>
       Blockchains, also known as distributed ledger technology (or simply &lsquo;DLT&rsquo;), are made up of digitally
       recorded data in a chain of packages called &lsquo;blocks&rsquo;. The manner in which these blocks are linked is
@@ -185,7 +189,7 @@ const SafePrivacyPolicy = () => (
       THE BLOCKCHAIN. IN PARTICULAR THE BLOCKCHAIN IS AVAILABLE TO THE PUBLIC AND ANY PERSONAL DATA SHARED ON THE
       BLOCKCHAIN WILL BECOME PUBLICLY AVAILABLE
     </p>
-    <h3 id="4">4. How We Use Personal Data</h3>
+    <h3 id="section-4">4. How We Use Personal Data</h3>
     <h4>4.1. When visiting our website and using {'Safe{Wallet}'}</h4>
     <p>
       When visiting our website or using {'Safe{Wallet}'}, we may collect and process personal data. The data will be
@@ -522,7 +526,7 @@ const SafePrivacyPolicy = () => (
       legal obligation to which we are subject. The legal basis for this processing is our legitimate interests, namely
       the protection and assertion of our legal rights.
     </p>
-    <h3 id="5">5. Use of Third Party Applications</h3>
+    <h3 id="section-5">5. Use of Third Party Applications</h3>
     <h4>5.1. Blockchain</h4>
     <p>
       When using Safe Accounts your smart contract address, Safe Account Transactions, addresses of signer accounts and
@@ -536,29 +540,29 @@ const SafePrivacyPolicy = () => (
     <h4>5.2. Amazon Web Services</h4>
     <p>
       We use{' '}
-      <Link href="https://aws.amazon.com/" target="_blank" rel="noreferrer">
+      <a href="https://aws.amazon.com/" target="_blank" rel="noreferrer">
         Amazon Web Services (AWS)
-      </Link>
+      </a>
       &nbsp;to store log and database data as described in section 4.1.
     </p>
     <h4>5.3. Datadog</h4>
     <p>
       We use{' '}
-      <Link href="https://www.datadoghq.com/" target="_blank" rel="noreferrer">
+      <a href="https://www.datadoghq.com/" target="_blank" rel="noreferrer">
         Datadog
-      </Link>
+      </a>
       &nbsp;to store log data as described in section 4.1.
     </p>
     <h4>5.4. Mobile app stores</h4>
     <p>
       {'Safe{Wallet}'} mobile apps are distributed via{' '}
-      <Link href="https://www.apple.com/app-store/" target="_blank" rel="noreferrer">
+      <a href="https://www.apple.com/app-store/" target="_blank" rel="noreferrer">
         Apple AppStore
-      </Link>
+      </a>
       &nbsp;and{' '}
-      <Link href="https://play.google.com/" target="_blank" rel="noreferrer">
+      <a href="https://play.google.com/" target="_blank" rel="noreferrer">
         Google Play Store
-      </Link>
+      </a>
       . They most likely track user behavior when downloading apps from their stores as well as when using apps. We only
       have very limited access to that data. We can view aggregated statistics on installs and uninstalls. Grouping by
       device type, app version, language, carrier and country is possible.
@@ -573,9 +577,9 @@ const SafePrivacyPolicy = () => (
     <h4>5.6. Google Firebase</h4>
     <p>
       We use the following{' '}
-      <Link href="https://firebase.google.com/" target="_blank" rel="noreferrer">
+      <a href="https://firebase.google.com/" target="_blank" rel="noreferrer">
         Google Firebase
-      </Link>
+      </a>
       &nbsp;services:
     </p>
     <ul>
@@ -591,44 +595,44 @@ const SafePrivacyPolicy = () => (
     </ul>
     <h4>5.7. WalletConnect</h4>
     <p>
-      <Link href="https://walletconnect.com/" target="_blank" rel="noreferrer">
+      <a href="https://walletconnect.com/" target="_blank" rel="noreferrer">
         WalletConnect
-      </Link>
+      </a>
       &nbsp;is used to connect wallets to dapps using end-to-end encryption by scanning a QR code. We do not store any
       information collected by WalletConnect.{' '}
     </p>
     <h4>5.8. Sentry</h4>
     <p>
       We use{' '}
-      <Link href="https://sentry.io/" target="_blank" rel="noreferrer">
+      <a href="https://sentry.io/" target="_blank" rel="noreferrer">
         Sentry
-      </Link>
+      </a>
       &nbsp;to collect error reports and crashes to improve product and user experience.{' '}
     </p>
     <h4>5.9. Beamer</h4>
     <p>
       We use{' '}
-      <Link href="https://www.getbeamer.com/" target="_blank" rel="noreferrer">
+      <a href="https://www.getbeamer.com/" target="_blank" rel="noreferrer">
         Beamer
-      </Link>
+      </a>
       &nbsp;providing updates to the user about changes in the app. Beamer&apos;s purpose and function are further
       explained under the following link{' '}
-      <Link href="https://www.getbeamer.com/showcase/notification-center" target="_blank" rel="noreferrer">
+      <a href="https://www.getbeamer.com/showcase/notification-center" target="_blank" rel="noreferrer">
         https://www.getbeamer.com/showcase/notification-center
-      </Link>
+      </a>
       .
     </p>
     <p>We do not store any information collected by Beamer.</p>
     <h4>5.10. Node providers</h4>
     <p>
       We use{' '}
-      <Link href="https://www.infura.io/" target="_blank" rel="noreferrer">
+      <a href="https://www.infura.io/" target="_blank" rel="noreferrer">
         Infura
-      </Link>
+      </a>
       &nbsp;and{' '}
-      <Link href="https://nodereal.io/" target="_blank" rel="noreferrer">
+      <a href="https://nodereal.io/" target="_blank" rel="noreferrer">
         Nodereal
-      </Link>
+      </a>
       &nbsp;to query public blockchain data from our backend services. All Safe Accounts are monitored, no
       personalization is happening and no user IP addresses are forwarded. Personal data processed are:
     </p>
@@ -640,9 +644,9 @@ const SafePrivacyPolicy = () => (
     <h4>5.11. Tenderly</h4>
     <p>
       We use{' '}
-      <Link href="https://tenderly.co/" target="_blank" rel="noreferrer">
+      <a href="https://tenderly.co/" target="_blank" rel="noreferrer">
         Tenderly
-      </Link>
+      </a>
       &nbsp;to simulate blockchain transactions before they are executed. For that we send your smart contract address
       of your Safe Account and transaction data to Tenderly.
     </p>
@@ -650,49 +654,49 @@ const SafePrivacyPolicy = () => (
     <p>We use the following tools for internal communication. </p>
     <ul>
       <li>
-        <Link href="https://slack.com/" target="_blank" rel="noreferrer">
+        <a href="https://slack.com/" target="_blank" rel="noreferrer">
           Slack
-        </Link>
+        </a>
       </li>
       <li>
-        <Link href="https://workspace.google.com/" target="_blank" rel="noreferrer">
+        <a href="https://workspace.google.com/" target="_blank" rel="noreferrer">
           Google Workspace
-        </Link>
+        </a>
       </li>
       <li>
-        <Link href="https://notion.so" target="_blank" rel="noreferrer">
+        <a href="https://notion.so" target="_blank" rel="noreferrer">
           Notion
-        </Link>
+        </a>
       </li>
     </ul>
     <h4>5.13. Web3Auth</h4>
     <p>
       We use{' '}
-      <Link href="https://web3auth.io/" target="_blank" rel="noreferrer">
+      <a href="https://web3auth.io/" target="_blank" rel="noreferrer">
         Web3Auth
-      </Link>{' '}
+      </a>{' '}
       to create a signer wallet/an owner account by using the user&apos;s Gmail account or Apple ID information.
     </p>
     <h4>5.14. MoonPay</h4>
     <p>
       We use{' '}
-      <Link href="https://www.moonpay.com/" target="_blank" rel="noreferrer">
+      <a href="https://www.moonpay.com/" target="_blank" rel="noreferrer">
         MoonPay
-      </Link>{' '}
+      </a>{' '}
       to offer on-ramp and off-ramp services. For that purpose personal data is required for KYC/AML or other financial
       regulatory requirements. This data is encrypted by MoonPay.
     </p>
     <h4>5.15. Spindl</h4>
     <p>
       We use{' '}
-      <Link href="https://www.spindl.xyz" target="_blank" rel="noreferrer">
+      <a href="https://www.spindl.xyz" target="_blank" rel="noreferrer">
         Spindl
-      </Link>
+      </a>
       , a measurement and attribution solution for web3 that assists us in comprehending how users interact with
       different decentralized applications and our app and to enhance your experience with {`Safe{Wallet}`}. For
       enhanced privacy, data is stored for a period of 7 days after which it is securely deleted.
     </p>
-    <h3 id="6">6. Sharing Your Personal Data</h3>
+    <h3 id="section-6">6. Sharing Your Personal Data</h3>
     <p>
       We may pass your information to our Business Partners, administration centers, third party service providers,
       agents, subcontractors and other associated organizations for the purposes of completing tasks and providing our
@@ -706,7 +710,7 @@ const SafePrivacyPolicy = () => (
       or reorganization, or if we are under a duty to disclose or share your personal data in order to comply with any
       legal obligation. However, we will take steps to ensure that your privacy rights continue to be protected.
     </p>
-    <h3 id="7">7. Transferring Your data outside of the EU</h3>
+    <h3 id="section-7">7. Transferring Your data outside of the EU</h3>
     <p>
       Wherever possible we will choose service providers based in the EU. For those outside the EU, wherever possible we
       will configure data to be inside the EU. We concluded the new version of the Standard Contractual Clauses with
@@ -735,9 +739,9 @@ const SafePrivacyPolicy = () => (
       DECENTRALIZED PUBLIC NETWORK AND ACCORDINGLY ANY PERSONAL DATA WRITTEN ONTO THE BLOCKCHAIN MAY BE TRANSFERRED AND
       STORED ACROSS THE GLOBE.
     </p>
-    <h3 id="8">8. Existence of Automated Decision-making</h3>
+    <h3 id="section-8">8. Existence of Automated Decision-making</h3>
     <p>We do not use automatic decision-making or profiling when processing Personal Data.</p>
-    <h3 id="9">9. Data Security</h3>
+    <h3 id="section-9">9. Data Security</h3>
     <p>
       We have put in place appropriate security measures to prevent your personal data from being accidentally lost,
       used or accessed in an unauthorized way, altered or disclosed. In addition, we limit access to your personal data
@@ -748,14 +752,14 @@ const SafePrivacyPolicy = () => (
       We have put in place procedures to deal with any suspected personal data breach and will notify you and any
       applicable regulator of a breach where we are legally required to do so.
     </p>
-    <h3 id="10">10. Your Rights as a Data Subject</h3>
+    <h3 id="section-10">10. Your Rights as a Data Subject</h3>
     <p>
       You have certain rights under applicable legislation, and in particular under Regulation EU 2016/679 (General Data
       Protection Regulation or &lsquo;GDPR&rsquo;). We explain these below. You can find out more about the GDPR and
       your rights by accessing the{' '}
-      <Link href="https://ec.europa.eu/info/law/law-topic/data-protection_en" target="_blank" rel="noreferrer">
+      <a href="https://ec.europa.eu/info/law/law-topic/data-protection_en" target="_blank" rel="noreferrer">
         European Commission&rsquo;s website
-      </Link>
+      </a>
       . If you wish to exercise your data subject rights, please contact us by post or at privacy@cc0x.dev.
     </p>
     <h5>Right Information and access</h5>
@@ -903,9 +907,9 @@ const SafePrivacyPolicy = () => (
       Phone: 030/138 89-0
     </p>
     <p>
-      <Link href="https://www.datenschutz-berlin.de" target="_blank" rel="noreferrer">
+      <a href="https://www.datenschutz-berlin.de" target="_blank" rel="noreferrer">
         https://www.datenschutz-berlin.de
-      </Link>
+      </a>
       &nbsp;
     </p>
     <p>
@@ -913,7 +917,7 @@ const SafePrivacyPolicy = () => (
       residence, place of work, or the place where you allege an infringement of one or more of our rights has taken
       place, if that is based in the EEA.
     </p>
-    <h3 id="11">11. Storing Personal Data</h3>
+    <h3 id="section-11">11. Storing Personal Data</h3>
     <p>
       We retain your information only for as long as is necessary for the purposes for which we process the information
       as set out in this policy.
@@ -923,13 +927,13 @@ const SafePrivacyPolicy = () => (
       compliance with a legal obligation to which we are subject, or in order to protect your vital interests or the
       vital interests of another natural person.
     </p>
-    <h3 id="12">12. Children’s data</h3>
+    <h3 id="section-12">12. Children’s data</h3>
     <p>
       Our products and services are neither designed nor intended for use by children and persons under the age of 18.
       If you suspect or discover that our products and services are being used by a child, please contact us immediately
-      at <Link href="mailto:privacy@cc0x.dev">privacy@cc0x.dev</Link>
+      at <a href="mailto:privacy@cc0x.dev">privacy@cc0x.dev</a>
     </p>
-    <h3 id="13">13. Changes to this Privacy Policy</h3>
+    <h3 id="section-13">13. Changes to this Privacy Policy</h3>
     <p>
       We may modify this privacy policy at any time to comply with legal requirements as well as developments within our
       organization. When we do, we will revise the date at the top of this page. Each visit or interaction with our
@@ -938,7 +942,7 @@ const SafePrivacyPolicy = () => (
       you about, you acknowledge that it is your responsibility to review our privacy policy to be aware of
       modifications. If you do not agree to the revised policy, you should discontinue your use of this website.
     </p>
-    <h3 id="14">14. Contact Us</h3>
+    <h3 id="section-14">14. Contact Us</h3>
     <h5>Contact us by post or email at:</h5>
     <p>
       Core Contributors GmbH
@@ -963,7 +967,7 @@ const SafePrivacyPolicy = () => (
       Germany
     </p>
     <p>
-      <Link href="mailto:corecontributors.dpo@techgdpr.com">corecontributors.dpo@techgdpr.com</Link>
+      <a href="mailto:corecontributors.dpo@techgdpr.com">corecontributors.dpo@techgdpr.com</a>
     </p>
   </div>
 )
