@@ -1,4 +1,5 @@
 import { Button, SvgIcon, Tooltip } from '@mui/material'
+import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 
 import RocketIcon from '@/public/images/transactions/rocket.svg'
@@ -10,6 +11,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import { Errors, logError } from '@/services/exceptions'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import { RecoveryLoaderContext } from '../RecoveryLoaderContext'
 
 export function ExecuteRecoveryButton({
   recovery,
@@ -21,6 +23,7 @@ export function ExecuteRecoveryButton({
   const { isExecutable } = useRecoveryTxState(recovery)
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
+  const { refetch } = useContext(RecoveryLoaderContext)
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -36,6 +39,7 @@ export function ExecuteRecoveryButton({
         chainId: safe.chainId,
         args: recovery.args,
         delayModifierAddress: recovery.address,
+        refetchRecoveryData: refetch,
       })
     } catch (e) {
       logError(Errors._812, e)

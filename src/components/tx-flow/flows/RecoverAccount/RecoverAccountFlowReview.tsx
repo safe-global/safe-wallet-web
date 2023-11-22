@@ -25,6 +25,7 @@ import { TxModalContext } from '../..'
 import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
 import { getCountdown } from '@/utils/date'
+import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
 import type { RecoverAccountFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -42,6 +43,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const wallet = useWallet()
   const onboard = useOnboard()
   const recovery = useAppSelector((state) => selectDelayModifierByGuardian(state, wallet?.address ?? ''))
+  const { refetch } = useContext(RecoveryLoaderContext)
 
   // Proposal
   const txCooldown = recovery?.txCooldown?.toNumber()
@@ -71,7 +73,14 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
     setSubmitError(undefined)
 
     try {
-      await dispatchRecoveryProposal({ onboard, safe, newThreshold, newOwners, delayModifierAddress: recovery.address })
+      await dispatchRecoveryProposal({
+        onboard,
+        safe,
+        newThreshold,
+        newOwners,
+        delayModifierAddress: recovery.address,
+        refetchRecoveryData: refetch,
+      })
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._810, err)

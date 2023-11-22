@@ -10,7 +10,7 @@ import type { IBuilder } from '../Builder'
 
 const MAX_OWNERS_LENGTH = 10
 
-function addressExBuilder(): IBuilder<AddressEx> {
+export function addressExBuilder(): IBuilder<AddressEx> {
   return Builder.new<AddressEx>().with({
     value: checksumAddress(faker.finance.ethereumAddress()),
     name: faker.word.words(),

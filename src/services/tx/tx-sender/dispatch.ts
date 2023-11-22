@@ -163,14 +163,14 @@ export const dispatchTxExecution = async (
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress, to: safeTx.data.to })
       }
     })
     .catch((err) => {
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress, to: safeTx.data.to })
       } else {
         txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
       }
@@ -224,11 +224,12 @@ export const dispatchBatchExecution = async (
           })
         })
       } else {
-        txs.forEach(({ txId }) => {
+        txs.forEach(({ txId, txData }) => {
           txDispatch(TxEvent.PROCESSED, {
             txId,
             groupKey,
             safeAddress,
+            to: txData?.to.value,
           })
         })
       }
@@ -237,8 +238,12 @@ export const dispatchBatchExecution = async (
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, { txId, safeAddress })
+        txs.forEach(({ txId, txData }) => {
+          txDispatch(TxEvent.PROCESSED, {
+            txId,
+            safeAddress,
+            to: txData?.to.value,
+          })
         })
       } else {
         txs.forEach(({ txId }) => {
@@ -300,7 +305,7 @@ export const dispatchSpendingLimitTxExecution = async (
           error: new Error('Transaction reverted by EVM'),
         })
       } else {
-        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress })
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress, to: txParams.to })
       }
     })
     .catch((error) => {
@@ -405,18 +410,34 @@ export const dispatchBatchExecutionRelay = async (
   )
 }
 
+function reloadRecoveryDataAfterProcessed(tx: ContractTransaction, refetchRecoveryData: () => void) {
+  tx.wait()
+    .then((receipt) => {
+      if (!didRevert(receipt)) {
+        refetchRecoveryData()
+      }
+    })
+    .catch((error) => {
+      if (didReprice(error)) {
+        refetchRecoveryData()
+      }
+    })
+}
+
 export async function dispatchRecoveryProposal({
   onboard,
   safe,
   newThreshold,
   newOwners,
   delayModifierAddress,
+  refetchRecoveryData,
 }: {
   onboard: OnboardAPI
   safe: SafeInfo
   newThreshold: number
   newOwners: Array<AddressEx>
   delayModifierAddress: string
+  refetchRecoveryData: () => void
 }) {
   const wallet = await assertWalletChain(onboard, safe.chainId)
   const provider = createWeb3(wallet.provider)
@@ -430,7 +451,13 @@ export async function dispatchRecoveryProposal({
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
 
   const signer = provider.getSigner()
-  await delayModifier.connect(signer).execTransactionFromModule(to, value, data, OperationType.Call)
+
+  delayModifier
+    .connect(signer)
+    .execTransactionFromModule(to, value, data, OperationType.Call)
+    .then((result) => {
+      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
+    })
 }
 
 export async function dispatchRecoveryExecution({
@@ -438,11 +465,13 @@ export async function dispatchRecoveryExecution({
   chainId,
   args,
   delayModifierAddress,
+  refetchRecoveryData,
 }: {
   onboard: OnboardAPI
   chainId: string
   args: TransactionAddedEvent['args']
   delayModifierAddress: string
+  refetchRecoveryData: () => void
 }) {
   const wallet = await assertWalletChain(onboard, chainId)
   const provider = createWeb3(wallet.provider)
@@ -450,5 +479,11 @@ export async function dispatchRecoveryExecution({
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
 
   const signer = provider.getSigner()
-  await delayModifier.connect(signer).executeNextTx(args.to, args.value, args.data, args.operation)
+
+  delayModifier
+    .connect(signer)
+    .executeNextTx(args.to, args.value, args.data, args.operation)
+    .then((result) => {
+      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
+    })
 }
