@@ -9,6 +9,7 @@ import {
   Collapse,
   Checkbox,
   FormControlLabel,
+  Tooltip,
 } from '@mui/material'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -25,6 +26,7 @@ import CircleCheckIcon from '@/public/images/common/circle-check.svg'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import type { UpsertRecoveryFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -85,6 +87,21 @@ export function UpsertRecoveryFlowSettings({
             <div>
               <Typography variant="h5" gutterBottom>
                 Recovery delay
+                <Tooltip
+                  placement="top"
+                  arrow
+                  title="The recovery delay begins after the recovery attempt is initiated"
+                >
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      fontSize="small"
+                      color="border"
+                      sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                    />
+                  </span>
+                </Tooltip>
               </Typography>
 
               <Typography variant="body2">
