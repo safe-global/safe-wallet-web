@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material/styles'
 import {
+  gtmInit,
   gtmTrackPageview,
   gtmSetChainId,
   gtmEnableCookies,
@@ -13,6 +14,7 @@ import {
   gtmSetUserProperty,
   gtmTrack,
 } from '@/services/analytics/gtm'
+import spindl, { spindlInit } from './spindl'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import useChainId from '@/hooks/useChainId'
@@ -37,6 +39,12 @@ const useGtm = () => {
   const deviceType = isMobile ? DeviceType.MOBILE : isTablet ? DeviceType.TABLET : DeviceType.DESKTOP
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
+
+  // Initialize GTM and Spindl
+  useEffect(() => {
+    gtmInit()
+    spindlInit()
+  }, [])
 
   // Enable GA cookies if consent was given
   useEffect(() => {
@@ -82,13 +90,14 @@ const useGtm = () => {
 
   useEffect(() => {
     if (wallet?.label) {
-      gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, wallet?.label)
+      gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, wallet.label)
     }
   }, [wallet?.label])
 
   useEffect(() => {
     if (wallet?.address) {
-      gtmSetUserProperty(AnalyticsUserProperties.WALLET_ADDRESS, wallet?.address)
+      gtmSetUserProperty(AnalyticsUserProperties.WALLET_ADDRESS, wallet.address)
+      spindl.attribute(wallet.address)
     }
   }, [wallet?.address])
 

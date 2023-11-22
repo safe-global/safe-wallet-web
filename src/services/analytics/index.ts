@@ -11,17 +11,10 @@
  * `import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'`
  * `trackEvent(ADDRESS_BOOK_EVENTS.EXPORT)`
  */
-import { gtmInit, gtmTrack, gtmTrackSafeApp } from './gtm'
-import spindlInit from './spindl'
+import { gtmTrack, gtmTrackSafeApp } from './gtm'
 
 export const trackEvent = gtmTrack
 export const trackSafeAppEvent = gtmTrackSafeApp
 
 export * from './types'
 export * from './events'
-
-// Initialize GTM and Spindl
-if (typeof window !== 'undefined') {
-  gtmInit()
-  spindlInit()
-}
