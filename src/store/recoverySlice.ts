@@ -50,3 +50,10 @@ export const selectDelayModifierByTxHash = createSelector(
     return recovery.find(({ queue }) => queue.some((item) => item.transactionHash === txHash))
   },
 )
+
+export const selectDelayModifierByAddress = createSelector(
+  [selectRecovery, (_: RootState, moduleAddress: string) => moduleAddress],
+  (recovery, moduleAddress) => {
+    return recovery.find(({ address }) => sameAddress(address, moduleAddress))
+  },
+)

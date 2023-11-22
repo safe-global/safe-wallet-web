@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Grid, IconButton, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useContext, useMemo } from 'react'
 import type { ReactElement } from 'react'
 
@@ -6,14 +6,12 @@ import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
 import { TxModalContext } from '@/components/tx-flow'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
+import { DelayModifierRow } from './DelayModifierRow'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { useAppSelector } from '@/store'
 import { selectRecovery } from '@/store/recoverySlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import DeleteIcon from '@/public/images/common/delete.svg'
-import EditIcon from '@/public/images/common/edit.svg'
 import EnhancedTable from '@/components/common/EnhancedTable'
-import CheckWallet from '@/components/common/CheckWallet'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
@@ -74,7 +72,9 @@ export function Recovery(): ReactElement {
   const isOwner = useIsSafeOwner()
 
   const rows = useMemo(() => {
-    return recovery.flatMap(({ guardians, txCooldown, txExpiration }) => {
+    return recovery.flatMap((delayModifier) => {
+      const { guardians, txCooldown, txExpiration } = delayModifier
+
       return guardians.map((guardian) => {
         const DAY_IN_SECONDS = 60 * 60 * 24
 
@@ -108,31 +108,7 @@ export function Recovery(): ReactElement {
               sticky: true,
               content: (
                 <div className={tableCss.actions}>
-                  {isOwner && (
-                    <CheckWallet>
-                      {(isOk) => (
-                        <>
-                          <Tooltip title={isOk ? 'Edit recovery setup' : undefined}>
-                            <span>
-                              {/* TODO: Display flow */}
-                              <IconButton onClick={() => setTxFlow(undefined)} size="small" disabled={!isOk}>
-                                <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
-                              </IconButton>
-                            </span>
-                          </Tooltip>
-
-                          <Tooltip title={isOk ? 'Disable recovery' : undefined}>
-                            <span>
-                              {/* TODO: Display flow */}
-                              <IconButton onClick={() => setTxFlow(undefined)} size="small" disabled={!isOk}>
-                                <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                              </IconButton>
-                            </span>
-                          </Tooltip>
-                        </>
-                      )}
-                    </CheckWallet>
-                  )}
+                  <DelayModifierRow delayModifier={delayModifier} />
                 </div>
               ),
             },
@@ -140,7 +116,7 @@ export function Recovery(): ReactElement {
         }
       })
     })
-  }, [recovery, isOwner, setTxFlow])
+  }, [recovery])
 
   return (
     <Paper sx={{ p: 4 }}>
