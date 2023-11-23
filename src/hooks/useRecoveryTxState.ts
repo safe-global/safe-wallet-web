@@ -3,9 +3,10 @@ import { useContext } from 'react'
 import { useClock } from './useClock'
 import { selectDelayModifierByTxHash } from '@/services/recovery/selectors'
 import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
+import { sameAddress } from '@/utils/addresses'
 import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
-export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args }: RecoveryQueueItem): {
+export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args, address }: RecoveryQueueItem): {
   isNext: boolean
   isExecutable: boolean
   isExpired: boolean
@@ -20,7 +21,9 @@ export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args
 
   const isValid = remainingMs.lte(0)
   const isExpired = expiresAt ? expiresAt.toNumber() <= Date.now() : false
-  const isNext = recovery ? args.queueNonce.eq(recovery.txNonce) : false
+
+  // Check module address in case multiple Delay Modifiers enabled
+  const isNext = recovery ? sameAddress(recovery.address, address) && args.queueNonce.eq(recovery.txNonce) : false
   const isExecutable = isNext && isValid && !isExpired
 
   const remainingSeconds = isValid ? 0 : Math.ceil(remainingMs.div(1_000).toNumber())

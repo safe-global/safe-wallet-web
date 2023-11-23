@@ -6,7 +6,7 @@ import CheckIcon from '@/public/images/common/circle-check.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Countdown } from '@/components/common/Countdown'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
-import { SkipRecoveryButton } from '../SkipRecoveryButton'
+import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
@@ -69,7 +69,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
 
       <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
         <ExecuteRecoveryButton recovery={item} />
-        <SkipRecoveryButton recovery={item} />
+        <CancelRecoveryButton recovery={item} />
       </Box>
     </>
   )
