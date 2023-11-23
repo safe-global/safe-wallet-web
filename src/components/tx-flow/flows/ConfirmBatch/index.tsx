@@ -1,4 +1,4 @@
-import { type ReactElement, useContext, useEffect } from 'react'
+import { type ReactElement, useContext, useEffect, useCallback } from 'react'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
@@ -9,6 +9,8 @@ import TxLayout from '../../common/TxLayout'
 import BatchIcon from '@/public/images/common/batch.svg'
 import { useDraftBatch } from '@/hooks/useDraftBatch'
 import BatchTxList from '@/components/batch/BatchSidebar/BatchTxList'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { trackEvent } from '@/services/analytics'
 
 type ConfirmBatchProps = {
   onSubmit: () => void
@@ -32,8 +34,13 @@ const ConfirmBatch = ({ onSubmit }: ConfirmBatchProps): ReactElement => {
     createMultiSendCallOnlyTx(calls).then(setSafeTx).catch(setSafeTxError)
   }, [batchTxs, setSafeTx, setSafeTxError])
 
+  const onTxSubmit = useCallback(() => {
+    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.batch })
+    onSubmit()
+  }, [onSubmit])
+
   return (
-    <SignOrExecuteForm onSubmit={onSubmit} isBatch>
+    <SignOrExecuteForm onSubmit={onTxSubmit} isBatch>
       <BatchTxList txItems={batchTxs} />
     </SignOrExecuteForm>
   )

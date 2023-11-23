@@ -319,10 +319,11 @@ export const dispatchSafeAppsTx = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   txId?: string,
-) => {
+): Promise<string> => {
   const sdk = await getSafeSDKWithSigner(onboard, chainId)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, safeTxHash, txId })
+  return safeTxHash
 }
 
 export const dispatchTxRelay = async (

@@ -13,6 +13,12 @@ import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmount
 import { safeFormatUnits } from '@/utils/formatters'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { createTx } from '@/services/tx/tx-sender'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+
+const onFormSubmit = () => {
+  trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
+  trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.spending_limit_remove })
+}
 
 export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) => {
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
@@ -41,10 +47,6 @@ export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) 
 
     createTx(txParams).then(setSafeTx).catch(setSafeTxError)
   }, [chainId, params.beneficiary, params.token, setSafeTx, setSafeTxError])
-
-  const onFormSubmit = () => {
-    trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
-  }
 
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>

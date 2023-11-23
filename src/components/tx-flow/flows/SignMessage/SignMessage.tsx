@@ -38,6 +38,8 @@ import InfoBox from '@/components/safe-messages/InfoBox'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -169,19 +171,14 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const { safe } = useSafeInfo()
   const isOwner = useIsSafeOwner()
   const wallet = useWallet()
+  useHighlightHiddenTab()
 
   const { decodedMessage, safeMessageMessage, safeMessageHash } = useDecodedSafeMessage(message, safe)
   const [safeMessage, setSafeMessage] = useSafeMessage(safeMessageHash)
-
-  useHighlightHiddenTab()
-
-  const decodedMessageAsString =
-    typeof decodedMessage === 'string' ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
-
+  const isPlainTextMessage = typeof decodedMessage === 'string'
+  const decodedMessageAsString = isPlainTextMessage ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
   const hasSigned = !!safeMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
-
   const isFullySigned = !!safeMessage?.preparedSignature
-
   const isDisabled = !isOwner || hasSigned
 
   const { onSign, submitError } = useSyncSafeMessageSigner(
@@ -195,8 +192,14 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
 
   const handleSign = async () => {
     const updatedMessage = await onSign()
+
     if (updatedMessage) {
       setSafeMessage(updatedMessage)
+    }
+
+    // Track first signature as creation
+    if (updatedMessage?.confirmations.length === 1) {
+      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.typed_message })
     }
   }
 

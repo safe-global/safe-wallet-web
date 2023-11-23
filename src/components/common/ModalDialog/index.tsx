@@ -20,12 +20,13 @@ interface DialogTitleProps {
 
 export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false, ...other }: DialogTitleProps) => {
   return (
-    <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }} {...other}>
+    <DialogTitle data-testid="modal-title" sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }} {...other}>
       {children}
       <span style={{ flex: 1 }} />
       {!hideChainIndicator && <ChainIndicator inline />}
       {onClose ? (
         <IconButton
+          data-testid="modal-dialog-close-btn"
           aria-label="close"
           onClick={(e) => {
             onClose(e, 'backdropClick')
@@ -56,6 +57,7 @@ const ModalDialog = ({
 
   return (
     <Dialog
+      data-testid="modal-view"
       {...restProps}
       fullScreen={isFullScreen}
       scroll={fullScreen ? 'paper' : 'body'}

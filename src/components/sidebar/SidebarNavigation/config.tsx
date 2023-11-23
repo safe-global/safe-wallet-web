@@ -44,7 +44,7 @@ export const navItems: NavItem[] = [
   },
   {
     label: 'Settings',
-    icon: <SvgIcon component={SettingsIcon} inheritViewBox />,
+    icon: <SvgIcon data-testid="settings-nav-icon" component={SettingsIcon} inheritViewBox />,
     href: AppRoutes.settings.setup,
   },
 ]

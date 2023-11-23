@@ -1,34 +1,24 @@
-FROM node:18-alpine AS base
-ENV NEXT_TELEMETRY_DISABLED 1
-
-FROM base AS builder
-
+FROM node:18-alpine
 RUN apk add --no-cache libc6-compat git python3 py3-pip make g++ libusb-dev eudev-dev linux-headers
 WORKDIR /app
-
-# Install dependencies
-COPY package.json yarn.lock* ./
-RUN yarn --frozen-lockfile
 COPY . .
-RUN yarn run after-install
 
-RUN yarn build
+# Fix arm64 timeouts
+RUN yarn config set network-timeout 300000 && yarn global add node-gyp
 
-# Production image
-FROM base AS runner
-WORKDIR /app
+# install deps
+RUN yarn install --frozen-lockfile
+RUN yarn after-install
 
 ENV NODE_ENV production
-ENV REVERSE_PROXY_UI_PORT 8080
 
-RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
-COPY --from=builder /app/out ./out
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
+# Uncomment the following line in case you want to disable telemetry during the build.
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Set the correct permission for prerender cache
-RUN mkdir .next && chown nextjs:nodejs .next
+EXPOSE 3000
 
-USER nextjs
+ENV PORT 3000
 
-EXPOSE ${REVERSE_PROXY_UI_PORT}
-
-CMD npx -y serve out -p ${REVERSE_PROXY_UI_PORT}
+CMD ["yarn", "static-serve"]

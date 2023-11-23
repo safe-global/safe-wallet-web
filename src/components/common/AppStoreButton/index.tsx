@@ -6,7 +6,6 @@ import { MOBILE_APP_EVENTS, trackEvent } from '@/services/analytics'
 
 // App Store campaigns track the user interaction
 enum LINKS {
-  pairing = 'https://apps.apple.com/app/apple-store/id1515759131?pt=119497694&ct=Web%20App%20Connect&mt=8',
   footer = 'https://apps.apple.com/app/apple-store/id1515759131?pt=119497694&ct=Web%20App%20Footer&mt=8',
 }
 

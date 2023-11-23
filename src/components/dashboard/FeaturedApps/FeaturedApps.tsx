@@ -10,11 +10,7 @@ import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
-
-const isWalletConnectSafeApp = (app: SafeAppData): boolean => {
-  const WALLET_CONNECT = /wallet-connect/
-  return WALLET_CONNECT.test(app.url)
-}
+import { isWalletConnectSafeApp } from '@/services/walletconnect/utils'
 
 const FeaturedAppCard = ({ app }: { app: SafeAppData }) => (
   <Card>
@@ -62,7 +58,7 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
           >
             {featuredApps?.map((app) => (
               <Grid item xs md key={app.id}>
-                {isWalletConnectSafeApp(app) ? (
+                {isWalletConnectSafeApp(app.url) ? (
                   <a onClick={onWcWidgetClick} style={{ cursor: 'pointer' }}>
                     <FeaturedAppCard app={app} />
                   </a>

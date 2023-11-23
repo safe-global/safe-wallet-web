@@ -115,6 +115,7 @@ export const OwnerList = () => {
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
                   <Button
+                    data-testid="add-owner-btn"
                     onClick={() => setTxFlow(<AddOwnerFlow />)}
                     variant="text"
                     startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}

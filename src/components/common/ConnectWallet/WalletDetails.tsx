@@ -1,8 +1,13 @@
-import { Box, Divider, SvgIcon, Typography } from '@mui/material'
+import { Box, Divider, Skeleton, SvgIcon, Typography } from '@mui/material'
+import dynamic from 'next/dynamic'
 import type { ReactElement } from 'react'
 
 import LockIcon from '@/public/images/common/lock.svg'
-import SocialSigner from '@/components/common/SocialSigner'
+
+const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
+  loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
+})
+
 import WalletLogin from '@/components/welcome/WelcomeLogin/WalletLogin'
 
 const WalletDetails = ({ onConnect }: { onConnect: () => void }): ReactElement => {

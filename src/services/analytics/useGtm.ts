@@ -1,7 +1,5 @@
 /**
- * This hook is used to initialize GTM and for anonymized page view tracking.
- * It won't initialize GTM if a consent wasn't given for analytics cookies.
- * The hook needs to be called when the app starts.
+ * Track analytics events using Google Tag Manager
  */
 import { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material/styles'
@@ -14,7 +12,9 @@ import {
   gtmSetDeviceType,
   gtmSetSafeAddress,
   gtmSetUserProperty,
+  gtmTrack,
 } from '@/services/analytics/gtm'
+import spindl, { spindlInit } from './spindl'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import useChainId from '@/hooks/useChainId'
@@ -25,6 +25,7 @@ import { useMediaQuery } from '@mui/material'
 import { AnalyticsUserProperties, DeviceType } from './types'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
+import { OVERVIEW_EVENTS } from './events'
 
 const useGtm = () => {
   const chainId = useChainId()
@@ -37,11 +38,12 @@ const useGtm = () => {
   const isTablet = useMediaQuery(theme.breakpoints.down('md'))
   const deviceType = isMobile ? DeviceType.MOBILE : isTablet ? DeviceType.TABLET : DeviceType.DESKTOP
   const safeAddress = useSafeAddress()
-  const walletLabel = useWallet()?.label
+  const wallet = useWallet()
 
-  // Initialize GTM
+  // Initialize GTM and Spindl
   useEffect(() => {
     gtmInit()
+    spindlInit()
   }, [])
 
   // Enable GA cookies if consent was given
@@ -72,6 +74,10 @@ const useGtm = () => {
   // Set safe address for all GTM events
   useEffect(() => {
     gtmSetSafeAddress(safeAddress)
+
+    if (safeAddress) {
+      gtmTrack(OVERVIEW_EVENTS.SAFE_VIEWED)
+    }
   }, [safeAddress])
 
   // Track page views – anonymized by default.
@@ -83,10 +89,17 @@ const useGtm = () => {
   }, [router.pathname])
 
   useEffect(() => {
-    if (walletLabel) {
-      gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, walletLabel)
+    if (wallet?.label) {
+      gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, wallet.label)
     }
-  }, [walletLabel])
+  }, [wallet?.label])
+
+  useEffect(() => {
+    if (wallet?.address) {
+      gtmSetUserProperty(AnalyticsUserProperties.WALLET_ADDRESS, wallet.address)
+      spindl.attribute(wallet.address)
+    }
+  }, [wallet?.address])
 
   // Track meta events on app load
   useMetaEvents()

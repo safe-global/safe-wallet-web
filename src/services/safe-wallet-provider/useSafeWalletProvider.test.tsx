@@ -271,6 +271,7 @@ describe('useSafeWalletProvider', () => {
           ],
           params: { safeTxGas: 0 },
         },
+        onSubmit: expect.any(Function),
       })
 
       expect(resp).toBeInstanceOf(Promise)
