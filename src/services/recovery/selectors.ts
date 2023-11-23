@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import type { RecoveryState } from '@/components/recovery/RecoveryLoaderContext'
+import type { RecoveryState } from '@/components/recovery/RecoveryContext'
 import { sameAddress } from '@/utils/addresses'
 
 // Identity function to help with type inference

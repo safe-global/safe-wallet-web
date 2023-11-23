@@ -44,7 +44,7 @@ import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import MobilePairingModal from '@/services/pairing/QRModal'
-import { RecoveryLoaderProvider } from '@/components/recovery/RecoveryLoaderContext'
+import { RecoveryProvider } from '@/components/recovery/RecoveryContext'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -84,11 +84,11 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <RecoveryLoaderProvider>
+            <RecoveryProvider>
               <TxModalProvider>
                 <WalletConnectProvider>{children}</WalletConnectProvider>
               </TxModalProvider>
-            </RecoveryLoaderProvider>
+            </RecoveryProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}

@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import { CancelRecoveryFlow } from '@/components/tx-flow/flows/CancelRecovery'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 export function CancelRecoveryButton({
   recovery,

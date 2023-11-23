@@ -8,7 +8,7 @@ import { Countdown } from '@/components/common/Countdown'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 import { formatDate } from '@/utils/date'

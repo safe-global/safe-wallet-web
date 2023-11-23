@@ -7,8 +7,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
 import { DelayModifierRow } from './DelayModifierRow'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -68,8 +67,7 @@ const headCells = [
 
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
-  const [recovery] = useContext(RecoveryLoaderContext).state
-  const isOwner = useIsSafeOwner()
+  const [recovery] = useRecovery()
 
   const rows = useMemo(() => {
     return recovery?.flatMap((delayModifier) => {

@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 
 import { useRecoveryTxState } from '../useRecoveryTxState'
 import { renderHook } from '@/tests/test-utils'
-import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
+import { RecoveryContext } from '@/components/recovery/RecoveryContext'
 
 describe('useRecoveryTxState', () => {
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe('useRecoveryTxState', () => {
 
       const { result } = renderHook(() => useRecoveryTxState(data[1].queue[0] as any), {
         wrapper: ({ children }) => (
-          <RecoveryLoaderContext.Provider value={{ state: [data] } as any}> {children}</RecoveryLoaderContext.Provider>
+          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
         ),
       })
 
@@ -83,7 +83,7 @@ describe('useRecoveryTxState', () => {
 
       const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any), {
         wrapper: ({ children }) => (
-          <RecoveryLoaderContext.Provider value={{ state: [data] } as any}> {children}</RecoveryLoaderContext.Provider>
+          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
         ),
       })
 
@@ -120,7 +120,7 @@ describe('useRecoveryTxState', () => {
 
       const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any), {
         wrapper: ({ children }) => (
-          <RecoveryLoaderContext.Provider value={{ state: [data] } as any}> {children}</RecoveryLoaderContext.Provider>
+          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
         ),
       })
 
@@ -157,7 +157,7 @@ describe('useRecoveryTxState', () => {
 
       const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any), {
         wrapper: ({ children }) => (
-          <RecoveryLoaderContext.Provider value={{ state: [data] } as any}> {children}</RecoveryLoaderContext.Provider>
+          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
         ),
       })
 
@@ -221,7 +221,7 @@ describe('useRecoveryTxState', () => {
 
       const { result } = renderHook(() => useRecoveryTxState(data[1].queue[1] as any), {
         wrapper: ({ children }) => (
-          <RecoveryLoaderContext.Provider value={{ state: [data] } as any}> {children}</RecoveryLoaderContext.Provider>
+          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
         ),
       })
 
@@ -264,7 +264,7 @@ describe('useRecoveryTxState', () => {
 
       const { result } = renderHook(() => useRecoveryTxState(data[0].queue[1] as any), {
         wrapper: ({ children }) => (
-          <RecoveryLoaderContext.Provider value={{ state: [data] } as any}> {children}</RecoveryLoaderContext.Provider>
+          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
         ),
       })
 
@@ -307,7 +307,7 @@ describe('useRecoveryTxState', () => {
 
       const { result } = renderHook(() => useRecoveryTxState(data[0].queue[1] as any), {
         wrapper: ({ children }) => (
-          <RecoveryLoaderContext.Provider value={{ state: [data] } as any}> {children}</RecoveryLoaderContext.Provider>
+          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
         ),
       })
 
@@ -350,7 +350,7 @@ describe('useRecoveryTxState', () => {
 
       const { result } = renderHook(() => useRecoveryTxState(data[0].queue[1] as any), {
         wrapper: ({ children }) => (
-          <RecoveryLoaderContext.Provider value={{ state: [data] } as any}> {children}</RecoveryLoaderContext.Provider>
+          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
         ),
       })
 

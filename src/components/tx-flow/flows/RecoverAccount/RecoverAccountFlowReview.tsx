@@ -24,7 +24,7 @@ import { TxModalContext } from '../..'
 import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
 import { getCountdown } from '@/utils/date'
-import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
+import { RecoveryContext } from '@/components/recovery/RecoveryContext'
 import type { RecoverAccountFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -41,9 +41,11 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const onboard = useOnboard()
-  const [data] = useContext(RecoveryLoaderContext).state
+  const {
+    refetch,
+    state: [data],
+  } = useContext(RecoveryContext)
   const recovery = data && selectDelayModifierByGuardian(data, wallet?.address ?? '')
-  const { refetch } = useContext(RecoveryLoaderContext)
 
   // Proposal
   const txCooldown = recovery?.txCooldown?.toNumber()

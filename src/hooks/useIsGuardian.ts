@@ -1,11 +1,9 @@
-import { useContext } from 'react'
-
 import { selectDelayModifierByGuardian } from '@/services/recovery/selectors'
 import useWallet from './wallets/useWallet'
-import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
 
 export function useIsGuardian() {
-  const [data] = useContext(RecoveryLoaderContext).state
+  const [recovery] = useRecovery()
   const wallet = useWallet()
-  return !wallet?.address || !data || !selectDelayModifierByGuardian(data, wallet.address)
+  return !wallet?.address || !recovery || !selectDelayModifierByGuardian(recovery, wallet.address)
 }

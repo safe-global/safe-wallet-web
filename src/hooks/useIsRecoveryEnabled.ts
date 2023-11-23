@@ -1,8 +1,6 @@
-import { useContext } from 'react'
-
-import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
 
 export function useIsRecoveryEnabled(): boolean {
-  const [data] = useContext(RecoveryLoaderContext).state
-  return !!data && data.length > 0
+  const [recovery] = useRecovery()
+  return !!recovery && recovery.length > 0
 }

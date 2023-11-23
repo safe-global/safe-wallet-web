@@ -1,7 +1,8 @@
-import { createContext, useEffect } from 'react'
+import { createContext, useContext, useEffect } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { BigNumber } from 'ethers'
+
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { sameAddress } from '@/utils/addresses'
 import { getTxDetails } from '@/services/tx/txDetails'
@@ -31,7 +32,7 @@ export type RecoveryStateItem = {
 export type RecoveryState = Array<RecoveryStateItem>
 
 // State of current Safe, populated on load
-export const RecoveryLoaderContext = createContext<{
+export const RecoveryContext = createContext<{
   state: AsyncResult<RecoveryState>
   refetch: () => void
 }>({
@@ -39,7 +40,7 @@ export const RecoveryLoaderContext = createContext<{
   refetch: () => {},
 })
 
-export function RecoveryLoaderProvider({ children }: { children: ReactNode }): ReactElement {
+export function RecoveryProvider({ children }: { children: ReactNode }): ReactElement {
   const { safe } = useSafeInfo()
 
   const [delayModifiers, delayModifiersError, delayModifiersLoading] = useDelayModifiers()
@@ -80,8 +81,10 @@ export function RecoveryLoaderProvider({ children }: { children: ReactNode }): R
   const loading = delayModifiersLoading || recoveryStateLoading
 
   return (
-    <RecoveryLoaderContext.Provider value={{ state: [data, error, loading], refetch }}>
-      {children}
-    </RecoveryLoaderContext.Provider>
+    <RecoveryContext.Provider value={{ state: [data, error, loading], refetch }}>{children}</RecoveryContext.Provider>
   )
+}
+
+export function useRecovery(): AsyncResult<RecoveryState> {
+  return useContext(RecoveryContext).state
 }

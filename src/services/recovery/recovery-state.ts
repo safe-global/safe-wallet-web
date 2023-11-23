@@ -13,7 +13,7 @@ import { trimTrailingSlash } from '@/utils/url'
 import { sameAddress } from '@/utils/addresses'
 import { isMultiSendCalldata } from '@/utils/transaction-calldata'
 import { decodeMultiSendTxs } from '@/utils/transactions'
-import type { RecoveryQueueItem, RecoveryState, RecoveryStateItem } from '@/components/recovery/RecoveryLoaderContext'
+import type { RecoveryQueueItem, RecoveryState, RecoveryStateItem } from '@/components/recovery/RecoveryContext'
 
 const MAX_PAGE_SIZE = 100
 

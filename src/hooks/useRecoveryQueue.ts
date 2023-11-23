@@ -1,13 +1,11 @@
-import { useContext } from 'react'
-
 import { selectRecoveryQueues } from '@/services/recovery/selectors'
 import { useClock } from './useClock'
-import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 export function useRecoveryQueue(): Array<RecoveryQueueItem> {
-  const [data] = useContext(RecoveryLoaderContext).state
-  const queue = data && selectRecoveryQueues(data)
+  const [recovery] = useRecovery()
+  const queue = recovery && selectRecoveryQueues(recovery)
   const clock = useClock()
 
   if (!queue) {

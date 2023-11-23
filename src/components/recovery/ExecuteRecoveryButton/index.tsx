@@ -10,8 +10,8 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import { Errors, logError } from '@/services/exceptions'
-import { RecoveryLoaderContext } from '../RecoveryLoaderContext'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
+import { RecoveryContext } from '../RecoveryContext'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 export function ExecuteRecoveryButton({
   recovery,
@@ -23,7 +23,7 @@ export function ExecuteRecoveryButton({
   const { isExecutable } = useRecoveryTxState(recovery)
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
-  const { refetch } = useContext(RecoveryLoaderContext)
+  const { refetch } = useContext(RecoveryContext)
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()

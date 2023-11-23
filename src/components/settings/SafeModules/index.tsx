@@ -8,7 +8,7 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useContext, useState } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
-import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
 import { selectDelayModifierByAddress } from '@/services/recovery/selectors'
 import { ConfirmRemoveRecoveryModal } from '../Recovery/ConfirmRemoveRecoveryModal'
 
@@ -25,8 +25,8 @@ const NoModules = () => {
 const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name?: string }) => {
   const { setTxFlow } = useContext(TxModalContext)
   const [confirmRemoveRecovery, setConfirmRemoveRecovery] = useState(false)
-  const [data] = useContext(RecoveryLoaderContext).state
-  const delayModifier = data && selectDelayModifierByAddress(data, moduleAddress)
+  const [recovery] = useRecovery()
+  const delayModifier = recovery && selectDelayModifierByAddress(recovery, moduleAddress)
 
   const onRemove = () => {
     if (delayModifier) {

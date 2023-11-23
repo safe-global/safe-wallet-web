@@ -8,7 +8,7 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import EditIcon from '@/public/images/common/edit.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { ConfirmRemoveRecoveryModal } from './ConfirmRemoveRecoveryModal'
-import type { RecoveryStateItem } from '@/components/recovery/RecoveryLoaderContext'
+import type { RecoveryStateItem } from '@/components/recovery/RecoveryContext'
 
 export function DelayModifierRow({ delayModifier }: { delayModifier: RecoveryStateItem }): ReactElement | null {
   const { setTxFlow } = useContext(TxModalContext)

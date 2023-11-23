@@ -10,7 +10,7 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { chainBuilder } from '@/tests/builders/chains'
 import { addressExBuilder, safeInfoBuilder } from '@/tests/builders/safe'
 import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
-import { RecoveryLoaderContext, RecoveryLoaderProvider } from '..'
+import { RecoveryContext, RecoveryProvider } from '..'
 import { getTxDetails } from '@/services/tx/txDetails'
 
 jest.mock('@/services/recovery/delay-modifier')
@@ -30,7 +30,7 @@ const mockUseCurrentChain = useCurrentChain as jest.MockedFunction<typeof useCur
 const mockUseHasFeature = useHasFeature as jest.MockedFunction<typeof useHasFeature>
 const mockGetTxDetails = getTxDetails as jest.MockedFunction<typeof getTxDetails>
 
-describe('RecoveryLoaderContext', () => {
+describe('RecoveryContext', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
@@ -54,15 +54,15 @@ describe('RecoveryLoaderContext', () => {
     mockGetDelayModifiers.mockResolvedValue(delayModifiers as any)
 
     function Test() {
-      const { refetch } = useContext(RecoveryLoaderContext)
+      const { refetch } = useContext(RecoveryContext)
 
       return <button onClick={refetch}>Refetch</button>
     }
 
     const { queryByText } = render(
-      <RecoveryLoaderProvider>
+      <RecoveryProvider>
         <Test />
-      </RecoveryLoaderProvider>,
+      </RecoveryProvider>,
     )
 
     await waitFor(() => {
@@ -98,9 +98,9 @@ describe('RecoveryLoaderContext', () => {
     mockGetTxDetails.mockResolvedValue({ txData: { to: { value: delayModifierAddress } } } as any)
 
     render(
-      <RecoveryLoaderProvider>
+      <RecoveryProvider>
         <></>
-      </RecoveryLoaderProvider>,
+      </RecoveryProvider>,
     )
 
     await waitFor(() => {
