@@ -44,9 +44,8 @@ runs:
       run: yarn serve &
 
     - uses: cypress-io/github-action@v4
-      run: |
-        npx cypress run --reporter "junit" --reporter-options "mochaFile=reports/junit-[hash].xml,testsuitesTitle=Root Suite"
       with:
+        command: npx cypress run --reporter junit --reporter-options mochaFile=reports/junit-[hash].xml
         spec: ${{ inputs.spec }}
         group: ${{ inputs.group }}
         parallel: true
