@@ -136,13 +136,6 @@ export async function _getEditRecoveryTransactions({
     (oldGuardian) => !newGuardians.some((newGuardian) => sameAddress(newGuardian, oldGuardian)),
   )
 
-  for (const guardianToAdd of guardiansToAdd) {
-    const enableModule = delayModifierContract.interface.encodeFunctionData('enableModule', [guardianToAdd])
-    txData.push(enableModule)
-
-    // Need not add guardian to cache as not relevant for prevModule
-  }
-
   for (const guardianToRemove of guardiansToRemove) {
     const prevModule = (() => {
       const guardianIndex = _guardians.findIndex((guardian) => sameAddress(guardian, guardianToRemove))
@@ -156,6 +149,13 @@ export async function _getEditRecoveryTransactions({
 
     // Remove guardian from cache
     _guardians = _guardians.filter((guardian) => !sameAddress(guardian, guardianToRemove))
+  }
+
+  for (const guardianToAdd of guardiansToAdd) {
+    const enableModule = delayModifierContract.interface.encodeFunctionData('enableModule', [guardianToAdd])
+    txData.push(enableModule)
+
+    // Need not add guardian to cache as not relevant for prevModule
   }
 
   return txData.map((data) => ({
