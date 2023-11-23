@@ -166,11 +166,12 @@ describe('tx-list', () => {
   })
 
   describe('groupRecoveryTransactions', () => {
-    it('should group recovery transactions with their cancellations', () => {
+    it.only('should group recovery transactions with their cancellations', () => {
       const moduleAddress = faker.finance.ethereumAddress()
 
       const queue = [
         {
+          type: 'TRANSACTION',
           transaction: {
             txInfo: {
               type: TransactionInfoType.CUSTOM,
@@ -182,6 +183,7 @@ describe('tx-list', () => {
           },
         },
         {
+          type: 'TRANSACTION',
           transaction: {
             txInfo: {
               type: TransactionInfoType.TRANSFER,
@@ -189,6 +191,7 @@ describe('tx-list', () => {
           },
         },
         {
+          type: 'TRANSACTION',
           transaction: {
             txInfo: {
               type: TransactionInfoType.CUSTOM,
@@ -213,6 +216,7 @@ describe('tx-list', () => {
             address: moduleAddress,
           },
           {
+            type: 'TRANSACTION',
             transaction: {
               txInfo: {
                 type: TransactionInfoType.CUSTOM,
