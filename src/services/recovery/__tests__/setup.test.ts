@@ -356,8 +356,8 @@ describe('getEditRecoveryTransactions', () => {
 
       expect(mockEncodeFunctionData).toHaveBeenCalledTimes(2)
 
-      expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(1, 'enableModule', [newGuardians[1]])
-      expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(2, 'disableModule', [guardians[1], guardians[2]])
+      expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(1, 'disableModule', [guardians[1], guardians[2]])
+      expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(2, 'enableModule', [newGuardians[1]])
 
       expect(transactions[0]).toEqual({
         to: moduleAddress,
