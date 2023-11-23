@@ -35,6 +35,14 @@ export interface ISocialWalletService {
   isMFAEnabled(): boolean
 
   /**
+   * Enables MFA by removing the SFA factor and adding a device share
+   */
+  enableMFA(): Promise<void>
+
+  /**
+   * Sets or updates the recovery password.
+   *
+   * If MFA is not enabled yet, it will also enable MFA
    * Enables MFA and stores a device share with 2 factors:
    * - one factor encrypted with the password
    * - one factor encrypted with a key in the local storage of the browser
@@ -42,7 +50,7 @@ export interface ISocialWalletService {
    * @param oldPassword required if MFA is already enabled
    * @param newPassword new password to set
    */
-  enableMFA(oldPassword: string | undefined, newPassword: string): Promise<void>
+  upsertPassword(oldPassword: string | undefined, newPassword: string): Promise<void>
 
   isRecoveryPasswordSet(): boolean
 
@@ -57,4 +65,6 @@ export interface ISocialWalletService {
   isSmsOtpEnabled(): boolean
 
   getSmsRecoveryNumber(): string | undefined
+
+  recoverAccountWithSms(number: string, code: string, storeDeviceShare: boolean): Promise<boolean>
 }

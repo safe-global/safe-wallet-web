@@ -22,6 +22,7 @@ import css from './styles.module.css'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import { obfuscateNumber } from '@/utils/phoneNumber'
+import { asError } from '@/services/exceptions/utils'
 
 enum SmsOtpFieldNames {
   mobileNumber = 'mobileNumber',
@@ -58,9 +59,13 @@ const SmsMfaForm = () => {
   }, [socialWalletService])
 
   const onRegister = async () => {
-    const mobileNumber = getValues(SmsOtpFieldNames.mobileNumber)
-    if (await socialWalletService?.registerSmsOtp(mobileNumber)) {
-      setVerificationStarted(true)
+    try {
+      const mobileNumber = getValues(SmsOtpFieldNames.mobileNumber)
+      if (await socialWalletService?.registerSmsOtp(mobileNumber)) {
+        setVerificationStarted(true)
+      }
+    } catch (err) {
+      setSubmitError(`Error registering this phone number: ${asError(err).message}`)
     }
   }
 

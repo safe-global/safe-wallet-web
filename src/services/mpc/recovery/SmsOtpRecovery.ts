@@ -1,9 +1,8 @@
-import { getPubKeyPoint, toPrivKeyEC } from '@tkey-mpc/common-types'
+import { toPrivKeyEC } from '@tkey-mpc/common-types'
 import {
   BrowserStorage,
   FactorKeyTypeShareDescription,
   generateFactorKey,
-  Point,
   TssShareType,
   type Web3AuthMPCCoreKit,
 } from '@web3auth/mpc-core-kit'
@@ -75,16 +74,19 @@ export class SmsOtpRecovery {
   }
 
   isEnabled(): boolean {
-    const shareDescriptions = Object.values(this.mpcCoreKit.getKeyDetails().shareDescriptions).map((i) =>
-      (i || [])[0] ? JSON.parse(i[0]) : {},
-    )
+    try {
+      const shareDescriptions = Object.values(this.mpcCoreKit.getKeyDetails().shareDescriptions).map((i) =>
+        (i || [])[0] ? JSON.parse(i[0]) : {},
+      )
 
-    console.log('Current Descriptions', shareDescriptions)
-    return shareDescriptions.some(
-      (shareDescription) =>
-        shareDescription.module === FactorKeyTypeShareDescription.Other &&
-        shareDescription.moduleName === SMS_OTP_MODULE_NAME,
-    )
+      return shareDescriptions.some(
+        (shareDescription) =>
+          shareDescription.module === FactorKeyTypeShareDescription.Other &&
+          shareDescription.moduleName === SMS_OTP_MODULE_NAME,
+      )
+    } catch (err) {
+      return false
+    }
   }
 
   getSmsRecoveryNumber(): string | undefined {
@@ -97,6 +99,17 @@ export class SmsOtpRecovery {
         shareDescription.module === FactorKeyTypeShareDescription.Other &&
         shareDescription.moduleName === SMS_OTP_MODULE_NAME,
     )?.number
+  }
+
+  getRecoveryPubKey(): string {
+    if (this.mpcCoreKit.tKey.privKey) {
+      const privKey = toPrivKeyEC(this.mpcCoreKit.tKey.privKey)
+      const pubKey = privKey.getPublic()
+      return `${pubKey.getX().toString(16, 64)}${pubKey.getY().toString(16, 64)}`
+    }
+
+    const pubKey = this.mpcCoreKit.tKey.metadata.pubKey
+    return `${pubKey.x.toString(16, 64)}${pubKey.y.toString(16, 64)}`
   }
 
   async registerDevice(mobileNumber: string): Promise<boolean> {
@@ -137,23 +150,22 @@ export class SmsOtpRecovery {
       }
     })
 
-    console.log('Device register request: ', response)
-
     return response.success === true
   }
 
   async startVerification() {
     const currentStorage = BrowserStorage.getInstance('mpc_corekit_store')
     const tracking_id = currentStorage.get('sms_tracking_id')
-    const privKey = toPrivKeyEC(this.mpcCoreKit.tKey.privKey)
-    const pubKey = privKey.getPublic()
+    const pubKey = this.getRecoveryPubKey()
+    if (!pubKey) {
+      throw new Error('Could not find public key for recovery')
+    }
     const data: IStartRequestBody = {
-      address: `${pubKey.getX().toString(16, 64)}${pubKey.getY().toString(16, 64)}`,
+      address: pubKey,
       client_id: SOCIAL_WALLET_OPTIONS.web3AuthClientId,
     }
 
     if (typeof tracking_id === 'string') {
-      console.log('Reusing existing verification process')
       data.tracking_id = tracking_id
     }
 
@@ -167,11 +179,13 @@ export class SmsOtpRecovery {
       if (resp.ok) {
         return resp.json()
       } else {
-        throw new Error('Invalid register request')
+        if (resp.status === 429) {
+          throw new Error('Rate limit exceeded. Try again later')
+        }
+        throw new Error('Registration process could not be started.')
       }
     })
 
-    console.log('Start verification response', response)
     if ('tracking_id' in response) {
       currentStorage.set('sms_tracking_id', response.tracking_id)
     }
@@ -183,11 +197,10 @@ export class SmsOtpRecovery {
     if (typeof tracking_id !== 'string') {
       return false
     }
-    const privKey = toPrivKeyEC(this.mpcCoreKit.tKey.privKey)
-    const pubKey = privKey.getPublic()
+    const pubKey = this.getRecoveryPubKey()
 
     const data: IVerifyRequestBody = {
-      address: `${pubKey.getX().toString(16, 64)}${pubKey.getY().toString(16, 64)}`,
+      address: pubKey,
       client_id: SOCIAL_WALLET_OPTIONS.web3AuthClientId,
       code,
       tracking_id,
@@ -213,27 +226,25 @@ export class SmsOtpRecovery {
       }
     })
 
-    console.log('Verify response', response)
-
     // if successfull, add this factorKey and share info in tkey instance.
     const storedFactorKey = JSON.parse(response.data)?.factorKey
     if (storedFactorKey) {
       const newFactorKey = new BN(storedFactorKey, 'hex')
-      const tkeyPt = getPubKeyPoint(newFactorKey)
-      const factorPub = Point.fromTkeyPoint(tkeyPt).toBufferSEC1(true).toString('hex')
-
-      const storeData: SmsOtpStoreData = {
-        number,
-        moduleName: SMS_OTP_MODULE_NAME,
+      if (isFirstTime) {
+        const storeData: SmsOtpStoreData = {
+          number,
+          moduleName: SMS_OTP_MODULE_NAME,
+        }
+        await this.mpcCoreKit.createFactor({
+          shareType: TssShareType.DEVICE,
+          factorKey: newFactorKey,
+          shareDescription: FactorKeyTypeShareDescription.Other,
+          additionalMetadata: storeData,
+        })
+      } else {
+        await this.mpcCoreKit.inputFactorKey(newFactorKey)
       }
-      await this.mpcCoreKit.createFactor({
-        shareType: TssShareType.DEVICE,
-        factorKey: newFactorKey,
-        shareDescription: FactorKeyTypeShareDescription.Other,
-        additionalMetadata: storeData,
-      })
 
-      this.mpcCoreKit.commitChanges()
       currentStorage.remove('sms_tracking_id')
       return true
     }

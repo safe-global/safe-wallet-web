@@ -38,7 +38,7 @@ class SocialWalletService implements ISocialWalletService {
     return this.securityQuestionRecovery.isEnabled()
   }
 
-  async enableMFA(oldPassword: string | undefined, newPassword: string): Promise<void> {
+  async upsertPassword(oldPassword: string | undefined, newPassword: string): Promise<void> {
     try {
       // 1. setup device factor with password recovery
       await this.securityQuestionRecovery.upsertPassword(newPassword, oldPassword)
@@ -47,13 +47,24 @@ class SocialWalletService implements ISocialWalletService {
         throw Error('Problem setting up the new password')
       }
 
+      // 2. enable MFA
       if (!this.isMFAEnabled()) {
         trackEvent({ ...MPC_WALLET_EVENTS.ENABLE_MFA, label: 'password' })
-        // 2. enable MFA in mpcCoreKit
-        await this.mpcCoreKit.enableMFA({}, false)
+        await this.enableMFA()
       }
 
+      // 3. commit
       await this.mpcCoreKit.commitChanges()
+    } catch (e) {
+      const error = asError(e)
+      logError(ErrorCodes._304, error.message)
+      throw error
+    }
+  }
+
+  async enableMFA(): Promise<void> {
+    try {
+      await this.mpcCoreKit.enableMFA({}, false)
     } catch (e) {
       const error = asError(e)
       logError(ErrorCodes._304, error.message)
@@ -138,6 +149,25 @@ class SocialWalletService implements ISocialWalletService {
     return this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
   }
 
+  async recoverAccountWithSms(number: string, code: string, storeDeviceShare: boolean = false) {
+    debugger
+    if (this.smsRecovery.isEnabled()) {
+      const success = await this.smsRecovery.verifyNumber(number, code, false)
+      if (success) {
+        if (storeDeviceShare) {
+          await this.deviceShareRecovery.createAndStoreDeviceFactor()
+        }
+        await this.finalizeLogin()
+      }
+    }
+
+    if (this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
+      trackEvent({ ...MPC_WALLET_EVENTS.RECOVERED_SOCIAL_SIGNER, label: 'sms' })
+    }
+
+    return this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
+  }
+
   isSmsOtpEnabled(): boolean {
     return this.smsRecovery.isEnabled()
   }
@@ -147,14 +177,24 @@ class SocialWalletService implements ISocialWalletService {
   }
 
   async registerSmsOtp(mobileNumber: string): Promise<boolean> {
-    await this.smsRecovery.registerDevice(mobileNumber)
+    if (!this.smsRecovery.isEnabled()) {
+      await this.smsRecovery.registerDevice(mobileNumber)
+    }
     await this.smsRecovery.startVerification()
     return true
   }
 
-  verifySmsOtp(number: string, code: string): Promise<boolean> {
-    // TODO: Check if this is the first time
-    return this.smsRecovery.verifyNumber(number, code, true)
+  async verifySmsOtp(number: string, code: string): Promise<boolean> {
+    const success = await this.smsRecovery.verifyNumber(number, code, !this.smsRecovery.isEnabled())
+
+    if (success) {
+      if (!this.isMFAEnabled()) {
+        await this.enableMFA()
+      }
+      await this.mpcCoreKit.commitChanges()
+    }
+
+    return success
   }
 
   async exportSignerKey(password: string): Promise<string> {

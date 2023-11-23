@@ -10,47 +10,53 @@ import {
   LinearProgress,
   FormControl,
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Track from '@/components/common/Track'
 import { FormProvider, useForm } from 'react-hook-form'
-import PasswordInput from '@/components/settings/SecurityLogin/PasswordMfaForm/PasswordInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 
 import css from './styles.module.css'
+import NumberField from '../NumberField'
 
-type PasswordFormData = {
-  password: string
+type SmsFormData = {
+  code: string
 }
 
-export const PasswordRecovery = ({
-  recoverFactorWithPassword,
+export const SmsRecovery = ({
+  recoverFactorWithSms,
+  sendSmsCode,
   onSuccess,
   onBack,
 }: {
-  recoverFactorWithPassword: (password: string, storeDeviceFactor: boolean) => Promise<void>
+  recoverFactorWithSms: (code: string, storeDeviceFactor: boolean) => Promise<void>
+  sendSmsCode: () => Promise<void>
   onSuccess?: (() => void) | undefined
   onBack: () => void
 }) => {
   const [storeDeviceFactor, setStoreDeviceFactor] = useState(false)
 
-  const formMethods = useForm<PasswordFormData>({
+  const formMethods = useForm<SmsFormData>({
     mode: 'all',
     defaultValues: {
-      password: '',
+      code: '',
     },
   })
+
+  useEffect(() => {
+    sendSmsCode()
+  }, [sendSmsCode])
 
   const { handleSubmit, formState } = formMethods
 
   const [error, setError] = useState<string>()
 
-  const onSubmit = async (data: PasswordFormData) => {
+  const onSubmit = async (data: SmsFormData) => {
     setError(undefined)
     try {
-      await recoverFactorWithPassword(data.password, storeDeviceFactor)
+      await recoverFactorWithSms(data.code, storeDeviceFactor)
       onSuccess?.()
     } catch (e) {
-      setError('Incorrect password')
+      setError('Incorrect Code')
     }
   }
 
@@ -71,20 +77,20 @@ export const PasswordRecovery = ({
               />
               <Box p={4}>
                 <Typography variant="h6" fontWeight="bold" mb={0.5}>
-                  Enter security password
+                  Enter recovery code
                 </Typography>
                 <Typography>
-                  This browser is not registered with your Account yet. Please enter your recovery password to restore
-                  access to this Account.
+                  This browser is not registered with your Account yet. Please enter the recovery code sent to your
+                  phone to recover your social signer.
                 </Typography>
               </Box>
               <Divider />
               <Box className={css.passwordWrapper}>
                 <FormControl fullWidth>
-                  <PasswordInput
-                    name="password"
-                    label="Recovery password"
-                    helperText={formState.errors['password']?.message}
+                  <NumberField
+                    name="code"
+                    label="Recovery code"
+                    helperText={formState.errors['code']?.message}
                     disabled={isDisabled}
                     required
                   />
@@ -100,7 +106,7 @@ export const PasswordRecovery = ({
               </Box>
 
               <Divider />
-              <Box p={4} display="flex" justifyContent="space-between">
+              <Box p={4} display="flex" alignItems="center" justifyContent="space-between">
                 <Button variant="outlined" onClick={onBack}>
                   Back
                 </Button>
