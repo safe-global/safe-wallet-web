@@ -72,6 +72,7 @@ export const NetworkFee = ({
         <Typography variant="body2">
           Your account is sponsored by
           <Image
+            data-testid="sponsor-icon"
             src={SPONSOR_LOGOS[chain?.chainId || '']}
             alt={chain?.chainName || ''}
             width={16}
@@ -180,7 +181,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           <ReviewRow
             name="Owners"
             value={
-              <Box className={css.ownersArray}>
+              <Box data-testid="review-step-owner-info" className={css.ownersArray}>
                 {data.owners.map((owner, index) => (
                   <EthHashInfo
                     address={owner.address}
@@ -224,7 +225,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           </Grid>
         )}
 
-        <Grid container spacing={3}>
+        <Grid data-testid="network-fee-section" container spacing={3}>
           <ReviewRow
             name="Est. network fee"
             value={
@@ -248,10 +249,22 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
       <Box className={layoutCss.row}>
         <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-          <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
+          <Button
+            data-testid="back-btn"
+            variant="outlined"
+            size="small"
+            onClick={handleBack}
+            startIcon={<ArrowBackIcon fontSize="small" />}
+          >
             Back
           </Button>
-          <Button onClick={createSafe} variant="contained" size="stretched" disabled={isDisabled}>
+          <Button
+            data-testid="review-step-next-btn"
+            onClick={createSafe}
+            variant="contained"
+            size="stretched"
+            disabled={isDisabled}
+          >
             Next
           </Button>
         </Box>

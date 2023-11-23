@@ -64,7 +64,7 @@ const StatusMessage = ({ status, isError }: { status: SafeCreationStatus; isErro
 
   return (
     <>
-      <Box paddingX={3} mt={3}>
+      <Box data-testid="safe-status-info" paddingX={3} mt={3}>
         <LoadingSpinner status={spinnerStatus} />
         <Typography variant="h6" marginTop={2} fontWeight={700}>
           {stepInfo.description}
