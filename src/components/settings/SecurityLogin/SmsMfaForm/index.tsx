@@ -23,6 +23,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import { obfuscateNumber } from '@/utils/phoneNumber'
 import { asError } from '@/services/exceptions/utils'
+import CodeInput from '@/components/common/CodeInput'
 
 enum SmsOtpFieldNames {
   mobileNumber = 'mobileNumber',
@@ -52,7 +53,7 @@ const SmsMfaForm = () => {
     },
   })
 
-  const { formState, handleSubmit, reset, watch, register, getValues } = formMethods
+  const { formState, handleSubmit, reset, watch, register, getValues, setValue } = formMethods
 
   const isSmsOtpSet = useMemo(() => {
     return socialWalletService?.isSmsOtpEnabled()
@@ -128,16 +129,13 @@ const SmsMfaForm = () => {
                     />
                   </FormControl>
                   {verificationStarted && (
-                    <FormControl fullWidth>
-                      <TextField
-                        placeholder="Verification code"
-                        label="Verification Code"
-                        helperText={formState.errors[SmsOtpFieldNames.verificationCode]?.message}
-                        {...register(SmsOtpFieldNames.verificationCode, {
-                          required: true,
-                        })}
+                    <Box>
+                      <Typography variant="h4">Verification Code</Typography>
+                      <CodeInput
+                        length={6}
+                        onCodeChanged={(code: string) => setValue(SmsOtpFieldNames.verificationCode, code)}
                       />
-                    </FormControl>
+                    </Box>
                   )}
 
                   {submitError && <Alert severity="error">{submitError}</Alert>}

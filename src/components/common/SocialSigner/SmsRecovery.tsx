@@ -1,22 +1,12 @@
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import {
-  Typography,
-  FormControlLabel,
-  Checkbox,
-  Button,
-  Box,
-  Divider,
-  Grid,
-  LinearProgress,
-  FormControl,
-} from '@mui/material'
+import { Typography, FormControlLabel, Checkbox, Button, Box, Divider, Grid, LinearProgress } from '@mui/material'
 import { useEffect, useState } from 'react'
 import Track from '@/components/common/Track'
 import { FormProvider, useForm } from 'react-hook-form'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 
 import css from './styles.module.css'
-import NumberField from '../NumberField'
+import CodeInput from '../CodeInput'
 
 type SmsFormData = {
   code: string
@@ -46,7 +36,7 @@ export const SmsRecovery = ({
     sendSmsCode()
   }, [sendSmsCode])
 
-  const { handleSubmit, formState } = formMethods
+  const { handleSubmit, formState, setValue } = formMethods
 
   const [error, setError] = useState<string>()
 
@@ -86,15 +76,14 @@ export const SmsRecovery = ({
               </Box>
               <Divider />
               <Box className={css.passwordWrapper}>
-                <FormControl fullWidth>
-                  <NumberField
-                    name="code"
-                    label="Recovery code"
-                    helperText={formState.errors['code']?.message}
-                    disabled={isDisabled}
-                    required
-                  />
-                </FormControl>
+                <CodeInput
+                  length={6}
+                  onCodeChanged={(code: string) => {
+                    setValue('code', code)
+                    alert('CODE ' + code)
+                  }}
+                />
+
                 <FormControlLabel
                   disabled={isDisabled}
                   control={
