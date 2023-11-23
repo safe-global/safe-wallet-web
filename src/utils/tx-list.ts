@@ -1,5 +1,9 @@
+import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Transaction, TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
+
 import { isConflictHeaderListItem, isNoneConflictType, isTransactionListItem } from '@/utils/transaction-guards'
+import { sameAddress } from './addresses'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 type GroupedTxs = Array<TransactionListItem | Transaction[]>
 
@@ -27,6 +31,36 @@ export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => 
       }
       return item
     })
+}
+
+export function _getRecoveryCancellations(moduleAddress: string, transactions: Array<Transaction>) {
+  const CANCELLATION_TX_METHOD_NAME = 'setTxNonce'
+
+  return transactions.filter(({ transaction }) => {
+    const { txInfo } = transaction
+    return (
+      txInfo.type === TransactionInfoType.CUSTOM &&
+      sameAddress(txInfo.to.value, moduleAddress) &&
+      txInfo.methodName === CANCELLATION_TX_METHOD_NAME
+    )
+  })
+}
+
+export function groupRecoveryTransactions(queue: Array<TransactionListItem>, recoveryQueue: Array<RecoveryQueueItem>) {
+  const transactions = queue.filter(isTransactionListItem)
+
+  return recoveryQueue.reduce<Array<Array<Transaction | RecoveryQueueItem>>>((acc, item) => {
+    acc.push([item])
+
+    const cancellations = _getRecoveryCancellations(item.address, transactions)
+
+    if (cancellations.length > 0) {
+      const prevItem = acc[acc.length - 1]
+      prevItem.push(...cancellations)
+    }
+
+    return acc
+  }, [])
 }
 
 export const getLatestTransactions = (list: TransactionListItem[] = []): Transaction[] => {
