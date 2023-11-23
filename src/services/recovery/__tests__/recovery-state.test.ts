@@ -6,7 +6,7 @@ import type { Delay, TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/ty
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import {
-  getRecoveryState,
+  _getRecoveryStateItem,
   _getRecoveryQueueItemTimestamps,
   _getSafeCreationReceipt,
   _isMaliciousRecovery,
@@ -389,7 +389,7 @@ describe('recovery-state', () => {
         queryFilter: queryFilterMock.mockImplementation(() => Promise.resolve(transactionsAdded)),
       }
 
-      const recoveryState = await getRecoveryState({
+      const recoveryState = await _getRecoveryStateItem({
         delayModifier: delayModifier as unknown as Delay,
         safeAddress,
         transactionService,
@@ -468,7 +468,7 @@ describe('recovery-state', () => {
         queryFilter: queryFilterMock.mockRejectedValue('Not required'),
       }
 
-      const recoveryState = await getRecoveryState({
+      const recoveryState = await _getRecoveryStateItem({
         delayModifier: delayModifier as unknown as Delay,
         safeAddress,
         transactionService,

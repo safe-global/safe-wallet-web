@@ -8,7 +8,7 @@ import { safeInfoBuilder } from '@/tests/builders/safe'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import * as safeInfo from '@/hooks/useSafeInfo'
 import { _useDidDismissProposal } from './index'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 describe('RecoveryModal', () => {
   describe('component', () => {

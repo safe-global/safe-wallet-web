@@ -15,7 +15,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
 import { PendingRecoveryListItem } from './PendingRecoveryListItem'
 import type { SafeInfo, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 const MAX_TXS = 4
 

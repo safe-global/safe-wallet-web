@@ -1,15 +1,17 @@
 import { useClock } from './useClock'
-import { useAppSelector } from '@/store'
-import { selectDelayModifierByTxHash } from '@/store/recoverySlice'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import { selectDelayModifierByTxHash } from '@/services/recovery/selectors'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
+import { sameAddress } from '@/utils/addresses'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
-export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args }: RecoveryQueueItem): {
+export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args, address }: RecoveryQueueItem): {
   isNext: boolean
   isExecutable: boolean
   isExpired: boolean
   remainingSeconds: number
 } {
-  const recovery = useAppSelector((state) => selectDelayModifierByTxHash(state, transactionHash))
+  const [recovery] = useRecovery()
+  const delayModifier = recovery && selectDelayModifierByTxHash(recovery, transactionHash)
 
   // We don't display seconds in the interface, so we can use a 60s interval
   const timestamp = useClock(60_000)
@@ -17,7 +19,10 @@ export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args
 
   const isValid = remainingMs.lte(0)
   const isExpired = expiresAt ? expiresAt.toNumber() <= Date.now() : false
-  const isNext = recovery ? args.queueNonce.eq(recovery.txNonce) : false
+
+  // Check module address in case multiple Delay Modifiers enabled
+  const isNext =
+    !delayModifier || (sameAddress(delayModifier.address, address) && args.queueNonce.eq(delayModifier.txNonce))
   const isExecutable = isNext && isValid && !isExpired
 
   const remainingSeconds = isValid ? 0 : Math.ceil(remainingMs.div(1_000).toNumber())

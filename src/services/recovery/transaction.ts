@@ -7,7 +7,7 @@ import { sameAddress } from '@/utils/addresses'
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import type { AddressEx, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 export function getRecoveryProposalTransactions({

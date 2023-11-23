@@ -13,7 +13,7 @@ import { trimTrailingSlash } from '@/utils/url'
 import { sameAddress } from '@/utils/addresses'
 import { isMultiSendCalldata } from '@/utils/transaction-calldata'
 import { decodeMultiSendTxs } from '@/utils/transactions'
-import type { RecoveryQueueItem, RecoveryState } from '@/store/recoverySlice'
+import type { RecoveryQueueItem, RecoveryState, RecoveryStateItem } from '@/components/recovery/RecoveryContext'
 
 const MAX_PAGE_SIZE = 100
 
@@ -173,7 +173,7 @@ const getRecoveryQueueItem = async ({
   }
 }
 
-export const getRecoveryState = async ({
+export const _getRecoveryStateItem = async ({
   delayModifier,
   transactionService,
   safeAddress,
@@ -187,7 +187,7 @@ export const getRecoveryState = async ({
   provider: JsonRpcProvider
   chainId: string
   version: SafeInfo['version']
-}): Promise<RecoveryState[number]> => {
+}): Promise<RecoveryStateItem> => {
   const [[guardians], txExpiration, txCooldown, txNonce, queueNonce] = await Promise.all([
     delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_PAGE_SIZE),
     delayModifier.txExpiration(),
@@ -229,4 +229,18 @@ export const getRecoveryState = async ({
     queueNonce,
     queue: queue.filter((item) => !item.removed),
   }
+}
+
+export function getRecoveryState({
+  delayModifiers,
+  ...rest
+}: {
+  delayModifiers: Array<Delay>
+  transactionService: string
+  safeAddress: string
+  provider: JsonRpcProvider
+  chainId: string
+  version: SafeInfo['version']
+}): Promise<RecoveryState> {
+  return Promise.all(delayModifiers.map((delayModifier) => _getRecoveryStateItem({ delayModifier, ...rest })))
 }

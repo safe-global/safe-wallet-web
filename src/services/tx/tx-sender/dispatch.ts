@@ -238,7 +238,10 @@ export const dispatchBatchExecution = async (
 
       if (didReprice(error)) {
         txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, { txId, safeAddress })
+          txDispatch(TxEvent.PROCESSED, {
+            txId,
+            safeAddress,
+          })
         })
       } else {
         txs.forEach(({ txId }) => {
@@ -405,18 +408,34 @@ export const dispatchBatchExecutionRelay = async (
   )
 }
 
+function reloadRecoveryDataAfterProcessed(tx: ContractTransaction, refetchRecoveryData: () => void) {
+  tx.wait()
+    .then((receipt) => {
+      if (!didRevert(receipt)) {
+        refetchRecoveryData()
+      }
+    })
+    .catch((error) => {
+      if (didReprice(error)) {
+        refetchRecoveryData()
+      }
+    })
+}
+
 export async function dispatchRecoveryProposal({
   onboard,
   safe,
   newThreshold,
   newOwners,
   delayModifierAddress,
+  refetchRecoveryData,
 }: {
   onboard: OnboardAPI
   safe: SafeInfo
   newThreshold: number
   newOwners: Array<AddressEx>
   delayModifierAddress: string
+  refetchRecoveryData: () => void
 }) {
   const wallet = await assertWalletChain(onboard, safe.chainId)
   const provider = createWeb3(wallet.provider)
@@ -430,7 +449,13 @@ export async function dispatchRecoveryProposal({
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
 
   const signer = provider.getSigner()
-  await delayModifier.connect(signer).execTransactionFromModule(to, value, data, OperationType.Call)
+
+  delayModifier
+    .connect(signer)
+    .execTransactionFromModule(to, value, data, OperationType.Call)
+    .then((result) => {
+      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
+    })
 }
 
 export async function dispatchRecoveryExecution({
@@ -438,11 +463,13 @@ export async function dispatchRecoveryExecution({
   chainId,
   args,
   delayModifierAddress,
+  refetchRecoveryData,
 }: {
   onboard: OnboardAPI
   chainId: string
   args: TransactionAddedEvent['args']
   delayModifierAddress: string
+  refetchRecoveryData: () => void
 }) {
   const wallet = await assertWalletChain(onboard, chainId)
   const provider = createWeb3(wallet.provider)
@@ -450,5 +477,11 @@ export async function dispatchRecoveryExecution({
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
 
   const signer = provider.getSigner()
-  await delayModifier.connect(signer).executeNextTx(args.to, args.value, args.data, args.operation)
+
+  delayModifier
+    .connect(signer)
+    .executeNextTx(args.to, args.value, args.data, args.operation)
+    .then((result) => {
+      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
+    })
 }

@@ -17,14 +17,14 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { createMultiSendCallOnlyTx, createTx, dispatchRecoveryProposal } from '@/services/tx/tx-sender'
 import { RecoverAccountFlowFields } from '.'
 import { OwnerList } from '../../common/OwnerList'
-import { useAppSelector } from '@/store'
-import { selectDelayModifierByGuardian } from '@/store/recoverySlice'
+import { selectDelayModifierByGuardian } from '@/services/recovery/selectors'
 import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '../..'
 import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
 import { getCountdown } from '@/utils/date'
+import { RecoveryContext } from '@/components/recovery/RecoveryContext'
 import type { RecoverAccountFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -41,7 +41,11 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const onboard = useOnboard()
-  const recovery = useAppSelector((state) => selectDelayModifierByGuardian(state, wallet?.address ?? ''))
+  const {
+    refetch,
+    state: [data],
+  } = useContext(RecoveryContext)
+  const recovery = data && selectDelayModifierByGuardian(data, wallet?.address ?? '')
 
   // Proposal
   const txCooldown = recovery?.txCooldown?.toNumber()
@@ -71,7 +75,14 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
     setSubmitError(undefined)
 
     try {
-      await dispatchRecoveryProposal({ onboard, safe, newThreshold, newOwners, delayModifierAddress: recovery.address })
+      await dispatchRecoveryProposal({
+        onboard,
+        safe,
+        newThreshold,
+        newOwners,
+        delayModifierAddress: recovery.address,
+        refetchRecoveryData: refetch,
+      })
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._810, err)
