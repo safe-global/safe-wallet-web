@@ -37,4 +37,9 @@ export const TX_EVENTS = {
     category: TX_CATEGORY,
     // label: TX_TYPES,
   },
+  CONFIRM: {
+    event: EventType.META,
+    action: 'Confirm transaction',
+    category: TX_CATEGORY,
+  },
 }
