@@ -25,3 +25,31 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
           spec: cypress/e2e/smoke/*.cy.js
           group: 'Smoke tests'
+
+      - name: Python setup
+        if: always()
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+
+      - name: Install junitparser
+        run: |
+          pip install junitparser
+
+      - name: Merge JUnit reports for TestRail
+        run: |
+          junitparser merge --suite-name "Root Suite" --glob "reports/junit-*" "reports/junit-report.xml"
+
+      - name: TestRail CLI upload results
+        if: always()
+        run: |
+          pip install trcli
+          trcli -y \
+          -h https://gno.testrail.io/ \
+          --project "Safe- Web App" \
+          --username ${{ secrets.TESTRAIL_USERNAME }} \
+          --password ${{ secrets.TESTRAIL_PASSWORD }} \
+          parse_junit \
+          --title "Automated Tests, branch: ${GITHUB_REF_NAME}" \
+          --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
+          -f "reports/junit-report.xml"
