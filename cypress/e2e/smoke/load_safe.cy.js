@@ -18,7 +18,7 @@ const INVALID_ADDRESS_ERROR_MSG = 'Address given is not a valid Safe address'
 const OWNER_ENS_DEFAULT_NAME = 'test20.eth'
 const OWNER_ADDRESS = constants.EOA
 
-describe('Load Safe tests', () => {
+describe('[SMOKE] Load Safe tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.loadNewSafeSepoliaUrl)
@@ -88,7 +88,7 @@ describe('Load Safe tests', () => {
     safe.clickOnAddBtn()
   })
 
-  it('Verify the custom Safe name is successfully loaded', () => {
+  it('[SMOKE] Verify the custom Safe name is successfully loaded', () => {
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_2)
     safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)
