@@ -4,7 +4,7 @@ import TxLayout from '../../common/TxLayout'
 import { CancelRecoveryFlowReview } from './CancelRecoveryFlowReview'
 import { CancelRecoveryOverview } from './CancelRecoveryOverview'
 import useTxStepper from '../../useTxStepper'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function CancelRecoveryFlow({ recovery }: { recovery: RecoveryQueueItem }): ReactElement {
   const { step, nextStep, prevStep } = useTxStepper<undefined>(undefined)

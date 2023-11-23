@@ -11,7 +11,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import { Errors, logError } from '@/services/exceptions'
 import { RecoveryContext } from '../RecoveryContext'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function ExecuteRecoveryButton({
   recovery,

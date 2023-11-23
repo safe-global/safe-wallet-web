@@ -7,7 +7,7 @@ import { Countdown } from '@/components/common/Countdown'
 import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { AppRoutes } from '@/config/routes'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 import css from './styles.module.css'
 

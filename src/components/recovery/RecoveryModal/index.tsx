@@ -13,7 +13,7 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { sameAddress } from '@/utils/addresses'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function _RecoveryModal({
   children,

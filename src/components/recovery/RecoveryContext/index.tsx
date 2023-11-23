@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect } from 'react'
 import type { ReactElement, ReactNode } from 'react'
-import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
-import type { BigNumber } from 'ethers'
 
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { sameAddress } from '@/utils/addresses'
@@ -10,26 +8,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryState } from './useRecoveryState'
 import { useDelayModifiers } from './useDelayModifiers'
 import type { AsyncResult } from '@/hooks/useAsync'
-
-export type RecoveryQueueItem = TransactionAddedEvent & {
-  timestamp: BigNumber
-  validFrom: BigNumber
-  expiresAt: BigNumber | null
-  isMalicious: boolean
-  executor: string
-}
-
-export type RecoveryStateItem = {
-  address: string
-  guardians: Array<string>
-  txExpiration: BigNumber
-  txCooldown: BigNumber
-  txNonce: BigNumber
-  queueNonce: BigNumber
-  queue: Array<RecoveryQueueItem>
-}
-
-export type RecoveryState = Array<RecoveryStateItem>
+import type { RecoveryState } from '@/services/recovery/recovery-state'
 
 // State of current Safe, populated on load
 export const RecoveryContext = createContext<{

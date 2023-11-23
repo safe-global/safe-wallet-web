@@ -8,7 +8,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getRecoverySkipTransaction } from '@/services/recovery/transaction'
 import { createTx } from '@/services/tx/tx-sender'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function CancelRecoveryFlowReview({ recovery }: { recovery: RecoveryQueueItem }): ReactElement {
   const web3ReadOnly = useWeb3ReadOnly()

@@ -7,7 +7,7 @@ import {
   selectDelayModifierByTxHash,
   selectDelayModifierByAddress,
 } from '../selectors'
-import type { RecoveryStateItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
 
 describe('selectors', () => {
   describe('selectDelayModifierByGuardian', () => {

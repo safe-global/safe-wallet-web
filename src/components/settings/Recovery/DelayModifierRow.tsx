@@ -9,7 +9,7 @@ import EditIcon from '@/public/images/common/edit.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { ConfirmRemoveRecoveryModal } from './ConfirmRemoveRecoveryModal'
 import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
-import type { RecoveryStateItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
 
 export function DelayModifierRow({ delayModifier }: { delayModifier: RecoveryStateItem }): ReactElement | null {
   const { setTxFlow } = useContext(TxModalContext)

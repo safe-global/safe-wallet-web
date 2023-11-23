@@ -9,7 +9,7 @@ import { RecoveryInfo } from '@/components/recovery/RecoveryInfo'
 import { RecoveryStatus } from '@/components/recovery/RecoveryStatus'
 import { RecoveryType } from '@/components/recovery/RecoveryType'
 import { AppRoutes } from '@/config/routes'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 import css from './styles.module.css'
 

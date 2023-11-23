@@ -7,7 +7,7 @@ import { UpsertRecoveryFlowReview as UpsertRecoveryFlowReview } from './UpsertRe
 import { UpsertRecoveryFlowSettings as UpsertRecoveryFlowSettings } from './UpsertRecoveryFlowSettings'
 import { UpsertRecoveryFlowIntro as UpsertRecoveryFlowIntro } from './UpsertRecoveryFlowIntro'
 import { DAY_IN_SECONDS } from './useRecoveryPeriods'
-import type { RecoveryState } from '@/components/recovery/RecoveryContext'
+import type { RecoveryState } from '@/services/recovery/recovery-state'
 
 const Subtitles = ['How does recovery work?', 'Set up recovery settings', 'Set up account recovery']
 

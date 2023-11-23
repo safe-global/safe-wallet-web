@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import type { RecoveryState } from '@/components/recovery/RecoveryContext'
 import { sameAddress } from '@/utils/addresses'
+import type { RecoveryState } from '@/services/recovery/recovery-state'
 
 // Identity function to help with type inference
 function selectRecovery<T extends RecoveryState | undefined>(state: T): T {

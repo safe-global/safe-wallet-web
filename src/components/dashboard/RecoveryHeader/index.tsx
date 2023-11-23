@@ -10,7 +10,7 @@ import { RecoveryProposalCard } from '@/components/recovery/RecoveryCards/Recove
 import { RecoveryInProgressCard } from '@/components/recovery/RecoveryCards/RecoveryInProgressCard'
 import { WidgetContainer, WidgetBody } from '../styled'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function _RecoveryHeader({
   isGuardian,

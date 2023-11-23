@@ -15,7 +15,7 @@ import type { ReactElement } from 'react'
 import AlertIcon from '@/public/images/notifications/alert.svg'
 import { TxModalContext } from '@/components/tx-flow'
 import { RemoveRecoveryFlow } from '@/components/tx-flow/flows/RemoveRecovery'
-import type { RecoveryStateItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
 
 export function ConfirmRemoveRecoveryModal({
   open,

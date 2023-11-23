@@ -8,7 +8,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useIntervalCounter from '@/hooks/useIntervalCounter'
 import { getRecoveryState } from '@/services/recovery/recovery-state'
 import type { AsyncResult } from '@/hooks/useAsync'
-import type { RecoveryState } from '.'
+import type { RecoveryState } from '@/services/recovery/recovery-state'
 
 const REFRESH_DELAY = 5 * 60 * 1_000 // 5 minutes
 

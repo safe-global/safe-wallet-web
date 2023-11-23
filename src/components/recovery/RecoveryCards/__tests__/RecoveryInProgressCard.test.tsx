@@ -4,7 +4,7 @@ import { fireEvent, waitFor } from '@testing-library/react'
 import { render } from '@/tests/test-utils'
 import { RecoveryInProgressCard } from '../RecoveryInProgressCard'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 jest.mock('@/hooks/useRecoveryTxState')
 

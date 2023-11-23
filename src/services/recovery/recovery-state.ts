@@ -13,9 +13,28 @@ import { trimTrailingSlash } from '@/utils/url'
 import { sameAddress } from '@/utils/addresses'
 import { isMultiSendCalldata } from '@/utils/transaction-calldata'
 import { decodeMultiSendTxs } from '@/utils/transactions'
-import type { RecoveryQueueItem, RecoveryState, RecoveryStateItem } from '@/components/recovery/RecoveryContext'
 
 export const MAX_GUARDIAN_PAGE_SIZE = 100
+
+export type RecoveryQueueItem = TransactionAddedEvent & {
+  timestamp: BigNumber
+  validFrom: BigNumber
+  expiresAt: BigNumber | null
+  isMalicious: boolean
+  executor: string
+}
+
+export type RecoveryStateItem = {
+  address: string
+  guardians: Array<string>
+  txExpiration: BigNumber
+  txCooldown: BigNumber
+  txNonce: BigNumber
+  queueNonce: BigNumber
+  queue: Array<RecoveryQueueItem>
+}
+
+export type RecoveryState = Array<RecoveryStateItem>
 
 export function _isMaliciousRecovery({
   chainId,

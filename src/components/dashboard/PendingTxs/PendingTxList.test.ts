@@ -5,7 +5,7 @@ import type { MultisigExecutionInfo, Transaction } from '@safe-global/safe-gatew
 
 import { safeInfoBuilder } from '@/tests/builders/safe'
 import { _getTransactionsToDisplay } from './PendingTxsList'
-import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 describe('_getTransactionsToDisplay', () => {
   it('should return the recovery queue if it has more than or equal to MAX_TXS items', () => {
