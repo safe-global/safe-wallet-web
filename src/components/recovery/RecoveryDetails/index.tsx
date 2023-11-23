@@ -12,7 +12,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { RecoverySigners } from '../RecoverySigners'
 import { Errors, logError } from '@/services/exceptions'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
 import summaryCss from '@/components/transactions/TxDetails/Summary/styles.module.css'
@@ -61,7 +61,9 @@ export function RecoveryDetails({ item }: { item: RecoveryQueueItem }): ReactEle
               </div>
             </InfoDetails>
           ) : (
-            <ErrorMessage>This transaction potentially calls malicious actions. We recommend skipping it.</ErrorMessage>
+            <ErrorMessage>
+              This transaction potentially calls malicious actions. We recommend cancelling it.
+            </ErrorMessage>
           )}
         </div>
 

@@ -7,9 +7,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
 import { DelayModifierRow } from './DelayModifierRow'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { useAppSelector } from '@/store'
-import { selectRecovery } from '@/store/recoverySlice'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -70,11 +68,10 @@ const headCells = [
 // TODO: Combine section with spending limits under "Security & Login" as per design
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
-  const recovery = useAppSelector(selectRecovery)
-  const isOwner = useIsSafeOwner()
+  const [recovery] = useRecovery()
 
   const rows = useMemo(() => {
-    return recovery.flatMap((delayModifier) => {
+    return recovery?.flatMap((delayModifier) => {
       const { guardians, txCooldown, txExpiration } = delayModifier
 
       return guardians.map((guardian) => {
@@ -139,7 +136,7 @@ export function Recovery(): ReactElement {
             Enabling the Account recovery module will require a transactions.
           </Typography>
 
-          {recovery.length === 0 ? (
+          {recovery?.length === 0 ? (
             <>
               <Alert severity="info">
                 Unhappy with the provided option? {/* TODO: Add link */}
@@ -160,9 +157,9 @@ export function Recovery(): ReactElement {
                 )}
               </CheckWallet>
             </>
-          ) : (
+          ) : rows ? (
             <EnhancedTable rows={rows} headCells={headCells} />
-          )}
+          ) : null}
         </Grid>
       </Grid>
     </Paper>

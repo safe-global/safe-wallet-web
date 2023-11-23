@@ -15,7 +15,7 @@ import type { ReactElement } from 'react'
 import AlertIcon from '@/public/images/notifications/alert.svg'
 import { TxModalContext } from '@/components/tx-flow'
 import { RemoveRecoveryFlow } from '@/components/tx-flow/flows/RemoveRecovery'
-import type { RecoveryState } from '@/store/recoverySlice'
+import type { RecoveryStateItem } from '@/components/recovery/RecoveryContext'
 
 export function ConfirmRemoveRecoveryModal({
   open,
@@ -24,7 +24,7 @@ export function ConfirmRemoveRecoveryModal({
 }: {
   open: boolean
   onClose: () => void
-  delayModifier: RecoveryState[number]
+  delayModifier: RecoveryStateItem
 }): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
 

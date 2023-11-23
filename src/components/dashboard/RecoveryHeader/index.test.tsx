@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 
 import { _RecoveryHeader } from '.'
 import { render } from '@/tests/test-utils'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 describe('RecoveryHeader', () => {
   it('should not render a widget if the chain does not support recovery', () => {

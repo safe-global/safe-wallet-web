@@ -1,11 +1,16 @@
-import { useAppSelector } from '@/store'
-import { selectRecoveryQueues } from '@/store/recoverySlice'
+import { selectRecoveryQueues } from '@/services/recovery/selectors'
 import { useClock } from './useClock'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 export function useRecoveryQueue(): Array<RecoveryQueueItem> {
-  const queue = useAppSelector(selectRecoveryQueues)
+  const [recovery] = useRecovery()
+  const queue = recovery && selectRecoveryQueues(recovery)
   const clock = useClock()
+
+  if (!queue) {
+    return []
+  }
 
   return queue.filter(({ expiresAt }) => {
     return expiresAt ? expiresAt.gt(clock) : true

@@ -7,8 +7,7 @@ import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Chip } from '@/components/common/Chip'
 import { TxModalContext } from '@/components/tx-flow'
 import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
-import { useAppSelector } from '@/store'
-import { selectRecovery } from '@/store/recoverySlice'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import CheckWallet from '@/components/common/CheckWallet'
@@ -20,7 +19,7 @@ import css from './styles.module.css'
 export function Recovery(): ReactElement {
   const router = useRouter()
   const { setTxFlow } = useContext(TxModalContext)
-  const recovery = useAppSelector(selectRecovery)
+  const [recovery] = useRecovery()
   const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
 
   const onEnable = () => {
@@ -59,7 +58,7 @@ export function Recovery(): ReactElement {
               {supportsRecovery && (
                 <CheckWallet>
                   {(isOk) => {
-                    if (recovery.length === 0) {
+                    if (!recovery || recovery.length === 0) {
                       return (
                         <Button variant="contained" disabled={!isOk} onClick={onEnable}>
                           Set up recovery

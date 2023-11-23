@@ -5,10 +5,10 @@ import RecoveryPlus from '@/public/images/common/recovery-plus.svg'
 import useTxStepper from '../../useTxStepper'
 import { RemoveRecoveryFlowOverview } from './RemoveRecoveryFlowOverview'
 import { RemoveRecoveryFlowReview } from './RemoveRecoveryFlowReview'
-import type { RecoveryState } from '@/store/recoverySlice'
+import type { RecoveryStateItem } from '@/components/recovery/RecoveryContext'
 
 export type RecoveryFlowProps = {
-  delayModifier: RecoveryState[number]
+  delayModifier: RecoveryStateItem
 }
 
 export function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactElement {

@@ -9,9 +9,9 @@ import EditIcon from '@/public/images/common/edit.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { ConfirmRemoveRecoveryModal } from './ConfirmRemoveRecoveryModal'
 import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
-import type { RecoveryState } from '@/store/recoverySlice'
+import type { RecoveryStateItem } from '@/components/recovery/RecoveryContext'
 
-export function DelayModifierRow({ delayModifier }: { delayModifier: RecoveryState[number] }): ReactElement | null {
+export function DelayModifierRow({ delayModifier }: { delayModifier: RecoveryStateItem }): ReactElement | null {
   const { setTxFlow } = useContext(TxModalContext)
   const isOwner = useIsSafeOwner()
   const [confirm, setConfirm] = useState(false)

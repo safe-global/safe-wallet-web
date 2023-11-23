@@ -1,0 +1,72 @@
+/* Settings */
+
+.display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-background-main);
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  padding: var(--space-1);
+  padding-left: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.email {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  position: relative;
+}
+
+.blur {
+  backdrop-filter: blur(6px);
+  border-radius: 6px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(100% + var(--space-3));
+  width: calc(100% + var(--space-6));
+  transform: translate(calc(var(--space-2) * -1), calc(calc(var(--space-1) * 1.5) * -1));
+}
+
+.buttons {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.button {
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border-light);
+  background-color: var(--color-background-paper);
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+}
+
+/* Dialog */
+
+.dialog :global(.MuiDialog-paper) {
+  max-width: 500px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  padding-top: var(--space-3);
+}
+
+.close {
+  color: var(--color-text-secondary);
+  margin-left: auto;
+}
+
+.content {
+  padding: var(--space-2) var(--space-3) var(--space-4);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-3);
+}
