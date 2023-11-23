@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { getDelayModifiers } from '@/services/recovery/delay-modifier'
+import { getRecoveryDelayModifiers } from '@/services/recovery/delay-modifier'
 import { getRecoveryState } from '@/services/recovery/recovery-state'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { chainBuilder } from '@/tests/builders/chains'
@@ -16,7 +16,7 @@ import { getTxDetails } from '@/services/tx/txDetails'
 jest.mock('@/services/recovery/delay-modifier')
 jest.mock('@/services/recovery/recovery-state')
 
-const mockGetDelayModifiers = getDelayModifiers as jest.MockedFunction<typeof getDelayModifiers>
+const mockGetRecoveryDelayModifiers = getRecoveryDelayModifiers as jest.MockedFunction<typeof getRecoveryDelayModifiers>
 const mockGetRecoveryState = getRecoveryState as jest.MockedFunction<typeof getRecoveryState>
 
 jest.mock('@/hooks/useSafeInfo')
@@ -51,7 +51,7 @@ describe('RecoveryContext', () => {
     const chain = chainBuilder().build()
     mockUseCurrentChain.mockReturnValue(chain)
     const delayModifiers = [{}]
-    mockGetDelayModifiers.mockResolvedValue(delayModifiers as any)
+    mockGetRecoveryDelayModifiers.mockResolvedValue(delayModifiers as any)
 
     function Test() {
       const { refetch } = useContext(RecoveryContext)
@@ -66,7 +66,7 @@ describe('RecoveryContext', () => {
     )
 
     await waitFor(() => {
-      expect(mockGetDelayModifiers).toHaveBeenCalledTimes(1)
+      expect(mockGetRecoveryDelayModifiers).toHaveBeenCalledTimes(1)
       expect(mockGetRecoveryState).toHaveBeenCalledTimes(1)
     })
 
@@ -78,7 +78,7 @@ describe('RecoveryContext', () => {
       expect(mockGetRecoveryState).toHaveBeenCalledTimes(2)
     })
 
-    expect(mockGetDelayModifiers).toHaveBeenCalledTimes(1)
+    expect(mockGetRecoveryDelayModifiers).toHaveBeenCalledTimes(1)
   })
 
   it('should refetch when interacting with a Delay Modifier', async () => {
@@ -94,7 +94,7 @@ describe('RecoveryContext', () => {
     const chain = chainBuilder().build()
     mockUseCurrentChain.mockReturnValue(chain)
     const delayModifierAddress = faker.finance.ethereumAddress()
-    mockGetDelayModifiers.mockResolvedValue([{ address: delayModifierAddress } as any])
+    mockGetRecoveryDelayModifiers.mockResolvedValue([{ address: delayModifierAddress } as any])
     mockGetTxDetails.mockResolvedValue({ txData: { to: { value: delayModifierAddress } } } as any)
 
     render(
@@ -104,7 +104,7 @@ describe('RecoveryContext', () => {
     )
 
     await waitFor(() => {
-      expect(mockGetDelayModifiers).toHaveBeenCalledTimes(1)
+      expect(mockGetRecoveryDelayModifiers).toHaveBeenCalledTimes(1)
       expect(mockGetRecoveryState).toHaveBeenCalledTimes(1)
     })
 
