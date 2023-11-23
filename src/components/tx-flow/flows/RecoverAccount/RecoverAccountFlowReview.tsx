@@ -53,6 +53,26 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const newThreshold = Number(params[RecoverAccountFlowFields.threshold])
   const newOwners = params[RecoverAccountFlowFields.owners]
 
+  const countdownPeriod = txCooldownCountdown
+    ? txCooldownCountdown.days > 0
+      ? txCooldownCountdown.days
+      : txCooldownCountdown.hours > 0
+      ? txCooldownCountdown.hours
+      : txCooldownCountdown.minutes > 0
+      ? txCooldownCountdown.minutes
+      : 0
+    : 0
+
+  const countdownUnit = txCooldownCountdown
+    ? txCooldownCountdown.days > 0
+      ? 'day'
+      : txCooldownCountdown.hours
+      ? 'hour'
+      : txCooldownCountdown.minutes
+      ? 'minute'
+      : ''
+    : ''
+
   useEffect(() => {
     const transactions = getRecoveryProposalTransactions({
       safe,
@@ -152,7 +172,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           Recovery will be{' '}
           {txCooldown === 0
             ? 'immediately possible'
-            : `possible ${txCooldownCountdown?.days} day${txCooldownCountdown?.days === 1 ? '' : 's'}`}{' '}
+            : `possible ${countdownPeriod} ${countdownUnit}${countdownPeriod === 1 ? '' : 's'}`}{' '}
           after this transaction is executed.
         </ErrorMessage>
 

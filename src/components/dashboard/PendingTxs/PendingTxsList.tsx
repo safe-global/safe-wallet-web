@@ -9,7 +9,7 @@ import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
 import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 import css from './styles.module.css'
-import { isSignableBy, isExecutable } from '@/utils/transaction-guards'
+import { isSignableBy, isExecutable, isRecoveryQueueItem } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
@@ -71,10 +71,6 @@ export function _getTransactionsToDisplay({
   const queueToDisplay = _queue.slice(0, MAX_TXS - recoveryQueue.length)
 
   return [...recoveryQueue, ...queueToDisplay]
-}
-
-function isRecoveryQueueItem(tx: Transaction | RecoveryQueueItem): tx is RecoveryQueueItem {
-  return 'args' in tx
 }
 
 const PendingTxsList = (): ReactElement | null => {
