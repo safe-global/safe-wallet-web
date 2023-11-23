@@ -69,8 +69,6 @@ export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()
 
-  console.log(recovery)
-
   const rows = useMemo(() => {
     return recovery?.flatMap((delayModifier) => {
       const { guardians, txCooldown, txExpiration } = delayModifier
