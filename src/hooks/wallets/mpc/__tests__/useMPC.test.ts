@@ -1,7 +1,8 @@
 import * as useOnboard from '@/hooks/wallets/useOnboard'
 import * as socialWalletOptions from '@/services/mpc/config'
-import { waitFor } from '@/tests/test-utils'
-import { _getMPCCoreKitInstance, initMPC, setMPCCoreKitInstance } from '../useMPC'
+import { renderHook, waitFor } from '@/tests/test-utils'
+import { _getMPCCoreKitInstance, setMPCCoreKitInstance, useInitMPC } from '../useMPC'
+import * as useChains from '@/hooks/useChains'
 import { type ChainInfo, RPC_AUTHENTICATION } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
@@ -62,55 +63,53 @@ class EventEmittingMockProvider {
   }
 }
 
-describe('initMPC', () => {
-  const mockOnboard = {
-    state: {
-      get: () => ({
-        wallets: [],
-        walletModules: [],
-      }),
-    },
-  } as unknown as OnboardAPI
-
-  const mockChain = {
-    chainId: '5',
-    chainName: 'Goerli',
-    blockExplorerUriTemplate: {
-      address: 'https://goerli.someprovider.io/{address}',
-      txHash: 'https://goerli.someprovider.io/{txHash}',
-      api: 'https://goerli.someprovider.io/',
-    },
-    nativeCurrency: {
-      decimals: 18,
-      logoUri: 'https://logo.goerli.com',
-      name: 'Goerli ETH',
-      symbol: 'ETH',
-    },
-    rpcUri: {
-      authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
-      value: 'https://goerli.somerpc.io',
-    },
-  } as unknown as ChainInfo
-
+describe('useInitMPC', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     jest.spyOn(socialWalletOptions, 'isSocialWalletOptions').mockReturnValue(true)
   })
-
   it('should set the coreKit if user is not logged in yet', async () => {
-    jest.spyOn(useOnboard, 'connectWallet').mockImplementation(() => Promise.resolve(undefined))
+    const connectWalletSpy = jest.fn().mockImplementation(() => Promise.resolve())
+    jest.spyOn(useOnboard, 'connectWallet').mockImplementation(connectWalletSpy)
     jest.spyOn(useOnboard, 'getConnectedWallet').mockReturnValue(null)
+    jest.spyOn(useOnboard, 'default').mockReturnValue({
+      state: {
+        get: () => ({
+          wallets: [],
+          walletModules: [],
+        }),
+      },
+    } as unknown as OnboardAPI)
+    jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({
+      chainId: '5',
+      chainName: 'Goerli',
+      blockExplorerUriTemplate: {
+        address: 'https://goerli.someprovider.io/{address}',
+        txHash: 'https://goerli.someprovider.io/{txHash}',
+        api: 'https://goerli.someprovider.io/',
+      },
+      nativeCurrency: {
+        decimals: 18,
+        logoUri: 'https://logo.goerli.com',
+        name: 'Goerli ETH',
+        symbol: 'ETH',
+      },
+      rpcUri: {
+        authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
+        value: 'https://goerli.somerpc.io',
+      },
+    } as unknown as ChainInfo)
 
     const mockWeb3AuthMpcCoreKit = jest.spyOn(require('@web3auth/mpc-core-kit'), 'Web3AuthMPCCoreKit')
     mockWeb3AuthMpcCoreKit.mockImplementation(() => {
       return new MockMPCCoreKit(COREKIT_STATUS.INITIALIZED, null)
     })
 
-    await initMPC(mockChain, mockOnboard)
+    renderHook(() => useInitMPC())
 
     await waitFor(() => {
       expect(_getMPCCoreKitInstance()).toBeDefined()
-      expect(useOnboard.connectWallet).not.toBeCalled()
+      expect(connectWalletSpy).not.toBeCalled()
     })
   })
 
@@ -118,6 +117,33 @@ describe('initMPC', () => {
     const connectWalletSpy = jest.fn().mockImplementation(() => Promise.resolve())
     jest.spyOn(useOnboard, 'connectWallet').mockImplementation(connectWalletSpy)
     jest.spyOn(useOnboard, 'getConnectedWallet').mockReturnValue(null)
+    jest.spyOn(useOnboard, 'default').mockReturnValue({
+      state: {
+        get: () => ({
+          wallets: [],
+          walletModules: [],
+        }),
+      },
+    } as unknown as OnboardAPI)
+    jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({
+      chainId: '5',
+      chainName: 'Goerli',
+      blockExplorerUriTemplate: {
+        address: 'https://goerli.someprovider.io/{address}',
+        txHash: 'https://goerli.someprovider.io/{txHash}',
+        api: 'https://goerli.someprovider.io/',
+      },
+      nativeCurrency: {
+        decimals: 18,
+        logoUri: 'https://logo.goerli.com',
+        name: 'Goerli ETH',
+        symbol: 'ETH',
+      },
+      rpcUri: {
+        authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
+        value: 'https://goerli.somerpc.io',
+      },
+    } as unknown as ChainInfo)
 
     const mockWeb3AuthMpcCoreKit = jest.spyOn(require('@web3auth/mpc-core-kit'), 'Web3AuthMPCCoreKit')
     const mockProvider = jest.fn()
@@ -125,7 +151,7 @@ describe('initMPC', () => {
       return new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, mockProvider as unknown as MPCProvider)
     })
 
-    await initMPC(mockChain, mockOnboard)
+    renderHook(() => useInitMPC())
 
     await waitFor(() => {
       expect(connectWalletSpy).toBeCalled()
@@ -134,13 +160,41 @@ describe('initMPC', () => {
   })
 
   it('should copy event handlers and emit chainChanged if the current chain is updated', async () => {
-    jest.spyOn(useOnboard, 'connectWallet').mockImplementation(() => Promise.resolve(undefined))
+    const connectWalletSpy = jest.fn().mockImplementation(() => Promise.resolve())
+    jest.spyOn(useOnboard, 'connectWallet').mockImplementation(connectWalletSpy)
     jest.spyOn(useOnboard, 'getConnectedWallet').mockReturnValue({
       address: hexZeroPad('0x1', 20),
       label: ONBOARD_MPC_MODULE_LABEL,
       chainId: '1',
       provider: {} as unknown as EIP1193Provider,
     })
+    jest.spyOn(useOnboard, 'default').mockReturnValue({
+      state: {
+        get: () => ({
+          wallets: [],
+          walletModules: [],
+        }),
+      },
+    } as unknown as OnboardAPI)
+    jest.spyOn(useChains, 'useCurrentChain').mockReturnValue({
+      chainId: '5',
+      chainName: 'Goerli',
+      blockExplorerUriTemplate: {
+        address: 'https://goerli.someprovider.io/{address}',
+        txHash: 'https://goerli.someprovider.io/{txHash}',
+        api: 'https://goerli.someprovider.io/',
+      },
+      nativeCurrency: {
+        decimals: 18,
+        logoUri: 'https://logo.goerli.com',
+        name: 'Goerli ETH',
+        symbol: 'ETH',
+      },
+      rpcUri: {
+        authentication: RPC_AUTHENTICATION.NO_AUTHENTICATION,
+        value: 'https://goerli.somerpc.io',
+      },
+    } as unknown as ChainInfo)
 
     const mockWeb3AuthMpcCoreKit = jest.spyOn(require('@web3auth/mpc-core-kit'), 'Web3AuthMPCCoreKit')
     const mockChainChangedListener = jest.fn()
@@ -161,12 +215,12 @@ describe('initMPC', () => {
       return new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, mockProvider as unknown as MPCProvider)
     })
 
-    await initMPC(mockChain, mockOnboard)
+    renderHook(() => useInitMPC())
 
     await waitFor(() => {
       expect(mockChainChangedListener).toHaveBeenCalledWith('0x5')
       expect(_getMPCCoreKitInstance()).toBeDefined()
-      expect(useOnboard.connectWallet).not.toBeCalled()
+      expect(connectWalletSpy).not.toBeCalled()
     })
   })
 })
