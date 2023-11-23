@@ -21,7 +21,7 @@ function Disclaimer({ isMalicious }: { isMalicious: boolean }): ReactElement {
         <Typography component="span" fontWeight={700}>
           Cancelling {isMalicious ? 'malicious transaction' : 'Account recovery'}.
         </Typography>{' '}
-        You can approve or reject the cancellation.{' '}
+        You will need to execute the cancellation.{' '}
         <ExternalLink
           // TODO: Add link
           href="#"
