@@ -7,10 +7,13 @@ import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Chip } from '@/components/common/Chip'
 import { TxModalContext } from '@/components/tx-flow'
 import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
+import { useIsRecoveryEnabled } from '@/hooks/useIsRecoveryEnabled'
+import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
 
 export function Recovery(): ReactElement {
+  const isRecoveryEnabled = useIsRecoveryEnabled()
   const { setTxFlow } = useContext(TxModalContext)
 
   const onClick = () => {
@@ -39,9 +42,16 @@ export function Recovery(): ReactElement {
               <Typography mt={1} mb={3}>
                 Ensure that you never lose access to your funds by choosing a guardian to recover your account.
               </Typography>
-              <Button variant="contained" onClick={onClick}>
-                Set up recovery
-              </Button>
+
+              {isRecoveryEnabled && (
+                <CheckWallet>
+                  {(isOk) => (
+                    <Button variant="contained" disabled={!isOk} onClick={onClick}>
+                      Set up recovery
+                    </Button>
+                  )}
+                </CheckWallet>
+              )}
             </Grid>
           </Grid>
         </Card>

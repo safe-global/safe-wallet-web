@@ -11,6 +11,7 @@ import {
   Tooltip,
 } from '@mui/material'
 import { useForm, FormProvider, useFieldArray, Controller } from 'react-hook-form'
+import { Fragment } from 'react'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
@@ -64,7 +65,7 @@ export function RecoverAccountFlowSetup({
 
           <Grid container spacing={3} direction="row">
             {fields.map((field, index) => (
-              <>
+              <Fragment key={index}>
                 <Grid item xs={11}>
                   <AddressBookInput
                     label={`Owner ${index + 1}`}
@@ -92,7 +93,7 @@ export function RecoverAccountFlowSetup({
                     </IconButton>
                   )}
                 </Grid>
-              </>
+              </Fragment>
             ))}
           </Grid>
 
