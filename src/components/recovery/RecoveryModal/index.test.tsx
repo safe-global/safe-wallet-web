@@ -8,6 +8,7 @@ import { safeInfoBuilder } from '@/tests/builders/safe'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import * as safeInfo from '@/hooks/useSafeInfo'
 import { _useDidDismissProposal } from './index'
+import { RecoveryContext } from '@/components/recovery/RecoveryContext'
 import type { RecoveryQueueItem } from '@/components/recovery/RecoveryContext'
 
 describe('RecoveryModal', () => {
@@ -27,9 +28,11 @@ describe('RecoveryModal', () => {
       const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
       const { queryByText } = render(
-        <_RecoveryModal wallet={wallet} isOwner={false} isGuardian={false} queue={queue}>
-          Test
-        </_RecoveryModal>,
+        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian={false} queue={queue}>
+            Test
+          </_RecoveryModal>
+        </RecoveryContext.Provider>,
       )
 
       expect(queryByText('Test')).toBeTruthy()
@@ -41,9 +44,11 @@ describe('RecoveryModal', () => {
       const queue = [] as Array<RecoveryQueueItem>
 
       const { queryByText } = render(
-        <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue}>
-          Test
-        </_RecoveryModal>,
+        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue}>
+            Test
+          </_RecoveryModal>
+        </RecoveryContext.Provider>,
       )
 
       expect(queryByText('Test')).toBeTruthy()
@@ -55,9 +60,11 @@ describe('RecoveryModal', () => {
       const queue = [] as Array<RecoveryQueueItem>
 
       const { queryByText } = render(
-        <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
-          Test
-        </_RecoveryModal>,
+        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
+            Test
+          </_RecoveryModal>
+        </RecoveryContext.Provider>,
       )
 
       expect(queryByText('Test')).toBeTruthy()
@@ -69,9 +76,11 @@ describe('RecoveryModal', () => {
       const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
       const { queryByText } = render(
-        <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue}>
-          Test
-        </_RecoveryModal>,
+        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue}>
+            Test
+          </_RecoveryModal>
+        </RecoveryContext.Provider>,
       )
 
       expect(queryByText('Test')).toBeTruthy()
@@ -83,9 +92,11 @@ describe('RecoveryModal', () => {
       const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
       const { queryByText } = render(
-        <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
-          Test
-        </_RecoveryModal>,
+        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
+            Test
+          </_RecoveryModal>
+        </RecoveryContext.Provider>,
       )
 
       expect(queryByText('Test')).toBeTruthy()
@@ -97,9 +108,11 @@ describe('RecoveryModal', () => {
       const queue = [] as Array<RecoveryQueueItem>
 
       const { queryByText } = render(
-        <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue}>
-          Test
-        </_RecoveryModal>,
+        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue}>
+            Test
+          </_RecoveryModal>
+        </RecoveryContext.Provider>,
       )
 
       expect(queryByText('Test')).toBeTruthy()
@@ -111,9 +124,11 @@ describe('RecoveryModal', () => {
       const queue = [] as Array<RecoveryQueueItem>
 
       const { queryByText } = render(
-        <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
-          Test
-        </_RecoveryModal>,
+        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
+            Test
+          </_RecoveryModal>
+        </RecoveryContext.Provider>,
       )
 
       expect(queryByText('Test')).toBeTruthy()
@@ -136,9 +151,11 @@ describe('RecoveryModal', () => {
       const queue = [{ validFrom: BigNumber.from(0), transactionHash: faker.string.hexadecimal() } as RecoveryQueueItem]
 
       const { queryByText } = render(
-        <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
-          Test
-        </_RecoveryModal>,
+        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
+            Test
+          </_RecoveryModal>
+        </RecoveryContext.Provider>,
       )
 
       expect(queryByText('Test')).toBeTruthy()
