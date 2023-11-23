@@ -15,7 +15,7 @@ import { isMultiSendCalldata } from '@/utils/transaction-calldata'
 import { decodeMultiSendTxs } from '@/utils/transactions'
 import type { RecoveryQueueItem, RecoveryState, RecoveryStateItem } from '@/components/recovery/RecoveryContext'
 
-const MAX_PAGE_SIZE = 100
+export const MAX_GUARDIAN_PAGE_SIZE = 100
 
 export function _isMaliciousRecovery({
   chainId,
@@ -189,7 +189,7 @@ export const _getRecoveryStateItem = async ({
   version: SafeInfo['version']
 }): Promise<RecoveryStateItem> => {
   const [[guardians], txExpiration, txCooldown, txNonce, queueNonce] = await Promise.all([
-    delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_PAGE_SIZE),
+    delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_GUARDIAN_PAGE_SIZE),
     delayModifier.txExpiration(),
     delayModifier.txCooldown(),
     delayModifier.txNonce(),

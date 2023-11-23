@@ -40,7 +40,7 @@ const RecoverySteps = [
   },
 ]
 
-export function EnableRecoveryFlowIntro({ onSubmit }: { onSubmit: () => void }): ReactElement {
+export function UpsertRecoveryFlowIntro({ onSubmit }: { onSubmit: () => void }): ReactElement {
   return (
     <TxCard>
       <Grid container display="flex" gap={4} className={css.connector}>

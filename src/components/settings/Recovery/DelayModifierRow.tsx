@@ -8,6 +8,7 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import EditIcon from '@/public/images/common/edit.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { ConfirmRemoveRecoveryModal } from './ConfirmRemoveRecoveryModal'
+import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 import type { RecoveryStateItem } from '@/components/recovery/RecoveryContext'
 
 export function DelayModifierRow({ delayModifier }: { delayModifier: RecoveryStateItem }): ReactElement | null {
@@ -20,8 +21,7 @@ export function DelayModifierRow({ delayModifier }: { delayModifier: RecoverySta
   }
 
   const onEdit = () => {
-    // TODO: Display flow
-    setTxFlow(undefined)
+    setTxFlow(<UpsertRecoveryFlow delayModifier={delayModifier} />)
   }
 
   const onDelete = () => {

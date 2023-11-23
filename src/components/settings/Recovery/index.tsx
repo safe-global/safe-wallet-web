@@ -2,7 +2,7 @@ import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@
 import { useContext, useMemo } from 'react'
 import type { ReactElement } from 'react'
 
-import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
+import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 import { TxModalContext } from '@/components/tx-flow'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -65,6 +65,7 @@ const headCells = [
   { id: HeadCells.Actions, label: '', sticky: true },
 ]
 
+// TODO: Combine section with spending limits under "Security & Login" as per design
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()
@@ -148,7 +149,7 @@ export function Recovery(): ReactElement {
                   <Button
                     variant="contained"
                     disabled={!isOk}
-                    onClick={() => setTxFlow(<EnableRecoveryFlow />)}
+                    onClick={() => setTxFlow(<UpsertRecoveryFlow />)}
                     sx={{ mt: 2 }}
                   >
                     Set up recovery

@@ -99,4 +99,24 @@ describe('selectors', () => {
       expect(selectDelayModifierByAddress(data, delayModifier3.address)).toStrictEqual(delayModifier3)
     })
   })
+
+  describe('selectDelayModifierByAddress', () => {
+    it('should return the Delay Modifier for the given txHash', () => {
+      const delayModifier1 = {
+        address: faker.finance.ethereumAddress(),
+      } as unknown as RecoveryStateItem
+
+      const delayModifier2 = {
+        address: faker.finance.ethereumAddress(),
+      } as unknown as RecoveryStateItem
+
+      const delayModifier3 = {
+        address: faker.finance.ethereumAddress(),
+      } as unknown as RecoveryStateItem
+
+      const data = [delayModifier1, delayModifier2, delayModifier3]
+
+      expect(selectDelayModifierByAddress(data, delayModifier2.address)).toStrictEqual(delayModifier2)
+    })
+  })
 })

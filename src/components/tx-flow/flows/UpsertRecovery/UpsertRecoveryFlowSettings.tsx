@@ -9,6 +9,7 @@ import {
   Collapse,
   Checkbox,
   FormControlLabel,
+  Tooltip,
 } from '@mui/material'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -18,32 +19,44 @@ import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
-import { EnableRecoveryFlowFields, RecoveryDelayPeriods, RecoveryExpirationPeriods } from '.'
+import { UpsertRecoveryFlowFields } from '.'
+import { useRecoveryPeriods } from './useRecoveryPeriods'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import CircleCheckIcon from '@/public/images/common/circle-check.svg'
 import { useDarkMode } from '@/hooks/useDarkMode'
-import type { EnableRecoveryFlowProps } from '.'
+import { sameAddress } from '@/utils/addresses'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import type { UpsertRecoveryFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 
-export function EnableRecoveryFlowSettings({
+export function UpsertRecoveryFlowSettings({
   params,
   onSubmit,
 }: {
-  params: EnableRecoveryFlowProps
-  onSubmit: (formData: EnableRecoveryFlowProps) => void
+  params: UpsertRecoveryFlowProps
+  onSubmit: (formData: UpsertRecoveryFlowProps) => void
 }): ReactElement {
-  const [showAdvanced, setShowAdvanced] = useState(params[EnableRecoveryFlowFields.txExpiration] !== '0')
+  const { safeAddress } = useSafeInfo()
+  const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.txExpiration] !== '0')
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const isDarkMode = useDarkMode()
+  const periods = useRecoveryPeriods()
 
-  const formMethods = useForm<EnableRecoveryFlowProps>({
+  const formMethods = useForm<UpsertRecoveryFlowProps>({
     defaultValues: params,
     mode: 'onChange',
   })
 
-  const emailAddress = formMethods.watch(EnableRecoveryFlowFields.emailAddress)
+  const validateGuardian = (guardian: string) => {
+    if (sameAddress(guardian, safeAddress)) {
+      return 'The Safe Account cannot be a guardian of itself'
+    }
+  }
+
+  const emailAddress = formMethods.watch(UpsertRecoveryFlowFields.emailAddress)
 
   const onShowAdvanced = () => setShowAdvanced((prev) => !prev)
 
@@ -63,11 +76,32 @@ export function EnableRecoveryFlowSettings({
               </Typography>
             </div>
 
-            <AddressBookInput label="Guardian address" name={EnableRecoveryFlowFields.guardians} required fullWidth />
+            <AddressBookInput
+              label="Guardian address"
+              name={UpsertRecoveryFlowFields.guardian}
+              required
+              fullWidth
+              validate={validateGuardian}
+            />
 
             <div>
               <Typography variant="h5" gutterBottom>
                 Recovery delay
+                <Tooltip
+                  placement="top"
+                  arrow
+                  title="The recovery delay begins after the recovery attempt is initiated"
+                >
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      fontSize="small"
+                      color="border"
+                      sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                    />
+                  </span>
+                </Tooltip>
               </Typography>
 
               <Typography variant="body2">
@@ -77,10 +111,10 @@ export function EnableRecoveryFlowSettings({
 
             <Controller
               control={formMethods.control}
-              name={EnableRecoveryFlowFields.txCooldown}
+              name={UpsertRecoveryFlowFields.txCooldown}
               render={({ field }) => (
                 <SelectField label="Recovery delay" fullWidth {...field}>
-                  {RecoveryDelayPeriods.map(({ label, value }, index) => (
+                  {periods.delay.map(({ label, value }, index) => (
                     <MenuItem key={index} value={value}>
                       {label}
                     </MenuItem>
@@ -100,12 +134,12 @@ export function EnableRecoveryFlowSettings({
 
               <Controller
                 control={formMethods.control}
-                name={EnableRecoveryFlowFields.txExpiration}
+                name={UpsertRecoveryFlowFields.txExpiration}
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field }) => (
                   <SelectField label="Transaction expiry" fullWidth {...field}>
-                    {RecoveryExpirationPeriods.map(({ label, value }, index) => (
+                    {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
                       </MenuItem>
@@ -134,7 +168,7 @@ export function EnableRecoveryFlowSettings({
 
             <Controller
               control={formMethods.control}
-              name={EnableRecoveryFlowFields.emailAddress}
+              name={UpsertRecoveryFlowFields.emailAddress}
               render={({ field }) => (
                 <TextField
                   label="Enter email address"

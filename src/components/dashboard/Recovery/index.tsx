@@ -6,18 +6,31 @@ import RecoveryLogo from '@/public/images/common/recovery.svg'
 import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Chip } from '@/components/common/Chip'
 import { TxModalContext } from '@/components/tx-flow'
-import { EnableRecoveryFlow } from '@/components/tx-flow/flows/EnableRecovery'
-import { useIsRecoveryEnabled } from '@/hooks/useIsRecoveryEnabled'
+import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 import CheckWallet from '@/components/common/CheckWallet'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 import css from './styles.module.css'
 
 export function Recovery(): ReactElement {
-  const isRecoveryEnabled = useIsRecoveryEnabled()
+  const router = useRouter()
   const { setTxFlow } = useContext(TxModalContext)
+  const [recovery] = useRecovery()
+  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
 
-  const onClick = () => {
-    setTxFlow(<EnableRecoveryFlow />)
+  const onEnable = () => {
+    setTxFlow(<UpsertRecoveryFlow />)
+  }
+
+  const onEdit = () => {
+    router.push({
+      pathname: AppRoutes.settings.recovery,
+      query: router.query,
+    })
   }
 
   return (
@@ -42,14 +55,23 @@ export function Recovery(): ReactElement {
               <Typography mt={1} mb={3}>
                 Ensure that you never lose access to your funds by choosing a guardian to recover your account.
               </Typography>
-
-              {isRecoveryEnabled && (
+              {supportsRecovery && (
                 <CheckWallet>
-                  {(isOk) => (
-                    <Button variant="contained" disabled={!isOk} onClick={onClick}>
-                      Set up recovery
-                    </Button>
-                  )}
+                  {(isOk) => {
+                    if (!recovery || recovery.length === 0) {
+                      return (
+                        <Button variant="contained" disabled={!isOk} onClick={onEnable}>
+                          Set up recovery
+                        </Button>
+                      )
+                    }
+
+                    return (
+                      <Button variant="contained" disabled={!isOk} onClick={onEdit}>
+                        Edit recovery
+                      </Button>
+                    )
+                  }}
                 </CheckWallet>
               )}
             </Grid>
