@@ -5,5 +5,5 @@ import { useRecovery } from '@/components/recovery/RecoveryContext'
 export function useIsGuardian() {
   const [recovery] = useRecovery()
   const wallet = useWallet()
-  return !wallet?.address || !recovery || !selectDelayModifierByGuardian(recovery, wallet.address)
+  return Boolean(wallet?.address && recovery && selectDelayModifierByGuardian(recovery, wallet.address))
 }
