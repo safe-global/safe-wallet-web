@@ -65,7 +65,6 @@ const headCells = [
   { id: HeadCells.Actions, label: '', sticky: true },
 ]
 
-// TODO: Combine section with spending limits under "Security & Login" as per design
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()

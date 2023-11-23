@@ -85,8 +85,8 @@ export const settingsNavItems = [
     href: AppRoutes.settings.appearance,
   },
   {
-    label: 'Recovery',
-    href: AppRoutes.settings.recovery,
+    label: 'Security & Login',
+    href: AppRoutes.settings.securityLogin,
   },
   {
     label: 'Notifications',
@@ -95,14 +95,6 @@ export const settingsNavItems = [
   {
     label: 'Modules',
     href: AppRoutes.settings.modules,
-  },
-  {
-    label: 'Spending limits',
-    href: AppRoutes.settings.spendingLimits,
-  },
-  {
-    label: 'Security & Login',
-    href: AppRoutes.settings.securityLogin,
   },
   {
     label: 'Safe Apps',

@@ -26,10 +26,8 @@ export const AppRoutes = {
     create: '/new-safe/create',
   },
   settings: {
-    spendingLimits: '/settings/spending-limits',
     setup: '/settings/setup',
     securityLogin: '/settings/security-login',
-    recovery: '/settings/recovery',
     notifications: '/settings/notifications',
     modules: '/settings/modules',
     index: '/settings',
