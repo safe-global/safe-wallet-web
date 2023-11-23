@@ -22,7 +22,6 @@ jobs:
 
       - uses: ./.github/workflows/cypress
         with:
-          command: npx cypress run --reporter "junit" --reporter-options "mochaFile=reports/junit-[hash].xml,testsuitesTitle=Root Suite"
           secrets: ${{ toJSON(secrets) }}
           spec: cypress/e2e/**/*.cy.js
           group: 'Regression on demand tests'
