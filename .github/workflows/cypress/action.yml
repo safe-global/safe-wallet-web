@@ -27,6 +27,7 @@ runs:
     - uses: ./.github/workflows/yarn
 
     - name: Install Cypress
+      shell: bash
       run: ./node_modules/.bin/cypress install
 
     - uses: ./.github/workflows/build
@@ -35,6 +36,7 @@ runs:
         e2e_mnemonic: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_CYPRESS_MNEMONIC }}
 
     - name: Serve
+      shell: bash
       run: yarn serve &
 
     - uses: cypress-io/github-action@v4
