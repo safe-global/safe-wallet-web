@@ -52,7 +52,7 @@ const TxPage = ({
 
       {page && page.results.length > 0 && <TxList items={page.results} />}
 
-      {isQueue && page?.results.length === 0 && recoveryQueue.lengh === 0 && !hasPending && <NoQueuedTxns />}
+      {isQueue && page?.results.length === 0 && recoveryQueue.length === 0 && !hasPending && <NoQueuedTxns />}
 
       {error && <ErrorMessage>Error loading transactions</ErrorMessage>}
 
