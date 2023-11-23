@@ -90,7 +90,6 @@ export const SocialSigner = ({
     }
   }
 
-  console.log('USER INFO:', userInfo)
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   return (
