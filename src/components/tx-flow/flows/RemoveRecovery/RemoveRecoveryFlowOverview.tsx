@@ -19,12 +19,12 @@ export function RemoveRecoveryFlowOverview({
       </Typography>
 
       <Typography variant="body2">
-        This guardian will not be able to start the initiate the recovery progress once this transaction is executed.
+        This Guardian will not be able to start the initiate the recovery progress once this transaction is executed.
       </Typography>
 
       <div>
         <Typography variant="body2" color="text.secondary" mb={1}>
-          Removing guardian
+          Removing Guardian
         </Typography>
 
         {delayModifier.guardians.map((guardian) => (

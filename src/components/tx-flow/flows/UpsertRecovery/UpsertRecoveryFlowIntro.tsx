@@ -13,21 +13,21 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 const RecoverySteps = [
   {
     Icon: RecoveryGuardians,
-    title: 'Choose a guardian and set a delay',
+    title: 'Choose a Guardian and set a delay',
     subtitle:
-      'Only your chosen guardian can initiate the recovery process. The process can be cancelled at any time during the delay period.',
+      'Only your chosen Guardian can initiate the recovery process. The process can be cancelled at any time during the delay period.',
   },
   {
     Icon: RecoveryGuardian,
-    title: 'Lost access? Let the guardian connect',
-    subtitle: 'The recovery process can be initiated by a trusted guardian when connected to your Safe Account.',
+    title: 'Lost access? Let the Guardian connect',
+    subtitle: 'The recovery process can be initiated by a trusted Guardian when connected to your Safe Account.',
   },
   {
     Icon: RecoveryDelay,
     title: 'Start the recovery process',
     subtitle: (
       <>
-        Your <b>guardian</b> chooses new Safe Account owner(s) that you control and can initiates the recovery
+        Your <b>Guardian</b> chooses new Safe Account owner(s) that you control and can initiates the recovery
         transaction.
       </>
     ),
@@ -47,8 +47,8 @@ export function UpsertRecoveryFlowIntro({ onSubmit }: { onSubmit: () => void }):
         {RecoverySteps.map(({ Icon, title, subtitle }, index) => (
           <Grid item xs={12} key={index}>
             <Grid container display="flex" gap={3}>
-              <Grid item>
-                <Icon className={css.icon} />
+              <Grid item className={css.icon}>
+                <Icon />
               </Grid>
               <Grid item xs>
                 <Typography variant="h5" mb={0.5}>

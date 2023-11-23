@@ -53,7 +53,7 @@ export function Recovery(): ReactElement {
                 <Chip label="New" />
               </Box>
               <Typography mt={1} mb={3}>
-                Ensure that you never lose access to your funds by choosing a guardian to recover your account.
+                Ensure that you never lose access to your funds by choosing a Guardian to recover your account.
               </Typography>
               {supportsRecovery && (
                 <CheckWallet>

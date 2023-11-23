@@ -22,7 +22,7 @@ export function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactE
   return (
     <TxLayout
       title={step === 0 ? 'Remove Account recovery' : 'Confirm transaction'}
-      subtitle="Remove guardian"
+      subtitle="Remove Guardian"
       icon={RecoveryPlus}
       step={step}
       onBack={prevStep}

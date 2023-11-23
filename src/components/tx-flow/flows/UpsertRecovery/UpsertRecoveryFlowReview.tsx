@@ -65,7 +65,7 @@ export function UpsertRecoveryFlowReview({
         This transaction will {moduleAddress ? 'update' : 'enable'} the Account recovery feature once executed.
       </Typography>
 
-      <TxDataRow title="Trusted guardian">
+      <TxDataRow title="Trusted Guardian">
         <EthHashInfo address={guardian} showName={false} hasExplorer showCopyButton avatarSize={24} />
       </TxDataRow>
 

@@ -131,7 +131,7 @@ export function Recovery(): ReactElement {
 
         <Grid item xs>
           <Typography mb={2}>
-            Choose a trusted guardian to recover your Safe Account, in case you should ever lose access to your Account.
+            Choose a trusted Guardian to recover your Safe Account, in case you should ever lose access to your Account.
             Enabling the Account recovery module will require a transactions.
           </Typography>
 

@@ -52,7 +52,7 @@ export function UpsertRecoveryFlowSettings({
 
   const validateGuardian = (guardian: string) => {
     if (sameAddress(guardian, safeAddress)) {
-      return 'The Safe Account cannot be a guardian of itself'
+      return 'The Safe Account cannot be a Guardian of itself'
     }
   }
 
@@ -67,11 +67,11 @@ export function UpsertRecoveryFlowSettings({
           <TxCard>
             <div>
               <Typography variant="h5" gutterBottom>
-                Trusted guardian
+                Trusted Guardian
               </Typography>
 
               <Typography variant="body2">
-                Choose a guardian, such as a hardware wallet or family member&apos;s wallet, that can initiate the
+                Choose a Guardian, such as a hardware wallet or family member&apos;s wallet, that can initiate the
                 recovery process in the future.
               </Typography>
             </div>

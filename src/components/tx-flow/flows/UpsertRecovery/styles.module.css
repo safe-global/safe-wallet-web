@@ -6,17 +6,20 @@
 }
 
 .icon {
-  outline: 9px solid var(--color-background-paper);
-  outline-offset: -3px;
-  border-radius: 100%;
   position: relative;
+  padding: 6px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-background-paper);
 }
 
 .connector::before {
   content: '';
   position: absolute;
   border-left: 1px dashed var(--color-border-light);
-  left: 60px;
+  left: 66px;
   height: 70%;
   margin-top: var(--space-1);
 }
