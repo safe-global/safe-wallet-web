@@ -3,7 +3,11 @@ import type { ReactElement } from 'react'
 
 import WarningIcon from '@/public/images/notifications/warning.svg'
 
-export const RecoveryInfo = (): ReactElement => {
+export const RecoveryInfo = ({ isMalicious }: { isMalicious: boolean }): ReactElement | null => {
+  if (!isMalicious) {
+    return null
+  }
+
   return (
     <Tooltip title="Suspicious activity" placement="top" arrow>
       <span>

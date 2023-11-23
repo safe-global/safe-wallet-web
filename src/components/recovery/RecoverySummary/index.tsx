@@ -22,11 +22,9 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
         <RecoveryType isMalicious={isMalicious} />
       </Box>
 
-      {isMalicious && (
-        <Box gridArea="info" className={txSummaryCss.columnWrap}>
-          <RecoveryInfo />
-        </Box>
-      )}
+      <Box gridArea="info" className={txSummaryCss.columnWrap}>
+        <RecoveryInfo isMalicious={isMalicious} />
+      </Box>
 
       {wallet && (
         <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>

@@ -42,34 +42,38 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
   return (
     <NextLink href={url} passHref>
       <Box className={css.container}>
-        {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
+        <Box gridArea="nonce">
+          {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
+        </Box>
 
-        <Box flex={1}>
+        <Box gridArea="type">
           <TxType tx={transaction} short={true} />
         </Box>
 
-        <Box flex={1} className={css.txInfo}>
+        <Box gridArea="info">
           <TxInfo info={transaction.txInfo} />
         </Box>
 
-        {isMultisigExecutionInfo(transaction.executionInfo) ? (
-          <Box className={css.confirmationsCount}>
-            <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" />
-            <Typography variant="caption" fontWeight="bold">
-              {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
-            </Typography>
-          </Box>
-        ) : (
-          <Box flexGrow={1} />
-        )}
+        <Box gridArea="confirmations">
+          {isMultisigExecutionInfo(transaction.executionInfo) && (
+            <Box className={css.confirmationsCount}>
+              <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" />
+              <Typography variant="caption" fontWeight="bold">
+                {`${transaction.executionInfo.confirmationsSubmitted}/${transaction.executionInfo.confirmationsRequired}`}
+              </Typography>
+            </Box>
+          )}
+        </Box>
 
-        {canExecute ? (
-          <ExecuteTxButton txSummary={transaction} compact />
-        ) : canSign ? (
-          <SignTxButton txSummary={transaction} compact />
-        ) : (
-          <ChevronRight color="border" />
-        )}
+        <Box gridArea="action">
+          {canExecute ? (
+            <ExecuteTxButton txSummary={transaction} compact />
+          ) : canSign ? (
+            <SignTxButton txSummary={transaction} compact />
+          ) : (
+            <ChevronRight color="border" />
+          )}
+        </Box>
       </Box>
     </NextLink>
   )
