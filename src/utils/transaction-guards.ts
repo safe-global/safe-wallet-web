@@ -36,6 +36,7 @@ import {
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -108,6 +109,10 @@ export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
 
 export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
   return value.type === TransactionListItemType.TRANSACTION
+}
+
+export function isRecoveryQueueItem(value: TransactionListItem | RecoveryQueueItem): value is RecoveryQueueItem {
+  return 'args' in value
 }
 
 // Narrows `Transaction`
