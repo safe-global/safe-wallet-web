@@ -140,8 +140,7 @@ export async function _getEditRecoveryTransactions({
     const enableModule = delayModifierContract.interface.encodeFunctionData('enableModule', [guardianToAdd])
     txData.push(enableModule)
 
-    // Add guardian to cache
-    _guardians.push(guardianToAdd)
+    // Need not add guardian to cache as not relevant for prevModule
   }
 
   for (const guardianToRemove of guardiansToRemove) {

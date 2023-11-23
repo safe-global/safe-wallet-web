@@ -25,18 +25,18 @@ export type UpsertRecoveryFlowProps = {
   [UpsertRecoveryFlowFields.emailAddress]: string
 }
 
-export function UpsertRecoveryFlow({ recovery }: { recovery?: RecoveryState[number] }): ReactElement {
+export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
   const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>({
-    [UpsertRecoveryFlowFields.guardian]: recovery?.guardians?.[0] ?? '',
-    [UpsertRecoveryFlowFields.txCooldown]: recovery?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
-    [UpsertRecoveryFlowFields.txExpiration]: recovery?.txExpiration?.toString() ?? '0',
+    [UpsertRecoveryFlowFields.guardian]: delayModifier?.guardians?.[0] ?? '',
+    [UpsertRecoveryFlowFields.txCooldown]: delayModifier?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
+    [UpsertRecoveryFlowFields.txExpiration]: delayModifier?.txExpiration?.toString() ?? '0',
     [UpsertRecoveryFlowFields.emailAddress]: '',
   })
 
   const steps = [
     <UpsertRecoveryFlowIntro key={0} onSubmit={() => nextStep(data)} />,
     <UpsertRecoveryFlowSettings key={1} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
-    <UpsertRecoveryFlowReview key={2} params={data} moduleAddress={recovery?.address} />,
+    <UpsertRecoveryFlowReview key={2} params={data} moduleAddress={delayModifier?.address} />,
   ]
 
   const isIntro = step === 0
