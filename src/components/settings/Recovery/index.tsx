@@ -135,7 +135,7 @@ export function Recovery(): ReactElement {
             Enabling the Account recovery module will require a transactions.
           </Typography>
 
-          {recovery?.length === 0 ? (
+          {!recovery || recovery.length === 0 ? (
             <>
               <Alert severity="info">
                 Unhappy with the provided option? {/* TODO: Add link */}

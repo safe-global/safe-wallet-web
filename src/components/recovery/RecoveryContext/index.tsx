@@ -6,7 +6,7 @@ import { sameAddress } from '@/utils/addresses'
 import { getTxDetails } from '@/services/tx/txDetails'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryState } from './useRecoveryState'
-import { useDelayModifiers } from './useDelayModifiers'
+import { useRecoveryDelayModifiers } from './useRecoveryDelayModifiers'
 import type { AsyncResult } from '@/hooks/useAsync'
 import type { RecoveryState } from '@/services/recovery/recovery-state'
 
@@ -22,7 +22,7 @@ export const RecoveryContext = createContext<{
 export function RecoveryProvider({ children }: { children: ReactNode }): ReactElement {
   const { safe } = useSafeInfo()
 
-  const [delayModifiers, delayModifiersError, delayModifiersLoading] = useDelayModifiers()
+  const [delayModifiers, delayModifiersError, delayModifiersLoading] = useRecoveryDelayModifiers()
   const {
     data: [recoveryState, recoveryStateError, recoveryStateLoading],
     refetch,

@@ -1,7 +1,7 @@
 import type { Delay } from '@gnosis.pm/zodiac'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { getDelayModifiers } from '@/services/recovery/delay-modifier'
+import { getRecoveryDelayModifiers } from '@/services/recovery/delay-modifier'
 import { FEATURES } from '@/utils/chains'
 import useAsync from '@/hooks/useAsync'
 import { useHasFeature } from '@/hooks/useChains'
@@ -14,7 +14,7 @@ function isOnlySpendingLimitEnabled(chainId: string, modules: SafeInfo['modules'
   return modules?.length === 1 && modules[0].value === getSpendingLimitModuleAddress(chainId)
 }
 
-export function useDelayModifiers(): AsyncResult<Delay[]> {
+export function useRecoveryDelayModifiers(): AsyncResult<Delay[]> {
   const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
   const web3ReadOnly = useWeb3ReadOnly()
   const { safe, safeAddress } = useSafeInfo()
@@ -29,11 +29,10 @@ export function useDelayModifiers(): AsyncResult<Delay[]> {
         safe.modules.length > 0 &&
         !isOnlySpendingLimitEnabled(safe.chainId, safe.modules)
       ) {
-        // TODO: Don't fetch _every_ Delay Modifier, but only those which _don't_ have Zodiac
-        // contracts as guardians. Zodiac only use the Delay Modifier with their contracts enabled
-        return getDelayModifiers(safe.chainId, safe.modules, web3ReadOnly)
+        return getRecoveryDelayModifiers(safe.chainId, safe.modules, web3ReadOnly)
       }
     },
+    // Only fetch delay modifiers again if the chain or enabled modules of current Safe changes
     // Need to check length of modules array to prevent new request every time Safe info polls
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [safeAddress, safe.chainId, safe.modules?.length, web3ReadOnly, supportsRecovery],
