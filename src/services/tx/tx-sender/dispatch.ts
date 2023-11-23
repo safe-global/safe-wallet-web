@@ -1,5 +1,4 @@
-import type { AddressEx, SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
+import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
 import type { EthersError } from '@/utils/ethers-utils'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
@@ -23,7 +22,6 @@ import {
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
-import { getRecoveryProposalTransaction } from '@/services/recovery/transaction'
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 
