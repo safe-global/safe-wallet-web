@@ -38,7 +38,7 @@ jobs:
         run: |
           pip install trcli
           trcli -y \
-          -h https:/https://gno.testrail.io/ \
+          -h https://gno.testrail.io/ \
           --project "Safe- Web App" \
           --username ${{ secrets.TESTRAIL_USERNAME }} \
           --password ${{ secrets.TESTRAIL_PASSWORD }} \
