@@ -23,7 +23,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '../..'
 import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
-import { getCountdown } from '@/utils/date'
+import { getPeriod } from '@/utils/date'
 import { RecoveryContext } from '@/components/recovery/RecoveryContext'
 import type { RecoverAccountFlowProps } from '.'
 
@@ -48,8 +48,6 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const recovery = data && selectDelayModifierByGuardian(data, wallet?.address ?? '')
 
   // Proposal
-  const txCooldown = recovery?.txCooldown?.toNumber()
-  const txCooldownCountdown = txCooldown ? getCountdown(txCooldown) : undefined
   const newThreshold = Number(params[RecoverAccountFlowFields.threshold])
   const newOwners = params[RecoverAccountFlowFields.owners]
 
@@ -67,7 +65,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
   // On modal submit
   const onSubmit = async () => {
-    if (!recovery || !onboard) {
+    if (!recovery || !onboard || !safeTx) {
       return
     }
 
@@ -78,8 +76,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
       await dispatchRecoveryProposal({
         onboard,
         safe,
-        newThreshold,
-        newOwners,
+        safeTx,
         delayModifierAddress: recovery.address,
         refetchRecoveryData: refetch,
       })
@@ -148,13 +145,15 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <WrongChainWarning />
 
-        <ErrorMessage level="info">
-          Recovery will be{' '}
-          {txCooldown === 0
-            ? 'immediately possible'
-            : `possible ${txCooldownCountdown?.days} day${txCooldownCountdown?.days === 1 ? '' : 's'}`}{' '}
-          after this transaction is executed.
-        </ErrorMessage>
+        {recovery?.txCooldown && (
+          <ErrorMessage level="info">
+            Recovery will be{' '}
+            {recovery.txCooldown.isZero()
+              ? 'immediately possible'
+              : `possible in ${getPeriod(recovery.txCooldown.toNumber())}`}{' '}
+            after this transaction is executed.
+          </ErrorMessage>
+        )}
 
         <Divider className={commonCss.nestedDivider} />
 

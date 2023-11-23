@@ -39,10 +39,10 @@ describe('RecoveryInProgressCard', () => {
       expect(queryByText('Account recovery possible')).toBeTruthy()
       expect(queryByText('Learn more')).toBeTruthy()
 
-      const dashboardButton = queryByText('Go to dashboard')
-      expect(dashboardButton).toBeTruthy()
+      const queueButton = queryByText('Go to queue')
+      expect(queueButton).toBeTruthy()
 
-      fireEvent.click(dashboardButton!)
+      fireEvent.click(queueButton!)
 
       await waitFor(() => {
         expect(mockClose).toHaveBeenCalled()
@@ -72,10 +72,10 @@ describe('RecoveryInProgressCard', () => {
       })
       expect(queryByText('Learn more')).toBeTruthy()
 
-      const dashboardButton = queryByText('Go to dashboard')
-      expect(dashboardButton).toBeTruthy()
+      const queueButton = queryByText('Go to queue')
+      expect(queueButton).toBeTruthy()
 
-      fireEvent.click(dashboardButton!)
+      fireEvent.click(queueButton!)
 
       await waitFor(() => {
         expect(mockClose).toHaveBeenCalled()
@@ -99,7 +99,7 @@ describe('RecoveryInProgressCard', () => {
       ;['days', 'hrs', 'mins'].forEach((unit) => {
         expect(queryByText(unit)).toBeFalsy()
       })
-      expect(queryByText('Go to dashboard')).toBeFalsy()
+      expect(queryByText('Go to queue')).toBeFalsy()
 
       expect(queryByText('Account recovery possible')).toBeTruthy()
       expect(queryByText('Learn more')).toBeTruthy()
@@ -118,7 +118,7 @@ describe('RecoveryInProgressCard', () => {
         />,
       )
 
-      expect(queryByText('Go to dashboard')).toBeFalsy()
+      expect(queryByText('Go to queue')).toBeFalsy()
 
       expect(queryByText('Account recovery in progress')).toBeTruthy()
       expect(queryByText('The recovery process has started. This Account will be ready to recover in:')).toBeTruthy()

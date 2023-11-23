@@ -29,7 +29,7 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
 
   const onClick = async () => {
     await router.push({
-      pathname: AppRoutes.home,
+      pathname: AppRoutes.transactions.queue,
       query: router.query,
     })
     onClose?.()
@@ -96,7 +96,7 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
         <Divider flexItem sx={{ mx: -4 }} />
 
         <Button variant="contained" onClick={onClick} sx={{ alignSelf: 'flex-end' }}>
-          Go to dashboard
+          Go to queue
         </Button>
       </Grid>
     </Card>

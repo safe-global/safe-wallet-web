@@ -39,14 +39,19 @@ export function RecoveryProvider({ children }: { children: ReactNode }): ReactEl
         return
       }
 
-      const { txData } = await getTxDetails(detail.txId, safe.chainId)
+      let to: string | undefined
 
-      if (!txData) {
+      try {
+        const { txData } = await getTxDetails(detail.txId, safe.chainId)
+        to = txData?.to.value
+      } catch {}
+
+      if (!to) {
         return
       }
 
       const isDelayModifierTx = delayModifiers.some((delayModifier) => {
-        return sameAddress(delayModifier.address, txData.to.value)
+        return sameAddress(delayModifier.address, to)
       })
 
       if (isDelayModifierTx) {

@@ -3,7 +3,9 @@ import { useCurrentChain } from '@/hooks/useChains'
 
 export const DAY_IN_SECONDS = 60 * 60 * 24
 
-const DefaultRecoveryDelayPeriods = [
+type Periods = Array<{ label: string; value: string | number }>
+
+const DefaultRecoveryDelayPeriods: Periods = [
   {
     label: '2 days',
     value: `${DAY_IN_SECONDS * 2}`,
@@ -26,7 +28,7 @@ const DefaultRecoveryDelayPeriods = [
   },
 ]
 
-const DefaultRecoveryExpirationPeriods = [
+const DefaultRecoveryExpirationPeriods: Periods = [
   {
     label: 'Never',
     value: '0',
@@ -34,23 +36,23 @@ const DefaultRecoveryExpirationPeriods = [
   ...DefaultRecoveryDelayPeriods,
 ]
 
-const TestRecoveryDelayPeriods = [
+const TestRecoveryDelayPeriods: Periods = [
   {
     label: '1 minute',
-    value: 60,
+    value: '60',
   },
   {
     label: '5 minutes',
-    value: 60 * 5,
+    value: `${60 * 5}`,
   },
   {
     label: '1 hour',
-    value: DAY_IN_SECONDS,
+    value: `${DAY_IN_SECONDS}`,
   },
   ...DefaultRecoveryDelayPeriods,
 ]
 
-const TestRecoveryExpirationPeriods = [
+const TestRecoveryExpirationPeriods: Periods = [
   {
     label: 'Never',
     value: '0',
@@ -58,7 +60,7 @@ const TestRecoveryExpirationPeriods = [
   ...TestRecoveryDelayPeriods,
 ]
 
-export function useRecoveryPeriods() {
+export function useRecoveryPeriods(): { delay: Periods; expiration: Periods } {
   const chain = useCurrentChain()
 
   if (!chain || [chains.gor, chains.sep].includes(chain.chainId)) {

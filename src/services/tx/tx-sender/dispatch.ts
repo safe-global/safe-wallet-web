@@ -426,26 +426,18 @@ function reloadRecoveryDataAfterProcessed(tx: ContractTransaction, refetchRecove
 export async function dispatchRecoveryProposal({
   onboard,
   safe,
-  newThreshold,
-  newOwners,
+  safeTx,
   delayModifierAddress,
   refetchRecoveryData,
 }: {
   onboard: OnboardAPI
   safe: SafeInfo
-  newThreshold: number
-  newOwners: Array<AddressEx>
+  safeTx: SafeTransaction
   delayModifierAddress: string
   refetchRecoveryData: () => void
 }) {
   const wallet = await assertWalletChain(onboard, safe.chainId)
   const provider = createWeb3(wallet.provider)
-
-  const { to, value, data } = getRecoveryProposalTransaction({
-    safe,
-    newThreshold,
-    newOwners,
-  })
 
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
 
@@ -453,7 +445,7 @@ export async function dispatchRecoveryProposal({
 
   delayModifier
     .connect(signer)
-    .execTransactionFromModule(to, value, data, OperationType.Call)
+    .execTransactionFromModule(safeTx.data.to, safeTx.data.value, safeTx.data.data, safeTx.data.operation)
     .then((result) => {
       reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
     })

@@ -12,6 +12,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckWallet from '@/components/common/CheckWallet'
+import { getPeriod } from '@/utils/date'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -74,10 +75,8 @@ export function Recovery(): ReactElement {
       const { guardians, txCooldown, txExpiration } = delayModifier
 
       return guardians.map((guardian) => {
-        const DAY_IN_SECONDS = 60 * 60 * 24
-
-        const txCooldownDays = txCooldown.div(DAY_IN_SECONDS).toNumber()
-        const txExpirationDays = txExpiration.div(DAY_IN_SECONDS).toNumber()
+        const txCooldownSeconds = txCooldown.toNumber()
+        const txExpirationSeconds = txExpiration.toNumber()
 
         return {
           cells: {
@@ -86,20 +85,12 @@ export function Recovery(): ReactElement {
               content: <EthHashInfo address={guardian} showCopyButton hasExplorer />,
             },
             [HeadCells.TxCooldown]: {
-              rawValue: txCooldownDays,
-              content: (
-                <Typography>
-                  {txCooldownDays} day{txCooldownDays > 1 ? 's' : ''}
-                </Typography>
-              ),
+              rawValue: txCooldownSeconds,
+              content: <Typography>{getPeriod(txCooldownSeconds)}</Typography>,
             },
             [HeadCells.TxExpiration]: {
-              rawValue: txExpirationDays,
-              content: (
-                <Typography>
-                  {txExpirationDays === 0 ? 'never' : `${txExpirationDays} day${txExpirationDays > 1 ? 's' : ''}`}
-                </Typography>
-              ),
+              rawValue: txExpirationSeconds,
+              content: <Typography>{getPeriod(txExpirationSeconds)}</Typography>,
             },
             [HeadCells.Actions]: {
               rawValue: '',

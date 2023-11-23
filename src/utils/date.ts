@@ -18,7 +18,13 @@ export const formatWithSchema = (timestamp: number, schema: string): string => f
 
 export const formatTime = (timestamp: number): string => formatWithSchema(timestamp, 'h:mm a')
 
-export const formatDate = (timestamp: number): string => formatWithSchema(timestamp, 'DD.MM.yyyy')
+export const formatDate = (timestamp: number): string => {
+  try {
+    return formatWithSchema(timestamp, 'DD.MM.yyyy')
+  } catch {
+    return formatTime(timestamp)
+  }
+}
 
 export const formatDateTime = (timestamp: number): string => formatWithSchema(timestamp, 'MMM d, yyyy - h:mm:ss a')
 
@@ -36,4 +42,20 @@ export function getCountdown(seconds: number): { days: number; hours: number; mi
   const minutes = Math.floor((remainingSeconds % HOUR_IN_SECONDS) / MINUTE_IN_SECONDS)
 
   return { days, hours, minutes }
+}
+
+export function getPeriod(seconds: number): string | undefined {
+  const { days, hours, minutes } = getCountdown(seconds)
+
+  if (days > 0) {
+    return `${days} day${days === 1 ? '' : 's'}`
+  }
+
+  if (hours > 0) {
+    return `${hours} hour${hours === 1 ? '' : 's'}`
+  }
+
+  if (minutes > 0) {
+    return `${minutes} minute${minutes === 1 ? '' : 's'}`
+  }
 }

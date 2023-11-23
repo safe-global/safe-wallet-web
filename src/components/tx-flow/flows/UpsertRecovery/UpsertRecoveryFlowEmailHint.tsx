@@ -16,7 +16,7 @@ export function UpsertRecoveryFlowEmailHint(): ReactElement {
       </Box>
       <Typography variant="body2" mt={2}>
         For security reasons, we highly recommend adding an email address. You will be notified once a Guardian
-        initiates recovery and be able to reject it if it&apos;s a malicious attempt.
+        initiates recovery and be able to cancel it if it&apos;s a malicious attempt.
       </Typography>
     </Alert>
   )
