@@ -13,6 +13,7 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { sameAddress } from '@/utils/addresses'
+import { useIsSidebarRoute } from '@/hooks/useIsSidebarRoute'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function _RecoveryModal({
@@ -21,12 +22,14 @@ export function _RecoveryModal({
   isGuardian,
   queue,
   wallet,
+  isSidebarRoute = true,
 }: {
   children: ReactNode
   isOwner: boolean
   isGuardian: boolean
   queue: Array<RecoveryQueueItem>
   wallet: ReturnType<typeof useWallet>
+  isSidebarRoute?: boolean
 }): ReactElement {
   const { wasProposalDismissed, dismissProposal } = _useDidDismissProposal()
   const { wasInProgressDismissed, dismissInProgress } = _useDidDismissInProgress()
@@ -43,6 +46,10 @@ export function _RecoveryModal({
 
   // Trigger modal
   useEffect(() => {
+    if (!isSidebarRoute) {
+      return
+    }
+
     setModal(() => {
       if (next && !wasInProgressDismissed(next.transactionHash)) {
         const onCloseWithDismiss = () => {
@@ -71,9 +78,11 @@ export function _RecoveryModal({
     isOwner,
     next,
     queue.length,
+    router.pathname,
     wallet,
     wasInProgressDismissed,
     wasProposalDismissed,
+    isSidebarRoute,
   ])
 
   // Close modal on navigation
@@ -101,6 +110,7 @@ export const RecoveryModal = madProps(_RecoveryModal, {
   isGuardian: useIsGuardian,
   queue: useRecoveryQueue,
   wallet: useWallet,
+  isSidebarRoute: useIsSidebarRoute,
 })
 
 export function _useDidDismissProposal() {
