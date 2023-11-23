@@ -8,7 +8,7 @@ import { RecoveryStatus } from '../RecoveryStatus'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import { SkipRecoveryButton } from '../SkipRecoveryButton'
 import useWallet from '@/hooks/wallets/useWallet'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
 import txSummaryCss from '@/components/transactions/TxSummary/styles.module.css'
 

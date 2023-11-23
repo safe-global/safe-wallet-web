@@ -22,7 +22,7 @@ import useLoadSpendingLimits from '@/hooks/loadables/useLoadSpendingLimits'
 import { safeMessagesSlice } from '@/store/safeMessagesSlice'
 
 // Dispatch into the corresponding store when the loadable is loaded
-export const useUpdateStore = (slice: Slice, useLoadHook: () => AsyncResult<unknown>): void => {
+const useUpdateStore = (slice: Slice, useLoadHook: () => AsyncResult<unknown>): void => {
   const dispatch = useAppDispatch()
   const [data, error, loading] = useLoadHook()
   const setAction = slice.actions.set

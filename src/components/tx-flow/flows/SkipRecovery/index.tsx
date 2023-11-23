@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 
 import TxLayout from '../../common/TxLayout'
 import { SkipRecoveryFlowReview } from './SkipRecoveryFlowReview'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
 export function SkipRecoveryFlow({ recovery }: { recovery: RecoveryQueueItem }): ReactElement {
   return (

@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import { SkipRecoveryFlow } from '@/components/tx-flow/flows/SkipRecovery'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
 export function SkipRecoveryButton({
   recovery,

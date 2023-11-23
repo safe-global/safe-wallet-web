@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 import txListItemCss from '@/components/transactions/TxListItem/styles.module.css'
 import { RecoverySummary } from '../RecoverySummary'
 import { RecoveryDetails } from '../RecoveryDetails'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
 export function RecoveryListItem({ item }: { item: RecoveryQueueItem }): ReactElement {
   return (

@@ -163,14 +163,14 @@ export const dispatchTxExecution = async (
       if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress, to: safeTx.data.to })
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
       }
     })
     .catch((err) => {
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress, to: safeTx.data.to })
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
       } else {
         txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
       }
@@ -224,12 +224,11 @@ export const dispatchBatchExecution = async (
           })
         })
       } else {
-        txs.forEach(({ txId, txData }) => {
+        txs.forEach(({ txId }) => {
           txDispatch(TxEvent.PROCESSED, {
             txId,
             groupKey,
             safeAddress,
-            to: txData?.to.value,
           })
         })
       }
@@ -238,11 +237,10 @@ export const dispatchBatchExecution = async (
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txs.forEach(({ txId, txData }) => {
+        txs.forEach(({ txId }) => {
           txDispatch(TxEvent.PROCESSED, {
             txId,
             safeAddress,
-            to: txData?.to.value,
           })
         })
       } else {
@@ -305,7 +303,7 @@ export const dispatchSpendingLimitTxExecution = async (
           error: new Error('Transaction reverted by EVM'),
         })
       } else {
-        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress, to: txParams.to })
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress })
       }
     })
     .catch((error) => {

@@ -7,7 +7,7 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getRecoverySkipTransaction } from '@/services/recovery/transaction'
 import { createTx } from '@/services/tx/tx-sender'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
 export function SkipRecoveryFlowReview({ recovery }: { recovery: RecoveryQueueItem }): ReactElement {
   const web3ReadOnly = useWeb3ReadOnly()

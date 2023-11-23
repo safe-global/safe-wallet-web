@@ -1,7 +1,8 @@
-import { useAppSelector } from '@/store'
-import { selectRecovery } from '@/store/recoverySlice'
+import { useContext } from 'react'
+
+import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
 
 export function useIsRecoveryEnabled(): boolean {
-  const recovery = useAppSelector(selectRecovery)
-  return recovery.length === 0
+  const [data] = useContext(RecoveryLoaderContext).state
+  return !!data && data.length > 0
 }

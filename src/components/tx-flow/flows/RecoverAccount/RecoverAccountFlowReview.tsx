@@ -17,8 +17,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { createMultiSendCallOnlyTx, createTx, dispatchRecoveryProposal } from '@/services/tx/tx-sender'
 import { RecoverAccountFlowFields } from '.'
 import { OwnerList } from '../../common/OwnerList'
-import { useAppSelector } from '@/store'
-import { selectDelayModifierByGuardian } from '@/store/recoverySlice'
+import { selectDelayModifierByGuardian } from '@/services/recovery/selectors'
 import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '../..'
@@ -42,7 +41,8 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const onboard = useOnboard()
-  const recovery = useAppSelector((state) => selectDelayModifierByGuardian(state, wallet?.address ?? ''))
+  const [data] = useContext(RecoveryLoaderContext).state
+  const recovery = data && selectDelayModifierByGuardian(data, wallet?.address ?? '')
   const { refetch } = useContext(RecoveryLoaderContext)
 
   // Proposal

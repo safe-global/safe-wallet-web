@@ -1,7 +1,9 @@
+import { useContext } from 'react'
+
 import { useClock } from './useClock'
-import { useAppSelector } from '@/store'
-import { selectDelayModifierByTxHash } from '@/store/recoverySlice'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import { selectDelayModifierByTxHash } from '@/services/recovery/selectors'
+import { RecoveryLoaderContext } from '@/components/recovery/RecoveryLoaderContext'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
 export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args }: RecoveryQueueItem): {
   isNext: boolean
@@ -9,7 +11,8 @@ export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args
   isExpired: boolean
   remainingSeconds: number
 } {
-  const recovery = useAppSelector((state) => selectDelayModifierByTxHash(state, transactionHash))
+  const [data] = useContext(RecoveryLoaderContext).state
+  const recovery = data && selectDelayModifierByTxHash(data, transactionHash)
 
   // We don't display seconds in the interface, so we can use a 60s interval
   const timestamp = useClock(60_000)

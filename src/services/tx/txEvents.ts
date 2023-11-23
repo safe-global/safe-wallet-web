@@ -38,7 +38,7 @@ interface TxEvents {
   [TxEvent.EXECUTING]: Id
   [TxEvent.PROCESSING]: Id & { txHash: string }
   [TxEvent.PROCESSING_MODULE]: Id & { txHash: string }
-  [TxEvent.PROCESSED]: Id & { safeAddress: string; to?: string }
+  [TxEvent.PROCESSED]: Id & { safeAddress: string }
   [TxEvent.REVERTED]: Id & { error: Error }
   [TxEvent.RELAYING]: Id & { taskId: string }
   [TxEvent.FAILED]: Id & { error: Error }

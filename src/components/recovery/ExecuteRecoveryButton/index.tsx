@@ -10,8 +10,8 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import { Errors, logError } from '@/services/exceptions'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
 import { RecoveryLoaderContext } from '../RecoveryLoaderContext'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
 export function ExecuteRecoveryButton({
   recovery,

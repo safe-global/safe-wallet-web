@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 
 import ClockIcon from '@/public/images/common/clock.svg'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
 export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): ReactElement => {
   const { isExecutable, isExpired } = useRecoveryTxState(recovery)

@@ -13,8 +13,7 @@ import { navItems } from './config'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { AppRoutes } from '@/config/routes'
 import useTxQueue from '@/hooks/useTxQueue'
-import { useAppSelector } from '@/store'
-import { selectRecoveryQueues } from '@/store/recoverySlice'
+import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
@@ -25,7 +24,7 @@ const Navigation = (): ReactElement => {
   const { safe } = useSafeInfo()
   const currentSubdirectory = getSubdirectory(router.pathname)
   const hasQueuedTxs = Boolean(useTxQueue().page?.results.length)
-  const hasRecoveryTxs = Boolean(useAppSelector(selectRecoveryQueues).length)
+  const hasRecoveryTxs = Boolean(useRecoveryQueue().length)
 
   // Indicate whether the current Safe needs an upgrade
   const setupItem = navItems.find((item) => item.href === AppRoutes.settings.setup)

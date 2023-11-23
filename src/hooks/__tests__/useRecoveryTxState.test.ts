@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers'
 import { useRecoveryTxState } from '../useRecoveryTxState'
 import { renderHook } from '@/tests/test-utils'
 import * as store from '@/store'
-import type { RecoveryQueueItem } from '@/store/recoverySlice'
+import type { RecoveryQueueItem } from '@/components/recovery/RecoveryLoaderContext'
 
 describe('useRecoveryTxState', () => {
   beforeEach(() => {
