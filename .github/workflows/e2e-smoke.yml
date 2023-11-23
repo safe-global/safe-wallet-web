@@ -18,32 +18,8 @@ jobs:
         containers: [1, 2, 3, 4, 5]
 
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: browser-actions/setup-chrome@v1
-
-      - uses: ./.github/workflows/yarn
-
-      - name: Install Cypress
-        run: |
-          ./node_modules/.bin/cypress install
-
-      - uses: ./.github/workflows/build
+      - uses: ./.github/workflows/cypress
         with:
           secrets: ${{ toJSON(secrets) }}
-          e2e_mnemonic: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
-
-      - name: Serve
-        run: yarn serve &
-
-      - uses: cypress-io/github-action@v4
-        with:
-          parallel: true
           spec: cypress/e2e/smoke/*.cy.js
-          browser: chrome
-          record: true
-          config: baseUrl=http://localhost:8080
           group: 'Smoke tests'
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
