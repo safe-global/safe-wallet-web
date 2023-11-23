@@ -17,6 +17,8 @@ jobs:
       matrix:
         containers: [1, 2]
     steps:
+      - uses: actions/checkout@v3
+
       - uses: ./.github/workflows/cypress
         with:
           secrets: ${{ toJSON(secrets) }}

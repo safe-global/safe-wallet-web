@@ -22,8 +22,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: actions/checkout@v3
-
     - uses: browser-actions/setup-chrome@v1
 
     - uses: ./.github/workflows/yarn

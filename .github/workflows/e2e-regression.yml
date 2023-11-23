@@ -21,30 +21,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: browser-actions/setup-chrome@v1
-
-      - uses: ./.github/workflows/yarn
-
-      - name: Install Cypress
-        run: |
-          ./node_modules/.bin/cypress install
-
-      - uses: ./.github/workflows/build
+      - uses: ./.github/workflows/cypress
         with:
           secrets: ${{ toJSON(secrets) }}
-          e2e_mnemonic: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
-
-      - name: Serve
-        run: yarn serve &
-
-      - uses: cypress-io/github-action@v4
-        with:
-          parallel: true
           spec: cypress/e2e/**/*.cy.js
-          browser: chrome
-          record: true
-          config: baseUrl=http://localhost:8080
           group: 'Regression tests'
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
