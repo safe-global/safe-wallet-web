@@ -28,7 +28,7 @@ export function Recovery(): ReactElement {
 
   const onEdit = () => {
     router.push({
-      pathname: AppRoutes.settings.recovery,
+      pathname: AppRoutes.settings.securityLogin,
       query: router.query,
     })
   }
