@@ -7,9 +7,10 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getRecoverySkipTransaction } from '@/services/recovery/transaction'
 import { createTx } from '@/services/tx/tx-sender'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
 
-export function SkipRecoveryFlowReview({ recovery }: { recovery: RecoveryQueueItem }): ReactElement {
+export function CancelRecoveryFlowReview({ recovery }: { recovery: RecoveryQueueItem }): ReactElement {
   const web3ReadOnly = useWeb3ReadOnly()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
@@ -23,16 +24,16 @@ export function SkipRecoveryFlowReview({ recovery }: { recovery: RecoveryQueueIt
 
   return (
     <SignOrExecuteForm onSubmit={() => null} isBatchable={false}>
-      <Typography mb={2}>
-        To reject the recovery attempt, a separate transaction will be created to increase the nonce beyond the
-        proposal.
+      <Typography mb={1}>
+        This transaction will initiate the cancellation of the{' '}
+        {recovery.isMalicious ? 'malicious transaction' : 'recovery attempt'}. It requires other owner signatures in
+        order to be complete.
       </Typography>
 
-      <Typography mb={2}>
-        Queue nonce: <b>{recovery.args.queueNonce.toNumber()}</b>
-      </Typography>
-
-      <Typography mb={2}>You will need to confirm the transaction with your currently connected wallet.</Typography>
+      <ErrorMessage level="info">
+        All actions initiated by the guardian will be skipped. The current owners will remain the owners of the Safe
+        Account.
+      </ErrorMessage>
     </SignOrExecuteForm>
   )
 }
