@@ -1,0 +1,28 @@
+name: Regression tests
+
+on:
+  pull_request:
+    branches:
+      - 'release**'
+      - 'release/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-20.04
+    name: Cypress Regression tests
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/cypress
+        with:
+          secrets: ${{ toJSON(secrets) }}
+          spec: cypress/e2e/**/*.cy.js
+          group: 'Regression tests'
