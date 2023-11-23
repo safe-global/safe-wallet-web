@@ -14,13 +14,15 @@ const createNewSafeBtn = 'span[data-track="create-safe: Continue to creation"]'
 const connectWalletBtn = 'Connect wallet'
 const googleConnectBtn = '[data-testid="google-connect-btn"]'
 const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
-const googleAccountInfoHeader = '[data-testid="open-account-center"]'
+export const accountInfoHeader = '[data-testid="open-account-center"]'
 const reviewStepOwnerInfo = '[data-testid="review-step-owner-info"]'
 const reviewStepNextBtn = '[data-testid="review-step-next-btn"]'
 const safeCreationStatusInfo = '[data-testid="safe-status-info"]'
 const startUsingSafeBtn = '[data-testid="start-using-safe-btn"]'
 const sponsorIcon = '[data-testid="sponsor-icon"]'
 const networkFeeSection = '[data-tetid="network-fee-section"]'
+const nextBtn = '[data-testid="next-btn"]'
+const backBtn = '[data-testid="back-btn"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -32,6 +34,9 @@ export const walletName = 'test1-sepolia-safe'
 export const defaltSepoliaPlaceholder = 'Sepolia Safe'
 const welcomeToSafeStr = 'Welcome to Safe'
 
+export function clickOnBackBtn() {
+  cy.get(backBtn).should('be.enabled').click()
+}
 export function verifySafeIsBeingCreated() {
   cy.get(safeCreationStatusInfo).should('have.text', safeCreationProcessing)
 }
@@ -68,7 +73,7 @@ export function verifyGoogleSignin() {
 }
 
 export function verifyGoogleAccountInfoInHeader() {
-  return cy.get(googleAccountInfoHeader).should('exist')
+  return cy.get(accountInfoHeader).should('exist')
 }
 
 export function verifyPolicy1_1() {
@@ -128,7 +133,7 @@ export function selectNetwork(network, regex = false) {
 }
 
 export function clickOnNextBtn() {
-  cy.contains('button', 'Next').click()
+  cy.get(nextBtn).should('be.enabled').click()
 }
 
 export function verifyOwnerName(name, index) {

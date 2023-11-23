@@ -1,0 +1,27 @@
+name: Smoke tests
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-20.04
+    name: Cypress Smoke tests
+
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3, 4, 5]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/cypress
+        with:
+          secrets: ${{ toJSON(secrets) }}
+          spec: cypress/e2e/smoke/*.cy.js
+          group: 'Smoke tests'

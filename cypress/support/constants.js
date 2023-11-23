@@ -66,6 +66,8 @@ export const validAppUrl = 'https://my-valid-custom-app.com'
 
 export const proposeEndpoint = '/**/propose'
 export const appsEndpoint = '/**/safe-apps'
+export const transactionHistoryEndpoint = '**/history'
+export const safeListEndpoint = '**/safes'
 
 export const mainSideMenuOptions = {
   home: 'Home',

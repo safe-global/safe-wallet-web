@@ -1,0 +1,57 @@
+name: 'Cypress'
+
+description: 'Run Cypress'
+
+inputs:
+  secrets:
+    description: 'GitHub secrets as JSON'
+    required: true
+
+  spec:
+    description: 'A glob pattern for which tests to run'
+    required: true
+
+  group:
+    description: 'The name of the group (e.g. "smoke")'
+    required: true
+
+  project_id:
+    description: 'Cypress cloud project id'
+    required: false
+
+  record_key:
+    description: 'Cypress cloud record key'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: browser-actions/setup-chrome@v1
+
+    - uses: ./.github/workflows/yarn
+
+    - name: Install Cypress
+      shell: bash
+      run: ./node_modules/.bin/cypress install
+
+    - uses: ./.github/workflows/build
+      with:
+        secrets: ${{ inputs.secrets }}
+        e2e_mnemonic: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_CYPRESS_MNEMONIC }}
+
+    - name: Serve
+      shell: bash
+      run: yarn serve &
+
+    - uses: cypress-io/github-action@v4
+      with:
+        spec: ${{ inputs.spec }}
+        group: ${{ inputs.group }}
+        parallel: true
+        browser: chrome
+        record: true
+        config: baseUrl=http://localhost:8080
+      env:
+        CYPRESS_RECORD_KEY: ${{ inputs.record_key || fromJSON(inputs.secrets).CYPRESS_RECORD_KEY }}
+        GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
+        CYPRESS_PROJECT_ID: ${{ inputs.project_id }}

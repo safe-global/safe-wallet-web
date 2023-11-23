@@ -9,6 +9,12 @@ import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { trackEvent } from '@/services/analytics'
+
+const onSubmit = () => {
+  trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.safe_update })
+}
 
 export const UpdateSafeReview = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -25,7 +31,7 @@ export const UpdateSafeReview = () => {
   }, [chain, safe, safeLoaded, setNonce, setSafeTx, setSafeTxError])
 
   return (
-    <SignOrExecuteForm onSubmit={() => null}>
+    <SignOrExecuteForm onSubmit={onSubmit}>
       <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>

@@ -1,8 +1,9 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
+import * as createwallet from '../pages/create_wallet.pages'
 
-describe('Remove Owners tests', () => {
+describe('[SMOKE] Remove Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
     cy.clearLocalStorage()
@@ -10,44 +11,12 @@ describe('Remove Owners tests', () => {
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 
-  it('Verify that "Remove" icon is visible', () => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
-    owner.verifyRemoveBtnIsEnabled().should('have.length', 2)
-  })
-
-  it('Verify Tooltip displays correct message for Non-Owner', () => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_4)
-    owner.waitForConnectionStatus()
-    owner.verifyRemoveBtnIsDisabled()
-  })
-
-  it('Verify Tooltip displays correct message for disconnected user', () => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
-    owner.waitForConnectionStatus()
-    owner.clickOnWalletExpandMoreIcon()
-    owner.clickOnDisconnectBtn()
-    owner.verifyRemoveBtnIsDisabled()
-  })
-
-  it('Verify owner removal form can be opened', () => {
+  // TODO: Add Sign action. Check there is no error before sign action on UI when nonce not loaded
+  it('[SMOKE] Verify owner deletion confirmation is displayed', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
     owner.waitForConnectionStatus()
     owner.openRemoveOwnerWindow(1)
-  })
-
-  it('Verify threshold input displays the upper limit as the current safe number of owners minus one', () => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
-    owner.waitForConnectionStatus()
-    owner.openRemoveOwnerWindow(1)
-    owner.verifyThresholdLimit(1, 1)
-    owner.getThresholdOptions().should('have.length', 1)
-  })
-
-  it('Verify owner deletion confirmation is displayed', () => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
-    owner.waitForConnectionStatus()
-    owner.openRemoveOwnerWindow(1)
-    owner.clickOnNextBtn()
+    createwallet.clickOnNextBtn()
     owner.verifyOwnerDeletionWindowDisplayed()
   })
 })

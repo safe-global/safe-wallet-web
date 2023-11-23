@@ -17,13 +17,18 @@ import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { getInteractionTitle, isTxValid } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { isWalletConnectSafeApp } from '@/services/walletconnect/utils'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
+  onSubmit?: (txId: string, safeTxHash: string) => void
 }
 
 const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
+  onSubmit,
 }: ReviewSafeAppsTxProps): ReactElement => {
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
@@ -54,11 +59,22 @@ const ReviewSafeAppsTx = ({
     if (!safeTx || !onboard) return
     trackSafeAppTxCount(Number(appId))
 
+    let safeTxHash = ''
     try {
-      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId, txId)
+      safeTxHash = await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId, txId)
     } catch (error) {
       setSafeTxError(asError(error))
     }
+
+    // Track tx creation
+    if (safeTx.signatures.size === 0) {
+      trackEvent({
+        ...TX_EVENTS.CREATE,
+        label: isWalletConnectSafeApp(app?.url || '') ? TX_TYPES.walletconnect : TX_TYPES.safeapps,
+      })
+    }
+
+    onSubmit?.(txId, safeTxHash)
   }
 
   const origin = useMemo(() => getTxOrigin(app), [app])

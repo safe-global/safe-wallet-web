@@ -1,10 +1,12 @@
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
+import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { getTxDetails } from '@/services/tx/txDetails'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useEffect } from 'react'
 import useChainId from './useChainId'
 
 const events = {
+  [TxEvent.SIGNATURE_PROPOSED]: TX_EVENTS.CONFIRM,
   [TxEvent.SIGNED]: WALLET_EVENTS.OFFCHAIN_SIGNATURE,
   [TxEvent.PROCESSING]: WALLET_EVENTS.ONCHAIN_INTERACTION,
   [TxEvent.PROCESSING_MODULE]: WALLET_EVENTS.ONCHAIN_INTERACTION,

@@ -8,6 +8,7 @@ import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { ChangeThresholdFlowFieldNames } from '@/components/tx-flow/flows/ChangeThreshold'
 import type { ChangeThresholdFlowProps } from '@/components/tx-flow/flows/ChangeThreshold'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -24,6 +25,7 @@ const ReviewChangeThreshold = ({ params }: { params: ChangeThresholdFlowProps })
   const onChangeThreshold = () => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: newThreshold })
+    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.owner_threshold_change })
   }
 
   return (

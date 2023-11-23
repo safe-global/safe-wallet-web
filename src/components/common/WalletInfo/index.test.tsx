@@ -104,7 +104,7 @@ describe('WalletInfo', () => {
       />,
     )
 
-    expect(getByText('Delete Account')).toBeInTheDocument()
+    expect(getByText('Delete account')).toBeInTheDocument()
   })
 
   it('should not display a Delete Account on prod', () => {
@@ -122,7 +122,7 @@ describe('WalletInfo', () => {
       />,
     )
 
-    expect(queryByText('Delete Account')).not.toBeInTheDocument()
+    expect(queryByText('Delete account')).not.toBeInTheDocument()
   })
 
   it('should not display a Delete Account if not social login', () => {
@@ -140,7 +140,7 @@ describe('WalletInfo', () => {
       />,
     )
 
-    expect(queryByText('Delete Account')).not.toBeInTheDocument()
+    expect(queryByText('Delete account')).not.toBeInTheDocument()
   })
 
   it('should display an enable mfa button if mfa is not enabled', () => {
