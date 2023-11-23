@@ -5,11 +5,13 @@ import SettingsHeader from '@/components/settings/SettingsHeader'
 import { PushNotifications } from '@/components/settings/PushNotifications'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { RecoveryEmail } from '@/components/settings/RecoveryEmail'
 
 const NotificationsPage: NextPage = () => {
   const isNotificationFeatureEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
+  const isRecoveryEnabled = useHasFeature(FEATURES.RECOVERY)
 
-  if (!isNotificationFeatureEnabled) {
+  if (!isNotificationFeatureEnabled || !isRecoveryEnabled) {
     return null
   }
 
@@ -22,7 +24,9 @@ const NotificationsPage: NextPage = () => {
       <SettingsHeader />
 
       <main>
-        <PushNotifications />
+        {isRecoveryEnabled && <RecoveryEmail />}
+
+        {isNotificationFeatureEnabled && <PushNotifications />}
       </main>
     </>
   )
