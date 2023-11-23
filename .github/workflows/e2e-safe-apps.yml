@@ -25,3 +25,5 @@ jobs:
           spec: cypress/e2e/safe-apps/*.cy.js
           group: 'Safe Apps tests'
           project_id: okn21k
+          record_key: ${{ secrets.CYPRESS_SAFE_APPS_RECORD_KEY }}
+

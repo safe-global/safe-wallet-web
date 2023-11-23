@@ -19,6 +19,10 @@ inputs:
     description: 'Cypress cloud project id'
     required: false
 
+  record_key:
+    description: 'Cypress cloud record key'
+    required: false
+
 runs:
   using: 'composite'
   steps:
@@ -48,6 +52,6 @@ runs:
         record: true
         config: baseUrl=http://localhost:8080
       env:
-        CYPRESS_RECORD_KEY: ${{ fromJSON(inputs.secrets).CYPRESS_RECORD_KEY }}
+        CYPRESS_RECORD_KEY: ${{ inputs.record_key || fromJSON(inputs.secrets).CYPRESS_RECORD_KEY }}
         GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
         CYPRESS_PROJECT_ID: ${{ inputs.project_id }}
