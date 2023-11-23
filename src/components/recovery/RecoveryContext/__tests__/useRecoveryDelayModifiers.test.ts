@@ -2,14 +2,14 @@ import { useHasFeature } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
-import { getDelayModifiers } from '@/services/recovery/delay-modifier'
+import { getRecoveryDelayModifiers } from '@/services/recovery/delay-modifier'
 import { addressExBuilder, safeInfoBuilder } from '@/tests/builders/safe'
 import { act, renderHook } from '@/tests/test-utils'
-import { useDelayModifiers } from '../useDelayModifiers'
+import { useRecoveryDelayModifiers } from '../useRecoveryDelayModifiers'
 
 jest.mock('@/services/recovery/delay-modifier')
 
-const mockGetDelayModifiers = getDelayModifiers as jest.MockedFunction<typeof getDelayModifiers>
+const mockGetRecoveryDelayModifiers = getRecoveryDelayModifiers as jest.MockedFunction<typeof getRecoveryDelayModifiers>
 
 jest.mock('@/hooks/useSafeInfo')
 jest.mock('@/hooks/wallets/web3')
@@ -19,7 +19,7 @@ const mockUseSafeInfo = useSafeInfo as jest.MockedFunction<typeof useSafeInfo>
 const mockUseWeb3ReadOnly = useWeb3ReadOnly as jest.MockedFunction<typeof useWeb3ReadOnly>
 const mockUseHasFeature = useHasFeature as jest.MockedFunction<typeof useHasFeature>
 
-describe('useDelayModifiers', () => {
+describe('useRecoveryDelayModifiers', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -34,7 +34,7 @@ describe('useDelayModifiers', () => {
     const safeInfo = { safe, safeAddress: safe.address.value }
     mockUseSafeInfo.mockReturnValue(safeInfo as any)
 
-    const { result } = renderHook(() => useDelayModifiers())
+    const { result } = renderHook(() => useRecoveryDelayModifiers())
 
     // Give enough time for loading to occur, if it will
     await act(async () => {
@@ -42,7 +42,7 @@ describe('useDelayModifiers', () => {
     })
 
     expect(result.current).toEqual([undefined, undefined, false])
-    expect(mockGetDelayModifiers).not.toHaveBeenCalledTimes(1)
+    expect(mockGetRecoveryDelayModifiers).not.toHaveBeenCalledTimes(1)
 
     jest.useRealTimers()
   })
@@ -56,7 +56,7 @@ describe('useDelayModifiers', () => {
     const safeInfo = { safe, safeAddress: safe.address.value }
     mockUseSafeInfo.mockReturnValue(safeInfo as any)
 
-    const { result } = renderHook(() => useDelayModifiers())
+    const { result } = renderHook(() => useRecoveryDelayModifiers())
 
     // Give enough time for loading to occur, if it will
     await act(async () => {
@@ -64,7 +64,7 @@ describe('useDelayModifiers', () => {
     })
 
     expect(result.current).toEqual([undefined, undefined, false])
-    expect(mockGetDelayModifiers).not.toHaveBeenCalledTimes(1)
+    expect(mockGetRecoveryDelayModifiers).not.toHaveBeenCalledTimes(1)
 
     jest.useRealTimers()
   })
@@ -79,7 +79,7 @@ describe('useDelayModifiers', () => {
     const safeInfo = { safe, safeAddress: safe.address.value }
     mockUseSafeInfo.mockReturnValue(safeInfo as any)
 
-    const { result } = renderHook(() => useDelayModifiers())
+    const { result } = renderHook(() => useRecoveryDelayModifiers())
 
     // Give enough time for loading to occur, if it will
     await act(async () => {
@@ -87,7 +87,7 @@ describe('useDelayModifiers', () => {
     })
 
     expect(result.current).toEqual([undefined, undefined, false])
-    expect(mockGetDelayModifiers).not.toHaveBeenCalledTimes(1)
+    expect(mockGetRecoveryDelayModifiers).not.toHaveBeenCalledTimes(1)
 
     jest.useRealTimers()
   })
@@ -105,7 +105,7 @@ describe('useDelayModifiers', () => {
     const safeInfo = { safe, safeAddress: safe.address.value }
     mockUseSafeInfo.mockReturnValue(safeInfo as any)
 
-    const { result } = renderHook(() => useDelayModifiers())
+    const { result } = renderHook(() => useRecoveryDelayModifiers())
 
     // Give enough time for loading to occur, if it will
     await act(async () => {
@@ -113,7 +113,7 @@ describe('useDelayModifiers', () => {
     })
 
     expect(result.current).toEqual([undefined, undefined, false])
-    expect(mockGetDelayModifiers).not.toHaveBeenCalledTimes(1)
+    expect(mockGetRecoveryDelayModifiers).not.toHaveBeenCalledTimes(1)
 
     jest.useRealTimers()
   })
@@ -129,8 +129,8 @@ describe('useDelayModifiers', () => {
     const safeInfo = { safe, safeAddress: safe.address.value }
     mockUseSafeInfo.mockReturnValue(safeInfo as any)
 
-    renderHook(() => useDelayModifiers())
+    renderHook(() => useRecoveryDelayModifiers())
 
-    expect(mockGetDelayModifiers).toHaveBeenCalledTimes(1)
+    expect(mockGetRecoveryDelayModifiers).toHaveBeenCalledTimes(1)
   })
 })

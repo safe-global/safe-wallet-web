@@ -69,6 +69,8 @@ export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()
 
+  console.log(recovery)
+
   const rows = useMemo(() => {
     return recovery?.flatMap((delayModifier) => {
       const { guardians, txCooldown, txExpiration } = delayModifier
@@ -135,7 +137,7 @@ export function Recovery(): ReactElement {
             Enabling the Account recovery module will require a transactions.
           </Typography>
 
-          {recovery?.length === 0 ? (
+          {!recovery || recovery.length === 0 ? (
             <>
               <Alert severity="info">
                 Unhappy with the provided option? {/* TODO: Add link */}
