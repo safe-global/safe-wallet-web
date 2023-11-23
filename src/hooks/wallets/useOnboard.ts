@@ -92,11 +92,19 @@ const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 // Detect injected wallet
 const hasInjectedWallet = () => typeof window !== 'undefined' && !!window?.ethereum
 
+let isConnecting = false
+
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = async (
   onboard: OnboardAPI,
   options?: Parameters<OnboardAPI['connectWallet']>[0],
 ): Promise<WalletState[] | undefined> => {
+  if (isConnecting) {
+    return
+  }
+
+  isConnecting = true
+
   // On mobile, automatically choose WalletConnect if there is no injected wallet
   if (!options && isMobile() && !hasInjectedWallet()) {
     options = {
@@ -110,8 +118,12 @@ export const connectWallet = async (
     wallets = await onboard.connectWallet(options)
   } catch (e) {
     logError(Errors._302, e)
+    isConnecting = false
+
     return
   }
+
+  isConnecting = false
 
   return wallets
 }

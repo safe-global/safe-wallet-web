@@ -3,7 +3,6 @@ import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { Box, Button, LinearProgress, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { useCallback, useContext, useMemo, useState } from 'react'
-import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecovery'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
@@ -21,6 +20,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import madProps from '@/utils/mad-props'
 import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { open } from '@/services/mpc/PasswordRecoveryModal'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -94,8 +94,7 @@ export const SocialSigner = ({
 
       if (status === COREKIT_STATUS.REQUIRED_SHARE) {
         onRequirePassword?.()
-
-        setTxFlow(<PasswordRecovery recoverFactorWithPassword={recoverPassword} />, () => setLoginPending(false), false)
+        open(() => setLoginPending(false))
         return
       }
     } catch (err) {
