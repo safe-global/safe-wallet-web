@@ -61,7 +61,9 @@ export function RecoveryDetails({ item }: { item: RecoveryQueueItem }): ReactEle
               </div>
             </InfoDetails>
           ) : (
-            <ErrorMessage>This transaction potentially calls malicious actions. We recommend skipping it.</ErrorMessage>
+            <ErrorMessage>
+              This transaction potentially calls malicious actions. We recommend cancelling it.
+            </ErrorMessage>
           )}
         </div>
 

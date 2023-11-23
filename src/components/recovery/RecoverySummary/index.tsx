@@ -6,7 +6,7 @@ import { RecoveryType } from '../RecoveryType'
 import { RecoveryInfo } from '../RecoveryInfo'
 import { RecoveryStatus } from '../RecoveryStatus'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
-import { SkipRecoveryButton } from '../SkipRecoveryButton'
+import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
 
@@ -31,7 +31,7 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
       {wallet && (
         <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
           <ExecuteRecoveryButton recovery={item} compact />
-          <SkipRecoveryButton recovery={item} compact />
+          <CancelRecoveryButton recovery={item} compact />
         </Box>
       )}
 

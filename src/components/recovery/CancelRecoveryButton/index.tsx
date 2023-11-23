@@ -6,10 +6,10 @@ import ErrorIcon from '@/public/images/notifications/error.svg'
 import IconButton from '@mui/material/IconButton'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
-import { SkipRecoveryFlow } from '@/components/tx-flow/flows/SkipRecovery'
+import { CancelRecoveryFlow } from '@/components/tx-flow/flows/CancelRecovery'
 import type { RecoveryQueueItem } from '@/store/recoverySlice'
 
-export function SkipRecoveryButton({
+export function CancelRecoveryButton({
   recovery,
   compact = false,
 }: {
@@ -22,7 +22,7 @@ export function SkipRecoveryButton({
     e.stopPropagation()
     e.preventDefault()
 
-    setTxFlow(<SkipRecoveryFlow recovery={recovery} />)
+    setTxFlow(<CancelRecoveryFlow recovery={recovery} />)
   }
 
   return (
@@ -34,7 +34,7 @@ export function SkipRecoveryButton({
           </IconButton>
         ) : (
           <Button onClick={onClick} variant="danger" disabled={!isOk} size="stretched">
-            Skip
+            Cancel
           </Button>
         )
       }
