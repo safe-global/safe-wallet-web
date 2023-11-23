@@ -45,7 +45,6 @@ runs:
 
     - uses: cypress-io/github-action@v4
       with:
-        command: npx cypress run --reporter junit --reporter-options mochaFile=reports/junit-[hash].xml
         spec: ${{ inputs.spec }}
         group: ${{ inputs.group }}
         parallel: true
