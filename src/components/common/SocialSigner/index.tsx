@@ -2,8 +2,7 @@ import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { Box, Button, LinearProgress, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
-import { useCallback, useContext, useMemo, useState } from 'react'
-import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecovery'
+import { useMemo, useState } from 'react'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
@@ -17,10 +16,10 @@ import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { TxModalContext } from '@/components/tx-flow'
 import madProps from '@/utils/mad-props'
 import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { open } from '@/services/mpc/PasswordRecoveryModal'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -60,24 +59,10 @@ export const SocialSigner = ({
 }: SocialSignerLoginProps) => {
   const [loginPending, setLoginPending] = useState<boolean>(false)
   const [loginError, setLoginError] = useState<string | undefined>(undefined)
-  const { setTxFlow } = useContext(TxModalContext)
   const userInfo = socialWalletService?.getUserInfo()
   const isDisabled = loginPending || !isMPCLoginEnabled
 
   const isWelcomePage = !!onLogin
-
-  const recoverPassword = useCallback(
-    async (password: string, storeDeviceFactor: boolean) => {
-      if (!socialWalletService) return
-
-      const success = await socialWalletService.recoverAccountWithPassword(password, storeDeviceFactor)
-
-      if (success) {
-        setTxFlow(undefined)
-      }
-    },
-    [setTxFlow, socialWalletService],
-  )
 
   const login = async () => {
     if (!socialWalletService) return
@@ -94,8 +79,7 @@ export const SocialSigner = ({
 
       if (status === COREKIT_STATUS.REQUIRED_SHARE) {
         onRequirePassword?.()
-
-        setTxFlow(<PasswordRecovery recoverFactorWithPassword={recoverPassword} />, () => setLoginPending(false), false)
+        open(() => setLoginPending(false))
         return
       }
     } catch (err) {
