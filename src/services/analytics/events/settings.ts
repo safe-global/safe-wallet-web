@@ -48,10 +48,6 @@ export const SETTINGS_EVENTS = {
       action: 'Dark mode',
       category: SETTINGS_CATEGORY,
     },
-    ADDRESS_EMOJIS: {
-      action: 'Toggle address emojis',
-      category: SETTINGS_CATEGORY,
-    },
   },
   MODULES: {
     REMOVE_MODULE: {

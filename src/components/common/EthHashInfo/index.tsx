@@ -6,8 +6,6 @@ import { selectSettings } from '@/store/settingsSlice'
 import { selectChainById } from '@/store/chainsSlice'
 import { getBlockExplorerLink } from '@/utils/chains'
 import SrcEthHashInfo, { type EthHashInfoProps } from './SrcEthHashInfo'
-import { selectAddedSafes } from '@/store/addedSafesSlice'
-import useSafeAddress from '@/hooks/useSafeAddress'
 
 const EthHashInfo = ({
   showName = true,
@@ -16,18 +14,10 @@ const EthHashInfo = ({
 }: EthHashInfoProps & { showName?: boolean }): ReactElement => {
   const settings = useAppSelector(selectSettings)
   const currentChainId = useChainId()
-  const safeAddress = useSafeAddress()
-  const addedSafes = useAppSelector((state) => selectAddedSafes(state, currentChainId)) || {}
   const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChainId))
   const addressBook = useAddressBook()
   const link = chain ? getBlockExplorerLink(chain, props.address) : undefined
   const name = showName ? addressBook[props.address] || props.name : undefined
-  const showEmoji =
-    settings.addressEmojis &&
-    props.showAvatar !== false &&
-    !props.customAvatar &&
-    avatarSize >= 20 &&
-    (safeAddress === props.address || props.address in addedSafes)
 
   return (
     <SrcEthHashInfo
@@ -39,7 +29,6 @@ const EthHashInfo = ({
       customAvatar={props.customAvatar}
       ExplorerButtonProps={{ title: link?.title || '', href: link?.href || '' }}
       avatarSize={avatarSize}
-      showEmoji={showEmoji}
     >
       {props.children}
     </SrcEthHashInfo>

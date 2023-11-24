@@ -47,7 +47,7 @@ export function verifyTxQueueWidget() {
     // Queued txns
     cy.contains(
       `a[href^="/transactions/tx?id=multisig_0x"]`,
-      '13' + 'Send' + `-0.00002 ${constants.tokenAbbreviation.sep}` + '1/1',
+      '14' + 'Send' + `-0.00002 ${constants.tokenAbbreviation.sep}` + '1/1',
     ).should('exist')
 
     cy.contains(
