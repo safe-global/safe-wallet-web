@@ -1,6 +1,7 @@
 .txType {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: var(--space-1);
   color: var(--color-text-primary);
 }

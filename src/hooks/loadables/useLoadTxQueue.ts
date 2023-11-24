@@ -13,11 +13,12 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   const reloadTag = txQueuedTag + txHistoryTag + proposedId
 
   // Re-fetch when chainId/address, or txQueueTag change
-  const [data, error, loading] = useAsync<TransactionListPage | undefined>(
-    async () => {
+  const [data, error, loading] = useAsync<TransactionListPage>(
+    () => {
       if (!safeLoaded) return
       return getTransactionQueue(chainId, safeAddress)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [safeLoaded, chainId, safeAddress, reloadTag],
     false,
   )

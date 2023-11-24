@@ -10,7 +10,9 @@ runs:
       with:
         path: '**/node_modules'
         key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
-
     - name: Yarn install
       shell: bash
-      run: yarn install --immutable
+      run: yarn install --frozen-lockfile
+    - name: Yarn after install
+      shell: bash
+      run: yarn after-install

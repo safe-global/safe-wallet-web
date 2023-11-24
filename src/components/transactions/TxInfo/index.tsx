@@ -17,12 +17,10 @@ import {
   isMultiSendTxInfo,
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
-  isSupportedMultiSendAddress,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
-import useChainId from '@/hooks/useChainId'
 
 export const TransferTx = ({
   info,
@@ -75,7 +73,7 @@ const CustomTx = ({ info }: { info: Custom }): ReactElement => {
 }
 
 const CreationTx = ({ info }: { info: Creation }): ReactElement => {
-  return <>Safe created by {shortenAddress(info.creator.value)}</>
+  return <>Safe Account created by {shortenAddress(info.creator.value)}</>
 }
 
 const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
@@ -97,19 +95,17 @@ const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   return <></>
 }
 
-const TxInfo = ({ info }: { info: TransactionInfo }): ReactElement => {
-  const chainId = useChainId()
-
+const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; withLogo?: boolean }): ReactElement => {
   if (isSettingsChangeTxInfo(info)) {
     return <SettingsChangeTx info={info} />
   }
 
-  if (isSupportedMultiSendAddress(info, chainId) && isMultiSendTxInfo(info)) {
+  if (isMultiSendTxInfo(info)) {
     return <MultiSendTx info={info} />
   }
 
   if (isTransferTxInfo(info)) {
-    return <TransferTx info={info} />
+    return <TransferTx info={info} {...rest} />
   }
 
   if (isCustomTxInfo(info)) {

@@ -7,10 +7,9 @@ import CheckWallet from '@/components/common/CheckWallet'
 
 type NftSendFormProps = {
   selectedNfts: SafeCollectibleResponse[]
-  onSelectAll: () => void
 }
 
-const NftSendForm = ({ selectedNfts, onSelectAll }: NftSendFormProps): ReactElement => {
+const NftSendForm = ({ selectedNfts }: NftSendFormProps): ReactElement => {
   const nftsText = `NFT${selectedNfts.length === 1 ? '' : 's'}`
   const noSelected = selectedNfts.length === 0
 
@@ -30,24 +29,10 @@ const NftSendForm = ({ selectedNfts, onSelectAll }: NftSendFormProps): ReactElem
         </Grid>
 
         <Grid item>
-          <Button
-            onClick={onSelectAll}
-            variant="outlined"
-            size="small"
-            sx={{
-              // The custom padding is needed to align the outlined button with the adjacent filled button
-              py: '6px',
-              minWidth: '10em',
-            }}
-          >
-            {noSelected ? 'Select all' : 'Deselect all'}
-          </Button>
-        </Grid>
-
-        <Grid item>
           <CheckWallet>
             {(isOk) => (
               <Button
+                data-testid={`nft-send-btn-${!isOk || noSelected}`}
                 type="submit"
                 variant="contained"
                 size="small"

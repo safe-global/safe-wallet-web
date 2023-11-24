@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import type { Notification } from '@/store/notificationsSlice'
 import { closeNotification, readNotification, selectNotifications } from '@/store/notificationsSlice'
 import type { AlertColor, SnackbarCloseReason } from '@mui/material'
-import { Alert, Link, Snackbar } from '@mui/material'
+import { Alert, Link, Snackbar, Typography } from '@mui/material'
 import css from './styles.module.css'
 import NextLink from 'next/link'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -31,7 +31,7 @@ export const NotificationLink = ({
 
   return (
     <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title} as="span">
-      <NextLink href={link.href} passHref>
+      <NextLink href={link.href} passHref legacyBehavior>
         <Link
           className={css.link}
           onClick={onClick}
@@ -45,6 +45,7 @@ export const NotificationLink = ({
 }
 
 const Toast = ({
+  title,
   message,
   detailedMessage,
   variant,
@@ -73,6 +74,12 @@ const Toast = ({
   return (
     <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={autoHideDuration}>
       <Alert severity={variant} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
+        {title && (
+          <Typography variant="body2" fontWeight="700">
+            {title}
+          </Typography>
+        )}
+
         {message}
 
         {detailedMessage && (

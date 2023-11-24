@@ -32,7 +32,7 @@ const SafeListItemSecondaryAction = ({
 
   if (!isAdded && href) {
     return (
-      <Link href={href} passHref>
+      <Link href={href} passHref legacyBehavior>
         <Button
           className={css.addButton}
           size="small"
@@ -42,7 +42,7 @@ const SafeListItemSecondaryAction = ({
             onClick?.()
           }}
         >
-          Add Safe
+          Add
         </Button>
       </Link>
     )

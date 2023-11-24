@@ -69,11 +69,15 @@ input[type='number'] {
   stroke: var(--color-border-main);
 }
 
+.illustration-very-light-stroke {
+  stroke: var(--color-border-light);
+}
+
 .illustration-background-stroke {
   stroke: var(--color-logo-background);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .sticky {
     position: sticky;
     right: 0;

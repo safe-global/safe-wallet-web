@@ -1,5 +1,4 @@
 import { Box, CircularProgress, Typography } from '@mui/material'
-import type { Palette } from '@mui/material'
 import type { ReactElement } from 'react'
 import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -8,14 +7,14 @@ import DateTime from '@/components/common/DateTime'
 import useWallet from '@/hooks/wallets/useWallet'
 import MsgType from '@/components/safe-messages/MsgType'
 import SignMsgButton from '@/components/safe-messages/SignMsgButton'
-import useSafeMessageStatus from '@/hooks/useSafeMessageStatus'
-import useIsSafeMessagePending from '@/hooks/useIsSafeMessagePending'
+import useSafeMessageStatus from '@/hooks/messages/useSafeMessageStatus'
+import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
 import TxConfirmations from '@/components/transactions/TxConfirmations'
 import classNames from 'classnames'
 
 import txSummaryCss from '@/components/transactions/TxSummary/styles.module.css'
 
-const getStatusColor = (value: SafeMessageStatus, palette: Palette) => {
+const getStatusColor = (value: SafeMessageStatus, palette: Record<string, Record<string, string>>): string => {
   switch (value) {
     case SafeMessageStatus.CONFIRMED:
       return palette.success.main
@@ -34,7 +33,7 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
 
   return (
-    <Box className={classNames(txSummaryCss.gridContainer, txSummaryCss.columnTemplateWithoutNonce)}>
+    <Box className={classNames(txSummaryCss.gridContainer, txSummaryCss.columnTemplate)}>
       <Box gridArea="type" className={txSummaryCss.columnWrap}>
         <MsgType msg={msg} />
       </Box>

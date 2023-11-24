@@ -8,7 +8,7 @@ export enum EthersTxReplacedReason {
   replaced = 'replaced',
 }
 
-// TODO: Replace this with ethers v6 types once released
+// TODO: Replace this with ethers v6 types once released and create similar helper to `asError`
 export type EthersError = Error & { code: ErrorCode; reason?: EthersTxReplacedReason; receipt?: TransactionReceipt }
 
 export const didRevert = (receipt: EthersError['receipt']): boolean => {

@@ -10,6 +10,11 @@ type Props = {
   label?: EventLabel
 }
 
+const shouldTrack = (el: HTMLDivElement) => {
+  const disabledChildren = el.querySelectorAll('*[disabled]')
+  return disabledChildren.length === 0
+}
+
 const Track = ({ children, as: Wrapper = 'span', ...trackData }: Props): typeof children => {
   const el = useRef<HTMLDivElement>(null)
 
@@ -21,7 +26,9 @@ const Track = ({ children, as: Wrapper = 'span', ...trackData }: Props): typeof 
     const trackEl = el.current
 
     const handleClick = () => {
-      trackEvent(trackData)
+      if (shouldTrack(trackEl)) {
+        trackEvent(trackData)
+      }
     }
 
     // We cannot use onClick as events in children do not always bubble up

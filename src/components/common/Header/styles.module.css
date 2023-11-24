@@ -11,12 +11,22 @@
 }
 
 .element {
-  padding: 0 var(--space-2);
   height: 100%;
   border-right: 1px solid var(--color-border-light);
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.element :global(.MuiBadge-standard) {
+  font-size: 12px;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+}
+
+[data-theme='dark'] .element :global(.MuiBadge-standard) {
+  background-color: var(--color-primary-main);
 }
 
 .menuButton,
@@ -30,6 +40,11 @@
   width: auto;
   display: block;
   color: var(--color-logo-main);
+  height: 20px;
+}
+
+.logo {
+  padding: var(--space-2);
 }
 
 .menuButton {
@@ -41,8 +56,6 @@
 }
 
 .networkSelector {
-  padding-right: 0;
-  padding-left: 0;
   border-right: none;
 }
 
@@ -50,7 +63,7 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899.95px) {
   .logo {
     display: none;
   }
@@ -60,17 +73,9 @@
   }
 }
 
-@media (max-width: 600px) {
-  .element {
-    padding: 0 var(--space-1);
-  }
-
+@media (max-width: 599.95px) {
   .menuButton {
     padding-left: var(--space-2);
-  }
-
-  .networkSelector {
-    padding-right: 0;
   }
 
   .hideMobile {

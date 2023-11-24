@@ -26,6 +26,9 @@ export const addressBookSlice = createSlice({
 
     upsertAddressBookEntry: (state, action: PayloadAction<{ chainId: string; address: string; name: string }>) => {
       const { chainId, address, name } = action.payload
+      if (name.trim() === '') {
+        return
+      }
       if (!state[chainId]) state[chainId] = {}
       state[chainId][address] = name
     },
@@ -34,6 +37,8 @@ export const addressBookSlice = createSlice({
       const { chainId, address } = action.payload
       if (!state[chainId]) return state
       delete state[chainId][address]
+      if (Object.keys(state[chainId]).length > 0) return state
+      delete state[chainId]
     },
   },
 })

@@ -1,57 +1,38 @@
 import useAsync from '@/hooks/useAsync'
-import useSafeAddress from '@/hooks/useSafeAddress'
-import { Errors, logError } from '@/services/exceptions'
-import {
-  IS_PRODUCTION,
-  SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION,
-  SAFE_GELATO_RELAY_SERVICE_URL_STAGING,
-} from '@/config/constants'
+import useSafeInfo from './useSafeInfo'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
-import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
-import { useRelayingDebugger } from '@/hooks/useRelayingDebugger'
+import { getRelays } from '@/services/tx/relaying'
 
-export const SAFE_GELATO_RELAY_SERVICE_URL =
-  IS_PRODUCTION || cgwDebugStorage.get()
-    ? SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION
-    : SAFE_GELATO_RELAY_SERVICE_URL_STAGING
+export const MAX_HOUR_RELAYS = 5
 
-const fetchRemainingRelays = async (chainId: string, address: string): Promise<number> => {
-  const url = `${SAFE_GELATO_RELAY_SERVICE_URL}/${chainId}/${address}`
-
-  try {
-    const res = await fetch(url)
-    const data = await res.json()
-    return data.remaining
-  } catch (error) {
-    logError(Errors._630, (error as Error).message)
-    return 0
-  }
-}
-
-export const useRemainingRelaysBySafe = () => {
+export const useRelaysBySafe = () => {
   const chain = useCurrentChain()
-  const safeAddress = useSafeAddress()
-  const [isRelayingEnabled] = useRelayingDebugger()
+  const { safe, safeAddress } = useSafeInfo()
 
   return useAsync(() => {
-    if (!safeAddress || !chain || !hasFeature(chain, FEATURES.RELAYING) || !isRelayingEnabled) return
+    if (!safeAddress || !chain || !hasFeature(chain, FEATURES.RELAYING)) return
 
-    return fetchRemainingRelays(chain.chainId, safeAddress)
-  }, [chain, safeAddress])
+    return getRelays(chain.chainId, safeAddress)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chain, safeAddress, safe.txHistoryTag])
 }
-
-const getMinimum = (result: number[]) => Math.min(...result)
 
 export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
   const chain = useCurrentChain()
-  const [isRelayingEnabled] = useRelayingDebugger()
+  const { safe } = useSafeInfo()
 
-  return useAsync(async () => {
-    if (!chain || !hasFeature(chain, FEATURES.RELAYING) || !isRelayingEnabled) return
+  return useAsync(() => {
+    if (!chain || !hasFeature(chain, FEATURES.RELAYING)) return
 
-    const result = await Promise.all(ownerAddresses.map((address) => fetchRemainingRelays(chain.chainId, address)))
-
-    return getMinimum(result)
-  }, [chain, ownerAddresses])
+    return Promise.all(ownerAddresses.map((address) => getRelays(chain.chainId, address)))
+      .then((result) => {
+        const min = Math.min(...result.map((r) => r.remaining))
+        return result.find((r) => r.remaining === min)
+      })
+      .catch(() => {
+        return { remaining: 0, limit: MAX_HOUR_RELAYS }
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chain, ownerAddresses, safe.txHistoryTag])
 }

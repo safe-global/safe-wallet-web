@@ -15,6 +15,10 @@ export const MODALS_EVENTS = {
     action: 'Contract interaction',
     category: MODALS_CATEGORY,
   },
+  SCAN_QR: {
+    action: 'Scan QR',
+    category: MODALS_CATEGORY,
+  },
   TX_DETAILS: {
     action: 'Transaction details',
     category: MODALS_CATEGORY,
@@ -27,8 +31,8 @@ export const MODALS_EVENTS = {
     action: 'Estimation',
     category: MODALS_CATEGORY,
   },
-  EXECUTE_TX: {
-    action: 'Execute transaction',
+  TOGGLE_EXECUTE_TX: {
+    action: 'Toggle execute transaction',
     category: MODALS_CATEGORY,
   },
   USE_SPENDING_LIMIT: {
@@ -40,16 +44,17 @@ export const MODALS_EVENTS = {
     action: 'Simulate transaction',
     category: MODALS_CATEGORY,
   },
-  REJECT_TX: {
-    action: 'Reject transaction',
-    category: MODALS_CATEGORY,
-  },
   EDIT_APPROVALS: {
     action: 'Edit approval',
     category: MODALS_CATEGORY,
   },
-  PROPOSE_TX: {
-    action: 'Propose transaction',
+  ACCEPT_RISK: {
+    action: 'Accept transaction risk',
     category: MODALS_CATEGORY,
+  },
+  REDEFINE_RESULT: {
+    action: 'Redefine scan result',
+    category: MODALS_CATEGORY,
+    event: EventType.META,
   },
 }

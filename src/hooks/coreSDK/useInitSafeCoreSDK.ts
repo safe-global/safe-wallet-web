@@ -8,6 +8,7 @@ import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { parsePrefixedAddress, sameAddress } from '@/utils/addresses'
+import { asError } from '@/services/exceptions/utils'
 
 export const useInitSafeCoreSDK = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -26,18 +27,36 @@ export const useInitSafeCoreSDK = () => {
     }
 
     // A read-only instance of the SDK is sufficient because we connect the signer to it when needed
-    initSafeSDK(web3ReadOnly, safe)
+    initSafeSDK({
+      provider: web3ReadOnly,
+      chainId: safe.chainId,
+      address: safe.address.value,
+      version: safe.version,
+      implementationVersionState: safe.implementationVersionState,
+      implementation: safe.implementation.value,
+    })
       .then(setSafeSDK)
-      .catch((e) => {
+      .catch((_e) => {
+        const e = asError(_e)
         dispatch(
           showNotification({
             message: 'Please try connecting your wallet again.',
             groupKey: 'core-sdk-init-error',
             variant: 'error',
-            detailedMessage: (e as Error).message,
+            detailedMessage: e.message,
           }),
         )
-        trackError(ErrorCodes._105, (e as Error).message)
+        trackError(ErrorCodes._105, e.message)
       })
-  }, [safe, safeLoaded, dispatch, web3ReadOnly, address])
+  }, [
+    address,
+    dispatch,
+    safe.address.value,
+    safe.chainId,
+    safe.implementation.value,
+    safe.implementationVersionState,
+    safe.version,
+    safeLoaded,
+    web3ReadOnly,
+  ])
 }

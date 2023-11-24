@@ -1,8 +1,5 @@
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import type { ReactElement } from 'react'
+import type { ReactElement, BaseSyntheticEvent } from 'react'
+import { Box, Button, DialogActions, DialogContent } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import AddressInput from '@/components/common/AddressInput'
@@ -11,13 +8,14 @@ import NameInput from '@/components/common/NameInput'
 import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import madProps from '@/utils/mad-props'
 
 export type AddressEntry = {
   name: string
   address: string
 }
 
-const EntryDialog = ({
+function EntryDialog({
   handleClose,
   defaultValues = {
     name: '',
@@ -25,14 +23,15 @@ const EntryDialog = ({
   },
   disableAddressInput = false,
   chainId,
+  currentChainId,
 }: {
   handleClose: () => void
   defaultValues?: AddressEntry
   disableAddressInput?: boolean
   chainId?: string
-}): ReactElement => {
+  currentChainId: string
+}): ReactElement {
   const dispatch = useAppDispatch()
-  const currentChainId = useChainId()
 
   const methods = useForm<AddressEntry>({
     defaultValues,
@@ -41,16 +40,20 @@ const EntryDialog = ({
 
   const { handleSubmit, formState } = methods
 
-  const onSubmit = (data: AddressEntry) => {
+  const submitCallback = handleSubmit((data: AddressEntry) => {
     dispatch(upsertAddressBookEntry({ ...data, chainId: chainId || currentChainId }))
-
     handleClose()
+  })
+
+  const onSubmit = (e: BaseSyntheticEvent) => {
+    e.stopPropagation()
+    submitCallback(e)
   }
 
   return (
     <ModalDialog open onClose={handleClose} dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
           <DialogContent>
             <Box mb={2}>
               <NameInput label="Name" autoFocus name="name" required />
@@ -80,4 +83,6 @@ const EntryDialog = ({
   )
 }
 
-export default EntryDialog
+export default madProps(EntryDialog, {
+  currentChainId: useChainId,
+})

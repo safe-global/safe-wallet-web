@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { Button, Grid, Typography, Divider, Box } from '@mui/material'
+import { useMemo, useState } from 'react'
+import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
 import { lightPalette } from '@safe-global/safe-react-components'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -15,16 +15,82 @@ import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeCon
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { type PendingSafeData, SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/create/steps/StatusStep'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ReviewRow from '@/components/new-safe/ReviewRow'
-import SponsoredBy from '@/components/tx/SponsoredBy'
-import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
+import { ExecutionMethodSelector, ExecutionMethod } from '@/components/tx/ExecutionMethodSelector'
+import { MAX_HOUR_RELAYS, useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import classnames from 'classnames'
+import { hasRemainingRelays } from '@/utils/relaying'
+import { BigNumber } from 'ethers'
+import { usePendingSafe } from '../StatusStep/usePendingSafe'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import { SPONSOR_LOGOS } from '@/components/tx/SponsoredBy'
+import Image from 'next/image'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+
+export const NetworkFee = ({
+  totalFee,
+  chain,
+  willRelay,
+}: {
+  totalFee: string
+  chain: ChainInfo | undefined
+  willRelay: boolean
+}) => {
+  const wallet = useWallet()
+
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+
+  if (!isSocialLogin) {
+    return (
+      <Box
+        p={1}
+        sx={{
+          backgroundColor: lightPalette.secondary.background,
+          color: 'static.main',
+          width: 'fit-content',
+          borderRadius: '6px',
+        }}
+      >
+        <Typography variant="body1" className={classnames({ [css.sponsoredFee]: willRelay })}>
+          <b>
+            &asymp; {totalFee} {chain?.nativeCurrency.symbol}
+          </b>
+        </Typography>
+      </Box>
+    )
+  }
+
+  if (willRelay) {
+    return (
+      <>
+        <Typography fontWeight="bold">Free</Typography>
+        <Typography variant="body2">
+          Your account is sponsored by
+          <Image
+            data-testid="sponsor-icon"
+            src={SPONSOR_LOGOS[chain?.chainId || '']}
+            alt={chain?.chainName || ''}
+            width={16}
+            height={16}
+            style={{ margin: '-3px 0px -3px 4px' }}
+          />{' '}
+          {chain?.chainName}
+        </Typography>
+      </>
+    )
+  }
+
+  return (
+    <Alert severity="error">
+      You have used up your {MAX_HOUR_RELAYS} free transactions per hour. Please try again later.
+    </Alert>
+  )
+}
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
@@ -32,15 +98,17 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const chain = useCurrentChain()
   const wallet = useWallet()
   const provider = useWeb3()
-  const { maxFeePerGas, maxPriorityFeePerGas } = useGasPrice()
+  const [gasPrice] = useGasPrice()
   const saltNonce = useMemo(() => Date.now(), [])
-  const [_, setPendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
+  const [_, setPendingSafe] = usePendingSafe()
+  const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
-  // Chain supports relaying and relay transactions are available
-  const willRelay = !!minRelays
+  // Every owner has remaining relays and relay method is selected
+  const canRelay = hasRemainingRelays(minRelays)
+  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
   const safeParams = useMemo(() => {
     return {
@@ -52,9 +120,20 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const { gasLimit } = useEstimateSafeCreationGas(safeParams)
 
+  const maxFeePerGas = gasPrice?.maxFeePerGas
+  const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
+
   const totalFee =
-    gasLimit && maxFeePerGas && maxPriorityFeePerGas
-      ? formatVisualAmount(maxFeePerGas.add(maxPriorityFeePerGas).mul(gasLimit), chain?.nativeCurrency.decimals)
+    gasLimit && maxFeePerGas
+      ? formatVisualAmount(
+          maxFeePerGas
+            .add(
+              // maxPriorityFeePerGas is undefined if EIP-1559 disabled
+              maxPriorityFeePerGas || BigNumber.from(0),
+            )
+            .mul(gasLimit),
+          chain?.nativeCurrency.decimals,
+        )
       : '> 0.001'
 
   const handleBack = () => {
@@ -64,7 +143,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const createSafe = async () => {
     if (!wallet || !provider || !chain) return
 
-    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId)
+    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION)
 
     const props = {
       safeAccountConfig: {
@@ -79,20 +158,30 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
     const safeAddress = await computeNewSafeAddress(provider, props)
 
-    setPendingSafe({ ...data, saltNonce, safeAddress })
-    onSubmit({ ...data, saltNonce, safeAddress, willRelay })
+    const pendingSafe = {
+      ...data,
+      saltNonce,
+      safeAddress,
+      willRelay,
+    }
+
+    setPendingSafe(pendingSafe)
+    onSubmit(pendingSafe)
   }
+
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+  const isDisabled = isWrongChain || (isSocialLogin && !willRelay)
 
   return (
     <>
       <Box className={layoutCss.row}>
         <Grid container spacing={3}>
           <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
-          <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />
+          {data.name && <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />}
           <ReviewRow
             name="Owners"
             value={
-              <Box className={css.ownersArray}>
+              <Box data-testid="review-step-owner-info" className={css.ownersArray}>
                 {data.owners.map((owner, index) => (
                   <EthHashInfo
                     address={owner.address}
@@ -120,49 +209,62 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       </Box>
 
       <Divider />
-      <Box className={layoutCss.row}>
-        <Grid item xs={12}>
+      <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
+        {canRelay && !isSocialLogin && (
           <Grid container spacing={3}>
             <ReviewRow
-              name="Est. network fee"
+              name="Execution method"
               value={
-                <>
-                  <Box
-                    p={1}
-                    sx={{
-                      backgroundColor: lightPalette.secondary.background,
-                      color: 'static.main',
-                      width: 'fit-content',
-                      borderRadius: '6px',
-                    }}
-                  >
-                    <Typography variant="body1" className={classnames({ [css.sponsoredFee]: willRelay })}>
-                      <b>
-                        &asymp; {totalFee} {chain?.nativeCurrency.symbol}
-                      </b>
-                    </Typography>
-                  </Box>
-                  {willRelay ? null : (
-                    <Typography variant="body2" color="text.secondary" mt={1}>
-                      You will have to confirm a transaction with your connected wallet.
-                    </Typography>
-                  )}
-                </>
+                <ExecutionMethodSelector
+                  executionMethod={executionMethod}
+                  setExecutionMethod={setExecutionMethod}
+                  relays={minRelays}
+                />
               }
             />
-            {willRelay ? <ReviewRow name="" value={<SponsoredBy remainingRelays={minRelays} />} /> : null}
           </Grid>
+        )}
+
+        <Grid data-testid="network-fee-section" container spacing={3}>
+          <ReviewRow
+            name="Est. network fee"
+            value={
+              <>
+                <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
+
+                {!willRelay && !isSocialLogin && (
+                  <Typography variant="body2" color="text.secondary" mt={1}>
+                    You will have to confirm a transaction with your connected wallet.
+                  </Typography>
+                )}
+              </>
+            }
+          />
         </Grid>
 
         {isWrongChain && <NetworkWarning />}
       </Box>
+
       <Divider />
+
       <Box className={layoutCss.row}>
         <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-          <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
+          <Button
+            data-testid="back-btn"
+            variant="outlined"
+            size="small"
+            onClick={handleBack}
+            startIcon={<ArrowBackIcon fontSize="small" />}
+          >
             Back
           </Button>
-          <Button onClick={createSafe} variant="contained" size="stretched" disabled={isWrongChain}>
+          <Button
+            data-testid="review-step-next-btn"
+            onClick={createSafe}
+            variant="contained"
+            size="stretched"
+            disabled={isDisabled}
+          >
             Next
           </Button>
         </Box>

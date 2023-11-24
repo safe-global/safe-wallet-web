@@ -32,6 +32,18 @@ describe('addressBookSlice', () => {
     })
   })
 
+  it('should ignore empty names in the address book', () => {
+    const state = addressBookSlice.reducer(
+      initialState,
+      upsertAddressBookEntry({
+        chainId: '1',
+        address: '0x2',
+        name: '',
+      }),
+    )
+    expect(state).toEqual(initialState)
+  })
+
   it('should edit an entry in the address book', () => {
     const state = addressBookSlice.reducer(
       initialState,
@@ -59,6 +71,19 @@ describe('addressBookSlice', () => {
       '1': { '0x1': 'Bob' },
       '4': { '0x0': 'Charlie', '0x1': 'Dave' },
     })
+  })
+
+  it('should remove the chain if the last entry is removed', () => {
+    const state = addressBookSlice.reducer(
+      {
+        '1': { '0x0': 'Alice' },
+      },
+      removeAddressBookEntry({
+        chainId: '1',
+        address: '0x0',
+      }),
+    )
+    expect(state).toStrictEqual({})
   })
 
   it('should not return entries with invalid address format', () => {

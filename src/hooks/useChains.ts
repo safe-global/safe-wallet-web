@@ -4,6 +4,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import { selectChainById, selectChains } from '@/store/chainsSlice'
 import { useChainId } from './useChainId'
+import { type FEATURES, hasFeature } from '@/utils/chains'
 
 const useChains = (): { configs: ChainInfo[]; error?: string; loading?: boolean } => {
   const state = useAppSelector(selectChains, isEqual)
@@ -24,4 +25,15 @@ export const useCurrentChain = (): ChainInfo | undefined => {
   const chainId = useChainId()
   const chainInfo = useAppSelector((state) => selectChainById(state, chainId), isEqual)
   return chainInfo
+}
+
+/**
+ * Checks if a feature is enabled on the current chain.
+ *
+ * @param feature name of the feature to check for
+ * @returns `true`, if the feature is enabled on the current chain. Otherwise `false`
+ */
+export const useHasFeature = (feature: FEATURES): boolean => {
+  const currentChain = useCurrentChain()
+  return !!currentChain && hasFeature(currentChain, feature)
 }

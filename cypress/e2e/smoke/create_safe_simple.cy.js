@@ -1,82 +1,58 @@
-const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'
-const OWNER_ADDRESS = '0xE297437d6b53890cbf004e401F3acc67c8b39665'
+import * as constants from '../../support/constants'
+import * as main from '../../e2e/pages/main.page'
+import * as createwallet from '../pages/create_wallet.pages'
+import * as owner from '../pages/owners.pages'
 
-describe('Create Safe form', () => {
-  it('should navigate to the form', () => {
-    cy.connectE2EWallet()
-
-    cy.visit('/welcome')
-
-    // Close cookie banner
-    cy.contains('button', 'Accept all').click()
-
-    // Ensure wallet is connected to correct chain via header
-    cy.contains('E2E Wallet @ Görli')
-
-    cy.contains('Create new Safe').click()
+describe('[SMOKE] Safe creation tests', () => {
+  beforeEach(() => {
+    cy.visit(constants.welcomeUrl + '?chain=sep')
+    main.waitForSafeListRequestToComplete()
+    cy.clearLocalStorage()
+    main.acceptCookies()
+  })
+  it('[SMOKE] Verify a Wallet can be connected', () => {
+    createwallet.clickOnCreateNewSafeBtn()
+    owner.clickOnWalletExpandMoreIcon()
+    owner.clickOnDisconnectBtn()
+    createwallet.clickOnConnectWalletBtn()
+    createwallet.connectWallet()
   })
 
-  it('should allow setting a name', () => {
-    // Name input should have a placeholder ending in 'goerli-safe'
-    cy.get('input[name="name"]')
-      .should('have.attr', 'placeholder')
-      .should('match', /g(ö|oe)rli-safe/)
-
-    // Input a custom name
-    cy.get('input[name="name"]').type('Test safe name').should('have.value', 'Test safe name')
+  it('[SMOKE] Verify that a new Wallet has default name related to the selected network', () => {
+    owner.waitForConnectionStatus()
+    createwallet.clickOnCreateNewSafeBtn()
+    createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
   })
 
-  it('should allow changing the network', () => {
-    // Switch to a different network
-    cy.get('[data-cy="create-safe-select-network"]').click()
-    cy.contains('Ethereum').click()
-
-    // Switch back to Görli
-    cy.get('[data-cy="create-safe-select-network"]').click()
-    cy.contains('li span', 'Görli').click()
-
-    cy.contains('button', 'Next').click()
+  it('[SMOKE] Verify Add and Remove Owner Row works as expected', () => {
+    owner.waitForConnectionStatus()
+    createwallet.clickOnCreateNewSafeBtn()
+    createwallet.clickOnNextBtn()
+    createwallet.clickOnAddNewOwnerBtn()
+    owner.verifyNumberOfOwners(2)
+    owner.verifyExistingOwnerAddress(1, '')
+    owner.verifyExistingOwnerName(1, '')
+    createwallet.removeOwner(0)
+    main.verifyElementsCount(createwallet.removeOwnerBtn, 0)
+    createwallet.clickOnAddNewOwnerBtn()
+    owner.verifyNumberOfOwners(2)
   })
 
-  it('should display a default owner and threshold', () => {
-    // Default owner
-    cy.get('input[name="owners.0.address"]').should('have.value', DEFAULT_OWNER_ADDRESS)
-
-    // Default threshold
-    cy.get('input[name="threshold"]').should('have.value', 1)
-  })
-
-  it('should allow changing the owner name', () => {
-    cy.get('input[name="owners.0.name"]').type('Test Owner Name')
-    cy.contains('button', 'Back').click()
-    cy.contains('button', 'Next').click()
-    cy.get('input[name="owners.0.name"]').should('have.value', 'Test Owner Name')
-  })
-
-  it('should add a new owner and update threshold', () => {
-    // Add new owner
-    cy.contains('button', 'Add new owner').click()
-    cy.get('input[name="owners.1.address"]').should('exist')
-    cy.get('input[name="owners.1.address"]').type(OWNER_ADDRESS)
-
-    // Update threshold
-    cy.get('input[name="threshold"]').parent().click()
-    cy.contains('li', '2').click()
-  })
-
-  it('should remove an owner and update threshold', () => {
-    // Remove owner
-    cy.get('button[aria-label="Remove owner"]').click()
-
-    // Threshold should change back to 1
-    cy.get('input[name="threshold"]').should('have.value', 1)
-
-    cy.contains('button', 'Next').click()
-  })
-
-  it('should display summary on review page', () => {
-    cy.contains('Test safe name')
-    cy.contains(DEFAULT_OWNER_ADDRESS)
-    cy.contains('1 out of 1')
+  it('[SMOKE] Verify Threshold Setup', () => {
+    owner.waitForConnectionStatus()
+    createwallet.clickOnCreateNewSafeBtn()
+    createwallet.clickOnNextBtn()
+    createwallet.clickOnAddNewOwnerBtn()
+    createwallet.clickOnAddNewOwnerBtn()
+    owner.verifyNumberOfOwners(3)
+    createwallet.clickOnAddNewOwnerBtn()
+    owner.verifyNumberOfOwners(4)
+    owner.verifyThresholdLimit(1, 4)
+    createwallet.updateThreshold(3)
+    createwallet.removeOwner(1)
+    owner.verifyThresholdLimit(1, 3)
+    createwallet.removeOwner(1)
+    owner.verifyThresholdLimit(1, 2)
+    createwallet.updateThreshold(1)
   })
 })

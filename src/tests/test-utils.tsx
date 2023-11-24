@@ -1,7 +1,7 @@
 import type { RenderHookOptions } from '@testing-library/react'
 import { render, renderHook } from '@testing-library/react'
 import type { NextRouter } from 'next/router'
-import { RouterContext } from 'next/dist/shared/lib/router-context'
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime'
 import type { Theme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material/styles'
 import { SafeThemeProvider } from '@safe-global/safe-react-components'
@@ -33,6 +33,7 @@ const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   replace: jest.fn(() => Promise.resolve(true)),
   route: '/',
   query: {},
+  forward: () => void 0,
   ...props,
 })
 

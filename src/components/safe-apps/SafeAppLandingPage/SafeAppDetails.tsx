@@ -28,7 +28,7 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
     </Box>
     <Divider />
     <Box sx={{ mt: 4 }}>
-      <Typography variant="body1">App URL</Typography>
+      <Typography variant="body1">Safe App URL</Typography>
       <Typography
         variant="body2"
         sx={({ palette, shape }) => ({

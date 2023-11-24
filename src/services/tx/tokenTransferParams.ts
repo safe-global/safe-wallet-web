@@ -1,6 +1,7 @@
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { safeParseUnits } from '@/utils/formatters'
 import { Interface } from '@ethersproject/abi'
-import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { sameAddress } from '@/utils/addresses'
 
 // CryptoKitties Contract Addresses by network
@@ -60,5 +61,23 @@ export const createNftTransferParams = (
     to: tokenAddress,
     value: '0',
     data,
+  }
+}
+
+export const getNativeTransferData = (data: MetaTransactionData): DecodedDataResponse => {
+  return {
+    method: 'Native token transfer',
+    parameters: [
+      {
+        name: 'to',
+        type: 'address',
+        value: data.to,
+      },
+      {
+        name: 'value',
+        type: 'uint256',
+        value: data.value,
+      },
+    ],
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { formatError } from '@/utils/formatters'
 import type { LinkProps } from 'next/link'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
@@ -14,25 +14,23 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
+import { getTxDetails } from '@/services/tx/txDetails'
 
 const TxNotifications = {
-  [TxEvent.SIGN_FAILED]: 'Signature failed. Please try again.',
-  [TxEvent.PROPOSED]: 'Your transaction was successfully proposed.',
-  [TxEvent.PROPOSE_FAILED]: 'Failed proposing the transaction. Please try again.',
-  [TxEvent.SIGNATURE_PROPOSED]: 'You successfully signed the transaction.',
-  [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send the signature. Please try again.',
-  [TxEvent.EXECUTING]: 'Please confirm the execution in your wallet.',
-  [TxEvent.PROCESSING]: 'Your transaction is being processed.',
-  [TxEvent.PROCESSING_MODULE]:
-    'Your transaction has been submitted and will appear in the interface only after it has been successfully processed and indexed.',
-  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]:
-    'An on-chain signature is required. Please confirm the transaction in your wallet.',
-  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]:
-    "The on-chain signature request was confirmed. Once it's on chain, the transaction will be signed.",
-  [TxEvent.PROCESSED]: 'Your transaction was successfully processed and is now being indexed.',
-  [TxEvent.REVERTED]: 'Transaction reverted. Please check your gas settings.',
-  [TxEvent.SUCCESS]: 'Your transaction was successfully executed.',
-  [TxEvent.FAILED]: 'Your transaction was unsuccessful.',
+  [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
+  [TxEvent.PROPOSED]: 'Successfully added to queue.',
+  [TxEvent.PROPOSE_FAILED]: 'Failed to add to queue. Please try again.',
+  [TxEvent.SIGNATURE_PROPOSED]: 'Successfully signed.',
+  [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send signature. Please try again.',
+  [TxEvent.EXECUTING]: 'Confirm the execution in your wallet.',
+  [TxEvent.PROCESSING]: 'Validating...',
+  [TxEvent.PROCESSING_MODULE]: 'Validating module interaction...',
+  [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: 'Confirm on-chain signature in your wallet.',
+  [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: 'On-chain signature request confirmed.',
+  [TxEvent.PROCESSED]: 'Successfully validated. Indexing...',
+  [TxEvent.REVERTED]: 'Reverted. Please check your gas settings.',
+  [TxEvent.SUCCESS]: 'Successfully executed.',
+  [TxEvent.FAILED]: 'Failed.',
 }
 
 enum Variant {
@@ -43,21 +41,17 @@ enum Variant {
 
 const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
 
-const getTxLink = (txId: string, chain: ChainInfo, safeAddress: string): { href: LinkProps['href']; title: string } => {
+export const getTxLink = (
+  txId: string,
+  chain: ChainInfo,
+  safeAddress: string,
+): { href: LinkProps['href']; title: string } => {
   return {
     href: {
       pathname: AppRoutes.transactions.tx,
       query: { id: txId, safe: `${chain?.shortName}:${safeAddress}` },
     },
     title: 'View transaction',
-  }
-}
-
-const getTxExplorerLink = (txHash: string, chain: ChainInfo): { href: LinkProps['href']; title: string } => {
-  const { href } = getExplorerLink(txHash, chain.blockExplorerUriTemplate)
-  return {
-    href,
-    title: 'View on explorer',
   }
 }
 
@@ -76,7 +70,7 @@ const useTxNotifications = (): void => {
     const entries = Object.entries(TxNotifications) as [keyof typeof TxNotifications, string][]
 
     const unsubFns = entries.map(([event, baseMessage]) =>
-      txSubscribe(event, (detail) => {
+      txSubscribe(event, async (detail) => {
         const isError = 'error' in detail
         const isSuccess = successEvents.includes(event)
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
@@ -84,13 +78,27 @@ const useTxNotifications = (): void => {
         const txHash = 'txHash' in detail ? detail.txHash : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txId || ''
 
+        let humanDescription = 'Transaction'
+        const id = txId || txHash
+        if (id) {
+          try {
+            const txDetails = await getTxDetails(chain.chainId, id)
+            humanDescription = txDetails.txInfo.humanDescription || humanDescription
+          } catch {}
+        }
+
         dispatch(
           showNotification({
+            title: humanDescription,
             message,
             detailedMessage: isError ? detail.error.message : undefined,
             groupKey,
             variant: isError ? Variant.ERROR : isSuccess ? Variant.SUCCESS : Variant.INFO,
-            link: txId ? getTxLink(txId, chain, safeAddress) : txHash ? getTxExplorerLink(txHash, chain) : undefined,
+            link: txId
+              ? getTxLink(txId, chain, safeAddress)
+              : txHash
+              ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
+              : undefined,
           }),
         )
       }),
@@ -110,6 +118,7 @@ const useTxNotifications = (): void => {
   const pendingTxs = useAppSelector(selectPendingTxs)
   const notifications = useAppSelector(selectNotifications)
   const wallet = useWallet()
+  const notifiedAwaitingTxIds = useRef<Array<string>>([])
 
   const txsAwaitingConfirmation = useMemo(() => {
     if (!page?.results) {
@@ -130,18 +139,22 @@ const useTxNotifications = (): void => {
     }
 
     const txId = txsAwaitingConfirmation[0].transaction.id
-    const hasNotified = notifications.some(({ groupKey }) => groupKey === txId)
+    const hasNotified = notifiedAwaitingTxIds.current.includes(txId)
 
-    if (!hasNotified) {
-      dispatch(
-        showNotification({
-          variant: 'info',
-          message: 'A transaction requires your confirmation.',
-          link: chain && getTxLink(txId, chain, safeAddress),
-          groupKey: txId,
-        }),
-      )
+    if (hasNotified) {
+      return
     }
+
+    dispatch(
+      showNotification({
+        variant: 'info',
+        message: 'A transaction requires your confirmation.',
+        link: chain && getTxLink(txId, chain, safeAddress),
+        groupKey: txId,
+      }),
+    )
+
+    notifiedAwaitingTxIds.current.push(txId)
   }, [chain, dispatch, isOwner, notifications, safeAddress, txsAwaitingConfirmation])
 }
 

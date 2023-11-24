@@ -1,4 +1,4 @@
-import React, { type ReactElement } from 'react'
+import React, { type ReactElement, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import ListItem from '@mui/material/ListItem'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
@@ -12,6 +12,7 @@ import {
 import { navItems } from './config'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { AppRoutes } from '@/config/routes'
+import useTxQueue from '@/hooks/useTxQueue'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
@@ -21,12 +22,24 @@ const Navigation = (): ReactElement => {
   const router = useRouter()
   const { safe } = useSafeInfo()
   const currentSubdirectory = getSubdirectory(router.pathname)
+  const hasQueuedTxs = Boolean(useTxQueue().page?.results.length)
 
   // Indicate whether the current Safe needs an upgrade
   const setupItem = navItems.find((item) => item.href === AppRoutes.settings.setup)
   if (setupItem) {
     setupItem.badge = safe.implementationVersionState === ImplementationVersionState.OUTDATED
   }
+
+  // Route Transactions to Queue if there are queued txs, otherwise to History
+  const getRoute = useCallback(
+    (href: string) => {
+      if (href === AppRoutes.transactions.history && hasQueuedTxs) {
+        return AppRoutes.transactions.queue
+      }
+      return href
+    },
+    [hasQueuedTxs],
+  )
 
   return (
     <SidebarList>
@@ -37,7 +50,7 @@ const Navigation = (): ReactElement => {
           <ListItem key={item.href} disablePadding selected={isSelected}>
             <SidebarListItemButton
               selected={isSelected}
-              href={{ pathname: item.href, query: { safe: router.query.safe } }}
+              href={{ pathname: getRoute(item.href), query: { safe: router.query.safe } }}
             >
               {item.icon && <SidebarListItemIcon badge={item.badge}>{item.icon}</SidebarListItemIcon>}
               <SidebarListItemText bold>{item.label}</SidebarListItemText>

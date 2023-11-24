@@ -8,14 +8,14 @@ import GovernanceSection from '@/components/dashboard/GovernanceSection/Governan
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
 import Relaying from '@/components/dashboard/Relaying'
-import { useCurrentChain } from '@/hooks/useChains'
-import { FEATURES, hasFeature } from '@/utils/chains'
+import { FEATURES } from '@/utils/chains'
+import { useHasFeature } from '@/hooks/useChains'
+import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
-  const currentChain = useCurrentChain()
-  const supportsRelaying = currentChain && hasFeature(currentChain, FEATURES.RELAYING)
-  const { showCreationModal = '' } = router.query
+  const supportsRelaying = useHasFeature(FEATURES.RELAYING)
+  const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
 
   return (
     <>
@@ -25,11 +25,11 @@ const Dashboard = (): ReactElement => {
         </Grid>
 
         <Grid item xs={12} lg={6}>
-          <PendingTxsList size={4} />
+          <PendingTxsList />
         </Grid>
 
         <Grid item xs={12} lg={supportsRelaying ? 6 : undefined}>
-          <FeaturedApps />
+          <FeaturedApps stackedLayout={!!supportsRelaying} />
         </Grid>
 
         {supportsRelaying ? (

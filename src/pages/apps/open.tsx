@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useCallback } from 'react'
+import { useCallback, useContext } from 'react'
 import { Box, CircularProgress } from '@mui/material'
 
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
@@ -15,6 +15,10 @@ import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import useChainId from '@/hooks/useChainId'
 import { AppRoutes } from '@/config/routes'
 import { getOrigin } from '@/components/safe-apps/utils'
+import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
+
+// TODO: Remove this once we properly deprecate the WC app
+const WC_SAFE_APP = /wallet-connect/
 
 const SafeApps: NextPage = () => {
   const chainId = useChainId()
@@ -42,6 +46,8 @@ const SafeApps: NextPage = () => {
     remoteSafeAppsLoading,
   })
 
+  const { setOpen } = useContext(WalletConnectContext)
+
   const goToList = useCallback(() => {
     router.push({
       pathname: AppRoutes.apps.index,
@@ -51,6 +57,12 @@ const SafeApps: NextPage = () => {
 
   // appUrl is required to be present
   if (!appUrl || !router.isReady) return null
+
+  if (WC_SAFE_APP.test(appUrl)) {
+    setOpen(true)
+    goToList()
+    return null
+  }
 
   if (isModalVisible) {
     return (
@@ -78,7 +90,7 @@ const SafeApps: NextPage = () => {
 
   return (
     <SafeAppsErrorBoundary render={() => <SafeAppsLoadError onBackToApps={() => router.back()} />}>
-      <AppFrame appUrl={appUrl} allowedFeaturesList={getAllowedFeaturesList(origin)} />
+      <AppFrame appUrl={appUrl} allowedFeaturesList={getAllowedFeaturesList(origin)} safeAppFromManifest={safeApp} />
     </SafeAppsErrorBoundary>
   )
 }

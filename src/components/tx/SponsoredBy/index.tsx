@@ -2,21 +2,29 @@ import { Box, Stack, SvgIcon, Tooltip, Typography } from '@mui/material'
 import GasStationIcon from '@/public/images/common/gas-station.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
+import chains from '@/config/chains'
+import { useCurrentChain } from '@/hooks/useChains'
+import type { RelayResponse } from '@/services/tx/relaying'
 
-export const MAX_HOUR_RELAYS = 5
+export const SPONSOR_LOGOS = {
+  [chains.gno]: '/images/common/gnosis-chain-logo.png',
+  [chains.gor]: '/images/common/token-placeholder.svg',
+}
 
-const SponsoredBy = ({ remainingRelays, tooltip }: { remainingRelays: number; tooltip?: string }) => {
+const SponsoredBy = ({ relays, tooltip }: { relays: RelayResponse; tooltip?: string }) => {
+  const chain = useCurrentChain()
+
   return (
     <Box className={css.sponsoredBy}>
       <SvgIcon component={GasStationIcon} inheritViewBox className={css.icon} />
-      <Stack direction="column">
-        <Stack direction="row" spacing={0.5} alignItems="center" mb={1}>
+      <div>
+        <Stack direction="row" spacing={0.5} alignItems="center">
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
             Sponsored by
           </Typography>
-          <img src="/images/common/gnosis-chain-logo.png" alt="Gnosis Chain" className={css.gcLogo} />
+          <img src={SPONSOR_LOGOS[chain?.chainId || '']} alt={chain?.chainName} className={css.logo} />
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
-            Gnosis Chain
+            {chain?.chainName}
           </Typography>
           {tooltip ? (
             <Tooltip title={tooltip} placement="top" arrow>
@@ -32,15 +40,14 @@ const SponsoredBy = ({ remainingRelays, tooltip }: { remainingRelays: number; to
             </Tooltip>
           ) : null}
         </Stack>
-        <div>
-          <Typography color="primary.light">
-            Transactions per hour:{' '}
-            <Box component="span" sx={{ fontWeight: '700', color: 'text.primary' }}>
-              {remainingRelays} of {MAX_HOUR_RELAYS}
-            </Box>
-          </Typography>
-        </div>
-      </Stack>
+
+        <Typography variant="body2" color="primary.light">
+          Transactions per hour:{' '}
+          <Box component="span" sx={{ fontWeight: '700', color: 'text.primary' }}>
+            {relays.remaining} of {relays.limit}
+          </Box>
+        </Typography>
+      </div>
     </Box>
   )
 }

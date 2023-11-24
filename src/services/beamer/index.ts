@@ -65,6 +65,7 @@ export const unloadBeamer = (): void => {
     '_BEAMER_FILTER_BY_URL_',
     '_BEAMER_LAST_UPDATE_',
     '_BEAMER_BOOSTED_ANNOUNCEMENT_DATE_',
+    '_BEAMER_NPS_LAST_SHOWN_',
   ]
 
   if (!window?.Beamer || !scriptRef) {
@@ -81,4 +82,17 @@ export const unloadBeamer = (): void => {
     local.removeMatching(BEAMER_LS_RE)
     BEAMER_COOKIES.forEach((name) => Cookies.remove(name, { domain, path: '/' }))
   }, 100)
+}
+
+export const shouldShowBeamerNps = (): boolean => {
+  if (!isBeamerLoaded() || !window?.Beamer) {
+    return false
+  }
+
+  const COOKIE_NAME = `_BEAMER_NPS_LAST_SHOWN_${BEAMER_ID}`
+
+  // Beamer advise using their '/nps/check' endpoint to see if the NPS should be shown
+  // As we need to check this more than the request limit, we instead check the cookie
+  // @see https://www.getbeamer.com/api
+  return !window.Beamer.getCookie(COOKIE_NAME)
 }

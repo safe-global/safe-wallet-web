@@ -4,12 +4,12 @@ import useSafeInfo from '../useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import useChainId from '@/hooks/useChainId'
-import { getWeb3ReadOnly, useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { getSpendingLimitContract, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import type { AddressEx, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { sameAddress } from '@/utils/addresses'
-import { type AllowanceModule, ERC20__factory } from '@/types/contracts'
+import { type AllowanceModule } from '@/types/contracts'
 import { getERC20TokenInfoOnChain } from '@/utils/tokens'
 
 import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
@@ -31,21 +31,6 @@ const discardZeroAllowance = (spendingLimit: SpendingLimitState): boolean =>
 
 const getTokenInfoFromBalances = (tokenInfoFromBalances: TokenInfo[], address: string): TokenInfo | undefined =>
   tokenInfoFromBalances.find((token) => token.address === address)
-
-const getTokenInfoOnChain = async (
-  address: string,
-): Promise<Omit<TokenInfo, 'name' | 'type' | 'logoUri'> | undefined> => {
-  const web3ReadOnly = getWeb3ReadOnly()
-  if (!web3ReadOnly) return
-
-  const erc20 = ERC20__factory.connect(address, web3ReadOnly)
-  const [symbol, decimals] = await Promise.all([erc20.symbol(), erc20.decimals()])
-  return {
-    address,
-    symbol,
-    decimals,
-  }
-}
 
 export const getTokenAllowanceForDelegate = async (
   contract: AllowanceModule,
@@ -116,11 +101,17 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
   const provider = useWeb3ReadOnly()
   const tokenInfoFromBalances = useAppSelector(selectTokens, isEqual)
 
-  const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(() => {
-    if (!provider || !safeLoaded || !safe.modules || !tokenInfoFromBalances) return
+  const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(
+    () => {
+      if (!provider || !safeLoaded || !safe.modules || !tokenInfoFromBalances) return
 
-    return getSpendingLimits(provider, safe.modules, safeAddress, chainId, tokenInfoFromBalances)
-  }, [provider, safeLoaded, safe.modules?.length, safeAddress, chainId, safe.txHistoryTag, tokenInfoFromBalances])
+      return getSpendingLimits(provider, safe.modules, safeAddress, chainId, tokenInfoFromBalances)
+    },
+    // Need to check length of modules array to prevent new request every time Safe info polls
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [provider, safeLoaded, safe.modules?.length, tokenInfoFromBalances, safeAddress, chainId, safe.txHistoryTag],
+    false,
+  )
 
   useEffect(() => {
     if (error) {

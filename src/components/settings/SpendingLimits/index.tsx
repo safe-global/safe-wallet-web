@@ -1,17 +1,22 @@
-import { Paper, Grid, Typography, Box } from '@mui/material'
+import { useContext } from 'react'
+import { Paper, Grid, Typography, Box, Button } from '@mui/material'
 import { NoSpendingLimits } from '@/components/settings/SpendingLimits/NoSpendingLimits'
 import { SpendingLimitsTable } from '@/components/settings/SpendingLimits/SpendingLimitsTable'
 import { useSelector } from 'react-redux'
 import { selectSpendingLimits, selectSpendingLimitsLoading } from '@/store/spendingLimitsSlice'
-import { NewSpendingLimit } from '@/components/settings/SpendingLimits/NewSpendingLimit'
-import { useCurrentChain } from '@/hooks/useChains'
-import { FEATURES, hasFeature } from '@/utils/chains'
+import { FEATURES } from '@/utils/chains'
+import { useHasFeature } from '@/hooks/useChains'
+import NewSpendingLimitFlow from '@/components/tx-flow/flows/NewSpendingLimit'
+import { SETTINGS_EVENTS } from '@/services/analytics'
+import CheckWallet from '@/components/common/CheckWallet'
+import Track from '@/components/common/Track'
+import { TxModalContext } from '@/components/tx-flow'
 
 const SpendingLimits = () => {
+  const { setTxFlow } = useContext(TxModalContext)
   const spendingLimits = useSelector(selectSpendingLimits)
   const spendingLimitsLoading = useSelector(selectSpendingLimitsLoading)
-  const currentChain = useCurrentChain()
-  const isEnabled = currentChain && hasFeature(currentChain, FEATURES.SPENDING_LIMIT)
+  const isEnabled = useHasFeature(FEATURES.SPENDING_LIMIT)
 
   return (
     <Paper sx={{ padding: 4 }}>
@@ -26,11 +31,24 @@ const SpendingLimits = () => {
           {isEnabled ? (
             <Box>
               <Typography>
-                You can set rules for specific beneficiaries to access funds from this Safe without having to collect
-                all signatures.
+                You can set rules for specific beneficiaries to access funds from this Safe Account without having to
+                collect all signatures.
               </Typography>
 
-              <NewSpendingLimit />
+              <CheckWallet>
+                {(isOk) => (
+                  <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.NEW_LIMIT}>
+                    <Button
+                      onClick={() => setTxFlow(<NewSpendingLimitFlow />)}
+                      sx={{ mt: 2 }}
+                      variant="contained"
+                      disabled={!isOk}
+                    >
+                      New spending limit
+                    </Button>
+                  </Track>
+                )}
+              </CheckWallet>
 
               {!spendingLimits.length && !spendingLimitsLoading && <NoSpendingLimits />}
             </Box>

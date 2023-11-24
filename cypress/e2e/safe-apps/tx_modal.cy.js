@@ -1,33 +1,35 @@
-import { TEST_SAFE } from './constants'
+import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
+import * as safeapps from '../pages/safeapps.pages'
 
-const appUrl = 'https://safe-test-app.com'
+const testAppName = 'Cypress Test App'
+const testAppDescr = 'Cypress Test App Description'
 
-describe('The transaction modal', () => {
-  before(() => {
+describe('Transaction modal tests', () => {
+  beforeEach(() => {
+    cy.clearLocalStorage()
     cy.fixture('safe-app').then((html) => {
-      cy.intercept('GET', `${appUrl}/*`, html)
+      cy.intercept('GET', `${constants.testAppUrl}/*`, html)
       cy.intercept('GET', `*/manifest.json`, {
-        name: 'Cypress Test App',
-        description: 'Cypress Test App Description',
+        name: testAppName,
+        description: testAppDescr,
         icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
       })
     })
-
-    cy.visitSafeApp(`${appUrl}/dummy`)
-
-    cy.findByText(/accept selection/i).click()
   })
 
-  describe('When sending a transaction from an app', () => {
-    it('should show the transaction popup', { defaultCommandTimeout: 12000 }, () => {
+  it(
+    'Verify that the transaction popup is displayed when sending a transaction from an app',
+    { defaultCommandTimeout: 12000 },
+    () => {
+      cy.visitSafeApp(`${constants.testAppUrl}/dummy`)
+      main.acceptCookies()
+      safeapps.clickOnContinueBtn()
+      safeapps.verifyWarningDefaultAppMsgIsDisplayed()
+      safeapps.clickOnContinueBtn()
       cy.findByRole('dialog').within(() => {
-        cy.findByText(/sending from/i)
-
-        const testSafeParts = TEST_SAFE.split(':')
-
-        cy.findByText(`${testSafeParts[0]}:`)
-        cy.findByText(testSafeParts[1])
+        cy.findByText(testAppName)
       })
-    })
-  })
+    },
+  )
 })

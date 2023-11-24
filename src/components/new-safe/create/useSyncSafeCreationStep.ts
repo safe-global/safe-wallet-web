@@ -1,25 +1,36 @@
 import { useEffect } from 'react'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import type { PendingSafeData } from '@/components/new-safe/create/steps/StatusStep'
 import type { NewSafeFormData } from '@/components/new-safe/create/index'
-import { SAFE_PENDING_CREATION_STORAGE_KEY } from '@/components/new-safe/create/steps/StatusStep'
 import useWallet from '@/hooks/wallets/useWallet'
+import { usePendingSafe } from './steps/StatusStep/usePendingSafe'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 
 const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => {
-  const [pendingSafe] = useLocalStorage<PendingSafeData | undefined>(SAFE_PENDING_CREATION_STORAGE_KEY)
+  const [pendingSafe] = usePendingSafe()
   const wallet = useWallet()
+  const isWrongChain = useIsWrongChain()
+  const router = useRouter()
 
   useEffect(() => {
-    if (!wallet) {
-      setStep(0)
-    }
-
     // Jump to the status screen if there is already a tx submitted
     if (pendingSafe) {
-      setStep(4)
+      setStep(3)
+      return
     }
-  }, [wallet, setStep, pendingSafe])
+
+    // Jump to the welcome page if there is no wallet
+    if (!wallet) {
+      router.push({ pathname: AppRoutes.welcome.index, query: router.query })
+    }
+
+    // Jump to choose name and network step if the wallet is connected to the wrong chain and there is no pending Safe
+    if (isWrongChain) {
+      setStep(0)
+      return
+    }
+  }, [wallet, setStep, pendingSafe, isWrongChain, router])
 }
 
 export default useSyncSafeCreationStep

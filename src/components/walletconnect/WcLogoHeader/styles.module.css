@@ -1,0 +1,19 @@
+.icon {
+  color: #3a99fb;
+  font-size: 50px;
+}
+
+.errorBadge {
+  color: var(--color-error-main);
+  margin-left: -16px;
+  margin-bottom: -6px;
+  background-color: var(--color-background-paper);
+  border-radius: 50%;
+  border: 1px solid var(--color-background-paper);
+}
+
+.title {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

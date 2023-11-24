@@ -1,7 +1,7 @@
 import type { Palette } from '@mui/material'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
-import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { type Transaction, TransactionInfoType, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
@@ -15,8 +15,10 @@ import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import TxConfirmations from '../TxConfirmations'
 import useIsPending from '@/hooks/useIsPending'
+import useABTesting from '@/services/tracking/useAbTesting'
+import { AbTest } from '@/services/tracking/abTesting'
 
-const getStatusColor = (value: TransactionStatus, palette: Palette) => {
+const getStatusColor = (value: TransactionStatus, palette: Palette | Record<string, Record<string, string>>) => {
   switch (value) {
     case TransactionStatus.SUCCESS:
       return palette.success.main
@@ -41,6 +43,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const wallet = useWallet()
   const txStatusLabel = useTransactionStatus(tx)
   const isPending = useIsPending(tx.id)
+  const shouldDisplayHumanDescription = useABTesting(AbTest.HUMAN_DESCRIPTION)
   const isQueue = isTxQueued(tx.txStatus)
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
@@ -52,15 +55,19 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
     : undefined
 
   const displayConfirmations = isQueue && !!submittedConfirmations && !!requiredConfirmations
+  const displayInfo =
+    (!tx.txInfo.richDecodedInfo && tx.txInfo.type !== TransactionInfoType.TRANSFER) || !shouldDisplayHumanDescription
 
   return (
     <Box
       className={`${css.gridContainer} ${
         isQueue
-          ? nonce && !isGrouped
+          ? displayInfo
             ? css.columnTemplate
-            : css.columnTemplateWithoutNonce
-          : css.columnTemplateTxHistory
+            : css.columnTemplateShort
+          : displayInfo
+          ? css.columnTemplateTxHistory
+          : css.columnTemplateTxHistoryShort
       }`}
       id={tx.id}
     >
@@ -70,9 +77,11 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         <TxType tx={tx} />
       </Box>
 
-      <Box gridArea="info" className={css.columnWrap}>
-        <TxInfo info={tx.txInfo} />
-      </Box>
+      {displayInfo && (
+        <Box gridArea="info" className={css.columnWrap}>
+          <TxInfo info={tx.txInfo} />
+        </Box>
+      )}
 
       <Box gridArea="date">
         <DateTime value={tx.timestamp} />

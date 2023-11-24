@@ -1,42 +1,40 @@
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
-import { Chip } from '@mui/material'
-import { MenuItem, Select, Skeleton } from '@mui/material'
+import { MenuItem, Select, Skeleton, Tooltip } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
 import ChainIndicator from '../ChainIndicator'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
-import type { ReactElement } from 'react'
+import { type ReactElement, forwardRef } from 'react'
 import { useCallback } from 'react'
 import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import useWallet from '@/hooks/wallets/useWallet'
+import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 
-/**
- * The dates when the chain was added to the app
- * Show a "New!" label for two weeks after the chain was added
- */
-const networkAddedDates: Record<string, string> = {
-  'base-gor': '2023-02-24',
-}
-const maxNewDays = 14
+const keepPathRoutes = [AppRoutes.welcome.index, AppRoutes.newSafe.create, AppRoutes.newSafe.load]
 
-const isNetworkNew = (network: string): boolean => {
-  const addedDate = networkAddedDates[network]
-  if (!addedDate) return false
-  const added = new Date(addedDate).getTime()
-  const elapsed = Date.now() - added
-  return elapsed < maxNewDays * 24 * 60 * 60 * 1000
-}
+const MenuWithTooltip = forwardRef<HTMLUListElement>(function MenuWithTooltip(props: any, ref) {
+  return (
+    <Tooltip title="More network support coming soon" arrow placement="left">
+      <ul ref={ref} {...props}>
+        {props.children}
+      </ul>
+    </Tooltip>
+  )
+})
 
-const NetworkSelector = (): ReactElement => {
+const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
+  const wallet = useWallet()
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
   const getNetworkLink = useCallback(
     (shortName: string) => {
-      const shouldKeepPath = [AppRoutes.newSafe.create, AppRoutes.newSafe.load].includes(router.pathname)
+      const shouldKeepPath = keepPathRoutes.includes(router.pathname)
 
       const route = {
         pathname: shouldKeepPath ? router.pathname : '/',
@@ -69,6 +67,8 @@ const NetworkSelector = (): ReactElement => {
     }
   }
 
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
+
   return configs.length ? (
     <Select
       value={chainId}
@@ -78,9 +78,11 @@ const NetworkSelector = (): ReactElement => {
       variant="standard"
       IconComponent={ExpandMoreIcon}
       MenuProps={{
+        transitionDuration: 0,
+        MenuListProps: { component: isSocialLogin ? MenuWithTooltip : undefined },
         sx: {
           '& .MuiPaper-root': {
-            mt: 2,
+            overflow: 'auto',
           },
         },
       }}
@@ -95,15 +97,9 @@ const NetworkSelector = (): ReactElement => {
     >
       {configs.map((chain) => {
         return (
-          <MenuItem key={chain.chainId} value={chain.chainId}>
-            <Link href={getNetworkLink(chain.shortName)} passHref>
-              <a>
-                <ChainIndicator chainId={chain.chainId} inline />
-
-                {isNetworkNew(chain.shortName) && (
-                  <Chip label="New!" size="small" color="secondary" component="span" className={css.newChip} />
-                )}
-              </a>
+          <MenuItem key={chain.chainId} value={chain.chainId} disabled={isSocialLogin && !isSocialWalletEnabled(chain)}>
+            <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} passHref>
+              <ChainIndicator chainId={chain.chainId} inline />
             </Link>
           </MenuItem>
         )

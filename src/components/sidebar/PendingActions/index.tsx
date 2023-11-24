@@ -42,7 +42,7 @@ const PendingActionButtons = ({
     <Box className={css.pendingButtons}>
       {wallet && totalToSign && (
         <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
-          <NextLink href={queueLink} passHref>
+          <NextLink href={queueLink} passHref legacyBehavior>
             <Tooltip title={`${shortAddress} can confirm ${totalToSign} transaction(s)`} placement="top" arrow>
               <ButtonBase
                 className={classnames(css.pendingButton, css.missingSignatures)}
@@ -52,7 +52,7 @@ const PendingActionButtons = ({
                   borderBottomRightRadius: ({ shape }) => shape.borderRadius,
                 }}
               >
-                <WalletIcon provider={wallet.label} />
+                <WalletIcon provider={wallet.label} icon={wallet.icon} />
                 <Typography variant="body2">{totalToSign}</Typography>
               </ButtonBase>
             </Tooltip>
@@ -62,7 +62,7 @@ const PendingActionButtons = ({
 
       {totalQueued && (
         <Track {...OVERVIEW_EVENTS.OPEN_QUEUED_TRANSACTIONS}>
-          <NextLink href={queueLink} passHref>
+          <NextLink href={queueLink} passHref legacyBehavior>
             <Tooltip title={`${totalQueued} transactions in the queue`} placement="top" arrow>
               <ButtonBase
                 className={classnames(css.pendingButton, css.queued)}

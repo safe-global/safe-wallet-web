@@ -1,49 +1,38 @@
 import path from 'path'
 import withBundleAnalyzer from '@next/bundle-analyzer'
-import NextPwa from'next-pwa'
+import withPWAInit from '@ducanh2912/next-pwa'
 
-const withPWA = NextPwa({
-  disable: process.env.NODE_ENV === 'development',
+const SERVICE_WORKERS_PATH = './src/service-workers'
+
+const withPWA = withPWAInit({
   dest: 'public',
+  workboxOptions: {
+    mode: 'production',
+  },
   reloadOnOnline: false,
   /* Do not precache anything */
   publicExcludes: ['**/*'],
   buildExcludes: [/./],
+  customWorkerSrc: SERVICE_WORKERS_PATH,
+  // Prefer InjectManifest for Web Push
+  swSrc: `${SERVICE_WORKERS_PATH}/index.ts`,
 })
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export', // static site export
+
+  images: {
+    unoptimized: true,
+  },
+
   reactStrictMode: false,
   productionBrowserSourceMaps: true,
   eslint: {
     dirs: ['src'],
   },
   experimental: {
-    images: {
-      unoptimized: true,
-    },
-    modularizeImports: {
-      '@mui/material': {
-        transform: '@mui/material/{{member}}',
-      },
-      '@mui/icons-material/?(((\\w*)?/?)*)': {
-        transform: '@mui/icons-material/{{ matches.[1] }}/{{member}}',
-      },
-      lodash: {
-        transform: 'lodash/{{member}}',
-      },
-      'date-fns': {
-        transform: 'date-fns/{{member}}',
-      },
-    },
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/:safe([a-z0-9-]+\\:0x[a-fA-F0-9]{40})/:path*',
-        destination: '/:path*?safe=:safe',
-      },
-    ]
+    optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lodash', 'date-fns'],
   },
   webpack(config) {
     config.module.rules.push({

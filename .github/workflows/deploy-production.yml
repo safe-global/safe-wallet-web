@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Deploy release
+    env:
+      ARCHIVE_NAME: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/yarn
+
+      - uses: ./.github/workflows/build
+        with:
+          secrets: ${{ toJSON(secrets) }}
+          prod: ${{ true }}
+
+      - name: Create archive
+        run: tar -czf "$ARCHIVE_NAME".tar.gz out
+
+      - name: Create checksum
+        run: sha256sum "$ARCHIVE_NAME".tar.gz > ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
+
+      - name: Upload archive
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ env.ARCHIVE_NAME }}.tar.gz
+          asset_name: ${{ env.ARCHIVE_NAME }}.tar.gz
+          asset_content_type: application/gzip
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Upload checksum
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
+          asset_name: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
+          asset_content_type: text/plain
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      # Script to upload release files
+      - name: 'Upload release build files for production'
+        env:
+          BUCKET: s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}
+          CHECKSUM_FILE: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
+        run: bash ./scripts/github/s3_upload.sh
+
+      # Script to prepare production deployments
+      - run: bash ./scripts/github/prepare_production_deployment.sh
+        env:
+          PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
+          PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
+          VERSION_TAG: ${{ github.event.release.tag_name }}

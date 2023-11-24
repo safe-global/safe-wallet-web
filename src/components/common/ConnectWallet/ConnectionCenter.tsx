@@ -1,23 +1,21 @@
-import { Popover, ButtonBase, Typography, Paper, Divider, Box } from '@mui/material'
+import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
+import madProps from '@/utils/mad-props'
+import { Popover, ButtonBase, Typography, Paper, Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import classnames from 'classnames'
 import { useState, type MouseEvent, type ReactElement } from 'react'
 
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
-import PairingDetails from '@/components/common/PairingDetails'
 
 import css from '@/components/common/ConnectWallet/styles.module.css'
-import { useCurrentChain } from '@/hooks/useChains'
-import { isPairingSupported } from '@/services/pairing/utils'
 
-const ConnectionCenter = (): ReactElement => {
-  const chain = useCurrentChain()
-
+export const ConnectionCenter = ({ isSocialLoginEnabled }: { isSocialLoginEnabled: boolean }): ReactElement => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = !!anchorEl
-
-  const isSupported = isPairingSupported(chain?.disabledWallets)
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -29,14 +27,21 @@ const ConnectionCenter = (): ReactElement => {
 
   const ExpandIcon = open ? ExpandLessIcon : ExpandMoreIcon
 
+  if (!isSocialLoginEnabled) {
+    return (
+      <Box className={css.buttonContainer}>
+        <ConnectWalletButton />
+      </Box>
+    )
+  }
+
   return (
     <>
       <ButtonBase disableRipple onClick={handleClick} className={css.buttonContainer}>
         <KeyholeIcon />
 
-        <Typography variant="caption">
+        <Typography variant="caption" className={css.notConnected}>
           <b>Not connected</b>
-          <br />
           <Typography variant="inherit" sx={{ color: ({ palette }) => palette.error.main }}>
             Connect wallet
           </Typography>
@@ -59,20 +64,16 @@ const ConnectionCenter = (): ReactElement => {
         }}
         sx={{ mt: 1 }}
       >
-        <Paper className={css.popoverContainer}>
+        <Paper className={classnames(css.popoverContainer, css.largeGap)}>
           <WalletDetails onConnect={handleClose} />
-
-          {isSupported && (
-            <Box className={css.pairingDetails}>
-              <Divider flexItem />
-
-              <PairingDetails vertical />
-            </Box>
-          )}
         </Paper>
       </Popover>
     </>
   )
 }
 
-export default ConnectionCenter
+const useIsSocialLoginEnabled = () => useHasFeature(FEATURES.SOCIAL_LOGIN)
+
+export default madProps(ConnectionCenter, {
+  isSocialLoginEnabled: useIsSocialLoginEnabled,
+})

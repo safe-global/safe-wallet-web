@@ -6,6 +6,7 @@ import type { JsonRpcProvider } from '@ethersproject/providers'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
+import { asError } from '../exceptions/utils'
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
 export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string) => {
@@ -33,7 +34,7 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
   } catch (error) {
     txDispatch(TxEvent.FAILED, {
       txId,
-      error: error as Error,
+      error: asError(error),
     })
   }
 }
@@ -81,7 +82,7 @@ const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStat
       })
     })
   } catch (error) {
-    logError(Errors._632, (error as Error).message)
+    logError(Errors._632, error)
     return
   }
 
@@ -90,7 +91,7 @@ const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStat
 
 const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
 
-export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: string): void => {
+export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: string, groupKey?: string): void => {
   let intervalId: NodeJS.Timeout
   let failAfterTimeoutId: NodeJS.Timeout
 
@@ -108,6 +109,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], groupKey?: str
           txDispatch(TxEvent.PROCESSED, {
             txId,
             groupKey,
+            safeAddress,
           }),
         )
         break

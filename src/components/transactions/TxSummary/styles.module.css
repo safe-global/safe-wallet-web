@@ -7,34 +7,35 @@
 }
 
 .columnTemplate {
-  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 2fr) minmax(150px, 2fr) minmax(200px, 2fr) 1fr 1fr minmax(
-      170px,
-      1fr
-    );
+  grid-template-columns:
+    minmax(50px, 0.25fr) minmax(150px, 2fr) minmax(150px, 2fr) minmax(200px, 2fr) 1fr minmax(60px, 0.5fr)
+    minmax(170px, 1fr);
   grid-template-areas: 'nonce type info date confirmations actions status';
 }
 
-.columnTemplateWithoutNonce {
-  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 2fr) minmax(150px, 2fr) minmax(200px, 2fr) 1fr 1fr minmax(
+.columnTemplateShort {
+  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 4fr) 0fr minmax(200px, 2fr) 1fr minmax(60px, 0.5fr) minmax(
       170px,
       1fr
     );
-  grid-template-areas: 'nonce type info date confirmations actions status';
+  grid-template-areas: 'nonce type empty date confirmations actions status';
 }
 
 .columnTemplateTxHistory {
-  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 2fr) minmax(150px, 2fr) minmax(100px, 1fr) minmax(
-      170px,
-      1fr
-    );
+  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 3fr) minmax(150px, 3fr) 0.75fr 0.5fr;
   grid-template-areas: 'nonce type info date status';
+}
+
+.columnTemplateTxHistoryShort {
+  grid-template-columns: minmax(50px, 0.25fr) 6fr 0fr 0.75fr 0.5fr;
+  grid-template-areas: 'nonce type empty date status';
 }
 
 .columnWrap {
   white-space: normal;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599.95px) {
   .columnWrap {
     word-break: break-word;
   }
@@ -43,7 +44,8 @@
     gap: var(--space-1);
   }
 
-  .columnTemplate {
+  .columnTemplate,
+  .columnTemplateShort {
     grid-template-columns: repeat(12, auto);
     grid-template-areas:
       'nonce type type type type type type type type type type type'
@@ -54,18 +56,8 @@
       'empty actions actions actions actions actions actions actions actions actions actions actions';
   }
 
-  .columnTemplateWithoutNonce {
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-areas:
-      'nonce type type type type type type type type type type type'
-      'empty info info info info info info info info info info info'
-      'empty date date date date date date date date date date date'
-      'empty confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations confirmations'
-      'empty status status status status status status status status status status status'
-      'empty actions actions actions actions actions actions actions actions actions actions actions';
-  }
-
-  .columnTemplateTxHistory {
+  .columnTemplateTxHistory,
+  .columnTemplateTxHistoryShort {
     grid-template-columns: repeat(12, 1fr);
     grid-template-areas:
       'nonce type type type type type type type type type type type'

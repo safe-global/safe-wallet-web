@@ -32,12 +32,12 @@ const SafeAppsZeroResultsPlaceholder = ({ searchQuery }: { searchQuery: string }
       img={<AddCustomAppIcon />}
       text={
         <Typography variant="body1" color="primary.light" m={2} maxWidth="600px">
-          No apps found matching <strong>{searchQuery}</strong>. Connect to dApps that haven&apos;t yet been integrated
-          with the Safe using the WalletConnect App.
+          No Safe Apps found matching <strong>{searchQuery}</strong>. Connect to dApps that haven&apos;t yet been
+          integrated with the {'Safe{Wallet}'} using the WalletConnect Safe App.
         </Typography>
       }
     >
-      <Link href={wcLink} passHref>
+      <Link href={wcLink} passHref legacyBehavior>
         <Button variant="contained" disableElevation size="small">
           Use WalletConnect
         </Button>

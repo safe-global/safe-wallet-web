@@ -35,7 +35,6 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
-import { getMultiSendCallOnlyContractAddress, getMultiSendContractAddress } from '@/services/contracts/safeContracts'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -78,16 +77,12 @@ export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
   return value.type === TransactionInfoType.CUSTOM
 }
 
-export const isSupportedMultiSendAddress = (txInfo: TransactionInfo, chainId: string): boolean => {
-  const toAddress = isCustomTxInfo(txInfo) ? txInfo.to.value : ''
-  const multiSendAddress = getMultiSendContractAddress(chainId)
-  const multiSendCallOnlyAddress = getMultiSendCallOnlyContractAddress(chainId)
-
-  return sameAddress(multiSendAddress, toAddress) || sameAddress(multiSendCallOnlyAddress, toAddress)
-}
-
 export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend => {
-  return value.type === TransactionInfoType.CUSTOM && value.methodName === 'multiSend'
+  return (
+    value.type === TransactionInfoType.CUSTOM &&
+    value.methodName === 'multiSend' &&
+    typeof value.actionCount === 'number'
+  )
 }
 
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
@@ -127,6 +122,17 @@ export const isSignableBy = (txSummary: TransactionSummary, walletAddress: strin
   return !!executionInfo?.missingSigners?.some((address) => address.value === walletAddress)
 }
 
+export const isConfirmableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {
+  if (!txSummary.executionInfo || !isMultisigExecutionInfo(txSummary.executionInfo)) {
+    return false
+  }
+  const { confirmationsRequired, confirmationsSubmitted } = txSummary.executionInfo
+  return (
+    confirmationsSubmitted >= confirmationsRequired ||
+    (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
+  )
+}
+
 export const isExecutable = (txSummary: TransactionSummary, walletAddress: string, safe: SafeInfo): boolean => {
   if (
     !txSummary.executionInfo ||
@@ -135,11 +141,7 @@ export const isExecutable = (txSummary: TransactionSummary, walletAddress: strin
   ) {
     return false
   }
-  const { confirmationsRequired, confirmationsSubmitted } = txSummary.executionInfo
-  return (
-    confirmationsSubmitted >= confirmationsRequired ||
-    (confirmationsSubmitted === confirmationsRequired - 1 && isSignableBy(txSummary, walletAddress))
-  )
+  return isConfirmableBy(txSummary, walletAddress)
 }
 
 // Spending limits

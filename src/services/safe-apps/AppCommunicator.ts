@@ -1,6 +1,7 @@
 import type { MutableRefObject } from 'react'
 import type { SDKMessageEvent, MethodToResponse, ErrorResponse, RequestId } from '@safe-global/safe-apps-sdk'
 import { getSDKVersion, Methods, MessageFormatter } from '@safe-global/safe-apps-sdk'
+import { asError } from '../exceptions/utils'
 
 type MessageHandler = (
   msg: SDKMessageEvent,
@@ -28,6 +29,7 @@ class AppCommunicator {
   }
 
   private isValidMessage = (msg: SDKMessageEvent): boolean => {
+    if (!msg.data) return false
     if (msg.data.hasOwnProperty('isCookieEnabled')) {
       return true
     }
@@ -39,6 +41,7 @@ class AppCommunicator {
   }
 
   private canHandleMessage = (msg: SDKMessageEvent): boolean => {
+    if (!msg.data) return false
     return Boolean(this.handlers.get(msg.data.method))
   }
 
@@ -69,7 +72,7 @@ class AppCommunicator {
           this.send(response, msg.data.id)
         }
       } catch (e) {
-        const error = e as Error
+        const error = asError(e)
 
         this.send(error.message, msg.data.id, true)
         this.config?.onError?.(error, msg.data)

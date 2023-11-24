@@ -18,10 +18,10 @@ export type LoadSafeFormData = NamedAddress & {
 
 export const LoadSafeSteps: TxStepperProps<LoadSafeFormData>['steps'] = [
   {
-    title: 'Connect wallet & select network',
-    subtitle: 'Select network on which the Safe was created',
-    render: (_, onSubmit, onBack, setStep) => (
-      <SetAddressStep onSubmit={onSubmit} onBack={onBack} data={_} setStep={setStep} />
+    title: 'Name, address & network',
+    subtitle: 'Paste the address of the Safe Account you want to add, select the network and choose a name.',
+    render: (data, onSubmit, onBack, setStep) => (
+      <SetAddressStep onSubmit={onSubmit} onBack={onBack} data={data} setStep={setStep} />
     ),
   },
   {
@@ -33,7 +33,7 @@ export const LoadSafeSteps: TxStepperProps<LoadSafeFormData>['steps'] = [
   },
   {
     title: 'Review',
-    subtitle: 'Confirm loading Safe.',
+    subtitle: 'Confirm loading Safe Account',
     render: (data, onSubmit, onBack, setStep) => (
       <SafeReviewStep onSubmit={onSubmit} onBack={onBack} data={data} setStep={setStep} />
     ),
@@ -46,7 +46,7 @@ const LoadSafe = ({ initialData }: { initialData?: TxStepperProps<LoadSafeFormDa
   const router = useRouter()
 
   const onClose = () => {
-    router.push(AppRoutes.welcome)
+    router.push(AppRoutes.welcome.index)
   }
 
   const initialSafe = initialData ?? loadSafeDefaultData
@@ -56,11 +56,13 @@ const LoadSafe = ({ initialData }: { initialData?: TxStepperProps<LoadSafeFormDa
       <Grid container columnSpacing={3} mt={[2, null, 7]} justifyContent="center">
         <Grid item xs={12} md={10} lg={8}>
           <Typography variant="h2" pb={2}>
-            Load Safe
+            Load Safe Account
           </Typography>
         </Grid>
         <Grid item xs={12} md={10} lg={8} order={[1, null, 0]}>
           <CardStepper
+            // Populate initial data
+            key={initialSafe.address}
             initialData={initialSafe}
             onClose={onClose}
             steps={LoadSafeSteps}

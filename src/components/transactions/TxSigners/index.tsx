@@ -125,6 +125,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
 
   const { confirmations, confirmationsRequired, executor } = detailedExecutionInfo
 
+  // TODO: Refactor to use `isConfirmableBy`
   const confirmationsCount = confirmations.length
   const canExecute = wallet?.address ? isExecutable(txSummary, wallet.address, safe) : false
   const confirmationsNeeded = confirmationsRequired - confirmations.length

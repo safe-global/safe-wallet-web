@@ -53,6 +53,7 @@ export type UseAppCommunicatorHandlers = {
     message: string | EIP712TypedData,
     requestId: string,
     method: Methods.signMessage | Methods.signTypedMessage,
+    sdkVersion: string,
   ) => void
   onGetTxBySafeTxHash: (transactionId: string) => Promise<TransactionDetails>
   onGetEnvironmentInfo: () => EnvironmentInfo
@@ -89,6 +90,8 @@ const useAppCommunicator = (
     const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onMessage: (msg) => {
+          if (!msg.data) return
+
           const isCustomApp = app && app.id < 1
 
           trackSafeAppEvent(
@@ -151,8 +154,12 @@ const useAppCommunicator = (
         return handlers.onSetSafeSettings(settings)
       }
 
+      if (!safeAppWeb3Provider) {
+        throw new Error('SafeAppWeb3Provider is not initialized')
+      }
+
       try {
-        return await safeAppWeb3Provider?.send(params.call, params.params)
+        return await safeAppWeb3Provider.send(params.call, params.params)
       } catch (err) {
         throw new Error((err as JsonRpcResponse).error)
       }
@@ -174,8 +181,8 @@ const useAppCommunicator = (
 
     communicator?.on(Methods.signMessage, (msg) => {
       const { message } = msg.data.params as SignMessageParams
-
-      handlers.onSignMessage(message, msg.data.id, Methods.signMessage)
+      const sdkVersion = msg.data.env.sdkVersion
+      handlers.onSignMessage(message, msg.data.id, Methods.signMessage, sdkVersion)
     })
 
     communicator?.on(Methods.getOffChainSignature, (msg) => {
@@ -184,8 +191,8 @@ const useAppCommunicator = (
 
     communicator?.on(Methods.signTypedMessage, (msg) => {
       const { typedData } = msg.data.params as SignTypedMessageParams
-
-      handlers.onSignMessage(typedData, msg.data.id, Methods.signTypedMessage)
+      const sdkVersion = msg.data.env.sdkVersion
+      handlers.onSignMessage(typedData, msg.data.id, Methods.signTypedMessage, sdkVersion)
     })
 
     communicator?.on(Methods.getChainInfo, handlers.onGetChainInfo)

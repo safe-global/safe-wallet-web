@@ -6,20 +6,15 @@ import {
   getTransactionQueue,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
-import { selectPendingTxs } from '@/store/pendingTxsSlice'
-import useChainId from './useChainId'
+import { selectPendingTxIdsBySafe } from '@/store/pendingTxsSlice'
 import useAsync from './useAsync'
-import useSafeAddress from './useSafeAddress'
 import { isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
+import useSafeInfo from './useSafeInfo'
 
 const usePendingTxIds = (): Array<TransactionSummary['id']> => {
-  const chainId = useChainId()
-  const pendingTxs = useAppSelector(selectPendingTxs)
-
-  return useMemo(() => {
-    const ids = Object.keys(pendingTxs).filter((txId) => pendingTxs[txId].chainId === chainId)
-    return ids as Array<TransactionSummary['id']>
-  }, [chainId, pendingTxs])
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId } = safe
+  return useAppSelector((state) => selectPendingTxIdsBySafe(state, chainId, safeAddress))
 }
 
 export const useHasPendingTxs = (): boolean => {
@@ -27,19 +22,33 @@ export const useHasPendingTxs = (): boolean => {
   return pendingIds.length > 0
 }
 
+/**
+ * Show unsigned pending queue only in 1/X Safes
+ */
+export const useShowUnsignedQueue = (): boolean => {
+  const { safe } = useSafeInfo()
+  const hasPending = useHasPendingTxs()
+  return safe.threshold === 1 && hasPending
+}
+
 export const usePendingTxsQueue = (): {
   page?: TransactionListPage
   error?: string
   loading: boolean
 } => {
-  const chainId = useChainId()
-  const safeAddress = useSafeAddress()
+  const { safe, safeAddress } = useSafeInfo()
+  const { chainId } = safe
   const pendingIds = usePendingTxIds()
+  const hasPending = pendingIds.length > 0
 
-  const [untrustedQueue, error, loading] = useAsync<TransactionListPage>(() => {
-    if (!pendingIds.length) return
-    return getTransactionQueue(chainId, safeAddress, undefined, false)
-  }, [chainId, safeAddress, pendingIds])
+  const [untrustedQueue, error, loading] = useAsync<TransactionListPage>(
+    () => {
+      if (!hasPending) return
+      return getTransactionQueue(chainId, safeAddress, undefined, false)
+    },
+    [chainId, safeAddress, hasPending],
+    false,
+  )
 
   const pendingTxPage = useMemo(() => {
     if (!untrustedQueue || !pendingIds.length) return

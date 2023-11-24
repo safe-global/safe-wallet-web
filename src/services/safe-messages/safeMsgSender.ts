@@ -1,39 +1,30 @@
 import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import type { RequestId } from '@safe-global/safe-apps-sdk'
 import { isObjectEIP712TypedData } from '@safe-global/safe-apps-sdk'
-import type { TypedDataDomain } from 'ethers'
 import type { OnboardAPI } from '@web3-onboard/core'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
-import { generateSafeMessageHash, generateSafeMessageTypedData } from '@/utils/safe-messages'
+import { generateSafeMessageHash, tryOffChainMsgSigning } from '@/utils/safe-messages'
 import { normalizeTypedData } from '@/utils/web3'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
+import { asError } from '../exceptions/utils'
 
 export const dispatchSafeMsgProposal = async ({
   onboard,
   safe,
   message,
-  requestId,
   safeAppId,
 }: {
   onboard: OnboardAPI
   safe: SafeInfo
   message: SafeMessage['message']
-  requestId: RequestId
   safeAppId?: number
 }): Promise<void> => {
   const messageHash = generateSafeMessageHash(safe, message)
 
   try {
-    const typedData = generateSafeMessageTypedData(safe, message)
-
     const signer = await getAssertedChainSigner(onboard, safe.chainId)
-    const signature = await signer._signTypedData(
-      typedData.domain as TypedDataDomain,
-      typedData.types,
-      typedData.message,
-    )
+    const signature = await tryOffChainMsgSigning(signer, safe, message)
 
     let normalizedMessage = message
     if (isObjectEIP712TypedData(message)) {
@@ -48,7 +39,7 @@ export const dispatchSafeMsgProposal = async ({
   } catch (error) {
     safeMsgDispatch(SafeMsgEvent.PROPOSE_FAILED, {
       messageHash,
-      error: error as Error,
+      error: asError(error),
     })
 
     throw error
@@ -56,7 +47,6 @@ export const dispatchSafeMsgProposal = async ({
 
   safeMsgDispatch(SafeMsgEvent.PROPOSE, {
     messageHash,
-    requestId,
   })
 }
 
@@ -64,24 +54,16 @@ export const dispatchSafeMsgConfirmation = async ({
   onboard,
   safe,
   message,
-  requestId,
 }: {
   onboard: OnboardAPI
   safe: SafeInfo
   message: SafeMessage['message']
-  requestId?: RequestId
 }): Promise<void> => {
   const messageHash = generateSafeMessageHash(safe, message)
 
   try {
-    const typedData = generateSafeMessageTypedData(safe, message)
-
     const signer = await getAssertedChainSigner(onboard, safe.chainId)
-    const signature = await signer._signTypedData(
-      typedData.domain as TypedDataDomain,
-      typedData.types,
-      typedData.message,
-    )
+    const signature = await tryOffChainMsgSigning(signer, safe, message)
 
     await confirmSafeMessage(safe.chainId, messageHash, {
       signature,
@@ -89,7 +71,7 @@ export const dispatchSafeMsgConfirmation = async ({
   } catch (error) {
     safeMsgDispatch(SafeMsgEvent.CONFIRM_PROPOSE_FAILED, {
       messageHash,
-      error: error as Error,
+      error: asError(error),
     })
 
     throw error
@@ -97,6 +79,5 @@ export const dispatchSafeMsgConfirmation = async ({
 
   safeMsgDispatch(SafeMsgEvent.CONFIRM_PROPOSE, {
     messageHash,
-    requestId,
   })
 }

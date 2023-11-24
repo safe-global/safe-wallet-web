@@ -27,6 +27,17 @@ describe('formatters', () => {
       ).toBe('1000000000000000000000000000000000000000000000000000000000000000001.1')
     })
   })
+
+  describe('camelCaseToSpaces', () => {
+    it('should convert "safeTransferFrom" to "safe Transfer From"', () => {
+      expect(formatters.camelCaseToSpaces('safeTransferFrom')).toEqual('safe Transfer From')
+    })
+
+    it('should convert "depositERC20token" to "deposit ERC20 Token"', () => {
+      expect(formatters.camelCaseToSpaces('depositERC20Token')).toEqual('deposit ERC20 Token')
+    })
+  })
+
   describe('safeFormatUnits', () => {
     it('formats to gwei by default', () => {
       const result1 = formatters.safeFormatUnits('1')

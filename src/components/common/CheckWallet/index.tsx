@@ -13,7 +13,7 @@ type CheckWalletProps = {
 
 enum Message {
   WalletNotConnected = 'Please connect your wallet',
-  NotSafeOwner = 'Your connected wallet is not an owner of this Safe',
+  NotSafeOwner = 'Your connected wallet is not an owner of this Safe Account',
   OnlySpendingLimitBeneficiary = 'You can only create ERC-20 transactions within your spending limit',
 }
 
@@ -27,7 +27,7 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner }: CheckWalle
     ? Message.WalletNotConnected
     : !isSafeOwner && !isSpendingLimit && !allowNonOwner
     ? Message.NotSafeOwner
-    : isSpendingLimit && !allowSpendingLimit
+    : isSpendingLimit && !allowSpendingLimit && !allowNonOwner
     ? Message.OnlySpendingLimitBeneficiary
     : ''
 

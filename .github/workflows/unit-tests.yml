@@ -1,0 +1,28 @@
+name: Unit tests
+on:
+  pull_request:
+
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/yarn
+
+      - name: Annotations and coverage report
+        uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          skip-step: install
+          annotations: failed-tests
+          package-manager: yarn
+          test-script: yarn test:ci
+          github-token: ${{ secrets.GITHUB_TOKEN }}

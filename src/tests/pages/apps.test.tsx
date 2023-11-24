@@ -15,7 +15,6 @@ import {
   within,
 } from '../test-utils'
 import AppsPage from '@/pages/apps'
-import BookmarkedSafeAppsPage from '@/pages/apps/bookmarked'
 import CustomSafeAppsPage from '@/pages/apps/custom'
 import * as safeAppsService from '@/services/safe-apps/manifest'
 import { LS_NAMESPACE } from '@/config/constants'
@@ -23,6 +22,11 @@ import { LS_NAMESPACE } from '@/config/constants'
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   getSafeApps: (chainId: string) => Promise.resolve(mockedSafeApps),
+}))
+
+jest.mock('next/navigation', () => ({
+  ...jest.requireActual('next/navigation'),
+  useParams: jest.fn(() => ({ safe: 'matic:0x0000000000000000000000000000000000000000' })),
 }))
 
 describe('AppsPage', () => {
@@ -74,64 +78,7 @@ describe('AppsPage', () => {
         // Transaction Builder Safe App title
         expect(getByRole(safeAppPreviewDrawer, 'heading', { level: 4, name: 'Transaction Builder' }))
         // open app button should be present
-        expect(getByText(safeAppPreviewDrawer, 'Open App'))
-      })
-    })
-
-    it('switches from Grid view mode to List view mode', async () => {
-      render(<AppsPage />, {
-        routerProps: {
-          pathname: '/apps',
-          query: {
-            safe: 'matic:0x0000000000000000000000000000000000000000',
-          },
-        },
-      })
-
-      await waitFor(() => {
-        // in the default grid view mode titles & descriptions are present
-        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-
-        expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
-      })
-
-      // switch list view mode
-      fireEvent.click(screen.getByLabelText('List view mode'))
-
-      await waitFor(() => {
-        // only titles are present
-        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-
-        // no description is present
-        expect(screen.queryByText(transactionBuilderSafeAppMock.description)).not.toBeInTheDocument()
-        expect(screen.queryByText(compopundSafeAppMock.description)).not.toBeInTheDocument()
-        expect(screen.queryByText(ensSafeAppMock.description)).not.toBeInTheDocument()
-        expect(screen.queryByText(synthetixSafeAppMock.description)).not.toBeInTheDocument()
-      })
-
-      // switch back to grid view mode
-      fireEvent.click(screen.getByLabelText('Grid view mode'))
-
-      await waitFor(() => {
-        // in the default grid view mode titles & descriptions are present
-        expect(screen.getByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('ENS App', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
-
-        expect(screen.getByText(transactionBuilderSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(compopundSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(ensSafeAppMock.description)).toBeInTheDocument()
-        expect(screen.getByText(synthetixSafeAppMock.description)).toBeInTheDocument()
+        expect(getByText(safeAppPreviewDrawer, 'Open Safe App'))
       })
     })
   })
@@ -145,9 +92,9 @@ describe('AppsPage', () => {
 
       window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
 
-      render(<BookmarkedSafeAppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
-          pathname: '/apps/bookmarked',
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
@@ -156,10 +103,11 @@ describe('AppsPage', () => {
 
       // show Bookmarked Safe Apps only
       await waitFor(() => {
-        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
-        expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
+        expect(screen.queryByText('My pinned apps (2)')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Transaction Builder')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin ENS App')).not.toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Synthetix')).not.toBeInTheDocument()
       })
     })
 
@@ -171,28 +119,28 @@ describe('AppsPage', () => {
 
       window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
 
-      render(<BookmarkedSafeAppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
-          pathname: '/apps/bookmarked',
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
         },
       })
 
-      // show Bookmarked Safe Apps only
+      // show Bookmarked Safe Apps
       await waitFor(() => {
-        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Transaction Builder')).toBeInTheDocument()
       })
 
       // unpin Transaction Builder Safe App
       fireEvent.click(screen.getByLabelText('Unpin Transaction Builder'))
 
-      // show Bookmarked Safe Apps only
+      // show Bookmarked Safe Apps
       await waitFor(() => {
-        expect(screen.queryByText('Compound', { selector: 'h5' })).toBeInTheDocument()
-        expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).not.toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
+        expect(screen.queryByLabelText('Unpin Transaction Builder')).not.toBeInTheDocument()
       })
     })
 
@@ -204,9 +152,9 @@ describe('AppsPage', () => {
 
       window.localStorage.setItem(`${LS_NAMESPACE}safeApps`, JSON.stringify(mockedBookmarkedSafeApps))
 
-      render(<BookmarkedSafeAppsPage />, {
+      render(<AppsPage />, {
         routerProps: {
-          pathname: '/apps/bookmarked',
+          pathname: '/apps',
           query: {
             safe: 'matic:0x0000000000000000000000000000000000000000',
           },
@@ -227,7 +175,7 @@ describe('AppsPage', () => {
         // Transaction Builder Safe App title
         expect(getByRole(safeAppPreviewDrawer, 'heading', { level: 4, name: 'Transaction Builder' }))
         // open app button should be present
-        expect(getByText(safeAppPreviewDrawer, 'Open App'))
+        expect(getByText(safeAppPreviewDrawer, 'Open Safe App'))
       })
     })
   })
@@ -245,22 +193,22 @@ describe('AppsPage', () => {
 
       await waitFor(() => {
         // show add custom app card
-        expect(screen.getByRole('button', { name: 'Add custom app' }))
+        expect(screen.getByRole('button', { name: 'Add custom Safe App' }))
       })
 
       // Add custom app modal is not present
       expect(screen.queryByRole('presentation')).not.toBeInTheDocument()
 
       await act(() => {
-        fireEvent.click(screen.getByRole('button', { name: 'Add custom app' }))
+        fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
       })
 
       // shows Add custom app modal
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 2, name: 'Add custom app' })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 2, name: 'Add custom Safe App' })).toBeInTheDocument()
 
         // shows custom safe App App Url input
-        const customSafeAppURLInput = screen.getByLabelText(/App URL/)
+        const customSafeAppURLInput = screen.getByLabelText(/Safe App URL/)
         expect(customSafeAppURLInput).toBeInTheDocument()
       })
     })
@@ -294,10 +242,10 @@ describe('AppsPage', () => {
         },
       })
 
-      fireEvent.click(screen.getByRole('button', { name: 'Add custom app' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
 
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument())
-      const appURLInput = screen.getByLabelText(/App URL/)
+      await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument())
+      const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       const riskCheckbox = await screen.findByRole('checkbox')
       fireEvent.click(riskCheckbox)
@@ -313,7 +261,7 @@ describe('AppsPage', () => {
       })
 
       // modal is closed
-      await waitForElementToBeRemoved(() => screen.queryByLabelText(/App URL/))
+      await waitForElementToBeRemoved(() => screen.queryByLabelText(/Safe App URL/))
 
       // custom safe app is present in the list
       expect(screen.queryByText('Custom test Safe app')).toBeInTheDocument()
@@ -332,7 +280,7 @@ describe('AppsPage', () => {
         // Custom test Safe app Safe App title
         expect(getByRole(safeAppPreviewDrawer, 'heading', { level: 4, name: 'Custom test Safe app' }))
         // open app button should be present
-        expect(getByText(safeAppPreviewDrawer, 'Open App'))
+        expect(getByText(safeAppPreviewDrawer, 'Open Safe App'))
       })
     })
 
@@ -346,15 +294,15 @@ describe('AppsPage', () => {
           },
         },
       })
-      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
-      const addCustomAppButton = screen.getByText('Add custom app')
+      await waitFor(() => expect(screen.getByText('Add custom Safe App')).toBeInTheDocument())
+      const addCustomAppButton = screen.getByText('Add custom Safe App')
       await act(() => {
         fireEvent.click(addCustomAppButton)
       })
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
-      const appURLInput = screen.getByLabelText(/App URL/)
+      await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument(), { timeout: 3000 })
+      const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: INVALID_SAFE_APP_URL } })
-      await screen.findByText(/the app doesn't support safe app functionality/i)
+      await screen.findByText(/the app doesn't support Safe App functionality/i)
     })
 
     it('Requires risk acknowledgment checkbox to add the app', async () => {
@@ -385,16 +333,16 @@ describe('AppsPage', () => {
           },
         },
       })
-      await waitFor(() => expect(screen.getByText('Add custom app')).toBeInTheDocument())
-      const addCustomAppButton = screen.getByText('Add custom app')
+      await waitFor(() => expect(screen.getByText('Add custom Safe App')).toBeInTheDocument())
+      const addCustomAppButton = screen.getByText('Add custom Safe App')
       await act(() => {
         fireEvent.click(addCustomAppButton)
       })
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument(), { timeout: 3000 })
-      const appURLInput = screen.getByLabelText(/App URL/)
+      await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument(), { timeout: 3000 })
+      const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       const riskCheckbox = await screen.findByText(
-        /This app is not part of Safe and I agree to use it at my own risk\./,
+        /This Safe App is not part of Safe{Wallet} and I agree to use it at my own risk\./,
       )
       await act(() => {
         fireEvent.click(riskCheckbox)
@@ -435,10 +383,10 @@ describe('AppsPage', () => {
         },
       })
 
-      fireEvent.click(screen.getByRole('button', { name: 'Add custom app' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
 
-      await waitFor(() => expect(screen.getByLabelText(/App URL/)).toBeInTheDocument())
-      const appURLInput = screen.getByLabelText(/App URL/)
+      await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument())
+      const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       const riskCheckbox = await screen.findByRole('checkbox')
       fireEvent.click(riskCheckbox)
@@ -454,7 +402,7 @@ describe('AppsPage', () => {
       })
 
       // modal is closed
-      await waitForElementToBeRemoved(() => screen.queryByLabelText(/App URL/))
+      await waitForElementToBeRemoved(() => screen.queryByLabelText(/Safe App URL/))
 
       const removeCustomSafeAppButton = screen.getByLabelText('Delete Custom test Safe app')
 
@@ -462,7 +410,7 @@ describe('AppsPage', () => {
         fireEvent.click(removeCustomSafeAppButton)
       })
 
-      await waitFor(() => expect(screen.getByText('Confirm app removal')).toBeInTheDocument())
+      await waitFor(() => expect(screen.getByText('Confirm Safe App removal')).toBeInTheDocument())
 
       const confirmRemovalButton = screen.getByRole('button', { name: 'Remove' })
       await act(() => {
@@ -570,7 +518,7 @@ describe('AppsPage', () => {
           expect(screen.queryByText('Synthetix', { selector: 'h5' })).not.toBeInTheDocument()
 
           // zero results component
-          expect(screen.getByText('No apps found', { exact: false })).toBeInTheDocument()
+          expect(screen.getByText('No Safe Apps found', { exact: false })).toBeInTheDocument()
           expect(screen.queryByText('Use WalletConnect')).toBeInTheDocument()
         })
       })
@@ -594,7 +542,7 @@ describe('AppsPage', () => {
           expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
         })
 
-        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+        const categorySelector = screen.getByText('Select category')
 
         await act(() => fireEvent.mouseDown(categorySelector))
 
@@ -647,7 +595,7 @@ describe('AppsPage', () => {
           expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
         })
 
-        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+        const categorySelector = screen.getByText('Select category')
 
         await act(() => fireEvent.mouseDown(categorySelector))
 
@@ -702,7 +650,7 @@ describe('AppsPage', () => {
           expect(screen.getByText('Synthetix', { selector: 'h5' })).toBeInTheDocument()
         })
 
-        const categorySelector = screen.getByRole('button', { name: 'Category Select category' })
+        const categorySelector = screen.getByText('Select category')
 
         await act(() => fireEvent.mouseDown(categorySelector))
 

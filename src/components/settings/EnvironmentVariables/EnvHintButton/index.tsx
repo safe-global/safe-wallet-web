@@ -6,17 +6,19 @@ import { useAppSelector } from '@/store'
 import { isEnvInitialState } from '@/store/settingsSlice'
 import css from './styles.module.css'
 import AlertIcon from '@/public/images/common/alert.svg'
+import useChainId from '@/hooks/useChainId'
 
 const EnvHintButton = () => {
   const router = useRouter()
-  const isInitialState = useAppSelector(isEnvInitialState)
+  const chainId = useChainId()
+  const isInitialState = useAppSelector((state) => isEnvInitialState(state, chainId))
 
   if (isInitialState) {
     return null
   }
 
   return (
-    <Link href={{ pathname: AppRoutes.settings.environmentVariables, query: router.query }} passHref>
+    <Link href={{ pathname: AppRoutes.settings.environmentVariables, query: router.query }} passHref legacyBehavior>
       <Tooltip title="Default environment has been changed" placement="top" arrow>
         <IconButton
           className={css.button}

@@ -1,5 +1,13 @@
-import type { ConflictHeader, DateLabel, Label, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
-import { getQueuedTransactionCount } from '../transactions'
+import type {
+  ConflictHeader,
+  DateLabel,
+  Label,
+  SafeAppData,
+  Transaction,
+} from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
+import { isMultiSendTxInfo } from '../transaction-guards'
+import { getQueuedTransactionCount, getTxOrigin } from '../transactions'
 
 describe('transactions', () => {
   describe('getQueuedTransactionCount', () => {
@@ -57,6 +65,124 @@ describe('transactions', () => {
         ],
       }
       expect(getQueuedTransactionCount(txPage)).toBe('1')
+    })
+  })
+
+  describe('getTxOrigin', () => {
+    it('should return undefined if no app is provided', () => {
+      expect(getTxOrigin()).toBe(undefined)
+    })
+
+    it('should return a stringified object with the app name and url', () => {
+      const app = {
+        url: 'https://test.com',
+        name: 'Test name',
+      } as SafeAppData
+
+      expect(getTxOrigin(app)).toBe('{"url":"https://test.com","name":"Test name"}')
+    })
+
+    it('should limit the origin to 200 characters with preference of the URL', () => {
+      const app = {
+        url: 'https://test.com/' + 'a'.repeat(160),
+        name: 'Test name',
+      } as SafeAppData
+
+      const result = getTxOrigin(app)
+
+      expect(result?.length).toBe(200)
+
+      expect(result).toBe(
+        '{"url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","name":"Tes"}',
+      )
+    })
+
+    it('should only limit the URL to 200 characters', () => {
+      const app = {
+        url: 'https://test.com/' + 'a'.repeat(180),
+        name: 'Test name',
+      } as SafeAppData
+
+      const result = getTxOrigin(app)
+
+      expect(result?.length).toBe(200)
+
+      expect(result).toBe(
+        '{"url":"https://test.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","name":""}',
+      )
+    })
+  })
+
+  describe('isMultiSendTxInfo', () => {
+    it('should return true for a multisend tx', () => {
+      expect(
+        isMultiSendTxInfo({
+          type: TransactionInfoType.CUSTOM,
+          to: {
+            value: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+            name: 'Gnosis Safe: MultiSendCallOnly',
+            logoUri:
+              'https://safe-transaction-assets.safe.global/contracts/logos/0x40A2aCCbd92BCA938b02010E17A5b8929b49130D.png',
+          },
+          dataSize: '1188',
+          value: '0',
+          methodName: 'multiSend',
+          actionCount: 3,
+          isCancellation: false,
+        }),
+      ).toBe(true)
+    })
+
+    it('should return false for non-multisend txs', () => {
+      expect(
+        isMultiSendTxInfo({
+          type: TransactionInfoType.CUSTOM,
+          to: {
+            value: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+            name: 'Gnosis Safe: MultiSendCallOnly',
+            logoUri:
+              'https://safe-transaction-assets.safe.global/contracts/logos/0x40A2aCCbd92BCA938b02010E17A5b8929b49130D.png',
+          },
+          dataSize: '1188',
+          value: '0',
+          methodName: 'multiSend',
+          //actionCount: 3, // missing actionCount
+          isCancellation: false,
+        }),
+      ).toBe(false)
+
+      expect(
+        isMultiSendTxInfo({
+          type: TransactionInfoType.CUSTOM,
+          to: {
+            value: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+            name: 'Gnosis Safe: MultiSendCallOnly',
+            logoUri:
+              'https://safe-transaction-assets.safe.global/contracts/logos/0x40A2aCCbd92BCA938b02010E17A5b8929b49130D.png',
+          },
+          dataSize: '1188',
+          value: '0',
+          methodName: 'notMultiSend', // wrong method
+          actionCount: 3,
+          isCancellation: false,
+        }),
+      ).toBe(false)
+
+      expect(
+        isMultiSendTxInfo({
+          type: TransactionInfoType.SETTINGS_CHANGE, // wrong type
+          dataDecoded: {
+            method: 'changeThreshold',
+            parameters: [
+              {
+                name: '_threshold',
+                type: 'uint256',
+                value: '2',
+              },
+            ],
+          },
+        }),
+      ).toBe(false)
     })
   })
 })

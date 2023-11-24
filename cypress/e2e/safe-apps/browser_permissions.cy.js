@@ -1,39 +1,35 @@
-import { BROWSER_PERMISSIONS_KEY } from './constants'
+import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
+import * as safeapps from '../pages/safeapps.pages'
 
-const appUrl = 'https://safe-test-app.com'
-
-describe('The Browser permissions system', () => {
-  describe('When the safe app requires permissions', () => {
-    beforeEach(() => {
-      cy.fixture('safe-app').then((html) => {
-        cy.intercept('GET', `${appUrl}/*`, html)
-        cy.intercept('GET', `*/manifest.json`, {
-          name: 'Cypress Test App',
-          description: 'Cypress Test App Description',
-          icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
-          safe_apps_permissions: ['camera', 'microphone'],
-        })
+describe('Browser permissions tests', () => {
+  beforeEach(() => {
+    cy.clearLocalStorage()
+    cy.fixture('safe-app').then((html) => {
+      cy.intercept('GET', `${constants.testAppUrl}/*`, html)
+      cy.intercept('GET', `*/manifest.json`, {
+        name: constants.testAppData.name,
+        description: constants.testAppData.descr,
+        icons: [{ src: 'logo.svg', sizes: 'any', type: 'image/svg+xml' }],
+        safe_apps_permissions: ['camera', 'microphone'],
       })
     })
+    cy.visitSafeApp(`${constants.testAppUrl}/app`)
+    main.acceptCookies()
+  })
 
-    it('should show a permissions slide to the user', () => {
-      cy.visitSafeApp(`${appUrl}/app`)
+  it('Verify a permissions slide to the user is displayed', () => {
+    safeapps.clickOnContinueBtn()
+    safeapps.verifyCameraCheckBoxExists()
+    safeapps.verifyMicrofoneCheckBoxExists()
+  })
 
-      cy.findByRole('checkbox', { name: /camera/i }).should('exist')
-      cy.findByRole('checkbox', { name: /microphone/i }).should('exist')
-    })
-
-    it('should allow to change, accept and store the selection', () => {
-      cy.findByText(/accept selection/i).click()
-
-      cy.findByRole('checkbox', { name: /microphone/i }).click()
-      cy.findByRole('button', { name: /continue/i })
-        .click()
-        .should(() => {
-          expect(window.localStorage.getItem(BROWSER_PERMISSIONS_KEY)).to.eq(
-            '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}',
-          )
-        })
-    })
+  it('Verify the selection can be changed, accepted and stored', () => {
+    safeapps.verifyMicrofoneCheckBoxExists().click()
+    safeapps.clickOnContinueBtn()
+    safeapps.verifyWarningDefaultAppMsgIsDisplayed()
+    safeapps.verifyCameraCheckBoxExists()
+    safeapps.clickOnContinueBtn()
+    safeapps.checkLocalStorage()
   })
 })

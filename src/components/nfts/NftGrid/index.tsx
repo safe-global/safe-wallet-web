@@ -1,4 +1,4 @@
-import type { ReactNode, SyntheticEvent } from 'react'
+import type { Dispatch, ReactNode, SetStateAction, SyntheticEvent } from 'react'
 import { useMemo, useState } from 'react'
 import { useCallback } from 'react'
 import { type ReactElement } from 'react'
@@ -26,15 +26,14 @@ import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescri
 import ExternalLink from '@/components/common/ExternalLink'
 import useChainId from '@/hooks/useChainId'
 import { nftPlatforms } from '../config'
-import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 interface NftsTableProps {
   nfts: SafeCollectibleResponse[]
   selectedNfts: SafeCollectibleResponse[]
+  setSelectedNfts: Dispatch<SetStateAction<SafeCollectibleResponse[]>>
   isLoading: boolean
   children?: ReactNode
-  onSelect: (item: SafeCollectibleResponse) => void
   onPreview: (item: SafeCollectibleResponse) => void
 }
 
@@ -62,13 +61,22 @@ const headCells = [
     id: 'checkbox',
     label: '',
     width: '7%',
+    textAlign: 'right',
   },
 ]
 
 const stopPropagation = (e: SyntheticEvent) => e.stopPropagation()
 
 const NftIndicator = ({ color }: { color: SvgIconProps['color'] }) => (
-  <SvgIcon component={NftIcon} inheritViewBox width={20} height={20} color={color} sx={{ ml: 0.25 }} />
+  <SvgIcon
+    data-testid={`nft-icon-${color}`}
+    component={NftIcon}
+    inheritViewBox
+    width={20}
+    height={20}
+    color={color}
+    sx={{ ml: 0.25 }}
+  />
 )
 
 const activeNftIcon = <NftIndicator color="primary" />
@@ -81,19 +89,16 @@ const inactiveNftIcon = (
   </Tooltip>
 )
 
-const linksHeader = (
-  <OnboardingTooltip
-    text="Please note that the links to OpenSea and Blur are provided only for viewing NFTs. Both these apps do not support the Safe Wallet right now."
-    widgetLocalStorageId="tooltip_nft_links"
-    placement="top"
-  >
-    <span>Links</span>
-  </OnboardingTooltip>
-)
-
-const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview }: NftsTableProps): ReactElement => {
+const NftGrid = ({
+  nfts,
+  selectedNfts,
+  setSelectedNfts,
+  isLoading,
+  children,
+  onPreview,
+}: NftsTableProps): ReactElement => {
   const chainId = useChainId()
-  const linkTemplates = nftPlatforms[chainId]
+  const linkTemplates = nftPlatforms[chainId] || []
   // Filter string
   const [filter, setFilter] = useState<string>('')
 
@@ -104,10 +109,14 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
     [setFilter],
   )
 
-  const onCheckboxClick = (e: React.SyntheticEvent, item: SafeCollectibleResponse) => {
-    e.stopPropagation()
-    onSelect(item)
-  }
+  const onCheckboxClick = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, item: SafeCollectibleResponse) => {
+      e.stopPropagation()
+      const { checked } = e.target
+      setSelectedNfts((prev) => (checked ? prev.concat(item) : prev.filter((el) => el !== item)))
+    },
+    [setSelectedNfts],
+  )
 
   // Filter by collection name or token address
   const filteredNfts = useMemo(() => {
@@ -115,6 +124,13 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
       ? nfts.filter((nft) => nft.tokenName.toLowerCase().includes(filter) || nft.address.toLowerCase().includes(filter))
       : nfts
   }, [nfts, filter])
+
+  const onSelectAll = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedNfts(e.target.checked ? filteredNfts : [])
+    },
+    [filteredNfts, setSelectedNfts],
+  )
 
   const minRows = Math.min(nfts.length, PAGE_SIZE)
 
@@ -132,6 +148,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
                   sx={{
                     display: headCell.xsHidden ? { xs: 'none', sm: 'table-cell' } : undefined,
                     width: headCell.width,
+                    'text-align': headCell.textAlign,
                   }}
                 >
                   {headCell.id === 'collection' ? (
@@ -160,8 +177,14 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
                     </Box>
                   ) : headCell.id === 'links' ? (
                     linkTemplates ? (
-                      linksHeader
+                      <>Links</>
                     ) : null
+                  ) : headCell.id === 'checkbox' ? (
+                    <Checkbox
+                      checked={filteredNfts.length > 0 && filteredNfts.length === selectedNfts.length}
+                      onChange={onSelectAll}
+                      title="Select all"
+                    />
                   ) : (
                     headCell.label
                   )}
@@ -176,7 +199,7 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
               const sx = item.imageUri ? { cursor: 'pointer' } : undefined
 
               return (
-                <TableRow tabIndex={-1} key={`${item.address}-${item.id}`}>
+                <TableRow data-testid={`nfts-table-row-${index + 1}`} tabIndex={-1} key={`${item.address}-${item.id}`}>
                   {/* Collection name */}
                   <TableCell onClick={onClick} sx={sx}>
                     <Box display="flex" alignItems="center" gap={2}>
@@ -218,7 +241,11 @@ const NftGrid = ({ nfts, selectedNfts, isLoading, children, onSelect, onPreview 
 
                   {/* Checkbox */}
                   <TableCell align="right">
-                    <Checkbox checked={selectedNfts.includes(item)} onClick={(e) => onCheckboxClick(e, item)} />
+                    <Checkbox
+                      data-testid={`nft-checkbox-${index + 1}`}
+                      checked={selectedNfts.includes(item)}
+                      onChange={(e) => onCheckboxClick(e, item)}
+                    />
 
                     {/* Insert the children at the end of the table */}
                     {index === filteredNfts.length - 1 && children}

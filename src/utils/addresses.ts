@@ -1,6 +1,10 @@
 import { getAddress } from 'ethers/lib/utils'
 import { isAddress } from '@ethersproject/address'
-
+/**
+ * Checksums the given address
+ * @param address ethereum address
+ * @returns the checksummed address if the given address is valid otherwise returns the address unchanged
+ */
 export const checksumAddress = (address: string): string => {
   return isAddress(address) ? getAddress(address) : address
 }
@@ -51,4 +55,14 @@ export const parsePrefixedAddress = (value: string): PrefixedAddress => {
 
 export const formatPrefixedAddress = (address: string, prefix?: string): string => {
   return prefix ? `${prefix}:${address}` : address
+}
+
+export const cleanInputValue = (value: string): string => {
+  const regex = /(?:([a-z0-9]+):)?(0x[a-f0-9]{40})\b/i
+  const match = value.match(regex)
+  // if match, return the address with optional prefix
+  if (match) return match[0]
+
+  // if no match, return the original value
+  return value
 }

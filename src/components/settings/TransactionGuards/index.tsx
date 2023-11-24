@@ -1,12 +1,17 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Paper, Grid, Typography, Box } from '@mui/material'
-import { RemoveGuard } from './RemoveGuard'
+import { Paper, Grid, Typography, Box, IconButton, SvgIcon } from '@mui/material'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
 import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
+import { HelpCenterArticle } from '@/config/constants'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import CheckWallet from '@/components/common/CheckWallet'
+import { useContext } from 'react'
+import { TxModalContext } from '@/components/tx-flow'
+import RemoveGuardFlow from '@/components/tx-flow/flows/RemoveGuard'
 
 const NoTransactionGuard = () => {
   return (
@@ -17,10 +22,23 @@ const NoTransactionGuard = () => {
 }
 
 const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId: string }) => {
+  const { setTxFlow } = useContext(TxModalContext)
+
   return (
     <Box className={css.guardDisplay}>
       <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} />
-      <RemoveGuard address={guardAddress} />
+      <CheckWallet>
+        {(isOk) => (
+          <IconButton
+            onClick={() => setTxFlow(<RemoveGuardFlow address={guardAddress} />)}
+            color="error"
+            size="small"
+            disabled={!isOk}
+          >
+            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+          </IconButton>
+        )}
+      </CheckWallet>
     </Box>
   )
 }
@@ -49,10 +67,7 @@ const TransactionGuards = () => {
               Transaction guards impose additional constraints that are checked prior to executing a Safe transaction.
               Transaction guards are potentially risky, so make sure to only use transaction guards from trusted
               sources. Learn more about transaction guards{' '}
-              <ExternalLink href="https://help.safe.global/en/articles/5324092-what-is-a-transaction-guard">
-                here
-              </ExternalLink>
-              .
+              <ExternalLink href={HelpCenterArticle.TRANSACTION_GUARD}>here</ExternalLink>.
             </Typography>
             {safe.guard ? (
               <GuardDisplay guardAddress={safe.guard.value} chainId={safe.chainId} />

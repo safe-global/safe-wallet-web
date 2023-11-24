@@ -31,6 +31,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
   },
+  SIDEBAR_OPEN_SAFE: {
+    action: 'Sidebar open Safe',
+    category: OVERVIEW_CATEGORY,
+  },
   TOTAL_ADDED_SAFES: {
     event: EventType.META,
     action: 'Total added Safes',
@@ -76,8 +80,25 @@ export const OVERVIEW_EVENTS = {
     action: 'Open transactions queue from queue size',
     category: OVERVIEW_CATEGORY,
   },
+  EXPORT_DATA: {
+    action: 'Export data from sidebar',
+    category: OVERVIEW_CATEGORY,
+  },
+  IMPORT_DATA: {
+    action: 'Import data from sidebar',
+    category: OVERVIEW_CATEGORY,
+  },
   RELAYING_HELP_ARTICLE: {
     action: 'Open relaying help article',
+    category: OVERVIEW_CATEGORY,
+  },
+  SEP5_ALLOCATION_BUTTON: {
+    action: 'Click on SEP5 allocation button',
+    category: OVERVIEW_CATEGORY,
+  },
+  SAFE_VIEWED: {
+    event: EventType.META,
+    action: 'Safe viewed',
     category: OVERVIEW_CATEGORY,
   },
 }

@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { Box } from '@mui/material'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+
 import EnhancedTable from '@/components/common/EnhancedTable'
 import type { AddressEntry } from '@/components/address-book/EntryDialog'
 import EntryDialog from '@/components/address-book/EntryDialog'
@@ -21,9 +23,10 @@ import PagePlaceholder from '@/components/common/PagePlaceholder'
 import NoEntriesIcon from '@/public/images/address-book/no-entries.svg'
 import { useCurrentChain } from '@/hooks/useChains'
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
-import TokenTransferModal from '@/components/tx/modals/TokenTransferModal'
-import { SendAssetsField } from '@/components/tx/modals/TokenTransferModal/SendAssetsForm'
+import { TxModalContext, type TxModalContextType } from '@/components/tx-flow'
+import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
 import CheckWallet from '@/components/common/CheckWallet'
+import madProps from '@/utils/mad-props'
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -45,12 +48,15 @@ const defaultOpen = {
   [ModalType.REMOVE]: false,
 }
 
-const AddressBookTable = () => {
-  const chain = useCurrentChain()
+type AddressBookTableProps = {
+  chain?: ChainInfo
+  setTxFlow: TxModalContextType['setTxFlow']
+}
+
+function AddressBookTable({ chain, setTxFlow }: AddressBookTableProps) {
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const [searchQuery, setSearchQuery] = useState('')
   const [defaultValues, setDefaultValues] = useState<AddressEntry | undefined>(undefined)
-  const [selectedAddress, setSelectedAddress] = useState<string | undefined>()
 
   const handleOpenModal = (type: keyof typeof open) => () => {
     setOpen((prev) => ({ ...prev, [type]: true }))
@@ -117,7 +123,7 @@ const AddressBookTable = () => {
                     variant="contained"
                     color="primary"
                     size="small"
-                    onClick={() => setSelectedAddress(address)}
+                    onClick={() => setTxFlow(<TokenTransferFlow recipient={address} />)}
                     disabled={!isOk}
                   >
                     Send
@@ -165,16 +171,13 @@ const AddressBookTable = () => {
       )}
 
       {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
-
-      {/* Send funds modal */}
-      {selectedAddress && (
-        <TokenTransferModal
-          onClose={() => setSelectedAddress(undefined)}
-          initialData={[{ [SendAssetsField.recipient]: selectedAddress }]}
-        />
-      )}
     </>
   )
 }
 
-export default AddressBookTable
+const useSetTxFlow = () => useContext(TxModalContext).setTxFlow
+
+export default madProps(AddressBookTable, {
+  chain: useCurrentChain,
+  setTxFlow: useSetTxFlow,
+})

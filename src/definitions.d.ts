@@ -10,10 +10,12 @@ declare global {
       _metamask: {
         isUnlocked: () => Promise<boolean>
       }
+      isConnected?: () => boolean
     }
     beamer_config?: BeamerConfig
     Beamer?: BeamerMethods
-    dataLayer?: DataLayerArgs['dataLayer']
+    dataLayer?: any[]
+    gtag?: (...args: any[]) => void
     Cypress?
   }
 }

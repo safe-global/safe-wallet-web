@@ -40,7 +40,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
         </div>
         <div>
           <Typography fontWeight="bold" variant="subtitle1">
-            Something wrong with the app?
+            Something wrong with the Safe App?
           </Typography>
           <Typography color="primary.light" variant="body2">
             Get in touch with the team
@@ -95,7 +95,14 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
               Website
             </Typography>
 
-            <Link href={developerWebsite} passHref target="_blank" rel="noopener noreferrer" color="primary">
+            <Link
+              href={developerWebsite}
+              passHref
+              target="_blank"
+              rel="noopener noreferrer"
+              color="primary"
+              legacyBehavior
+            >
               <MuiLink target="_blank" className={css.websiteLink} underline="hover" fontWeight="bold" mt={1.2}>
                 {developerWebsite}
               </MuiLink>

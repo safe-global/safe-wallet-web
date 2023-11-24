@@ -47,11 +47,12 @@ const SingleTx = () => {
       return getTransactionDetails(safe.chainId, transactionId).then((details) => {
         // If the transaction is not related to the current safe, throw an error
         if (!sameAddress(details.safeAddress, safeAddress)) {
-          return Promise.reject(new Error('Transaction with this id was not found in this Safe'))
+          return Promise.reject(new Error('Transaction with this id was not found in this Safe Account'))
         }
         return details
       })
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [transactionId, safe.chainId, safe.txQueuedTag, safe.txHistoryTag, safeAddress],
     false,
   )

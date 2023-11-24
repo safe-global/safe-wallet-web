@@ -1,26 +1,33 @@
-import { Button, Typography } from '@mui/material'
+import { Box, Divider, Skeleton, SvgIcon, Typography } from '@mui/material'
+import dynamic from 'next/dynamic'
 import type { ReactElement } from 'react'
 
-import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
+import LockIcon from '@/public/images/common/lock.svg'
 
-const WalletDetails = ({ onConnect }: { onConnect?: () => void }): ReactElement => {
-  const connectWallet = useConnectWallet()
+const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
+  loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
+})
 
-  const handleConnect = () => {
-    onConnect?.()
-    connectWallet()
-  }
+import WalletLogin from '@/components/welcome/WelcomeLogin/WalletLogin'
 
+const WalletDetails = ({ onConnect }: { onConnect: () => void }): ReactElement => {
   return (
     <>
-      <Typography variant="h5">Connect a wallet</Typography>
+      <Box my={1}>
+        <SvgIcon inheritViewBox sx={{ width: 64, height: 64, display: 'block' }}>
+          <LockIcon />
+        </SvgIcon>
+      </Box>
 
-      <KeyholeIcon />
+      <WalletLogin onLogin={onConnect} />
 
-      <Button onClick={handleConnect} variant="contained" size="small" disableElevation fullWidth>
-        Connect
-      </Button>
+      <Divider sx={{ width: '100%' }}>
+        <Typography color="text.secondary" fontWeight={700} variant="overline">
+          or
+        </Typography>
+      </Divider>
+
+      <SocialSigner onRequirePassword={onConnect} />
     </>
   )
 }

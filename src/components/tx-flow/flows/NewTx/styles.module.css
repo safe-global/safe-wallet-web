@@ -1,0 +1,55 @@
+.chain {
+  align-self: flex-end;
+  margin-bottom: var(--space-2);
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-10) var(--space-8);
+  gap: var(--space-3);
+}
+
+.title {
+  font-size: 44px;
+  font-weight: 700;
+}
+
+.type {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.globs > div {
+  padding: 0;
+  margin: 0 0 var(--space-3) 0;
+}
+
+@media (max-width: 899.95px) {
+  .container {
+    margin-top: var(--space-3);
+    padding: 0;
+  }
+
+  .container :global(.MuiPaper-root) {
+    border-radius: unset;
+  }
+
+  .chain {
+    position: absolute;
+    top: 0;
+    right: 57px;
+    margin: var(--space-2);
+  }
+
+  .progressBar {
+    display: none;
+  }
+
+  .pane + .pane {
+    padding-top: 0;
+  }
+}

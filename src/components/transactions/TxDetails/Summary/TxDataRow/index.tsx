@@ -1,8 +1,9 @@
+import type { ReactElement, ReactNode } from 'react'
+import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 import CopyButton from '@/components/common/CopyButton'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { Typography } from '@mui/material'
 import { hexDataLength } from 'ethers/lib/utils'
-import type { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
@@ -26,12 +27,25 @@ export const generateDataRowValue = (
   value?: string,
   type?: 'hash' | 'rawData' | 'address' | 'bytes',
   hasExplorer?: boolean,
+  addressInfo?: AddressEx,
 ): ReactElement | null => {
   if (value == undefined) return null
+
   switch (type) {
     case 'hash':
     case 'address':
-      return <EthHashInfo address={value} hasExplorer={hasExplorer} showAvatar={false} showCopyButton />
+      const customAvatar = addressInfo?.logoUri
+
+      return (
+        <EthHashInfo
+          address={value}
+          name={addressInfo?.name}
+          customAvatar={customAvatar}
+          showAvatar={!!customAvatar}
+          hasExplorer={hasExplorer}
+          showCopyButton
+        />
+      )
     case 'rawData':
       return (
         <div className={css.rawData}>
