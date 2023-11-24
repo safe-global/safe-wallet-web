@@ -1,12 +1,13 @@
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { Typography, FormControlLabel, Checkbox, Button, Box, Divider, Grid, LinearProgress } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Track from '@/components/common/Track'
 import { FormProvider, useForm } from 'react-hook-form'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 
 import css from './styles.module.css'
 import CodeInput from '../CodeInput'
+import { CooldownButton } from '../CodeInput/CooldownButton'
 
 type SmsFormData = {
   code: string
@@ -32,11 +33,7 @@ export const SmsRecovery = ({
     },
   })
 
-  useEffect(() => {
-    sendSmsCode()
-  }, [sendSmsCode])
-
-  const { handleSubmit, formState, setValue } = formMethods
+  const { handleSubmit, formState, setValue, watch } = formMethods
 
   const [error, setError] = useState<string>()
 
@@ -50,7 +47,20 @@ export const SmsRecovery = ({
     }
   }
 
-  const isDisabled = formState.isSubmitting
+  // Initially we send a SMS code
+  useEffect(() => {
+    sendSmsCode()
+  }, [sendSmsCode])
+
+  const handleCodeChange = useCallback(
+    (code: string) => {
+      setValue('code', code)
+    },
+    [setValue],
+  )
+
+  const currentCode = watch('code')
+  const isDisabled = formState.isSubmitting || currentCode.length < 6
 
   return (
     <FormProvider {...formMethods}>
@@ -76,16 +86,13 @@ export const SmsRecovery = ({
               </Box>
               <Divider />
               <Box className={css.passwordWrapper}>
-                <CodeInput
-                  length={6}
-                  onCodeChanged={(code: string) => {
-                    setValue('code', code)
-                    alert('CODE ' + code)
-                  }}
-                />
+                <CodeInput length={6} onCodeChanged={handleCodeChange} />
+
+                <CooldownButton cooldown={60} onClick={sendSmsCode} startDisabled={true}>
+                  Resend Code
+                </CooldownButton>
 
                 <FormControlLabel
-                  disabled={isDisabled}
                   control={
                     <Checkbox checked={storeDeviceFactor} onClick={() => setStoreDeviceFactor((prev) => !prev)} />
                   }

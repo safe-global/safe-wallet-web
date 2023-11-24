@@ -109,7 +109,7 @@ const SmsMfaForm = () => {
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Box display="flex" alignItems="center" gap={1}>
                 <SvgIcon component={CheckIcon} sx={{ color: isSmsOtpSet ? 'success.main' : 'border.light' }} />
-                <Typography fontWeight="bold">SMS Recovery</Typography>
+                <Typography fontWeight="bold">SMS recovery</Typography>
               </Box>
             </AccordionSummary>
             <AccordionDetails sx={{ p: 0 }}>
@@ -130,7 +130,9 @@ const SmsMfaForm = () => {
                   </FormControl>
                   {verificationStarted && (
                     <Box>
-                      <Typography variant="h4">Verification Code</Typography>
+                      <Typography mb={1} variant="h4">
+                        Verification code
+                      </Typography>
                       <CodeInput
                         length={6}
                         onCodeChanged={(code: string) => setValue(SmsOtpFieldNames.verificationCode, code)}

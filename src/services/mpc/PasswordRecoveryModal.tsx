@@ -41,7 +41,7 @@ const RecoveryPicker = ({
         </Typography>
         <Box bgcolor="background.paper" borderRadius={1}>
           <Box p={4}>
-            <Typography variant="h4" fontWeight="bold" mb={2}>
+            <Typography variant="h6" fontWeight="bold" mb={2}>
               Choose your recovery method
             </Typography>
             <Typography>
@@ -50,24 +50,28 @@ const RecoveryPicker = ({
             </Typography>
           </Box>
           <Divider />
-          <Box p={4}>
-            <Typography>Use your mobile phone</Typography>
-            <Button onClick={() => setRecoveryMethod(RecoveryMethod.SMS)} disabled={!smsEnabled} variant="contained">
+          <Box p={4} display="flex" gap={2} flexDirection="column">
+            <Button
+              size="large"
+              onClick={() => setRecoveryMethod(RecoveryMethod.SMS)}
+              disabled={!smsEnabled}
+              variant="outlined"
+            >
               SMS
             </Button>
 
-            <Typography mt={3}>Use your recovery password</Typography>
             <Button
+              size="large"
               onClick={() => setRecoveryMethod(RecoveryMethod.PASSWORD)}
               disabled={!passwordEnabled}
-              variant="contained"
+              variant="outlined"
+              sx={{ pointerEvents: 'all' }}
             >
               Password
             </Button>
 
             {!IS_PRODUCTION && (
               <>
-                <Typography mt={3}>Only in Dev / Staging</Typography>
                 <Button onClick={deleteAccount} variant="danger">
                   Delete account
                 </Button>

@@ -1,5 +1,6 @@
+import useDebounce from '@/hooks/useDebounce'
 import { Box } from '@mui/material'
-import { createRef, type FormEvent, useState } from 'react'
+import { createRef, type FormEvent, useState, useEffect, type ClipboardEvent } from 'react'
 import css from './styles.module.css'
 
 const digitRegExp = /^[0-9]$/
@@ -23,18 +24,39 @@ const useCodeInput = (length: number, onCodeChanged: (code: string) => void) => 
         inputRefsArray[index - 1].current?.focus()
       }
     }
+  }
 
-    if (!newCode.some((digit) => !digitRegExp.test(digit))) {
-      // There is no character that's not a digit, we invoke the callback
-      onCodeChanged(newCode.join(''))
+  const handlePaste = (event: ClipboardEvent<HTMLInputElement>) => {
+    let input = event.clipboardData?.getData('text')
+    if (!input) {
+      return
+    }
+    const trimmedInput = input.trim()
+    if (trimmedInput.length === length) {
+      const newCode = trimmedInput.split('')
+      if (!newCode.some((digit) => !digitRegExp.test(digit))) {
+        setCode(newCode)
+      }
     }
   }
 
-  return { code, handleChange, inputRefsArray }
+  const debouncedCode = useDebounce(code, 100)
+
+  useEffect(() => {
+    // Submit input if complete and valid
+    if (!debouncedCode.some((digit) => !digitRegExp.test(digit))) {
+      // There is no character that's not a digit, we invoke the callback
+      onCodeChanged(debouncedCode.join(''))
+    } else {
+      onCodeChanged('')
+    }
+  }, [debouncedCode, onCodeChanged])
+
+  return { code, handleChange, handlePaste, inputRefsArray }
 }
 
 const CodeInput = ({ length, onCodeChanged }: { length: number; onCodeChanged: (code: string) => void }) => {
-  const { code, handleChange, inputRefsArray } = useCodeInput(length, onCodeChanged)
+  const { code, handleChange, handlePaste, inputRefsArray } = useCodeInput(length, onCodeChanged)
   // create a array of refs
   const onInput = (event: FormEvent<HTMLInputElement>, index: number) => {
     const value = event.currentTarget.value
@@ -53,6 +75,7 @@ const CodeInput = ({ length, onCodeChanged }: { length: number; onCodeChanged: (
           value={code[idx]}
           ref={ref}
           onFocus={onFocus}
+          onPaste={handlePaste}
           onInput={(event) => onInput(event, idx)}
           key={idx}
           maxLength={1}

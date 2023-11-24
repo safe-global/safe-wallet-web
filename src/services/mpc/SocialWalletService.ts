@@ -150,7 +150,6 @@ class SocialWalletService implements ISocialWalletService {
   }
 
   async recoverAccountWithSms(number: string, code: string, storeDeviceShare: boolean = false) {
-    debugger
     if (this.smsRecovery.isEnabled()) {
       const success = await this.smsRecovery.verifyNumber(number, code, false)
       if (success) {
