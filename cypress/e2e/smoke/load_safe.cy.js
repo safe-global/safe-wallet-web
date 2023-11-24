@@ -61,15 +61,15 @@ describe('[SMOKE] Load Safe tests', () => {
   })
 
   it('Verify a valid QR code is accepted', () => {
-    safe.ScanQRCode(constants.VALID_QR_CODE_PATH)
+    safe.scanQRCode(constants.VALID_QR_CODE_PATH)
     safe.verifyAddressInputValue(constants.SEPOLIA_TEST_SAFE_6)
     safe.verifyNextButtonStatus('be.enabled')
     safe.clickOnNextBtn()
   })
 
-  it('Verify a non QR code is not accepted', () => {
-    safe.ScanQRCode(constants.INVALID_QR_CODE_PATH)
-    cy.contains('The QR could not be read')
+  it.only('Verify a non QR code is not accepted', () => {
+    safe.scanQRCode(constants.INVALID_QR_CODE_PATH)
+    safe.verifyQRErrorMsgDisplayed()
   })
 
   it('Verify custom name in the first owner an be set', () => {

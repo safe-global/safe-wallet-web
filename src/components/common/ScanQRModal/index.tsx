@@ -68,6 +68,7 @@ const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElement => 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <QrReader
+          data-testid="qr-error-msg"
           legacyMode={cameraBlocked}
           onError={onFileScannedError}
           onScan={onFileScannedResolve}

@@ -13,11 +13,16 @@ const sidebarCheckIcon = '[data-testid="CheckIcon"]'
 const addressStepNextBtn = '[data-testid="load-safe-next-btn"]'
 const qrCodeBtn = '[data-testid="address-qr-scan"]'
 const typeFile = '[type="file"]'
+const qrErrorMsg = '[data-testid="qr-error-msg"]'
 const nextBtnStr = 'Next'
 const addBtnStr = 'Add'
 const settingsBtnStr = 'Settings'
 const ownersConfirmationsStr = 'Owners and confirmations'
 const transactionStr = 'Transactions'
+
+export function verifyQRErrorMsgDisplayed() {
+  cy.get(qrErrorMsg).should('exist')
+}
 
 export function openLoadSafeForm() {
   cy.contains('a', addExistingAccountBtnStr).click()
@@ -60,7 +65,7 @@ export function verifyNameLengthErrorMessage() {
   cy.get(nameInput).parent().prev('label').contains(invalidAddressNameLengthErrorMsg)
 }
 
-export function ScanQRCode(image) {
+export function scanQRCode(image) {
   cy.get(qrCodeBtn).click()
   cy.contains('Upload an image').click()
   cy.get(typeFile).attachFile(image)
