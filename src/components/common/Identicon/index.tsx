@@ -1,9 +1,5 @@
-import type { ReactElement, CSSProperties } from 'react'
-import { useMemo } from 'react'
-import { blo } from 'blo'
-import Skeleton from '@mui/material/Skeleton'
-
-import css from './styles.module.css'
+import type { ReactElement } from 'react'
+import { Unicon } from '../Unicon'
 
 export interface IdenticonProps {
   address: string
@@ -11,24 +7,7 @@ export interface IdenticonProps {
 }
 
 const Identicon = ({ address, size = 40 }: IdenticonProps): ReactElement => {
-  const style = useMemo<CSSProperties | null>(() => {
-    try {
-      const blockie = blo(address as `0x${string}`)
-      return {
-        backgroundImage: `url(${blockie})`,
-        width: `${size}px`,
-        height: `${size}px`,
-      }
-    } catch (e) {
-      return null
-    }
-  }, [address, size])
-
-  return !style ? (
-    <Skeleton variant="circular" width={size} height={size} />
-  ) : (
-    <div className={css.icon} style={style} />
-  )
+  return <Unicon address={address} size={size} />
 }
 
 export default Identicon
