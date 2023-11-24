@@ -1,4 +1,3 @@
-import { verify } from 'crypto'
 import * as constants from '../../support/constants'
 
 const addExistingAccountBtnStr = 'Add existing one'
