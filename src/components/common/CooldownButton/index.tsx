@@ -25,7 +25,7 @@ const CircularProgressWithLabel = (props: CircularProgressProps & { value: numbe
   )
 }
 
-export const CooldownButton = ({
+const CooldownButton = ({
   onClick,
   cooldown,
   startDisabled = true,
@@ -81,3 +81,5 @@ export const CooldownButton = ({
     </Button>
   )
 }
+
+export default CooldownButton

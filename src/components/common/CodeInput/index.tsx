@@ -77,7 +77,8 @@ const CodeInput = ({ length, onCodeChanged }: { length: number; onCodeChanged: (
           onFocus={onFocus}
           onPaste={handlePaste}
           onInput={(event) => onInput(event, idx)}
-          key={idx}
+          data-testid={`digit-${idx}`}
+          key={`digit-${idx}`}
           maxLength={1}
         />
       ))}

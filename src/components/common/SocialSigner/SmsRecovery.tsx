@@ -7,7 +7,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 
 import css from './styles.module.css'
 import CodeInput from '../CodeInput'
-import { CooldownButton } from '../CodeInput/CooldownButton'
+import CooldownButton from '../CooldownButton'
 
 type SmsFormData = {
   code: string
