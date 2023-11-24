@@ -1,4 +1,5 @@
-import { TransactionDetails, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
 
 type SafeInfo = {
@@ -81,62 +82,29 @@ export class SafeWalletProvider {
 
     switch (method) {
       case 'wallet_switchEthereumChain': {
-        const [{ chainId }] = params as [{ chainId: string }]
-        try {
-          await this.sdk.switchChain(chainId, appInfo)
-        } catch (e) {
-          throw new RpcError(RpcErrorCode.UNSUPPORTED_CHAIN, 'Unsupported chain')
-        }
-        return null
+        return this.wallet_switchEthereumChain(...(params as [{ chainId: string }]), appInfo)
       }
 
       case 'eth_accounts': {
-        return [this.safe.safeAddress]
+        return this.eth_accounts()
       }
 
       case 'net_version':
       case 'eth_chainId': {
-        return `0x${this.safe.chainId.toString(16)}`
+        return this.eth_chainId()
       }
 
       case 'personal_sign': {
-        const [message, address] = params as [string, string]
-
-        if (this.safe.safeAddress.toLowerCase() !== address.toLowerCase()) {
-          throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'The address or message hash is invalid')
-        }
-
-        const response = await this.sdk.signMessage(message, appInfo)
-        const signature = 'signature' in response ? response.signature : undefined
-
-        return signature || '0x'
+        return this.personal_sign(...(params as [string, string]), appInfo)
       }
 
       case 'eth_sign': {
-        const [address, messageHash] = params as [string, string]
-
-        if (this.safe.safeAddress.toLowerCase() !== address.toLowerCase() || !messageHash.startsWith('0x')) {
-          throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'The address or message hash is invalid')
-        }
-
-        const response = await this.sdk.signMessage(messageHash, appInfo)
-        const signature = 'signature' in response ? response.signature : undefined
-
-        return signature || '0x'
+        return this.eth_sign(...(params as [string, string]), appInfo)
       }
 
       case 'eth_signTypedData':
       case 'eth_signTypedData_v4': {
-        const [address, typedData] = params as [string, unknown]
-        const parsedTypedData = typeof typedData === 'string' ? JSON.parse(typedData) : typedData
-
-        if (this.safe.safeAddress.toLowerCase() !== address.toLowerCase()) {
-          throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'The address is invalid')
-        }
-
-        const response = await this.sdk.signTypedMessage(parsedTypedData, appInfo)
-        const signature = 'signature' in response ? response.signature : undefined
-        return signature || '0x'
+        return this.eth_signTypedData(...(params as [string, unknown]), appInfo)
       }
 
       case 'eth_sendTransaction': {
@@ -145,128 +113,44 @@ export class SafeWalletProvider {
           data: '0x',
           ...(params[0] as { gas: string | number; to: string }),
         }
-
-        // Some ethereum libraries might pass the gas as a hex-encoded string
-        // We need to convert it to a number because the SDK expects a number and our backend only supports
-        // Decimal numbers
-        if (typeof tx.gas === 'string' && tx.gas.startsWith('0x')) {
-          tx.gas = parseInt(tx.gas, 16)
-        }
-
-        const { safeTxHash, txHash } = await this.sdk.send(
-          {
-            txs: [tx],
-            params: { safeTxGas: Number(tx.gas) },
-          },
-          appInfo,
-        )
-
-        if (txHash) return txHash
-
-        // Store fake transaction
-        this.submittedTxs.set(safeTxHash, {
-          from: this.safe.safeAddress,
-          hash: safeTxHash,
-          gas: 0,
-          gasPrice: '0x00',
-          nonce: 0,
-          input: tx.data,
-          value: tx.value,
-          to: tx.to,
-          blockHash: null,
-          blockNumber: null,
-          transactionIndex: null,
-        })
-
-        return safeTxHash
+        return this.eth_sendTransaction(tx, appInfo)
       }
 
       case 'eth_getTransactionByHash': {
-        let txHash = params[0] as string
-        try {
-          const resp = await this.sdk.getBySafeTxHash(txHash)
-          txHash = resp.txHash || txHash
-        } catch (e) {}
-
-        // Use fake transaction if we don't have a real tx hash
-        if (this.submittedTxs.has(txHash)) {
-          return this.submittedTxs.get(txHash)
-        }
-        return await this.sdk.proxy(method, [txHash])
+        return this.eth_getTransactionByHash(...(params as [string]))
       }
 
       case 'eth_getTransactionReceipt': {
-        let txHash = params[0] as string
-        try {
-          const resp = await this.sdk.getBySafeTxHash(txHash)
-          txHash = resp.txHash || txHash
-        } catch (e) {}
-        return this.sdk.proxy(method, params)
+        return this.eth_getTransactionReceipt(...(params as [string]))
       }
 
       // EIP-5792
       // @see https://eips.ethereum.org/EIPS/eip-5792
       case 'wallet_sendFunctionCallBundle': {
-        const arg = params[0] as {
-          chainId: string
-          from: string
-          calls: Array<{ gas: string; data: string; to?: string; value?: string }>
-        }
-
-        const { safeTxHash } = await this.sdk.send(
-          {
-            txs: arg.calls,
-            params: { safeTxGas: 0 },
-          },
+        return this.wallet_sendFunctionCallBundle(
+          ...(params as [
+            {
+              chainId: string
+              from: string
+              calls: Array<{ gas: string; data: string; to?: string; value?: string }>
+            },
+          ]),
           appInfo,
         )
-
-        return safeTxHash
       }
+
       case 'wallet_getBundleStatus': {
-        const hash = params[0] as string
-        let tx: TransactionDetails | undefined
-
-        try {
-          tx = await this.sdk.getBySafeTxHash(hash)
-        } catch (e) {}
-
-        if (!tx || !tx.txData?.dataDecoded) {
-          throw new Error('Transaction not found')
-        }
-
-        const calls = new Array(tx.txData.dataDecoded.parameters?.[0].valueDecoded?.length || 1).fill(null)
-        const { txStatus, txHash } = tx
-
-        let receipt: TransactionReceipt | undefined
-        if (txHash) {
-          receipt = await (this.sdk.proxy('eth_getTransactionReceipt', [txHash]) as Promise<TransactionReceipt>)
-        }
-
-        const callStatus = {
-          status: BundleTxStatuses[txStatus],
-          receipt: {
-            success: txStatus === TransactionStatus.SUCCESS,
-            blockHash: receipt?.blockHash ?? '',
-            blockNumber: receipt?.blockNumber ?? -1,
-            blockTimestamp: tx.executedAt,
-            gasUsed: receipt?.gasUsed ?? 0,
-            transactionHash: txHash,
-          },
-        }
-
-        return {
-          calls: calls.map(() => callStatus),
-        }
+        return this.wallet_getBundleStatus(...(params as [string]))
       }
+
       case 'wallet_showBundleStatus': {
-        this.sdk.showTxStatus(params[0] as string)
+        this.wallet_showBundleStatus(...(params as [string]))
         return null
       }
 
       // Safe proprietary methods
       case 'safe_setSettings': {
-        return this.sdk.setSafeSettings(params[0] as SafeSettings)
+        return this.safe_setSettings(...(params as [SafeSettings]))
       }
 
       default: {
@@ -310,5 +194,198 @@ export class SafeWalletProvider {
         },
       }
     }
+  }
+
+  // Actual RPC methods
+
+  async wallet_switchEthereumChain({ chainId }: { chainId: string }, appInfo: AppInfo) {
+    try {
+      await this.sdk.switchChain(chainId, appInfo)
+    } catch (e) {
+      throw new RpcError(RpcErrorCode.UNSUPPORTED_CHAIN, 'Unsupported chain')
+    }
+    return null
+  }
+
+  async eth_accounts() {
+    return [this.safe.safeAddress]
+  }
+
+  async eth_chainId() {
+    return `0x${this.safe.chainId.toString(16)}`
+  }
+
+  async personal_sign(message: string, address: string, appInfo: AppInfo): Promise<string> {
+    if (this.safe.safeAddress.toLowerCase() !== address.toLowerCase()) {
+      throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'The address or message hash is invalid')
+    }
+
+    const response = await this.sdk.signMessage(message, appInfo)
+    const signature = 'signature' in response ? response.signature : undefined
+
+    return signature || '0x'
+  }
+
+  async eth_sign(address: string, messageHash: string, appInfo: AppInfo): Promise<string> {
+    if (this.safe.safeAddress.toLowerCase() !== address.toLowerCase() || !messageHash.startsWith('0x')) {
+      throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'The address or message hash is invalid')
+    }
+
+    const response = await this.sdk.signMessage(messageHash, appInfo)
+    const signature = 'signature' in response ? response.signature : undefined
+
+    return signature || '0x'
+  }
+
+  async eth_signTypedData(address: string, typedData: unknown, appInfo: AppInfo): Promise<string> {
+    const parsedTypedData = typeof typedData === 'string' ? JSON.parse(typedData) : typedData
+
+    if (this.safe.safeAddress.toLowerCase() !== address.toLowerCase()) {
+      throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'The address is invalid')
+    }
+
+    const response = await this.sdk.signTypedMessage(parsedTypedData, appInfo)
+    const signature = 'signature' in response ? response.signature : undefined
+    return signature || '0x'
+  }
+
+  async eth_sendTransaction(
+    tx: { gas: string | number; to: string; value: string; data: string },
+    appInfo: AppInfo,
+  ): Promise<string> {
+    // Some ethereum libraries might pass the gas as a hex-encoded string
+    // We need to convert it to a number because the SDK expects a number and our backend only supports
+    // Decimal numbers
+    if (typeof tx.gas === 'string' && tx.gas.startsWith('0x')) {
+      tx.gas = parseInt(tx.gas, 16)
+    }
+
+    const { safeTxHash, txHash } = await this.sdk.send(
+      {
+        txs: [tx],
+        params: { safeTxGas: Number(tx.gas) },
+      },
+      appInfo,
+    )
+
+    if (txHash) return txHash
+
+    // Store fake transaction
+    this.submittedTxs.set(safeTxHash, {
+      from: this.safe.safeAddress,
+      hash: safeTxHash,
+      gas: 0,
+      gasPrice: '0x00',
+      nonce: 0,
+      input: tx.data,
+      value: tx.value,
+      to: tx.to,
+      blockHash: null,
+      blockNumber: null,
+      transactionIndex: null,
+    })
+
+    return safeTxHash
+  }
+
+  async eth_getTransactionByHash(txHash: string): Promise<TransactionDetails> {
+    try {
+      const resp = await this.sdk.getBySafeTxHash(txHash)
+      txHash = resp.txHash || txHash
+    } catch (e) {}
+
+    // Use fake transaction if we don't have a real tx hash
+    if (this.submittedTxs.has(txHash)) {
+      return this.submittedTxs.get(txHash) as TransactionDetails
+    }
+
+    return (await this.sdk.proxy('eth_getTransactionByHash', [txHash])) as Promise<TransactionDetails>
+  }
+
+  async eth_getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
+    try {
+      const resp = await this.sdk.getBySafeTxHash(txHash)
+      txHash = resp.txHash || txHash
+    } catch (e) {}
+    return this.sdk.proxy('eth_getTransactionReceipt', [txHash]) as Promise<TransactionReceipt>
+  }
+
+  // EIP-5792
+  // @see https://eips.ethereum.org/EIPS/eip-5792
+  async wallet_sendFunctionCallBundle(
+    bundle: {
+      chainId: string
+      from: string
+      calls: Array<{ gas: string; data: string; to?: string; value?: string }>
+    },
+    appInfo: AppInfo,
+  ): Promise<string> {
+    const { safeTxHash } = await this.sdk.send(
+      {
+        txs: bundle.calls,
+        params: { safeTxGas: 0 },
+      },
+      appInfo,
+    )
+
+    return safeTxHash
+  }
+  async wallet_getBundleStatus(safeTxHash: string): Promise<{
+    calls: Array<{
+      status: BundleStatus
+      receipt: {
+        success: boolean
+        blockHash: string
+        blockNumber: number
+        blockTimestamp: number
+        gasUsed: number
+        transactionHash: string
+        logs: TransactionReceipt['logs']
+      }
+    }>
+  }> {
+    let tx: TransactionDetails | undefined
+
+    try {
+      tx = await this.sdk.getBySafeTxHash(safeTxHash)
+    } catch (e) {}
+
+    if (!tx || !tx.txData?.dataDecoded) {
+      throw new Error('Transaction not found')
+    }
+
+    const calls = new Array(tx.txData.dataDecoded.parameters?.[0].valueDecoded?.length || 1).fill(null)
+    const { txStatus, txHash } = tx
+
+    let receipt: TransactionReceipt | undefined
+    if (txHash) {
+      receipt = await (this.sdk.proxy('eth_getTransactionReceipt', [txHash]) as Promise<TransactionReceipt>)
+    }
+
+    const callStatus = {
+      status: BundleTxStatuses[txStatus],
+      receipt: {
+        success: txStatus === TransactionStatus.SUCCESS,
+        blockHash: receipt?.blockHash ?? '',
+        blockNumber: receipt?.blockNumber ?? -1,
+        blockTimestamp: tx.executedAt || -1,
+        gasUsed: receipt?.gasUsed.toNumber() ?? 0,
+        transactionHash: txHash ?? '',
+        logs: receipt?.logs ?? [],
+      },
+    }
+
+    return {
+      calls: calls.map(() => callStatus),
+    }
+  }
+  async wallet_showBundleStatus(txHash: string): Promise<null> {
+    this.sdk.showTxStatus(txHash)
+    return null
+  }
+
+  // Safe proprietary methods
+  async safe_setSettings(settings: SafeSettings): Promise<SafeSettings> {
+    return this.sdk.setSafeSettings(settings)
   }
 }
