@@ -33,10 +33,12 @@ jobs:
           python-version: '3.x'
 
       - name: Install junitparser
+        if: always()
         run: |
           pip install junitparser
 
       - name: Merge JUnit reports for TestRail
+        if: always()
         run: |
           junitparser merge --suite-name "Root Suite" --glob "reports/junit-*" "reports/junit-report.xml"
 
