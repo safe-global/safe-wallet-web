@@ -5,10 +5,10 @@ import { svgPaths as emblemPaths } from './Emblem'
 import {
   gradientEnds,
   gradientStarts,
-  UniconAttributeData,
+  type UniconAttributeData,
   UniconAttributes,
   UniconAttributesArray,
-  UniconAttributesToIndices,
+  type UniconAttributesToIndices,
   UniconNumOptions,
 } from './types'
 
@@ -20,7 +20,7 @@ export const isEthAddress = (address: string) => {
 
 export const deriveUniconAttributeIndices = (
   address: string,
-  randomSeed = 0
+  randomSeed = 0,
 ): UniconAttributesToIndices | undefined => {
   if (!isEthAddress(address)) return
 

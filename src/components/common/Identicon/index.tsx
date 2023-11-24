@@ -1,3 +1,4 @@
+import { useDarkMode } from '@/hooks/useDarkMode'
 import type { ReactElement } from 'react'
 import { Unicon } from '../Unicon'
 
@@ -7,7 +8,8 @@ export interface IdenticonProps {
 }
 
 const Identicon = ({ address, size = 40 }: IdenticonProps): ReactElement => {
-  return <Unicon address={address} size={size} />
+  const isDarkMode = useDarkMode()
+  return <Unicon address={address} size={size} isDarkMode={isDarkMode} />
 }
 
 export default Identicon

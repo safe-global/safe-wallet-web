@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from 'react'
-import { useDarkMode } from '@/hooks/useDarkMode'
-import { blurs, UniconAttributeData, UniconAttributes, UniconAttributesToIndices } from './types'
+import { blurs, type UniconAttributeData, UniconAttributes, type UniconAttributesToIndices } from './types'
 import { deriveUniconAttributeIndices, getUniconAttributeData, isEthAddress } from './utils'
 
 const ORIGINAL_CONTAINER_SIZE = 36
@@ -94,13 +93,14 @@ function UniconSvg({
   attributeIndices,
   size,
   address,
+  isDarkMode,
 }: {
   attributeIndices: UniconAttributesToIndices
   size: number
   address: string
   mobile?: boolean
+  isDarkMode?: boolean
 }) {
-  const isDarkMode = useDarkMode()
   const attributeData = useMemo(() => getUniconAttributeData(attributeIndices), [attributeIndices])
 
   const gradientId = `gradient${address + size}`
@@ -142,9 +142,10 @@ interface Props {
   randomSeed?: number
   border?: boolean
   mobile?: boolean
+  isDarkMode?: boolean
 }
 
-function _Unicon({ address, size = 24, randomSeed = 0, mobile }: Props) {
+function _Unicon({ address, size = 24, randomSeed = 0, mobile, isDarkMode }: Props) {
   const attributeIndices = useMemo(() => deriveUniconAttributeIndices(address, randomSeed), [address, randomSeed])
 
   if (!address || !isEthAddress(address) || !attributeIndices) return null
@@ -152,7 +153,13 @@ function _Unicon({ address, size = 24, randomSeed = 0, mobile }: Props) {
   return (
     <div style={{ height: size, width: size, position: 'relative' }}>
       <div style={{ height: size, width: size, overflow: 'visible', position: 'absolute' }}>
-        <UniconSvg attributeIndices={attributeIndices} size={size} address={address} mobile={mobile} />
+        <UniconSvg
+          attributeIndices={attributeIndices}
+          size={size}
+          address={address}
+          mobile={mobile}
+          isDarkMode={isDarkMode}
+        />
       </div>
     </div>
   )
