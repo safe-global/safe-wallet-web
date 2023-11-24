@@ -67,9 +67,9 @@ describe('[SMOKE] Load Safe tests', () => {
     safe.clickOnNextBtn()
   })
 
-  it.only('Verify a non QR code is not accepted', () => {
+  it('Verify a non QR code is not accepted', () => {
     safe.scanQRCode(constants.INVALID_QR_CODE_PATH)
-    safe.verifyQRErrorMsgDisplayed()
+    safe.verifyQRCodeErrorMsg()
   })
 
   it('Verify custom name in the first owner an be set', () => {

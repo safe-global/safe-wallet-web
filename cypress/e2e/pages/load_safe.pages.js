@@ -1,3 +1,4 @@
+import { verify } from 'crypto'
 import * as constants from '../../support/constants'
 
 const addExistingAccountBtnStr = 'Add existing one'
@@ -13,15 +14,15 @@ const sidebarCheckIcon = '[data-testid="CheckIcon"]'
 const addressStepNextBtn = '[data-testid="load-safe-next-btn"]'
 const qrCodeBtn = '[data-testid="address-qr-scan"]'
 const typeFile = '[type="file"]'
-const qrErrorMsg = '[data-testid="qr-error-msg"]'
 const nextBtnStr = 'Next'
 const addBtnStr = 'Add'
 const settingsBtnStr = 'Settings'
 const ownersConfirmationsStr = 'Owners and confirmations'
 const transactionStr = 'Transactions'
+const qrErrorMsg = 'The QR could not be read'
 
-export function verifyQRErrorMsgDisplayed() {
-  cy.get(qrErrorMsg).should('exist')
+export function verifyQRCodeErrorMsg() {
+  cy.contains(qrErrorMsg).should('be.visible')
 }
 
 export function openLoadSafeForm() {
