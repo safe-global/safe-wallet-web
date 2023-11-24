@@ -1,3 +1,6 @@
+import { TransactionDetails, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
+
 type SafeInfo = {
   safeAddress: string
   chainId: number
@@ -22,7 +25,8 @@ export type WalletSDK = {
     params: { txs: unknown[]; params: { safeTxGas: number } },
     appInfo: AppInfo,
   ) => Promise<{ safeTxHash: string; txHash?: string }>
-  getBySafeTxHash: (safeTxHash: string) => Promise<{ txHash?: string }>
+  getBySafeTxHash: (safeTxHash: string) => Promise<TransactionDetails>
+  showTxStatus: (safeTxHash: string) => void
   switchChain: (chainId: string, appInfo: AppInfo) => Promise<null>
   setSafeSettings: (safeSettings: SafeSettings) => SafeSettings
   proxy: (method: string, params: unknown[]) => Promise<unknown>
@@ -38,6 +42,19 @@ export enum RpcErrorCode {
   USER_REJECTED = 4001,
   UNSUPPORTED_METHOD = 4200,
   UNSUPPORTED_CHAIN = 4901,
+}
+
+enum BundleStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+}
+
+const BundleTxStatuses: Record<TransactionStatus, BundleStatus> = {
+  [TransactionStatus.AWAITING_CONFIRMATIONS]: BundleStatus.PENDING,
+  [TransactionStatus.AWAITING_EXECUTION]: BundleStatus.PENDING,
+  [TransactionStatus.CANCELLED]: BundleStatus.CONFIRMED,
+  [TransactionStatus.FAILED]: BundleStatus.CONFIRMED,
+  [TransactionStatus.SUCCESS]: BundleStatus.CONFIRMED,
 }
 
 class RpcError extends Error {
@@ -187,6 +204,67 @@ export class SafeWalletProvider {
         return this.sdk.proxy(method, params)
       }
 
+      // EIP-5792
+      // @see https://eips.ethereum.org/EIPS/eip-5792
+      case 'wallet_sendFunctionCallBundle': {
+        const arg = params[0] as {
+          chainId: string
+          from: string
+          calls: Array<{ gas: string; data: string; to?: string; value?: string }>
+        }
+
+        const { safeTxHash } = await this.sdk.send(
+          {
+            txs: arg.calls,
+            params: { safeTxGas: 0 },
+          },
+          appInfo,
+        )
+
+        return safeTxHash
+      }
+      case 'wallet_getBundleStatus': {
+        const hash = params[0] as string
+        let tx: TransactionDetails | undefined
+
+        try {
+          tx = await this.sdk.getBySafeTxHash(hash)
+        } catch (e) {}
+
+        if (!tx || !tx.txData?.dataDecoded) {
+          throw new Error('Transaction not found')
+        }
+
+        const calls = new Array(tx.txData.dataDecoded.parameters?.[0].valueDecoded?.length || 1).fill(null)
+        const { txStatus, txHash } = tx
+
+        let receipt: TransactionReceipt | undefined
+        if (txHash) {
+          receipt = await (this.sdk.proxy('eth_getTransactionReceipt', [txHash]) as Promise<TransactionReceipt>)
+        }
+
+        const callStatus = {
+          status: BundleTxStatuses[txStatus],
+          receipt: {
+            success: txStatus === TransactionStatus.SUCCESS,
+            blockHash: receipt?.blockHash ?? '',
+            blockNumber: receipt?.blockNumber ?? -1,
+            blockTimestamp: tx.executedAt,
+            gasUsed: receipt?.gasUsed ?? 0,
+            transactionHash: txHash,
+          },
+        }
+
+        return {
+          calls: calls.map(() => callStatus),
+        }
+      }
+      case 'wallet_showBundleStatus': {
+        this.sdk.showTxStatus(params[0] as string)
+        return null
+      }
+
+      // Safe proprietary methods
       case 'safe_setSettings': {
         return this.sdk.setSafeSettings(params[0] as SafeSettings)
       }

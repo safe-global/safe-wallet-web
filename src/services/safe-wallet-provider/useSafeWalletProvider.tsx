@@ -182,6 +182,16 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         return null
       },
 
+      async showTxStatus(safeTxHash) {
+        router.push({
+          pathname: AppRoutes.transactions.tx,
+          query: {
+            safe: router.query.safe,
+            id: safeTxHash,
+          },
+        })
+      },
+
       setSafeSettings(newSettings) {
         const res = {
           ...settings,

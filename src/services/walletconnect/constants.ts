@@ -21,6 +21,9 @@ export const SAFE_COMPATIBLE_METHODS = [
   'eth_getLogs',
   'eth_gasPrice',
   'wallet_switchEthereumChain',
+  'wallet_sendFunctionCallBundle',
+  'wallet_getBundleStatus',
+  'wallet_wallet_showBundleStatus',
   'safe_setSettings',
 ]
 
