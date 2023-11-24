@@ -3,7 +3,6 @@ import { Box } from '@mui/material'
 
 import css from './styles.module.css'
 import Identicon, { type IdenticonProps } from '../Identicon'
-import AddressEmoji from '../AddressEmoji'
 
 interface ThresholdProps {
   threshold: number | string
@@ -25,7 +24,6 @@ const SafeIcon = ({ address, threshold, owners, size }: SafeIconProps): ReactEle
   <div className={css.container}>
     {threshold && owners ? <Threshold threshold={threshold} owners={owners} /> : null}
     <Identicon address={address} size={size} />
-    <AddressEmoji address={address} size={size} />
   </div>
 )
 

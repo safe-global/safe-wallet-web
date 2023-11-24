@@ -42,7 +42,6 @@ export type SettingsState = {
     onChainSigning: boolean
   }
   transactionExecution: boolean
-  addressEmojis: boolean
 }
 
 export const initialState: SettingsState = {
@@ -69,7 +68,6 @@ export const initialState: SettingsState = {
     onChainSigning: false,
   },
   transactionExecution: true,
-  addressEmojis: false,
 }
 
 export const settingsSlice = createSlice({
@@ -93,9 +91,6 @@ export const settingsSlice = createSlice({
     },
     setDarkMode: (state, { payload }: PayloadAction<SettingsState['theme']['darkMode']>) => {
       state.theme.darkMode = payload
-    },
-    setAddressEmojis: (state, { payload }: PayloadAction<SettingsState['addressEmojis']>) => {
-      state.addressEmojis = payload
     },
     setHiddenTokensForChain: (state, { payload }: PayloadAction<{ chainId: string; assets: string[] }>) => {
       const { chainId, assets } = payload
@@ -132,7 +127,6 @@ export const {
   setCopyShortName,
   setQrShortName,
   setDarkMode,
-  setAddressEmojis,
   setHiddenTokensForChain,
   setTokenList,
   setRpc,
