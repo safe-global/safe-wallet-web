@@ -4,6 +4,8 @@ import { createRef, type FormEvent, useState, useEffect, type ClipboardEvent } f
 import css from './styles.module.css'
 
 const digitRegExp = /^[0-9]$/
+export const debounceTimer = 100
+
 const useCodeInput = (length: number, onCodeChanged: (code: string) => void) => {
   const [code, setCode] = useState(Array.from(new Array(length)).map(() => ''))
 
@@ -40,7 +42,9 @@ const useCodeInput = (length: number, onCodeChanged: (code: string) => void) => 
     }
   }
 
-  const debouncedCode = useDebounce(code, 100)
+  // We debounce the input because pasting a code will trigger many onInput events
+  // This also gives the user the chance to see the fully input code
+  const debouncedCode = useDebounce(code, debounceTimer)
 
   useEffect(() => {
     // Submit input if complete and valid

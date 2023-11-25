@@ -107,7 +107,7 @@ const SocialSignerMFA = () => {
     if (!socialWalletService) return
 
     try {
-      await socialWalletService.enableMFA(
+      await socialWalletService.upsertPassword(
         data[PasswordFieldNames.currentPassword],
         data[PasswordFieldNames.newPassword],
       )

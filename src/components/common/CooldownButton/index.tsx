@@ -28,7 +28,7 @@ const CircularProgressWithLabel = (props: CircularProgressProps & { value: numbe
 const CooldownButton = ({
   onClick,
   cooldown,
-  startDisabled = true,
+  startDisabled = false,
   children,
 }: {
   onClick: () => void
@@ -37,19 +37,13 @@ const CooldownButton = ({
   cooldown: number
   children: ReactNode
 }) => {
-  const [remainingSeconds, setRemainingSeconds] = useState(0)
-  const [lastSendTime, setLastSendTime] = useState(0)
+  const [remainingSeconds, setRemainingSeconds] = useState(startDisabled ? cooldown : 0)
+  const [lastSendTime, setLastSendTime] = useState(startDisabled ? Date.now() : 0)
 
   const adjustSeconds = useCallback(() => {
     const remainingCoolDownSeconds = Math.max(0, cooldown * 1000 - (Date.now() - lastSendTime)) / 1000
     setRemainingSeconds(remainingCoolDownSeconds)
   }, [cooldown, lastSendTime])
-
-  useEffect(() => {
-    if (startDisabled) {
-      setLastSendTime(Date.now())
-    }
-  }, [startDisabled])
 
   useEffect(() => {
     // Counter for progress
@@ -59,6 +53,7 @@ const CooldownButton = ({
 
   const handleClick = () => {
     setLastSendTime(Date.now())
+    setRemainingSeconds(cooldown)
     onClick()
   }
 

@@ -12,6 +12,13 @@ const typeInFocusedElement = (text: string) => {
 }
 
 describe('CodeInput', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
   it('should have empty initial state', () => {
     const onChanged = jest.fn()
     const result = render(<CodeInput length={4} onCodeChanged={onChanged} />)
@@ -33,6 +40,9 @@ describe('CodeInput', () => {
     typeInFocusedElement('3')
     typeInFocusedElement('4')
 
+    // Debounce input
+    jest.advanceTimersByTime(100)
+
     await waitFor(() => {
       expect(onChanged).toHaveBeenCalledWith('1234')
     })
@@ -50,6 +60,9 @@ describe('CodeInput', () => {
     typeInFocusedElement('3')
     typeInFocusedElement('4')
 
+    // Debounce input
+    jest.advanceTimersByTime(100)
+
     await waitFor(() => {
       // First 4 codes
       expect(onChanged).toHaveBeenCalledWith('1234')
@@ -63,6 +76,9 @@ describe('CodeInput', () => {
     typeInFocusedElement('1')
     typeInFocusedElement('1')
     typeInFocusedElement('1')
+
+    // Debounce input
+    jest.advanceTimersByTime(100)
 
     // Second validcode
     await waitFor(() => {
@@ -82,6 +98,9 @@ describe('CodeInput', () => {
     typeInFocusedElement('1')
     typeInFocusedElement('2')
 
+    // Debounce input
+    jest.advanceTimersByTime(100)
+
     await waitFor(() => {
       expect(onChanged).not.toHaveBeenCalledWith('AB12')
       expect(onChanged).toHaveBeenCalledWith('')
@@ -97,6 +116,9 @@ describe('CodeInput', () => {
     // Type 12
     typeInFocusedElement('1')
     typeInFocusedElement('2')
+
+    // Debounce input
+    jest.advanceTimersByTime(100)
 
     await waitFor(() => {
       expect(onChanged).not.toHaveBeenCalledWith('12')
@@ -116,6 +138,9 @@ describe('CodeInput', () => {
         getData: () => '1234',
       },
     })
+
+    // Debounce input
+    jest.advanceTimersByTime(100)
 
     await waitFor(() => {
       expect(onChanged).toHaveBeenCalledWith('1234')

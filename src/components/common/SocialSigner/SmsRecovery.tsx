@@ -89,7 +89,7 @@ export const SmsRecovery = ({
                 <CodeInput length={6} onCodeChanged={handleCodeChange} />
 
                 <CooldownButton cooldown={60} onClick={sendSmsCode} startDisabled={true}>
-                  Resend Code
+                  Resend code
                 </CooldownButton>
 
                 <FormControlLabel

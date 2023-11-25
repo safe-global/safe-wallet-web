@@ -24,6 +24,7 @@ import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import { obfuscateNumber } from '@/utils/phoneNumber'
 import { asError } from '@/services/exceptions/utils'
 import CodeInput from '@/components/common/CodeInput'
+import CooldownButton from '@/components/common/CooldownButton'
 
 enum SmsOtpFieldNames {
   mobileNumber = 'mobileNumber',
@@ -129,14 +130,15 @@ const SmsMfaForm = () => {
                     />
                   </FormControl>
                   {verificationStarted && (
-                    <Box>
-                      <Typography mb={1} variant="h4">
-                        Verification code
-                      </Typography>
+                    <Box display="flex" flexDirection="column" gap={1} alignItems="flex-start">
+                      <Typography variant="h4">Verification code</Typography>
                       <CodeInput
                         length={6}
                         onCodeChanged={(code: string) => setValue(SmsOtpFieldNames.verificationCode, code)}
                       />
+                      <CooldownButton cooldown={60} onClick={onRegister} startDisabled={true}>
+                        Resend code
+                      </CooldownButton>
                     </Box>
                   )}
 
