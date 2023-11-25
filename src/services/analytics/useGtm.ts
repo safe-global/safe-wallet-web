@@ -1,7 +1,5 @@
 /**
- * This hook is used to initialize GTM and for anonymized page view tracking.
- * It won't initialize GTM if a consent wasn't given for analytics cookies.
- * The hook needs to be called when the app starts.
+ * Track analytics events using Google Tag Manager
  */
 import { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material/styles'
@@ -16,6 +14,7 @@ import {
   gtmSetUserProperty,
   gtmTrack,
 } from '@/services/analytics/gtm'
+import { spindlInit, spindlAttribute } from './spindl'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import useChainId from '@/hooks/useChainId'
@@ -41,9 +40,10 @@ const useGtm = () => {
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
 
-  // Initialize GTM
+  // Initialize GTM and Spindl
   useEffect(() => {
     gtmInit()
+    spindlInit()
   }, [])
 
   // Enable GA cookies if consent was given
@@ -90,13 +90,14 @@ const useGtm = () => {
 
   useEffect(() => {
     if (wallet?.label) {
-      gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, wallet?.label)
+      gtmSetUserProperty(AnalyticsUserProperties.WALLET_LABEL, wallet.label)
     }
   }, [wallet?.label])
 
   useEffect(() => {
     if (wallet?.address) {
-      gtmSetUserProperty(AnalyticsUserProperties.WALLET_ADDRESS, wallet?.address)
+      gtmSetUserProperty(AnalyticsUserProperties.WALLET_ADDRESS, wallet.address)
+      spindlAttribute(wallet.address)
     }
   }, [wallet?.address])
 

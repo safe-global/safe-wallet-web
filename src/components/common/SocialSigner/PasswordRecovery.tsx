@@ -48,6 +48,7 @@ export const PasswordRecovery = ({
     setError(undefined)
     try {
       await recoverFactorWithPassword(data.password, storeDeviceFactor)
+
       onSuccess?.()
     } catch (e) {
       setError('Incorrect password')

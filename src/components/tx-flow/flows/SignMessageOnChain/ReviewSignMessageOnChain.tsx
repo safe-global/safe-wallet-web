@@ -102,7 +102,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
     if (!safeTx || !onboard) return
 
     // Track the creation of a typed message
-    if (isTypedMessage && safeTx.signatures.size === 1) {
+    if (isTypedMessage && safeTx.signatures.size === 0) {
       trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.typed_message })
     }
 
