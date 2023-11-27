@@ -53,7 +53,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
           The recovery can be executed{' '}
           {isExecutable ? (
             item.expiresAt ? (
-              <Typography color="primary.main">until ${formatDate(item.expiresAt.toNumber())}.</Typography>
+              <Typography color="primary.main">until {formatDate(item.expiresAt.toNumber())}.</Typography>
             ) : (
               'now.'
             )
