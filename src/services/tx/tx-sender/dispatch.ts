@@ -476,3 +476,29 @@ export async function dispatchRecoveryExecution({
       reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
     })
 }
+
+export async function dispatchRecoverySkipExpired({
+  onboard,
+  chainId,
+  delayModifierAddress,
+  refetchRecoveryData,
+}: {
+  onboard: OnboardAPI
+  chainId: string
+  delayModifierAddress: string
+  refetchRecoveryData: () => void
+}) {
+  const wallet = await assertWalletChain(onboard, chainId)
+  const provider = createWeb3(wallet.provider)
+
+  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
+
+  const signer = provider.getSigner()
+
+  delayModifier
+    .connect(signer)
+    .skipExpired()
+    .then((result) => {
+      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
+    })
+}
