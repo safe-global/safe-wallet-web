@@ -52,7 +52,7 @@ export function ExecuteRecoveryButton({
         const isDisabled = !isOk || !isExecutable
 
         return (
-          <Tooltip title={isDisabled ? 'Previous recovery attempts must be executed or skipped first' : null}>
+          <Tooltip title={isDisabled ? 'Previous recovery attempts must be executed or cancelled first' : null}>
             <span>
               {compact ? (
                 <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
