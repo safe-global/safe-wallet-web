@@ -86,11 +86,11 @@ export function Recovery(): ReactElement {
             },
             [HeadCells.TxCooldown]: {
               rawValue: txCooldownSeconds,
-              content: <Typography>{getPeriod(txCooldownSeconds)}</Typography>,
+              content: <Typography>{txCooldownSeconds === 0 ? 'never' : getPeriod(txCooldownSeconds)}</Typography>,
             },
             [HeadCells.TxExpiration]: {
               rawValue: txExpirationSeconds,
-              content: <Typography>{getPeriod(txExpirationSeconds)}</Typography>,
+              content: <Typography>{txExpirationSeconds === 0 ? 'never' : getPeriod(txExpirationSeconds)}</Typography>,
             },
             [HeadCells.Actions]: {
               rawValue: '',
