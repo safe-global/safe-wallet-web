@@ -90,15 +90,19 @@ export class SmsOtpRecovery {
   }
 
   getSmsRecoveryNumber(): string | undefined {
-    const shareDescriptions = Object.values(this.mpcCoreKit.getKeyDetails().shareDescriptions).map((i) =>
-      (i || [])[0] ? JSON.parse(i[0]) : {},
-    )
+    try {
+      const shareDescriptions = Object.values(this.mpcCoreKit.getKeyDetails().shareDescriptions).map((i) =>
+        (i || [])[0] ? JSON.parse(i[0]) : {},
+      )
 
-    return shareDescriptions.find(
-      (shareDescription) =>
-        shareDescription.module === FactorKeyTypeShareDescription.Other &&
-        shareDescription.moduleName === SMS_OTP_MODULE_NAME,
-    )?.number
+      return shareDescriptions.find(
+        (shareDescription) =>
+          shareDescription.module === FactorKeyTypeShareDescription.Other &&
+          shareDescription.moduleName === SMS_OTP_MODULE_NAME,
+      )?.number
+    } catch (err) {
+      return
+    }
   }
 
   getRecoveryPubKey(): string {

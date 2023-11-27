@@ -28,6 +28,9 @@ class SocialWalletService implements ISocialWalletService {
     this.deviceShareRecovery = new DeviceShareRecovery(mpcCoreKit)
     this.securityQuestionRecovery = new SecurityQuestionRecovery(mpcCoreKit)
     this.smsRecovery = new SmsOtpRecovery(mpcCoreKit)
+
+    // In case of rehydration we need to initialize the store
+    this.syncMfaSetup()
   }
 
   /**
@@ -123,6 +126,9 @@ class SocialWalletService implements ISocialWalletService {
         ],
         aggregateVerifierType: 'single_id_verifier',
       })
+
+      // After login we need to store what recovery options are setup
+      this.syncMfaSetup()
 
       if (this.mpcCoreKit.status === COREKIT_STATUS.REQUIRED_SHARE) {
         // Check if we have a device share stored

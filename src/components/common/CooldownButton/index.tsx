@@ -4,7 +4,15 @@ import { useState, useCallback, useEffect, type ReactNode } from 'react'
 const CircularProgressWithLabel = (props: CircularProgressProps & { value: number; label: string }) => {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-      <CircularProgress variant="determinate" {...props} />
+      <CircularProgress
+        sx={{
+          boxShadow: ({ palette }) => `inset 0 0 0px 2.6px ${palette.text.disabled}`,
+          borderRadius: '100%',
+          color: ({ palette }) => palette.text.primary,
+        }}
+        variant="determinate"
+        {...props}
+      />
       <Box
         sx={{
           top: 0,
@@ -17,7 +25,7 @@ const CircularProgressWithLabel = (props: CircularProgressProps & { value: numbe
           justifyContent: 'center',
         }}
       >
-        <Typography variant="caption" component="div" color="text.secondary">
+        <Typography variant="caption" fontWeight={700} component="div" color="text.primary">
           {props.label}
         </Typography>
       </Box>
@@ -62,16 +70,16 @@ const CooldownButton = ({
   return (
     <Button size="small" onClick={handleClick} disabled={remainingSeconds > 0}>
       <Box display="flex" flexDirection="row" gap={1} alignItems="center">
-        <Typography>{children}</Typography>
         {remainingSeconds > 0 && (
           <CircularProgressWithLabel
             variant="determinate"
             color="secondary"
-            size={28}
+            size={30}
             value={resendProgress}
-            label={`${Math.floor(remainingSeconds)}s`}
+            label={`${Math.floor(remainingSeconds)}`}
           />
         )}
+        <span>{children}</span>
       </Box>
     </Button>
   )

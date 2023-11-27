@@ -105,6 +105,7 @@ const CodeInput = ({ length, onCodeChanged }: { length: number; onCodeChanged: (
         <input
           className={css.codeDigit}
           value={code[idx]}
+          required
           ref={ref}
           onFocus={onFocus}
           onPaste={handlePaste}
