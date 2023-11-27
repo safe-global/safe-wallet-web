@@ -44,6 +44,7 @@ import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import { RecoveryProvider } from '@/components/recovery/RecoveryContext'
+import { RecoveryModal } from '@/components/recovery/RecoveryModal'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -129,6 +130,8 @@ const WebCoreApp = ({
           <Notifications />
 
           <PasswordRecoveryModal />
+
+          <RecoveryModal />
         </AppProviders>
       </CacheProvider>
     </StoreHydrator>
