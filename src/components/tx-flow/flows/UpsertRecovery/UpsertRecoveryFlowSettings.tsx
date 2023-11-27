@@ -14,7 +14,7 @@ import {
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
@@ -214,10 +214,11 @@ export function UpsertRecoveryFlowSettings({
   )
 }
 
-function SelectField(props: TextFieldProps) {
+const SelectField = forwardRef<TextFieldProps['ref'], TextFieldProps>((props, ref) => {
   return (
     <TextField
       {...props}
+      ref={ref}
       select
       sx={{
         '& .MuiSelect-select': {
@@ -235,4 +236,5 @@ function SelectField(props: TextFieldProps) {
       }}
     />
   )
-}
+})
+SelectField.displayName = 'SelectField'
