@@ -1,16 +1,4 @@
-import {
-  Divider,
-  CardActions,
-  Button,
-  Typography,
-  SvgIcon,
-  MenuItem,
-  TextField,
-  Collapse,
-  Checkbox,
-  FormControlLabel,
-  Tooltip,
-} from '@mui/material'
+import { CardActions, Button, Typography, SvgIcon, MenuItem, TextField, Collapse, Tooltip } from '@mui/material'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
@@ -22,8 +10,6 @@ import TxCard from '../../common/TxCard'
 import { UpsertRecoveryFlowFields } from '.'
 import { useRecoveryPeriods } from './useRecoveryPeriods'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import CircleCheckIcon from '@/public/images/common/circle-check.svg'
-import { useDarkMode } from '@/hooks/useDarkMode'
 import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -41,8 +27,6 @@ export function UpsertRecoveryFlowSettings({
 }): ReactElement {
   const { safeAddress } = useSafeInfo()
   const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.txExpiration] !== '0')
-  const [understandsRisk, setUnderstandsRisk] = useState(false)
-  const isDarkMode = useDarkMode()
   const periods = useRecoveryPeriods()
 
   const formMethods = useForm<UpsertRecoveryFlowProps>({
@@ -55,8 +39,6 @@ export function UpsertRecoveryFlowSettings({
       return 'The Safe Account cannot be a Guardian of itself'
     }
   }
-
-  const emailAddress = formMethods.watch(UpsertRecoveryFlowFields.emailAddress)
 
   const onShowAdvanced = () => setShowAdvanced((prev) => !prev)
 
@@ -151,59 +133,8 @@ export function UpsertRecoveryFlowSettings({
           </TxCard>
 
           <TxCard>
-            <div className={css.recommended}>
-              <SvgIcon component={CircleCheckIcon} inheritViewBox color="info" fontSize="small" sx={{ mr: 0.5 }} />
-              <Typography variant="caption">Recommended</Typography>
-            </div>
-
-            <div>
-              <Typography variant="h5" gutterBottom>
-                Receive email updates
-              </Typography>
-
-              <Typography variant="body2" mb={1}>
-                Get notified about any recovery initiations and their statuses.
-              </Typography>
-            </div>
-
-            <Controller
-              control={formMethods.control}
-              name={UpsertRecoveryFlowFields.emailAddress}
-              render={({ field }) => (
-                <TextField
-                  label="Enter email address"
-                  fullWidth
-                  {...field}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              )}
-            />
-
-            {emailAddress ? (
-              <div className={css.poweredBy}>
-                <Typography variant="caption">Powered by </Typography>
-                <img
-                  src={
-                    isDarkMode ? '/images/transactions/tenderly-light.svg' : '/images/transactions/tenderly-dark.svg'
-                  }
-                  alt="Tenderly"
-                  className={css.tenderly}
-                />
-              </div>
-            ) : (
-              <FormControlLabel
-                label="I understand the risks of proceediung without an email address"
-                control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
-                sx={{ pl: 2 }}
-              />
-            )}
-
-            <Divider className={commonCss.nestedDivider} />
-
             <CardActions sx={{ mt: '0 !important' }}>
-              <Button variant="contained" type="submit" disabled={!emailAddress && !understandsRisk}>
+              <Button variant="contained" type="submit">
                 Next
               </Button>
             </CardActions>
