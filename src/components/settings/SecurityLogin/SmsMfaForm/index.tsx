@@ -13,14 +13,13 @@ import {
   TextField,
 } from '@mui/material'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import { useRouter } from 'next/router'
 import { useState, useMemo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import CheckIcon from '@/public/images/common/check-filled.svg'
 import LockWarningIcon from '@/public/images/common/lock-warning.svg'
 import css from './styles.module.css'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import useSocialWallet, { useMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
 import { obfuscateNumber } from '@/utils/phoneNumber'
 import { asError } from '@/services/exceptions/utils'
 import CodeInput from '@/components/common/CodeInput'
@@ -37,19 +36,19 @@ type SmsOtpFormData = {
 }
 
 const SmsMfaForm = () => {
-  const router = useRouter()
   const socialWalletService = useSocialWallet()
   const [submitError, setSubmitError] = useState<string>()
   const [successMsg, setSuccessMsg] = useState<string>()
   const [verificationStarted, setVerificationStarted] = useState(false)
   const [open, setOpen] = useState<boolean>(false)
+  const mfaSetup = useMfaStore()
 
-  const currentNumber = socialWalletService?.getSmsRecoveryNumber()
+  const currentNumber = mfaSetup?.sms?.number
 
   const formMethods = useForm<SmsOtpFormData>({
     mode: 'all',
     defaultValues: {
-      [SmsOtpFieldNames.mobileNumber]: obfuscateNumber(currentNumber) ?? '+49',
+      [SmsOtpFieldNames.mobileNumber]: obfuscateNumber(currentNumber) ?? '',
       [SmsOtpFieldNames.verificationCode]: undefined,
     },
   })
@@ -57,8 +56,8 @@ const SmsMfaForm = () => {
   const { formState, handleSubmit, reset, watch, register, getValues, setValue } = formMethods
 
   const isSmsOtpSet = useMemo(() => {
-    return socialWalletService?.isSmsOtpEnabled()
-  }, [socialWalletService])
+    return Boolean(mfaSetup?.sms)
+  }, [mfaSetup])
 
   const onRegister = async () => {
     try {

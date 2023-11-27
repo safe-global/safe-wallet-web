@@ -10,6 +10,7 @@ import { asError } from '../exceptions/utils'
 import { type ISocialWalletService } from './interfaces'
 import { isSocialWalletOptions, SOCIAL_WALLET_OPTIONS } from './config'
 import { SmsOtpRecovery } from './recovery/SmsOtpRecovery'
+import { MultiFactorType, setMfaStore, type useMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
 
 /**
  * Singleton Service for accessing the social login wallet
@@ -27,6 +28,29 @@ class SocialWalletService implements ISocialWalletService {
     this.deviceShareRecovery = new DeviceShareRecovery(mpcCoreKit)
     this.securityQuestionRecovery = new SecurityQuestionRecovery(mpcCoreKit)
     this.smsRecovery = new SmsOtpRecovery(mpcCoreKit)
+  }
+
+  /**
+   * Writes the current MFA setup into external storage so that we can trigger re-renders
+   */
+  private syncMfaSetup() {
+    const newState: ReturnType<typeof useMfaStore> = {
+      sms: undefined,
+      password: undefined,
+    }
+
+    if (this.isSmsOtpEnabled()) {
+      const number = this.getSmsRecoveryNumber()
+      if (number) {
+        newState.sms = { type: MultiFactorType.SMS, number }
+      }
+    }
+
+    if (this.isRecoveryPasswordSet()) {
+      newState.password = { type: MultiFactorType.PASSWORD }
+    }
+
+    setMfaStore(newState)
   }
 
   isMFAEnabled() {
@@ -55,6 +79,7 @@ class SocialWalletService implements ISocialWalletService {
 
       // 3. commit
       await this.mpcCoreKit.commitChanges()
+      this.syncMfaSetup()
     } catch (e) {
       const error = asError(e)
       logError(ErrorCodes._304, error.message)
@@ -124,7 +149,7 @@ class SocialWalletService implements ISocialWalletService {
   private async finalizeLogin() {
     if (this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
       await this.mpcCoreKit.commitChanges()
-      await this.mpcCoreKit.provider?.request({ method: 'eth_accounts', params: [] })
+      this.syncMfaSetup()
       await this.onConnect()
     }
   }
@@ -191,6 +216,7 @@ class SocialWalletService implements ISocialWalletService {
         await this.enableMFA()
       }
       await this.mpcCoreKit.commitChanges()
+      this.syncMfaSetup()
     }
 
     return success

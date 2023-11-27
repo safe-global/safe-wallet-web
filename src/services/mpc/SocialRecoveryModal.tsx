@@ -2,7 +2,7 @@ import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecov
 import { SmsRecovery } from '@/components/common/SocialSigner/SmsRecovery'
 import TxModalDialog from '@/components/common/TxModalDialog'
 import { IS_PRODUCTION } from '@/config/constants'
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import useSocialWallet, { useMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
 import ExternalStore from '@/services/ExternalStore'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import { useCallback, useState } from 'react'
@@ -86,12 +86,13 @@ const RecoveryPicker = ({
 
 const SocialRecoveryModal = () => {
   const socialWalletService = useSocialWallet()
+  const mfaSetup = useMfaStore()
   const [recoveryMethod, setRecoveryMethod] = useState<RecoveryMethod>()
   const closeCallback = useCloseCallback()
   const open = !!closeCallback
 
-  const passwordEnabled = socialWalletService?.isRecoveryPasswordSet() ?? false
-  const smsEnabled = socialWalletService?.isSmsOtpEnabled() ?? false
+  const passwordEnabled = Boolean(mfaSetup?.password)
+  const smsEnabled = Boolean(mfaSetup?.sms)
 
   const recoverPassword = async (password: string, storeDeviceFactor: boolean) => {
     if (!socialWalletService) return

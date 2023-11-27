@@ -48,7 +48,7 @@ function MpcModule(chain: ChainInfo): WalletInit {
         const { _getMPCCoreKitInstance } = await import('@/hooks/wallets/mpc/useMPC')
         const { getSocialWalletService } = await import('@/hooks/wallets/mpc/useSocialWallet')
         const { COREKIT_STATUS } = await import('@web3auth/mpc-core-kit')
-        const { open } = await import('./PasswordRecoveryModal')
+        const { open } = await import('./SocialRecoveryModal')
 
         const getMPCProvider = () => _getMPCCoreKitInstance()?.provider
 

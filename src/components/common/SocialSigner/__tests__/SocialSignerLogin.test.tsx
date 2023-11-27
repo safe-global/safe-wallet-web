@@ -9,7 +9,7 @@ import { fireEvent } from '@testing-library/react'
 import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import { chainBuilder } from '@/tests/builders/chains'
-import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
+import PasswordRecoveryModal from '@/services/mpc/SocialRecoveryModal'
 
 jest.mock('@/services/mpc/SocialWalletService')
 

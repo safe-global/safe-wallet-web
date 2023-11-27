@@ -13,7 +13,6 @@ import {
   Alert,
 } from '@mui/material'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import { useRouter } from 'next/router'
 import { useState, useMemo, type ChangeEvent } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import CheckIcon from '@/public/images/common/check-filled.svg'
@@ -24,7 +23,7 @@ import BarChartIcon from '@/public/images/common/bar-chart.svg'
 import ShieldIcon from '@/public/images/common/shield.svg'
 import ShieldOffIcon from '@/public/images/common/shield-off.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import useSocialWallet, { useMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
 
 enum PasswordFieldNames {
   currentPassword = 'currentPassword',
@@ -79,11 +78,11 @@ const passwordStrengthMap = {
 } as const
 
 const SocialSignerMFA = () => {
-  const router = useRouter()
   const socialWalletService = useSocialWallet()
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>()
   const [submitError, setSubmitError] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
+  const mfaSetup = useMfaStore()
 
   const formMethods = useForm<PasswordFormData>({
     mode: 'all',
@@ -97,11 +96,8 @@ const SocialSignerMFA = () => {
   const { formState, handleSubmit, reset, watch } = formMethods
 
   const isPasswordSet = useMemo(() => {
-    if (!socialWalletService) {
-      return false
-    }
-    return socialWalletService.isRecoveryPasswordSet()
-  }, [socialWalletService])
+    return Boolean(mfaSetup?.password)
+  }, [mfaSetup])
 
   const onSubmit = async (data: PasswordFormData) => {
     if (!socialWalletService) return
@@ -113,9 +109,6 @@ const SocialSignerMFA = () => {
       )
       onReset()
       setOpen(false)
-
-      // This is a workaround so that the isPasswordSet and isMFAEnabled state update
-      router.reload()
     } catch (e) {
       setSubmitError('The password you entered is incorrect. Please try again.')
     }
