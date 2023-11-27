@@ -45,7 +45,14 @@ const WalletOverview = ({ wallet }: { wallet: ConnectedWallet }): ReactElement =
           {wallet.ens ? (
             <div>{wallet.ens}</div>
           ) : (
-            <EthHashInfo prefix={prefix || ''} address={wallet.address} showName={false} showAvatar avatarSize={12} />
+            <EthHashInfo
+              prefix={prefix || ''}
+              address={wallet.address}
+              showName={false}
+              showAvatar
+              avatarSize={12}
+              copyAddress={false}
+            />
           )}
         </Typography>
       </Box>
