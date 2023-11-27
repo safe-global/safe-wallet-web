@@ -58,7 +58,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
               'now.'
             )
           ) : !isNext ? (
-            'after the previous recovery attempts are executed or skipped and the delay period has passed:'
+            'after the previous recovery attempts are executed or cancelled and the delay period has passed:'
           ) : (
             'after the delay period:'
           )}
