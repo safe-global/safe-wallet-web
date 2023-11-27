@@ -9,6 +9,7 @@ import { fireEvent } from '@testing-library/react'
 import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import { chainBuilder } from '@/tests/builders/chains'
+import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
 
 jest.mock('@/services/mpc/SocialWalletService')
 
@@ -35,6 +36,7 @@ describe('SocialSignerLogin', () => {
           isMPCLoginEnabled={true}
           onLogin={mockOnLogin}
         />
+        <PasswordRecoveryModal />
       </TxModalProvider>,
     )
 
@@ -63,6 +65,7 @@ describe('SocialSignerLogin', () => {
           isMPCLoginEnabled={true}
           onLogin={mockOnLogin}
         />
+        <PasswordRecoveryModal />
       </TxModalProvider>,
     )
 
@@ -85,6 +88,7 @@ describe('SocialSignerLogin', () => {
           isMPCLoginEnabled={true}
           onLogin={mockOnLogin}
         />
+        <PasswordRecoveryModal />
       </TxModalProvider>,
     )
 
@@ -113,7 +117,7 @@ describe('SocialSignerLogin', () => {
   it('should display Password Recovery form and display a Continue as button when login succeeds', async () => {
     const mockOnLogin = jest.fn()
     mockSocialWalletService.loginAndCreate = jest.fn(() => Promise.resolve(COREKIT_STATUS.REQUIRED_SHARE))
-    mockSocialWalletService.getUserInfo = jest.fn(undefined)
+    mockSocialWalletService.getUserInfo = jest.fn().mockReturnValue(undefined)
     mockSocialWalletService.recoverAccountWithPassword = jest.fn(() => Promise.resolve(true))
 
     const result = render(
@@ -125,6 +129,7 @@ describe('SocialSignerLogin', () => {
           isMPCLoginEnabled={true}
           onLogin={mockOnLogin}
         />
+        <PasswordRecoveryModal />
       </TxModalProvider>,
     )
 
@@ -153,13 +158,23 @@ describe('SocialSignerLogin', () => {
       submitButton.click()
     })
 
-    mockSocialWalletService.getUserInfo = jest.fn(
-      () =>
-        ({
-          email: 'test@testermann.com',
-          name: 'Test Testermann',
-          profileImage: 'test.testermann.local/profile.png',
-        } as unknown as UserInfo),
+    mockSocialWalletService.getUserInfo = jest.fn().mockReturnValue({
+      email: 'test@testermann.com',
+      name: 'Test Testermann',
+      profileImage: 'test.testermann.local/profile.png',
+    } as unknown as UserInfo)
+
+    result.rerender(
+      <TxModalProvider>
+        <SocialSigner
+          socialWalletService={mockSocialWalletService}
+          wallet={mockWallet}
+          supportedChains={['Goerli']}
+          isMPCLoginEnabled={true}
+          onLogin={mockOnLogin}
+        />
+        <PasswordRecoveryModal />
+      </TxModalProvider>,
     )
 
     await waitFor(() => {

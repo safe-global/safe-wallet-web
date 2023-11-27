@@ -4,9 +4,12 @@ import * as fs from 'fs'
 export default defineConfig({
   projectId: 'exhdra',
   trashAssetsBeforeRuns: true,
-
+  reporter: 'junit',
+  reporterOptions: {
+    mochaFile: 'reports/junit-[hash].xml',
+  },
   retries: {
-    runMode: 1,
+    runMode: 2,
     openMode: 0,
   },
   e2e: {

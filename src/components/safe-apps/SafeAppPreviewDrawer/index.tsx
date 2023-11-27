@@ -84,7 +84,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
 
         <Box sx={{ display: 'flex', gap: 1, mt: 2, flexWrap: 'wrap' }}>
           {safeApp?.chainIds.map((chainId) => (
-            <ChainIndicator key={chainId} chainId={chainId} inline renderWhiteSpaceIfNoChain={false} />
+            <ChainIndicator key={chainId} chainId={chainId} inline showUnknown={false} />
           ))}
         </Box>
 

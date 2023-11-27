@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, Divider } from '@mui/material'
+import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -96,8 +96,8 @@ const ExecuteForm = ({
     }
 
     // On success
-    setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
     onSubmit(executedTxId)
+    setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
   }
 
   const cannotPropose = !isOwner && !onlyExecute
@@ -156,8 +156,8 @@ const ExecuteForm = ({
           {/* Submit button */}
           <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-                Execute
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
+                {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}
           </CheckWallet>

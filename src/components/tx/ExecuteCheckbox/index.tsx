@@ -12,7 +12,7 @@ const ExecuteCheckbox = ({ onChange }: { onChange: (checked: boolean) => void })
 
   const handleChange = (_: ChangeEvent<HTMLInputElement>, value: string) => {
     const checked = value === 'true'
-    trackEvent({ ...MODALS_EVENTS.EXECUTE_TX, label: checked })
+    trackEvent({ ...MODALS_EVENTS.TOGGLE_EXECUTE_TX, label: checked })
     dispatch(setTransactionExecution(checked))
     onChange(checked)
   }

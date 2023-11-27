@@ -9,14 +9,12 @@ import ExplorerButton, { type ExplorerButtonProps } from '../../ExplorerButton'
 import { shortenAddress } from '@/utils/formatters'
 import ImageFallback from '../../ImageFallback'
 import css from './styles.module.css'
-import { Emoji } from '../../AddressEmoji'
 
 export type EthHashInfoProps = {
   address: string
   chainId?: string
   name?: string | null
   showAvatar?: boolean
-  showEmoji?: boolean
   showCopyButton?: boolean
   prefix?: string
   showPrefix?: boolean
@@ -39,7 +37,6 @@ const SrcEthHashInfo = ({
   showPrefix,
   shortAddress = true,
   showAvatar = true,
-  showEmoji,
   avatarSize,
   name,
   showCopyButton,
@@ -65,7 +62,6 @@ const SrcEthHashInfo = ({
           ) : (
             identicon
           )}
-          {showEmoji && <Emoji address={address} size={avatarSize} />}
         </div>
       )}
 
