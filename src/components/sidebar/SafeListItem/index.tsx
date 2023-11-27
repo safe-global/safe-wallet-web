@@ -107,7 +107,15 @@ const SafeListItem = ({
               }}
               secondaryTypographyProps={{ component: 'div', color: 'primary' }}
               primary={name || ''}
-              secondary={<EthHashInfo address={address} showAvatar={false} showName={false} prefix={shortName} />}
+              secondary={
+                <EthHashInfo
+                  address={address}
+                  showAvatar={false}
+                  showName={false}
+                  prefix={shortName}
+                  copyAddress={false}
+                />
+              }
             />
           </ListItemButton>
         </Link>
