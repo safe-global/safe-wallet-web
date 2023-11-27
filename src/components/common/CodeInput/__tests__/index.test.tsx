@@ -146,4 +146,62 @@ describe('CodeInput', () => {
       expect(onChanged).toHaveBeenCalledWith('1234')
     })
   })
+
+  it('should be able to navigate using the arrow keys', async () => {
+    const onChanged = jest.fn()
+    const result = render(<CodeInput length={4} onCodeChanged={onChanged} />)
+
+    const firstDigitInput = result.getByTestId('digit-0')
+    firstDigitInput.focus()
+
+    // press right twice
+    fireEvent.keyDown(document.activeElement!, {
+      key: 'ArrowRight',
+    })
+
+    // press right twice
+    fireEvent.keyDown(document.activeElement!, {
+      key: 'ArrowRight',
+    })
+
+    typeInFocusedElement('2')
+
+    expect((result.getByTestId('digit-0') as HTMLInputElement).value).toBe('')
+    expect((result.getByTestId('digit-1') as HTMLInputElement).value).toBe('')
+    expect((result.getByTestId('digit-2') as HTMLInputElement).value).toBe('2')
+    expect((result.getByTestId('digit-3') as HTMLInputElement).value).toBe('')
+
+    // Focus is now on the last element. Navigate back to the first
+    fireEvent.keyDown(document.activeElement!, {
+      key: 'ArrowLeft',
+    })
+    fireEvent.keyDown(document.activeElement!, {
+      key: 'ArrowLeft',
+    })
+    fireEvent.keyDown(document.activeElement!, {
+      key: 'ArrowLeft',
+    })
+
+    typeInFocusedElement('0')
+    typeInFocusedElement('1')
+
+    expect((result.getByTestId('digit-0') as HTMLInputElement).value).toBe('0')
+    expect((result.getByTestId('digit-1') as HTMLInputElement).value).toBe('1')
+    expect((result.getByTestId('digit-2') as HTMLInputElement).value).toBe('2')
+    expect((result.getByTestId('digit-3') as HTMLInputElement).value).toBe('')
+
+    // press right to navigate to the last digit
+    fireEvent.keyDown(document.activeElement!, {
+      key: 'ArrowRight',
+    })
+
+    typeInFocusedElement('3')
+
+    // Debounce input
+    jest.advanceTimersByTime(100)
+
+    await waitFor(() => {
+      expect(onChanged).toHaveBeenCalledWith('0123')
+    })
+  })
 })

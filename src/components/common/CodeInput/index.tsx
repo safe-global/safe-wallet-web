@@ -1,6 +1,6 @@
 import useDebounce from '@/hooks/useDebounce'
 import { Box } from '@mui/material'
-import { createRef, type FormEvent, useState, useEffect, type ClipboardEvent } from 'react'
+import { createRef, type FormEvent, useState, useEffect, type ClipboardEvent, type KeyboardEvent } from 'react'
 import css from './styles.module.css'
 
 const digitRegExp = /^[0-9]$/
@@ -11,20 +11,48 @@ const useCodeInput = (length: number, onCodeChanged: (code: string) => void) => 
 
   const [inputRefsArray] = useState(() => Array.from({ length }, () => createRef<HTMLInputElement>()))
 
+  const focusNext = (index: number) => {
+    if (index + 1 < length) {
+      inputRefsArray[index + 1].current?.focus()
+    }
+  }
+
+  const focusPrevious = (index: number) => {
+    if (index > 0) {
+      inputRefsArray[index - 1].current?.focus()
+    }
+  }
+
   const handleChange = (digit: string, index: number) => {
     const newCode = [...code]
     newCode[index] = digit
     setCode(newCode)
     if (digit.length === 1) {
-      // set focus to next element
-      if (index + 1 < length) {
-        inputRefsArray[index + 1].current?.focus()
-      }
+      focusNext(index)
     } else {
       // Go to previous element
-      if (index > 0) {
-        inputRefsArray[index - 1].current?.focus()
-      }
+      focusPrevious(index)
+    }
+  }
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (event.key === 'Backspace') {
+      const newCode = [...code]
+      newCode[index] = ''
+      setCode(newCode)
+      focusPrevious(index)
+      event.stopPropagation()
+      event.preventDefault()
+    }
+
+    if (event.key === 'ArrowLeft') {
+      focusPrevious(index)
+      event.preventDefault()
+    }
+
+    if (event.key === 'ArrowRight') {
+      focusNext(index)
+      event.preventDefault()
     }
   }
 
@@ -56,11 +84,11 @@ const useCodeInput = (length: number, onCodeChanged: (code: string) => void) => 
     }
   }, [debouncedCode, onCodeChanged])
 
-  return { code, handleChange, handlePaste, inputRefsArray }
+  return { code, handleChange, handlePaste, inputRefsArray, handleKeyDown }
 }
 
 const CodeInput = ({ length, onCodeChanged }: { length: number; onCodeChanged: (code: string) => void }) => {
-  const { code, handleChange, handlePaste, inputRefsArray } = useCodeInput(length, onCodeChanged)
+  const { code, handleChange, handlePaste, inputRefsArray, handleKeyDown } = useCodeInput(length, onCodeChanged)
   // create a array of refs
   const onInput = (event: FormEvent<HTMLInputElement>, index: number) => {
     const value = event.currentTarget.value
@@ -80,6 +108,7 @@ const CodeInput = ({ length, onCodeChanged }: { length: number; onCodeChanged: (
           ref={ref}
           onFocus={onFocus}
           onPaste={handlePaste}
+          onKeyDown={(event) => handleKeyDown(event, idx)}
           onInput={(event) => onInput(event, idx)}
           data-testid={`digit-${idx}`}
           key={`digit-${idx}`}
