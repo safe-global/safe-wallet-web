@@ -44,12 +44,12 @@ export function _RecoveryModal({
 
   // Trigger modal
   useEffect(() => {
-    if (!isSidebarRoute && (!isOwner || !isGuardian)) {
+    if (!isSidebarRoute) {
       return
     }
 
     setModal(() => {
-      if (next && !wasInProgressDismissed(next.transactionHash)) {
+      if (next && (isOwner || isGuardian) && !wasInProgressDismissed(next.transactionHash)) {
         const onCloseWithDismiss = () => {
           dismissInProgress(next.transactionHash)
           onClose()
