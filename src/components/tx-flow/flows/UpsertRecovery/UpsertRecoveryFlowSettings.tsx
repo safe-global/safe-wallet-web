@@ -112,8 +112,8 @@ export function UpsertRecoveryFlowSettings({
             <Controller
               control={formMethods.control}
               name={UpsertRecoveryFlowFields.txCooldown}
-              render={({ field }) => (
-                <SelectField label="Recovery delay" fullWidth {...field}>
+              render={({ field: { ref, ...field } }) => (
+                <SelectField label="Recovery delay" fullWidth inputRef={ref} {...field}>
                   {periods.delay.map(({ label, value }, index) => (
                     <MenuItem key={index} value={value}>
                       {label}
@@ -137,8 +137,8 @@ export function UpsertRecoveryFlowSettings({
                 name={UpsertRecoveryFlowFields.txExpiration}
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
-                render={({ field }) => (
-                  <SelectField label="Transaction expiry" fullWidth {...field}>
+                render={({ field: { ref, ...field } }) => (
+                  <SelectField label="Transaction expiry" fullWidth inputRef={ref} {...field}>
                     {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
