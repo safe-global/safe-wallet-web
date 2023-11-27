@@ -14,7 +14,7 @@ import {
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
-import { forwardRef, useState } from 'react'
+import { useState } from 'react'
 import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
@@ -112,8 +112,8 @@ export function UpsertRecoveryFlowSettings({
             <Controller
               control={formMethods.control}
               name={UpsertRecoveryFlowFields.txCooldown}
-              render={({ field }) => (
-                <SelectField label="Recovery delay" fullWidth {...field}>
+              render={({ field: { ref, ...field } }) => (
+                <SelectField label="Recovery delay" fullWidth inputRef={ref} {...field}>
                   {periods.delay.map(({ label, value }, index) => (
                     <MenuItem key={index} value={value}>
                       {label}
@@ -137,8 +137,8 @@ export function UpsertRecoveryFlowSettings({
                 name={UpsertRecoveryFlowFields.txExpiration}
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
-                render={({ field }) => (
-                  <SelectField label="Transaction expiry" fullWidth {...field}>
+                render={({ field: { ref, ...field } }) => (
+                  <SelectField label="Transaction expiry" fullWidth inputRef={ref} {...field}>
                     {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
@@ -214,11 +214,10 @@ export function UpsertRecoveryFlowSettings({
   )
 }
 
-const SelectField = forwardRef<TextFieldProps['ref'], TextFieldProps>((props, ref) => {
+function SelectField(props: TextFieldProps) {
   return (
     <TextField
       {...props}
-      ref={ref}
       select
       sx={{
         '& .MuiSelect-select': {
@@ -236,5 +235,4 @@ const SelectField = forwardRef<TextFieldProps['ref'], TextFieldProps>((props, re
       }}
     />
   )
-})
-SelectField.displayName = 'SelectField'
+}
