@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect } from 'react'
+import { addListener } from '@reduxjs/toolkit'
 import type { ReactElement, ReactNode } from 'react'
 
-import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
+import { useAppDispatch } from '@/store'
 import { sameAddress } from '@/utils/addresses'
-import { getTxDetails } from '@/services/tx/txDetails'
+import { isCustomTxInfo, isMultiSendTxInfo, isTransactionListItem } from '@/utils/transaction-guards'
+import { txHistorySlice } from '@/store/txHistorySlice'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryState } from './useRecoveryState'
 import { useRecoveryDelayModifiers } from './useRecoveryDelayModifiers'
@@ -21,6 +23,7 @@ export const RecoveryContext = createContext<{
 
 export function RecoveryProvider({ children }: { children: ReactNode }): ReactElement {
   const { safe } = useSafeInfo()
+  const dispatch = useAppDispatch()
 
   const [delayModifiers, delayModifiersError, delayModifiersLoading] = useRecoveryDelayModifiers()
   const {
@@ -34,31 +37,41 @@ export function RecoveryProvider({ children }: { children: ReactNode }): ReactEl
       return
     }
 
-    return txSubscribe(TxEvent.PROCESSED, async (detail) => {
-      if (!detail.txId) {
-        return
-      }
+    // Listen to history polls (only occuring when the txHistoryTag changes)
+    const listener = dispatch(
+      addListener({
+        actionCreator: txHistorySlice.actions.set,
+        effect: (action) => {
+          // Get the most recent transaction
+          const [latestTx] = action.payload.data?.results.filter(isTransactionListItem) ?? []
 
-      let to: string | undefined
+          if (!latestTx) {
+            return
+          }
 
-      try {
-        const { txData } = await getTxDetails(detail.txId, safe.chainId)
-        to = txData?.to.value
-      } catch {}
+          const { txInfo } = latestTx.transaction
 
-      if (!to) {
-        return
-      }
+          const isDelayModiferTx = delayModifiers.some((delayModifier) => {
+            return isCustomTxInfo(txInfo) && sameAddress(txInfo.to.value, delayModifier.address)
+          })
 
-      const isDelayModifierTx = delayModifiers.some((delayModifier) => {
-        return sameAddress(delayModifier.address, to)
-      })
+          // Refetch if the most recent transaction was with a Delay Modifier or MultiSend
+          // (Multiple Delay Modifier settings changes are batched into a MultiSend)
+          if (isDelayModiferTx || isMultiSendTxInfo(txInfo)) {
+            refetch()
+          }
+        },
+      }),
+    )
 
-      if (isDelayModifierTx) {
-        refetch()
-      }
-    })
-  }, [safe.chainId, delayModifiers, refetch])
+    // Types are incorrect, but this ensures type safety
+    const unsubscribe =
+      listener instanceof Function
+        ? (listener as unknown as typeof listener.payload.unsubscribe)
+        : listener.payload.unsubscribe
+
+    return unsubscribe
+  }, [safe.chainId, delayModifiers, refetch, dispatch])
 
   const data = recoveryState
   const error = delayModifiersError || recoveryStateError

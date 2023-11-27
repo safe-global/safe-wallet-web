@@ -6,12 +6,12 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getRecoveryDelayModifiers } from '@/services/recovery/delay-modifier'
 import { getRecoveryState } from '@/services/recovery/recovery-state'
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { useAppDispatch } from '@/store'
 import { chainBuilder } from '@/tests/builders/chains'
 import { addressExBuilder, safeInfoBuilder } from '@/tests/builders/safe'
 import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
 import { RecoveryContext, RecoveryProvider } from '..'
-import { getTxDetails } from '@/services/tx/txDetails'
+import { txHistorySlice } from '@/store/txHistorySlice'
 
 jest.mock('@/services/recovery/delay-modifier')
 jest.mock('@/services/recovery/recovery-state')
@@ -22,20 +22,15 @@ const mockGetRecoveryState = getRecoveryState as jest.MockedFunction<typeof getR
 jest.mock('@/hooks/useSafeInfo')
 jest.mock('@/hooks/wallets/web3')
 jest.mock('@/hooks/useChains')
-jest.mock('@/services/tx/txDetails')
 
 const mockUseSafeInfo = useSafeInfo as jest.MockedFunction<typeof useSafeInfo>
 const mockUseWeb3ReadOnly = useWeb3ReadOnly as jest.MockedFunction<typeof useWeb3ReadOnly>
 const mockUseCurrentChain = useCurrentChain as jest.MockedFunction<typeof useCurrentChain>
 const mockUseHasFeature = useHasFeature as jest.MockedFunction<typeof useHasFeature>
-const mockGetTxDetails = getTxDetails as jest.MockedFunction<typeof getTxDetails>
 
 describe('RecoveryContext', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-
-    // Clear memoization cache
-    getTxDetails.cache.clear?.()
   })
 
   it('should refetch manually calling it', async () => {
@@ -95,11 +90,39 @@ describe('RecoveryContext', () => {
     mockUseCurrentChain.mockReturnValue(chain)
     const delayModifierAddress = faker.finance.ethereumAddress()
     mockGetRecoveryDelayModifiers.mockResolvedValue([{ address: delayModifierAddress } as any])
-    mockGetTxDetails.mockResolvedValue({ txData: { to: { value: delayModifierAddress } } } as any)
 
-    render(
+    function Test() {
+      const dispatch = useAppDispatch()
+
+      const fakeTxHistoryPoll = () => {
+        dispatch(
+          txHistorySlice.actions.set({
+            loading: false,
+            data: {
+              results: [
+                {
+                  type: 'TRANSACTION',
+                  transaction: {
+                    txInfo: {
+                      type: 'Custom',
+                      to: {
+                        value: delayModifierAddress,
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          } as any),
+        )
+      }
+
+      return <button onClick={fakeTxHistoryPoll}>Fake poll</button>
+    }
+
+    const { queryByText } = render(
       <RecoveryProvider>
-        <></>
+        <Test />
       </RecoveryProvider>,
     )
 
@@ -108,19 +131,11 @@ describe('RecoveryContext', () => {
       expect(mockGetRecoveryState).toHaveBeenCalledTimes(1)
     })
 
-    const txId = faker.string.alphanumeric()
-
     act(() => {
-      txDispatch(TxEvent.PROCESSED, {
-        txId,
-        safeAddress: faker.finance.ethereumAddress(),
-      })
+      fireEvent.click(queryByText('Fake poll')!)
     })
 
     await waitFor(() => {
-      expect(mockGetTxDetails).toHaveBeenCalledTimes(1)
-      expect(mockGetTxDetails).toHaveBeenNthCalledWith(1, txId, safe.chainId)
-
       expect(mockGetRecoveryState).toHaveBeenCalledTimes(2)
     })
   })
