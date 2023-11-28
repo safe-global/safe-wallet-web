@@ -3,6 +3,7 @@ import { Contract, utils, constants } from 'ethers'
 
 // ENS Registry ABI (simplified version)
 const ensRegistryAbi = ['function resolver(bytes32 node) external view returns (address)']
+const resolverAbi = ['function addr(bytes32 node) external view returns (address)']
 
 export const customResolveName = async (
   registryAddress: string,
@@ -17,7 +18,7 @@ export const customResolveName = async (
     return undefined
   }
 
-  const resolver = new Contract(resolverAddress, ensRegistryAbi, rpcProvider)
+  const resolver = new Contract(resolverAddress, resolverAbi, rpcProvider)
   const address = await resolver.addr(namehash)
 
   return address || undefined
