@@ -1,4 +1,3 @@
-import isEqual from 'lodash/isEqual'
 import { useMemo } from 'react'
 import { getTransactionHistory, type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
@@ -15,7 +14,7 @@ const useTxHistory = (
   loading: boolean
 } => {
   // The latest page of the history is always in the store
-  const historyState = useAppSelector(selectTxHistory, isEqual)
+  const historyState = useAppSelector(selectTxHistory)
   const [filter] = useTxFilter()
 
   const {
