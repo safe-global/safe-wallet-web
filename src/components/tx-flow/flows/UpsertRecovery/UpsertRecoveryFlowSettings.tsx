@@ -1,4 +1,16 @@
-import { CardActions, Button, Typography, SvgIcon, MenuItem, TextField, Collapse, Tooltip } from '@mui/material'
+import {
+  Divider,
+  CardActions,
+  Button,
+  Typography,
+  SvgIcon,
+  MenuItem,
+  TextField,
+  Collapse,
+  Checkbox,
+  FormControlLabel,
+  Tooltip,
+} from '@mui/material'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
@@ -27,6 +39,7 @@ export function UpsertRecoveryFlowSettings({
 }): ReactElement {
   const { safeAddress } = useSafeInfo()
   const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.txExpiration] !== '0')
+  const [understandsRisk, setUnderstandsRisk] = useState(false)
   const periods = useRecoveryPeriods()
 
   const formMethods = useForm<UpsertRecoveryFlowProps>({
@@ -133,8 +146,16 @@ export function UpsertRecoveryFlowSettings({
           </TxCard>
 
           <TxCard>
+            <FormControlLabel
+              label="I understand that the Guardian will be able to initiate recovery of this Safe Account and I will not be informed about this outside of the Safe{Wallet}."
+              control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
+              sx={{ pl: 2 }}
+            />
+
+            <Divider className={commonCss.nestedDivider} />
+
             <CardActions sx={{ mt: '0 !important' }}>
-              <Button variant="contained" type="submit">
+              <Button variant="contained" type="submit" disabled={!understandsRisk}>
                 Next
               </Button>
             </CardActions>
