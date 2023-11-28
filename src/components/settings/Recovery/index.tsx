@@ -13,7 +13,6 @@ import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { getPeriod } from '@/utils/date'
-import { HelpCenterArticle } from '@/config/constants'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
