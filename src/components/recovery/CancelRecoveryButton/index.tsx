@@ -55,7 +55,7 @@ export function CancelRecoveryButton({
   return (
     <CheckWallet allowNonOwner>
       {(isOk) => {
-        const isDisabled = !isOk || isGuardian
+        const isDisabled = isOwner ? !isOk : !isOk && !isExpired
 
         return compact ? (
           <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>
