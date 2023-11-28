@@ -42,3 +42,17 @@
   width: 100%;
   margin: 0;
 }
+
+.dot {
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-primary-main);
+}
+
+.phoneNumberDisplay {
+  font-size: 14px;
+  padding: var(--space-2);
+  background-color: var(--color-background-main);
+  border-radius: 6px;
+  margin-bottom: var(--space-1);
+}

@@ -1,5 +1,5 @@
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import { Typography, FormControlLabel, Checkbox, Button, Box, Divider, Grid, LinearProgress } from '@mui/material'
+import { Typography, FormControlLabel, Checkbox, Button, Box, Divider, Avatar } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
 import Track from '@/components/common/Track'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -8,6 +8,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import css from './styles.module.css'
 import CodeInput from '../CodeInput'
 import CooldownButton from '../CooldownButton'
+import { obfuscateNumber } from '@/utils/phoneNumber'
 
 type SmsFormData = {
   code: string
@@ -18,11 +19,13 @@ export const SmsRecovery = ({
   sendSmsCode,
   onSuccess,
   onBack,
+  phoneNumber,
 }: {
   recoverFactorWithSms: (code: string, storeDeviceFactor: boolean) => Promise<void>
   sendSmsCode: () => Promise<void>
   onSuccess?: (() => void) | undefined
   onBack: () => void
+  phoneNumber: string | undefined
 }) => {
   const [storeDeviceFactor, setStoreDeviceFactor] = useState(false)
 
@@ -65,56 +68,49 @@ export const SmsRecovery = ({
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container justifyContent="center" alignItems="center">
-          <Grid item xs={12} md={5} p={2}>
-            <Typography variant="h2" fontWeight="bold" mb={3}>
-              Verify your account
-            </Typography>
-            <Box bgcolor="background.paper" borderRadius={1}>
-              <LinearProgress
-                color="secondary"
-                sx={{ borderTopLeftRadius: '6px', borderTopRightRadius: '6px', opacity: isDisabled ? 1 : 0 }}
-              />
-              <Box p={4}>
-                <Typography variant="h6" fontWeight="bold" mb={0.5}>
-                  Enter recovery code
-                </Typography>
-                <Typography>
-                  This browser is not registered with your Account yet. Please enter the recovery code sent to your
-                  phone to recover your social signer.
-                </Typography>
-              </Box>
-              <Divider />
-              <Box className={css.passwordWrapper}>
-                <CodeInput length={6} onCodeChanged={handleCodeChange} />
-
-                <CooldownButton cooldown={60} onClick={sendSmsCode} startDisabled={true}>
-                  Resend code
-                </CooldownButton>
-
-                <FormControlLabel
-                  control={
-                    <Checkbox checked={storeDeviceFactor} onClick={() => setStoreDeviceFactor((prev) => !prev)} />
-                  }
-                  label="Do not ask again on this device"
-                />
-                {error && <ErrorMessage className={css.loginError}>{error}</ErrorMessage>}
-              </Box>
-
-              <Divider />
-              <Box p={4} display="flex" alignItems="center" justifyContent="space-between">
-                <Button variant="outlined" onClick={onBack}>
-                  Back
-                </Button>
-                <Track {...MPC_WALLET_EVENTS.RECOVER_PASSWORD}>
-                  <Button variant="contained" type="submit" disabled={isDisabled}>
-                    Submit
-                  </Button>
-                </Track>
-              </Box>
+        <Box>
+          <Box p={4}>
+            <Box display="flex" flexDirection="row" gap={1} alignItems="center" mb={0.5}>
+              <Avatar className={css.dot}>
+                <Typography variant="body2">{2}</Typography>
+              </Avatar>
+              <Typography variant="h6" fontWeight="bold">
+                Enter recovery code
+              </Typography>
             </Box>
-          </Grid>
-        </Grid>
+            <Typography variant="body2" pl={'28px'}>
+              Please enter the recovery code sent to your phone.
+            </Typography>
+          </Box>
+          <Divider />
+          <Box className={css.passwordWrapper}>
+            <Typography className={css.phoneNumberDisplay}>{obfuscateNumber(phoneNumber)}</Typography>
+
+            <CodeInput length={6} onCodeChanged={handleCodeChange} />
+
+            <CooldownButton cooldown={60} onClick={sendSmsCode} startDisabled={true}>
+              Resend code
+            </CooldownButton>
+
+            <FormControlLabel
+              control={<Checkbox checked={storeDeviceFactor} onClick={() => setStoreDeviceFactor((prev) => !prev)} />}
+              label="Do not ask again on this device"
+            />
+            {error && <ErrorMessage className={css.loginError}>{error}</ErrorMessage>}
+          </Box>
+
+          <Divider />
+          <Box p={4} display="flex" alignItems="center" justifyContent="space-between">
+            <Button variant="outlined" onClick={onBack}>
+              Back
+            </Button>
+            <Track {...MPC_WALLET_EVENTS.RECOVER_PASSWORD}>
+              <Button variant="contained" type="submit" disabled={isDisabled}>
+                Submit
+              </Button>
+            </Track>
+          </Box>
+        </Box>
       </form>
     </FormProvider>
   )

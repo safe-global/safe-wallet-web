@@ -9,7 +9,7 @@ import { fireEvent } from '@testing-library/react'
 import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import { chainBuilder } from '@/tests/builders/chains'
-import PasswordRecoveryModal from '@/services/mpc/SocialRecoveryModal'
+import PasswordRecoveryModal from '@/components/common/SocialSigner/SocialRecoveryModal'
 import { MultiFactorType, setMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
 
 const typeInFocusedElement = (text: string) => {

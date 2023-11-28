@@ -19,7 +19,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import madProps from '@/utils/mad-props'
 import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { open } from '@/services/mpc/SocialRecoveryModal'
+import { open } from '@/components/common/SocialSigner/SocialRecoveryModal'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains

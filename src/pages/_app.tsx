@@ -1,5 +1,5 @@
 import useRehydrateSocialWallet from '@/hooks/wallets/mpc/useRehydrateSocialWallet'
-import PasswordRecoveryModal from '@/services/mpc/SocialRecoveryModal'
+import PasswordRecoveryModal from '@/components/common/SocialSigner/SocialRecoveryModal'
 import Sentry from '@/services/sentry' // needs to be imported first
 import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
