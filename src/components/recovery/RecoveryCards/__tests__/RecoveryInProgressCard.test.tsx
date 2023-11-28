@@ -36,7 +36,7 @@ describe('RecoveryInProgressCard', () => {
         expect(queryByText(unit)).toBeFalsy()
       })
 
-      expect(queryByText('Account recovery possible')).toBeTruthy()
+      expect(queryByText('Account can be recovered')).toBeTruthy()
       expect(queryByText('Learn more')).toBeTruthy()
 
       const queueButton = queryByText('Go to queue')
@@ -101,7 +101,7 @@ describe('RecoveryInProgressCard', () => {
       })
       expect(queryByText('Go to queue')).toBeFalsy()
 
-      expect(queryByText('Account recovery possible')).toBeTruthy()
+      expect(queryByText('Account can be recovered')).toBeTruthy()
       expect(queryByText('Learn more')).toBeTruthy()
     })
 

@@ -37,9 +37,9 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
   }
 
   const icon = <RecoveryPending />
-  const title = isExecutable ? 'Account recovery possible' : 'Account recovery in progress'
+  const title = isExecutable ? 'Account can be recovered' : 'Account recovery in progress'
   const desc = isExecutable
-    ? 'The recovery process is possible. This Account can be recovered.'
+    ? 'The delay period has passed and it is now possible to execute the recovery transaction.'
     : 'The recovery process has started. This Account will be ready to recover in:'
 
   const link = (
