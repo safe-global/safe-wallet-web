@@ -49,6 +49,45 @@ describe('RecoveryInProgressCard', () => {
       })
     })
 
+    it('should render the expired state correctly', async () => {
+      mockUseRecoveryTxState.mockReturnValue({
+        isExecutable: false,
+        isExpired: true,
+        remainingSeconds: 0,
+      } as any)
+
+      const mockClose = jest.fn()
+
+      const { queryByText } = render(
+        <RecoveryInProgressCard
+          orientation="vertical"
+          onClose={mockClose}
+          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
+        />,
+      )
+
+      ;['days', 'hrs', 'mins'].forEach((unit) => {
+        expect(queryByText(unit)).toBeFalsy()
+      })
+
+      expect(queryByText('Account recovery expired')).toBeTruthy()
+      expect(
+        queryByText(
+          'The pending recovery transaction has expired and needs to be cancelled before a new one can be created.',
+        ),
+      ).toBeTruthy()
+      expect(queryByText('Learn more')).toBeTruthy()
+
+      const queueButton = queryByText('Go to queue')
+      expect(queueButton).toBeTruthy()
+
+      fireEvent.click(queueButton!)
+
+      await waitFor(() => {
+        expect(mockClose).toHaveBeenCalled()
+      })
+    })
+
     it('should render non-executable recovery state correctly', async () => {
       mockUseRecoveryTxState.mockReturnValue({
         isExecutable: false,
@@ -102,6 +141,35 @@ describe('RecoveryInProgressCard', () => {
       expect(queryByText('Go to queue')).toBeFalsy()
 
       expect(queryByText('Account can be recovered')).toBeTruthy()
+      expect(queryByText('Learn more')).toBeTruthy()
+    })
+
+    it('should render the expired state correctly', async () => {
+      mockUseRecoveryTxState.mockReturnValue({
+        isExecutable: false,
+        isExpired: true,
+        remainingSeconds: 0,
+      } as any)
+
+      const mockClose = jest.fn()
+
+      const { queryByText } = render(
+        <RecoveryInProgressCard
+          orientation="horizontal"
+          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
+        />,
+      )
+
+      ;['days', 'hrs', 'mins'].forEach((unit) => {
+        expect(queryByText(unit)).toBeFalsy()
+      })
+
+      expect(queryByText('Account recovery expired')).toBeTruthy()
+      expect(
+        queryByText(
+          'The pending recovery transaction has expired and needs to be cancelled before a new one can be created.',
+        ),
+      ).toBeTruthy()
       expect(queryByText('Learn more')).toBeTruthy()
     })
 
