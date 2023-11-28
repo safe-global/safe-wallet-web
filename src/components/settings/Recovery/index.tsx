@@ -131,7 +131,7 @@ export function Recovery(): ReactElement {
           {!recovery || recovery.length === 0 ? (
             <>
               <Alert severity="info">
-                Unhappy with the provided option?
+                Unhappy with the provided option?{' '}
                 <ExternalLink noIcon href={FEEDBACK_FORM} title="Give feedback about the Account recovery process">
                   Give us feedback
                 </ExternalLink>
