@@ -17,6 +17,8 @@ import { HelpCenterArticle } from '@/config/constants'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
+const FEEDBACK_FORM = 'https://noteforms.com/forms/safe-feedback-form-hk16ds?notionforms=1&utm_source=notionforms'
+
 enum HeadCells {
   Guardian = 'guardian',
   TxCooldown = 'txCooldown',
@@ -131,11 +133,7 @@ export function Recovery(): ReactElement {
             <>
               <Alert severity="info">
                 Unhappy with the provided option?
-                <ExternalLink
-                  noIcon
-                  href={HelpCenterArticle.RECOVERY}
-                  title="Learn more about Account recovery process"
-                >
+                <ExternalLink noIcon href={FEEDBACK_FORM} title="Give feedback about the Account recovery process">
                   Give us feedback
                 </ExternalLink>
               </Alert>
