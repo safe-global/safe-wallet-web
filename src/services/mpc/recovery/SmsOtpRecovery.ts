@@ -10,6 +10,7 @@ import { BN } from 'bn.js'
 import { ecsign, keccak256 } from 'ethereumjs-util'
 import { hexZeroPad } from 'ethers/lib/utils'
 import { SOCIAL_WALLET_OPTIONS } from '../config'
+import EncryptionUtil from '../EncryptionUtil'
 
 type SmsOtpStoreData = {
   number: string
@@ -209,11 +210,20 @@ export class SmsOtpRecovery {
       code,
       tracking_id,
     }
+    // We need the oAuthKey to encrypt / decrypt
+    const oAuthKey = this.mpcCoreKit.state.oAuthKey
+    if (!oAuthKey) {
+      throw new Error('Cannot create factor without oAuthKey')
+    }
+    const encryptionUtil = new EncryptionUtil(new BN(oAuthKey, 'hex'))
 
     if (isFirstTime) {
       // create a new factor key to setup data in the database.
       const newFactorKey = generateFactorKey()
-      data.data = JSON.stringify({ factorKey: newFactorKey.private.toString(16, 64) })
+
+      // Encrypt the key with the torus postbox key
+      const payload = { factorKey: newFactorKey.private.toString(16, 64) }
+      data.data = await encryptionUtil.encrypt(payload)
     }
 
     const response = await fetch(`${SmsOtpRecovery.BASE_URL}/api/v1/sms/verify`, {
@@ -231,7 +241,8 @@ export class SmsOtpRecovery {
     })
 
     // if successfull, add this factorKey and share info in tkey instance.
-    const storedFactorKey = JSON.parse(response.data)?.factorKey
+    const decryptedData = await encryptionUtil.decrypt<{ factorKey: string }>(response.data)
+    const storedFactorKey = decryptedData?.factorKey
     if (storedFactorKey) {
       const newFactorKey = new BN(storedFactorKey, 'hex')
       if (isFirstTime) {
