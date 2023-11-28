@@ -9,8 +9,10 @@ import { dispatchRecoveryExecution } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
-import { Errors, logError } from '@/services/exceptions'
+import { Errors, trackError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 import { RecoveryContext } from '../RecoveryContext'
+import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function ExecuteRecoveryButton({
@@ -20,6 +22,7 @@ export function ExecuteRecoveryButton({
   recovery: RecoveryQueueItem
   compact?: boolean
 }): ReactElement {
+  const { setSubmitError } = useContext(RecoveryListItemContext)
   const { isExecutable } = useRecoveryTxState(recovery)
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
@@ -41,8 +44,11 @@ export function ExecuteRecoveryButton({
         delayModifierAddress: recovery.address,
         refetchRecoveryData: refetch,
       })
-    } catch (e) {
-      logError(Errors._812, e)
+    } catch (_err) {
+      const err = asError(_err)
+
+      trackError(Errors._812, e)
+      setSubmitError(err)
     }
   }
 
