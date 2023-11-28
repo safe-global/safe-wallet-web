@@ -1,6 +1,8 @@
 import { type JsonRpcProvider } from '@ethersproject/providers'
-import { logError } from './exceptions'
-import ErrorCodes from './exceptions/ErrorCodes'
+import { logError } from '../exceptions'
+import ErrorCodes from '../exceptions/ErrorCodes'
+import { CUSTOM_REGISTRIES } from './config'
+import { customResolveName } from './custom'
 
 type EthersError = Error & {
   reason?: string
@@ -14,7 +16,18 @@ export function isDomain(domain: string): boolean {
 }
 
 export const resolveName = async (rpcProvider: JsonRpcProvider, name: string): Promise<string | undefined> => {
+  let chainId = ''
   try {
+    chainId = (await rpcProvider.getNetwork()).chainId.toString()
+  } catch {}
+
+  try {
+    // Try custom resolvers first
+    if (chainId && CUSTOM_REGISTRIES[chainId]) {
+      return await customResolveName(CUSTOM_REGISTRIES[chainId], rpcProvider, name)
+    }
+
+    // The default ENS resolver
     return (await rpcProvider.resolveName(name)) || undefined
   } catch (e) {
     const err = e as EthersError

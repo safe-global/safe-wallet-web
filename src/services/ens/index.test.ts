@@ -1,5 +1,5 @@
 import { type JsonRpcProvider } from '@ethersproject/providers'
-import { resolveName, lookupAddress, isDomain } from '../ens'
+import { resolveName, lookupAddress, isDomain } from '.'
 import { logError } from '../exceptions'
 
 // mock rpcProvider
@@ -11,6 +11,7 @@ const rpcProvider = {
 const badRpcProvider = {
   resolveName: jest.fn(() => Promise.reject(new Error('bad resolveName'))),
   lookupAddress: jest.fn(() => Promise.reject(new Error('bad lookupAddress'))),
+  getNetwork: jest.fn(() => Promise.resolve({ chainId: 1 })),
 } as unknown as JsonRpcProvider
 
 // mock logError
