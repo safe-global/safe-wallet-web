@@ -11,7 +11,6 @@ export const SEPOLIA_TEST_SAFE_4 = 'sep:0x03042B890b99552b60A073F808100517fb148F
 export const SEPOLIA_TEST_SAFE_5 = 'sep:0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b6415'
 export const SEPOLIA_TEST_SAFE_6 = 'sep:0x6d0b6F96f665Bb4490f9ddb2e450Da2f7e546dC1'
 export const SEPOLIA_TEST_SAFE_7 = 'sep:0xBf30F749FC027a5d79c4710D988F0D3C8e217A4F'
-export const ETH_ENS_SAFE_ADDRESS_1 = 'eth:0x8675B754342754A30A2AeF474D114d8460bca19b'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
 export const PAGINATION_TEST_SAFE = 'gor:0x850493a15914aAC05a821A3FAb973b4598889A7b'
 export const TEST_SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
@@ -27,9 +26,6 @@ export const SIDEBAR_ADDRESS = '0x04f8...1a91'
 export const ENS_TEST_SEPOLIA = 'testenssepolia.eth'
 export const ENS_TEST_GOERLI = 'goerli-safe-test.eth'
 export const ENS_TEST_SEPOLIA_INVALID = 'ivladitestenssepolia.eth'
-export const ENS_TEST_ETH = 'mainnetsafe.eth'
-export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png' //converts to SEPOLIA_TEST_SAFE_6 address
-export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png' //A blank square
 
 export const BROWSER_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__browserPermissions`
 export const SAFE_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__safePermissions`
@@ -54,7 +50,6 @@ export const welcomeUrl = '/welcome'
 export const chainMaticUrl = '/welcome?chain=matic'
 export const createNewSafeSepoliaUrl = '/new-safe/create?chain=sep'
 export const loadNewSafeSepoliaUrl = '/new-safe/load?chain=sep'
-export const loadNewSafeEthUrl = '/new-safe/load?chain=eth'
 export const appsUrl = '/apps'
 export const requestPermissionsUrl = '/request-permissions'
 export const getPermissionsUrl = '/get-permissions'
@@ -70,6 +65,12 @@ export const appsEndpoint = '/**/safe-apps'
 export const transactionHistoryEndpoint = '**/history'
 export const safeListEndpoint = '**/safes'
 
+export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png'
+export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png'
+
+export const networkKeys = {
+  sepolia: '11155111',
+}
 export const mainSideMenuOptions = {
   home: 'Home',
 }
@@ -155,12 +156,9 @@ export const addresBookContacts = {
 
 export const localStorageKeys = {
   SAFE_v2__addressBook: 'SAFE_v2__addressBook',
+  SAFE_v2__batch: 'SAFE_v2__batch',
 }
 
 export const connectWalletNames = {
   e2e: 'E2E Wallet',
-}
-
-export const longNames = {
-  safeName: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
 }

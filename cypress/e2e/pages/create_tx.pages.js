@@ -51,7 +51,7 @@ export function clickOnSendTokensBtn() {
   cy.contains(sendTokensBtnStr).click()
 }
 
-export function clickOnTokenselectorAndSelectSepolia() {
+export function clickOnTokenselectorAndSelectSepoliaEth() {
   cy.get(tokenAddressInput).prev().click()
   cy.get('ul[role="listbox"]').contains(constants.tokenNames.sepoliaEther).click()
 }
