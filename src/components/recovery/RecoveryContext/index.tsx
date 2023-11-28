@@ -1,10 +1,6 @@
-import { createContext, useContext, useEffect } from 'react'
+import { createContext, useContext } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 
-import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
-import { sameAddress } from '@/utils/addresses'
-import { getTxDetails } from '@/services/tx/txDetails'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryState } from './useRecoveryState'
 import { useRecoveryDelayModifiers } from './useRecoveryDelayModifiers'
 import type { AsyncResult } from '@/hooks/useAsync'
@@ -20,45 +16,11 @@ export const RecoveryContext = createContext<{
 })
 
 export function RecoveryProvider({ children }: { children: ReactNode }): ReactElement {
-  const { safe } = useSafeInfo()
-
   const [delayModifiers, delayModifiersError, delayModifiersLoading] = useRecoveryDelayModifiers()
   const {
     data: [recoveryState, recoveryStateError, recoveryStateLoading],
     refetch,
   } = useRecoveryState(delayModifiers)
-
-  // Reload recovery data when a Delay Modifier is interacted with
-  useEffect(() => {
-    if (!delayModifiers || delayModifiers.length === 0) {
-      return
-    }
-
-    return txSubscribe(TxEvent.PROCESSED, async (detail) => {
-      if (!detail.txId) {
-        return
-      }
-
-      let to: string | undefined
-
-      try {
-        const { txData } = await getTxDetails(detail.txId, safe.chainId)
-        to = txData?.to.value
-      } catch {}
-
-      if (!to) {
-        return
-      }
-
-      const isDelayModifierTx = delayModifiers.some((delayModifier) => {
-        return sameAddress(delayModifier.address, to)
-      })
-
-      if (isDelayModifierTx) {
-        refetch()
-      }
-    })
-  }, [safe.chainId, delayModifiers, refetch])
 
   const data = recoveryState
   const error = delayModifiersError || recoveryStateError
