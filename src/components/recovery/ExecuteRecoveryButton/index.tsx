@@ -23,7 +23,8 @@ export function ExecuteRecoveryButton({
   compact?: boolean
 }): ReactElement {
   const { setSubmitError } = useContext(RecoveryListItemContext)
-  const { isExecutable } = useRecoveryTxState(recovery)
+  const { isExecutable, isPending } = useRecoveryTxState(recovery)
+  const { setPending } = useContext(RecoveryContext)
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
   const { refetch } = useContext(RecoveryContext)
@@ -35,6 +36,8 @@ export function ExecuteRecoveryButton({
     if (!onboard) {
       return
     }
+
+    setPending((prev) => ({ ...prev, [recovery.transactionHash]: true }))
 
     try {
       await dispatchRecoveryExecution({
@@ -49,13 +52,18 @@ export function ExecuteRecoveryButton({
 
       trackError(Errors._812, e)
       setSubmitError(err)
+    } finally {
+      setPending((prev) => {
+        const { [recovery.transactionHash]: _, ...rest } = prev
+        return rest
+      })
     }
   }
 
   return (
     <CheckWallet allowNonOwner>
       {(isOk) => {
-        const isDisabled = !isOk || !isExecutable
+        const isDisabled = !isOk || !isExecutable || isPending
 
         return (
           <Tooltip title={isDisabled ? 'Previous recovery attempts must be executed or cancelled first' : null}>

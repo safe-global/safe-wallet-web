@@ -29,7 +29,7 @@ export function CancelRecoveryButton({
   const { setSubmitError } = useContext(RecoveryListItemContext)
   const isOwner = useIsSafeOwner()
   const isGuardian = useIsGuardian()
-  const { isExpired } = useRecoveryTxState(recovery)
+  const { isExpired, isPending } = useRecoveryTxState(recovery)
   const { setTxFlow } = useContext(TxModalContext)
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
@@ -61,7 +61,7 @@ export function CancelRecoveryButton({
   return (
     <CheckWallet allowNonOwner>
       {(isOk) => {
-        const isDisabled = !isOk || (isGuardian && !isExpired)
+        const isDisabled = !isOk || isPending || (isGuardian && !isExpired)
 
         return compact ? (
           <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>

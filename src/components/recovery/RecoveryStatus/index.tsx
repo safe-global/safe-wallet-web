@@ -6,7 +6,7 @@ import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): ReactElement => {
-  const { isExecutable, isExpired } = useRecoveryTxState(recovery)
+  const { isExecutable, isExpired, isPending } = useRecoveryTxState(recovery)
 
   return (
     <>
@@ -17,7 +17,9 @@ export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): R
         display="inline-flex"
         alignItems="center"
       >
-        {isExecutable ? (
+        {isPending ? (
+          'Processing...'
+        ) : isExecutable ? (
           'Awaiting execution'
         ) : isExpired ? (
           'Expired'

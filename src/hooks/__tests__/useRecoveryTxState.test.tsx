@@ -50,10 +50,13 @@ describe('useRecoveryTxState', () => {
         ),
       })
 
-      expect(result.current.isExecutable).toBe(false)
-      expect(result.current.remainingSeconds).toBe(1)
-      expect(result.current.isExpired).toBe(false)
-      expect(result.current.isNext).toBe(true)
+      expect(result.current).toStrictEqual({
+        isExecutable: false,
+        remainingSeconds: 1,
+        isExpired: false,
+        isNext: true,
+        isPending: false,
+      })
     })
 
     it('should return correct values when validFrom is in the future and expiresAt is in the future', () => {
@@ -87,10 +90,13 @@ describe('useRecoveryTxState', () => {
         ),
       })
 
-      expect(result.current.isExecutable).toBe(false)
-      expect(result.current.remainingSeconds).toBe(1)
-      expect(result.current.isExpired).toBe(false)
-      expect(result.current.isNext).toBe(true)
+      expect(result.current).toStrictEqual({
+        isExecutable: false,
+        remainingSeconds: 1,
+        isExpired: false,
+        isNext: true,
+        isPending: false,
+      })
     })
 
     it('should return correct values when validFrom is in the past and expiresAt is in the future', () => {
@@ -124,10 +130,13 @@ describe('useRecoveryTxState', () => {
         ),
       })
 
-      expect(result.current.isExecutable).toBe(true)
-      expect(result.current.remainingSeconds).toBe(0)
-      expect(result.current.isExpired).toBe(false)
-      expect(result.current.isNext).toBe(true)
+      expect(result.current).toStrictEqual({
+        isExecutable: true,
+        remainingSeconds: 0,
+        isExpired: false,
+        isNext: true,
+        isPending: false,
+      })
     })
 
     it('should return correct values when validFrom is in the past and expiresAt is in the past', () => {
@@ -161,10 +170,55 @@ describe('useRecoveryTxState', () => {
         ),
       })
 
-      expect(result.current.isExecutable).toBe(false)
-      expect(result.current.remainingSeconds).toBe(0)
-      expect(result.current.isExpired).toBe(true)
-      expect(result.current.isNext).toBe(true)
+      expect(result.current).toStrictEqual({
+        isExecutable: false,
+        remainingSeconds: 0,
+        isExpired: true,
+        isNext: true,
+        isPending: false,
+      })
+    })
+
+    it('should return pending if the transaction hash is set as pending', () => {
+      jest.setSystemTime(0)
+
+      const delayModifierAddress = faker.finance.ethereumAddress()
+      const nextTxHash = faker.string.hexadecimal()
+
+      const validFrom = BigNumber.from(0)
+      const expiresAt = BigNumber.from(1)
+
+      const data = [
+        {
+          address: delayModifierAddress,
+          txNonce: BigNumber.from(0),
+          queue: [
+            {
+              address: delayModifierAddress,
+              transactionHash: nextTxHash,
+              validFrom,
+              expiresAt,
+              args: { queueNonce: BigNumber.from(0) },
+            },
+          ],
+        },
+      ]
+
+      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any), {
+        wrapper: ({ children }) => (
+          <RecoveryContext.Provider value={{ state: [data], pending: { [nextTxHash]: true } } as any}>
+            {children}
+          </RecoveryContext.Provider>
+        ),
+      })
+
+      expect(result.current).toStrictEqual({
+        isExecutable: true,
+        remainingSeconds: 0,
+        isExpired: false,
+        isNext: true,
+        isPending: true,
+      })
     })
   })
 
@@ -225,10 +279,13 @@ describe('useRecoveryTxState', () => {
         ),
       })
 
-      expect(result.current.isExecutable).toBe(false)
-      expect(result.current.remainingSeconds).toBe(1)
-      expect(result.current.isExpired).toBe(false)
-      expect(result.current.isNext).toBe(false)
+      expect(result.current).toStrictEqual({
+        isExecutable: false,
+        remainingSeconds: 1,
+        isExpired: false,
+        isNext: false,
+        isPending: false,
+      })
     })
 
     it('should return correct values when validFrom is in the future and expiresAt is in the future', () => {
@@ -268,10 +325,13 @@ describe('useRecoveryTxState', () => {
         ),
       })
 
-      expect(result.current.isExecutable).toBe(false)
-      expect(result.current.remainingSeconds).toBe(1)
-      expect(result.current.isExpired).toBe(false)
-      expect(result.current.isNext).toBe(false)
+      expect(result.current).toStrictEqual({
+        isExecutable: false,
+        remainingSeconds: 1,
+        isExpired: false,
+        isNext: false,
+        isPending: false,
+      })
     })
 
     it('should return correct values when validFrom is in the past and expiresAt is in the future', () => {
@@ -311,10 +371,13 @@ describe('useRecoveryTxState', () => {
         ),
       })
 
-      expect(result.current.isExecutable).toBe(false)
-      expect(result.current.remainingSeconds).toBe(0)
-      expect(result.current.isExpired).toBe(false)
-      expect(result.current.isNext).toBe(false)
+      expect(result.current).toStrictEqual({
+        isExecutable: false,
+        remainingSeconds: 0,
+        isExpired: false,
+        isNext: false,
+        isPending: false,
+      })
     })
 
     it('should return correct values when validFrom is in the past and expiresAt is in the past', () => {
@@ -354,10 +417,13 @@ describe('useRecoveryTxState', () => {
         ),
       })
 
-      expect(result.current.isExecutable).toBe(false)
-      expect(result.current.remainingSeconds).toBe(0)
-      expect(result.current.isExpired).toBe(true)
-      expect(result.current.isNext).toBe(false)
+      expect(result.current).toStrictEqual({
+        isExecutable: false,
+        remainingSeconds: 0,
+        isExpired: true,
+        isNext: false,
+        isPending: false,
+      })
     })
   })
 })
