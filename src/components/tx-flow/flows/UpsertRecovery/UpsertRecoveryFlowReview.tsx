@@ -1,20 +1,26 @@
-import { useContext, useEffect } from 'react'
-import type { ReactElement } from 'react'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { Errors, logError } from '@/services/exceptions'
-import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
-import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { getRecoveryUpsertTransactions } from '@/services/recovery/setup'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { SvgIcon, Tooltip, Typography } from '@mui/material'
-import { useRecoveryPeriods } from './useRecoveryPeriods'
-import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import { UpsertRecoveryFlowFields } from '.'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { Errors, logError } from '@/services/exceptions'
+import { getRecoveryUpsertTransactions } from '@/services/recovery/setup'
+import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
+import { SvgIcon, Tooltip, Typography } from '@mui/material'
+import type { ReactElement } from 'react'
+import { useContext, useEffect } from 'react'
 import type { UpsertRecoveryFlowProps } from '.'
+import { UpsertRecoveryFlowFields } from '.'
+import { useRecoveryPeriods } from './useRecoveryPeriods'
+
+const onSubmit = (isEdit: boolean) => {
+  trackEvent({ ...TX_EVENTS.CREATE, label: isEdit ? TX_TYPES.recovery_edit : TX_TYPES.recovery_setup })
+}
 
 export function UpsertRecoveryFlowReview({
   params,
@@ -58,8 +64,10 @@ export function UpsertRecoveryFlowReview({
     }
   }, [safeTxError])
 
+  const isEdit = !!moduleAddress
+
   return (
-    <SignOrExecuteForm onSubmit={() => null}>
+    <SignOrExecuteForm onSubmit={() => onSubmit(isEdit)}>
       <Typography>
         This transaction will {moduleAddress ? 'update' : 'enable'} the Account recovery feature once executed.
       </Typography>

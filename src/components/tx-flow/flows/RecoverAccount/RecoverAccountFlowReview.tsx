@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { CardActions, Button, Typography, Divider, Box } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
@@ -80,6 +82,8 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
         delayModifierAddress: recovery.address,
         refetchRecoveryData: refetch,
       })
+      // TODO: This event is fired before the user submits the tx in their wallet but it should wait for it
+      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.recovery_init })
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._810, err)

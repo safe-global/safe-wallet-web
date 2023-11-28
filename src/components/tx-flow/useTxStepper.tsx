@@ -1,17 +1,32 @@
+import { trackEvent } from '@/services/analytics'
 import { useCallback, useState } from 'react'
 
-const useTxStepper = <T extends unknown>(initialData: T) => {
+const useTxStepper = <T extends unknown>(initialData: T, eventCategory?: string) => {
   const [step, setStep] = useState(0)
   const [data, setData] = useState<T>(initialData)
 
-  const nextStep = useCallback((entireData: T) => {
-    setData(entireData)
-    setStep((prevStep) => prevStep + 1)
-  }, [])
+  const nextStep = useCallback(
+    (entireData: T) => {
+      setData(entireData)
+      setStep((prevStep) => {
+        if (eventCategory) {
+          trackEvent({ action: 'Next', category: eventCategory, label: prevStep })
+        }
+
+        return prevStep + 1
+      })
+    },
+    [eventCategory],
+  )
 
   const prevStep = useCallback(() => {
-    setStep((prevStep) => prevStep - 1)
-  }, [])
+    setStep((prevStep) => {
+      if (eventCategory) {
+        trackEvent({ action: 'Back', category: eventCategory, label: prevStep })
+      }
+      return prevStep - 1
+    })
+  }, [eventCategory])
 
   return { step, data, nextStep, prevStep }
 }

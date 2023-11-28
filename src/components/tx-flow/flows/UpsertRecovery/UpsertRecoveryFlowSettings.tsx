@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import {
   Divider,
   CardActions,
@@ -53,7 +55,10 @@ export function UpsertRecoveryFlowSettings({
     }
   }
 
-  const onShowAdvanced = () => setShowAdvanced((prev) => !prev)
+  const onShowAdvanced = () => {
+    setShowAdvanced((prev) => !prev)
+    trackEvent(RECOVERY_EVENTS.SHOW_ADVANCED)
+  }
 
   return (
     <>

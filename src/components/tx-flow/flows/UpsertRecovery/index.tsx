@@ -1,3 +1,4 @@
+import { RECOVERY_CATEGORY } from '@/services/analytics/events/recovery'
 import type { ReactElement } from 'react'
 
 import TxLayout from '@/components/tx-flow/common/TxLayout'
@@ -24,11 +25,14 @@ export type UpsertRecoveryFlowProps = {
 }
 
 export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
-  const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>({
-    [UpsertRecoveryFlowFields.guardian]: delayModifier?.guardians?.[0] ?? '',
-    [UpsertRecoveryFlowFields.txCooldown]: delayModifier?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
-    [UpsertRecoveryFlowFields.txExpiration]: delayModifier?.txExpiration?.toString() ?? '0',
-  })
+  const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>(
+    {
+      [UpsertRecoveryFlowFields.guardian]: delayModifier?.guardians?.[0] ?? '',
+      [UpsertRecoveryFlowFields.txCooldown]: delayModifier?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
+      [UpsertRecoveryFlowFields.txExpiration]: delayModifier?.txExpiration?.toString() ?? '0',
+    },
+    RECOVERY_CATEGORY,
+  )
 
   const steps = [
     <UpsertRecoveryFlowIntro key={0} onSubmit={() => nextStep(data)} />,
