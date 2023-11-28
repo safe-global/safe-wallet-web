@@ -32,7 +32,7 @@ const headCells = [
     label: (
       <>
         Recovery delay{' '}
-        <Tooltip title="You can cancel any recovery attempt when it is not needed or wanted within the delay period.">
+        <Tooltip title="You can cancel any recovery attempt when it is not needed or wanted.">
           <span>
             <SvgIcon
               component={InfoIcon}
