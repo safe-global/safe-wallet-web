@@ -2,7 +2,7 @@ import { Button, Card, Divider, Grid, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
-import ProposeRecovery from '@/public/images/common/propose-recovery.svg'
+import { useDarkMode } from '@/hooks/useDarkMode'
 import ExternalLink from '@/components/common/ExternalLink'
 import { RecoverAccountFlow } from '@/components/tx-flow/flows/RecoverAccount'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -29,12 +29,19 @@ type Props =
     }
 
 export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe, setTxFlow }: Props): ReactElement {
+  const isDarkMode = useDarkMode()
+
   const onRecover = async () => {
     onClose?.()
     setTxFlow(<RecoverAccountFlow />)
   }
 
-  const icon = <ProposeRecovery />
+  const icon = (
+    <img
+      src={`/images/common/propose-recovery-${isDarkMode ? 'dark' : 'light'}.svg`}
+      alt="An arrow surrounding a circle containing a vault"
+    />
+  )
   const title = 'Recover this Account'
   const desc = `The connect wallet was chosen as a trusted Guardian. You can help the owner${
     safe.owners.length > 1 ? 's' : ''
