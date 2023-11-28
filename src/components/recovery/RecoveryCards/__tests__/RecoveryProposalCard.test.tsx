@@ -22,7 +22,7 @@ describe('RecoveryProposalCard', () => {
       expect(queryByText('Recover this Account')).toBeTruthy()
       expect(
         queryByText(
-          'The connect wallet was chosen as a trusted Guardian. You can help the owner regain access by updating the owner list.',
+          'The connected wallet was chosen as a trusted Guardian. You can help the owner regain access by updating the owner list.',
         ),
       ).toBeTruthy()
       expect(queryByText('Learn more')).toBeTruthy()
@@ -51,7 +51,7 @@ describe('RecoveryProposalCard', () => {
     expect(queryByText('Recover this Account')).toBeTruthy()
     expect(
       queryByText(
-        'The connect wallet was chosen as a trusted Guardian. You can help the owner regain access by updating the owner list.',
+        'The connected wallet was chosen as a trusted Guardian. You can help the owner regain access by updating the owner list.',
       ),
     ).toBeTruthy()
     expect(queryByText('Learn more')).toBeTruthy()
