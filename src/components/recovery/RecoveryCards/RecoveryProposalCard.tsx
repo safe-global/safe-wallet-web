@@ -8,6 +8,7 @@ import { RecoverAccountFlow } from '@/components/tx-flow/flows/RecoverAccount'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import madProps from '@/utils/mad-props'
 import { TxModalContext } from '@/components/tx-flow'
+import { HelpCenterArticle } from '@/config/constants'
 import type { TxModalContextType } from '@/components/tx-flow'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -40,10 +41,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   } regain access by updating the owner list.`
 
   const link = (
-    <ExternalLink
-      href="#" // TODO: Link to docs
-      title="Learn about the Account recovery process"
-    >
+    <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
       Learn more
     </ExternalLink>
   )

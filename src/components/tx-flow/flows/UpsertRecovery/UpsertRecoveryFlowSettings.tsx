@@ -12,6 +12,7 @@ import {
   Checkbox,
   FormControlLabel,
   Tooltip,
+  Alert,
 } from '@mui/material'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -83,6 +84,10 @@ export function UpsertRecoveryFlowSettings({
               fullWidth
               validate={validateGuardian}
             />
+
+            <Alert severity="info" sx={{ border: 'unset' }}>
+              Your Guardian will be able to modify your Account setup. Only select an address that you trust.
+            </Alert>
 
             <div>
               <Typography variant="h5" gutterBottom>

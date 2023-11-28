@@ -58,23 +58,13 @@ export function Recovery(): ReactElement {
               <Typography mt={1} mb={3}>
                 Ensure that you never lose access to your funds by choosing a Guardian to recover your account.
               </Typography>
-              {supportsRecovery && (
+              {supportsRecovery && (!recovery || recovery.length === 0) && (
                 <CheckWallet>
-                  {(isOk) => {
-                    if (!recovery || recovery.length === 0) {
-                      return (
-                        <Button variant="contained" disabled={!isOk} onClick={onEnable}>
-                          Set up recovery
-                        </Button>
-                      )
-                    }
-
-                    return (
-                      <Button variant="contained" disabled={!isOk} onClick={onEdit}>
-                        Edit recovery
-                      </Button>
-                    )
-                  }}
+                  {(isOk) => (
+                    <Button variant="contained" disabled={!isOk} onClick={onEnable}>
+                      Set up recovery
+                    </Button>
+                  )}
                 </CheckWallet>
               )}
             </Grid>
