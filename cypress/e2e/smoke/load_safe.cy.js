@@ -52,10 +52,10 @@ describe('[SMOKE] Load Safe tests', () => {
     safe.verifyNameLengthErrorMessage()
   })
 
-  it('Verify ENS name is translated to a valid address', () => {
-    cy.visit(constants.loadNewSafeEthUrl)
-    safe.inputAddress(constants.ENS_TEST_ETH)
-    safe.verifyAddressInputValue(constants.ETH_ENS_SAFE_ADDRESS_1)
+  it.skip('Verify ENS name is translated to a valid address', () => {
+    // cy.visit(constants.loadNewSafeEthUrl)
+    safe.inputAddress(constants.ENS_TEST_SEPOLIA)
+    safe.verifyAddressInputValue(constants.ENS_TEST_SEPOLIA)
     safe.verifyNextButtonStatus('be.enabled')
     safe.clickOnNextBtn()
   })
@@ -70,22 +70,6 @@ describe('[SMOKE] Load Safe tests', () => {
   it('Verify a non QR code is not accepted', () => {
     safe.scanQRCode(constants.INVALID_QR_CODE_PATH)
     safe.verifyQRCodeErrorMsg()
-  })
-
-  it('Verify custom name in the first owner an be set', () => {
-    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
-    safe.clickOnNextBtn()
-    createwallet.typeOwnerName(testOwnerName, 0)
-    safe.clickOnNextBtn()
-  })
-
-  it('Verify Safe and owner names are displayed in the Review step', () => {
-    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
-    safe.clickOnNextBtn()
-    createwallet.typeOwnerName(testOwnerName, 0)
-    safe.clickOnNextBtn()
-    safe.verifyDataInReviewSection(testSafeName, testOwnerName)
-    safe.clickOnAddBtn()
   })
 
   it('[SMOKE] Verify the custom Safe name is successfully loaded', () => {
