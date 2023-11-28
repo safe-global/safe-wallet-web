@@ -8,6 +8,7 @@ import { isRecoveryQueueItem } from '@/utils/transaction-guards'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import { RecoveryListItem } from '../RecoveryListItem'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 
 import css from '@/components/transactions/GroupedTxListItems/styles.module.css'
 
@@ -22,11 +23,7 @@ function Disclaimer({ isMalicious }: { isMalicious: boolean }): ReactElement {
           Cancelling {isMalicious ? 'malicious transaction' : 'Account recovery'}.
         </Typography>{' '}
         You will need to execute the cancellation.{' '}
-        <ExternalLink
-          // TODO: Add link
-          href="#"
-          title="Learn more about Account recovery"
-        >
+        <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
           Learn more
         </ExternalLink>
       </Typography>

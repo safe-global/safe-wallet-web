@@ -13,6 +13,7 @@ import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { getPeriod } from '@/utils/date'
+import { HelpCenterArticle } from '@/config/constants'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -129,8 +130,12 @@ export function Recovery(): ReactElement {
           {!recovery || recovery.length === 0 ? (
             <>
               <Alert severity="info">
-                Unhappy with the provided option? {/* TODO: Add link */}
-                <ExternalLink noIcon href="#">
+                Unhappy with the provided option?
+                <ExternalLink
+                  noIcon
+                  href={HelpCenterArticle.RECOVERY}
+                  title="Learn more about Account recovery process"
+                >
                   Give us feedback
                 </ExternalLink>
               </Alert>
