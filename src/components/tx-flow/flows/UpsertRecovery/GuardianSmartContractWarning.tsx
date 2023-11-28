@@ -42,7 +42,7 @@ export function GuardianWarning(): ReactElement | null {
       try {
         await getSafeInfo(safe.chainId, debouncedGuardian)
       } catch {
-        setWarning('The given address is a smart contract. Please ensure that it can execute transactions.')
+        setWarning('The given address is a smart contract. Please ensure that it can sign transactions.')
       }
     })()
   }, [debouncedGuardian, safe.chainId, safeAddress])
