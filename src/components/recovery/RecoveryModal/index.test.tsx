@@ -23,148 +23,20 @@ describe('RecoveryModal', () => {
       _RecoveryModal = require('./index')._RecoveryModal
     })
 
-    it('should not render the modal if there is a queue but the user is not an owner or guardian', () => {
-      const wallet = connectedWalletBuilder().build()
-      const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
-
-      const { queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian={false} queue={queue}>
-            Test
-          </_RecoveryModal>
-        </RecoveryContext.Provider>,
-      )
-
-      expect(queryByText('Test')).toBeTruthy()
-      expect(queryByText('recovery')).toBeFalsy()
-    })
-
-    it('should not render the modal if there is no queue and the user is a guardian', () => {
+    it('should not render either modal if there is no queue and the user is an owner', () => {
       const wallet = connectedWalletBuilder().build()
       const queue = [] as Array<RecoveryQueueItem>
 
-      const { queryByText } = render(
+      const { container, queryByText } = render(
         <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue}>
-            Test
-          </_RecoveryModal>
+          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue} />
         </RecoveryContext.Provider>,
       )
 
-      expect(queryByText('Test')).toBeTruthy()
+      expect(container.innerHTML).toBe(
+        '<div aria-hidden="true" class="MuiBackdrop-root css-1ejpag9-MuiBackdrop-root" style="opacity: 0; visibility: hidden;"></div>',
+      )
       expect(queryByText('recovery')).toBeFalsy()
-    })
-
-    it('should not render the modal if there is no queue and the user is an owner', () => {
-      const wallet = connectedWalletBuilder().build()
-      const queue = [] as Array<RecoveryQueueItem>
-
-      const { queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
-            Test
-          </_RecoveryModal>
-        </RecoveryContext.Provider>,
-      )
-
-      expect(queryByText('Test')).toBeTruthy()
-      expect(queryByText('recovery')).toBeFalsy()
-    })
-
-    it('should not render the in-progress modal when there is a queue for guardians on a non-sidebar route', () => {
-      const wallet = connectedWalletBuilder().build()
-      const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
-
-      const { queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} isSidebarRoute={false}>
-            Test
-          </_RecoveryModal>
-        </RecoveryContext.Provider>,
-      )
-
-      expect(queryByText('Test')).toBeTruthy()
-      expect(queryByText('recovery')).toBeFalsy()
-    })
-
-    it('should render the in-progress modal when there is a queue for guardians', () => {
-      const wallet = connectedWalletBuilder().build()
-      const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
-
-      const { queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue}>
-            Test
-          </_RecoveryModal>
-        </RecoveryContext.Provider>,
-      )
-
-      expect(queryByText('Test')).toBeTruthy()
-      expect(queryByText('Account recovery in progress')).toBeTruthy()
-    })
-
-    it('should render the in-progress modal when there is a queue for owners', () => {
-      const wallet = connectedWalletBuilder().build()
-      const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
-
-      const { queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
-            Test
-          </_RecoveryModal>
-        </RecoveryContext.Provider>,
-      )
-
-      expect(queryByText('Test')).toBeTruthy()
-      expect(queryByText('Account recovery in progress')).toBeTruthy()
-    })
-
-    it('should not render the proposal modal when there is no queue for guardians on a non-sidebar route', () => {
-      const wallet = connectedWalletBuilder().build()
-      const queue = [] as Array<RecoveryQueueItem>
-
-      const { queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} isSidebarRoute={false}>
-            Test
-          </_RecoveryModal>
-        </RecoveryContext.Provider>,
-      )
-
-      expect(queryByText('Test')).toBeTruthy()
-      expect(queryByText('recovery')).toBeFalsy()
-    })
-
-    it('should render the proposal modal when there is no queue for guardians', () => {
-      const wallet = connectedWalletBuilder().build()
-      const queue = [] as Array<RecoveryQueueItem>
-
-      const { queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue}>
-            Test
-          </_RecoveryModal>
-        </RecoveryContext.Provider>,
-      )
-
-      expect(queryByText('Test')).toBeTruthy()
-      expect(queryByText('Recover this Account')).toBeTruthy()
-    })
-
-    it('should not render the proposal modal when there is no queue for owners', () => {
-      const wallet = connectedWalletBuilder().build()
-      const queue = [] as Array<RecoveryQueueItem>
-
-      const { queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
-            Test
-          </_RecoveryModal>
-        </RecoveryContext.Provider>,
-      )
-
-      expect(queryByText('Test')).toBeTruthy()
-      expect(queryByText('Recover this Account')).toBeFalsy()
     })
 
     it('should close the modal when the user navigates away', async () => {
@@ -182,15 +54,13 @@ describe('RecoveryModal', () => {
       const wallet = connectedWalletBuilder().build()
       const queue = [{ validFrom: BigNumber.from(0), transactionHash: faker.string.hexadecimal() } as RecoveryQueueItem]
 
-      const { queryByText } = render(
+      const { container, queryByText } = render(
         <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue}>
-            Test
-          </_RecoveryModal>
+          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue} />
         </RecoveryContext.Provider>,
       )
 
-      expect(queryByText('Test')).toBeTruthy()
+      expect(container).not.toBeEmptyDOMElement()
       expect(queryByText('Account recovery in progress')).toBeTruthy()
 
       // Trigger the route change
@@ -198,6 +68,128 @@ describe('RecoveryModal', () => {
 
       await waitFor(() => {
         expect(queryByText('Account recovery in progress')).toBeFalsy()
+      })
+    })
+
+    describe('in-progress', () => {
+      it('should render the in-progress modal when there is a queue for guardians', () => {
+        const wallet = connectedWalletBuilder().build()
+        const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
+
+        const { container, queryByText } = render(
+          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} />
+          </RecoveryContext.Provider>,
+        )
+
+        expect(container).not.toBeEmptyDOMElement()
+        expect(queryByText('Account recovery in progress')).toBeTruthy()
+      })
+
+      it('should render the in-progress modal when there is a queue for owners', () => {
+        const wallet = connectedWalletBuilder().build()
+        const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
+
+        const { container, queryByText } = render(
+          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+            <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue} />
+          </RecoveryContext.Provider>,
+        )
+
+        expect(container).not.toBeEmptyDOMElement()
+        expect(queryByText('Account recovery in progress')).toBeTruthy()
+      })
+
+      it('should not render the in-progress modal when there is a queue but the user is not an owner or guardian', () => {
+        const wallet = connectedWalletBuilder().build()
+        const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
+
+        const { container, queryByText } = render(
+          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian={false} queue={queue} />
+          </RecoveryContext.Provider>,
+        )
+
+        expect(container).not.toBeEmptyDOMElement()
+        expect(queryByText('recovery')).toBeFalsy()
+      })
+
+      it('should not render the in-progress modal when there is a queue for guardians on a non-sidebar route', () => {
+        const wallet = connectedWalletBuilder().build()
+        const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
+
+        const { container, queryByText } = render(
+          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} isSidebarRoute={false} />
+          </RecoveryContext.Provider>,
+        )
+
+        expect(container).not.toBeEmptyDOMElement()
+        expect(queryByText('recovery')).toBeFalsy()
+      })
+    })
+
+    describe('proposal', () => {
+      it('should render the proposal modal if there is no queue and the user is a guardian', () => {
+        const wallet = connectedWalletBuilder().build()
+        const queue = [] as Array<RecoveryQueueItem>
+
+        const { container, queryByText } = render(
+          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} />
+          </RecoveryContext.Provider>,
+        )
+
+        expect(container).not.toBeEmptyDOMElement()
+        expect(queryByText('recovery')).toBeFalsy()
+      })
+
+      it('should not render the proposal modal when there is no queue for owners', () => {
+        const wallet = connectedWalletBuilder().build()
+        const queue = [] as Array<RecoveryQueueItem>
+
+        const { container, queryByText } = render(
+          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+            <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue} />
+          </RecoveryContext.Provider>,
+        )
+
+        expect(container.innerHTML).toBe(
+          '<div aria-hidden="true" class="MuiBackdrop-root css-1ejpag9-MuiBackdrop-root" style="opacity: 0; visibility: hidden;"></div>',
+        )
+        expect(queryByText('Recover this Account')).toBeFalsy()
+      })
+
+      it('should not render the proposal modal when there is no queue for guardians on a non-sidebar route', () => {
+        const wallet = connectedWalletBuilder().build()
+        const queue = [] as Array<RecoveryQueueItem>
+
+        const { container, queryByText } = render(
+          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} isSidebarRoute={false} />
+          </RecoveryContext.Provider>,
+        )
+
+        expect(container.innerHTML).toBe(
+          '<div aria-hidden="true" class="MuiBackdrop-root css-1ejpag9-MuiBackdrop-root" style="opacity: 0; visibility: hidden;"></div>',
+        )
+        expect(queryByText('recovery')).toBeFalsy()
+      })
+
+      it('should not render the proposal modal when there is no queue for non-owners', () => {
+        const wallet = connectedWalletBuilder().build()
+        const queue = [] as Array<RecoveryQueueItem>
+
+        const { container, queryByText } = render(
+          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
+            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian={false} queue={queue} />
+          </RecoveryContext.Provider>,
+        )
+
+        expect(container.innerHTML).toBe(
+          '<div aria-hidden="true" class="MuiBackdrop-root css-1ejpag9-MuiBackdrop-root" style="opacity: 0; visibility: hidden;"></div>',
+        )
+        expect(queryByText('Recover this Account')).toBeFalsy()
       })
     })
   })

@@ -1,7 +1,7 @@
 import { Backdrop, Fade } from '@mui/material'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactElement } from 'react'
 
 import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
 import { RecoveryInProgressCard } from '../RecoveryCards/RecoveryInProgressCard'
@@ -17,14 +17,12 @@ import { useIsSidebarRoute } from '@/hooks/useIsSidebarRoute'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function _RecoveryModal({
-  children,
   isOwner,
   isGuardian,
   queue,
   wallet,
   isSidebarRoute = true,
 }: {
-  children: ReactNode
   isOwner: boolean
   isGuardian: boolean
   queue: Array<RecoveryQueueItem>
@@ -51,7 +49,7 @@ export function _RecoveryModal({
     }
 
     setModal(() => {
-      if (next && !wasInProgressDismissed(next.transactionHash)) {
+      if (next && (isOwner || isGuardian) && !wasInProgressDismissed(next.transactionHash)) {
         const onCloseWithDismiss = () => {
           dismissInProgress(next.transactionHash)
           onClose()
@@ -60,7 +58,7 @@ export function _RecoveryModal({
         return <RecoveryInProgressCard onClose={onCloseWithDismiss} recovery={next} />
       }
 
-      if (wallet?.address && !isOwner && !wasProposalDismissed(wallet.address)) {
+      if (wallet?.address && isGuardian && !wasProposalDismissed(wallet.address)) {
         const onCloseWithDismiss = () => {
           dismissProposal(wallet.address)
           onClose()
@@ -94,14 +92,11 @@ export function _RecoveryModal({
   }, [router])
 
   return (
-    <>
-      <Fade in={!!modal}>
-        <Backdrop open={!!modal} sx={{ zIndex: 3, bgcolor: ({ palette }) => palette.background.main }}>
-          {modal}
-        </Backdrop>
-      </Fade>
-      {children}
-    </>
+    <Fade in={!!modal}>
+      <Backdrop open={!!modal} sx={{ zIndex: 3, bgcolor: ({ palette }) => palette.background.main }}>
+        {modal}
+      </Backdrop>
+    </Fade>
   )
 }
 
