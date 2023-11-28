@@ -9,9 +9,10 @@ import {
   TextField,
   IconButton,
   Tooltip,
+  FormHelperText,
 } from '@mui/material'
 import { useForm, FormProvider, useFieldArray, Controller } from 'react-hook-form'
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
@@ -24,8 +25,33 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { sameAddress } from '@/utils/addresses'
 import type { RecoverAccountFlowProps } from '.'
+import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+
+export function _isSameSetup({
+  oldOwners,
+  oldThreshold,
+  newOwners,
+  newThreshold,
+}: {
+  oldOwners: Array<AddressEx>
+  oldThreshold: number
+  newOwners: Array<AddressEx>
+  newThreshold: number
+}): boolean {
+  if (oldThreshold !== newThreshold) {
+    return false
+  }
+
+  if (oldOwners.length !== newOwners.length) {
+    return false
+  }
+
+  return oldOwners.every((oldOwner) => {
+    return newOwners.some((newOwner) => sameAddress(oldOwner.value, newOwner.value))
+  })
+}
 
 export function RecoverAccountFlowSetup({
   params,
@@ -34,7 +60,7 @@ export function RecoverAccountFlowSetup({
   params: RecoverAccountFlowProps
   onSubmit: (formData: RecoverAccountFlowProps) => void
 }): ReactElement {
-  const { safeAddress } = useSafeInfo()
+  const { safeAddress, safe } = useSafeInfo()
 
   const formMethods = useForm<RecoverAccountFlowProps>({
     defaultValues: params,
@@ -46,7 +72,12 @@ export function RecoverAccountFlowSetup({
     name: RecoverAccountFlowFields.owners,
   })
 
-  const owners = formMethods.watch(RecoverAccountFlowFields.owners)
+  const isSameSetup = useCallback(
+    (newOwners: Array<AddressEx>, newThreshold: number): boolean => {
+      return _isSameSetup({ oldOwners: safe.owners, oldThreshold: safe.threshold, newOwners, newThreshold })
+    },
+    [safe.owners, safe.threshold],
+  )
 
   return (
     <FormProvider {...formMethods}>
@@ -78,11 +109,18 @@ export function RecoverAccountFlowSetup({
                         return 'The Safe Account cannot own itself'
                       }
 
-                      const isDuplicate = owners.filter((owner) => owner.value === value).length > 1
+                      const newOwners = formMethods.getValues(RecoverAccountFlowFields.owners)
+                      const isDuplicate = newOwners.filter((owner) => owner.value === value).length > 1
                       if (isDuplicate) {
                         return 'Already designated to be an owner'
                       }
+
+                      const newThreshold = formMethods.getValues(RecoverAccountFlowFields.threshold)
+                      if (isSameSetup(newOwners, Number(newThreshold))) {
+                        return 'Proposed Account setup is the same'
+                      }
                     }}
+                    deps={[RecoverAccountFlowFields.threshold]}
                   />
                 </Grid>
 
@@ -132,13 +170,13 @@ export function RecoverAccountFlowSetup({
             </Typography>
           </div>
 
-          <Grid container direction="row" alignItems="center" gap={2} mb={1}>
-            <Grid item>
-              <Controller
-                control={formMethods.control}
-                name={RecoverAccountFlowFields.threshold}
-                render={({ field }) => (
-                  <TextField select {...field}>
+          <Controller
+            control={formMethods.control}
+            name={RecoverAccountFlowFields.threshold}
+            render={({ field, fieldState }) => (
+              <Grid container direction="row" alignItems="center" gap={2} mb={1}>
+                <Grid item>
+                  <TextField select {...field} error={!!fieldState.error}>
                     {fields.map((_, index) => {
                       const value = index + 1
                       return (
@@ -148,14 +186,29 @@ export function RecoverAccountFlowSetup({
                       )
                     })}
                   </TextField>
-                )}
-              />
-            </Grid>
+                </Grid>
 
-            <Grid item>
-              <Typography>out of {fields.length} owner(s)</Typography>
-            </Grid>
-          </Grid>
+                <Grid item>
+                  <Typography>out of {fields.length} owner(s)</Typography>
+                </Grid>
+
+                {fieldState.error && (
+                  <Grid item xs={12}>
+                    <FormHelperText error>{fieldState.error?.message}</FormHelperText>
+                  </Grid>
+                )}
+              </Grid>
+            )}
+            rules={{
+              validate: (newThreshold) => {
+                const newOwners = formMethods.getValues(RecoverAccountFlowFields.owners)
+                if (isSameSetup(newOwners, Number(newThreshold))) {
+                  return 'Proposed Account setup is the same'
+                }
+              },
+              deps: [RecoverAccountFlowFields.owners],
+            }}
+          />
 
           <Divider className={commonCss.nestedDivider} />
 
