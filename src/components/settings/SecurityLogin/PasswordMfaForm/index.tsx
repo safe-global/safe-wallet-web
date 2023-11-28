@@ -138,151 +138,139 @@ const SocialSignerMFA = () => {
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" flexDirection="column" gap={3} alignItems="baseline">
-          <Typography>
-            Protect your social login signer with a password. It will be used to restore access in another browser or on
-            another device.
-          </Typography>
-          <Accordion expanded={open} defaultExpanded={false} onChange={toggleAccordion}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Box display="flex" alignItems="center" gap={1}>
-                <SvgIcon component={CheckIcon} sx={{ color: isPasswordSet ? 'success.main' : 'border.light' }} />
-                <Typography fontWeight="bold">Password</Typography>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails sx={{ p: 0 }}>
-              <Grid container>
-                <Grid item container xs={12} md={7} gap={3} p={3}>
-                  {isPasswordSet && (
-                    <>
-                      <FormControl fullWidth>
-                        <PasswordInput
-                          name={PasswordFieldNames.currentPassword}
-                          placeholder="Current password"
-                          label="Current password"
-                          helperText={formState.errors[PasswordFieldNames.currentPassword]?.message}
-                          required
-                        />
-                      </FormControl>
-                      <Divider sx={{ width: 1 }} />
-                    </>
-                  )}
+        <Accordion expanded={open} defaultExpanded={false} onChange={toggleAccordion}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Box display="flex" alignItems="center" gap={1}>
+              <SvgIcon component={CheckIcon} sx={{ color: isPasswordSet ? 'success.main' : 'border.light' }} />
+              <Typography fontWeight="bold">Password</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ p: 0 }}>
+            <Grid container>
+              <Grid item container xs={12} md={7} gap={3} p={3}>
+                {isPasswordSet && (
+                  <>
+                    <FormControl fullWidth>
+                      <PasswordInput
+                        name={PasswordFieldNames.currentPassword}
+                        placeholder="Current password"
+                        label="Current password"
+                        helperText={formState.errors[PasswordFieldNames.currentPassword]?.message}
+                        required
+                      />
+                    </FormControl>
+                    <Divider sx={{ width: 1 }} />
+                  </>
+                )}
 
-                  <FormControl fullWidth>
-                    <PasswordInput
-                      name={PasswordFieldNames.newPassword}
-                      placeholder="New password"
-                      label="New password"
-                      helperText={formState.errors[PasswordFieldNames.newPassword]?.message}
-                      required
-                      inputProps={{
-                        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-                          const value = event.target.value
-                          setPasswordStrength(_getPasswordStrength(value))
-                        },
-                      }}
-                    />
-                    <Typography
-                      variant="body2"
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      mt={1}
-                      className={
-                        passwordStrength !== undefined
-                          ? css[passwordStrengthMap[passwordStrength].className]
-                          : css.defaultPassword
-                      }
-                    >
-                      <BarChartIcon />
-                      {passwordStrength !== undefined
-                        ? `${passwordStrengthMap[passwordStrength].label} password`
-                        : 'Password strength'}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" mt={1}>
-                      Include at least 9 or more characters, a number, an uppercase letter and a symbol
-                    </Typography>
-                  </FormControl>
+                <FormControl fullWidth>
+                  <PasswordInput
+                    name={PasswordFieldNames.newPassword}
+                    placeholder="New password"
+                    label="New password"
+                    helperText={formState.errors[PasswordFieldNames.newPassword]?.message}
+                    required
+                    inputProps={{
+                      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+                        const value = event.target.value
+                        setPasswordStrength(_getPasswordStrength(value))
+                      },
+                    }}
+                  />
+                  <Typography
+                    variant="body2"
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                    mt={1}
+                    className={
+                      passwordStrength !== undefined
+                        ? css[passwordStrengthMap[passwordStrength].className]
+                        : css.defaultPassword
+                    }
+                  >
+                    <BarChartIcon />
+                    {passwordStrength !== undefined
+                      ? `${passwordStrengthMap[passwordStrength].label} password`
+                      : 'Password strength'}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" mt={1}>
+                    Include at least 9 or more characters, a number, an uppercase letter and a symbol
+                  </Typography>
+                </FormControl>
 
-                  <FormControl fullWidth>
-                    <PasswordInput
-                      name={PasswordFieldNames.confirmPassword}
-                      placeholder="Confirm password"
-                      label="Confirm password"
-                      helperText={formState.errors[PasswordFieldNames.confirmPassword]?.message}
-                      required
-                    />
-                    <Typography
-                      variant="body2"
-                      display="flex"
-                      alignItems="center"
-                      gap={1}
-                      mt={1}
-                      className={
-                        passwordsEmpty
-                          ? css.passwordsShouldMatch
-                          : passwordsMatch
-                          ? css.passwordsMatch
-                          : css.passwordsNoMatch
-                      }
-                    >
-                      {passwordsEmpty ? (
-                        <>
-                          <ShieldOffIcon /> Passwords should match
-                        </>
-                      ) : passwordsMatch ? (
-                        <>
-                          <ShieldIcon /> Passwords match
-                        </>
-                      ) : (
-                        <>
-                          <ShieldOffIcon /> Passwords don&apos;t match
-                        </>
-                      )}
-                    </Typography>
-                  </FormControl>
+                <FormControl fullWidth>
+                  <PasswordInput
+                    name={PasswordFieldNames.confirmPassword}
+                    placeholder="Confirm password"
+                    label="Confirm password"
+                    helperText={formState.errors[PasswordFieldNames.confirmPassword]?.message}
+                    required
+                  />
+                  <Typography
+                    variant="body2"
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                    mt={1}
+                    className={
+                      passwordsEmpty
+                        ? css.passwordsShouldMatch
+                        : passwordsMatch
+                        ? css.passwordsMatch
+                        : css.passwordsNoMatch
+                    }
+                  >
+                    {passwordsEmpty ? (
+                      <>
+                        <ShieldOffIcon /> Passwords should match
+                      </>
+                    ) : passwordsMatch ? (
+                      <>
+                        <ShieldIcon /> Passwords match
+                      </>
+                    ) : (
+                      <>
+                        <ShieldOffIcon /> Passwords don&apos;t match
+                      </>
+                    )}
+                  </Typography>
+                </FormControl>
 
-                  {submitError && <Alert severity="error">{submitError}</Alert>}
+                {submitError && <Alert severity="error">{submitError}</Alert>}
 
-                  <Box display="flex" justifyContent="space-between" width={1}>
-                    <Button sx={{ fontSize: '14px' }} variant="text" onClick={onReset} disabled={!formState.isDirty}>
-                      Cancel
+                <Box display="flex" justifyContent="space-between" width={1}>
+                  <Button sx={{ fontSize: '14px' }} variant="text" onClick={onReset} disabled={!formState.isDirty}>
+                    Cancel
+                  </Button>
+                  <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
+                    <Button sx={{ fontSize: '14px' }} disabled={isSubmitDisabled} type="submit" variant="contained">
+                      {isPasswordSet ? 'Change' : 'Create'} Password
                     </Button>
-                    <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
-                      <Button sx={{ fontSize: '14px' }} disabled={isSubmitDisabled} type="submit" variant="contained">
-                        {isPasswordSet ? 'Change' : 'Create'} Password
-                      </Button>
-                    </Track>
-                  </Box>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  md={5}
-                  p={3}
-                  sx={{ borderLeft: (theme) => `1px solid ${theme.palette.border.light}` }}
-                >
-                  <Box>
-                    <LockWarningIcon />
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      You won&apos;t be able to restore this password
-                    </Typography>
-                    <ol className={css.list}>
-                      <Typography component="li" variant="body2">
-                        You will have to input this password if you login with this social login signer in another
-                        browser or on another device.
-                      </Typography>
-                      <Typography component="li" variant="body2">
-                        We suggest to use a password manager or to write the password down on a piece of paper and
-                        secure it.
-                      </Typography>
-                    </ol>
-                  </Box>
-                </Grid>
+                  </Track>
+                </Box>
               </Grid>
-            </AccordionDetails>
-          </Accordion>
-        </Box>
+              <Grid item xs={12} md={5} p={3} sx={{ borderLeft: (theme) => `1px solid ${theme.palette.border.light}` }}>
+                <Box>
+                  <LockWarningIcon />
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    You won&apos;t be able to restore this password
+                  </Typography>
+                  <ol className={css.list}>
+                    <Typography component="li" variant="body2">
+                      You will have to input this password if you login with this social login signer in another browser
+                      or on another device.
+                    </Typography>
+                    <Typography component="li" variant="body2">
+                      We suggest to use a password manager or to write the password down on a piece of paper and secure
+                      it.
+                    </Typography>
+                  </ol>
+                </Box>
+              </Grid>
+            </Grid>
+          </AccordionDetails>
+        </Accordion>
       </form>
     </FormProvider>
   )

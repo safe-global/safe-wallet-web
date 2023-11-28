@@ -11,6 +11,7 @@ import {
   SvgIcon,
   Alert,
   TextField,
+  AlertTitle,
 } from '@mui/material'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { useState, useMemo } from 'react'
@@ -47,7 +48,8 @@ const SmsMfaForm = () => {
 
   const formMethods = useForm<SmsOtpFormData>({
     mode: 'all',
-    defaultValues: {
+    // We use values instead of defaultValues so that the number updates after setting up the new factor
+    values: {
       [SmsOtpFieldNames.mobileNumber]: obfuscateNumber(currentNumber) ?? '',
       [SmsOtpFieldNames.verificationCode]: undefined,
     },
@@ -103,22 +105,22 @@ const SmsMfaForm = () => {
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" flexDirection="column" gap={3} alignItems="baseline">
-          <Typography>Protect your social login signer with mobile recovery</Typography>
-          <Accordion expanded={open} defaultExpanded={false} onChange={toggleAccordion}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Box display="flex" alignItems="center" gap={1}>
-                <SvgIcon component={CheckIcon} sx={{ color: isSmsOtpSet ? 'success.main' : 'border.light' }} />
-                <Typography fontWeight="bold">SMS recovery</Typography>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails sx={{ p: 0 }}>
-              <Grid container>
-                <Grid item container xs={12} md={7} gap={3} p={3}>
+        <Accordion expanded={open} defaultExpanded={false} onChange={toggleAccordion}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Box display="flex" alignItems="center" gap={1}>
+              <SvgIcon component={CheckIcon} sx={{ color: isSmsOtpSet ? 'success.main' : 'border.light' }} />
+              <Typography fontWeight="bold">SMS</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ p: 0 }}>
+            <Grid container>
+              <Grid item container xs={12} md={7} gap={2} p={3}>
+                <Box display="flex" flexDirection="column" gap={2}>
+                  <Typography>Protect your social login signer with a mobile factor</Typography>
                   <FormControl fullWidth>
                     <TextField
-                      placeholder="Mobile number"
-                      label="Mobile number"
+                      placeholder="Your phone number"
+                      label="Your phone number"
                       helperText={formState.errors[SmsOtpFieldNames.mobileNumber]?.message}
                       InputProps={{
                         readOnly: verificationStarted || Boolean(currentNumber),
@@ -141,26 +143,31 @@ const SmsMfaForm = () => {
                     </Box>
                   )}
 
-                  {submitError && <Alert severity="error">{submitError}</Alert>}
-                  {successMsg && <Alert severity="success">{successMsg}</Alert>}
-
                   {!isSmsOtpSet && (
                     <Box display="flex" justifyContent="space-between" alignItems="center" width={1}>
-                      <Button sx={{ fontSize: '14px' }} variant="text" onClick={onReset} disabled={!formState.isDirty}>
-                        Cancel
-                      </Button>
                       {/* TODO: CHANGE TRACKING EVENT */}
                       {verificationStarted ? (
-                        <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
+                        <>
                           <Button
                             sx={{ fontSize: '14px' }}
-                            disabled={isSubmitDisabled}
-                            onClick={onVerify}
-                            variant="contained"
+                            variant="outlined"
+                            onClick={onReset}
+                            disabled={!formState.isDirty}
                           >
-                            Verify number
+                            Cancel
                           </Button>
-                        </Track>
+
+                          <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
+                            <Button
+                              sx={{ fontSize: '14px' }}
+                              disabled={isSubmitDisabled}
+                              onClick={onVerify}
+                              variant="contained"
+                            >
+                              Setup SMS factor
+                            </Button>
+                          </Track>
+                        </>
                       ) : (
                         <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
                           <Button
@@ -169,43 +176,59 @@ const SmsMfaForm = () => {
                             onClick={onRegister}
                             variant="contained"
                           >
-                            Register
+                            Setup SMS factor
                           </Button>
                         </Track>
                       )}
                     </Box>
                   )}
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  md={5}
-                  p={3}
-                  sx={{ borderLeft: (theme) => `1px solid ${theme.palette.border.light}` }}
-                >
-                  <Box>
-                    <LockWarningIcon />
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Recover your account at any time using an SMS to your phone.
-                    </Typography>
-                    <ol className={css.list}>
-                      <Typography component="li" variant="body2">
-                        Register a mobile phone number{' '}
-                      </Typography>
-                      <Typography component="li" variant="body2">
-                        Verify your number by entering the received code
-                      </Typography>
-                      <Typography component="li" variant="body2">
-                        Whenever you login on a new device or browser you can recover your social signer by entering a
-                        SMS code
-                      </Typography>
-                    </ol>
-                  </Box>
-                </Grid>
+                  {submitError && (
+                    <Alert severity="error">
+                      <AlertTitle>
+                        <b>Error</b>
+                      </AlertTitle>
+                      {submitError}
+                    </Alert>
+                  )}
+                  {successMsg && (
+                    <Alert severity="success">
+                      <AlertTitle>
+                        <b>Success</b>
+                      </AlertTitle>
+                      {successMsg}
+                    </Alert>
+                  )}
+                  <Alert severity="info">
+                    <AlertTitle>
+                      <b>Only this number can restore access to your social login signer</b>
+                    </AlertTitle>
+                    Once you verified this number, it can not be changed anymore.
+                  </Alert>
+                </Box>
               </Grid>
-            </AccordionDetails>
-          </Accordion>
-        </Box>
+              <Grid item xs={12} md={5} p={3} sx={{ borderLeft: (theme) => `1px solid ${theme.palette.border.light}` }}>
+                <Box>
+                  <LockWarningIcon />
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Recover your account at any time using an SMS to your phone.
+                  </Typography>
+                  <ol className={css.list}>
+                    <Typography component="li" variant="body2">
+                      Register a mobile phone number{' '}
+                    </Typography>
+                    <Typography component="li" variant="body2">
+                      Verify your number by entering the received code
+                    </Typography>
+                    <Typography component="li" variant="body2">
+                      Whenever you login on a new device or browser you can recover your social signer by entering a SMS
+                      code
+                    </Typography>
+                  </ol>
+                </Box>
+              </Grid>
+            </Grid>
+          </AccordionDetails>
+        </Accordion>
       </form>
     </FormProvider>
   )

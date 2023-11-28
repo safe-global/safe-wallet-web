@@ -31,6 +31,11 @@ const SecurityLogin = () => {
           <Grid item xs>
             <Grid container spacing={2}>
               <Grid item xs={12}>
+                <Typography>
+                  Methods used to restore access to your social login signer in another browser or on another device.
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
                 <PasswordMfaForm />
               </Grid>
               <Grid item xs={12}>
