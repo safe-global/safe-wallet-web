@@ -11,7 +11,6 @@ import useDebounce from '@/hooks/useDebounce'
 import { useRouter } from 'next/router'
 import { TxModalContext } from '@/components/tx-flow'
 import BatchSidebar from '@/components/batch/BatchSidebar'
-import { RecoveryModal } from '@/components/recovery/RecoveryModal'
 
 const PageLayout = ({ pathname, children }: { pathname: string; children: ReactElement }): ReactElement => {
   const router = useRouter()
@@ -48,9 +47,7 @@ const PageLayout = ({ pathname, children }: { pathname: string; children: ReactE
         })}
       >
         <div className={css.content}>
-          <SafeLoadingError>
-            <RecoveryModal>{children}</RecoveryModal>
-          </SafeLoadingError>
+          <SafeLoadingError>{children}</SafeLoadingError>
         </div>
 
         <BatchSidebar isOpen={isBatchOpen} onToggle={setBatchOpen} />
