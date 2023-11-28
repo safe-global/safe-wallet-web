@@ -1,5 +1,3 @@
-import { trackEvent } from '@/services/analytics'
-import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Backdrop, Fade } from '@mui/material'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -63,7 +61,6 @@ export function _RecoveryModal({
       if (wallet?.address && isGuardian && !wasProposalDismissed(wallet.address)) {
         const onCloseWithDismiss = () => {
           dismissProposal(wallet.address)
-          trackEvent(RECOVERY_EVENTS.DISMISS_PROPOSAL_CARD)
           onClose()
         }
 

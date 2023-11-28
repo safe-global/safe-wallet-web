@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Button, Card, Divider, Grid, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
@@ -28,10 +30,15 @@ type Props =
       setTxFlow: TxModalContextType['setTxFlow']
     }
 
+const onLearnMoreClick = () => {
+  trackEvent({ ...RECOVERY_EVENTS.LEARN_MORE, label: 'proposal-card' })
+}
+
 export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe, setTxFlow }: Props): ReactElement {
   const onRecover = async () => {
     onClose?.()
     setTxFlow(<RecoverAccountFlow />)
+    trackEvent({ ...RECOVERY_EVENTS.START_RECOVERY, label: orientation === 'vertical' ? 'pop-up' : 'dashboard' })
   }
 
   const icon = <ProposeRecovery />
@@ -41,7 +48,11 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   } regain access by updating the owner list.`
 
   const link = (
-    <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
+    <ExternalLink
+      href={HelpCenterArticle.RECOVERY}
+      onClick={onLearnMoreClick}
+      title="Learn more about the Account recovery process"
+    >
       Learn more
     </ExternalLink>
   )
@@ -98,7 +109,14 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
         <Divider flexItem sx={{ mx: -4 }} />
 
         <Grid item alignSelf="flex-end">
-          <Button onClick={onClose}>I&apos;ll do it later</Button>
+          <Button
+            onClick={() => {
+              trackEvent(RECOVERY_EVENTS.DISMISS_PROPOSAL_CARD)
+              onClose?.()
+            }}
+          >
+            I&apos;ll do it later
+          </Button>
           {recoveryButton}
         </Grid>
       </Grid>

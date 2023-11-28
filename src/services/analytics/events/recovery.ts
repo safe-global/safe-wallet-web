@@ -1,10 +1,25 @@
 import { EventType } from '@/services/analytics'
 
-export const RECOVERY_CATEGORY = 'recovery'
+// These are used for the generic stepper flow events (Next, Back)
+export const SETUP_RECOVERY_CATEGORY = 'setup-recovery'
+export const START_RECOVERY_CATEGORY = 'start-recovery'
+export const CANCEL_RECOVERY_CATEGORY = 'cancel-recovery'
+
+const RECOVERY_CATEGORY = 'recovery'
 
 export const RECOVERY_EVENTS = {
   SETUP_RECOVERY: {
-    action: 'Set-up recovery',
+    action: 'Set up recovery',
+    category: RECOVERY_CATEGORY,
+    event: EventType.CLICK,
+  },
+  START_RECOVERY: {
+    action: 'Start recovery',
+    category: RECOVERY_CATEGORY,
+    event: EventType.CLICK,
+  },
+  CANCEL_RECOVERY: {
+    action: 'Cancel recovery',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },
@@ -14,7 +29,17 @@ export const RECOVERY_EVENTS = {
     event: EventType.CLICK,
   },
   DISMISS_PROPOSAL_CARD: {
-    action: 'Recovery do it later',
+    action: 'Do it later',
+    category: RECOVERY_CATEGORY,
+    event: EventType.CLICK,
+  },
+  LEARN_MORE: {
+    action: 'Learn more',
+    category: RECOVERY_CATEGORY,
+    event: EventType.CLICK,
+  },
+  GO_BACK: {
+    action: 'Go back on cancel',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },

@@ -1,4 +1,4 @@
-import { RECOVERY_CATEGORY } from '@/services/analytics/events/recovery'
+import { SETUP_RECOVERY_CATEGORY } from '@/services/analytics/events/recovery'
 import type { ReactElement } from 'react'
 
 import TxLayout from '@/components/tx-flow/common/TxLayout'
@@ -31,7 +31,7 @@ export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: Recovery
       [UpsertRecoveryFlowFields.txCooldown]: delayModifier?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
       [UpsertRecoveryFlowFields.txExpiration]: delayModifier?.txExpiration?.toString() ?? '0',
     },
-    RECOVERY_CATEGORY,
+    SETUP_RECOVERY_CATEGORY,
   )
 
   const steps = [

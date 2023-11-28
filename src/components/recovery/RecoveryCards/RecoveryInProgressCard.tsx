@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Button, Card, Divider, Grid, Typography } from '@mui/material'
 import { useRouter } from 'next/dist/client/router'
 import type { ReactElement } from 'react'
@@ -24,6 +26,10 @@ type Props =
       recovery: RecoveryQueueItem
     }
 
+const onLearnMoreClick = () => {
+  trackEvent({ ...RECOVERY_EVENTS.LEARN_MORE, label: 'in-progress-card' })
+}
+
 export function RecoveryInProgressCard({ orientation = 'vertical', onClose, recovery }: Props): ReactElement {
   const { isExecutable, remainingSeconds } = useRecoveryTxState(recovery)
   const router = useRouter()
@@ -43,7 +49,11 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
     : 'The recovery process has started. This Account will be ready to recover in:'
 
   const link = (
-    <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
+    <ExternalLink
+      href={HelpCenterArticle.RECOVERY}
+      onClick={onLearnMoreClick}
+      title="Learn more about the Account recovery process"
+    >
       Learn more
     </ExternalLink>
   )
