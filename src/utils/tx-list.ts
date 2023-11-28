@@ -46,17 +46,18 @@ export function _getRecoveryCancellations(moduleAddress: string, transactions: A
   })
 }
 
+type GroupedRecoveryQueueItem = Transaction | RecoveryQueueItem
+
 export function groupRecoveryTransactions(queue: Array<TransactionListItem>, recoveryQueue: Array<RecoveryQueueItem>) {
   const transactions = queue.filter(isTransactionListItem)
 
-  return recoveryQueue.reduce<Array<Array<Transaction | RecoveryQueueItem>>>((acc, item) => {
-    acc.push([item])
-
+  return recoveryQueue.reduce<Array<RecoveryQueueItem | Array<GroupedRecoveryQueueItem>>>((acc, item) => {
     const cancellations = _getRecoveryCancellations(item.address, transactions)
 
-    if (cancellations.length > 0) {
-      const prevItem = acc[acc.length - 1]
-      prevItem.push(...cancellations)
+    if (cancellations.length === 0) {
+      acc.push(item)
+    } else {
+      acc.push([item, ...cancellations])
     }
 
     return acc

@@ -166,8 +166,9 @@ describe('tx-list', () => {
   })
 
   describe('groupRecoveryTransactions', () => {
-    it.only('should group recovery transactions with their cancellations', () => {
+    it('should group recovery transactions with their cancellations', () => {
       const moduleAddress = faker.finance.ethereumAddress()
+      const moduleAddress2 = faker.finance.ethereumAddress()
 
       const queue = [
         {
@@ -208,6 +209,9 @@ describe('tx-list', () => {
         {
           address: moduleAddress,
         },
+        {
+          address: moduleAddress2,
+        },
       ]
 
       expect(groupRecoveryTransactions(queue as any, recoveryQueue as any)).toEqual([
@@ -228,6 +232,9 @@ describe('tx-list', () => {
             },
           },
         ],
+        {
+          address: moduleAddress2,
+        },
       ])
     })
   })
