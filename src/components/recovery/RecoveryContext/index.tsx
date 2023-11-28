@@ -1,42 +1,32 @@
-import { createContext, useContext, useState } from 'react'
-import type { ReactElement, ReactNode, Dispatch, SetStateAction } from 'react'
+import { createContext, useContext } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 
 import { useRecoveryState } from './useRecoveryState'
 import { useRecoveryDelayModifiers } from './useRecoveryDelayModifiers'
 import type { AsyncResult } from '@/hooks/useAsync'
 import type { RecoveryState } from '@/services/recovery/recovery-state'
-
-type PendingRecoveryTransactions = { [txHash: string]: boolean }
+import { useRecoveryPendingTxs } from './useRecoveryPendingTxs'
 
 // State of current Safe, populated on load
 export const RecoveryContext = createContext<{
   state: AsyncResult<RecoveryState>
-  refetch: () => void
-  pending: PendingRecoveryTransactions
-  setPending: Dispatch<SetStateAction<PendingRecoveryTransactions>>
+  pending: ReturnType<typeof useRecoveryPendingTxs>
 }>({
   state: [undefined, undefined, false],
-  refetch: () => {},
   pending: {},
-  setPending: () => {},
 })
 
 export function RecoveryProvider({ children }: { children: ReactNode }): ReactElement {
   const [delayModifiers, delayModifiersError, delayModifiersLoading] = useRecoveryDelayModifiers()
-  const {
-    data: [recoveryState, recoveryStateError, recoveryStateLoading],
-    refetch,
-  } = useRecoveryState(delayModifiers)
-  const [pending, setPending] = useState<PendingRecoveryTransactions>({})
+  const [recoveryState, recoveryStateError, recoveryStateLoading] = useRecoveryState(delayModifiers)
+  const pending = useRecoveryPendingTxs()
 
   const data = recoveryState
   const error = delayModifiersError || recoveryStateError
   const loading = delayModifiersLoading || recoveryStateLoading
 
   return (
-    <RecoveryContext.Provider value={{ state: [data, error, loading], refetch, pending, setPending }}>
-      {children}
-    </RecoveryContext.Provider>
+    <RecoveryContext.Provider value={{ state: [data, error, loading], pending }}>{children}</RecoveryContext.Provider>
   )
 }
 

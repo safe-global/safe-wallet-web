@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker'
-import { useContext } from 'react'
 
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -13,7 +12,8 @@ import useTxHistory from '@/hooks/useTxHistory'
 import { getRecoveryDelayModifiers } from '@/services/recovery/delay-modifier'
 import { useAppDispatch } from '@/store'
 import { txHistorySlice } from '@/store/txHistorySlice'
-import { RecoveryProvider, RecoveryContext } from '..'
+import { RecoveryProvider } from '..'
+import { recoveryDispatch, RecoveryEvent } from '@/services/recovery/recoveryEvents'
 
 jest.mock('@/services/recovery/delay-modifier')
 jest.mock('@/services/recovery/recovery-state')
@@ -76,7 +76,7 @@ describe('useRecoveryState', () => {
       jest.advanceTimersByTime(10)
     })
 
-    expect(result.current.data).toEqual([undefined, undefined, false])
+    expect(result.current).toEqual([undefined, undefined, false])
     expect(mockGetRecoveryState).not.toHaveBeenCalledTimes(1)
 
     jest.useRealTimers()
@@ -120,7 +120,7 @@ describe('useRecoveryState', () => {
       jest.advanceTimersByTime(10)
     })
 
-    expect(result.current.data).toEqual([undefined, undefined, false])
+    expect(result.current).toEqual([undefined, undefined, false])
     expect(mockGetRecoveryState).not.toHaveBeenCalledTimes(1)
 
     jest.useRealTimers()
@@ -163,7 +163,7 @@ describe('useRecoveryState', () => {
     })
   })
 
-  it('should refetch when interacting with a Delay Modifier', async () => {
+  it('should refetch when interacting with a Delay Modifier via the Safe', async () => {
     mockUseHasFeature.mockReturnValue(true)
     const provider = {}
     mockUseWeb3ReadOnly.mockReturnValue(provider as any)
@@ -227,7 +227,7 @@ describe('useRecoveryState', () => {
     })
   })
 
-  it('should refetch manually calling it', async () => {
+  it('should refetch when interacting with a Delay Modifier as a Guardian', async () => {
     mockUseHasFeature.mockReturnValue(true)
     const provider = {}
     mockUseWeb3ReadOnly.mockReturnValue(provider as any)
@@ -239,18 +239,12 @@ describe('useRecoveryState', () => {
     mockUseSafeInfo.mockReturnValue(safeInfo as any)
     const chain = chainBuilder().build()
     mockUseCurrentChain.mockReturnValue(chain)
-    const delayModifiers = [{}]
-    mockGetRecoveryDelayModifiers.mockResolvedValue(delayModifiers as any)
+    const delayModifierAddress = faker.finance.ethereumAddress()
+    mockGetRecoveryDelayModifiers.mockResolvedValue([{ address: delayModifierAddress } as any])
 
-    function Test() {
-      const { refetch } = useContext(RecoveryContext)
-
-      return <button onClick={refetch}>Refetch</button>
-    }
-
-    const { queryByText } = render(
+    render(
       <RecoveryProvider>
-        <Test />
+        <></>
       </RecoveryProvider>,
     )
 
@@ -259,14 +253,13 @@ describe('useRecoveryState', () => {
       expect(mockGetRecoveryState).toHaveBeenCalledTimes(1)
     })
 
-    act(() => {
-      fireEvent.click(queryByText('Refetch')!)
+    recoveryDispatch(RecoveryEvent.PROCESSED, {
+      moduleAddress: delayModifierAddress,
+      recoveryTxHash: faker.string.hexadecimal(),
     })
 
     await waitFor(() => {
       expect(mockGetRecoveryState).toHaveBeenCalledTimes(2)
     })
-
-    expect(mockGetRecoveryDelayModifiers).toHaveBeenCalledTimes(1)
   })
 })

@@ -8,12 +8,11 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import { CancelRecoveryFlow } from '@/components/tx-flow/flows/CancelRecovery'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { dispatchRecoverySkipExpired } from '@/services/tx/tx-sender'
+import { dispatchRecoverySkipExpired } from '@/services/recovery/recovery-sender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { trackError, Errors } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
-import { RecoveryContext } from '../RecoveryContext'
 import { useIsGuardian } from '@/hooks/useIsGuardian'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
@@ -33,7 +32,6 @@ export function CancelRecoveryButton({
   const { setTxFlow } = useContext(TxModalContext)
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
-  const { refetch } = useContext(RecoveryContext)
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -47,7 +45,7 @@ export function CancelRecoveryButton({
           onboard,
           chainId: safe.chainId,
           delayModifierAddress: recovery.address,
-          refetchRecoveryData: refetch,
+          recoveryTxHash: recovery.args.txHash,
         })
       } catch (_err) {
         const err = asError(_err)
