@@ -29,17 +29,17 @@ export const RECOVERY_EVENTS = {
     event: EventType.CLICK,
   },
   DISMISS_PROPOSAL_CARD: {
-    action: 'Do it later',
+    action: 'Dismiss recovery proposal card',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },
   LEARN_MORE: {
-    action: 'Learn more',
+    action: 'Learn more about recovery',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },
   GO_BACK: {
-    action: 'Go back on cancel',
+    action: 'Go back on cancel recovery',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },

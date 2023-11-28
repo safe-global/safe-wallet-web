@@ -31,7 +31,7 @@ export enum TX_TYPES {
   recovery_setup = 'recovery_setup',
   recovery_edit = 'recovery_edit',
   recovery_remove = 'recovery_remove',
-  recovery_init = 'recovery_init',
+  recovery_attempt = 'recovery_attempt',
   recovery_cancel = 'recovery_cancel',
 }
 

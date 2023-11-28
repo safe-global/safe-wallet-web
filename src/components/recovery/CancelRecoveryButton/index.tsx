@@ -38,8 +38,8 @@ export function CancelRecoveryButton({
     e.stopPropagation()
     e.preventDefault()
 
+    trackEvent(RECOVERY_EVENTS.CANCEL_RECOVERY)
     if (isOwner) {
-      trackEvent(RECOVERY_EVENTS.CANCEL_RECOVERY)
       setTxFlow(<CancelRecoveryFlow recovery={recovery} />)
     } else if (onboard) {
       try {

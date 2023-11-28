@@ -1,3 +1,4 @@
+import Track from '@/components/common/Track'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Button, Card, Divider, Grid, Typography } from '@mui/material'
@@ -30,10 +31,6 @@ type Props =
       setTxFlow: TxModalContextType['setTxFlow']
     }
 
-const onLearnMoreClick = () => {
-  trackEvent({ ...RECOVERY_EVENTS.LEARN_MORE, label: 'proposal-card' })
-}
-
 export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe, setTxFlow }: Props): ReactElement {
   const onRecover = async () => {
     onClose?.()
@@ -48,13 +45,11 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   } regain access by updating the owner list.`
 
   const link = (
-    <ExternalLink
-      href={HelpCenterArticle.RECOVERY}
-      onClick={onLearnMoreClick}
-      title="Learn more about the Account recovery process"
-    >
-      Learn more
-    </ExternalLink>
+    <Track {...RECOVERY_EVENTS.LEARN_MORE} label="proposal-card">
+      <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
+        Learn more
+      </ExternalLink>
+    </Track>
   )
 
   const recoveryButton = (

@@ -83,7 +83,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
         refetchRecoveryData: refetch,
       })
       // TODO: This event is fired before the user submits the tx in their wallet but it should wait for it
-      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.recovery_init })
+      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.recovery_attempt })
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._810, err)

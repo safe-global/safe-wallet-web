@@ -1,4 +1,4 @@
-import { trackEvent } from '@/services/analytics'
+import { MODAL_NAVIGATION, trackEvent } from '@/services/analytics'
 import { useCallback, useState } from 'react'
 
 const useTxStepper = <T extends unknown>(initialData: T, eventCategory?: string) => {
@@ -10,7 +10,7 @@ const useTxStepper = <T extends unknown>(initialData: T, eventCategory?: string)
       setData(entireData)
       setStep((prevStep) => {
         if (eventCategory) {
-          trackEvent({ action: 'Next', category: eventCategory, label: prevStep })
+          trackEvent({ action: MODAL_NAVIGATION.Next, category: eventCategory, label: prevStep })
         }
 
         return prevStep + 1
@@ -22,7 +22,7 @@ const useTxStepper = <T extends unknown>(initialData: T, eventCategory?: string)
   const prevStep = useCallback(() => {
     setStep((prevStep) => {
       if (eventCategory) {
-        trackEvent({ action: 'Back', category: eventCategory, label: prevStep })
+        trackEvent({ action: MODAL_NAVIGATION.Back, category: eventCategory, label: prevStep })
       }
       return prevStep - 1
     })
