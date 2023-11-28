@@ -105,7 +105,7 @@ export function UpsertRecoveryFlowSettings({
               </Typography>
 
               <Typography variant="body2">
-                You can cancel any recovery attempt when it is not needed or wanted within the delay period.
+                You can cancel any recovery attempt when it is not needed or wanted.
               </Typography>
             </div>
 
