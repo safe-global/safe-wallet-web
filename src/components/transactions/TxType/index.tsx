@@ -4,9 +4,7 @@ import { TransactionInfoType, TransferDirection } from '@safe-global/safe-gatewa
 import { Box } from '@mui/material'
 import css from './styles.module.css'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import { HumanDescription, TransferDescription } from '@/components/transactions/HumanDescription'
-import useABTesting from '@/services/tracking/useAbTesting'
-import { AbTest } from '@/services/tracking/abTesting'
+import { TransferDescription } from '@/components/transactions/HumanDescription'
 
 type TxTypeProps = {
   tx: TransactionSummary
@@ -15,9 +13,6 @@ type TxTypeProps = {
 
 const TxType = ({ tx, short = false }: TxTypeProps) => {
   const type = useTransactionType(tx)
-  const shouldDisplayHumanDescription = useABTesting(AbTest.HUMAN_DESCRIPTION)
-
-  const humanDescription = tx.txInfo.richDecodedInfo?.fragments
 
   return (
     <Box className={css.txType}>
@@ -28,9 +23,7 @@ const TxType = ({ tx, short = false }: TxTypeProps) => {
         height={16}
         fallback="/images/transactions/custom.svg"
       />
-      {humanDescription && shouldDisplayHumanDescription && !short ? (
-        <HumanDescription fragments={humanDescription} />
-      ) : tx.txInfo.type === TransactionInfoType.TRANSFER && shouldDisplayHumanDescription && !short ? (
+      {tx.txInfo.type === TransactionInfoType.TRANSFER && !short ? (
         <TransferDescription isSendTx={tx.txInfo.direction === TransferDirection.OUTGOING} txInfo={tx.txInfo} />
       ) : (
         type.text
