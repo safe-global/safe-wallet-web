@@ -164,7 +164,7 @@ describe('WalletInfo', () => {
     jest.spyOn(mpcModule, 'isSocialLoginWallet').mockReturnValue(true)
 
     // Mock that MFA is enabled
-    socialWalletService.enableMFA('', '')
+    socialWalletService.enableMFA()
 
     const { queryByText } = render(
       <WalletInfo

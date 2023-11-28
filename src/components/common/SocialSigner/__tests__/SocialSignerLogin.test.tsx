@@ -10,6 +10,17 @@ import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import { chainBuilder } from '@/tests/builders/chains'
 import PasswordRecoveryModal from '@/services/mpc/SocialRecoveryModal'
+import { MultiFactorType, setMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
+
+const typeInFocusedElement = (text: string) => {
+  let activeElement = document.activeElement! as HTMLInputElement
+  activeElement.value = text
+  fireEvent.input(activeElement, {
+    currentTarget: {
+      value: text,
+    },
+  })
+}
 
 jest.mock('@/services/mpc/SocialWalletService')
 
@@ -116,6 +127,11 @@ describe('SocialSignerLogin', () => {
 
   it('should display Password Recovery form and display a Continue as button when login succeeds', async () => {
     const mockOnLogin = jest.fn()
+    // Mock that Password Recovery is setup
+    setMfaStore({
+      sms: undefined,
+      password: { type: MultiFactorType.PASSWORD },
+    })
     mockSocialWalletService.loginAndCreate = jest.fn(() => Promise.resolve(COREKIT_STATUS.REQUIRED_SHARE))
     mockSocialWalletService.getUserInfo = jest.fn().mockReturnValue(undefined)
     mockSocialWalletService.recoverAccountWithPassword = jest.fn(() => Promise.resolve(true))
@@ -147,9 +163,15 @@ describe('SocialSignerLogin', () => {
     })
 
     await waitFor(() => {
-      expect(result.findByText('Enter security password')).resolves.toBeDefined()
+      expect(result.getByText('Choose your recovery method')).toBeVisible()
+      expect(result.getByText('Password')).toBeEnabled()
     })
 
+    result.getByText('Password').click()
+
+    await waitFor(() => {
+      expect(result.findByLabelText('Recovery password')).resolves.toBeVisible()
+    })
     const passwordField = await result.findByLabelText('Recovery password')
     const submitButton = await result.findByText('Submit')
 
@@ -157,6 +179,98 @@ describe('SocialSignerLogin', () => {
       fireEvent.change(passwordField, { target: { value: 'Test1234!' } })
       submitButton.click()
     })
+
+    mockSocialWalletService.getUserInfo = jest.fn().mockReturnValue({
+      email: 'test@testermann.com',
+      name: 'Test Testermann',
+      profileImage: 'test.testermann.local/profile.png',
+    } as unknown as UserInfo)
+
+    result.rerender(
+      <TxModalProvider>
+        <SocialSigner
+          socialWalletService={mockSocialWalletService}
+          wallet={mockWallet}
+          supportedChains={['Goerli']}
+          isMPCLoginEnabled={true}
+          onLogin={mockOnLogin}
+        />
+        <PasswordRecoveryModal />
+      </TxModalProvider>,
+    )
+
+    await waitFor(() => {
+      expect(result.getByText('Continue as Test Testermann')).toBeInTheDocument()
+    })
+  })
+
+  it('should display SMS Recovery form and display a Continue as button when login succeeds', async () => {
+    const mockOnLogin = jest.fn()
+    // Mock that Password Recovery is setup
+    setMfaStore({
+      sms: { type: MultiFactorType.SMS, number: '+49170123456' },
+      password: { type: MultiFactorType.PASSWORD },
+    })
+    mockSocialWalletService.loginAndCreate = jest.fn(() => Promise.resolve(COREKIT_STATUS.REQUIRED_SHARE))
+    mockSocialWalletService.getUserInfo = jest.fn().mockReturnValue(undefined)
+    mockSocialWalletService.registerSmsOtp = jest.fn(() => Promise.resolve(true))
+    mockSocialWalletService.recoverAccountWithSms = jest.fn(() => Promise.resolve(true))
+
+    const result = render(
+      <TxModalProvider>
+        <SocialSigner
+          socialWalletService={mockSocialWalletService}
+          wallet={mockWallet}
+          supportedChains={['Goerli']}
+          isMPCLoginEnabled={true}
+          onLogin={mockOnLogin}
+        />
+        <PasswordRecoveryModal />
+      </TxModalProvider>,
+    )
+
+    await waitFor(() => {
+      expect(result.findByText('Continue with Google')).resolves.toBeDefined()
+    })
+
+    // We do not automatically invoke the callback as the user did not actively connect
+    expect(mockOnLogin).not.toHaveBeenCalled()
+
+    const button = await result.findByRole('button')
+
+    act(() => {
+      button.click()
+    })
+
+    await waitFor(() => {
+      expect(result.getByText('Choose your recovery method')).toBeVisible()
+      expect(result.getByText('SMS')).toBeEnabled()
+    })
+
+    act(() => {
+      result.getByText('SMS').click()
+    })
+
+    await waitFor(() => {
+      expect(result.getByText('Enter recovery code')).toBeVisible()
+    })
+
+    const firstDigitInput = result.getByTestId('digit-0')
+    firstDigitInput.focus()
+
+    // Enter code
+    typeInFocusedElement('1')
+    typeInFocusedElement('2')
+    typeInFocusedElement('3')
+    typeInFocusedElement('4')
+    typeInFocusedElement('5')
+    typeInFocusedElement('6')
+
+    await waitFor(() => {
+      expect(result.getByText('Submit')).toBeEnabled()
+    })
+
+    result.getByText('Submit').click()
 
     mockSocialWalletService.getUserInfo = jest.fn().mockReturnValue({
       email: 'test@testermann.com',

@@ -9,6 +9,26 @@ import { type ISocialWalletService } from '../interfaces'
  * For password recovery it expects the password to be "Test1234!"
  */
 class TestSocialWalletService implements ISocialWalletService {
+  upsertPassword(oldPassword: string | undefined, newPassword: string): Promise<void> {
+    this.enableMFA()
+    return Promise.resolve()
+  }
+  registerSmsOtp(mobileNumber: string): Promise<boolean> {
+    return Promise.resolve(true)
+  }
+  verifySmsOtp(number: string, code: string): Promise<boolean> {
+    this.enableMFA()
+    return Promise.resolve(true)
+  }
+  isSmsOtpEnabled(): boolean {
+    throw new Error('Method not implemented.')
+  }
+  getSmsRecoveryNumber(): string | undefined {
+    throw new Error('Method not implemented.')
+  }
+  recoverAccountWithSms(number: string, code: string, storeDeviceShare: boolean): Promise<boolean> {
+    throw new Error('Method not implemented.')
+  }
   private fakePassword = 'Test1234!'
   private postLoginState = COREKIT_STATUS.LOGGED_IN
   private _isMfaEnabled = false
@@ -29,7 +49,7 @@ class TestSocialWalletService implements ISocialWalletService {
   isMFAEnabled(): boolean {
     return this._isMfaEnabled
   }
-  enableMFA(oldPassword: string, newPassword: string): Promise<void> {
+  enableMFA(): Promise<void> {
     this._isMfaEnabled = true
     return Promise.resolve()
   }

@@ -119,12 +119,12 @@ const SocialRecoveryModal = () => {
   const sendSmsCode = useCallback(async () => {
     if (!socialWalletService) return
 
-    const number = socialWalletService.getSmsRecoveryNumber()
+    const number = mfaSetup?.sms?.number
     if (!number) {
       throw new Error('No recovery mobile number is set')
     }
     await socialWalletService.registerSmsOtp(number)
-  }, [socialWalletService])
+  }, [socialWalletService, mfaSetup])
 
   const handleClose = () => {
     closeCallback?.()

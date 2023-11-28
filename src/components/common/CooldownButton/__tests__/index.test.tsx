@@ -19,14 +19,14 @@ describe('CooldownButton', () => {
 
     expect(result.getByRole('button')).toBeDisabled()
     expect(result.getByText('Try again')).toBeVisible()
-    expect(result.getByText('30s')).toBeVisible()
+    expect(result.getByText('30')).toBeVisible()
 
     jest.advanceTimersByTime(10_000)
 
     await waitFor(() => {
       expect(result.getByRole('button')).toBeDisabled()
       expect(result.getByText('Try again')).toBeVisible()
-      expect(result.getByText('20s')).toBeVisible()
+      expect(result.getByText('20')).toBeVisible()
     })
 
     jest.advanceTimersByTime(5_000)
@@ -34,7 +34,7 @@ describe('CooldownButton', () => {
     await waitFor(() => {
       expect(result.getByRole('button')).toBeDisabled()
       expect(result.getByText('Try again')).toBeVisible()
-      expect(result.getByText('15s')).toBeVisible()
+      expect(result.getByText('15')).toBeVisible()
     })
 
     jest.advanceTimersByTime(15_000)
@@ -66,7 +66,7 @@ describe('CooldownButton', () => {
     await waitFor(() => {
       expect(result.getByRole('button')).toBeDisabled()
       expect(result.getByText('Try again')).toBeVisible()
-      expect(result.getByText('30s')).toBeVisible()
+      expect(result.getByText('30')).toBeVisible()
     })
 
     jest.advanceTimersByTime(30_000)
