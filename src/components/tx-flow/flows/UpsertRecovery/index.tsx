@@ -15,14 +15,12 @@ export enum UpsertRecoveryFlowFields {
   guardian = 'guardian',
   txCooldown = 'txCooldown',
   txExpiration = 'txExpiration',
-  emailAddress = 'emailAddress',
 }
 
 export type UpsertRecoveryFlowProps = {
   [UpsertRecoveryFlowFields.guardian]: string
   [UpsertRecoveryFlowFields.txCooldown]: string
   [UpsertRecoveryFlowFields.txExpiration]: string
-  [UpsertRecoveryFlowFields.emailAddress]: string
 }
 
 export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
@@ -30,7 +28,6 @@ export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: Recovery
     [UpsertRecoveryFlowFields.guardian]: delayModifier?.guardians?.[0] ?? '',
     [UpsertRecoveryFlowFields.txCooldown]: delayModifier?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
     [UpsertRecoveryFlowFields.txExpiration]: delayModifier?.txExpiration?.toString() ?? '0',
-    [UpsertRecoveryFlowFields.emailAddress]: '',
   })
 
   const steps = [

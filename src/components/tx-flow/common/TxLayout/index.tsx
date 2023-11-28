@@ -13,7 +13,6 @@ import SafeLogo from '@/public/images/logo-no-text.svg'
 import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SecurityWarnings from '@/components/tx/security/SecurityWarnings'
-import { UpsertRecoveryFlowEmailHint } from '../../flows/UpsertRecovery/UpsertRecoveryFlowEmailHint'
 
 const TxLayoutHeader = ({
   hideNonce,
@@ -76,7 +75,6 @@ const TxLayout = ({
   isBatch = false,
   isReplacement = false,
   isMessage = false,
-  isRecovery = false,
 }: TxLayoutProps): ReactElement => {
   const [statusVisible, setStatusVisible] = useState<boolean>(true)
 
@@ -168,8 +166,6 @@ const TxLayout = ({
 
                   <Box className={css.sticky}>
                     <SecurityWarnings />
-
-                    {isRecovery && <UpsertRecoveryFlowEmailHint />}
                   </Box>
                 </Grid>
               </Grid>

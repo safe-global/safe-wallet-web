@@ -33,7 +33,6 @@ export function UpsertRecoveryFlowReview({
   const expiration = periods.expiration.find(
     ({ value }) => value === params[UpsertRecoveryFlowFields.txExpiration],
   )!.label
-  const emailAddress = params[UpsertRecoveryFlowFields.emailAddress]
 
   useEffect(() => {
     if (!web3) {
@@ -116,8 +115,6 @@ export function UpsertRecoveryFlowReview({
       >
         {expiration}
       </TxDataRow>
-
-      {emailAddress ? <TxDataRow title="Email address">{emailAddress}</TxDataRow> : null}
     </SignOrExecuteForm>
   )
 }
