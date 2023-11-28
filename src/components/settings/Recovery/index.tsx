@@ -16,6 +16,8 @@ import { getPeriod } from '@/utils/date'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
+const FEEDBACK_FORM = 'https://noteforms.com/forms/safe-feedback-form-hk16ds?notionforms=1&utm_source=notionforms'
+
 enum HeadCells {
   Guardian = 'guardian',
   TxCooldown = 'txCooldown',
@@ -129,8 +131,8 @@ export function Recovery(): ReactElement {
           {!recovery || recovery.length === 0 ? (
             <>
               <Alert severity="info">
-                Unhappy with the provided option? {/* TODO: Add link */}
-                <ExternalLink noIcon href="#">
+                Unhappy with the provided option?
+                <ExternalLink noIcon href={FEEDBACK_FORM} title="Give feedback about the Account recovery process">
                   Give us feedback
                 </ExternalLink>
               </Alert>

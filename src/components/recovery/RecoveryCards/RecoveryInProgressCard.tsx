@@ -7,6 +7,7 @@ import { Countdown } from '@/components/common/Countdown'
 import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { AppRoutes } from '@/config/routes'
+import { HelpCenterArticle } from '@/config/constants'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 import css from './styles.module.css'
@@ -42,10 +43,7 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
     : 'The recovery process has started. This Account will be ready to recover in:'
 
   const link = (
-    <ExternalLink
-      href="#" // TODO: Link to docs
-      title="Learn about the Account recovery process"
-    >
+    <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
       Learn more
     </ExternalLink>
   )
