@@ -6,6 +6,7 @@ import { logError } from '../exceptions'
 const rpcProvider = {
   resolveName: jest.fn(() => Promise.resolve('0x0000000000000000000000000000000000000000')),
   lookupAddress: jest.fn(() => Promise.resolve('safe.eth')),
+  getNetwork: jest.fn(() => Promise.resolve({ chainId: 1 })),
 } as unknown as JsonRpcProvider
 
 const badRpcProvider = {
@@ -17,6 +18,10 @@ const badRpcProvider = {
 // mock logError
 jest.mock('../exceptions', () => ({
   logError: jest.fn(),
+}))
+
+jest.mock('./custom', () => ({
+  customResolveName: jest.fn(() => Promise.resolve('0x0000001111111111111111111111111111111111')),
 }))
 
 describe('domains', () => {
@@ -39,6 +44,15 @@ describe('domains', () => {
       const address = await resolveName(badRpcProvider, 'safe.eth')
       expect(address).toBe(undefined)
       expect(logError).toHaveBeenCalledWith('101: Failed to resolve the address', 'bad resolveName')
+    })
+
+    it('should look up names on Sepolia', async () => {
+      // mock rpcProvider
+      const rpcProvider = {
+        getNetwork: jest.fn(() => Promise.resolve({ chainId: 11155111 })),
+      } as unknown as JsonRpcProvider
+
+      expect(await resolveName(rpcProvider, 'sepolia.eth')).toBe('0x0000001111111111111111111111111111111111')
     })
   })
 
