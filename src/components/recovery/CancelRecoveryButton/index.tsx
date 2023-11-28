@@ -13,7 +13,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { RecoveryContext } from '../RecoveryContext'
-import { useIsGuardian } from '@/hooks/useIsGuardian'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
@@ -25,7 +24,6 @@ export function CancelRecoveryButton({
   compact?: boolean
 }): ReactElement {
   const isOwner = useIsSafeOwner()
-  const isGuardian = useIsGuardian()
   const { isExpired } = useRecoveryTxState(recovery)
   const { setTxFlow } = useContext(TxModalContext)
   const onboard = useOnboard()
@@ -55,7 +53,7 @@ export function CancelRecoveryButton({
   return (
     <CheckWallet allowNonOwner>
       {(isOk) => {
-        const isDisabled = isOwner ? !isOk : !isOk && !isExpired
+        const isDisabled = isOwner ? !isOk : !isOk || !isExpired
 
         return compact ? (
           <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>
