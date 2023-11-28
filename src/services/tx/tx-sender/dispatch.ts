@@ -441,12 +441,14 @@ export async function dispatchRecoveryProposal({
 
   const signer = provider.getSigner()
 
-  delayModifier
-    .connect(signer)
-    .execTransactionFromModule(safeTx.data.to, safeTx.data.value, safeTx.data.data, safeTx.data.operation)
-    .then((result) => {
-      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
-    })
+  try {
+    const tx = await delayModifier
+      .connect(signer)
+      .execTransactionFromModule(safeTx.data.to, safeTx.data.value, safeTx.data.data, safeTx.data.operation)
+    reloadRecoveryDataAfterProcessed(tx, refetchRecoveryData)
+  } catch (error) {
+    throw error
+  }
 }
 
 export async function dispatchRecoveryExecution({
@@ -469,12 +471,12 @@ export async function dispatchRecoveryExecution({
 
   const signer = provider.getSigner()
 
-  delayModifier
-    .connect(signer)
-    .executeNextTx(args.to, args.value, args.data, args.operation)
-    .then((result) => {
-      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
-    })
+  try {
+    const tx = await delayModifier.connect(signer).executeNextTx(args.to, args.value, args.data, args.operation)
+    reloadRecoveryDataAfterProcessed(tx, refetchRecoveryData)
+  } catch (error) {
+    throw error
+  }
 }
 
 export async function dispatchRecoverySkipExpired({
@@ -495,10 +497,10 @@ export async function dispatchRecoverySkipExpired({
 
   const signer = provider.getSigner()
 
-  delayModifier
-    .connect(signer)
-    .skipExpired()
-    .then((result) => {
-      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
-    })
+  try {
+    const tx = await delayModifier.connect(signer).skipExpired()
+    reloadRecoveryDataAfterProcessed(tx, refetchRecoveryData)
+  } catch (error) {
+    throw error
+  }
 }

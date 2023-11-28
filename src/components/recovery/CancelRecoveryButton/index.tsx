@@ -11,10 +11,12 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { dispatchRecoverySkipExpired } from '@/services/tx/tx-sender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { logError, Errors } from '@/services/exceptions'
+import { trackError, Errors } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
 import { RecoveryContext } from '../RecoveryContext'
 import { useIsGuardian } from '@/hooks/useIsGuardian'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
+import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function CancelRecoveryButton({
@@ -24,6 +26,7 @@ export function CancelRecoveryButton({
   recovery: RecoveryQueueItem
   compact?: boolean
 }): ReactElement {
+  const { setSubmitError } = useContext(RecoveryListItemContext)
   const isOwner = useIsSafeOwner()
   const isGuardian = useIsGuardian()
   const { isExpired } = useRecoveryTxState(recovery)
@@ -32,7 +35,7 @@ export function CancelRecoveryButton({
   const { safe } = useSafeInfo()
   const { refetch } = useContext(RecoveryContext)
 
-  const onClick = (e: SyntheticEvent) => {
+  const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
     e.preventDefault()
 
@@ -40,14 +43,17 @@ export function CancelRecoveryButton({
       setTxFlow(<CancelRecoveryFlow recovery={recovery} />)
     } else if (onboard) {
       try {
-        dispatchRecoverySkipExpired({
+        await dispatchRecoverySkipExpired({
           onboard,
           chainId: safe.chainId,
           delayModifierAddress: recovery.address,
           refetchRecoveryData: refetch,
         })
-      } catch (e) {
-        logError(Errors._813, e)
+      } catch (_err) {
+        const err = asError(_err)
+
+        trackError(Errors._813, err)
+        setSubmitError(err)
       }
     }
   }
