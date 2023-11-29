@@ -20,7 +20,7 @@ export const RECOVERY_EVENTS = {
     event: EventType.META,
   },
   EDIT_RECOVERY: {
-    action: 'Edit recovery setup',
+    action: 'Edit recovery',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },
@@ -60,12 +60,12 @@ export const RECOVERY_EVENTS = {
     event: EventType.CLICK,
   },
   LEARN_MORE: {
-    action: 'Learn more about recovery',
+    action: 'Recovery info click',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },
   GO_BACK: {
-    action: 'Go back on cancel recovery',
+    action: 'Recovery cancellation back',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },
