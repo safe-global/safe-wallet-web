@@ -8,8 +8,8 @@ import {
   isSettingsChangeTxInfo,
   isTransferTxInfo,
   isCustomTxInfo,
-} from './transaction-guards'
-import { isRejectionTx } from './transactions'
+  isCancellationTxInfo,
+} from '@/utils/transaction-guards'
 
 export const getTransactionTrackingType = async (txId: string, chainId: string): Promise<string | undefined> => {
   let details: TransactionDetails
@@ -50,17 +50,13 @@ export const getTransactionTrackingType = async (txId: string, chainId: string):
     }
   }
 
-  if (isRejectionTx({ data: details.txData?.hexData || '', value: details.txData?.value || '' })) {
-    return TX_TYPES.rejection
-  }
-
   if (isCustomTxInfo(txInfo)) {
-    if (isWalletConnectSafeApp(details.safeAppInfo?.url || '')) {
-      return TX_TYPES.walletconnect
+    if (isCancellationTxInfo(txInfo)) {
+      return TX_TYPES.rejection
     }
 
     if (details.safeAppInfo) {
-      return TX_TYPES.safeapps
+      return isWalletConnectSafeApp(details.safeAppInfo.url) ? TX_TYPES.walletconnect : TX_TYPES.safeapps
     }
 
     if (isMultiSendTxInfo(txInfo)) {

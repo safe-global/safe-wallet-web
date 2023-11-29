@@ -281,6 +281,6 @@ export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransactio
   return txs
 }
 
-export const isRejectionTx = (decodedData: { data: string; value: string } | undefined) => {
-  return !!decodedData && !!isEmptyHexData(decodedData.data) && decodedData.value === '0'
+export const isRejectionTx = (tx?: SafeTransaction) => {
+  return !!tx && !!tx.data.data && !!isEmptyHexData(tx.data.data) && tx.data.value === '0'
 }

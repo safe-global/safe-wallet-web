@@ -113,7 +113,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
 
   const showRecommendedNonceButton = recommendedNonce !== nonce
   const isEditable = !safeTx || safeTx?.signatures.size === 0
-  const readOnly = !isEditable || isRejectionTx(safeTx?.data)
+  const readOnly = !isEditable || isRejectionTx(safeTx)
 
   const formMethods = useForm({
     defaultValues: {
