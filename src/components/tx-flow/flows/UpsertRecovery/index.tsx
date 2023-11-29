@@ -32,12 +32,7 @@ export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: Recovery
 
   const steps = [
     <UpsertRecoveryFlowIntro key={0} onSubmit={() => nextStep(data)} />,
-    <UpsertRecoveryFlowSettings
-      key={1}
-      params={data}
-      delayModifier={delayModifier}
-      onSubmit={(formData) => nextStep({ ...data, ...formData })}
-    />,
+    <UpsertRecoveryFlowSettings key={1} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
     <UpsertRecoveryFlowReview key={2} params={data} moduleAddress={delayModifier?.address} />,
   ]
 
