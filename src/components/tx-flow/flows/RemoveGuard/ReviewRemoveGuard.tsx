@@ -1,5 +1,6 @@
 import { useContext, useEffect } from 'react'
 import { Typography } from '@mui/material'
+import type { SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Errors, logError } from '@/services/exceptions'
@@ -9,9 +10,12 @@ import { type RemoveGuardFlowProps } from '.'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
-const onFormSubmit = () => {
+const onFormSubmit: SubmitCallback = (_, isExecuted) => {
   trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_GUARD)
   trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.guard_remove })
+  if (isExecuted) {
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.guard_remove })
+  }
 }
 
 export const ReviewRemoveGuard = ({ params }: { params: RemoveGuardFlowProps }) => {

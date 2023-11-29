@@ -4,6 +4,7 @@ import { Box, Divider, Typography } from '@mui/material'
 
 import { createUpdateThresholdTx } from '@/services/tx/tx-sender'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
+import type { SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { ChangeThresholdFlowFieldNames } from '@/components/tx-flow/flows/ChangeThreshold'
@@ -22,10 +23,15 @@ const ReviewChangeThreshold = ({ params }: { params: ChangeThresholdFlowProps })
     createUpdateThresholdTx(newThreshold).then(setSafeTx).catch(setSafeTxError)
   }, [newThreshold, setSafeTx, setSafeTxError])
 
-  const onChangeThreshold = () => {
+  const onChangeThreshold: SubmitCallback = (_, isExecuted) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: newThreshold })
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.owner_threshold_change })
+    if (isExecuted) {
+      trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.owner_threshold_change })
+    } else {
+      trackEvent({ ...TX_EVENTS.CONFIRM, label: TX_TYPES.owner_threshold_change })
+    }
   }
 
   return (

@@ -1,13 +1,16 @@
-import { type ReactElement, useContext, useEffect } from 'react'
+import { type ReactElement, useContext, useEffect, useCallback } from 'react'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useChainId } from '@/hooks/useChainId'
 import useWallet from '@/hooks/wallets/useWallet'
-import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { isExecutable, isMultisigExecutionInfo, isSignableBy } from '@/utils/transaction-guards'
 import { Typography } from '@mui/material'
 import { createExistingTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS } from '@/services/analytics/events/transactions'
+import { getTransactionTrackingType } from '@/utils/tx-tracking'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -38,8 +41,17 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
 
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 
+  const onSubmit = useCallback<SubmitCallback>(
+    async (txId, isExecuted) => {
+      const txType = await getTransactionTrackingType(txId, chainId)
+      const event = isExecuted ? TX_EVENTS.EXECUTE : TX_EVENTS.CONFIRM
+      trackEvent({ ...event, label: txType })
+    },
+    [chainId],
+  )
+
   return (
-    <SignOrExecuteForm txId={txId} onSubmit={() => {}} isExecutable={canExecute} onlyExecute={!canSign}>
+    <SignOrExecuteForm txId={txId} onSubmit={onSubmit} isExecutable={canExecute} onlyExecute={!canSign}>
       <Typography mb={2}>{text}</Typography>
     </SignOrExecuteForm>
   )

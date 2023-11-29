@@ -1,3 +1,4 @@
+import type { SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { getSpendingLimitInterface, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import useChainId from '@/hooks/useChainId'
@@ -15,9 +16,12 @@ import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { createTx } from '@/services/tx/tx-sender'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
-const onFormSubmit = () => {
+const onFormSubmit: SubmitCallback = (_, isExecuted) => {
   trackEvent(SETTINGS_EVENTS.SPENDING_LIMIT.LIMIT_REMOVED)
   trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.spending_limit_remove })
+  if (isExecuted) {
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.spending_limit_remove })
+  }
 }
 
 export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) => {

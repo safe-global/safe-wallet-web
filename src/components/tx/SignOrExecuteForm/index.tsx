@@ -20,9 +20,11 @@ import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
 import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
 
+export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
+
 export type SignOrExecuteProps = {
   txId?: string
-  onSubmit: (txId: string) => void
+  onSubmit: SubmitCallback
   children?: ReactNode
   isExecutable?: boolean
   isRejection?: boolean

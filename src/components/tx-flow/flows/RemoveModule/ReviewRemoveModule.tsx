@@ -1,4 +1,4 @@
-import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { Grid, Typography } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
@@ -9,9 +9,12 @@ import { type RemoveModuleFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
-const onFormSubmit = () => {
+const onFormSubmit: SubmitCallback = (_, isExecuted) => {
   trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_MODULE)
   trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.module_remove })
+  if (isExecuted) {
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.module_remove })
+  }
 }
 
 export const ReviewRemoveModule = ({ params }: { params: RemoveModuleFlowProps }) => {

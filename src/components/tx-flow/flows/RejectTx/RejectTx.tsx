@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { Typography } from '@mui/material'
-import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { createRejectTx } from '@/services/tx/tx-sender'
 import { useContext, useEffect } from 'react'
 import { SafeTxContext } from '../../SafeTxProvider'
@@ -11,8 +11,11 @@ type RejectTxProps = {
   txNonce: number
 }
 
-const onSubmit = () => {
+const onSubmit: SubmitCallback = (_, isExecuted) => {
   trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.rejection })
+  if (isExecuted) {
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.rejection })
+  }
 }
 
 const RejectTx = ({ txNonce }: RejectTxProps): ReactElement => {

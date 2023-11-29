@@ -23,6 +23,7 @@ import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { asError } from '@/services/exceptions/utils'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
+import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -40,7 +41,7 @@ const ReviewSpendingLimitTx = ({
   onSubmit,
 }: {
   params: TokenTransferParams
-  onSubmit: () => void
+  onSubmit: SubmitCallback
 }): ReactElement => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
@@ -90,7 +91,7 @@ const ReviewSpendingLimitTx = ({
 
     try {
       await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress)
-      onSubmit()
+      onSubmit('', true)
       setTxFlow(undefined)
     } catch (_err) {
       const err = asError(_err)

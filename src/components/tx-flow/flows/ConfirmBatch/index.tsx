@@ -1,6 +1,6 @@
 import { type ReactElement, useContext, useEffect, useCallback } from 'react'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
@@ -34,10 +34,16 @@ const ConfirmBatch = ({ onSubmit }: ConfirmBatchProps): ReactElement => {
     createMultiSendCallOnlyTx(calls).then(setSafeTx).catch(setSafeTxError)
   }, [batchTxs, setSafeTx, setSafeTxError])
 
-  const onTxSubmit = useCallback(() => {
-    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.batch })
-    onSubmit()
-  }, [onSubmit])
+  const onTxSubmit = useCallback<SubmitCallback>(
+    (_, isExecuted) => {
+      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.batch })
+      if (isExecuted) {
+        trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.batch })
+      }
+      onSubmit()
+    },
+    [onSubmit],
+  )
 
   return (
     <SignOrExecuteForm onSubmit={onTxSubmit} isBatch>

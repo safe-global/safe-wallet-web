@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react'
 import { Typography, Divider, Box, Paper, SvgIcon } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
@@ -27,10 +27,13 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
 
   const newOwnerLength = safe.owners.length - 1
 
-  const onFormSubmit = () => {
+  const onFormSubmit: SubmitCallback = (_, isExecuted) => {
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.owner_remove })
+    if (isExecuted) {
+      trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.owner_remove })
+    }
   }
 
   return (

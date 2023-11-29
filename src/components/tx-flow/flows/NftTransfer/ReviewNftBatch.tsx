@@ -5,7 +5,7 @@ import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import type { NftTransferParams } from '.'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
-import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { SafeTxContext } from '../../SafeTxProvider'
 import { NftItems } from '@/components/tx-flow/flows/NftTransfer/SendNftBatch'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
@@ -40,10 +40,17 @@ const ReviewNftBatch = ({ params, onSubmit, txNonce }: ReviewNftBatchProps): Rea
     promise.then(setSafeTx).catch(setSafeTxError)
   }, [safeAddress, params, setSafeTx, setSafeTxError])
 
-  const onTxSubmit = useCallback(() => {
-    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.transfer_nft })
-    onSubmit()
-  }, [onSubmit])
+  const onTxSubmit = useCallback<SubmitCallback>(
+    (_, isExecuted) => {
+      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.transfer_nft })
+      if (isExecuted) {
+        trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.transfer_nft })
+      }
+
+      onSubmit()
+    },
+    [onSubmit],
+  )
 
   return (
     <SignOrExecuteForm onSubmit={onTxSubmit}>
