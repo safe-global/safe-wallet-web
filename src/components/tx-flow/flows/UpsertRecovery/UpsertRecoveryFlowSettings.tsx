@@ -57,6 +57,8 @@ export function UpsertRecoveryFlowSettings({
 
   const onShowAdvanced = () => setShowAdvanced((prev) => !prev)
 
+  const isDisabled = !formMethods.formState.isDirty || !understandsRisk
+
   return (
     <>
       <FormProvider {...formMethods}>
@@ -163,7 +165,7 @@ export function UpsertRecoveryFlowSettings({
             <Divider className={commonCss.nestedDivider} />
 
             <CardActions sx={{ mt: '0 !important' }}>
-              <Button variant="contained" type="submit" disabled={!understandsRisk || !formMethods.formState.isDirty}>
+              <Button variant="contained" type="submit" disabled={isDisabled}>
                 Next
               </Button>
             </CardActions>
