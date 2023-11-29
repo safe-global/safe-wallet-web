@@ -160,7 +160,7 @@ export function UpsertRecoveryFlowSettings({
             <Divider className={commonCss.nestedDivider} />
 
             <CardActions sx={{ mt: '0 !important' }}>
-              <Button variant="contained" type="submit" disabled={!understandsRisk}>
+              <Button variant="contained" type="submit" disabled={!understandsRisk || !formMethods.formState.isDirty}>
                 Next
               </Button>
             </CardActions>

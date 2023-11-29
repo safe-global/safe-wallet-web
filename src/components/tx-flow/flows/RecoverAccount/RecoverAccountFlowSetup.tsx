@@ -9,10 +9,10 @@ import {
   TextField,
   IconButton,
   Tooltip,
-  FormHelperText,
+  Alert,
 } from '@mui/material'
 import { useForm, FormProvider, useFieldArray, Controller } from 'react-hook-form'
-import { Fragment, useCallback } from 'react'
+import { Fragment } from 'react'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
@@ -67,17 +67,20 @@ export function RecoverAccountFlowSetup({
     mode: 'all',
   })
 
+  const newOwners = formMethods.watch(RecoverAccountFlowFields.owners)
+  const newThreshold = formMethods.watch(RecoverAccountFlowFields.threshold)
+
   const { fields, append, remove } = useFieldArray({
     control: formMethods.control,
     name: RecoverAccountFlowFields.owners,
   })
 
-  const isSameSetup = useCallback(
-    (newOwners: Array<AddressEx>, newThreshold: number): boolean => {
-      return _isSameSetup({ oldOwners: safe.owners, oldThreshold: safe.threshold, newOwners, newThreshold })
-    },
-    [safe.owners, safe.threshold],
-  )
+  const isSameSetup = _isSameSetup({
+    oldOwners: safe.owners,
+    oldThreshold: safe.threshold,
+    newOwners,
+    newThreshold: Number(newThreshold),
+  })
 
   return (
     <FormProvider {...formMethods}>
@@ -109,18 +112,11 @@ export function RecoverAccountFlowSetup({
                         return 'The Safe Account cannot own itself'
                       }
 
-                      const newOwners = formMethods.getValues(RecoverAccountFlowFields.owners)
                       const isDuplicate = newOwners.filter((owner) => owner.value === value).length > 1
                       if (isDuplicate) {
                         return 'Already designated to be an owner'
                       }
-
-                      const newThreshold = formMethods.getValues(RecoverAccountFlowFields.threshold)
-                      if (isSameSetup(newOwners, Number(newThreshold))) {
-                        return 'Proposed Account setup is the same'
-                      }
                     }}
-                    deps={[RecoverAccountFlowFields.threshold]}
                   />
                 </Grid>
 
@@ -170,13 +166,13 @@ export function RecoverAccountFlowSetup({
             </Typography>
           </div>
 
-          <Controller
-            control={formMethods.control}
-            name={RecoverAccountFlowFields.threshold}
-            render={({ field, fieldState }) => (
-              <Grid container direction="row" alignItems="center" gap={2} mb={1}>
-                <Grid item>
-                  <TextField select {...field} error={!!fieldState.error}>
+          <Grid container direction="row" alignItems="center" gap={2} mb={1}>
+            <Grid item>
+              <Controller
+                control={formMethods.control}
+                name={RecoverAccountFlowFields.threshold}
+                render={({ field }) => (
+                  <TextField select {...field}>
                     {fields.map((_, index) => {
                       const value = index + 1
                       return (
@@ -186,34 +182,25 @@ export function RecoverAccountFlowSetup({
                       )
                     })}
                   </TextField>
-                </Grid>
-
-                <Grid item>
-                  <Typography>out of {fields.length} owner(s)</Typography>
-                </Grid>
-
-                {fieldState.error && (
-                  <Grid item xs={12}>
-                    <FormHelperText error>{fieldState.error?.message}</FormHelperText>
-                  </Grid>
                 )}
-              </Grid>
-            )}
-            rules={{
-              validate: (newThreshold) => {
-                const newOwners = formMethods.getValues(RecoverAccountFlowFields.owners)
-                if (isSameSetup(newOwners, Number(newThreshold))) {
-                  return 'Proposed Account setup is the same'
-                }
-              },
-              deps: [RecoverAccountFlowFields.owners],
-            }}
-          />
+              />
+            </Grid>
+
+            <Grid item>
+              <Typography>out of {fields.length} owner(s)</Typography>
+            </Grid>
+          </Grid>
+
+          {isSameSetup && (
+            <Alert severity="error" sx={{ border: 'unset' }}>
+              The proposed Account setup is the same as the current one.
+            </Alert>
+          )}
 
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions sx={{ mt: '0 !important' }}>
-            <Button variant="contained" type="submit" sx={{ mt: 1 }}>
+            <Button variant="contained" type="submit" sx={{ mt: 1 }} disabled={isSameSetup}>
               Next
             </Button>
           </CardActions>
