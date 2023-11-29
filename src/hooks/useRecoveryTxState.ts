@@ -30,7 +30,7 @@ export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args
   const isNext =
     !delayModifier || (sameAddress(delayModifier.address, address) && args.queueNonce.eq(delayModifier.txNonce))
   const isExecutable = isNext && isValid && !isExpired
-  const isPending = !!pending?.[transactionHash]
+  const isPending = !!pending?.[args.txHash]
 
   const remainingSeconds = isValid ? 0 : Math.ceil(remainingMs.div(1_000).toNumber())
 

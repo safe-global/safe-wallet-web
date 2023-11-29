@@ -1,4 +1,4 @@
-import { SvgIcon, Typography } from '@mui/material'
+import { CircularProgress, SvgIcon, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
@@ -20,29 +20,31 @@ export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): R
   const pendingTxStatus = pending?.[recovery.args.txHash]
 
   const status = pendingTxStatus ? (
-    STATUS_LABELS[pendingTxStatus]
+    <>
+      <CircularProgress size={14} color="inherit" />
+      {STATUS_LABELS[pendingTxStatus]}
+    </>
   ) : isExecutable ? (
     'Awaiting execution'
   ) : isExpired ? (
     'Expired'
   ) : (
     <>
-      <SvgIcon component={ClockIcon} inheritViewBox color="warning" fontSize="inherit" sx={{ mr: 0.5 }} />
+      <SvgIcon component={ClockIcon} inheritViewBox color="warning" fontSize="inherit" />
       Pending
     </>
   )
 
   return (
-    <>
-      <Typography
-        variant="caption"
-        fontWeight="bold"
-        color={isExpired ? 'error.main' : 'warning.main'}
-        display="inline-flex"
-        alignItems="center"
-      >
-        {status}
-      </Typography>
-    </>
+    <Typography
+      variant="caption"
+      fontWeight="bold"
+      color={isExpired ? 'error.main' : 'warning.main'}
+      display="inline-flex"
+      alignItems="center"
+      gap={1}
+    >
+      {status}
+    </Typography>
   )
 }
