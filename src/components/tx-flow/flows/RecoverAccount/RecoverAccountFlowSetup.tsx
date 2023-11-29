@@ -126,7 +126,13 @@ export function RecoverAccountFlowSetup({
 
                 <Grid item xs={1} display="flex" alignItems="center" justifyContent="center">
                   {index > 0 && (
-                    <IconButton onClick={() => remove(index)}>
+                    <IconButton
+                      onClick={() => {
+                        remove(index)
+                        // Trigger validation in case of same setup before
+                        formMethods.trigger(RecoverAccountFlowFields.owners)
+                      }}
+                    >
                       <SvgIcon component={DeleteIcon} inheritViewBox />
                     </IconButton>
                   )}
@@ -136,7 +142,11 @@ export function RecoverAccountFlowSetup({
           </Grid>
 
           <Button
-            onClick={() => append({ value: '' })}
+            onClick={() => {
+              append({ value: '' })
+              // Trigger validation in case of same setup before
+              formMethods.trigger(RecoverAccountFlowFields.owners)
+            }}
             variant="text"
             startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
             sx={{ alignSelf: 'flex-start', my: 1 }}

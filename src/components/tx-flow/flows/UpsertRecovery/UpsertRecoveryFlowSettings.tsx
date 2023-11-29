@@ -15,9 +15,10 @@ import {
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
+import type { BigNumber } from 'ethers'
 
 import TxCard from '../../common/TxCard'
 import { UpsertRecoveryFlowFields } from '.'
@@ -27,16 +28,37 @@ import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import type { UpsertRecoveryFlowProps } from '.'
+import type { RecoveryState } from '@/services/recovery/recovery-state'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 
+export function _isSameSetup({
+  oldGuardian,
+  oldTxCooldown,
+  oldTxExpiration,
+  newGuardian,
+  newTxCooldown,
+  newTxExpiration,
+}: {
+  oldGuardian: string
+  oldTxCooldown: BigNumber
+  oldTxExpiration: BigNumber
+  newGuardian: string
+  newTxCooldown: string
+  newTxExpiration: string
+}): boolean {
+  return sameAddress(oldGuardian, newGuardian) && oldTxCooldown.eq(newTxCooldown) && oldTxExpiration.eq(newTxExpiration)
+}
+
 export function UpsertRecoveryFlowSettings({
   params,
   onSubmit,
+  delayModifier,
 }: {
   params: UpsertRecoveryFlowProps
   onSubmit: (formData: UpsertRecoveryFlowProps) => void
+  delayModifier?: RecoveryState[number]
 }): ReactElement {
   const { safeAddress } = useSafeInfo()
   const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.txExpiration] !== '0')
@@ -52,9 +74,33 @@ export function UpsertRecoveryFlowSettings({
     if (sameAddress(guardian, safeAddress)) {
       return 'The Safe Account cannot be a Guardian of itself'
     }
+
+    const newTxCooldown = formMethods.getValues(UpsertRecoveryFlowFields.txCooldown)
+    const newExpiration = formMethods.getValues(UpsertRecoveryFlowFields.txExpiration)
+    if (isSameSetup(guardian, newTxCooldown, newExpiration)) {
+      return 'Proposed Guardian is the same'
+    }
   }
 
   const onShowAdvanced = () => setShowAdvanced((prev) => !prev)
+
+  const isSameSetup = useCallback(
+    (newGuardian: string, newTxCooldown: string, newTxExpiration: string): boolean => {
+      if (!delayModifier) {
+        return false
+      }
+
+      return _isSameSetup({
+        oldGuardian: delayModifier.guardians[0],
+        oldTxCooldown: delayModifier.txCooldown,
+        oldTxExpiration: delayModifier.txExpiration,
+        newGuardian,
+        newTxCooldown,
+        newTxExpiration,
+      })
+    },
+    [delayModifier],
+  )
 
   return (
     <>
@@ -78,6 +124,7 @@ export function UpsertRecoveryFlowSettings({
               required
               fullWidth
               validate={validateGuardian}
+              deps={[UpsertRecoveryFlowFields.txCooldown, UpsertRecoveryFlowFields.txExpiration]}
             />
 
             <Alert severity="info" sx={{ border: 'unset' }}>
@@ -112,8 +159,14 @@ export function UpsertRecoveryFlowSettings({
             <Controller
               control={formMethods.control}
               name={UpsertRecoveryFlowFields.txCooldown}
-              render={({ field: { ref, ...field } }) => (
-                <SelectField label="Recovery delay" fullWidth inputRef={ref} {...field}>
+              render={({ field: { ref, ...field }, fieldState: { error } }) => (
+                <SelectField
+                  label={error?.message ?? 'Recovery delay'}
+                  fullWidth
+                  inputRef={ref}
+                  {...field}
+                  error={!!error?.message}
+                >
                   {periods.delay.map(({ label, value }, index) => (
                     <MenuItem key={index} value={value}>
                       {label}
@@ -121,6 +174,16 @@ export function UpsertRecoveryFlowSettings({
                   ))}
                 </SelectField>
               )}
+              rules={{
+                validate: (newCooldown) => {
+                  const newGuardian = formMethods.getValues(UpsertRecoveryFlowFields.guardian)
+                  const newExpiration = formMethods.getValues(UpsertRecoveryFlowFields.txExpiration)
+                  if (isSameSetup(newGuardian, newCooldown, newExpiration)) {
+                    return 'Proposed recovery delay is the same'
+                  }
+                },
+                deps: [UpsertRecoveryFlowFields.guardian, UpsertRecoveryFlowFields.txExpiration],
+              }}
             />
 
             <Typography variant="body2" onClick={onShowAdvanced} role="button" className={css.advanced}>
@@ -137,8 +200,14 @@ export function UpsertRecoveryFlowSettings({
                 name={UpsertRecoveryFlowFields.txExpiration}
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
-                render={({ field: { ref, ...field } }) => (
-                  <SelectField label="Transaction expiry" fullWidth inputRef={ref} {...field}>
+                render={({ field: { ref, ...field }, fieldState: { error } }) => (
+                  <SelectField
+                    label={error?.message ?? 'Transaction expiry'}
+                    fullWidth
+                    inputRef={ref}
+                    {...field}
+                    error={!!error?.message}
+                  >
                     {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
@@ -146,6 +215,16 @@ export function UpsertRecoveryFlowSettings({
                     ))}
                   </SelectField>
                 )}
+                rules={{
+                  validate: (newExpiration) => {
+                    const newGuardian = formMethods.getValues(UpsertRecoveryFlowFields.guardian)
+                    const newCooldown = formMethods.getValues(UpsertRecoveryFlowFields.txCooldown)
+                    if (isSameSetup(newGuardian, newCooldown, newExpiration)) {
+                      return 'Proposed transaction expiry is the same'
+                    }
+                  },
+                  deps: [UpsertRecoveryFlowFields.guardian, UpsertRecoveryFlowFields.txCooldown],
+                }}
               />
             </Collapse>
           </TxCard>
