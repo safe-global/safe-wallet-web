@@ -29,6 +29,7 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.verifyNativeTokenTransfer()
     createtx.changeNonce(currentNonce)
     createtx.verifyConfirmTransactionData()
+    cy.contains('Connected wallet').click()
     createtx.openExecutionParamsModal()
     createtx.verifyAndSubmitExecutionParams()
     createtx.clickOnNoLaterOption()
