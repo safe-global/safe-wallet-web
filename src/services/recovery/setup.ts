@@ -2,7 +2,7 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { getModuleInstance, KnownContracts, deployAndSetUpModule } from '@gnosis.pm/zodiac'
 import { Interface } from 'ethers/lib/utils'
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 import { sameAddress } from '@/utils/addresses'
@@ -22,7 +22,7 @@ export function _getRecoverySetupTransactions({
   guardians: Array<string>
   chainId: string
   safeAddress: string
-  provider: Web3Provider
+  provider: JsonRpcProvider
 }): {
   expectedModuleAddress: string
   transactions: Array<MetaTransactionData>
@@ -100,7 +100,7 @@ export async function _getEditRecoveryTransactions({
   newTxExpiration: string
   newGuardians: Array<string>
   moduleAddress: string
-  provider: Web3Provider
+  provider: JsonRpcProvider
 }): Promise<Array<MetaTransactionData>> {
   const delayModifierContract = getModuleInstance(KnownContracts.DELAY, moduleAddress, provider)
 
@@ -176,7 +176,7 @@ export async function getRecoveryUpsertTransactions({
   safeAddress,
 }: UpsertRecoveryFlowProps & {
   moduleAddress?: string
-  provider: Web3Provider
+  provider: JsonRpcProvider
   chainId: string
   safeAddress: string
 }): Promise<Array<MetaTransactionData>> {

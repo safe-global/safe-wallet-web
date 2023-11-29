@@ -6,7 +6,7 @@ import { Errors, logError } from '@/services/exceptions'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { getRecoveryUpsertTransactions } from '@/services/recovery/setup'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useRecoveryPeriods } from './useRecoveryPeriods'
@@ -23,7 +23,7 @@ export function UpsertRecoveryFlowReview({
   params: UpsertRecoveryFlowProps
   moduleAddress?: string
 }): ReactElement {
-  const web3 = useWeb3()
+  const web3ReadOnly = useWeb3ReadOnly()
   const { safe, safeAddress } = useSafeInfo()
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
 
@@ -35,22 +35,24 @@ export function UpsertRecoveryFlowReview({
   )!.label
 
   useEffect(() => {
-    if (!web3) {
+    if (!web3ReadOnly) {
       return
     }
 
     getRecoveryUpsertTransactions({
       ...params,
-      provider: web3,
+      provider: web3ReadOnly,
       chainId: safe.chainId,
       safeAddress,
       moduleAddress,
-    }).then((transactions) => {
-      const promise = transactions.length > 1 ? createMultiSendCallOnlyTx(transactions) : createTx(transactions[0])
-
-      promise.then(setSafeTx).catch(setSafeTxError)
     })
-  }, [guardian, moduleAddress, params, safe.chainId, safeAddress, setSafeTx, setSafeTxError, web3])
+      .then((transactions) => {
+        const promise = transactions.length > 1 ? createMultiSendCallOnlyTx(transactions) : createTx(transactions[0])
+
+        promise.then(setSafeTx).catch(setSafeTxError)
+      })
+      .catch(setSafeTxError)
+  }, [guardian, moduleAddress, params, safe.chainId, safeAddress, setSafeTx, setSafeTxError, web3ReadOnly])
 
   useEffect(() => {
     if (safeTxError) {
