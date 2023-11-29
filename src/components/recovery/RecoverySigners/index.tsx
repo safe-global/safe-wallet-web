@@ -19,7 +19,6 @@ import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactElement {
   const { submitError } = useContext(RecoveryListItemContext)
   const { isExecutable, isNext, remainingSeconds } = useRecoveryTxState(item)
-  console.log(item)
 
   return (
     <>
