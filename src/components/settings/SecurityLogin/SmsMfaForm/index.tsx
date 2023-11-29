@@ -170,14 +170,13 @@ const SmsMfaForm = () => {
 
                   {!isSmsOtpSet && (
                     <Box display="flex" justifyContent="space-between" alignItems="center" width={1}>
-                      {/* TODO: CHANGE TRACKING EVENT */}
                       {verificationStarted ? (
                         <>
                           <Button sx={{ fontSize: '14px' }} variant="outlined" onClick={onReset}>
                             Cancel
                           </Button>
 
-                          <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
+                          <Track {...MPC_WALLET_EVENTS.VERIFY_NUMBER}>
                             <Button
                               sx={{ fontSize: '14px' }}
                               disabled={isSubmitDisabled}
@@ -189,7 +188,7 @@ const SmsMfaForm = () => {
                           </Track>
                         </>
                       ) : (
-                        <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
+                        <Track {...MPC_WALLET_EVENTS.REGISTER_NUMBER}>
                           <Button
                             sx={{ fontSize: '14px' }}
                             disabled={isSubmitDisabled}

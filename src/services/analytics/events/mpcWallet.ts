@@ -18,6 +18,11 @@ export const MPC_WALLET_EVENTS = {
     action: 'Recover account using password',
     category: MPC_WALLET_CATEGORY,
   },
+  SMS: {
+    event: EventType.CLICK,
+    action: 'Recover account using sms code',
+    category: MPC_WALLET_CATEGORY,
+  },
   RECOVERED_SOCIAL_SIGNER: {
     event: EventType.META,
     action: 'Recovered social signer',
@@ -28,9 +33,24 @@ export const MPC_WALLET_EVENTS = {
     action: 'Set or change password',
     category: MPC_WALLET_CATEGORY,
   },
+  REGISTER_NUMBER: {
+    event: EventType.CLICK,
+    action: 'Register phone number',
+    category: MPC_WALLET_CATEGORY,
+  },
+  VERIFY_NUMBER: {
+    event: EventType.CLICK,
+    action: 'Verify phone number',
+    category: MPC_WALLET_CATEGORY,
+  },
   ENABLE_MFA: {
     event: EventType.META,
     action: 'Enable MFA for account',
+    category: MPC_WALLET_CATEGORY,
+  },
+  SETUP_MFA_FACTOR: {
+    event: EventType.META,
+    action: 'Setup MFA factor',
     category: MPC_WALLET_CATEGORY,
   },
   REVEAL_PRIVATE_KEY: {

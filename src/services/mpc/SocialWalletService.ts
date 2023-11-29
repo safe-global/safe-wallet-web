@@ -73,7 +73,6 @@ class SocialWalletService implements ISocialWalletService {
       if (!securityQuestionFactor) {
         throw Error('Problem setting up the new password')
       }
-
       // 2. enable MFA
       if (!this.isMFAEnabled()) {
         trackEvent({ ...MPC_WALLET_EVENTS.ENABLE_MFA, label: 'password' })
@@ -81,6 +80,7 @@ class SocialWalletService implements ISocialWalletService {
       }
 
       // 3. commit
+      trackEvent({ ...MPC_WALLET_EVENTS.SETUP_MFA_FACTOR, label: 'password' })
       await this.mpcCoreKit.commitChanges()
       this.syncMfaSetup()
     } catch (e) {
@@ -219,8 +219,11 @@ class SocialWalletService implements ISocialWalletService {
 
     if (success) {
       if (!this.isMFAEnabled()) {
+        trackEvent({ ...MPC_WALLET_EVENTS.ENABLE_MFA, label: 'sms' })
         await this.enableMFA()
       }
+      trackEvent({ ...MPC_WALLET_EVENTS.SETUP_MFA_FACTOR, label: 'sms' })
+
       await this.mpcCoreKit.commitChanges()
       this.syncMfaSetup()
     }
