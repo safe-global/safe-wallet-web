@@ -26,6 +26,7 @@ import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
 import { getPeriod } from '@/utils/date'
 import { useRecovery } from '@/components/recovery/RecoveryContext'
+import { useIsValidRecoveryExecTransactionFromModule } from '@/hooks/useIsValidRecoveryExecution'
 import type { RecoverAccountFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -44,6 +45,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const onboard = useOnboard()
   const [data] = useRecovery()
   const recovery = data && selectDelayModifierByGuardian(data, wallet?.address ?? '')
+  const [, executionValidationError] = useIsValidRecoveryExecTransactionFromModule(recovery?.address, safeTx)
 
   // Proposal
   const newThreshold = Number(params[RecoverAccountFlowFields.threshold])
@@ -133,6 +135,12 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
         {safeTxError && (
           <ErrorMessage error={safeTxError}>
             This recovery will most likely fail. To save gas costs, avoid executing the transaction.
+          </ErrorMessage>
+        )}
+
+        {executionValidationError && (
+          <ErrorMessage error={executionValidationError}>
+            This transaction will most likely fail. To save gas costs, avoid executing the transaction.
           </ErrorMessage>
         )}
 

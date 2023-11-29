@@ -1,5 +1,4 @@
 import { Box, List, ListItem, ListItemIcon, ListItemText, SvgIcon, Typography } from '@mui/material'
-import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
 import CircleIcon from '@/public/images/common/circle.svg'
@@ -10,14 +9,12 @@ import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import { formatDate } from '@/utils/date'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
+import { RecoveryValidationErrors } from '../RecoveryValidationErrors'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 
 export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactElement {
-  const { submitError } = useContext(RecoveryListItemContext)
   const { isExecutable, isNext, remainingSeconds } = useRecoveryTxState(item)
 
   return (
@@ -71,9 +68,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
         {isNext && <Countdown seconds={remainingSeconds} />}
       </Box>
 
-      {submitError && (
-        <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-      )}
+      <RecoveryValidationErrors item={item} />
 
       <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
         <ExecuteRecoveryButton recovery={item} />

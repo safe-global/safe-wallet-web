@@ -22,7 +22,7 @@ const isContractError = (error: EthersError) => {
 
 // Monkey patch the signerProvider to proxy requests to the "readonly" provider if on the wrong chain
 // This is ONLY used to check the validity of a transaction in `useIsValidExecution`
-const getPatchedSignerProvider = (
+export const getPatchedSignerProvider = (
   wallet: ConnectedWallet,
   chainId: SafeInfo['chainId'],
   readOnlyProvider: JsonRpcProvider,
