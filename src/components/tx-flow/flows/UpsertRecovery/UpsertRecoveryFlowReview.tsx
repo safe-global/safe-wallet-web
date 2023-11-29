@@ -47,10 +47,9 @@ export function UpsertRecoveryFlowReview({
       moduleAddress,
     })
       .then((transactions) => {
-        const promise = transactions.length > 1 ? createMultiSendCallOnlyTx(transactions) : createTx(transactions[0])
-
-        promise.then(setSafeTx).catch(setSafeTxError)
+        return transactions.length > 1 ? createMultiSendCallOnlyTx(transactions) : createTx(transactions[0])
       })
+      .then(setSafeTx)
       .catch(setSafeTxError)
   }, [guardian, moduleAddress, params, safe.chainId, safeAddress, setSafeTx, setSafeTxError, web3ReadOnly])
 
