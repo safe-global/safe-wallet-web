@@ -40,6 +40,7 @@ export const TX_Builder_url = 'https://safe-apps.dev.5afe.dev/tx-builder'
 export const drainAccount_url = 'https://safe-apps.dev.5afe.dev/drain-safe'
 export const testAppUrl = 'https://safe-test-app.com'
 export const addressBookUrl = '/address-book?safe='
+export const appsUrlGeneral = '/apps?=safe='
 export const BALANCE_URL = '/balances?safe='
 export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
@@ -55,7 +56,7 @@ export const requestPermissionsUrl = '/request-permissions'
 export const getPermissionsUrl = '/get-permissions'
 export const appSettingsUrl = '/settings/safe-apps'
 export const setupUrl = '/settings/setup?safe='
-export const dataSettingsUrl = '/settings/data'
+export const dataSettingsUrl = '/settings/data?safe='
 export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
@@ -157,6 +158,9 @@ export const addresBookContacts = {
 export const localStorageKeys = {
   SAFE_v2__addressBook: 'SAFE_v2__addressBook',
   SAFE_v2__batch: 'SAFE_v2__batch',
+  SAFE_v2__settings: 'SAFE_v2__settings',
+  SAFE_v2__addedSafes: 'SAFE_v2__addedSafes',
+  SAFE_v2__safeApps: 'SAFE_v2__safeApps',
 }
 
 export const connectWalletNames = {
