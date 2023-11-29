@@ -11,17 +11,17 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { UpsertRecoveryFlowFields } from '.'
 import { sameAddress } from '@/utils/addresses'
 
-export function GuardianWarning(): ReactElement | null {
+export function RecovererWarning(): ReactElement | null {
   const { safe, safeAddress } = useSafeInfo()
   const [warning, setWarning] = useState<string>()
 
-  const guardian = useWatch({ name: UpsertRecoveryFlowFields.guardian })
-  const debouncedGuardian = useDebounce(guardian, 500)
+  const recoverer = useWatch({ name: UpsertRecoveryFlowFields.recoverer })
+  const debouncedRecoverer = useDebounce(recoverer, 500)
 
   useEffect(() => {
     setWarning(undefined)
 
-    if (!isAddress(debouncedGuardian) || sameAddress(debouncedGuardian, safeAddress)) {
+    if (!isAddress(debouncedRecoverer) || sameAddress(debouncedRecoverer, safeAddress)) {
       return
     }
 
@@ -29,7 +29,7 @@ export function GuardianWarning(): ReactElement | null {
       let isSmartContract = false
 
       try {
-        isSmartContract = await isSmartContractWallet(safe.chainId, debouncedGuardian)
+        isSmartContract = await isSmartContractWallet(safe.chainId, debouncedRecoverer)
       } catch {
         return
       }
@@ -40,12 +40,12 @@ export function GuardianWarning(): ReactElement | null {
       }
 
       try {
-        await getSafeInfo(safe.chainId, debouncedGuardian)
+        await getSafeInfo(safe.chainId, debouncedRecoverer)
       } catch {
         setWarning('The given address is a smart contract. Please ensure that it can sign transactions.')
       }
     })()
-  }, [debouncedGuardian, safe.chainId, safeAddress])
+  }, [debouncedRecoverer, safe.chainId, safeAddress])
 
   if (!warning) {
     return null

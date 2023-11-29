@@ -28,7 +28,7 @@ export function UpsertRecoveryFlowReview({
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
 
   const periods = useRecoveryPeriods()
-  const guardian = params[UpsertRecoveryFlowFields.guardian]
+  const recoverer = params[UpsertRecoveryFlowFields.recoverer]
   const delay = periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.txCooldown])!.label
   const expiration = periods.expiration.find(
     ({ value }) => value === params[UpsertRecoveryFlowFields.txExpiration],
@@ -50,7 +50,7 @@ export function UpsertRecoveryFlowReview({
 
       promise.then(setSafeTx).catch(setSafeTxError)
     })
-  }, [guardian, moduleAddress, params, safe.chainId, safeAddress, setSafeTx, setSafeTxError, web3])
+  }, [recoverer, moduleAddress, params, safe.chainId, safeAddress, setSafeTx, setSafeTxError, web3])
 
   useEffect(() => {
     if (safeTxError) {
@@ -64,8 +64,8 @@ export function UpsertRecoveryFlowReview({
         This transaction will {moduleAddress ? 'update' : 'enable'} the Account recovery feature once executed.
       </Typography>
 
-      <TxDataRow title="Trusted Guardian">
-        <EthHashInfo address={guardian} showName={false} hasExplorer showCopyButton avatarSize={24} />
+      <TxDataRow title="Trusted Recoverer">
+        <EthHashInfo address={recoverer} showName={false} hasExplorer showCopyButton avatarSize={24} />
       </TxDataRow>
 
       <TxDataRow
