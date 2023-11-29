@@ -79,7 +79,6 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
         safeTx,
         delayModifierAddress: recovery.address,
       })
-      // TODO: This event is fired before the user submits the tx in their wallet but it should wait for it
       trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.recovery_attempt })
     } catch (_err) {
       const err = asError(_err)
