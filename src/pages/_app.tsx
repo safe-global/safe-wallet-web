@@ -45,6 +45,7 @@ import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import { RecoveryProvider } from '@/components/recovery/RecoveryContext'
 import { RecoveryModal } from '@/components/recovery/RecoveryModal'
+import { useRecoveryTxNotifications } from '@/hooks/useRecoveryTxNotification'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -60,6 +61,7 @@ const InitApp = (): null => {
   useInitSafeCoreSDK()
   useTxNotifications()
   useSafeMessageNotifications()
+  useRecoveryTxNotifications()
   useSafeNotifications()
   useTxPendingStatuses()
   useSafeMessagePendingStatuses()

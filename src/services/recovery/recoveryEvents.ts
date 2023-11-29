@@ -8,12 +8,23 @@ export enum RecoveryEvent {
   FAILED = 'FAILED',
 }
 
-interface RecoveryEvents {
-  [RecoveryEvent.EXECUTING]: { moduleAddress: string; recoveryTxHash: string }
-  [RecoveryEvent.PROCESSING]: { moduleAddress: string; recoveryTxHash: string }
-  [RecoveryEvent.REVERTED]: { moduleAddress: string; recoveryTxHash: string; error: Error }
-  [RecoveryEvent.PROCESSED]: { moduleAddress: string; recoveryTxHash: string }
-  [RecoveryEvent.FAILED]: { moduleAddress: string; recoveryTxHash?: string; error: Error }
+export enum RecoveryEventType {
+  PROPOSAL = 'PROPOSAL',
+  EXECUTION = 'EXECUTION',
+  SKIP_EXPIRED = 'SKIP_EXPIRED',
+}
+
+export interface RecoveryEvents {
+  [RecoveryEvent.EXECUTING]: { moduleAddress: string; recoveryTxHash: string; eventType: RecoveryEventType }
+  [RecoveryEvent.PROCESSING]: { moduleAddress: string; recoveryTxHash: string; eventType: RecoveryEventType }
+  [RecoveryEvent.REVERTED]: {
+    moduleAddress: string
+    recoveryTxHash: string
+    error: Error
+    eventType: RecoveryEventType
+  }
+  [RecoveryEvent.PROCESSED]: { moduleAddress: string; recoveryTxHash: string; eventType: RecoveryEventType }
+  [RecoveryEvent.FAILED]: { moduleAddress: string; recoveryTxHash?: string; error: Error; eventType: RecoveryEventType }
 }
 
 const recoveryEventBus = new EventBus<RecoveryEvents>()

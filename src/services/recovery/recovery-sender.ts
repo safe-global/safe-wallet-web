@@ -7,25 +7,25 @@ import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Del
 import { createWeb3 } from '@/hooks/wallets/web3'
 
 import { didReprice, didRevert } from '@/utils/ethers-utils'
-import { recoveryDispatch, RecoveryEvent } from './recoveryEvents'
+import { recoveryDispatch, RecoveryEvent, RecoveryEventType } from './recoveryEvents'
 import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain } from '../tx/tx-sender/sdk'
 
-function waitForRecoveryTx(moduleAddress: string, recoveryTxHash: string, tx: ContractTransaction) {
+function waitForRecoveryTx({
+  tx,
+  ...payload
+}: {
+  moduleAddress: string
+  recoveryTxHash: string
+  tx: ContractTransaction
+  eventType: RecoveryEventType
+}) {
   // TODO: This does not make sense to emit here but normal txs and messages emit in the same place
   // We should ideally move this to the beginning of _all_ dispatchers for consistency so that the UI
   // shows a pending state when beginning exectuion of a transaction/message and perhaps rename it to
   // something more generic like DISPATCHING or SUBMITTING
 
-  recoveryDispatch(RecoveryEvent.EXECUTING, {
-    moduleAddress,
-    recoveryTxHash,
-  })
-
-  const payload = {
-    moduleAddress,
-    recoveryTxHash,
-  }
+  recoveryDispatch(RecoveryEvent.EXECUTING, payload)
 
   recoveryDispatch(RecoveryEvent.PROCESSING, payload)
 
@@ -69,10 +69,10 @@ export async function dispatchRecoveryProposal({
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
 
   const signer = provider.getSigner()
-
-  let recoveryTxHash: string | undefined
-
   const contract = delayModifier.connect(signer)
+
+  const eventType = RecoveryEventType.PROPOSAL
+  let recoveryTxHash: string | undefined
 
   try {
     // Get recovery tx hash as a form of ID for FAILED event in event bus
@@ -90,11 +90,17 @@ export async function dispatchRecoveryProposal({
       safeTx.data.operation,
     )
 
-    waitForRecoveryTx(delayModifierAddress, recoveryTxHash, tx)
+    waitForRecoveryTx({
+      moduleAddress: delayModifierAddress,
+      recoveryTxHash,
+      eventType,
+      tx,
+    })
   } catch (error) {
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash,
+      eventType,
       error: asError(error),
     })
 
@@ -120,14 +126,22 @@ export async function dispatchRecoveryExecution({
 
   const signer = provider.getSigner()
 
+  const eventType = RecoveryEventType.EXECUTION
+
   try {
     const tx = await delayModifier.connect(signer).executeNextTx(args.to, args.value, args.data, args.operation)
 
-    waitForRecoveryTx(delayModifierAddress, args.txHash, tx)
+    waitForRecoveryTx({
+      moduleAddress: delayModifierAddress,
+      recoveryTxHash: args.txHash,
+      eventType,
+      tx,
+    })
   } catch (error) {
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash: args.txHash,
+      eventType,
       error: asError(error),
     })
 
@@ -153,14 +167,22 @@ export async function dispatchRecoverySkipExpired({
 
   const signer = provider.getSigner()
 
+  const eventType = RecoveryEventType.SKIP_EXPIRED
+
   try {
     const tx = await delayModifier.connect(signer).skipExpired()
 
-    waitForRecoveryTx(delayModifierAddress, recoveryTxHash, tx)
+    waitForRecoveryTx({
+      moduleAddress: delayModifierAddress,
+      recoveryTxHash,
+      eventType,
+      tx,
+    })
   } catch (error) {
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash,
+      eventType,
       error: asError(error),
     })
 

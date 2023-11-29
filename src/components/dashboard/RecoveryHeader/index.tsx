@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material'
+import { useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 
 import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
@@ -9,15 +10,16 @@ import { useHasFeature } from '@/hooks/useChains'
 import { RecoveryProposalCard } from '@/components/recovery/RecoveryCards/RecoveryProposalCard'
 import { RecoveryInProgressCard } from '@/components/recovery/RecoveryCards/RecoveryInProgressCard'
 import { WidgetContainer, WidgetBody } from '../styled'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { RecoveryEvent, recoverySubscribe } from '@/services/recovery/recoveryEvents'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function _RecoveryHeader({
+  isProposalInProgress,
   isRecoverer,
   supportsRecovery,
   queue,
 }: {
-  isOwner: boolean
+  isProposalInProgress: boolean
   isRecoverer: boolean
   supportsRecovery: boolean
   queue: Array<RecoveryQueueItem>
@@ -30,7 +32,7 @@ export function _RecoveryHeader({
 
   const modal = next ? (
     <RecoveryInProgressCard orientation="horizontal" recovery={next} />
-  ) : isRecoverer ? (
+  ) : isRecoverer && !isProposalInProgress ? (
     <RecoveryProposalCard orientation="horizontal" />
   ) : null
 
@@ -46,11 +48,33 @@ export function _RecoveryHeader({
   return null
 }
 
+export function _useIsProposalInProgress(): boolean {
+  const [isProposalSubmitting, setIsProposalSubmitting] = useState(false)
+  const queue = useRecoveryQueue()
+
+  useEffect(() => {
+    const unsubFns = Object.values(RecoveryEvent).map((event) =>
+      recoverySubscribe(event, (detail) => {
+        const isValidating = event === RecoveryEvent.EXECUTING || event === RecoveryEvent.PROCESSING
+        const isQueried = queue.some((item) => item.args.txHash === detail?.recoveryTxHash)
+
+        setIsProposalSubmitting(isValidating || !isQueried)
+      }),
+    )
+
+    return () => {
+      unsubFns.forEach((unsub) => unsub())
+    }
+  }, [queue])
+
+  return isProposalSubmitting
+}
+
 // Appease TypeScript
 const _useSupportedRecovery = () => useHasFeature(FEATURES.RECOVERY)
 
 export const RecoveryHeader = madProps(_RecoveryHeader, {
-  isOwner: useIsSafeOwner,
+  isProposalInProgress: _useIsProposalInProgress,
   isRecoverer: useIsRecoverer,
   supportsRecovery: _useSupportedRecovery,
   queue: useRecoveryQueue,
