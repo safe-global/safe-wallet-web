@@ -73,15 +73,16 @@ export function UpsertRecoveryFlowSettings({
               </Typography>
             </div>
 
-            <AddressBookInput
-              label="Recoverer address"
-              name={UpsertRecoveryFlowFields.recoverer}
-              required
-              fullWidth
-              validate={validateRecoverer}
-            />
-
-            <RecovererWarning />
+            <div>
+              <AddressBookInput
+                label="Recoverer address"
+                name={UpsertRecoveryFlowFields.recoverer}
+                required
+                fullWidth
+                validate={validateRecoverer}
+              />
+              <RecovererWarning />
+            </div>
 
             <Alert severity="info" sx={{ border: 'unset' }}>
               Your Recoverer will be able to modify your Account setup. Only select an address that you trust.
