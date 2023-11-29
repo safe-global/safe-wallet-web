@@ -23,7 +23,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
   const desc = isExecutable ? (
     item.expiresAt ? (
       <>
-        The recovery transaction can be executed until{' '}
+        The recovery transaction can be executed{' '}
         <Typography color="primary.main">until {formatDate(item.expiresAt.toNumber())}.</Typography>
       </>
     ) : (
