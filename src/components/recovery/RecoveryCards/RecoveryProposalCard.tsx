@@ -43,7 +43,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
     />
   )
   const title = 'Recover this Account'
-  const desc = `The connected wallet was chosen as a trusted Guardian. You can help the owner${
+  const desc = `The connected wallet was chosen as a trusted Recoverer. You can help the owner${
     safe.owners.length > 1 ? 's' : ''
   } regain access by updating the owner list.`
 

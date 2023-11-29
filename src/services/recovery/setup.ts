@@ -6,20 +6,20 @@ import type { Web3Provider } from '@ethersproject/providers'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 import { sameAddress } from '@/utils/addresses'
-import { MAX_GUARDIAN_PAGE_SIZE } from './recovery-state'
+import { MAX_RECOVERER_PAGE_SIZE } from './recovery-state'
 import type { UpsertRecoveryFlowProps } from '@/components/tx-flow/flows/UpsertRecovery'
 
 export function _getRecoverySetupTransactions({
   txCooldown,
   txExpiration,
-  guardians,
+  recoverers,
   chainId,
   safeAddress,
   provider,
 }: {
   txCooldown: string
   txExpiration: string
-  guardians: Array<string>
+  recoverers: Array<string>
   chainId: string
   safeAddress: string
   provider: Web3Provider
@@ -72,11 +72,11 @@ export function _getRecoverySetupTransactions({
 
   const delayModifierContract = getModuleInstance(KnownContracts.DELAY, expectedModuleAddress, provider)
 
-  // Add guardians to Delay Modifier
-  const enableDelayModifierModules: Array<MetaTransactionData> = guardians.map((guardian) => {
+  // Add recoverers to Delay Modifier
+  const enableDelayModifierModules: Array<MetaTransactionData> = recoverers.map((recoverer) => {
     return {
       to: expectedModuleAddress,
-      data: delayModifierContract.interface.encodeFunctionData('enableModule', [guardian]),
+      data: delayModifierContract.interface.encodeFunctionData('enableModule', [recoverer]),
       value: '0',
     }
   })
@@ -92,22 +92,22 @@ export function _getRecoverySetupTransactions({
 export async function _getEditRecoveryTransactions({
   newTxCooldown,
   newTxExpiration,
-  newGuardians,
+  newRecoverers,
   moduleAddress,
   provider,
 }: {
   newTxCooldown: string
   newTxExpiration: string
-  newGuardians: Array<string>
+  newRecoverers: Array<string>
   moduleAddress: string
   provider: Web3Provider
 }): Promise<Array<MetaTransactionData>> {
   const delayModifierContract = getModuleInstance(KnownContracts.DELAY, moduleAddress, provider)
 
-  const [txExpiration, txCooldown, [guardians]] = await Promise.all([
+  const [txExpiration, txCooldown, [recoverers]] = await Promise.all([
     delayModifierContract.txExpiration(),
     delayModifierContract.txCooldown(),
-    delayModifierContract.getModulesPaginated(SENTINEL_ADDRESS, MAX_GUARDIAN_PAGE_SIZE),
+    delayModifierContract.getModulesPaginated(SENTINEL_ADDRESS, MAX_RECOVERER_PAGE_SIZE),
   ])
 
   // Recovery management transaction data
@@ -125,37 +125,37 @@ export async function _getEditRecoveryTransactions({
     txData.push(setTxExpiration)
   }
 
-  // Cache guardian changes to determine prevModule
-  let _guardians = [...guardians]
+  // Cache recoverer changes to determine prevModule
+  let _recoverers = [...recoverers]
 
   // Don't add/remove same owners
-  const guardiansToAdd = newGuardians.filter(
-    (newGuardian) => !_guardians.some((oldGuardian) => sameAddress(oldGuardian, newGuardian)),
+  const recoverersToAdd = newRecoverers.filter(
+    (newRecoverer) => !_recoverers.some((oldRecoverer) => sameAddress(oldRecoverer, newRecoverer)),
   )
-  const guardiansToRemove = _guardians.filter(
-    (oldGuardian) => !newGuardians.some((newGuardian) => sameAddress(newGuardian, oldGuardian)),
+  const recoverersToRemove = _recoverers.filter(
+    (oldRecoverer) => !newRecoverers.some((newRecoverer) => sameAddress(newRecoverer, oldRecoverer)),
   )
 
-  for (const guardianToRemove of guardiansToRemove) {
+  for (const recovererToRemove of recoverersToRemove) {
     const prevModule = (() => {
-      const guardianIndex = _guardians.findIndex((guardian) => sameAddress(guardian, guardianToRemove))
-      return guardianIndex === 0 ? SENTINEL_ADDRESS : _guardians[guardianIndex - 1]
+      const recovererIndex = _recoverers.findIndex((recoverer) => sameAddress(recoverer, recovererToRemove))
+      return recovererIndex === 0 ? SENTINEL_ADDRESS : _recoverers[recovererIndex - 1]
     })()
     const disableModule = delayModifierContract.interface.encodeFunctionData('disableModule', [
       prevModule,
-      guardianToRemove,
+      recovererToRemove,
     ])
     txData.push(disableModule)
 
-    // Remove guardian from cache
-    _guardians = _guardians.filter((guardian) => !sameAddress(guardian, guardianToRemove))
+    // Remove recoverer from cache
+    _recoverers = _recoverers.filter((recoverer) => !sameAddress(recoverer, recovererToRemove))
   }
 
-  for (const guardianToAdd of guardiansToAdd) {
-    const enableModule = delayModifierContract.interface.encodeFunctionData('enableModule', [guardianToAdd])
+  for (const recovererToAdd of recoverersToAdd) {
+    const enableModule = delayModifierContract.interface.encodeFunctionData('enableModule', [recovererToAdd])
     txData.push(enableModule)
 
-    // Need not add guardian to cache as not relevant for prevModule
+    // Need not add recoverer to cache as not relevant for prevModule
   }
 
   return txData.map((data) => ({
@@ -169,7 +169,7 @@ export async function _getEditRecoveryTransactions({
 export async function getRecoveryUpsertTransactions({
   txCooldown,
   txExpiration,
-  guardian,
+  recoverer,
   provider,
   moduleAddress,
   chainId,
@@ -185,7 +185,7 @@ export async function getRecoveryUpsertTransactions({
       moduleAddress,
       newTxCooldown: txCooldown,
       newTxExpiration: txExpiration,
-      newGuardians: [guardian],
+      newRecoverers: [recoverer],
       provider,
     })
   }
@@ -193,7 +193,7 @@ export async function getRecoveryUpsertTransactions({
   const { transactions } = _getRecoverySetupTransactions({
     txCooldown,
     txExpiration,
-    guardians: [guardian],
+    recoverers: [recoverer],
     chainId,
     safeAddress,
     provider,
