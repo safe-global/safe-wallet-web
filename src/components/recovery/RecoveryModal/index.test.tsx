@@ -29,7 +29,7 @@ describe('RecoveryModal', () => {
 
       const { container, queryByText } = render(
         <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue} />
+          <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />
         </RecoveryContext.Provider>,
       )
 
@@ -56,7 +56,7 @@ describe('RecoveryModal', () => {
 
       const { container, queryByText } = render(
         <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue} />
+          <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />
         </RecoveryContext.Provider>,
       )
 
@@ -72,13 +72,13 @@ describe('RecoveryModal', () => {
     })
 
     describe('in-progress', () => {
-      it('should render the in-progress modal when there is a queue for guardians', () => {
+      it('should render the in-progress modal when there is a queue for recoverers', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
         const { container, queryByText } = render(
           <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} />
+            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} />
           </RecoveryContext.Provider>,
         )
 
@@ -92,7 +92,7 @@ describe('RecoveryModal', () => {
 
         const { container, queryByText } = render(
           <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue} />
+            <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />
           </RecoveryContext.Provider>,
         )
 
@@ -100,13 +100,13 @@ describe('RecoveryModal', () => {
         expect(queryByText('Account recovery in progress')).toBeTruthy()
       })
 
-      it('should not render the in-progress modal when there is a queue but the user is not an owner or guardian', () => {
+      it('should not render the in-progress modal when there is a queue but the user is not an owner or recoverer', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
         const { container, queryByText } = render(
           <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian={false} queue={queue} />
+            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer={false} queue={queue} />
           </RecoveryContext.Provider>,
         )
 
@@ -114,13 +114,13 @@ describe('RecoveryModal', () => {
         expect(queryByText('recovery')).toBeFalsy()
       })
 
-      it('should not render the in-progress modal when there is a queue for guardians on a non-sidebar route', () => {
+      it('should not render the in-progress modal when there is a queue for recoverers on a non-sidebar route', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
         const { container, queryByText } = render(
           <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} isSidebarRoute={false} />
+            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} isSidebarRoute={false} />
           </RecoveryContext.Provider>,
         )
 
@@ -130,13 +130,13 @@ describe('RecoveryModal', () => {
     })
 
     describe('proposal', () => {
-      it('should render the proposal modal if there is no queue and the user is a guardian', () => {
+      it('should render the proposal modal if there is no queue and the user is a recoverer', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [] as Array<RecoveryQueueItem>
 
         const { container, queryByText } = render(
           <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} />
+            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} />
           </RecoveryContext.Provider>,
         )
 
@@ -150,7 +150,7 @@ describe('RecoveryModal', () => {
 
         const { container, queryByText } = render(
           <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner isGuardian={false} queue={queue} />
+            <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />
           </RecoveryContext.Provider>,
         )
 
@@ -160,13 +160,13 @@ describe('RecoveryModal', () => {
         expect(queryByText('Recover this Account')).toBeFalsy()
       })
 
-      it('should not render the proposal modal when there is no queue for guardians on a non-sidebar route', () => {
+      it('should not render the proposal modal when there is no queue for recoverers on a non-sidebar route', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [] as Array<RecoveryQueueItem>
 
         const { container, queryByText } = render(
           <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian queue={queue} isSidebarRoute={false} />
+            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} isSidebarRoute={false} />
           </RecoveryContext.Provider>,
         )
 
@@ -182,7 +182,7 @@ describe('RecoveryModal', () => {
 
         const { container, queryByText } = render(
           <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isGuardian={false} queue={queue} />
+            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer={false} queue={queue} />
           </RecoveryContext.Provider>,
         )
 
@@ -206,42 +206,42 @@ describe('RecoveryModal', () => {
 
     describe('useDidDismissProposal', () => {
       it('should return false if the proposal was not dismissed before', () => {
-        const guardianAddress = faker.finance.ethereumAddress()
+        const recovererAddress = faker.finance.ethereumAddress()
 
         const { result } = renderHook(() => _useDidDismissProposal())
 
-        expect(result.current.wasProposalDismissed(guardianAddress)).toBeFalsy()
+        expect(result.current.wasProposalDismissed(recovererAddress)).toBeFalsy()
       })
 
       it('should return true if the proposal was dismissed before', () => {
-        const guardianAddress = faker.finance.ethereumAddress()
+        const recovererAddress = faker.finance.ethereumAddress()
 
         const { result, rerender } = renderHook(() => _useDidDismissProposal())
 
-        expect(result.current.wasProposalDismissed(guardianAddress)).toBeFalsy()
-        result.current.dismissProposal(guardianAddress)
+        expect(result.current.wasProposalDismissed(recovererAddress)).toBeFalsy()
+        result.current.dismissProposal(recovererAddress)
 
         rerender()
 
-        expect(result.current.wasProposalDismissed(guardianAddress)).toBeTruthy()
+        expect(result.current.wasProposalDismissed(recovererAddress)).toBeTruthy()
       })
 
       it('should persist dismissals between sessions', () => {
-        const guardianAddress = faker.finance.ethereumAddress()
+        const recovererAddress = faker.finance.ethereumAddress()
 
         const firstRender = renderHook(() => _useDidDismissProposal())
 
-        expect(firstRender.result.current.wasProposalDismissed(guardianAddress)).toBeFalsy()
-        firstRender.result.current.dismissProposal(guardianAddress)
+        expect(firstRender.result.current.wasProposalDismissed(recovererAddress)).toBeFalsy()
+        firstRender.result.current.dismissProposal(recovererAddress)
 
         firstRender.rerender()
 
-        expect(firstRender.result.current.wasProposalDismissed(guardianAddress)).toBeTruthy()
+        expect(firstRender.result.current.wasProposalDismissed(recovererAddress)).toBeTruthy()
 
         firstRender.unmount()
 
         const secondRender = renderHook(() => _useDidDismissProposal())
-        expect(secondRender.result.current.wasProposalDismissed(guardianAddress)).toBeTruthy()
+        expect(secondRender.result.current.wasProposalDismissed(recovererAddress)).toBeTruthy()
       })
     })
 
@@ -257,36 +257,36 @@ describe('RecoveryModal', () => {
       })
 
       it('should return false if in-progress was not dismissed before', () => {
-        const guardianAddress = faker.finance.ethereumAddress()
+        const recovererAddress = faker.finance.ethereumAddress()
 
         const { result } = renderHook(() => _useDidDismissInProgress())
 
-        expect(result.current.wasInProgressDismissed(guardianAddress)).toBeFalsy()
+        expect(result.current.wasInProgressDismissed(recovererAddress)).toBeFalsy()
       })
 
       it('should return true if in-progress was not dismissed before', () => {
-        const guardianAddress = faker.finance.ethereumAddress()
+        const recovererAddress = faker.finance.ethereumAddress()
 
         const { result } = renderHook(() => _useDidDismissInProgress())
 
-        expect(result.current.wasInProgressDismissed(guardianAddress)).toBeFalsy()
-        result.current.dismissInProgress(guardianAddress)
-        expect(result.current.wasInProgressDismissed(guardianAddress)).toBeTruthy()
+        expect(result.current.wasInProgressDismissed(recovererAddress)).toBeFalsy()
+        result.current.dismissInProgress(recovererAddress)
+        expect(result.current.wasInProgressDismissed(recovererAddress)).toBeTruthy()
       })
 
       it('should not persist dismissals between sessions', () => {
-        const guardianAddress = faker.finance.ethereumAddress()
+        const recovererAddress = faker.finance.ethereumAddress()
 
         const firstRender = renderHook(() => _useDidDismissInProgress())
 
-        expect(firstRender.result.current.wasInProgressDismissed(guardianAddress)).toBeFalsy()
-        firstRender.result.current.dismissInProgress(guardianAddress)
-        expect(firstRender.result.current.wasInProgressDismissed(guardianAddress)).toBeTruthy()
+        expect(firstRender.result.current.wasInProgressDismissed(recovererAddress)).toBeFalsy()
+        firstRender.result.current.dismissInProgress(recovererAddress)
+        expect(firstRender.result.current.wasInProgressDismissed(recovererAddress)).toBeTruthy()
 
         firstRender.unmount()
 
         const secondRender = renderHook(() => _useDidDismissInProgress())
-        expect(secondRender.result.current.wasInProgressDismissed(guardianAddress)).toBeFalsy()
+        expect(secondRender.result.current.wasInProgressDismissed(recovererAddress)).toBeFalsy()
       })
     })
   })

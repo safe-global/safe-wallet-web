@@ -333,7 +333,7 @@ describe('recovery-state', () => {
         })
       })
 
-      const guardians = [faker.finance.ethereumAddress()]
+      const recoverers = [faker.finance.ethereumAddress()]
       const txExpiration = BigNumber.from(0)
       const txCooldown = BigNumber.from(69420)
       const txNonce = BigNumber.from(2)
@@ -376,7 +376,7 @@ describe('recovery-state', () => {
           TransactionAdded: () => cloneDeep(defaultTransactionAddedFilter),
         },
         address: faker.finance.ethereumAddress(),
-        getModulesPaginated: () => Promise.resolve([guardians]),
+        getModulesPaginated: () => Promise.resolve([recoverers]),
         txExpiration: () => Promise.resolve(txExpiration),
         txCooldown: () => Promise.resolve(txCooldown),
         txNonce: () => Promise.resolve(txNonce),
@@ -400,7 +400,7 @@ describe('recovery-state', () => {
 
       expect(recoveryState).toStrictEqual({
         address: delayModifier.address,
-        guardians,
+        recoverers,
         txExpiration,
         txCooldown,
         txNonce,
@@ -444,7 +444,7 @@ describe('recovery-state', () => {
       const transactionService = faker.internet.url({ appendSlash: true })
       const provider = {} as unknown as JsonRpcProvider
 
-      const guardians = [faker.finance.ethereumAddress()]
+      const recoverers = [faker.finance.ethereumAddress()]
       const txExpiration = BigNumber.from(0)
       const txCooldown = BigNumber.from(69420)
       const txNonce = BigNumber.from(2)
@@ -460,7 +460,7 @@ describe('recovery-state', () => {
           TransactionAdded: () => cloneDeep(defaultTransactionAddedFilter),
         },
         address: faker.finance.ethereumAddress(),
-        getModulesPaginated: () => Promise.resolve([guardians]),
+        getModulesPaginated: () => Promise.resolve([recoverers]),
         txExpiration: () => Promise.resolve(txExpiration),
         txCooldown: () => Promise.resolve(txCooldown),
         txNonce: () => Promise.resolve(txNonce),
@@ -479,7 +479,7 @@ describe('recovery-state', () => {
 
       expect(recoveryState).toStrictEqual({
         address: delayModifier.address,
-        guardians,
+        recoverers,
         txExpiration,
         txCooldown,
         txNonce,

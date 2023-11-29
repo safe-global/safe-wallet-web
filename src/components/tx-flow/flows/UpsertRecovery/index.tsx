@@ -12,20 +12,20 @@ import type { RecoveryState } from '@/services/recovery/recovery-state'
 const Subtitles = ['How does recovery work?', 'Set up recovery settings', 'Set up account recovery']
 
 export enum UpsertRecoveryFlowFields {
-  guardian = 'guardian',
+  recoverer = 'recoverer',
   txCooldown = 'txCooldown',
   txExpiration = 'txExpiration',
 }
 
 export type UpsertRecoveryFlowProps = {
-  [UpsertRecoveryFlowFields.guardian]: string
+  [UpsertRecoveryFlowFields.recoverer]: string
   [UpsertRecoveryFlowFields.txCooldown]: string
   [UpsertRecoveryFlowFields.txExpiration]: string
 }
 
 export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
   const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>({
-    [UpsertRecoveryFlowFields.guardian]: delayModifier?.guardians?.[0] ?? '',
+    [UpsertRecoveryFlowFields.recoverer]: delayModifier?.recoverers?.[0] ?? '',
     [UpsertRecoveryFlowFields.txCooldown]: delayModifier?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
     [UpsertRecoveryFlowFields.txExpiration]: delayModifier?.txExpiration?.toString() ?? '0',
   })

@@ -6,7 +6,7 @@ import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { sameAddress } from '@/utils/addresses'
 import { getGenericProxyMasterCopy, getGnosisProxyMasterCopy, isGenericProxy, isGnosisProxy } from './proxies'
-import { MAX_GUARDIAN_PAGE_SIZE } from './recovery-state'
+import { MAX_RECOVERER_PAGE_SIZE } from './recovery-state'
 
 export async function _getZodiacContract(
   chainId: string,
@@ -47,7 +47,7 @@ export async function _isOfficialRecoveryDelayModifier(
 ) {
   // Zodiac-deployed Delay Modifiers only have other Zodiac contracts added as modules
   // If Delay Modifier only has non-Zodiac contracts as modules, it's a recovery-specific Delay Modifier
-  const [modules] = await delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_GUARDIAN_PAGE_SIZE)
+  const [modules] = await delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_RECOVERER_PAGE_SIZE)
 
   if (modules.length === 0) {
     return false
@@ -77,8 +77,8 @@ export async function getRecoveryDelayModifiers(
 
   const recoveryDelayModifiers = await Promise.all(
     delayModifiers.map(async (delayModifier) => {
-      // TODO: Fetches "guardians" of Delay Modifier, but we later fetch them again
-      // in useRecoveryState. Could optimise this by returning the guardians here
+      // TODO: Fetches "recoverers" of Delay Modifier, but we later fetch them again
+      // in useRecoveryState. Could optimise this by returning the recoverers here
       const isRecoveryDelayModifier = await _isOfficialRecoveryDelayModifier(chainId, delayModifier, provider)
       return isRecoveryDelayModifier && delayModifier
     }),

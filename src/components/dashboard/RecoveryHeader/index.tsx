@@ -2,7 +2,7 @@ import { Grid } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
-import { useIsGuardian } from '@/hooks/useIsGuardian'
+import { useIsRecoverer } from '@/hooks/useIsRecoverer'
 import madProps from '@/utils/mad-props'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
@@ -13,12 +13,12 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function _RecoveryHeader({
-  isGuardian,
+  isRecoverer,
   supportsRecovery,
   queue,
 }: {
   isOwner: boolean
-  isGuardian: boolean
+  isRecoverer: boolean
   supportsRecovery: boolean
   queue: Array<RecoveryQueueItem>
 }): ReactElement | null {
@@ -30,7 +30,7 @@ export function _RecoveryHeader({
 
   const modal = next ? (
     <RecoveryInProgressCard orientation="horizontal" recovery={next} />
-  ) : isGuardian ? (
+  ) : isRecoverer ? (
     <RecoveryProposalCard orientation="horizontal" />
   ) : null
 
@@ -51,7 +51,7 @@ const _useSupportedRecovery = () => useHasFeature(FEATURES.RECOVERY)
 
 export const RecoveryHeader = madProps(_RecoveryHeader, {
   isOwner: useIsSafeOwner,
-  isGuardian: useIsGuardian,
+  isRecoverer: useIsRecoverer,
   supportsRecovery: _useSupportedRecovery,
   queue: useRecoveryQueue,
 })

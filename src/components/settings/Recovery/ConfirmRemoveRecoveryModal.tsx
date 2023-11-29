@@ -58,7 +58,7 @@ export function ConfirmRemoveRecoveryModal({
 
       <DialogContent dividers sx={{ py: 2, px: 3 }}>
         <DialogContentText color="text.primary">
-          Are you sure you wish to remove the recovery module? The assigned Guardian won&apos;t be able to recover this
+          Are you sure you wish to remove the recovery module? The assigned Recoverer won&apos;t be able to recover this
           Safe account for you.
         </DialogContentText>
       </DialogContent>

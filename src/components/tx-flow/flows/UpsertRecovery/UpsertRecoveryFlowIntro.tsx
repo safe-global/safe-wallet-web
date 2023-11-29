@@ -2,8 +2,8 @@ import { Button, CardActions, Divider, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
-import RecoveryGuardians from '@/public/images/settings/spending-limit/beneficiary.svg'
-import RecoveryGuardian from '@/public/images/transactions/recovery-guardian.svg'
+import RecoveryRecoverers from '@/public/images/settings/spending-limit/beneficiary.svg'
+import RecoveryRecoverer from '@/public/images/transactions/recovery-recoverer.svg'
 import RecoveryDelay from '@/public/images/settings/spending-limit/time.svg'
 import RecoveryExecution from '@/public/images/transactions/recovery-execution.svg'
 
@@ -12,22 +12,22 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 const RecoverySteps = [
   {
-    Icon: RecoveryGuardians,
-    title: 'Choose a Guardian and set a delay',
+    Icon: RecoveryRecoverers,
+    title: 'Choose a Recoverer and set a delay',
     subtitle:
-      'Only your chosen Guardian can initiate the recovery process. The process can be cancelled at any time during the delay period.',
+      'Only your chosen Recoverer can initiate the recovery process. The process can be cancelled at any time during the delay period.',
   },
   {
-    Icon: RecoveryGuardian,
-    title: 'Lost access? Let the Guardian connect',
-    subtitle: 'The recovery process can be initiated by a trusted Guardian when connected to your Safe Account.',
+    Icon: RecoveryRecoverer,
+    title: 'Lost access? Let the Recoverer connect',
+    subtitle: 'The recovery process can be initiated by a trusted Recoverer when connected to your Safe Account.',
   },
   {
     Icon: RecoveryDelay,
     title: 'Start the recovery process',
     subtitle: (
       <>
-        Your <b>Guardian</b> chooses new Safe Account owner(s) that you control and can initiates the recovery
+        Your <b>Recoverer</b> chooses new Safe Account owner(s) that you control and can initiates the recovery
         transaction.
       </>
     ),
