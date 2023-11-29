@@ -8,12 +8,11 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import { CancelRecoveryFlow } from '@/components/tx-flow/flows/CancelRecovery'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { dispatchRecoverySkipExpired } from '@/services/tx/tx-sender'
+import { dispatchRecoverySkipExpired } from '@/services/recovery/recovery-sender'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { trackError, Errors } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
-import { RecoveryContext } from '../RecoveryContext'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
@@ -27,11 +26,10 @@ export function CancelRecoveryButton({
 }): ReactElement {
   const { setSubmitError } = useContext(RecoveryListItemContext)
   const isOwner = useIsSafeOwner()
-  const { isExpired } = useRecoveryTxState(recovery)
+  const { isExpired, isPending } = useRecoveryTxState(recovery)
   const { setTxFlow } = useContext(TxModalContext)
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
-  const { refetch } = useContext(RecoveryContext)
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -45,7 +43,7 @@ export function CancelRecoveryButton({
           onboard,
           chainId: safe.chainId,
           delayModifierAddress: recovery.address,
-          refetchRecoveryData: refetch,
+          recoveryTxHash: recovery.args.txHash,
         })
       } catch (_err) {
         const err = asError(_err)
@@ -59,7 +57,7 @@ export function CancelRecoveryButton({
   return (
     <CheckWallet allowNonOwner>
       {(isOk) => {
-        const isDisabled = isOwner ? !isOk : !isOk || !isExpired
+        const isDisabled = isPending || (isOwner ? !isOk : !isOk || !isExpired)
 
         return compact ? (
           <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>

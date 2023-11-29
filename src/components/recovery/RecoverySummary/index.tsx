@@ -33,7 +33,7 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
         </Box>
       )}
 
-      <Box gridArea="status" ml={{ sm: 'auto' }} mr={1} display="flex" alignItems="center" gap={1}>
+      <Box gridArea="status" ml={{ sm: 'auto' }} mr={1} display="flex" alignItems="center">
         <RecoveryStatus recovery={item} />
       </Box>
     </Box>

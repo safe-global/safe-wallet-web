@@ -14,7 +14,8 @@ import useDecodeTx from '@/hooks/useDecodeTx'
 import TxCard from '../../common/TxCard'
 import { SafeTxContext } from '../../SafeTxProvider'
 import CheckWallet from '@/components/common/CheckWallet'
-import { createMultiSendCallOnlyTx, createTx, dispatchRecoveryProposal } from '@/services/tx/tx-sender'
+import { dispatchRecoveryProposal } from '@/services/recovery/recovery-sender'
+import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import { RecoverAccountFlowFields } from '.'
 import { OwnerList } from '../../common/OwnerList'
 import { selectDelayModifierByGuardian } from '@/services/recovery/selectors'
@@ -24,7 +25,7 @@ import { TxModalContext } from '../..'
 import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
 import { getPeriod } from '@/utils/date'
-import { RecoveryContext } from '@/components/recovery/RecoveryContext'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
 import type { RecoverAccountFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -41,10 +42,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const onboard = useOnboard()
-  const {
-    refetch,
-    state: [data],
-  } = useContext(RecoveryContext)
+  const [data] = useRecovery()
   const recovery = data && selectDelayModifierByGuardian(data, wallet?.address ?? '')
 
   // Proposal
@@ -78,7 +76,6 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
         safe,
         safeTx,
         delayModifierAddress: recovery.address,
-        refetchRecoveryData: refetch,
       })
     } catch (_err) {
       const err = asError(_err)
