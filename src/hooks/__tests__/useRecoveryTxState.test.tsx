@@ -185,6 +185,8 @@ describe('useRecoveryTxState', () => {
       const delayModifierAddress = faker.finance.ethereumAddress()
       const nextTxHash = faker.string.hexadecimal()
 
+      const nextRecoveryTxHash = faker.string.hexadecimal()
+
       const validFrom = BigNumber.from(0)
       const expiresAt = BigNumber.from(1)
 
@@ -198,7 +200,7 @@ describe('useRecoveryTxState', () => {
               transactionHash: nextTxHash,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(0) },
+              args: { queueNonce: BigNumber.from(0), txHash: nextRecoveryTxHash },
             },
           ],
         },
@@ -206,7 +208,7 @@ describe('useRecoveryTxState', () => {
 
       const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any), {
         wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data], pending: { [nextTxHash]: true } } as any}>
+          <RecoveryContext.Provider value={{ state: [data], pending: { [nextRecoveryTxHash]: true } } as any}>
             {children}
           </RecoveryContext.Provider>
         ),
