@@ -12,6 +12,16 @@ import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain } from '../tx/tx-sender/sdk'
 
 function waitForRecoveryTx(moduleAddress: string, recoveryTxHash: string, tx: ContractTransaction) {
+  // TODO: This does not make sense to emit here but normal txs and messages emit in the same place
+  // We should ideally move this to the beginning of _all_ dispatchers for consistency so that the UI
+  // shows a pending state when beginning exectuion of a transaction/message and perhaps rename it to
+  // something more generic like DISPATCHING or SUBMITTING
+
+  recoveryDispatch(RecoveryEvent.EXECUTING, {
+    moduleAddress,
+    recoveryTxHash,
+  })
+
   const payload = {
     moduleAddress,
     recoveryTxHash,
@@ -61,12 +71,11 @@ export async function dispatchRecoveryProposal({
   const signer = provider.getSigner()
 
   let recoveryTxHash: string | undefined
-  let tx: ContractTransaction | undefined
 
   const contract = delayModifier.connect(signer)
 
   try {
-    // Get recovery tx hash as a form of ID for event bus
+    // Get recovery tx hash as a form of ID for FAILED event in event bus
     recoveryTxHash = await contract.getTransactionHash(
       safeTx.data.to,
       safeTx.data.value,
@@ -74,26 +83,14 @@ export async function dispatchRecoveryProposal({
       safeTx.data.operation,
     )
 
-    recoveryDispatch(RecoveryEvent.EXECUTING, {
-      moduleAddress: delayModifierAddress,
-      recoveryTxHash: recoveryTxHash,
-    })
-  } catch (error) {
-    recoveryDispatch(RecoveryEvent.FAILED, {
-      moduleAddress: delayModifierAddress,
-      error: asError(error),
-    })
-
-    throw error
-  }
-
-  try {
-    tx = await contract.execTransactionFromModule(
+    const tx = await contract.execTransactionFromModule(
       safeTx.data.to,
       safeTx.data.value,
       safeTx.data.data,
       safeTx.data.operation,
     )
+
+    waitForRecoveryTx(delayModifierAddress, recoveryTxHash, tx)
   } catch (error) {
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
@@ -103,8 +100,6 @@ export async function dispatchRecoveryProposal({
 
     throw error
   }
-
-  waitForRecoveryTx(delayModifierAddress, recoveryTxHash, tx)
 }
 
 export async function dispatchRecoveryExecution({
@@ -125,15 +120,10 @@ export async function dispatchRecoveryExecution({
 
   const signer = provider.getSigner()
 
-  let tx: ContractTransaction | undefined
-
   try {
-    tx = await delayModifier.connect(signer).executeNextTx(args.to, args.value, args.data, args.operation)
+    const tx = await delayModifier.connect(signer).executeNextTx(args.to, args.value, args.data, args.operation)
 
-    recoveryDispatch(RecoveryEvent.EXECUTING, {
-      moduleAddress: delayModifierAddress,
-      recoveryTxHash: args.txHash,
-    })
+    waitForRecoveryTx(delayModifierAddress, args.txHash, tx)
   } catch (error) {
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
@@ -143,8 +133,6 @@ export async function dispatchRecoveryExecution({
 
     throw error
   }
-
-  waitForRecoveryTx(delayModifierAddress, args.txHash, tx)
 }
 
 export async function dispatchRecoverySkipExpired({
@@ -165,15 +153,10 @@ export async function dispatchRecoverySkipExpired({
 
   const signer = provider.getSigner()
 
-  let tx: ContractTransaction | undefined
-
   try {
-    tx = await delayModifier.connect(signer).skipExpired()
+    const tx = await delayModifier.connect(signer).skipExpired()
 
-    recoveryDispatch(RecoveryEvent.EXECUTING, {
-      moduleAddress: delayModifierAddress,
-      recoveryTxHash,
-    })
+    waitForRecoveryTx(delayModifierAddress, recoveryTxHash, tx)
   } catch (error) {
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
@@ -183,6 +166,4 @@ export async function dispatchRecoverySkipExpired({
 
     throw error
   }
-
-  waitForRecoveryTx(delayModifierAddress, recoveryTxHash, tx)
 }
