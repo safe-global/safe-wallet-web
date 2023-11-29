@@ -7,48 +7,48 @@ import { useRecoveryPendingTxs } from '../useRecoveryPendingTxs'
 describe('useRecoveryPendingTxs', () => {
   it('should set pending status to SUBMITTING when EXECUTING event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
-    const transactionHash = faker.string.hexadecimal()
+    const recoveryTxHash = faker.string.hexadecimal()
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, { moduleAddress: delayModifierAddress, transactionHash })
+      recoveryDispatch(RecoveryEvent.EXECUTING, { moduleAddress: delayModifierAddress, recoveryTxHash })
     })
 
     expect(result.current).toStrictEqual({
-      [transactionHash]: PendingStatus.SUBMITTING,
+      [recoveryTxHash]: PendingStatus.SUBMITTING,
     })
   })
 
   it('should set pending status to PROCESSING when PROCESSING event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
-    const transactionHash = faker.string.hexadecimal()
+    const recoveryTxHash = faker.string.hexadecimal()
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.PROCESSING, { moduleAddress: delayModifierAddress, transactionHash })
+      recoveryDispatch(RecoveryEvent.PROCESSING, { moduleAddress: delayModifierAddress, recoveryTxHash })
     })
 
     expect(result.current).toStrictEqual({
-      [transactionHash]: PendingStatus.PROCESSING,
+      [recoveryTxHash]: PendingStatus.PROCESSING,
     })
   })
 
   it('should set remove the pending status when REVERTED event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
-    const transactionHash = faker.string.hexadecimal()
+    const recoveryTxHash = faker.string.hexadecimal()
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, { moduleAddress: delayModifierAddress, transactionHash })
+      recoveryDispatch(RecoveryEvent.EXECUTING, { moduleAddress: delayModifierAddress, recoveryTxHash })
       recoveryDispatch(RecoveryEvent.REVERTED, {
         moduleAddress: delayModifierAddress,
-        transactionHash,
+        recoveryTxHash,
         error: new Error(),
       })
     })
@@ -58,14 +58,14 @@ describe('useRecoveryPendingTxs', () => {
 
   it('should set remove the pending status when PROCESSED event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
-    const transactionHash = faker.string.hexadecimal()
+    const recoveryTxHash = faker.string.hexadecimal()
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, { moduleAddress: delayModifierAddress, transactionHash })
-      recoveryDispatch(RecoveryEvent.PROCESSED, { moduleAddress: delayModifierAddress, transactionHash })
+      recoveryDispatch(RecoveryEvent.EXECUTING, { moduleAddress: delayModifierAddress, recoveryTxHash })
+      recoveryDispatch(RecoveryEvent.PROCESSED, { moduleAddress: delayModifierAddress, recoveryTxHash })
     })
 
     expect(result.current).toStrictEqual({})
