@@ -1,15 +1,13 @@
-import { type ReactElement, useEffect, useContext, useCallback } from 'react'
+import { type ReactElement, useEffect, useContext } from 'react'
 import { Grid, Typography } from '@mui/material'
 import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import type { NftTransferParams } from '.'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
-import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { SafeTxContext } from '../../SafeTxProvider'
 import { NftItems } from '@/components/tx-flow/flows/NftTransfer/SendNftBatch'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
-import { trackEvent } from '@/services/analytics'
 
 type ReviewNftBatchProps = {
   params: NftTransferParams
@@ -40,20 +38,8 @@ const ReviewNftBatch = ({ params, onSubmit, txNonce }: ReviewNftBatchProps): Rea
     promise.then(setSafeTx).catch(setSafeTxError)
   }, [safeAddress, params, setSafeTx, setSafeTxError])
 
-  const onTxSubmit = useCallback<SubmitCallback>(
-    (_, isExecuted) => {
-      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.transfer_nft })
-      if (isExecuted) {
-        trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.transfer_nft })
-      }
-
-      onSubmit()
-    },
-    [onSubmit],
-  )
-
   return (
-    <SignOrExecuteForm onSubmit={onTxSubmit}>
+    <SignOrExecuteForm onSubmit={onSubmit}>
       <Grid container gap={1} mb={2}>
         <Grid item md>
           <Typography variant="body2" color="text.secondary">

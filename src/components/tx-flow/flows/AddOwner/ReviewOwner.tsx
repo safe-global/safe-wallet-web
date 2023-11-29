@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react'
 import { Typography, Divider, Box, SvgIcon, Paper } from '@mui/material'
 
-import type { SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
@@ -15,7 +14,6 @@ import PlusIcon from '@/public/images/common/plus.svg'
 import MinusIcon from '@/public/images/common/minus.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()
@@ -38,7 +36,7 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
     promise.then(setSafeTx).catch(setSafeTxError)
   }, [removedOwner, newOwner, threshold, setSafeTx, setSafeTxError])
 
-  const addAddressBookEntryAndSubmit: SubmitCallback = (_, isExecuted) => {
+  const addAddressBookEntryAndSubmit = () => {
     if (typeof newOwner.name !== 'undefined') {
       dispatch(
         upsertAddressBookEntry({
@@ -51,12 +49,6 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
 
     trackEvent({ ...SETTINGS_EVENTS.SETUP.THRESHOLD, label: safe.threshold })
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
-
-    const txType = params.removedOwner ? TX_TYPES.owner_swap : TX_TYPES.owner_add
-    trackEvent({ ...TX_EVENTS.CREATE, label: txType })
-    if (isExecuted) {
-      trackEvent({ ...TX_EVENTS.EXECUTE, label: txType })
-    }
   }
 
   return (

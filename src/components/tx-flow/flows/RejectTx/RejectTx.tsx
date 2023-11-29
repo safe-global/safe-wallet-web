@@ -1,21 +1,12 @@
 import type { ReactElement } from 'react'
 import { Typography } from '@mui/material'
-import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { createRejectTx } from '@/services/tx/tx-sender'
 import { useContext, useEffect } from 'react'
 import { SafeTxContext } from '../../SafeTxProvider'
-import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 type RejectTxProps = {
   txNonce: number
-}
-
-const onSubmit: SubmitCallback = (_, isExecuted) => {
-  trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.rejection })
-  if (isExecuted) {
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.rejection })
-  }
 }
 
 const RejectTx = ({ txNonce }: RejectTxProps): ReactElement => {
@@ -28,7 +19,7 @@ const RejectTx = ({ txNonce }: RejectTxProps): ReactElement => {
   }, [txNonce, setNonce, setSafeTx, setSafeTxError])
 
   return (
-    <SignOrExecuteForm onSubmit={onSubmit} isBatchable={false}>
+    <SignOrExecuteForm isBatchable={false}>
       <Typography mb={2}>
         To reject the transaction, a separate rejection transaction will be created to replace the original one.
       </Typography>

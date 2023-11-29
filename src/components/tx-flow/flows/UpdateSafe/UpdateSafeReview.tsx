@@ -8,16 +8,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
-import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
-import { trackEvent } from '@/services/analytics'
-
-const onSubmit: SubmitCallback = (_, isExecuted) => {
-  trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.safe_update })
-  if (isExecuted) {
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.safe_update })
-  }
-}
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 
 export const UpdateSafeReview = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -34,7 +25,7 @@ export const UpdateSafeReview = () => {
   }, [chain, safe, safeLoaded, setNonce, setSafeTx, setSafeTxError])
 
   return (
-    <SignOrExecuteForm onSubmit={onSubmit}>
+    <SignOrExecuteForm>
       <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>

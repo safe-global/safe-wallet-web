@@ -6,7 +6,7 @@ import { Typography, Grid, Alert } from '@mui/material'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
-import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
@@ -17,7 +17,6 @@ import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import type { NewSpendingLimitFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeTxContext } from '../../SafeTxProvider'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowProps }) => {
   const [existingSpendingLimit, setExistingSpendingLimit] = useState<SpendingLimitState>()
@@ -49,16 +48,11 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
       : getResetTimeOptions(chainId).find((time) => time.value === params.resetTime)?.label
   }, [isOneTime, params.resetTime, chainId])
 
-  const onFormSubmit: SubmitCallback = (_, isExecuted) => {
+  const onFormSubmit = () => {
     trackEvent({
       ...SETTINGS_EVENTS.SPENDING_LIMIT.RESET_PERIOD,
       label: resetTime,
     })
-
-    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.spending_limit_add })
-    if (isExecuted) {
-      trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.spending_limit_add })
-    }
   }
 
   const existingAmount = existingSpendingLimit

@@ -16,7 +16,7 @@ export const getTransactionTrackingType = async (txId: string, chainId: string):
   try {
     details = await getTxDetails(txId, chainId)
   } catch {
-    return
+    return TX_TYPES.custom
   }
   const { txInfo } = details
 
@@ -48,7 +48,6 @@ export const getTransactionTrackingType = async (txId: string, chainId: string):
         return TX_TYPES.guard_remove
       }
     }
-    return
   }
 
   if (isRejectionTx({ data: details.txData?.hexData || '', value: details.txData?.value || '' })) {
@@ -67,7 +66,7 @@ export const getTransactionTrackingType = async (txId: string, chainId: string):
     if (isMultiSendTxInfo(txInfo)) {
       return TX_TYPES.batch
     }
-
-    return undefined
   }
+
+  return TX_TYPES.custom
 }

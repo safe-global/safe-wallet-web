@@ -96,7 +96,7 @@ const ExecuteForm = ({
     }
 
     // On success
-    onSubmit(executedTxId, true)
+    onSubmit?.(executedTxId, true)
     setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
   }
 

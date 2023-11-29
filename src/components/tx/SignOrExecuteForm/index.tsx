@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, useState, useContext } from 'react'
+import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { WrongChainWarning } from '../WrongChainWarning'
@@ -19,12 +19,16 @@ import useDecodeTx from '@/hooks/useDecodeTx'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
 import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
+import { getTransactionTrackingType } from '@/utils/tx-tracking'
+import useChainId from '@/hooks/useChainId'
+import { TX_EVENTS } from '@/services/analytics/events/transactions'
+import { trackEvent } from '@/services/analytics'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
 export type SignOrExecuteProps = {
   txId?: string
-  onSubmit: SubmitCallback
+  onSubmit?: SubmitCallback
   children?: ReactNode
   isExecutable?: boolean
   isRejection?: boolean
@@ -36,7 +40,8 @@ export type SignOrExecuteProps = {
   isCreation?: boolean
 }
 
-const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
+const SignOrExecuteForm = ({ onSubmit, ...props }: SignOrExecuteProps): ReactElement => {
+  const chainId = useChainId()
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
   const { safeTx, safeTxError } = useContext(SafeTxContext)
@@ -49,6 +54,18 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
   const willExecute = (props.onlyExecute || shouldExecute) && canExecute
+
+  const onFormSubmit = useCallback<SubmitCallback>(
+    async (txId, isExecuted) => {
+      // Track tx event
+      const event = isExecuted ? TX_EVENTS.EXECUTE : isCreation ? TX_EVENTS.CREATE : TX_EVENTS.CONFIRM
+      const txType = await getTransactionTrackingType(txId, chainId)
+      trackEvent({ ...event, label: txType })
+
+      onSubmit?.(txId, isExecuted)
+    },
+    [chainId, isCreation, onSubmit],
+  )
 
   return (
     <>
@@ -98,9 +115,15 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
         <RiskConfirmationError />
 
         {willExecute ? (
-          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} />
+          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
         ) : (
-          <SignForm {...props} safeTx={safeTx} isBatchable={isBatchable} isCreation={isCreation} />
+          <SignForm
+            {...props}
+            safeTx={safeTx}
+            isBatchable={isBatchable}
+            isCreation={isCreation}
+            onSubmit={onFormSubmit}
+          />
         )}
       </TxCard>
     </>

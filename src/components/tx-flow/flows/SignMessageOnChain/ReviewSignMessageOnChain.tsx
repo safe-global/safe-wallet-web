@@ -11,7 +11,6 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import SendFromBlock from '@/components/tx/SendFromBlock'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import type { SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import useChainId from '@/hooks/useChainId'
@@ -25,8 +24,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { asError } from '@/services/exceptions/utils'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -98,19 +96,14 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
     signMessageAddress,
   ])
 
-  const handleSubmit: SubmitCallback = (_, isExecuted) => {
+  const handleSubmit = async () => {
     if (!safeTx || !onboard) return
 
-    // Track the creation of a typed message
-    if (isTypedMessage && safeTx.signatures.size === 0) {
-      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.typed_message })
+    try {
+      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
+    } catch (error) {
+      setSafeTxError(asError(error))
     }
-
-    if (isExecuted) {
-      trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.typed_message })
-    }
-
-    dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId).catch(setSafeTxError)
   }
 
   return (
