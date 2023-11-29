@@ -9,7 +9,7 @@ import { Countdown } from '@/components/common/Countdown'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
-import { formatDate } from '@/utils/date'
+import { formatDateTime } from '@/utils/date'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
@@ -24,7 +24,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
     item.expiresAt ? (
       <>
         The recovery transaction can be executed{' '}
-        <Typography color="primary.main">until {formatDate(item.expiresAt.toNumber())}.</Typography>
+        <Typography color="primary.main">until {formatDateTime(item.expiresAt.toNumber())}.</Typography>
       </>
     ) : (
       'The recovery transaction can be executed now.'
