@@ -1,0 +1,71 @@
+.dialog :global .MuiPaper-root {
+  max-width: 900px;
+  padding: var(--space-2);
+}
+
+.dialog h2 {
+  font-weight: bold;
+  padding: 0;
+}
+
+.dialog :global .MuiDialogContent-root {
+  border: 0;
+  padding: 0;
+}
+
+.method {
+  border: 2px solid var(--color-border-light);
+  padding: var(--space-3);
+  border-radius: 6px;
+}
+
+.buttonGroup :global .MuiRadio-root {
+  display: none;
+}
+
+.buttonGroup :global .MuiRadio-root.Mui-checked + span > div {
+  border-color: var(--color-primary-main);
+}
+
+.buttonGroup :global .MuiFormControlLabel-root {
+  margin: 0;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.buttonGroup :global .MuiFormControlLabel-root span,
+.buttonGroup :global .MuiFormControlLabel-root span > div {
+  height: 100%;
+}
+
+.closeIcon {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  color: var(--color-text-secondary);
+  margin-left: auto;
+}
+
+@media (min-width: 600px) {
+  .dialog :global .MuiPaper-root {
+    padding: var(--space-10);
+  }
+
+  .dialog h2 {
+    font-size: 32px;
+  }
+
+  .buttonGroup {
+    flex-wrap: nowrap;
+  }
+
+  .closeIcon {
+    top: var(--space-3);
+    right: var(--space-3);
+  }
+}

@@ -1,9 +1,8 @@
+import { ChooseRecoveryMethodModal } from '@/components/settings/Recovery/ChooseRecoveryMethodModal'
 import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
-import { useContext, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 
-import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
-import { TxModalContext } from '@/components/tx-flow'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
 import { DelayModifierRow } from './DelayModifierRow'
@@ -69,7 +68,6 @@ const headCells = [
 ]
 
 export function Recovery(): ReactElement {
-  const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()
 
   const rows = useMemo(() => {
@@ -136,18 +134,8 @@ export function Recovery(): ReactElement {
                   Give us feedback
                 </ExternalLink>
               </Alert>
-              <CheckWallet>
-                {(isOk) => (
-                  <Button
-                    variant="contained"
-                    disabled={!isOk}
-                    onClick={() => setTxFlow(<UpsertRecoveryFlow />)}
-                    sx={{ mt: 2 }}
-                  >
-                    Set up recovery
-                  </Button>
-                )}
-              </CheckWallet>
+
+              <SetupRecoveryButton />
             </>
           ) : rows ? (
             <EnhancedTable rows={rows} headCells={headCells} />
@@ -155,5 +143,23 @@ export function Recovery(): ReactElement {
         </Grid>
       </Grid>
     </Paper>
+  )
+}
+
+export const SetupRecoveryButton = () => {
+  const [open, setOpen] = useState<boolean>(false)
+
+  return (
+    <>
+      <CheckWallet>
+        {(isOk) => (
+          <Button variant="contained" disabled={!isOk} onClick={() => setOpen(true)} sx={{ mt: 2 }}>
+            Set up recovery
+          </Button>
+        )}
+      </CheckWallet>
+
+      <ChooseRecoveryMethodModal open={open} onClose={() => setOpen(false)} />
+    </>
   )
 }

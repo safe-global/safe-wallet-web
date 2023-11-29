@@ -1,37 +1,19 @@
-import { Box, Button, Card, Grid, Typography } from '@mui/material'
-import { useContext } from 'react'
+import { SetupRecoveryButton } from '@/components/settings/Recovery'
+import { Box, Card, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import RecoveryLogo from '@/public/images/common/recovery.svg'
 import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Chip } from '@/components/common/Chip'
-import { TxModalContext } from '@/components/tx-flow'
-import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 import { useRecovery } from '@/components/recovery/RecoveryContext'
-import { useRouter } from 'next/router'
-import { AppRoutes } from '@/config/routes'
-import CheckWallet from '@/components/common/CheckWallet'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 
 import css from './styles.module.css'
 
 export function Recovery(): ReactElement {
-  const router = useRouter()
-  const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()
   const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
-
-  const onEnable = () => {
-    setTxFlow(<UpsertRecoveryFlow />)
-  }
-
-  const onEdit = () => {
-    router.push({
-      pathname: AppRoutes.settings.securityLogin,
-      query: router.query,
-    })
-  }
 
   return (
     <WidgetContainer>
@@ -55,15 +37,7 @@ export function Recovery(): ReactElement {
               <Typography mt={1} mb={3}>
                 Ensure that you never lose access to your funds by choosing a Recoverer to recover your account.
               </Typography>
-              {supportsRecovery && (!recovery || recovery.length === 0) && (
-                <CheckWallet>
-                  {(isOk) => (
-                    <Button variant="contained" disabled={!isOk} onClick={onEnable}>
-                      Set up recovery
-                    </Button>
-                  )}
-                </CheckWallet>
-              )}
+              {supportsRecovery && (!recovery || recovery.length === 0) && <SetupRecoveryButton />}
             </Grid>
           </Grid>
         </Card>
