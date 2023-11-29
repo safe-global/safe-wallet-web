@@ -34,7 +34,7 @@ const headCells = [
     label: (
       <>
         Recovery delay{' '}
-        <Tooltip title="You can cancel any recovery attempt when it is not needed or wanted within the delay period.">
+        <Tooltip title="You can cancel any recovery attempt when it is not needed or wanted.">
           <span>
             <SvgIcon
               component={InfoIcon}
@@ -133,7 +133,7 @@ export function Recovery(): ReactElement {
           {!recovery || recovery.length === 0 ? (
             <>
               <Alert severity="info">
-                Unhappy with the provided option?
+                Unhappy with the provided option?{' '}
                 <ExternalLink noIcon href={FEEDBACK_FORM} title="Give feedback about the Account recovery process">
                   Give us feedback
                 </ExternalLink>

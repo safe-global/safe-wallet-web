@@ -5,29 +5,28 @@ import { useRecoveryState } from './useRecoveryState'
 import { useRecoveryDelayModifiers } from './useRecoveryDelayModifiers'
 import type { AsyncResult } from '@/hooks/useAsync'
 import type { RecoveryState } from '@/services/recovery/recovery-state'
+import { useRecoveryPendingTxs } from './useRecoveryPendingTxs'
 
 // State of current Safe, populated on load
 export const RecoveryContext = createContext<{
   state: AsyncResult<RecoveryState>
-  refetch: () => void
+  pending: ReturnType<typeof useRecoveryPendingTxs>
 }>({
   state: [undefined, undefined, false],
-  refetch: () => {},
+  pending: {},
 })
 
 export function RecoveryProvider({ children }: { children: ReactNode }): ReactElement {
   const [delayModifiers, delayModifiersError, delayModifiersLoading] = useRecoveryDelayModifiers()
-  const {
-    data: [recoveryState, recoveryStateError, recoveryStateLoading],
-    refetch,
-  } = useRecoveryState(delayModifiers)
+  const [recoveryState, recoveryStateError, recoveryStateLoading] = useRecoveryState(delayModifiers)
+  const pending = useRecoveryPendingTxs()
 
   const data = recoveryState
   const error = delayModifiersError || recoveryStateError
   const loading = delayModifiersLoading || recoveryStateLoading
 
   return (
-    <RecoveryContext.Provider value={{ state: [data, error, loading], refetch }}>{children}</RecoveryContext.Provider>
+    <RecoveryContext.Provider value={{ state: [data, error, loading], pending }}>{children}</RecoveryContext.Provider>
   )
 }
 

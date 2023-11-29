@@ -12,15 +12,13 @@ import { isCustomTxInfo, isMultiSendTxInfo, isTransactionListItem } from '@/util
 import { sameAddress } from '@/utils/addresses'
 import { addListener } from '@reduxjs/toolkit'
 import { txHistorySlice } from '@/store/txHistorySlice'
+import { RecoveryEvent, recoverySubscribe } from '@/services/recovery/recoveryEvents'
 import type { AsyncResult } from '@/hooks/useAsync'
 import type { RecoveryState } from '@/services/recovery/recovery-state'
 
 const REFRESH_DELAY = 5 * 60 * 1_000 // 5 minutes
 
-export function useRecoveryState(delayModifiers?: Array<Delay>): {
-  data: AsyncResult<RecoveryState>
-  refetch: () => void
-} {
+export function useRecoveryState(delayModifiers?: Array<Delay>): AsyncResult<RecoveryState> {
   const web3ReadOnly = useWeb3ReadOnly()
   const chain = useCurrentChain()
   const { safe, safeAddress } = useSafeInfo()
@@ -35,34 +33,10 @@ export function useRecoveryState(delayModifiers?: Array<Delay>): {
     setRefetchDep((prev) => !prev)
   }, [])
 
-  const data = useAsync<RecoveryState>(
-    () => {
-      if (!delayModifiers || delayModifiers.length === 0 || !chain?.transactionService || !web3ReadOnly) {
-        return
-      }
-
-      return getRecoveryState({
-        delayModifiers,
-        transactionService: chain.transactionService,
-        safeAddress,
-        provider: web3ReadOnly,
-        chainId: safe.chainId,
-        version: safe.version,
-      })
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      delayModifiers,
-      counter,
-      refetchDep,
-      chain?.transactionService,
-      web3ReadOnly,
-      safeAddress,
-      safe.chainId,
-      safe.version,
-    ],
-    false,
-  )
+  // Reload recovery data when a Guardian transaction occurs
+  useEffect(() => {
+    return recoverySubscribe(RecoveryEvent.PROCESSED, refetch)
+  }, [refetch])
 
   // Reload recovery data when a Delay Modifier is interacted with
   useEffect(() => {
@@ -108,5 +82,32 @@ export function useRecoveryState(delayModifiers?: Array<Delay>): {
     return unsubscribe
   }, [safe.chainId, delayModifiers, refetch, dispatch])
 
-  return { data, refetch }
+  return useAsync<RecoveryState>(
+    () => {
+      if (!delayModifiers || delayModifiers.length === 0 || !chain?.transactionService || !web3ReadOnly) {
+        return
+      }
+
+      return getRecoveryState({
+        delayModifiers,
+        transactionService: chain.transactionService,
+        safeAddress,
+        provider: web3ReadOnly,
+        chainId: safe.chainId,
+        version: safe.version,
+      })
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      delayModifiers,
+      counter,
+      refetchDep,
+      chain?.transactionService,
+      web3ReadOnly,
+      safeAddress,
+      safe.chainId,
+      safe.version,
+    ],
+    false,
+  )
 }

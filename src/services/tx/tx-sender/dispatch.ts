@@ -22,8 +22,6 @@ import {
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
-import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
-import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 
 /**
  * Propose a transaction
@@ -405,100 +403,4 @@ export const dispatchBatchExecutionRelay = async (
     safeAddress,
     groupKey,
   )
-}
-
-function reloadRecoveryDataAfterProcessed(tx: ContractTransaction, refetchRecoveryData: () => void) {
-  tx.wait()
-    .then((receipt) => {
-      if (!didRevert(receipt)) {
-        refetchRecoveryData()
-      }
-    })
-    .catch((error) => {
-      if (didReprice(error)) {
-        refetchRecoveryData()
-      }
-    })
-}
-
-export async function dispatchRecoveryProposal({
-  onboard,
-  safe,
-  safeTx,
-  delayModifierAddress,
-  refetchRecoveryData,
-}: {
-  onboard: OnboardAPI
-  safe: SafeInfo
-  safeTx: SafeTransaction
-  delayModifierAddress: string
-  refetchRecoveryData: () => void
-}) {
-  const wallet = await assertWalletChain(onboard, safe.chainId)
-  const provider = createWeb3(wallet.provider)
-
-  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
-
-  const signer = provider.getSigner()
-
-  delayModifier
-    .connect(signer)
-    .execTransactionFromModule(safeTx.data.to, safeTx.data.value, safeTx.data.data, safeTx.data.operation)
-    .then((result) => {
-      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
-    })
-}
-
-export async function dispatchRecoveryExecution({
-  onboard,
-  chainId,
-  args,
-  delayModifierAddress,
-  refetchRecoveryData,
-}: {
-  onboard: OnboardAPI
-  chainId: string
-  args: TransactionAddedEvent['args']
-  delayModifierAddress: string
-  refetchRecoveryData: () => void
-}) {
-  const wallet = await assertWalletChain(onboard, chainId)
-  const provider = createWeb3(wallet.provider)
-
-  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
-
-  const signer = provider.getSigner()
-
-  delayModifier
-    .connect(signer)
-    .executeNextTx(args.to, args.value, args.data, args.operation)
-    .then((result) => {
-      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
-    })
-}
-
-export async function dispatchRecoverySkipExpired({
-  onboard,
-  chainId,
-  delayModifierAddress,
-  refetchRecoveryData,
-}: {
-  onboard: OnboardAPI
-  chainId: string
-  delayModifierAddress: string
-  refetchRecoveryData: () => void
-}) {
-  const wallet = await assertWalletChain(onboard, chainId)
-  const provider = createWeb3(wallet.provider)
-
-  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
-
-  const signer = provider.getSigner()
-
-  delayModifier
-    .connect(signer)
-    .skipExpired()
-    .then((result) => {
-      reloadRecoveryDataAfterProcessed(result, refetchRecoveryData)
-    })
 }

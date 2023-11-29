@@ -28,6 +28,7 @@ import AddressBookInput from '@/components/common/AddressBookInput'
 import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import { GuardianWarning } from './GuardianSmartContractWarning'
 import type { UpsertRecoveryFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -85,6 +86,8 @@ export function UpsertRecoveryFlowSettings({
               validate={validateGuardian}
             />
 
+            <GuardianWarning />
+
             <Alert severity="info" sx={{ border: 'unset' }}>
               Your Guardian will be able to modify your Account setup. Only select an address that you trust.
             </Alert>
@@ -110,7 +113,7 @@ export function UpsertRecoveryFlowSettings({
               </Typography>
 
               <Typography variant="body2">
-                You can cancel any recovery attempt when it is not needed or wanted within the delay period.
+                You can cancel any recovery attempt when it is not needed or wanted.
               </Typography>
             </div>
 

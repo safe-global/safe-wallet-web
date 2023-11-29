@@ -27,7 +27,7 @@ type Props =
     }
 
 export function RecoveryInProgressCard({ orientation = 'vertical', onClose, recovery }: Props): ReactElement {
-  const { isExecutable, remainingSeconds } = useRecoveryTxState(recovery)
+  const { isExecutable, isExpired, remainingSeconds } = useRecoveryTxState(recovery)
   const router = useRouter()
 
   const onClick = async () => {
@@ -39,9 +39,15 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
   }
 
   const icon = <RecoveryPending />
-  const title = isExecutable ? 'Account can be recovered' : 'Account recovery in progress'
+  const title = isExecutable
+    ? 'Account can be recovered'
+    : isExpired
+    ? 'Account recovery expired'
+    : 'Account recovery in progress'
   const desc = isExecutable
     ? 'The delay period has passed and it is now possible to execute the recovery transaction.'
+    : isExpired
+    ? 'The pending recovery transaction has expired and needs to be cancelled before a new one can be created.'
     : 'The recovery process has started. This Account will be ready to recover in:'
 
   const link = (

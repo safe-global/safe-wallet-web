@@ -12,10 +12,17 @@ import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
 import { RecoveryHeader } from './RecoveryHeader'
+import { useRecovery } from '../recovery/RecoveryContext'
+
+function _useShouldShowRecovery(): boolean {
+  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
+  const [recovery] = useRecovery()
+  return supportsRecovery && !recovery
+}
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
-  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
+  const showRecoveryWidget = _useShouldShowRecovery()
   const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
 
   return (
@@ -31,11 +38,11 @@ const Dashboard = (): ReactElement => {
           <PendingTxsList />
         </Grid>
 
-        <Grid item xs={12} lg={supportsRecovery ? 6 : undefined}>
-          <FeaturedApps stackedLayout={!!supportsRecovery} />
+        <Grid item xs={12} lg={showRecoveryWidget ? 6 : undefined}>
+          <FeaturedApps stackedLayout={!!showRecoveryWidget} />
         </Grid>
 
-        {supportsRecovery ? (
+        {showRecoveryWidget ? (
           <Grid item xs={12} lg={6}>
             <Recovery />
           </Grid>

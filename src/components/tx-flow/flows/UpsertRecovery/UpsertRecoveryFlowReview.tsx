@@ -80,10 +80,7 @@ export function UpsertRecoveryFlowReview({
         title={
           <>
             Recovery delay
-            <Tooltip
-              placement="top"
-              title="You can cancel any recovery attempt when it is not needed or wanted within the delay period."
-            >
+            <Tooltip placement="top" title="You can cancel any recovery attempt when it is not needed or wanted.">
               <span>
                 <SvgIcon
                   component={InfoIcon}
