@@ -5,7 +5,7 @@ import { IS_PRODUCTION } from '@/config/constants'
 import useSocialWallet, { useMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
 import ExternalStore from '@/services/ExternalStore'
 import { Avatar, Box, Button, Divider, Grid, LinearProgress, Typography } from '@mui/material'
-import { type ReactNode, useCallback, useState, useEffect } from 'react'
+import { type ReactNode, useCallback, useState } from 'react'
 import css from './styles.module.css'
 
 const { useStore: useCloseCallback, setStore: setCloseCallback } = new ExternalStore<() => void>()
