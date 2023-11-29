@@ -17,8 +17,10 @@ export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): R
   const { isExecutable, isExpired } = useRecoveryTxState(recovery)
   const { pending } = useContext(RecoveryContext)
 
-  const status = pending?.[recovery.transactionHash] ? (
-    STATUS_LABELS[pending[recovery.transactionHash]]
+  const pendingTxStatus = pending?.[recovery.args.txHash]
+
+  const status = pendingTxStatus ? (
+    STATUS_LABELS[pendingTxStatus]
   ) : isExecutable ? (
     'Awaiting execution'
   ) : isExpired ? (
