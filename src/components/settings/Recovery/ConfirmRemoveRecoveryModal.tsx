@@ -1,3 +1,5 @@
+import Track from '@/components/common/Track'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import {
   Button,
   Dialog,
@@ -64,10 +66,14 @@ export function ConfirmRemoveRecoveryModal({
       </DialogContent>
 
       <DialogActions sx={{ display: 'flex', justifyContent: 'space-between', p: 3, pb: 2 }}>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={onConfirm} autoFocus variant="danger">
-          Remove
-        </Button>
+        <Track {...RECOVERY_EVENTS.REMOVE_RECOVERY_CANCEL}>
+          <Button onClick={onClose}>Cancel</Button>
+        </Track>
+        <Track {...RECOVERY_EVENTS.REMOVE_RECOVERY_PROCEED}>
+          <Button onClick={onConfirm} autoFocus variant="danger">
+            Remove
+          </Button>
+        </Track>
       </DialogActions>
     </Dialog>
   )

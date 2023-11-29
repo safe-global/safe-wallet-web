@@ -49,9 +49,9 @@ export function DelayModifierRow({ delayModifier }: { delayModifier: RecoverySta
               </span>
             </Tooltip>
 
-            <Tooltip title={isOk ? 'Disable recovery' : undefined}>
+            <Tooltip title={isOk ? 'Remove recovery' : undefined}>
               <span>
-                <Track {...RECOVERY_EVENTS.DISABLE_RECOVERY}>
+                <Track {...RECOVERY_EVENTS.REMOVE_RECOVERY}>
                   <IconButton onClick={onDelete} size="small" disabled={!isOk}>
                     <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
                   </IconButton>
