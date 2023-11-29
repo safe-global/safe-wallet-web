@@ -3,6 +3,7 @@ import {
   BrowserStorage,
   FactorKeyTypeShareDescription,
   generateFactorKey,
+  type MPCKeyDetails,
   TssShareType,
   type Web3AuthMPCCoreKit,
 } from '@web3auth/mpc-core-kit'
@@ -76,9 +77,9 @@ export class SmsOtpRecovery {
 
   isEnabled(): boolean {
     try {
-      const shareDescriptions = Object.values(this.mpcCoreKit.getKeyDetails().shareDescriptions).map((i) =>
-        (i || [])[0] ? JSON.parse(i[0]) : {},
-      )
+      const shareDescriptions = Object.values(
+        (this.mpcCoreKit.tKey.metadata.generalStore as MPCKeyDetails).shareDescriptions,
+      ).map((i) => ((i || [])[0] ? JSON.parse(i[0]) : {}))
 
       return shareDescriptions.some(
         (shareDescription) =>
@@ -92,9 +93,9 @@ export class SmsOtpRecovery {
 
   getSmsRecoveryNumber(): string | undefined {
     try {
-      const shareDescriptions = Object.values(this.mpcCoreKit.getKeyDetails().shareDescriptions).map((i) =>
-        (i || [])[0] ? JSON.parse(i[0]) : {},
-      )
+      const shareDescriptions = Object.values(
+        (this.mpcCoreKit.tKey.metadata.generalStore as MPCKeyDetails).shareDescriptions,
+      ).map((i) => ((i || [])[0] ? JSON.parse(i[0]) : {}))
 
       return shareDescriptions.find(
         (shareDescription) =>
@@ -147,11 +148,23 @@ export class SmsOtpRecovery {
         'content-type': 'application/JSON',
       },
       body: JSON.stringify(data),
-    }).then((resp) => {
+    }).then(async (resp) => {
       if (resp.ok) {
         return resp.json()
       } else {
-        throw new Error('Invalid register request')
+        // Parse error
+        let errorResp: any
+
+        try {
+          errorResp = await resp.json()
+        } catch (err) {}
+
+        if (errorResp && 'validation' in errorResp && 'body' in errorResp.validation) {
+          const validationError = errorResp.validation.body.message
+          throw new Error(validationError)
+        }
+
+        throw new Error('Error registering number. Check the number and try again.')
       }
     })
 
@@ -232,11 +245,19 @@ export class SmsOtpRecovery {
         'content-type': 'application/JSON',
       },
       body: JSON.stringify(data),
-    }).then((resp) => {
+    }).then(async (resp) => {
       if (resp.ok) {
         return resp.json()
       } else {
-        throw new Error('Invalid verify request')
+        let errorResp
+        try {
+          errorResp = await resp.json()
+          // Try to parse as json
+        } catch (err) {}
+        if (errorResp && 'message' in errorResp) {
+          throw new Error(errorResp.message)
+        }
+        throw new Error('Your phone number could not be verified.')
       }
     })
 

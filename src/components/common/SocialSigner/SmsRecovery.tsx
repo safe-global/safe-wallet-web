@@ -9,6 +9,7 @@ import css from './styles.module.css'
 import CodeInput from '../CodeInput'
 import CooldownButton from '../CooldownButton'
 import { obfuscateNumber } from '@/utils/phoneNumber'
+import { asError } from '@/services/exceptions/utils'
 
 type SmsFormData = {
   code: string
@@ -46,7 +47,7 @@ export const SmsRecovery = ({
       await recoverFactorWithSms(data.code, storeDeviceFactor)
       onSuccess?.()
     } catch (e) {
-      setError('Incorrect Code')
+      setError(asError(e).message)
     }
   }
 

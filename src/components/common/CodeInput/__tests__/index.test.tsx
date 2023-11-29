@@ -1,15 +1,5 @@
-import { fireEvent, render, waitFor } from '@/tests/test-utils'
+import { fireEvent, render, typeInFocusedElement, waitFor } from '@/tests/test-utils'
 import CodeInput from '..'
-
-const typeInFocusedElement = (text: string) => {
-  let activeElement = document.activeElement! as HTMLInputElement
-  activeElement.value = text
-  fireEvent.input(activeElement, {
-    currentTarget: {
-      value: text,
-    },
-  })
-}
 
 describe('CodeInput', () => {
   beforeAll(() => {

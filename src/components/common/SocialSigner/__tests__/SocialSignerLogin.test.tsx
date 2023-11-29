@@ -1,4 +1,4 @@
-import { act, render, waitFor } from '@/tests/test-utils'
+import { act, render, typeInFocusedElement, waitFor } from '@/tests/test-utils'
 
 import { SocialSigner, _getSupportedChains } from '@/components/common/SocialSigner'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
@@ -11,16 +11,6 @@ import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import { chainBuilder } from '@/tests/builders/chains'
 import PasswordRecoveryModal from '@/components/common/SocialSigner/SocialRecoveryModal'
 import { MultiFactorType, setMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
-
-const typeInFocusedElement = (text: string) => {
-  let activeElement = document.activeElement! as HTMLInputElement
-  activeElement.value = text
-  fireEvent.input(activeElement, {
-    currentTarget: {
-      value: text,
-    },
-  })
-}
 
 jest.mock('@/services/mpc/SocialWalletService')
 

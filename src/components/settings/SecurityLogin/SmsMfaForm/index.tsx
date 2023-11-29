@@ -14,7 +14,7 @@ import {
   AlertTitle,
 } from '@mui/material'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import CheckIcon from '@/public/images/common/check-filled.svg'
 import LockWarningIcon from '@/public/images/common/lock-warning.svg'
@@ -36,6 +36,10 @@ type SmsOtpFormData = {
   [SmsOtpFieldNames.verificationCode]: string | undefined
 }
 
+// For now we just have a very simple regex that ensures the number thats with "+" and numbers or whitespace
+// The numbers will also get validated by the backend
+const phoneRegex = /^\+([0-9]|\s)+$/
+
 const SmsMfaForm = () => {
   const socialWalletService = useSocialWallet()
   const [submitError, setSubmitError] = useState<string>()
@@ -48,7 +52,12 @@ const SmsMfaForm = () => {
 
   const formMethods = useForm<SmsOtpFormData>({
     mode: 'all',
-    // We use values instead of defaultValues so that the number updates after setting up the new factor
+    // If we do not set defaultValues the placeholder will overlap the value.
+    defaultValues: {
+      [SmsOtpFieldNames.mobileNumber]: obfuscateNumber(currentNumber) ?? '',
+      [SmsOtpFieldNames.verificationCode]: undefined,
+    },
+    // We set values in case the user finishes setting up MFA so that the value gets updates to the obfuscated number
     values: {
       [SmsOtpFieldNames.mobileNumber]: obfuscateNumber(currentNumber) ?? '',
       [SmsOtpFieldNames.verificationCode]: undefined,
@@ -68,20 +77,24 @@ const SmsMfaForm = () => {
         setVerificationStarted(true)
       }
     } catch (err) {
-      setSubmitError(`Error registering this phone number: ${asError(err).message}`)
+      setSubmitError(asError(err).message)
     }
   }
 
   const onVerify = async () => {
-    const code = getValues(SmsOtpFieldNames.verificationCode)
-    const mobileNumber = getValues(SmsOtpFieldNames.mobileNumber)
-    if (!code) {
-      setSubmitError('You need to provide a 6 digit code')
-      return
-    }
-    if (await socialWalletService?.verifySmsOtp(mobileNumber, code)) {
-      onReset()
-      setSuccessMsg('Your SMS recovery was setup successfully')
+    try {
+      const code = getValues(SmsOtpFieldNames.verificationCode)
+      const mobileNumber = getValues(SmsOtpFieldNames.mobileNumber)
+      if (!code) {
+        setSubmitError('You need to provide a 6 digit code')
+        return
+      }
+      if (await socialWalletService?.verifySmsOtp(mobileNumber, code)) {
+        onReset()
+        setSuccessMsg('Your SMS recovery was setup successfully')
+      }
+    } catch (err) {
+      setSubmitError(asError(err).message)
     }
   }
 
@@ -98,9 +111,17 @@ const SmsMfaForm = () => {
     setOpen((prev) => !prev)
   }
 
-  const mobileNumber = watch(SmsOtpFieldNames.mobileNumber)
+  const onCodeChange = useCallback(
+    (code: string) => {
+      setValue(SmsOtpFieldNames.verificationCode, code)
+    },
+    [setValue],
+  )
 
-  const isSubmitDisabled = !mobileNumber
+  const { mobileNumber, verificationCode } = watch()
+
+  const isSubmitDisabled =
+    !mobileNumber || !formState.isValid || (verificationStarted && verificationCode?.length !== 6)
 
   return (
     <FormProvider {...formMethods}>
@@ -121,22 +142,26 @@ const SmsMfaForm = () => {
                     <TextField
                       placeholder="Your phone number"
                       label="Your phone number"
-                      helperText={formState.errors[SmsOtpFieldNames.mobileNumber]?.message}
+                      error={Boolean(formState.errors[SmsOtpFieldNames.mobileNumber])}
+                      helperText={
+                        formState.errors[SmsOtpFieldNames.mobileNumber]?.message ||
+                        formState.errors[SmsOtpFieldNames.mobileNumber]?.type === 'pattern'
+                          ? 'Invalid phone number'
+                          : ''
+                      }
                       InputProps={{
                         readOnly: verificationStarted || Boolean(currentNumber),
                       }}
                       {...register(SmsOtpFieldNames.mobileNumber, {
                         required: true,
+                        pattern: phoneRegex,
                       })}
                     />
                   </FormControl>
                   {verificationStarted && (
                     <Box display="flex" flexDirection="column" gap={1} alignItems="flex-start">
                       <Typography variant="h4">Verification code</Typography>
-                      <CodeInput
-                        length={6}
-                        onCodeChanged={(code: string) => setValue(SmsOtpFieldNames.verificationCode, code)}
-                      />
+                      <CodeInput length={6} onCodeChanged={onCodeChange} />
                       <CooldownButton cooldown={60} onClick={onRegister} startDisabled={true}>
                         Resend code
                       </CooldownButton>
@@ -148,12 +173,7 @@ const SmsMfaForm = () => {
                       {/* TODO: CHANGE TRACKING EVENT */}
                       {verificationStarted ? (
                         <>
-                          <Button
-                            sx={{ fontSize: '14px' }}
-                            variant="outlined"
-                            onClick={onReset}
-                            disabled={!formState.isDirty}
-                          >
+                          <Button sx={{ fontSize: '14px' }} variant="outlined" onClick={onReset}>
                             Cancel
                           </Button>
 
