@@ -20,6 +20,14 @@ export function Countdown({ seconds }: { seconds: number }): ReactElement | null
     return null
   }
 
+  if (seconds <= 60) {
+    return (
+      <Typography fontWeight={700} component="span">
+        {'< 1 min'}
+      </Typography>
+    )
+  }
+
   const { days, hours, minutes } = _getCountdown(seconds)
 
   return (

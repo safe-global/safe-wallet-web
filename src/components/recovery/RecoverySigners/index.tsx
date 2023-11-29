@@ -9,7 +9,7 @@ import { Countdown } from '@/components/common/Countdown'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
-import { formatDate } from '@/utils/date'
+import { formatDateTime } from '@/utils/date'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
@@ -19,6 +19,7 @@ import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactElement {
   const { submitError } = useContext(RecoveryListItemContext)
   const { isExecutable, isNext, remainingSeconds } = useRecoveryTxState(item)
+  console.log(item)
 
   return (
     <>
@@ -57,7 +58,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
           The recovery can be executed{' '}
           {isExecutable ? (
             item.expiresAt ? (
-              <Typography color="primary.main">until {formatDate(item.expiresAt.toNumber())}.</Typography>
+              <Typography color="primary.main">until {formatDateTime(item.expiresAt.toNumber())}.</Typography>
             ) : (
               'now.'
             )
