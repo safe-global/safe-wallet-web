@@ -5,6 +5,8 @@ import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import useSafeAddress from './useSafeAddress'
 import { RecoveryEvent, RecoveryEventType, recoverySubscribe } from '@/services/recovery/recoveryEvents'
+import { getExplorerLink } from '@/utils/gateway'
+import { useCurrentChain } from './useChains'
 
 const RecoveryTxNotifications = {
   [RecoveryEvent.EXECUTING]: 'Confirm the execution in your wallet.',
@@ -22,6 +24,7 @@ const RecoveryTxNotificationTitles = {
 
 export function useRecoveryTxNotifications(): void {
   const dispatch = useAppDispatch()
+  const chain = useCurrentChain()
   const safeAddress = useSafeAddress()
 
   /**
@@ -29,6 +32,10 @@ export function useRecoveryTxNotifications(): void {
    */
 
   useEffect(() => {
+    if (!chain?.blockExplorerUriTemplate) {
+      return
+    }
+
     const unsubFns = Object.entries(RecoveryTxNotifications).map(([event, notification]) =>
       recoverySubscribe(event as RecoveryEvent, async (detail) => {
         const isSuccess = event === RecoveryEvent.PROCESSED
@@ -36,7 +43,12 @@ export function useRecoveryTxNotifications(): void {
 
         const title = RecoveryTxNotificationTitles[detail.eventType]
         const message = isError ? `${notification} ${formatError(detail.error)}` : notification
-        const groupKey = 'recoveryTxHash' in detail ? detail.recoveryTxHash ?? '' : ''
+
+        const txHash = 'txHash' in detail ? detail.txHash : undefined
+        const recoveryTxHash = 'recoveryTxHash' in detail ? detail.recoveryTxHash : undefined
+        const groupKey = txHash || recoveryTxHash || ''
+
+        const link = txHash ? getExplorerLink(txHash, chain.blockExplorerUriTemplate) : undefined
 
         dispatch(
           showNotification({
@@ -45,6 +57,7 @@ export function useRecoveryTxNotifications(): void {
             detailedMessage: isError ? detail.error.message : undefined,
             groupKey: groupKey,
             variant: isError ? 'error' : isSuccess ? 'success' : 'info',
+            link,
           }),
         )
       }),
@@ -53,5 +66,5 @@ export function useRecoveryTxNotifications(): void {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch, safeAddress])
+  }, [dispatch, safeAddress, chain?.blockExplorerUriTemplate])
 }

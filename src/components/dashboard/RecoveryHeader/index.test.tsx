@@ -5,6 +5,11 @@ import { _RecoveryHeader, _useIsProposalInProgress } from '.'
 import { render, renderHook, waitFor } from '@/tests/test-utils'
 import { RecoveryContext } from '@/components/recovery/RecoveryContext'
 import { RecoveryEvent, recoveryDispatch, RecoveryEventType } from '@/services/recovery/recoveryEvents'
+import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
+
+jest.mock('@/hooks/useRecoveryQueue')
+
+const mockUseRecoveryQueue = useRecoveryQueue as jest.MockedFunction<typeof useRecoveryQueue>
 
 describe('RecoveryHeader', () => {
   it('should not render a widget if the chain does not support recovery', () => {
@@ -57,14 +62,23 @@ describe('RecoveryHeader', () => {
 })
 
 describe('useIsProposalInProgress', () => {
-  ;[RecoveryEvent.EXECUTING, RecoveryEvent.PROCESSING].forEach((event) => {
+  ;[
+    RecoveryEvent.EXECUTING,
+    RecoveryEvent.PROCESSING,
+    RecoveryEvent.REVERTED,
+    RecoveryEvent.PROCESSED,
+    RecoveryEvent.FAILED,
+  ].forEach((event) => {
     it('should return true if there is a proposal in progress', async () => {
+      mockUseRecoveryQueue.mockReturnValue([] as any)
+
       const { result } = renderHook(() => _useIsProposalInProgress())
 
       expect(result.current).toBe(false)
 
       recoveryDispatch(event, {
         moduleAddress: faker.finance.ethereumAddress(),
+        txHash: faker.string.hexadecimal(),
         recoveryTxHash: faker.string.hexadecimal(),
         eventType: faker.helpers.enumValue(RecoveryEventType),
       })
@@ -76,26 +90,27 @@ describe('useIsProposalInProgress', () => {
   })
   ;[RecoveryEvent.REVERTED, RecoveryEvent.PROCESSED, RecoveryEvent.FAILED].forEach((event) => {
     it('should return false if there is not a proposal in progress', async () => {
+      const payload = {
+        moduleAddress: faker.finance.ethereumAddress(),
+        txHash: faker.string.hexadecimal(),
+        recoveryTxHash: faker.string.hexadecimal(),
+        eventType: faker.helpers.enumValue(RecoveryEventType),
+      }
+
+      mockUseRecoveryQueue.mockReturnValue([{ args: { txHash: payload.recoveryTxHash } }] as any)
+
       const { result } = renderHook(() => _useIsProposalInProgress())
 
       expect(result.current).toBe(false)
 
       // Trigger pending
-      recoveryDispatch(RecoveryEvent.EXECUTING, {
-        moduleAddress: faker.finance.ethereumAddress(),
-        recoveryTxHash: faker.string.hexadecimal(),
-        eventType: faker.helpers.enumValue(RecoveryEventType),
-      })
+      recoveryDispatch(RecoveryEvent.EXECUTING, payload)
 
       await waitFor(() => {
         expect(result.current).toBe(true)
       })
 
-      recoveryDispatch(event, {
-        moduleAddress: faker.finance.ethereumAddress(),
-        recoveryTxHash: faker.string.hexadecimal(),
-        eventType: faker.helpers.enumValue(RecoveryEventType),
-      })
+      recoveryDispatch(event, payload)
 
       await waitFor(() => {
         expect(result.current).toBe(false)

@@ -25,27 +25,32 @@ function waitForRecoveryTx({
   // shows a pending state when beginning exectuion of a transaction/message and perhaps rename it to
   // something more generic like DISPATCHING or SUBMITTING
 
-  recoveryDispatch(RecoveryEvent.EXECUTING, payload)
+  const event = {
+    ...payload,
+    txHash: tx.hash,
+  }
 
-  recoveryDispatch(RecoveryEvent.PROCESSING, payload)
+  recoveryDispatch(RecoveryEvent.EXECUTING, event)
+
+  recoveryDispatch(RecoveryEvent.PROCESSING, event)
 
   tx.wait()
     .then((receipt) => {
       if (didRevert(receipt)) {
         recoveryDispatch(RecoveryEvent.REVERTED, {
-          ...payload,
+          ...event,
           error: new Error('Transaction reverted by EVM'),
         })
       } else {
-        recoveryDispatch(RecoveryEvent.PROCESSED, payload)
+        recoveryDispatch(RecoveryEvent.PROCESSED, event)
       }
     })
     .catch((error) => {
       if (didReprice(error)) {
-        recoveryDispatch(RecoveryEvent.PROCESSED, payload)
+        recoveryDispatch(RecoveryEvent.PROCESSED, event)
       } else {
         recoveryDispatch(RecoveryEvent.FAILED, {
-          ...payload,
+          ...event,
           error: asError(error),
         })
       }

@@ -1,4 +1,4 @@
-import { RecoveryEvent, recoveryDispatch } from '@/services/recovery/recoveryEvents'
+import { RecoveryEvent, recoveryDispatch, RecoveryEventType } from '@/services/recovery/recoveryEvents'
 import { PendingStatus } from '@/store/pendingTxsSlice'
 import { act, renderHook } from '@/tests/test-utils'
 import { faker } from '@faker-js/faker'
@@ -7,13 +7,19 @@ import { useRecoveryPendingTxs } from '../useRecoveryPendingTxs'
 describe('useRecoveryPendingTxs', () => {
   it('should set pending status to SUBMITTING when EXECUTING event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
+    const txHash = faker.string.hexadecimal()
     const recoveryTxHash = faker.string.hexadecimal()
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, { moduleAddress: delayModifierAddress, recoveryTxHash })
+      recoveryDispatch(RecoveryEvent.EXECUTING, {
+        moduleAddress: delayModifierAddress,
+        txHash,
+        recoveryTxHash,
+        eventType: faker.helpers.enumValue(RecoveryEventType),
+      })
     })
 
     expect(result.current).toStrictEqual({
@@ -23,13 +29,19 @@ describe('useRecoveryPendingTxs', () => {
 
   it('should set pending status to PROCESSING when PROCESSING event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
+    const txHash = faker.string.hexadecimal()
     const recoveryTxHash = faker.string.hexadecimal()
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.PROCESSING, { moduleAddress: delayModifierAddress, recoveryTxHash })
+      recoveryDispatch(RecoveryEvent.PROCESSING, {
+        moduleAddress: delayModifierAddress,
+        txHash,
+        recoveryTxHash,
+        eventType: faker.helpers.enumValue(RecoveryEventType),
+      })
     })
 
     expect(result.current).toStrictEqual({
@@ -39,16 +51,25 @@ describe('useRecoveryPendingTxs', () => {
 
   it('should set remove the pending status when REVERTED event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
+    const txHash = faker.string.hexadecimal()
     const recoveryTxHash = faker.string.hexadecimal()
+    const eventType = faker.helpers.enumValue(RecoveryEventType)
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, { moduleAddress: delayModifierAddress, recoveryTxHash })
+      recoveryDispatch(RecoveryEvent.EXECUTING, {
+        moduleAddress: delayModifierAddress,
+        txHash,
+        recoveryTxHash,
+        eventType,
+      })
       recoveryDispatch(RecoveryEvent.REVERTED, {
         moduleAddress: delayModifierAddress,
+        txHash,
         recoveryTxHash,
+        eventType,
         error: new Error(),
       })
     })
@@ -58,14 +79,26 @@ describe('useRecoveryPendingTxs', () => {
 
   it('should set remove the pending status when PROCESSED event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
+    const txHash = faker.string.hexadecimal()
     const recoveryTxHash = faker.string.hexadecimal()
+    const eventType = faker.helpers.enumValue(RecoveryEventType)
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, { moduleAddress: delayModifierAddress, recoveryTxHash })
-      recoveryDispatch(RecoveryEvent.PROCESSED, { moduleAddress: delayModifierAddress, recoveryTxHash })
+      recoveryDispatch(RecoveryEvent.EXECUTING, {
+        moduleAddress: delayModifierAddress,
+        txHash,
+        recoveryTxHash,
+        eventType,
+      })
+      recoveryDispatch(RecoveryEvent.PROCESSED, {
+        moduleAddress: delayModifierAddress,
+        txHash,
+        recoveryTxHash,
+        eventType,
+      })
     })
 
     expect(result.current).toStrictEqual({})

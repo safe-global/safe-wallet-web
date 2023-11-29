@@ -15,16 +15,38 @@ export enum RecoveryEventType {
 }
 
 export interface RecoveryEvents {
-  [RecoveryEvent.EXECUTING]: { moduleAddress: string; recoveryTxHash: string; eventType: RecoveryEventType }
-  [RecoveryEvent.PROCESSING]: { moduleAddress: string; recoveryTxHash: string; eventType: RecoveryEventType }
+  [RecoveryEvent.EXECUTING]: {
+    moduleAddress: string
+    txHash: string
+    recoveryTxHash: string
+    eventType: RecoveryEventType
+  }
+  [RecoveryEvent.PROCESSING]: {
+    moduleAddress: string
+    txHash: string
+    recoveryTxHash: string
+    eventType: RecoveryEventType
+  }
   [RecoveryEvent.REVERTED]: {
     moduleAddress: string
+    txHash: string
     recoveryTxHash: string
     error: Error
     eventType: RecoveryEventType
   }
-  [RecoveryEvent.PROCESSED]: { moduleAddress: string; recoveryTxHash: string; eventType: RecoveryEventType }
-  [RecoveryEvent.FAILED]: { moduleAddress: string; recoveryTxHash?: string; error: Error; eventType: RecoveryEventType }
+  [RecoveryEvent.PROCESSED]: {
+    moduleAddress: string
+    txHash: string
+    recoveryTxHash: string
+    eventType: RecoveryEventType
+  }
+  [RecoveryEvent.FAILED]: {
+    moduleAddress: string
+    txHash?: string
+    recoveryTxHash?: string
+    error: Error
+    eventType: RecoveryEventType
+  }
 }
 
 const recoveryEventBus = new EventBus<RecoveryEvents>()
