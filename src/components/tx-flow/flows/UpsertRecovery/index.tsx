@@ -13,13 +13,13 @@ import type { RecoveryState } from '@/services/recovery/recovery-state'
 const Subtitles = ['How does recovery work?', 'Set up recovery settings', 'Set up account recovery']
 
 export enum UpsertRecoveryFlowFields {
-  guardian = 'guardian',
+  recoverer = 'recoverer',
   txCooldown = 'txCooldown',
   txExpiration = 'txExpiration',
 }
 
 export type UpsertRecoveryFlowProps = {
-  [UpsertRecoveryFlowFields.guardian]: string
+  [UpsertRecoveryFlowFields.recoverer]: string
   [UpsertRecoveryFlowFields.txCooldown]: string
   [UpsertRecoveryFlowFields.txExpiration]: string
 }

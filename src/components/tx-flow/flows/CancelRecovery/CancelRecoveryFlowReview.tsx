@@ -37,7 +37,7 @@ export function CancelRecoveryFlowReview({ recovery }: { recovery: RecoveryQueue
       </Typography>
 
       <ErrorMessage level="info">
-        All actions initiated by the Guardian will be cancelled. The current owners will remain the owners of the Safe
+        All actions initiated by the Recoverer will be cancelled. The current owners will remain the owners of the Safe
         Account.
       </ErrorMessage>
     </SignOrExecuteForm>

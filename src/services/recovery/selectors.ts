@@ -8,10 +8,10 @@ function selectRecovery<T extends RecoveryState | undefined>(state: T): T {
   return state
 }
 
-export const selectDelayModifierByGuardian = createSelector(
+export const selectDelayModifierByRecoverer = createSelector(
   [selectRecovery, (_: RecoveryState, walletAddress: string) => walletAddress],
   (recovery, walletAddress) => {
-    return recovery?.find(({ guardians }) => guardians.some((guardian) => sameAddress(guardian, walletAddress)))
+    return recovery?.find(({ recoverers }) => recoverers.some((recoverer) => sameAddress(recoverer, walletAddress)))
   },
 )
 

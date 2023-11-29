@@ -28,7 +28,7 @@ import AddressBookInput from '@/components/common/AddressBookInput'
 import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import { GuardianWarning } from './GuardianSmartContractWarning'
+import { RecovererWarning } from './RecovererSmartContractWarning'
 import type { UpsertRecoveryFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -51,9 +51,9 @@ export function UpsertRecoveryFlowSettings({
     mode: 'onChange',
   })
 
-  const validateGuardian = (guardian: string) => {
-    if (sameAddress(guardian, safeAddress)) {
-      return 'The Safe Account cannot be a Guardian of itself'
+  const validateRecoverer = (recoverer: string) => {
+    if (sameAddress(recoverer, safeAddress)) {
+      return 'The Safe Account cannot be a Recoverer of itself'
     }
   }
 
@@ -62,6 +62,8 @@ export function UpsertRecoveryFlowSettings({
     trackEvent(RECOVERY_EVENTS.SHOW_ADVANCED)
   }
 
+  const isDisabled = !formMethods.formState.isDirty || !understandsRisk
+
   return (
     <>
       <FormProvider {...formMethods}>
@@ -69,27 +71,28 @@ export function UpsertRecoveryFlowSettings({
           <TxCard>
             <div>
               <Typography variant="h5" gutterBottom>
-                Trusted Guardian
+                Trusted Recoverer
               </Typography>
 
               <Typography variant="body2">
-                Choose a Guardian, such as a hardware wallet or family member&apos;s wallet, that can initiate the
+                Choose a Recoverer, such as a hardware wallet or family member&apos;s wallet, that can initiate the
                 recovery process in the future.
               </Typography>
             </div>
 
-            <AddressBookInput
-              label="Guardian address"
-              name={UpsertRecoveryFlowFields.guardian}
-              required
-              fullWidth
-              validate={validateGuardian}
-            />
-
-            <GuardianWarning />
+            <div>
+              <AddressBookInput
+                label="Recoverer address"
+                name={UpsertRecoveryFlowFields.recoverer}
+                required
+                fullWidth
+                validate={validateRecoverer}
+              />
+              <RecovererWarning />
+            </div>
 
             <Alert severity="info" sx={{ border: 'unset' }}>
-              Your Guardian will be able to modify your Account setup. Only select an address that you trust.
+              Your Recoverer will be able to modify your Account setup. Only select an address that you trust.
             </Alert>
 
             <div>
@@ -160,7 +163,7 @@ export function UpsertRecoveryFlowSettings({
 
           <TxCard>
             <FormControlLabel
-              label="I understand that the Guardian will be able to initiate recovery of this Safe Account and I will not be informed about this outside of the Safe{Wallet}."
+              label="I understand that the Recoverer will be able to initiate recovery of this Safe Account and I will not be informed about this outside of the Safe{Wallet}."
               control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
               sx={{ pl: 2 }}
             />
@@ -168,7 +171,7 @@ export function UpsertRecoveryFlowSettings({
             <Divider className={commonCss.nestedDivider} />
 
             <CardActions sx={{ mt: '0 !important' }}>
-              <Button variant="contained" type="submit" disabled={!understandsRisk}>
+              <Button variant="contained" type="submit" disabled={isDisabled}>
                 Next
               </Button>
             </CardActions>

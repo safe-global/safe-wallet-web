@@ -9,7 +9,7 @@ import { Countdown } from '@/components/common/Countdown'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
-import { formatDate } from '@/utils/date'
+import { formatDateTime } from '@/utils/date'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
@@ -18,7 +18,22 @@ import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 
 export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactElement {
   const { submitError } = useContext(RecoveryListItemContext)
-  const { isExecutable, isNext, remainingSeconds } = useRecoveryTxState(item)
+  const { isExecutable, isExpired, isNext, remainingSeconds } = useRecoveryTxState(item)
+
+  const desc = isExecutable ? (
+    item.expiresAt ? (
+      <>
+        The recovery transaction can be executed{' '}
+        <Typography color="primary.main">until {formatDateTime(item.expiresAt.toNumber())}.</Typography>
+      </>
+    ) : (
+      'The recovery transaction can be executed now.'
+    )
+  ) : isExpired ? (
+    'The recovery transaction has expired and needs to be cancelled before a new one can be created.'
+  ) : (
+    'The recovery transaction can be executed after the delay period has passed:'
+  )
 
   return (
     <>
@@ -53,20 +68,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
       </List>
 
       <Box className={txSignersCss.listFooter}>
-        <Typography sx={({ palette }) => ({ color: palette.border.main, mb: 1 })}>
-          The recovery can be executed{' '}
-          {isExecutable ? (
-            item.expiresAt ? (
-              <Typography color="primary.main">until {formatDate(item.expiresAt.toNumber())}.</Typography>
-            ) : (
-              'now.'
-            )
-          ) : !isNext ? (
-            'after the previous recovery attempts are executed or cancelled and the delay period has passed:'
-          ) : (
-            'after the delay period:'
-          )}
-        </Typography>
+        <Typography sx={({ palette }) => ({ color: palette.border.main, mb: 1 })}>{desc}</Typography>
 
         {isNext && <Countdown seconds={remainingSeconds} />}
       </Box>

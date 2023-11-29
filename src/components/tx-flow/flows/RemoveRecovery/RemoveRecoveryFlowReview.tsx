@@ -29,8 +29,8 @@ export function RemoveRecoveryFlowReview({ delayModifier }: RecoveryFlowProps): 
       </Typography>
 
       <OwnerList
-        title="Removing guardian"
-        owners={delayModifier.guardians.map((guardian) => ({ value: guardian }))}
+        title="Removing Recoverer"
+        owners={delayModifier.recoverers.map((recoverer) => ({ value: recoverer }))}
         sx={{ bgcolor: ({ palette }) => `${palette.warning.background} !important` }}
       />
     </SignOrExecuteForm>

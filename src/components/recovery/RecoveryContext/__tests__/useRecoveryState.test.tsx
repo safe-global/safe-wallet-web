@@ -227,7 +227,7 @@ describe('useRecoveryState', () => {
     })
   })
 
-  it('should refetch when interacting with a Delay Modifier as a Guardian', async () => {
+  it('should refetch when interacting with a Delay Modifier as a Recoverer', async () => {
     mockUseHasFeature.mockReturnValue(true)
     const provider = {}
     mockUseWeb3ReadOnly.mockReturnValue(provider as any)

@@ -10,19 +10,19 @@ describe('RecoveryHeader', () => {
 
     const { container } = render(
       <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-        <_RecoveryHeader isOwner isGuardian queue={queue} supportsRecovery={false} />
+        <_RecoveryHeader isOwner isRecoverer queue={queue} supportsRecovery={false} />
       </RecoveryContext.Provider>,
     )
 
     expect(container).toBeEmptyDOMElement()
   })
 
-  it('should render the in-progress widget if there is a queue for guardians', () => {
+  it('should render the in-progress widget if there is a queue for recoverers', () => {
     const queue = [{ validFrom: BigNumber.from(0) }] as any
 
     const { queryByText } = render(
       <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-        <_RecoveryHeader isOwner={false} isGuardian queue={queue} supportsRecovery />
+        <_RecoveryHeader isOwner={false} isRecoverer queue={queue} supportsRecovery />
       </RecoveryContext.Provider>,
     )
 
@@ -34,19 +34,19 @@ describe('RecoveryHeader', () => {
 
     const { queryByText } = render(
       <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-        <_RecoveryHeader isOwner isGuardian={false} queue={queue} supportsRecovery />
+        <_RecoveryHeader isOwner isRecoverer={false} queue={queue} supportsRecovery />
       </RecoveryContext.Provider>,
     )
 
     expect(queryByText('Account recovery in progress')).toBeTruthy()
   })
 
-  it('should render the proposal widget when there is no queue for guardians', () => {
+  it('should render the proposal widget when there is no queue for recoverers', () => {
     const queue = [] as any
 
     const { queryByText } = render(
       <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-        <_RecoveryHeader isOwner={false} isGuardian queue={queue} supportsRecovery />
+        <_RecoveryHeader isOwner={false} isRecoverer queue={queue} supportsRecovery />
       </RecoveryContext.Provider>,
     )
 
@@ -58,7 +58,7 @@ describe('RecoveryHeader', () => {
 
     const { container } = render(
       <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-        <_RecoveryHeader isOwner isGuardian={false} queue={queue} supportsRecovery />
+        <_RecoveryHeader isOwner isRecoverer={false} queue={queue} supportsRecovery />
       </RecoveryContext.Provider>,
     )
 
