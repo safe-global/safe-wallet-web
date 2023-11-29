@@ -60,7 +60,7 @@ export function RecovererWarning(): ReactElement | null {
       className={addressBookInputCss.unknownAddress}
       sx={({ palette }) => ({
         bgcolor: `${palette.warning.background} !important`,
-        color: `${palette.warning.light} !important`,
+        color: `${palette.warning.main} !important`,
       })}
     >
       <SvgIcon component={InfoIcon} fontSize="small" />
