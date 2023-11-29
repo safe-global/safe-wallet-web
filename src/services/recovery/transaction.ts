@@ -1,7 +1,6 @@
 import { Interface } from 'ethers/lib/utils'
-import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@safe-global/safe-deployments'
+import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { sameAddress } from '@/utils/addresses'
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
@@ -93,55 +92,12 @@ export function getRecoveryProposalTransactions({
     txData.push(safeInterface.encodeFunctionData('changeThreshold', [newThreshold]))
   }
 
-  if (newThreshold > _owners.length) {
-    throw new Error('New threshold is higher than desired owners')
-  }
-
   return txData.map((data) => ({
     to: safe.address.value,
     value: '0',
     operation: OperationType.Call,
     data,
   }))
-}
-
-export function getRecoveryProposalTransaction({
-  safe,
-  newThreshold,
-  newOwners,
-}: {
-  safe: SafeInfo
-  newThreshold: number
-  newOwners: Array<AddressEx>
-}): MetaTransactionData {
-  const transactions = getRecoveryProposalTransactions({ safe, newThreshold, newOwners })
-
-  if (transactions.length === 0) {
-    throw new Error('No recovery transactions found')
-  }
-
-  if (transactions.length === 1) {
-    return transactions[0]
-  }
-
-  const multiSendDeployment = getMultiSendCallOnlyDeployment({
-    network: safe.chainId,
-    version: safe.version ?? undefined,
-  })
-
-  if (!multiSendDeployment) {
-    throw new Error('MultiSend deployment not found')
-  }
-
-  const multiSendInterface = new Interface(multiSendDeployment.abi)
-  const multiSendData = encodeMultiSendData(transactions)
-
-  return {
-    to: multiSendDeployment.networkAddresses[safe.chainId] ?? multiSendDeployment.defaultAddress,
-    value: '0',
-    operation: OperationType.Call,
-    data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
-  }
 }
 
 export function getRecoverySkipTransaction(
