@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
@@ -11,6 +13,7 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
 
   const onClose = () => {
     setTxFlow(undefined)
+    trackEvent(RECOVERY_EVENTS.GO_BACK)
   }
 
   return (

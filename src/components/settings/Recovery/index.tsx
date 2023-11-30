@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useContext, useMemo } from 'react'
 import type { ReactElement } from 'react'
@@ -141,7 +143,10 @@ export function Recovery(): ReactElement {
                   <Button
                     variant="contained"
                     disabled={!isOk}
-                    onClick={() => setTxFlow(<UpsertRecoveryFlow />)}
+                    onClick={() => {
+                      setTxFlow(<UpsertRecoveryFlow />)
+                      trackEvent({ ...RECOVERY_EVENTS.SETUP_RECOVERY, label: 'settings' })
+                    }}
                     sx={{ mt: 2 }}
                   >
                     Set up recovery

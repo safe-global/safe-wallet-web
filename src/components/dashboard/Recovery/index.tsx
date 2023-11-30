@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Card, Grid, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
@@ -24,6 +26,7 @@ export function Recovery(): ReactElement {
 
   const onEnable = () => {
     setTxFlow(<UpsertRecoveryFlow />)
+    trackEvent({ ...RECOVERY_EVENTS.SETUP_RECOVERY, label: 'dashboard' })
   }
 
   const onEdit = () => {
