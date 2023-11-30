@@ -29,6 +29,7 @@
 
 .buttonGroup :global .MuiFormControlLabel-root {
   margin: 0;
+  flex: 1;
 }
 
 .buttonGroup {
@@ -49,6 +50,20 @@
   right: var(--space-1);
   color: var(--color-text-secondary);
   margin-left: auto;
+}
+
+.checkList {
+  padding: 0;
+}
+
+.checkList li {
+  padding: 0;
+  gap: 8px;
+  margin-bottom: var(--space-1);
+}
+
+.checkList li:last-child {
+  margin-bottom: 0;
 }
 
 @media (min-width: 600px) {

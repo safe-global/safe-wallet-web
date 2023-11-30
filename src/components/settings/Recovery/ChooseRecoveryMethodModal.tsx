@@ -15,6 +15,8 @@ import {
   FormControl,
   FormControlLabel,
   IconButton,
+  List,
+  ListItem,
   Radio,
   RadioGroup,
   Typography,
@@ -28,6 +30,7 @@ import RecoverySygnumIcon from '@/public/images/common/recovery_sygnum.svg'
 import RecoveryCoincoverIcon from '@/public/images/common/recovery_coincover.svg'
 import { TxModalContext } from '@/components/tx-flow'
 import css from './styles.module.css'
+import CheckIcon from '@/public/images/common/check.svg'
 
 const SYGNUM_WAITLIST_LINK = 'https://wn2n6ocviur.typeform.com/to/cJbJW0KR'
 const COINCOVER_WAITLIST_LINK = 'https://wn2n6ocviur.typeform.com/to/ijqSzOkr'
@@ -51,7 +54,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
     },
     mode: 'onChange',
   })
-  const { register, watch, setValue } = methods
+  const { register, watch } = methods
 
   const currentType = watch('recoveryMethod')
 
@@ -91,7 +94,9 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                   <Typography fontWeight="bold" mb={1} mt={2}>
                     Self-custodial recovery
                   </Typography>
-                  <Typography>Allow your friends and family to recovery your Safe by enabling a module.</Typography>
+                  <Typography>
+                    Allow yourself, friends and family to recover your Safe Account by enabling a module.
+                  </Typography>
                 </div>
               }
             />
@@ -105,7 +110,16 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                   <Typography fontWeight="bold" mb={1} mt={2}>
                     Sygnum
                   </Typography>
-                  <Typography>Allow your friends and family to recovery your Safe by enabling a module.</Typography>
+                  <List className={css.checkList}>
+                    <ListItem>
+                      <CheckIcon />
+                      Quick and hassle-free setup
+                    </ListItem>
+                    <ListItem>
+                      <CheckIcon />
+                      Encrypted account information
+                    </ListItem>
+                  </List>
                 </div>
               }
             />
@@ -119,7 +133,16 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                   <Typography fontWeight="bold" mb={1} mt={2}>
                     Coincover
                   </Typography>
-                  <Typography>Allow your friends and family to recovery your Safe by enabling a module.</Typography>
+                  <List className={css.checkList}>
+                    <ListItem>
+                      <CheckIcon />
+                      Quick and hassle-free setup
+                    </ListItem>
+                    <ListItem>
+                      <CheckIcon />
+                      Encrypted account information
+                    </ListItem>
+                  </List>{' '}
                 </div>
               }
             />
