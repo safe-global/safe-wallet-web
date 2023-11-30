@@ -1,3 +1,5 @@
+import Track from '@/components/common/Track'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Paper, Typography } from '@mui/material'
 import { partition } from 'lodash'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
@@ -23,9 +25,11 @@ function Disclaimer({ isMalicious }: { isMalicious: boolean }): ReactElement {
           Cancelling {isMalicious ? 'malicious transaction' : 'Account recovery'}.
         </Typography>{' '}
         You will need to execute the cancellation.{' '}
-        <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
-          Learn more
-        </ExternalLink>
+        <Track {...RECOVERY_EVENTS.LEARN_MORE} label="tx-queue">
+          <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
+            Learn more
+          </ExternalLink>
+        </Track>
       </Typography>
     </Box>
   )

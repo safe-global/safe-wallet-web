@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import {
   Divider,
   CardActions,
@@ -55,7 +57,10 @@ export function UpsertRecoveryFlowSettings({
     }
   }
 
-  const onShowAdvanced = () => setShowAdvanced((prev) => !prev)
+  const onShowAdvanced = () => {
+    setShowAdvanced((prev) => !prev)
+    trackEvent(RECOVERY_EVENTS.SHOW_ADVANCED)
+  }
 
   const isDisabled = !formMethods.formState.isDirty || !understandsRisk
 
@@ -75,15 +80,16 @@ export function UpsertRecoveryFlowSettings({
               </Typography>
             </div>
 
-            <AddressBookInput
-              label="Recoverer address"
-              name={UpsertRecoveryFlowFields.recoverer}
-              required
-              fullWidth
-              validate={validateRecoverer}
-            />
-
-            <RecovererWarning />
+            <div>
+              <AddressBookInput
+                label="Recoverer address"
+                name={UpsertRecoveryFlowFields.recoverer}
+                required
+                fullWidth
+                validate={validateRecoverer}
+              />
+              <RecovererWarning />
+            </div>
 
             <Alert severity="info" sx={{ border: 'unset' }}>
               Your Recoverer will be able to modify your Account setup. Only select an address that you trust.
