@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useContext, useMemo } from 'react'
 import type { ReactElement } from 'react'
@@ -19,14 +21,14 @@ import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 const FEEDBACK_FORM = 'https://noteforms.com/forms/safe-feedback-form-hk16ds?notionforms=1&utm_source=notionforms'
 
 enum HeadCells {
-  Guardian = 'guardian',
+  Recoverer = 'recoverer',
   TxCooldown = 'txCooldown',
   TxExpiration = 'txExpiration',
   Actions = 'actions',
 }
 
 const headCells = [
-  { id: HeadCells.Guardian, label: 'Guardian' },
+  { id: HeadCells.Recoverer, label: 'Recoverer' },
   {
     id: HeadCells.TxCooldown,
     label: (
@@ -74,17 +76,17 @@ export function Recovery(): ReactElement {
 
   const rows = useMemo(() => {
     return recovery?.flatMap((delayModifier) => {
-      const { guardians, txCooldown, txExpiration } = delayModifier
+      const { recoverers, txCooldown, txExpiration } = delayModifier
 
-      return guardians.map((guardian) => {
+      return recoverers.map((recoverer) => {
         const txCooldownSeconds = txCooldown.toNumber()
         const txExpirationSeconds = txExpiration.toNumber()
 
         return {
           cells: {
-            [HeadCells.Guardian]: {
-              rawValue: guardian,
-              content: <EthHashInfo address={guardian} showCopyButton hasExplorer />,
+            [HeadCells.Recoverer]: {
+              rawValue: recoverer,
+              content: <EthHashInfo address={recoverer} showCopyButton hasExplorer />,
             },
             [HeadCells.TxCooldown]: {
               rawValue: txCooldownSeconds,
@@ -124,8 +126,8 @@ export function Recovery(): ReactElement {
 
         <Grid item xs>
           <Typography mb={2}>
-            Choose a trusted Guardian to recover your Safe Account, in case you should ever lose access to your Account.
-            Enabling the Account recovery module will require a transactions.
+            Choose a trusted Recoverer to recover your Safe Account, in case you should ever lose access to your
+            Account. Enabling the Account recovery module will require a transactions.
           </Typography>
 
           {!recovery || recovery.length === 0 ? (
@@ -141,7 +143,10 @@ export function Recovery(): ReactElement {
                   <Button
                     variant="contained"
                     disabled={!isOk}
-                    onClick={() => setTxFlow(<UpsertRecoveryFlow />)}
+                    onClick={() => {
+                      setTxFlow(<UpsertRecoveryFlow />)
+                      trackEvent({ ...RECOVERY_EVENTS.SETUP_RECOVERY, label: 'settings' })
+                    }}
                     sx={{ mt: 2 }}
                   >
                     Set up recovery

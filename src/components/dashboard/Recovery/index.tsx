@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Card, Grid, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
@@ -24,6 +26,7 @@ export function Recovery(): ReactElement {
 
   const onEnable = () => {
     setTxFlow(<UpsertRecoveryFlow />)
+    trackEvent({ ...RECOVERY_EVENTS.SETUP_RECOVERY, label: 'dashboard' })
   }
 
   const onEdit = () => {
@@ -53,7 +56,7 @@ export function Recovery(): ReactElement {
                 <Chip label="New" />
               </Box>
               <Typography mt={1} mb={3}>
-                Ensure that you never lose access to your funds by choosing a Guardian to recover your account.
+                Ensure that you never lose access to your funds by choosing a Recoverer to recover your account.
               </Typography>
               {supportsRecovery && (!recovery || recovery.length === 0) && (
                 <CheckWallet>

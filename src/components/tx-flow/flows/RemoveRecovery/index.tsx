@@ -1,3 +1,4 @@
+import { REMOVE_RECOVERY_CATEGORY } from '@/services/analytics/events/recovery'
 import type { ReactElement } from 'react'
 
 import TxLayout from '@/components/tx-flow/common/TxLayout'
@@ -12,7 +13,7 @@ export type RecoveryFlowProps = {
 }
 
 export function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactElement {
-  const { step, nextStep, prevStep } = useTxStepper<undefined>(undefined)
+  const { step, nextStep, prevStep } = useTxStepper<undefined>(undefined, REMOVE_RECOVERY_CATEGORY)
 
   const steps = [
     <RemoveRecoveryFlowOverview key={0} delayModifier={delayModifier} onSubmit={() => nextStep(undefined)} />,
@@ -22,7 +23,7 @@ export function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactE
   return (
     <TxLayout
       title={step === 0 ? 'Remove Account recovery' : 'Confirm transaction'}
-      subtitle="Remove Guardian"
+      subtitle="Remove Recoverer"
       icon={RecoveryPlus}
       step={step}
       onBack={prevStep}

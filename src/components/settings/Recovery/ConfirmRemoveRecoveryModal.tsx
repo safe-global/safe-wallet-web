@@ -1,3 +1,5 @@
+import Track from '@/components/common/Track'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import {
   Button,
   Dialog,
@@ -58,16 +60,20 @@ export function ConfirmRemoveRecoveryModal({
 
       <DialogContent dividers sx={{ py: 2, px: 3 }}>
         <DialogContentText color="text.primary">
-          Are you sure you wish to remove the recovery module? The assigned Guardian won&apos;t be able to recover this
+          Are you sure you wish to remove the recovery module? The assigned Recoverer won&apos;t be able to recover this
           Safe account for you.
         </DialogContentText>
       </DialogContent>
 
       <DialogActions sx={{ display: 'flex', justifyContent: 'space-between', p: 3, pb: 2 }}>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={onConfirm} autoFocus variant="danger">
-          Remove
-        </Button>
+        <Track {...RECOVERY_EVENTS.REMOVE_RECOVERY_CANCEL}>
+          <Button onClick={onClose}>Cancel</Button>
+        </Track>
+        <Track {...RECOVERY_EVENTS.REMOVE_RECOVERY_PROCEED}>
+          <Button onClick={onConfirm} autoFocus variant="danger">
+            Remove
+          </Button>
+        </Track>
       </DialogActions>
     </Dialog>
   )

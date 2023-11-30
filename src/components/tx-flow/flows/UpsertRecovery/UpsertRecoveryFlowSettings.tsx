@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import {
   Divider,
   CardActions,
@@ -26,17 +28,20 @@ import AddressBookInput from '@/components/common/AddressBookInput'
 import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import { GuardianWarning } from './GuardianSmartContractWarning'
+import { RecovererWarning } from './RecovererSmartContractWarning'
 import type { UpsertRecoveryFlowProps } from '.'
+import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 
 export function UpsertRecoveryFlowSettings({
   params,
+  delayModifier,
   onSubmit,
 }: {
   params: UpsertRecoveryFlowProps
+  delayModifier?: RecoveryStateItem
   onSubmit: (formData: UpsertRecoveryFlowProps) => void
 }): ReactElement {
   const { safeAddress } = useSafeInfo()
@@ -49,13 +54,31 @@ export function UpsertRecoveryFlowSettings({
     mode: 'onChange',
   })
 
-  const validateGuardian = (guardian: string) => {
-    if (sameAddress(guardian, safeAddress)) {
-      return 'The Safe Account cannot be a Guardian of itself'
+  const recoverer = formMethods.watch(UpsertRecoveryFlowFields.recoverer)
+  const txCooldown = formMethods.watch(UpsertRecoveryFlowFields.txCooldown)
+  const txExpiration = formMethods.watch(UpsertRecoveryFlowFields.txExpiration)
+
+  // RHF's dirty check is tempermental with our address input dropdown
+  const isDirty = delayModifier
+    ? // Updating settings
+      !sameAddress(recoverer, delayModifier.recoverers[0]) ||
+      !delayModifier.txCooldown.eq(txCooldown) ||
+      !delayModifier.txExpiration.eq(txExpiration)
+    : // Setting up recovery
+      recoverer && txCooldown && txExpiration
+
+  const validateRecoverer = (recoverer: string) => {
+    if (sameAddress(recoverer, safeAddress)) {
+      return 'The Safe Account cannot be a Recoverer of itself'
     }
   }
 
-  const onShowAdvanced = () => setShowAdvanced((prev) => !prev)
+  const onShowAdvanced = () => {
+    setShowAdvanced((prev) => !prev)
+    trackEvent(RECOVERY_EVENTS.SHOW_ADVANCED)
+  }
+
+  const isDisabled = !understandsRisk || !isDirty
 
   return (
     <>
@@ -64,27 +87,28 @@ export function UpsertRecoveryFlowSettings({
           <TxCard>
             <div>
               <Typography variant="h5" gutterBottom>
-                Trusted Guardian
+                Trusted Recoverer
               </Typography>
 
               <Typography variant="body2">
-                Choose a Guardian, such as a hardware wallet or family member&apos;s wallet, that can initiate the
+                Choose a Recoverer, such as a hardware wallet or family member&apos;s wallet, that can initiate the
                 recovery process in the future.
               </Typography>
             </div>
 
-            <AddressBookInput
-              label="Guardian address"
-              name={UpsertRecoveryFlowFields.guardian}
-              required
-              fullWidth
-              validate={validateGuardian}
-            />
-
-            <GuardianWarning />
+            <div>
+              <AddressBookInput
+                label="Recoverer address"
+                name={UpsertRecoveryFlowFields.recoverer}
+                required
+                fullWidth
+                validate={validateRecoverer}
+              />
+              <RecovererWarning />
+            </div>
 
             <Alert severity="info" sx={{ border: 'unset' }}>
-              Your Guardian will be able to modify your Account setup. Only select an address that you trust.
+              Your Recoverer will be able to modify your Account setup. Only select an address that you trust.
             </Alert>
 
             <div>
@@ -155,7 +179,7 @@ export function UpsertRecoveryFlowSettings({
 
           <TxCard>
             <FormControlLabel
-              label="I understand that the Guardian will be able to initiate recovery of this Safe Account and I will not be informed about this outside of the Safe{Wallet}."
+              label="I understand that the Recoverer will be able to initiate recovery of this Safe Account and I will not be informed about this outside of the Safe{Wallet}."
               control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
               sx={{ pl: 2 }}
             />
@@ -163,7 +187,7 @@ export function UpsertRecoveryFlowSettings({
             <Divider className={commonCss.nestedDivider} />
 
             <CardActions sx={{ mt: '0 !important' }}>
-              <Button variant="contained" type="submit" disabled={!understandsRisk}>
+              <Button variant="contained" type="submit" disabled={isDisabled}>
                 Next
               </Button>
             </CardActions>

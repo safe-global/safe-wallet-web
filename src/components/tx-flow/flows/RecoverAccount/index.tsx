@@ -1,3 +1,4 @@
+import { START_RECOVERY_CATEGORY } from '@/services/analytics/events/recovery'
 import type { ReactElement } from 'react'
 import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -19,10 +20,13 @@ export type RecoverAccountFlowProps = {
 }
 
 export function RecoverAccountFlow(): ReactElement {
-  const { data, step, nextStep, prevStep } = useTxStepper<RecoverAccountFlowProps>({
-    [RecoverAccountFlowFields.owners]: [{ value: '' }],
-    [RecoverAccountFlowFields.threshold]: '1',
-  })
+  const { data, step, nextStep, prevStep } = useTxStepper<RecoverAccountFlowProps>(
+    {
+      [RecoverAccountFlowFields.owners]: [{ value: '' }],
+      [RecoverAccountFlowFields.threshold]: '1',
+    },
+    START_RECOVERY_CATEGORY,
+  )
 
   const steps = [
     <RecoverAccountFlowSetup key={0} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,

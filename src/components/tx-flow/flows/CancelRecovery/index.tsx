@@ -1,3 +1,4 @@
+import { CANCEL_RECOVERY_CATEGORY } from '@/services/analytics/events/recovery'
 import type { ReactElement } from 'react'
 
 import TxLayout from '../../common/TxLayout'
@@ -7,7 +8,7 @@ import useTxStepper from '../../useTxStepper'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function CancelRecoveryFlow({ recovery }: { recovery: RecoveryQueueItem }): ReactElement {
-  const { step, nextStep, prevStep } = useTxStepper<undefined>(undefined)
+  const { step, nextStep, prevStep } = useTxStepper<undefined>(undefined, CANCEL_RECOVERY_CATEGORY)
 
   const steps = [
     <CancelRecoveryOverview key={0} onSubmit={() => nextStep(undefined)} />,

@@ -33,7 +33,7 @@ export function useRecoveryState(delayModifiers?: Array<Delay>): AsyncResult<Rec
     setRefetchDep((prev) => !prev)
   }, [])
 
-  // Reload recovery data when a Guardian transaction occurs
+  // Reload recovery data when a Recoverer transaction occurs
   useEffect(() => {
     return recoverySubscribe(RecoveryEvent.PROCESSED, refetch)
   }, [refetch])

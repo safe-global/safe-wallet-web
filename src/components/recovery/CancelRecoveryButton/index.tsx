@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Button, SvgIcon } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
@@ -35,6 +37,7 @@ export function CancelRecoveryButton({
     e.stopPropagation()
     e.preventDefault()
 
+    trackEvent(RECOVERY_EVENTS.CANCEL_RECOVERY)
     if (isOwner) {
       setTxFlow(<CancelRecoveryFlow recovery={recovery} />)
     } else if (onboard) {

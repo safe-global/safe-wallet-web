@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 import { faker } from '@faker-js/faker'
 
 import {
-  selectDelayModifierByGuardian,
+  selectDelayModifierByRecoverer,
   selectRecoveryQueues,
   selectDelayModifierByTxHash,
   selectDelayModifierByAddress,
@@ -10,24 +10,24 @@ import {
 import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
 
 describe('selectors', () => {
-  describe('selectDelayModifierByGuardian', () => {
-    it('should return the Delay Modifier for the given guardian', () => {
+  describe('selectDelayModifierByRecoverer', () => {
+    it('should return the Delay Modifier for the given recoverer', () => {
       const delayModifier1 = {
-        guardians: [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
+        recoverers: [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
         queue: [{ timestamp: BigNumber.from(1) }],
       } as unknown as RecoveryStateItem
 
       const delayModifier2 = {
-        guardians: [faker.finance.ethereumAddress()],
+        recoverers: [faker.finance.ethereumAddress()],
       } as unknown as RecoveryStateItem
 
       const delayModifier3 = {
-        guardians: [faker.finance.ethereumAddress()],
+        recoverers: [faker.finance.ethereumAddress()],
       } as unknown as RecoveryStateItem
 
       const data = [delayModifier1, delayModifier2, delayModifier3]
 
-      expect(selectDelayModifierByGuardian(data, delayModifier1.guardians[0])).toStrictEqual(delayModifier1)
+      expect(selectDelayModifierByRecoverer(data, delayModifier1.recoverers[0])).toStrictEqual(delayModifier1)
     })
   })
 

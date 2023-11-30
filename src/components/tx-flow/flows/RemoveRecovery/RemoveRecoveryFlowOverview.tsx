@@ -19,20 +19,20 @@ export function RemoveRecoveryFlowOverview({
       </Typography>
 
       <Typography variant="body2">
-        This Guardian will not be able to start the initiate the recovery progress once this transaction is executed.
+        This Recoverer will not be able to start the initiate the recovery progress once this transaction is executed.
       </Typography>
 
       <div>
         <Typography variant="body2" color="text.secondary" mb={1}>
-          Removing Guardian
+          Removing Recoverer
         </Typography>
 
-        {delayModifier.guardians.map((guardian) => (
+        {delayModifier.recoverers.map((recoverer) => (
           <EthHashInfo
             avatarSize={32}
-            key={guardian}
+            key={recoverer}
             shortAddress={false}
-            address={guardian}
+            address={recoverer}
             hasExplorer
             showCopyButton
           />

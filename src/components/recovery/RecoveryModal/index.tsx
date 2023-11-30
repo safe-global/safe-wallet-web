@@ -7,7 +7,7 @@ import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
 import { RecoveryInProgressCard } from '../RecoveryCards/RecoveryInProgressCard'
 import { RecoveryProposalCard } from '../RecoveryCards/RecoveryProposalCard'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { useIsGuardian } from '@/hooks/useIsGuardian'
+import { useIsRecoverer } from '@/hooks/useIsRecoverer'
 import madProps from '@/utils/mad-props'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -18,13 +18,13 @@ import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function _RecoveryModal({
   isOwner,
-  isGuardian,
+  isRecoverer,
   queue,
   wallet,
   isSidebarRoute = true,
 }: {
   isOwner: boolean
-  isGuardian: boolean
+  isRecoverer: boolean
   queue: Array<RecoveryQueueItem>
   wallet: ReturnType<typeof useWallet>
   isSidebarRoute?: boolean
@@ -49,7 +49,7 @@ export function _RecoveryModal({
     }
 
     setModal(() => {
-      if (next && (isOwner || isGuardian) && !wasInProgressDismissed(next.transactionHash)) {
+      if (next && (isOwner || isRecoverer) && !wasInProgressDismissed(next.transactionHash)) {
         const onCloseWithDismiss = () => {
           dismissInProgress(next.transactionHash)
           onClose()
@@ -58,7 +58,7 @@ export function _RecoveryModal({
         return <RecoveryInProgressCard onClose={onCloseWithDismiss} recovery={next} />
       }
 
-      if (wallet?.address && isGuardian && !wasProposalDismissed(wallet.address)) {
+      if (wallet?.address && isRecoverer && !wasProposalDismissed(wallet.address)) {
         const onCloseWithDismiss = () => {
           dismissProposal(wallet.address)
           onClose()
@@ -72,7 +72,7 @@ export function _RecoveryModal({
   }, [
     dismissInProgress,
     dismissProposal,
-    isGuardian,
+    isRecoverer,
     isOwner,
     next,
     queue.length,
@@ -102,7 +102,7 @@ export function _RecoveryModal({
 
 export const RecoveryModal = madProps(_RecoveryModal, {
   isOwner: useIsSafeOwner,
-  isGuardian: useIsGuardian,
+  isRecoverer: useIsRecoverer,
   queue: useRecoveryQueue,
   wallet: useWallet,
   isSidebarRoute: useIsSidebarRoute,
@@ -111,8 +111,8 @@ export const RecoveryModal = madProps(_RecoveryModal, {
 export function _useDidDismissProposal() {
   const LS_KEY = 'dismissedRecoveryProposals'
 
-  type Guardian = string
-  type DismissedProposalCache = { [chainId: string]: { [safeAddress: string]: Guardian } }
+  type Recoverer = string
+  type DismissedProposalCache = { [chainId: string]: { [safeAddress: string]: Recoverer } }
 
   const { safe, safeAddress } = useSafeInfo()
   const chainId = safe.chainId
@@ -121,14 +121,14 @@ export function _useDidDismissProposal() {
 
   // Cache dismissal of proposal modal
   const dismissProposal = useCallback(
-    (guardianAddress: string) => {
+    (recovererAddress: string) => {
       const dismissed = dismissedProposals?.[chainId] ?? {}
 
       setDismissedProposals({
         ...(dismissedProposals ?? {}),
         [chainId]: {
           ...dismissed,
-          [safeAddress]: guardianAddress,
+          [safeAddress]: recovererAddress,
         },
       })
     },
@@ -136,9 +136,9 @@ export function _useDidDismissProposal() {
   )
 
   const wasProposalDismissed = useCallback(
-    (guardianAddress: string) => {
-      // If no proposals, is guardian and didn't ever dismiss
-      return sameAddress(dismissedProposals?.[chainId]?.[safeAddress], guardianAddress)
+    (recovererAddress: string) => {
+      // If no proposals, is recoverer and didn't ever dismiss
+      return sameAddress(dismissedProposals?.[chainId]?.[safeAddress], recovererAddress)
     },
     [chainId, dismissedProposals, safeAddress],
   )
