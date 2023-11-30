@@ -14,7 +14,7 @@ import { sameAddress } from '@/utils/addresses'
 import { isMultiSendCalldata } from '@/utils/transaction-calldata'
 import { decodeMultiSendTxs } from '@/utils/transactions'
 
-export const MAX_GUARDIAN_PAGE_SIZE = 100
+export const MAX_RECOVERER_PAGE_SIZE = 100
 
 export type RecoveryQueueItem = TransactionAddedEvent & {
   timestamp: BigNumber
@@ -26,9 +26,9 @@ export type RecoveryQueueItem = TransactionAddedEvent & {
 
 export type RecoveryStateItem = {
   address: string
-  guardians: Array<string>
-  txExpiration: BigNumber
-  txCooldown: BigNumber
+  recoverers: Array<string>
+  expiry: BigNumber
+  delay: BigNumber
   txNonce: BigNumber
   queueNonce: BigNumber
   queue: Array<RecoveryQueueItem>
@@ -47,6 +47,8 @@ export function _isMaliciousRecovery({
   safeAddress: string
   transaction: Pick<TransactionAddedEvent['args'], 'to' | 'data'>
 }) {
+  const BASE_MULTI_SEND_CALL_ONLY_VERSION = '1.3.0'
+
   const isMultiSend = isMultiSendCalldata(transaction.data)
   const transactions = isMultiSend ? decodeMultiSendTxs(transaction.data) : [transaction]
 
@@ -55,7 +57,9 @@ export function _isMaliciousRecovery({
     return !sameAddress(transaction.to, safeAddress)
   }
 
-  const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId, version: version ?? undefined })
+  const multiSendDeployment =
+    getMultiSendCallOnlyDeployment({ network: chainId, version: version ?? undefined }) ??
+    getMultiSendCallOnlyDeployment({ network: chainId, version: BASE_MULTI_SEND_CALL_ONLY_VERSION })
 
   if (!multiSendDeployment) {
     return true
@@ -73,20 +77,20 @@ export function _isMaliciousRecovery({
 export const _getRecoveryQueueItemTimestamps = async ({
   delayModifier,
   transactionAdded,
-  txCooldown,
-  txExpiration,
+  delay,
+  expiry,
 }: {
   delayModifier: Delay
   transactionAdded: TransactionAddedEvent
-  txCooldown: BigNumber
-  txExpiration: BigNumber
+  delay: BigNumber
+  expiry: BigNumber
 }): Promise<Pick<RecoveryQueueItem, 'timestamp' | 'validFrom' | 'expiresAt'>> => {
   const timestamp = await delayModifier.txCreatedAt(transactionAdded.args.queueNonce)
 
-  const validFrom = timestamp.add(txCooldown)
-  const expiresAt = txExpiration.isZero()
+  const validFrom = timestamp.add(delay)
+  const expiresAt = expiry.isZero()
     ? null // Never expires
-    : validFrom.add(txExpiration).mul(1_000)
+    : validFrom.add(expiry).mul(1_000)
 
   return {
     timestamp: timestamp.mul(1_000),
@@ -151,8 +155,8 @@ const queryAddedTransactions = async (
 const getRecoveryQueueItem = async ({
   delayModifier,
   transactionAdded,
-  txCooldown,
-  txExpiration,
+  delay,
+  expiry,
   provider,
   chainId,
   version,
@@ -160,8 +164,8 @@ const getRecoveryQueueItem = async ({
 }: {
   delayModifier: Delay
   transactionAdded: TransactionAddedEvent
-  txCooldown: BigNumber
-  txExpiration: BigNumber
+  delay: BigNumber
+  expiry: BigNumber
   provider: JsonRpcProvider
   chainId: string
   version: SafeInfo['version']
@@ -171,8 +175,8 @@ const getRecoveryQueueItem = async ({
     _getRecoveryQueueItemTimestamps({
       delayModifier,
       transactionAdded,
-      txCooldown,
-      txExpiration,
+      delay,
+      expiry,
     }),
     provider.getTransactionReceipt(transactionAdded.transactionHash),
   ])
@@ -207,8 +211,8 @@ export const _getRecoveryStateItem = async ({
   chainId: string
   version: SafeInfo['version']
 }): Promise<RecoveryStateItem> => {
-  const [[guardians], txExpiration, txCooldown, txNonce, queueNonce] = await Promise.all([
-    delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_GUARDIAN_PAGE_SIZE),
+  const [[recoverers], expiry, delay, txNonce, queueNonce] = await Promise.all([
+    delayModifier.getModulesPaginated(SENTINEL_ADDRESS, MAX_RECOVERER_PAGE_SIZE),
     delayModifier.txExpiration(),
     delayModifier.txCooldown(),
     delayModifier.txNonce(),
@@ -229,8 +233,8 @@ export const _getRecoveryStateItem = async ({
       return getRecoveryQueueItem({
         delayModifier,
         transactionAdded,
-        txCooldown,
-        txExpiration,
+        delay,
+        expiry,
         provider,
         chainId,
         version,
@@ -241,9 +245,9 @@ export const _getRecoveryStateItem = async ({
 
   return {
     address: delayModifier.address,
-    guardians,
-    txExpiration,
-    txCooldown,
+    recoverers,
+    expiry,
+    delay,
     txNonce,
     queueNonce,
     queue: queue.filter((item) => !item.removed),

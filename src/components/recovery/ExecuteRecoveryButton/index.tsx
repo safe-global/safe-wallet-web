@@ -22,7 +22,7 @@ export function ExecuteRecoveryButton({
   compact?: boolean
 }): ReactElement {
   const { setSubmitError } = useContext(RecoveryListItemContext)
-  const { isExecutable, isPending } = useRecoveryTxState(recovery)
+  const { isExecutable, isNext, isPending } = useRecoveryTxState(recovery)
   const onboard = useOnboard()
   const { safe } = useSafeInfo()
 
@@ -55,7 +55,15 @@ export function ExecuteRecoveryButton({
         const isDisabled = !isOk || !isExecutable || isPending
 
         return (
-          <Tooltip title={isDisabled ? 'Previous recovery attempts must be executed or cancelled first' : null}>
+          <Tooltip
+            title={
+              isDisabled
+                ? isNext
+                  ? 'You can execute the recovery after the specified review window'
+                  : 'Previous recovery proposals must be executed or cancelled first'
+                : null
+            }
+          >
             <span>
               {compact ? (
                 <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">

@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { Typography } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
@@ -9,6 +11,10 @@ import { getRecoverySkipTransaction } from '@/services/recovery/transaction'
 import { createTx } from '@/services/tx/tx-sender'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
+
+const onSubmit = () => {
+  trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.recovery_cancel })
+}
 
 export function CancelRecoveryFlowReview({ recovery }: { recovery: RecoveryQueueItem }): ReactElement {
   const web3ReadOnly = useWeb3ReadOnly()
@@ -23,16 +29,16 @@ export function CancelRecoveryFlowReview({ recovery }: { recovery: RecoveryQueue
   }, [setSafeTx, setSafeTxError, recovery, web3ReadOnly])
 
   return (
-    <SignOrExecuteForm onSubmit={() => null} isBatchable={false}>
+    <SignOrExecuteForm onSubmit={onSubmit} isBatchable={false}>
       <Typography mb={1}>
-        This transaction will initiate the cancellation of the{' '}
-        {recovery.isMalicious ? 'malicious transaction' : 'recovery attempt'}. It requires other owner signatures in
-        order to be complete.
+        All actions initiated by the Recoverer will be cancelled. The current owners will remain the owners of the Safe
+        Account.
       </Typography>
 
       <ErrorMessage level="info">
-        All actions initiated by the Guardian will be cancelled. The current owners will remain the owners of the Safe
-        Account.
+        This transaction will initiate the cancellation of the{' '}
+        {recovery.isMalicious ? 'malicious transaction' : 'recovery proposal'}. It requires other owner signatures in
+        order to be executed.
       </ErrorMessage>
     </SignOrExecuteForm>
   )

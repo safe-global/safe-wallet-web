@@ -39,8 +39,8 @@ export function RecoveryDescription({ item }: { item: RecoveryQueueItem }): Reac
   if (newSetup.owners.length === 0) {
     return (
       <ErrorMessage>
-        This recovery attempt will fail as the owner structure has been modified since it&apos;s proposal. We recommend
-        cancelling it{isGuardian ? ' and trying again' : ''}.
+        This recovery proposal will fail as the owner structure has since been modified. We recommend cancelling it
+        {isGuardian ? ' and trying again' : ''}.
       </ErrorMessage>
     )
   }

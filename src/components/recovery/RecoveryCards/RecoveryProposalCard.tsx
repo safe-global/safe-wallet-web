@@ -1,3 +1,6 @@
+import Track from '@/components/common/Track'
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Button, Card, Divider, Grid, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
@@ -8,7 +11,7 @@ import { RecoverAccountFlow } from '@/components/tx-flow/flows/RecoverAccount'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import madProps from '@/utils/mad-props'
 import { TxModalContext } from '@/components/tx-flow'
-import { HelpCenterArticle } from '@/config/constants'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 import type { TxModalContextType } from '@/components/tx-flow'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -34,6 +37,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   const onRecover = async () => {
     onClose?.()
     setTxFlow(<RecoverAccountFlow />)
+    trackEvent({ ...RECOVERY_EVENTS.START_RECOVERY, label: orientation === 'vertical' ? 'pop-up' : 'dashboard' })
   }
 
   const icon = (
@@ -43,14 +47,16 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
     />
   )
   const title = 'Recover this Account'
-  const desc = `The connected wallet was chosen as a trusted Guardian. You can help the owner${
+  const desc = `The connected wallet was chosen as a trusted Recoverer. You can help the owner${
     safe.owners.length > 1 ? 's' : ''
-  } regain access by updating the owner list.`
+  } regain access by resetting the Account setup.`
 
   const link = (
-    <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
-      Learn more
-    </ExternalLink>
+    <Track {...RECOVERY_EVENTS.LEARN_MORE} label="proposal-card">
+      <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
+        Learn more
+      </ExternalLink>
+    </Track>
   )
 
   const recoveryButton = (
@@ -105,7 +111,14 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
         <Divider flexItem sx={{ mx: -4 }} />
 
         <Grid item alignSelf="flex-end">
-          <Button onClick={onClose}>I&apos;ll do it later</Button>
+          <Button
+            onClick={() => {
+              trackEvent(RECOVERY_EVENTS.DISMISS_PROPOSAL_CARD)
+              onClose?.()
+            }}
+          >
+            I&apos;ll do it later
+          </Button>
           {recoveryButton}
         </Grid>
       </Grid>

@@ -1,3 +1,5 @@
+import Track from '@/components/common/Track'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Button, Card, Divider, Grid, Typography } from '@mui/material'
 import { useRouter } from 'next/dist/client/router'
 import type { ReactElement } from 'react'
@@ -7,7 +9,7 @@ import { Countdown } from '@/components/common/Countdown'
 import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { AppRoutes } from '@/config/routes'
-import { HelpCenterArticle } from '@/config/constants'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 import css from './styles.module.css'
@@ -43,15 +45,17 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
     ? 'Account recovery expired'
     : 'Account recovery in progress'
   const desc = isExecutable
-    ? 'The delay period has passed and it is now possible to execute the recovery transaction.'
+    ? 'The review window has passed and it is now possible to execute the recovery proposal.'
     : isExpired
-    ? 'The pending recovery transaction has expired and needs to be cancelled before a new one can be created.'
+    ? 'The pending recovery proposal has expired and needs to be cancelled before a new one can be created.'
     : 'The recovery process has started. This Account will be ready to recover in:'
 
   const link = (
-    <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
-      Learn more
-    </ExternalLink>
+    <Track {...RECOVERY_EVENTS.LEARN_MORE} label="in-progress-card">
+      <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
+        Learn more
+      </ExternalLink>
+    </Track>
   )
 
   if (orientation === 'horizontal') {

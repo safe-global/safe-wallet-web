@@ -8,14 +8,13 @@ import { Countdown } from '@/components/common/Countdown'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
-import { formatDate } from '@/utils/date'
 import { RecoveryValidationErrors } from '../RecoveryValidationErrors'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 
 export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactElement {
-  const { isExecutable, isNext, remainingSeconds } = useRecoveryTxState(item)
+  const { isNext, remainingSeconds } = useRecoveryTxState(item)
 
   return (
     <>
@@ -50,20 +49,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
       </List>
 
       <Box className={txSignersCss.listFooter}>
-        <Typography sx={({ palette }) => ({ color: palette.border.main, mb: 1 })}>
-          The recovery can be executed{' '}
-          {isExecutable ? (
-            item.expiresAt ? (
-              <Typography color="primary.main">until {formatDate(item.expiresAt.toNumber())}.</Typography>
-            ) : (
-              'now.'
-            )
-          ) : !isNext ? (
-            'after the previous recovery attempts are executed or cancelled and the delay period has passed:'
-          ) : (
-            'after the delay period:'
-          )}
-        </Typography>
+        <Typography sx={({ palette }) => ({ color: palette.border.main, mb: 1 })}>{desc}</Typography>
 
         {isNext && <Countdown seconds={remainingSeconds} />}
       </Box>

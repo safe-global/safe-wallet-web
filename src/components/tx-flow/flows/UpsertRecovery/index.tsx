@@ -1,3 +1,4 @@
+import { SETUP_RECOVERY_CATEGORY } from '@/services/analytics/events/recovery'
 import type { ReactElement } from 'react'
 
 import TxLayout from '@/components/tx-flow/common/TxLayout'
@@ -12,27 +13,35 @@ import type { RecoveryState } from '@/services/recovery/recovery-state'
 const Subtitles = ['How does recovery work?', 'Set up recovery settings', 'Set up account recovery']
 
 export enum UpsertRecoveryFlowFields {
-  guardian = 'guardian',
-  txCooldown = 'txCooldown',
-  txExpiration = 'txExpiration',
+  recoverer = 'recoverer',
+  delay = 'delay',
+  expiry = 'expiry',
 }
 
 export type UpsertRecoveryFlowProps = {
-  [UpsertRecoveryFlowFields.guardian]: string
-  [UpsertRecoveryFlowFields.txCooldown]: string
-  [UpsertRecoveryFlowFields.txExpiration]: string
+  [UpsertRecoveryFlowFields.recoverer]: string
+  [UpsertRecoveryFlowFields.delay]: string
+  [UpsertRecoveryFlowFields.expiry]: string
 }
 
 export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
-  const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>({
-    [UpsertRecoveryFlowFields.guardian]: delayModifier?.guardians?.[0] ?? '',
-    [UpsertRecoveryFlowFields.txCooldown]: delayModifier?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
-    [UpsertRecoveryFlowFields.txExpiration]: delayModifier?.txExpiration?.toString() ?? '0',
-  })
+  const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>(
+    {
+      [UpsertRecoveryFlowFields.recoverer]: delayModifier?.recoverers?.[0] ?? '',
+      [UpsertRecoveryFlowFields.delay]: delayModifier?.delay?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
+      [UpsertRecoveryFlowFields.expiry]: delayModifier?.expiry?.toString() ?? '0',
+    },
+    SETUP_RECOVERY_CATEGORY,
+  )
 
   const steps = [
     <UpsertRecoveryFlowIntro key={0} onSubmit={() => nextStep(data)} />,
-    <UpsertRecoveryFlowSettings key={1} params={data} onSubmit={(formData) => nextStep({ ...data, ...formData })} />,
+    <UpsertRecoveryFlowSettings
+      key={1}
+      params={data}
+      delayModifier={delayModifier}
+      onSubmit={(formData) => nextStep({ ...data, ...formData })}
+    />,
     <UpsertRecoveryFlowReview key={2} params={data} moduleAddress={delayModifier?.address} />,
   ]
 

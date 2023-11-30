@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { CardActions, Button, Typography, Divider, Box } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
@@ -18,7 +20,7 @@ import { dispatchRecoveryProposal } from '@/services/recovery/recovery-sender'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import { RecoverAccountFlowFields } from '.'
 import { OwnerList } from '../../common/OwnerList'
-import { selectDelayModifierByGuardian } from '@/services/recovery/selectors'
+import { selectDelayModifierByRecoverer } from '@/services/recovery/selectors'
 import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '../..'
@@ -44,7 +46,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const wallet = useWallet()
   const onboard = useOnboard()
   const [data] = useRecovery()
-  const recovery = data && selectDelayModifierByGuardian(data, wallet?.address ?? '')
+  const recovery = data && selectDelayModifierByRecoverer(data, wallet?.address ?? '')
   const [, executionValidationError] = useIsValidRecoveryExecTransactionFromModule(recovery?.address, safeTx)
 
   // Proposal
@@ -79,6 +81,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
         safeTx,
         delayModifierAddress: recovery.address,
       })
+      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.recovery_attempt })
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._810, err)
@@ -150,12 +153,10 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <WrongChainWarning />
 
-        {recovery?.txCooldown && (
+        {recovery?.delay && (
           <ErrorMessage level="info">
             Recovery will be{' '}
-            {recovery.txCooldown.isZero()
-              ? 'immediately possible'
-              : `possible in ${getPeriod(recovery.txCooldown.toNumber())}`}{' '}
+            {recovery.delay.isZero() ? 'immediately possible' : `possible in ${getPeriod(recovery.delay.toNumber())}`}{' '}
             after this transaction is executed.
           </ErrorMessage>
         )}

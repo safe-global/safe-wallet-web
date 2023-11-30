@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Card, Grid, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
@@ -9,7 +11,6 @@ import { TxModalContext } from '@/components/tx-flow'
 import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 import { useRecovery } from '@/components/recovery/RecoveryContext'
 import { useRouter } from 'next/router'
-import { AppRoutes } from '@/config/routes'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
@@ -24,13 +25,7 @@ export function Recovery(): ReactElement {
 
   const onEnable = () => {
     setTxFlow(<UpsertRecoveryFlow />)
-  }
-
-  const onEdit = () => {
-    router.push({
-      pathname: AppRoutes.settings.securityLogin,
-      query: router.query,
-    })
+    trackEvent({ ...RECOVERY_EVENTS.SETUP_RECOVERY, label: 'dashboard' })
   }
 
   return (
@@ -48,12 +43,12 @@ export function Recovery(): ReactElement {
             <Grid item xs>
               <Box className={css.wrapper}>
                 <Typography variant="h4" className={css.title}>
-                  Introducing account recovery{' '}
+                  Introducing {`Safe{RecoveryHub}`}{' '}
                 </Typography>
                 <Chip label="New" />
               </Box>
               <Typography mt={1} mb={3}>
-                Ensure that you never lose access to your funds by choosing a Guardian to recover your account.
+                Ensure you never lose access to your funds by choosing a recovery option to recover your Safe Account.
               </Typography>
               {supportsRecovery && (!recovery || recovery.length === 0) && (
                 <CheckWallet>

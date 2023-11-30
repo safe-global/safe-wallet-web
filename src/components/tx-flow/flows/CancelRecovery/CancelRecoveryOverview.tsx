@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
@@ -11,6 +13,7 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
 
   const onClose = () => {
     setTxFlow(undefined)
+    trackEvent(RECOVERY_EVENTS.GO_BACK)
   }
 
   return (
@@ -24,8 +27,8 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
         </Typography>
 
         <Typography variant="body2" mb={3} textAlign="center">
-          If it is was an unwanted recovery attempt or you&apos;ve noticed something suspicious, you can cancel it by
-          increasing the nonce of the recovery module.
+          If it is an unwanted recovery proposal or you&apos;ve noticed something suspicious, you can cancel it at any
+          time.
         </Typography>
 
         <Box display="flex" gap={3}>
@@ -34,7 +37,7 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
           </Button>
 
           <Button variant="contained" onClick={onSubmit}>
-            Yes, cancel recovery
+            Yes, cancel proposal
           </Button>
         </Box>
       </Box>

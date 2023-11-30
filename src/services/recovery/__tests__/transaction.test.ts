@@ -1,11 +1,9 @@
 import { faker } from '@faker-js/faker'
 import { Interface } from 'ethers/lib/utils'
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
-import * as deployments from '@safe-global/safe-deployments'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { getRecoveryProposalTransaction, getRecoveryProposalTransactions } from '../transaction'
+import { getRecoveryProposalTransactions } from '../transaction'
 
 describe('transaction', () => {
   describe('getRecoveryTransactions', () => {
@@ -563,149 +561,6 @@ describe('transaction', () => {
           expect(encodeFunctionDataSpy).toHaveBeenNthCalledWith(1, 'swapOwner', [oldOwner1, oldOwner2, newOwner1])
           expect(encodeFunctionDataSpy).toHaveBeenNthCalledWith(2, 'removeOwner', [newOwner1, oldOwner3, newThreshold])
         })
-      })
-    })
-
-    it('should throw if the new threshold is higher than the final owner output', () => {
-      const safeAddresss = faker.finance.ethereumAddress()
-
-      const newOwner1 = faker.finance.ethereumAddress()
-      const newOwner2 = faker.finance.ethereumAddress()
-
-      const oldOwner1 = faker.finance.ethereumAddress()
-
-      const oldThreshold = 1
-      const newThreshold = 10
-
-      const safe = {
-        address: { value: safeAddresss },
-        owners: [{ value: oldOwner1 }],
-        threshold: oldThreshold,
-      } as SafeInfo
-
-      const newOwners = [{ value: newOwner1 }, { value: newOwner2 }]
-
-      expect(() => getRecoveryProposalTransactions({ safe, newThreshold, newOwners })).toThrow(
-        'New threshold is higher than desired owners',
-      )
-    })
-  })
-
-  describe('getRecoveryProposalTransaction', () => {
-    it('should throw an error when no recovery transactions are found', () => {
-      const safe = {
-        address: { value: faker.finance.ethereumAddress() },
-        owners: [{ value: faker.finance.ethereumAddress() }],
-        threshold: 1,
-      } as SafeInfo
-
-      expect(() =>
-        getRecoveryProposalTransaction({
-          safe,
-          newThreshold: safe.threshold,
-          newOwners: safe.owners,
-        }),
-      ).toThrow('No recovery transactions found')
-    })
-
-    it('should return the transaction when a single recovery transaction is found', () => {
-      const safeAddresss = faker.finance.ethereumAddress()
-
-      const oldOwner1 = faker.finance.ethereumAddress()
-      const newOwner1 = faker.finance.ethereumAddress()
-
-      const oldThreshold = 1
-
-      const safe = {
-        address: { value: safeAddresss },
-        owners: [{ value: oldOwner1 }],
-        threshold: oldThreshold,
-      } as SafeInfo
-
-      const newOwners = [{ value: newOwner1 }]
-
-      const transaction = getRecoveryProposalTransaction({
-        safe,
-        newThreshold: oldThreshold,
-        newOwners,
-      })
-
-      expect(transaction).toEqual({
-        to: safeAddresss,
-        value: '0',
-        data: expect.any(String),
-        operation: OperationType.Call,
-      })
-    })
-
-    describe('when multiple recovery transactions are found', () => {
-      it('should return a MetaTransactionData object ', () => {
-        const safeAddresss = faker.finance.ethereumAddress()
-
-        const oldOwner1 = faker.finance.ethereumAddress()
-        const oldOwner2 = faker.finance.ethereumAddress()
-        const oldOwner3 = faker.finance.ethereumAddress()
-
-        const newOwner1 = faker.finance.ethereumAddress()
-        const newOwner2 = faker.finance.ethereumAddress()
-        const newOwner3 = faker.finance.ethereumAddress()
-
-        const oldThreshold = 2
-        const newThreshold = oldThreshold + 1
-
-        const safe = {
-          address: { value: safeAddresss },
-          owners: [{ value: oldOwner1 }, { value: oldOwner2 }, { value: oldOwner3 }],
-          threshold: oldThreshold,
-        } as SafeInfo
-
-        const multiSendDeployment = deployments.getMultiSendCallOnlyDeployment()!
-
-        const newOwners = [{ value: newOwner1 }, { value: newOwner2 }, { value: newOwner3 }]
-
-        const transaction = getRecoveryProposalTransaction({
-          safe,
-          newThreshold,
-          newOwners,
-        })
-
-        expect(transaction).toEqual({
-          to: multiSendDeployment.defaultAddress,
-          value: '0',
-          data: expect.any(String),
-          operation: OperationType.Call,
-        })
-      })
-
-      it('should throw an error when MultiSend deployment is not found', () => {
-        jest.spyOn(deployments, 'getMultiSendCallOnlyDeployment').mockReturnValue(undefined)
-
-        const safeAddresss = faker.finance.ethereumAddress()
-
-        const oldOwner1 = faker.finance.ethereumAddress()
-        const oldOwner2 = faker.finance.ethereumAddress()
-
-        const newOwner1 = faker.finance.ethereumAddress()
-        const newOwner2 = faker.finance.ethereumAddress()
-        const newOwner3 = faker.finance.ethereumAddress()
-
-        const oldThreshold = 2
-
-        const safe = {
-          address: { value: safeAddresss },
-          owners: [{ value: oldOwner1 }, { value: oldOwner2 }],
-          threshold: oldThreshold,
-        } as SafeInfo
-
-        const newOwners = [{ value: newOwner1 }, { value: newOwner2 }, { value: newOwner3 }]
-
-        expect(() =>
-          getRecoveryProposalTransaction({
-            safe,
-            newThreshold: oldThreshold,
-            newOwners,
-          }),
-        ).toThrow('MultiSend deployment not found')
       })
     })
   })

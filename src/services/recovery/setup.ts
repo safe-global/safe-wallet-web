@@ -2,27 +2,27 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { getModuleInstance, KnownContracts, deployAndSetUpModule } from '@gnosis.pm/zodiac'
 import { Interface } from 'ethers/lib/utils'
-import type { Web3Provider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 import { sameAddress } from '@/utils/addresses'
-import { MAX_GUARDIAN_PAGE_SIZE } from './recovery-state'
+import { MAX_RECOVERER_PAGE_SIZE } from './recovery-state'
 import type { UpsertRecoveryFlowProps } from '@/components/tx-flow/flows/UpsertRecovery'
 
 export function _getRecoverySetupTransactions({
-  txCooldown,
-  txExpiration,
-  guardians,
+  delay,
+  expiry,
+  recoverers,
   chainId,
   safeAddress,
   provider,
 }: {
-  txCooldown: string
-  txExpiration: string
-  guardians: Array<string>
+  delay: string
+  expiry: string
+  recoverers: Array<string>
   chainId: string
   safeAddress: string
-  provider: Web3Provider
+  provider: JsonRpcProvider
 }): {
   expectedModuleAddress: string
   transactions: Array<MetaTransactionData>
@@ -33,8 +33,8 @@ export function _getRecoverySetupTransactions({
       safeAddress, // address _owner
       safeAddress, // address _avatar
       safeAddress, // address _target
-      txCooldown, // uint256 _cooldown
-      txExpiration, // uint256 _expiration
+      delay, // uint256 _cooldown
+      expiry, // uint256 _expiration
     ],
   }
 
@@ -72,11 +72,11 @@ export function _getRecoverySetupTransactions({
 
   const delayModifierContract = getModuleInstance(KnownContracts.DELAY, expectedModuleAddress, provider)
 
-  // Add guardians to Delay Modifier
-  const enableDelayModifierModules: Array<MetaTransactionData> = guardians.map((guardian) => {
+  // Add recoverers to Delay Modifier
+  const enableDelayModifierModules: Array<MetaTransactionData> = recoverers.map((recoverer) => {
     return {
       to: expectedModuleAddress,
-      data: delayModifierContract.interface.encodeFunctionData('enableModule', [guardian]),
+      data: delayModifierContract.interface.encodeFunctionData('enableModule', [recoverer]),
       value: '0',
     }
   })
@@ -90,72 +90,72 @@ export function _getRecoverySetupTransactions({
 }
 
 export async function _getEditRecoveryTransactions({
-  newTxCooldown,
-  newTxExpiration,
-  newGuardians,
+  newDelay,
+  newExpiry,
+  newRecoverers,
   moduleAddress,
   provider,
 }: {
-  newTxCooldown: string
-  newTxExpiration: string
-  newGuardians: Array<string>
+  newDelay: string
+  newExpiry: string
+  newRecoverers: Array<string>
   moduleAddress: string
-  provider: Web3Provider
+  provider: JsonRpcProvider
 }): Promise<Array<MetaTransactionData>> {
   const delayModifierContract = getModuleInstance(KnownContracts.DELAY, moduleAddress, provider)
 
-  const [txExpiration, txCooldown, [guardians]] = await Promise.all([
+  const [oldExpiry, oldDelay, [recoverers]] = await Promise.all([
     delayModifierContract.txExpiration(),
     delayModifierContract.txCooldown(),
-    delayModifierContract.getModulesPaginated(SENTINEL_ADDRESS, MAX_GUARDIAN_PAGE_SIZE),
+    delayModifierContract.getModulesPaginated(SENTINEL_ADDRESS, MAX_RECOVERER_PAGE_SIZE),
   ])
 
   // Recovery management transaction data
   const txData: Array<string> = []
 
   // Update cooldown
-  if (!txCooldown.eq(newTxCooldown)) {
-    const setTxCooldown = delayModifierContract.interface.encodeFunctionData('setTxCooldown', [newTxCooldown])
+  if (!oldDelay.eq(newDelay)) {
+    const setTxCooldown = delayModifierContract.interface.encodeFunctionData('setTxCooldown', [newDelay])
     txData.push(setTxCooldown)
   }
 
   // Update expiration
-  if (!txExpiration.eq(newTxExpiration)) {
-    const setTxExpiration = delayModifierContract.interface.encodeFunctionData('setTxExpiration', [newTxExpiration])
+  if (!oldExpiry.eq(newExpiry)) {
+    const setTxExpiration = delayModifierContract.interface.encodeFunctionData('setTxExpiration', [newExpiry])
     txData.push(setTxExpiration)
   }
 
-  // Cache guardian changes to determine prevModule
-  let _guardians = [...guardians]
+  // Cache recoverer changes to determine prevModule
+  let _recoverers = [...recoverers]
 
   // Don't add/remove same owners
-  const guardiansToAdd = newGuardians.filter(
-    (newGuardian) => !_guardians.some((oldGuardian) => sameAddress(oldGuardian, newGuardian)),
+  const recoverersToAdd = newRecoverers.filter(
+    (newRecoverer) => !_recoverers.some((oldRecoverer) => sameAddress(oldRecoverer, newRecoverer)),
   )
-  const guardiansToRemove = _guardians.filter(
-    (oldGuardian) => !newGuardians.some((newGuardian) => sameAddress(newGuardian, oldGuardian)),
+  const recoverersToRemove = _recoverers.filter(
+    (oldRecoverer) => !newRecoverers.some((newRecoverer) => sameAddress(newRecoverer, oldRecoverer)),
   )
 
-  for (const guardianToRemove of guardiansToRemove) {
+  for (const recovererToRemove of recoverersToRemove) {
     const prevModule = (() => {
-      const guardianIndex = _guardians.findIndex((guardian) => sameAddress(guardian, guardianToRemove))
-      return guardianIndex === 0 ? SENTINEL_ADDRESS : _guardians[guardianIndex - 1]
+      const recovererIndex = _recoverers.findIndex((recoverer) => sameAddress(recoverer, recovererToRemove))
+      return recovererIndex === 0 ? SENTINEL_ADDRESS : _recoverers[recovererIndex - 1]
     })()
     const disableModule = delayModifierContract.interface.encodeFunctionData('disableModule', [
       prevModule,
-      guardianToRemove,
+      recovererToRemove,
     ])
     txData.push(disableModule)
 
-    // Remove guardian from cache
-    _guardians = _guardians.filter((guardian) => !sameAddress(guardian, guardianToRemove))
+    // Remove recoverer from cache
+    _recoverers = _recoverers.filter((recoverer) => !sameAddress(recoverer, recovererToRemove))
   }
 
-  for (const guardianToAdd of guardiansToAdd) {
-    const enableModule = delayModifierContract.interface.encodeFunctionData('enableModule', [guardianToAdd])
+  for (const recovererToAdd of recoverersToAdd) {
+    const enableModule = delayModifierContract.interface.encodeFunctionData('enableModule', [recovererToAdd])
     txData.push(enableModule)
 
-    // Need not add guardian to cache as not relevant for prevModule
+    // Need not add recoverer to cache as not relevant for prevModule
   }
 
   return txData.map((data) => ({
@@ -167,33 +167,33 @@ export async function _getEditRecoveryTransactions({
 }
 
 export async function getRecoveryUpsertTransactions({
-  txCooldown,
-  txExpiration,
-  guardian,
+  delay,
+  expiry,
+  recoverer,
   provider,
   moduleAddress,
   chainId,
   safeAddress,
 }: UpsertRecoveryFlowProps & {
   moduleAddress?: string
-  provider: Web3Provider
+  provider: JsonRpcProvider
   chainId: string
   safeAddress: string
 }): Promise<Array<MetaTransactionData>> {
   if (moduleAddress) {
     return _getEditRecoveryTransactions({
       moduleAddress,
-      newTxCooldown: txCooldown,
-      newTxExpiration: txExpiration,
-      newGuardians: [guardian],
+      newDelay: delay,
+      newExpiry: expiry,
+      newRecoverers: [recoverer],
       provider,
     })
   }
 
   const { transactions } = _getRecoverySetupTransactions({
-    txCooldown,
-    txExpiration,
-    guardians: [guardian],
+    delay,
+    expiry,
+    recoverers: [recoverer],
     chainId,
     safeAddress,
     provider,

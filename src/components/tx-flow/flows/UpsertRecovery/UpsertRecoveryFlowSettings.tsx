@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import {
   Divider,
   CardActions,
@@ -26,21 +28,28 @@ import AddressBookInput from '@/components/common/AddressBookInput'
 import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import { GuardianWarning } from './GuardianSmartContractWarning'
+import { RecovererWarning } from './RecovererSmartContractWarning'
+import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { TOOLTIP_TITLES } from '../../common/constants'
+import Track from '@/components/common/Track'
 import type { UpsertRecoveryFlowProps } from '.'
+import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 
 export function UpsertRecoveryFlowSettings({
   params,
+  delayModifier,
   onSubmit,
 }: {
   params: UpsertRecoveryFlowProps
+  delayModifier?: RecoveryStateItem
   onSubmit: (formData: UpsertRecoveryFlowProps) => void
 }): ReactElement {
   const { safeAddress } = useSafeInfo()
-  const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.txExpiration] !== '0')
+  const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.expiry] !== '0')
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const periods = useRecoveryPeriods()
 
@@ -49,52 +58,71 @@ export function UpsertRecoveryFlowSettings({
     mode: 'onChange',
   })
 
-  const validateGuardian = (guardian: string) => {
-    if (sameAddress(guardian, safeAddress)) {
-      return 'The Safe Account cannot be a Guardian of itself'
+  const recoverer = formMethods.watch(UpsertRecoveryFlowFields.recoverer)
+  const delay = formMethods.watch(UpsertRecoveryFlowFields.delay)
+  const expiry = formMethods.watch(UpsertRecoveryFlowFields.expiry)
+
+  // RHF's dirty check is tempermental with our address input dropdown
+  const isDirty = delayModifier
+    ? // Updating settings
+      !sameAddress(recoverer, delayModifier.recoverers[0]) ||
+      !delayModifier.delay.eq(delay) ||
+      !delayModifier.expiry.eq(expiry)
+    : // Setting up recovery
+      recoverer && delay && expiry
+
+  const validateRecoverer = (recoverer: string) => {
+    if (sameAddress(recoverer, safeAddress)) {
+      return 'The Safe Account cannot be a Recoverer of itself'
     }
   }
 
-  const onShowAdvanced = () => setShowAdvanced((prev) => !prev)
+  const onShowAdvanced = () => {
+    setShowAdvanced((prev) => !prev)
+    trackEvent(RECOVERY_EVENTS.SHOW_ADVANCED)
+  }
+
+  const isDisabled = !understandsRisk || !isDirty
 
   return (
     <>
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit)} className={commonCss.form}>
           <TxCard>
-            <div>
-              <Typography variant="h5" gutterBottom>
-                Trusted Guardian
-              </Typography>
-
-              <Typography variant="body2">
-                Choose a Guardian, such as a hardware wallet or family member&apos;s wallet, that can initiate the
-                recovery process in the future.
-              </Typography>
-            </div>
-
-            <AddressBookInput
-              label="Guardian address"
-              name={UpsertRecoveryFlowFields.guardian}
-              required
-              fullWidth
-              validate={validateGuardian}
-            />
-
-            <GuardianWarning />
-
-            <Alert severity="info" sx={{ border: 'unset' }}>
-              Your Guardian will be able to modify your Account setup. Only select an address that you trust.
+            <Alert severity="warning" sx={{ border: 'unset' }}>
+              Your Recoverer will be able to reset your Account setup. Only select an address that you trust.{' '}
+              <Track {...RECOVERY_EVENTS.LEARN_MORE} label="recover-setup-flow">
+                <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
+                  Learn more
+                </ExternalLink>
+              </Track>
             </Alert>
 
             <div>
               <Typography variant="h5" gutterBottom>
-                Recovery delay
-                <Tooltip
-                  placement="top"
-                  arrow
-                  title="The recovery delay begins after the recovery attempt is initiated"
-                >
+                Trusted Recoverer
+              </Typography>
+
+              <Typography variant="body2">
+                Choose a Recoverer, such as a hardware wallet or a Safe Account controlled by family or friends, that
+                can initiate the recovery process in the future.
+              </Typography>
+            </div>
+
+            <div>
+              <AddressBookInput
+                label="Recoverer address or ENS"
+                name={UpsertRecoveryFlowFields.recoverer}
+                required
+                fullWidth
+                validate={validateRecoverer}
+              />
+              <RecovererWarning />
+            </div>
+            <div>
+              <Typography variant="h5" gutterBottom>
+                Review window
+                <Tooltip placement="top" arrow title={TOOLTIP_TITLES.REVIEW_WINDOW}>
                   <span>
                     <SvgIcon
                       component={InfoIcon}
@@ -108,13 +136,13 @@ export function UpsertRecoveryFlowSettings({
               </Typography>
 
               <Typography variant="body2">
-                You can cancel any recovery attempt when it is not needed or wanted.
+                You can cancel any recovery proposal when it is not needed or wanted during this period.
               </Typography>
             </div>
 
             <Controller
               control={formMethods.control}
-              name={UpsertRecoveryFlowFields.txCooldown}
+              name={UpsertRecoveryFlowFields.delay}
               render={({ field: { ref, ...field } }) => (
                 <SelectField label="Recovery delay" fullWidth inputRef={ref} {...field}>
                   {periods.delay.map(({ label, value }, index) => (
@@ -131,17 +159,34 @@ export function UpsertRecoveryFlowSettings({
             </Typography>
 
             <Collapse in={showAdvanced}>
-              <Typography variant="body2" mb={2}>
-                Set a period of time after which the recovery attempt will expire and can no longer be executed.
-              </Typography>
+              <div>
+                <Typography variant="h5" gutterBottom>
+                  Proposal expiry
+                  <Tooltip placement="top" arrow title={TOOLTIP_TITLES.PROPOSAL_EXPIRY}>
+                    <span>
+                      <SvgIcon
+                        component={InfoIcon}
+                        inheritViewBox
+                        fontSize="small"
+                        color="border"
+                        sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                      />
+                    </span>
+                  </Tooltip>
+                </Typography>
+
+                <Typography variant="body2" mb={2}>
+                  Set a period of time after which the recovery proposal will expire and can no longer be executed.
+                </Typography>
+              </div>
 
               <Controller
                 control={formMethods.control}
-                name={UpsertRecoveryFlowFields.txExpiration}
+                name={UpsertRecoveryFlowFields.expiry}
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field: { ref, ...field } }) => (
-                  <SelectField label="Transaction expiry" fullWidth inputRef={ref} {...field}>
+                  <SelectField label="Proposal expiry" fullWidth inputRef={ref} {...field}>
                     {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
@@ -155,7 +200,7 @@ export function UpsertRecoveryFlowSettings({
 
           <TxCard>
             <FormControlLabel
-              label="I understand that the Guardian will be able to initiate recovery of this Safe Account and I will not be informed about this outside of the Safe{Wallet}."
+              label="I understand that the Recoverer will be able to initiate recovery of this Safe Account and that I will only be informed within the Safe{Wallet}."
               control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
               sx={{ pl: 2 }}
             />
@@ -163,7 +208,7 @@ export function UpsertRecoveryFlowSettings({
             <Divider className={commonCss.nestedDivider} />
 
             <CardActions sx={{ mt: '0 !important' }}>
-              <Button variant="contained" type="submit" disabled={!understandsRisk}>
+              <Button variant="contained" type="submit" disabled={isDisabled}>
                 Next
               </Button>
             </CardActions>

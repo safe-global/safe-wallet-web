@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useContext, useMemo } from 'react'
 import type { ReactElement } from 'react'
@@ -13,26 +15,29 @@ import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { getPeriod } from '@/utils/date'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
+import Track from '@/components/common/Track'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
 const FEEDBACK_FORM = 'https://noteforms.com/forms/safe-feedback-form-hk16ds?notionforms=1&utm_source=notionforms'
 
 enum HeadCells {
-  Guardian = 'guardian',
-  TxCooldown = 'txCooldown',
-  TxExpiration = 'txExpiration',
+  Recoverer = 'recoverer',
+  Delay = 'delay',
+  Expiry = 'expiry',
   Actions = 'actions',
 }
 
 const headCells = [
-  { id: HeadCells.Guardian, label: 'Guardian' },
+  { id: HeadCells.Recoverer, label: 'Recoverer' },
   {
-    id: HeadCells.TxCooldown,
+    id: HeadCells.Delay,
     label: (
       <>
-        Recovery delay{' '}
-        <Tooltip title="You can cancel any recovery attempt when it is not needed or wanted.">
+        Review window{' '}
+        <Tooltip title={TOOLTIP_TITLES.REVIEW_WINDOW}>
           <span>
             <SvgIcon
               component={InfoIcon}
@@ -47,11 +52,11 @@ const headCells = [
     ),
   },
   {
-    id: HeadCells.TxExpiration,
+    id: HeadCells.Expiry,
     label: (
       <>
-        Expiry{' '}
-        <Tooltip title="A period of time after which the recovery attempt will expire and can no longer be executed.">
+        Proposal expiry{' '}
+        <Tooltip title={TOOLTIP_TITLES.PROPOSAL_EXPIRY}>
           <span>
             <SvgIcon
               component={InfoIcon}
@@ -72,27 +77,29 @@ export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()
 
+  const isRecoveryEnabled = recovery && recovery.length > 0
+
   const rows = useMemo(() => {
     return recovery?.flatMap((delayModifier) => {
-      const { guardians, txCooldown, txExpiration } = delayModifier
+      const { recoverers, delay, expiry } = delayModifier
 
-      return guardians.map((guardian) => {
-        const txCooldownSeconds = txCooldown.toNumber()
-        const txExpirationSeconds = txExpiration.toNumber()
+      return recoverers.map((recoverer) => {
+        const delaySeconds = delay.toNumber()
+        const expirySeconds = expiry.toNumber()
 
         return {
           cells: {
-            [HeadCells.Guardian]: {
-              rawValue: guardian,
-              content: <EthHashInfo address={guardian} showCopyButton hasExplorer />,
+            [HeadCells.Recoverer]: {
+              rawValue: recoverer,
+              content: <EthHashInfo address={recoverer} showCopyButton hasExplorer />,
             },
-            [HeadCells.TxCooldown]: {
-              rawValue: txCooldownSeconds,
-              content: <Typography>{txCooldownSeconds === 0 ? 'none' : getPeriod(txCooldownSeconds)}</Typography>,
+            [HeadCells.Delay]: {
+              rawValue: delaySeconds,
+              content: <Typography>{delaySeconds === 0 ? 'none' : getPeriod(delaySeconds)}</Typography>,
             },
-            [HeadCells.TxExpiration]: {
-              rawValue: txExpirationSeconds,
-              content: <Typography>{txExpirationSeconds === 0 ? 'never' : getPeriod(txExpirationSeconds)}</Typography>,
+            [HeadCells.Expiry]: {
+              rawValue: expirySeconds,
+              content: <Typography>{expirySeconds === 0 ? 'never' : getPeriod(expirySeconds)}</Typography>,
             },
             [HeadCells.Actions]: {
               rawValue: '',
@@ -124,11 +131,17 @@ export function Recovery(): ReactElement {
 
         <Grid item xs>
           <Typography mb={2}>
-            Choose a trusted Guardian to recover your Safe Account, in case you should ever lose access to your Account.
-            Enabling the Account recovery module will require a transactions.
+            {isRecoveryEnabled
+              ? 'The trusted Recoverer will be able to recover your Safe Account if you ever lose access. You can change Recoverers or alter your recovery setup at any time.'
+              : 'Choose a trusted Recoverer to recover your Safe Account if you ever lose access. Enabling the Account recovery module will require a transaction.'}{' '}
+            <Track {...RECOVERY_EVENTS.LEARN_MORE} label="settings">
+              <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
+                Learn more
+              </ExternalLink>
+            </Track>
           </Typography>
 
-          {!recovery || recovery.length === 0 ? (
+          {!isRecoveryEnabled ? (
             <>
               <Alert severity="info">
                 Unhappy with the provided option?{' '}
@@ -141,7 +154,10 @@ export function Recovery(): ReactElement {
                   <Button
                     variant="contained"
                     disabled={!isOk}
-                    onClick={() => setTxFlow(<UpsertRecoveryFlow />)}
+                    onClick={() => {
+                      setTxFlow(<UpsertRecoveryFlow />)
+                      trackEvent({ ...RECOVERY_EVENTS.SETUP_RECOVERY, label: 'settings' })
+                    }}
                     sx={{ mt: 2 }}
                   >
                     Set up recovery
