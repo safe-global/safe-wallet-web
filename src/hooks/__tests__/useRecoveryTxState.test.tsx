@@ -15,10 +15,10 @@ describe('useRecoveryTxState', () => {
       jest.setSystemTime(0)
 
       const delayModifierAddress1 = faker.finance.ethereumAddress()
-      const nextTxHash1 = faker.string.hexadecimal()
+      const nextTxHash1 = faker.string.hexadecimal({ length: 10 })
 
       const delayModifierAddress2 = faker.finance.ethereumAddress()
-      const nextTxHash2 = faker.string.hexadecimal()
+      const nextTxHash2 = faker.string.hexadecimal({ length: 10 })
 
       const validFrom = BigNumber.from(1_000)
       const expiresAt = BigNumber.from(1_000)
@@ -63,7 +63,7 @@ describe('useRecoveryTxState', () => {
       jest.setSystemTime(0)
 
       const delayModifierAddress = faker.finance.ethereumAddress()
-      const nextTxHash = faker.string.hexadecimal()
+      const nextTxHash = faker.string.hexadecimal({ length: 10 })
 
       const validFrom = BigNumber.from(1_000)
       const expiresAt = BigNumber.from(1_000)
@@ -103,7 +103,7 @@ describe('useRecoveryTxState', () => {
       jest.setSystemTime(1_000)
 
       const delayModifierAddress = faker.finance.ethereumAddress()
-      const nextTxHash = faker.string.hexadecimal()
+      const nextTxHash = faker.string.hexadecimal({ length: 10 })
 
       const validFrom = BigNumber.from(0)
       const expiresAt = BigNumber.from(2_000)
@@ -143,7 +143,7 @@ describe('useRecoveryTxState', () => {
       jest.setSystemTime(1_000)
 
       const delayModifierAddress = faker.finance.ethereumAddress()
-      const nextTxHash = faker.string.hexadecimal()
+      const nextTxHash = faker.string.hexadecimal({ length: 10 })
 
       const validFrom = BigNumber.from(0)
       const expiresAt = BigNumber.from(0)
@@ -183,9 +183,9 @@ describe('useRecoveryTxState', () => {
       jest.setSystemTime(0)
 
       const delayModifierAddress = faker.finance.ethereumAddress()
-      const nextTxHash = faker.string.hexadecimal()
+      const nextTxHash = faker.string.hexadecimal({ length: 10 })
 
-      const nextRecoveryTxHash = faker.string.hexadecimal()
+      const nextRecoveryTxHash = faker.string.hexadecimal({ length: 10 })
 
       const validFrom = BigNumber.from(0)
       const expiresAt = BigNumber.from(1)
@@ -230,13 +230,13 @@ describe('useRecoveryTxState', () => {
 
       const delayModifierAddress1 = faker.finance.ethereumAddress()
 
-      const nextTxHash1 = faker.string.hexadecimal()
-      const queueTxHash1 = faker.string.hexadecimal()
+      const nextTxHash1 = faker.string.hexadecimal({ length: 10 })
+      const queueTxHash1 = faker.string.hexadecimal({ length: 10 })
 
       const delayModifierAddress2 = faker.finance.ethereumAddress()
 
-      const nextTxHash2 = faker.string.hexadecimal()
-      const queueTxHash2 = faker.string.hexadecimal()
+      const nextTxHash2 = faker.string.hexadecimal({ length: 10 })
+      const queueTxHash2 = faker.string.hexadecimal({ length: 10 })
 
       const validFrom = BigNumber.from(1_000)
       const expiresAt = BigNumber.from(1_000)
@@ -295,8 +295,8 @@ describe('useRecoveryTxState', () => {
 
       const delayModifierAddress = faker.finance.ethereumAddress()
 
-      const nextTxHash = faker.string.hexadecimal()
-      const queueTxHash = faker.string.hexadecimal()
+      const nextTxHash = faker.string.hexadecimal({ length: 10 })
+      const queueTxHash = faker.string.hexadecimal({ length: 10 })
 
       const validFrom = BigNumber.from(1_000)
       const expiresAt = BigNumber.from(1_000)
@@ -341,8 +341,8 @@ describe('useRecoveryTxState', () => {
 
       const delayModifierAddress = faker.finance.ethereumAddress()
 
-      const nextTxHash = faker.string.hexadecimal()
-      const queueTxHash = faker.string.hexadecimal()
+      const nextTxHash = faker.string.hexadecimal({ length: 10 })
+      const queueTxHash = faker.string.hexadecimal({ length: 10 })
 
       const validFrom = BigNumber.from(0)
       const expiresAt = BigNumber.from(2_000)
@@ -387,8 +387,8 @@ describe('useRecoveryTxState', () => {
 
       const delayModifierAddress = faker.finance.ethereumAddress()
 
-      const nextTxHash = faker.string.hexadecimal()
-      const queueTxHash = faker.string.hexadecimal()
+      const nextTxHash = faker.string.hexadecimal({ length: 10 })
+      const queueTxHash = faker.string.hexadecimal({ length: 10 })
 
       const validFrom = BigNumber.from(0)
       const expiresAt = BigNumber.from(0)
