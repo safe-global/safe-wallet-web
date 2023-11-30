@@ -1,32 +1,19 @@
-import { trackEvent } from '@/services/analytics'
-import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { Box, Button, Card, Grid, Typography } from '@mui/material'
-import { useContext } from 'react'
+import { SetupRecoveryButton } from '@/components/settings/Recovery'
+import { Box, Card, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import RecoveryLogo from '@/public/images/common/recovery.svg'
 import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Chip } from '@/components/common/Chip'
-import { TxModalContext } from '@/components/tx-flow'
-import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 import { useRecovery } from '@/components/recovery/RecoveryContext'
-import { useRouter } from 'next/router'
-import CheckWallet from '@/components/common/CheckWallet'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 
 import css from './styles.module.css'
 
 export function Recovery(): ReactElement {
-  const router = useRouter()
-  const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()
   const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
-
-  const onEnable = () => {
-    setTxFlow(<UpsertRecoveryFlow />)
-    trackEvent({ ...RECOVERY_EVENTS.SETUP_RECOVERY, label: 'dashboard' })
-  }
 
   return (
     <WidgetContainer>
@@ -51,13 +38,7 @@ export function Recovery(): ReactElement {
                 Ensure you never lose access to your funds by choosing a recovery option to recover your Safe Account.
               </Typography>
               {supportsRecovery && (!recovery || recovery.length === 0) && (
-                <CheckWallet>
-                  {(isOk) => (
-                    <Button variant="contained" disabled={!isOk} onClick={onEnable}>
-                      Set up recovery
-                    </Button>
-                  )}
-                </CheckWallet>
+                <SetupRecoveryButton eventLabel="dashboard" />
               )}
             </Grid>
           </Grid>

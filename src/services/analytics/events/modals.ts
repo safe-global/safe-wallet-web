@@ -60,6 +60,6 @@ export const MODALS_EVENTS = {
 }
 
 export enum MODAL_NAVIGATION {
-  Next = 'TxFlow Next',
-  Back = 'TxFlow Back',
+  Next = 'Next click',
+  Back = 'Back click',
 }

@@ -103,9 +103,11 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
 
         <Divider flexItem sx={{ mx: -4 }} />
 
-        <Button variant="contained" onClick={onClick} sx={{ alignSelf: 'flex-end' }}>
-          Go to queue
-        </Button>
+        <Track {...RECOVERY_EVENTS.CHECK_RECOVERY_PROPOSAL}>
+          <Button variant="contained" onClick={onClick} sx={{ alignSelf: 'flex-end' }}>
+            Go to queue
+          </Button>
+        </Track>
       </Grid>
     </Card>
   )
