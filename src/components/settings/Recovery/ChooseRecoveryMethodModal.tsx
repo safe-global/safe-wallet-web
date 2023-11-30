@@ -68,14 +68,13 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
 
   return (
     <Dialog open={open} onClose={onClose} className={css.dialog}>
-      <DialogTitle display="flex" alignItems="center" sx={{ mb: 2 }}>
-        Set up Account recovery
+      <DialogContent dividers sx={{ py: 2, px: 3 }}>
+        <Typography variant="h2" mb={1}>
+          Set up Account recovery
+        </Typography>
         <IconButton onClick={onClose} className={css.closeIcon}>
           <CloseIcon />
         </IconButton>
-      </DialogTitle>
-
-      <DialogContent dividers sx={{ py: 2, px: 3 }}>
         <DialogContentText color="text.primary" mb={4}>
           Ensure that you never lose access to your funds by selecting one of the options below. Want to know how
           recovery works? Learn more in our{' '}
@@ -117,11 +116,15 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                   <List className={css.checkList}>
                     <ListItem>
                       <CheckIcon />
-                      Quick and hassle-free setup
+                      Add any account as Recoverer
                     </ListItem>
                     <ListItem>
                       <CheckIcon />
-                      Encrypted account information
+                      Trust no centralized party
+                    </ListItem>
+                    <ListItem>
+                      <CheckIcon />
+                      Set up Recovery for free
                     </ListItem>
                   </List>
                 </div>
@@ -140,11 +143,15 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                   <List className={css.checkList}>
                     <ListItem>
                       <CheckIcon />
-                      Quick and hassle-free setup
+                      Add any account as Recoverer
                     </ListItem>
                     <ListItem>
                       <CheckIcon />
-                      Encrypted account information
+                      Trust no centralized party
+                    </ListItem>
+                    <ListItem>
+                      <CheckIcon />
+                      Set up Recovery for free
                     </ListItem>
                   </List>
                 </div>
@@ -152,14 +159,12 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
             />
           </RadioGroup>
         </FormControl>
-
         <Typography color="primary.light" mt="12px">
           Unhappy with the provided options?{' '}
           <Track {...RECOVERY_EVENTS.GIVE_US_FEEDBACK} label="method-modal">
             <ExternalLink href={RECOVERY_FEEDBACK_FORM}>Give us feedback</ExternalLink>
           </Track>
         </Typography>
-
         <Box display="flex" justifyContent="center" mt={3}>
           {currentType === RecoveryMethod.SelfCustody ? (
             <Track {...RECOVERY_EVENTS.CONTINUE_WITH_RECOVERY} label={currentType}>
