@@ -126,7 +126,7 @@ export function Recovery(): ReactElement {
           </Typography>
 
           {!recovery || recovery.length === 0 ? (
-            <SetupRecoveryButton location="settings" />
+            <SetupRecoveryButton eventLabel="settings" />
           ) : rows ? (
             <EnhancedTable rows={rows} headCells={headCells} />
           ) : null}
@@ -136,14 +136,14 @@ export function Recovery(): ReactElement {
   )
 }
 
-export const SetupRecoveryButton = ({ location }: { location: string }) => {
+export const SetupRecoveryButton = ({ eventLabel }: { eventLabel: string }) => {
   const [open, setOpen] = useState<boolean>(false)
 
   return (
     <>
       <CheckWallet>
         {(isOk) => (
-          <Track {...RECOVERY_EVENTS.SETUP_RECOVERY} label={location}>
+          <Track {...RECOVERY_EVENTS.SETUP_RECOVERY} label={eventLabel}>
             <Button variant="contained" disabled={!isOk} onClick={() => setOpen(true)} sx={{ mt: 2 }}>
               Set up recovery
             </Button>

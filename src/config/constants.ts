@@ -87,7 +87,7 @@ export const HelpCenterArticle = {
   PUSH_NOTIFICATIONS: `${HELP_CENTER_URL}/en/articles/99197-how-to-start-receiving-web-push-notifications-in-the-web-wallet`,
 } as const
 
-export const FEEDBACK_FORM =
+export const RECOVERY_FEEDBACK_FORM =
   'https://noteforms.com/forms/safe-feedback-form-hk16ds?notionforms=1&utm_source=notionforms'
 
 // Social

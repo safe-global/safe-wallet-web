@@ -1,5 +1,5 @@
 import Track from '@/components/common/Track'
-import { FEEDBACK_FORM, HelpCenterArticle } from '@/config/constants'
+import { RECOVERY_FEEDBACK_FORM, HelpCenterArticle } from '@/config/constants'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { type ChangeEvent, type ReactElement, useContext } from 'react'
@@ -41,8 +41,12 @@ enum RecoveryMethod {
   Coincover = 'Coincover',
 }
 
+enum FieldNames {
+  recoveryMethod = 'recoveryMethod',
+}
+
 type Fields = {
-  recoveryMethod: RecoveryMethod
+  [FieldNames.recoveryMethod]: RecoveryMethod
 }
 
 export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; onClose: () => void }): ReactElement {
@@ -56,7 +60,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
   })
   const { register, watch } = methods
 
-  const currentType = watch('recoveryMethod')
+  const currentType = watch(FieldNames.recoveryMethod)
 
   const trackOptionChoice = (e: ChangeEvent<HTMLInputElement>) => {
     trackEvent({ ...RECOVERY_EVENTS.SELECT_RECOVERY_METHOD, label: e.target.value })
@@ -65,7 +69,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
   return (
     <Dialog open={open} onClose={onClose} className={css.dialog}>
       <DialogTitle display="flex" alignItems="center" sx={{ mb: 2 }}>
-        Set up account recovery
+        Set up Account recovery
         <IconButton onClick={onClose} className={css.closeIcon}>
           <CloseIcon />
         </IconButton>
@@ -73,7 +77,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
 
       <DialogContent dividers sx={{ py: 2, px: 3 }}>
         <DialogContentText color="text.primary" mb={4}>
-          Ensure that you never lose access to your funds by selecting one of the options below. Want to know how the
+          Ensure that you never lose access to your funds by selecting one of the options below. Want to know how
           recovery works? Learn more in our{' '}
           <Track {...RECOVERY_EVENTS.LEARN_MORE} label="method-modal">
             <ExternalLink href={HelpCenterArticle.RECOVERY}>Help Center</ExternalLink>
@@ -81,13 +85,13 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
         </DialogContentText>
         <FormControl>
           <RadioGroup
+            {...register(FieldNames.recoveryMethod, { onChange: trackOptionChoice })}
             defaultValue={RecoveryMethod.SelfCustody}
-            onChange={trackOptionChoice}
             className={css.buttonGroup}
           >
             <FormControlLabel
               value={RecoveryMethod.SelfCustody}
-              control={<Radio {...register('recoveryMethod')} />}
+              control={<Radio />}
               label={
                 <div className={css.method}>
                   <RecoveryCustomIcon style={{ display: 'block' }} />
@@ -95,7 +99,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                     Self-custodial recovery
                   </Typography>
                   <Typography>
-                    Allow yourself, friends and family to recover your Safe Account by enabling a module.
+                    Allow yourself, friends or family to recover your Safe Account by enabling a module.
                   </Typography>
                 </div>
               }
@@ -103,7 +107,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
 
             <FormControlLabel
               value={RecoveryMethod.Sygnum}
-              control={<Radio {...register('recoveryMethod')} />}
+              control={<Radio />}
               label={
                 <div className={css.method}>
                   <RecoverySygnumIcon style={{ display: 'block' }} />
@@ -126,7 +130,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
 
             <FormControlLabel
               value={RecoveryMethod.Coincover}
-              control={<Radio {...register('recoveryMethod')} />}
+              control={<Radio />}
               label={
                 <div className={css.method}>
                   <RecoveryCoincoverIcon style={{ display: 'block' }} />
@@ -142,7 +146,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                       <CheckIcon />
                       Encrypted account information
                     </ListItem>
-                  </List>{' '}
+                  </List>
                 </div>
               }
             />
@@ -152,37 +156,33 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
         <Typography color="primary.light" mt="12px">
           Unhappy with the provided options?{' '}
           <Track {...RECOVERY_EVENTS.GIVE_US_FEEDBACK} label="method-modal">
-            <ExternalLink href={FEEDBACK_FORM}>Give us feedback</ExternalLink>
+            <ExternalLink href={RECOVERY_FEEDBACK_FORM}>Give us feedback</ExternalLink>
           </Track>
         </Typography>
 
         <Box display="flex" justifyContent="center" mt={3}>
           {currentType === RecoveryMethod.SelfCustody ? (
-            <Button
-              variant="contained"
-              onClick={() => {
-                trackEvent({ ...RECOVERY_EVENTS.CONTINUE_WITH_RECOVERY, label: currentType })
-                setTxFlow(<UpsertRecoveryFlow />)
-                onClose()
-              }}
-            >
-              Set up
-            </Button>
-          ) : (
-            <Link
-              href={currentType === RecoveryMethod.Sygnum ? SYGNUM_WAITLIST_LINK : COINCOVER_WAITLIST_LINK}
-              target="_blank"
-              passHref
-            >
+            <Track {...RECOVERY_EVENTS.CONTINUE_WITH_RECOVERY} label={currentType}>
               <Button
                 variant="contained"
                 onClick={() => {
-                  trackEvent({ ...RECOVERY_EVENTS.CONTINUE_TO_WAITLIST, label: currentType })
+                  setTxFlow(<UpsertRecoveryFlow />)
+                  onClose()
                 }}
               >
-                Join waitlist
+                Set up
               </Button>
-            </Link>
+            </Track>
+          ) : (
+            <Track {...RECOVERY_EVENTS.CONTINUE_TO_WAITLIST} label={currentType}>
+              <Link
+                href={currentType === RecoveryMethod.Sygnum ? SYGNUM_WAITLIST_LINK : COINCOVER_WAITLIST_LINK}
+                target="_blank"
+                passHref
+              >
+                <Button variant="contained">Join waitlist</Button>
+              </Link>
+            </Track>
           )}
         </Box>
       </DialogContent>
