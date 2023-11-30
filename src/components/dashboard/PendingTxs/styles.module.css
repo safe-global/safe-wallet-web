@@ -1,13 +1,11 @@
 .container {
   width: 100%;
-  min-height: 50px;
   padding: 8px 16px;
   background-color: var(--color-background-paper);
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
-  display: grid;
-  grid-template-columns: minmax(30px, min-content) 0.5fr 1fr min-content min-content;
-  grid-template-areas: 'nonce type info confirmations action';
+  flex-wrap: wrap;
+  display: flex;
   align-items: center;
   gap: var(--space-2);
 }
@@ -45,4 +43,13 @@
   background-color: var(--color-secondary-light);
   color: var(--color-static-main);
   text-align: center;
+}
+
+@media (max-width: 599.95px) {
+  .txInfo {
+    width: 100%;
+    order: 1;
+    flex: auto;
+    margin-top: calc(var(--space-1) * -1);
+  }
 }
