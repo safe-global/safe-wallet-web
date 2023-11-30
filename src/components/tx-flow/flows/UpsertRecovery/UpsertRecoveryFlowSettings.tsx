@@ -32,6 +32,7 @@ import { RecovererWarning } from './RecovererSmartContractWarning'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 import { TOOLTIP_TITLES } from '../../common/constants'
+import Track from '@/components/common/Track'
 import type { UpsertRecoveryFlowProps } from '.'
 import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
 
@@ -90,9 +91,11 @@ export function UpsertRecoveryFlowSettings({
           <TxCard>
             <Alert severity="warning" sx={{ border: 'unset' }}>
               Your Recoverer will be able to reset your Account setup. Only select an address that you trust.{' '}
-              <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
-                Learn more
-              </ExternalLink>
+              <Track {...RECOVERY_EVENTS.LEARN_MORE} label="recover-setup-flow">
+                <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
+                  Learn more
+                </ExternalLink>
+              </Track>
             </Alert>
 
             <div>

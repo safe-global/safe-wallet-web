@@ -17,6 +17,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { getPeriod } from '@/utils/date'
 import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
+import Track from '@/components/common/Track'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -133,9 +134,11 @@ export function Recovery(): ReactElement {
             {isRecoveryEnabled
               ? 'The trusted Recoverer will be able to recover your Safe Account if you ever lose access. You can change Recoverers or alter your recovery setup at any time.'
               : 'Choose a trusted Recoverer to recover your Safe Account if you ever lose access. Enabling the Account recovery module will require a transaction.'}{' '}
-            <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
-              Learn more
-            </ExternalLink>
+            <Track {...RECOVERY_EVENTS.LEARN_MORE} label="settings">
+              <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
+                Learn more
+              </ExternalLink>
+            </Track>
           </Typography>
 
           {!isRecoveryEnabled ? (
