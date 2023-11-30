@@ -1,4 +1,5 @@
 import { ChooseRecoveryMethodModal } from '@/components/settings/Recovery/ChooseRecoveryMethodModal'
+import { FEEDBACK_FORM } from '@/config/constants'
 import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
@@ -14,8 +15,6 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { getPeriod } from '@/utils/date'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
-
-const FEEDBACK_FORM = 'https://noteforms.com/forms/safe-feedback-form-hk16ds?notionforms=1&utm_source=notionforms'
 
 enum HeadCells {
   Recoverer = 'recoverer',

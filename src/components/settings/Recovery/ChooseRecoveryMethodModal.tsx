@@ -1,3 +1,4 @@
+import { FEEDBACK_FORM, HelpCenterArticle } from '@/config/constants'
 import { type ChangeEvent, type ReactElement, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
@@ -63,10 +64,9 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
       </DialogTitle>
 
       <DialogContent dividers sx={{ py: 2, px: 3 }}>
-        {/* TODO: Add missing link */}
         <DialogContentText color="text.primary" mb={4}>
           Ensure that you never lose access to your funds by selecting one of the options below. Want to know how the
-          recovery works? Learn more in our <ExternalLink href="#">Help Center</ExternalLink>
+          recovery works? Learn more in our <ExternalLink href={HelpCenterArticle.RECOVERY}>Help Center</ExternalLink>
         </DialogContentText>
         <FormControl>
           <RadioGroup defaultValue={RecoveryMethod.SelfCustody} className={css.buttonGroup}>
@@ -115,8 +115,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
         </FormControl>
 
         <Typography color="primary.light" mt="12px">
-          {/* TODO: Add missing link */}
-          Unhappy with the provided options? <ExternalLink href="#">Give us feedback</ExternalLink>
+          Unhappy with the provided options? <ExternalLink href={FEEDBACK_FORM}>Give us feedback</ExternalLink>
         </Typography>
 
         <Box display="flex" justifyContent="center" mt={3}>
