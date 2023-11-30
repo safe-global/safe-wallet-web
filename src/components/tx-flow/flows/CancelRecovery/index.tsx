@@ -12,7 +12,7 @@ export function CancelRecoveryFlow({ recovery }: { recovery: RecoveryQueueItem }
 
   const steps = [
     <CancelRecoveryOverview key={0} onSubmit={() => nextStep(undefined)} />,
-    <CancelRecoveryFlowReview key={0} recovery={recovery} />,
+    <CancelRecoveryFlowReview key={1} recovery={recovery} />,
   ]
 
   const isIntro = step === 0

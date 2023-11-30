@@ -9,12 +9,28 @@ import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
 import { RecoveryValidationErrors } from '../RecoveryValidationErrors'
+import { formatDateTime } from '@/utils/date'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 
 export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactElement {
-  const { isNext, remainingSeconds } = useRecoveryTxState(item)
+  const { isExecutable, isExpired, isNext, remainingSeconds } = useRecoveryTxState(item)
+
+  const desc = isExecutable ? (
+    item.expiresAt ? (
+      <>
+        The recovery proposal can be executed{' '}
+        <Typography color="primary.main">until {formatDateTime(item.expiresAt.toNumber())}.</Typography>
+      </>
+    ) : (
+      'The recovery proposal can be executed now.'
+    )
+  ) : isExpired ? (
+    'The recovery proposal has expired and needs to be cancelled before a new one can be created.'
+  ) : (
+    'The recovery proposal can be executed after the review window has passed:'
+  )
 
   return (
     <>

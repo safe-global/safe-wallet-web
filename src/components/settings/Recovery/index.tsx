@@ -1,11 +1,10 @@
-import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
-import { useContext, useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import Track from '@/components/common/Track'
+import { ChooseRecoveryMethodModal } from '@/components/settings/Recovery/ChooseRecoveryMethodModal'
 import type { ReactElement } from 'react'
 
-import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
-import { TxModalContext } from '@/components/tx-flow'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
 import { DelayModifierRow } from './DelayModifierRow'
@@ -15,13 +14,10 @@ import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { getPeriod } from '@/utils/date'
-import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { HelpCenterArticle, HelperCenterArticleTitles, RECOVERY_FEEDBACK_FORM } from '@/config/constants'
 import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
-import Track from '@/components/common/Track'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
-
-const FEEDBACK_FORM = 'https://noteforms.com/forms/safe-feedback-form-hk16ds?notionforms=1&utm_source=notionforms'
 
 enum HeadCells {
   Recoverer = 'recoverer',
@@ -74,7 +70,6 @@ const headCells = [
 ]
 
 export function Recovery(): ReactElement {
-  const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()
 
   const isRecoveryEnabled = recovery && recovery.length > 0
@@ -145,25 +140,15 @@ export function Recovery(): ReactElement {
             <>
               <Alert severity="info">
                 Unhappy with the provided option?{' '}
-                <ExternalLink noIcon href={FEEDBACK_FORM} title="Give feedback about the Account recovery process">
+                <ExternalLink
+                  noIcon
+                  href={RECOVERY_FEEDBACK_FORM}
+                  title="Give feedback about the Account recovery process"
+                >
                   Give us feedback
                 </ExternalLink>
               </Alert>
-              <CheckWallet>
-                {(isOk) => (
-                  <Button
-                    variant="contained"
-                    disabled={!isOk}
-                    onClick={() => {
-                      setTxFlow(<UpsertRecoveryFlow />)
-                      trackEvent({ ...RECOVERY_EVENTS.SETUP_RECOVERY, label: 'settings' })
-                    }}
-                    sx={{ mt: 2 }}
-                  >
-                    Set up recovery
-                  </Button>
-                )}
-              </CheckWallet>
+              <SetupRecoveryButton eventLabel="settings" />
             </>
           ) : rows ? (
             <EnhancedTable rows={rows} headCells={headCells} />
@@ -171,5 +156,25 @@ export function Recovery(): ReactElement {
         </Grid>
       </Grid>
     </Paper>
+  )
+}
+
+export const SetupRecoveryButton = ({ eventLabel }: { eventLabel: string }) => {
+  const [open, setOpen] = useState<boolean>(false)
+
+  return (
+    <>
+      <CheckWallet>
+        {(isOk) => (
+          <Track {...RECOVERY_EVENTS.SETUP_RECOVERY} label={eventLabel}>
+            <Button variant="contained" disabled={!isOk} onClick={() => setOpen(true)} sx={{ mt: 2 }}>
+              Set up recovery
+            </Button>
+          </Track>
+        )}
+      </CheckWallet>
+
+      <ChooseRecoveryMethodModal open={open} onClose={() => setOpen(false)} />
+    </>
   )
 }
