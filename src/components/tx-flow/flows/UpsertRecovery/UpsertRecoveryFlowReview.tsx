@@ -4,13 +4,13 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { Errors, logError } from '@/services/exceptions'
 import { getRecoveryUpsertTransactions } from '@/services/recovery/setup'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import { isSmartContractWallet } from '@/utils/wallets'
 import { SvgIcon, Tooltip, Typography } from '@mui/material'
@@ -53,7 +53,7 @@ export function UpsertRecoveryFlowReview({
   params: UpsertRecoveryFlowProps
   moduleAddress?: string
 }): ReactElement {
-  const web3 = useWeb3()
+  const web3ReadOnly = useWeb3ReadOnly()
   const { safe, safeAddress } = useSafeInfo()
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
 
@@ -65,22 +65,23 @@ export function UpsertRecoveryFlowReview({
   )!.label
 
   useEffect(() => {
-    if (!web3) {
+    if (!web3ReadOnly) {
       return
     }
 
     getRecoveryUpsertTransactions({
       ...params,
-      provider: web3,
+      provider: web3ReadOnly,
       chainId: safe.chainId,
       safeAddress,
       moduleAddress,
-    }).then((transactions) => {
-      const promise = transactions.length > 1 ? createMultiSendCallOnlyTx(transactions) : createTx(transactions[0])
-
-      promise.then(setSafeTx).catch(setSafeTxError)
     })
-  }, [recoverer, moduleAddress, params, safe.chainId, safeAddress, setSafeTx, setSafeTxError, web3])
+      .then((transactions) => {
+        return transactions.length > 1 ? createMultiSendCallOnlyTx(transactions) : createTx(transactions[0])
+      })
+      .then(setSafeTx)
+      .catch(setSafeTxError)
+  }, [moduleAddress, params, safe.chainId, safeAddress, setSafeTx, setSafeTxError, web3ReadOnly])
 
   useEffect(() => {
     if (safeTxError) {
