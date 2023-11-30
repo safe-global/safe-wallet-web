@@ -68,7 +68,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   if (orientation === 'horizontal') {
     return (
       <Card sx={{ py: 3, px: 4 }}>
-        <Grid container display="flex" alignItems="center" gap={3}>
+        <Grid container display="flex" alignItems="center" gap={3} flexDirection={{ xs: 'column', md: 'row' }}>
           <Grid item>{icon}</Grid>
 
           <Grid item xs>
@@ -110,7 +110,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
 
         <Divider flexItem sx={{ mx: -4 }} />
 
-        <Grid item alignSelf="flex-end">
+        <Grid item container justifyContent="flex-end" gap={{ md: 1 }}>
           <Button
             onClick={() => {
               trackEvent(RECOVERY_EVENTS.DISMISS_PROPOSAL_CARD)
