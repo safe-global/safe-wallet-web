@@ -1,5 +1,6 @@
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
+import { RecoveryEvent } from '@/services/recovery/recoveryEvents'
 import { getTxDetails } from '@/services/tx/txDetails'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useEffect } from 'react'
@@ -11,6 +12,7 @@ const events = {
   [TxEvent.PROCESSING]: WALLET_EVENTS.ONCHAIN_INTERACTION,
   [TxEvent.PROCESSING_MODULE]: WALLET_EVENTS.ONCHAIN_INTERACTION,
   [TxEvent.RELAYING]: WALLET_EVENTS.ONCHAIN_INTERACTION,
+  [RecoveryEvent.PROCESSING]: WALLET_EVENTS.ONCHAIN_INTERACTION,
 }
 
 export const useTxTracking = (): void => {

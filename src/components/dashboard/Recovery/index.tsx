@@ -37,7 +37,7 @@ export function Recovery(): ReactElement {
               <Typography mt={1} mb={3}>
                 Ensure that you never lose access to your funds by choosing a Recoverer to recover your account.
               </Typography>
-              {supportsRecovery && (!recovery || recovery.length === 0) && <SetupRecoveryButton />}
+              {supportsRecovery && (!recovery || recovery.length === 0) && <SetupRecoveryButton location="dashboard" />}
             </Grid>
           </Grid>
         </Card>

@@ -1,5 +1,7 @@
+import Track from '@/components/common/Track'
 import { ChooseRecoveryMethodModal } from '@/components/settings/Recovery/ChooseRecoveryMethodModal'
 import { FEEDBACK_FORM } from '@/config/constants'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
@@ -126,16 +128,7 @@ export function Recovery(): ReactElement {
           </Typography>
 
           {!recovery || recovery.length === 0 ? (
-            <>
-              <Alert severity="info">
-                Unhappy with the provided option?{' '}
-                <ExternalLink noIcon href={FEEDBACK_FORM} title="Give feedback about the Account recovery process">
-                  Give us feedback
-                </ExternalLink>
-              </Alert>
-
-              <SetupRecoveryButton />
-            </>
+            <SetupRecoveryButton location="settings" />
           ) : rows ? (
             <EnhancedTable rows={rows} headCells={headCells} />
           ) : null}
@@ -145,16 +138,18 @@ export function Recovery(): ReactElement {
   )
 }
 
-export const SetupRecoveryButton = () => {
+export const SetupRecoveryButton = ({ location }: { location: string }) => {
   const [open, setOpen] = useState<boolean>(false)
 
   return (
     <>
       <CheckWallet>
         {(isOk) => (
-          <Button variant="contained" disabled={!isOk} onClick={() => setOpen(true)} sx={{ mt: 2 }}>
-            Set up recovery
-          </Button>
+          <Track {...RECOVERY_EVENTS.SETUP_RECOVERY} label={location}>
+            <Button variant="contained" disabled={!isOk} onClick={() => setOpen(true)} sx={{ mt: 2 }}>
+              Set up recovery
+            </Button>
+          </Track>
         )}
       </CheckWallet>
 

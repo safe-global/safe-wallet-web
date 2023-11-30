@@ -1,4 +1,7 @@
+import Track from '@/components/common/Track'
 import { FEEDBACK_FORM, HelpCenterArticle } from '@/config/constants'
+import { trackEvent } from '@/services/analytics'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { type ChangeEvent, type ReactElement, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
@@ -48,12 +51,14 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
     },
     mode: 'onChange',
   })
-  const { register, watch } = methods
+  const { register, watch, setValue } = methods
 
   const currentType = watch('recoveryMethod')
 
   const trackOptionChoice = (e: ChangeEvent<HTMLInputElement>) => {
     // TODO: Track this event with e.target.value
+    setValue('recoveryMethod', e.target.value)
+    trackEvent({ ...RECOVERY_EVENTS.SELECT_RECOVERY_METHOD, label: e.target.value })
   }
 
   return (
@@ -68,7 +73,10 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
       <DialogContent dividers sx={{ py: 2, px: 3 }}>
         <DialogContentText color="text.primary" mb={4}>
           Ensure that you never lose access to your funds by selecting one of the options below. Want to know how the
-          recovery works? Learn more in our <ExternalLink href={HelpCenterArticle.RECOVERY}>Help Center</ExternalLink>
+          recovery works? Learn more in our{' '}
+          <Track {...RECOVERY_EVENTS.LEARN_MORE} label="method-modal">
+            <ExternalLink href={HelpCenterArticle.RECOVERY}>Help Center</ExternalLink>
+          </Track>
         </DialogContentText>
         <FormControl>
           <RadioGroup defaultValue={RecoveryMethod.SelfCustody} className={css.buttonGroup}>
@@ -117,7 +125,10 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
         </FormControl>
 
         <Typography color="primary.light" mt="12px">
-          Unhappy with the provided options? <ExternalLink href={FEEDBACK_FORM}>Give us feedback</ExternalLink>
+          Unhappy with the provided options?{' '}
+          <Track {...RECOVERY_EVENTS.GIVE_US_FEEDBACK} label="method-modal">
+            <ExternalLink href={FEEDBACK_FORM}>Give us feedback</ExternalLink>
+          </Track>
         </Typography>
 
         <Box display="flex" justifyContent="center" mt={3}>
@@ -125,7 +136,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
             <Button
               variant="contained"
               onClick={() => {
-                // TODO: Track an event
+                trackEvent({ ...RECOVERY_EVENTS.CONTINUE_WITH_RECOVERY, label: currentType })
                 setTxFlow(<UpsertRecoveryFlow />)
                 onClose()
               }}
@@ -141,7 +152,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
               <Button
                 variant="contained"
                 onClick={() => {
-                  // TODO: Track an event
+                  trackEvent({ ...RECOVERY_EVENTS.CONTINUE_TO_WAITLIST, label: currentType })
                 }}
               >
                 Join waitlist
