@@ -3,9 +3,9 @@ import type { ReactElement, ReactNode } from 'react'
 
 import { useRecoveryState } from './useRecoveryState'
 import { useRecoveryDelayModifiers } from './useRecoveryDelayModifiers'
+import { useRecoveryPendingTxs } from './useRecoveryPendingTxs'
 import type { AsyncResult } from '@/hooks/useAsync'
 import type { RecoveryState } from '@/services/recovery/recovery-state'
-import { useRecoveryPendingTxs } from './useRecoveryPendingTxs'
 
 // State of current Safe, populated on load
 export const RecoveryContext = createContext<{

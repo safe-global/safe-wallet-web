@@ -11,6 +11,7 @@ import { RecoveryContext } from '../RecoveryContext'
 const STATUS_LABELS: Partial<Record<PendingStatus, string>> = {
   [PendingStatus.SUBMITTING]: 'Submitting',
   [PendingStatus.PROCESSING]: 'Processing',
+  [PendingStatus.INDEXING]: 'Loading',
 }
 
 export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): ReactElement => {

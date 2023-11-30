@@ -13,7 +13,7 @@ import { getRecoveryDelayModifiers } from '@/services/recovery/delay-modifier'
 import { useAppDispatch } from '@/store'
 import { txHistorySlice } from '@/store/txHistorySlice'
 import { RecoveryProvider } from '..'
-import { recoveryDispatch, RecoveryEvent } from '@/services/recovery/recoveryEvents'
+import { recoveryDispatch, RecoveryEvent, RecoveryEventType } from '@/services/recovery/recoveryEvents'
 
 jest.mock('@/services/recovery/delay-modifier')
 jest.mock('@/services/recovery/recovery-state')
@@ -255,7 +255,9 @@ describe('useRecoveryState', () => {
 
     recoveryDispatch(RecoveryEvent.PROCESSED, {
       moduleAddress: delayModifierAddress,
+      txHash: faker.string.hexadecimal(),
       recoveryTxHash: faker.string.hexadecimal(),
+      eventType: faker.helpers.enumValue(RecoveryEventType),
     })
 
     await waitFor(() => {
