@@ -1,14 +1,16 @@
-import { RecoveryEvent, recoverySubscribe } from '@/services/recovery/recoveryEvents'
-import { PendingStatus } from '@/store/pendingTxsSlice'
 import { useEffect, useState } from 'react'
 
-type PendingRecoveryTransactions = { [recoveryTxHash: string]: PendingStatus }
+import { RecoveryEvent, recoverySubscribe } from '@/services/recovery/recoveryEvents'
+import { PendingStatus } from '@/store/pendingTxsSlice'
+
+export type PendingRecoveryTransactions = { [recoveryTxHash: string]: PendingStatus }
 
 const pendingStatuses: { [key in RecoveryEvent]: PendingStatus | null } = {
   [RecoveryEvent.EXECUTING]: PendingStatus.SUBMITTING,
   [RecoveryEvent.PROCESSING]: PendingStatus.PROCESSING,
+  [RecoveryEvent.PROCESSED]: PendingStatus.INDEXING,
+  [RecoveryEvent.SUCCESS]: null,
   [RecoveryEvent.REVERTED]: null,
-  [RecoveryEvent.PROCESSED]: null,
   [RecoveryEvent.FAILED]: null,
 }
 

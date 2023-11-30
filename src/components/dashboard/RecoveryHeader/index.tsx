@@ -56,9 +56,9 @@ export function _useIsProposalInProgress(): boolean {
     const unsubFns = Object.values(RecoveryEvent).map((event) =>
       recoverySubscribe(event, (detail) => {
         const isValidating = event === RecoveryEvent.EXECUTING || event === RecoveryEvent.PROCESSING
-        const isQueried = queue.some((item) => item.args.txHash === detail?.recoveryTxHash)
+        const isLoaded = queue.some((item) => item.args.txHash === detail?.recoveryTxHash)
 
-        setIsProposalSubmitting(isValidating || !isQueried)
+        setIsProposalSubmitting(isValidating || !isLoaded)
       }),
     )
 
