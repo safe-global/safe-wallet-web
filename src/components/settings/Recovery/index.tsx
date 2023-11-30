@@ -1,9 +1,8 @@
-import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { Alert, Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
-import { useMemo, useState } from 'react'
 import Track from '@/components/common/Track'
 import { ChooseRecoveryMethodModal } from '@/components/settings/Recovery/ChooseRecoveryMethodModal'
-import type { ReactElement } from 'react'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
+import { Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { useMemo, useState } from 'react'
 
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -14,7 +13,7 @@ import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { getPeriod } from '@/utils/date'
-import { HelpCenterArticle, HelperCenterArticleTitles, RECOVERY_FEEDBACK_FORM } from '@/config/constants'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
@@ -137,19 +136,7 @@ export function Recovery(): ReactElement {
           </Typography>
 
           {!isRecoveryEnabled ? (
-            <>
-              <Alert severity="info">
-                Unhappy with the provided option?{' '}
-                <ExternalLink
-                  noIcon
-                  href={RECOVERY_FEEDBACK_FORM}
-                  title="Give feedback about the Account recovery process"
-                >
-                  Give us feedback
-                </ExternalLink>
-              </Alert>
-              <SetupRecoveryButton eventLabel="settings" />
-            </>
+            <SetupRecoveryButton eventLabel="settings" />
           ) : rows ? (
             <EnhancedTable rows={rows} headCells={headCells} />
           ) : null}

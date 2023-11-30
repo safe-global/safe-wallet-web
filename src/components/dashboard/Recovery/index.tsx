@@ -1,5 +1,5 @@
-import { Box, Card, Grid, Typography } from '@mui/material'
 import { SetupRecoveryButton } from '@/components/settings/Recovery'
+import { Box, Card, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import RecoveryLogo from '@/public/images/common/recovery.svg'
