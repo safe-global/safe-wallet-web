@@ -157,6 +157,34 @@ describe('recovery-state', () => {
 
         expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(false)
       })
+      ;['1.0.0', '1.1.1'].forEach((version) => {
+        it(`should return false if the transaction is an official MultiSend call on Safe version ${version} (below the initial MultiSend contract version)`, () => {
+          const chainId = '5'
+          const safeAddress = faker.finance.ethereumAddress()
+
+          const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
+          const safeInterface = new Interface(safeAbi)
+
+          const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId, version: '1.3.0' })!
+          const multiSendInterface = new Interface(multiSendDeployment.abi)
+
+          const multiSendData = encodeMultiSendData([
+            {
+              to: safeAddress,
+              value: '0',
+              data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 1]),
+              operation: 0,
+            },
+          ])
+
+          const transaction = {
+            to: multiSendDeployment.networkAddresses[chainId],
+            data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
+          }
+
+          expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(false)
+        })
+      })
     })
   })
 
