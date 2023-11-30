@@ -47,6 +47,8 @@ export function _isMaliciousRecovery({
   safeAddress: string
   transaction: Pick<TransactionAddedEvent['args'], 'to' | 'data'>
 }) {
+  const BASE_MULTI_SEND_CALL_ONLY_VERSION = '1.3.0'
+
   const isMultiSend = isMultiSendCalldata(transaction.data)
   const transactions = isMultiSend ? decodeMultiSendTxs(transaction.data) : [transaction]
 
@@ -55,7 +57,9 @@ export function _isMaliciousRecovery({
     return !sameAddress(transaction.to, safeAddress)
   }
 
-  const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId, version: version ?? undefined })
+  const multiSendDeployment =
+    getMultiSendCallOnlyDeployment({ network: chainId, version: version ?? undefined }) ??
+    getMultiSendCallOnlyDeployment({ network: chainId, version: BASE_MULTI_SEND_CALL_ONLY_VERSION })
 
   if (!multiSendDeployment) {
     return true

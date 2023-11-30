@@ -30,15 +30,18 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { RecovererWarning } from './RecovererSmartContractWarning'
 import type { UpsertRecoveryFlowProps } from '.'
+import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 
 export function UpsertRecoveryFlowSettings({
   params,
+  delayModifier,
   onSubmit,
 }: {
   params: UpsertRecoveryFlowProps
+  delayModifier?: RecoveryStateItem
   onSubmit: (formData: UpsertRecoveryFlowProps) => void
 }): ReactElement {
   const { safeAddress } = useSafeInfo()
@@ -51,6 +54,19 @@ export function UpsertRecoveryFlowSettings({
     mode: 'onChange',
   })
 
+  const recoverer = formMethods.watch(UpsertRecoveryFlowFields.recoverer)
+  const txCooldown = formMethods.watch(UpsertRecoveryFlowFields.txCooldown)
+  const txExpiration = formMethods.watch(UpsertRecoveryFlowFields.txExpiration)
+
+  // RHF's dirty check is tempermental with our address input dropdown
+  const isDirty = delayModifier
+    ? // Updating settings
+      !sameAddress(recoverer, delayModifier.recoverers[0]) ||
+      !delayModifier.txCooldown.eq(txCooldown) ||
+      !delayModifier.txExpiration.eq(txExpiration)
+    : // Setting up recovery
+      recoverer && txCooldown && txExpiration
+
   const validateRecoverer = (recoverer: string) => {
     if (sameAddress(recoverer, safeAddress)) {
       return 'The Safe Account cannot be a Recoverer of itself'
@@ -62,7 +78,7 @@ export function UpsertRecoveryFlowSettings({
     trackEvent(RECOVERY_EVENTS.SHOW_ADVANCED)
   }
 
-  const isDisabled = !formMethods.formState.isDirty || !understandsRisk
+  const isDisabled = !understandsRisk || !isDirty
 
   return (
     <>
@@ -82,7 +98,7 @@ export function UpsertRecoveryFlowSettings({
 
             <div>
               <AddressBookInput
-                label="Recoverer address"
+                label="Recoverer address or ENS"
                 name={UpsertRecoveryFlowFields.recoverer}
                 required
                 fullWidth
