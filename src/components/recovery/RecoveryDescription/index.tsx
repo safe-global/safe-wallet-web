@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { useIsGuardian } from '@/hooks/useIsGuardian'
+import { useIsRecoverer } from '@/hooks/useIsRecoverer'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { logError, Errors } from '@/services/exceptions'
 import { getRecoveredSafeInfo } from '@/services/recovery/transaction-list'
@@ -14,7 +14,7 @@ import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 export function RecoveryDescription({ item }: { item: RecoveryQueueItem }): ReactElement {
   const { args, isMalicious } = item
   const { safe } = useSafeInfo()
-  const isGuardian = useIsGuardian()
+  const isRecoverer = useIsRecoverer()
 
   const newSetup = useMemo(() => {
     try {
@@ -40,7 +40,7 @@ export function RecoveryDescription({ item }: { item: RecoveryQueueItem }): Reac
     return (
       <ErrorMessage>
         This recovery proposal will fail as the owner structure has since been modified. We recommend cancelling it
-        {isGuardian ? ' and trying again' : ''}.
+        {isRecoverer ? ' and trying again' : ''}.
       </ErrorMessage>
     )
   }

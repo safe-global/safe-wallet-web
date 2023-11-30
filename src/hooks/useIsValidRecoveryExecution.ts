@@ -7,7 +7,7 @@ import useAsync from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { getPatchedSignerProvider } from './useIsValidExecution'
 import { useRecoveryTxState } from './useRecoveryTxState'
-import { useIsGuardian } from './useIsGuardian'
+import { useIsRecoverer } from './useIsRecoverer'
 import type { AsyncResult } from './useAsync'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
@@ -18,10 +18,10 @@ export function useIsValidRecoveryExecTransactionFromModule(
   const wallet = useWallet()
   const { safe } = useSafeInfo()
   const web3ReadOnly = useWeb3ReadOnly()
-  const isGuardian = useIsGuardian()
+  const isRecoverer = useIsRecoverer()
 
   return useAsync(() => {
-    if (!isGuardian || !safeTx || !wallet || !web3ReadOnly || !delayModifierAddress) {
+    if (!isRecoverer || !safeTx || !wallet || !web3ReadOnly || !delayModifierAddress) {
       return
     }
 
@@ -43,7 +43,7 @@ export function useIsValidRecoveryExecTransactionFromModule(
         throw error
       }
     })()
-  }, [isGuardian, safeTx, wallet, web3ReadOnly, safe.chainId, delayModifierAddress])
+  }, [isRecoverer, safeTx, wallet, web3ReadOnly, safe.chainId, delayModifierAddress])
 }
 
 export function useIsValidRecoveryExecuteNextTx(recovery: RecoveryQueueItem): AsyncResult<boolean> {

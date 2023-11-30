@@ -5,7 +5,7 @@ import { renderHook, waitFor } from '@/tests/test-utils'
 import { faker } from '@faker-js/faker'
 import { getModuleInstance } from '@gnosis.pm/zodiac'
 import { BigNumber } from 'ethers'
-import { useIsGuardian } from '../useIsGuardian'
+import { useIsRecoverer } from '../useIsRecoverer'
 import { getPatchedSignerProvider } from '../useIsValidExecution'
 import {
   useIsValidRecoveryExecTransactionFromModule,
@@ -24,14 +24,14 @@ const mockGetModuleInstance = getModuleInstance as jest.MockedFunction<typeof ge
 jest.mock('@/hooks/wallets/useWallet')
 jest.mock('@/hooks/useSafeInfo')
 jest.mock('@/hooks/wallets/web3')
-jest.mock('@/hooks/useIsGuardian')
+jest.mock('@/hooks/useIsRecoverer')
 jest.mock('@/hooks/useRecoveryTxState')
 jest.mock('@/hooks/useIsValidExecution')
 
 const mockUseWallet = useWallet as jest.MockedFunction<typeof useWallet>
 const mockUseSafeInfo = useSafeInfo as jest.MockedFunction<typeof useSafeInfo>
 const mockUseWeb3ReadOnly = useWeb3ReadOnly as jest.MockedFunction<typeof useWeb3ReadOnly>
-const mockUseIsGuardian = useIsGuardian as jest.MockedFunction<typeof useIsGuardian>
+const mockUseIsRecoverer = useIsRecoverer as jest.MockedFunction<typeof useIsRecoverer>
 const mockUseRecoveryTxState = useRecoveryTxState as jest.MockedFunction<typeof useRecoveryTxState>
 const mockGetPatchedSignerOrProvider = getPatchedSignerProvider as jest.MockedFunction<typeof getPatchedSignerProvider>
 
@@ -45,7 +45,7 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
       mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
-      mockUseIsGuardian.mockReturnValue(false)
+      mockUseIsRecoverer.mockReturnValue(false)
 
       const { result } = renderHook(() =>
         useIsValidRecoveryExecTransactionFromModule(faker.finance.ethereumAddress(), createSafeTx()),
@@ -62,7 +62,7 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
       mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
-      mockUseIsGuardian.mockReturnValue(true)
+      mockUseIsRecoverer.mockReturnValue(true)
 
       const { result } = renderHook(() => useIsValidRecoveryExecTransactionFromModule(undefined, createSafeTx()))
 
@@ -77,7 +77,7 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
       mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
-      mockUseIsGuardian.mockReturnValue(true)
+      mockUseIsRecoverer.mockReturnValue(true)
 
       const { result } = renderHook(() => useIsValidRecoveryExecTransactionFromModule(faker.finance.ethereumAddress()))
 
@@ -92,7 +92,7 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWallet.mockReturnValue(null)
       mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
-      mockUseIsGuardian.mockReturnValue(true)
+      mockUseIsRecoverer.mockReturnValue(true)
 
       const { result } = renderHook(() =>
         useIsValidRecoveryExecTransactionFromModule(faker.finance.ethereumAddress(), createSafeTx()),
@@ -109,7 +109,7 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
       mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
       mockUseWeb3ReadOnly.mockReturnValue(undefined)
-      mockUseIsGuardian.mockReturnValue(true)
+      mockUseIsRecoverer.mockReturnValue(true)
 
       const { result } = renderHook(() =>
         useIsValidRecoveryExecTransactionFromModule(faker.finance.ethereumAddress(), createSafeTx()),
@@ -126,7 +126,7 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
       mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
-      mockUseIsGuardian.mockReturnValue(true)
+      mockUseIsRecoverer.mockReturnValue(true)
 
       mockGetPatchedSignerOrProvider.mockReturnValue({
         getSigner: () => ({} as any),
@@ -161,7 +161,7 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
       mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
-      mockUseIsGuardian.mockReturnValue(true)
+      mockUseIsRecoverer.mockReturnValue(true)
 
       mockGetPatchedSignerOrProvider.mockReturnValue({
         getSigner: () => ({} as any),
