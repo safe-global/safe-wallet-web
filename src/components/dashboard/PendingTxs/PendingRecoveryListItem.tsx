@@ -27,24 +27,16 @@ export function PendingRecoveryListItem({ transaction }: { transaction: Recovery
 
   return (
     <Link href={url} passHref>
-      <Box className={css.container}>
-        <Box gridArea="nonce" />
-
-        <Box gridArea="type">
+      <Box className={css.container} minHeight={50}>
+        <Box flex={1}>
           <RecoveryType isMalicious={isMalicious} />
         </Box>
 
-        <Box gridArea="info">
-          <RecoveryInfo isMalicious={isMalicious} />
-        </Box>
+        <RecoveryInfo isMalicious={isMalicious} />
 
-        <Box gridArea="confirmations">
-          <RecoveryStatus recovery={transaction} />
-        </Box>
+        <RecoveryStatus recovery={transaction} />
 
-        <Box gridArea="action">
-          <ChevronRight color="border" />
-        </Box>
+        <ChevronRight color="border" />
       </Box>
     </Link>
   )
