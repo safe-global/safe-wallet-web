@@ -107,31 +107,5 @@ describe('useRecoveryPendingTxs', () => {
     })
   })
 
-  it('should remove the pending status to SUCCESS event is emitted', () => {
-    const delayModifierAddress = faker.finance.ethereumAddress()
-    const txHash = faker.string.hexadecimal()
-    const recoveryTxHash = faker.string.hexadecimal()
-    const eventType = faker.helpers.enumValue(RecoveryEventType)
-    const { result } = renderHook(() => useRecoveryPendingTxs())
-
-    expect(result.current).toStrictEqual({})
-
-    act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, {
-        moduleAddress: delayModifierAddress,
-        txHash,
-        recoveryTxHash,
-        eventType,
-      })
-      recoveryDispatch(RecoveryEvent.SUCCESS, {
-        moduleAddress: delayModifierAddress,
-        txHash,
-        recoveryTxHash,
-      })
-    })
-
-    expect(result.current).toStrictEqual({})
-  })
-
   // No need to test RecoveryEvent.FAILED as pending status is not set before it is dispatched
 })

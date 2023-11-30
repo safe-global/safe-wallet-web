@@ -10,7 +10,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import { RecoveryProposalCard } from '@/components/recovery/RecoveryCards/RecoveryProposalCard'
 import { RecoveryInProgressCard } from '@/components/recovery/RecoveryCards/RecoveryInProgressCard'
 import { WidgetContainer, WidgetBody } from '../styled'
-import { RecoveryEvent, recoverySubscribe } from '@/services/recovery/recoveryEvents'
+import { RecoveryEvent, RecoveryEventType, recoverySubscribe } from '@/services/recovery/recoveryEvents'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function _RecoveryHeader({
@@ -55,10 +55,11 @@ export function _useIsProposalInProgress(): boolean {
   useEffect(() => {
     const unsubFns = Object.values(RecoveryEvent).map((event) =>
       recoverySubscribe(event, (detail) => {
+        const isProposal = 'eventType' in detail && detail.eventType === RecoveryEventType.PROPOSAL
         const isValidating = event === RecoveryEvent.EXECUTING || event === RecoveryEvent.PROCESSING
         const isLoaded = queue.some((item) => item.args.txHash === detail?.recoveryTxHash)
 
-        setIsProposalSubmitting(isValidating || !isLoaded)
+        setIsProposalSubmitting(isProposal && (isValidating || !isLoaded))
       }),
     )
 

@@ -80,7 +80,7 @@ describe('useIsProposalInProgress', () => {
         moduleAddress: faker.finance.ethereumAddress(),
         txHash: faker.string.hexadecimal(),
         recoveryTxHash: faker.string.hexadecimal(),
-        eventType: faker.helpers.enumValue(RecoveryEventType),
+        eventType: RecoveryEventType.PROPOSAL,
       })
 
       await waitFor(() => {
@@ -89,12 +89,12 @@ describe('useIsProposalInProgress', () => {
     })
   })
   ;[RecoveryEvent.REVERTED, RecoveryEvent.PROCESSED, RecoveryEvent.FAILED].forEach((event) => {
-    it('should return false if there is not a proposal in progress', async () => {
+    it('should return false if there is not a proposal in progress and it is not in the queue', async () => {
       const payload = {
         moduleAddress: faker.finance.ethereumAddress(),
         txHash: faker.string.hexadecimal(),
         recoveryTxHash: faker.string.hexadecimal(),
-        eventType: faker.helpers.enumValue(RecoveryEventType),
+        eventType: RecoveryEventType.PROPOSAL,
       }
 
       mockUseRecoveryQueue.mockReturnValue([{ args: { txHash: payload.recoveryTxHash } }] as any)

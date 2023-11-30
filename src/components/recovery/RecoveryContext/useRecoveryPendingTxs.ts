@@ -9,7 +9,6 @@ const pendingStatuses: { [key in RecoveryEvent]: PendingStatus | null } = {
   [RecoveryEvent.EXECUTING]: PendingStatus.SUBMITTING,
   [RecoveryEvent.PROCESSING]: PendingStatus.PROCESSING,
   [RecoveryEvent.PROCESSED]: PendingStatus.INDEXING,
-  [RecoveryEvent.SUCCESS]: null,
   [RecoveryEvent.REVERTED]: null,
   [RecoveryEvent.FAILED]: null,
 }

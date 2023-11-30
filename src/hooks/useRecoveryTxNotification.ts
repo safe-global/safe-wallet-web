@@ -15,7 +15,8 @@ const RecoveryTxNotifications = {
   [RecoveryEvent.PROCESSED]: 'Successfully validated. Loading...',
   [RecoveryEvent.REVERTED]: 'Reverted. Please check your gas settings.',
   [RecoveryEvent.FAILED]: 'Failed.',
-  [RecoveryEvent.SUCCESS]: 'Successfully executed.',
+  // TODO: Add success event
+  // [RecoveryEvent.SUCCESS]: 'Successfully executed.',
 }
 
 const RecoveryTxNotificationTitles = {

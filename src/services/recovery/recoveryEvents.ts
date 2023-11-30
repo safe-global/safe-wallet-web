@@ -6,7 +6,6 @@ export enum RecoveryEvent {
   REVERTED = 'REVERTED',
   PROCESSED = 'PROCESSED',
   FAILED = 'FAILED',
-  SUCCESS = 'SUCCESS',
 }
 
 export enum RecoveryEventType {
@@ -47,11 +46,6 @@ export interface RecoveryEvents {
     recoveryTxHash?: string
     error: Error
     eventType: RecoveryEventType
-  }
-  [RecoveryEvent.SUCCESS]: {
-    moduleAddress: string
-    txHash: string
-    recoveryTxHash: string
   }
 }
 
