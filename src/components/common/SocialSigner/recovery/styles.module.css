@@ -1,0 +1,75 @@
+.profileImg {
+  border-radius: var(--space-2);
+  width: 32px;
+  height: 32px;
+}
+
+.profileData {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.loginProgress {
+  margin-bottom: -16px;
+  top: 0;
+  width: 100%;
+  height: 2px;
+  position: absolute;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.smsResendCooldownProgress {
+  margin-bottom: -16px;
+  top: 0;
+  width: 100%;
+  height: 2px;
+  position: absolute;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.passwordWrapper {
+  padding: var(--space-4) var(--space-4) var(--space-2) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.loginError {
+  width: 100%;
+  margin: 0;
+}
+
+.dot {
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-primary-main);
+}
+
+.phoneNumberDisplay {
+  font-size: 14px;
+  padding: var(--space-2);
+  background-color: var(--color-background-main);
+  border-radius: 6px;
+  margin-bottom: var(--space-1);
+}
+
+.imageButton {
+  height: 292px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+  width: 100%;
+}
+
+.imageButton:global(.Mui-disabled) {
+  color: var(--color-text-disabled);
+  box-shadow: none;
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.imageButton:global(.Mui-disabled) svg {
+  opacity: 0.3;
+}

@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@/tests/test-utils'
-import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecovery'
+import { PasswordRecovery } from '@/components/common/SocialSigner/recovery/PasswordRecovery'
 import { act, waitFor } from '@testing-library/react'
 
 describe('PasswordRecovery', () => {
@@ -8,7 +8,11 @@ describe('PasswordRecovery', () => {
     const mockOnSuccess = jest.fn()
 
     const { getByText, getByLabelText } = render(
-      <PasswordRecovery recoverFactorWithPassword={mockRecoverWithPassword} onSuccess={mockOnSuccess} />,
+      <PasswordRecovery
+        onBack={() => {}}
+        recoverFactorWithPassword={mockRecoverWithPassword}
+        onSuccess={mockOnSuccess}
+      />,
     )
 
     const passwordField = getByLabelText('Recovery password')
@@ -30,7 +34,11 @@ describe('PasswordRecovery', () => {
     const mockOnSuccess = jest.fn()
 
     const { getByText, getByLabelText } = render(
-      <PasswordRecovery recoverFactorWithPassword={mockRecoverWithPassword} onSuccess={mockOnSuccess} />,
+      <PasswordRecovery
+        onBack={() => {}}
+        recoverFactorWithPassword={mockRecoverWithPassword}
+        onSuccess={mockOnSuccess}
+      />,
     )
 
     const passwordField = getByLabelText('Recovery password')

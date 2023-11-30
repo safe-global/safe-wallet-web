@@ -13,12 +13,17 @@ export const MPC_WALLET_EVENTS = {
     action: 'MFA login started',
     category: MPC_WALLET_CATEGORY,
   },
+  CHOOSE_RECOVERY_METHOD: {
+    event: EventType.CLICK,
+    action: 'Choose mfa method',
+    category: MPC_WALLET_CATEGORY,
+  },
   RECOVER_PASSWORD: {
     event: EventType.CLICK,
     action: 'Recover account using password',
     category: MPC_WALLET_CATEGORY,
   },
-  SMS: {
+  RECOVER_SMS: {
     event: EventType.CLICK,
     action: 'Recover account using sms code',
     category: MPC_WALLET_CATEGORY,

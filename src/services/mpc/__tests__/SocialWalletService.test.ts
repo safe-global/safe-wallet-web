@@ -5,6 +5,8 @@ import {
   type OauthLoginParams,
   type Web3AuthMPCCoreKit,
   type TssSecurityQuestion,
+  generateFactorKey,
+  BrowserStorage,
 } from '@web3auth/mpc-core-kit'
 import * as mpcCoreKit from '@web3auth/mpc-core-kit'
 import * as socialWalletOptions from '@/services/mpc/config'
@@ -12,11 +14,31 @@ import { ethers } from 'ethers'
 import BN from 'bn.js'
 import { hexZeroPad } from 'ethers/lib/utils'
 import SocialWalletService from '../SocialWalletService'
+import { SMS_OTP_MODULE_NAME } from '../recovery/SmsOtpRecovery'
+import EncryptionUtil from '../EncryptionUtil'
+import { type Point } from '@tkey-mpc/common-types'
+import { getMfaStore, MultiFactorType } from '@/hooks/wallets/mpc/useSocialWallet'
 
 /** time until mock login resolves */
 const MOCK_LOGIN_TIME = 1000
 /** Mock address for successful login */
 const mockSignerAddress = hexZeroPad('0x1', 20)
+
+const setupFetchSuccessStub = (data: any) => (_url: string) => {
+  return Promise.resolve({
+    json: () => Promise.resolve(data),
+    status: 200,
+    ok: true,
+  })
+}
+
+const setupFetchErrorStub = (data: any) => (_url: string) => {
+  return Promise.resolve({
+    json: () => Promise.resolve(data),
+    status: 400,
+    ok: false,
+  })
+}
 
 /**
  * Helper class for mocking MPC Core Kit login flow
@@ -25,8 +47,20 @@ class MockMPCCoreKit {
   status: COREKIT_STATUS = COREKIT_STATUS.INITIALIZED
   state: {
     userInfo: UserInfo | undefined
+    oAuthKey: string | undefined
   } = {
     userInfo: undefined,
+    oAuthKey: undefined,
+  }
+
+  tKey = {
+    metadata: {
+      generalStore: {
+        shareDescriptions: {} as Record<string, string[]>,
+      },
+      pubKey: undefined as undefined | Point,
+    },
+    privKey: undefined as undefined | BN,
   }
 
   private stateAfterLogin: COREKIT_STATUS
@@ -42,6 +76,18 @@ class MockMPCCoreKit {
     this.stateAfterLogin = stateAfterLogin
     this.userInfoAfterLogin = userInfoAfterLogin
     this.expectedFactorKey = expectedFactorKey
+
+    const metaDataKey = generateFactorKey()
+    const oAuthKey = generateFactorKey()
+
+    this.state.oAuthKey = oAuthKey.private.toString('hex')
+    this.tKey.metadata.pubKey = metaDataKey.pub
+    this.tKey.privKey = metaDataKey.private
+  }
+
+  /** Helper function to mock a share description */
+  addShareDescription(factorKeyPub: Point, data: string) {
+    this.tKey.metadata.generalStore.shareDescriptions[`${factorKeyPub.x}${factorKeyPub.y}`] = [data]
   }
 
   loginWithOauth(params: OauthLoginParams): Promise<void> {
@@ -266,6 +312,253 @@ describe('useMPCWallet', () => {
       await waitFor(() => {
         expect(mockOnConnect).toHaveBeenCalled()
       })
+    })
+  })
+
+  describe('recoverUsingSms', () => {
+    it('should not recover if wrong code is entered', () => {
+      const factorKey = generateFactorKey()
+      const metaDataKey = generateFactorKey()
+      const oAuthKey = generateFactorKey()
+      const mockOnConnect = jest.fn()
+      BrowserStorage.getInstance('mpc_corekit_store').set('sms_tracking_id', '123')
+      const mockMPCCore = {
+        state: {
+          userInfo: undefined,
+          oAuthKey: oAuthKey.private.toString('hex'),
+        },
+        tKey: {
+          metadata: {
+            generalStore: {
+              shareDescriptions: {
+                [`${factorKey.pub.x}${factorKey.pub.y}`]: [
+                  JSON.stringify({
+                    module: 'Other',
+                    moduleName: SMS_OTP_MODULE_NAME,
+                    number: '+40 170 69 420',
+                  }),
+                ],
+              } as Record<string, object>,
+            },
+            pubKey: metaDataKey.pub,
+          },
+        },
+        commitChanges: jest.fn(),
+      } as unknown as Web3AuthMPCCoreKit
+
+      global.fetch = jest.fn().mockImplementation(
+        setupFetchErrorStub({
+          message: 'OTP is invalid',
+        }),
+      )
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
+      testService.setOnConnect(mockOnConnect)
+
+      expect(testService.recoverAccountWithSms('+40 170 69 420', '123456', false)).rejects.toEqual(
+        new Error('OTP is invalid'),
+      )
+      expect(mockOnConnect).not.toHaveBeenCalled()
+      expect(mockMPCCore.commitChanges).not.toHaveBeenCalled()
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+    })
+
+    it('should recover if correct code is entered', async () => {
+      const factorKey = generateFactorKey()
+
+      const mockOnConnect = jest.fn()
+
+      BrowserStorage.getInstance('mpc_corekit_store').set('sms_tracking_id', '123')
+      const mockMPCCore = new MockMPCCoreKit(
+        COREKIT_STATUS.REQUIRED_SHARE,
+        {
+          email: 'test@test.com',
+          name: 'Test',
+        } as unknown as UserInfo,
+        factorKey.private,
+      )
+      // Add share description for SMS Module
+      mockMPCCore.addShareDescription(
+        factorKey.pub,
+        JSON.stringify({
+          module: 'Other',
+          moduleName: SMS_OTP_MODULE_NAME,
+          number: '+40 170 69 420',
+        }),
+      )
+
+      const encryptionUtil = new EncryptionUtil(new BN(mockMPCCore.state.oAuthKey!, 'hex'))
+      const encryptedFactorKey = await encryptionUtil.encrypt({ factorKey: factorKey.private })
+      global.fetch = jest.fn().mockImplementation(
+        setupFetchSuccessStub({
+          data: encryptedFactorKey,
+          success: true,
+        }),
+      )
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
+      testService.setOnConnect(mockOnConnect)
+
+      const result = await testService.recoverAccountWithSms('+40 170 69 420', '123456', false)
+      expect(result).toBeTruthy()
+      expect(mockOnConnect).toHaveBeenCalled()
+      expect(mockMPCCore.commitChanges).toHaveBeenCalled()
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(getMfaStore()).toEqual({
+        sms: {
+          type: MultiFactorType.SMS,
+          number: '+40 170 69 420',
+        },
+        password: undefined,
+      })
+    })
+
+    it('should recover if correct code is entered', async () => {
+      const factorKey = generateFactorKey()
+
+      const mockOnConnect = jest.fn()
+
+      BrowserStorage.getInstance('mpc_corekit_store').set('sms_tracking_id', '123')
+      const mockMPCCore = new MockMPCCoreKit(
+        COREKIT_STATUS.REQUIRED_SHARE,
+        {
+          email: 'test@test.com',
+          name: 'Test',
+        } as unknown as UserInfo,
+        factorKey.private,
+      )
+      // Add share description for SMS Module
+      mockMPCCore.addShareDescription(
+        factorKey.pub,
+        JSON.stringify({
+          module: 'Other',
+          moduleName: SMS_OTP_MODULE_NAME,
+          number: '+40 170 69 420',
+        }),
+      )
+
+      const encryptionUtil = new EncryptionUtil(new BN(mockMPCCore.state.oAuthKey!, 'hex'))
+      const encryptedFactorKey = await encryptionUtil.encrypt({ factorKey: factorKey.private })
+      global.fetch = jest.fn().mockImplementation(
+        setupFetchSuccessStub({
+          data: encryptedFactorKey,
+          success: true,
+        }),
+      )
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
+      testService.setOnConnect(mockOnConnect)
+
+      const result = await testService.recoverAccountWithSms('+40 170 69 420', '123456', false)
+      expect(result).toBeTruthy()
+      expect(mockOnConnect).toHaveBeenCalled()
+      expect(mockMPCCore.commitChanges).toHaveBeenCalled()
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(getMfaStore()).toEqual({
+        sms: {
+          type: MultiFactorType.SMS,
+          number: '+40 170 69 420',
+        },
+        password: undefined,
+      })
+    })
+  })
+
+  describe('registerSmsOtp', () => {
+    it('should trigger register and start verification and store tracking_id if not registered yet', async () => {
+      const mockMPCCore = new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, {
+        email: 'test@test.com',
+        name: 'Test',
+      } as unknown as UserInfo)
+
+      // mock login
+      mockMPCCore.loginWithOauth({} as OauthLoginParams)
+      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+
+      global.fetch = jest.fn().mockImplementation((_url: string) => {
+        if (_url.endsWith('start')) {
+          return Promise.resolve({
+            json: () =>
+              Promise.resolve({
+                success: true,
+                tracking_id: '456',
+              }),
+            status: 200,
+            ok: true,
+          })
+        }
+        if (_url.endsWith('register')) {
+          return Promise.resolve({
+            json: () =>
+              Promise.resolve({
+                success: true,
+              }),
+            status: 200,
+            ok: true,
+          })
+        }
+      })
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
+      const result = await testService.registerSmsOtp('+40 176 420 69')
+      expect(result).toBeTruthy()
+
+      const storage = BrowserStorage.getInstance('mpc_corekit_store')
+      expect(storage.get('sms_tracking_id')).toEqual('456')
+      expect(mockFetch).toHaveBeenCalledTimes(2)
+    })
+
+    it('should only trigger start verification and store tracking_id if already registered', async () => {
+      const mockMPCCore = new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, {
+        email: 'test@test.com',
+        name: 'Test',
+      } as unknown as UserInfo)
+
+      const factorKey = generateFactorKey()
+
+      // Add share description for SMS Module
+      mockMPCCore.addShareDescription(
+        factorKey.pub,
+        JSON.stringify({
+          module: 'Other',
+          moduleName: SMS_OTP_MODULE_NAME,
+          number: '+40 170 69 420',
+        }),
+      )
+
+      // mock login
+      mockMPCCore.loginWithOauth({} as OauthLoginParams)
+      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+
+      global.fetch = jest.fn().mockImplementation((_url: string) => {
+        if (_url.endsWith('start')) {
+          return Promise.resolve({
+            json: () =>
+              Promise.resolve({
+                success: true,
+                tracking_id: '456',
+              }),
+            status: 200,
+            ok: true,
+          })
+        }
+        throw new Error('Not implemented!')
+      })
+
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
+      const result = await testService.registerSmsOtp('+40 176 420 69')
+      expect(result).toBeTruthy()
+
+      const storage = BrowserStorage.getInstance('mpc_corekit_store')
+      expect(storage.get('sms_tracking_id')).toEqual('456')
+      expect(mockFetch).toHaveBeenCalledTimes(1)
     })
   })
 })

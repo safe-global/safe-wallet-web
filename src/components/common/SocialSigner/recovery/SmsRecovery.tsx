@@ -6,8 +6,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 
 import css from './styles.module.css'
-import CodeInput from '../CodeInput'
-import CooldownButton from '../CooldownButton'
+import CodeInput from '../../CodeInput'
+import CooldownButton from '../../CooldownButton'
 import { obfuscateNumber } from '@/utils/phoneNumber'
 import { asError } from '@/services/exceptions/utils'
 
@@ -105,7 +105,7 @@ export const SmsRecovery = ({
             <Button variant="outlined" onClick={onBack}>
               Back
             </Button>
-            <Track {...MPC_WALLET_EVENTS.RECOVER_PASSWORD}>
+            <Track {...MPC_WALLET_EVENTS.RECOVER_SMS}>
               <Button variant="contained" type="submit" disabled={isDisabled}>
                 Submit
               </Button>

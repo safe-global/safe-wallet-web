@@ -124,6 +124,7 @@ export class SmsOtpRecovery {
     }
     const privKey = toPrivKeyEC(this.mpcCoreKit.tKey.privKey)
     const pubKey = privKey.getPublic()
+
     const sig = ecsign(
       keccak256(Buffer.from(mobileNumber, 'utf8')),
       Buffer.from(this.mpcCoreKit.tKey.privKey.toString(16, 64), 'hex'),

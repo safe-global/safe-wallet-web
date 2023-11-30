@@ -1,16 +1,17 @@
-import { PasswordRecovery } from '@/components/common/SocialSigner/PasswordRecovery'
-import { SmsRecovery } from '@/components/common/SocialSigner/SmsRecovery'
+import { PasswordRecovery } from '@/components/common/SocialSigner/recovery/PasswordRecovery'
+import { SmsRecovery } from '@/components/common/SocialSigner/recovery/SmsRecovery'
 import TxModalDialog from '@/components/common/TxModalDialog'
-import { IS_PRODUCTION } from '@/config/constants'
 import useSocialWallet, { useMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
 import ExternalStore from '@/services/ExternalStore'
-import { Avatar, Box, Button, Divider, Grid, LinearProgress, Typography } from '@mui/material'
+import { useAppDispatch } from '@/store'
+import { showNotification } from '@/store/notificationsSlice'
+import { Box, Grid, LinearProgress, Typography } from '@mui/material'
 import { type ReactNode, useCallback, useState } from 'react'
-import css from './styles.module.css'
+import { PickRecoveryMethod } from './PickRecoveryMethod'
 
 const { useStore: useCloseCallback, setStore: setCloseCallback } = new ExternalStore<() => void>()
 
-enum RecoveryMethod {
+export enum RecoveryMethod {
   PASSWORD,
   SMS,
 }
@@ -52,64 +53,6 @@ const RecoveryFlow = ({
   )
 }
 
-const RecoveryPicker = ({
-  smsEnabled,
-  passwordEnabled,
-  setRecoveryMethod,
-  deleteAccount,
-}: {
-  smsEnabled: boolean
-  passwordEnabled: boolean
-  setRecoveryMethod: (method: RecoveryMethod) => void
-  deleteAccount?: () => void
-}) => {
-  return (
-    <Box>
-      <Box p={4}>
-        <Box display="flex" flexDirection="row" gap={1} alignItems="center" mb={0.5}>
-          <Avatar className={css.dot}>
-            <Typography variant="body2">{2}</Typography>
-          </Avatar>
-          <Box>
-            <Typography variant="h6" fontWeight="bold">
-              Choose your recovery method
-            </Typography>
-          </Box>
-        </Box>
-        <Typography variant="body2" pl={'28px'}>
-          How would you like to recovery your social login signer?
-        </Typography>
-      </Box>
-      <Divider />
-      <Box p={4} display="flex" gap={2} flexDirection="column">
-        <Button
-          sx={{ height: '64px' }}
-          onClick={() => setRecoveryMethod(RecoveryMethod.SMS)}
-          disabled={!smsEnabled}
-          variant="outlined"
-        >
-          SMS
-        </Button>
-
-        <Button
-          sx={{ height: '64px' }}
-          onClick={() => setRecoveryMethod(RecoveryMethod.PASSWORD)}
-          disabled={!passwordEnabled}
-          variant="outlined"
-        >
-          Password
-        </Button>
-
-        {!IS_PRODUCTION && (
-          <Button onClick={deleteAccount} variant="danger" sx={{ height: '64px' }}>
-            Delete account
-          </Button>
-        )}
-      </Box>
-    </Box>
-  )
-}
-
 const SocialRecoveryModal = () => {
   const socialWalletService = useSocialWallet()
   const mfaSetup = useMfaStore()
@@ -117,9 +60,21 @@ const SocialRecoveryModal = () => {
   const [isRecovering, setIsRecovering] = useState(false)
   const closeCallback = useCloseCallback()
   const open = !!closeCallback
+  const dispatch = useAppDispatch()
 
   const passwordEnabled = Boolean(mfaSetup?.password)
   const smsEnabled = Boolean(mfaSetup?.sms)
+
+  const onSuccess = () => {
+    dispatch(
+      showNotification({
+        title: 'Social login signer recovered',
+        message: "Your social login signer recovery is complete and you're are back in control!",
+        groupKey: 'social-login-signer-recovery',
+        variant: 'success',
+      }),
+    )
+  }
 
   const recoverPassword = async (password: string, storeDeviceFactor: boolean) => {
     if (!socialWalletService) return
@@ -127,6 +82,7 @@ const SocialRecoveryModal = () => {
     setIsRecovering(true)
     try {
       await socialWalletService.recoverAccountWithPassword(password, storeDeviceFactor)
+      onSuccess()
     } finally {
       setIsRecovering(false)
     }
@@ -142,6 +98,7 @@ const SocialRecoveryModal = () => {
     setIsRecovering(true)
     try {
       await socialWalletService.recoverAccountWithSms(number, code, storeDeviceFactor)
+      onSuccess()
     } finally {
       setIsRecovering(false)
     }
@@ -197,7 +154,7 @@ const SocialRecoveryModal = () => {
         {recoveryMethod !== undefined ? (
           RecoveryComponentMap[recoveryMethod]
         ) : (
-          <RecoveryPicker
+          <PickRecoveryMethod
             passwordEnabled={passwordEnabled}
             smsEnabled={smsEnabled}
             setRecoveryMethod={setRecoveryMethod}
