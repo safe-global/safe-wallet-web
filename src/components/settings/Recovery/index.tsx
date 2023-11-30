@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 
 import { Chip } from '@/components/common/Chip'
+import ExternalLink from '@/components/common/ExternalLink'
 import { DelayModifierRow } from './DelayModifierRow'
 import { useRecovery } from '@/components/recovery/RecoveryContext'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -13,24 +14,26 @@ import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { getPeriod } from '@/utils/date'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
 enum HeadCells {
   Recoverer = 'recoverer',
-  TxCooldown = 'txCooldown',
-  TxExpiration = 'txExpiration',
+  Delay = 'delay',
+  Expiry = 'expiry',
   Actions = 'actions',
 }
 
 const headCells = [
   { id: HeadCells.Recoverer, label: 'Recoverer' },
   {
-    id: HeadCells.TxCooldown,
+    id: HeadCells.Delay,
     label: (
       <>
-        Recovery delay{' '}
-        <Tooltip title="You can cancel any recovery attempt when it is not needed or wanted.">
+        Review window{' '}
+        <Tooltip title={TOOLTIP_TITLES.REVIEW_WINDOW}>
           <span>
             <SvgIcon
               component={InfoIcon}
@@ -45,11 +48,11 @@ const headCells = [
     ),
   },
   {
-    id: HeadCells.TxExpiration,
+    id: HeadCells.Expiry,
     label: (
       <>
-        Expiry{' '}
-        <Tooltip title="A period of time after which the recovery attempt will expire and can no longer be executed.">
+        Proposal expiry{' '}
+        <Tooltip title={TOOLTIP_TITLES.PROPOSAL_EXPIRY}>
           <span>
             <SvgIcon
               component={InfoIcon}
@@ -69,13 +72,15 @@ const headCells = [
 export function Recovery(): ReactElement {
   const [recovery] = useRecovery()
 
+  const isRecoveryEnabled = recovery && recovery.length > 0
+
   const rows = useMemo(() => {
     return recovery?.flatMap((delayModifier) => {
-      const { recoverers, txCooldown, txExpiration } = delayModifier
+      const { recoverers, delay, expiry } = delayModifier
 
       return recoverers.map((recoverer) => {
-        const txCooldownSeconds = txCooldown.toNumber()
-        const txExpirationSeconds = txExpiration.toNumber()
+        const delaySeconds = delay.toNumber()
+        const expirySeconds = expiry.toNumber()
 
         return {
           cells: {
@@ -83,13 +88,13 @@ export function Recovery(): ReactElement {
               rawValue: recoverer,
               content: <EthHashInfo address={recoverer} showCopyButton hasExplorer />,
             },
-            [HeadCells.TxCooldown]: {
-              rawValue: txCooldownSeconds,
-              content: <Typography>{txCooldownSeconds === 0 ? 'none' : getPeriod(txCooldownSeconds)}</Typography>,
+            [HeadCells.Delay]: {
+              rawValue: delaySeconds,
+              content: <Typography>{delaySeconds === 0 ? 'none' : getPeriod(delaySeconds)}</Typography>,
             },
-            [HeadCells.TxExpiration]: {
-              rawValue: txExpirationSeconds,
-              content: <Typography>{txExpirationSeconds === 0 ? 'never' : getPeriod(txExpirationSeconds)}</Typography>,
+            [HeadCells.Expiry]: {
+              rawValue: expirySeconds,
+              content: <Typography>{expirySeconds === 0 ? 'never' : getPeriod(expirySeconds)}</Typography>,
             },
             [HeadCells.Actions]: {
               rawValue: '',
@@ -121,11 +126,17 @@ export function Recovery(): ReactElement {
 
         <Grid item xs>
           <Typography mb={2}>
-            Choose a trusted Recoverer to recover your Safe Account, in case you should ever lose access to your
-            Account. Enabling the Account recovery module will require a transactions.
+            {isRecoveryEnabled
+              ? 'The trusted Recoverer will be able to recover your Safe Account if you ever lose access. You can change Recoverers or alter your recovery setup at any time.'
+              : 'Choose a trusted Recoverer to recover your Safe Account if you ever lose access. Enabling the Account recovery module will require a transaction.'}{' '}
+            <Track {...RECOVERY_EVENTS.LEARN_MORE} label="settings">
+              <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
+                Learn more
+              </ExternalLink>
+            </Track>
           </Typography>
 
-          {!recovery || recovery.length === 0 ? (
+          {!isRecoveryEnabled ? (
             <SetupRecoveryButton eventLabel="settings" />
           ) : rows ? (
             <EnhancedTable rows={rows} headCells={headCells} />

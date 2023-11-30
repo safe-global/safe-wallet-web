@@ -23,16 +23,16 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
   const desc = isExecutable ? (
     item.expiresAt ? (
       <>
-        The recovery transaction can be executed{' '}
+        The recovery proposal can be executed{' '}
         <Typography color="primary.main">until {formatDateTime(item.expiresAt.toNumber())}.</Typography>
       </>
     ) : (
-      'The recovery transaction can be executed now.'
+      'The recovery proposal can be executed now.'
     )
   ) : isExpired ? (
-    'The recovery transaction has expired and needs to be cancelled before a new one can be created.'
+    'The recovery proposal has expired and needs to be cancelled before a new one can be created.'
   ) : (
-    'The recovery transaction can be executed after the delay period has passed:'
+    'The recovery proposal can be executed after the review window has passed:'
   )
 
   return (

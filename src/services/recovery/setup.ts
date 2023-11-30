@@ -10,15 +10,15 @@ import { MAX_RECOVERER_PAGE_SIZE } from './recovery-state'
 import type { UpsertRecoveryFlowProps } from '@/components/tx-flow/flows/UpsertRecovery'
 
 export function _getRecoverySetupTransactions({
-  txCooldown,
-  txExpiration,
+  delay,
+  expiry,
   recoverers,
   chainId,
   safeAddress,
   provider,
 }: {
-  txCooldown: string
-  txExpiration: string
+  delay: string
+  expiry: string
   recoverers: Array<string>
   chainId: string
   safeAddress: string
@@ -33,8 +33,8 @@ export function _getRecoverySetupTransactions({
       safeAddress, // address _owner
       safeAddress, // address _avatar
       safeAddress, // address _target
-      txCooldown, // uint256 _cooldown
-      txExpiration, // uint256 _expiration
+      delay, // uint256 _cooldown
+      expiry, // uint256 _expiration
     ],
   }
 
@@ -90,21 +90,21 @@ export function _getRecoverySetupTransactions({
 }
 
 export async function _getEditRecoveryTransactions({
-  newTxCooldown,
-  newTxExpiration,
+  newDelay,
+  newExpiry,
   newRecoverers,
   moduleAddress,
   provider,
 }: {
-  newTxCooldown: string
-  newTxExpiration: string
+  newDelay: string
+  newExpiry: string
   newRecoverers: Array<string>
   moduleAddress: string
   provider: JsonRpcProvider
 }): Promise<Array<MetaTransactionData>> {
   const delayModifierContract = getModuleInstance(KnownContracts.DELAY, moduleAddress, provider)
 
-  const [txExpiration, txCooldown, [recoverers]] = await Promise.all([
+  const [oldExpiry, oldDelay, [recoverers]] = await Promise.all([
     delayModifierContract.txExpiration(),
     delayModifierContract.txCooldown(),
     delayModifierContract.getModulesPaginated(SENTINEL_ADDRESS, MAX_RECOVERER_PAGE_SIZE),
@@ -114,14 +114,14 @@ export async function _getEditRecoveryTransactions({
   const txData: Array<string> = []
 
   // Update cooldown
-  if (!txCooldown.eq(newTxCooldown)) {
-    const setTxCooldown = delayModifierContract.interface.encodeFunctionData('setTxCooldown', [newTxCooldown])
+  if (!oldDelay.eq(newDelay)) {
+    const setTxCooldown = delayModifierContract.interface.encodeFunctionData('setTxCooldown', [newDelay])
     txData.push(setTxCooldown)
   }
 
   // Update expiration
-  if (!txExpiration.eq(newTxExpiration)) {
-    const setTxExpiration = delayModifierContract.interface.encodeFunctionData('setTxExpiration', [newTxExpiration])
+  if (!oldExpiry.eq(newExpiry)) {
+    const setTxExpiration = delayModifierContract.interface.encodeFunctionData('setTxExpiration', [newExpiry])
     txData.push(setTxExpiration)
   }
 
@@ -167,8 +167,8 @@ export async function _getEditRecoveryTransactions({
 }
 
 export async function getRecoveryUpsertTransactions({
-  txCooldown,
-  txExpiration,
+  delay,
+  expiry,
   recoverer,
   provider,
   moduleAddress,
@@ -183,16 +183,16 @@ export async function getRecoveryUpsertTransactions({
   if (moduleAddress) {
     return _getEditRecoveryTransactions({
       moduleAddress,
-      newTxCooldown: txCooldown,
-      newTxExpiration: txExpiration,
+      newDelay: delay,
+      newExpiry: expiry,
       newRecoverers: [recoverer],
       provider,
     })
   }
 
   const { transactions } = _getRecoverySetupTransactions({
-    txCooldown,
-    txExpiration,
+    delay,
+    expiry,
     recoverers: [recoverer],
     chainId,
     safeAddress,

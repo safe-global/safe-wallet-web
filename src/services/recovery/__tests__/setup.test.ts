@@ -22,8 +22,8 @@ describe('getRecoverySetupTransactions', () => {
   })
 
   it('should return deploy Delay Modifier, enable Safe recoverer and add a Recoverer transactions', () => {
-    const txCooldown = faker.string.numeric()
-    const txExpiration = faker.string.numeric()
+    const delay = faker.string.numeric()
+    const expiry = faker.string.numeric()
     const recoverers = [faker.finance.ethereumAddress()]
     const safeAddress = faker.finance.ethereumAddress()
     const chainId = faker.string.numeric()
@@ -46,8 +46,8 @@ describe('getRecoverySetupTransactions', () => {
     })
 
     const result = _getRecoverySetupTransactions({
-      txCooldown,
-      txExpiration,
+      delay,
+      expiry,
       recoverers,
       chainId,
       safeAddress,
@@ -63,8 +63,8 @@ describe('getRecoverySetupTransactions', () => {
           safeAddress, // address _owner
           safeAddress, // address _avatar
           safeAddress, // address _target
-          txCooldown, // uint256 _cooldown
-          txExpiration, // uint256 _expiration
+          delay, // uint256 _cooldown
+          expiry, // uint256 _expiration
         ],
       },
       provider,
@@ -96,19 +96,19 @@ describe('getRecoverySetupTransactions', () => {
 })
 
 describe('getEditRecoveryTransactions', () => {
-  it('should return a setTxExpiration transaction if a new txExpiration is provided', async () => {
+  it('should return a setTxExpiration transaction if a new expiry is provided', async () => {
     const moduleAddress = faker.finance.ethereumAddress()
 
-    const txCooldown = faker.string.numeric()
-    const txExpiration = faker.string.numeric()
+    const delay = faker.string.numeric()
+    const expiry = faker.string.numeric()
     const recoverers = [faker.finance.ethereumAddress()]
 
-    const newTxExpiration = faker.string.numeric({ exclude: txExpiration })
+    const newExpiry = faker.string.numeric({ exclude: expiry })
 
     const mockEncodeFunctionData = jest.fn()
     mockGetModuleInstance.mockReturnValue({
-      txCooldown: () => Promise.resolve(BigNumber.from(txCooldown)),
-      txExpiration: () => Promise.resolve(BigNumber.from(txExpiration)),
+      txCooldown: () => Promise.resolve(BigNumber.from(delay)),
+      txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
       getModulesPaginated: () => Promise.resolve([recoverers]),
       interface: {
         encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -117,8 +117,8 @@ describe('getEditRecoveryTransactions', () => {
 
     const transactions = await _getEditRecoveryTransactions({
       provider: {} as Web3Provider,
-      newTxCooldown: txCooldown,
-      newTxExpiration,
+      newDelay: delay,
+      newExpiry,
       newRecoverers: recoverers,
       moduleAddress,
     })
@@ -126,7 +126,7 @@ describe('getEditRecoveryTransactions', () => {
     expect(transactions).toHaveLength(1)
 
     expect(mockEncodeFunctionData).toHaveBeenCalledTimes(1)
-    expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(1, 'setTxExpiration', [newTxExpiration])
+    expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(1, 'setTxExpiration', [newExpiry])
 
     expect(transactions[0]).toEqual({
       to: moduleAddress,
@@ -136,19 +136,19 @@ describe('getEditRecoveryTransactions', () => {
     })
   })
 
-  it('should return a setTxCooldown transaction if a new txCooldown is provided', async () => {
+  it('should return a setTxCooldown transaction if a new delay is provided', async () => {
     const moduleAddress = faker.finance.ethereumAddress()
 
-    const txCooldown = faker.string.numeric()
-    const txExpiration = faker.string.numeric()
+    const delay = faker.string.numeric()
+    const expiry = faker.string.numeric()
     const recoverers = [faker.finance.ethereumAddress()]
 
-    const newTxCooldown = faker.string.numeric({ exclude: txCooldown })
+    const newDelay = faker.string.numeric({ exclude: delay })
 
     const mockEncodeFunctionData = jest.fn()
     mockGetModuleInstance.mockReturnValue({
-      txCooldown: () => Promise.resolve(BigNumber.from(txCooldown)),
-      txExpiration: () => Promise.resolve(BigNumber.from(txExpiration)),
+      txCooldown: () => Promise.resolve(BigNumber.from(delay)),
+      txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
       getModulesPaginated: () => Promise.resolve([recoverers]),
       interface: {
         encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -157,8 +157,8 @@ describe('getEditRecoveryTransactions', () => {
 
     const transactions = await _getEditRecoveryTransactions({
       provider: {} as Web3Provider,
-      newTxCooldown,
-      newTxExpiration: txExpiration,
+      newDelay,
+      newExpiry: expiry,
       newRecoverers: recoverers,
       moduleAddress,
     })
@@ -166,7 +166,7 @@ describe('getEditRecoveryTransactions', () => {
     expect(transactions).toHaveLength(1)
 
     expect(mockEncodeFunctionData).toHaveBeenCalledTimes(1)
-    expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(1, 'setTxCooldown', [newTxCooldown])
+    expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(1, 'setTxCooldown', [newDelay])
 
     expect(transactions[0]).toEqual({
       to: moduleAddress,
@@ -179,16 +179,16 @@ describe('getEditRecoveryTransactions', () => {
   it('should return an enableModule transaction if a new recoverer is provided', async () => {
     const moduleAddress = faker.finance.ethereumAddress()
 
-    const txCooldown = faker.string.numeric()
-    const txExpiration = faker.string.numeric()
+    const delay = faker.string.numeric()
+    const expiry = faker.string.numeric()
     const recoverers = [faker.finance.ethereumAddress()]
 
     const newRecoverers = [recoverers[0], faker.finance.ethereumAddress(), faker.finance.ethereumAddress()]
 
     const mockEncodeFunctionData = jest.fn()
     mockGetModuleInstance.mockReturnValue({
-      txCooldown: () => Promise.resolve(BigNumber.from(txCooldown)),
-      txExpiration: () => Promise.resolve(BigNumber.from(txExpiration)),
+      txCooldown: () => Promise.resolve(BigNumber.from(delay)),
+      txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
       getModulesPaginated: () => Promise.resolve([recoverers]),
       interface: {
         encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -197,8 +197,8 @@ describe('getEditRecoveryTransactions', () => {
 
     const transactions = await _getEditRecoveryTransactions({
       provider: {} as Web3Provider,
-      newTxCooldown: txCooldown,
-      newTxExpiration: txExpiration,
+      newDelay: delay,
+      newExpiry: expiry,
       newRecoverers,
       moduleAddress,
     })
@@ -227,14 +227,14 @@ describe('getEditRecoveryTransactions', () => {
   it('should return a disableModule transaction if an existing recoverer is provided', async () => {
     const moduleAddress = faker.finance.ethereumAddress()
 
-    const txCooldown = faker.string.numeric()
-    const txExpiration = faker.string.numeric()
+    const delay = faker.string.numeric()
+    const expiry = faker.string.numeric()
     const recoverers = [faker.finance.ethereumAddress()]
 
     const mockEncodeFunctionData = jest.fn()
     mockGetModuleInstance.mockReturnValue({
-      txCooldown: () => Promise.resolve(BigNumber.from(txCooldown)),
-      txExpiration: () => Promise.resolve(BigNumber.from(txExpiration)),
+      txCooldown: () => Promise.resolve(BigNumber.from(delay)),
+      txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
       getModulesPaginated: () => Promise.resolve([recoverers]),
       interface: {
         encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -243,8 +243,8 @@ describe('getEditRecoveryTransactions', () => {
 
     const transactions = await _getEditRecoveryTransactions({
       provider: {} as Web3Provider,
-      newTxCooldown: txCooldown,
-      newTxExpiration: txExpiration,
+      newDelay: delay,
+      newExpiry: expiry,
       newRecoverers: [],
       moduleAddress,
     })
@@ -267,18 +267,18 @@ describe('getEditRecoveryTransactions', () => {
     it('should skip existing recoverers provided', async () => {
       const moduleAddress = faker.finance.ethereumAddress()
 
-      const txCooldown = faker.string.numeric()
-      const txExpiration = faker.string.numeric()
+      const delay = faker.string.numeric()
+      const expiry = faker.string.numeric()
       const recoverers = [faker.finance.ethereumAddress()]
 
-      const newTxCooldown = faker.string.numeric({ exclude: txCooldown })
-      const newTxExpiration = faker.string.numeric({ exclude: txExpiration })
+      const newDelay = faker.string.numeric({ exclude: delay })
+      const newExpiry = faker.string.numeric({ exclude: expiry })
       const newRecoverers = [recoverers[0], faker.finance.ethereumAddress()]
 
       const mockEncodeFunctionData = jest.fn()
       mockGetModuleInstance.mockReturnValue({
-        txCooldown: () => Promise.resolve(BigNumber.from(txCooldown)),
-        txExpiration: () => Promise.resolve(BigNumber.from(txExpiration)),
+        txCooldown: () => Promise.resolve(BigNumber.from(delay)),
+        txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
         getModulesPaginated: () => Promise.resolve([recoverers]),
         interface: {
           encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -287,8 +287,8 @@ describe('getEditRecoveryTransactions', () => {
 
       const transactions = await _getEditRecoveryTransactions({
         provider: {} as Web3Provider,
-        newTxCooldown,
-        newTxExpiration,
+        newDelay,
+        newExpiry,
         newRecoverers,
         moduleAddress,
       })
@@ -297,8 +297,8 @@ describe('getEditRecoveryTransactions', () => {
 
       expect(mockEncodeFunctionData).toHaveBeenCalledTimes(3)
 
-      expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(1, 'setTxCooldown', [newTxCooldown])
-      expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(2, 'setTxExpiration', [newTxExpiration])
+      expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(1, 'setTxCooldown', [newDelay])
+      expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(2, 'setTxExpiration', [newExpiry])
       expect(mockEncodeFunctionData).toHaveBeenNthCalledWith(3, 'enableModule', [newRecoverers[1]]) // Skip existing recoverer
 
       expect(transactions[0]).toEqual({
@@ -324,8 +324,8 @@ describe('getEditRecoveryTransactions', () => {
     it('should handle complex recoverer mappings', async () => {
       const moduleAddress = faker.finance.ethereumAddress()
 
-      const txCooldown = faker.string.numeric()
-      const txExpiration = faker.string.numeric()
+      const delay = faker.string.numeric()
+      const expiry = faker.string.numeric()
       const recoverers = [
         faker.finance.ethereumAddress(),
         faker.finance.ethereumAddress(),
@@ -336,8 +336,8 @@ describe('getEditRecoveryTransactions', () => {
 
       const mockEncodeFunctionData = jest.fn()
       mockGetModuleInstance.mockReturnValue({
-        txCooldown: () => Promise.resolve(BigNumber.from(txCooldown)),
-        txExpiration: () => Promise.resolve(BigNumber.from(txExpiration)),
+        txCooldown: () => Promise.resolve(BigNumber.from(delay)),
+        txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
         getModulesPaginated: () => Promise.resolve([recoverers]),
         interface: {
           encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -346,8 +346,8 @@ describe('getEditRecoveryTransactions', () => {
 
       const transactions = await _getEditRecoveryTransactions({
         provider: {} as Web3Provider,
-        newTxCooldown: txCooldown,
-        newTxExpiration: txExpiration,
+        newDelay: delay,
+        newExpiry: expiry,
         newRecoverers,
         moduleAddress,
       })

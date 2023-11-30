@@ -73,7 +73,7 @@ describe('RecoveryInProgressCard', () => {
       expect(queryByText('Account recovery expired')).toBeTruthy()
       expect(
         queryByText(
-          'The pending recovery transaction has expired and needs to be cancelled before a new one can be created.',
+          'The pending recovery proposal has expired and needs to be cancelled before a new one can be created.',
         ),
       ).toBeTruthy()
       expect(queryByText('Learn more')).toBeTruthy()
@@ -151,8 +151,6 @@ describe('RecoveryInProgressCard', () => {
         remainingSeconds: 0,
       } as any)
 
-      const mockClose = jest.fn()
-
       const { queryByText } = render(
         <RecoveryInProgressCard
           orientation="horizontal"
@@ -167,7 +165,7 @@ describe('RecoveryInProgressCard', () => {
       expect(queryByText('Account recovery expired')).toBeTruthy()
       expect(
         queryByText(
-          'The pending recovery transaction has expired and needs to be cancelled before a new one can be created.',
+          'The pending recovery proposal has expired and needs to be cancelled before a new one can be created.',
         ),
       ).toBeTruthy()
       expect(queryByText('Learn more')).toBeTruthy()

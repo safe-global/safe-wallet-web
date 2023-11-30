@@ -59,8 +59,8 @@ export function ExecuteRecoveryButton({
             title={
               isDisabled
                 ? isNext
-                  ? 'You can execute the recovery after the specified delay'
-                  : 'Previous recovery attempts must be executed or cancelled first'
+                  ? 'You can execute the recovery after the specified review window'
+                  : 'Previous recovery proposals must be executed or cancelled first'
                 : null
             }
           >

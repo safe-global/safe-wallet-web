@@ -19,7 +19,7 @@ export function RemoveRecoveryFlowOverview({
       </Typography>
 
       <Typography variant="body2">
-        This Recoverer will not be able to start the initiate the recovery progress once this transaction is executed.
+        This Recoverer will not be able to initiate the recovery process once this transaction is executed.
       </Typography>
 
       <div>

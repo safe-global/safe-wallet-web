@@ -86,6 +86,9 @@ export const HelpCenterArticle = {
   DELEGATES: `${HELP_CENTER_URL}/en/articles/40799-what-is-a-delegate-key`,
   PUSH_NOTIFICATIONS: `${HELP_CENTER_URL}/en/articles/99197-how-to-start-receiving-web-push-notifications-in-the-web-wallet`,
 } as const
+export const HelperCenterArticleTitles = {
+  RECOVERY: 'Learn more about the Account recovery process',
+}
 
 export const RECOVERY_FEEDBACK_FORM =
   'https://noteforms.com/forms/safe-feedback-form-hk16ds?notionforms=1&utm_source=notionforms'

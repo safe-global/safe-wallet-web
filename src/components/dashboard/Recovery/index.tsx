@@ -30,12 +30,12 @@ export function Recovery(): ReactElement {
             <Grid item xs>
               <Box className={css.wrapper}>
                 <Typography variant="h4" className={css.title}>
-                  Introducing account recovery{' '}
+                  Introducing {`Safe{RecoveryHub}`}{' '}
                 </Typography>
                 <Chip label="New" />
               </Box>
               <Typography mt={1} mb={3}>
-                Ensure that you never lose access to your funds by choosing a Recoverer to recover your account.
+                Ensure you never lose access to your funds by choosing a recovery option to recover your Safe Account.
               </Typography>
               {supportsRecovery && (!recovery || recovery.length === 0) && (
                 <SetupRecoveryButton eventLabel="dashboard" />

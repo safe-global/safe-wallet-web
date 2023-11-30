@@ -44,16 +44,6 @@ export const RECOVERY_EVENTS = {
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },
-  REMOVE_RECOVERY_CANCEL: {
-    action: 'Cancel recovery removal',
-    category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
-  },
-  REMOVE_RECOVERY_PROCEED: {
-    action: 'Proceed with recovery removal',
-    category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
-  },
   START_RECOVERY: {
     action: 'Start recovery proposal',
     category: RECOVERY_CATEGORY,
