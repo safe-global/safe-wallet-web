@@ -21,6 +21,8 @@ import CloseIcon from '@mui/icons-material/Close'
 import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
 import ExternalLink from '@/components/common/ExternalLink'
 import RecoveryCustomIcon from '@/public/images/common/recovery_custom.svg'
+import RecoverySygnumIcon from '@/public/images/common/recovery_sygnum.svg'
+import RecoveryCoincoverIcon from '@/public/images/common/recovery_coincover.svg'
 import { TxModalContext } from '@/components/tx-flow'
 import css from './styles.module.css'
 
@@ -89,7 +91,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
               control={<Radio {...register('recoveryMethod')} onChange={trackOptionChoice} />}
               label={
                 <div className={css.method}>
-                  <RecoveryCustomIcon style={{ display: 'block' }} />
+                  <RecoverySygnumIcon style={{ display: 'block' }} />
                   <Typography fontWeight="bold" mb={1} mt={2}>
                     Sygnum
                   </Typography>
@@ -103,7 +105,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
               control={<Radio {...register('recoveryMethod')} onChange={trackOptionChoice} />}
               label={
                 <div className={css.method}>
-                  <RecoveryCustomIcon style={{ display: 'block' }} />
+                  <RecoveryCoincoverIcon style={{ display: 'block' }} />
                   <Typography fontWeight="bold" mb={1} mt={2}>
                     Coincover
                   </Typography>
