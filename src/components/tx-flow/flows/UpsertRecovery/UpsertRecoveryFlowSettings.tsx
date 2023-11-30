@@ -98,7 +98,7 @@ export function UpsertRecoveryFlowSettings({
 
             <div>
               <AddressBookInput
-                label="Recoverer address"
+                label="Recoverer address or ENS"
                 name={UpsertRecoveryFlowFields.recoverer}
                 required
                 fullWidth
