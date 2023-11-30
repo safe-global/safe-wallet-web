@@ -24,15 +24,15 @@ const FEEDBACK_FORM = 'https://noteforms.com/forms/safe-feedback-form-hk16ds?not
 
 enum HeadCells {
   Recoverer = 'recoverer',
-  TxCooldown = 'txCooldown',
-  TxExpiration = 'txExpiration',
+  Delay = 'delay',
+  Expiry = 'expiry',
   Actions = 'actions',
 }
 
 const headCells = [
   { id: HeadCells.Recoverer, label: 'Recoverer' },
   {
-    id: HeadCells.TxCooldown,
+    id: HeadCells.Delay,
     label: (
       <>
         Review window{' '}
@@ -51,7 +51,7 @@ const headCells = [
     ),
   },
   {
-    id: HeadCells.TxExpiration,
+    id: HeadCells.Expiry,
     label: (
       <>
         Proposal expiry{' '}
@@ -80,11 +80,11 @@ export function Recovery(): ReactElement {
 
   const rows = useMemo(() => {
     return recovery?.flatMap((delayModifier) => {
-      const { recoverers, txCooldown, txExpiration } = delayModifier
+      const { recoverers, delay, expiry } = delayModifier
 
       return recoverers.map((recoverer) => {
-        const txCooldownSeconds = txCooldown.toNumber()
-        const txExpirationSeconds = txExpiration.toNumber()
+        const delaySeconds = delay.toNumber()
+        const expirySeconds = expiry.toNumber()
 
         return {
           cells: {
@@ -92,13 +92,13 @@ export function Recovery(): ReactElement {
               rawValue: recoverer,
               content: <EthHashInfo address={recoverer} showCopyButton hasExplorer />,
             },
-            [HeadCells.TxCooldown]: {
-              rawValue: txCooldownSeconds,
-              content: <Typography>{txCooldownSeconds === 0 ? 'none' : getPeriod(txCooldownSeconds)}</Typography>,
+            [HeadCells.Delay]: {
+              rawValue: delaySeconds,
+              content: <Typography>{delaySeconds === 0 ? 'none' : getPeriod(delaySeconds)}</Typography>,
             },
-            [HeadCells.TxExpiration]: {
-              rawValue: txExpirationSeconds,
-              content: <Typography>{txExpirationSeconds === 0 ? 'never' : getPeriod(txExpirationSeconds)}</Typography>,
+            [HeadCells.Expiry]: {
+              rawValue: expirySeconds,
+              content: <Typography>{expirySeconds === 0 ? 'never' : getPeriod(expirySeconds)}</Typography>,
             },
             [HeadCells.Actions]: {
               rawValue: '',

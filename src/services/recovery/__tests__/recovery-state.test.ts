@@ -170,14 +170,14 @@ describe('recovery-state', () => {
           queueNonce: BigNumber.from(0),
         },
       } as TransactionAddedEvent
-      const txCooldown = BigNumber.from(1)
-      const txExpiration = BigNumber.from(2)
+      const delay = BigNumber.from(1)
+      const expiry = BigNumber.from(2)
 
       const item = await _getRecoveryQueueItemTimestamps({
         delayModifier,
         transactionAdded,
-        txCooldown,
-        txExpiration,
+        delay,
+        expiry,
       })
 
       expect(item).toStrictEqual({
@@ -187,7 +187,7 @@ describe('recovery-state', () => {
       })
     })
 
-    it('should return a recovery queue item timestamps with expiresAt null if txExpiration is zero', async () => {
+    it('should return a recovery queue item timestamps with expiresAt null if expiry is zero', async () => {
       const delayModifier = {
         txCreatedAt: () => Promise.resolve(BigNumber.from(1)),
       } as unknown as Delay
@@ -196,14 +196,14 @@ describe('recovery-state', () => {
           queueNonce: BigNumber.from(0),
         },
       } as TransactionAddedEvent
-      const txCooldown = BigNumber.from(1)
-      const txExpiration = BigNumber.from(0)
+      const delay = BigNumber.from(1)
+      const expiry = BigNumber.from(0)
 
       const item = await _getRecoveryQueueItemTimestamps({
         delayModifier,
         transactionAdded,
-        txCooldown,
-        txExpiration,
+        delay,
+        expiry,
       })
 
       expect(item).toStrictEqual({
@@ -334,8 +334,8 @@ describe('recovery-state', () => {
       })
 
       const recoverers = [faker.finance.ethereumAddress()]
-      const txExpiration = BigNumber.from(0)
-      const txCooldown = BigNumber.from(69420)
+      const expiry = BigNumber.from(0)
+      const delay = BigNumber.from(69420)
       const txNonce = BigNumber.from(2)
       const queueNonce = BigNumber.from(4)
       const transactionsAdded = [
@@ -377,8 +377,8 @@ describe('recovery-state', () => {
         },
         address: faker.finance.ethereumAddress(),
         getModulesPaginated: () => Promise.resolve([recoverers]),
-        txExpiration: () => Promise.resolve(txExpiration),
-        txCooldown: () => Promise.resolve(txCooldown),
+        txExpiration: () => Promise.resolve(expiry),
+        txCooldown: () => Promise.resolve(delay),
         txNonce: () => Promise.resolve(txNonce),
         txCreatedAt: jest
           .fn()
@@ -401,15 +401,15 @@ describe('recovery-state', () => {
       expect(recoveryState).toStrictEqual({
         address: delayModifier.address,
         recoverers,
-        txExpiration,
-        txCooldown,
+        expiry,
+        delay,
         txNonce,
         queueNonce,
         queue: [
           {
             ...transactionsAdded[0],
             timestamp: BigNumber.from(420).mul(1_000),
-            validFrom: BigNumber.from(420).add(txCooldown).mul(1_000),
+            validFrom: BigNumber.from(420).add(delay).mul(1_000),
             expiresAt: null,
             isMalicious: false,
             executor: transactionAddedReceipt.from,
@@ -417,7 +417,7 @@ describe('recovery-state', () => {
           {
             ...transactionsAdded[1],
             timestamp: BigNumber.from(69420).mul(1_000),
-            validFrom: BigNumber.from(69420).add(txCooldown).mul(1_000),
+            validFrom: BigNumber.from(69420).add(delay).mul(1_000),
             expiresAt: null,
             isMalicious: true,
             executor: transactionAddedReceipt.from,
@@ -445,8 +445,8 @@ describe('recovery-state', () => {
       const provider = {} as unknown as JsonRpcProvider
 
       const recoverers = [faker.finance.ethereumAddress()]
-      const txExpiration = BigNumber.from(0)
-      const txCooldown = BigNumber.from(69420)
+      const expiry = BigNumber.from(0)
+      const delay = BigNumber.from(69420)
       const txNonce = BigNumber.from(2)
       const queueNonce = BigNumber.from(2)
 
@@ -461,8 +461,8 @@ describe('recovery-state', () => {
         },
         address: faker.finance.ethereumAddress(),
         getModulesPaginated: () => Promise.resolve([recoverers]),
-        txExpiration: () => Promise.resolve(txExpiration),
-        txCooldown: () => Promise.resolve(txCooldown),
+        txExpiration: () => Promise.resolve(expiry),
+        txCooldown: () => Promise.resolve(delay),
         txNonce: () => Promise.resolve(txNonce),
         queueNonce: () => Promise.resolve(queueNonce),
         queryFilter: queryFilterMock.mockRejectedValue('Not required'),
@@ -480,8 +480,8 @@ describe('recovery-state', () => {
       expect(recoveryState).toStrictEqual({
         address: delayModifier.address,
         recoverers,
-        txExpiration,
-        txCooldown,
+        expiry,
+        delay,
         txNonce,
         queueNonce,
         queue: [],

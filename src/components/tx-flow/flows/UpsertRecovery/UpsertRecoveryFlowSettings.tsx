@@ -48,7 +48,7 @@ export function UpsertRecoveryFlowSettings({
   onSubmit: (formData: UpsertRecoveryFlowProps) => void
 }): ReactElement {
   const { safeAddress } = useSafeInfo()
-  const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.txExpiration] !== '0')
+  const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.expiry] !== '0')
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const periods = useRecoveryPeriods()
 
@@ -58,17 +58,17 @@ export function UpsertRecoveryFlowSettings({
   })
 
   const recoverer = formMethods.watch(UpsertRecoveryFlowFields.recoverer)
-  const txCooldown = formMethods.watch(UpsertRecoveryFlowFields.txCooldown)
-  const txExpiration = formMethods.watch(UpsertRecoveryFlowFields.txExpiration)
+  const delay = formMethods.watch(UpsertRecoveryFlowFields.delay)
+  const expiry = formMethods.watch(UpsertRecoveryFlowFields.expiry)
 
   // RHF's dirty check is tempermental with our address input dropdown
   const isDirty = delayModifier
     ? // Updating settings
       !sameAddress(recoverer, delayModifier.recoverers[0]) ||
-      !delayModifier.txCooldown.eq(txCooldown) ||
-      !delayModifier.txExpiration.eq(txExpiration)
+      !delayModifier.delay.eq(delay) ||
+      !delayModifier.expiry.eq(expiry)
     : // Setting up recovery
-      recoverer && txCooldown && txExpiration
+      recoverer && delay && expiry
 
   const validateRecoverer = (recoverer: string) => {
     if (sameAddress(recoverer, safeAddress)) {
@@ -139,7 +139,7 @@ export function UpsertRecoveryFlowSettings({
 
             <Controller
               control={formMethods.control}
-              name={UpsertRecoveryFlowFields.txCooldown}
+              name={UpsertRecoveryFlowFields.delay}
               render={({ field: { ref, ...field } }) => (
                 <SelectField label="Recovery delay" fullWidth inputRef={ref} {...field}>
                   {periods.delay.map(({ label, value }, index) => (
@@ -179,7 +179,7 @@ export function UpsertRecoveryFlowSettings({
 
               <Controller
                 control={formMethods.control}
-                name={UpsertRecoveryFlowFields.txExpiration}
+                name={UpsertRecoveryFlowFields.expiry}
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field: { ref, ...field } }) => (

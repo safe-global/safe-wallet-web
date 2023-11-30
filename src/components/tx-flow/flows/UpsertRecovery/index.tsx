@@ -14,22 +14,22 @@ const Subtitles = ['How does recovery work?', 'Set up recovery settings', 'Set u
 
 export enum UpsertRecoveryFlowFields {
   recoverer = 'recoverer',
-  txCooldown = 'txCooldown',
-  txExpiration = 'txExpiration',
+  delay = 'delay',
+  expiry = 'expiry',
 }
 
 export type UpsertRecoveryFlowProps = {
   [UpsertRecoveryFlowFields.recoverer]: string
-  [UpsertRecoveryFlowFields.txCooldown]: string
-  [UpsertRecoveryFlowFields.txExpiration]: string
+  [UpsertRecoveryFlowFields.delay]: string
+  [UpsertRecoveryFlowFields.expiry]: string
 }
 
 export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
   const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>(
     {
       [UpsertRecoveryFlowFields.recoverer]: delayModifier?.recoverers?.[0] ?? '',
-      [UpsertRecoveryFlowFields.txCooldown]: delayModifier?.txCooldown?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
-      [UpsertRecoveryFlowFields.txExpiration]: delayModifier?.txExpiration?.toString() ?? '0',
+      [UpsertRecoveryFlowFields.delay]: delayModifier?.delay?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
+      [UpsertRecoveryFlowFields.expiry]: delayModifier?.expiry?.toString() ?? '0',
     },
     SETUP_RECOVERY_CATEGORY,
   )

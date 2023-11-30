@@ -145,12 +145,10 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <WrongChainWarning />
 
-        {recovery?.txCooldown && (
+        {recovery?.delay && (
           <ErrorMessage level="info">
             Recovery will be{' '}
-            {recovery.txCooldown.isZero()
-              ? 'immediately possible'
-              : `possible in ${getPeriod(recovery.txCooldown.toNumber())}`}{' '}
+            {recovery.delay.isZero() ? 'immediately possible' : `possible in ${getPeriod(recovery.delay.toNumber())}`}{' '}
             after this transaction is executed.
           </ErrorMessage>
         )}
