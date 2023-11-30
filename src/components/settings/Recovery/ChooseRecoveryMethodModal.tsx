@@ -56,8 +56,6 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
   const currentType = watch('recoveryMethod')
 
   const trackOptionChoice = (e: ChangeEvent<HTMLInputElement>) => {
-    // TODO: Track this event with e.target.value
-    setValue('recoveryMethod', e.target.value)
     trackEvent({ ...RECOVERY_EVENTS.SELECT_RECOVERY_METHOD, label: e.target.value })
   }
 
@@ -79,10 +77,14 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
           </Track>
         </DialogContentText>
         <FormControl>
-          <RadioGroup defaultValue={RecoveryMethod.SelfCustody} className={css.buttonGroup}>
+          <RadioGroup
+            defaultValue={RecoveryMethod.SelfCustody}
+            onChange={trackOptionChoice}
+            className={css.buttonGroup}
+          >
             <FormControlLabel
               value={RecoveryMethod.SelfCustody}
-              control={<Radio {...register('recoveryMethod')} onChange={trackOptionChoice} />}
+              control={<Radio {...register('recoveryMethod')} />}
               label={
                 <div className={css.method}>
                   <RecoveryCustomIcon style={{ display: 'block' }} />
@@ -96,7 +98,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
 
             <FormControlLabel
               value={RecoveryMethod.Sygnum}
-              control={<Radio {...register('recoveryMethod')} onChange={trackOptionChoice} />}
+              control={<Radio {...register('recoveryMethod')} />}
               label={
                 <div className={css.method}>
                   <RecoverySygnumIcon style={{ display: 'block' }} />
@@ -110,7 +112,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
 
             <FormControlLabel
               value={RecoveryMethod.Coincover}
-              control={<Radio {...register('recoveryMethod')} onChange={trackOptionChoice} />}
+              control={<Radio {...register('recoveryMethod')} />}
               label={
                 <div className={css.method}>
                   <RecoveryCoincoverIcon style={{ display: 'block' }} />
