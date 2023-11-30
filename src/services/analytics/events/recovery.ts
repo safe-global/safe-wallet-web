@@ -89,4 +89,9 @@ export const RECOVERY_EVENTS = {
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },
+  CHECK_RECOVERY_PROPOSAL: {
+    action: 'Check recovery proposal',
+    category: RECOVERY_CATEGORY,
+    event: EventType.CLICK,
+  },
 }
