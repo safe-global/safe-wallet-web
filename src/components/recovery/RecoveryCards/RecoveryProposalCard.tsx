@@ -11,7 +11,7 @@ import { RecoverAccountFlow } from '@/components/tx-flow/flows/RecoverAccount'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import madProps from '@/utils/mad-props'
 import { TxModalContext } from '@/components/tx-flow'
-import { HelpCenterArticle } from '@/config/constants'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 import type { TxModalContextType } from '@/components/tx-flow'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -49,11 +49,11 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   const title = 'Recover this Account'
   const desc = `The connected wallet was chosen as a trusted Recoverer. You can help the owner${
     safe.owners.length > 1 ? 's' : ''
-  } regain access by updating the owner list.`
+  } regain access by resetting the Account setup.`
 
   const link = (
     <Track {...RECOVERY_EVENTS.LEARN_MORE} label="proposal-card">
-      <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
+      <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
         Learn more
       </ExternalLink>
     </Track>

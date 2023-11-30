@@ -13,9 +13,9 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 const RecoverySteps = [
   {
     Icon: RecoveryRecoverers,
-    title: 'Choose a Recoverer and set a delay',
+    title: 'Choose a Recoverer and set a review window',
     subtitle:
-      'Only your chosen Recoverer can initiate the recovery process. The process can be cancelled at any time during the delay period.',
+      'Only your chosen Recoverer can initiate the recovery process. The process can be cancelled at any time during the review window.',
   },
   {
     Icon: RecoveryRecoverer,
@@ -25,18 +25,13 @@ const RecoverySteps = [
   {
     Icon: RecoveryDelay,
     title: 'Start the recovery process',
-    subtitle: (
-      <>
-        Your <b>Recoverer</b> chooses new Safe Account owner(s) that you control and can initiates the recovery
-        transaction.
-      </>
-    ),
+    subtitle: 'Your Recoverer initiates the recovery process by proposing a new Safe Account setup on-chain.',
   },
   {
     Icon: RecoveryExecution,
     title: 'All done! The Account is yours again',
     subtitle:
-      'Once the delay period has passed, you can execute the recovery transaction and regain access to your Safe Account.',
+      'Once the review window has passed, you can execute the recovery proposal and regain access to your Safe Account.',
   },
 ]
 

@@ -6,10 +6,10 @@ import ExternalLink from '@/components/common/ExternalLink'
 import RemoveModuleFlow from '@/components/tx-flow/flows/RemoveModule'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
 import { selectDelayModifierByAddress } from '@/services/recovery/selectors'
-import { ConfirmRemoveRecoveryModal } from '../Recovery/ConfirmRemoveRecoveryModal'
+import { RemoveRecoveryFlow } from '@/components/tx-flow/flows/RemoveRecovery'
 import { useRecovery } from '@/components/recovery/RecoveryContext'
 
 import css from '../TransactionGuards/styles.module.css'
@@ -24,45 +24,35 @@ const NoModules = () => {
 
 const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name?: string }) => {
   const { setTxFlow } = useContext(TxModalContext)
-  const [confirmRemoveRecovery, setConfirmRemoveRecovery] = useState(false)
   const [recovery] = useRecovery()
   const delayModifier = recovery && selectDelayModifierByAddress(recovery, moduleAddress)
 
   const onRemove = () => {
     if (delayModifier) {
-      setConfirmRemoveRecovery(true)
+      setTxFlow(<RemoveRecoveryFlow delayModifier={delayModifier} />)
     } else {
       setTxFlow(<RemoveModuleFlow address={moduleAddress} />)
     }
   }
 
   return (
-    <>
-      <Box className={css.guardDisplay}>
-        <EthHashInfo
-          name={name}
-          shortAddress={false}
-          address={moduleAddress}
-          showCopyButton
-          chainId={chainId}
-          hasExplorer
-        />
-        <CheckWallet>
-          {(isOk) => (
-            <IconButton onClick={onRemove} color="error" size="small" disabled={!isOk} title="Remove module">
-              <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-            </IconButton>
-          )}
-        </CheckWallet>
-      </Box>
-      {delayModifier && (
-        <ConfirmRemoveRecoveryModal
-          open={confirmRemoveRecovery}
-          onClose={() => setConfirmRemoveRecovery(false)}
-          delayModifier={delayModifier}
-        />
-      )}
-    </>
+    <Box className={css.guardDisplay}>
+      <EthHashInfo
+        name={name}
+        shortAddress={false}
+        address={moduleAddress}
+        showCopyButton
+        chainId={chainId}
+        hasExplorer
+      />
+      <CheckWallet>
+        {(isOk) => (
+          <IconButton onClick={onRemove} color="error" size="small" disabled={!isOk} title="Remove module">
+            <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+          </IconButton>
+        )}
+      </CheckWallet>
+    </Box>
   )
 }
 
