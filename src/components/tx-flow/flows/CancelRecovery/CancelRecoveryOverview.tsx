@@ -27,8 +27,8 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
         </Typography>
 
         <Typography variant="body2" mb={3} textAlign="center">
-          If it is was an unwanted recovery proposal or you&apos;ve noticed something suspicious, you can cancel it at
-          any time.
+          If it is an unwanted recovery proposal or you&apos;ve noticed something suspicious, you can cancel it at any
+          time.
         </Typography>
 
         <Box display="flex" gap={3}>
