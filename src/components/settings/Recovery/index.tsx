@@ -15,6 +15,8 @@ import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { getPeriod } from '@/utils/date'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -33,8 +35,8 @@ const headCells = [
     id: HeadCells.TxCooldown,
     label: (
       <>
-        Recovery delay{' '}
-        <Tooltip title="You can cancel any recovery attempt when it is not needed or wanted.">
+        Review window{' '}
+        <Tooltip title={TOOLTIP_TITLES.REVIEW_WINDOW}>
           <span>
             <SvgIcon
               component={InfoIcon}
@@ -52,8 +54,8 @@ const headCells = [
     id: HeadCells.TxExpiration,
     label: (
       <>
-        Expiry{' '}
-        <Tooltip title="A period of time after which the recovery attempt will expire and can no longer be executed.">
+        Proposal expiry{' '}
+        <Tooltip title={TOOLTIP_TITLES.PROPOSAL_EXPIRY}>
           <span>
             <SvgIcon
               component={InfoIcon}
@@ -73,6 +75,8 @@ const headCells = [
 export function Recovery(): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
   const [recovery] = useRecovery()
+
+  const isRecoveryEnabled = recovery && recovery.length > 0
 
   const rows = useMemo(() => {
     return recovery?.flatMap((delayModifier) => {
@@ -126,11 +130,15 @@ export function Recovery(): ReactElement {
 
         <Grid item xs>
           <Typography mb={2}>
-            Choose a trusted Recoverer to recover your Safe Account, in case you should ever lose access to your
-            Account. Enabling the Account recovery module will require a transactions.
+            {isRecoveryEnabled
+              ? 'The trusted Recoverer will be able to recover your Safe Account if you ever lose access. You can change Recoverers or alter your recovery setup at any time.'
+              : 'Choose a trusted Recoverer to recover your Safe Account if you ever lose access. Enabling the Account recovery module will require a transaction.'}{' '}
+            <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
+              Learn more
+            </ExternalLink>
           </Typography>
 
-          {!recovery || recovery.length === 0 ? (
+          {!isRecoveryEnabled ? (
             <>
               <Alert severity="info">
                 Unhappy with the provided option?{' '}

@@ -10,7 +10,7 @@ import { isRecoveryQueueItem } from '@/utils/transaction-guards'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import { RecoveryListItem } from '../RecoveryListItem'
 import ExternalLink from '@/components/common/ExternalLink'
-import { HelpCenterArticle } from '@/config/constants'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 
 import css from '@/components/transactions/GroupedTxListItems/styles.module.css'
 
@@ -26,7 +26,7 @@ function Disclaimer({ isMalicious }: { isMalicious: boolean }): ReactElement {
         </Typography>{' '}
         You will need to execute the cancellation.{' '}
         <Track {...RECOVERY_EVENTS.LEARN_MORE} label="tx-queue">
-          <ExternalLink href={HelpCenterArticle.RECOVERY} title="Learn more about the Account recovery process">
+          <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
             Learn more
           </ExternalLink>
         </Track>

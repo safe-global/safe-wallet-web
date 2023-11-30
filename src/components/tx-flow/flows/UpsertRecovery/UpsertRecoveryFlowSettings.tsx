@@ -29,6 +29,9 @@ import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { RecovererWarning } from './RecovererSmartContractWarning'
+import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { TOOLTIP_TITLES } from '../../common/constants'
 import type { UpsertRecoveryFlowProps } from '.'
 import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
 
@@ -85,14 +88,21 @@ export function UpsertRecoveryFlowSettings({
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit)} className={commonCss.form}>
           <TxCard>
+            <Alert severity="warning" sx={{ border: 'unset' }}>
+              Your Recoverer will be able to reset your Account setup. Only select an address that you trust.{' '}
+              <ExternalLink href={HelpCenterArticle.RECOVERY} title={HelperCenterArticleTitles.RECOVERY}>
+                Learn more
+              </ExternalLink>
+            </Alert>
+
             <div>
               <Typography variant="h5" gutterBottom>
                 Trusted Recoverer
               </Typography>
 
               <Typography variant="body2">
-                Choose a Recoverer, such as a hardware wallet or family member&apos;s wallet, that can initiate the
-                recovery process in the future.
+                Choose a Recoverer, such as a hardware wallet or a Safe Account controlled by family or friends, that
+                can initiate the recovery process in the future.
               </Typography>
             </div>
 
@@ -106,19 +116,10 @@ export function UpsertRecoveryFlowSettings({
               />
               <RecovererWarning />
             </div>
-
-            <Alert severity="info" sx={{ border: 'unset' }}>
-              Your Recoverer will be able to modify your Account setup. Only select an address that you trust.
-            </Alert>
-
             <div>
               <Typography variant="h5" gutterBottom>
-                Recovery delay
-                <Tooltip
-                  placement="top"
-                  arrow
-                  title="The recovery delay begins after the recovery attempt is initiated"
-                >
+                Review window
+                <Tooltip placement="top" arrow title={TOOLTIP_TITLES.REVIEW_WINDOW}>
                   <span>
                     <SvgIcon
                       component={InfoIcon}
@@ -132,7 +133,7 @@ export function UpsertRecoveryFlowSettings({
               </Typography>
 
               <Typography variant="body2">
-                You can cancel any recovery attempt when it is not needed or wanted.
+                You can cancel any recovery proposal when it is not needed or wanted during this period.
               </Typography>
             </div>
 
@@ -155,9 +156,26 @@ export function UpsertRecoveryFlowSettings({
             </Typography>
 
             <Collapse in={showAdvanced}>
-              <Typography variant="body2" mb={2}>
-                Set a period of time after which the recovery attempt will expire and can no longer be executed.
-              </Typography>
+              <div>
+                <Typography variant="h5" gutterBottom>
+                  Proposal expiry
+                  <Tooltip placement="top" arrow title={TOOLTIP_TITLES.PROPOSAL_EXPIRY}>
+                    <span>
+                      <SvgIcon
+                        component={InfoIcon}
+                        inheritViewBox
+                        fontSize="small"
+                        color="border"
+                        sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                      />
+                    </span>
+                  </Tooltip>
+                </Typography>
+
+                <Typography variant="body2" mb={2}>
+                  Set a period of time after which the recovery proposal will expire and can no longer be executed.
+                </Typography>
+              </div>
 
               <Controller
                 control={formMethods.control}
@@ -165,7 +183,7 @@ export function UpsertRecoveryFlowSettings({
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field: { ref, ...field } }) => (
-                  <SelectField label="Transaction expiry" fullWidth inputRef={ref} {...field}>
+                  <SelectField label="Proposal expiry" fullWidth inputRef={ref} {...field}>
                     {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
@@ -179,7 +197,7 @@ export function UpsertRecoveryFlowSettings({
 
           <TxCard>
             <FormControlLabel
-              label="I understand that the Recoverer will be able to initiate recovery of this Safe Account and I will not be informed about this outside of the Safe{Wallet}."
+              label="I understand that the Recoverer will be able to initiate recovery of this Safe Account and that I will only be informed within the Safe{Wallet}."
               control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
               sx={{ pl: 2 }}
             />

@@ -1,7 +1,11 @@
+import { SvgIcon, Tooltip, Typography } from '@mui/material'
+import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useContext, useEffect } from 'react'
+import type { ReactElement } from 'react'
+
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useWeb3 } from '@/hooks/wallets/web3'
@@ -13,13 +17,10 @@ import { Errors, logError } from '@/services/exceptions'
 import { getRecoveryUpsertTransactions } from '@/services/recovery/setup'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import { isSmartContractWallet } from '@/utils/wallets'
-import { SvgIcon, Tooltip, Typography } from '@mui/material'
-import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { ReactElement } from 'react'
-import { useContext, useEffect } from 'react'
-import type { UpsertRecoveryFlowProps } from '.'
 import { UpsertRecoveryFlowFields } from '.'
+import { TOOLTIP_TITLES } from '../../common/constants'
 import { useRecoveryPeriods } from './useRecoveryPeriods'
+import type { UpsertRecoveryFlowProps } from '.'
 
 enum AddressType {
   EOA = 'EOA',
@@ -103,8 +104,8 @@ export function UpsertRecoveryFlowReview({
       <TxDataRow
         title={
           <>
-            Recovery delay
-            <Tooltip placement="top" title="You can cancel any recovery attempt when it is not needed or wanted.">
+            Review window
+            <Tooltip placement="top" title={TOOLTIP_TITLES.REVIEW_WINDOW}>
               <span>
                 <SvgIcon
                   component={InfoIcon}
@@ -121,29 +122,28 @@ export function UpsertRecoveryFlowReview({
         {delay}
       </TxDataRow>
 
-      <TxDataRow
-        title={
-          <>
-            Transaction validity
-            <Tooltip
-              placement="top"
-              title="A period after which the recovery attempt will expire and can no longer be executed."
-            >
-              <span>
-                <SvgIcon
-                  component={InfoIcon}
-                  inheritViewBox
-                  fontSize="small"
-                  color="border"
-                  sx={{ verticalAlign: 'middle', ml: 0.5 }}
-                />
-              </span>
-            </Tooltip>
-          </>
-        }
-      >
-        {expiration}
-      </TxDataRow>
+      {expiration !== '0' && (
+        <TxDataRow
+          title={
+            <>
+              Proposal expiry
+              <Tooltip placement="top" title={TOOLTIP_TITLES.PROPOSAL_EXPIRY}>
+                <span>
+                  <SvgIcon
+                    component={InfoIcon}
+                    inheritViewBox
+                    fontSize="small"
+                    color="border"
+                    sx={{ verticalAlign: 'middle', ml: 0.5 }}
+                  />
+                </span>
+              </Tooltip>
+            </>
+          }
+        >
+          {expiration}
+        </TxDataRow>
+      )}
     </SignOrExecuteForm>
   )
 }
