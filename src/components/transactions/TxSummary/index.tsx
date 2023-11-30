@@ -59,7 +59,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
     (!tx.txInfo.richDecodedInfo && tx.txInfo.type !== TransactionInfoType.TRANSFER) || !shouldDisplayHumanDescription
 
   return (
-    <Box
+    <Box data-testid="transaction-item"
       className={`${css.gridContainer} ${
         isQueue
           ? displayInfo
