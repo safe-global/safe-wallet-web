@@ -38,7 +38,7 @@ const getAddressType = async (address: string, chainId: string) => {
 }
 
 const onSubmit = async (isEdit: boolean, params: UpsertRecoveryFlowProps, chainId: string) => {
-  const addressType = await getAddressType(params.guardian, chainId)
+  const addressType = await getAddressType(params.recoverer, chainId)
   const creationType = isEdit ? TX_TYPES.recovery_edit : TX_TYPES.recovery_setup
   const settings = `${creationType},delay_${params.txCooldown},expiry_${params.txExpiration},type_${addressType}`
 
