@@ -1,7 +1,7 @@
 import EventBus from '../EventBus'
 
 export enum RecoveryEvent {
-  EXECUTING = 'EXECUTING',
+  PROCESSING_BY_SMART_CONTRACT_WALLET = 'PROCESSING_BY_SMART_CONTRACT_WALLET',
   PROCESSING = 'PROCESSING',
   REVERTED = 'REVERTED',
   PROCESSED = 'PROCESSED',
@@ -15,7 +15,7 @@ export enum RecoveryEventType {
 }
 
 export interface RecoveryEvents {
-  [RecoveryEvent.EXECUTING]: {
+  [RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET]: {
     moduleAddress: string
     txHash: string
     recoveryTxHash: string
