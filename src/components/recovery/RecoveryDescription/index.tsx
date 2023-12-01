@@ -1,45 +1,35 @@
 import { Typography } from '@mui/material'
-import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useIsRecoverer } from '@/hooks/useIsRecoverer'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { logError, Errors } from '@/services/exceptions'
-import { getRecoveredSafeInfo } from '@/services/recovery/transaction-list'
+import { useRecoveredSafeInfo } from '@/hooks/useRecoveredSafeInfo'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 export function RecoveryDescription({ item }: { item: RecoveryQueueItem }): ReactElement {
-  const { args, isMalicious } = item
-  const { safe } = useSafeInfo()
-  const isRecoverer = useIsRecoverer()
+  const { isMalicious } = item
 
-  const newSetup = useMemo(() => {
-    try {
-      return getRecoveredSafeInfo(safe, {
-        to: args.to,
-        value: args.value.toString(),
-        data: args.data,
-      })
-    } catch (e) {
-      logError(Errors._811, e)
-    }
-    // We only render the threshold and owners
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [args.data, args.to, args.value, safe.threshold, safe.owners])
-
-  if (isMalicious || !newSetup) {
+  if (isMalicious) {
     return (
       <ErrorMessage>This transaction potentially calls malicious actions. We recommend cancelling it.</ErrorMessage>
     )
   }
 
-  if (newSetup.owners.length === 0) {
+  return <_RecoveryDescription item={item} />
+}
+
+// Conditional hooks
+function _RecoveryDescription({ item }: { item: RecoveryQueueItem }): ReactElement {
+  const isRecoverer = useIsRecoverer()
+  const [newSetup, newSetupError] = useRecoveredSafeInfo(item)
+
+  if (!newSetup) {
     return (
-      <ErrorMessage>
-        This recovery proposal will fail as the owner structure has since been modified. We recommend cancelling it
+      <ErrorMessage level="warning" error={newSetupError}>
+        It is not possible to decode the proposed Account setup as the owner structure has changed since proposal. We{' '}
+        <b>highly recommend</b> cancelling it
         {isRecoverer ? ' and trying again' : ''}.
       </ErrorMessage>
     )

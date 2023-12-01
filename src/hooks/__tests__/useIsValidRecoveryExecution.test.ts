@@ -1,7 +1,11 @@
+import { getCurrentGnosisSafeContract, getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
+import { createTx } from '@/services/tx/tx-sender'
 import { safeInfoBuilder } from '@/tests/builders/safe'
 import { createSafeTx } from '@/tests/builders/safeTx'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import { renderHook, waitFor } from '@/tests/test-utils'
+import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
+import { Gnosis_safe__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.1.1'
 import { faker } from '@faker-js/faker'
 import { getModuleInstance } from '@gnosis.pm/zodiac'
 import { BigNumber } from 'ethers'
@@ -10,12 +14,14 @@ import { getPatchedSignerProvider } from '../useIsValidExecution'
 import {
   useIsValidRecoveryExecTransactionFromModule,
   useIsValidRecoveryExecuteNextTx,
+  useIsValidRecoveryExecution,
   useIsValidRecoverySkipExpired,
 } from '../useIsValidRecoveryExecution'
 import { useRecoveryTxState } from '../useRecoveryTxState'
 import useSafeInfo from '../useSafeInfo'
 import useWallet from '../wallets/useWallet'
 import { useWeb3ReadOnly } from '../wallets/web3'
+import { id } from 'ethers/lib/utils'
 
 jest.mock('@gnosis.pm/zodiac')
 
@@ -27,6 +33,8 @@ jest.mock('@/hooks/wallets/web3')
 jest.mock('@/hooks/useIsRecoverer')
 jest.mock('@/hooks/useRecoveryTxState')
 jest.mock('@/hooks/useIsValidExecution')
+jest.mock('@/services/contracts/safeContracts')
+jest.mock('@/services/tx/tx-sender')
 
 const mockUseWallet = useWallet as jest.MockedFunction<typeof useWallet>
 const mockUseSafeInfo = useSafeInfo as jest.MockedFunction<typeof useSafeInfo>
@@ -34,6 +42,13 @@ const mockUseWeb3ReadOnly = useWeb3ReadOnly as jest.MockedFunction<typeof useWeb
 const mockUseIsRecoverer = useIsRecoverer as jest.MockedFunction<typeof useIsRecoverer>
 const mockUseRecoveryTxState = useRecoveryTxState as jest.MockedFunction<typeof useRecoveryTxState>
 const mockGetPatchedSignerOrProvider = getPatchedSignerProvider as jest.MockedFunction<typeof getPatchedSignerProvider>
+const mockGetReadOnlyMultiSendCallOnlyContract = getReadOnlyMultiSendCallOnlyContract as jest.MockedFunction<
+  typeof getReadOnlyMultiSendCallOnlyContract
+>
+const mockGetCurrentGnosisSafeContract = getCurrentGnosisSafeContract as jest.MockedFunction<
+  typeof getCurrentGnosisSafeContract
+>
+const mockCreateTx = createTx as jest.MockedFunction<typeof createTx>
 
 describe('useIsValidRecoveryExecution', () => {
   beforeEach(() => {
@@ -489,6 +504,223 @@ describe('useIsValidRecoveryExecution', () => {
 
       await waitFor(() => {
         expect(result.current).toEqual([undefined, error, false])
+      })
+    })
+  })
+
+  describe('useIsValidRecoveryExecution', () => {
+    it('should return undefined if the transaction is not executable', async () => {
+      mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
+      mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
+      mockUseWeb3ReadOnly.mockReturnValue({} as any)
+      mockUseRecoveryTxState.mockReturnValue({ isExecutable: false } as any)
+
+      const recovery = {
+        address: faker.finance.ethereumAddress(),
+        args: {
+          to: faker.finance.ethereumAddress(),
+          value: BigNumber.from(0),
+          data: '0x',
+          operation: 0,
+        },
+      }
+
+      const { result } = renderHook(() => useIsValidRecoveryExecution(recovery as any))
+
+      expect(result.current).toEqual([undefined, undefined, false])
+
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
+      })
+    })
+
+    it('should return undefined if no wallet is connected', async () => {
+      mockUseWallet.mockReturnValue(null)
+      mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
+      mockUseWeb3ReadOnly.mockReturnValue({} as any)
+      mockUseRecoveryTxState.mockReturnValue({ isExecutable: true } as any)
+
+      const recovery = {
+        address: faker.finance.ethereumAddress(),
+        args: {
+          to: faker.finance.ethereumAddress(),
+          value: BigNumber.from(0),
+          data: '0x',
+          operation: 0,
+        },
+      }
+
+      const { result } = renderHook(() => useIsValidRecoveryExecution(recovery as any))
+
+      expect(result.current).toEqual([undefined, undefined, false])
+
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
+      })
+    })
+
+    it('should return undefined if no provider is connected', async () => {
+      mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
+      mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
+      mockUseWeb3ReadOnly.mockReturnValue(undefined)
+      mockUseRecoveryTxState.mockReturnValue({ isExecutable: true } as any)
+
+      const recovery = {
+        address: faker.finance.ethereumAddress(),
+        args: {
+          to: faker.finance.ethereumAddress(),
+          value: BigNumber.from(0),
+          data: '0x',
+          operation: 0,
+        },
+      }
+
+      const { result } = renderHook(() => useIsValidRecoveryExecution(recovery as any))
+
+      expect(result.current).toEqual([undefined, undefined, false])
+
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
+      })
+    })
+
+    describe('multiSend', () => {
+      it('should return true if the transaction is valid', async () => {
+        mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
+        mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
+        mockUseWeb3ReadOnly.mockReturnValue({} as any)
+        mockUseRecoveryTxState.mockReturnValue({ isExecutable: true } as any)
+        mockGetReadOnlyMultiSendCallOnlyContract.mockReturnValue({
+          contract: {
+            connect: () => ({
+              callStatic: {
+                multiSend: () => Promise.resolve(),
+              },
+            }),
+          },
+        } as any)
+
+        const recovery = {
+          address: faker.finance.ethereumAddress(),
+          args: {
+            to: faker.finance.ethereumAddress(),
+            value: BigNumber.from(0),
+            data: id(Multi_send__factory.createInterface().getFunction('multiSend').format()),
+            operation: 0,
+          },
+        }
+
+        const { result } = renderHook(() => useIsValidRecoveryExecution(recovery as any))
+
+        expect(result.current).toEqual([undefined, undefined, true])
+
+        await waitFor(() => {
+          expect(result.current).toEqual([true, undefined, false])
+        })
+      })
+
+      it('should otherwise return an error if the transaction is invalid', async () => {
+        mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
+        mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
+        mockUseWeb3ReadOnly.mockReturnValue({} as any)
+        mockUseRecoveryTxState.mockReturnValue({ isExecutable: true } as any)
+        const error = new Error('Some error')
+        mockGetReadOnlyMultiSendCallOnlyContract.mockReturnValue({
+          contract: {
+            connect: () => ({
+              callStatic: {
+                multiSend: () => Promise.reject(error),
+              },
+            }),
+          },
+        } as any)
+
+        const recovery = {
+          address: faker.finance.ethereumAddress(),
+          args: {
+            to: faker.finance.ethereumAddress(),
+            value: BigNumber.from(0),
+            data: id(Multi_send__factory.createInterface().getFunction('multiSend').format()),
+            operation: 0,
+          },
+        }
+
+        const { result } = renderHook(() => useIsValidRecoveryExecution(recovery as any))
+
+        expect(result.current).toEqual([undefined, undefined, true])
+
+        await waitFor(() => {
+          expect(result.current).toEqual([undefined, error, false])
+        })
+      })
+    })
+
+    describe('Safe', () => {
+      it('should return true if the transaction is valid', async () => {
+        mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
+        mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
+        mockUseWeb3ReadOnly.mockReturnValue({} as any)
+        mockUseRecoveryTxState.mockReturnValue({ isExecutable: true } as any)
+        mockGetCurrentGnosisSafeContract.mockReturnValue({
+          contract: {
+            callStatic: {
+              execTransaction: () => Promise.resolve(),
+            },
+          },
+        } as any)
+
+        const recovery = {
+          address: faker.finance.ethereumAddress(),
+          args: {
+            to: faker.finance.ethereumAddress(),
+            value: BigNumber.from(0),
+            data: id(Gnosis_safe__factory.createInterface().getFunction('execTransaction').format()),
+            operation: 0,
+          },
+        }
+        mockCreateTx.mockResolvedValue(createSafeTx(recovery.args.data))
+
+        const { result } = renderHook(() => useIsValidRecoveryExecution(recovery as any))
+
+        expect(result.current).toEqual([undefined, undefined, true])
+
+        await waitFor(() => {
+          expect(result.current).toEqual([true, undefined, false])
+        })
+      })
+
+      it('should otherwise return an error if the transaction is invalid', async () => {
+        mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
+        mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
+        mockUseWeb3ReadOnly.mockReturnValue({} as any)
+        mockUseRecoveryTxState.mockReturnValue({ isExecutable: true } as any)
+        const error = new Error('Some error')
+        mockGetCurrentGnosisSafeContract.mockReturnValue({
+          contract: {
+            callStatic: {
+              execTransaction: () => Promise.reject(error),
+            },
+          },
+        } as any)
+
+        const recovery = {
+          address: faker.finance.ethereumAddress(),
+          args: {
+            to: faker.finance.ethereumAddress(),
+            value: BigNumber.from(0),
+            data: id(Gnosis_safe__factory.createInterface().getFunction('execTransaction').format()),
+            operation: 0,
+          },
+        }
+        mockCreateTx.mockResolvedValue(createSafeTx(recovery.args.data))
+
+        const { result } = renderHook(() => useIsValidRecoveryExecution(recovery as any))
+
+        expect(result.current).toEqual([undefined, undefined, true])
+
+        await waitFor(() => {
+          expect(result.current).toEqual([undefined, error, false])
+        })
       })
     })
   })
