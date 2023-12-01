@@ -12,17 +12,28 @@ import * as mpcCoreKit from '@web3auth/mpc-core-kit'
 import * as socialWalletOptions from '@/services/mpc/config'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
-import { hexZeroPad } from 'ethers/lib/utils'
 import SocialWalletService from '../SocialWalletService'
 import { SMS_OTP_MODULE_NAME } from '../recovery/SmsOtpRecovery'
 import EncryptionUtil from '../EncryptionUtil'
 import { type Point } from '@tkey-mpc/common-types'
 import { getMfaStore, MultiFactorType } from '@/hooks/wallets/mpc/useSocialWallet'
+import { hexZeroPad } from 'ethers/lib/utils'
 
 /** time until mock login resolves */
 const MOCK_LOGIN_TIME = 1000
-/** Mock address for successful login */
-const mockSignerAddress = hexZeroPad('0x1', 20)
+
+/**
+ * Mock ecsign as it leads to errors because of a mismatch of the Uint8Array type
+ * Related to this: https://github.com/jestjs/jest/issues/7780
+ */
+jest.mock('ethereumjs-util', () => ({
+  ...jest.requireActual('ethereumjs-util'),
+  ecsign: () => ({
+    v: 27,
+    r: Buffer.from(hexZeroPad('0x123', 32), 'hex'),
+    s: Buffer.from(hexZeroPad('0x456', 32), 'hex'),
+  }),
+}))
 
 const setupFetchSuccessStub = (data: any) => (_url: string) => {
   return Promise.resolve({
@@ -110,14 +121,22 @@ class MockMPCCoreKit {
     }
   }
 
+  getKeyDetails = () => {
+    return { shareDescriptions: this.tKey.metadata.generalStore.shareDescriptions }
+  }
+
   commitChanges = jest.fn().mockImplementation(() => Promise.resolve())
+
+  createFactor = jest.fn().mockImplementation((input) => Promise.resolve(input.factorKey.toString('hex')))
+
+  enableMFA = jest.fn().mockImplementation(() => Promise.resolve())
 
   getUserInfo() {
     return this.state.userInfo
   }
 }
 
-describe('useMPCWallet', () => {
+describe('SocialWalletService', () => {
   beforeAll(() => {
     jest.useFakeTimers()
   })
@@ -414,57 +433,6 @@ describe('useMPCWallet', () => {
         password: undefined,
       })
     })
-
-    it('should recover if correct code is entered', async () => {
-      const factorKey = generateFactorKey()
-
-      const mockOnConnect = jest.fn()
-
-      BrowserStorage.getInstance('mpc_corekit_store').set('sms_tracking_id', '123')
-      const mockMPCCore = new MockMPCCoreKit(
-        COREKIT_STATUS.REQUIRED_SHARE,
-        {
-          email: 'test@test.com',
-          name: 'Test',
-        } as unknown as UserInfo,
-        factorKey.private,
-      )
-      // Add share description for SMS Module
-      mockMPCCore.addShareDescription(
-        factorKey.pub,
-        JSON.stringify({
-          module: 'Other',
-          moduleName: SMS_OTP_MODULE_NAME,
-          number: '+40 170 69 420',
-        }),
-      )
-
-      const encryptionUtil = new EncryptionUtil(new BN(mockMPCCore.state.oAuthKey!, 'hex'))
-      const encryptedFactorKey = await encryptionUtil.encrypt({ factorKey: factorKey.private })
-      global.fetch = jest.fn().mockImplementation(
-        setupFetchSuccessStub({
-          data: encryptedFactorKey,
-          success: true,
-        }),
-      )
-      const mockFetch = jest.spyOn(global, 'fetch')
-
-      const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
-      testService.setOnConnect(mockOnConnect)
-
-      const result = await testService.recoverAccountWithSms('+40 170 69 420', '123456', false)
-      expect(result).toBeTruthy()
-      expect(mockOnConnect).toHaveBeenCalled()
-      expect(mockMPCCore.commitChanges).toHaveBeenCalled()
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(getMfaStore()).toEqual({
-        sms: {
-          type: MultiFactorType.SMS,
-          number: '+40 170 69 420',
-        },
-        password: undefined,
-      })
-    })
   })
 
   describe('registerSmsOtp', () => {
@@ -559,6 +527,124 @@ describe('useMPCWallet', () => {
       const storage = BrowserStorage.getInstance('mpc_corekit_store')
       expect(storage.get('sms_tracking_id')).toEqual('456')
       expect(mockFetch).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('verifySmsOtp', () => {
+    it('should not add a factor if verification fails', async () => {
+      const mockMPCCore = new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, {
+        email: 'test@test.com',
+        name: 'Test',
+      } as unknown as UserInfo)
+
+      const factorKey = generateFactorKey()
+
+      const mockHashedFactorKey = generateFactorKey()
+
+      // Add share description for SMS Module
+      mockMPCCore.addShareDescription(
+        mockHashedFactorKey.pub,
+        JSON.stringify({
+          module: 'hashedShare',
+        }),
+      )
+
+      // mock login
+      mockMPCCore.loginWithOauth({} as OauthLoginParams)
+      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+
+      global.fetch = jest.fn().mockImplementation(
+        setupFetchErrorStub({
+          message: 'OTP invalid',
+        }),
+      )
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      BrowserStorage.getInstance('mpc_corekit_store').set('sms_tracking_id', '123')
+
+      const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
+      expect(testService.verifySmsOtp('+40 176 420 69', '123456')).rejects.toEqual(new Error('OTP invalid'))
+      expect(mockMPCCore.createFactor).not.toHaveBeenCalled()
+
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    it('should add a factor if verification succeds', async () => {
+      const mockMPCCore = new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, {
+        email: 'test@test.com',
+        name: 'Test',
+      } as unknown as UserInfo)
+
+      const factorKey = generateFactorKey()
+
+      // mock login
+      mockMPCCore.loginWithOauth({} as OauthLoginParams)
+      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+
+      const encryptionUtil = new EncryptionUtil(new BN(mockMPCCore.state.oAuthKey!, 'hex'))
+      const encryptedFactorKey = await encryptionUtil.encrypt({ factorKey: factorKey.private })
+      global.fetch = jest.fn().mockImplementation(
+        setupFetchSuccessStub({
+          data: encryptedFactorKey,
+          success: true,
+        }),
+      )
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const storage = BrowserStorage.getInstance('mpc_corekit_store')
+      storage.set('sms_tracking_id', '123')
+
+      const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
+      const success = await testService.verifySmsOtp('+40 176 420 69', '123456')
+      expect(mockMPCCore.createFactor).toHaveBeenCalled()
+      expect(mockMPCCore.enableMFA).not.toHaveBeenCalled()
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(storage.get('sms_tracking_id')).toBeUndefined()
+    })
+
+    it('should add a factor and enableMFA if verification succeds and MFA is not enabled yet', async () => {
+      const mockMPCCore = new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, {
+        email: 'test@test.com',
+        name: 'Test',
+      } as unknown as UserInfo)
+
+      const factorKey = generateFactorKey()
+
+      const mockHashedFactorKey = generateFactorKey()
+
+      // Add share description for SMS Module
+      mockMPCCore.addShareDescription(
+        mockHashedFactorKey.pub,
+        JSON.stringify({
+          module: 'hashedShare',
+        }),
+      )
+
+      // mock login
+      mockMPCCore.loginWithOauth({} as OauthLoginParams)
+      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+
+      const encryptionUtil = new EncryptionUtil(new BN(mockMPCCore.state.oAuthKey!, 'hex'))
+      const encryptedFactorKey = await encryptionUtil.encrypt({ factorKey: factorKey.private })
+      global.fetch = jest.fn().mockImplementation(
+        setupFetchSuccessStub({
+          data: encryptedFactorKey,
+          success: true,
+        }),
+      )
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const storage = BrowserStorage.getInstance('mpc_corekit_store')
+      storage.set('sms_tracking_id', '123')
+
+      const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
+      const success = await testService.verifySmsOtp('+40 176 420 69', '123456')
+      expect(mockMPCCore.createFactor).toHaveBeenCalled()
+      expect(mockMPCCore.enableMFA).toHaveBeenCalled()
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(storage.get('sms_tracking_id')).toBeUndefined()
     })
   })
 })

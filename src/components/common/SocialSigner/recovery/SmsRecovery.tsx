@@ -29,6 +29,7 @@ export const SmsRecovery = ({
   phoneNumber: string | undefined
 }) => {
   const [storeDeviceFactor, setStoreDeviceFactor] = useState(false)
+  const [initialCodeSent, setInitialCodeSent] = useState(false)
 
   const formMethods = useForm<SmsFormData>({
     mode: 'all',
@@ -53,8 +54,11 @@ export const SmsRecovery = ({
 
   // Initially we send a SMS code
   useEffect(() => {
-    sendSmsCode()
-  }, [sendSmsCode])
+    if (!initialCodeSent) {
+      setInitialCodeSent(true)
+      sendSmsCode()
+    }
+  }, [sendSmsCode, initialCodeSent])
 
   const handleCodeChange = useCallback(
     (code: string) => {

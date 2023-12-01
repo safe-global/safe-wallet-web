@@ -135,11 +135,8 @@ class SocialWalletService implements ISocialWalletService {
         if (await this.deviceShareRecovery.isEnabled()) {
           await this.deviceShareRecovery.recoverWithDeviceFactor()
         } else {
-          // Check password recovery
-          if (this.securityQuestionRecovery.isEnabled()) {
-            trackEvent(MPC_WALLET_EVENTS.MANUAL_RECOVERY)
-            return this.mpcCoreKit.status
-          }
+          // Manually recovery is needed
+          return this.mpcCoreKit.status
         }
       }
 

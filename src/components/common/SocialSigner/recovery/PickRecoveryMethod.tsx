@@ -14,10 +14,13 @@ import { RecoveryMethod } from './SocialRecoveryModal'
 import SmsIcon from '@/public/images/social-signer/mfa_sms.svg'
 import PasswordIcon from '@/public/images/social-signer/mfa_password.svg'
 import AuthenticatorIcon from '@/public/images/social-signer/mfa_authenticator.svg'
-
+import SmsIconDark from '@/public/images/social-signer/mfa_sms_dark.svg'
+import PasswordIconDark from '@/public/images/social-signer/mfa_password_dark.svg'
+import AuthenticatorIconDark from '@/public/images/social-signer/mfa_authenticator_dark.svg'
 import css from './styles.module.css'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import Track from '../../Track'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const ImageButton = ({ icon, children, ...props }: ButtonBaseProps & { icon: any }) => {
   return (
@@ -44,6 +47,7 @@ export const PickRecoveryMethod = ({
   setRecoveryMethod: (method: RecoveryMethod) => void
   deleteAccount?: () => void
 }) => {
+  const isDarkMode = useDarkMode()
   return (
     <Box>
       <Box p={4}>
@@ -65,14 +69,22 @@ export const PickRecoveryMethod = ({
       <Grid container direction="row" spacing={2} padding={4}>
         <Grid item lg={4} xs={12}>
           <Track {...MPC_WALLET_EVENTS.CHOOSE_RECOVERY_METHOD} label="sms">
-            <ImageButton icon={SmsIcon} onClick={() => setRecoveryMethod(RecoveryMethod.SMS)} disabled={!smsEnabled}>
+            <ImageButton
+              icon={isDarkMode ? SmsIconDark : SmsIcon}
+              onClick={() => setRecoveryMethod(RecoveryMethod.SMS)}
+              disabled={!smsEnabled}
+            >
               SMS
             </ImageButton>
           </Track>
         </Grid>
         <Grid item lg={4} xs={12}>
           <Track {...MPC_WALLET_EVENTS.CHOOSE_RECOVERY_METHOD} label="authenticator">
-            <ImageButton icon={AuthenticatorIcon} onClick={() => setRecoveryMethod(RecoveryMethod.PASSWORD)} disabled>
+            <ImageButton
+              icon={isDarkMode ? AuthenticatorIconDark : AuthenticatorIcon}
+              onClick={() => setRecoveryMethod(RecoveryMethod.PASSWORD)}
+              disabled
+            >
               Authenticator App
             </ImageButton>
           </Track>
@@ -80,7 +92,7 @@ export const PickRecoveryMethod = ({
         <Grid item lg={4} xs={12}>
           <Track {...MPC_WALLET_EVENTS.CHOOSE_RECOVERY_METHOD} label="password">
             <ImageButton
-              icon={PasswordIcon}
+              icon={isDarkMode ? PasswordIconDark : PasswordIcon}
               onClick={() => setRecoveryMethod(RecoveryMethod.PASSWORD)}
               disabled={!passwordEnabled}
             >

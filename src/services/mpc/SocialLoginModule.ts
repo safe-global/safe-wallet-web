@@ -4,6 +4,8 @@ import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type WalletInit, ProviderRpcError } from '@web3-onboard/common'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
+import { trackEvent } from '../analytics'
+import { MPC_WALLET_EVENTS } from '../analytics/events/mpcWallet'
 
 const assertDefined = <T>(mpcProvider: T | undefined) => {
   if (!mpcProvider) {
@@ -87,6 +89,7 @@ function MpcModule(chain: ChainInfo): WalletInit {
                     const status = await socialWalletService.loginAndCreate()
 
                     if (status === COREKIT_STATUS.REQUIRED_SHARE) {
+                      trackEvent(MPC_WALLET_EVENTS.MANUAL_RECOVERY)
                       open(() => {
                         getConnectedAccounts(getMPCProvider()).then(resolve).catch(reject)
                       })

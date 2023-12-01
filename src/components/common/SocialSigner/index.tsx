@@ -9,7 +9,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
 import Track from '@/components/common/Track'
-import { CREATE_SAFE_EVENTS } from '@/services/analytics'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
@@ -79,6 +79,7 @@ export const SocialSigner = ({
 
       if (status === COREKIT_STATUS.REQUIRED_SHARE) {
         onRequirePassword?.()
+        trackEvent(MPC_WALLET_EVENTS.MANUAL_RECOVERY)
         open(() => setLoginPending(false))
         return
       }

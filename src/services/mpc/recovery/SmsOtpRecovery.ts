@@ -265,27 +265,28 @@ export class SmsOtpRecovery {
     // if successfull, add this factorKey and share info in tkey instance.
     const decryptedData = await encryptionUtil.decrypt<{ factorKey: string }>(response.data)
     const storedFactorKey = decryptedData?.factorKey
-    if (storedFactorKey) {
-      const newFactorKey = new BN(storedFactorKey, 'hex')
-      if (isFirstTime) {
-        const storeData: SmsOtpStoreData = {
-          number,
-          moduleName: SMS_OTP_MODULE_NAME,
-        }
-        await this.mpcCoreKit.createFactor({
-          shareType: TssShareType.DEVICE,
-          factorKey: newFactorKey,
-          shareDescription: FactorKeyTypeShareDescription.Other,
-          additionalMetadata: storeData,
-        })
-      } else {
-        await this.mpcCoreKit.inputFactorKey(newFactorKey)
-      }
-
+    if (!storedFactorKey) {
       currentStorage.remove('sms_tracking_id')
-      return true
+      return false
     }
+
+    const newFactorKey = new BN(storedFactorKey, 'hex')
+    if (isFirstTime) {
+      const storeData: SmsOtpStoreData = {
+        number,
+        moduleName: SMS_OTP_MODULE_NAME,
+      }
+      await this.mpcCoreKit.createFactor({
+        shareType: TssShareType.DEVICE,
+        factorKey: newFactorKey,
+        shareDescription: FactorKeyTypeShareDescription.Other,
+        additionalMetadata: storeData,
+      })
+    } else {
+      await this.mpcCoreKit.inputFactorKey(newFactorKey)
+    }
+
     currentStorage.remove('sms_tracking_id')
-    return false
+    return true
   }
 }
