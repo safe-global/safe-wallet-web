@@ -17,7 +17,7 @@ export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): R
   const { isExecutable, isExpired } = useRecoveryTxState(recovery)
   const { pending } = useContext(RecoveryContext)
 
-  const pendingTxStatus = pending?.[recovery.args.txHash]
+  const pendingTxStatus = pending?.[recovery.args.txHash]?.status
 
   const status = pendingTxStatus ? (
     <>

@@ -2,10 +2,11 @@ import EventBus from '../EventBus'
 
 export enum RecoveryEvent {
   PROCESSING_BY_SMART_CONTRACT_WALLET = 'PROCESSING_BY_SMART_CONTRACT_WALLET',
-  PROCESSING = 'PROCESSING',
-  REVERTED = 'REVERTED',
-  PROCESSED = 'PROCESSED',
+  PROCESSING = 'PROCESSING', // Submitted to the blockchain
+  PROCESSED = 'PROCESSED', // Executed on the blockchain
+  SUCCESS = 'SUCCESS', // Loaded from the blockchain
   FAILED = 'FAILED',
+  REVERTED = 'REVERTED',
 }
 
 export enum RecoveryTxType {
@@ -45,6 +46,10 @@ export interface RecoveryEvents {
     txHash?: string
     recoveryTxHash?: string
     error: Error
+    txType: RecoveryTxType
+  }
+  [RecoveryEvent.SUCCESS]: {
+    recoveryTxHash: string
     txType: RecoveryTxType
   }
 }
