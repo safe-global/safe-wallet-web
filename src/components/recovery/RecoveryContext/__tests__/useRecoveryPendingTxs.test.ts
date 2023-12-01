@@ -9,6 +9,7 @@ describe('useRecoveryPendingTxs', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
     const txHash = faker.string.hexadecimal()
     const recoveryTxHash = faker.string.hexadecimal()
+    const txType = faker.helpers.enumValue(RecoveryTxType)
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
@@ -18,12 +19,12 @@ describe('useRecoveryPendingTxs', () => {
         moduleAddress: delayModifierAddress,
         txHash,
         recoveryTxHash,
-        txType: faker.helpers.enumValue(RecoveryTxType),
+        txType,
       })
     })
 
     expect(result.current).toStrictEqual({
-      [recoveryTxHash]: RecoveryEvent.PROCESSING,
+      [recoveryTxHash]: { status: RecoveryEvent.PROCESSING, txType },
     })
   })
 
@@ -80,7 +81,7 @@ describe('useRecoveryPendingTxs', () => {
     })
 
     expect(result.current).toStrictEqual({
-      [recoveryTxHash]: RecoveryEvent.PROCESSED,
+      [recoveryTxHash]: { status: RecoveryEvent.PROCESSED, txType },
     })
   })
 

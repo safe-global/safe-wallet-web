@@ -4,6 +4,7 @@ import type { ReactElement, ReactNode } from 'react'
 import { useRecoveryState } from './useRecoveryState'
 import { useRecoveryDelayModifiers } from './useRecoveryDelayModifiers'
 import { useRecoveryPendingTxs } from './useRecoveryPendingTxs'
+import { useRecoverySuccessEvents } from './useRecoverySuccessEvents'
 import type { AsyncResult } from '@/hooks/useAsync'
 import type { RecoveryState } from '@/services/recovery/recovery-state'
 
@@ -20,6 +21,8 @@ export function RecoveryProvider({ children }: { children: ReactNode }): ReactEl
   const [delayModifiers, delayModifiersError, delayModifiersLoading] = useRecoveryDelayModifiers()
   const [recoveryState, recoveryStateError, recoveryStateLoading] = useRecoveryState(delayModifiers)
   const pending = useRecoveryPendingTxs()
+
+  useRecoverySuccessEvents(pending, recoveryState)
 
   const data = recoveryState
   const error = delayModifiersError || recoveryStateError
