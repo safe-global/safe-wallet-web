@@ -3,7 +3,6 @@ import { ChooseRecoveryMethodModal } from '@/components/settings/Recovery/Choose
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
-import type { ReactElement } from 'react'
 
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
