@@ -6,7 +6,7 @@ import { PendingStatus } from '@/store/pendingTxsSlice'
 export type PendingRecoveryTransactions = { [recoveryTxHash: string]: PendingStatus }
 
 const pendingStatuses: { [key in RecoveryEvent]: PendingStatus | null } = {
-  [RecoveryEvent.EXECUTING]: PendingStatus.SUBMITTING,
+  [RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET]: null,
   [RecoveryEvent.PROCESSING]: PendingStatus.PROCESSING,
   [RecoveryEvent.PROCESSED]: PendingStatus.INDEXING,
   [RecoveryEvent.REVERTED]: null,

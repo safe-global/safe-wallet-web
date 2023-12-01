@@ -4,12 +4,38 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { ContractTransaction } from 'ethers'
 import type { OnboardAPI } from '@web3-onboard/core'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
-import { createWeb3 } from '@/hooks/wallets/web3'
 
+import { createWeb3 } from '@/hooks/wallets/web3'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
 import { recoveryDispatch, RecoveryEvent, RecoveryEventType } from './recoveryEvents'
 import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain } from '../tx/tx-sender/sdk'
+import { isSmartContractWallet } from '@/utils/wallets'
+
+async function getDelayModifierContract({
+  onboard,
+  chainId,
+  delayModifierAddress,
+}: {
+  onboard: OnboardAPI
+  chainId: string
+  delayModifierAddress: string
+}) {
+  // Switch signer to chain of Safe
+  const wallet = await assertWalletChain(onboard, chainId)
+
+  const provider = createWeb3(wallet.provider)
+  const isSmartContract = await isSmartContractWallet(wallet.chainId, wallet.address)
+
+  // Use unchecked signer for smart contract wallets as transactions do not necessarily immediately execute
+  const signer = isSmartContract ? provider.getUncheckedSigner() : provider.getSigner()
+  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, signer).connect(signer)
+
+  return {
+    isUnchecked: isSmartContract,
+    delayModifier,
+  }
+}
 
 function waitForRecoveryTx({
   tx,
@@ -20,17 +46,10 @@ function waitForRecoveryTx({
   tx: ContractTransaction
   eventType: RecoveryEventType
 }) {
-  // TODO: This does not make sense to emit here but normal txs and messages emit in the same place
-  // We should ideally move this to the beginning of _all_ dispatchers for consistency so that the UI
-  // shows a pending state when beginning exectuion of a transaction/message and perhaps rename it to
-  // something more generic like DISPATCHING or SUBMITTING
-
   const event = {
     ...payload,
     txHash: tx.hash,
   }
-
-  recoveryDispatch(RecoveryEvent.EXECUTING, event)
 
   recoveryDispatch(RecoveryEvent.PROCESSING, event)
 
@@ -68,39 +87,46 @@ export async function dispatchRecoveryProposal({
   safeTx: SafeTransaction
   delayModifierAddress: string
 }) {
-  const wallet = await assertWalletChain(onboard, safe.chainId)
-  const provider = createWeb3(wallet.provider)
-
-  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
-
-  const signer = provider.getSigner()
-  const contract = delayModifier.connect(signer)
+  const { delayModifier, isUnchecked } = await getDelayModifierContract({
+    onboard,
+    chainId: safe.chainId,
+    delayModifierAddress,
+  })
 
   const eventType = RecoveryEventType.PROPOSAL
   let recoveryTxHash: string | undefined
 
   try {
     // Get recovery tx hash as a form of ID for FAILED event in event bus
-    recoveryTxHash = await contract.getTransactionHash(
+    recoveryTxHash = await delayModifier.getTransactionHash(
       safeTx.data.to,
       safeTx.data.value,
       safeTx.data.data,
       safeTx.data.operation,
     )
 
-    const tx = await contract.execTransactionFromModule(
+    const tx = await delayModifier.execTransactionFromModule(
       safeTx.data.to,
       safeTx.data.value,
       safeTx.data.data,
       safeTx.data.operation,
     )
 
-    waitForRecoveryTx({
-      moduleAddress: delayModifierAddress,
-      recoveryTxHash,
-      eventType,
-      tx,
-    })
+    if (isUnchecked) {
+      recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
+        moduleAddress: delayModifierAddress,
+        recoveryTxHash,
+        eventType,
+        txHash: tx.hash,
+      })
+    } else {
+      waitForRecoveryTx({
+        moduleAddress: delayModifierAddress,
+        recoveryTxHash,
+        eventType,
+        tx,
+      })
+    }
   } catch (error) {
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
@@ -124,24 +150,32 @@ export async function dispatchRecoveryExecution({
   args: TransactionAddedEvent['args']
   delayModifierAddress: string
 }) {
-  const wallet = await assertWalletChain(onboard, chainId)
-  const provider = createWeb3(wallet.provider)
-
-  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
-
-  const signer = provider.getSigner()
+  const { delayModifier, isUnchecked } = await getDelayModifierContract({
+    onboard,
+    chainId,
+    delayModifierAddress,
+  })
 
   const eventType = RecoveryEventType.EXECUTION
 
   try {
-    const tx = await delayModifier.connect(signer).executeNextTx(args.to, args.value, args.data, args.operation)
+    const tx = await delayModifier.executeNextTx(args.to, args.value, args.data, args.operation)
 
-    waitForRecoveryTx({
-      moduleAddress: delayModifierAddress,
-      recoveryTxHash: args.txHash,
-      eventType,
-      tx,
-    })
+    if (isUnchecked) {
+      recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
+        moduleAddress: delayModifierAddress,
+        recoveryTxHash: args.txHash,
+        eventType,
+        txHash: tx.hash,
+      })
+    } else {
+      waitForRecoveryTx({
+        moduleAddress: delayModifierAddress,
+        recoveryTxHash: args.txHash,
+        eventType,
+        tx,
+      })
+    }
   } catch (error) {
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
@@ -165,24 +199,32 @@ export async function dispatchRecoverySkipExpired({
   delayModifierAddress: string
   recoveryTxHash: string
 }) {
-  const wallet = await assertWalletChain(onboard, chainId)
-  const provider = createWeb3(wallet.provider)
-
-  const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
-
-  const signer = provider.getSigner()
+  const { delayModifier, isUnchecked } = await getDelayModifierContract({
+    onboard,
+    chainId,
+    delayModifierAddress,
+  })
 
   const eventType = RecoveryEventType.SKIP_EXPIRED
 
   try {
-    const tx = await delayModifier.connect(signer).skipExpired()
+    const tx = await delayModifier.skipExpired()
 
-    waitForRecoveryTx({
-      moduleAddress: delayModifierAddress,
-      recoveryTxHash,
-      eventType,
-      tx,
-    })
+    if (isUnchecked) {
+      recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
+        moduleAddress: delayModifierAddress,
+        recoveryTxHash,
+        eventType,
+        txHash: tx.hash,
+      })
+    } else {
+      waitForRecoveryTx({
+        moduleAddress: delayModifierAddress,
+        recoveryTxHash,
+        eventType,
+        tx,
+      })
+    }
   } catch (error) {
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
