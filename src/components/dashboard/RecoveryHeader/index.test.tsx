@@ -62,32 +62,28 @@ describe('RecoveryHeader', () => {
 })
 
 describe('useIsProposalInProgress', () => {
-  ;[
-    RecoveryEvent.EXECUTING,
-    RecoveryEvent.PROCESSING,
-    RecoveryEvent.REVERTED,
-    RecoveryEvent.PROCESSED,
-    RecoveryEvent.FAILED,
-  ].forEach((event) => {
-    it('should return true if there is a proposal in progress', async () => {
-      mockUseRecoveryQueue.mockReturnValue([] as any)
+  ;[RecoveryEvent.PROCESSING, RecoveryEvent.REVERTED, RecoveryEvent.PROCESSED, RecoveryEvent.FAILED].forEach(
+    (event) => {
+      it('should return true if there is a proposal in progress', async () => {
+        mockUseRecoveryQueue.mockReturnValue([] as any)
 
-      const { result } = renderHook(() => _useIsProposalInProgress())
+        const { result } = renderHook(() => _useIsProposalInProgress())
 
-      expect(result.current).toBe(false)
+        expect(result.current).toBe(false)
 
-      recoveryDispatch(event, {
-        moduleAddress: faker.finance.ethereumAddress(),
-        txHash: faker.string.hexadecimal(),
-        recoveryTxHash: faker.string.hexadecimal(),
-        eventType: RecoveryEventType.PROPOSAL,
+        recoveryDispatch(event, {
+          moduleAddress: faker.finance.ethereumAddress(),
+          txHash: faker.string.hexadecimal(),
+          recoveryTxHash: faker.string.hexadecimal(),
+          eventType: RecoveryEventType.PROPOSAL,
+        })
+
+        await waitFor(() => {
+          expect(result.current).toBe(true)
+        })
       })
-
-      await waitFor(() => {
-        expect(result.current).toBe(true)
-      })
-    })
-  })
+    },
+  )
   ;[RecoveryEvent.REVERTED, RecoveryEvent.PROCESSED, RecoveryEvent.FAILED].forEach((event) => {
     it('should return false if there is not a proposal in progress and it is not in the queue', async () => {
       const payload = {
@@ -104,7 +100,7 @@ describe('useIsProposalInProgress', () => {
       expect(result.current).toBe(false)
 
       // Trigger pending
-      recoveryDispatch(RecoveryEvent.EXECUTING, payload)
+      recoveryDispatch(RecoveryEvent.PROCESSING, payload)
 
       await waitFor(() => {
         expect(result.current).toBe(true)

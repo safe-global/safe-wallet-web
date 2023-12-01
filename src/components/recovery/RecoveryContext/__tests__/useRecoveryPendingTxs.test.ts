@@ -6,29 +6,7 @@ import { act, renderHook } from '@/tests/test-utils'
 import { useRecoveryPendingTxs } from '../useRecoveryPendingTxs'
 
 describe('useRecoveryPendingTxs', () => {
-  it('should set pending status to SUBMITTING when EXECUTING event is emitted', () => {
-    const delayModifierAddress = faker.finance.ethereumAddress()
-    const txHash = faker.string.hexadecimal()
-    const recoveryTxHash = faker.string.hexadecimal()
-    const { result } = renderHook(() => useRecoveryPendingTxs())
-
-    expect(result.current).toStrictEqual({})
-
-    act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, {
-        moduleAddress: delayModifierAddress,
-        txHash,
-        recoveryTxHash,
-        eventType: faker.helpers.enumValue(RecoveryEventType),
-      })
-    })
-
-    expect(result.current).toStrictEqual({
-      [recoveryTxHash]: PendingStatus.SUBMITTING,
-    })
-  })
-
-  it('should set pending status to PROCESSING when PROCESSING event is emitted', () => {
+  it('should set pending status to SUBMITTING when PROCESSING event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
     const txHash = faker.string.hexadecimal()
     const recoveryTxHash = faker.string.hexadecimal()
@@ -46,7 +24,7 @@ describe('useRecoveryPendingTxs', () => {
     })
 
     expect(result.current).toStrictEqual({
-      [recoveryTxHash]: PendingStatus.PROCESSING,
+      [recoveryTxHash]: PendingStatus.SUBMITTING,
     })
   })
 
@@ -60,7 +38,7 @@ describe('useRecoveryPendingTxs', () => {
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, {
+      recoveryDispatch(RecoveryEvent.PROCESSING, {
         moduleAddress: delayModifierAddress,
         txHash,
         recoveryTxHash,
@@ -88,7 +66,7 @@ describe('useRecoveryPendingTxs', () => {
     expect(result.current).toStrictEqual({})
 
     act(() => {
-      recoveryDispatch(RecoveryEvent.EXECUTING, {
+      recoveryDispatch(RecoveryEvent.PROCESSING, {
         moduleAddress: delayModifierAddress,
         txHash,
         recoveryTxHash,
