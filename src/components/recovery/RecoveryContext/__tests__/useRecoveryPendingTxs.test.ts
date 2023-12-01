@@ -6,7 +6,7 @@ import { act, renderHook } from '@/tests/test-utils'
 import { useRecoveryPendingTxs } from '../useRecoveryPendingTxs'
 
 describe('useRecoveryPendingTxs', () => {
-  it('should set pending status to SUBMITTING when PROCESSING event is emitted', () => {
+  it('should set pending status to PROCESSING when PROCESSING event is emitted', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
     const txHash = faker.string.hexadecimal()
     const recoveryTxHash = faker.string.hexadecimal()
@@ -24,7 +24,7 @@ describe('useRecoveryPendingTxs', () => {
     })
 
     expect(result.current).toStrictEqual({
-      [recoveryTxHash]: PendingStatus.SUBMITTING,
+      [recoveryTxHash]: PendingStatus.PROCESSING,
     })
   })
 
