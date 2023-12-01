@@ -5,20 +5,10 @@ import type { SafeMessageListPage } from '@safe-global/safe-gateway-typescript-s
 import useAsync from '@/hooks/useAsync'
 import { logError, Errors } from '@/services/exceptions'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { POLLING_INTERVAL } from '@/config/constants'
-import useIntervalCounter from '@/hooks/useIntervalCounter'
 import type { AsyncResult } from '@/hooks/useAsync'
 
 export const useLoadSafeMessages = (): AsyncResult<SafeMessageListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
-
-  // TODO: Remove manual polling when messagesTag is no longer cached on the backend
-  const [pollCount, resetPolling] = useIntervalCounter(POLLING_INTERVAL)
-
-  // Reset the counter when safe address/chainId changes
-  useEffect(() => {
-    resetPolling()
-  }, [resetPolling, safeAddress, safe.chainId])
 
   const [data, error, loading] = useAsync<SafeMessageListPage>(
     () => {
@@ -28,13 +18,7 @@ export const useLoadSafeMessages = (): AsyncResult<SafeMessageListPage> => {
       return getSafeMessages(safe.chainId, safeAddress)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      safeLoaded,
-      safe.chainId,
-      safeAddress,
-      // safe.messagesTag,
-      pollCount,
-    ],
+    [safeLoaded, safe.chainId, safeAddress, safe.messagesTag],
     false,
   )
 

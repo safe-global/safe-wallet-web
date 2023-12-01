@@ -61,7 +61,7 @@ export const WalletInfo = ({
   return (
     <Box className={css.container}>
       <Box className={css.accountContainer}>
-        <ChainIndicator />
+        <ChainIndicator chainId={wallet.chainId} />
 
         <Box className={css.addressContainer}>
           {isSocialLogin ? (

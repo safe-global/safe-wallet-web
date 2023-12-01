@@ -10,6 +10,8 @@ export const SEPOLIA_TEST_SAFE_3 = 'sep:0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40
 export const SEPOLIA_TEST_SAFE_4 = 'sep:0x03042B890b99552b60A073F808100517fb148F60'
 export const SEPOLIA_TEST_SAFE_5 = 'sep:0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b6415'
 export const SEPOLIA_TEST_SAFE_6 = 'sep:0x6d0b6F96f665Bb4490f9ddb2e450Da2f7e546dC1'
+// SAFE_7 has ENS assigned to it
+export const SEPOLIA_TEST_SAFE_7 = 'sep:0xBf30F749FC027a5d79c4710D988F0D3C8e217A4F'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
 export const PAGINATION_TEST_SAFE = 'gor:0x850493a15914aAC05a821A3FAb973b4598889A7b'
 export const TEST_SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
@@ -22,7 +24,7 @@ export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED
 export const SEPOLIA_OWNER_2 = '0x96D4c6fFC338912322813a77655fCC926b9A5aC5'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
 export const SIDEBAR_ADDRESS = '0x04f8...1a91'
-export const ENS_TEST_SEPOLIA = 'testenssepolia.eth'
+export const ENS_TEST_SEPOLIA = 'e2etestsafe.eth'
 export const ENS_TEST_GOERLI = 'goerli-safe-test.eth'
 export const ENS_TEST_SEPOLIA_INVALID = 'ivladitestenssepolia.eth'
 
@@ -39,6 +41,7 @@ export const TX_Builder_url = 'https://safe-apps.dev.5afe.dev/tx-builder'
 export const drainAccount_url = 'https://safe-apps.dev.5afe.dev/drain-safe'
 export const testAppUrl = 'https://safe-test-app.com'
 export const addressBookUrl = '/address-book?safe='
+export const appsUrlGeneral = '/apps?=safe='
 export const BALANCE_URL = '/balances?safe='
 export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
@@ -54,7 +57,7 @@ export const requestPermissionsUrl = '/request-permissions'
 export const getPermissionsUrl = '/get-permissions'
 export const appSettingsUrl = '/settings/safe-apps'
 export const setupUrl = '/settings/setup?safe='
-export const dataSettingsUrl = '/settings/data'
+export const dataSettingsUrl = '/settings/data?safe='
 export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
@@ -64,6 +67,12 @@ export const appsEndpoint = '/**/safe-apps'
 export const transactionHistoryEndpoint = '**/history'
 export const safeListEndpoint = '**/safes'
 
+export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png'
+export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png'
+
+export const networkKeys = {
+  sepolia: '11155111',
+}
 export const mainSideMenuOptions = {
   home: 'Home',
 }
@@ -149,6 +158,10 @@ export const addresBookContacts = {
 
 export const localStorageKeys = {
   SAFE_v2__addressBook: 'SAFE_v2__addressBook',
+  SAFE_v2__batch: 'SAFE_v2__batch',
+  SAFE_v2__settings: 'SAFE_v2__settings',
+  SAFE_v2__addedSafes: 'SAFE_v2__addedSafes',
+  SAFE_v2__safeApps: 'SAFE_v2__safeApps',
 }
 
 export const connectWalletNames = {

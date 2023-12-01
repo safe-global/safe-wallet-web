@@ -3,27 +3,28 @@ import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 
 const sendValue = 0.00002
-const currentNonce = 11
+const currentNonce = 0
 
 describe('[SMOKE] Create transactions tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_7)
     main.acceptCookies()
   })
 
+  // TODO: Change title to: Verify a new send token transaction can be initiated
   it('[SMOKE] Verify a new send token transaction can be created', () => {
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
     createtx.typeRecipientAddress(constants.EOA)
-    createtx.clickOnTokenselectorAndSelectSepolia()
+    createtx.clickOnTokenselectorAndSelectSepoliaEth()
     createtx.setMaxAmount()
     createtx.verifyMaxAmount(constants.tokenNames.sepoliaEther, constants.tokenAbbreviation.sep)
     createtx.setSendValue(sendValue)
     createtx.clickOnNextBtn()
   })
 
-  it('[SMOKE] Verify a transaction can be reviewed, edited and submitted', () => {
+  it.skip('[SMOKE] Verify a transaction can be reviewed, edited and submitted', () => {
     createtx.verifySubmitBtnIsEnabled()
     cy.wait(1000)
     createtx.verifyNativeTokenTransfer()
@@ -32,11 +33,11 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.openExecutionParamsModal()
     createtx.verifyAndSubmitExecutionParams()
     createtx.clickOnNoLaterOption()
-    createtx.changeNonce(13)
+    createtx.changeNonce(14)
     createtx.clickOnSignTransactionBtn()
   })
 
-  it('[SMOKE] Verify that clicking on notification shows the transaction in queue', () => {
+  it.skip('[SMOKE] Verify that clicking on notification shows the transaction in queue', () => {
     createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()

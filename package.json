@@ -53,7 +53,7 @@
     "@safe-global/safe-deployments": "1.25.0",
     "@safe-global/safe-ethers-lib": "^1.9.4",
     "@safe-global/safe-gateway-typescript-sdk": "^3.13.2",
-    "@safe-global/safe-modules-deployments": "^1.0.0",
+    "@safe-global/safe-modules-deployments": "^1.2.0",
     "@safe-global/safe-react-components": "^2.0.6",
     "@sentry/react": "^7.74.0",
     "@sentry/tracing": "^7.74.0",

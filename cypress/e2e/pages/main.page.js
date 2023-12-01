@@ -111,3 +111,34 @@ export function extractDigitsToArray(selector, digitsArray) {
     }
   })
 }
+
+export function isItemInLocalstorage(key, expectedValue, maxAttempts = 10, delay = 100) {
+  return new Promise((resolve, reject) => {
+    let attempts = 0
+
+    const isItemInLocalstorage = () => {
+      attempts++
+      const storedValue = JSON.parse(window.localStorage.getItem(key))
+      const keyEqualsValue = JSON.stringify(expectedValue) === JSON.stringify(storedValue)
+      if (keyEqualsValue) {
+        resolve()
+      } else if (attempts < maxAttempts) {
+        setTimeout(isItemInLocalstorage, delay)
+      } else {
+        reject(error)
+      }
+    }
+    isItemInLocalstorage()
+  })
+}
+
+export function addToLocalStorage(key, jsonValue) {
+  return new Promise((resolve, reject) => {
+    try {
+      window.localStorage.setItem(key, JSON.stringify(jsonValue))
+      resolve('Item added to local storage successfully')
+    } catch (error) {
+      reject('Error adding item to local storage: ' + error)
+    }
+  })
+}

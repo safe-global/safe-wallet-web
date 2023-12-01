@@ -22,7 +22,6 @@ jobs:
 
       - uses: ./.github/workflows/cypress
         with:
-          command: npx cypress run --reporter "junit" --reporter-options "mochaFile=reports/junit-[hash].xml,testsuitesTitle=Root Suite"
           secrets: ${{ toJSON(secrets) }}
           spec: cypress/e2e/**/*.cy.js
           group: 'Regression on demand tests'
@@ -32,6 +31,16 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: '3.x'
+
+      - name: Install junitparser
+        if: always()
+        run: |
+          pip install junitparser
+
+      - name: Merge JUnit reports for TestRail
+        if: always()
+        run: |
+          junitparser merge --suite-name "Root Suite" --glob "reports/junit-*" "reports/junit-report.xml"
 
       - name: TestRail CLI upload results
         if: always()
@@ -45,4 +54,4 @@ jobs:
           parse_junit \
           --title "Automated Tests, branch: ${GITHUB_REF_NAME}" \
           --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
-          -f "reports/junit*.xml"
+          -f "reports/junit-report.xml"
