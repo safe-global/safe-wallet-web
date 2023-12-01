@@ -1,3 +1,4 @@
+import useRehydrateSocialWallet from '@/hooks/wallets/mpc/useRehydrateSocialWallet'
 import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
 import Sentry from '@/services/sentry' // needs to be imported first
 import type { ReactNode } from 'react'
@@ -38,12 +39,13 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
-import { useInitMPC } from '@/hooks/wallets/mpc/useMPC'
 import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
 import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
-import MobilePairingModal from '@/services/pairing/QRModal'
+import { RecoveryProvider } from '@/components/recovery/RecoveryContext'
+import { RecoveryModal } from '@/components/recovery/RecoveryModal'
+import { useRecoveryTxNotifications } from '@/hooks/useRecoveryTxNotification'
 import WalletProvider from '@/components/common/WalletProvider'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
@@ -60,13 +62,14 @@ const InitApp = (): null => {
   useInitSafeCoreSDK()
   useTxNotifications()
   useSafeMessageNotifications()
+  useRecoveryTxNotifications()
   useSafeNotifications()
   useTxPendingStatuses()
   useSafeMessagePendingStatuses()
   useTxTracking()
   useSafeMsgTracking()
   useBeamer()
-  useInitMPC()
+  useRehydrateSocialWallet()
   useABTesting(AbTest.HUMAN_DESCRIPTION)
 
   return null
@@ -85,9 +88,11 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
             <WalletProvider>
-              <TxModalProvider>
-                <WalletConnectProvider>{children}</WalletConnectProvider>
-              </TxModalProvider>
+              <RecoveryProvider>
+                <TxModalProvider>
+                  <WalletConnectProvider>{children}</WalletConnectProvider>
+                </TxModalProvider>
+              </RecoveryProvider>
             </WalletProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
@@ -129,9 +134,9 @@ const WebCoreApp = ({
 
           <Notifications />
 
-          <MobilePairingModal />
-
           <PasswordRecoveryModal />
+
+          <RecoveryModal />
         </AppProviders>
       </CacheProvider>
     </StoreHydrator>

@@ -1,14 +1,9 @@
-import { _getMPCCoreKitInstance } from '@/hooks/wallets/mpc/useMPC'
-import { getSocialWalletService } from '@/hooks/wallets/mpc/useSocialWallet'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import * as PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type WalletInit, ProviderRpcError } from '@web3-onboard/common'
 import { type EIP1193Provider } from '@web3-onboard/core'
-import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
-
-const getMPCProvider = () => _getMPCCoreKitInstance()?.provider
+import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 
 const assertDefined = <T>(mpcProvider: T | undefined) => {
   if (!mpcProvider) {
@@ -23,9 +18,9 @@ export const isSocialLoginWallet = (walletLabel: string | undefined) => {
   return walletLabel === ONBOARD_MPC_MODULE_LABEL
 }
 
-const getConnectedAccounts = async () => {
+const getConnectedAccounts = async (provider: typeof Web3AuthMPCCoreKit.prototype.provider | undefined) => {
   try {
-    const web3 = assertDefined(getMPCProvider())
+    const web3 = assertDefined(provider)
     return web3.request({ method: 'eth_accounts' })
   } catch (e) {
     throw new ProviderRpcError({
@@ -50,6 +45,13 @@ function MpcModule(chain: ChainInfo): WalletInit {
       label: ONBOARD_MPC_MODULE_LABEL,
       getIcon: async () => (await import('./icon')).default,
       getInterface: async () => {
+        const { _getMPCCoreKitInstance } = await import('@/hooks/wallets/mpc/useMPC')
+        const { getSocialWalletService } = await import('@/hooks/wallets/mpc/useSocialWallet')
+        const { COREKIT_STATUS } = await import('@web3auth/mpc-core-kit')
+        const { open } = await import('./PasswordRecoveryModal')
+
+        const getMPCProvider = () => _getMPCCoreKitInstance()?.provider
+
         const provider: EIP1193Provider = {
           on: (event, listener) => {
             const web3 = assertDefined(getMPCProvider())
@@ -85,11 +87,11 @@ function MpcModule(chain: ChainInfo): WalletInit {
                     const status = await socialWalletService.loginAndCreate()
 
                     if (status === COREKIT_STATUS.REQUIRED_SHARE) {
-                      PasswordRecoveryModal.open(() => {
-                        getConnectedAccounts().then(resolve).catch(reject)
+                      open(() => {
+                        getConnectedAccounts(getMPCProvider()).then(resolve).catch(reject)
                       })
                     } else {
-                      getConnectedAccounts().then(resolve).catch(reject)
+                      getConnectedAccounts(getMPCProvider()).then(resolve).catch(reject)
                     }
                   }
                   return

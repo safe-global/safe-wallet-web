@@ -22,7 +22,7 @@ const hiddenTokenIcon = 'svg[data-testid="VisibilityOffOutlinedIcon"]'
 const hideTokenDefaultString = 'Hide tokens'
 const assetNameSortBtnStr = 'Asset'
 const assetBalanceSortBtnStr = 'Balance'
-const sendBtnStr = 'Send'
+export const sendBtnStr = 'Send'
 const sendTokensStr = 'Send tokens'
 
 const pageRowsDefault = '25'

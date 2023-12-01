@@ -60,11 +60,12 @@ const WalletOverview = ({
             <div>{wallet.ens}</div>
           ) : (
             <EthHashInfo
-              showPrefix={false}
               prefix={prefix || ''}
               address={wallet.address}
               showName={false}
               showAvatar={false}
+              avatarSize={12}
+              copyAddress={false}
             />
           )}
         </Typography>

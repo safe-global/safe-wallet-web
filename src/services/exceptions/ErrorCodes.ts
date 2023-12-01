@@ -15,7 +15,6 @@ enum ErrorCodes {
   _106 = '106: Failed to get connected wallet',
 
   _302 = '302: Error connecting to the wallet',
-  _303 = '303: Error creating pairing session',
   _304 = '304: Error enabling MFA',
   _305 = '305: Error exporting account key',
   _306 = '306: Error logging in',
@@ -61,6 +60,10 @@ enum ErrorCodes {
   _807 = '807: Failed to remove guard',
   _808 = '808: Failed to get transaction origin',
   _809 = '809: Failed decoding transaction',
+  _810 = '810: Error executing a recovery proposal transaction',
+  _811 = '811: Error decoding a recovery proposal transaction',
+  _812 = '812: Failed to recover',
+  _813 = '813: Failed to cancel recovery',
 
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',

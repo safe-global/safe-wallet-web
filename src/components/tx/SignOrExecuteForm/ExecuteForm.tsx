@@ -1,5 +1,5 @@
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, Divider } from '@mui/material'
+import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -68,7 +68,7 @@ const ExecuteForm = ({
   const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
 
   // Check if transaction will fail
-  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(safeTx, advancedParams.gasLimit)
+  const { executionValidationError } = useIsValidExecution(safeTx, advancedParams.gasLimit)
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -96,13 +96,12 @@ const ExecuteForm = ({
     }
 
     // On success
-    setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
     onSubmit(executedTxId)
+    setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
   }
 
   const cannotPropose = !isOwner && !onlyExecute
-  const submitDisabled =
-    !safeTx || !isSubmittable || disableSubmit || isValidExecutionLoading || isExecutionLoop || cannotPropose
+  const submitDisabled = !safeTx || !isSubmittable || disableSubmit || isExecutionLoop || cannotPropose
 
   return (
     <>
@@ -156,8 +155,8 @@ const ExecuteForm = ({
           {/* Submit button */}
           <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-                Execute
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
+                {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}
           </CheckWallet>

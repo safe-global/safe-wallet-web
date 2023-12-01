@@ -1,11 +1,11 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
+import * as createWallet from '../pages/create_wallet.pages'
+import * as navigation from '../pages/navigation.page'
 
-const copyToClipboardBtn = 'button[aria-label="Copy to clipboard"]'
 const tooltipLabel = (label) => `span[aria-label="${label}"]`
 const removeOwnerBtn = 'span[data-track="settings: Remove owner"] > span > button'
 const replaceOwnerBtn = 'span[data-track="settings: Replace owner"] > span > button'
-const addOwnerBtn = 'span[data-track="settings: Add owner"] > button'
 const tooltip = 'div[role="tooltip"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
 const sentinelStart = 'div[data-testid="sentinelStart"]'
@@ -20,22 +20,29 @@ const thresholdOption = 'li[role="option"]'
 const existingOwnerAddressInput = (index) => `input[name="owners.${index}.address"]`
 const existingOwnerNameInput = (index) => `input[name="owners.${index}.name"]`
 const singleOwnerNameInput = 'input[name="name"]'
+const finishTransactionBtn = '[data-testid="finish-transaction-btn"]'
+const addOwnerBtn = '[data-testid="add-owner-btn"]'
+const addOwnerNextBtn = '[data-testid="add-owner-next-btn"]'
 
 const disconnectBtnStr = 'Disconnect'
 const notConnectedStatus = 'Connect'
 const e2eWalletStr = 'E2E Wallet'
 const max50charsLimitStr = 'Maximum 50 symbols'
-const nextBtnStr = 'Next'
 const executeBtnStr = 'Execute'
 const backbtnStr = 'Back'
 const removeOwnerStr = 'Remove owner'
 const selectedOwnerStr = 'Selected owner'
 const addNewOwnerStr = 'Add new owner'
+const processedTransactionStr = 'Transaction was successful'
 
 export const safeAccountNonceStr = 'Safe Account nonce'
 export const nonOwnerErrorMsg = 'Your connected wallet is not an owner of this Safe Account'
 export const disconnectedUserErrorMsg = 'Please connect your wallet'
 
+export function verifyOwnerTransactionComplted() {
+  cy.get(processedTransactionStr).should('exist')
+  cy.get(finishTransactionBtn).should('exist')
+}
 export function verifyNumberOfOwners(count) {
   const indices = Array.from({ length: count }, (_, index) => index)
   const names = indices.map(existingOwnerNameInput)
@@ -98,7 +105,6 @@ export function hoverOverDeleteOwnerBtn(index) {
 
 export function openRemoveOwnerWindow(btn) {
   cy.get(removeOwnerBtn).eq(btn).click({ force: true })
-  cy.get(copyToClipboardBtn).parent().eq(2).find('span').contains('0x').should('be.visible')
   cy.get('div').contains(removeOwnerStr).should('exist')
 }
 
@@ -106,7 +112,6 @@ export function openReplaceOwnerWindow() {
   cy.get(replaceOwnerBtn).click({ force: true })
   cy.get(newOwnerName).should('be.visible')
   cy.get(newOwnerAddress).should('be.visible')
-  cy.get(copyToClipboardBtn).parent().eq(2).find('span').contains('0x').should('be.visible')
 }
 export function verifyTooltipLabel(label) {
   cy.get(tooltipLabel(label)).should('be.visible')
@@ -154,12 +159,11 @@ export function clickOnConnectBtn() {
 }
 
 export function waitForConnectionStatus() {
-  cy.get('div').contains(e2eWalletStr)
+  cy.get(createWallet.accountInfoHeader).should('exist')
 }
 
 export function openAddOwnerWindow() {
-  cy.get('span').contains(addNewOwnerStr).click()
-  cy.wait(1000)
+  cy.get(addOwnerBtn).should('be.enabled').click()
   cy.get(newOwnerName).should('be.visible')
   cy.get(newOwnerAddress).should('be.visible')
 }
@@ -197,11 +201,11 @@ export function verifyNewOwnerName(name) {
 }
 
 export function clickOnNextBtn() {
-  cy.get('button').contains(nextBtnStr).click()
+  cy.get(addOwnerNextBtn).should('be.enabled').click()
 }
 
 export function clickOnBackBtn() {
-  cy.get('button').contains(backbtnStr).click()
+  cy.get(navigation.modalBackBtn).should('be.enabled').click()
 }
 
 export function verifyConfirmTransactionWindowDisplayed() {

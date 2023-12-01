@@ -24,7 +24,7 @@ const Setup: NextPage = () => {
       <SettingsHeader />
 
       <main>
-        <Paper sx={{ p: 4, mb: 2 }}>
+        <Paper data-testid="setup-section" sx={{ p: 4, mb: 2 }}>
           <Grid container spacing={3}>
             <Grid item lg={4} xs={12}>
               <Typography variant="h4" fontWeight={700}>

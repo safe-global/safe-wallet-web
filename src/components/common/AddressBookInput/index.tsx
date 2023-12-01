@@ -57,7 +57,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
         readOnly={props.InputProps?.readOnly}
         freeSolo
         options={addressBookEntries}
-        onInputChange={(_, value) => setValue(name, value, { shouldValidate: true })}
+        onInputChange={(_, value) => setValue(name, value)}
         filterOptions={abFilterOptions}
         componentsProps={{
           paper: {

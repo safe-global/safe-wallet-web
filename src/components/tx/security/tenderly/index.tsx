@@ -18,17 +18,20 @@ import sharedCss from '@/components/tx/security/shared/styles.module.css'
 import { TxInfoContext } from '@/components/tx-flow/TxInfoProvider'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import Track from '@/components/common/Track'
+import { MODALS_EVENTS } from '@/services/analytics'
 
 export type TxSimulationProps = {
   transactions?: SimulationTxParams['transactions']
   gasLimit?: number
   disabled: boolean
+  executionOwner?: string
 }
 
 // TODO: Investigate resetting on gasLimit change as we are not simulating with the gasLimit of the tx
 // otherwise remove all usage of gasLimit in simulation. Note: this was previously being done.
 // TODO: Test this component
-const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationProps): ReactElement => {
+const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const isDarkMode = useDarkMode()
@@ -45,7 +48,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
 
     simulateTransaction({
       safe,
-      executionOwner: wallet.address,
+      executionOwner: executionOwner ?? wallet.address,
       transactions,
       gasLimit,
     } as SimulationTxParams)
@@ -112,15 +115,17 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit }: TxSimulationPro
             </Typography>
           )
         ) : (
-          <Button
-            variant="outlined"
-            size="small"
-            className={css.simulate}
-            onClick={handleSimulation}
-            disabled={!transactions || disabled}
-          >
-            Simulate
-          </Button>
+          <Track {...MODALS_EVENTS.SIMULATE_TX}>
+            <Button
+              variant="outlined"
+              size="small"
+              className={css.simulate}
+              onClick={handleSimulation}
+              disabled={!transactions || disabled}
+            >
+              Simulate
+            </Button>
+          </Track>
         )}
       </div>
     </Paper>

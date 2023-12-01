@@ -13,7 +13,7 @@ const useWalletCanRelay = (tx: SafeTransaction | undefined) => {
   return useAsync(() => {
     if (!tx || !wallet) return
 
-    return isSmartContractWallet(wallet)
+    return isSmartContractWallet(wallet.chainId, wallet.address)
       .then((isSCWallet) => {
         if (!isSCWallet) return true
 

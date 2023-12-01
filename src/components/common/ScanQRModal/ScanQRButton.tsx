@@ -29,7 +29,7 @@ const ScanQRButton = ({ onScan }: Props): ReactElement => {
   return (
     <>
       <Track {...MODALS_EVENTS.SCAN_QR}>
-        <IconButton onClick={openQrModal}>
+        <IconButton data-testid="address-qr-scan" onClick={openQrModal}>
           <SvgIcon component={QrCodeIcon} inheritViewBox color="primary" fontSize="small" />
         </IconButton>
       </Track>

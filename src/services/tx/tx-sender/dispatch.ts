@@ -234,7 +234,10 @@ export const dispatchBatchExecution = async (
 
       if (didReprice(error)) {
         txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, { txId, safeAddress })
+          txDispatch(TxEvent.PROCESSED, {
+            txId,
+            safeAddress,
+          })
         })
       } else {
         txs.forEach(({ txId }) => {
@@ -312,10 +315,11 @@ export const dispatchSafeAppsTx = async (
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   txId?: string,
-) => {
+): Promise<string> => {
   const sdk = await getSafeSDKWithSigner(onboard, chainId)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, safeTxHash, txId })
+  return safeTxHash
 }
 
 export const dispatchTxRelay = async (

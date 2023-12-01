@@ -1,4 +1,4 @@
-import { Typography, Button, CardActions, Divider, Alert } from '@mui/material'
+import { CircularProgress, Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -41,7 +41,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const { safe } = useSafeInfo()
   const [relays] = useRelaysBySafe()
   const { setTxFlow } = useContext(TxModalContext)
-  const [gasPrice, , gasPriceLoading] = useGasPrice()
+  const [gasPrice] = useGasPrice()
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -75,7 +75,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || gasPriceLoading) return
+    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice) return
 
     const overrides: PayableOverrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
@@ -121,7 +121,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
     }
   }
 
-  const submitDisabled = loading || !isSubmittable || gasPriceLoading
+  const submitDisabled = loading || !isSubmittable || !gasPrice
 
   return (
     <>
@@ -194,8 +194,14 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           <CardActions>
             <CheckWallet allowNonOwner={true}>
               {(isOk) => (
-                <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} onClick={handleSubmit}>
-                  Submit
+                <Button
+                  variant="contained"
+                  type="submit"
+                  disabled={!isOk || submitDisabled}
+                  onClick={handleSubmit}
+                  sx={{ minWidth: '114px' }}
+                >
+                  {!isSubmittable ? <CircularProgress size={20} /> : 'Submit'}
                 </Button>
               )}
             </CheckWallet>

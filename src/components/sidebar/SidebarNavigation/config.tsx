@@ -44,7 +44,7 @@ export const navItems: NavItem[] = [
   },
   {
     label: 'Settings',
-    icon: <SvgIcon component={SettingsIcon} inheritViewBox />,
+    icon: <SvgIcon data-testid="settings-nav-icon" component={SettingsIcon} inheritViewBox />,
     href: AppRoutes.settings.setup,
   },
 ]
@@ -85,20 +85,16 @@ export const settingsNavItems = [
     href: AppRoutes.settings.appearance,
   },
   {
+    label: 'Security & Login',
+    href: AppRoutes.settings.securityLogin,
+  },
+  {
     label: 'Notifications',
     href: AppRoutes.settings.notifications,
   },
   {
     label: 'Modules',
     href: AppRoutes.settings.modules,
-  },
-  {
-    label: 'Spending limits',
-    href: AppRoutes.settings.spendingLimits,
-  },
-  {
-    label: 'Security & Login',
-    href: AppRoutes.settings.securityLogin,
   },
   {
     label: 'Safe Apps',

@@ -55,9 +55,11 @@ type TxLayoutProps = {
   txSummary?: TransactionSummary
   onBack?: () => void
   hideNonce?: boolean
+  hideProgress?: boolean
   isBatch?: boolean
   isReplacement?: boolean
   isMessage?: boolean
+  isRecovery?: boolean
 }
 
 const TxLayout = ({
@@ -69,6 +71,7 @@ const TxLayout = ({
   txSummary,
   onBack,
   hideNonce = false,
+  hideProgress = false,
   isBatch = false,
   isReplacement = false,
   isMessage = false,
@@ -109,17 +112,25 @@ const TxLayout = ({
                 {/* Main content */}
                 <Grid item xs={12} md={7}>
                   <div className={css.titleWrapper}>
-                    <Typography variant="h3" component="div" fontWeight="700" className={css.title}>
+                    <Typography
+                      data-testid="modal-title"
+                      variant="h3"
+                      component="div"
+                      fontWeight="700"
+                      className={css.title}
+                    >
                       {title}
                     </Typography>
 
                     <ChainIndicator inline />
                   </div>
 
-                  <Paper className={css.header}>
-                    <Box className={css.progressBar}>
-                      <ProgressBar value={progress} />
-                    </Box>
+                  <Paper data-testid="modal-header" className={css.header}>
+                    {!hideProgress && (
+                      <Box className={css.progressBar}>
+                        <ProgressBar value={progress} />
+                      </Box>
+                    )}
 
                     <TxLayoutHeader subtitle={subtitle} icon={icon} hideNonce={hideNonce} />
                   </Paper>
@@ -128,7 +139,12 @@ const TxLayout = ({
                     {steps[step]}
 
                     {onBack && step > 0 && (
-                      <Button variant="contained" onClick={onBack} className={css.backButton}>
+                      <Button
+                        data-testid="modal-back-btn"
+                        variant="contained"
+                        onClick={onBack}
+                        className={css.backButton}
+                      >
                         Back
                       </Button>
                     )}

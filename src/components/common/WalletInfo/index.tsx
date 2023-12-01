@@ -147,7 +147,7 @@ export const WalletInfo = ({
 
         {!IS_PRODUCTION && isSocialLogin && (
           <Button onClick={resetAccount} variant="danger" size="small" fullWidth disableElevation>
-            Delete Account
+            Delete account
           </Button>
         )}
       </Box>
