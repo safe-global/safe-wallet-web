@@ -8,13 +8,19 @@ import { RecoveryEvent, RecoveryTxType, recoverySubscribe } from '@/services/rec
 import { getExplorerLink } from '@/utils/gateway'
 import { useCurrentChain } from './useChains'
 
+const SUCCESS_EVENTS = [
+  RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET,
+  RecoveryEvent.PROCESSED,
+  RecoveryEvent.SUCCESS,
+]
+
 const RecoveryTxNotifications = {
+  [RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET]: 'Confirm the execution in your wallet.',
   [RecoveryEvent.PROCESSING]: 'Validating...',
   [RecoveryEvent.PROCESSED]: 'Successfully validated. Loading...',
   [RecoveryEvent.REVERTED]: 'Reverted. Please check your gas settings.',
   [RecoveryEvent.FAILED]: 'Failed.',
-  // TODO: Add success event
-  // [RecoveryEvent.SUCCESS]: 'Successfully executed.',
+  [RecoveryEvent.SUCCESS]: 'Successfully executed.',
 }
 
 const RecoveryTxNotificationTitles = {
@@ -37,9 +43,11 @@ export function useRecoveryTxNotifications(): void {
       return
     }
 
-    const unsubFns = Object.entries(RecoveryTxNotifications).map(([event, notification]) =>
-      recoverySubscribe(event as RecoveryEvent, async (detail) => {
-        const isSuccess = event === RecoveryEvent.PROCESSED
+    const entries = Object.entries(RecoveryTxNotifications) as Array<[keyof typeof RecoveryTxNotifications, string]>
+
+    const unsubFns = entries.map(([event, notification]) =>
+      recoverySubscribe(event, async (detail) => {
+        const isSuccess = SUCCESS_EVENTS.includes(event)
         const isError = 'error' in detail
 
         const txHash = 'txHash' in detail ? detail.txHash : undefined

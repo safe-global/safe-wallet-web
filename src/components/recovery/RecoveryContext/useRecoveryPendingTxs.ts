@@ -1,18 +1,25 @@
 import { useEffect, useState } from 'react'
 
 import { RecoveryEvent, recoverySubscribe } from '@/services/recovery/recoveryEvents'
+import type { RecoveryTxType } from '@/services/recovery/recoveryEvents'
 
-export type PendingRecoveryTransactions = { [recoveryTxHash: string]: RecoveryEvent }
+type PendingRecoveryTransactions = {
+  [recoveryTxHash: string]: {
+    status: RecoveryEvent
+    txType: RecoveryTxType
+  }
+}
 
 const pendingStatuses: { [key in RecoveryEvent]: RecoveryEvent | null } = {
   [RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET]: null,
   [RecoveryEvent.PROCESSING]: RecoveryEvent.PROCESSING,
   [RecoveryEvent.PROCESSED]: RecoveryEvent.PROCESSED,
+  [RecoveryEvent.SUCCESS]: null,
   [RecoveryEvent.REVERTED]: null,
   [RecoveryEvent.FAILED]: null,
 }
 
-export function useRecoveryPendingTxs(): PendingRecoveryTransactions {
+export function useRecoveryPendingTxs() {
   const [pending, setPending] = useState<PendingRecoveryTransactions>({})
 
   useEffect(() => {
@@ -30,7 +37,13 @@ export function useRecoveryPendingTxs(): PendingRecoveryTransactions {
             return rest
           }
 
-          return { ...prev, [recoveryTxHash]: status }
+          return {
+            ...prev,
+            [recoveryTxHash]: {
+              txType: detail.txType,
+              status,
+            },
+          }
         })
       }),
     )
