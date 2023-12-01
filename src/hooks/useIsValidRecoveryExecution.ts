@@ -25,24 +25,18 @@ export function useIsValidRecoveryExecTransactionFromModule(
       return
     }
 
-    return (async () => {
-      const provider = getPatchedSignerProvider(wallet, safe.chainId, web3ReadOnly)
-      const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
+    const provider = getPatchedSignerProvider(wallet, safe.chainId, web3ReadOnly)
+    const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
 
-      const signer = provider.getSigner()
-      const contract = delayModifier.connect(signer)
+    const signer = provider.getSigner()
+    const contract = delayModifier.connect(signer)
 
-      try {
-        return await contract.callStatic.execTransactionFromModule(
-          safeTx.data.to,
-          safeTx.data.value,
-          safeTx.data.data,
-          safeTx.data.operation,
-        )
-      } catch (error) {
-        throw error
-      }
-    })()
+    return contract.callStatic.execTransactionFromModule(
+      safeTx.data.to,
+      safeTx.data.value,
+      safeTx.data.data,
+      safeTx.data.operation,
+    )
   }, [isRecoverer, safeTx, wallet, web3ReadOnly, safe.chainId, delayModifierAddress])
 }
 
@@ -52,28 +46,22 @@ export function useIsValidRecoveryExecuteNextTx(recovery: RecoveryQueueItem): As
   const web3ReadOnly = useWeb3ReadOnly()
   const { isExecutable } = useRecoveryTxState(recovery)
 
-  return useAsync(() => {
+  return useAsync(async () => {
     if (!isExecutable || !wallet?.address || !web3ReadOnly) {
       return
     }
 
-    return (async () => {
-      const provider = getPatchedSignerProvider(wallet, safe.chainId, web3ReadOnly)
-      const delayModifier = getModuleInstance(KnownContracts.DELAY, recovery.address, provider)
+    const provider = getPatchedSignerProvider(wallet, safe.chainId, web3ReadOnly)
+    const delayModifier = getModuleInstance(KnownContracts.DELAY, recovery.address, provider)
 
-      const signer = provider.getSigner()
-      const contract = delayModifier.connect(signer)
+    const signer = provider.getSigner()
+    const contract = delayModifier.connect(signer)
 
-      try {
-        const { to, value, data, operation } = recovery.args
+    const { to, value, data, operation } = recovery.args
 
-        await contract.callStatic.executeNextTx(to, value, data, operation)
+    await contract.callStatic.executeNextTx(to, value, data, operation)
 
-        return true
-      } catch (error) {
-        throw error
-      }
-    })()
+    return true
   }, [isExecutable, recovery.address, recovery.args, safe.chainId, wallet, web3ReadOnly])
 }
 
@@ -83,25 +71,19 @@ export function useIsValidRecoverySkipExpired(recovery: RecoveryQueueItem): Asyn
   const web3ReadOnly = useWeb3ReadOnly()
   const { isExpired } = useRecoveryTxState(recovery)
 
-  return useAsync(() => {
+  return useAsync(async () => {
     if (!isExpired || !wallet?.address || !web3ReadOnly) {
       return
     }
 
-    return (async () => {
-      const provider = getPatchedSignerProvider(wallet, safe.chainId, web3ReadOnly)
-      const delayModifier = getModuleInstance(KnownContracts.DELAY, recovery.address, provider)
+    const provider = getPatchedSignerProvider(wallet, safe.chainId, web3ReadOnly)
+    const delayModifier = getModuleInstance(KnownContracts.DELAY, recovery.address, provider)
 
-      const signer = provider.getSigner()
-      const contract = delayModifier.connect(signer)
+    const signer = provider.getSigner()
+    const contract = delayModifier.connect(signer)
 
-      try {
-        await contract.callStatic.skipExpired()
+    await contract.callStatic.skipExpired()
 
-        return true
-      } catch (error) {
-        throw error
-      }
-    })()
+    return true
   }, [isExpired, recovery.address, safe.chainId, wallet, web3ReadOnly])
 }

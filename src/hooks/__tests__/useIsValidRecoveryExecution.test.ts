@@ -1,10 +1,11 @@
-import { safeInfoBuilder } from '@/tests/builders/safe'
-import { createSafeTx } from '@/tests/builders/safeTx'
-import { connectedWalletBuilder } from '@/tests/builders/wallet'
-import { renderHook, waitFor } from '@/tests/test-utils'
 import { faker } from '@faker-js/faker'
 import { getModuleInstance } from '@gnosis.pm/zodiac'
 import { BigNumber } from 'ethers'
+
+import { safeInfoBuilder } from '@/tests/builders/safe'
+import { createSafeTx } from '@/tests/builders/safeTx'
+import { connectedWalletBuilder } from '@/tests/builders/wallet'
+import { act, renderHook } from '@/tests/test-utils'
 import { useIsRecoverer } from '../useIsRecoverer'
 import { getPatchedSignerProvider } from '../useIsValidExecution'
 import {
@@ -53,9 +54,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, false])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no delay modifier address is provided', async () => {
@@ -68,9 +71,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, false])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no transaction is provided', async () => {
@@ -83,9 +88,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, false])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no wallet is connected', async () => {
@@ -100,9 +107,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, false])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no provider is connected', async () => {
@@ -117,9 +126,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, false])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return whether the transaction is valid', async () => {
@@ -148,13 +159,17 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current[2]).toBe(false)
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
 
-      await waitFor(() => {
-        expect(result.current).toEqual([isValid, undefined, false])
+      expect(result.current[2]).toBe(false)
+
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([isValid, undefined, false])
     })
 
     it('should otherwise return an error if the transaction validity check throws', async () => {
@@ -183,9 +198,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, error, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, error, false])
     })
   })
 
@@ -208,11 +225,13 @@ describe('useIsValidRecoveryExecution', () => {
 
       const { result } = renderHook(() => useIsValidRecoveryExecuteNextTx(recovery as any))
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no wallet is connected', async () => {
@@ -233,11 +252,13 @@ describe('useIsValidRecoveryExecution', () => {
 
       const { result } = renderHook(() => useIsValidRecoveryExecuteNextTx(recovery as any))
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no provider is connected', async () => {
@@ -258,11 +279,13 @@ describe('useIsValidRecoveryExecution', () => {
 
       const { result } = renderHook(() => useIsValidRecoveryExecuteNextTx(recovery as any))
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return whether the transaction is valid', async () => {
@@ -297,9 +320,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([true, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([true, undefined, false])
     })
 
     it('should otherwise return an error if the transaction is invalid', async () => {
@@ -335,9 +360,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, error, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, error, false])
     })
   })
 
@@ -360,11 +387,13 @@ describe('useIsValidRecoveryExecution', () => {
 
       const { result } = renderHook(() => useIsValidRecoverySkipExpired(recovery as any))
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no wallet is connected', async () => {
@@ -385,11 +414,13 @@ describe('useIsValidRecoveryExecution', () => {
 
       const { result } = renderHook(() => useIsValidRecoverySkipExpired(recovery as any))
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no provider is connected', async () => {
@@ -410,11 +441,13 @@ describe('useIsValidRecoveryExecution', () => {
 
       const { result } = renderHook(() => useIsValidRecoverySkipExpired(recovery as any))
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return true if the transaction is valid', async () => {
@@ -449,9 +482,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([true, undefined, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([true, undefined, false])
     })
 
     it('should otherwise return an error if the transaction is invalid', async () => {
@@ -487,9 +522,11 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await waitFor(() => {
-        expect(result.current).toEqual([undefined, error, false])
+      await act(async () => {
+        await new Promise(process.nextTick)
       })
+
+      expect(result.current).toEqual([undefined, error, false])
     })
   })
 })
