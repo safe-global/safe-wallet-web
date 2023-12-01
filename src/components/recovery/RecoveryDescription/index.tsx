@@ -30,13 +30,14 @@ export function RecoveryDescription({ item }: { item: RecoveryQueueItem }): Reac
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [args.data, args.to, args.value, safe.threshold, safe.owners])
 
-  if (isMalicious || !newSetup) {
+  if (isMalicious) {
     return (
       <ErrorMessage>This transaction potentially calls malicious actions. We recommend cancelling it.</ErrorMessage>
     )
   }
 
-  if (newSetup.owners.length === 0) {
+  // TODO: Improve by using Tenderly to check if the proposal will fail
+  if (!newSetup || newSetup.owners.length === 0) {
     return (
       <ErrorMessage>
         This recovery proposal will fail as the owner structure has since been modified. We recommend cancelling it
