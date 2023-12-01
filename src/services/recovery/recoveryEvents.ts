@@ -8,7 +8,7 @@ export enum RecoveryEvent {
   FAILED = 'FAILED',
 }
 
-export enum RecoveryEventType {
+export enum RecoveryTxType {
   PROPOSAL = 'PROPOSAL',
   EXECUTION = 'EXECUTION',
   SKIP_EXPIRED = 'SKIP_EXPIRED',
@@ -19,33 +19,33 @@ export interface RecoveryEvents {
     moduleAddress: string
     txHash: string
     recoveryTxHash: string
-    eventType: RecoveryEventType
+    txType: RecoveryTxType
   }
   [RecoveryEvent.PROCESSING]: {
     moduleAddress: string
     txHash: string
     recoveryTxHash: string
-    eventType: RecoveryEventType
+    txType: RecoveryTxType
   }
   [RecoveryEvent.REVERTED]: {
     moduleAddress: string
     txHash: string
     recoveryTxHash: string
     error: Error
-    eventType: RecoveryEventType
+    txType: RecoveryTxType
   }
   [RecoveryEvent.PROCESSED]: {
     moduleAddress: string
     txHash: string
     recoveryTxHash: string
-    eventType: RecoveryEventType
+    txType: RecoveryTxType
   }
   [RecoveryEvent.FAILED]: {
     moduleAddress: string
     txHash?: string
     recoveryTxHash?: string
     error: Error
-    eventType: RecoveryEventType
+    txType: RecoveryTxType
   }
 }
 

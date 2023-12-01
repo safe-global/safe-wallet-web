@@ -7,7 +7,7 @@ import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Del
 
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
-import { recoveryDispatch, RecoveryEvent, RecoveryEventType } from './recoveryEvents'
+import { recoveryDispatch, RecoveryEvent, RecoveryTxType } from './recoveryEvents'
 import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain } from '../tx/tx-sender/sdk'
 import { isSmartContractWallet } from '@/utils/wallets'
@@ -44,7 +44,7 @@ function waitForRecoveryTx({
   moduleAddress: string
   recoveryTxHash: string
   tx: ContractTransaction
-  eventType: RecoveryEventType
+  txType: RecoveryTxType
 }) {
   const event = {
     ...payload,
@@ -93,7 +93,7 @@ export async function dispatchRecoveryProposal({
     delayModifierAddress,
   })
 
-  const eventType = RecoveryEventType.PROPOSAL
+  const txType = RecoveryTxType.PROPOSAL
   let recoveryTxHash: string | undefined
 
   try {
@@ -116,14 +116,14 @@ export async function dispatchRecoveryProposal({
       recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
         moduleAddress: delayModifierAddress,
         recoveryTxHash,
-        eventType,
+        txType: txType,
         txHash: tx.hash,
       })
     } else {
       waitForRecoveryTx({
         moduleAddress: delayModifierAddress,
         recoveryTxHash,
-        eventType,
+        txType: txType,
         tx,
       })
     }
@@ -131,7 +131,7 @@ export async function dispatchRecoveryProposal({
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash,
-      eventType,
+      txType: txType,
       error: asError(error),
     })
 
@@ -156,7 +156,7 @@ export async function dispatchRecoveryExecution({
     delayModifierAddress,
   })
 
-  const eventType = RecoveryEventType.EXECUTION
+  const txType = RecoveryTxType.EXECUTION
 
   try {
     const tx = await delayModifier.executeNextTx(args.to, args.value, args.data, args.operation)
@@ -165,14 +165,14 @@ export async function dispatchRecoveryExecution({
       recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
         moduleAddress: delayModifierAddress,
         recoveryTxHash: args.txHash,
-        eventType,
+        txType: txType,
         txHash: tx.hash,
       })
     } else {
       waitForRecoveryTx({
         moduleAddress: delayModifierAddress,
         recoveryTxHash: args.txHash,
-        eventType,
+        txType: txType,
         tx,
       })
     }
@@ -180,7 +180,7 @@ export async function dispatchRecoveryExecution({
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash: args.txHash,
-      eventType,
+      txType: txType,
       error: asError(error),
     })
 
@@ -205,7 +205,7 @@ export async function dispatchRecoverySkipExpired({
     delayModifierAddress,
   })
 
-  const eventType = RecoveryEventType.SKIP_EXPIRED
+  const txType = RecoveryTxType.SKIP_EXPIRED
 
   try {
     const tx = await delayModifier.skipExpired()
@@ -214,14 +214,14 @@ export async function dispatchRecoverySkipExpired({
       recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
         moduleAddress: delayModifierAddress,
         recoveryTxHash,
-        eventType,
+        txType,
         txHash: tx.hash,
       })
     } else {
       waitForRecoveryTx({
         moduleAddress: delayModifierAddress,
         recoveryTxHash,
-        eventType,
+        txType,
         tx,
       })
     }
@@ -229,7 +229,7 @@ export async function dispatchRecoverySkipExpired({
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash,
-      eventType,
+      txType,
       error: asError(error),
     })
 

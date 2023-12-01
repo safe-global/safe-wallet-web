@@ -4,14 +4,13 @@ import type { ReactElement } from 'react'
 
 import ClockIcon from '@/public/images/common/clock.svg'
 import { useRecoveryTxState } from '@/hooks/useRecoveryTxState'
-import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
-import { PendingStatus } from '@/store/pendingTxsSlice'
+import { RecoveryEvent } from '@/services/recovery/recoveryEvents'
 import { RecoveryContext } from '../RecoveryContext'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
-const STATUS_LABELS: Partial<Record<PendingStatus, string>> = {
-  [PendingStatus.SUBMITTING]: 'Submitting',
-  [PendingStatus.PROCESSING]: 'Processing',
-  [PendingStatus.INDEXING]: 'Loading',
+const STATUS_LABELS: Partial<Record<RecoveryEvent, string>> = {
+  [RecoveryEvent.PROCESSING]: 'Processing',
+  [RecoveryEvent.PROCESSED]: 'Loading',
 }
 
 export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): ReactElement => {

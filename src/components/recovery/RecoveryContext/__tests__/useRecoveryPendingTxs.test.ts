@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-import { RecoveryEvent, recoveryDispatch, RecoveryEventType } from '@/services/recovery/recoveryEvents'
-import { PendingStatus } from '@/store/pendingTxsSlice'
+import { RecoveryEvent, recoveryDispatch, RecoveryTxType } from '@/services/recovery/recoveryEvents'
 import { act, renderHook } from '@/tests/test-utils'
 import { useRecoveryPendingTxs } from '../useRecoveryPendingTxs'
 
@@ -19,12 +18,12 @@ describe('useRecoveryPendingTxs', () => {
         moduleAddress: delayModifierAddress,
         txHash,
         recoveryTxHash,
-        eventType: faker.helpers.enumValue(RecoveryEventType),
+        txType: faker.helpers.enumValue(RecoveryTxType),
       })
     })
 
     expect(result.current).toStrictEqual({
-      [recoveryTxHash]: PendingStatus.PROCESSING,
+      [recoveryTxHash]: RecoveryEvent.PROCESSING,
     })
   })
 
@@ -32,7 +31,7 @@ describe('useRecoveryPendingTxs', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
     const txHash = faker.string.hexadecimal()
     const recoveryTxHash = faker.string.hexadecimal()
-    const eventType = faker.helpers.enumValue(RecoveryEventType)
+    const txType = faker.helpers.enumValue(RecoveryTxType)
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
@@ -42,13 +41,13 @@ describe('useRecoveryPendingTxs', () => {
         moduleAddress: delayModifierAddress,
         txHash,
         recoveryTxHash,
-        eventType,
+        txType,
       })
       recoveryDispatch(RecoveryEvent.REVERTED, {
         moduleAddress: delayModifierAddress,
         txHash,
         recoveryTxHash,
-        eventType,
+        txType,
         error: new Error(),
       })
     })
@@ -60,7 +59,7 @@ describe('useRecoveryPendingTxs', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
     const txHash = faker.string.hexadecimal()
     const recoveryTxHash = faker.string.hexadecimal()
-    const eventType = faker.helpers.enumValue(RecoveryEventType)
+    const txType = faker.helpers.enumValue(RecoveryTxType)
     const { result } = renderHook(() => useRecoveryPendingTxs())
 
     expect(result.current).toStrictEqual({})
@@ -70,18 +69,18 @@ describe('useRecoveryPendingTxs', () => {
         moduleAddress: delayModifierAddress,
         txHash,
         recoveryTxHash,
-        eventType,
+        txType,
       })
       recoveryDispatch(RecoveryEvent.PROCESSED, {
         moduleAddress: delayModifierAddress,
         txHash,
         recoveryTxHash,
-        eventType,
+        txType,
       })
     })
 
     expect(result.current).toStrictEqual({
-      [recoveryTxHash]: PendingStatus.INDEXING,
+      [recoveryTxHash]: RecoveryEvent.PROCESSED,
     })
   })
 

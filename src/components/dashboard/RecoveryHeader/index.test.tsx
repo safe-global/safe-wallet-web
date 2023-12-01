@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers'
 import { _RecoveryHeader, _useIsProposalInProgress } from '.'
 import { render, renderHook, waitFor } from '@/tests/test-utils'
 import { RecoveryContext } from '@/components/recovery/RecoveryContext'
-import { RecoveryEvent, recoveryDispatch, RecoveryEventType } from '@/services/recovery/recoveryEvents'
+import { RecoveryEvent, recoveryDispatch, RecoveryTxType } from '@/services/recovery/recoveryEvents'
 import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
 
 jest.mock('@/hooks/useRecoveryQueue')
@@ -75,7 +75,7 @@ describe('useIsProposalInProgress', () => {
           moduleAddress: faker.finance.ethereumAddress(),
           txHash: faker.string.hexadecimal(),
           recoveryTxHash: faker.string.hexadecimal(),
-          eventType: RecoveryEventType.PROPOSAL,
+          txType: RecoveryTxType.PROPOSAL,
         })
 
         await waitFor(() => {
@@ -90,7 +90,7 @@ describe('useIsProposalInProgress', () => {
         moduleAddress: faker.finance.ethereumAddress(),
         txHash: faker.string.hexadecimal(),
         recoveryTxHash: faker.string.hexadecimal(),
-        eventType: RecoveryEventType.PROPOSAL,
+        txType: RecoveryTxType.PROPOSAL,
       }
 
       mockUseRecoveryQueue.mockReturnValue([{ args: { txHash: payload.recoveryTxHash } }] as any)

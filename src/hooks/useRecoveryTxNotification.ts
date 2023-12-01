@@ -4,7 +4,7 @@ import { formatError } from '@/utils/formatters'
 import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 import useSafeAddress from './useSafeAddress'
-import { RecoveryEvent, RecoveryEventType, recoverySubscribe } from '@/services/recovery/recoveryEvents'
+import { RecoveryEvent, RecoveryTxType, recoverySubscribe } from '@/services/recovery/recoveryEvents'
 import { getExplorerLink } from '@/utils/gateway'
 import { useCurrentChain } from './useChains'
 
@@ -18,9 +18,9 @@ const RecoveryTxNotifications = {
 }
 
 const RecoveryTxNotificationTitles = {
-  [RecoveryEventType.PROPOSAL]: 'Account recovery proposal',
-  [RecoveryEventType.EXECUTION]: 'Account recovery',
-  [RecoveryEventType.SKIP_EXPIRED]: 'Account recovery cancellation',
+  [RecoveryTxType.PROPOSAL]: 'Account recovery proposal',
+  [RecoveryTxType.EXECUTION]: 'Account recovery',
+  [RecoveryTxType.SKIP_EXPIRED]: 'Account recovery cancellation',
 }
 
 export function useRecoveryTxNotifications(): void {
@@ -46,7 +46,7 @@ export function useRecoveryTxNotifications(): void {
         const recoveryTxHash = 'recoveryTxHash' in detail ? detail.recoveryTxHash : undefined
         const groupKey = txHash || recoveryTxHash || ''
 
-        const title = RecoveryTxNotificationTitles[detail.eventType]
+        const title = RecoveryTxNotificationTitles[detail.txType]
         const message = isError ? `${notification} ${formatError(detail.error)}` : notification
 
         const link = txHash ? getExplorerLink(txHash, chain.blockExplorerUriTemplate) : undefined
