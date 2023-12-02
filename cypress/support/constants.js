@@ -159,6 +159,7 @@ export const amountErrorMsg = {
 export const nonceTooltipMsg = {
   lowerThanCurrent: "Nonce can't be lower than ",
   higherThanRecommended: 'Nonce is higher than the recommended nonce',
+  muchHigherThanRecommended: 'Nonce is much higher than the current nonce',
   mustBeNumber: 'Nonce must be a number',
 }
 

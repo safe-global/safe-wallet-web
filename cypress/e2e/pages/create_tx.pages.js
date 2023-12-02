@@ -17,6 +17,8 @@ const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
 const TransactionSummary = 'Send '
+const transactionsPerHrStr = 'Transactions per hour'
+const transactionsPerHr5Of5Str = '5 of 5'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
@@ -55,8 +57,10 @@ export function clickOnNewtransactionBtn() {
 export function typeRecipientAddress(address) {
   cy.get(recepientInput).clear().type(address).should('have.value', address)
 }
-export function typeENSName() {
-  cy.get(recepientInput).clear().type(constants.ENS_TEST_SEPOLIA).should('have.value', constants.DEFAULT_OWNER_ADDRESS)
+export function verifyENSResolves() {
+  let split = constants.ENS_TEST_SEPOLIA.split(':')
+  let address = split[0]
+  cy.get(recepientInput).should('have.value', address)
 }
 
 export function clickOnSendTokensBtn() {

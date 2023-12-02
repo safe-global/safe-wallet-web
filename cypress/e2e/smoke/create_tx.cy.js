@@ -5,7 +5,7 @@ import * as createtx from '../../e2e/pages/create_tx.pages'
 const sendValue = 0.00002
 const currentNonce = 0
 
-function reachStepTwo() {
+function happyPathToStepTwo() {
   createtx.typeRecipientAddress(constants.EOA)
   createtx.clickOnTokenselectorAndSelectSepoliaEth()
   createtx.setSendValue(sendValue)
@@ -27,7 +27,8 @@ describe('[SMOKE] Create transactions tests', () => {
   })
 
   it('[SMOKE] Verify address input validates a valid ENS name', () => {
-    createtx.typeENSName()
+    createtx.typeRecipientAddress(constants.ENS_TEST_SEPOLIA)
+    createtx.verifyENSResolves()
   })
 
   it('[SMOKE] Verify amount input validates negative numbers', () => {
@@ -45,14 +46,16 @@ describe('[SMOKE] Create transactions tests', () => {
   it('[SMOKE] Verify nonce tooltip warning messages', () => {
     createtx.changeNonce(-1)
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.lowerThanCurrent + currentNonce.toString())
-    createtx.changeNonce(999)
+    createtx.changeNonce(currentNonce + 50)
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.higherThanRecommended)
+    createtx.changeNonce(currentNonce + 150)
+    createtx.verifyTooltipMessage(constants.nonceTooltipMsg.muchHigherThanRecommended)
     createtx.changeNonce('abc')
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.mustBeNumber)
   })
 
   it('[SMOKE] Verify advance parameters gas limit input', () => {
-    reachStepTwo()
+    happyPathToStepTwo()
     createtx.changeNonce(currentNonce)
     createtx.selectCurrentWallet()
     createtx.openExecutionParamsModal()
@@ -60,7 +63,7 @@ describe('[SMOKE] Create transactions tests', () => {
   })
 
   it('[SMOKE] Verify a transaction shows relayer and addToBatch button', () => {
-    reachStepTwo()
+    happyPathToStepTwo()
     createtx.verifySubmitBtnIsEnabled()
     createtx.verifyNativeTokenTransfer()
     createtx.changeNonce(currentNonce)
@@ -72,7 +75,7 @@ describe('[SMOKE] Create transactions tests', () => {
   })
 
   it('[SMOKE] Verify submitting a tx and that clicking on notification shows the transaction in queue', () => {
-    reachStepTwo()
+    happyPathToStepTwo()
     createtx.verifySubmitBtnIsEnabled()
     createtx.changeNonce(14)
     createtx.clickOnSignTransactionBtn()
