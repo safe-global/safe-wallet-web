@@ -26,6 +26,7 @@ export const SIDEBAR_ADDRESS = '0x04f8...1a91'
 export const ENS_TEST_SEPOLIA = 'testenssepolia.eth'
 export const ENS_TEST_GOERLI = 'goerli-safe-test.eth'
 export const ENS_TEST_SEPOLIA_INVALID = 'ivladitestenssepolia.eth'
+export const WRONGLY_CHECKSUMMED_ADDRESS = '0X6D0B6F96F665BB4490F9DDB2E450DA2F7E546DC1'
 
 export const BROWSER_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__browserPermissions`
 export const SAFE_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__safePermissions`
@@ -142,7 +143,23 @@ export const addressBookErrrMsg = {
   ownerAdded: 'Owner is already added',
   failedResolve: 'Failed to resolve the address',
   emptyAddress: 'Owner',
+  invalidPrefix(prefix) {
+    return `"${prefix}" doesn't match the current chain`
+  },
 }
+
+export const amountErrorMsg = {
+  negativeValue: 'The value must be greater than 0',
+  randomString: 'The value must be a number',
+  largerThanCurrentBalance: /Maximum value is \d+(\.\d+)?/,
+}
+
+export const nonceTooltipMsg = {
+  lowerThanCurrent: "Nonce can't be lower than ",
+  higherThanRecommended: 'Nonce is higher than the recommended nonce',
+  mustBeNumber: 'Nonce must be a number',
+}
+
 export const addresBookContacts = {
   user1: {
     address: '0x01A9F68e339da12565cfBc47fe7D6EdEcB11C46f',

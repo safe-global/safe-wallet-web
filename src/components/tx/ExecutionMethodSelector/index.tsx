@@ -57,6 +57,7 @@ export const ExecutionMethodSelector = ({
               control={<Radio />}
             />
             <FormControlLabel
+              data-testid="connected-wallet-execution-method"
               sx={{ flex: 1 }}
               value={ExecutionMethod.WALLET}
               label={
