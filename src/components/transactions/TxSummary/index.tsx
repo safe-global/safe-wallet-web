@@ -60,6 +60,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
   return (
     <Box
+      data-testid="transaction-item"
       className={`${css.gridContainer} ${
         isQueue
           ? displayInfo

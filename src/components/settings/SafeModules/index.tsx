@@ -8,6 +8,10 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useContext } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
+import { selectDelayModifierByAddress } from '@/services/recovery/selectors'
+import { RemoveRecoveryFlow } from '@/components/tx-flow/flows/RemoveRecovery'
+import { useRecovery } from '@/components/recovery/RecoveryContext'
+
 import css from '../TransactionGuards/styles.module.css'
 
 const NoModules = () => {
@@ -20,6 +24,16 @@ const NoModules = () => {
 
 const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string; chainId: string; name?: string }) => {
   const { setTxFlow } = useContext(TxModalContext)
+  const [recovery] = useRecovery()
+  const delayModifier = recovery && selectDelayModifierByAddress(recovery, moduleAddress)
+
+  const onRemove = () => {
+    if (delayModifier) {
+      setTxFlow(<RemoveRecoveryFlow delayModifier={delayModifier} />)
+    } else {
+      setTxFlow(<RemoveModuleFlow address={moduleAddress} />)
+    }
+  }
 
   return (
     <Box className={css.guardDisplay}>
@@ -33,13 +47,7 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
       />
       <CheckWallet>
         {(isOk) => (
-          <IconButton
-            onClick={() => setTxFlow(<RemoveModuleFlow address={moduleAddress} />)}
-            color="error"
-            size="small"
-            disabled={!isOk}
-            title="Remove module"
-          >
+          <IconButton onClick={onRemove} color="error" size="small" disabled={!isOk} title="Remove module">
             <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
           </IconButton>
         )}
