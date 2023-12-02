@@ -51,7 +51,7 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.mustBeNumber)
   })
 
-  it.only('[SMOKE] Verify advance parameters gas limit input', () => {
+  it('[SMOKE] Verify advance parameters gas limit input', () => {
     reachStepTwo()
     createtx.changeNonce(currentNonce)
     createtx.selectCurrentWallet()
@@ -59,7 +59,7 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.verifyAndSubmitExecutionParams()
   })
 
-  it.only('[SMOKE] Verify a transaction shows relayer and addToBatch button', () => {
+  it('[SMOKE] Verify a transaction shows relayer and addToBatch button', () => {
     reachStepTwo()
     createtx.verifySubmitBtnIsEnabled()
     createtx.verifyNativeTokenTransfer()
@@ -71,7 +71,7 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.verifyAddToBatchBtnIsEnabled()
   })
 
-  it.only('[SMOKE] Verify submitting a tx and that clicking on notification shows the transaction in queue', () => {
+  it('[SMOKE] Verify submitting a tx and that clicking on notification shows the transaction in queue', () => {
     reachStepTwo()
     createtx.verifySubmitBtnIsEnabled()
     createtx.changeNonce(14)
