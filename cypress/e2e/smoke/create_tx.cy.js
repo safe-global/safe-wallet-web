@@ -5,8 +5,15 @@ import * as createtx from '../../e2e/pages/create_tx.pages'
 const sendValue = 0.00002
 const currentNonce = 0
 
+function reachStepTwo() {
+  createtx.typeRecipientAddress(constants.EOA)
+  createtx.clickOnTokenselectorAndSelectSepoliaEth()
+  createtx.setSendValue(sendValue)
+  createtx.clickOnNextBtn()
+}
+
 describe('[SMOKE] Create transactions tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_7)
     main.acceptCookies()
@@ -44,26 +51,31 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.mustBeNumber)
   })
 
-  it('[SMOKE] Verify a transaction can be reviewed, edited and submitted', () => {
-    createtx.typeRecipientAddress(constants.EOA)
-    createtx.clickOnTokenselectorAndSelectSepoliaEth()
-    createtx.setSendValue(sendValue)
-    createtx.clickOnNextBtn()
+  it.only('[SMOKE] Verify advance parameters gas limit input', () => {
+    reachStepTwo()
+    createtx.changeNonce(currentNonce)
+    createtx.selectCurrentWallet()
+    createtx.openExecutionParamsModal()
+    createtx.verifyAndSubmitExecutionParams()
+  })
+
+  it.only('[SMOKE] Verify a transaction shows relayer and addToBatch button', () => {
+    reachStepTwo()
     createtx.verifySubmitBtnIsEnabled()
     createtx.verifyNativeTokenTransfer()
     createtx.changeNonce(currentNonce)
     createtx.verifyConfirmTransactionData()
     createtx.verifyRelayerAttemptsAvailable()
     createtx.selectCurrentWallet()
-    createtx.openExecutionParamsModal()
-    createtx.verifyAndSubmitExecutionParams()
     createtx.clickOnNoLaterOption()
-    createtx.changeNonce(14)
     createtx.verifyAddToBatchBtnIsEnabled()
-    createtx.clickOnSignTransactionBtn()
   })
 
-  it('[SMOKE] Verify that clicking on notification shows the transaction in queue', () => {
+  it.only('[SMOKE] Verify submitting a tx and that clicking on notification shows the transaction in queue', () => {
+    reachStepTwo()
+    createtx.verifySubmitBtnIsEnabled()
+    createtx.changeNonce(14)
+    createtx.clickOnSignTransactionBtn()
     createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()
