@@ -48,6 +48,10 @@ type Fields = {
   [FieldNames.recoveryMethod]: RecoveryMethod
 }
 
+const isRecoveryMethod = (value: any): value is RecoveryMethod => {
+  return Object.values(RecoveryMethod).includes(value)
+}
+
 export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; onClose: () => void }): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
 
@@ -57,11 +61,12 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
     },
     mode: 'onChange',
   })
-  const { register, watch } = methods
+  const { register, watch, setValue } = methods
 
   const currentType = watch(FieldNames.recoveryMethod)
 
   const trackOptionChoice = (e: ChangeEvent<HTMLInputElement>) => {
+    isRecoveryMethod(e.target.value) && setValue(FieldNames.recoveryMethod, e.target.value)
     trackEvent({ ...RECOVERY_EVENTS.SELECT_RECOVERY_METHOD, label: e.target.value })
   }
 
