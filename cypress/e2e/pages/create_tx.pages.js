@@ -57,10 +57,10 @@ export function clickOnNewtransactionBtn() {
 export function typeRecipientAddress(address) {
   cy.get(recepientInput).clear().type(address).should('have.value', address)
 }
-export function verifyENSResolves() {
-  let split = constants.ENS_TEST_SEPOLIA.split(':')
-  let address = split[0]
-  cy.get(recepientInput).should('have.value', address)
+export function verifyENSResolves(fullAddress) {
+  let split = fullAddress.split(':')
+  let noPrefixAddress = split[1]
+  cy.get(recepientInput).should('have.value', noPrefixAddress)
 }
 
 export function clickOnSendTokensBtn() {

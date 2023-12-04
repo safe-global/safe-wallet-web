@@ -21,17 +21,17 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.clickOnSendTokensBtn()
   })
 
-  it('[SMOKE] Verify address input error values', () => {
+  it('[SMOKE] Verify error messages for invalid address input', () => {
     createtx.verifyRandomStringAddress('Lorem Ipsum')
     createtx.verifyWrongChecksum(constants.WRONGLY_CHECKSUMMED_ADDRESS)
   })
 
-  it('[SMOKE] Verify address input validates a valid ENS name', () => {
+  it('[SMOKE] Verify address input resolves a valid ENS name', () => {
     createtx.typeRecipientAddress(constants.ENS_TEST_SEPOLIA)
-    createtx.verifyENSResolves()
+    createtx.verifyENSResolves(constants.SEPOLIA_TEST_SAFE_7)
   })
 
-  it('[SMOKE] Verify amount input validates negative numbers', () => {
+  it('[SMOKE] Verify error message for invalid amount input', () => {
     createtx.clickOnTokenselectorAndSelectSepoliaEth()
     createtx.verifyAmountNegativeNumber()
     createtx.verifyAmountLargerThanCurrentBalance()
