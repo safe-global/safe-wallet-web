@@ -1,12 +1,13 @@
 import { useTransactionType } from '@/hooks/useTransactionType'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { TransactionInfoType, TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box } from '@mui/material'
 import css from './styles.module.css'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { HumanDescription, TransferDescription } from '@/components/transactions/HumanDescription'
 import useABTesting from '@/services/tracking/useAbTesting'
 import { AbTest } from '@/services/tracking/abTesting'
+import { isOutgoingTransfer } from '@/utils/transaction-guards'
 
 type TxTypeProps = {
   tx: TransactionSummary
@@ -31,7 +32,7 @@ const TxType = ({ tx, short = false }: TxTypeProps) => {
       {humanDescription && shouldDisplayHumanDescription && !short ? (
         <HumanDescription fragments={humanDescription} />
       ) : tx.txInfo.type === TransactionInfoType.TRANSFER && shouldDisplayHumanDescription && !short ? (
-        <TransferDescription isSendTx={tx.txInfo.direction === TransferDirection.OUTGOING} txInfo={tx.txInfo} />
+        <TransferDescription isSendTx={isOutgoingTransfer(tx.txInfo)} txInfo={tx.txInfo} />
       ) : (
         type.text
       )}
