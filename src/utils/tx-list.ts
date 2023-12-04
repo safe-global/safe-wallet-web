@@ -4,10 +4,12 @@ import type { Transaction, TransactionListItem } from '@safe-global/safe-gateway
 import {
   isConflictHeaderListItem,
   isDateLabel,
+  isERC20Transfer,
   isLabelListItem,
   isNoneConflictType,
   isOutgoingTransfer,
   isTransactionListItem,
+  isTransferTxInfo,
 } from '@/utils/transaction-guards'
 import { sameAddress } from './addresses'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
@@ -80,11 +82,14 @@ export const getLatestTransactions = (list: TransactionListItem[] = []): Transac
   )
 }
 
-export const filterNoNonce = (item: TransactionListItem): boolean => {
+export const filterNoNonceTransfers = (item: TransactionListItem): boolean => {
   return !(
     isTransactionListItem(item) &&
     isOutgoingTransfer(item.transaction.txInfo) &&
-    !item.transaction.executionInfo
+    !item.transaction.executionInfo &&
+    isTransferTxInfo(item.transaction.txInfo) &&
+    isERC20Transfer(item.transaction.txInfo.transferInfo) &&
+    !item.transaction.txInfo.transferInfo.logoUri
   )
 }
 

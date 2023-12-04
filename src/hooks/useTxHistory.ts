@@ -5,7 +5,7 @@ import useAsync from './useAsync'
 import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
 import { fetchFilteredTxHistory, useTxFilter } from '@/utils/tx-history-filter'
-import { filterEmptyLabels, filterNoNonce } from '@/utils/tx-list'
+import { filterEmptyLabels, filterNoNonceTransfers } from '@/utils/tx-list'
 
 const useTxHistory = (
   pageUrl?: string,
@@ -47,7 +47,7 @@ const useTxHistory = (
       page: dataPage
         ? {
             ...dataPage,
-            results: dataPage.results.filter(filterNoNonce).filter(filterEmptyLabels),
+            results: dataPage.results.filter(filterNoNonceTransfers).filter(filterEmptyLabels),
           }
         : undefined,
       error: errorMessage,
