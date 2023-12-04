@@ -40,8 +40,6 @@ import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendin
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
 import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
-import useABTesting from '@/services/tracking/useAbTesting'
-import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import { RecoveryProvider } from '@/components/recovery/RecoveryContext'
 import { RecoveryModal } from '@/components/recovery/RecoveryModal'
@@ -69,7 +67,6 @@ const InitApp = (): null => {
   useSafeMsgTracking()
   useBeamer()
   useRehydrateSocialWallet()
-  useABTesting(AbTest.HUMAN_DESCRIPTION)
 
   return null
 }
