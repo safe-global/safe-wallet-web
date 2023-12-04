@@ -1,4 +1,4 @@
-import type {
+import {
   AddressEx,
   Cancellation,
   ConflictHeader,
@@ -23,6 +23,7 @@ import type {
   TransactionListItem,
   TransactionSummary,
   Transfer,
+  TransferDirection,
   TransferInfo,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
@@ -92,6 +93,10 @@ export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellat
 
 export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
   return value.type === TransactionInfoType.CREATION
+}
+
+export const isOutgoingTransfer = (txInfo: TransactionInfo): boolean => {
+  return isTransferTxInfo(txInfo) && txInfo.direction.toUpperCase() === TransferDirection.OUTGOING
 }
 
 // TransactionListItem type guards

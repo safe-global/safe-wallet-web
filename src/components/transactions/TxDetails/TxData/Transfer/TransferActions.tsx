@@ -10,9 +10,8 @@ import EntryDialog from '@/components/address-book/EntryDialog'
 import ContextMenu from '@/components/common/ContextMenu'
 import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
 import type { Transfer } from '@safe-global/safe-gateway-typescript-sdk'
-import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { isERC20Transfer, isNativeTokenTransfer } from '@/utils/transaction-guards'
+import { isERC20Transfer, isNativeTokenTransfer, isOutgoingTransfer } from '@/utils/transaction-guards'
 import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 import { safeFormatUnits } from '@/utils/formatters'
 import CheckWallet from '@/components/common/CheckWallet'
@@ -64,7 +63,7 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
     ? safeFormatUnits(txInfo.transferInfo.value, txInfo.transferInfo.decimals)
     : undefined
 
-  const isOutgoingTx = txInfo.direction.toUpperCase() === TransferDirection.OUTGOING
+  const isOutgoingTx = isOutgoingTransfer(txInfo)
   const canSendAgain =
     isOutgoingTx && (isNativeTokenTransfer(txInfo.transferInfo) || isERC20Transfer(txInfo.transferInfo))
 
