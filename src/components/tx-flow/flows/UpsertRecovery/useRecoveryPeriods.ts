@@ -47,7 +47,7 @@ const TestRecoveryDelayPeriods: Periods = [
   },
   {
     label: '1 hour',
-    value: `${60 * 60 * 60}`,
+    value: `${60 * 60}`,
   },
   ...DefaultRecoveryDelayPeriods,
 ]
