@@ -104,7 +104,8 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                         Self-custodial recovery
                       </Typography>
                       <Typography>
-                        Allow yourself, friends or family to recover your Safe Account by enabling a module.
+                        Setup social recovery with friends and family or use your personal setup to regain access to
+                        your Safe Account.
                       </Typography>
                     </div>
                   }
@@ -122,15 +123,15 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                       <List className={css.checkList}>
                         <ListItem>
                           <CheckIcon />
-                          Add any account as Recoverer
+                          Secured by a global digital asset banking group
                         </ListItem>
                         <ListItem>
                           <CheckIcon />
-                          Trust no centralized party
+                          Trusted by leading L1/L2 and DeFi protocols
                         </ListItem>
                         <ListItem>
                           <CheckIcon />
-                          Set up Recovery for free
+                          Easy and efficient setup
                         </ListItem>
                       </List>
                     </div>
@@ -149,15 +150,15 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                       <List className={css.checkList}>
                         <ListItem>
                           <CheckIcon />
-                          Add any account as Recoverer
+                          World&apos;s #1 Recovery Solution
                         </ListItem>
                         <ListItem>
                           <CheckIcon />
-                          Trust no centralized party
+                          Protected by Biometrics
                         </ListItem>
                         <ListItem>
                           <CheckIcon />
-                          Set up Recovery for free
+                          Lloyd’s of London Backed Tech
                         </ListItem>
                       </List>
                     </div>
