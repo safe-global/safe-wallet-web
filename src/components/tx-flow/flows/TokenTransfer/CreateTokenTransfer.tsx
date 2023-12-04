@@ -58,7 +58,7 @@ const CreateTokenTransfer = ({
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
-  const { setNonce } = useContext(SafeTxContext)
+  const { setNonce, setNonceNeeded } = useContext(SafeTxContext)
   const [recipientFocus, setRecipientFocus] = useState(!params.recipient)
 
   useEffect(() => {
@@ -133,6 +133,12 @@ const CreateTokenTransfer = ({
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
+
+  useEffect(() => {
+    if (!spendingLimit) {
+      setNonceNeeded(true)
+    }
+  }, [setNonceNeeded, spendingLimit])
 
   return (
     <TxCard>
