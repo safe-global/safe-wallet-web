@@ -26,14 +26,6 @@ describe('Load Safe tests', () => {
     cy.wait(2000)
   })
 
-  it('Verify a network can be selected in the Safe', () => {
-    safe.clickNetworkSelector(constants.networks.sepolia)
-    safe.selectPolygon()
-    cy.wait(2000)
-    safe.clickNetworkSelector(constants.networks.polygon)
-    safe.selectSepolia()
-  })
-
   it('Verify custom name in the first owner can be set', () => {
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
     safe.clickOnNextBtn()

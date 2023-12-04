@@ -58,3 +58,8 @@ export const MODALS_EVENTS = {
     event: EventType.META,
   },
 }
+
+export enum MODAL_NAVIGATION {
+  Next = 'Next click',
+  Back = 'Back click',
+}

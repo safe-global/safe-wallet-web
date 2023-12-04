@@ -28,14 +28,14 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
 }
 
 export const isSmartContractWallet = memoize(
-  async (wallet: ConnectedWallet) => {
+  async (_chainId: string, address: string) => {
     const provider = getWeb3ReadOnly()
 
     if (!provider) {
       throw new Error('Provider not found')
     }
 
-    return isSmartContract(provider, wallet.address)
+    return isSmartContract(provider, address)
   },
-  ({ chainId, address }) => chainId + address,
+  (chainId, address) => chainId + address,
 )

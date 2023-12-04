@@ -57,7 +57,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
         readOnly={props.InputProps?.readOnly}
         freeSolo
         options={addressBookEntries}
-        onInputChange={(_, value) => setValue(name, value, { shouldValidate: true })}
+        onInputChange={(_, value) => setValue(name, value)}
         filterOptions={abFilterOptions}
         componentsProps={{
           paper: {
@@ -66,7 +66,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
         }}
         renderOption={(props, option) => (
           <Typography component="li" variant="body2" {...props}>
-            <EthHashInfo address={option.label} name={option.name} shortAddress={false} />
+            <EthHashInfo address={option.label} name={option.name} shortAddress={false} copyAddress={false} />
           </Typography>
         )}
         renderInput={(params) => (
