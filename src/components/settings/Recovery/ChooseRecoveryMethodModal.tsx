@@ -3,7 +3,7 @@ import { RECOVERY_FEEDBACK_FORM, HelpCenterArticle } from '@/config/constants'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { type ChangeEvent, type ReactElement, useContext } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import Link from 'next/link'
 import {
   Box,
@@ -48,10 +48,6 @@ type Fields = {
   [FieldNames.recoveryMethod]: RecoveryMethod
 }
 
-const isRecoveryMethod = (value: any): value is RecoveryMethod => {
-  return Object.values(RecoveryMethod).includes(value)
-}
-
 export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; onClose: () => void }): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
 
@@ -61,12 +57,11 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
     },
     mode: 'onChange',
   })
-  const { register, watch, setValue } = methods
+  const { watch, control } = methods
 
   const currentType = watch(FieldNames.recoveryMethod)
 
   const trackOptionChoice = (e: ChangeEvent<HTMLInputElement>) => {
-    isRecoveryMethod(e.target.value) && setValue(FieldNames.recoveryMethod, e.target.value)
     trackEvent({ ...RECOVERY_EVENTS.SELECT_RECOVERY_METHOD, label: e.target.value })
   }
 
@@ -87,81 +82,90 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
           </Track>
         </DialogContentText>
         <FormControl>
-          <RadioGroup
-            {...register(FieldNames.recoveryMethod, { onChange: trackOptionChoice })}
-            defaultValue={RecoveryMethod.SelfCustody}
-            className={css.buttonGroup}
-          >
-            <FormControlLabel
-              value={RecoveryMethod.SelfCustody}
-              control={<Radio />}
-              label={
-                <div className={css.method}>
-                  <RecoveryCustomIcon style={{ display: 'block' }} />
-                  <Typography fontWeight="bold" mb={1} mt={2}>
-                    Self-custodial recovery
-                  </Typography>
-                  <Typography>
-                    Allow yourself, friends or family to recover your Safe Account by enabling a module.
-                  </Typography>
-                </div>
-              }
-            />
+          <Controller
+            control={control}
+            name={FieldNames.recoveryMethod}
+            render={({ field }) => (
+              <RadioGroup
+                {...field}
+                className={css.buttonGroup}
+                onChange={(e) => {
+                  field.onChange(e)
+                  trackOptionChoice(e)
+                }}
+              >
+                <FormControlLabel
+                  value={RecoveryMethod.SelfCustody}
+                  control={<Radio />}
+                  label={
+                    <div className={css.method}>
+                      <RecoveryCustomIcon style={{ display: 'block' }} />
+                      <Typography fontWeight="bold" mb={1} mt={2}>
+                        Self-custodial recovery
+                      </Typography>
+                      <Typography>
+                        Allow yourself, friends or family to recover your Safe Account by enabling a module.
+                      </Typography>
+                    </div>
+                  }
+                />
 
-            <FormControlLabel
-              value={RecoveryMethod.Sygnum}
-              control={<Radio />}
-              label={
-                <div className={css.method}>
-                  <RecoverySygnumIcon style={{ display: 'block' }} />
-                  <Typography fontWeight="bold" mb={1} mt={2}>
-                    Sygnum
-                  </Typography>
-                  <List className={css.checkList}>
-                    <ListItem>
-                      <CheckIcon />
-                      Add any account as Recoverer
-                    </ListItem>
-                    <ListItem>
-                      <CheckIcon />
-                      Trust no centralized party
-                    </ListItem>
-                    <ListItem>
-                      <CheckIcon />
-                      Set up Recovery for free
-                    </ListItem>
-                  </List>
-                </div>
-              }
-            />
+                <FormControlLabel
+                  value={RecoveryMethod.Sygnum}
+                  control={<Radio />}
+                  label={
+                    <div className={css.method}>
+                      <RecoverySygnumIcon style={{ display: 'block' }} />
+                      <Typography fontWeight="bold" mb={1} mt={2}>
+                        Sygnum
+                      </Typography>
+                      <List className={css.checkList}>
+                        <ListItem>
+                          <CheckIcon />
+                          Add any account as Recoverer
+                        </ListItem>
+                        <ListItem>
+                          <CheckIcon />
+                          Trust no centralized party
+                        </ListItem>
+                        <ListItem>
+                          <CheckIcon />
+                          Set up Recovery for free
+                        </ListItem>
+                      </List>
+                    </div>
+                  }
+                />
 
-            <FormControlLabel
-              value={RecoveryMethod.Coincover}
-              control={<Radio />}
-              label={
-                <div className={css.method}>
-                  <RecoveryCoincoverIcon style={{ display: 'block' }} />
-                  <Typography fontWeight="bold" mb={1} mt={2}>
-                    Coincover
-                  </Typography>
-                  <List className={css.checkList}>
-                    <ListItem>
-                      <CheckIcon />
-                      Add any account as Recoverer
-                    </ListItem>
-                    <ListItem>
-                      <CheckIcon />
-                      Trust no centralized party
-                    </ListItem>
-                    <ListItem>
-                      <CheckIcon />
-                      Set up Recovery for free
-                    </ListItem>
-                  </List>
-                </div>
-              }
-            />
-          </RadioGroup>
+                <FormControlLabel
+                  value={RecoveryMethod.Coincover}
+                  control={<Radio />}
+                  label={
+                    <div className={css.method}>
+                      <RecoveryCoincoverIcon style={{ display: 'block' }} />
+                      <Typography fontWeight="bold" mb={1} mt={2}>
+                        Coincover
+                      </Typography>
+                      <List className={css.checkList}>
+                        <ListItem>
+                          <CheckIcon />
+                          Add any account as Recoverer
+                        </ListItem>
+                        <ListItem>
+                          <CheckIcon />
+                          Trust no centralized party
+                        </ListItem>
+                        <ListItem>
+                          <CheckIcon />
+                          Set up Recovery for free
+                        </ListItem>
+                      </List>
+                    </div>
+                  }
+                />
+              </RadioGroup>
+            )}
+          />
         </FormControl>
         <Typography color="primary.light" mt="12px">
           Unhappy with the provided options?{' '}
