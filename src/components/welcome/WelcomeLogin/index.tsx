@@ -27,10 +27,12 @@ const WelcomeLogin = () => {
   return (
     <Paper className={css.loginCard} data-testid="welcome-login">
       <Box className={css.loginContent}>
-        <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '24px', width: '80px' }} />
+        <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '24px', width: '80px', ml: '-8px' }} />
+
         <Typography variant="h6" mt={6} fontWeight={700}>
           Create Account
         </Typography>
+
         <Typography mb={2} textAlign="center">
           Choose how you would like to create your Safe Account
         </Typography>

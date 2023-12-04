@@ -60,6 +60,10 @@ input[type='number'] {
   fill: var(--color-logo-background);
 }
 
+.illustration-background-warning-fill {
+  fill: var(--color-warning-background);
+}
+
 /* Note: a fallback `stroke` property must be on the svg to work */
 .illustration-main-stroke {
   stroke: var(--color-primary-main);

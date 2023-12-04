@@ -41,7 +41,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const { safe } = useSafeInfo()
   const [relays] = useRelaysBySafe()
   const { setTxFlow } = useContext(TxModalContext)
-  const [gasPrice, , gasPriceLoading] = useGasPrice()
+  const [gasPrice] = useGasPrice()
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -75,7 +75,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || gasPriceLoading) return
+    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice) return
 
     const overrides: PayableOverrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
@@ -121,7 +121,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
     }
   }
 
-  const submitDisabled = loading || !isSubmittable || gasPriceLoading
+  const submitDisabled = loading || !isSubmittable || !gasPrice
 
   return (
     <>

@@ -134,16 +134,18 @@ const TxDetails = ({
 
   return (
     <div className={css.container}>
-      {txDetailsData && <TxDetailsBlock txSummary={txSummary} txDetails={txDetailsData} />}
-      {loading && (
+      {txDetailsData ? (
+        <TxDetailsBlock txSummary={txSummary} txDetails={txDetailsData} />
+      ) : loading ? (
         <div className={css.loading}>
           <CircularProgress />
         </div>
-      )}
-      {error && (
-        <div className={css.error}>
-          <ErrorMessage error={error}>Couldn&apos;t load the transaction details</ErrorMessage>
-        </div>
+      ) : (
+        error && (
+          <div className={css.error}>
+            <ErrorMessage error={error}>Couldn&apos;t load the transaction details</ErrorMessage>
+          </div>
+        )
       )}
     </div>
   )
