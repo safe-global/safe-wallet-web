@@ -1,7 +1,6 @@
 import PasswordMfaForm from '@/components/settings/SecurityLogin/PasswordMfaForm'
 import SmsMfaForm from './SmsMfaForm'
 import { Box, Grid, Paper, Typography } from '@mui/material'
-import SocialSignerMFA from './SocialSignerMFA'
 import SocialSignerExport from './SocialSignerExport'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
