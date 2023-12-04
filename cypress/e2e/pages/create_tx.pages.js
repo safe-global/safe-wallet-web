@@ -10,11 +10,15 @@ const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
 const transactionActionsList = '[data-testid="transaction-actions-list"]'
 const transactionItem = '[data-testid="transaction-item"]'
+const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-method"]'
+const addToBatchBtn = '[data-track="batching: Add to batch"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
 const TransactionSummary = 'Send '
+const transactionsPerHrStr = 'Transactions per hour'
+const transactionsPerHr5Of5Str = '5 of 5'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
@@ -51,10 +55,54 @@ export function clickOnNewtransactionBtn() {
 }
 
 export function typeRecipientAddress(address) {
-  cy.get(recepientInput).type(address).should('have.value', address)
+  cy.get(recepientInput).clear().type(address).should('have.value', address)
 }
+export function verifyENSResolves(fullAddress) {
+  let split = fullAddress.split(':')
+  let noPrefixAddress = split[1]
+  cy.get(recepientInput).should('have.value', noPrefixAddress)
+}
+
 export function clickOnSendTokensBtn() {
   cy.contains(sendTokensBtnStr).click()
+}
+
+export function verifyRandomStringAddress(randomAddressString) {
+  typeRecipientAddress(randomAddressString)
+  cy.contains(constants.addressBookErrrMsg.invalidFormat).should('be.visible')
+}
+
+export function verifyWrongChecksum(wronglyChecksummedAddress) {
+  typeRecipientAddress(wronglyChecksummedAddress)
+  cy.contains(constants.addressBookErrrMsg.invalidChecksum).should('be.visible')
+}
+
+export function verifyAmountNegativeNumber() {
+  setSendValue(-1)
+  cy.contains(constants.amountErrorMsg.negativeValue).should('be.visible')
+}
+
+export function verifyAmountLargerThanCurrentBalance() {
+  setSendValue(9999)
+  cy.contains(constants.amountErrorMsg.largerThanCurrentBalance).should('be.visible')
+}
+
+export function verifyAmountMustBeNumber() {
+  setSendValue('abc')
+  cy.contains(constants.amountErrorMsg.randomString).should('be.visible')
+}
+
+export function verifyTooltipMessage(message) {
+  cy.get('div[role="tooltip"]').contains(message).should('be.visible')
+}
+
+export function selectCurrentWallet() {
+  cy.get(connectedWalletExecMethod).click()
+}
+
+export function verifyRelayerAttemptsAvailable() {
+  cy.contains(transactionsPerHrStr).should('be.visible')
+  cy.contains(transactionsPerHr5Of5Str).should('be.visible')
 }
 
 export function clickOnTokenselectorAndSelectSepoliaEth() {
@@ -94,6 +142,10 @@ export function verifySubmitBtnIsEnabled() {
   cy.get('button[type="submit"]').should('not.be.disabled')
 }
 
+export function verifyAddToBatchBtnIsEnabled() {
+  cy.get(addToBatchBtn).should('not.be.disabled')
+}
+
 export function verifyNativeTokenTransfer() {
   cy.contains(nativeTokenTransferStr).should('be.visible')
 }
@@ -125,6 +177,8 @@ export function verifyAndSubmitExecutionParams() {
     cy.get('@Paramsform').find('label').contains(`${element}`).next().find('input').should('not.be.disabled')
   })
 
+  cy.get('@Paramsform').find(gasLimitInput).clear().type('100').invoke('prop', 'value').should('equal', '100')
+  cy.contains('Gas limit must be at least 21000').should('be.visible')
   cy.get('@Paramsform').find(gasLimitInput).clear().type('300000').invoke('prop', 'value').should('equal', '300000')
   cy.get('@Paramsform').find(gasLimitInput).parent('div').find(rotateLeftIcon).click()
   cy.get('@Paramsform').submit()
