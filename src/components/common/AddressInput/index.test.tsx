@@ -68,6 +68,7 @@ describe('AddressInput tests', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    ;(useCurrentChain as jest.Mock).mockImplementation(() => mockChain)
   })
 
   it('should render with a default address value', () => {
@@ -203,7 +204,7 @@ describe('AddressInput tests', () => {
 
     await waitFor(() => expect(input.value).toBe(TEST_ADDRESS_A))
 
-    expect(input.previousElementSibling?.textContent).toBe('gor:')
+    expect(input.previousElementSibling?.textContent).toBe(`${mockChain.shortName}:`)
   })
 
   it('should not show the adornment prefix when the value contains correct prefix', async () => {
@@ -247,7 +248,7 @@ describe('AddressInput tests', () => {
     const input = utils.getByLabelText('Recipient', { exact: false }) as HTMLInputElement
 
     act(() => {
-      fireEvent.change(input, { target: { value: `gor:${TEST_ADDRESS_A}` } })
+      fireEvent.change(input, { target: { value: `${mockChain.shortName}:${TEST_ADDRESS_A}` } })
     })
 
     expect(methods.getValues().recipient).toBe(TEST_ADDRESS_A)

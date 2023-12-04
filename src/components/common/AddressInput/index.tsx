@@ -152,7 +152,6 @@ const AddressInput = ({
           required,
 
           setValueAs: (value: string): string => {
-            console.log('setValueAs', value)
             // Clean the input value
             const cleanValue = cleanInputValue(value)
             rawValueRef.current = cleanValue
