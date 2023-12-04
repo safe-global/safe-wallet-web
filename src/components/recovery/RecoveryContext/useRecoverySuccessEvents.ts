@@ -23,21 +23,15 @@ export function useRecoverySuccessEvents(
 
       const isQueued = recoveryState.some(({ queue }) => queue.some(({ args }) => args.txHash === recoveryTxHash))
 
-      if (isQueued) {
-        // Only proposals should appear in the queue
-        if (txType === RecoveryTxType.PROPOSAL) {
-          recoveryDispatch(RecoveryEvent.SUCCESS, {
-            recoveryTxHash,
-            txType,
-          })
-        }
-      } else {
-        // Executions/cancellations are removed from the queue
-        recoveryDispatch(RecoveryEvent.SUCCESS, {
-          recoveryTxHash,
-          txType,
-        })
+      // Only queued proposals or executions/cancellations removed from the queue
+      if (isQueued && txType !== RecoveryTxType.PROPOSAL) {
+        return
       }
+
+      recoveryDispatch(RecoveryEvent.SUCCESS, {
+        recoveryTxHash,
+        txType,
+      })
     })
   }, [pending, recoveryState])
 }
