@@ -152,16 +152,22 @@ const AddressInput = ({
           required,
 
           setValueAs: (value: string): string => {
+            console.log('setValueAs', value)
             // Clean the input value
             const cleanValue = cleanInputValue(value)
             rawValueRef.current = cleanValue
             // This also checksums the address
-            return parsePrefixedAddress(cleanValue).address
+            if (validatePrefixed(cleanValue) === undefined) {
+              // if the prefix is correct we remove it from the value
+              return parsePrefixedAddress(cleanValue).address
+            } else {
+              // we keep invalid prefixes such that the validation error is persistet
+              return cleanValue
+            }
           },
 
           validate: async () => {
             const value = rawValueRef.current
-
             if (value) {
               return validatePrefixed(value) || (await validate?.(parsePrefixedAddress(value).address))
             }

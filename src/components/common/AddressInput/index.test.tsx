@@ -35,7 +35,7 @@ const TestForm = ({ address, validate }: { address: string; validate?: AddressIn
     defaultValues: {
       [name]: address,
     },
-    mode: 'onChange',
+    mode: 'all',
   })
 
   return (
@@ -86,6 +86,17 @@ describe('AddressInput tests', () => {
     act(() => {
       fireEvent.change(input, { target: { value: `eth:${TEST_ADDRESS_A}` } })
       jest.advanceTimersByTime(1000)
+    })
+
+    await waitFor(() =>
+      expect(utils.getByLabelText(`"eth" doesn't match the current chain`, { exact: false })).toBeDefined(),
+    )
+
+    // The validation error should persist on blur
+    await act(async () => {
+      fireEvent.blur(input)
+      jest.advanceTimersByTime(1000)
+      await Promise.resolve()
     })
 
     await waitFor(() =>
