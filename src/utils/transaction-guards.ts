@@ -1,4 +1,4 @@
-import {
+import type {
   AddressEx,
   Cancellation,
   ConflictHeader,
@@ -23,9 +23,9 @@ import {
   TransactionListItem,
   TransactionSummary,
   Transfer,
-  TransferDirection,
   TransferInfo,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConflictType,
   DetailedExecutionInfoType,

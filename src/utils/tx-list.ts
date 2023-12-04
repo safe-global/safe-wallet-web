@@ -89,7 +89,7 @@ export const filterNoNonceTransfers = (item: TransactionListItem): boolean => {
     !item.transaction.executionInfo &&
     isTransferTxInfo(item.transaction.txInfo) &&
     isERC20Transfer(item.transaction.txInfo.transferInfo) &&
-    !item.transaction.txInfo.transferInfo.logoUri
+    !item.transaction.txInfo.humanDescription
   )
 }
 
