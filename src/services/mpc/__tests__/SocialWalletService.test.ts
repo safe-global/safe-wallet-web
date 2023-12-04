@@ -352,8 +352,7 @@ describe('SocialWalletService', () => {
               shareDescriptions: {
                 [`${factorKey.pub.x}${factorKey.pub.y}`]: [
                   JSON.stringify({
-                    module: 'Other',
-                    moduleName: SMS_OTP_MODULE_NAME,
+                    module: SMS_OTP_MODULE_NAME,
                     number: '+40 170 69 420',
                   }),
                 ],
@@ -401,8 +400,7 @@ describe('SocialWalletService', () => {
       mockMPCCore.addShareDescription(
         factorKey.pub,
         JSON.stringify({
-          module: 'Other',
-          moduleName: SMS_OTP_MODULE_NAME,
+          module: SMS_OTP_MODULE_NAME,
           number: '+40 170 69 420',
         }),
       )
@@ -493,8 +491,7 @@ describe('SocialWalletService', () => {
       mockMPCCore.addShareDescription(
         factorKey.pub,
         JSON.stringify({
-          module: 'Other',
-          moduleName: SMS_OTP_MODULE_NAME,
+          module: SMS_OTP_MODULE_NAME,
           number: '+40 170 69 420',
         }),
       )

@@ -15,7 +15,7 @@ import EncryptionUtil from '../EncryptionUtil'
 
 type SmsOtpStoreData = {
   number: string
-  moduleName: string
+  module: string
 }
 
 interface IRegisterRequestBody {
@@ -65,7 +65,7 @@ interface IVerifyRequestBody {
   data?: string
 }
 
-export const SMS_OTP_MODULE_NAME = 'SmsRecovery'
+export const SMS_OTP_MODULE_NAME = 'external_sms'
 
 export class SmsOtpRecovery {
   private mpcCoreKit: Web3AuthMPCCoreKit
@@ -81,11 +81,7 @@ export class SmsOtpRecovery {
         (this.mpcCoreKit.tKey.metadata.generalStore as MPCKeyDetails).shareDescriptions,
       ).map((i) => ((i || [])[0] ? JSON.parse(i[0]) : {}))
 
-      return shareDescriptions.some(
-        (shareDescription) =>
-          shareDescription.module === FactorKeyTypeShareDescription.Other &&
-          shareDescription.moduleName === SMS_OTP_MODULE_NAME,
-      )
+      return shareDescriptions.some((shareDescription) => shareDescription.module === SMS_OTP_MODULE_NAME)
     } catch (err) {
       return false
     }
@@ -97,11 +93,7 @@ export class SmsOtpRecovery {
         (this.mpcCoreKit.tKey.metadata.generalStore as MPCKeyDetails).shareDescriptions,
       ).map((i) => ((i || [])[0] ? JSON.parse(i[0]) : {}))
 
-      return shareDescriptions.find(
-        (shareDescription) =>
-          shareDescription.module === FactorKeyTypeShareDescription.Other &&
-          shareDescription.moduleName === SMS_OTP_MODULE_NAME,
-      )?.number
+      return shareDescriptions.find((shareDescription) => shareDescription.module === SMS_OTP_MODULE_NAME)?.number
     } catch (err) {
       return
     }
@@ -274,7 +266,7 @@ export class SmsOtpRecovery {
     if (isFirstTime) {
       const storeData: SmsOtpStoreData = {
         number,
-        moduleName: SMS_OTP_MODULE_NAME,
+        module: SMS_OTP_MODULE_NAME,
       }
       await this.mpcCoreKit.createFactor({
         shareType: TssShareType.DEVICE,
