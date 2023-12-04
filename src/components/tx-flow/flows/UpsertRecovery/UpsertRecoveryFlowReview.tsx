@@ -61,7 +61,7 @@ export function UpsertRecoveryFlowReview({
   const periods = useRecoveryPeriods()
   const recoverer = params[UpsertRecoveryFlowFields.recoverer]
   const delay = periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.delay])!.label
-  const expiry = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])!.value
+  const expiry = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])!.label
 
   useEffect(() => {
     if (!web3ReadOnly) {
