@@ -46,10 +46,6 @@
     height: auto;
   }
 
-  .balance {
-    display: none;
-  }
-
   .socialLoginInfo > div > div:last-child {
     display: none;
   }

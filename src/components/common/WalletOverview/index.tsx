@@ -45,7 +45,13 @@ const WalletOverview = ({
   if (isSocialLogin) {
     return (
       <div className={css.socialLoginInfo}>
-        <SocialLoginInfo wallet={wallet} chainInfo={walletChain} hideActions={true} />
+        <SocialLoginInfo
+          wallet={wallet}
+          chainInfo={walletChain}
+          hideActions={true}
+          balance={balance}
+          showBalance={showBalance}
+        />
       </div>
     )
   }
@@ -71,11 +77,9 @@ const WalletOverview = ({
         </Typography>
 
         {showBalance && (
-          <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-            <Typography variant="caption" component="div" fontWeight="bold" className={css.balance}>
-              <WalletBalance balance={balance} />
-            </Typography>
-          </Box>
+          <Typography variant="caption" component="div" fontWeight="bold" display={{ xs: 'none', sm: 'block' }}>
+            <WalletBalance balance={balance} />
+          </Typography>
         )}
       </Box>
     </Box>

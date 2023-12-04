@@ -1,4 +1,6 @@
+import WalletBalance from '@/components/common/WalletBalance'
 import { Badge, Box, Typography } from '@mui/material'
+import { type BigNumber } from 'ethers'
 import css from './styles.module.css'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/services/onboard'
@@ -14,11 +16,15 @@ const SocialLoginInfo = ({
   chainInfo,
   hideActions = false,
   size = 28,
+  balance,
+  showBalance,
 }: {
   wallet: ConnectedWallet
   chainInfo?: ChainInfo
   hideActions?: boolean
   size?: number
+  balance?: BigNumber | undefined
+  showBalance?: boolean
 }) => {
   const socialWalletService = useSocialWallet()
   const userInfo = socialWalletService?.getUserInfo()
@@ -42,12 +48,18 @@ const SocialLoginInfo = ({
         {!socialWalletService?.isMFAEnabled() && <Badge variant="dot" color="warning" className={css.bubble} />}
       </Box>
       <div className={css.profileData}>
-        <Typography className={css.text} variant="body2" fontWeight={700}>
+        <Typography className={css.text} variant="body2">
           {userInfo.name}
         </Typography>
-        <Typography className={css.text} variant="body2">
-          {userInfo.email}
-        </Typography>
+        {showBalance ? (
+          <Typography variant="caption" component="div" fontWeight="bold" display={{ xs: 'none', sm: 'block' }}>
+            <WalletBalance balance={balance} />
+          </Typography>
+        ) : (
+          <Typography className={css.text} variant="body2">
+            {userInfo.email}
+          </Typography>
+        )}
       </div>
       {!hideActions && (
         <div className={css.actionButtons}>
