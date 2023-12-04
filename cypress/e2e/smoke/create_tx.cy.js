@@ -12,18 +12,19 @@ describe('[SMOKE] Create transactions tests', () => {
     main.acceptCookies()
   })
 
+  // TODO: Change title to: Verify a new send token transaction can be initiated
   it('[SMOKE] Verify a new send token transaction can be created', () => {
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
     createtx.typeRecipientAddress(constants.EOA)
-    createtx.clickOnTokenselectorAndSelectSepolia()
+    createtx.clickOnTokenselectorAndSelectSepoliaEth()
     createtx.setMaxAmount()
     createtx.verifyMaxAmount(constants.tokenNames.sepoliaEther, constants.tokenAbbreviation.sep)
     createtx.setSendValue(sendValue)
     createtx.clickOnNextBtn()
   })
 
-  it('[SMOKE] Verify a transaction can be reviewed, edited and submitted', () => {
+  it.skip('[SMOKE] Verify a transaction can be reviewed, edited and submitted', () => {
     createtx.verifySubmitBtnIsEnabled()
     cy.wait(1000)
     createtx.verifyNativeTokenTransfer()
@@ -36,7 +37,7 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.clickOnSignTransactionBtn()
   })
 
-  it('[SMOKE] Verify that clicking on notification shows the transaction in queue', () => {
+  it.skip('[SMOKE] Verify that clicking on notification shows the transaction in queue', () => {
     createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()

@@ -8,8 +8,8 @@ const amountInput = 'input[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
-const transactionItemExpandable = 'div[id^="transfer"]'
-const expandItemIcon = '[data-testid="ExpandMoreIcon"]'
+const transactionActionsList = '[data-testid="transaction-actions-list"]'
+const transactionItem = '[data-testid="transaction-item"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -22,14 +22,20 @@ const nativeTokenTransferStr = 'Native token transfer'
 const yesStr = 'Yes, '
 const estimatedFeeStr = 'Estimated fee'
 const executeStr = 'Execute'
-const transactionsPerHrStr = 'Transactions per hour'
-const transactionsPerHr5Of5Str = '5 of 5'
 const editBtnStr = 'Edit'
 const executionParamsStr = 'Execution parameters'
 const noLaterStr = 'No, later'
 const signBtnStr = 'Sign'
 const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
+
+export function clickOnTransactionItem(item) {
+  cy.get(transactionItem).eq(item).scrollIntoView().click({ force: true })
+}
+
+export function verifyTransactionActionsVisibility(option) {
+  cy.get(transactionActionsList).should(option)
+}
 
 export function clickOnNewtransactionBtn() {
   // Assert that "New transaction" button is visible
@@ -51,7 +57,7 @@ export function clickOnSendTokensBtn() {
   cy.contains(sendTokensBtnStr).click()
 }
 
-export function clickOnTokenselectorAndSelectSepolia() {
+export function clickOnTokenselectorAndSelectSepoliaEth() {
   cy.get(tokenAddressInput).prev().click()
   cy.get('ul[role="listbox"]').contains(constants.tokenNames.sepoliaEther).click()
 }
@@ -189,8 +195,4 @@ export function clickOnExpandAllBtn() {
 
 export function clickOnCollapseAllBtn() {
   cy.contains(collapseAllBtnStr).click()
-}
-
-export function clickOnExpandIcon() {
-  cy.get(expandItemIcon).click()
 }

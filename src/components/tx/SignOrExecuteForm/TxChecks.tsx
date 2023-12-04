@@ -6,14 +6,14 @@ import { Redefine, RedefineMessage } from '@/components/tx/security/redefine'
 
 import css from './styles.module.css'
 
-const TxChecks = (): ReactElement => {
+const TxChecks = ({ executionOwner }: { executionOwner?: string }): ReactElement => {
   const { safeTx } = useContext(SafeTxContext)
 
   return (
     <>
       <Typography variant="h5">Transaction checks</Typography>
 
-      <TxSimulation disabled={false} transactions={safeTx} />
+      <TxSimulation disabled={false} transactions={safeTx} executionOwner={executionOwner} />
 
       <Box className={css.mobileTxCheckMessages}>
         <TxSimulationMessage />

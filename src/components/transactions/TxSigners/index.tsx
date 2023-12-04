@@ -133,7 +133,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
 
   return (
     <>
-      <List className={css.signers}>
+      <List data-testid="transaction-actions-list" className={css.signers}>
         <ListItem>
           {isCancellationTxInfo(txInfo) ? (
             <>

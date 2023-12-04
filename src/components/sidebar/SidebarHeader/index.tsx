@@ -20,7 +20,6 @@ import { selectSettings } from '@/store/settingsSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getBlockExplorerLink } from '@/utils/chains'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import CopyButton from '@/components/common/CopyButton'
 import QrCodeButton from '../QrCodeButton'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
@@ -29,6 +28,7 @@ import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import EnvHintButton from '@/components/settings/EnvironmentVariables/EnvHintButton'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import ExplorerButton from '@/components/common/ExplorerButton'
+import CopyTooltip from '@/components/common/CopyTooltip'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
@@ -51,7 +51,7 @@ const SafeHeader = (): ReactElement => {
   return (
     <div className={css.container}>
       <div className={css.info}>
-        <div className={css.safe}>
+        <div data-testid="safe-header-info" className={css.safe}>
           <div>
             {safeAddress ? (
               <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
@@ -88,9 +88,11 @@ const SafeHeader = (): ReactElement => {
           </Track>
 
           <Track {...OVERVIEW_EVENTS.COPY_ADDRESS}>
-            <CopyButton text={addressCopyText} className={css.iconButton}>
-              <SvgIcon component={CopyIconBold} inheritViewBox color="primary" fontSize="small" />
-            </CopyButton>
+            <CopyTooltip text={addressCopyText}>
+              <IconButton className={css.iconButton}>
+                <SvgIcon component={CopyIconBold} inheritViewBox color="primary" fontSize="small" />
+              </IconButton>
+            </CopyTooltip>
           </Track>
 
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>

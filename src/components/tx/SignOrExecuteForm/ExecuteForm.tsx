@@ -68,7 +68,7 @@ const ExecuteForm = ({
   const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
 
   // Check if transaction will fail
-  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(safeTx, advancedParams.gasLimit)
+  const { executionValidationError } = useIsValidExecution(safeTx, advancedParams.gasLimit)
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -101,8 +101,7 @@ const ExecuteForm = ({
   }
 
   const cannotPropose = !isOwner && !onlyExecute
-  const submitDisabled =
-    !safeTx || !isSubmittable || disableSubmit || isValidExecutionLoading || isExecutionLoop || cannotPropose
+  const submitDisabled = !safeTx || !isSubmittable || disableSubmit || isExecutionLoop || cannotPropose
 
   return (
     <>
