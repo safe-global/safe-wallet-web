@@ -12,7 +12,7 @@ import { HelpCenterArticle } from '@/config/constants'
 
 import css from './styles.module.css'
 import { TokenAmountFields } from '@/components/common/TokenAmountInput'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 const SpendingLimitRow = ({
@@ -27,6 +27,12 @@ const SpendingLimitRow = ({
   const { setNonceNeeded } = useContext(SafeTxContext)
 
   const formattedAmount = safeFormatUnits(availableAmount, selectedToken?.decimals)
+
+  useEffect(() => {
+    if (isOnlySpendLimitBeneficiary) {
+      setNonceNeeded(false)
+    }
+  }, [isOnlySpendLimitBeneficiary, setNonceNeeded])
 
   return (
     <FormControl>

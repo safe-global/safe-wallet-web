@@ -67,6 +67,16 @@ const CreateTokenTransfer = ({
     }
   }, [setNonce, txNonce])
 
+  const balancesItems = useMemo(() => {
+    return isOnlySpendingLimitBeneficiary
+      ? balances.items.filter(({ tokenInfo }) => {
+          return spendingLimits?.some(({ beneficiary, token }) => {
+            return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token.address)
+          })
+        })
+      : balances.items
+  }, [balances.items, isOnlySpendingLimitBeneficiary, spendingLimits, wallet?.address])
+
   const formMethods = useForm<TokenTransferParams>({
     defaultValues: {
       ...params,
@@ -75,6 +85,9 @@ const CreateTokenTransfer = ({
         : isOnlySpendingLimitBeneficiary
         ? TokenTransferType.spendingLimit
         : params.type,
+      [TokenTransferFields.tokenAddress]: isOnlySpendingLimitBeneficiary
+        ? balancesItems[0]?.tokenInfo.address
+        : params.tokenAddress,
     },
     mode: 'onChange',
     delayError: 500,
@@ -91,9 +104,7 @@ const CreateTokenTransfer = ({
 
   // Selected token
   const tokenAddress = watch(TokenAmountFields.tokenAddress)
-  const selectedToken = tokenAddress
-    ? balances.items.find((item) => item.tokenInfo.address === tokenAddress)
-    : undefined
+  const selectedToken = tokenAddress ? balancesItems.find((item) => item.tokenInfo.address === tokenAddress) : undefined
 
   const type = watch(TokenTransferFields.type)
   const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
@@ -105,16 +116,6 @@ const CreateTokenTransfer = ({
       ? spendingLimitAmount
       : totalAmount
     : totalAmount
-
-  const balancesItems = useMemo(() => {
-    return isOnlySpendingLimitBeneficiary
-      ? balances.items.filter(({ tokenInfo }) => {
-          return spendingLimits?.some(({ beneficiary, token }) => {
-            return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token.address)
-          })
-        })
-      : balances.items
-  }, [balances.items, isOnlySpendingLimitBeneficiary, spendingLimits, wallet?.address])
 
   const onMaxAmountClick = useCallback(() => {
     if (!selectedToken) return
