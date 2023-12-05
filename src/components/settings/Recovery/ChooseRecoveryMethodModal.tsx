@@ -69,7 +69,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
     <Dialog open={open} onClose={onClose} className={css.dialog}>
       <DialogContent dividers sx={{ py: 2, px: 3 }}>
         <Typography variant="h2" mb={1}>
-          Set up Account recovery
+          Set up Account Recovery
         </Typography>
         <IconButton onClick={onClose} className={css.closeIcon}>
           <CloseIcon />
@@ -101,12 +101,22 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                     <div className={css.method}>
                       <RecoveryCustomIcon style={{ display: 'block' }} />
                       <Typography fontWeight="bold" mb={1} mt={2}>
-                        Self-custodial recovery
+                        Self Custodial Recovery
                       </Typography>
-                      <Typography>
-                        Setup social recovery with friends and family or use your personal setup to regain access to
-                        your Safe Account.
-                      </Typography>
+                      <List className={css.checkList}>
+                        <ListItem>
+                          <CheckIcon />
+                          Fully own your recovery setup
+                        </ListItem>
+                        <ListItem>
+                          <CheckIcon />
+                          Nominate anyone including friends, family or yourself
+                        </ListItem>
+                        <ListItem>
+                          <CheckIcon />
+                          No additional cost and ensured privacy
+                        </ListItem>
+                      </List>
                     </div>
                   }
                 />
