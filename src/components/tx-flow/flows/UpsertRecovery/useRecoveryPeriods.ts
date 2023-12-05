@@ -66,7 +66,7 @@ export function useRecoveryPeriods(): { delay: Periods; expiration: Periods } {
 
   // TODO: Remove constant before release
   // eslint-disable-next-line no-constant-condition
-  if (true || isTestChain) {
+  if (isTestChain) {
     return {
       delay: TestRecoveryDelayPeriods,
       expiration: TestRecoveryExpirationPeriods,
