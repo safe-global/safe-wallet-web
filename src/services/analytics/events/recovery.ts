@@ -10,7 +10,7 @@ const RECOVERY_CATEGORY = 'recovery'
 
 export const RECOVERY_EVENTS = {
   SETUP_RECOVERY: {
-    action: 'Start recovery set-up',
+    action: 'Start recovery setup',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
   },
@@ -83,5 +83,30 @@ export const RECOVERY_EVENTS = {
     action: 'Check recovery proposal',
     category: RECOVERY_CATEGORY,
     event: EventType.CLICK,
+  },
+  SUBMIT_RECOVERY_CREATE: {
+    action: 'Submit recovery setup',
+    category: RECOVERY_CATEGORY,
+    event: EventType.META,
+  },
+  SUBMIT_RECOVERY_EDIT: {
+    action: 'Submit recovery edit',
+    category: RECOVERY_CATEGORY,
+    event: EventType.META,
+  },
+  SUBMIT_RECOVERY_REMOVE: {
+    action: 'Submit recovery remove',
+    category: RECOVERY_CATEGORY,
+    event: EventType.META,
+  },
+  SUBMIT_RECOVERY_ATTEMPT: {
+    action: 'Submit recovery attempt',
+    category: RECOVERY_CATEGORY,
+    event: EventType.META,
+  },
+  SUBMIT_RECOVERY_CANCEL: {
+    action: 'Submit recovery cancel',
+    category: RECOVERY_CATEGORY,
+    event: EventType.META,
   },
 }
