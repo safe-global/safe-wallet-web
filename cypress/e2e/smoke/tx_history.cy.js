@@ -17,8 +17,6 @@ describe('[SMOKE] Transaction history tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.transactionsHistoryUrl + constants.SEPOLIA_TEST_SAFE_8)
-    // So that tests that rely on this feature don't randomly fail
-    // cy.window().then((win) => win.localStorage.setItem('SAFE_v2__AB_human-readable', true))
     main.acceptCookies()
   })
 
