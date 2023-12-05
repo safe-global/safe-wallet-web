@@ -12,7 +12,7 @@ import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-t
 import { assertValidSafeVersion, createEthersAdapter, createReadOnlyEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import type SignMessageLibEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/SignMessageLib/SignMessageLibEthersContract'
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
-import type { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
+import type { Web3Provider } from '@ethersproject/providers'
 import type GnosisSafeContractEthers from '@safe-global/safe-ethers-lib/dist/src/contracts/GnosisSafe/GnosisSafeContractEthers'
 import type EthersAdapter from '@safe-global/safe-ethers-lib'
 import semver from 'semver'
@@ -80,12 +80,8 @@ export const _getMinimumMultiSendCallOnlyVersion = (safeVersion: SafeInfo['versi
   return semver.gte(safeVersion, INITIAL_CALL_ONLY_VERSION) ? safeVersion : INITIAL_CALL_ONLY_VERSION
 }
 
-export const getMultiSendCallOnlyContract = (
-  chainId: string,
-  safeVersion: SafeInfo['version'],
-  provider: Web3Provider | JsonRpcProvider,
-) => {
-  const ethAdapter = createEthersAdapter(provider)
+export const getMultiSendCallOnlyContract = (chainId: string, safeVersion: SafeInfo['version']) => {
+  const ethAdapter = createReadOnlyEthersAdapter()
   const multiSendVersion = _getMinimumMultiSendCallOnlyVersion(safeVersion)
 
   return ethAdapter.getMultiSendCallOnlyContract({

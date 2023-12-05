@@ -52,7 +52,6 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
-  const web3 = useWeb3ReadOnly()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -60,9 +59,9 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [params.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
-    if (!chain?.chainId || !safe.version || !web3) return
-    return getMultiSendCallOnlyContract(chain.chainId, safe.version, web3)
-  }, [chain?.chainId, safe.version, web3])
+    if (!chain?.chainId || !safe.version) return
+    return getMultiSendCallOnlyContract(chain.chainId, safe.version)
+  }, [chain?.chainId, safe.version])
 
   const multiSendTxs = useMemo(() => {
     if (!txsWithDetails || !chain || !safe.version) return
