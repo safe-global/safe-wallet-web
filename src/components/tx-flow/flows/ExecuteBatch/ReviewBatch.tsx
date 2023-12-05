@@ -16,7 +16,6 @@ import { TxSimulation } from '@/components/tx/security/tenderly'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import { hasRemainingRelays } from '@/utils/relaying'
@@ -32,6 +31,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
 import type { PayableOverrides } from 'ethers'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -52,7 +52,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
-  const web3 = useWeb3()
+  const web3 = useWeb3ReadOnly()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
