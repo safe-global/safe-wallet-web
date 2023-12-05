@@ -1,7 +1,7 @@
 import type { Palette } from '@mui/material'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
-import { type Transaction, TransactionInfoType, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
@@ -52,20 +52,11 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
     : undefined
 
   const displayConfirmations = isQueue && !!submittedConfirmations && !!requiredConfirmations
-  const displayInfo = !tx.txInfo.richDecodedInfo && tx.txInfo.type !== TransactionInfoType.TRANSFER
 
   return (
     <Box
       data-testid="transaction-item"
-      className={`${css.gridContainer} ${
-        isQueue
-          ? displayInfo
-            ? css.columnTemplate
-            : css.columnTemplateShort
-          : displayInfo
-          ? css.columnTemplateTxHistory
-          : css.columnTemplateTxHistoryShort
-      }`}
+      className={`${css.gridContainer} ${isQueue ? css.columnTemplate : css.columnTemplateTxHistory}`}
       id={tx.id}
     >
       {nonce && !isGrouped && <Box gridArea="nonce">{nonce}</Box>}
@@ -74,11 +65,9 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         <TxType tx={tx} />
       </Box>
 
-      {displayInfo && (
-        <Box gridArea="info" className={css.columnWrap}>
-          <TxInfo info={tx.txInfo} />
-        </Box>
-      )}
+      <Box gridArea="info" className={css.columnWrap}>
+        <TxInfo info={tx.txInfo} />
+      </Box>
 
       <Box gridArea="date">
         <DateTime value={tx.timestamp} />
