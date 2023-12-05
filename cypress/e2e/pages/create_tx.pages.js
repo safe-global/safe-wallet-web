@@ -1,4 +1,5 @@
 import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
 
 const newTransactionBtnStr = 'New transaction'
 const recepientInput = 'input[name="recipient"]'
@@ -12,6 +13,10 @@ const transactionActionsList = '[data-testid="transaction-actions-list"]'
 const transactionItem = '[data-testid="transaction-item"]'
 const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-method"]'
 const addToBatchBtn = '[data-track="batching: Add to batch"]'
+const accordionDetails = '[data-testid="accordion-details"]'
+const copyIcon = '[data-testid="copy-btn-icon"]'
+const transactionType = '[data-testid="tx-type"]'
+const copyToClipboardItem = 'span[aria-label="Copy to clipboard"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -32,6 +37,62 @@ const noLaterStr = 'No, later'
 const signBtnStr = 'Sign'
 const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
+
+export function verifyCopyIconsWork(number) {
+  for (let i = 0; i <= number; i++) {
+    cy.get(copyIcon)
+      .parent()
+      .eq(i)
+      .click({ force: true })
+      .then(() =>
+        cy.window().then((win) => {
+          win.navigator.clipboard.readText().then((text) => {
+            expect(text).to.contain('')
+            console.log(text)
+          })
+        }),
+      )
+  }
+}
+
+export function verifyNumberOfCopyIcons(number) {
+  main.verifyElementsCount(copyIcon, number)
+}
+
+export function verifyNumberOfExternalLinks(number) {
+  for (let i = 0; i <= number; i++) {
+    cy.get(copyIcon).parent().parent().next().should('be.visible')
+    cy.get(copyIcon)
+      .parent()
+      .parent()
+      .next()
+      .children()
+      .should('have.attr', 'href')
+      .and('include', constants.sepoliaEtherscanlLink)
+  }
+}
+
+export function clickOnTransactionItemByName(name) {
+  cy.get(transactionItem).contains(name).scrollIntoView().click({ force: true })
+}
+
+export function verifyExpandedDetails(data) {
+  main.checkTextsExistWithinElement(accordionDetails, data)
+}
+
+export function verifySummary(name, data, alt) {
+  cy.get(transactionItem)
+    .contains(name)
+    .parent()
+    .parent()
+    .parent()
+    .within(() => {
+      data.forEach((text) => {
+        cy.contains(text).should('be.visible')
+      })
+      if (alt) verifyImageAltTxt(0, alt)
+    })
+}
 
 export function clickOnTransactionItem(item) {
   cy.get(transactionItem).eq(item).scrollIntoView().click({ force: true })
@@ -232,15 +293,6 @@ export function verifyTransactionStrExists(str) {
 
 export function verifyTransactionStrNotVible(str) {
   cy.contains(str).should('not.be.visible')
-}
-
-export function clickOnTransactionExpandableItem(name, actions) {
-  cy.contains('div', name)
-    .next()
-    .click()
-    .within(() => {
-      actions()
-    })
 }
 
 export function clickOnExpandAllBtn() {

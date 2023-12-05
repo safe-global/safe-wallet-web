@@ -1,0 +1,118 @@
+{
+  "type": {
+    "general": {
+      "nonce": {},
+      "icon": {},
+      "title": {},
+      "actionsSummary": {},
+      "date": {},
+      "status": {},
+      "transactionSafehash": {},
+      "createdAt": {},
+      "executedAt": {},
+      "statusOk": "Success"
+    },
+    "actions": {
+      "created": {},
+      "confirmations": {},
+      "executedBy": {},
+      "signedBy": {}
+    },
+    "advancedDetails": {
+      "operation": {},
+      "safeTxGas": {},
+      "baseGas": {},
+      "gasPrice": {},
+      "gasToken": {},
+      "refundReceiver": {},
+      "signature": {},
+      "rawData": {}
+    },
+    "accountCreation": {
+      "actionsSummary": "Safe Account created by 0xC16D...6fED",
+      "transactionSafehash": {},
+      "title": "Safe Account created",
+      "creator": {
+        "actionTitle": "Creator",
+        "address": "sep:0xC16Db0251654C0a72E91B190d81eAD367d2C6fED"
+      },
+      "factory": {
+        "name": "SafeProxyFactory 1.3.0",
+        "actionTitle": "Factory",
+        "address": "sep:0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC"
+      },
+      "masterCopy": {
+        "name": "SafeL2 1.3.0",
+        "actionTitle": "Mastercopy",
+        "address": "sep:0xfb1bffC9d739B8D520DaF37dF666da4C687191EA"
+      },
+      "transactionHash": "0x05d4...7979",
+      "altTmage": "Safe Account created"
+    },
+    "receive": {
+      "title": "Receive",
+      "receivedFrom": "Received < 0.00001 ETH from:",
+      "senderAddress": "sep:0x96D4c6fFC338912322813a77655fCC926b9A5aC5",
+      "transactionHash": "0x4159...3e7d",
+      "altTmage": "Received"
+    },
+    "send": {
+      "sendTo": {},
+      "recipentAddress": {}
+    },
+    "setSpendingLimits": {
+      "contractTitle": {},
+      "contractVersion": {},
+      "contractAddress": {},
+      "enableModule": {},
+      "addDelegate": {},
+      "setAllowance": {
+        "delegateAddress": {},
+        "tokenAddress": {},
+        "allowanceAmount": {},
+        "resetTimeMin": {},
+        "resetBaseMin": {}
+      },
+      "deleteSpendingLimit": {
+        "title": {},
+        "beneficiary": {},
+        "token": {}
+      },
+      "onchainRejection": {
+        "description": {}
+      },
+      "batchNativeTransfer": {
+        "nativeTransfer": {}
+      },
+      "addOwner": {
+        "ownerAddress": {
+          "actionTitile": {},
+          "ownerAddress": {}
+        },
+        "confirmations": {}
+      },
+      "swapOwner": {
+        "newOwner": {
+          "actionTitile": {},
+          "ownerAddress": {}
+        },
+        "oldOwner": {
+          "actionTitile": {},
+          "ownerAddress": {}
+        }
+      },
+      "removeOwner": {
+        "actionTitile": {},
+        "ownerAddress": {}
+      },
+      "changeThreshold": {
+        "requiredConfirmations": {}
+      },
+      "disableModule": {
+        "actionTitle": {},
+        "address": {}
+      }
+    },
+    "": {}
+  }
+}

@@ -48,7 +48,7 @@ export const ExpandableTransactionItem = ({
         <TxSummary item={item} isGrouped={isGrouped} />
       </AccordionSummary>
 
-      <AccordionDetails sx={{ padding: 0 }}>
+      <AccordionDetails data-testid="accordion-details" sx={{ padding: 0 }}>
         {isCreationTxInfo(item.transaction.txInfo) ? (
           <CreateTxInfo txSummary={item.transaction} />
         ) : (

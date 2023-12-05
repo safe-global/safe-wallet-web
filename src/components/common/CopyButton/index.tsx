@@ -22,7 +22,7 @@ const CopyButton = ({
     <CopyTooltip text={text} onCopy={onCopy} initialToolTipText={initialToolTipText}>
       {children ?? (
         <IconButton aria-label={initialToolTipText} size="small" className={className}>
-          <SvgIcon component={CopyIcon} inheritViewBox color="border" fontSize="small" />
+          <SvgIcon data-testid="copy-btn-icon" component={CopyIcon} inheritViewBox color="border" fontSize="small" />
         </IconButton>
       )}
     </CopyTooltip>
