@@ -12,7 +12,6 @@ import { MethodDetails } from '@/components/transactions/TxDetails/TxData/Decode
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { dateString } from '@/utils/formatters'
 import { BATCH_EVENTS, trackEvent } from '@/services/analytics'
-import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 
 type BatchTxItemProps = DraftBatchItem & {
   id: string
@@ -56,7 +55,6 @@ const BatchTxItem = ({
   const handleExpand = () => {
     trackEvent(BATCH_EVENTS.BATCH_EXPAND_TX)
   }
-  const displayInfo = !txDetails.txInfo.richDecodedInfo && txDetails.txInfo.type !== TransactionInfoType.TRANSFER
 
   return (
     <ListItem disablePadding sx={{ gap: 2, alignItems: 'flex-start' }}>
@@ -77,7 +75,9 @@ const BatchTxItem = ({
 
             <TxType tx={txSummary} />
 
-            <Box flex={1}>{displayInfo && <TxInfo info={txDetails.txInfo} />}</Box>
+            <Box flex={1}>
+              <TxInfo info={txDetails.txInfo} />
+            </Box>
 
             {onDelete && (
               <>
