@@ -1,5 +1,5 @@
 import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Typography } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
@@ -13,7 +13,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 const onSubmit = () => {
-  trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.recovery_cancel })
+  trackEvent({ ...RECOVERY_EVENTS.SUBMIT_RECOVERY_CANCEL })
 }
 
 export function CancelRecoveryFlowReview({ recovery }: { recovery: RecoveryQueueItem }): ReactElement {
