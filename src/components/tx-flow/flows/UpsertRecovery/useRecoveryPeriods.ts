@@ -47,7 +47,7 @@ const TestRecoveryDelayPeriods: Periods = [
   },
   {
     label: '1 hour',
-    value: `${DAY_IN_SECONDS}`,
+    value: `${60 * 60}`,
   },
   ...DefaultRecoveryDelayPeriods,
 ]
@@ -62,8 +62,11 @@ const TestRecoveryExpirationPeriods: Periods = [
 
 export function useRecoveryPeriods(): { delay: Periods; expiration: Periods } {
   const chain = useCurrentChain()
+  const isTestChain = chain && [chains.gor, chains.sep].includes(chain.chainId)
 
-  if (!chain || [chains.gor, chains.sep].includes(chain.chainId)) {
+  // TODO: Remove constant before release
+  // eslint-disable-next-line no-constant-condition
+  if (isTestChain) {
     return {
       delay: TestRecoveryDelayPeriods,
       expiration: TestRecoveryExpirationPeriods,

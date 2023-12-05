@@ -80,7 +80,7 @@
   }
 
   .dialog :global .MuiDialogContent-root {
-    padding: var(--space-10);
+    padding: var(--space-8);
   }
 
   .dialog h2 {

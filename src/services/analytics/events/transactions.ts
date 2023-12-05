@@ -26,13 +26,6 @@ export enum TX_TYPES {
   typed_message = 'typed_message',
   safeapps = 'safeapps',
   walletconnect = 'walletconnect',
-
-  // Recovery
-  recovery_setup = 'recovery_setup',
-  recovery_edit = 'recovery_edit',
-  recovery_remove = 'recovery_remove',
-  recovery_attempt = 'recovery_attempt',
-  recovery_cancel = 'recovery_cancel',
 }
 
 const TX_CATEGORY = 'transactions'

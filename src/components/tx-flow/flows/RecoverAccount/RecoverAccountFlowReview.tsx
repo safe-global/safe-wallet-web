@@ -1,6 +1,6 @@
 import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
-import { CardActions, Button, Typography, Divider, Box } from '@mui/material'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
+import { CardActions, Button, Typography, Divider, Box, CircularProgress } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 
@@ -81,7 +81,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
         safeTx,
         delayModifierAddress: recovery.address,
       })
-      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.recovery_attempt })
+      trackEvent({ ...RECOVERY_EVENTS.SUBMIT_RECOVERY_ATTEMPT })
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._810, err)
@@ -167,7 +167,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           <CheckWallet allowNonOwner>
             {(isOk) => (
               <Button variant="contained" disabled={!isOk || submitDisabled} onClick={onSubmit}>
-                Execute
+                {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}
           </CheckWallet>

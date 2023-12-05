@@ -61,7 +61,13 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
   if (orientation === 'horizontal') {
     return (
       <Card sx={{ py: 3, px: 4 }}>
-        <Grid container display="flex" alignItems="center" gap={3} flexDirection={{ xs: 'column', md: 'row' }}>
+        <Grid
+          container
+          display="flex"
+          alignItems={{ xs: 'flex-start', md: 'center' }}
+          gap={3}
+          flexDirection={{ xs: 'column', md: 'row' }}
+        >
           <Grid item>{icon}</Grid>
 
           <Grid item xs>

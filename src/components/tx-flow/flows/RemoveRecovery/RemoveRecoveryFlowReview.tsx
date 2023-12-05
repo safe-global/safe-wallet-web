@@ -1,5 +1,5 @@
 import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Typography } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
@@ -11,7 +11,7 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import type { RecoveryFlowProps } from '.'
 
 const onSubmit = () => {
-  trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.recovery_remove })
+  trackEvent({ ...RECOVERY_EVENTS.SUBMIT_RECOVERY_REMOVE })
 }
 
 export function RemoveRecoveryFlowReview({ delayModifier }: RecoveryFlowProps): ReactElement {

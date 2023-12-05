@@ -11,7 +11,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { Errors, logError } from '@/services/exceptions'
 import { getRecoveryUpsertTransactions } from '@/services/recovery/setup'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
@@ -40,10 +39,10 @@ const getAddressType = async (address: string, chainId: string) => {
 
 const onSubmit = async (isEdit: boolean, params: UpsertRecoveryFlowProps, chainId: string) => {
   const addressType = await getAddressType(params.recoverer, chainId)
-  const creationType = isEdit ? TX_TYPES.recovery_edit : TX_TYPES.recovery_setup
-  const settings = `${creationType},delay_${params.delay},expiry_${params.expiry},type_${addressType}`
+  const creationEvent = isEdit ? RECOVERY_EVENTS.SUBMIT_RECOVERY_EDIT : RECOVERY_EVENTS.SUBMIT_RECOVERY_CREATE
+  const settings = `delay_${params.delay},expiry_${params.expiry},type_${addressType}`
 
-  trackEvent({ ...TX_EVENTS.CREATE, label: creationType })
+  trackEvent({ ...creationEvent })
   trackEvent({ ...RECOVERY_EVENTS.RECOVERY_SETTINGS, label: settings })
 }
 
@@ -61,7 +60,7 @@ export function UpsertRecoveryFlowReview({
   const periods = useRecoveryPeriods()
   const recoverer = params[UpsertRecoveryFlowFields.recoverer]
   const delay = periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.delay])!.label
-  const expiry = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])!.value
+  const expiry = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])!.label
 
   useEffect(() => {
     if (!web3ReadOnly) {
