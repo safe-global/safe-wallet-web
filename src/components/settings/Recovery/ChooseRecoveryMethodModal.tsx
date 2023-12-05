@@ -123,15 +123,15 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                       <List className={css.checkList}>
                         <ListItem>
                           <CheckIcon />
-                          Secured by a global digital asset banking group
+                          Regulated Swiss digital asset bank
                         </ListItem>
                         <ListItem>
                           <CheckIcon />
-                          Trusted by leading L1/L2 and DeFi protocols
+                          Ensure you (and only you) can recover
                         </ListItem>
                         <ListItem>
                           <CheckIcon />
-                          Easy and efficient setup
+                          Simple and efficient
                         </ListItem>
                       </List>
                     </div>
