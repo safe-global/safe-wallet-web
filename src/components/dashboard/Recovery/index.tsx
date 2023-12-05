@@ -25,7 +25,7 @@ export function Recovery(): ReactElement {
         <Card className={css.card}>
           <Grid container className={css.grid}>
             <Grid item>
-              <RecoveryLogo alt="Vault with a circular arrow around it" />
+              <RecoveryLogo alt="A circular arrow above a lifebuoy" />
             </Grid>
             <Grid item xs>
               <Box className={css.wrapper}>

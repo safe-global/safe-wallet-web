@@ -64,6 +64,18 @@ input[type='number'] {
   fill: var(--color-warning-background);
 }
 
+.illustration-background-paper-fill {
+  fill: var(--color-background-paper);
+}
+
+.illustration-secondary-light-fill {
+  fill: var(--color-secondary-light);
+}
+
+.illustration-text-primary-fill {
+  fill: var(--color-text-primary);
+}
+
 /* Note: a fallback `stroke` property must be on the svg to work */
 .illustration-main-stroke {
   stroke: var(--color-primary-main);
