@@ -64,7 +64,7 @@ export function RecoverAccountFlowSetup({
 
   const formMethods = useForm<RecoverAccountFlowProps>({
     defaultValues: params,
-    mode: 'all',
+    mode: 'onChange',
   })
 
   const newOwners = formMethods.watch(RecoverAccountFlowFields.owners)
