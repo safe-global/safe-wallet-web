@@ -101,7 +101,13 @@ const ExecuteForm = ({
   }
 
   const cannotPropose = !isOwner && !onlyExecute
-  const submitDisabled = !safeTx || !isSubmittable || disableSubmit || isExecutionLoop || cannotPropose
+  const submitDisabled =
+    !safeTx ||
+    !isSubmittable ||
+    disableSubmit ||
+    isExecutionLoop ||
+    cannotPropose ||
+    (needsRiskConfirmation && !isRiskConfirmed)
 
   return (
     <>

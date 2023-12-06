@@ -76,7 +76,8 @@ const SignForm = ({
   }
 
   const cannotPropose = !isOwner
-  const submitDisabled = !safeTx || !isSubmittable || disableSubmit || cannotPropose
+  const submitDisabled =
+    !safeTx || !isSubmittable || disableSubmit || cannotPropose || (needsRiskConfirmation && !isRiskConfirmed)
 
   return (
     <form onSubmit={handleSubmit}>
