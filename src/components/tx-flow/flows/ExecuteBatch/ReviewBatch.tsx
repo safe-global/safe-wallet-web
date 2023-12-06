@@ -30,7 +30,6 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxModalContext } from '@/components/tx-flow'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import type { PayableOverrides } from 'ethers'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
