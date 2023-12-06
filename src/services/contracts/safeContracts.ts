@@ -80,8 +80,12 @@ export const _getMinimumMultiSendCallOnlyVersion = (safeVersion: SafeInfo['versi
   return semver.gte(safeVersion, INITIAL_CALL_ONLY_VERSION) ? safeVersion : INITIAL_CALL_ONLY_VERSION
 }
 
-export const getMultiSendCallOnlyContract = (chainId: string, safeVersion: SafeInfo['version']) => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+export const getMultiSendCallOnlyContract = (
+  chainId: string,
+  safeVersion: SafeInfo['version'],
+  provider: Web3Provider,
+) => {
+  const ethAdapter = createEthersAdapter(provider)
   const multiSendVersion = _getMinimumMultiSendCallOnlyVersion(safeVersion)
 
   return ethAdapter.getMultiSendCallOnlyContract({

@@ -2,7 +2,7 @@ import { CircularProgress, Typography, Button, CardActions, Divider, Alert } fro
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
+import { getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
@@ -59,7 +59,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
   const multiSendContract = useMemo(() => {
     if (!chain?.chainId || !safe.version) return
-    return getMultiSendCallOnlyContract(chain.chainId, safe.version)
+    return getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
   }, [chain?.chainId, safe.version])
 
   const multiSendTxs = useMemo(() => {
