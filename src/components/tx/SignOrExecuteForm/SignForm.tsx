@@ -1,3 +1,4 @@
+import madProps from '@/utils/mad-props'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
 
@@ -15,7 +16,7 @@ import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 import BatchButton from './BatchButton'
 
-const SignForm = ({
+export const SignForm = ({
   safeTx,
   txId,
   onSubmit,
@@ -24,7 +25,9 @@ const SignForm = ({
   isBatch,
   isBatchable,
   isCreation,
+  isOwner,
 }: SignOrExecuteProps & {
+  isOwner: ReturnType<typeof useIsSafeOwner>
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
@@ -32,7 +35,6 @@ const SignForm = ({
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
   // Hooks
-  const isOwner = useIsSafeOwner()
   const { signTx, addToBatch } = useTxActions()
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
@@ -124,4 +126,6 @@ const SignForm = ({
   )
 }
 
-export default SignForm
+export default madProps(SignForm, {
+  isOwner: useIsSafeOwner,
+})
