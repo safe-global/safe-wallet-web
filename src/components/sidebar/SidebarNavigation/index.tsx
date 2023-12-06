@@ -13,8 +13,7 @@ import {
 import { type NavItem, navItems } from './config'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { AppRoutes } from '@/config/routes'
-import { useQueuedTxs } from '@/hooks/useTxQueue'
-import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
+import { useQueuedTxsLength } from '@/hooks/useTxQueue'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
@@ -24,7 +23,7 @@ const Navigation = (): ReactElement => {
   const router = useRouter()
   const { safe } = useSafeInfo()
   const currentSubdirectory = getSubdirectory(router.pathname)
-  const queueSize = useQueuedTxs().length + useRecoveryQueue().length
+  const queueSize = useQueuedTxsLength()
 
   const getBadge = (item: NavItem) => {
     // Indicate whether the current Safe needs an upgrade
@@ -42,7 +41,7 @@ const Navigation = (): ReactElement => {
 
   // Route Transactions to Queue if there are queued txs, otherwise to History
   const getRoute = (href: string) => {
-    if (href === AppRoutes.transactions.history && queueSize > 0) {
+    if (href === AppRoutes.transactions.history && queueSize) {
       return AppRoutes.transactions.queue
     }
     return href
