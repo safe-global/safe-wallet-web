@@ -1,4 +1,4 @@
-import React, { type ReactElement, useCallback } from 'react'
+import React, { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import ListItem from '@mui/material/ListItem'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
@@ -24,41 +24,29 @@ const Navigation = (): ReactElement => {
   const router = useRouter()
   const { safe } = useSafeInfo()
   const currentSubdirectory = getSubdirectory(router.pathname)
-  const queueSize = useTxQueue().page?.results.length || 0
-  const hasQueuedTxs = queueSize > 0
-  const hasRecoveryTxs = Boolean(useRecoveryQueue().length)
-  const isSafeOutdated = safe.implementationVersionState === ImplementationVersionState.OUTDATED
+  const queueSize = (useTxQueue().page?.results.length || 0) + useRecoveryQueue().length
 
-  const getBadge = useCallback(
-    (item: NavItem) => {
-      // Indicate whether the current Safe needs an upgrade
-      if (item.href === AppRoutes.settings.setup) {
-        return isSafeOutdated
-      }
-    },
-    [isSafeOutdated],
-  )
+  const getBadge = (item: NavItem) => {
+    // Indicate whether the current Safe needs an upgrade
+    if (item.href === AppRoutes.settings.setup) {
+      return safe.implementationVersionState === ImplementationVersionState.OUTDATED
+    }
+  }
 
-  const getCounter = useCallback(
-    (item: NavItem) => {
-      // Indicate qeueued txs
-      if (item.href === AppRoutes.transactions.history) {
-        return queueSize
-      }
-    },
-    [queueSize],
-  )
+  const getCounter = (item: NavItem) => {
+    // Indicate qeueued txs
+    if (item.href === AppRoutes.transactions.history) {
+      return queueSize
+    }
+  }
 
   // Route Transactions to Queue if there are queued txs, otherwise to History
-  const getRoute = useCallback(
-    (href: string) => {
-      if (href === AppRoutes.transactions.history && (hasQueuedTxs || hasRecoveryTxs)) {
-        return AppRoutes.transactions.queue
-      }
-      return href
-    },
-    [hasQueuedTxs, hasRecoveryTxs],
-  )
+  const getRoute = (href: string) => {
+    if (href === AppRoutes.transactions.history && queueSize > 0) {
+      return AppRoutes.transactions.queue
+    }
+    return href
+  }
 
   return (
     <SidebarList>
