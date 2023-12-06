@@ -1,5 +1,18 @@
+import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Transaction, TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
-import { isConflictHeaderListItem, isNoneConflictType, isTransactionListItem } from '@/utils/transaction-guards'
+
+import {
+  isConflictHeaderListItem,
+  isDateLabel,
+  isERC20Transfer,
+  isLabelListItem,
+  isNoneConflictType,
+  isOutgoingTransfer,
+  isTransactionListItem,
+  isTransferTxInfo,
+} from '@/utils/transaction-guards'
+import { sameAddress } from './addresses'
+import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
 type GroupedTxs = Array<TransactionListItem | Transaction[]>
 
@@ -29,6 +42,37 @@ export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => 
     })
 }
 
+export function _getRecoveryCancellations(moduleAddress: string, transactions: Array<Transaction>) {
+  const CANCELLATION_TX_METHOD_NAME = 'setTxNonce'
+
+  return transactions.filter(({ transaction }) => {
+    const { txInfo } = transaction
+    return (
+      txInfo.type === TransactionInfoType.CUSTOM &&
+      sameAddress(txInfo.to.value, moduleAddress) &&
+      txInfo.methodName === CANCELLATION_TX_METHOD_NAME
+    )
+  })
+}
+
+type GroupedRecoveryQueueItem = Transaction | RecoveryQueueItem
+
+export function groupRecoveryTransactions(queue: Array<TransactionListItem>, recoveryQueue: Array<RecoveryQueueItem>) {
+  const transactions = queue.filter(isTransactionListItem)
+
+  return recoveryQueue.reduce<Array<RecoveryQueueItem | Array<GroupedRecoveryQueueItem>>>((acc, item) => {
+    const cancellations = _getRecoveryCancellations(item.address, transactions)
+
+    if (cancellations.length === 0) {
+      acc.push(item)
+    } else {
+      acc.push([item, ...cancellations])
+    }
+
+    return acc
+  }, [])
+}
+
 export const getLatestTransactions = (list: TransactionListItem[] = []): Transaction[] => {
   return (
     groupConflictingTxs(list)
@@ -36,4 +80,20 @@ export const getLatestTransactions = (list: TransactionListItem[] = []): Transac
       .map((group) => (Array.isArray(group) ? group[0] : group))
       .filter(isTransactionListItem)
   )
+}
+
+export const filterNoNonceTransfers = (item: TransactionListItem): boolean => {
+  return !(
+    isTransactionListItem(item) &&
+    isOutgoingTransfer(item.transaction.txInfo) &&
+    !item.transaction.executionInfo &&
+    isTransferTxInfo(item.transaction.txInfo) &&
+    isERC20Transfer(item.transaction.txInfo.transferInfo) &&
+    !item.transaction.txInfo.humanDescription
+  )
+}
+
+export const filterEmptyLabels = (item: TransactionListItem, index: number, txList: TransactionListItem[]): boolean => {
+  const nextItem = txList[index + 1]
+  return (!isDateLabel(item) && !isLabelListItem(item)) || (nextItem && isTransactionListItem(nextItem))
 }

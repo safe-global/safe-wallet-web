@@ -121,12 +121,10 @@ export function isItemInLocalstorage(key, expectedValue, maxAttempts = 10, delay
       const storedValue = JSON.parse(window.localStorage.getItem(key))
       const keyEqualsValue = JSON.stringify(expectedValue) === JSON.stringify(storedValue)
       if (keyEqualsValue) {
-        cy.log('Item retrieved from local storage successfully')
         resolve()
       } else if (attempts < maxAttempts) {
         setTimeout(isItemInLocalstorage, delay)
       } else {
-        cy.log('Error: Key does not equal the expected value in local storage')
         reject(error)
       }
     }

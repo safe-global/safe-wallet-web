@@ -10,7 +10,7 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { AddOwnerFlowProps } from '.'
 import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
-import PlusIcon from '@/public/images/common/plus.svg'
+import { OwnerList } from '../../common/OwnerList'
 import MinusIcon from '@/public/images/common/minus.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -68,13 +68,7 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
           />
         </Paper>
       )}
-      <Paper sx={{ backgroundColor: ({ palette }) => palette.success.background, p: 2 }}>
-        <Typography color="text.secondary" mb={2} display="flex" alignItems="center">
-          <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-          New owner
-        </Typography>
-        <EthHashInfo name={newOwner.name} address={newOwner.address} shortAddress={false} showCopyButton hasExplorer />
-      </Paper>
+      <OwnerList owners={[{ name: newOwner.name, value: newOwner.address }]} />
       <Divider className={commonCss.nestedDivider} />
       <Box>
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>

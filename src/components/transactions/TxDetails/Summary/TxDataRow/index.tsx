@@ -8,7 +8,7 @@ import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 type TxDataRowProps = {
-  title: string
+  title: ReactNode
   children?: ReactNode
 }
 

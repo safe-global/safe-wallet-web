@@ -26,7 +26,7 @@ describe('[SMOKE] Load Safe tests', () => {
     cy.wait(2000)
   })
 
-  it('Verify a network can be selected in the Safe', () => {
+  it('[SMOKE] Verify a network can be selected in the Safe', () => {
     safe.clickNetworkSelector(constants.networks.sepolia)
     safe.selectPolygon()
     cy.wait(2000)
@@ -34,7 +34,7 @@ describe('[SMOKE] Load Safe tests', () => {
     safe.selectSepolia()
   })
 
-  it('Verify only valid Safe name can be accepted', () => {
+  it('[SMOKE] Verify only valid Safe name can be accepted', () => {
     // alias the address input label
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
@@ -47,27 +47,27 @@ describe('[SMOKE] Load Safe tests', () => {
     safe.clickOnNextBtn()
   })
 
-  it('Verify names cannot have more than 50 characters', () => {
+  it('[SMOKE] Verify names cannot have more than 50 characters', () => {
     safe.inputName(main.generateRandomString(51))
     safe.verifyNameLengthErrorMessage()
   })
 
-  it.skip('Verify ENS name is translated to a valid address', () => {
+  it('[SMOKE] Verify ENS name is translated to a valid address', () => {
     // cy.visit(constants.loadNewSafeEthUrl)
     safe.inputAddress(constants.ENS_TEST_SEPOLIA)
-    safe.verifyAddressInputValue(constants.ENS_TEST_SEPOLIA)
+    safe.verifyAddressInputValue(constants.SEPOLIA_TEST_SAFE_7)
     safe.verifyNextButtonStatus('be.enabled')
     safe.clickOnNextBtn()
   })
 
-  it('Verify a valid QR code is accepted', () => {
+  it('[SMOKE] Verify a valid QR code is accepted', () => {
     safe.scanQRCode(constants.VALID_QR_CODE_PATH)
     safe.verifyAddressInputValue(constants.SEPOLIA_TEST_SAFE_6)
     safe.verifyNextButtonStatus('be.enabled')
     safe.clickOnNextBtn()
   })
 
-  it('Verify a non QR code is not accepted', () => {
+  it('[SMOKE] Verify a non QR code is not accepted', () => {
     safe.scanQRCode(constants.INVALID_QR_CODE_PATH)
     safe.verifyQRCodeErrorMsg()
   })

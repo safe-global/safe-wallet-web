@@ -27,6 +27,7 @@ export default defineConfig({
     testIsolation: false,
     hideXHR: true,
     defaultCommandTimeout: 10000,
+    pageLoadTimeout: 60000,
   },
 
   chromeWebSecurity: false,
