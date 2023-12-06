@@ -16,7 +16,7 @@ import { TokenTransferFields, type TokenTransferParams, TokenTransferType } from
 import TxCard from '../../common/TxCard'
 import { formatVisualAmount } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import TokenAmountInput, { TokenAmountFields } from '@/components/common/TokenAmountInput'
+import TokenAmountInput from '@/components/common/TokenAmountInput'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
@@ -80,7 +80,7 @@ export const CreateTokenTransfer = ({
   } = formMethods
 
   const recipient = watch(TokenTransferFields.recipient)
-  const tokenAddress = watch(TokenAmountFields.tokenAddress)
+  const tokenAddress = watch(TokenTransferFields.tokenAddress)
   const type = watch(TokenTransferFields.type)
 
   const selectedToken = balancesItems.find((item) => item.tokenInfo.address === tokenAddress)
@@ -88,17 +88,14 @@ export const CreateTokenTransfer = ({
 
   const isSpendingLimitType = type === TokenTransferType.spendingLimit
 
-  const maxAmount =
-    isSpendingLimitType && spendingLimitAmount && totalAmount.gt(spendingLimitAmount)
-      ? spendingLimitAmount
-      : totalAmount
+  const maxAmount = isSpendingLimitType && totalAmount.gt(spendingLimitAmount) ? spendingLimitAmount : totalAmount
 
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   useEffect(() => {
-    setNonceNeeded(!isSpendingLimitType || !spendingLimitAmount)
+    setNonceNeeded(!isSpendingLimitType || spendingLimitAmount.eq(0))
   }, [setNonceNeeded, isSpendingLimitType, spendingLimitAmount])
 
   return (
@@ -124,7 +121,7 @@ export const CreateTokenTransfer = ({
             </Box>
           )}
 
-          {!disableSpendingLimit && !!spendingLimitAmount && (
+          {!disableSpendingLimit && spendingLimitAmount.gt(0) && (
             <FormControl fullWidth sx={{ mt: 3 }}>
               <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
             </FormControl>

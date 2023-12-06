@@ -13,6 +13,10 @@ describe('CreateTokenTransfer', () => {
     type: TokenTransferType.multiSig,
   }
 
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should display a token amount input', () => {
     const { getByText } = render(
       <CreateTokenTransfer params={mockParams} onSubmit={jest.fn()} isSafeTokenPaused={true} />,
