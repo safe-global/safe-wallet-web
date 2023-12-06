@@ -147,7 +147,9 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
               <StyledListItemIcon $state={StepState.CONFIRMED}>
                 <Created />
               </StyledListItemIcon>
-              <ListItemText data-testid="create-action" primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
+              <ListItemText data-testid="create-action" primaryTypographyProps={{ fontWeight: 700 }}>
+                Created
+              </ListItemText>
             </>
           )}
         </ListItem>

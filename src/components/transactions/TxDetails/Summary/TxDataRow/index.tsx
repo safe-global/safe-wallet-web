@@ -8,7 +8,7 @@ import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 type TxDataRowProps = {
-  datatestid: String
+  datatestid?: String
   title: ReactNode
   children?: ReactNode
 }
@@ -17,9 +17,17 @@ export const TxDataRow = ({ datatestid, title, children }: TxDataRowProps): Reac
   if (children == undefined) return null
   return (
     <div data-testid={datatestid} className={css.gridRow}>
-      <div data-testid="tx-row-title" className={css.title}>{title}</div>
+      <div data-testid="tx-row-title" className={css.title}>
+        {title}
+      </div>
 
-      {typeof children === 'string' ? <Typography component="div" data-testid="tx-data-row">{children}</Typography> : children}
+      {typeof children === 'string' ? (
+        <Typography component="div" data-testid="tx-data-row">
+          {children}
+        </Typography>
+      ) : (
+        children
+      )}
     </div>
   )
 }

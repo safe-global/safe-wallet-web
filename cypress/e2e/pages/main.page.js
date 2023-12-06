@@ -98,6 +98,12 @@ export function verifyElementsExist(elements) {
   })
 }
 
+export function verifyElementsIsVisible(elements) {
+  elements.forEach((element) => {
+    cy.get(element).should('be.visible')
+  })
+}
+
 export function getTextToArray(selector, textArray) {
   cy.get(selector).each(($element) => {
     textArray.push($element.text())

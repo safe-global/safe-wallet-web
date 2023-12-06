@@ -38,7 +38,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
       const title = settingsInfo.type === SettingsInfoType.ADD_OWNER ? 'Add owner:' : 'Remove owner:'
       return (
         <>
-          <ThresholdWarning/>
+          <ThresholdWarning />
           <InfoDetails datatestid="owner-action" title={title}>
             <EthHashInfo
               address={settingsInfo.owner.value}
@@ -46,7 +46,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
               customAvatar={settingsInfo.owner?.logoUri}
               {...addressInfoProps}
             />
-            <InfoDetails datatestid="required-confirmations" title="Required confirmations for new transactions:">{settingsInfo.threshold}</InfoDetails>
+            <InfoDetails datatestid="required-confirmations" title="Required confirmations for new transactions:">
+              {settingsInfo.threshold}
+            </InfoDetails>
           </InfoDetails>
         </>
       )
@@ -77,7 +79,9 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
       return (
         <>
           <ThresholdWarning />
-          <InfoDetails datatestid="required-confirmations" title="Required confirmations for new transactions:">{settingsInfo.threshold}</InfoDetails>
+          <InfoDetails datatestid="required-confirmations" title="Required confirmations for new transactions:">
+            {settingsInfo.threshold}
+          </InfoDetails>
         </>
       )
     }
