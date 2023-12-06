@@ -12,6 +12,8 @@ export const SEPOLIA_TEST_SAFE_5 = 'sep:0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b64
 export const SEPOLIA_TEST_SAFE_6 = 'sep:0x6d0b6F96f665Bb4490f9ddb2e450Da2f7e546dC1'
 // SAFE_7 has ENS assigned to it
 export const SEPOLIA_TEST_SAFE_7 = 'sep:0xBf30F749FC027a5d79c4710D988F0D3C8e217A4F'
+// SAFE 8 is used for tx history tests
+export const SEPOLIA_TEST_SAFE_8 = 'sep:0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
 export const PAGINATION_TEST_SAFE = 'gor:0x850493a15914aAC05a821A3FAb973b4598889A7b'
 export const TEST_SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
@@ -62,6 +64,7 @@ export const dataSettingsUrl = '/settings/data?safe='
 export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
+export const sepoliaEtherscanlLink = 'https://sepolia.etherscan.io/address'
 
 export const proposeEndpoint = '/**/propose'
 export const appsEndpoint = '/**/safe-apps'

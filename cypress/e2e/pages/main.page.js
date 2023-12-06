@@ -51,7 +51,9 @@ export function verifyHomeSafeUrl(safe) {
 
 export function checkTextsExistWithinElement(element, texts) {
   texts.forEach((text) => {
-    cy.wrap(element).findByText(text).should('exist')
+    cy.get(element).within(() => {
+      cy.get('div').contains(text).should('be.visible')
+    })
   })
 }
 
@@ -93,6 +95,12 @@ export function verifyValuesExist(element, values) {
 export function verifyElementsExist(elements) {
   elements.forEach((element) => {
     cy.get(element).should('exist')
+  })
+}
+
+export function verifyElementsIsVisible(elements) {
+  elements.forEach((element) => {
+    cy.get(element).should('be.visible')
   })
 }
 

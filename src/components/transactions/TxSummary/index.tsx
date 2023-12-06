@@ -59,17 +59,21 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       className={`${css.gridContainer} ${isQueue ? css.columnTemplate : css.columnTemplateTxHistory}`}
       id={tx.id}
     >
-      {nonce && !isGrouped && <Box gridArea="nonce">{nonce}</Box>}
+      {nonce && !isGrouped && (
+        <Box data-testid="nonce" gridArea="nonce">
+          {nonce}
+        </Box>
+      )}
 
-      <Box gridArea="type" className={css.columnWrap}>
+      <Box data-testid="tx-type" gridArea="type" className={css.columnWrap}>
         <TxType tx={tx} />
       </Box>
 
-      <Box gridArea="info" className={css.columnWrap}>
+      <Box data-testid="tx-info" gridArea="info" className={css.columnWrap}>
         <TxInfo info={tx.txInfo} />
       </Box>
 
-      <Box gridArea="date">
+      <Box data-testid="tx-date" gridArea="date">
         <DateTime value={tx.timestamp} />
       </Box>
 
@@ -94,6 +98,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       )}
 
       <Box
+        data-testid="tx-status"
         gridArea="status"
         marginLeft={{ sm: 'auto' }}
         marginRight={1}
