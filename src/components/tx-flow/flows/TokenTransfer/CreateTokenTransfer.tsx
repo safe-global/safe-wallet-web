@@ -135,10 +135,8 @@ const CreateTokenTransfer = ({
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   useEffect(() => {
-    if (!spendingLimit) {
-      setNonceNeeded(true)
-    }
-  }, [setNonceNeeded, spendingLimit])
+    setNonceNeeded(!isSpendingLimitType || !spendingLimit)
+  }, [setNonceNeeded, isSpendingLimitType, spendingLimit])
 
   return (
     <TxCard>
