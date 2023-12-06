@@ -6,10 +6,11 @@ import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript
 import {
   SidebarList,
   SidebarListItemButton,
+  SidebarListItemCounter,
   SidebarListItemIcon,
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
-import { navItems } from './config'
+import { type NavItem, navItems } from './config'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { AppRoutes } from '@/config/routes'
 import useTxQueue from '@/hooks/useTxQueue'
@@ -23,14 +24,30 @@ const Navigation = (): ReactElement => {
   const router = useRouter()
   const { safe } = useSafeInfo()
   const currentSubdirectory = getSubdirectory(router.pathname)
-  const hasQueuedTxs = Boolean(useTxQueue().page?.results.length)
+  const queueSize = useTxQueue().page?.results.length || 0
+  const hasQueuedTxs = queueSize > 0
   const hasRecoveryTxs = Boolean(useRecoveryQueue().length)
+  const isSafeOutdated = safe.implementationVersionState === ImplementationVersionState.OUTDATED
 
-  // Indicate whether the current Safe needs an upgrade
-  const setupItem = navItems.find((item) => item.href === AppRoutes.settings.setup)
-  if (setupItem) {
-    setupItem.badge = safe.implementationVersionState === ImplementationVersionState.OUTDATED
-  }
+  const getBadge = useCallback(
+    (item: NavItem) => {
+      // Indicate whether the current Safe needs an upgrade
+      if (item.href === AppRoutes.settings.setup) {
+        return isSafeOutdated
+      }
+    },
+    [isSafeOutdated],
+  )
+
+  const getCounter = useCallback(
+    (item: NavItem) => {
+      // Indicate qeueued txs
+      if (item.href === AppRoutes.transactions.history) {
+        return queueSize
+      }
+    },
+    [queueSize],
+  )
 
   // Route Transactions to Queue if there are queued txs, otherwise to History
   const getRoute = useCallback(
@@ -54,8 +71,13 @@ const Navigation = (): ReactElement => {
               selected={isSelected}
               href={{ pathname: getRoute(item.href), query: { safe: router.query.safe } }}
             >
-              {item.icon && <SidebarListItemIcon badge={item.badge}>{item.icon}</SidebarListItemIcon>}
-              <SidebarListItemText bold>{item.label}</SidebarListItemText>
+              {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
+
+              <SidebarListItemText bold>
+                {item.label}
+
+                <SidebarListItemCounter count={getCounter(item)} />
+              </SidebarListItemText>
             </SidebarListItemButton>
           </ListItem>
         )
