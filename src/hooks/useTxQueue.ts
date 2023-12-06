@@ -3,6 +3,7 @@ import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxQueue, selectQueuedTransactionsByNonce } from '@/store/txQueueSlice'
 import useSafeInfo from './useSafeInfo'
+import { isTransactionListItem } from '@/utils/transaction-guards'
 
 const useTxQueue = (
   pageUrl?: string,
@@ -35,6 +36,11 @@ const useTxQueue = (
         error: queueState.error,
         loading: queueState.loading,
       }
+}
+
+export const useQueuedTxs = () => {
+  const queue = useAppSelector(selectTxQueue)
+  return queue.data?.results.filter(isTransactionListItem) ?? []
 }
 
 export const useQueuedTxByNonce = (nonce?: number) => {
