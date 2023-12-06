@@ -11,7 +11,7 @@ import {
   isCancellationTxInfo,
 } from '@/utils/transaction-guards'
 
-export const getTransactionTrackingType = async (txId: string, chainId: string): Promise<string | undefined> => {
+export const getTransactionTrackingType = async (txId: string, chainId: string): Promise<string> => {
   let details: TransactionDetails
   try {
     details = await getTxDetails(txId, chainId)
