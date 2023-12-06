@@ -1,9 +1,9 @@
-import { type ReactElement, useMemo, useState, useCallback, useContext, useEffect } from 'react'
-import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import madProps from '@/utils/mad-props'
+import { type ReactElement, useState, useContext, useEffect } from 'react'
+import { type SafeBalanceResponse, type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import useAddressBook from '@/hooks/useAddressBook'
-import useChainId from '@/hooks/useChainId'
-import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
+import { useSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import useIsSafeTokenPaused from '@/hooks/useIsSafeTokenPaused'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import { useAppSelector } from '@/store'
@@ -21,10 +21,37 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import { TokenTransferFields, type TokenTransferParams, TokenTransferType } from '.'
 import TxCard from '../../common/TxCard'
-import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
+import { formatVisualAmount } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import TokenAmountInput, { TokenAmountFields } from '@/components/common/TokenAmountInput'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+
+const useTokenAmount = (
+  items: SafeBalanceResponse['items'],
+  selectedToken: SafeBalanceResponse['items'][0] | undefined,
+) => {
+  const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
+
+  const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
+  const totalAmount = BigNumber.from(selectedToken?.balance || 0)
+
+  return { totalAmount, spendingLimitAmount }
+}
+
+const useVisibleTokens = () => {
+  const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
+  const { balances } = useVisibleBalances()
+  const spendingLimits = useAppSelector(selectSpendingLimits)
+  const wallet = useWallet()
+
+  return isOnlySpendingLimitBeneficiary
+    ? balances.items.filter(({ tokenInfo }) => {
+        return spendingLimits?.some(({ beneficiary, token }) => {
+          return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token.address)
+        })
+      })
+    : balances.items
+}
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -40,24 +67,24 @@ export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }
   </Grid>
 )
 
-const CreateTokenTransfer = ({
+export const CreateTokenTransfer = ({
   params,
   onSubmit,
+  addressBook,
+  isSafeTokenPaused,
+  safeTokenAddress,
   txNonce,
 }: {
   params: TokenTransferParams
   onSubmit: (data: TokenTransferParams) => void
+  addressBook: ReturnType<typeof useAddressBook>
+  isSafeTokenPaused: ReturnType<typeof useIsSafeTokenPaused>
+  safeTokenAddress?: ReturnType<typeof useSafeTokenAddress>
   txNonce?: number
 }): ReactElement => {
   const disableSpendingLimit = txNonce !== undefined
-  const { balances } = useVisibleBalances()
-  const addressBook = useAddressBook()
-  const chainId = useChainId()
-  const safeTokenAddress = getSafeTokenAddress(chainId)
-  const isSafeTokenPaused = useIsSafeTokenPaused()
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
-  const spendingLimits = useAppSelector(selectSpendingLimits)
-  const wallet = useWallet()
+  const balancesItems = useVisibleTokens()
   const { setNonce, setNonceNeeded } = useContext(SafeTxContext)
   const [recipientFocus, setRecipientFocus] = useState(!params.recipient)
 
@@ -66,16 +93,6 @@ const CreateTokenTransfer = ({
       setNonce(txNonce)
     }
   }, [setNonce, txNonce])
-
-  const balancesItems = useMemo(() => {
-    return isOnlySpendingLimitBeneficiary
-      ? balances.items.filter(({ tokenInfo }) => {
-          return spendingLimits?.some(({ beneficiary, token }) => {
-            return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token.address)
-          })
-        })
-      : balances.items
-  }, [balances.items, isOnlySpendingLimitBeneficiary, spendingLimits, wallet?.address])
 
   const formMethods = useForm<TokenTransferParams>({
     defaultValues: {
@@ -101,42 +118,26 @@ const CreateTokenTransfer = ({
   } = formMethods
 
   const recipient = watch(TokenTransferFields.recipient)
-
-  // Selected token
   const tokenAddress = watch(TokenAmountFields.tokenAddress)
-  const selectedToken = tokenAddress ? balancesItems.find((item) => item.tokenInfo.address === tokenAddress) : undefined
-
   const type = watch(TokenTransferFields.type)
-  const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
+
+  const selectedToken = balancesItems.find((item) => item.tokenInfo.address === tokenAddress)
+  const { totalAmount, spendingLimitAmount } = useTokenAmount(balancesItems, selectedToken)
+
   const isSpendingLimitType = type === TokenTransferType.spendingLimit
-  const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
-  const totalAmount = BigNumber.from(selectedToken?.balance || 0)
-  const maxAmount = isSpendingLimitType
-    ? spendingLimitAmount && totalAmount.gt(spendingLimitAmount)
+
+  const maxAmount =
+    isSpendingLimitType && spendingLimitAmount && totalAmount.gt(spendingLimitAmount)
       ? spendingLimitAmount
       : totalAmount
-    : totalAmount
-
-  const onMaxAmountClick = useCallback(() => {
-    if (!selectedToken) return
-
-    const amount =
-      isSpendingLimitType && spendingLimitAmount && spendingLimitAmount.lte(selectedToken.balance)
-        ? spendingLimitAmount.toString()
-        : selectedToken.balance
-
-    setValue(TokenAmountFields.amount, safeFormatUnits(amount, selectedToken.tokenInfo.decimals), {
-      shouldValidate: true,
-    })
-  }, [isSpendingLimitType, selectedToken, setValue, spendingLimitAmount])
 
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   useEffect(() => {
-    setNonceNeeded(!isSpendingLimitType || !spendingLimit)
-  }, [setNonceNeeded, isSpendingLimitType, spendingLimit])
+    setNonceNeeded(!isSpendingLimitType || !spendingLimitAmount)
+  }, [setNonceNeeded, isSpendingLimitType, spendingLimitAmount])
 
   return (
     <TxCard>
@@ -145,6 +146,7 @@ const CreateTokenTransfer = ({
           <FormControl fullWidth sx={{ mt: 1 }}>
             {addressBook[recipient] ? (
               <Box
+                data-testid="address-book-recipient"
                 onClick={() => {
                   setValue(TokenTransferFields.recipient, '')
                   setRecipientFocus(true)
@@ -162,12 +164,7 @@ const CreateTokenTransfer = ({
             )}
           </FormControl>
 
-          <TokenAmountInput
-            balances={balancesItems}
-            selectedToken={selectedToken}
-            maxAmount={maxAmount}
-            onMaxAmountClick={onMaxAmountClick}
-          />
+          <TokenAmountInput balances={balancesItems} selectedToken={selectedToken} maxAmount={maxAmount} />
 
           {isDisabled && (
             <Box display="flex" alignItems="center" mt={-2} mb={3}>
@@ -197,4 +194,8 @@ const CreateTokenTransfer = ({
   )
 }
 
-export default CreateTokenTransfer
+export default madProps(CreateTokenTransfer, {
+  addressBook: useAddressBook,
+  safeTokenAddress: useSafeTokenAddress,
+  isSafeTokenPaused: useIsSafeTokenPaused,
+})
