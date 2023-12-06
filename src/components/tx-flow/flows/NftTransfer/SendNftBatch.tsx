@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Box, Button, CardActions, Divider, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
 import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -6,9 +5,7 @@ import NftIcon from '@/public/images/common/nft.svg'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import type { NftTransferParams } from '.'
 import ImageFallback from '@/components/common/ImageFallback'
-import useAddressBook from '@/hooks/useAddressBook'
 import TxCard from '../../common/TxCard'
-import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 enum Field {
@@ -88,8 +85,6 @@ export const NftItems = ({ tokens }: { tokens: SafeCollectibleResponse[] }) => {
 }
 
 const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
-  const [recipientFocus, setRecipientFocus] = useState(false)
-  const addressBook = useAddressBook()
   const { tokens } = params
 
   const formMethods = useForm<FormData>({
@@ -100,7 +95,6 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
   const {
     handleSubmit,
     watch,
-    setValue,
     formState: { errors },
   } = formMethods
 
@@ -119,24 +113,7 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onFormSubmit)}>
           <FormControl fullWidth sx={{ mb: 3, mt: 1 }}>
-            {/* TODO: Extract this */}
-            {addressBook[recipient] ? (
-              <Box
-                onClick={() => {
-                  setValue(Field.recipient, '')
-                  setRecipientFocus(true)
-                }}
-              >
-                <AddressInputReadOnly label="Sending to" address={recipient} />
-              </Box>
-            ) : (
-              <AddressBookInput
-                name={Field.recipient}
-                label="Recipient address or ENS"
-                canAdd={isAddressValid}
-                focused={recipientFocus}
-              />
-            )}
+            <AddressBookInput name={Field.recipient} label="Recipient address or ENS" canAdd={isAddressValid} />
           </FormControl>
 
           <Typography data-testid="selected-nfts" variant="body2" color="text.secondary" mb={2}>
