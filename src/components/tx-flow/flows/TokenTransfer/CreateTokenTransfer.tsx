@@ -1,22 +1,15 @@
+import { useTokenAmount, useVisibleTokens } from '@/components/tx-flow/flows/TokenTransfer/utils'
 import madProps from '@/utils/mad-props'
-import { type ReactElement, useState, useContext, useEffect } from 'react'
-import { type SafeBalanceResponse, type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { useVisibleBalances } from '@/hooks/useVisibleBalances'
-import useAddressBook from '@/hooks/useAddressBook'
+import { type ReactElement, useContext, useEffect } from 'react'
+import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import useIsSafeTokenPaused from '@/hooks/useIsSafeTokenPaused'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
-import { useAppSelector } from '@/store'
-import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
-import useWallet from '@/hooks/wallets/useWallet'
 import { FormProvider, useForm } from 'react-hook-form'
-import useSpendingLimit from '@/hooks/useSpendingLimit'
-import { BigNumber } from '@ethersproject/bignumber'
 import { sameAddress } from '@/utils/addresses'
 import { Box, Button, CardActions, Divider, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
 import TokenIcon from '@/components/common/TokenIcon'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
 import { TokenTransferFields, type TokenTransferParams, TokenTransferType } from '.'
@@ -25,33 +18,6 @@ import { formatVisualAmount } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import TokenAmountInput, { TokenAmountFields } from '@/components/common/TokenAmountInput'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-
-const useTokenAmount = (
-  items: SafeBalanceResponse['items'],
-  selectedToken: SafeBalanceResponse['items'][0] | undefined,
-) => {
-  const spendingLimit = useSpendingLimit(selectedToken?.tokenInfo)
-
-  const spendingLimitAmount = spendingLimit ? BigNumber.from(spendingLimit.amount).sub(spendingLimit.spent) : undefined
-  const totalAmount = BigNumber.from(selectedToken?.balance || 0)
-
-  return { totalAmount, spendingLimitAmount }
-}
-
-const useVisibleTokens = () => {
-  const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
-  const { balances } = useVisibleBalances()
-  const spendingLimits = useAppSelector(selectSpendingLimits)
-  const wallet = useWallet()
-
-  return isOnlySpendingLimitBeneficiary
-    ? balances.items.filter(({ tokenInfo }) => {
-        return spendingLimits?.some(({ beneficiary, token }) => {
-          return sameAddress(beneficiary, wallet?.address || '') && sameAddress(tokenInfo.address, token.address)
-        })
-      })
-    : balances.items
-}
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -70,14 +36,12 @@ export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }
 export const CreateTokenTransfer = ({
   params,
   onSubmit,
-  addressBook,
   isSafeTokenPaused,
   safeTokenAddress,
   txNonce,
 }: {
   params: TokenTransferParams
   onSubmit: (data: TokenTransferParams) => void
-  addressBook: ReturnType<typeof useAddressBook>
   isSafeTokenPaused: ReturnType<typeof useIsSafeTokenPaused>
   safeTokenAddress?: ReturnType<typeof useSafeTokenAddress>
   txNonce?: number
@@ -86,7 +50,6 @@ export const CreateTokenTransfer = ({
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const balancesItems = useVisibleTokens()
   const { setNonce, setNonceNeeded } = useContext(SafeTxContext)
-  const [recipientFocus, setRecipientFocus] = useState(!params.recipient)
 
   useEffect(() => {
     if (txNonce) {
@@ -112,7 +75,6 @@ export const CreateTokenTransfer = ({
 
   const {
     handleSubmit,
-    setValue,
     watch,
     formState: { errors },
   } = formMethods
@@ -122,7 +84,7 @@ export const CreateTokenTransfer = ({
   const type = watch(TokenTransferFields.type)
 
   const selectedToken = balancesItems.find((item) => item.tokenInfo.address === tokenAddress)
-  const { totalAmount, spendingLimitAmount } = useTokenAmount(balancesItems, selectedToken)
+  const { totalAmount, spendingLimitAmount } = useTokenAmount(selectedToken)
 
   const isSpendingLimitType = type === TokenTransferType.spendingLimit
 
@@ -144,24 +106,11 @@ export const CreateTokenTransfer = ({
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)} className={commonCss.form}>
           <FormControl fullWidth sx={{ mt: 1 }}>
-            {addressBook[recipient] ? (
-              <Box
-                data-testid="address-book-recipient"
-                onClick={() => {
-                  setValue(TokenTransferFields.recipient, '')
-                  setRecipientFocus(true)
-                }}
-              >
-                <AddressInputReadOnly label="Sending to" address={recipient} />
-              </Box>
-            ) : (
-              <AddressBookInput
-                name={TokenTransferFields.recipient}
-                label="Recipient address or ENS"
-                canAdd={isAddressValid}
-                focused={recipientFocus}
-              />
-            )}
+            <AddressBookInput
+              name={TokenTransferFields.recipient}
+              label="Recipient address or ENS"
+              canAdd={isAddressValid}
+            />
           </FormControl>
 
           <TokenAmountInput balances={balancesItems} selectedToken={selectedToken} maxAmount={maxAmount} />
@@ -195,7 +144,6 @@ export const CreateTokenTransfer = ({
 }
 
 export default madProps(CreateTokenTransfer, {
-  addressBook: useAddressBook,
   safeTokenAddress: useSafeTokenAddress,
   isSafeTokenPaused: useIsSafeTokenPaused,
 })

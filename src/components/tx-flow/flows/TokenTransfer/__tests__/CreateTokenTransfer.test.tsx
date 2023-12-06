@@ -1,9 +1,9 @@
 import { TokenTransferType } from '@/components/tx-flow/flows/TokenTransfer'
 import { CreateTokenTransfer } from '@/components/tx-flow/flows/TokenTransfer/CreateTokenTransfer'
+import * as tokenUtils from '@/components/tx-flow/flows/TokenTransfer/utils'
 import { render } from '@/tests/test-utils'
-import { faker } from '@faker-js/faker'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { fireEvent, waitFor } from '@testing-library/react'
+import { BigNumber } from 'ethers'
 
 describe('CreateTokenTransfer', () => {
   const mockParams = {
@@ -15,44 +15,16 @@ describe('CreateTokenTransfer', () => {
 
   it('should display a token amount input', () => {
     const { getByText } = render(
-      <CreateTokenTransfer params={mockParams} onSubmit={jest.fn()} addressBook={{}} isSafeTokenPaused={true} />,
+      <CreateTokenTransfer params={mockParams} onSubmit={jest.fn()} isSafeTokenPaused={true} />,
     )
 
     expect(getByText('Amount')).toBeInTheDocument()
   })
 
-  it('should display a read-only field if recipient is in address book', () => {
-    const mockAddress = faker.finance.ethereumAddress()
-    const mockAddressBook = { [mockAddress]: 'Test address' }
-
+  it('should display a recipient input', () => {
     const { getAllByText } = render(
-      <CreateTokenTransfer
-        params={{ ...mockParams, recipient: mockAddress }}
-        onSubmit={jest.fn()}
-        addressBook={mockAddressBook}
-        isSafeTokenPaused={true}
-      />,
+      <CreateTokenTransfer params={mockParams} onSubmit={jest.fn()} isSafeTokenPaused={true} />,
     )
-
-    expect(getAllByText('Sending to')[0]).toBeInTheDocument()
-  })
-
-  it('should display an input field if the read-only field was clicked', () => {
-    const mockAddress = faker.finance.ethereumAddress()
-    const mockAddressBook = { [mockAddress]: 'Test address' }
-
-    const { getByTestId, getAllByText } = render(
-      <CreateTokenTransfer
-        params={{ ...mockParams, recipient: mockAddress }}
-        onSubmit={jest.fn()}
-        addressBook={mockAddressBook}
-        isSafeTokenPaused={true}
-      />,
-    )
-
-    expect(getAllByText('Sending to')[0]).toBeInTheDocument()
-
-    fireEvent.click(getByTestId('address-book-recipient'))
 
     expect(getAllByText('Recipient address or ENS')[0]).toBeInTheDocument()
   })
@@ -62,7 +34,6 @@ describe('CreateTokenTransfer', () => {
       <CreateTokenTransfer
         params={{ ...mockParams, tokenAddress: '0x2' }}
         onSubmit={jest.fn()}
-        addressBook={{}}
         safeTokenAddress="0x2"
         isSafeTokenPaused={true}
       />,
@@ -74,6 +45,39 @@ describe('CreateTokenTransfer', () => {
     expect(button).toBeDisabled()
   })
 
-  it.todo('should display a type selection if a spending limit token is selected')
-  it.todo('should not display a type selection if there is a txNonce')
+  it('should enable the submit button if $SAFE token is selected and transferable', () => {
+    const { queryByText, getByText } = render(
+      <CreateTokenTransfer
+        params={{ ...mockParams, tokenAddress: '0x2' }}
+        onSubmit={jest.fn()}
+        safeTokenAddress="0x2"
+        isSafeTokenPaused={false}
+      />,
+    )
+
+    const button = getByText('Next')
+
+    expect(queryByText('$SAFE is currently non-transferable.')).not.toBeInTheDocument()
+    expect(button).not.toBeDisabled()
+  })
+
+  it('should display a type selection if a spending limit token is selected', () => {
+    jest
+      .spyOn(tokenUtils, 'useTokenAmount')
+      .mockReturnValue({ totalAmount: BigNumber.from(1000), spendingLimitAmount: BigNumber.from(500) })
+
+    const { getByText } = render(
+      <CreateTokenTransfer params={mockParams} onSubmit={jest.fn()} isSafeTokenPaused={false} />,
+    )
+
+    expect(getByText('Send as')).toBeInTheDocument()
+  })
+
+  it('should not display a type selection if there is a txNonce', () => {
+    const { queryByText } = render(
+      <CreateTokenTransfer params={mockParams} onSubmit={jest.fn()} isSafeTokenPaused={false} txNonce={1} />,
+    )
+
+    expect(queryByText('Send as')).not.toBeInTheDocument()
+  })
 })
