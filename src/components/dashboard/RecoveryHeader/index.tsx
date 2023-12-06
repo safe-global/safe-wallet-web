@@ -72,7 +72,7 @@ export function _useIsProposalInProgress(): boolean {
 }
 
 // Appease TypeScript
-const _useSupportedRecovery = () => useHasFeature(FEATURES.RECOVERY)
+const _useSupportedRecovery = () => useHasFeature(FEATURES.RECOVER_TEMP)
 
 export const RecoveryHeader = madProps(_RecoveryHeader, {
   isProposalInProgress: _useIsProposalInProgress,

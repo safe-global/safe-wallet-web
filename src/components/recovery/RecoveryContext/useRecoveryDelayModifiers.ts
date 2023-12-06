@@ -15,7 +15,7 @@ function isOnlySpendingLimitEnabled(chainId: string, modules: SafeInfo['modules'
 }
 
 export function useRecoveryDelayModifiers(): AsyncResult<Delay[]> {
-  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
+  const supportsRecovery = useHasFeature(FEATURES.RECOVER_TEMP)
   const web3ReadOnly = useWeb3ReadOnly()
   const { safe, safeAddress } = useSafeInfo()
 

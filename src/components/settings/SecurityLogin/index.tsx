@@ -9,7 +9,7 @@ import { Recovery } from '../Recovery'
 import SpendingLimits from '../SpendingLimits'
 
 const SecurityLogin = () => {
-  const isRecoverySupported = useHasFeature(FEATURES.RECOVERY)
+  const isRecoverySupported = useHasFeature(FEATURES.RECOVER_TEMP)
   const wallet = useWallet()
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 

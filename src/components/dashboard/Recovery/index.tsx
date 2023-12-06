@@ -13,7 +13,7 @@ import css from './styles.module.css'
 
 export function Recovery(): ReactElement {
   const [recovery] = useRecovery()
-  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
+  const supportsRecovery = useHasFeature(FEATURES.RECOVER_TEMP)
 
   return (
     <WidgetContainer>

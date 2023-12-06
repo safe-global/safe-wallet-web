@@ -15,7 +15,7 @@ import { RecoveryHeader } from './RecoveryHeader'
 import { useRecovery } from '../recovery/RecoveryContext'
 
 function _useShouldShowRecovery(): boolean {
-  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
+  const supportsRecovery = useHasFeature(FEATURES.RECOVER_TEMP)
   const [recovery] = useRecovery()
   return supportsRecovery && !recovery
 }
