@@ -53,11 +53,9 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
       <TxCard>
         {props.children}
 
-        {!isCreation && (
-          <ErrorBoundary fallback={<div>Error parsing data</div>}>
-            <ApprovalEditor safeTransaction={safeTx} />
-          </ErrorBoundary>
-        )}
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor safeTransaction={safeTx} />
+        </ErrorBoundary>
 
         <DecodedTx
           tx={safeTx}
