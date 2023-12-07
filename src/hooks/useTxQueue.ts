@@ -43,6 +43,7 @@ const useTxQueue = (
 export const useQueuedTxsLength = (): string => {
   const queue = useAppSelector(selectTxQueue)
   const { length } = queue.data?.results.filter(isTransactionListItem) ?? []
+  console.log(queue)
   const recoveryQueueSize = useRecoveryQueue().length
   const totalSize = length + recoveryQueueSize
   if (!totalSize) return ''
