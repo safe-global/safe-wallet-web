@@ -22,6 +22,13 @@ describe('SignForm', () => {
     operation: OperationType.Call,
   })
 
+  const defaultProps = {
+    onSubmit: jest.fn(),
+    isOwner: true,
+    txActions: { signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() },
+    txSecurity: defaultSecurityContextValues,
+  }
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -29,14 +36,7 @@ describe('SignForm', () => {
   it('displays a warning if connected wallet already signed the tx', () => {
     jest.spyOn(hooks, 'useAlreadySigned').mockReturnValue(true)
 
-    const { getByText } = render(
-      <SignForm
-        onSubmit={jest.fn()}
-        isOwner={true}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
-      />,
-    )
+    const { getByText } = render(<SignForm {...defaultProps} />)
 
     expect(getByText('You have already signed this transaction.')).toBeInTheDocument()
   })
@@ -44,14 +44,7 @@ describe('SignForm', () => {
   it('does not display a warning if connected wallet has not signed the tx yet', () => {
     jest.spyOn(hooks, 'useAlreadySigned').mockReturnValue(false)
 
-    const { queryByText } = render(
-      <SignForm
-        onSubmit={jest.fn()}
-        isOwner={true}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
-      />,
-    )
+    const { queryByText } = render(<SignForm {...defaultProps} />)
 
     expect(queryByText('You have already signed this transaction.')).not.toBeInTheDocument()
   })
@@ -59,14 +52,7 @@ describe('SignForm', () => {
   it('shows a non-owner error', () => {
     jest.spyOn(hooks, 'useAlreadySigned').mockReturnValue(false)
 
-    const { queryByText } = render(
-      <SignForm
-        onSubmit={jest.fn()}
-        isOwner={false}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
-      />,
-    )
+    const { queryByText } = render(<SignForm {...defaultProps} isOwner={false} />)
 
     expect(
       queryByText(
@@ -82,11 +68,9 @@ describe('SignForm', () => {
 
     const { getByText } = render(
       <SignForm
+        {...defaultProps}
         safeTx={safeTransaction}
-        onSubmit={jest.fn()}
-        isOwner={true}
         txActions={{ signTx: mockSignTx, addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
       />,
     )
 
@@ -104,11 +88,9 @@ describe('SignForm', () => {
 
     const { getByText } = render(
       <SignForm
+        {...defaultProps}
         safeTx={safeTransaction}
-        onSubmit={jest.fn()}
-        isOwner={true}
         txActions={{ signTx: mockSignTx, addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
       />,
     )
 
@@ -122,45 +104,19 @@ describe('SignForm', () => {
   })
 
   it('shows a batch button on tx creation', () => {
-    const { getByText } = render(
-      <SignForm
-        isCreation
-        onSubmit={jest.fn()}
-        isOwner={true}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
-      />,
-    )
+    const { getByText } = render(<SignForm {...defaultProps} isCreation />)
 
     expect(getByText('Add to batch')).toBeInTheDocument()
   })
 
   it('does not show a batch button when signing a batch', () => {
-    const { queryByText } = render(
-      <SignForm
-        isCreation
-        isBatch
-        onSubmit={jest.fn()}
-        isOwner={true}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
-      />,
-    )
+    const { queryByText } = render(<SignForm {...defaultProps} isCreation isBatch />)
 
     expect(queryByText('Add to batch')).not.toBeInTheDocument()
   })
 
   it('disables the batch button if tx is not batchable', () => {
-    const { getByText } = render(
-      <SignForm
-        isCreation
-        isBatchable={false}
-        onSubmit={jest.fn()}
-        isOwner={true}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
-      />,
-    )
+    const { getByText } = render(<SignForm {...defaultProps} isCreation isBatchable={false} />)
 
     const batchButton = getByText('Add to batch')
 
@@ -173,13 +129,11 @@ describe('SignForm', () => {
 
     const { getByText } = render(
       <SignForm
+        {...defaultProps}
         safeTx={safeTransaction}
         isBatchable
         isCreation
-        onSubmit={jest.fn()}
-        isOwner={true}
         txActions={{ signTx: jest.fn(), addToBatch: mockAddToBatch, executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
       />,
     )
 
@@ -193,14 +147,7 @@ describe('SignForm', () => {
   })
 
   it('shows a disabled submit button if there is no safeTx', () => {
-    const { getByText } = render(
-      <SignForm
-        onSubmit={jest.fn()}
-        isOwner={true}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
-      />,
-    )
+    const { getByText } = render(<SignForm {...defaultProps} safeTx={undefined} />)
 
     const button = getByText('Sign')
 
@@ -209,16 +156,7 @@ describe('SignForm', () => {
   })
 
   it('shows a disabled submit button if passed via props', () => {
-    const { getByText } = render(
-      <SignForm
-        safeTx={safeTransaction}
-        onSubmit={jest.fn()}
-        disableSubmit
-        isOwner={true}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
-      />,
-    )
+    const { getByText } = render(<SignForm {...defaultProps} safeTx={safeTransaction} disableSubmit />)
 
     const button = getByText('Sign')
 
@@ -227,15 +165,7 @@ describe('SignForm', () => {
   })
 
   it('shows a disabled submit button if not an owner', () => {
-    const { getByText } = render(
-      <SignForm
-        safeTx={safeTransaction}
-        onSubmit={jest.fn()}
-        isOwner={false}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
-        txSecurity={defaultSecurityContextValues}
-      />,
-    )
+    const { getByText } = render(<SignForm {...defaultProps} safeTx={safeTransaction} isOwner={false} />)
 
     const button = getByText('Sign')
 
@@ -246,10 +176,8 @@ describe('SignForm', () => {
   it('shows a disabled submit button if there is a high or critical risk and user has not confirmed it', () => {
     const { getByText } = render(
       <SignForm
+        {...defaultProps}
         safeTx={safeTransaction}
-        onSubmit={jest.fn()}
-        isOwner={false}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
         txSecurity={{ ...defaultSecurityContextValues, needsRiskConfirmation: true, isRiskConfirmed: false }}
       />,
     )
@@ -263,10 +191,8 @@ describe('SignForm', () => {
   it('shows an enabled submit button if there is a high or critical risk and user has confirmed it', () => {
     const { getByText } = render(
       <SignForm
+        {...defaultProps}
         safeTx={safeTransaction}
-        onSubmit={jest.fn()}
-        isOwner={true}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }}
         txSecurity={{ ...defaultSecurityContextValues, needsRiskConfirmation: true, isRiskConfirmed: true }}
       />,
     )
