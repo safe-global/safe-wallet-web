@@ -17,18 +17,13 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import ReplaceOwnerIcon from '@/public/images/settings/setup/replace-owner.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
-import ExportIcon from '@/public/images/common/export.svg'
+import type { AddressBook } from '@/store/addressBookSlice'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
 const headCells = [
   { id: 'owner', label: 'Name' },
-  {
-    id: 'actions',
-    label: <ExportButton />,
-    sticky: true,
-    hideSort: true,
-  },
+  { id: 'actions', label: '', sticky: true },
 ]
 
 export const OwnerList = () => {
@@ -118,7 +113,7 @@ export const OwnerList = () => {
 
           <EnhancedTable rows={rows} headCells={headCells} />
 
-          <Box pt={2}>
+          <Box pt={2} display="flex" justifyContent="space-between">
             <CheckWallet>
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
@@ -134,6 +129,10 @@ export const OwnerList = () => {
                 </Track>
               )}
             </CheckWallet>
+
+            <Button variant="text" onClick={() => exportOwners(safe, addressBook)}>
+              Export as CSV
+            </Button>
           </Box>
         </Grid>
       </Grid>
@@ -141,8 +140,14 @@ export const OwnerList = () => {
   )
 }
 
-function exportOwners({ chainId, address, owners }: SafeInfo) {
-  const csv = jsonToCSV(owners.map((owner) => [owner.value]))
+function exportOwners({ chainId, address, owners }: SafeInfo, addressBook: AddressBook) {
+  const json = owners.map((owner) => {
+    const address = owner.value
+    const name = addressBook[address] || owner.name
+    return [address, name]
+  })
+
+  const csv = jsonToCSV(json)
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
   const link = document.createElement('a')
 
@@ -152,18 +157,4 @@ function exportOwners({ chainId, address, owners }: SafeInfo) {
   })
 
   link.click()
-}
-
-function ExportButton() {
-  const { safe } = useSafeInfo()
-
-  return (
-    <Box textAlign="right">
-      <Tooltip title="Export owners">
-        <Button variant="contained" onClick={() => exportOwners(safe)} sx={{ p: 1, minWidth: 'unset' }}>
-          <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
-        </Button>
-      </Tooltip>
-    </Box>
-  )
 }
