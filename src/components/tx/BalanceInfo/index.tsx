@@ -13,7 +13,7 @@ const BalanceInfo = () => {
       <div>
         <Stack direction="row" spacing={0.5} alignItems="center">
           <Typography variant="body2" fontWeight={700} letterSpacing="0.1px">
-            Wallet balance
+            Connected wallet balance
           </Typography>
         </Stack>
 
