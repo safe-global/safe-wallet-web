@@ -26,8 +26,12 @@ export const SignForm = ({
   isBatchable,
   isCreation,
   isOwner,
+  txActions,
+  txSecurity,
 }: SignOrExecuteProps & {
   isOwner: ReturnType<typeof useIsSafeOwner>
+  txActions: ReturnType<typeof useTxActions>
+  txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
@@ -35,9 +39,9 @@ export const SignForm = ({
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
   // Hooks
-  const { signTx, addToBatch } = useTxActions()
+  const { signTx, addToBatch } = txActions
   const { setTxFlow } = useContext(TxModalContext)
-  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
+  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
   const hasSigned = useAlreadySigned(safeTx)
 
   // On modal submit
@@ -126,6 +130,10 @@ export const SignForm = ({
   )
 }
 
+const useTxSecurityContext = () => useContext(TxSecurityContext)
+
 export default madProps(SignForm, {
   isOwner: useIsSafeOwner,
+  txActions: useTxActions,
+  txSecurity: useTxSecurityContext,
 })
