@@ -11,7 +11,7 @@ describe('[SMOKE] Address book tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
-    main.waitForTrnsactionHistoryToComplete()
+    main.waitForHistoryCallToComplete()
     main.acceptCookies()
   })
 
