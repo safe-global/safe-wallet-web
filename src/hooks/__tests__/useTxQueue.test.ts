@@ -5,6 +5,10 @@ import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 import { TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('useQueuedTxsLength', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should return an empty string if there are no queued transactions', () => {
     jest.spyOn(store, 'useAppSelector').mockReturnValue({
       data: {
