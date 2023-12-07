@@ -39,10 +39,14 @@ export const ExecuteForm = ({
   isOwner,
   isExecutionLoop,
   relays,
+  txActions,
+  txSecurity,
 }: SignOrExecuteProps & {
   isOwner: ReturnType<typeof useIsSafeOwner>
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
   relays: ReturnType<typeof useRelaysBySafe>
+  txActions: ReturnType<typeof useTxActions>
+  txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
@@ -51,9 +55,9 @@ export const ExecuteForm = ({
 
   // Hooks
   const currentChain = useCurrentChain()
-  const { executeTx } = useTxActions()
+  const { executeTx } = txActions
   const { setTxFlow } = useContext(TxModalContext)
-  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
+  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
 
   // We default to relay, but the option is only shown if we canRelay
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
@@ -174,8 +178,12 @@ export const ExecuteForm = ({
   )
 }
 
+const useTxSecurityContext = () => useContext(TxSecurityContext)
+
 export default madProps(ExecuteForm, {
   isOwner: useIsSafeOwner,
   isExecutionLoop: useIsExecutionLoop,
   relays: useRelaysBySafe,
+  txActions: useTxActions,
+  txSecurity: useTxSecurityContext,
 })

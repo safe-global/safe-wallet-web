@@ -1,36 +1,53 @@
+import { defaultSecurityContextValues } from '@/components/tx/security/shared/TxSecurityContext'
+import { type AsyncResult } from '@/hooks/useAsync'
+import { type RelayResponse } from '@/services/tx/relaying'
+import { createMockSafeTransaction } from '@/tests/transactions'
+import { OperationType } from '@safe-global/safe-core-sdk-types'
+import { type ReactElement } from 'react'
 import { ExecuteForm } from '@/components/tx/SignOrExecuteForm/ExecuteForm'
+import * as useGasLimit from '@/hooks/useGasLimit'
+import * as useIsValidExecution from '@/hooks/useIsValidExecution'
 import * as useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import * as relayUtils from '@/utils/relaying'
 import { render } from '@/tests/test-utils'
+import { fireEvent, waitFor } from '@testing-library/react'
+
+// We assume that CheckWallet always returns true
+jest.mock('@/components/common/CheckWallet', () => ({
+  __esModule: true,
+  default({ children }: { children: (ok: boolean) => ReactElement }) {
+    return children(true)
+  },
+}))
 
 describe('ExecuteForm', () => {
+  const safeTransaction = createMockSafeTransaction({
+    to: '0x1',
+    data: '0x',
+    operation: OperationType.Call,
+  })
+
+  const defaultProps = {
+    onSubmit: jest.fn(),
+    isOwner: true,
+    isExecutionLoop: false,
+    relays: [undefined, undefined, false] as AsyncResult<RelayResponse>,
+    txActions: { signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() },
+    txSecurity: defaultSecurityContextValues,
+  }
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   it('shows estimated fees', () => {
-    const { getByText } = render(
-      <ExecuteForm
-        onSubmit={jest.fn()}
-        isOwner={true}
-        isExecutionLoop={false}
-        relays={[undefined, undefined, false]}
-      />,
-    )
+    const { getByText } = render(<ExecuteForm {...defaultProps} />)
 
     expect(getByText('Estimated fee')).toBeInTheDocument()
   })
 
   it('shows a non-owner error if the transaction still needs signatures and its not an owner', () => {
-    const { getByText } = render(
-      <ExecuteForm
-        onSubmit={jest.fn()}
-        isOwner={false}
-        isExecutionLoop={false}
-        onlyExecute={false}
-        relays={[undefined, undefined, false]}
-      />,
-    )
+    const { getByText } = render(<ExecuteForm {...defaultProps} isOwner={false} onlyExecute={false} />)
 
     expect(
       getByText("You are currently not an owner of this Safe Account and won't be able to submit this transaction."),
@@ -38,15 +55,7 @@ describe('ExecuteForm', () => {
   })
 
   it('does not show a non-owner error if the transaction is fully signed and its not an owner', () => {
-    const { queryByText } = render(
-      <ExecuteForm
-        onSubmit={jest.fn()}
-        isOwner={false}
-        isExecutionLoop={false}
-        onlyExecute={true}
-        relays={[undefined, undefined, false]}
-      />,
-    )
+    const { queryByText } = render(<ExecuteForm {...defaultProps} isOwner={false} onlyExecute={true} />)
 
     expect(
       queryByText("You are currently not an owner of this Safe Account and won't be able to submit this transaction."),
@@ -54,9 +63,7 @@ describe('ExecuteForm', () => {
   })
 
   it('shows an error if the same safe tries to execute', () => {
-    const { getByText } = render(
-      <ExecuteForm onSubmit={jest.fn()} isOwner={true} isExecutionLoop={true} relays={[undefined, undefined, false]} />,
-    )
+    const { getByText } = render(<ExecuteForm {...defaultProps} isExecutionLoop={true} />)
 
     expect(
       getByText('Cannot execute a transaction from the Safe Account itself, please connect a different account.'),
@@ -67,10 +74,134 @@ describe('ExecuteForm', () => {
     jest.spyOn(useWalletCanRelay, 'default').mockReturnValue([true, undefined, false])
     jest.spyOn(relayUtils, 'hasRemainingRelays').mockReturnValue(true)
 
-    const { getByText } = render(
-      <ExecuteForm onSubmit={jest.fn()} isOwner={true} isExecutionLoop={true} relays={[undefined, undefined, false]} />,
-    )
+    const { getByText } = render(<ExecuteForm {...defaultProps} />)
 
     expect(getByText('Choose execution method:')).toBeInTheDocument()
+  })
+
+  it('shows an execution validation error', () => {
+    jest
+      .spyOn(useIsValidExecution, 'default')
+      .mockReturnValue({ executionValidationError: new Error('Some error'), isValidExecutionLoading: false })
+
+    const { getByText } = render(
+      <ExecuteForm {...defaultProps} txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() }} />,
+    )
+
+    expect(
+      getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
+    ).toBeInTheDocument()
+  })
+
+  it('shows a gasLimit error', () => {
+    jest
+      .spyOn(useGasLimit, 'default')
+      .mockReturnValue({ gasLimitError: new Error('Gas limit error'), gasLimitLoading: false })
+
+    const { getByText } = render(<ExecuteForm {...defaultProps} />)
+
+    expect(
+      getByText('This transaction will most likely fail. To save gas costs, reject this transaction.'),
+    ).toBeInTheDocument()
+  })
+
+  it('shows a submit error', async () => {
+    const mockExecuteTx = jest.fn(() => {
+      throw new Error('Error submitting the tx')
+    })
+
+    const { getByText } = render(
+      <ExecuteForm
+        {...defaultProps}
+        safeTx={safeTransaction}
+        onSubmit={jest.fn()}
+        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: mockExecuteTx }}
+      />,
+    )
+
+    const button = getByText('Execute')
+
+    fireEvent.click(button)
+
+    await waitFor(() => {
+      expect(getByText('Error submitting the transaction. Please try again.')).toBeInTheDocument()
+    })
+  })
+
+  it('execute the tx when the submit button is clicked', async () => {
+    const mockExecuteTx = jest.fn()
+
+    const { getByText } = render(
+      <ExecuteForm
+        {...defaultProps}
+        safeTx={safeTransaction}
+        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: mockExecuteTx }}
+      />,
+    )
+
+    const button = getByText('Execute')
+
+    fireEvent.click(button)
+
+    await waitFor(() => {
+      expect(mockExecuteTx).toHaveBeenCalled()
+    })
+  })
+
+  it('shows a disabled submit button if there is no safeTx', () => {
+    const { getByText } = render(<ExecuteForm {...defaultProps} safeTx={undefined} />)
+
+    const button = getByText('Execute')
+
+    expect(button).toBeInTheDocument()
+    expect(button).toBeDisabled()
+  })
+
+  it('shows a disabled submit button if passed via props', () => {
+    const { getByText } = render(<ExecuteForm safeTx={safeTransaction} disableSubmit {...defaultProps} />)
+
+    const button = getByText('Execute')
+
+    expect(button).toBeInTheDocument()
+    expect(button).toBeDisabled()
+  })
+
+  it('shows a disabled submit button if the same safe is connected', () => {
+    const { getByText } = render(<ExecuteForm {...defaultProps} isExecutionLoop={true} />)
+
+    const button = getByText('Execute')
+
+    expect(button).toBeInTheDocument()
+    expect(button).toBeDisabled()
+  })
+
+  it('shows a disabled submit button if there is a high or critical risk and user has not confirmed it', () => {
+    const { getByText } = render(
+      <ExecuteForm
+        {...defaultProps}
+        safeTx={safeTransaction}
+        txSecurity={{ ...defaultProps.txSecurity, isRiskConfirmed: false, needsRiskConfirmation: true }}
+      />,
+    )
+
+    const button = getByText('Execute')
+
+    expect(button).toBeInTheDocument()
+    expect(button).toBeDisabled()
+  })
+
+  it('shows an enabled submit button if there is a high or critical risk and user has confirmed it', () => {
+    const { getByText } = render(
+      <ExecuteForm
+        {...defaultProps}
+        safeTx={safeTransaction}
+        txSecurity={{ ...defaultProps.txSecurity, isRiskConfirmed: true, needsRiskConfirmation: true }}
+      />,
+    )
+
+    const button = getByText('Execute')
+
+    expect(button).toBeInTheDocument()
+    expect(button).not.toBeDisabled()
   })
 })
