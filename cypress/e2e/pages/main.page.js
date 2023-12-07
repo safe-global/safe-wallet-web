@@ -11,7 +11,7 @@ export function clickOnSideMenuItem(item) {
   cy.get('p').contains(item).click()
 }
 
-export function waitForTrnsactionHistoryToComplete() {
+export function waitForHistoryCallToComplete() {
   cy.intercept('GET', constants.transactionHistoryEndpoint).as('History')
   cy.wait('@History')
 }
@@ -51,9 +51,11 @@ export function verifyHomeSafeUrl(safe) {
 
 export function checkTextsExistWithinElement(element, texts) {
   texts.forEach((text) => {
-    cy.get(element).within(() => {
-      cy.get('div').contains(text).should('be.visible')
-    })
+    cy.get(element)
+      .should('be.visible')
+      .within(() => {
+        cy.get('div').contains(text).should('be.visible')
+      })
   })
 }
 
