@@ -171,7 +171,7 @@ const useAppCommunicator = (
       const transactions = txs.map(({ to, value, data }) => {
         return {
           to: getAddress(to),
-          value: BigNumber.from(value).toString(),
+          value: value ? BigNumber.from(value).toString() : '0',
           data,
         }
       })
