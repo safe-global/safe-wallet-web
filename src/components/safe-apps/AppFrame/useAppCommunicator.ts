@@ -172,7 +172,7 @@ const useAppCommunicator = (
         return {
           to: getAddress(to),
           value: value ? BigNumber.from(value).toString() : '0',
-          data,
+          data: data || '0x',
         }
       })
 
