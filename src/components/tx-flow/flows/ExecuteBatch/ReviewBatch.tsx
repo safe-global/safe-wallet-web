@@ -2,7 +2,7 @@ import { CircularProgress, Typography, Button, CardActions, Divider, Alert } fro
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
+import { getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
@@ -16,7 +16,6 @@ import { TxSimulation } from '@/components/tx/security/tenderly'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import { hasRemainingRelays } from '@/utils/relaying'
@@ -52,7 +51,6 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
-  const web3 = useWeb3()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -60,9 +58,9 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [params.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
-    if (!chain?.chainId || !safe.version || !web3) return
-    return getMultiSendCallOnlyContract(chain.chainId, safe.version, web3)
-  }, [chain?.chainId, safe.version, web3])
+    if (!chain?.chainId || !safe.version) return
+    return getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
+  }, [chain?.chainId, safe.version])
 
   const multiSendTxs = useMemo(() => {
     if (!txsWithDetails || !chain || !safe.version) return
