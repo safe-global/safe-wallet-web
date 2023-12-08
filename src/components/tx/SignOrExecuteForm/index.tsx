@@ -57,12 +57,12 @@ const SignOrExecuteForm = ({ onSubmit, ...props }: SignOrExecuteProps): ReactEle
 
   const onFormSubmit = useCallback<SubmitCallback>(
     async (txId, isExecuted) => {
+      onSubmit?.(txId, isExecuted)
+
       // Track tx event
       const event = isExecuted ? TX_EVENTS.EXECUTE : isCreation ? TX_EVENTS.CREATE : TX_EVENTS.CONFIRM
       const txType = await getTransactionTrackingType(txId, chainId)
       trackEvent({ ...event, label: txType })
-
-      onSubmit?.(txId, isExecuted)
     },
     [chainId, isCreation, onSubmit],
   )
