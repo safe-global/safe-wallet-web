@@ -1,4 +1,4 @@
-import { type ConnectedWallet } from '@/services/onboard'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { faker } from '@faker-js/faker'
 import { Builder, type IBuilder } from '../Builder'
 import { eip1193ProviderBuilder } from './eip1193Provider'

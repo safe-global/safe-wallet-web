@@ -76,9 +76,7 @@ const GasParams = ({
             {gasLimitError ? null : isLoading ? (
               <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '7em' }} />
             ) : (
-              <span className={classnames({ [css.sponsoredFee]: willRelay })}>
-                {totalFee} {chain?.nativeCurrency.symbol}
-              </span>
+              <span>{willRelay ? 'Free' : `${totalFee} ${chain?.nativeCurrency.symbol}`}</span>
             )}
           </Typography>
         ) : (

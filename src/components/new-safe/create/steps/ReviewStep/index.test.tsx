@@ -3,7 +3,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { render } from '@/tests/test-utils'
 import { NetworkFee } from '@/components/new-safe/create/steps/ReviewStep/index'
 import * as useWallet from '@/hooks/wallets/useWallet'
-import { type ConnectedWallet } from '@/services/onboard'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 
 const mockChainInfo = {
