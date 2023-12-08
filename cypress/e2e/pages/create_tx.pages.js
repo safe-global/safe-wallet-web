@@ -1,5 +1,8 @@
 import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
 
+export const delegateCallWarning = '[data-testid="delegate-call-warning"]'
+export const policyChangeWarning = '[data-testid="threshold-warning"]'
 const newTransactionBtnStr = 'New transaction'
 const recepientInput = 'input[name="recipient"]'
 const sendTokensBtnStr = 'Send tokens'
@@ -8,10 +11,22 @@ const amountInput = 'input[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
-const transactionActionsList = '[data-testid="transaction-actions-list"]'
 const transactionItem = '[data-testid="transaction-item"]'
 const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-method"]'
 const addToBatchBtn = '[data-track="batching: Add to batch"]'
+const accordionDetails = '[data-testid="accordion-details"]'
+const copyIcon = '[data-testid="copy-btn-icon"]'
+const transactionType = '[data-testid="tx-type"]'
+const copyToClipboardItem = 'span[aria-label="Copy to clipboard"]'
+const transactionSideList = '[data-testid="transaction-actions-list"]'
+const confirmationVisibilityBtn = '[data-testid="confirmation-visibility-btn"]'
+const expandAllBtn = '[data-testid="expande-all-btn"]'
+const collapseAllBtn = '[data-testid="collapse-all-btn"]'
+const txRowTitle = '[data-testid="tx-row-title"]'
+const advancedDetails = '[data-testid="tx-advanced-details"]'
+const baseGas = '[data-testid="tx-bas-gas"]'
+const requiredConfirmation = '[data-testid="required-confirmations"]'
+const txDate = '[data-testid="tx-date"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -33,12 +48,138 @@ const signBtnStr = 'Sign'
 const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
 
+export function verifyNumberOfTransactions(count) {
+  cy.get(txDate).should('have.length.at.least', count)
+  cy.get(transactionItem).should('have.length.at.least', count)
+}
+
+export function checkRequiredThreshold(count) {
+  cy.get(requiredConfirmation).should('be.visible').and('include.text', count)
+}
+
+export function verifyCopyIconWorks(index, data) {
+  cy.get(copyIcon)
+    .parent()
+    .eq(index)
+    .click({ force: true })
+    .then(() =>
+      cy.window().then((win) => {
+        win.navigator.clipboard.readText().then((text) => {
+          expect(text).to.contain(data)
+        })
+      }),
+    )
+}
+
+export function verifyNumberOfCopyIcons(number) {
+  main.verifyElementsCount(copyIcon, number)
+}
+
+export function verifyNumberOfExternalLinks(number) {
+  for (let i = 0; i <= number; i++) {
+    cy.get(copyIcon).parent().parent().next().should('be.visible')
+    cy.get(copyIcon)
+      .parent()
+      .parent()
+      .next()
+      .children()
+      .should('have.attr', 'href')
+      .and('include', constants.sepoliaEtherscanlLink)
+  }
+}
+
+export function clickOnTransactionItemByName(name) {
+  cy.get(transactionItem).contains(name).scrollIntoView().click({ force: true })
+}
+
+export function clickOnTransactionItemByIndex(index) {
+  cy.get(transactionItem).eq(index).scrollIntoView().click({ force: true })
+  cy.get(accordionDetails).should('be.visible')
+}
+
+export function verifyExpandedDetails(data, warning) {
+  main.checkTextsExistWithinElement(accordionDetails, data)
+  if (warning) cy.get(warning).should('be.visible')
+}
+
+export function verifyActions(data) {
+  main.checkTextsExistWithinElement(accordionDetails, data)
+}
+
+export function clickOnExpandableAction(data) {
+  cy.get(accordionDetails).within(() => {
+    cy.get('div').contains(data).click()
+  })
+}
+
+function clickOnAdvancedDetails() {
+  cy.get(advancedDetails).click()
+}
+
+export function expandAdvancedDetails(data) {
+  clickOnAdvancedDetails()
+  data.forEach((row) => {
+    cy.get(txRowTitle).contains(row).should('be.visible')
+  })
+}
+
+export function collapseAdvancedDetails() {
+  clickOnAdvancedDetails()
+  cy.get(baseGas).should('not.exist')
+}
+
+export function expandAllActions(actions) {
+  cy.get(expandAllBtn).click()
+  main.checkTextsExistWithinElement(accordionDetails, actions)
+}
+
+export function collapseAllActions(data) {
+  cy.get(collapseAllBtn).click()
+  data.forEach((action) => {
+    cy.get(txRowTitle).contains(action).should('have.css', 'visibility', 'hidden')
+  })
+}
+
+export function verifyActionListExists(data) {
+  main.checkTextsExistWithinElement(transactionSideList, data)
+  main.verifyElementsIsVisible([confirmationVisibilityBtn])
+}
+
+export function verifySummaryByName(name, data, alt) {
+  cy.get(transactionItem)
+    .contains(name)
+    .parent()
+    .parent()
+    .parent()
+    .within(() => {
+      data.forEach((text) => {
+        cy.contains(text).should('be.visible')
+      })
+      if (alt) verifyImageAltTxt(0, alt)
+    })
+}
+
+export function verifySummaryByIndex(index, data, altIcon, altToken) {
+  cy.get(transactionItem)
+    .parent()
+    .parent()
+    .parent()
+    .eq(index)
+    .within(() => {
+      data.forEach((text) => {
+        cy.contains(text).should('be.visible')
+      })
+      if (altIcon) verifyImageAltTxt(0, altIcon)
+      if (altToken) verifyImageAltTxt(1, altToken)
+    })
+}
+
 export function clickOnTransactionItem(item) {
   cy.get(transactionItem).eq(item).scrollIntoView().click({ force: true })
 }
 
 export function verifyTransactionActionsVisibility(option) {
-  cy.get(transactionActionsList).should(option)
+  cy.get(transactionSideList).should(option)
 }
 
 export function clickOnNewtransactionBtn() {
@@ -232,15 +373,6 @@ export function verifyTransactionStrExists(str) {
 
 export function verifyTransactionStrNotVible(str) {
   cy.contains(str).should('not.be.visible')
-}
-
-export function clickOnTransactionExpandableItem(name, actions) {
-  cy.contains('div', name)
-    .next()
-    .click()
-    .within(() => {
-      actions()
-    })
 }
 
 export function clickOnExpandAllBtn() {

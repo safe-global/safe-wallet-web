@@ -1,6 +1,7 @@
+import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
 import { type ReactElement, useState, useMemo } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
-import { SvgIcon, Typography } from '@mui/material'
+import { Box, SvgIcon, Typography } from '@mui/material'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import useAddressBook from '@/hooks/useAddressBook'
 import AddressInput, { type AddressInputProps } from '../AddressInput'
@@ -44,6 +45,14 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
       }
     : undefined
 
+  if (addressBook[addressValue]) {
+    return (
+      <Box data-testid="address-book-recipient" onClick={() => setValue(name, '')}>
+        <AddressInputReadOnly address={addressValue} label="Sending to" />
+      </Box>
+    )
+  }
+
   return (
     <>
       <Autocomplete
@@ -73,6 +82,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
           <AddressInput
             {...params}
             {...props}
+            focused={props.focused || !addressValue}
             name={name}
             onOpenListClick={hasVisibleOptions ? handleOpenAutocomplete : undefined}
             isAutocompleteOpen={open}

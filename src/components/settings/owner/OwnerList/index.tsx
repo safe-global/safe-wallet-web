@@ -1,3 +1,5 @@
+import { jsonToCSV } from 'react-papaparse'
+import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import AddOwnerFlow from '@/components/tx-flow/flows/AddOwner'
 import useAddressBook from '@/hooks/useAddressBook'
@@ -15,6 +17,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import ReplaceOwnerIcon from '@/public/images/settings/setup/replace-owner.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
+import type { AddressBook } from '@/store/addressBookSlice'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -110,7 +113,7 @@ export const OwnerList = () => {
 
           <EnhancedTable rows={rows} headCells={headCells} />
 
-          <Box pt={2}>
+          <Box pt={2} display="flex" justifyContent="space-between">
             <CheckWallet>
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
@@ -126,9 +129,32 @@ export const OwnerList = () => {
                 </Track>
               )}
             </CheckWallet>
+
+            <Button variant="text" onClick={() => exportOwners(safe, addressBook)}>
+              Export as CSV
+            </Button>
           </Box>
         </Grid>
       </Grid>
     </Box>
   )
+}
+
+function exportOwners({ chainId, address, owners }: SafeInfo, addressBook: AddressBook) {
+  const json = owners.map((owner) => {
+    const address = owner.value
+    const name = addressBook[address] || owner.name
+    return [address, name]
+  })
+
+  const csv = jsonToCSV(json)
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+
+  Object.assign(link, {
+    download: `${chainId}-${address.value}-owners.csv`,
+    href: window.URL.createObjectURL(blob),
+  })
+
+  link.click()
 }

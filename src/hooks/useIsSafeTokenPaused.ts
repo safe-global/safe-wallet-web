@@ -15,6 +15,8 @@ const useIsSafeTokenPaused = () => {
   const [isSafeTokenPaused] = useAsync<boolean>(async () => {
     const safeTokenAddress = getSafeTokenAddress(chainId)
 
+    if (!safeTokenAddress) return false
+
     const safeTokenContract = new Contract(safeTokenAddress, new Interface([PAUSED_ABI]), provider)
 
     let isPaused: boolean

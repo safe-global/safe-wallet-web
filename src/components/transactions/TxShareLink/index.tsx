@@ -30,7 +30,14 @@ const TxShareLink = ({ id }: { id: string }): ReactElement => {
 
   return (
     <Track {...TX_LIST_EVENTS.COPY_DEEPLINK}>
-      <IconButton component={Link} aria-label="Share" href={href} onClick={onClick} disabled={!isCopyEnabled}>
+      <IconButton
+        data-testid="share-btn"
+        component={Link}
+        aria-label="Share"
+        href={href}
+        onClick={onClick}
+        disabled={!isCopyEnabled}
+      >
         <SvgIcon component={ShareIcon} inheritViewBox fontSize="small" color="border" />
       </IconButton>
     </Track>

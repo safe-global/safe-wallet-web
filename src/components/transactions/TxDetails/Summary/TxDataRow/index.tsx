@@ -8,17 +8,26 @@ import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 type TxDataRowProps = {
+  datatestid?: String
   title: ReactNode
   children?: ReactNode
 }
 
-export const TxDataRow = ({ title, children }: TxDataRowProps): ReactElement | null => {
+export const TxDataRow = ({ datatestid, title, children }: TxDataRowProps): ReactElement | null => {
   if (children == undefined) return null
   return (
-    <div className={css.gridRow}>
-      <div className={css.title}>{title}</div>
+    <div data-testid={datatestid} className={css.gridRow}>
+      <div data-testid="tx-row-title" className={css.title}>
+        {title}
+      </div>
 
-      {typeof children === 'string' ? <Typography component="div">{children}</Typography> : children}
+      {typeof children === 'string' ? (
+        <Typography component="div" data-testid="tx-data-row">
+          {children}
+        </Typography>
+      ) : (
+        children
+      )}
     </div>
   )
 }
@@ -48,7 +57,7 @@ export const generateDataRowValue = (
       )
     case 'rawData':
       return (
-        <div className={css.rawData}>
+        <div data-testid="tx-data-row" className={css.rawData}>
           <div>{value ? hexDataLength(value) : 0} bytes</div>
           <CopyButton text={value} />
         </div>
