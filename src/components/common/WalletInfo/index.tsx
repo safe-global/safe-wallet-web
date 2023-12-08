@@ -1,6 +1,6 @@
 import WalletBalance from '@/components/common/WalletBalance'
 import { WalletIdenticon } from '@/components/common/WalletOverview'
-import useWalletBalance from '@/hooks/wallets/useWalletBalance'
+import { type BigNumber } from 'ethers'
 import { Box, Button, Typography } from '@mui/material'
 import css from './styles.module.css'
 import SocialLoginInfo from '@/components/common/SocialLoginInfo'
@@ -22,6 +22,7 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 
 type WalletInfoProps = {
   wallet: ConnectedWallet
+  balance: BigNumber | undefined
   socialWalletService: ReturnType<typeof useSocialWallet>
   router: ReturnType<typeof useRouter>
   onboard: ReturnType<typeof useOnboard>
@@ -31,6 +32,7 @@ type WalletInfoProps = {
 
 export const WalletInfo = ({
   wallet,
+  balance,
   socialWalletService,
   router,
   onboard,
@@ -39,7 +41,6 @@ export const WalletInfo = ({
 }: WalletInfoProps) => {
   const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const prefix = chainInfo?.shortName
-  const [balance] = useWalletBalance()
 
   const handleSwitchWallet = () => {
     if (onboard) {
