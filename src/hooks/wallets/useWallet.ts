@@ -1,25 +1,9 @@
-import { useEffect, useState } from 'react'
-import useOnboard, { type ConnectedWallet, getConnectedWallet } from './useOnboard'
+import { useContext } from 'react'
+import { type ConnectedWallet } from './useOnboard'
+import { WalletContext } from '@/components/common/WalletProvider'
 
 const useWallet = (): ConnectedWallet | null => {
-  const onboard = useOnboard()
-  const onboardWallets = onboard?.state.get().wallets || []
-  const [wallet, setWallet] = useState<ConnectedWallet | null>(getConnectedWallet(onboardWallets))
-
-  useEffect(() => {
-    if (!onboard) return
-
-    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
-      const newWallet = getConnectedWallet(wallets)
-      setWallet(newWallet)
-    })
-
-    return () => {
-      walletSubscription.unsubscribe()
-    }
-  }, [onboard])
-
-  return wallet
+  return useContext(WalletContext)
 }
 
 export default useWallet
