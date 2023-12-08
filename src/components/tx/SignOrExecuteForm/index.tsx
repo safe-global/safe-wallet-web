@@ -61,7 +61,7 @@ const SignOrExecuteForm = ({ onSubmit, ...props }: SignOrExecuteProps): ReactEle
 
       // Track tx event
       const event = isExecuted ? TX_EVENTS.EXECUTE : isCreation ? TX_EVENTS.CREATE : TX_EVENTS.CONFIRM
-      const txType = await getTransactionTrackingType(txId, chainId)
+      const txType = await getTransactionTrackingType(chainId, txId)
       trackEvent({ ...event, label: txType })
     },
     [chainId, isCreation, onSubmit],

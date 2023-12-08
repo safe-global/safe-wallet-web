@@ -6,7 +6,7 @@ import { TX_TYPES } from '../events/transactions'
 
 const getMockTxType = (txDetails: unknown) => {
   jest.spyOn(txDetailsModule, 'getTxDetails').mockImplementation(() => Promise.resolve(txDetails as TransactionDetails))
-  return getTransactionTrackingType('0x123', '1')
+  return getTransactionTrackingType('1', '0x123')
 }
 
 describe('getTransactionTrackingType', () => {
