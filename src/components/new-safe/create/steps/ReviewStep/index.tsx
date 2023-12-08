@@ -1,3 +1,5 @@
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import useWalletCanPay from '@/hooks/useWalletCanPay'
 import { useMemo, useState } from 'react'
 import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
 import { lightPalette } from '@safe-global/safe-react-components'
@@ -124,6 +126,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
 
+  const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas, maxPriorityFeePerGas })
+
   const totalFee =
     gasLimit && maxFeePerGas
       ? formatVisualAmount(
@@ -244,6 +248,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         </Grid>
 
         {isWrongChain && <NetworkWarning />}
+
+        {!walletCanPay && !willRelay && (
+          <ErrorMessage>Your connected wallet doesn&apos;t have enough funds to execute this transaction</ErrorMessage>
+        )}
       </Box>
 
       <Divider />
