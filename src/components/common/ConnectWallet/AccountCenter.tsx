@@ -62,7 +62,7 @@ export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         }}
       >
         <Paper className={css.popoverContainer}>
-          <WalletInfo wallet={wallet} handleClose={closeWalletInfo} />
+          <WalletInfo wallet={wallet} balance={balance} handleClose={closeWalletInfo} />
         </Paper>
       </Popover>
     </>
