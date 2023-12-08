@@ -13,7 +13,7 @@ const Approvals = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
 
         return (
           <ListItem key={tx.tokenAddress + tx.spender} disablePadding data-testid="approval-item">
-            <ApprovalItem spender={tx.spender}>
+            <ApprovalItem spender={tx.spender} method={tx.method}>
               <Grid container gap={1} alignItems="center">
                 <SendAmountBlock amount={tx.amountFormatted} tokenInfo={tx.tokenInfo} title="Token" />
               </Grid>

@@ -46,7 +46,7 @@ export const ApprovalEditorForm = ({
       <List className={css.approvalsList}>
         {approvalInfos.map((tx, idx) => (
           <ListItem key={tx.tokenAddress + tx.spender} disablePadding data-testid="approval-item">
-            <ApprovalItem spender={tx.spender}>
+            <ApprovalItem spender={tx.spender} method={tx.method}>
               <>
                 <ApprovalValueField name={`approvals.${idx}`} tx={tx} />
                 <Track {...MODALS_EVENTS.EDIT_APPROVALS}>

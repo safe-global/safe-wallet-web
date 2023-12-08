@@ -51,7 +51,8 @@ describe('ApprovalEditor', () => {
       spender: '0x2',
       amount: '4200000',
       amountFormatted: '420.0',
-    }
+      method: 'approve',
+    } as const
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
     const mockSafeTx = createMockSafeTransaction({ to: '0x1', data: '0x', operation: OperationType.DelegateCall })
 
@@ -72,7 +73,8 @@ describe('ApprovalEditor', () => {
       spender: '0x2',
       amount: '4200000',
       amountFormatted: '420.0',
-    }
+      method: 'approve',
+    } as const
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
     const mockSafeTx = createMockSafeTransaction({ to: '0x1', data: '0x', operation: OperationType.DelegateCall })
 
