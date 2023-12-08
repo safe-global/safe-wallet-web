@@ -8,6 +8,7 @@ import SponsoredBy from '../SponsoredBy'
 import type { RelayResponse } from '@/services/tx/relaying'
 
 import css from './styles.module.css'
+import BalanceInfo from '@/components/tx/BalanceInfo'
 
 export const enum ExecutionMethod {
   RELAY = 'RELAY',
@@ -72,7 +73,7 @@ export const ExecutionMethodSelector = ({
         </FormControl>
       </div>
 
-      {shouldRelay && relays ? <SponsoredBy relays={relays} tooltip={tooltip} /> : null}
+      {shouldRelay && relays ? <SponsoredBy relays={relays} tooltip={tooltip} /> : wallet ? <BalanceInfo /> : null}
     </Box>
   )
 }

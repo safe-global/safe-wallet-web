@@ -24,6 +24,8 @@ export const SAFE_COMPATIBLE_METHODS = [
   'safe_setSettings',
 ]
 
+export const SAFE_COMPATIBLE_EVENTS = ['chainChanged', 'accountsChanged']
+
 export const SAFE_WALLET_METADATA = {
   name: 'Safe{Wallet}',
   url: 'https://app.safe.global',

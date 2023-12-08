@@ -7,7 +7,7 @@ describe('[SMOKE] Add Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
     cy.clearLocalStorage()
-    main.waitForTrnsactionHistoryToComplete()
+    main.waitForHistoryCallToComplete()
     main.acceptCookies()
     main.verifyElementsExist([navigation.setupSection])
   })
@@ -18,7 +18,7 @@ describe('[SMOKE] Add Owners tests', () => {
 
   it('[SMOKE] Verify “Add new owner” button tooltip displays correct message for Non-Owner', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_2)
-    main.waitForTrnsactionHistoryToComplete()
+    main.waitForHistoryCallToComplete()
     owner.verifyAddOwnerBtnIsDisabled()
   })
 

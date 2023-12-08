@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 
 export const delegateCallWarning = '[data-testid="delegate-call-warning"]'
+export const policyChangeWarning = '[data-testid="threshold-warning"]'
 const newTransactionBtnStr = 'New transaction'
 const recepientInput = 'input[name="recipient"]'
 const sendTokensBtnStr = 'Send tokens'
@@ -10,7 +11,6 @@ const amountInput = 'input[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
-const transactionActionsList = '[data-testid="transaction-actions-list"]'
 const transactionItem = '[data-testid="transaction-item"]'
 const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-method"]'
 const addToBatchBtn = '[data-track="batching: Add to batch"]'
@@ -25,6 +25,8 @@ const collapseAllBtn = '[data-testid="collapse-all-btn"]'
 const txRowTitle = '[data-testid="tx-row-title"]'
 const advancedDetails = '[data-testid="tx-advanced-details"]'
 const baseGas = '[data-testid="tx-bas-gas"]'
+const requiredConfirmation = '[data-testid="required-confirmations"]'
+const txDate = '[data-testid="tx-date"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -45,6 +47,15 @@ const noLaterStr = 'No, later'
 const signBtnStr = 'Sign'
 const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
+
+export function verifyNumberOfTransactions(count) {
+  cy.get(txDate).should('have.length.at.least', count)
+  cy.get(transactionItem).should('have.length.at.least', count)
+}
+
+export function checkRequiredThreshold(count) {
+  cy.get(requiredConfirmation).should('be.visible').and('include.text', count)
+}
 
 export function verifyCopyIconWorks(index, data) {
   cy.get(copyIcon)
@@ -168,7 +179,7 @@ export function clickOnTransactionItem(item) {
 }
 
 export function verifyTransactionActionsVisibility(option) {
-  cy.get(transactionActionsList).should(option)
+  cy.get(transactionSideList).should(option)
 }
 
 export function clickOnNewtransactionBtn() {
