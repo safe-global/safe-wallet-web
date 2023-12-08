@@ -24,6 +24,7 @@ import { asError } from '@/services/exceptions/utils'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
 import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -99,6 +100,9 @@ const ReviewSpendingLimitTx = ({
       setIsSubmittable(true)
       setSubmitError(err)
     }
+
+    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.transfer_token })
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.transfer_token })
   }
 
   const submitDisabled = !isSubmittable || gasLimitLoading
