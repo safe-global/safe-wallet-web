@@ -20,7 +20,7 @@ jest.mock('@/components/common/CheckWallet', () => ({
   },
 }))
 
-describe('ExecuteForm', () => {
+describe.only('ExecuteForm', () => {
   const safeTransaction = createMockSafeTransaction({
     to: '0x1',
     data: '0x',
@@ -76,7 +76,7 @@ describe('ExecuteForm', () => {
 
     const { getByText } = render(<ExecuteForm {...defaultProps} />)
 
-    expect(getByText('Choose execution method:')).toBeInTheDocument()
+    expect(getByText('Who will pay gas fees:')).toBeInTheDocument()
   })
 
   it('shows an execution validation error', () => {

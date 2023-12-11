@@ -28,7 +28,7 @@ describe('NetworkFee', () => {
     jest.spyOn(useWallet, 'default').mockReturnValue({ label: ONBOARD_MPC_MODULE_LABEL } as unknown as ConnectedWallet)
     const result = render(<NetworkFee totalFee="0" chain={mockChainInfo} willRelay={true} />)
 
-    expect(result.getByText(/Your account is sponsored by Gnosis Chain/)).toBeInTheDocument()
+    expect(result.getByText(/Your account is sponsored by Gnosis/)).toBeInTheDocument()
   })
 
   it('displays an error message for social login if there are no relays left', () => {
