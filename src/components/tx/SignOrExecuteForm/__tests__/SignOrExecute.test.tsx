@@ -2,6 +2,7 @@ import { SignOrExecuteForm } from '@/components/tx/SignOrExecuteForm'
 import * as hooks from '@/components/tx/SignOrExecuteForm/hooks'
 import { safeTxBuilder } from '@/tests/builders/safeTx'
 import { render } from '@/tests/test-utils'
+import { fireEvent } from '@testing-library/react'
 
 describe('SignOrExecute', () => {
   it('should display a safeTxError', () => {
@@ -54,7 +55,46 @@ describe('SignOrExecute', () => {
     })
   })
 
-  it.todo('should not display radio options if execution is the only option')
-  it.todo('should display an execution title if that option is selected')
-  it.todo('should display a sign title if that option is selected')
+  it('should not display radio options if execution is the only option', () => {
+    const { queryByText } = render(
+      <SignOrExecuteForm
+        safeTx={safeTxBuilder().build()}
+        onSubmit={jest.fn()}
+        safeTxError={undefined}
+        txId={undefined}
+        onlyExecute={true}
+      />,
+    )
+
+    expect(queryByText('Would you like to execute the transaction immediately?')).not.toBeInTheDocument()
+  })
+
+  it('should display a sign/execute title if that option is selected', () => {
+    jest.spyOn(hooks, 'useValidateNonce').mockReturnValue(true)
+
+    const { getByTestId, getByText } = render(
+      <SignOrExecuteForm
+        safeTx={safeTxBuilder().build()}
+        onSubmit={jest.fn()}
+        safeTxError={undefined}
+        txId={'someid'}
+        isExecutable={true}
+      />,
+    )
+
+    expect(getByText('Would you like to execute the transaction immediately?')).toBeInTheDocument()
+
+    const executeCheckbox = getByTestId('execute-checkbox')
+    const signCheckbox = getByTestId('sign-checkbox')
+
+    expect(getByText("You're about to execute this transaction.")).toBeInTheDocument()
+
+    fireEvent.click(signCheckbox)
+
+    expect(getByText("You're about to confirm this transaction.")).toBeInTheDocument()
+
+    fireEvent.click(executeCheckbox)
+
+    expect(getByText("You're about to execute this transaction.")).toBeInTheDocument()
+  })
 })
