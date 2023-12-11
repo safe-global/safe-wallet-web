@@ -1,10 +1,10 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
-import { MenuItem, Select, Skeleton, Tooltip } from '@mui/material'
+import { ListSubheader, MenuItem, Select, Skeleton, Tooltip, Typography } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
-import ChainIndicator from '../ChainIndicator'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
 import { type ReactElement, forwardRef } from 'react'
@@ -26,6 +26,30 @@ const MenuWithTooltip = forwardRef<HTMLUListElement>(function MenuWithTooltip(pr
     </Tooltip>
   )
 })
+
+type NetworkLogos = Record<string, string>
+
+export const NetworkLogos: NetworkLogos = {
+  eth: '/images/networks/mainnet.svg',
+  bnb: '/images/networks/bnb.svg',
+  oeth: '/images/networks/optimism.svg',
+  gno: '/images/networks/gno.png',
+  matic: '/images/networks/polygon.svg',
+  aurora: '/images/networks/aurora.svg',
+  base: '/images/networks/base.svg',
+  ['base-gor']: '/images/networks/base.svg',
+  zkevm: '/images/networks/polygon.svg',
+  zksync: '/images/networks/zksync.svg',
+  celo: '/images/networks/celo.svg',
+  gor: '/images/networks/gor.svg',
+  arb1: '/images/networks/arb.svg',
+  avax: '/images/networks/avax.svg',
+  sep: '/images/networks/sep.png',
+}
+
+const isTestnet = (shortName: string) => {
+  return shortName === 'gor' || shortName === 'base-gor' || shortName === 'sep'
+}
 
 const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const wallet = useWallet()
@@ -90,20 +114,43 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
         '& .MuiSelect-select': {
           py: 0,
         },
-        '& svg path': {
-          fill: ({ palette }) => palette.border.main,
-        },
       }}
     >
-      {configs.map((chain) => {
-        return (
-          <MenuItem key={chain.chainId} value={chain.chainId} disabled={isSocialLogin && !isSocialWalletEnabled(chain)}>
-            <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} passHref>
-              <ChainIndicator chainId={chain.chainId} inline />
-            </Link>
-          </MenuItem>
-        )
-      })}
+      {configs
+        .filter((config) => !isTestnet(config.shortName))
+        .map((chain) => {
+          return (
+            <MenuItem
+              className={css.menuItem}
+              key={chain.chainId}
+              value={chain.chainId}
+              disabled={isSocialLogin && !isSocialWalletEnabled(chain)}
+            >
+              <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
+                <Image src={NetworkLogos[chain.shortName]} alt="" width={24} height={24} />
+                <Typography variant="body2">{chain.chainName}</Typography>
+              </Link>
+            </MenuItem>
+          )
+        })}
+      <ListSubheader className={css.listSubHeader}>Testnets</ListSubheader>
+      {configs
+        .filter((config) => isTestnet(config.shortName))
+        .map((chain) => {
+          return (
+            <MenuItem
+              className={css.menuItem}
+              key={chain.chainId}
+              value={chain.chainId}
+              disabled={isSocialLogin && !isSocialWalletEnabled(chain)}
+            >
+              <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
+                <Image src={NetworkLogos[chain.shortName]} alt="" width={24} height={24} />
+                <Typography variant="body2">{chain.chainName}</Typography>
+              </Link>
+            </MenuItem>
+          )
+        })}
     </Select>
   ) : (
     <Skeleton width={94} height={31} sx={{ mx: 2 }} />
