@@ -38,7 +38,6 @@ describe('Replace Owners tests', () => {
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerAddress(constants.addresBookContacts.user1.address)
-    owner.selectNewOwner(constants.addresBookContacts.user1.name)
     owner.verifyNewOwnerName(constants.addresBookContacts.user1.name)
   })
 
