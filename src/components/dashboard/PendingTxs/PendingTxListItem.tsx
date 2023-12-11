@@ -49,7 +49,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
         </Box>
 
         <Box flex={1} className={css.txInfo}>
-          <TxInfo info={transaction.txInfo} />
+          <TxInfo info={transaction.txInfo} trusted />
         </Box>
 
         {isMultisigExecutionInfo(transaction.executionInfo) ? (
