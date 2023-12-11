@@ -48,7 +48,10 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
   if (addressBook[addressValue]) {
     return (
       <Box data-testid="address-book-recipient" onClick={() => setValue(name, '')}>
-        <AddressInputReadOnly address={addressValue} label="Sending to" />
+        <AddressInputReadOnly
+          address={addressValue}
+          label={typeof props.label === 'string' ? props.label : 'Sending to'}
+        />
       </Box>
     )
   }
