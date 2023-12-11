@@ -3,36 +3,50 @@ import { TransferTx } from '@/components/transactions/TxInfo'
 import { isTxQueued } from '@/utils/transaction-guards'
 import type { TransactionStatus, Transfer } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Typography } from '@mui/material'
+import { Box, SvgIcon, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 
 import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
+import WarningIcon from '@/public/images/notifications/warning.svg'
 
 type TransferTxInfoProps = {
   txInfo: Transfer
   txStatus: TransactionStatus
 }
 
-const TransferTxInfoSummary = ({ txInfo, txStatus }: TransferTxInfoProps) => {
+const TransferTxInfoSummary = ({ txInfo, txStatus, trusted }: TransferTxInfoProps & { trusted: boolean }) => {
   const { direction } = txInfo
 
   return (
-    <Typography>
-      {direction === TransferDirection.INCOMING ? 'Received' : isTxQueued(txStatus) ? 'Send' : 'Sent'}{' '}
-      <b>
-        <TransferTx info={txInfo} withLogo={false} omitSign />
-      </b>
-      {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
-    </Typography>
+    <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+      <Typography>
+        {direction === TransferDirection.INCOMING ? 'Received' : isTxQueued(txStatus) ? 'Send' : 'Sent'}{' '}
+        <b>
+          <TransferTx info={txInfo} withLogo={false} omitSign trusted={trusted} />
+        </b>
+        {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
+      </Typography>
+      {!trusted && (
+        <Tooltip
+          title={`This token is unfamiliar and may pose risks when interacting with it or the address that ${
+            direction === TransferDirection.INCOMING ? 'sent' : 'received'
+          } it.`}
+        >
+          <Box lineHeight="16px">
+            <SvgIcon component={WarningIcon} fontSize="small" inheritViewBox color="warning" />
+          </Box>
+        </Tooltip>
+      )}
+    </Box>
   )
 }
 
-const TransferTxInfo = ({ txInfo, txStatus }: TransferTxInfoProps) => {
+const TransferTxInfo = ({ txInfo, txStatus, trusted }: TransferTxInfoProps & { trusted: boolean }) => {
   const address = txInfo.direction.toUpperCase() === TransferDirection.INCOMING ? txInfo.sender : txInfo.recipient
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>
-      <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} />
+      <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} trusted={trusted} />
 
       <Box display="flex" alignItems="center">
         <EthHashInfo
@@ -42,6 +56,7 @@ const TransferTxInfo = ({ txInfo, txStatus }: TransferTxInfoProps) => {
           shortAddress={false}
           hasExplorer
           showCopyButton
+          trusted={trusted}
         >
           <TransferActions address={address.value} txInfo={txInfo} />
         </EthHashInfo>

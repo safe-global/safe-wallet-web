@@ -15,6 +15,8 @@ import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import TxConfirmations from '../TxConfirmations'
 import useIsPending from '@/hooks/useIsPending'
+import classNames from 'classnames'
+import { isTrustedTx } from '@/utils/transactions'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette | Record<string, Record<string, string>>) => {
   switch (value) {
@@ -53,10 +55,16 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
   const displayConfirmations = isQueue && !!submittedConfirmations && !!requiredConfirmations
 
+  const isTrusted = isTrustedTx(tx)
+
+  classNames(css.gridContainer, isQueue ? css.columnTemplate : css.columnTemplateTxHistory)
+
   return (
     <Box
       data-testid="transaction-item"
-      className={`${css.gridContainer} ${isQueue ? css.columnTemplate : css.columnTemplateTxHistory}`}
+      className={classNames(css.gridContainer, isQueue ? css.columnTemplate : css.columnTemplateTxHistory, {
+        [css.untrusted]: !isTrusted,
+      })}
       id={tx.id}
     >
       {nonce && !isGrouped && (
@@ -70,7 +78,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       </Box>
 
       <Box data-testid="tx-info" gridArea="info" className={css.columnWrap}>
-        <TxInfo info={tx.txInfo} />
+        <TxInfo info={tx.txInfo} trusted={isTrusted} />
       </Box>
 
       <Box data-testid="tx-date" gridArea="date">

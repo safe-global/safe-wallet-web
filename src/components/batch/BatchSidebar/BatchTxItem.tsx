@@ -76,7 +76,7 @@ const BatchTxItem = ({
             <TxType tx={txSummary} />
 
             <Box flex={1}>
-              <TxInfo info={txDetails.txInfo} />
+              <TxInfo info={txDetails.txInfo} trusted />
             </Box>
 
             {onDelete && (
@@ -95,7 +95,7 @@ const BatchTxItem = ({
 
         <AccordionDetails>
           <div className={css.details}>
-            <TxData txDetails={txDetails} />
+            <TxData txDetails={txDetails} trusted />
 
             <TxDataRow title="Created:">{timestamp ? dateString(timestamp) : null}</TxDataRow>
 
