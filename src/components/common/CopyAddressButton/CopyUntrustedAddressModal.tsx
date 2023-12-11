@@ -15,8 +15,17 @@ import {
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import EthHashInfo from '../EthHashInfo'
 import type { CopyTooltipConfirmationModalProps } from '../CopyTooltip'
+import { useEffect } from 'react'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import Track from '../Track'
 
 const CopyUntrustedAddressModal = ({ open, onClose, onCopy, text }: CopyTooltipConfirmationModalProps) => {
+  useEffect(() => {
+    if (open) {
+      trackEvent(MODALS_EVENTS.COPY_WARNING_SHOWN)
+    }
+  }, [open])
+
   const { address } = parsePrefixedAddress(text)
   return (
     <Dialog open={open} onClose={onClose}>
@@ -43,9 +52,11 @@ const CopyUntrustedAddressModal = ({ open, onClose, onCopy, text }: CopyTooltipC
       </DialogContent>
       <Divider />
       <DialogActions sx={{ padding: 3 }}>
-        <Button size="small" variant="outlined" color="secondary" onClick={onCopy}>
-          Proceed and copy
-        </Button>
+        <Track {...MODALS_EVENTS.COPY_WARNING_PROCEED}>
+          <Button size="small" variant="outlined" color="secondary" onClick={onCopy}>
+            Proceed and copy
+          </Button>
+        </Track>
       </DialogActions>
     </Dialog>
   )

@@ -76,7 +76,7 @@ const BatchTxItem = ({
             <TxType tx={txSummary} />
 
             <Box flex={1}>
-              <TxInfo info={txDetails.txInfo} trusted />
+              <TxInfo info={txDetails.txInfo} />
             </Box>
 
             {onDelete && (

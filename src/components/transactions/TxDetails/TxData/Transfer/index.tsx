@@ -22,7 +22,7 @@ const TransferTxInfoSummary = ({ txInfo, txStatus, trusted }: TransferTxInfoProp
       <Typography>
         {direction === TransferDirection.INCOMING ? 'Received' : isTxQueued(txStatus) ? 'Send' : 'Sent'}{' '}
         <b>
-          <TransferTx info={txInfo} withLogo={false} omitSign trusted={trusted} />
+          <TransferTx info={txInfo} withLogo={false} omitSign />
         </b>
         {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
       </Typography>

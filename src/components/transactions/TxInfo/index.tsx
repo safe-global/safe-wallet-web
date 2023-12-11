@@ -26,12 +26,10 @@ export const TransferTx = ({
   info,
   omitSign = false,
   withLogo = true,
-  trusted,
 }: {
   info: Transfer
   omitSign?: boolean
   withLogo?: boolean
-  trusted: boolean
 }): ReactElement => {
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
@@ -97,15 +95,7 @@ const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   return <></>
 }
 
-const TxInfo = ({
-  info,
-  ...rest
-}: {
-  info: TransactionInfo
-  omitSign?: boolean
-  withLogo?: boolean
-  trusted: boolean
-}): ReactElement => {
+const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; withLogo?: boolean }): ReactElement => {
   if (isSettingsChangeTxInfo(info)) {
     return <SettingsChangeTx info={info} />
   }
@@ -115,7 +105,7 @@ const TxInfo = ({
   }
 
   if (isTransferTxInfo(info)) {
-    return <TransferTx info={info} {...rest} trusted={true} />
+    return <TransferTx info={info} {...rest} />
   }
 
   if (isCustomTxInfo(info)) {

@@ -57,6 +57,16 @@ export const MODALS_EVENTS = {
     category: MODALS_CATEGORY,
     event: EventType.META,
   },
+  COPY_WARNING_SHOWN: {
+    action: 'Show copy address warning',
+    category: MODALS_CATEGORY,
+    event: EventType.META,
+  },
+  COPY_WARNING_PROCEED: {
+    action: 'Proceed with copying address',
+    category: MODALS_CATEGORY,
+    event: EventType.CLICK,
+  },
 }
 
 export enum MODAL_NAVIGATION {

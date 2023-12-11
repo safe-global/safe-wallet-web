@@ -78,7 +78,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       </Box>
 
       <Box data-testid="tx-info" gridArea="info" className={css.columnWrap}>
-        <TxInfo info={tx.txInfo} trusted={isTrusted} />
+        <TxInfo info={tx.txInfo} />
       </Box>
 
       <Box data-testid="tx-date" gridArea="date">
