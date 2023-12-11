@@ -1,3 +1,4 @@
+import madProps from '@/utils/mad-props'
 import { type ReactElement, type ReactNode, useState, useContext } from 'react'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
@@ -34,10 +35,16 @@ export type SignOrExecuteProps = {
   isCreation?: boolean
 }
 
-const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
+export const SignOrExecuteForm = ({
+  safeTx,
+  safeTxError,
+  ...props
+}: SignOrExecuteProps & {
+  safeTx: ReturnType<typeof useSafeTx>
+  safeTxError: ReturnType<typeof useSafeTxError>
+}): ReactElement => {
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
-  const { safeTx, safeTxError } = useContext(SafeTxContext)
   const isCreation = !props.txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
@@ -53,11 +60,9 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
       <TxCard>
         {props.children}
 
-        {!isCreation && (
-          <ErrorBoundary fallback={<div>Error parsing data</div>}>
-            <ApprovalEditor safeTransaction={safeTx} />
-          </ErrorBoundary>
-        )}
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor safeTransaction={safeTx} />
+        </ErrorBoundary>
 
         <DecodedTx
           tx={safeTx}
@@ -105,4 +110,10 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   )
 }
 
-export default SignOrExecuteForm
+const useSafeTx = () => useContext(SafeTxContext).safeTx
+const useSafeTxError = () => useContext(SafeTxContext).safeTxError
+
+export default madProps(SignOrExecuteForm, {
+  safeTx: useSafeTx,
+  safeTxError: useSafeTxError,
+})

@@ -61,7 +61,7 @@ export function verifyCopyIconWorks(index, data) {
   cy.get(copyIcon)
     .parent()
     .eq(index)
-    .click({ force: true })
+    .trigger('click')
     .then(() =>
       cy.window().then((win) => {
         win.navigator.clipboard.readText().then((text) => {

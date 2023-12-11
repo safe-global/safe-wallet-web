@@ -1,6 +1,5 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import type { ReactElement } from 'react'
-import { ErrorBoundary } from '@sentry/react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
@@ -13,7 +12,6 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { getInteractionTitle, isTxValid } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
@@ -33,15 +31,14 @@ const ReviewSafeAppsTx = ({
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const chain = useCurrentChain()
-  const [txList, setTxList] = useState(txs)
   const { safeTx, setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
 
   useHighlightHiddenTab()
 
   useEffect(() => {
     const createSafeTx = async (): Promise<SafeTransaction> => {
-      const isMultiSend = txList.length > 1
-      const tx = isMultiSend ? await createMultiSendCallOnlyTx(txList) : await createTx(txList[0])
+      const isMultiSend = txs.length > 1
+      const tx = isMultiSend ? await createMultiSendCallOnlyTx(txs) : await createTx(txs[0])
 
       if (params?.safeTxGas) {
         // FIXME: do it properly via the Core SDK
@@ -53,7 +50,7 @@ const ReviewSafeAppsTx = ({
     }
 
     createSafeTx().then(setSafeTx).catch(setSafeTxError)
-  }, [txList, setSafeTx, setSafeTxError, params])
+  }, [txs, setSafeTx, setSafeTxError, params])
 
   const handleSubmit = async (txId: string) => {
     if (!safeTx || !onboard) return
@@ -82,10 +79,6 @@ const ReviewSafeAppsTx = ({
 
   return (
     <SignOrExecuteForm onSubmit={handleSubmit} origin={origin}>
-      <ErrorBoundary fallback={<div>Error parsing data</div>}>
-        <ApprovalEditor safeTransaction={safeTx} updateTransaction={setTxList} />
-      </ErrorBoundary>
-
       {safeTx ? (
         <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
       ) : error ? (

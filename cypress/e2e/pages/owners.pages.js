@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as createWallet from '../pages/create_wallet.pages'
 import * as navigation from '../pages/navigation.page'
+import * as addressBook from '../pages/address_book.page'
 
 const tooltipLabel = (label) => `span[aria-label="${label}"]`
 const removeOwnerBtn = 'span[data-track="settings: Remove owner"] > span > button'
@@ -182,8 +183,13 @@ export function verifyValidWalletName(errorMsg) {
 }
 
 export function typeOwnerAddress(address) {
-  cy.get(newOwnerAddress).clear().type(address)
-  main.verifyInputValue(newOwnerAddress, address.substring(4))
+  cy.get(newOwnerAddress)
+    .clear()
+    .type(address)
+    .then(($input) => {
+      const typedValue = $input.val()
+      expect(address).to.contain(typedValue)
+    })
   cy.wait(1000)
 }
 
@@ -197,7 +203,7 @@ export function selectNewOwner(name) {
 }
 
 export function verifyNewOwnerName(name) {
-  cy.get(newOwnerName).should('have.attr', 'placeholder', name)
+  cy.get(addressBook.addressBookRecipient).should('include.text', name)
 }
 
 export function clickOnNextBtn() {
