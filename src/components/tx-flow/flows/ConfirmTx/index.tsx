@@ -13,7 +13,7 @@ const ConfirmTxFlow = ({ txSummary }: { txSummary: TransactionSummary }) => {
       subtitle={
         <>
           {text}&nbsp;
-          <TxInfo info={txSummary.txInfo} withLogo={false} omitSign />
+          <TxInfo info={txSummary.txInfo} withLogo={false} omitSign trusted />
         </>
       }
       step={0}
