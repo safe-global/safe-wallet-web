@@ -1,4 +1,4 @@
-import type { Palette } from '@mui/material'
+import { type Palette, SvgIcon, Tooltip } from '@mui/material'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
@@ -17,6 +17,7 @@ import TxConfirmations from '../TxConfirmations'
 import useIsPending from '@/hooks/useIsPending'
 import classNames from 'classnames'
 import { isTrustedTx } from '@/utils/transactions'
+import WarningIcon from '@/public/images/notifications/warning.svg'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette | Record<string, Record<string, string>>) => {
   switch (value) {
@@ -62,31 +63,58 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   return (
     <Box
       data-testid="transaction-item"
-      className={classNames(css.gridContainer, isQueue ? css.columnTemplate : css.columnTemplateTxHistory, {
-        [css.untrusted]: !isTrusted,
-      })}
+      className={classNames(css.gridContainer, isQueue ? css.columnTemplate : css.columnTemplateTxHistory, {})}
       id={tx.id}
     >
+      {!isTrusted && (
+        <Box data-testid="warning" gridArea="nonce">
+          <Tooltip title={`This token is unfamiliar and may pose risks when interacting with it or involved addresses`}>
+            <Box
+              lineHeight="16px"
+              sx={{
+                opacity: 1,
+              }}
+            >
+              <SvgIcon component={WarningIcon} fontSize="small" inheritViewBox color="warning" />
+            </Box>
+          </Tooltip>
+        </Box>
+      )}
+
       {nonce && !isGrouped && (
         <Box data-testid="nonce" gridArea="nonce">
           {nonce}
         </Box>
       )}
 
-      <Box data-testid="tx-type" gridArea="type" className={css.columnWrap}>
+      <Box
+        data-testid="tx-type"
+        gridArea="type"
+        className={classNames(css.columnWrap, { [css.untrusted]: !isTrusted })}
+      >
         <TxType tx={tx} />
       </Box>
 
-      <Box data-testid="tx-info" gridArea="info" className={css.columnWrap}>
+      <Box
+        data-testid="tx-info"
+        gridArea="info"
+        className={classNames(css.columnWrap, { [css.untrusted]: !isTrusted })}
+      >
         <TxInfo info={tx.txInfo} />
       </Box>
 
-      <Box data-testid="tx-date" gridArea="date">
+      <Box data-testid="tx-date" gridArea="date" className={classNames({ [css.untrusted]: !isTrusted })}>
         <DateTime value={tx.timestamp} />
       </Box>
 
       {displayConfirmations && (
-        <Box gridArea="confirmations" display="flex" alignItems="center" gap={1}>
+        <Box
+          gridArea="confirmations"
+          display="flex"
+          alignItems="center"
+          gap={1}
+          className={classNames({ [css.untrusted]: !isTrusted })}
+        >
           <TxConfirmations
             submittedConfirmations={submittedConfirmations}
             requiredConfirmations={requiredConfirmations}
@@ -95,7 +123,13 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       )}
 
       {wallet && isQueue && (
-        <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
+        <Box
+          gridArea="actions"
+          display="flex"
+          justifyContent={{ sm: 'center' }}
+          gap={1}
+          className={classNames({ [css.untrusted]: !isTrusted })}
+        >
           {awaitingExecution ? (
             <ExecuteTxButton txSummary={item.transaction} compact />
           ) : (
@@ -114,6 +148,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         alignItems="center"
         gap={1}
         color={({ palette }) => getStatusColor(tx.txStatus, palette)}
+        className={classNames({ [css.untrusted]: !isTrusted })}
       >
         {isPending && <CircularProgress size={14} color="inherit" />}
 
