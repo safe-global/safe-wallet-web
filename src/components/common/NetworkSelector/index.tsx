@@ -1,9 +1,8 @@
-import { getChainLogo } from '@/config/chains'
+import ChainIndicator from '@/components/common/ChainIndicator'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import Image from 'next/image'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
-import { ListSubheader, MenuItem, Select, Skeleton, Tooltip, Typography } from '@mui/material'
+import { ListSubheader, MenuItem, Select, Skeleton, Tooltip } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
@@ -85,8 +84,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
           disabled={isSocialLogin && !isSocialWalletEnabled(chain)}
         >
           <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
-            <Image src={getChainLogo(chain.chainId)} alt={`${chain.chainName} Logo`} width={24} height={24} />
-            <Typography variant="body2">{chain.chainName}</Typography>
+            <ChainIndicator chainId={chain.chainId} inline />
           </Link>
         </MenuItem>
       )
