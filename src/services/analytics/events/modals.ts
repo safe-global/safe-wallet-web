@@ -63,7 +63,7 @@ export const MODALS_EVENTS = {
     event: EventType.META,
   },
   COPY_WARNING_PROCEED: {
-    action: 'Proceed with copying address',
+    action: 'Proceed and copy address',
     category: MODALS_CATEGORY,
     event: EventType.CLICK,
   },
