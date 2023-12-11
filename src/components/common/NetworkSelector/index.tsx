@@ -1,4 +1,5 @@
 import { getChainLogo } from '@/config/chains'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
@@ -74,6 +75,25 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
+  const renderMenuItem = useCallback(
+    (value: string, chain: ChainInfo) => {
+      return (
+        <MenuItem
+          key={value}
+          value={value}
+          className={css.menuItem}
+          disabled={isSocialLogin && !isSocialWalletEnabled(chain)}
+        >
+          <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
+            <Image src={getChainLogo(chain.chainId)} alt={`${chain.chainName} Logo`} width={24} height={24} />
+            <Typography variant="body2">{chain.chainName}</Typography>
+          </Link>
+        </MenuItem>
+      )
+    },
+    [getNetworkLink, isSocialLogin, props.onChainSelect],
+  )
+
   return configs.length ? (
     <Select
       value={chainId}
@@ -97,41 +117,9 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
         },
       }}
     >
-      {configs
-        .filter((config) => !isTestnet(config.shortName))
-        .map((chain) => {
-          return (
-            <MenuItem
-              className={css.menuItem}
-              key={chain.chainId}
-              value={chain.chainId}
-              disabled={isSocialLogin && !isSocialWalletEnabled(chain)}
-            >
-              <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
-                <Image src={getChainLogo(chain.chainId)} alt={`${chain.chainName} Logo`} width={24} height={24} />
-                <Typography variant="body2">{chain.chainName}</Typography>
-              </Link>
-            </MenuItem>
-          )
-        })}
+      {configs.filter((config) => !isTestnet(config.shortName)).map((chain) => renderMenuItem(chain.chainId, chain))}
       <ListSubheader className={css.listSubHeader}>Testnets</ListSubheader>
-      {configs
-        .filter((config) => isTestnet(config.shortName))
-        .map((chain) => {
-          return (
-            <MenuItem
-              className={css.menuItem}
-              key={chain.chainId}
-              value={chain.chainId}
-              disabled={isSocialLogin && !isSocialWalletEnabled(chain)}
-            >
-              <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
-                <Image src={getChainLogo(chain.chainId)} alt={`${chain.chainName} Logo`} width={24} height={24} />
-                <Typography variant="body2">{chain.chainName}</Typography>
-              </Link>
-            </MenuItem>
-          )
-        })}
+      {configs.filter((config) => isTestnet(config.shortName)).map((chain) => renderMenuItem(chain.chainId, chain))}
     </Select>
   ) : (
     <Skeleton width={94} height={31} sx={{ mx: 2 }} />
