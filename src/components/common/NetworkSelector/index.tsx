@@ -1,3 +1,4 @@
+import { getChainLogo } from '@/config/chains'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
@@ -26,26 +27,6 @@ const MenuWithTooltip = forwardRef<HTMLUListElement>(function MenuWithTooltip(pr
     </Tooltip>
   )
 })
-
-type NetworkLogos = Record<string, string>
-
-export const NetworkLogos: NetworkLogos = {
-  eth: '/images/networks/mainnet.svg',
-  bnb: '/images/networks/bnb.svg',
-  oeth: '/images/networks/optimism.svg',
-  gno: '/images/networks/gno.png',
-  matic: '/images/networks/polygon.svg',
-  aurora: '/images/networks/aurora.svg',
-  base: '/images/networks/base.svg',
-  ['base-gor']: '/images/networks/base.svg',
-  zkevm: '/images/networks/polygon.svg',
-  zksync: '/images/networks/zksync.svg',
-  celo: '/images/networks/celo.svg',
-  gor: '/images/networks/gor.svg',
-  arb1: '/images/networks/arb.svg',
-  avax: '/images/networks/avax.svg',
-  sep: '/images/networks/sep.png',
-}
 
 const isTestnet = (shortName: string) => {
   return shortName === 'gor' || shortName === 'base-gor' || shortName === 'sep'
@@ -127,7 +108,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
               disabled={isSocialLogin && !isSocialWalletEnabled(chain)}
             >
               <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
-                <Image src={NetworkLogos[chain.shortName]} alt="" width={24} height={24} />
+                <Image src={getChainLogo(chain.chainId)} alt={`${chain.chainName} Logo`} width={24} height={24} />
                 <Typography variant="body2">{chain.chainName}</Typography>
               </Link>
             </MenuItem>
@@ -145,7 +126,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
               disabled={isSocialLogin && !isSocialWalletEnabled(chain)}
             >
               <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
-                <Image src={NetworkLogos[chain.shortName]} alt="" width={24} height={24} />
+                <Image src={getChainLogo(chain.chainId)} alt={`${chain.chainName} Logo`} width={24} height={24} />
                 <Typography variant="body2">{chain.chainName}</Typography>
               </Link>
             </MenuItem>
