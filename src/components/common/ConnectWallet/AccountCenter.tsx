@@ -1,3 +1,4 @@
+import useWalletBalance from '@/hooks/wallets/useWalletBalance'
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
 import { Box, ButtonBase, Paper, Popover } from '@mui/material'
@@ -10,6 +11,7 @@ import WalletInfo from '@/components/common/WalletInfo'
 
 export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [balance] = useWalletBalance()
 
   const openWalletInfo = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -32,7 +34,7 @@ export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         data-testid="open-account-center"
       >
         <Box className={css.buttonContainer}>
-          <WalletOverview wallet={wallet} />
+          <WalletOverview wallet={wallet} balance={balance} showBalance />
 
           <Box display="flex" alignItems="center" justifyContent="flex-end" marginLeft="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
@@ -58,9 +60,10 @@ export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
             top: 'var(--header-height) !important',
           },
         }}
+        transitionDuration={0}
       >
         <Paper className={css.popoverContainer}>
-          <WalletInfo wallet={wallet} handleClose={closeWalletInfo} />
+          <WalletInfo wallet={wallet} balance={balance} handleClose={closeWalletInfo} />
         </Paper>
       </Popover>
     </>

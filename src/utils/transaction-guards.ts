@@ -117,7 +117,8 @@ export const isTransactionListItem = (value: TransactionListItem): value is Tran
 }
 
 export function isRecoveryQueueItem(value: TransactionListItem | RecoveryQueueItem): value is RecoveryQueueItem {
-  return 'args' in value
+  const EVENT_SIGNATURE = 'TransactionAdded(uint256,bytes32,address,uint256,bytes,uint8)'
+  return 'eventSignature' in value && value.eventSignature === EVENT_SIGNATURE
 }
 
 // Narrows `Transaction`

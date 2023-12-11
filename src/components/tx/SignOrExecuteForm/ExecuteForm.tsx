@@ -1,3 +1,4 @@
+import BalanceInfo from '@/components/tx/BalanceInfo'
 import madProps from '@/utils/mad-props'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
@@ -127,6 +128,7 @@ export const ExecuteForm = ({
             gasLimitError={gasLimitError}
             willRelay={willRelay}
           />
+          {!canRelay && <BalanceInfo />}
 
           {canRelay && (
             <div className={css.noTopBorder}>

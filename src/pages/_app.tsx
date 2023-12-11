@@ -44,6 +44,7 @@ import { useNotificationTracking } from '@/components/settings/PushNotifications
 import { RecoveryProvider } from '@/components/recovery/RecoveryContext'
 import { RecoveryModal } from '@/components/recovery/RecoveryModal'
 import { useRecoveryTxNotifications } from '@/hooks/useRecoveryTxNotification'
+import WalletProvider from '@/components/common/WalletProvider'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -83,11 +84,13 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <RecoveryProvider>
-              <TxModalProvider>
-                <WalletConnectProvider>{children}</WalletConnectProvider>
-              </TxModalProvider>
-            </RecoveryProvider>
+            <WalletProvider>
+              <RecoveryProvider>
+                <TxModalProvider>
+                  <WalletConnectProvider>{children}</WalletConnectProvider>
+                </TxModalProvider>
+              </RecoveryProvider>
+            </WalletProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}

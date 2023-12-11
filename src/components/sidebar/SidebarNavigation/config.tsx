@@ -13,7 +13,6 @@ export type NavItem = {
   label: string
   icon?: ReactElement
   href: string
-  badge?: boolean
 }
 
 export const navItems: NavItem[] = [

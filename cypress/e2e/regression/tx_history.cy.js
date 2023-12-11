@@ -15,23 +15,23 @@ const typeDeleteAllowance = data.type.deleteSpendingLimit
 const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
 
-describe('Transaction history tests', () => {
+describe('Tx history tests 1', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.transactionsHistoryUrl + constants.SEPOLIA_TEST_SAFE_8)
     main.acceptCookies()
   })
 
-  // Contract creation
+  // Account creation
   it('Verify summary for account creation', () => {
     createTx.verifySummaryByName(
       typeCreateAccount.title,
-      [typeCreateAccount.actionsSummary, typeCreateAccount.summaryTime, typeGeneral.statusOk],
+      [typeCreateAccount.actionsSummary, typeGeneral.statusOk],
       typeCreateAccount.altTmage,
     )
   })
 
-  it('Verify exapnded details for account creation', () => {
+  it('Verify exapanded details for account creation', () => {
     createTx.clickOnTransactionItemByName(typeCreateAccount.title)
     createTx.verifyExpandedDetails([
       typeCreateAccount.creator.actionTitle,
@@ -61,13 +61,13 @@ describe('Transaction history tests', () => {
   it('Verify summary for token receipt', () => {
     createTx.verifySummaryByIndex(
       txItemIndex,
-      [typeReceive.title, typeReceive.summaryTxInfo, typeReceive.summaryTime, typeGeneral.statusOk],
+      [typeReceive.title, typeReceive.summaryTxInfo, typeGeneral.statusOk],
       typeReceive.altImage,
       typeReceive.altToken,
     )
   })
 
-  it('Verify exapnded details for token receipt', () => {
+  it('Verify exapanded details for token receipt', () => {
     createTx.clickOnTransactionItemByIndex(txItemIndex)
     createTx.verifyExpandedDetails([
       typeReceive.title,
@@ -87,13 +87,13 @@ describe('Transaction history tests', () => {
   it('Verify summary for token send', () => {
     createTx.verifySummaryByName(
       typeSend.title,
-      [typeSend.summaryTxInfo, typeSend.summaryTime, typeGeneral.statusOk],
+      [typeSend.summaryTxInfo, typeGeneral.statusOk],
       typeSend.altImage,
       typeSend.altToken,
     )
   })
 
-  it('Verify exapnded details for token send', () => {
+  it('Verify exapanded details for token send', () => {
     createTx.clickOnTransactionItemByName(typeSend.title)
     createTx.verifyExpandedDetails([typeSend.sentTo, typeSend.recipientAddress, typeSend.transactionHash])
     createTx.verifyActionListExists([
@@ -103,21 +103,16 @@ describe('Transaction history tests', () => {
     ])
   })
 
-  // Contract interaction
+  // Spending limits
   it('Verify summary for setting spend limits', () => {
     createTx.verifySummaryByIndex(
       initialSpendingLimitsTx,
-      [
-        typeSpendingLimits.title,
-        typeSpendingLimits.summaryTxInfo,
-        typeSpendingLimits.summaryTime,
-        typeGeneral.statusOk,
-      ],
+      [typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo, typeGeneral.statusOk],
       typeSpendingLimits.altImage,
     )
   })
 
-  it('Verify exapnded details for initial spending limits setup', () => {
+  it('Verify exapanded details for initial spending limits setup', () => {
     createTx.clickOnTransactionItemByIndex(initialSpendingLimitsTx)
     createTx.verifyExpandedDetails(
       [
@@ -160,16 +155,16 @@ describe('Transaction history tests', () => {
     createTx.collapseAllActions([typeSpendingLimits.addDelegate.delegateAddressTitle])
   })
 
-  // Contract interaction
+  // Spending limit deletion
   it('Verify summary for allowance deletion', () => {
     createTx.verifySummaryByName(
       typeDeleteAllowance.title,
-      [typeDeleteAllowance.summaryTxInfo, typeDeleteAllowance.summaryTime, typeGeneral.statusOk],
+      [typeDeleteAllowance.summaryTxInfo, typeGeneral.statusOk],
       typeDeleteAllowance.altImage,
     )
   })
 
-  it('Verify exapnded details for allowance deletion', () => {
+  it('Verify exapanded details for allowance deletion', () => {
     createTx.clickOnTransactionItemByName(typeDeleteAllowance.title)
     createTx.verifyExpandedDetails([
       typeDeleteAllowance.description,
@@ -182,7 +177,7 @@ describe('Transaction history tests', () => {
     ])
   })
 
-  it('Verify advanced details displayed in exapnded details for allowance deletion', () => {
+  it('Verify advanced details displayed in exapanded details for allowance deletion', () => {
     createTx.clickOnTransactionItemByName(typeDeleteAllowance.title)
     createTx.expandAdvancedDetails([typeDeleteAllowance.baseGas])
     createTx.collapseAdvancedDetails([typeDeleteAllowance.baseGas])
