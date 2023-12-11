@@ -26,7 +26,7 @@ const CopyUntrustedAddressModal = ({ open, onClose, onCopy, text }: CopyTooltipC
           <Typography variant="h6" fontWeight={700}>
             Before you copy
           </Typography>
-          <IconButton onClick={onClose} sx={{ marginLeft: 'auto' }}>
+          <IconButton aria-label="close" onClick={onClose} sx={{ marginLeft: 'auto' }}>
             <Close />
           </IconButton>
         </Box>
