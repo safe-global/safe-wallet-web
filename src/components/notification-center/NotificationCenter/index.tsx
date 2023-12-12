@@ -120,6 +120,7 @@ const NotificationCenter = (): ReactElement => {
             top: 'var(--header-height) !important',
           },
         }}
+        transitionDuration={0}
       >
         <Paper className={css.popoverContainer}>
           <div className={css.popoverHeader}>

@@ -26,7 +26,7 @@ const WcHeaderWidget = ({ sessions, ...props }: WcHeaderWidgetProps) => {
         />
       </div>
 
-      <Popup keepMounted anchorEl={iconRef.current} open={props.isOpen} onClose={props.onClose}>
+      <Popup keepMounted anchorEl={iconRef.current} open={props.isOpen} onClose={props.onClose} transitionDuration={0}>
         {props.children}
       </Popup>
     </>

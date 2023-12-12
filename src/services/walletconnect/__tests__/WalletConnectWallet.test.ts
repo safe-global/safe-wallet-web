@@ -198,6 +198,60 @@ describe('WalletConnectWallet', () => {
       })
     })
 
+    it('should call approveSession with correct namespace if no requiredNamespace is given', async () => {
+      const approveSessionSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'approveSession')
+      approveSessionSpy.mockResolvedValue({
+        namespaces: {
+          eip155: {},
+        },
+      } as unknown as SessionTypes.Struct)
+
+      const proposal = {
+        id: 123,
+        params: {
+          id: 456,
+          pairingTopic: 'pairingTopic',
+          expiry: 789,
+          requiredNamespaces: {},
+          optionalNamespaces: {
+            eip155: {
+              chains: ['eip155:43114', 'eip155:42161', 'eip155:8453', 'eip155:100', 'eip155:137', 'eip155:1101'],
+              // Not included as optional
+              methods: ['eth_sendTransaction', 'personal_sign', 'eth_accounts', 'eth_requestAccounts'],
+              events: ['chainChanged', 'accountsChanged'],
+            },
+          },
+        },
+      } as unknown as Web3WalletTypes.SessionProposal
+
+      await wallet.approveSession(
+        proposal,
+        '69420', // Not in proposal, therefore not supported
+        hexZeroPad('0x123', 20),
+      )
+
+      const namespaces = {
+        eip155: {
+          chains: ['eip155:43114', 'eip155:42161', 'eip155:8453', 'eip155:100', 'eip155:137', 'eip155:1101'],
+          methods: ['eth_accounts', 'personal_sign', 'eth_sendTransaction'],
+          events: ['chainChanged', 'accountsChanged'],
+          accounts: [
+            `eip155:43114:${hexZeroPad('0x123', 20)}`,
+            `eip155:42161:${hexZeroPad('0x123', 20)}`,
+            `eip155:8453:${hexZeroPad('0x123', 20)}`,
+            `eip155:100:${hexZeroPad('0x123', 20)}`,
+            `eip155:137:${hexZeroPad('0x123', 20)}`,
+            `eip155:1101:${hexZeroPad('0x123', 20)}`,
+          ],
+        },
+      }
+
+      expect(approveSessionSpy).toHaveBeenCalledWith({
+        id: 123,
+        namespaces,
+      })
+    })
+
     it('should call updateSession with the correct parameters', async () => {
       const emitSessionEventSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'emitSessionEvent')
       jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'approveSession').mockResolvedValue({

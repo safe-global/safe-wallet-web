@@ -61,7 +61,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
   }, [txFlow, closeSidebar])
 
   return (
-    <Drawer variant="temporary" anchor="right" open={isOpen} onClose={closeSidebar}>
+    <Drawer variant="temporary" anchor="right" open={isOpen} onClose={closeSidebar} transitionDuration={100}>
       <aside className={css.aside}>
         <Typography variant="h4" fontWeight={700} mb={1}>
           Batched transactions
