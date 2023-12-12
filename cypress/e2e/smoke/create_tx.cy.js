@@ -26,7 +26,7 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.verifyWrongChecksum(constants.WRONGLY_CHECKSUMMED_ADDRESS)
   })
 
-  it.only('[SMOKE] Verify address input resolves a valid ENS name', () => {
+  it('[SMOKE] Verify address input resolves a valid ENS name', () => {
     createtx.typeRecipientAddress(constants.ENS_TEST_SEPOLIA)
     // createtx.verifyENSResolves(constants.SEPOLIA_TEST_SAFE_7)
   })
