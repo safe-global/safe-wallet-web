@@ -1,7 +1,13 @@
 import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Transaction, TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { isConflictHeaderListItem, isNoneConflictType, isTransactionListItem } from '@/utils/transaction-guards'
+import {
+  isConflictHeaderListItem,
+  isDateLabel,
+  isLabelListItem,
+  isNoneConflictType,
+  isTransactionListItem,
+} from '@/utils/transaction-guards'
 import { sameAddress } from './addresses'
 import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
 
@@ -71,4 +77,9 @@ export const getLatestTransactions = (list: TransactionListItem[] = []): Transac
       .map((group) => (Array.isArray(group) ? group[0] : group))
       .filter(isTransactionListItem)
   )
+}
+
+export const filterEmptyLabels = (item: TransactionListItem, index: number, txList: TransactionListItem[]): boolean => {
+  const nextItem = txList[index + 1]
+  return (!isDateLabel(item) && !isLabelListItem(item)) || (nextItem && isTransactionListItem(nextItem))
 }

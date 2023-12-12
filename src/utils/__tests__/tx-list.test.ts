@@ -2,7 +2,12 @@ import { faker } from '@faker-js/faker'
 import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { groupConflictingTxs, groupRecoveryTransactions, _getRecoveryCancellations } from '@/utils/tx-list'
+import {
+  filterEmptyLabels,
+  groupConflictingTxs,
+  groupRecoveryTransactions,
+  _getRecoveryCancellations,
+} from '@/utils/tx-list'
 
 describe('tx-list', () => {
   describe('groupConflictingTxs', () => {
@@ -236,6 +241,39 @@ describe('tx-list', () => {
           address: moduleAddress2,
         },
       ])
+    })
+  })
+
+  describe('Tx list filters', () => {
+    it('should filter tx list by empty labels', () => {
+      const list = [
+        // "Empty" date label
+        {
+          type: 'DATE_LABEL',
+          timestamp: 1701561600000,
+        },
+
+        // Legit date label
+        {
+          type: 'DATE_LABEL',
+          timestamp: 2701561600001,
+        },
+
+        // Legit tx
+        {
+          type: 'TRANSACTION',
+          transaction: {
+            id: 'multisig_123',
+          },
+        },
+      ] as unknown as TransactionListItem[]
+
+      const result = list.filter(filterEmptyLabels)
+
+      expect(result.length).toBe(2)
+      expect(result[0].type).toBe('DATE_LABEL')
+      expect('timestamp' in result[0] && result[0].timestamp).toBe(2701561600001)
+      expect(list.filter(filterEmptyLabels)[1].type).toBe('TRANSACTION')
     })
   })
 })

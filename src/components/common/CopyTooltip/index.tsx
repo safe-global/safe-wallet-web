@@ -1,30 +1,22 @@
-import type { ComponentType, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import React, { type ReactElement, type SyntheticEvent, useCallback, useState } from 'react'
 import { Tooltip } from '@mui/material'
+import ConfirmCopyModal from './ConfirmCopyModal'
 
 const cursorPointer = { cursor: 'pointer' }
-
-export type CopyTooltipConfirmationModalProps = {
-  open: boolean
-  onClose: () => void
-  onCopy: { (e: SyntheticEvent): void }
-  text: string
-}
 
 const CopyTooltip = ({
   text,
   children,
   initialToolTipText = 'Copy to clipboard',
   onCopy,
-  ConfirmationModal,
-  trusted = true,
+  dialogContent,
 }: {
   text: string
   children?: ReactNode
   initialToolTipText?: string
   onCopy?: () => void
-  trusted?: boolean
-  ConfirmationModal?: ComponentType<CopyTooltipConfirmationModalProps>
+  dialogContent?: ReactElement
 }): ReactElement => {
   const [tooltipText, setTooltipText] = useState(initialToolTipText)
   const [showTooltip, setShowTooltip] = useState(false)
@@ -36,7 +28,7 @@ const CopyTooltip = ({
       e.preventDefault()
       e.stopPropagation()
 
-      if (!trusted && !showConfirmation) {
+      if (dialogContent && !showConfirmation) {
         setShowConfirmation(true)
         return
       }
@@ -60,7 +52,7 @@ const CopyTooltip = ({
 
       return () => clearTimeout(timeout)
     },
-    [trusted, showConfirmation, text, onCopy, isCopyEnabled, initialToolTipText],
+    [dialogContent, showConfirmation, text, onCopy, isCopyEnabled, initialToolTipText],
   )
 
   return (
@@ -80,13 +72,10 @@ const CopyTooltip = ({
           {children}
         </span>
       </Tooltip>
-      {ConfirmationModal !== undefined && (
-        <ConfirmationModal
-          text={text}
-          open={showConfirmation}
-          onClose={() => setShowConfirmation(false)}
-          onCopy={handleCopy}
-        />
+      {dialogContent !== undefined && (
+        <ConfirmCopyModal onClose={() => setShowConfirmation(false)} onCopy={handleCopy} open={showConfirmation}>
+          {dialogContent}
+        </ConfirmCopyModal>
       )}
     </>
   )

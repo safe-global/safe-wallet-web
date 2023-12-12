@@ -1,4 +1,3 @@
-import { parsePrefixedAddress } from '@/utils/addresses'
 import { Close } from '@mui/icons-material'
 import {
   Dialog,
@@ -13,20 +12,24 @@ import {
   Box,
 } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
-import EthHashInfo from '../EthHashInfo'
-import type { CopyTooltipConfirmationModalProps } from '../CopyTooltip'
-import { useEffect } from 'react'
-import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import { type ReactElement, useEffect, type SyntheticEvent } from 'react'
+import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 import Track from '../Track'
 
-const CopyUntrustedAddressModal = ({ open, onClose, onCopy, text }: CopyTooltipConfirmationModalProps) => {
+export type ConfirmCopyModalProps = {
+  open: boolean
+  onClose: () => void
+  onCopy: { (e: SyntheticEvent): void }
+  children: ReactElement
+}
+
+const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalProps) => {
   useEffect(() => {
     if (open) {
-      trackEvent(MODALS_EVENTS.COPY_WARNING_SHOWN)
+      trackEvent(TX_LIST_EVENTS.COPY_WARNING_SHOWN)
     }
   }, [open])
 
-  const { address } = parsePrefixedAddress(text)
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>
@@ -41,18 +44,10 @@ const CopyUntrustedAddressModal = ({ open, onClose, onCopy, text }: CopyTooltipC
         </Box>
       </DialogTitle>
       <Divider />
-      <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2}>
-          <EthHashInfo address={address} shortAddress={false} copyAddress={false} showCopyButton={false} hasExplorer />
-          <Typography>
-            The copied address is linked to a transaction with an untrusted token. Make sure you are interacting with
-            the right address.
-          </Typography>
-        </Box>
-      </DialogContent>
+      <DialogContent>{children}</DialogContent>
       <Divider />
       <DialogActions sx={{ padding: 3 }}>
-        <Track {...MODALS_EVENTS.COPY_WARNING_PROCEED}>
+        <Track {...TX_LIST_EVENTS.COPY_WARNING_PROCEED}>
           <Button size="small" variant="outlined" color="secondary" onClick={onCopy}>
             Proceed and copy
           </Button>
@@ -62,4 +57,4 @@ const CopyUntrustedAddressModal = ({ open, onClose, onCopy, text }: CopyTooltipC
   )
 }
 
-export default CopyUntrustedAddressModal
+export default ConfirmCopyModal

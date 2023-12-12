@@ -58,7 +58,7 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted }: TransferTxInfoProps & { t
           showCopyButton
           trusted={trusted}
         >
-          <TransferActions address={address.value} txInfo={txInfo} />
+          <TransferActions address={address.value} txInfo={txInfo} trusted={trusted} />
         </EthHashInfo>
       </Box>
     </Box>

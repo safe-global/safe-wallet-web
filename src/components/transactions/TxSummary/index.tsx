@@ -1,4 +1,4 @@
-import { type Palette, SvgIcon, Tooltip } from '@mui/material'
+import { type Palette } from '@mui/material'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
@@ -17,7 +17,7 @@ import TxConfirmations from '../TxConfirmations'
 import useIsPending from '@/hooks/useIsPending'
 import classNames from 'classnames'
 import { isTrustedTx } from '@/utils/transactions'
-import WarningIcon from '@/public/images/notifications/warning.svg'
+import UntrustedTxWarning from '../UntrustedTxWarning'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette | Record<string, Record<string, string>>) => {
   switch (value) {
@@ -66,20 +66,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       className={classNames(css.gridContainer, isQueue ? css.columnTemplate : css.columnTemplateTxHistory, {})}
       id={tx.id}
     >
-      {!isTrusted && (
-        <Box data-testid="warning" gridArea="nonce">
-          <Tooltip title={`This token is unfamiliar and may pose risks when interacting with it or involved addresses`}>
-            <Box
-              lineHeight="16px"
-              sx={{
-                opacity: 1,
-              }}
-            >
-              <SvgIcon component={WarningIcon} fontSize="small" inheritViewBox color="warning" />
-            </Box>
-          </Tooltip>
-        </Box>
-      )}
+      <UntrustedTxWarning trusted={isTrusted} />
 
       {nonce && !isGrouped && (
         <Box data-testid="nonce" gridArea="nonce">
