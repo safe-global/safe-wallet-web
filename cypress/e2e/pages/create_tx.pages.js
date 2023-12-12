@@ -284,7 +284,7 @@ export function verifySubmitBtnIsEnabled() {
 }
 
 export function verifyAddToBatchBtnIsEnabled() {
-  cy.get(addToBatchBtn).should('not.be.disabled')
+  return cy.get(addToBatchBtn).should('not.be.disabled')
 }
 
 export function verifyNativeTokenTransfer() {
@@ -326,7 +326,6 @@ export function verifyAndSubmitExecutionParams() {
 }
 
 export function clickOnNoLaterOption() {
-  // Asserts the execute checkbox is uncheckable (???)
   cy.contains(noLaterStr).click()
 }
 
