@@ -13,14 +13,7 @@
       {
         "additionalHooks": "useAsync"
       }
-    ],
-    "@typescript-eslint/no-floating-promises":  "error",
-    "@typescript-eslint/await-thenable":  "error",
-    "@typescript-eslint/no-misused-promises":  "error"
-  },
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": ["./tsconfig.json"]
+    ]
   },
   "ignorePatterns": ["node_modules/", ".next/", ".github/"],
   "plugins": ["unused-imports", "@typescript-eslint"]

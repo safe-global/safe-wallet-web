@@ -24,7 +24,7 @@ export const TxInfoContext = createContext<{
   status: SimulationStatus
 }>({
   simulation: {
-    simulateTransaction: () => {},
+    simulateTransaction: () => Promise.resolve(),
     simulation: undefined,
     _simulationRequestStatus: FETCH_STATUS.NOT_ASKED,
     simulationLink: '',
