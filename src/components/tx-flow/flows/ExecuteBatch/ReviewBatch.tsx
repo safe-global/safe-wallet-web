@@ -31,6 +31,8 @@ import { TxModalContext } from '@/components/tx-flow'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
 import type { PayableOverrides } from 'ethers'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -117,6 +119,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       setSubmitError(err)
       return
     }
+
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.batch })
   }
 
   const submitDisabled = loading || !isSubmittable || !gasPrice

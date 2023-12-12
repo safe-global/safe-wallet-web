@@ -12,7 +12,7 @@ import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardS
 import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
 import { SafeCreationStatus, useSafeCreation } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import StatusStepper from '@/components/new-safe/create/steps/StatusStep/StatusStepper'
-import { trackEvent } from '@/services/analytics'
+import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { getRedirect } from '@/components/new-safe/create/logic'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { AppRoutes } from '@/config/routes'
@@ -104,7 +104,7 @@ export const CreateSafeStatus = ({ data, setProgressColor, setStep }: StepRender
         <>
           <Divider />
           <Box className={layoutCss.row}>
-            <Track {...CREATE_SAFE_EVENTS.GO_TO_SAFE}>
+            <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.after_create}>
               <Button data-testid="start-using-safe-btn" variant="contained" onClick={onFinish}>
                 Start using {'Safe{Wallet}'}
               </Button>

@@ -80,7 +80,7 @@ export const gtmDisableCookies = TagManager.disableCookies
 export const gtmSetUserProperty = TagManager.setUserProperty
 
 type GtmEvent = {
-  event: EventType
+  event: string
   chainId: string
   deviceType: DeviceType
   abTest?: AbTest
@@ -90,7 +90,7 @@ type ActionGtmEvent = GtmEvent & {
   eventCategory: string
   eventAction: string
   eventLabel?: EventLabel
-  eventType?: EventType
+  eventType?: string
 }
 
 type PageviewGtmEvent = GtmEvent & {

@@ -71,7 +71,7 @@ export const SignForm = ({
 
     // On successful sign
     if (!isAddingToBatch) {
-      onSubmit(resultTxId)
+      onSubmit?.(resultTxId)
     }
 
     setTxFlow(undefined)
