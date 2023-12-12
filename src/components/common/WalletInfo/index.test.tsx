@@ -45,6 +45,7 @@ describe('WalletInfo', () => {
         onboard={mockOnboard}
         addressBook={{}}
         handleClose={jest.fn()}
+        balance={undefined}
       />,
     )
 
@@ -60,6 +61,7 @@ describe('WalletInfo', () => {
         onboard={mockOnboard}
         addressBook={{}}
         handleClose={jest.fn()}
+        balance={undefined}
       />,
     )
 
@@ -75,6 +77,7 @@ describe('WalletInfo', () => {
         onboard={mockOnboard}
         addressBook={{}}
         handleClose={jest.fn()}
+        balance={undefined}
       />,
     )
 
@@ -101,6 +104,7 @@ describe('WalletInfo', () => {
         onboard={mockOnboard}
         addressBook={{}}
         handleClose={jest.fn()}
+        balance={undefined}
       />,
     )
 
@@ -119,6 +123,7 @@ describe('WalletInfo', () => {
         onboard={mockOnboard}
         addressBook={{}}
         handleClose={jest.fn()}
+        balance={undefined}
       />,
     )
 
@@ -137,6 +142,7 @@ describe('WalletInfo', () => {
         onboard={mockOnboard}
         addressBook={{}}
         handleClose={jest.fn()}
+        balance={undefined}
       />,
     )
 
@@ -154,6 +160,7 @@ describe('WalletInfo', () => {
         onboard={mockOnboard}
         addressBook={{}}
         handleClose={jest.fn()}
+        balance={undefined}
       />,
     )
 
@@ -174,6 +181,7 @@ describe('WalletInfo', () => {
         onboard={mockOnboard}
         addressBook={{}}
         handleClose={jest.fn()}
+        balance={undefined}
       />,
     )
 

@@ -98,7 +98,8 @@ export const localStorageItem =
   '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}'
 export const gridItem = 'main .MuiPaper-root > .MuiGrid-item'
 export const linkNames = {
-  logo: /logo/i,
+  wcLogo: /WalletConnect logo/i,
+  txBuilderLogo: /Transaction Builder logo/i,
 }
 export const abi =
   '[{{}"inputs":[{{}"internalType":"address","name":"_singleton","type":"address"{}}],"stateMutability":"nonpayable","type":"constructor"{}},{{}"stateMutability":"payable","type":"fallback"{}}]'

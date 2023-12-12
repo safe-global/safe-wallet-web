@@ -187,7 +187,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
           return (
             <Fragment key={chain.chainName}>
               {/* Chain indicator */}
-              <ChainIndicator chainId={chain.chainId} className={css.chainDivider} />
+              <ChainIndicator chainId={chain.chainId} className={css.chainDivider} showLogo={false} />
 
               {/* No Safes yet */}
               {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
