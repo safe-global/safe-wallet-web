@@ -31,10 +31,6 @@ export const OVERVIEW_EVENTS = {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
   },
-  SIDEBAR_OPEN_SAFE: {
-    action: 'Sidebar open Safe',
-    category: OVERVIEW_CATEGORY,
-  },
   TOTAL_ADDED_SAFES: {
     event: EventType.META,
     action: 'Total added Safes',
@@ -96,9 +92,22 @@ export const OVERVIEW_EVENTS = {
     action: 'Click on SEP5 allocation button',
     category: OVERVIEW_CATEGORY,
   },
+  // Track clicks on links to Safe Accounts
+  OPEN_SAFE: {
+    action: 'Open Safe',
+    category: OVERVIEW_CATEGORY,
+    //label: OPEN_SAFE_LABELS
+  },
+  // Track actual Safe views
   SAFE_VIEWED: {
     event: EventType.META,
     action: 'Safe viewed',
     category: OVERVIEW_CATEGORY,
   },
+}
+
+export enum OPEN_SAFE_LABELS {
+  sidebar = 'sidebar',
+  after_create = 'after_create',
+  after_add = 'after_add',
 }

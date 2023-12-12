@@ -23,7 +23,7 @@ import PendingActionButtons from '@/components/sidebar/PendingActions'
 import usePendingActions from '@/hooks/usePendingActions'
 import useOnceVisible from '@/hooks/useOnceVisible'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics'
+import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS } from '@/services/analytics'
 
 const SafeListItem = ({
   address,
@@ -84,7 +84,7 @@ const SafeListItem = ({
         )
       }
     >
-      <Track {...OVERVIEW_EVENTS.SIDEBAR_OPEN_SAFE}>
+      <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.sidebar}>
         <Link href={href} passHref legacyBehavior>
           <ListItemButton
             key={address}
