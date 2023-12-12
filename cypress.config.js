@@ -27,7 +27,6 @@ export default defineConfig({
     testIsolation: false,
     hideXHR: true,
     defaultCommandTimeout: 10000,
-    numTestsKeptInMemory: 0,
     pageLoadTimeout: 60000,
   },
 
