@@ -39,3 +39,18 @@ export const isSmartContractWallet = memoize(
   },
   (chainId, address) => chainId + address,
 )
+
+/* Check if the wallet is unlocked. */
+export const isWalletUnlocked = async (walletName: string): Promise<boolean | undefined> => {
+  const METAMASK = 'MetaMask'
+
+  // Only MetaMask exposes a method to check if the wallet is unlocked
+  if (walletName === METAMASK) {
+    if (typeof window === 'undefined' || !window.ethereum?._metamask) return false
+    try {
+      return await window.ethereum?._metamask.isUnlocked()
+    } catch {
+      return false
+    }
+  }
+}
