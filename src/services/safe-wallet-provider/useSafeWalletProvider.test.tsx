@@ -309,7 +309,7 @@ describe('useSafeWalletProvider', () => {
         },
       })
 
-      result.current?.switchChain('0x5', appInfo)
+      void result.current?.switchChain('0x5', appInfo)
 
       expect(mockPush).toHaveBeenCalledWith({
         pathname: '/',
@@ -328,7 +328,7 @@ describe('useSafeWalletProvider', () => {
 
       const { result } = renderHook(() => _useTxFlowApi('1', '0x1234567890000000000000000000000000000000'))
 
-      result.current?.proxy('eth_chainId', [])
+      void result.current?.proxy('eth_chainId', [])
 
       expect(mockSend).toHaveBeenCalledWith('eth_chainId', [])
     })

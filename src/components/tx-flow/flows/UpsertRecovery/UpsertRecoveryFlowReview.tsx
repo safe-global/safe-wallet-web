@@ -90,7 +90,7 @@ export function UpsertRecoveryFlowReview({
   const isEdit = !!moduleAddress
 
   return (
-    <SignOrExecuteForm onSubmit={() => onSubmit(isEdit, params, safe.chainId)}>
+    <SignOrExecuteForm onSubmit={() => void onSubmit(isEdit, params, safe.chainId)}>
       <Typography>
         This transaction will {moduleAddress ? 'update' : 'enable'} the Account recovery feature once executed.
       </Typography>

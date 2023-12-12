@@ -1,4 +1,5 @@
 import 'fake-indexeddb/auto'
+import * as preferences from '@/components/settings/PushNotifications/hooks/useNotificationPreferences'
 import { hexZeroPad } from 'ethers/lib/utils'
 import * as tracking from '@/services/analytics'
 import { set } from 'idb-keyval'
@@ -96,8 +97,9 @@ describe('PushNotificationsBanner', () => {
 
   describe('PushNotificationsBanner', () => {
     beforeEach(() => {
+      jest.clearAllMocks()
       // Reset indexedDB
-      indexedDB = new IDBFactory()
+      //indexedDB = new IDBFactory()
 
       window.localStorage.clear()
 
@@ -331,16 +333,21 @@ describe('PushNotificationsBanner', () => {
       expect(result.queryByText('Get notified about pending signatures', { exact: false })).not.toBeInTheDocument()
     })
 
-    it('should not show the banner if the user has already registered for notifications', () => {
-      set(
-        `1:${hexZeroPad('0x123', 20)}`, // Registered
-        {
-          safeAddress: hexZeroPad('0x123', 20),
-          chainId: '1',
-          preferences: {},
-        },
-        createPushNotificationPrefsIndexedDb(),
-      )
+    it('should not show the banner if the user has already registered for notifications', async () => {
+      jest.spyOn(preferences, 'useNotificationPreferences').mockReturnValue({
+        getPreferences: () => ({
+          EXECUTED_MULTISIG_TRANSACTION: true,
+          INCOMING_ETHER: true,
+          INCOMING_TOKEN: true,
+          MODULE_TRANSACTION: true,
+          CONFIRMATION_REQUEST: true,
+          SAFE_CREATED: true,
+          PENDING_MULTISIG_TRANSACTION: true,
+          NEW_CONFIRMATION: true,
+          OUTGOING_ETHER: true,
+          OUTGOING_TOKEN: true,
+        }),
+      } as unknown as ReturnType<typeof preferences.useNotificationPreferences>)
 
       const result = render(
         <PushNotificationsBanner>

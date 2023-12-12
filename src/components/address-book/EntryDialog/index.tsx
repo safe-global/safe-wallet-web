@@ -47,7 +47,7 @@ function EntryDialog({
 
   const onSubmit = (e: BaseSyntheticEvent) => {
     e.stopPropagation()
-    submitCallback(e)
+    void submitCallback(e)
   }
 
   return (

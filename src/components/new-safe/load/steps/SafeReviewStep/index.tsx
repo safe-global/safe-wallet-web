@@ -79,7 +79,7 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
 
     trackEvent(LOAD_SAFE_EVENTS.GO_TO_SAFE)
 
-    router.push({
+    void router.push({
       pathname: AppRoutes.home,
       query: { safe: `${chain?.shortName}:${safeAddress}` },
     })

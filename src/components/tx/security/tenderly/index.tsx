@@ -41,12 +41,12 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
     status: { isFinished, isError, isSuccess, isCallTraceError, isLoading },
   } = useContext(TxInfoContext)
 
-  const handleSimulation = async () => {
+  const handleSimulation = () => {
     if (!wallet) {
       return
     }
 
-    simulateTransaction({
+    void simulateTransaction({
       safe,
       executionOwner: executionOwner ?? wallet.address,
       transactions,

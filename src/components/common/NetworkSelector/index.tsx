@@ -68,7 +68,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
 
     if (shortName) {
       trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: newChainId })
-      router.push(getNetworkLink(shortName))
+      void router.push(getNetworkLink(shortName))
     }
   }
 

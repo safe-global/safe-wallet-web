@@ -93,7 +93,7 @@ export const useSafeCreation = (
             owners: owners.map((owner) => owner.address),
             saltNonce,
           },
-          (txHash) => createSafeCallback(txHash, tx),
+          (txHash) => void createSafeCallback(txHash, tx),
           chain.chainId,
         )
 

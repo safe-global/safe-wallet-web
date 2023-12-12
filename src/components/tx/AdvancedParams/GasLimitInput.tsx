@@ -18,7 +18,7 @@ const GasLimitInput = ({ recommendedGasLimit }: { recommendedGasLimit?: string }
 
   const onResetGasLimit = () => {
     setValue(AdvancedField.gasLimit, recommendedGasLimit)
-    trigger(AdvancedField.gasLimit)
+    void trigger(AdvancedField.gasLimit)
   }
 
   const error = errors.gasLimit as

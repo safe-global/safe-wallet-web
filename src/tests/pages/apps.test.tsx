@@ -199,9 +199,7 @@ describe('AppsPage', () => {
       // Add custom app modal is not present
       expect(screen.queryByRole('presentation')).not.toBeInTheDocument()
 
-      await act(() => {
-        fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
-      })
+      fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
 
       // shows Add custom app modal
       await waitFor(() => {
@@ -256,10 +254,7 @@ describe('AppsPage', () => {
           }),
         ).toBeInTheDocument(),
       )
-      await act(() => {
-        fireEvent.click(screen.getByText('Add'))
-      })
-
+      fireEvent.click(screen.getByText('Add'))
       // modal is closed
       await waitForElementToBeRemoved(() => screen.queryByLabelText(/Safe App URL/))
 
@@ -296,9 +291,7 @@ describe('AppsPage', () => {
       })
       await waitFor(() => expect(screen.getByText('Add custom Safe App')).toBeInTheDocument())
       const addCustomAppButton = screen.getByText('Add custom Safe App')
-      await act(() => {
-        fireEvent.click(addCustomAppButton)
-      })
+      fireEvent.click(addCustomAppButton)
       await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument(), { timeout: 3000 })
       const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: INVALID_SAFE_APP_URL } })
@@ -333,24 +326,29 @@ describe('AppsPage', () => {
           },
         },
       })
+
       await waitFor(() => expect(screen.getByText('Add custom Safe App')).toBeInTheDocument())
+
       const addCustomAppButton = screen.getByText('Add custom Safe App')
-      await act(() => {
-        fireEvent.click(addCustomAppButton)
-      })
+      fireEvent.click(addCustomAppButton)
+
       await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument(), { timeout: 3000 })
+
       const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
+
       const riskCheckbox = await screen.findByText(
         /This Safe App is not part of Safe{Wallet} and I agree to use it at my own risk\./,
       )
-      await act(() => {
-        fireEvent.click(riskCheckbox)
-      })
-      await act(() => {
-        fireEvent.click(riskCheckbox)
-      })
+      fireEvent.click(riskCheckbox)
+      fireEvent.click(riskCheckbox)
+
+      // TODO: This shouldn't be needed
+      await Promise.resolve()
+      await Promise.resolve()
+
       fireEvent.click(screen.getByText('Add'))
+
       await waitFor(() => expect(screen.getByText('Accepting the disclaimer is mandatory')).toBeInTheDocument())
     })
 
@@ -397,25 +395,20 @@ describe('AppsPage', () => {
           }),
         ).toBeInTheDocument(),
       )
-      await act(() => {
-        fireEvent.click(screen.getByText('Add'))
-      })
+      fireEvent.click(screen.getByText('Add'))
 
       // modal is closed
       await waitForElementToBeRemoved(() => screen.queryByLabelText(/Safe App URL/))
 
       const removeCustomSafeAppButton = screen.getByLabelText('Delete Custom test Safe app')
 
-      await act(() => {
-        fireEvent.click(removeCustomSafeAppButton)
-      })
+      fireEvent.click(removeCustomSafeAppButton)
 
       await waitFor(() => expect(screen.getByText('Confirm Safe App removal')).toBeInTheDocument())
 
       const confirmRemovalButton = screen.getByRole('button', { name: 'Remove' })
-      await act(() => {
-        fireEvent.click(confirmRemovalButton)
-      })
+
+      fireEvent.click(confirmRemovalButton)
 
       await waitForElementToBeRemoved(() => screen.getByRole('button', { name: 'Remove' }))
 

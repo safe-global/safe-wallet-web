@@ -39,7 +39,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
   })
 
   useEffect(() => {
-    const unsubscribe = txSubscribe(TxEvent.PROCESSING, async ({ txId, txHash }) => {
+    const unsubscribe = txSubscribe(TxEvent.PROCESSING, ({ txId, txHash }) => {
       if (!txId) return
       pendingTxs.current[txId] = txHash
     })
@@ -171,7 +171,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         }
 
         if (prompt(`${appInfo.name} wants to switch to ${cfg.shortName}. Do you want to continue?`)) {
-          router.push({
+          void router.push({
             pathname: AppRoutes.index,
             query: {
               chain: cfg.shortName,

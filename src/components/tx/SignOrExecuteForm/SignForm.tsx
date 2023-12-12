@@ -78,7 +78,7 @@ export const SignForm = ({
   }
 
   const onBatchClick = (e: SyntheticEvent) => {
-    handleSubmit(e, true)
+    void handleSubmit(e, true)
   }
 
   const cannotPropose = !isOwner

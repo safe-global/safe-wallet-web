@@ -20,7 +20,7 @@ const Messages: NextPage = () => {
       return
     }
 
-    router.replace({ ...router, pathname: AppRoutes.transactions.history })
+    void router.replace({ ...router, pathname: AppRoutes.transactions.history })
   }, [router, chain])
 
   return (

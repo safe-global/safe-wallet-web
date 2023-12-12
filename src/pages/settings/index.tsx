@@ -9,7 +9,7 @@ const Settings: NextPage = () => {
 
   useEffect(() => {
     const redirectPath = router.query.safe ? settingsNavItems[0].href : generalSettingsNavItems[0].href
-    router.push(redirectPath, {
+    void router.push(redirectPath, {
       query: router.query,
     })
   }, [router, router.query.safe])

@@ -32,7 +32,7 @@ export const useWalletConnectClipboardUri = (): [string, Dispatch<SetStateAction
     }
 
     if (document.hasFocus()) {
-      setClipboard()
+      void setClipboard()
     }
 
     // Update clipboard when returning to Safe

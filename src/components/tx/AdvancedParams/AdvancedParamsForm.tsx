@@ -64,7 +64,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
   const onFormSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    handleSubmit(onSubmit)()
+    void handleSubmit(onSubmit)()
   }
 
   return (

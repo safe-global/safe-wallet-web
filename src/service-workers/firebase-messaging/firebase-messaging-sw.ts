@@ -37,7 +37,7 @@ export function firebaseMessagingSw() {
 
       cacheServiceWorkerPushNotificationTrackingEvent('opened', data)
 
-      self.clients.openWindow(data.link)
+      void self.clients.openWindow(data.link)
     },
     false,
   )
@@ -64,7 +64,7 @@ export function firebaseMessagingSw() {
 
     cacheServiceWorkerPushNotificationTrackingEvent('shown', data)
 
-    self.registration.showNotification(notification.title || '', {
+    void self.registration.showNotification(notification.title || '', {
       icon: ICON_PATH,
       body: notification.body,
       image: notification.image,

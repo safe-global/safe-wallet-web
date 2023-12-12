@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from '@/tests/test-utils'
+import { renderHook, waitFor } from '@/tests/test-utils'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
 import { REDEFINE_RETRY_TIMEOUT, useRedefine } from './useRedefine'
@@ -243,9 +243,7 @@ describe('useRedefine', () => {
     })
 
     // Should not poll again without error 1000
-    await act(() => {
-      jest.advanceTimersByTime(REDEFINE_RETRY_TIMEOUT)
-    })
+    jest.advanceTimersByTime(REDEFINE_RETRY_TIMEOUT)
 
     expect(mockFetch).toHaveBeenCalledTimes(1)
   })
@@ -382,9 +380,7 @@ describe('useRedefine', () => {
     mockFetch = jest.spyOn(global, 'fetch')
 
     // Should poll again on error 1000
-    await act(() => {
-      jest.advanceTimersByTime(REDEFINE_RETRY_TIMEOUT)
-    })
+    jest.advanceTimersByTime(REDEFINE_RETRY_TIMEOUT)
 
     await waitFor(() => {
       expect(result.current[0]).toBeDefined()
@@ -400,9 +396,7 @@ describe('useRedefine', () => {
 
     // Should not poll again after full result without error 1000
     // Should not poll again without error 1000
-    await act(() => {
-      jest.advanceTimersByTime(REDEFINE_RETRY_TIMEOUT)
-    })
+    jest.advanceTimersByTime(REDEFINE_RETRY_TIMEOUT)
     expect(mockFetch).toHaveBeenCalledTimes(1)
   })
 })

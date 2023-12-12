@@ -47,7 +47,7 @@ const SpendingLimitRow = ({
 
               // Validate only after the field is changed
               setTimeout(() => {
-                trigger(TokenAmountFields.amount)
+                void trigger(TokenAmountFields.amount)
               }, 10)
             }}
             {...field}

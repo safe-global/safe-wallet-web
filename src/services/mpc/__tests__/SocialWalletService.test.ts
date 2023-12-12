@@ -60,7 +60,7 @@ class MockMPCCoreKit {
       this.status = COREKIT_STATUS.LOGGED_IN
       return Promise.resolve()
     } else {
-      Promise.reject()
+      return Promise.reject()
     }
   }
 
@@ -103,13 +103,11 @@ describe('useMPCWallet', () => {
       expect(mockOnConnect).not.toHaveBeenCalled()
 
       // Resolve mock login
-      act(() => {
-        jest.advanceTimersByTime(MOCK_LOGIN_TIME)
-      })
+      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
 
       // We should be logged in and onboard should get connected
-      await waitFor(() => {
-        expect(status).resolves.toEqual(COREKIT_STATUS.LOGGED_IN)
+      await waitFor(async () => {
+        await expect(status).resolves.toEqual(COREKIT_STATUS.LOGGED_IN)
         expect(mockOnConnect).toHaveBeenCalled()
         expect(mockCoreKit.commitChanges).toHaveBeenCalled()
       })
@@ -143,13 +141,11 @@ describe('useMPCWallet', () => {
       expect(mockOnConnect).not.toHaveBeenCalled()
 
       // Resolve mock login
-      act(() => {
-        jest.advanceTimersByTime(MOCK_LOGIN_TIME)
-      })
+      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
 
       // We should be logged in and onboard should get connected
-      await waitFor(() => {
-        expect(status).resolves.toEqual(COREKIT_STATUS.LOGGED_IN)
+      await waitFor(async () => {
+        await expect(status).resolves.toEqual(COREKIT_STATUS.LOGGED_IN)
         expect(mockOnConnect).toHaveBeenCalled()
         expect(mockCoreKit.commitChanges).toHaveBeenCalled()
       })
@@ -176,13 +172,11 @@ describe('useMPCWallet', () => {
       })
 
       // Resolve mock login
-      act(() => {
-        jest.advanceTimersByTime(MOCK_LOGIN_TIME)
-      })
+      jest.advanceTimersByTime(MOCK_LOGIN_TIME)
 
       // A missing second factor should result in manual recovery state
-      await waitFor(() => {
-        expect(status).resolves.toEqual(COREKIT_STATUS.REQUIRED_SHARE)
+      await waitFor(async () => {
+        await expect(status).resolves.toEqual(COREKIT_STATUS.REQUIRED_SHARE)
         expect(mockOnConnect).not.toHaveBeenCalled()
         expect(mockCoreKit.commitChanges).not.toHaveBeenCalled()
       })
@@ -216,7 +210,7 @@ describe('useMPCWallet', () => {
   })
 
   describe('recoverFactorWithPassword', () => {
-    it('should not recover if wrong password is entered', () => {
+    it('should not recover if wrong password is entered', async () => {
       const mockOnConnect = jest.fn()
       const mockMPCCore = {
         state: {
@@ -235,7 +229,7 @@ describe('useMPCWallet', () => {
       const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
       testService.setOnConnect(mockOnConnect)
 
-      expect(testService.recoverAccountWithPassword('test', false)).rejects.toEqual(new Error('Invalid answer'))
+      await expect(testService.recoverAccountWithPassword('test', false)).rejects.toEqual(new Error('Invalid answer'))
       expect(mockOnConnect).not.toHaveBeenCalled()
       expect(mockMPCCore.commitChanges).not.toHaveBeenCalled()
     })
@@ -261,7 +255,7 @@ describe('useMPCWallet', () => {
       const testService = new SocialWalletService(mockMPCCore as unknown as Web3AuthMPCCoreKit)
       testService.setOnConnect(mockOnConnect)
 
-      act(() => testService.recoverAccountWithPassword('test', false))
+      await testService.recoverAccountWithPassword('test', false)
 
       await waitFor(() => {
         expect(mockOnConnect).toHaveBeenCalled()

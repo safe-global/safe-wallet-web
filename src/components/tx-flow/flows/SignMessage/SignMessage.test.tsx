@@ -11,7 +11,7 @@ import * as useAsyncHook from '@/hooks/useAsync'
 import * as useChainsHook from '@/hooks/useChains'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
-import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
+import { render, fireEvent, waitFor } from '@/tests/test-utils'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { EIP1193Provider, WalletState, AppState, OnboardAPI } from '@web3-onboard/core'
 import { generateSafeMessageHash } from '@/utils/safe-messages'
@@ -249,29 +249,29 @@ describe('SignMessage', () => {
 
     const button = getByText('Sign')
 
-    await act(() => {
-      fireEvent.click(button)
+    fireEvent.click(button)
+
+    await waitFor(() => {
+      expect(proposalSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          safe: {
+            version: '1.3.0',
+            address: {
+              value: hexZeroPad('0x1', 20),
+            },
+            chainId: '5',
+            threshold: 2,
+          } as SafeInfo,
+          message: 'Hello world!',
+          safeAppId: 25,
+        }),
+      )
+
+      // Immediately refetches message and displays confirmation
+      expect(baseElement).toHaveTextContent('0x0000...0002')
+      expect(baseElement).toHaveTextContent('1 of 2')
+      expect(baseElement).toHaveTextContent('Confirmation #2')
     })
-
-    expect(proposalSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        safe: {
-          version: '1.3.0',
-          address: {
-            value: hexZeroPad('0x1', 20),
-          },
-          chainId: '5',
-          threshold: 2,
-        } as SafeInfo,
-        message: 'Hello world!',
-        safeAppId: 25,
-      }),
-    )
-
-    // Immediately refetches message and displays confirmation
-    expect(baseElement).toHaveTextContent('0x0000...0002')
-    expect(baseElement).toHaveTextContent('1 of 2')
-    expect(baseElement).toHaveTextContent('Confirmation #2')
   })
 
   it('confirms the message if already proposed', async () => {
@@ -327,10 +327,6 @@ describe('SignMessage', () => {
       <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={messageText} requestId="123" />,
     )
 
-    await act(async () => {
-      Promise.resolve()
-    })
-
     const confirmationSpy = jest
       .spyOn(sender, 'dispatchSafeMsgConfirmation')
       .mockImplementation(() => Promise.resolve())
@@ -357,25 +353,25 @@ describe('SignMessage', () => {
       preparedSignature: '0x789',
     })
 
-    await act(() => {
-      fireEvent.click(button)
+    fireEvent.click(button)
+
+    await waitFor(() => {
+      expect(confirmationSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          safe: {
+            version: '1.3.0',
+            address: {
+              value: hexZeroPad('0x1', 20),
+            },
+            chainId: '5',
+            threshold: 2,
+          } as SafeInfo,
+          message: 'Hello world!',
+        }),
+      )
+
+      expect(getByText('Message successfully signed')).toBeInTheDocument()
     })
-
-    expect(confirmationSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        safe: {
-          version: '1.3.0',
-          address: {
-            value: hexZeroPad('0x1', 20),
-          },
-          chainId: '5',
-          threshold: 2,
-        } as SafeInfo,
-        message: 'Hello world!',
-      }),
-    )
-
-    expect(getByText('Message successfully signed')).toBeInTheDocument()
   })
 
   it('displays an error if no wallet is connected', () => {
@@ -548,9 +544,7 @@ describe('SignMessage', () => {
     const button = getByText('Sign')
     expect(button).not.toBeDisabled()
 
-    await act(() => {
-      fireEvent.click(button)
-    })
+    fireEvent.click(button)
 
     await waitFor(() => {
       expect(proposalSpy).toHaveBeenCalled()
@@ -600,9 +594,7 @@ describe('SignMessage', () => {
 
     const button = getByText('Sign')
 
-    await act(() => {
-      fireEvent.click(button)
-    })
+    fireEvent.click(button)
 
     expect(confirmationSpy).toHaveBeenCalled()
 

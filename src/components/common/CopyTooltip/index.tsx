@@ -19,11 +19,12 @@ const CopyTooltip = ({
   const [isCopyEnabled, setIsCopyEnabled] = useState(true)
 
   const handleCopy = useCallback(
-    (e: SyntheticEvent) => {
+    async (e: SyntheticEvent) => {
       e.preventDefault()
       e.stopPropagation()
       try {
-        navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
+        await navigator.clipboard.writeText(text)
+        setTooltipText('Copied')
         onCopy?.()
       } catch (err) {
         setIsCopyEnabled(false)
@@ -43,7 +44,7 @@ const CopyTooltip = ({
 
   return (
     <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
-      <span onClick={handleCopy} style={cursorPointer}>
+      <span onClick={(e) => void handleCopy(e)} style={cursorPointer}>
         {children}
       </span>
     </Tooltip>

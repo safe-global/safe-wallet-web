@@ -46,7 +46,7 @@ export function useRecoveryTxNotifications(): void {
     const entries = Object.entries(RecoveryTxNotifications) as Array<[keyof typeof RecoveryTxNotifications, string]>
 
     const unsubFns = entries.map(([event, notification]) =>
-      recoverySubscribe(event, async (detail) => {
+      recoverySubscribe(event, (detail) => {
         const isSuccess = SUCCESS_EVENTS.includes(event)
         const isError = 'error' in detail
 

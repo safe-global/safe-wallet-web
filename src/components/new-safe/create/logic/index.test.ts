@@ -263,11 +263,13 @@ describe('createNewSafeViaRelayer', () => {
     })
   })
 
-  it('should throw an error if relaying fails', () => {
+  it('should throw an error if relaying fails', async () => {
+    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => new Web3Provider(jest.fn()))
+
     const relayFailedError = new Error('Relay failed')
 
     jest.spyOn(relaying, 'sponsoredCall').mockRejectedValue(relayFailedError)
 
-    expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
+    await expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
   })
 })

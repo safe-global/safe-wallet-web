@@ -30,8 +30,8 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
   const { isExecutable, isExpired, remainingSeconds } = useRecoveryTxState(recovery)
   const router = useRouter()
 
-  const onClick = async () => {
-    await router.push({
+  const onClick = () => {
+    void router.push({
       pathname: AppRoutes.transactions.queue,
       query: router.query,
     })

@@ -1,4 +1,4 @@
-import { act, fireEvent, render } from '@/tests/test-utils'
+import { fireEvent, render } from '@/tests/test-utils'
 import { SafeAppsSigningMethod } from '.'
 
 describe('SafeAppsSigningMethod', () => {
@@ -16,11 +16,11 @@ describe('SafeAppsSigningMethod', () => {
     const checkbox = result.getByRole('checkbox')
     expect(checkbox).not.toBeChecked()
 
-    act(() => fireEvent.click(checkbox))
+    fireEvent.click(checkbox)
 
     expect(checkbox).toBeChecked()
 
-    act(() => fireEvent.click(checkbox))
+    fireEvent.click(checkbox)
 
     expect(checkbox).not.toBeChecked()
   })

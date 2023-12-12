@@ -49,7 +49,7 @@ const SafeApps: NextPage = () => {
   const { setOpen } = useContext(WalletConnectContext)
 
   const goToList = useCallback(() => {
-    router.push({
+    void router.push({
       pathname: AppRoutes.apps.index,
       query: { safe: router.query.safe },
     })

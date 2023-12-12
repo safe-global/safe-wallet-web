@@ -12,10 +12,10 @@ const ChainSwitcher = ({ fullWidth }: { fullWidth?: boolean }): ReactElement | n
   const onboard = useOnboard()
   const isWrongChain = useIsWrongChain()
 
-  const handleChainSwitch = useCallback(async () => {
+  const handleChainSwitch = useCallback(() => {
     if (!onboard || !chain) return
 
-    await switchWalletChain(onboard, chain.chainId)
+    void switchWalletChain(onboard, chain.chainId)
   }, [chain, onboard])
 
   if (!isWrongChain) return null

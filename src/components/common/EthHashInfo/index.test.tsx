@@ -1,7 +1,7 @@
 import { blo } from 'blo'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
+import { fireEvent, render, waitFor } from '@/tests/test-utils'
 import * as useAddressBook from '@/hooks/useAddressBook'
 import * as useChainId from '@/hooks/useChainId'
 import * as store from '@/store'
@@ -262,9 +262,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
-        fireEvent.click(button!)
-      })
+      fireEvent.click(button!)
 
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
         '0xe26920604f9a02c5a877d449faa71b7504f0c2508dcc7c0384078a024b8e592f',
@@ -293,9 +291,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
-        fireEvent.click(button!)
-      })
+      fireEvent.click(button!)
 
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(`rin:${MOCK_SAFE_ADDRESS}`)
     })
@@ -326,9 +322,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
-        fireEvent.click(button!)
-      })
+      fireEvent.click(button!)
 
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(`rin:${MOCK_SAFE_ADDRESS}`)
     })
@@ -356,9 +350,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
-        fireEvent.click(button!)
-      })
+      fireEvent.click(button!)
 
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(`gno:${MOCK_SAFE_ADDRESS}`)
     })
@@ -383,9 +375,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
-        fireEvent.click(button!)
-      })
+      fireEvent.click(button!)
 
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(MOCK_SAFE_ADDRESS)
     })

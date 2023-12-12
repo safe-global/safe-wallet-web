@@ -17,7 +17,7 @@ const IndexPage: NextPage = () => {
       return
     }
 
-    router.replace(
+    void router.replace(
       safeAddress
         ? `${AppRoutes.home}?safe=${safeAddress}`
         : chain

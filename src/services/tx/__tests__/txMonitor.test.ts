@@ -3,7 +3,7 @@ import * as txEvents from '@/services/tx/txEvents'
 import * as txMonitor from '@/services/tx/txMonitor'
 
 import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
-import { act } from '@testing-library/react'
+import { waitFor } from '@testing-library/react'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { hexZeroPad } from 'ethers/lib/utils'
 
@@ -120,19 +120,20 @@ describe('txMonitor', () => {
 
       waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2', safeAddress })
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2', safeAddress })
+      })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
-        jest.advanceTimersByTime(3 * 60_000 + 1)
+      jest.advanceTimersByTime(3 * 60_000 + 1)
+
+      await waitFor(() => {
+        expect(txDispatchSpy).not.toHaveBeenCalled()
       })
-      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it("emits a REVERTED event if taskStatus 'ExecReverted'", async () => {
@@ -147,22 +148,23 @@ describe('txMonitor', () => {
 
       waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
-        txId: '0x2',
-        error: new Error(`Relayed transaction reverted by EVM.`),
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
+          txId: '0x2',
+          error: new Error(`Relayed transaction reverted by EVM.`),
+        })
       })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
-        jest.advanceTimersByTime(3 * 60_000 + 1)
+      jest.advanceTimersByTime(3 * 60_000 + 1)
+
+      await waitFor(() => {
+        expect(txDispatchSpy).not.toHaveBeenCalled()
       })
-      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it("emits a FAILED event if taskStatus 'Blacklisted'", async () => {
@@ -177,22 +179,23 @@ describe('txMonitor', () => {
 
       waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
-        txId: '0x2',
-        error: new Error(`Relayed transaction was blacklisted by relay provider.`),
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+          txId: '0x2',
+          error: new Error(`Relayed transaction was blacklisted by relay provider.`),
+        })
       })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
-        jest.advanceTimersByTime(3 * 60_000 + 1)
+      jest.advanceTimersByTime(3 * 60_000 + 1)
+
+      await waitFor(() => {
+        expect(txDispatchSpy).not.toHaveBeenCalled()
       })
-      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it("emits a FAILED event if taskStatus 'Cancelled'", async () => {
@@ -207,22 +210,23 @@ describe('txMonitor', () => {
 
       waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
-        txId: '0x2',
-        error: new Error(`Relayed transaction was cancelled by relay provider.`),
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+          txId: '0x2',
+          error: new Error(`Relayed transaction was cancelled by relay provider.`),
+        })
       })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
-        jest.advanceTimersByTime(3 * 60_000 + 1)
+      jest.advanceTimersByTime(3 * 60_000 + 1)
+
+      await waitFor(() => {
+        expect(txDispatchSpy).not.toHaveBeenCalled()
       })
-      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it("emits a FAILED event if taskStatus 'NotFound'", async () => {
@@ -237,22 +241,23 @@ describe('txMonitor', () => {
 
       waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
-        txId: '0x2',
-        error: new Error(`Relayed transaction was not found.`),
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+          txId: '0x2',
+          error: new Error(`Relayed transaction was not found.`),
+        })
       })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
-        jest.advanceTimersByTime(3 * 60_000 + 1)
+      jest.advanceTimersByTime(3 * 60_000 + 1)
+
+      await waitFor(() => {
+        expect(txDispatchSpy).not.toHaveBeenCalled()
       })
-      expect(txDispatchSpy).not.toHaveBeenCalled()
     })
 
     it('emits a FAILED event if the tx relaying timed out', async () => {
@@ -265,13 +270,13 @@ describe('txMonitor', () => {
 
       waitForRelayedTx('0x1', ['0x2'], safeAddress)
 
-      await act(() => {
-        jest.advanceTimersByTime(3 * 60_000 + 1)
-      })
+      jest.advanceTimersByTime(3 * 60_000 + 1)
 
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
-        txId: '0x2',
-        error: new Error('Transaction not relayed in 3 minutes. Be aware that it might still be relayed.'),
+      await waitFor(() => {
+        expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+          txId: '0x2',
+          error: new Error('Transaction not relayed in 3 minutes. Be aware that it might still be relayed.'),
+        })
       })
     })
   })
@@ -290,12 +295,12 @@ describe('txMonitor', () => {
 
       waitForCreateSafeTx('0x1', setStatusSpy)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.SUCCESS)
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.SUCCESS)
+      })
     })
 
     it("sets the status to ERROR if taskStatus 'ExecReverted'", async () => {
@@ -311,12 +316,12 @@ describe('txMonitor', () => {
 
       waitForCreateSafeTx('0x1', setStatusSpy)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      })
     })
 
     it("sets the status to ERROR if taskStatus 'Blacklisted'", async () => {
@@ -332,12 +337,12 @@ describe('txMonitor', () => {
 
       waitForCreateSafeTx('0x1', setStatusSpy)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      })
     })
 
     it("sets the status to ERROR if taskStatus 'Cancelled'", async () => {
@@ -353,12 +358,12 @@ describe('txMonitor', () => {
 
       waitForCreateSafeTx('0x1', setStatusSpy)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      })
     })
 
     it("sets the status to ERROR if taskStatus 'NotFound'", async () => {
@@ -374,12 +379,12 @@ describe('txMonitor', () => {
 
       waitForCreateSafeTx('0x1', setStatusSpy)
 
-      await act(() => {
-        jest.advanceTimersByTime(15_000 + 1)
-      })
+      jest.advanceTimersByTime(15_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      })
     })
 
     it('sets the status to ERROR if the tx relaying timed out', async () => {
@@ -395,12 +400,12 @@ describe('txMonitor', () => {
 
       waitForCreateSafeTx('0x1', setStatusSpy)
 
-      await act(() => {
-        jest.advanceTimersByTime(3 * 60_000 + 1)
-      })
+      jest.advanceTimersByTime(3 * 60_000 + 1)
 
-      expect(mockFetch).toHaveBeenCalled()
-      expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalled()
+        expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
+      })
     })
   })
 })

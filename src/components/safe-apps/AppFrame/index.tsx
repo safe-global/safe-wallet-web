@@ -254,7 +254,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
   }, [appIsLoading, isBackendAppsLoading, appName])
 
   useEffect(() => {
-    const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash }) => {
+    const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, ({ safeAppRequestId, safeTxHash }) => {
       if (safeAppRequestId && currentRequestId === safeAppRequestId) {
         trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION, appName)
         communicator?.send({ safeTxHash }, safeAppRequestId)

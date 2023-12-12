@@ -111,7 +111,7 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
 
   const handleSwitchWallet = () => {
     if (onboard) {
-      switchWallet(onboard)
+      void switchWallet(onboard)
     }
   }
   if (!hasSigned) {
@@ -203,11 +203,11 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
     }
   }
 
-  const onContinue = async () => {
+  const onContinue = () => {
     if (!safeMessage) {
       return
     }
-    await dispatchPreparedSignature(safeMessage, safeMessageHash, () => setTxFlow(undefined), requestId)
+    return dispatchPreparedSignature(safeMessage, safeMessageHash, () => setTxFlow(undefined), requestId)
   }
 
   return (

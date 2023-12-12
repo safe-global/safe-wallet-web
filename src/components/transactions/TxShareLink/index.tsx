@@ -14,14 +14,14 @@ const TxShareLink = ({ id }: { id: string }): ReactElement => {
   const { safe = '' } = router.query
   const href = `${AppRoutes.transactions.tx}?safe=${safe}&id=${id}`
 
-  const onClick = (e: MouseEvent) => {
+  const onClick = async (e: MouseEvent) => {
     if (!e.ctrlKey && !e.metaKey) {
       e.preventDefault()
     }
 
     try {
       // copy href to clipboard
-      navigator.clipboard.writeText(location.origin + href)
+      await navigator.clipboard.writeText(location.origin + href)
     } catch (error) {
       console.error(error)
       setIsCopyEnabled(false)

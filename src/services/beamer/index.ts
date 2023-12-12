@@ -14,7 +14,7 @@ let scriptRef: HTMLScriptElement | null = null
 
 const isBeamerLoaded = (): boolean => !!scriptRef
 
-export const loadBeamer = async (shortName: string): Promise<void> => {
+export const loadBeamer = (shortName: string) => {
   if (isBeamerLoaded()) return
 
   const BEAMER_URL = 'https://app.getbeamer.com/js/beamer-embed.js'
@@ -44,7 +44,7 @@ export const loadBeamer = async (shortName: string): Promise<void> => {
   scriptRef.addEventListener('load', () => window.Beamer?.init(), { once: true })
 }
 
-export const updateBeamer = async (shortName: string): Promise<void> => {
+export const updateBeamer = (shortName: string) => {
   if (!isBeamerLoaded() || !window?.Beamer) {
     return
   }

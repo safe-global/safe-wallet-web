@@ -17,7 +17,7 @@ export function useWalletConnectSearchParamUri(): [string | null, (wcUri: string
         newQuery[WC_URI_SEARCH_PARAM] = wcUri
       }
 
-      router.replace({
+      void router.replace({
         pathname: router.pathname,
         query: newQuery,
       })

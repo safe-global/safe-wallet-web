@@ -39,7 +39,7 @@ const Custom404: NextPage = () => {
     const redirectUrl = _getRedirectUrl(location)
 
     if (redirectUrl) {
-      router.replace(redirectUrl)
+      void router.replace(redirectUrl)
     } else {
       setIsRedirecting(false)
     }

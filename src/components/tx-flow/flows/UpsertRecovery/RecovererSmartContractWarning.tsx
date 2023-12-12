@@ -28,7 +28,7 @@ export function RecovererWarning(): ReactElement | null {
       return
     }
 
-    ;(async () => {
+    void (async () => {
       let isSmartContract = false
 
       try {

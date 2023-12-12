@@ -57,7 +57,7 @@ const WcInput = ({ uri }: { uri: string }) => {
 
   // Insert a pre-filled uri
   useEffect(() => {
-    onInput(uri)
+    void onInput(uri)
   }, [onInput, uri])
 
   const onPaste = useCallback(async () => {
@@ -65,14 +65,14 @@ const WcInput = ({ uri }: { uri: string }) => {
     const clipboard = await getClipboard()
 
     if (clipboard && isPairingUri(clipboard)) {
-      onInput(clipboard)
+      void onInput(clipboard)
     }
   }, [onInput])
 
   return (
     <TextField
       value={value}
-      onChange={(e) => onInput(e.target.value)}
+      onChange={(e) => void onInput(e.target.value)}
       fullWidth
       autoComplete="off"
       disabled={connecting}

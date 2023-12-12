@@ -16,10 +16,10 @@ const cachedGetSafeApps = (chainId: string): ReturnType<typeof getSafeApps> | un
 
     // Clear the cache the promise resolves with a small delay
     cache[chainId]
-      ?.catch(() => null)
-      .then(() => {
+      ?.then(() => {
         setTimeout(() => (cache[chainId] = undefined), 100)
       })
+      .catch(() => null)
   }
 
   return cache[chainId]

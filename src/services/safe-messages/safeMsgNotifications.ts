@@ -8,12 +8,12 @@ const isMessageFullySigned = (message: SafeMessage): message is SafeMessage & { 
 /**
  * Dispatches a notification including the `preparedSignature` of the message if it is fully signed.
  *
- * @param chainId
+ * @param message
  * @param safeMessageHash
  * @param onClose
  * @param requestId
  */
-export const dispatchPreparedSignature = async (
+export const dispatchPreparedSignature = (
   message: SafeMessage,
   safeMessageHash: string,
   onClose: () => void,

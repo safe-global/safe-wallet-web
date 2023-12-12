@@ -123,7 +123,7 @@ function MpcModule(chain: ChainInfo): WalletInit {
             return web3.removeListener(event, listener)
           },
           disconnect: () => {
-            _getMPCCoreKitInstance()?.logout()
+            void _getMPCCoreKitInstance()?.logout()
           },
         }
 

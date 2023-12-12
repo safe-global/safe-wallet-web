@@ -135,7 +135,7 @@ export const SocialSigner = ({
             <Button
               data-testid="google-connect-btn"
               variant="outlined"
-              onClick={login}
+              onClick={() => void login()}
               size="small"
               disabled={isDisabled}
               fullWidth

@@ -50,7 +50,7 @@ class TestSocialWalletService implements ISocialWalletService {
 
   async loginAndCreate(): Promise<COREKIT_STATUS> {
     return new Promise((resolve) => {
-      this.onConnect().then(() => resolve(this.postLoginState))
+      void this.onConnect().then(() => resolve(this.postLoginState))
     })
   }
 

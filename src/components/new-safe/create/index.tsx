@@ -172,7 +172,7 @@ const CreateSafe = () => {
   }
 
   const onClose = () => {
-    router.push(AppRoutes.welcome.index)
+    void router.push(AppRoutes.welcome.index)
   }
 
   return (

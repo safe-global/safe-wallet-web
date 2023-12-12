@@ -102,7 +102,7 @@ export const useTxFilter = (): [TxFilter | null, (filter: TxFilter | null) => vo
   const filter = useMemo(() => txFilter.parseUrlQuery(router.query), [router.query])
 
   const setQuery = (filter: TxFilter | null) => {
-    router.push({
+    void router.push({
       pathname: router.pathname,
       query: {
         safe: router.query.safe,
@@ -138,10 +138,11 @@ export const fetchFilteredTxHistory = async (
         return getModuleTransactions(chainId, safeAddress, filterData.filter, pageUrl)
       }
       default: {
+        console.log('ASD')
         return { results: [] }
       }
     }
   }
 
-  return await fetchPage()
+  return fetchPage()
 }

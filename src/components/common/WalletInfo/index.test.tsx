@@ -5,7 +5,7 @@ import { type NextRouter } from 'next/router'
 import * as mpcModule from '@/services/mpc/SocialLoginModule'
 import * as constants from '@/config/constants'
 import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
-import { act } from '@testing-library/react'
+import { fireEvent } from '@testing-library/react'
 import SocialWalletService from '@/services/mpc/SocialWalletService'
 import type { ISocialWalletService } from '@/services/mpc/interfaces'
 
@@ -85,9 +85,7 @@ describe('WalletInfo', () => {
 
     expect(disconnectButton).toBeInTheDocument()
 
-    act(() => {
-      disconnectButton.click()
-    })
+    fireEvent.click(disconnectButton)
 
     expect(mockOnboard.disconnectWallet).toHaveBeenCalled()
   })
@@ -171,7 +169,7 @@ describe('WalletInfo', () => {
     jest.spyOn(mpcModule, 'isSocialLoginWallet').mockReturnValue(true)
 
     // Mock that MFA is enabled
-    socialWalletService.enableMFA('', '')
+    void socialWalletService.enableMFA('', '')
 
     const { queryByText } = render(
       <WalletInfo

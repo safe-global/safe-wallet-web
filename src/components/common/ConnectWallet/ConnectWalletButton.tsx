@@ -6,7 +6,7 @@ const ConnectWalletButton = ({ onConnect }: { onConnect?: () => void }): React.R
 
   const handleConnect = () => {
     onConnect?.()
-    connectWallet()
+    void connectWallet()
   }
 
   return (

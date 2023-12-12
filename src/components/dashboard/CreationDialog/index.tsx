@@ -34,8 +34,9 @@ const CreationDialog = () => {
   const chain = useCurrentChain()
 
   const onClose = () => {
+    // Remove the query param so that the dialog doesn't open again
     const { [CREATION_MODAL_QUERY_PARM]: _, ...query } = router.query
-    router.replace({ pathname: router.pathname, query })
+    void router.replace({ pathname: router.pathname, query })
 
     setOpen(false)
   }

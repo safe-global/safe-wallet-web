@@ -34,7 +34,7 @@ type Props =
 export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe, setTxFlow }: Props): ReactElement {
   const isDarkMode = useDarkMode()
 
-  const onRecover = async () => {
+  const onRecover = () => {
     onClose?.()
     setTxFlow(<RecoverAccountFlow />)
     trackEvent({ ...RECOVERY_EVENTS.START_RECOVERY, label: orientation === 'vertical' ? 'pop-up' : 'dashboard' })

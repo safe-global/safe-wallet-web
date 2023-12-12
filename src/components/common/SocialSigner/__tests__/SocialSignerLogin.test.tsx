@@ -1,4 +1,4 @@
-import { act, render, waitFor } from '@/tests/test-utils'
+import { render, waitFor } from '@/tests/test-utils'
 
 import { SocialSigner, _getSupportedChains } from '@/components/common/SocialSigner'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
@@ -39,16 +39,13 @@ describe('SocialSignerLogin', () => {
         <PasswordRecoveryModal />
       </TxModalProvider>,
     )
-
-    await waitFor(() => {
-      expect(result.findByText('Continue as Test Testermann')).resolves.toBeDefined()
-    })
+    expect(result.getByText('Continue as Test Testermann')).toBeInTheDocument()
 
     // We do not automatically invoke the callback as the user did not actively connect
     expect(mockOnLogin).not.toHaveBeenCalled()
 
-    const button = await result.findByRole('button')
-    button.click()
+    const button = result.getByRole('button')
+    fireEvent.click(button)
 
     expect(mockOnLogin).toHaveBeenCalled()
   })
@@ -69,10 +66,8 @@ describe('SocialSignerLogin', () => {
       </TxModalProvider>,
     )
 
-    await waitFor(async () => {
-      expect(result.findByText('Continue with Google')).resolves.toBeDefined()
-      expect(await result.findByRole('button')).toBeEnabled()
-    })
+    expect(result.getByText('Continue with Google')).toBeInTheDocument()
+    expect(result.getByRole('button')).toBeEnabled()
   })
 
   it('should display a Continue as button and call onLogin when clicked', () => {
@@ -111,7 +106,7 @@ describe('SocialSignerLogin', () => {
     )
 
     expect(result.getByText('Currently only supported on Goerli')).toBeInTheDocument()
-    expect(await result.findByRole('button')).toBeDisabled()
+    expect(result.getByRole('button')).toBeDisabled()
   })
 
   it('should display Password Recovery form and display a Continue as button when login succeeds', async () => {
@@ -133,30 +128,24 @@ describe('SocialSignerLogin', () => {
       </TxModalProvider>,
     )
 
-    await waitFor(() => {
-      expect(result.findByText('Continue with Google')).resolves.toBeDefined()
-    })
+    expect(result.getByText('Continue with Google')).toBeInTheDocument()
 
     // We do not automatically invoke the callback as the user did not actively connect
     expect(mockOnLogin).not.toHaveBeenCalled()
 
-    const button = await result.findByRole('button')
+    const button = result.getByRole('button')
 
-    act(() => {
-      button.click()
-    })
+    fireEvent.click(button)
 
     await waitFor(() => {
-      expect(result.findByText('Enter security password')).resolves.toBeDefined()
+      expect(result.getByText('Enter security password')).toBeInTheDocument()
     })
 
-    const passwordField = await result.findByLabelText('Recovery password')
-    const submitButton = await result.findByText('Submit')
+    const passwordField = result.getByLabelText('Recovery password')
+    const submitButton = result.getByText('Submit')
 
-    act(() => {
-      fireEvent.change(passwordField, { target: { value: 'Test1234!' } })
-      submitButton.click()
-    })
+    fireEvent.change(passwordField, { target: { value: 'Test1234!' } })
+    fireEvent.click(submitButton)
 
     mockSocialWalletService.getUserInfo = jest.fn().mockReturnValue({
       email: 'test@testermann.com',
@@ -177,9 +166,7 @@ describe('SocialSignerLogin', () => {
       </TxModalProvider>,
     )
 
-    await waitFor(() => {
-      expect(result.getByText('Continue as Test Testermann')).toBeInTheDocument()
-    })
+    expect(result.getByText('Continue as Test Testermann')).toBeInTheDocument()
   })
 
   describe('getSupportedChains', () => {

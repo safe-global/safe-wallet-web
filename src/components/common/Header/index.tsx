@@ -40,7 +40,7 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
     if (onMenuToggle) {
       onMenuToggle((isOpen) => !isOpen)
     } else {
-      router.push(logoHref)
+      void router.push(logoHref)
     }
   }
 

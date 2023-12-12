@@ -17,5 +17,5 @@ export const spindlInit = () => {
 export const spindlAttribute = (address: string) => {
   if (!IS_PRODUCTION) return
 
-  spindl.attribute(address)
+  void spindl.attribute(address)
 }

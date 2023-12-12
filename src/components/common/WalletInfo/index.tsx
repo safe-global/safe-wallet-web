@@ -45,16 +45,16 @@ export const WalletInfo = ({
   const handleSwitchWallet = () => {
     if (onboard) {
       handleClose()
-      switchWallet(onboard)
+      void switchWallet(onboard)
     }
   }
 
   const resetAccount = () => socialWalletService?.__deleteAccount()
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
     if (!wallet) return
 
-    onboard?.disconnectWallet({
+    await onboard?.disconnectWallet({
       label: wallet.label,
     })
 

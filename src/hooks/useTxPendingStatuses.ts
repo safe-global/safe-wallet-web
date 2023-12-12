@@ -48,7 +48,7 @@ const useTxMonitor = (): void => {
       monitoredTxs.current[txId] = true
 
       if (isProcessing) {
-        waitForTx(provider, txId, txHash)
+        void waitForTx(provider, txId, txHash)
         continue
       }
 

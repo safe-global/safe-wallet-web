@@ -379,8 +379,13 @@ describe('tx-history-filter', () => {
       jest.clearAllMocks()
     })
 
-    it('should get incoming transfers relevant to `type`', () => {
-      fetchFilteredTxHistory('4', '0x123', { type: 'Incoming' as TxFilterType, filter: { value: '123' } }, 'pageUrl1')
+    it('should get incoming transfers relevant to `type`', async () => {
+      await fetchFilteredTxHistory(
+        '4',
+        '0x123',
+        { type: 'Incoming' as TxFilterType, filter: { value: '123' } },
+        'pageUrl1',
+      )
 
       expect(getIncomingTransfers).toHaveBeenCalledWith('4', '0x123', { value: '123' }, 'pageUrl1')
 
@@ -388,8 +393,8 @@ describe('tx-history-filter', () => {
       expect(getModuleTransactions).not.toHaveBeenCalled()
     })
 
-    it('should get outgoing transfers relevant to `type`', () => {
-      fetchFilteredTxHistory(
+    it('should get outgoing transfers relevant to `type`', async () => {
+      await fetchFilteredTxHistory(
         '100',
         '0x456',
         {
@@ -410,8 +415,8 @@ describe('tx-history-filter', () => {
       expect(getModuleTransactions).not.toHaveBeenCalled()
     })
 
-    it('should get module transfers relevant to `type`', () => {
-      fetchFilteredTxHistory(
+    it('should get module transfers relevant to `type`', async () => {
+      await fetchFilteredTxHistory(
         '1',
         '0x789',
         { type: 'Module-based' as TxFilterType, filter: { to: '0x123' } },
@@ -424,8 +429,8 @@ describe('tx-history-filter', () => {
       expect(getMultisigTransactions).not.toHaveBeenCalled()
     })
 
-    it('should return undefined if invalid `type`', () => {
-      fetchFilteredTxHistory(
+    it('should return undefined if invalid `type`', async () => {
+      await fetchFilteredTxHistory(
         '1',
         '0x789',
         { type: 'Test' as TxFilterType, filter: { token_address: '0x123' } },

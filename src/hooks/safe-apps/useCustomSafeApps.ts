@@ -55,7 +55,7 @@ const useCustomSafeApps = (): ReturnType => {
       setLoading(false)
     }
 
-    loadCustomApps()
+    void loadCustomApps()
   }, [chainId])
 
   return { customSafeApps, loading, updateCustomSafeApps }

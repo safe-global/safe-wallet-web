@@ -149,14 +149,14 @@ const lastWalletStorage = localItem<string>('lastWallet')
 
 const connectLastWallet = async (onboard: OnboardAPI) => {
   const lastWalletLabel = lastWalletStorage.get()
-  if (lastWalletLabel) {
-    const isUnlocked = await isWalletUnlocked(lastWalletLabel)
+  if (!lastWalletLabel) return
 
-    if (isUnlocked === true || isUnlocked === undefined) {
-      connectWallet(onboard, {
-        autoSelect: { label: lastWalletLabel, disableModals: isUnlocked || false },
-      })
-    }
+  const isUnlocked = await isWalletUnlocked(lastWalletLabel)
+
+  if (isUnlocked === true || isUnlocked === undefined) {
+    void connectWallet(onboard, {
+      autoSelect: { label: lastWalletLabel, disableModals: isUnlocked || false },
+    })
   }
 }
 
@@ -187,17 +187,19 @@ export const useInitOnboard = () => {
       onboard.state.actions.setWalletModules(supportedWallets)
     }
 
-    enableWallets().then(() => {
-      // e2e wallet
-      if (typeof window !== 'undefined' && window.Cypress) {
-        connectWallet(onboard, {
-          autoSelect: { label: E2E_WALLET_NAME, disableModals: true },
-        })
-      }
+    enableWallets()
+      .then(() => {
+        // e2e wallet
+        if (typeof window !== 'undefined' && window.Cypress) {
+          void connectWallet(onboard, {
+            autoSelect: { label: E2E_WALLET_NAME, disableModals: true },
+          })
+        }
 
-      // Reconnect last wallet
-      connectLastWallet(onboard)
-    })
+        // Reconnect last wallet
+        void connectLastWallet(onboard)
+      })
+      .catch(() => null)
   }, [chain, onboard])
 
   // Track connected wallet

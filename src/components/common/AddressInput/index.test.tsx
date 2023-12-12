@@ -40,7 +40,7 @@ const TestForm = ({ address, validate }: { address: string; validate?: AddressIn
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(() => null)}>
+      <form onSubmit={void methods.handleSubmit(() => null)}>
         <AddressInput name={name} label="Recipient address" validate={validate} />
         <button type="submit">Submit</button>
       </form>

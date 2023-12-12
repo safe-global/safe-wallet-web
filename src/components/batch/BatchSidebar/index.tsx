@@ -46,7 +46,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
   )
 
   const onConfirmClick = useCallback(
-    async (e: SyntheticEvent) => {
+    (e: SyntheticEvent) => {
       e.preventDefault()
       if (!batchTxs.length) return
       closeSidebar()

@@ -21,7 +21,7 @@ const WelcomeLogin = () => {
 
   const continueToCreation = () => {
     trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
-    router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
+    void router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
   }
 
   return (

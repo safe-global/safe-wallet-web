@@ -16,7 +16,7 @@ const WcPage: NextPage = () => {
 
     const { uri } = router.query
 
-    router.replace(
+    void router.replace(
       lastSafe
         ? {
             pathname: AppRoutes.home,

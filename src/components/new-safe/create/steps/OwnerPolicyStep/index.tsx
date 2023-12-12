@@ -63,7 +63,7 @@ const OwnerPolicyStep = ({
     // Set threshold if it's greater than the number of owners
     setValue(OwnerPolicyStepFields.threshold, Math.min(threshold, ownerFields.length - 1))
     remove(index)
-    trigger(OwnerPolicyStepFields.owners)
+    void trigger(OwnerPolicyStepFields.owners)
   }
 
   const isDisabled = isWrongChain || !formState.isValid
@@ -90,7 +90,7 @@ const OwnerPolicyStep = ({
   })
 
   return (
-    <form onSubmit={onFormSubmit} id={OWNER_POLICY_STEP_FORM_ID}>
+    <form onSubmit={(e) => void onFormSubmit(e)} id={OWNER_POLICY_STEP_FORM_ID}>
       <FormProvider {...formMethods}>
         <Box className={layoutCss.row}>
           {ownerFields.map((field, i) => (

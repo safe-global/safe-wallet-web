@@ -74,7 +74,7 @@ export const useNotificationTracking = (): void => {
 
   useEffect(() => {
     if (typeof indexedDB !== 'undefined' && isNotificationFeatureEnabled) {
-      handleTrackCachedNotificationEvents(createNotificationTrackingIndexedDb())
+      void handleTrackCachedNotificationEvents(createNotificationTrackingIndexedDb())
     }
   }, [isNotificationFeatureEnabled])
 }

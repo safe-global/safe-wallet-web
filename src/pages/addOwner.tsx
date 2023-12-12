@@ -13,7 +13,7 @@ const AddOwner: NextPage = () => {
   const { setTxFlow } = useContext(TxModalContext)
 
   useEffect(() => {
-    router.push({ pathname: AppRoutes.settings.setup, query: router.query }).then(() => {
+    void router.push({ pathname: AppRoutes.settings.setup, query: router.query }).then(() => {
       if (!ownerAddress) return
 
       setTxFlow(<AddOwnerFlow address={ownerAddress} />)

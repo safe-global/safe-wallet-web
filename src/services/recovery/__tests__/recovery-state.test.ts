@@ -314,13 +314,15 @@ describe('recovery-state', () => {
       } as unknown as JsonRpcProvider
       mockUseWeb3ReadOnly.mockReturnValue(provider)
 
-      Array.from({ length: 3 }).forEach(async () => {
-        await _getSafeCreationReceipt({
-          transactionService,
-          safeAddress,
-          provider,
-        })
-      })
+      await Promise.all(
+        Array.from({ length: 3 }).map(() => {
+          return _getSafeCreationReceipt({
+            transactionService,
+            safeAddress,
+            provider,
+          })
+        }),
+      )
 
       expect(global.fetch).toHaveBeenCalledTimes(1)
     })
@@ -339,7 +341,7 @@ describe('recovery-state', () => {
       const provider = new JsonRpcProvider()
       mockUseWeb3ReadOnly.mockReturnValue(provider)
 
-      expect(
+      await expect(
         _getSafeCreationReceipt({
           transactionService,
           safeAddress,
