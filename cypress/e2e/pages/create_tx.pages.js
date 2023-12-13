@@ -1,5 +1,8 @@
 import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
 
+export const delegateCallWarning = '[data-testid="delegate-call-warning"]'
+export const policyChangeWarning = '[data-testid="threshold-warning"]'
 const newTransactionBtnStr = 'New transaction'
 const recepientInput = 'input[name="recipient"]'
 const sendTokensBtnStr = 'Send tokens'
@@ -8,13 +11,26 @@ const amountInput = 'input[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
-const transactionItemExpandable = 'div[id^="transfer"]'
-const expandItemIcon = '[data-testid="ExpandMoreIcon"]'
+const transactionItem = '[data-testid="transaction-item"]'
+const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-method"]'
+const addToBatchBtn = '[data-track="batching: Add to batch"]'
+const accordionDetails = '[data-testid="accordion-details"]'
+const copyIcon = '[data-testid="copy-btn-icon"]'
+const transactionSideList = '[data-testid="transaction-actions-list"]'
+const confirmationVisibilityBtn = '[data-testid="confirmation-visibility-btn"]'
+const expandAllBtn = '[data-testid="expande-all-btn"]'
+const collapseAllBtn = '[data-testid="collapse-all-btn"]'
+const txRowTitle = '[data-testid="tx-row-title"]'
+const advancedDetails = '[data-testid="tx-advanced-details"]'
+const baseGas = '[data-testid="tx-bas-gas"]'
+const requiredConfirmation = '[data-testid="required-confirmations"]'
+const txDate = '[data-testid="tx-date"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
 const TransactionSummary = 'Send '
+const transactionsPerHrStr = 'free transactions left this hour'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
@@ -22,14 +38,146 @@ const nativeTokenTransferStr = 'Native token transfer'
 const yesStr = 'Yes, '
 const estimatedFeeStr = 'Estimated fee'
 const executeStr = 'Execute'
-const transactionsPerHrStr = 'Transactions per hour'
-const transactionsPerHr5Of5Str = '5 of 5'
 const editBtnStr = 'Edit'
 const executionParamsStr = 'Execution parameters'
 const noLaterStr = 'No, later'
 const signBtnStr = 'Sign'
 const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
+
+export function verifyNumberOfTransactions(count) {
+  cy.get(txDate).should('have.length.at.least', count)
+  cy.get(transactionItem).should('have.length.at.least', count)
+}
+
+export function checkRequiredThreshold(count) {
+  cy.get(requiredConfirmation).should('be.visible').and('include.text', count)
+}
+
+export function verifyCopyIconWorks(index, data) {
+  cy.get(copyIcon)
+    .parent()
+    .eq(index)
+    .trigger('click')
+    .then(() =>
+      cy.window().then((win) => {
+        win.navigator.clipboard.readText().then((text) => {
+          expect(text).to.contain(data)
+        })
+      }),
+    )
+}
+
+export function verifyNumberOfCopyIcons(number) {
+  main.verifyElementsCount(copyIcon, number)
+}
+
+export function verifyNumberOfExternalLinks(number) {
+  for (let i = 0; i <= number; i++) {
+    cy.get(copyIcon).parent().parent().next().should('be.visible')
+    cy.get(copyIcon)
+      .parent()
+      .parent()
+      .next()
+      .children()
+      .should('have.attr', 'href')
+      .and('include', constants.sepoliaEtherscanlLink)
+  }
+}
+
+export function clickOnTransactionItemByName(name) {
+  cy.get(transactionItem).contains(name).scrollIntoView().click({ force: true })
+}
+
+export function clickOnTransactionItemByIndex(index) {
+  cy.get(transactionItem).eq(index).scrollIntoView().click({ force: true })
+  cy.get(accordionDetails).should('be.visible')
+}
+
+export function verifyExpandedDetails(data, warning) {
+  main.checkTextsExistWithinElement(accordionDetails, data)
+  if (warning) cy.get(warning).should('be.visible')
+}
+
+export function verifyActions(data) {
+  main.checkTextsExistWithinElement(accordionDetails, data)
+}
+
+export function clickOnExpandableAction(data) {
+  cy.get(accordionDetails).within(() => {
+    cy.get('div').contains(data).click()
+  })
+}
+
+function clickOnAdvancedDetails() {
+  cy.get(advancedDetails).click()
+}
+
+export function expandAdvancedDetails(data) {
+  clickOnAdvancedDetails()
+  data.forEach((row) => {
+    cy.get(txRowTitle).contains(row).should('be.visible')
+  })
+}
+
+export function collapseAdvancedDetails() {
+  clickOnAdvancedDetails()
+  cy.get(baseGas).should('not.exist')
+}
+
+export function expandAllActions(actions) {
+  cy.get(expandAllBtn).click()
+  main.checkTextsExistWithinElement(accordionDetails, actions)
+}
+
+export function collapseAllActions(data) {
+  cy.get(collapseAllBtn).click()
+  data.forEach((action) => {
+    cy.get(txRowTitle).contains(action).should('have.css', 'visibility', 'hidden')
+  })
+}
+
+export function verifyActionListExists(data) {
+  main.checkTextsExistWithinElement(transactionSideList, data)
+  main.verifyElementsIsVisible([confirmationVisibilityBtn])
+}
+
+export function verifySummaryByName(name, data, alt) {
+  cy.get(transactionItem)
+    .contains(name)
+    .parent()
+    .parent()
+    .parent()
+    .within(() => {
+      data.forEach((text) => {
+        cy.contains(text).should('be.visible')
+      })
+      if (alt) verifyImageAltTxt(0, alt)
+    })
+}
+
+export function verifySummaryByIndex(index, data, altIcon, altToken) {
+  cy.get(transactionItem)
+    .parent()
+    .parent()
+    .parent()
+    .eq(index)
+    .within(() => {
+      data.forEach((text) => {
+        cy.contains(text).should('be.visible')
+      })
+      if (altIcon) verifyImageAltTxt(0, altIcon)
+      if (altToken) verifyImageAltTxt(1, altToken)
+    })
+}
+
+export function clickOnTransactionItem(item) {
+  cy.get(transactionItem).eq(item).scrollIntoView().click({ force: true })
+}
+
+export function verifyTransactionActionsVisibility(option) {
+  cy.get(transactionSideList).should(option)
+}
 
 export function clickOnNewtransactionBtn() {
   // Assert that "New transaction" button is visible
@@ -45,13 +193,56 @@ export function clickOnNewtransactionBtn() {
 }
 
 export function typeRecipientAddress(address) {
-  cy.get(recepientInput).type(address).should('have.value', address)
+  cy.get(recepientInput).clear().type(address).should('have.value', address)
 }
+export function verifyENSResolves(fullAddress) {
+  let split = fullAddress.split(':')
+  let noPrefixAddress = split[1]
+  cy.get(recepientInput).should('have.value', noPrefixAddress)
+}
+
 export function clickOnSendTokensBtn() {
   cy.contains(sendTokensBtnStr).click()
 }
 
-export function clickOnTokenselectorAndSelectSepolia() {
+export function verifyRandomStringAddress(randomAddressString) {
+  typeRecipientAddress(randomAddressString)
+  cy.contains(constants.addressBookErrrMsg.invalidFormat).should('be.visible')
+}
+
+export function verifyWrongChecksum(wronglyChecksummedAddress) {
+  typeRecipientAddress(wronglyChecksummedAddress)
+  cy.contains(constants.addressBookErrrMsg.invalidChecksum).should('be.visible')
+}
+
+export function verifyAmountNegativeNumber() {
+  setSendValue(-1)
+  cy.contains(constants.amountErrorMsg.negativeValue).should('be.visible')
+}
+
+export function verifyAmountLargerThanCurrentBalance() {
+  setSendValue(9999)
+  cy.contains(constants.amountErrorMsg.largerThanCurrentBalance).should('be.visible')
+}
+
+export function verifyAmountMustBeNumber() {
+  setSendValue('abc')
+  cy.contains(constants.amountErrorMsg.randomString).should('be.visible')
+}
+
+export function verifyTooltipMessage(message) {
+  cy.get('div[role="tooltip"]').contains(message).should('be.visible')
+}
+
+export function selectCurrentWallet() {
+  cy.get(connectedWalletExecMethod).click()
+}
+
+export function verifyRelayerAttemptsAvailable() {
+  cy.contains(transactionsPerHrStr).should('be.visible')
+}
+
+export function clickOnTokenselectorAndSelectSepoliaEth() {
   cy.get(tokenAddressInput).prev().click()
   cy.get('ul[role="listbox"]').contains(constants.tokenNames.sepoliaEther).click()
 }
@@ -88,6 +279,10 @@ export function verifySubmitBtnIsEnabled() {
   cy.get('button[type="submit"]').should('not.be.disabled')
 }
 
+export function verifyAddToBatchBtnIsEnabled() {
+  return cy.get(addToBatchBtn).should('not.be.disabled')
+}
+
 export function verifyNativeTokenTransfer() {
   cy.contains(nativeTokenTransferStr).should('be.visible')
 }
@@ -119,13 +314,14 @@ export function verifyAndSubmitExecutionParams() {
     cy.get('@Paramsform').find('label').contains(`${element}`).next().find('input').should('not.be.disabled')
   })
 
+  cy.get('@Paramsform').find(gasLimitInput).clear().type('100').invoke('prop', 'value').should('equal', '100')
+  cy.contains('Gas limit must be at least 21000').should('be.visible')
   cy.get('@Paramsform').find(gasLimitInput).clear().type('300000').invoke('prop', 'value').should('equal', '300000')
   cy.get('@Paramsform').find(gasLimitInput).parent('div').find(rotateLeftIcon).click()
   cy.get('@Paramsform').submit()
 }
 
 export function clickOnNoLaterOption() {
-  // Asserts the execute checkbox is uncheckable (???)
   cy.contains(noLaterStr).click()
 }
 
@@ -174,23 +370,10 @@ export function verifyTransactionStrNotVible(str) {
   cy.contains(str).should('not.be.visible')
 }
 
-export function clickOnTransactionExpandableItem(name, actions) {
-  cy.contains('div', name)
-    .next()
-    .click()
-    .within(() => {
-      actions()
-    })
-}
-
 export function clickOnExpandAllBtn() {
   cy.contains(expandAllBtnStr).click()
 }
 
 export function clickOnCollapseAllBtn() {
   cy.contains(collapseAllBtnStr).click()
-}
-
-export function clickOnExpandIcon() {
-  cy.get(expandItemIcon).click()
 }

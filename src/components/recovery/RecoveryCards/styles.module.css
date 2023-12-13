@@ -1,0 +1,26 @@
+.card {
+  max-width: 576px;
+  padding: var(--space-2);
+  margin: var(--space-2);
+}
+
+.button {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .card {
+    padding: var(--space-4);
+  }
+
+  .button {
+    width: auto;
+  }
+}
+
+/* To center the card when the sidebar is visible */
+@media (min-width: 900px) {
+  .card {
+    margin-left: 230px;
+  }
+}

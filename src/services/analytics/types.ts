@@ -11,7 +11,7 @@ export enum EventType {
 export type EventLabel = string | number | boolean | null
 
 export type AnalyticsEvent = {
-  event?: EventType
+  event?: string
   category: string
   action: string
   label?: EventLabel

@@ -1,17 +1,9 @@
-import Onboard, { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
+import Onboard, { type OnboardAPI } from '@web3-onboard/core'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexValue } from '@ethersproject/bytes'
 import { getAllWallets, getRecommendedInjectedWallets } from '@/hooks/wallets/wallets'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
 import type { EnvState } from '@/store/settingsSlice'
-
-export type ConnectedWallet = {
-  label: string
-  chainId: string
-  address: string
-  ens?: string
-  provider: EIP1193Provider
-}
 
 let onboard: OnboardAPI | null = null
 
@@ -57,7 +49,7 @@ export const createOnboard = (
 
     connect: {
       removeWhereIsMyWalletWarning: true,
-      autoConnectLastWallet: true,
+      autoConnectLastWallet: false,
     },
   })
 

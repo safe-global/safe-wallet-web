@@ -14,7 +14,7 @@ import {
   gtmSetUserProperty,
   gtmTrack,
 } from '@/services/analytics/gtm'
-import spindl, { spindlInit } from './spindl'
+import { spindlInit, spindlAttribute } from './spindl'
 import { useAppSelector } from '@/store'
 import { CookieType, selectCookies } from '@/store/cookiesSlice'
 import useChainId from '@/hooks/useChainId'
@@ -85,8 +85,8 @@ const useGtm = () => {
     // Don't track 404 because it's not a real page, it immediately does a client-side redirect
     if (router.pathname === AppRoutes['404']) return
 
-    gtmTrackPageview(router.pathname)
-  }, [router.pathname])
+    gtmTrackPageview(router.pathname, router.asPath)
+  }, [router.asPath, router.pathname])
 
   useEffect(() => {
     if (wallet?.label) {
@@ -97,7 +97,7 @@ const useGtm = () => {
   useEffect(() => {
     if (wallet?.address) {
       gtmSetUserProperty(AnalyticsUserProperties.WALLET_ADDRESS, wallet.address)
-      spindl.attribute(wallet.address)
+      spindlAttribute(wallet.address)
     }
   }, [wallet?.address])
 

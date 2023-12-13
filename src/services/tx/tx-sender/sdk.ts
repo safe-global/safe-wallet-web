@@ -11,7 +11,7 @@ import { createWeb3 } from '@/hooks/wallets/web3'
 import { hexValue } from 'ethers/lib/utils'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
-import type { ConnectedWallet } from '@/services/onboard'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 import { asError } from '@/services/exceptions/utils'
 

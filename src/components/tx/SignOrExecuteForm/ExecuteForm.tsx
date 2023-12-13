@@ -1,3 +1,5 @@
+import BalanceInfo from '@/components/tx/BalanceInfo'
+import madProps from '@/utils/mad-props'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
 import classNames from 'classnames'
@@ -27,7 +29,7 @@ import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 
-const ExecuteForm = ({
+export const ExecuteForm = ({
   safeTx,
   txId,
   onSubmit,
@@ -35,7 +37,17 @@ const ExecuteForm = ({
   origin,
   onlyExecute,
   isCreation,
+  isOwner,
+  isExecutionLoop,
+  relays,
+  txActions,
+  txSecurity,
 }: SignOrExecuteProps & {
+  isOwner: ReturnType<typeof useIsSafeOwner>
+  isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
+  relays: ReturnType<typeof useRelaysBySafe>
+  txActions: ReturnType<typeof useTxActions>
+  txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
@@ -43,15 +55,10 @@ const ExecuteForm = ({
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
   // Hooks
-  const isOwner = useIsSafeOwner()
   const currentChain = useCurrentChain()
-  const { executeTx } = useTxActions()
-  const [relays] = useRelaysBySafe()
+  const { executeTx } = txActions
   const { setTxFlow } = useContext(TxModalContext)
-  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
-
-  // Check that the transaction is executable
-  const isExecutionLoop = useIsExecutionLoop()
+  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
 
   // We default to relay, but the option is only shown if we canRelay
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
@@ -60,7 +67,7 @@ const ExecuteForm = ({
   const [walletCanRelay] = useWalletCanRelay(safeTx)
 
   // The transaction can/will be relayed
-  const canRelay = walletCanRelay && hasRemainingRelays(relays)
+  const canRelay = walletCanRelay && hasRemainingRelays(relays[0])
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
   // Estimate gas limit
@@ -68,7 +75,7 @@ const ExecuteForm = ({
   const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
 
   // Check if transaction will fail
-  const { executionValidationError, isValidExecutionLoading } = useIsValidExecution(safeTx, advancedParams.gasLimit)
+  const { executionValidationError } = useIsValidExecution(safeTx, advancedParams.gasLimit)
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -96,13 +103,18 @@ const ExecuteForm = ({
     }
 
     // On success
-    onSubmit(executedTxId)
+    onSubmit?.(executedTxId, true)
     setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
   }
 
   const cannotPropose = !isOwner && !onlyExecute
   const submitDisabled =
-    !safeTx || !isSubmittable || disableSubmit || isValidExecutionLoading || isExecutionLoop || cannotPropose
+    !safeTx ||
+    !isSubmittable ||
+    disableSubmit ||
+    isExecutionLoop ||
+    cannotPropose ||
+    (needsRiskConfirmation && !isRiskConfirmed)
 
   return (
     <>
@@ -116,13 +128,14 @@ const ExecuteForm = ({
             gasLimitError={gasLimitError}
             willRelay={willRelay}
           />
+          {!canRelay && <BalanceInfo />}
 
           {canRelay && (
             <div className={css.noTopBorder}>
               <ExecutionMethodSelector
                 executionMethod={executionMethod}
                 setExecutionMethod={setExecutionMethod}
-                relays={relays}
+                relays={relays[0]}
               />
             </div>
           )}
@@ -167,4 +180,12 @@ const ExecuteForm = ({
   )
 }
 
-export default ExecuteForm
+const useTxSecurityContext = () => useContext(TxSecurityContext)
+
+export default madProps(ExecuteForm, {
+  isOwner: useIsSafeOwner,
+  isExecutionLoop: useIsExecutionLoop,
+  relays: useRelaysBySafe,
+  txActions: useTxActions,
+  txSecurity: useTxSecurityContext,
+})

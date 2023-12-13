@@ -24,6 +24,10 @@
   background-color: var(--color-border-light);
 }
 
+[data-theme='dark'] .list :global .MuiBadge-standard {
+  background-color: var(--color-primary-main);
+}
+
 .list :global .MuiListItemButton-root:hover {
   border-radius: 6px;
   background-color: var(--color-background-light);

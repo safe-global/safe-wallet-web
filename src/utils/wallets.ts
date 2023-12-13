@@ -28,14 +28,29 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
 }
 
 export const isSmartContractWallet = memoize(
-  async (wallet: ConnectedWallet) => {
+  async (_chainId: string, address: string) => {
     const provider = getWeb3ReadOnly()
 
     if (!provider) {
       throw new Error('Provider not found')
     }
 
-    return isSmartContract(provider, wallet.address)
+    return isSmartContract(provider, address)
   },
-  ({ chainId, address }) => chainId + address,
+  (chainId, address) => chainId + address,
 )
+
+/* Check if the wallet is unlocked. */
+export const isWalletUnlocked = async (walletName: string): Promise<boolean | undefined> => {
+  const METAMASK = 'MetaMask'
+
+  // Only MetaMask exposes a method to check if the wallet is unlocked
+  if (walletName === METAMASK) {
+    if (typeof window === 'undefined' || !window.ethereum?._metamask) return false
+    try {
+      return await window.ethereum?._metamask.isUnlocked()
+    } catch {
+      return false
+    }
+  }
+}

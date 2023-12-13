@@ -29,6 +29,7 @@ import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsPending from '@/hooks/useIsPending'
+import { isTrustedTx } from '@/utils/transactions'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -48,6 +49,8 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
     txDetails.detailedExecutionInfo.trusted === false
 
+  const isTrustedTransfer = isTrustedTx(txSummary)
+
   return (
     <>
       {/* /Details */}
@@ -58,7 +61,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
 
         <div className={css.txData}>
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
-            <TxData txDetails={txDetails} />
+            <TxData txDetails={txDetails} trusted={isTrustedTransfer} />
           </ErrorBoundary>
         </div>
 
@@ -134,16 +137,18 @@ const TxDetails = ({
 
   return (
     <div className={css.container}>
-      {txDetailsData && <TxDetailsBlock txSummary={txSummary} txDetails={txDetailsData} />}
-      {loading && (
+      {txDetailsData ? (
+        <TxDetailsBlock txSummary={txSummary} txDetails={txDetailsData} />
+      ) : loading ? (
         <div className={css.loading}>
           <CircularProgress />
         </div>
-      )}
-      {error && (
-        <div className={css.error}>
-          <ErrorMessage error={error}>Couldn&apos;t load the transaction details</ErrorMessage>
-        </div>
+      ) : (
+        error && (
+          <div className={css.error}>
+            <ErrorMessage error={error}>Couldn&apos;t load the transaction details</ErrorMessage>
+          </div>
+        )
       )}
     </div>
   )

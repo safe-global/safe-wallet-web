@@ -31,8 +31,15 @@ const ExecuteCheckbox = ({ onChange }: { onChange: (checked: boolean) => void })
           }
           control={<Radio />}
           className={css.radio}
+          data-testid="execute-checkbox"
         />
-        <FormControlLabel value="false" label={<>No, later</>} control={<Radio />} className={css.radio} />
+        <FormControlLabel
+          value="false"
+          label={<>No, later</>}
+          control={<Radio />}
+          className={css.radio}
+          data-testid="sign-checkbox"
+        />
       </RadioGroup>
     </>
   )

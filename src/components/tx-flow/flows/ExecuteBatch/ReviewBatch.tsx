@@ -2,7 +2,7 @@ import { CircularProgress, Typography, Button, CardActions, Divider, Alert } fro
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
+import { getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
@@ -16,7 +16,6 @@ import { TxSimulation } from '@/components/tx/security/tenderly'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import { hasRemainingRelays } from '@/utils/relaying'
@@ -32,6 +31,8 @@ import { TxModalContext } from '@/components/tx-flow'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
 import type { PayableOverrides } from 'ethers'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -41,7 +42,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const { safe } = useSafeInfo()
   const [relays] = useRelaysBySafe()
   const { setTxFlow } = useContext(TxModalContext)
-  const [gasPrice, , gasPriceLoading] = useGasPrice()
+  const [gasPrice] = useGasPrice()
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -52,7 +53,6 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
-  const web3 = useWeb3()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -60,9 +60,9 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [params.txs, chain?.chainId])
 
   const multiSendContract = useMemo(() => {
-    if (!chain?.chainId || !safe.version || !web3) return
-    return getMultiSendCallOnlyContract(chain.chainId, safe.version, web3)
-  }, [chain?.chainId, safe.version, web3])
+    if (!chain?.chainId || !safe.version) return
+    return getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
+  }, [chain?.chainId, safe.version])
 
   const multiSendTxs = useMemo(() => {
     if (!txsWithDetails || !chain || !safe.version) return
@@ -75,7 +75,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || gasPriceLoading) return
+    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice) return
 
     const overrides: PayableOverrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
@@ -119,9 +119,11 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       setSubmitError(err)
       return
     }
+
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.batch })
   }
 
-  const submitDisabled = loading || !isSubmittable || gasPriceLoading
+  const submitDisabled = loading || !isSubmittable || !gasPrice
 
   return (
     <>

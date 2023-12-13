@@ -133,7 +133,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
 
   return (
     <>
-      <List className={css.signers}>
+      <List data-testid="transaction-actions-list" className={css.signers}>
         <ListItem>
           {isCancellationTxInfo(txInfo) ? (
             <>
@@ -147,7 +147,9 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
               <StyledListItemIcon $state={StepState.CONFIRMED}>
                 <Created />
               </StyledListItemIcon>
-              <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Created</ListItemText>
+              <ListItemText data-testid="create-action" primaryTypographyProps={{ fontWeight: 700 }}>
+                Created
+              </ListItemText>
             </>
           )}
         </ListItem>
@@ -156,7 +158,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
           <StyledListItemIcon $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
             {isConfirmed ? <Check /> : <MissingConfirmation />}
           </StyledListItemIcon>
-          <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
+          <ListItemText data-testid="confirmation-action" primaryTypographyProps={{ fontWeight: 700 }}>
             Confirmations{' '}
             <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
           </ListItemText>
@@ -167,7 +169,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
               <StyledListItemIcon $state={StepState.CONFIRMED}>
                 <Dot />
               </StyledListItemIcon>
-              <ListItemText>
+              <ListItemText data-testid="signer">
                 <EthHashInfo address={signer.value} name={signer.name} hasExplorer showCopyButton />
               </ListItemText>
             </ListItem>
@@ -178,7 +180,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
               <Dot />
             </StyledListItemIcon>
             <ListItemText>
-              <Link component="button" onClick={toggleHide} fontSize="medium">
+              <Link data-testid="confirmation-visibility-btn" component="button" onClick={toggleHide} fontSize="medium">
                 {hideConfirmations ? 'Show all' : 'Hide all'}
               </Link>
             </ListItemText>
@@ -188,13 +190,13 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
           <StyledListItemIcon $state={executor ? StepState.CONFIRMED : StepState.DISABLED}>
             {executor ? <Check /> : <MissingConfirmation />}
           </StyledListItemIcon>
-          <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
+          <ListItemText data-testid="tx-action-status" primaryTypographyProps={{ fontWeight: 700 }}>
             {executor ? 'Executed' : isPending ? txStatus : 'Can be executed'}
           </ListItemText>
         </ListItem>
       </List>
       {executor ? (
-        <Box className={css.listFooter}>
+        <Box data-testid="executor" className={css.listFooter}>
           <EthHashInfo
             address={executor.value}
             name={executor.name}

@@ -198,9 +198,8 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
     }
 
     // Track first signature as creation
-    if (updatedMessage?.confirmations.length === 1) {
-      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.typed_message })
-    }
+    const isCreation = updatedMessage?.confirmations.length === 1
+    trackEvent({ ...(isCreation ? TX_EVENTS.CREATE : TX_EVENTS.CONFIRM), label: TX_TYPES.typed_message })
   }
 
   const onContinue = async () => {

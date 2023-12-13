@@ -2,6 +2,7 @@ import 'cypress-file-upload'
 import * as constants from '../../support/constants'
 import * as addressBook from '../../e2e/pages/address_book.page'
 import * as main from '../../e2e/pages/main.page'
+import * as ls from '../../support/localstorage_data.js'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
@@ -10,7 +11,7 @@ describe('[SMOKE] Address book tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
-    main.waitForTrnsactionHistoryToComplete()
+    main.waitForHistoryCallToComplete()
     main.acceptCookies()
   })
 
@@ -19,14 +20,19 @@ describe('[SMOKE] Address book tests', () => {
     addressBook.addEntry(NAME, constants.RECIPIENT_ADDRESS)
   })
 
-  //TODO: Use localstorage for setting up/deleting entries
   it('[SMOKE] Verify entry can be deleted', () => {
-    addressBook.clickOnCreateEntryBtn()
-    addressBook.addEntry(NAME, constants.RECIPIENT_ADDRESS)
-    // Click the delete button in the first entry
-    addressBook.clickDeleteEntryButton()
-    addressBook.clickDeleteEntryModalDeleteButton()
-    addressBook.verifyEditedNameNotExists(EDITED_NAME)
+    main
+      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+      .then(() => {
+        main
+          .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+          .then(() => {
+            cy.reload()
+            addressBook.clickDeleteEntryButton()
+            addressBook.clickDeleteEntryModalDeleteButton()
+            addressBook.verifyEditedNameNotExists(EDITED_NAME)
+          })
+      })
   })
 
   it('[SMOKE] Verify csv file can be imported', () => {

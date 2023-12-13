@@ -10,6 +10,8 @@ import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
+import { localItem } from '@/services/local-storage/local'
+import { isWalletUnlocked } from '@/utils/wallets'
 
 const WALLETCONNECT = 'WalletConnect'
 
@@ -92,11 +94,19 @@ const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 // Detect injected wallet
 const hasInjectedWallet = () => typeof window !== 'undefined' && !!window?.ethereum
 
+let isConnecting = false
+
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = async (
   onboard: OnboardAPI,
   options?: Parameters<OnboardAPI['connectWallet']>[0],
 ): Promise<WalletState[] | undefined> => {
+  if (isConnecting) {
+    return
+  }
+
+  isConnecting = true
+
   // On mobile, automatically choose WalletConnect if there is no injected wallet
   if (!options && isMobile() && !hasInjectedWallet()) {
     options = {
@@ -110,8 +120,12 @@ export const connectWallet = async (
     wallets = await onboard.connectWallet(options)
   } catch (e) {
     logError(Errors._302, e)
+    isConnecting = false
+
     return
   }
+
+  isConnecting = false
 
   return wallets
 }
@@ -129,6 +143,25 @@ export const switchWallet = async (onboard: OnboardAPI) => {
   if (newWalletLabel !== oldWalletLabel) {
     await onboard.disconnectWallet({ label: oldWalletLabel })
   }
+}
+
+const lastWalletStorage = localItem<string>('lastWallet')
+
+const connectLastWallet = async (onboard: OnboardAPI) => {
+  const lastWalletLabel = lastWalletStorage.get()
+  if (lastWalletLabel) {
+    const isUnlocked = await isWalletUnlocked(lastWalletLabel)
+
+    if (isUnlocked === true || isUnlocked === undefined) {
+      connectWallet(onboard, {
+        autoSelect: { label: lastWalletLabel, disableModals: isUnlocked || false },
+      })
+    }
+  }
+}
+
+const saveLastWallet = (walletLabel: string) => {
+  lastWalletStorage.set(walletLabel)
 }
 
 // Disable/enable wallets according to chain
@@ -161,6 +194,9 @@ export const useInitOnboard = () => {
           autoSelect: { label: E2E_WALLET_NAME, disableModals: true },
         })
       }
+
+      // Reconnect last wallet
+      connectLastWallet(onboard)
     })
   }, [chain, onboard])
 
@@ -174,10 +210,12 @@ export const useInitOnboard = () => {
       if (newWallet) {
         if (newWallet.label !== lastConnectedWallet) {
           lastConnectedWallet = newWallet.label
+          saveLastWallet(lastConnectedWallet)
           trackWalletType(newWallet)
         }
-      } else {
+      } else if (lastConnectedWallet) {
         lastConnectedWallet = ''
+        saveLastWallet(lastConnectedWallet)
       }
     })
 

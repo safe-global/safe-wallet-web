@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
-import React, { type ReactElement, type SyntheticEvent, useCallback, useState } from 'react'
+import React, { type ReactElement } from 'react'
 import CopyIcon from '@/public/images/common/copy.svg'
-import { IconButton, SvgIcon, Tooltip } from '@mui/material'
+import { IconButton, SvgIcon } from '@mui/material'
+import CopyTooltip from '../CopyTooltip'
 
 const CopyButton = ({
   text,
@@ -9,6 +10,7 @@ const CopyButton = ({
   children,
   initialToolTipText = 'Copy to clipboard',
   onCopy,
+  dialogContent,
 }: {
   text: string
   className?: string
@@ -16,45 +18,16 @@ const CopyButton = ({
   initialToolTipText?: string
   ariaLabel?: string
   onCopy?: () => void
+  dialogContent?: ReactElement
 }): ReactElement => {
-  const [tooltipText, setTooltipText] = useState(initialToolTipText)
-  const [isCopyEnabled, setIsCopyEnabled] = useState(true)
-
-  const handleCopy = useCallback(
-    (e: SyntheticEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
-      try {
-        navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
-        onCopy?.()
-      } catch (err) {
-        setIsCopyEnabled(false)
-        setTooltipText('Copying is disabled in your browser')
-      }
-    },
-    [text, onCopy],
-  )
-
-  const handleMouseLeave = useCallback(() => {
-    setTimeout(() => {
-      if (isCopyEnabled) {
-        setTooltipText(initialToolTipText)
-      }
-    }, 500)
-  }, [initialToolTipText, isCopyEnabled])
-
   return (
-    <Tooltip title={tooltipText} placement="top" onMouseLeave={handleMouseLeave}>
-      <IconButton
-        aria-label={initialToolTipText}
-        onClick={handleCopy}
-        size="small"
-        className={className}
-        disabled={!isCopyEnabled}
-      >
-        {children ?? <SvgIcon component={CopyIcon} inheritViewBox color="border" fontSize="small" />}
-      </IconButton>
-    </Tooltip>
+    <CopyTooltip text={text} onCopy={onCopy} initialToolTipText={initialToolTipText} dialogContent={dialogContent}>
+      {children ?? (
+        <IconButton aria-label={initialToolTipText} size="small" className={className}>
+          <SvgIcon data-testid="copy-btn-icon" component={CopyIcon} inheritViewBox color="border" fontSize="small" />
+        </IconButton>
+      )}
+    </CopyTooltip>
   )
 }
 

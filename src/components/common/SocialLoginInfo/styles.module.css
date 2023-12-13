@@ -1,7 +1,5 @@
 .profileImg {
   border-radius: var(--space-2);
-  width: 28px;
-  height: 28px;
   display: block;
 }
 
