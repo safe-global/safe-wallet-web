@@ -27,6 +27,8 @@ runs:
   using: 'composite'
   steps:
     - uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: 119
 
     - uses: ./.github/workflows/yarn
 
