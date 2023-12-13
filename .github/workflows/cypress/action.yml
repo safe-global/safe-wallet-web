@@ -39,7 +39,9 @@ runs:
 
     - name: Serve
       shell: bash
-      run: yarn serve &
+      run: |
+        yarn serve &
+        sleep 20
 
     - uses: cypress-io/github-action@v4
       with:
