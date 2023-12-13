@@ -8,6 +8,7 @@ import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
 import EditIcon from '@/public/images/common/edit.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import Approvals from '@/components/tx/ApprovalEditor/Approvals'
+import { BigNumber } from 'ethers'
 
 const Title = () => {
   return (
@@ -34,7 +35,9 @@ export const ApprovalEditor = ({
 }) => {
   const [readableApprovals, error, loading] = useApprovalInfos(safeTransaction)
 
-  if (readableApprovals?.length === 0 || !safeTransaction) {
+  const nonZeroApprovals = readableApprovals?.filter((approval) => !BigNumber.from(0).eq(approval.amount))
+
+  if (nonZeroApprovals?.length === 0 || !safeTransaction) {
     return null
   }
 
