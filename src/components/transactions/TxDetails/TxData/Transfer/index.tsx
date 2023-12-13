@@ -8,6 +8,7 @@ import React from 'react'
 
 import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
 import WarningIcon from '@/public/images/notifications/warning.svg'
+import UntrustedTxWarning from '@/components/transactions/UntrustedTxWarning'
 
 type TransferTxInfoProps = {
   txInfo: Transfer
@@ -26,17 +27,7 @@ const TransferTxInfoSummary = ({ txInfo, txStatus, trusted }: TransferTxInfoProp
         </b>
         {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
       </Typography>
-      {!trusted && (
-        <Tooltip
-          title={`This token is unfamiliar and may pose risks when interacting with it or the address that ${
-            direction === TransferDirection.INCOMING ? 'sent' : 'received'
-          } it.`}
-        >
-          <Box lineHeight="16px">
-            <SvgIcon component={WarningIcon} fontSize="small" inheritViewBox color="warning" />
-          </Box>
-        </Tooltip>
-      )}
+      {!trusted && <UntrustedTxWarning />}
     </Box>
   )
 }

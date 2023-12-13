@@ -48,7 +48,7 @@ const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalP
       <Divider />
       <DialogActions sx={{ padding: 3 }}>
         <Track {...TX_LIST_EVENTS.COPY_WARNING_PROCEED}>
-          <Button size="small" variant="outlined" color="secondary" onClick={onCopy}>
+          <Button size="small" variant="outlined" color="primary" onClick={onCopy}>
             Proceed and copy
           </Button>
         </Track>

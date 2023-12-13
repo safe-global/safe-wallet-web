@@ -66,7 +66,11 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       className={classNames(css.gridContainer, isQueue ? css.columnTemplate : css.columnTemplateTxHistory, {})}
       id={tx.id}
     >
-      <UntrustedTxWarning trusted={isTrusted} />
+      {!isTrusted && (
+        <Box data-testid="warning" gridArea="nonce">
+          <UntrustedTxWarning />
+        </Box>
+      )}
 
       {nonce && !isGrouped && (
         <Box data-testid="nonce" gridArea="nonce">
