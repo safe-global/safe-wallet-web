@@ -39,9 +39,8 @@ runs:
 
     - name: Serve
       shell: bash
-      run: |
-        yarn serve &
-        sleep 20
+      run: yarn serve &
+      wait-on: ${REVERSE_PROXY_UI_PORT:=8080}
 
     - uses: cypress-io/github-action@v4
       with:
