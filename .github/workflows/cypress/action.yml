@@ -49,6 +49,7 @@ runs:
         browser: chrome
         record: true
         config: baseUrl=http://localhost:8080
+        wait-on: 'http://localhost:8080'
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.record_key || fromJSON(inputs.secrets).CYPRESS_RECORD_KEY }}
         GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
