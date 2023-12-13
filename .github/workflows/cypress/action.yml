@@ -29,6 +29,8 @@ runs:
     - uses: browser-actions/setup-chrome@v1
       with:
         chrome-version: 119
+      shell: bash
+      run: ls -al /opt/hostedtoolcache/chromium/119.0.6045.105/x64
 
     - uses: ./.github/workflows/yarn
 
