@@ -8,13 +8,16 @@ import type {
   Transaction,
   TransactionDetails,
   TransactionListPage,
+  TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { ConflictType, getTransactionDetails, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 import {
+  isERC20Transfer,
   isModuleDetailedExecutionInfo,
   isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
   isTransactionListItem,
+  isTransferTxInfo,
   isTxQueued,
 } from './transaction-guards'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types/dist/src/types'
@@ -283,4 +286,14 @@ export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransactio
 
 export const isRejectionTx = (tx?: SafeTransaction) => {
   return !!tx && !!tx.data.data && !!isEmptyHexData(tx.data.data) && tx.data.value === '0'
+}
+
+export const isTrustedTx = (tx: TransactionSummary) => {
+  return (
+    isMultisigExecutionInfo(tx.executionInfo) ||
+    isModuleDetailedExecutionInfo(tx.executionInfo) ||
+    !isTransferTxInfo(tx.txInfo) ||
+    !isERC20Transfer(tx.txInfo.transferInfo) ||
+    Boolean(tx.txInfo.transferInfo.trusted)
+  )
 }

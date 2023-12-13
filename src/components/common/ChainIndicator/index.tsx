@@ -1,3 +1,4 @@
+import { getChainLogo } from '@/config/chains'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import classnames from 'classnames'
@@ -13,10 +14,12 @@ type ChainIndicatorProps = {
   inline?: boolean
   className?: string
   showUnknown?: boolean
+  showLogo?: boolean
 }
 
 const fallbackChainConfig = {
   chainName: 'Unknown chain',
+  chainId: '-1',
   theme: {
     backgroundColor: '#ddd',
     textColor: '#000',
@@ -28,6 +31,7 @@ const ChainIndicator = ({
   className,
   inline = false,
   showUnknown = true,
+  showLogo = true,
 }: ChainIndicatorProps): ReactElement | null => {
   const currentChainId = useChainId()
   const id = chainId || currentChainId
@@ -49,7 +53,20 @@ const ChainIndicator = ({
   return noChains ? (
     <Skeleton width="100%" height="22px" variant="rectangular" sx={{ flexShrink: 0 }} />
   ) : chainConfig ? (
-    <span style={style} className={classnames(inline ? css.inlineIndicator : css.indicator, className)}>
+    <span
+      style={showLogo ? undefined : style}
+      className={classnames(inline ? css.inlineIndicator : css.indicator, showLogo ? css.withLogo : '', className)}
+    >
+      {showLogo && (
+        <img
+          src={getChainLogo(chainConfig.chainId)}
+          alt={`${chainConfig.chainName} Logo`}
+          width={24}
+          height={24}
+          loading="lazy"
+        />
+      )}
+
       {chainConfig.chainName}
     </span>
   ) : null

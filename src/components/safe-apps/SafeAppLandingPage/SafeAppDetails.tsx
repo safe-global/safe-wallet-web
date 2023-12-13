@@ -45,7 +45,7 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
     </Box>
     <Box sx={{ mt: 2 }}>
       <Typography variant="body1">Available networks</Typography>
-      <Box sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', gap: 2, mt: 1, flexWrap: 'wrap' }}>
         {app.chainIds.map((chainId) => (
           <ChainIndicator key={chainId} chainId={chainId} inline showUnknown={false} />
         ))}

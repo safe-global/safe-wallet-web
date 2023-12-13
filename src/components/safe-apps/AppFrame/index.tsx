@@ -239,7 +239,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
     }
 
     setAppIsLoading(false)
-    gtmTrackPageview(`${router.pathname}?appUrl=${router.query.appUrl}`)
+    gtmTrackPageview(`${router.pathname}?appUrl=${router.query.appUrl}`, router.asPath)
   }, [appUrl, iframeRef, setAppIsLoading, router])
 
   useEffect(() => {

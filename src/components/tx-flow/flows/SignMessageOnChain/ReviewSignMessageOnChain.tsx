@@ -25,8 +25,6 @@ import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
-import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -100,11 +98,6 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
 
   const handleSubmit = async () => {
     if (!safeTx || !onboard) return
-
-    // Track the creation of a typed message
-    if (isTypedMessage && safeTx.signatures.size === 0) {
-      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.typed_message })
-    }
 
     try {
       await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)

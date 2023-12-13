@@ -7,7 +7,7 @@ const WalletBalance = ({ balance }: { balance: BigNumber | undefined }) => {
   const currentChain = useCurrentChain()
 
   if (!balance) {
-    return <Skeleton width={30} />
+    return <Skeleton width={30} variant="text" sx={{ display: 'inline-block' }} />
   }
 
   return (

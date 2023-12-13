@@ -16,8 +16,6 @@ const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-meth
 const addToBatchBtn = '[data-track="batching: Add to batch"]'
 const accordionDetails = '[data-testid="accordion-details"]'
 const copyIcon = '[data-testid="copy-btn-icon"]'
-const transactionType = '[data-testid="tx-type"]'
-const copyToClipboardItem = 'span[aria-label="Copy to clipboard"]'
 const transactionSideList = '[data-testid="transaction-actions-list"]'
 const confirmationVisibilityBtn = '[data-testid="confirmation-visibility-btn"]'
 const expandAllBtn = '[data-testid="expande-all-btn"]'
@@ -32,8 +30,7 @@ const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
 const TransactionSummary = 'Send '
-const transactionsPerHrStr = 'Transactions per hour'
-const transactionsPerHr5Of5Str = '5 of 5'
+const transactionsPerHrStr = 'free transactions left this hour'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
@@ -61,7 +58,7 @@ export function verifyCopyIconWorks(index, data) {
   cy.get(copyIcon)
     .parent()
     .eq(index)
-    .click({ force: true })
+    .trigger('click')
     .then(() =>
       cy.window().then((win) => {
         win.navigator.clipboard.readText().then((text) => {
@@ -243,7 +240,6 @@ export function selectCurrentWallet() {
 
 export function verifyRelayerAttemptsAvailable() {
   cy.contains(transactionsPerHrStr).should('be.visible')
-  cy.contains(transactionsPerHr5Of5Str).should('be.visible')
 }
 
 export function clickOnTokenselectorAndSelectSepoliaEth() {
@@ -284,7 +280,7 @@ export function verifySubmitBtnIsEnabled() {
 }
 
 export function verifyAddToBatchBtnIsEnabled() {
-  cy.get(addToBatchBtn).should('not.be.disabled')
+  return cy.get(addToBatchBtn).should('not.be.disabled')
 }
 
 export function verifyNativeTokenTransfer() {
@@ -326,7 +322,6 @@ export function verifyAndSubmitExecutionParams() {
 }
 
 export function clickOnNoLaterOption() {
-  // Asserts the execute checkbox is uncheckable (???)
   cy.contains(noLaterStr).click()
 }
 

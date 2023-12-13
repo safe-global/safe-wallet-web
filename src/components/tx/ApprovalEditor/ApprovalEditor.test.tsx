@@ -1,3 +1,4 @@
+import { safeSignatureBuilder, safeTxBuilder } from '@/tests/builders/safeTx'
 import { render } from '@/tests/test-utils'
 import ApprovalEditor from '.'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -44,7 +45,33 @@ describe('ApprovalEditor', () => {
     expect(await result.queryByTestId('approval-editor-loading')).toBeInTheDocument()
   })
 
-  it('renders a read-only view if there is no update callback', async () => {
+  it('renders a read-only view if the transaction contains signatures', async () => {
+    const mockApprovalInfo = {
+      tokenInfo: { symbol: 'TST', decimals: 18, address: '0x3', type: TokenType.ERC20 },
+      tokenAddress: '0x1',
+      spender: '0x2',
+      amount: '4200000',
+      amountFormatted: '420.0',
+      method: 'approve',
+    } as const
+    jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
+    const mockSafeTx = safeTxBuilder()
+      .with({
+        signatures: new Map().set('0x1', safeSignatureBuilder().build()),
+      })
+      .build()
+
+    const result = render(<ApprovalEditor safeTransaction={mockSafeTx} />)
+
+    const amountInput = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
+
+    expect(amountInput).not.toBeInTheDocument()
+    expect(result.getByText('TST'))
+    expect(result.getByText('420'))
+    expect(result.getByText('0x2'))
+  })
+
+  it('renders a form if there are no signatures', async () => {
     const mockApprovalInfo = {
       tokenInfo: { symbol: 'TST', decimals: 18, address: '0x3', type: TokenType.ERC20 },
       tokenAddress: '0x1',
@@ -58,11 +85,12 @@ describe('ApprovalEditor', () => {
 
     const result = render(<ApprovalEditor safeTransaction={mockSafeTx} />)
 
-    const amountInput = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
+    const amountInput1 = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
 
-    expect(amountInput).not.toBeInTheDocument()
+    expect(amountInput1).toBeInTheDocument
+
+    expect(amountInput1).toHaveValue('420.0')
     expect(result.getByText('TST'))
-    expect(result.getByText('420'))
     expect(result.getByText('0x2'))
   })
 
@@ -78,7 +106,7 @@ describe('ApprovalEditor', () => {
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
     const mockSafeTx = createMockSafeTransaction({ to: '0x1', data: '0x', operation: OperationType.DelegateCall })
 
-    const result = render(<ApprovalEditor safeTransaction={mockSafeTx} updateTransaction={jest.fn} />)
+    const result = render(<ApprovalEditor safeTransaction={mockSafeTx} />)
 
     const amountInput = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
 

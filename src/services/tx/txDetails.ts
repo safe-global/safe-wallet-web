@@ -4,13 +4,13 @@ import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 /**
  * Fetch and memoize transaction details from Safe Gateway
  *
- * @param id Transaction id or hash
  * @param chainId Chain id
+ * @param id Transaction id or hash
  * @returns Transaction details
  */
 export const getTxDetails = memoize(
-  (id: string, chainId: string) => {
-    return getTransactionDetails(id, chainId)
+  (chainId: string, id: string) => {
+    return getTransactionDetails(chainId, id)
   },
-  (id: string, chainId: string) => `${id}-${chainId}`,
+  (id: string, chainId: string) => `${chainId}-${id}`,
 )
