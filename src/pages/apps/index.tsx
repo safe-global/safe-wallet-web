@@ -24,7 +24,8 @@ const SafeApps: NextPage = () => {
     [remoteSafeApps, pinnedSafeAppIds],
   )
 
-  const onChangeQuery = useCallback(debounce(setQuery, 300), [setQuery])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChangeQuery = useCallback(debounce(setQuery, 300), [])
 
   // Redirect to an individual safe app page if the appUrl is in the query params
   useEffect(() => {
