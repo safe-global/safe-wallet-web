@@ -43,12 +43,7 @@ const useTxHistory = (
   // Return the new page or the stored page
   return useMemo(
     () => ({
-      page: dataPage
-        ? {
-            ...dataPage,
-            results: dataPage.results,
-          }
-        : undefined,
+      page: dataPage,
       error: errorMessage,
       loading: isLoading,
     }),
