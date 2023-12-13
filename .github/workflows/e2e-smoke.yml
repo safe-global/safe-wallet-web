@@ -11,6 +11,9 @@ jobs:
   e2e:
     runs-on: ubuntu-20.04
     name: Cypress Smoke tests
+    container:
+      image: cypress/browsers:latest
+      options: --user 1001
 
     strategy:
       fail-fast: false

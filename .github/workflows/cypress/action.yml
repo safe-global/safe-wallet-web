@@ -26,18 +26,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: browser-actions/setup-chrome@v1
-      with:
-        chrome-version: 119
-
-    - name: List Items in Chrome Folder
-      shell: bash
-      run: ls -al /opt/hostedtoolcache/chromium/119.0.6045.105/x64
-
-    - name: Start Chrome
-      shell: bash
-      run: /opt/hostedtoolcache/chromium/119.0.6045.105/x64/chrome --headless --disable-gpu &
-
     - uses: ./.github/workflows/yarn
 
     - name: Install Cypress
@@ -58,7 +46,7 @@ runs:
         spec: ${{ inputs.spec }}
         group: ${{ inputs.group }}
         parallel: true
-        browser: /opt/hostedtoolcache/chromium/119.0.6045.105/x64/chrome
+        browser: chrome
         record: true
         config: baseUrl=http://localhost:8080
       env:
