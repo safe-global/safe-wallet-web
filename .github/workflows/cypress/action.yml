@@ -30,10 +30,6 @@ runs:
       with:
         chrome-version: 119
 
-    - run: |
-        ${{ steps.setup-chrome.outputs.chrome-path }} --version
-      shell: bash
-
     - uses: ./.github/workflows/yarn
 
     - name: Install Cypress
@@ -54,7 +50,7 @@ runs:
         spec: ${{ inputs.spec }}
         group: ${{ inputs.group }}
         parallel: true
-        browser: chrome
+        browser: /opt/hostedtoolcache/chromium/119.0.6045.105/x64
         record: true
         config: baseUrl=http://localhost:8080
       env:
