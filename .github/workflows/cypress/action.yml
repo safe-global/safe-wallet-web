@@ -32,6 +32,7 @@ runs:
 
     - run: |
         ${{ steps.setup-chrome.outputs.chrome-path }} --version
+      shell: bash
 
     - uses: ./.github/workflows/yarn
 
