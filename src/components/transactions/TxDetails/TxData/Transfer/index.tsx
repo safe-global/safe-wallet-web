@@ -3,11 +3,10 @@ import { TransferTx } from '@/components/transactions/TxInfo'
 import { isTxQueued } from '@/utils/transaction-guards'
 import type { TransactionStatus, Transfer } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
-import WarningIcon from '@/public/images/notifications/warning.svg'
 import UntrustedTxWarning from '@/components/transactions/UntrustedTxWarning'
 
 type TransferTxInfoProps = {
