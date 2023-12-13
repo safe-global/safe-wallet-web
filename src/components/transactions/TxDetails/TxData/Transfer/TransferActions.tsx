@@ -26,7 +26,15 @@ const ETHER = 'ether'
 
 const defaultOpen = { [ModalType.ADD_TO_AB]: false }
 
-const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfer }): ReactElement => {
+const TransferActions = ({
+  address,
+  txInfo,
+  trusted,
+}: {
+  address: string
+  txInfo: Transfer
+  trusted: boolean
+}): ReactElement => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
   const addressBook = useAddressBook()
@@ -65,7 +73,7 @@ const TransferActions = ({ address, txInfo }: { address: string; txInfo: Transfe
 
   const isOutgoingTx = isOutgoingTransfer(txInfo)
   const canSendAgain =
-    isOutgoingTx && (isNativeTokenTransfer(txInfo.transferInfo) || isERC20Transfer(txInfo.transferInfo))
+    trusted && isOutgoingTx && (isNativeTokenTransfer(txInfo.transferInfo) || isERC20Transfer(txInfo.transferInfo))
 
   return (
     <>

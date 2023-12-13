@@ -72,7 +72,7 @@ export const sepoliaEtherscanlLink = 'https://sepolia.etherscan.io/address'
 
 export const proposeEndpoint = '/**/propose'
 export const appsEndpoint = '/**/safe-apps'
-export const transactionHistoryEndpoint = '**/history'
+export const transactionHistoryEndpoint = '**/history?trusted=false'
 export const safeListEndpoint = '**/safes'
 
 export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png'
