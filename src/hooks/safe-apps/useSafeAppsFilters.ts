@@ -20,18 +20,14 @@ type ReturnType = {
 
 const useSafeAppsFilters = (safeAppsList: SafeAppData[]): ReturnType => {
   const [query, setQuery] = useState<string>('')
-  const debouncedQuery = useDebounce(query, 400)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [optimizedWithBatchFilter, setOptimizedWithBatchFilter] = useState<boolean>(false)
 
-  const filteredAppsByQuery = useAppsSearch(safeAppsList, debouncedQuery)
-
+  const filteredAppsByQuery = useAppsSearch(safeAppsList, query)
   const filteredAppsByQueryAndCategories = useAppsFilterByCategory(filteredAppsByQuery, selectedCategories)
-
   const filteredApps = useAppsFilterByOptimizedForBatch(filteredAppsByQueryAndCategories, optimizedWithBatchFilter)
 
   const debouncedSearchQuery = useDebounce(query, 2000)
-
   useEffect(() => {
     if (debouncedSearchQuery) {
       trackSafeAppEvent({ ...SAFE_APPS_EVENTS.SEARCH, label: debouncedSearchQuery })
