@@ -291,6 +291,7 @@ export const isRejectionTx = (tx?: SafeTransaction) => {
 export const isTrustedTx = (tx: TransactionSummary) => {
   return (
     isMultisigExecutionInfo(tx.executionInfo) ||
+    isModuleDetailedExecutionInfo(tx.executionInfo) ||
     !isTransferTxInfo(tx.txInfo) ||
     !isERC20Transfer(tx.txInfo.transferInfo) ||
     Boolean(tx.txInfo.transferInfo.trusted)
