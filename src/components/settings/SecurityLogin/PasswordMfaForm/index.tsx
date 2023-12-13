@@ -8,14 +8,12 @@ import {
   AccordionDetails,
   Grid,
   FormControl,
-  SvgIcon,
   Divider,
   Alert,
 } from '@mui/material'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { useState, useMemo, type ChangeEvent } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import CheckIcon from '@/public/images/common/check-filled.svg'
 import LockWarningIcon from '@/public/images/common/lock-warning.svg'
 import PasswordInput from '@/components/settings/SecurityLogin/PasswordMfaForm/PasswordInput'
 import css from '@/components/settings/SecurityLogin/PasswordMfaForm/styles.module.css'
@@ -24,6 +22,7 @@ import ShieldIcon from '@/public/images/common/shield.svg'
 import ShieldOffIcon from '@/public/images/common/shield-off.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useSocialWallet, { useMfaStore } from '@/hooks/wallets/mpc/useSocialWallet'
+import MfaFactorSummary from '../MfaFactorSummary'
 
 enum PasswordFieldNames {
   currentPassword = 'currentPassword',
@@ -140,17 +139,17 @@ const SocialSignerMFA = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Accordion expanded={open} defaultExpanded={false} onChange={toggleAccordion}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Box display="flex" alignItems="center" gap={1}>
-              <SvgIcon component={CheckIcon} sx={{ color: isPasswordSet ? 'success.main' : 'border.light' }} />
-              <Typography fontWeight="bold">Password</Typography>
-            </Box>
+            <MfaFactorSummary enabled={isPasswordSet} label="Password" />
           </AccordionSummary>
           <AccordionDetails sx={{ p: 0 }}>
             <Grid container>
               <Grid item container xs={12} md={7} gap={3} p={3}>
+                <Typography>
+                  The password can be changed afterwards but once setup it can currently not be removed.
+                </Typography>
                 {isPasswordSet && (
                   <>
-                    <FormControl fullWidth>
+                    <FormControl>
                       <PasswordInput
                         name={PasswordFieldNames.currentPassword}
                         placeholder="Current password"
@@ -163,7 +162,7 @@ const SocialSignerMFA = () => {
                   </>
                 )}
 
-                <FormControl fullWidth>
+                <FormControl>
                   <PasswordInput
                     name={PasswordFieldNames.newPassword}
                     placeholder="New password"
@@ -194,12 +193,12 @@ const SocialSignerMFA = () => {
                       ? `${passwordStrengthMap[passwordStrength].label} password`
                       : 'Password strength'}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" mt={1}>
-                    Include at least 9 or more characters, a number, an uppercase letter and a symbol
-                  </Typography>
                 </FormControl>
+                <Typography variant="body2" color="text.secondary" mt={-2}>
+                  Include at least 9 or more characters, a number, an uppercase letter and a symbol
+                </Typography>
 
-                <FormControl fullWidth>
+                <FormControl>
                   <PasswordInput
                     name={PasswordFieldNames.confirmPassword}
                     placeholder="Confirm password"

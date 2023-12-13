@@ -32,7 +32,8 @@ const SecurityLogin = () => {
                   <Grid item xs={12}>
                     <Typography>
                       Methods used to restore access to your social login signer in another browser or on another
-                      device.
+                      device. While you can setup multiple methods you will only have to provide one of the chosen
+                      factors when logging in on a new device.
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>

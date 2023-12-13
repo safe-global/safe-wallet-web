@@ -8,15 +8,13 @@ import {
   AccordionDetails,
   Grid,
   FormControl,
-  SvgIcon,
   Alert,
   TextField,
   AlertTitle,
 } from '@mui/material'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import CheckIcon from '@/public/images/common/check-filled.svg'
 import LockWarningIcon from '@/public/images/common/lock-warning.svg'
 import css from './styles.module.css'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -25,6 +23,7 @@ import { obfuscateNumber } from '@/utils/phoneNumber'
 import { asError } from '@/services/exceptions/utils'
 import CodeInput from '@/components/common/CodeInput'
 import CooldownButton from '@/components/common/CooldownButton'
+import MfaFactorSummary from '../MfaFactorSummary'
 
 enum SmsOtpFieldNames {
   mobileNumber = 'mobileNumber',
@@ -98,6 +97,18 @@ const SmsMfaForm = () => {
     }
   }
 
+  // Remove success message after 5s
+  useEffect(() => {
+    let timeout: NodeJS.Timeout | undefined
+    if (successMsg) {
+      timeout = setTimeout(() => {
+        setSuccessMsg(undefined)
+      }, 5000)
+    }
+
+    return () => clearTimeout(timeout)
+  }, [successMsg])
+
   const onSubmit = () => {}
 
   const onReset = () => {
@@ -128,10 +139,7 @@ const SmsMfaForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Accordion expanded={open} defaultExpanded={false} onChange={toggleAccordion}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Box display="flex" alignItems="center" gap={1}>
-              <SvgIcon component={CheckIcon} sx={{ color: isSmsOtpSet ? 'success.main' : 'border.light' }} />
-              <Typography fontWeight="bold">SMS</Typography>
-            </Box>
+            <MfaFactorSummary enabled={isSmsOtpSet} label="SMS" />
           </AccordionSummary>
           <AccordionDetails sx={{ p: 0 }}>
             <Grid container>
@@ -152,15 +160,20 @@ const SmsMfaForm = () => {
                       InputProps={{
                         readOnly: verificationStarted || Boolean(currentNumber),
                       }}
+                      InputLabelProps={{
+                        shrink: Boolean(currentNumber),
+                      }}
                       {...register(SmsOtpFieldNames.mobileNumber, {
                         required: true,
-                        pattern: phoneRegex,
+                        pattern: currentNumber ? undefined : phoneRegex,
                       })}
                     />
                   </FormControl>
                   {verificationStarted && (
-                    <Box display="flex" flexDirection="column" gap={1} alignItems="flex-start">
-                      <Typography variant="h4">Verification code</Typography>
+                    <Box display="flex" flexDirection="column" gap={2} alignItems="flex-start">
+                      <Typography variant="body2" color="text.secondary">
+                        Verification code
+                      </Typography>
                       <CodeInput length={6} onCodeChanged={onCodeChange} />
                       <CooldownButton cooldown={60} onClick={onRegister} startDisabled={true}>
                         Resend code
