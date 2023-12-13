@@ -34,6 +34,9 @@ runs:
       shell: bash
       run: ls -al /opt/hostedtoolcache/chromium/119.0.6045.105/x64
 
+    - name: Start Chrome
+      run: /opt/hostedtoolcache/chromium/119.0.6045.105/x64/chrome --headless --disable-gpu &
+
     - uses: ./.github/workflows/yarn
 
     - name: Install Cypress
