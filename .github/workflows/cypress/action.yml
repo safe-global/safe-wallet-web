@@ -32,7 +32,7 @@ runs:
 
     - name: List Items in Chrome Folder
       shell: bash
-      run: ls -al /opt/hostedtoolcache/chromium/119.0.6045.105/x64
+      run: ls -al /opt/hostedtoolcache/chromium/119.0.6045.105/x64/chrome
 
     - uses: ./.github/workflows/yarn
 
