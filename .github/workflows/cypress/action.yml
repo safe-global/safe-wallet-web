@@ -32,7 +32,7 @@ runs:
 
     - name: List Items in Chrome Folder
       shell: bash
-      run: ls -al /opt/hostedtoolcache/chromium/119.0.6045.105/x64/chrome
+      run: ls -al /opt/hostedtoolcache/chromium/119.0.6045.105/x64
 
     - uses: ./.github/workflows/yarn
 
@@ -54,7 +54,7 @@ runs:
         spec: ${{ inputs.spec }}
         group: ${{ inputs.group }}
         parallel: true
-        browser: /opt/hostedtoolcache/chromium/119.0.6045.105/x64
+        browser: /opt/hostedtoolcache/chromium/119.0.6045.105/x64/chrome
         record: true
         config: baseUrl=http://localhost:8080
       env:
