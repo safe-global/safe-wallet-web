@@ -11,9 +11,6 @@ jobs:
   e2e:
     runs-on: ubuntu-20.04
     name: Cypress Smoke tests
-    container:
-      image: cypress/browsers:latest
-      options: --user 1001
 
     strategy:
       fail-fast: false
@@ -22,6 +19,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install Specific Chrome Version
+        shell: bash
+        run: |
+          sudo apt-get install -y wget
+          sudo wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get install ./google-chrome-stable_current_amd64.deb
 
       - uses: ./.github/workflows/cypress
         with:
