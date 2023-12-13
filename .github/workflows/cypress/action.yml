@@ -29,6 +29,9 @@ runs:
     - uses: browser-actions/setup-chrome@v1
       with:
         chrome-version: 119
+    
+    - run: |
+      ${{ steps.setup-chrome.outputs.chrome-path }} --version    
 
     - uses: ./.github/workflows/yarn
 
