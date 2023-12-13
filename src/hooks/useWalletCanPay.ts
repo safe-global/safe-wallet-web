@@ -1,7 +1,6 @@
 import useWalletBalance from '@/hooks/wallets/useWalletBalance'
 import { BigNumber } from 'ethers'
 
-// TODO: Test this hook
 const useWalletCanPay = ({
   gasLimit,
   maxFeePerGas,
@@ -13,7 +12,8 @@ const useWalletCanPay = ({
 }) => {
   const [walletBalance] = useWalletBalance()
 
-  // Optimistic approach
+  // Take an optimistic approach and assume the wallet can pay
+  // if gasLimit, maxFeePerGas or their walletBalance are missing
   if (!gasLimit || !maxFeePerGas || !walletBalance) return true
 
   const totalFee = maxFeePerGas.add(maxPriorityFeePerGas || BigNumber.from(0)).mul(gasLimit)
