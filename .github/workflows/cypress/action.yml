@@ -31,8 +31,7 @@ runs:
     - name: Install Latest stable Chrome Version
       shell: bash
       run: |
-        sudo apt-get install -y wget
-        sudo wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        curl -O 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
         sudo apt-get install ./google-chrome-stable_current_amd64.deb
 
     - uses: ./.github/workflows/build
