@@ -3,10 +3,6 @@ import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
 
-const txItemIndex = 18
-const initialSpendingLimitsTx = 16
-const spendingLimitTx = 11
-
 const typeCreateAccount = data.type.accountCreation
 const typeReceive = data.type.receive
 const typeSend = data.type.send
@@ -59,16 +55,16 @@ describe('Tx history tests 1', () => {
 
   // Token receipt
   it('Verify summary for token receipt', () => {
-    createTx.verifySummaryByIndex(
-      txItemIndex,
-      [typeReceive.title, typeReceive.summaryTxInfo, typeGeneral.statusOk],
-      typeReceive.altImage,
-      typeReceive.altToken,
+    createTx.verifySummaryByName(
+      typeReceive.summaryTitle,
+      typeReceive.summaryTxInfo,
+      [typeReceive.summaryTxInfo, typeGeneral.statusOk],
+      typeReceive.altTmage,
     )
   })
 
   it('Verify exapanded details for token receipt', () => {
-    createTx.clickOnTransactionItemByIndex(txItemIndex)
+    createTx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
     createTx.verifyExpandedDetails([
       typeReceive.title,
       typeReceive.receivedFrom,
@@ -78,7 +74,7 @@ describe('Tx history tests 1', () => {
   })
 
   it('Verify copy button copies tx hash', () => {
-    createTx.clickOnTransactionItemByIndex(txItemIndex)
+    createTx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
     createTx.verifyNumberOfCopyIcons(2)
     createTx.verifyCopyIconWorks(1, typeReceive.transactionHashCopied)
   })
@@ -94,7 +90,7 @@ describe('Tx history tests 1', () => {
   })
 
   it('Verify exapanded details for token send', () => {
-    createTx.clickOnTransactionItemByName(typeSend.title)
+    createTx.clickOnTransactionItemByName(typeSend.title, typeSend.summaryTxInfo)
     createTx.verifyExpandedDetails([typeSend.sentTo, typeSend.recipientAddress, typeSend.transactionHash])
     createTx.verifyActionListExists([
       typeSideActions.created,
@@ -105,15 +101,16 @@ describe('Tx history tests 1', () => {
 
   // Spending limits
   it('Verify summary for setting spend limits', () => {
-    createTx.verifySummaryByIndex(
-      initialSpendingLimitsTx,
-      [typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo, typeGeneral.statusOk],
-      typeSpendingLimits.altImage,
+    createTx.verifySummaryByName(
+      typeSpendingLimits.title,
+      typeSpendingLimits.summaryTxInfo,
+      [typeGeneral.statusOk],
+      typeSpendingLimits.altTmage,
     )
   })
 
   it('Verify exapanded details for initial spending limits setup', () => {
-    createTx.clickOnTransactionItemByIndex(initialSpendingLimitsTx)
+    createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [
         typeSpendingLimits.title,
@@ -126,7 +123,7 @@ describe('Tx history tests 1', () => {
   })
 
   it('Verify that 3 actions exist in initial spending limits setup', () => {
-    createTx.clickOnTransactionItemByIndex(initialSpendingLimitsTx)
+    createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.verifyActions([
       typeSpendingLimits.enableModule.title,
       typeSpendingLimits.addDelegate.title,
@@ -135,7 +132,7 @@ describe('Tx history tests 1', () => {
   })
 
   it('Verify that all 3 actions can be expanded and collapsed in initial spending limits setup', () => {
-    createTx.clickOnTransactionItemByIndex(initialSpendingLimitsTx)
+    createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.expandAllActions([
       typeSpendingLimits.enableModule.title,
       typeSpendingLimits.addDelegate.title,
@@ -149,7 +146,7 @@ describe('Tx history tests 1', () => {
   })
 
   it('Verify that addDelegate action can be expanded and collapsed in spending limits', () => {
-    createTx.clickOnTransactionItemByIndex(spendingLimitTx)
+    createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.clickOnExpandableAction(typeSpendingLimits.addDelegate.title)
     createTx.verifyActions([typeSpendingLimits.addDelegate.delegateAddressTitle])
     createTx.collapseAllActions([typeSpendingLimits.addDelegate.delegateAddressTitle])
@@ -159,13 +156,14 @@ describe('Tx history tests 1', () => {
   it('Verify summary for allowance deletion', () => {
     createTx.verifySummaryByName(
       typeDeleteAllowance.title,
+      typeDeleteAllowance.summaryTxInfo,
       [typeDeleteAllowance.summaryTxInfo, typeGeneral.statusOk],
       typeDeleteAllowance.altImage,
     )
   })
 
   it('Verify exapanded details for allowance deletion', () => {
-    createTx.clickOnTransactionItemByName(typeDeleteAllowance.title)
+    createTx.clickOnTransactionItemByName(typeDeleteAllowance.title, typeDeleteAllowance.summaryTxInfo)
     createTx.verifyExpandedDetails([
       typeDeleteAllowance.description,
       typeDeleteAllowance.beneficiary,
@@ -178,7 +176,7 @@ describe('Tx history tests 1', () => {
   })
 
   it('Verify advanced details displayed in exapanded details for allowance deletion', () => {
-    createTx.clickOnTransactionItemByName(typeDeleteAllowance.title)
+    createTx.clickOnTransactionItemByName(typeDeleteAllowance.title, typeDeleteAllowance.summaryTxInfo)
     createTx.expandAdvancedDetails([typeDeleteAllowance.baseGas])
     createTx.collapseAdvancedDetails([typeDeleteAllowance.baseGas])
   })
