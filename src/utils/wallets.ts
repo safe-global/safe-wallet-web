@@ -4,6 +4,7 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly, isSmartContract } from '@/hooks/wallets/web3'
 import { WALLET_KEYS } from '@/hooks/wallets/consts'
 import { memoize } from 'lodash'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 
 const isWCRejection = (err: Error): boolean => {
   return /rejected/.test(err?.message)
@@ -52,5 +53,10 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean | un
     } catch {
       return false
     }
+  }
+
+  // Don't reconnect to MPC wallet because it's not initialized right away
+  if (walletName === ONBOARD_MPC_MODULE_LABEL) {
+    return false
   }
 }
