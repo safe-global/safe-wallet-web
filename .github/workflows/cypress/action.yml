@@ -28,7 +28,7 @@ runs:
   steps:
     - uses: ./.github/workflows/yarn
 
-    - name: Install Specific Chrome Version
+    - name: Install Latest stable Chrome Version
       shell: bash
       run: |
         sudo apt-get install -y wget
