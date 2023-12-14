@@ -3,9 +3,6 @@ import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
 
-const batchTx = 17
-const thresholdTx = 0
-
 const typeOnchainRejection = data.type.onchainRejection
 const typeBatch = data.type.batchNativeTransfer
 const typeAddOwner = data.type.addOwner
@@ -48,16 +45,16 @@ describe('Tx history tests 2', () => {
 
   // Batch transaction
   it('Verify summary for batch', () => {
-    createTx.verifySummaryByIndex(
-      batchTx,
-      [typeBatch.title, typeBatch.summaryTxInfo, typeGeneral.statusOk],
+    createTx.verifySummaryByName(
+      typeBatch.title,
+      typeBatch.summaryTxInfo,
+      [typeBatch.summaryTxInfo, typeGeneral.statusOk],
       typeBatch.altImage,
-      typeBatch.altToken,
     )
   })
 
   it('Verify exapanded details for batch', () => {
-    createTx.clickOnTransactionItemByIndex(batchTx)
+    createTx.clickOnTransactionItemByName(typeBatch.title, typeBatch.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [
         typeBatch.description,
@@ -146,15 +143,15 @@ describe('Tx history tests 2', () => {
 
   // Change threshold
   it('Verify summary for changing threshold', () => {
-    createTx.verifySummaryByIndex(
-      thresholdTx,
-      [typeChangeThreshold.title, typeGeneral.statusOk],
+    createTx.verifySummaryByName(
+      typeChangeThreshold.title,
+      [typeChangeThreshold.summaryTxInfo, typeGeneral.statusOk],
       typeChangeThreshold.altImage,
     )
   })
 
   it('Verify exapanded details for changing threshold', () => {
-    createTx.clickOnTransactionItemByIndex(thresholdTx)
+    createTx.clickOnTransactionItemByName(typeChangeThreshold.title)
     createTx.verifyExpandedDetails(
       [
         typeChangeThreshold.requiredConfirmationsTitle,

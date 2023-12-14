@@ -9,6 +9,7 @@ const sendTokensBtnStr = 'Send tokens'
 const tokenAddressInput = 'input[name="tokenAddress"]'
 const amountInput = 'input[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
+const nonceTxValue = '[data-testid="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
 const transactionItem = '[data-testid="transaction-item"]'
@@ -85,13 +86,15 @@ export function verifyNumberOfExternalLinks(number) {
   }
 }
 
-export function clickOnTransactionItemByName(name) {
-  cy.get(transactionItem).contains(name).scrollIntoView().click({ force: true })
-}
-
-export function clickOnTransactionItemByIndex(index) {
-  cy.get(transactionItem).eq(index).scrollIntoView().click({ force: true })
-  cy.get(accordionDetails).should('be.visible')
+export function clickOnTransactionItemByName(name, token) {
+  cy.get(transactionItem)
+    .filter(':contains("' + name + '")')
+    .then(($elements) => {
+      if (token) {
+        $elements = $elements.filter(':contains("' + token + '")')
+      }
+      cy.wrap($elements.first()).click({ force: true })
+    })
 }
 
 export function verifyExpandedDetails(data, warning) {
@@ -142,32 +145,27 @@ export function verifyActionListExists(data) {
   main.verifyElementsIsVisible([confirmationVisibilityBtn])
 }
 
-export function verifySummaryByName(name, data, alt) {
+export function verifySummaryByName(name, token, data, alt, altToken) {
   cy.get(transactionItem)
-    .contains(name)
-    .parent()
-    .parent()
-    .parent()
-    .within(() => {
-      data.forEach((text) => {
-        cy.contains(text).should('be.visible')
-      })
-      if (alt) verifyImageAltTxt(0, alt)
-    })
-}
+    .filter(':contains("' + name + '")')
+    .then(($elements) => {
+      if (token) {
+        $elements = $elements.filter(':contains("' + token + '")')
+      }
 
-export function verifySummaryByIndex(index, data, altIcon, altToken) {
-  cy.get(transactionItem)
-    .parent()
-    .parent()
-    .parent()
-    .eq(index)
-    .within(() => {
-      data.forEach((text) => {
-        cy.contains(text).should('be.visible')
-      })
-      if (altIcon) verifyImageAltTxt(0, altIcon)
-      if (altToken) verifyImageAltTxt(1, altToken)
+      if ($elements.length > 0) {
+        cy.wrap($elements.first()).then(($element) => {
+          if (Array.isArray(data)) {
+            data.forEach((text) => {
+              cy.wrap($element).contains(text).should('be.visible')
+            })
+          } else {
+            cy.wrap($element).contains(data).should('be.visible')
+          }
+          if (alt) cy.wrap($element).find('img').eq(0).should('have.attr', 'alt', alt).should('be.visible')
+          if (altToken) cy.wrap($element).find('img').eq(1).should('have.attr', 'alt', alt).should('be.visible')
+        })
+      }
     })
 }
 

@@ -33,6 +33,7 @@
     },
     "receive": {
       "title": "Receive",
+      "summaryTitle": "Received",
       "summaryTxInfo": "< 0.00001 ETH",
       "summaryTime": "11:00 AM",
       "receivedFrom": "Received < 0.00001 ETH from:",
@@ -68,8 +69,8 @@
       "altImage":"Safe: MultiSendCallOnly 1.3.0",
       "contractTitle": "Safe: MultiSendCallOnly 1.3.0",
       "contractAddress": "sep:0xA1dabEF33b3B82c7814B6D82A79e50F4AC44102B",
-      "transactionHash": "0x833e...b88c",
-      "safeTxHash": "0x4172...665d",
+      "transactionHash": "0xa5dd...b064",
+      "safeTxHash": "0x4dd0...b2b8",
       "nativeTransfer": {
         "title": "native transfer",
         "description": "Interact with (and send < 0.00001 ETH to)"
