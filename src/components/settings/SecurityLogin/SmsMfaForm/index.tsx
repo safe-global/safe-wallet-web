@@ -22,7 +22,7 @@ import useSocialWallet, { useMfaStore } from '@/hooks/wallets/mpc/useSocialWalle
 import { obfuscateNumber } from '@/utils/phoneNumber'
 import { asError } from '@/services/exceptions/utils'
 import CodeInput from '@/components/common/CodeInput'
-import CooldownButton from '@/components/common/CooldownButton'
+import CooldownLink from '@/components/common/CooldownLink'
 import MfaFactorSummary from '../MfaFactorSummary'
 
 enum SmsOtpFieldNames {
@@ -144,7 +144,7 @@ const SmsMfaForm = () => {
           <AccordionDetails sx={{ p: 0 }}>
             <Grid container>
               <Grid item container xs={12} md={7} gap={2} p={3}>
-                <Box display="flex" flexDirection="column" gap={2}>
+                <Box display="flex" flexDirection="column" gap={3}>
                   <Typography>Protect your social login signer with a mobile factor</Typography>
                   <FormControl fullWidth>
                     <TextField
@@ -161,7 +161,7 @@ const SmsMfaForm = () => {
                         readOnly: verificationStarted || Boolean(currentNumber),
                       }}
                       InputLabelProps={{
-                        shrink: Boolean(currentNumber),
+                        shrink: Boolean(mobileNumber),
                       }}
                       {...register(SmsOtpFieldNames.mobileNumber, {
                         required: true,
@@ -170,14 +170,17 @@ const SmsMfaForm = () => {
                     />
                   </FormControl>
                   {verificationStarted && (
-                    <Box display="flex" flexDirection="column" gap={2} alignItems="flex-start">
+                    <Box display="flex" flexDirection="column" gap={1} alignItems="flex-start">
                       <Typography variant="body2" color="text.secondary">
                         Verification code
                       </Typography>
                       <CodeInput length={6} onCodeChanged={onCodeChange} />
-                      <CooldownButton cooldown={60} onClick={onRegister} startDisabled={true}>
-                        Resend code
-                      </CooldownButton>
+                      <Typography variant="caption">
+                        Didn&apos;t receive a code?{' '}
+                        <CooldownLink cooldown={60} onClick={onRegister} startDisabled={true}>
+                          Resend code
+                        </CooldownLink>
+                      </Typography>
                     </Box>
                   )}
 

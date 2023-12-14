@@ -7,7 +7,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 
 import css from './styles.module.css'
 import CodeInput from '../../CodeInput'
-import CooldownButton from '../../CooldownButton'
+import CooldownLink from '../../CooldownLink'
 import { obfuscateNumber } from '@/utils/phoneNumber'
 import { asError } from '@/services/exceptions/utils'
 
@@ -92,13 +92,21 @@ export const SmsRecovery = ({
             <Typography className={css.phoneNumberDisplay}>{obfuscateNumber(phoneNumber)}</Typography>
 
             <CodeInput length={6} onCodeChanged={handleCodeChange} />
-
-            <CooldownButton cooldown={60} onClick={sendSmsCode} startDisabled={true}>
-              Resend code
-            </CooldownButton>
+            <Typography mt={-1} variant="caption">
+              Didn&apos;t receive a code?{' '}
+              <CooldownLink cooldown={60} onClick={sendSmsCode} startDisabled={true}>
+                Resend code
+              </CooldownLink>
+            </Typography>
 
             <FormControlLabel
-              control={<Checkbox checked={storeDeviceFactor} onClick={() => setStoreDeviceFactor((prev) => !prev)} />}
+              control={
+                <Checkbox
+                  sx={{ ml: -1.5 }}
+                  checked={storeDeviceFactor}
+                  onClick={() => setStoreDeviceFactor((prev) => !prev)}
+                />
+              }
               label="Do not ask again on this device"
             />
             {error && <ErrorMessage className={css.loginError}>{error}</ErrorMessage>}
