@@ -3,9 +3,9 @@ import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
 
-const txItemIndex = 18
-const initialSpendingLimitsTx = 16
-const spendingLimitTx = 11
+const txItemIndex = 22
+const initialSpendingLimitsTx = 20
+const spendingLimitTx = 15
 
 const typeCreateAccount = data.type.accountCreation
 const typeReceive = data.type.receive

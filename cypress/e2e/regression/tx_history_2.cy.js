@@ -3,7 +3,7 @@ import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
 
-const batchTx = 13
+const batchTx = 17
 const thresholdTx = 0
 
 const typeOnchainRejection = data.type.onchainRejection
