@@ -145,7 +145,8 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
     return {
       severity: result.data ? redefineSeverityMap[result.data.insights.verdict.label] : SecuritySeverity.NONE,
       payload: {
-        issues: result.data?.insights.issues.map((issue) => ({
+        // Redefine incorrectly considers accounts that utilize privacy preserving technology to be a "compliance risk" (despite the law being very clear on this), so we filter those out
+        issues: result.data?.insights.issues.filter(issue => !(issue.category === 'COMPLIANCE' && issue.severity.code === 2)).map((issue) => ({
           ...issue,
           severity: redefineSeverityMap[issue.severity.label],
         })),
