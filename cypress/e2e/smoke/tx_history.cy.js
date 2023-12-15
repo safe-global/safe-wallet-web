@@ -9,6 +9,7 @@ const typeReceive = data.type.receive
 const typeSend = data.type.send
 const typeDeleteAllowance = data.type.deleteSpendingLimit
 const typeGeneral = data.type.general
+const typeUntrustedToken = data.type.untrustedReceivedToken
 
 describe('[SMOKE] Tx history tests', () => {
   beforeEach(() => {
@@ -66,5 +67,21 @@ describe('[SMOKE] Tx history tests', () => {
       [typeDeleteAllowance.summaryTxInfo, typeGeneral.statusOk],
       typeDeleteAllowance.altImage,
     )
+  })
+
+  it('[SMOKE] Verify summary for untrusted token', () => {
+    createTx.verifySummaryByName(
+      typeUntrustedToken.summaryTitle,
+      typeUntrustedToken.summaryTxInfo,
+      [typeUntrustedToken.summaryTxInfo, typeGeneral.statusOk],
+      typeUntrustedToken.altImage,
+    )
+    createTx.verifySpamIconIsDisplayed(typeUntrustedToken.title, typeUntrustedToken.summaryTxInfo)
+  })
+
+  it('[SMOKE] Verify that copying sender address of untrusted token shows warning popup', () => {
+    createTx.clickOnTransactionItemByName(typeUntrustedToken.summaryTitle, typeUntrustedToken.summaryTxInfo)
+    createTx.clickOnCopyBtn(0)
+    createTx.verifyWarningModalVisible()
   })
 })
