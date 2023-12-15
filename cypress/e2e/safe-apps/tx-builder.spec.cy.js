@@ -60,7 +60,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
       getBody().findByText(safeapps.sendBatchStr).click()
     })
     cy.get('h4').contains(safeapps.transactionBuilderStr).should('be.visible')
-    cy.findAllByText(safeapps.testNativeTransfer).should('have.length', 3)
+    cy.findAllByText(safeapps.testBooleanValue).should('have.length', 3)
     navigation.clickOnModalCloseBtn()
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findAllByText(constants.SEPOLIA_CONTRACT_SHORT).should('have.length', 3)
@@ -179,7 +179,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
       getBody().findByText(safeapps.sendBatchStr).click()
     })
     cy.get('h4').contains(safeapps.transactionBuilderStr).should('be.visible')
-    cy.findAllByText(safeapps.testNativeTransfer).should('have.length', 2)
+    cy.findAllByText(safeapps.testAddressValueStr).should('have.length', 2)
     navigation.clickOnModalCloseBtn()
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findAllByText(constants.SEPOLIA_CONTRACT_SHORT).should('have.length', 2)

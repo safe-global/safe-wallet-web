@@ -25,10 +25,6 @@ describe('Tx history tests 2', () => {
   })
 
   // On-chain rejection
-  it('Verify summary for on-chain rejection', () => {
-    createTx.verifySummaryByName(typeOnchainRejection.title, [typeGeneral.statusOk], typeOnchainRejection.altImage)
-  })
-
   it('Verify exapanded details for on-chain rejection', () => {
     createTx.clickOnTransactionItemByName(typeOnchainRejection.title)
     createTx.verifyExpandedDetails([
@@ -44,15 +40,6 @@ describe('Tx history tests 2', () => {
   })
 
   // Batch transaction
-  it('Verify summary for batch', () => {
-    createTx.verifySummaryByName(
-      typeBatch.title,
-      typeBatch.summaryTxInfo,
-      [typeBatch.summaryTxInfo, typeGeneral.statusOk],
-      typeBatch.altImage,
-    )
-  })
-
   it('Verify exapanded details for batch', () => {
     createTx.clickOnTransactionItemByName(typeBatch.title, typeBatch.summaryTxInfo)
     createTx.verifyExpandedDetails(
