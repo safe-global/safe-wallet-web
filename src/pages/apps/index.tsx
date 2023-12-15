@@ -11,6 +11,8 @@ import SafeAppList from '@/components/safe-apps/SafeAppList'
 import { AppRoutes } from '@/config/routes'
 import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const SafeApps: NextPage = () => {
   const router = useRouter()
@@ -18,6 +20,7 @@ const SafeApps: NextPage = () => {
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
     useSafeAppsFilters(remoteSafeApps)
   const isFiltered = filteredApps.length !== remoteSafeApps.length
+  const isSafeAppsEnabled = useHasFeature(FEATURES.SAFE_APPS)
 
   const nonPinnedApps = useMemo(
     () => remoteSafeApps.filter((app) => !pinnedSafeAppIds.has(app.id)),
@@ -34,6 +37,8 @@ const SafeApps: NextPage = () => {
       router.push({ pathname: AppRoutes.apps.open, query: { safe: router.query.safe, appUrl } })
     }
   }, [router])
+
+  if (!isSafeAppsEnabled) return <></>
 
   return (
     <>
