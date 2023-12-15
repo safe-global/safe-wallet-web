@@ -149,4 +149,9 @@ describe('Tx history tests 2', () => {
     )
     createTx.checkRequiredThreshold(2)
   })
+
+  it('Verify that sender address of untrusted token will not be copied until agreed in warning popup', () => {
+    createTx.clickOnTransactionItemByName(typeUntrustedToken.summaryTitle, typeUntrustedToken.summaryTxInfo)
+    createTx.verifyAddressNotCopied(0, typeUntrustedToken.senderAddress)
+  })
 })
