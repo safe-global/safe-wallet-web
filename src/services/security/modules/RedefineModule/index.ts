@@ -1,6 +1,7 @@
 import { REDEFINE_API } from '@/config/constants'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
+import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
 export const enum REDEFINE_ERROR_CODES {
@@ -18,11 +19,19 @@ const redefineSeverityMap: Record<RedefineSeverity['label'], SecuritySeverity> =
   NO_ISSUES: SecuritySeverity.NONE,
 }
 
-export type RedefineModuleRequest = {
+export type RedefineModuleTransactionRequest = {
   chainId: number
   safeAddress: string
   walletAddress: string
   safeTransaction: SafeTransaction
+  threshold: number
+}
+
+export type RedefineModuleMessageRequest = {
+  chainId: number
+  safeAddress: string
+  walletAddress: string
+  message: EIP712TypedData
   threshold: number
 }
 
@@ -105,8 +114,8 @@ export type RedefineResponse = {
   }[]
 }
 
-export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefineModuleResponse> {
-  async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
+export class RedefineModule implements SecurityModule<RedefineModuleTransactionRequest, RedefineModuleResponse> {
+  async scanTransaction(request: RedefineModuleTransactionRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
     if (!REDEFINE_API) {
       throw new Error('Redefine API URL is not set')
     }
@@ -125,6 +134,49 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
       payload: {
         method: 'eth_signTypedData_v4',
         params: [safeAddress, JSON.stringify(txTypedData)],
+      },
+    }
+
+    const res = await fetch(REDEFINE_API, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/JSON',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!res.ok) {
+      throw new Error('Redefine scan failed', await res.json())
+    }
+
+    const result = (await res.json()) as RedefineResponse
+
+    return {
+      severity: result.data ? redefineSeverityMap[result.data.insights.verdict.label] : SecuritySeverity.NONE,
+      payload: {
+        issues: result.data?.insights.issues.map((issue) => ({
+          ...issue,
+          severity: redefineSeverityMap[issue.severity.label],
+        })),
+        balanceChange: result.data?.balanceChange,
+        simulation: result.data?.simulation,
+        errors: result.errors,
+      },
+    }
+  }
+
+  async scanMessage(request: RedefineModuleMessageRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
+    if (!REDEFINE_API) {
+      throw new Error('Redefine API URL is not set')
+    }
+
+    const { chainId, safeAddress, message } = request
+
+    const payload: RedefinePayload = {
+      chainId,
+      payload: {
+        method: 'eth_signTypedData_v4',
+        params: [safeAddress, JSON.stringify(message)],
       },
     }
 

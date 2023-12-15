@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@/tests/test-utils'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { REDEFINE_RETRY_TIMEOUT, useRedefine } from './useRedefine'
+import { REDEFINE_RETRY_TIMEOUT, useRedefineTransaction } from './useRedefine'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import * as useChains from '@/hooks/useChains'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -35,7 +35,7 @@ describe('useRedefine', () => {
     global.fetch = jest.fn()
   })
   it('should return undefined without safeTx', async () => {
-    const { result } = renderHook(() => useRedefine(undefined))
+    const { result } = renderHook(() => useRedefineTransaction(undefined))
 
     await waitFor(() => {
       expect(result.current[0]).toBeUndefined()
@@ -63,7 +63,7 @@ describe('useRedefine', () => {
       encodedSignatures: () => '',
     }
 
-    const { result } = renderHook(() => useRedefine(safeTx))
+    const { result } = renderHook(() => useRedefineTransaction(safeTx))
 
     await waitFor(() => {
       expect(result.current[0]).toBeUndefined()
@@ -101,7 +101,7 @@ describe('useRedefine', () => {
 
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(false)
 
-    const { result } = renderHook(() => useRedefine(safeTx))
+    const { result } = renderHook(() => useRedefineTransaction(safeTx))
 
     await waitFor(() => {
       expect(result.current[0]).toBeUndefined()
@@ -142,7 +142,7 @@ describe('useRedefine', () => {
     const mockFetch = jest.spyOn(global, 'fetch')
     mockFetch.mockImplementation(() => Promise.reject({ message: '403 not authorized' }))
 
-    const { result } = renderHook(() => useRedefine(safeTx))
+    const { result } = renderHook(() => useRedefineTransaction(safeTx))
 
     await waitFor(() => {
       expect(result.current[0]).toBeUndefined()
@@ -229,7 +229,7 @@ describe('useRedefine', () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub(mockRedefineResponse))
 
     const mockFetch = jest.spyOn(global, 'fetch')
-    const { result } = renderHook(() => useRedefine(safeTx))
+    const { result } = renderHook(() => useRedefineTransaction(safeTx))
 
     await waitFor(() => {
       expect(result.current[0]).toBeDefined()
@@ -363,7 +363,7 @@ describe('useRedefine', () => {
     global.fetch = jest.fn().mockImplementation(setupFetchStub(mockPartialRedefineResponse))
 
     let mockFetch = jest.spyOn(global, 'fetch')
-    const { result } = renderHook(() => useRedefine(safeTx))
+    const { result } = renderHook(() => useRedefineTransaction(safeTx))
 
     await waitFor(() => {
       expect(result.current[0]).toBeDefined()

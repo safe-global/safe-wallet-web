@@ -17,6 +17,7 @@ import { SecuritySeverity } from '@/services/security/modules/types'
 import CloseIcon from '@/public/images/common/close.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckIcon from '@/public/images/common/check.svg'
+import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const REDEFINE_RETRY_TIMEOUT = 2_000
 const RedefineModuleInstance = new RedefineModule()
@@ -71,7 +72,7 @@ export const mapRedefineSeverity: Record<SecuritySeverity, SecurityWarningProps>
   },
 }
 
-export const useRedefine = (
+export const useRedefineTransaction = (
   safeTransaction: SafeTransaction | undefined,
 ): AsyncResult<SecurityResponse<RedefineModuleResponse>> => {
   const { safe, safeAddress } = useSafeInfo()
@@ -95,6 +96,68 @@ export const useRedefine = (
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [safe.chainId, safe.threshold, safeAddress, safeTransaction, wallet?.address, retryCounter, isFeatureEnabled],
+    false,
+  )
+
+  const isAnalyzing = !!redefinePayload?.payload?.errors.some(
+    (error) => error.code === REDEFINE_ERROR_CODES.ANALYSIS_IN_PROGRESS,
+  )
+
+  const loading = redefineLoading || isAnalyzing
+
+  const error = useMemo(() => {
+    const simulationErrors =
+      redefinePayload?.payload?.errors.filter((error) => CRITICAL_ERRORS[error.code] !== undefined) ?? []
+    const errorMessage = redefineErrors
+      ? DEFAULT_ERROR_MESSAGE
+      : simulationErrors.length > 0
+      ? CRITICAL_ERRORS[simulationErrors[0].code]
+      : undefined
+    return errorMessage ? new Error(errorMessage) : undefined
+  }, [redefineErrors, redefinePayload?.payload?.errors])
+
+  useEffect(() => {
+    if (!isAnalyzing) {
+      return
+    }
+
+    let timeoutId = setTimeout(() => setRetryCounter((prev) => prev + 1), REDEFINE_RETRY_TIMEOUT)
+    return () => clearTimeout(timeoutId)
+  }, [redefinePayload, isAnalyzing])
+
+  useEffect(() => {
+    if (!loading && !error && redefinePayload) {
+      trackEvent({ ...MODALS_EVENTS.REDEFINE_RESULT, label: redefinePayload.severity })
+    }
+  }, [error, loading, redefinePayload])
+
+  return [redefinePayload, error, loading]
+}
+
+export const useRedefineMessage = (
+  message: EIP712TypedData | undefined,
+): AsyncResult<SecurityResponse<RedefineModuleResponse>> => {
+  const { safe, safeAddress } = useSafeInfo()
+  const wallet = useWallet()
+  const [retryCounter, setRetryCounter] = useState(0)
+  const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
+
+  const [redefinePayload, redefineErrors, redefineLoading] = useAsync<SecurityResponse<RedefineModuleResponse>>(
+    () => {
+      if (!isFeatureEnabled || !message || !wallet?.address) {
+        return
+      }
+
+      return RedefineModuleInstance.scanMessage({
+        chainId: Number(safe.chainId),
+        message,
+        safeAddress,
+        walletAddress: wallet.address,
+        threshold: safe.threshold,
+      })
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [safe.chainId, safe.threshold, safeAddress, message, wallet?.address, retryCounter, isFeatureEnabled],
     false,
   )
 

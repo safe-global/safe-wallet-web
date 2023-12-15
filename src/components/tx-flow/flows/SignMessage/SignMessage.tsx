@@ -40,6 +40,7 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { useRedefineMessage } from '@/components/tx/security/redefine/useRedefine'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -208,6 +209,12 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
     }
     await dispatchPreparedSignature(safeMessage, safeMessageHash, () => setTxFlow(undefined), requestId)
   }
+
+  const [redefineResult, redefineError, redefineLoading] = useRedefineMessage(
+    typeof message !== 'string' ? message : undefined,
+  )
+
+  console.log('Redefine message scan', redefineResult, redefineError, redefineLoading)
 
   return (
     <>
