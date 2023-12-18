@@ -4,7 +4,6 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly, isSmartContract } from '@/hooks/wallets/web3'
 import { WALLET_KEYS } from '@/hooks/wallets/consts'
 import { memoize } from 'lodash'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 
 const isWCRejection = (err: Error): boolean => {
   return /rejected/.test(err?.message)
@@ -40,23 +39,3 @@ export const isSmartContractWallet = memoize(
   },
   (chainId, address) => chainId + address,
 )
-
-/* Check if the wallet is unlocked. */
-export const isWalletUnlocked = async (walletName: string): Promise<boolean | undefined> => {
-  const METAMASK = 'MetaMask'
-
-  // Only MetaMask exposes a method to check if the wallet is unlocked
-  if (walletName === METAMASK) {
-    if (typeof window === 'undefined' || !window.ethereum?._metamask) return false
-    try {
-      return await window.ethereum?._metamask.isUnlocked()
-    } catch {
-      return false
-    }
-  }
-
-  // Don't reconnect to MPC wallet because it's not initialized right away
-  if (walletName === ONBOARD_MPC_MODULE_LABEL) {
-    return false
-  }
-}

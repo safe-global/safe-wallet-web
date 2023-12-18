@@ -22,7 +22,7 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 
 type WalletInfoProps = {
   wallet: ConnectedWallet
-  balance: BigNumber | undefined
+  balance?: BigNumber
   socialWalletService: ReturnType<typeof useSocialWallet>
   router: ReturnType<typeof useRouter>
   onboard: ReturnType<typeof useOnboard>
@@ -106,20 +106,24 @@ export const WalletInfo = ({
       </Box>
 
       <Box className={css.rowContainer}>
-        <Box className={css.row}>
-          <Typography variant="body2" color="primary.light">
-            Balance
-          </Typography>
-          <Typography variant="body2">
-            <WalletBalance balance={balance} />
-          </Typography>
-        </Box>
+        {balance && (
+          <Box className={css.row}>
+            <Typography variant="body2" color="primary.light">
+              Balance
+            </Typography>
+            <Typography variant="body2">
+              <WalletBalance balance={balance} />
+            </Typography>
+          </Box>
+        )}
+
         <Box className={css.row}>
           <Typography variant="body2" color="primary.light">
             Wallet
           </Typography>
           <Typography variant="body2">{wallet.label}</Typography>
         </Box>
+
         <Box className={css.row}>
           <Typography variant="body2" color="primary.light">
             Network

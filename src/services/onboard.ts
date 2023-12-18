@@ -49,7 +49,7 @@ export const createOnboard = (
 
     connect: {
       removeWhereIsMyWalletWarning: true,
-      autoConnectLastWallet: false,
+      autoConnectLastWallet: true,
     },
   })
 
