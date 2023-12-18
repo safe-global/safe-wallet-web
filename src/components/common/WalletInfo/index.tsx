@@ -120,12 +120,12 @@ export const WalletInfo = ({
           <Typography variant="body2" color="primary.light">
             Balance
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" textAlign="right">
             <WalletBalance balance={balance} />
 
             {currentChainId !== chainInfo?.chainId && (
               <>
-                <Typography variant="body2" color="primary.light" textAlign="right">
+                <Typography variant="body2" color="primary.light">
                   ({chainInfo?.chainName || 'Unknown chain'})
                 </Typography>
               </>
