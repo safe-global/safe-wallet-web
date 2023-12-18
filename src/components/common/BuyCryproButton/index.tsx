@@ -1,5 +1,5 @@
 import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
+import Link, { type LinkProps } from 'next/link'
 import { Button } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { SafeAppsTag } from '@/config/constants'
@@ -15,29 +15,27 @@ const useOnrampAppUrl = (): string | undefined => {
   return onrampApps?.[0]?.url
 }
 
+const useBuyCryptoHref = (): LinkProps['href'] | undefined => {
+  const query = useSearchParams()
+  const safe = query.get('safe')
+  const appUrl = useOnrampAppUrl()
+
+  return useMemo(() => {
+    if (!safe || !appUrl) return undefined
+    return { pathname: AppRoutes.apps.open, query: { safe, appUrl } }
+  }, [safe, appUrl])
+}
+
 const buttonStyles = {
   minHeight: '40px',
 }
 
-const _BuyCryptoButton = ({
-  appUrl,
-  query,
-}: {
-  appUrl: string | undefined
-  query: ReturnType<typeof useSearchParams>
-}) => {
-  if (!appUrl) return null
-
-  const safe = query.get('safe')
-
-  const linkHref = useMemo(() => {
-    if (!safe) return ''
-    return { pathname: AppRoutes.apps.open, query: { safe, appUrl } }
-  }, [safe, appUrl])
+const _BuyCryptoButton = ({ href }: { href?: LinkProps['href'] }) => {
+  if (!href) return null
 
   return (
     <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON}>
-      <Link href={linkHref} passHref>
+      <Link href={href} passHref>
         <Button variant="contained" size="small" sx={buttonStyles} fullWidth startIcon={<AddIcon />}>
           Buy crypto
         </Button>
@@ -47,8 +45,7 @@ const _BuyCryptoButton = ({
 }
 
 const BuyCryproButton = madProps(_BuyCryptoButton, {
-  appUrl: useOnrampAppUrl,
-  query: useSearchParams,
+  href: useBuyCryptoHref,
 })
 
 export default BuyCryproButton
