@@ -104,6 +104,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Safe viewed',
     category: OVERVIEW_CATEGORY,
   },
+  BUY_CRYPTO_BUTTON: {
+    action: 'Buy crypto button',
+    category: OVERVIEW_CATEGORY,
+  },
 }
 
 export enum OPEN_SAFE_LABELS {
