@@ -1,4 +1,4 @@
-import BalanceInfo from '@/components/tx/BalanceInfo'
+import useWalletCanPay from '@/hooks/useWalletCanPay'
 import madProps from '@/utils/mad-props'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
@@ -107,6 +107,12 @@ export const ExecuteForm = ({
     setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
   }
 
+  const walletCanPay = useWalletCanPay({
+    gasLimit,
+    maxFeePerGas: advancedParams.maxFeePerGas,
+    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
+  })
+
   const cannotPropose = !isOwner && !onlyExecute
   const submitDisabled =
     !safeTx ||
@@ -128,7 +134,6 @@ export const ExecuteForm = ({
             gasLimitError={gasLimitError}
             willRelay={willRelay}
           />
-          {!canRelay && <BalanceInfo />}
 
           {canRelay && (
             <div className={css.noTopBorder}>
@@ -148,6 +153,8 @@ export const ExecuteForm = ({
           <ErrorMessage>
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
+        ) : !walletCanPay && !willRelay ? (
+          <ErrorMessage>Your connected wallet doesn&apos;t have enough funds to execute this transaction.</ErrorMessage>
         ) : (
           (executionValidationError || gasLimitError) && (
             <ErrorMessage error={executionValidationError || gasLimitError}>
