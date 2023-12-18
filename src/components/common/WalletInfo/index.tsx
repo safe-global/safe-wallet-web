@@ -19,10 +19,12 @@ import { selectChainById } from '@/store/chainsSlice'
 import madProps from '@/utils/mad-props'
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
+import useChainId from '@/hooks/useChainId'
 
 type WalletInfoProps = {
   wallet: ConnectedWallet
-  balance?: BigNumber
+  balance?: string | BigNumber
+  currentChainId: ReturnType<typeof useChainId>
   socialWalletService: ReturnType<typeof useSocialWallet>
   router: ReturnType<typeof useRouter>
   onboard: ReturnType<typeof useOnboard>
@@ -33,6 +35,7 @@ type WalletInfoProps = {
 export const WalletInfo = ({
   wallet,
   balance,
+  currentChainId,
   socialWalletService,
   router,
   onboard,
@@ -106,17 +109,6 @@ export const WalletInfo = ({
       </Box>
 
       <Box className={css.rowContainer}>
-        {balance && (
-          <Box className={css.row}>
-            <Typography variant="body2" color="primary.light">
-              Balance
-            </Typography>
-            <Typography variant="body2">
-              <WalletBalance balance={balance} />
-            </Typography>
-          </Box>
-        )}
-
         <Box className={css.row}>
           <Typography variant="body2" color="primary.light">
             Wallet
@@ -126,13 +118,23 @@ export const WalletInfo = ({
 
         <Box className={css.row}>
           <Typography variant="body2" color="primary.light">
-            Network
+            Balance
           </Typography>
-          <Typography variant="body2">{chainInfo?.chainName}</Typography>
+          <Typography variant="body2">
+            <WalletBalance balance={balance} />
+
+            {currentChainId !== chainInfo?.chainId && (
+              <>
+                <Typography variant="body2" color="primary.light" textAlign="right">
+                  ({chainInfo?.chainName || 'Unknown chain'})
+                </Typography>
+              </>
+            )}
+          </Typography>
         </Box>
       </Box>
 
-      <Box display="flex" flexDirection="column" gap={1} width={1}>
+      <Box display="flex" flexDirection="column" gap={2} width={1}>
         <ChainSwitcher fullWidth />
 
         <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
@@ -165,4 +167,5 @@ export default madProps(WalletInfo, {
   router: useRouter,
   onboard: useOnboard,
   addressBook: useAddressBook,
+  currentChainId: useChainId,
 })
