@@ -50,8 +50,8 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   let balance = ''
   if (account.balance) {
     const tokenBalance = Object.entries(account.balance)[0]
-    const token = tokenBalance[0]
-    const balanceString = tokenBalance[1]
+    const token = tokenBalance?.[0] || ''
+    const balanceString = tokenBalance?.[1] || ''
     const balanceNumber = parseFloat(balanceString)
     if (!Number.isNaN(balanceNumber)) {
       const balanceFormatted = formatAmount(balanceNumber)
