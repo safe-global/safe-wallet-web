@@ -12,6 +12,7 @@ const typeDisableOwner = data.type.disableModule
 const typeChangeThreshold = data.type.changeThreshold
 const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
+const typeUntrustedToken = data.type.untrustedReceivedToken
 
 describe('Tx history tests 2', () => {
   beforeEach(() => {
