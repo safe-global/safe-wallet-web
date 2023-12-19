@@ -45,7 +45,7 @@
     "@gnosis.pm/zodiac": "^3.4.2",
     "@mui/icons-material": "^5.14.20",
     "@mui/material": "^5.14.20",
-    "@mui/x-date-pickers": "^6.18.5",
+    "@mui/x-date-pickers": "^5.0.20",
     "@reduxjs/toolkit": "^1.9.5",
     "@safe-global/safe-apps-sdk": "^8.1.0",
     "@safe-global/safe-core-sdk": "^3.3.5",
