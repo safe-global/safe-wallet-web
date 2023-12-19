@@ -1,64 +1,64 @@
-import { alpha, Theme, PaletteMode } from '@mui/material';
-import { createTheme, Shadows } from '@mui/material/styles';
+import { alpha, Theme, PaletteMode } from '@mui/material'
+import { createTheme, Shadows } from '@mui/material/styles'
 
-import palette from './lightPalette';
-import darkPalette from './darkPalette';
-import typography from './typography';
+import palette from './lightPalette'
+import darkPalette from './darkPalette'
+import typography from './typography'
 
-export const base = 8;
+export const base = 8
 
 declare module '@mui/material/styles' {
   // Custom color palettes
   export interface Palette {
-    border: Palette['primary'];
-    logo: Palette['primary'];
-    backdrop: Palette['primary'];
-    static: Palette['primary'];
+    border: Palette['primary']
+    logo: Palette['primary']
+    backdrop: Palette['primary']
+    static: Palette['primary']
   }
   export interface PaletteOptions {
-    border: PaletteOptions['primary'];
-    logo: PaletteOptions['primary'];
-    backdrop: PaletteOptions['primary'];
-    static: PaletteOptions['primary'];
+    border: PaletteOptions['primary']
+    logo: PaletteOptions['primary']
+    backdrop: PaletteOptions['primary']
+    static: PaletteOptions['primary']
   }
 
   export interface TypeBackground {
-    main: string;
-    light: string;
+    main: string
+    light: string
   }
 
   // Custom color properties
   export interface PaletteColor {
-    background?: string;
+    background?: string
   }
   export interface SimplePaletteColorOptions {
-    background?: string;
+    background?: string
   }
 }
 
 declare module '@mui/material/SvgIcon' {
   export interface SvgIconPropsColorOverrides {
-    border: unknown;
+    border: unknown
   }
 }
 
 declare module '@mui/material/Button' {
   export interface ButtonPropsSizeOverrides {
-    stretched: true;
+    stretched: true
   }
 
   export interface ButtonPropsColorOverrides {
-    background: true;
+    background: true
   }
   export interface ButtonPropsVariantOverrides {
-    danger: true;
+    danger: true
   }
 }
 
 const createSafeTheme = (mode: PaletteMode): Theme => {
-  const isDarkMode = mode === 'dark';
-  const colors = isDarkMode ? darkPalette : palette;
-  const shadowColor = colors.primary.light;
+  const isDarkMode = mode === 'dark'
+  const colors = isDarkMode ? darkPalette : palette
+  const shadowColor = colors.primary.light
 
   return createTheme({
     palette: {
@@ -71,18 +71,10 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
     },
     shadows: [
       'none',
-      isDarkMode
-        ? `0 0 2px ${shadowColor}`
-        : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
-      isDarkMode
-        ? `0 0 2px ${shadowColor}`
-        : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
-      isDarkMode
-        ? `0 0 2px ${shadowColor}`
-        : `0 2px 20px ${shadowColor}0a, 0 8px 32px ${shadowColor}14`,
-      isDarkMode
-        ? `0 0 2px ${shadowColor}`
-        : `0 8px 32px ${shadowColor}0a, 0 24px 60px ${shadowColor}14`,
+      isDarkMode ? `0 0 2px ${shadowColor}` : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
+      isDarkMode ? `0 0 2px ${shadowColor}` : `0 1px 4px ${shadowColor}0a, 0 4px 10px ${shadowColor}14`,
+      isDarkMode ? `0 0 2px ${shadowColor}` : `0 2px 20px ${shadowColor}0a, 0 8px 32px ${shadowColor}14`,
+      isDarkMode ? `0 0 2px ${shadowColor}` : `0 8px 32px ${shadowColor}0a, 0 24px 60px ${shadowColor}14`,
       ...Array(20).fill('none'),
     ] as Shadows,
     typography,
@@ -445,17 +437,11 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             color: theme.palette.background.main,
             backgroundColor: theme.palette.text.primary,
             '& .MuiLink-root': {
-              color: isDarkMode
-                ? theme.palette.background.main
-                : theme.palette.secondary.main,
-              textDecorationColor: isDarkMode
-                ? theme.palette.background.main
-                : theme.palette.secondary.main,
+              color: isDarkMode ? theme.palette.background.main : theme.palette.secondary.main,
+              textDecorationColor: isDarkMode ? theme.palette.background.main : theme.palette.secondary.main,
             },
             '& .MuiLink-root:hover': {
-              color: isDarkMode
-                ? theme.palette.text.secondary
-                : theme.palette.secondary.light,
+              color: isDarkMode ? theme.palette.text.secondary : theme.palette.secondary.light,
             },
           }),
           arrow: ({ theme }) => ({
@@ -499,7 +485,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
         },
       },
     },
-  });
-};
+  })
+}
 
-export default createSafeTheme;
+export default createSafeTheme

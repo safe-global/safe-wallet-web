@@ -60,6 +60,6 @@ const lightPalette = {
   static: {
     main: '#121312',
   },
-};
+}
 
-export default lightPalette;
+export default lightPalette

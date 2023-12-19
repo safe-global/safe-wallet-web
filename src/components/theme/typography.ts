@@ -1,6 +1,6 @@
-import { TypographyOptions } from '@mui/material/styles/createTypography';
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 
-const safeFontFamily = 'DM Sans, sans-serif';
+const safeFontFamily = 'DM Sans, sans-serif'
 
 const typography: TypographyOptions = {
   fontFamily: safeFontFamily,
@@ -45,6 +45,6 @@ const typography: TypographyOptions = {
     textTransform: 'uppercase',
     letterSpacing: '1px',
   },
-};
+}
 
-export default typography;
+export default typography

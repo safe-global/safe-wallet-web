@@ -60,6 +60,6 @@ const darkPalette = {
   static: {
     main: '#121312',
   },
-};
+}
 
-export default darkPalette;
+export default darkPalette
