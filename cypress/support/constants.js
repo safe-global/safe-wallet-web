@@ -10,26 +10,30 @@ export const SEPOLIA_TEST_SAFE_3 = 'sep:0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40
 export const SEPOLIA_TEST_SAFE_4 = 'sep:0x03042B890b99552b60A073F808100517fb148F60'
 export const SEPOLIA_TEST_SAFE_5 = 'sep:0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b6415'
 export const SEPOLIA_TEST_SAFE_6 = 'sep:0x6d0b6F96f665Bb4490f9ddb2e450Da2f7e546dC1'
+// SAFE_7 has ENS assigned to it
 export const SEPOLIA_TEST_SAFE_7 = 'sep:0xBf30F749FC027a5d79c4710D988F0D3C8e217A4F'
-export const ETH_ENS_SAFE_ADDRESS_1 = 'eth:0x8675B754342754A30A2AeF474D114d8460bca19b'
+// SAFE 8 is used for tx history tests
+export const SEPOLIA_TEST_SAFE_8 = 'sep:0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb'
+// SAFE 9 & 10 are used for safe apps tests
+export const SEPOLIA_TEST_SAFE_9 = 'sep:0xD1571E8Cc4438aFef2836DD9a0E5D09fb63EDE9a'
+export const SEPOLIA_TEST_SAFE_10 = 'sep:0x4DD4cB2299E491E1B469245DB589ccB2B16d7bde'
+export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
+export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
 export const PAGINATION_TEST_SAFE = 'gor:0x850493a15914aAC05a821A3FAb973b4598889A7b'
 export const TEST_SAFE = 'gor:0x04f8b1EA3cBB315b87ced0E32deb5a43cC151a91'
 export const EOA = '0x03042B890b99552b60A073F808100517fb148F60'
-export const SAFE_APP_ADDRESS = '0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4'
+export const SAFE_APP_ADDRESS = '0x11AB70A4564C62F567B92868Cb5e69b50c5434aF'
 export const SAFE_APP_ADDRESS_2 = '0x49d4450977E2c95362C13D3a31a09311E0Ea26A6'
 export const SAFE_APP_ADDRESS_3 = '0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD'
-export const SAFE_APP_ADDRESS_2_SHORT = '0x49d4...26A6'
 export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'
 export const SEPOLIA_OWNER_2 = '0x96D4c6fFC338912322813a77655fCC926b9A5aC5'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
 export const SIDEBAR_ADDRESS = '0x04f8...1a91'
-export const ENS_TEST_SEPOLIA = 'testenssepolia.eth'
+export const ENS_TEST_SEPOLIA = 'e2etestsafe.eth'
 export const ENS_TEST_GOERLI = 'goerli-safe-test.eth'
 export const ENS_TEST_SEPOLIA_INVALID = 'ivladitestenssepolia.eth'
-export const ENS_TEST_ETH = 'mainnetsafe.eth'
-export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png' //converts to SEPOLIA_TEST_SAFE_6 address
-export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png' //A blank square
+export const WRONGLY_CHECKSUMMED_ADDRESS = '0X6D0B6F96F665BB4490F9DDB2E450DA2F7E546DC1'
 
 export const BROWSER_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__browserPermissions`
 export const SAFE_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__safePermissions`
@@ -44,6 +48,7 @@ export const TX_Builder_url = 'https://safe-apps.dev.5afe.dev/tx-builder'
 export const drainAccount_url = 'https://safe-apps.dev.5afe.dev/drain-safe'
 export const testAppUrl = 'https://safe-test-app.com'
 export const addressBookUrl = '/address-book?safe='
+export const appsUrlGeneral = '/apps?=safe='
 export const BALANCE_URL = '/balances?safe='
 export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
@@ -54,22 +59,28 @@ export const welcomeUrl = '/welcome'
 export const chainMaticUrl = '/welcome?chain=matic'
 export const createNewSafeSepoliaUrl = '/new-safe/create?chain=sep'
 export const loadNewSafeSepoliaUrl = '/new-safe/load?chain=sep'
-export const loadNewSafeEthUrl = '/new-safe/load?chain=eth'
 export const appsUrl = '/apps'
 export const requestPermissionsUrl = '/request-permissions'
 export const getPermissionsUrl = '/get-permissions'
 export const appSettingsUrl = '/settings/safe-apps'
 export const setupUrl = '/settings/setup?safe='
-export const dataSettingsUrl = '/settings/data'
+export const dataSettingsUrl = '/settings/data?safe='
 export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
+export const sepoliaEtherscanlLink = 'https://sepolia.etherscan.io/address'
 
 export const proposeEndpoint = '/**/propose'
 export const appsEndpoint = '/**/safe-apps'
-export const transactionHistoryEndpoint = '**/history'
+export const transactionHistoryEndpoint = '**/history?trusted=false'
 export const safeListEndpoint = '**/safes'
 
+export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png'
+export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png'
+
+export const networkKeys = {
+  sepolia: '11155111',
+}
 export const mainSideMenuOptions = {
   home: 'Home',
 }
@@ -141,7 +152,24 @@ export const addressBookErrrMsg = {
   ownerAdded: 'Owner is already added',
   failedResolve: 'Failed to resolve the address',
   emptyAddress: 'Owner',
+  invalidPrefix(prefix) {
+    return `"${prefix}" doesn't match the current chain`
+  },
 }
+
+export const amountErrorMsg = {
+  negativeValue: 'The value must be greater than 0',
+  randomString: 'The value must be a number',
+  largerThanCurrentBalance: /Maximum value is \d+(\.\d+)?/,
+}
+
+export const nonceTooltipMsg = {
+  lowerThanCurrent: "Nonce can't be lower than ",
+  higherThanRecommended: 'Nonce is higher than the recommended nonce',
+  muchHigherThanRecommended: 'Nonce is much higher than the current nonce',
+  mustBeNumber: 'Nonce must be a number',
+}
+
 export const addresBookContacts = {
   user1: {
     address: '0x01A9F68e339da12565cfBc47fe7D6EdEcB11C46f',
@@ -155,12 +183,12 @@ export const addresBookContacts = {
 
 export const localStorageKeys = {
   SAFE_v2__addressBook: 'SAFE_v2__addressBook',
+  SAFE_v2__batch: 'SAFE_v2__batch',
+  SAFE_v2__settings: 'SAFE_v2__settings',
+  SAFE_v2__addedSafes: 'SAFE_v2__addedSafes',
+  SAFE_v2__safeApps: 'SAFE_v2__safeApps',
 }
 
 export const connectWalletNames = {
   e2e: 'E2E Wallet',
-}
-
-export const longNames = {
-  safeName: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
 }

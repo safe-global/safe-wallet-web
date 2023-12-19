@@ -6,15 +6,16 @@ const beameriFrameContainer = '#beamerOverlay .iframeCointaner'
 const beamerInput = 'input[id="beamer"]'
 const nameInput = 'input[name="name"]'
 const addressInput = 'input[name="address"]'
+export const addressBookRecipient = '[data-testid="address-book-recipient"]'
 const saveBtn = 'Save'
 export const editEntryBtn = 'button[aria-label="Edit entry"]'
 export const deleteEntryBtn = 'button[aria-label="Delete entry"]'
 export const deleteEntryModalBtnSection = '.MuiDialogActions-root'
 export const delteEntryModaldeleteBtn = 'Delete'
-const exportFileModalBtnSection = '.MuiDialogActions-root'
 const exportFileModalExportBtn = 'Export'
 const importBtn = 'Import'
 const exportBtn = 'Export'
+const exportModalBtn = '[data-testid="export-modal-btn"]'
 const whatsNewBtnStr = "What's new"
 const beamrCookiesStr = 'accept the "Beamer" cookies'
 
@@ -39,11 +40,11 @@ export function verifyDataImported(name, address) {
 }
 
 export function clickOnExportFileBtn() {
-  cy.contains(exportBtn).click()
+  cy.contains(exportBtn).should('be.enabled').click()
 }
 
 export function confirmExport() {
-  cy.get(exportFileModalBtnSection).contains(exportFileModalExportBtn).click()
+  cy.get(exportModalBtn).click()
 }
 
 export function clickOnCreateEntryBtn() {

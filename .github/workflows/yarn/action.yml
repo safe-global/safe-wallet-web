@@ -8,7 +8,9 @@ runs:
     - name: Yarn cache
       uses: actions/cache@v3
       with:
-        path: '**/node_modules'
+        path: |
+          **/node_modules
+          /home/runner/.cache/Cypress
         key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
     - name: Yarn install
       shell: bash

@@ -13,7 +13,6 @@ export type NavItem = {
   label: string
   icon?: ReactElement
   href: string
-  badge?: boolean
 }
 
 export const navItems: NavItem[] = [
@@ -85,20 +84,16 @@ export const settingsNavItems = [
     href: AppRoutes.settings.appearance,
   },
   {
+    label: 'Security & Login',
+    href: AppRoutes.settings.securityLogin,
+  },
+  {
     label: 'Notifications',
     href: AppRoutes.settings.notifications,
   },
   {
     label: 'Modules',
     href: AppRoutes.settings.modules,
-  },
-  {
-    label: 'Spending limits',
-    href: AppRoutes.settings.spendingLimits,
-  },
-  {
-    label: 'Security & Login',
-    href: AppRoutes.settings.securityLogin,
   },
   {
     label: 'Safe Apps',

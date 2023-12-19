@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 import { format } from 'date-fns'
 const path = require('path')
 
+const pinnedAppsStr = 'My pinned apps'
 const enablePushNotificationsStr = 'Enable push notifications'
 const addressBookBtnStr = 'Address book'
 const dataImportModalStr = 'Data import'
@@ -12,6 +13,7 @@ const appearenceTabStr = 'Appearance'
 const showMoreTabsBtn = '[data-testid="KeyboardArrowRightIcon"]'
 const dataTabStr = 'Data'
 const tab = 'div[role="tablist"] a'
+const safeHeaderInfo = '[data-testid="safe-header-info"]'
 export const prependChainPrefixStr = 'Prepend chain prefix to addresses'
 export const copyAddressStr = 'Copy addresses with chain prefix'
 export const darkModeStr = 'Dark mode'
@@ -42,6 +44,7 @@ export function verifyImportModalData() {
 
 export function clickOnImportedSafe(safe) {
   cy.contains(safe).click()
+  cy.get(safeHeaderInfo).contains(safe).should('exist')
 }
 
 export function clickOnOpenSafeListSidebar() {
@@ -82,6 +85,15 @@ export function clickOnBookmarkedAppsBtn() {
 export function verifyAppsAreVisible(appNames) {
   appNames.forEach((appName) => {
     cy.contains(appName).should('be.visible')
+  })
+}
+
+export function verifyPinnedApps(pinnedApps) {
+  pinnedApps.forEach((appName) => {
+    cy.get('p')
+      .contains(pinnedAppsStr)
+      .within(() => {})
+    cy.get('li').contains(appName).should('be.visible')
   })
 }
 

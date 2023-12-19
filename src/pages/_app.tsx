@@ -10,7 +10,7 @@ import type { Theme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material/styles'
 import { setBaseUrl as setGatewayBaseUrl } from '@safe-global/safe-gateway-typescript-sdk'
 import { CacheProvider, type EmotionCache } from '@emotion/react'
-import { SafeThemeProvider } from '@safe-global/safe-react-components'
+import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
 import '@/styles/globals.css'
 import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/config/constants'
 import { StoreHydrator } from '@/store'
@@ -40,9 +40,11 @@ import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendin
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
 import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
-import useABTesting from '@/services/tracking/useAbTesting'
-import { AbTest } from '@/services/tracking/abTesting'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
+import { RecoveryProvider } from '@/components/recovery/RecoveryContext'
+import { RecoveryModal } from '@/components/recovery/RecoveryModal'
+import { useRecoveryTxNotifications } from '@/hooks/useRecoveryTxNotification'
+import WalletProvider from '@/components/common/WalletProvider'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -58,6 +60,7 @@ const InitApp = (): null => {
   useInitSafeCoreSDK()
   useTxNotifications()
   useSafeMessageNotifications()
+  useRecoveryTxNotifications()
   useSafeNotifications()
   useTxPendingStatuses()
   useSafeMessagePendingStatuses()
@@ -65,7 +68,6 @@ const InitApp = (): null => {
   useSafeMsgTracking()
   useBeamer()
   useRehydrateSocialWallet()
-  useABTesting(AbTest.HUMAN_DESCRIPTION)
 
   return null
 }
@@ -82,9 +84,13 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
-            <TxModalProvider>
-              <WalletConnectProvider>{children}</WalletConnectProvider>
-            </TxModalProvider>
+            <WalletProvider>
+              <RecoveryProvider>
+                <TxModalProvider>
+                  <WalletConnectProvider>{children}</WalletConnectProvider>
+                </TxModalProvider>
+              </RecoveryProvider>
+            </WalletProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
       )}
@@ -126,6 +132,8 @@ const WebCoreApp = ({
           <Notifications />
 
           <PasswordRecoveryModal />
+
+          <RecoveryModal />
         </AppProviders>
       </CacheProvider>
     </StoreHydrator>

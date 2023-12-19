@@ -132,12 +132,12 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
   useEffect(() => {
     let message = ''
     // Warnings
-    if (Number(nonce) >= safe.nonce + MAX_NONCE_DIFFERENCE) {
-      message = ErrorMessages.NONCE_TOO_FAR
-    }
-
     if (Number(nonce) > Number(recommendedNonce)) {
       message = ErrorMessages.NONCE_GT_RECOMMENDED
+    }
+
+    if (Number(nonce) >= safe.nonce + MAX_NONCE_DIFFERENCE) {
+      message = ErrorMessages.NONCE_TOO_FAR
     }
 
     setWarning(message)

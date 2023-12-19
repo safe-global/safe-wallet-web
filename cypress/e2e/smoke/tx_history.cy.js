@@ -1,47 +1,87 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
+import * as data from '../../fixtures/txhistory_data_data.json'
 
-const OUTGOING = 'Sent'
+const typeOnchainRejection = data.type.onchainRejection
+const typeBatch = data.type.batchNativeTransfer
+const typeReceive = data.type.receive
+const typeSend = data.type.send
+const typeDeleteAllowance = data.type.deleteSpendingLimit
+const typeGeneral = data.type.general
+const typeUntrustedToken = data.type.untrustedReceivedToken
 
-const str1 = 'Received'
-const str2 = 'Executed'
-const str3 = 'Transaction hash'
-
-describe('[SMOKE] Transaction history tests', () => {
+describe('[SMOKE] Tx history tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
-    // Go to the test Safe transaction history
-    cy.visit(constants.transactionsHistoryUrl + constants.SEPOLIA_TEST_SAFE_5)
-
-    // So that tests that rely on this feature don't randomly fail
-    cy.window().then((win) => win.localStorage.setItem('SAFE_v2__AB_human-readable', true))
-
+    cy.visit(constants.transactionsHistoryUrl + constants.SEPOLIA_TEST_SAFE_8)
     main.acceptCookies()
   })
 
-  it('[SMOKE] Verify October 29th transactions are displayed', () => {
-    const DATE = 'Oct 29, 2023'
-    const NEXT_DATE_LABEL = 'Oct 20, 2023'
-    const amount = '0.00001 ETH'
-    const success = 'Success'
+  // Token receipt
+  it('[SMOKE] Verify summary for token receipt', () => {
+    createTx.verifySummaryByName(
+      typeReceive.summaryTitle,
+      typeReceive.summaryTxInfo,
+      [typeReceive.summaryTxInfo, typeGeneral.statusOk],
+      typeReceive.altTmage,
+    )
+  })
 
-    createTx.verifyDateExists(DATE)
-    createTx.verifyDateExists(NEXT_DATE_LABEL)
+  it('[SMOKE] Verify exapanded details for token receipt', () => {
+    createTx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
+    createTx.verifyExpandedDetails([
+      typeReceive.title,
+      typeReceive.receivedFrom,
+      typeReceive.senderAddress,
+      typeReceive.transactionHash,
+    ])
+  })
 
-    const rows = cy.contains('div', DATE).nextUntil(`div:contains(${NEXT_DATE_LABEL})`)
+  it('[SMOKE] Verify summary for token send', () => {
+    createTx.verifySummaryByName(
+      typeSend.title,
+      [typeSend.summaryTxInfo, typeGeneral.statusOk],
+      typeSend.altImage,
+      typeSend.altToken,
+    )
+  })
 
-    rows.should('have.length', 10)
+  it('[SMOKE] Verify summary for on-chain rejection', () => {
+    createTx.verifySummaryByName(typeOnchainRejection.title, [typeGeneral.statusOk], typeOnchainRejection.altImage)
+  })
 
-    rows.eq(0).within(() => {
-      // Type
-      createTx.verifyImageAltTxt(0, OUTGOING)
-      createTx.verifyStatus(constants.transactionStatus.sent)
+  it('[SMOKE] Verify summary for batch', () => {
+    createTx.verifySummaryByName(
+      typeBatch.title,
+      typeBatch.summaryTxInfo,
+      [typeBatch.summaryTxInfo, typeGeneral.statusOk],
+      typeBatch.altImage,
+    )
+  })
 
-      // Info
-      createTx.verifyImageAltTxt(1, constants.tokenAbbreviation.sep)
-      createTx.verifyTransactionStrExists(amount)
-      createTx.verifyTransactionStrExists(success)
-    })
+  it('[SMOKE] Verify summary for allowance deletion', () => {
+    createTx.verifySummaryByName(
+      typeDeleteAllowance.title,
+      typeDeleteAllowance.summaryTxInfo,
+      [typeDeleteAllowance.summaryTxInfo, typeGeneral.statusOk],
+      typeDeleteAllowance.altImage,
+    )
+  })
+
+  it('[SMOKE] Verify summary for untrusted token', () => {
+    createTx.verifySummaryByName(
+      typeUntrustedToken.summaryTitle,
+      typeUntrustedToken.summaryTxInfo,
+      [typeUntrustedToken.summaryTxInfo, typeGeneral.statusOk],
+      typeUntrustedToken.altImage,
+    )
+    createTx.verifySpamIconIsDisplayed(typeUntrustedToken.title, typeUntrustedToken.summaryTxInfo)
+  })
+
+  it('[SMOKE] Verify that copying sender address of untrusted token shows warning popup', () => {
+    createTx.clickOnTransactionItemByName(typeUntrustedToken.summaryTitle, typeUntrustedToken.summaryTxInfo)
+    createTx.clickOnCopyBtn(0)
+    createTx.verifyWarningModalVisible()
   })
 })

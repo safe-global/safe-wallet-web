@@ -19,12 +19,12 @@ import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
 import { MultiSendTxInfo } from '@/components/transactions/TxDetails/TxData/MultiSendTxInfo'
 
-const TxData = ({ txDetails }: { txDetails: TransactionDetails }): ReactElement => {
+const TxData = ({ txDetails, trusted }: { txDetails: TransactionDetails; trusted: boolean }): ReactElement => {
   const chainId = useChainId()
   const txInfo = txDetails.txInfo
 
   if (isTransferTxInfo(txInfo)) {
-    return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} />
+    return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} trusted={trusted} />
   }
 
   if (isSettingsChangeTxInfo(txInfo)) {

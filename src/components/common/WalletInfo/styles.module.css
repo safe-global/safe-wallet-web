@@ -31,3 +31,31 @@
 .warningButton:global.MuiButton-root:hover {
   background-color: var(--color-warning-background);
 }
+
+.address {
+  height: 40px;
+}
+
+.address div[title] {
+  font-weight: bold;
+}
+
+.rowContainer {
+  align-self: stretch;
+  border: 1px solid var(--color-border-light);
+  border-radius: 4px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--color-border-light);
+  padding: 12px;
+  margin-top: -2px;
+}
+
+.row:first-of-type {
+  border: 0;
+}

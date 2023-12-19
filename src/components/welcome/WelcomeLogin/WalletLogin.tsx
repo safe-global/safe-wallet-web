@@ -4,7 +4,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { Box, Button, Typography } from '@mui/material'
-import { EthHashInfo } from '@safe-global/safe-react-components'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   const wallet = useWallet()

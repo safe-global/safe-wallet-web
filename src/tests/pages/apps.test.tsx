@@ -18,6 +18,7 @@ import AppsPage from '@/pages/apps'
 import CustomSafeAppsPage from '@/pages/apps/custom'
 import * as safeAppsService from '@/services/safe-apps/manifest'
 import { LS_NAMESPACE } from '@/config/constants'
+import * as chainHooks from '@/hooks/useChains'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
@@ -33,6 +34,7 @@ describe('AppsPage', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
     window.localStorage.clear()
+    jest.spyOn(chainHooks, 'useHasFeature').mockImplementation(() => true)
   })
 
   describe('Safe Apps List Page', () => {

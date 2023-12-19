@@ -1,7 +1,6 @@
 import QrCodeButton from '@/components/sidebar/QrCodeButton'
 import { TxModalContext } from '@/components/tx-flow'
 import NewTxMenu from '@/components/tx-flow/flows/NewTx'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
@@ -19,9 +18,9 @@ import { AppRoutes } from '@/config/routes'
 import useCollectibles from '@/hooks/useCollectibles'
 import type { UrlObject } from 'url'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
-import AddIcon from '@mui/icons-material/Add'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import ArrowIconSE from '@/public/images/common/arrow-se.svg'
+import BuyCryproButton from '@/components/common/BuyCryproButton'
 
 const ValueSkeleton = () => <Skeleton variant="text" width={20} />
 
@@ -81,14 +80,11 @@ const Overview = (): ReactElement => {
   const chain = useCurrentChain()
   const { chainId } = chain || {}
   const { setTxFlow } = useContext(TxModalContext)
-  const [apps] = useRemoteSafeApps()
 
   const fiatTotal = useMemo(
     () => (balances.fiatTotal ? formatCurrency(balances.fiatTotal, currency) : ''),
     [currency, balances.fiatTotal],
   )
-
-  const rampSafeApp = apps?.find((app) => app.name === 'Ramp Network')
 
   const assetsLink: UrlObject = {
     pathname: AppRoutes.balances.index,
@@ -185,29 +181,10 @@ const Overview = (): ReactElement => {
             </Grid>
             <Grid item mt="auto">
               <Grid container mt={3} spacing={1} flexWrap="wrap">
-                {rampSafeApp && (
-                  <Grid item xs={12} sm="auto">
-                    <Link
-                      href={{
-                        pathname: AppRoutes.apps.open,
-                        query: { safe: router.query.safe, appUrl: rampSafeApp.url },
-                      }}
-                      passHref
-                      legacyBehavior
-                    >
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="primary"
-                        startIcon={<AddIcon />}
-                        sx={{ minHeight: '40px' }}
-                        fullWidth
-                      >
-                        Buy crypto
-                      </Button>
-                    </Link>
-                  </Grid>
-                )}
+                <Grid item xs={12} sm="auto">
+                  <BuyCryproButton />
+                </Grid>
+
                 <Grid item xs={6} sm="auto">
                   <Button
                     onClick={handleOnSend}

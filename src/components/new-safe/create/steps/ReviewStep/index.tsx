@@ -1,6 +1,8 @@
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import useWalletCanPay from '@/hooks/useWalletCanPay'
 import { useMemo, useState } from 'react'
 import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
-import { lightPalette } from '@safe-global/safe-react-components'
+import lightPalette from '@/components/theme/lightPalette'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -28,7 +30,7 @@ import { BigNumber } from 'ethers'
 import { usePendingSafe } from '../StatusStep/usePendingSafe'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import { SPONSOR_LOGOS } from '@/components/tx/SponsoredBy'
+import { RELAY_SPONSORS } from '@/components/tx/SponsoredBy'
 import Image from 'next/image'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -66,6 +68,7 @@ export const NetworkFee = ({
   }
 
   if (willRelay) {
+    const sponsor = RELAY_SPONSORS[chain?.chainId || ''] || RELAY_SPONSORS.default
     return (
       <>
         <Typography fontWeight="bold">Free</Typography>
@@ -73,13 +76,13 @@ export const NetworkFee = ({
           Your account is sponsored by
           <Image
             data-testid="sponsor-icon"
-            src={SPONSOR_LOGOS[chain?.chainId || '']}
-            alt={chain?.chainName || ''}
+            src={sponsor.logo}
+            alt={sponsor.name}
             width={16}
             height={16}
             style={{ margin: '-3px 0px -3px 4px' }}
           />{' '}
-          {chain?.chainName}
+          {sponsor.name}
         </Typography>
       </>
     )
@@ -122,6 +125,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
+
+  const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas, maxPriorityFeePerGas })
 
   const totalFee =
     gasLimit && maxFeePerGas
@@ -243,6 +248,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         </Grid>
 
         {isWrongChain && <NetworkWarning />}
+
+        {!walletCanPay && !willRelay && (
+          <ErrorMessage>Your connected wallet doesn&apos;t have enough funds to execute this transaction</ErrorMessage>
+        )}
       </Box>
 
       <Divider />
