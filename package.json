@@ -97,7 +97,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",
-    "@next/bundle-analyzer": "^13.1.1",
+    "@next/bundle-analyzer": "^13.5.6",
     "@openzeppelin/contracts": "^4.9.2",
     "@safe-global/safe-core-sdk-types": "^1.9.1",
     "@sentry/types": "^7.74.0",
