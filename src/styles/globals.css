@@ -1,6 +1,6 @@
 @import url(./vars.css);
 @import url(./onboard.css);
-@import url(../../node_modules/@safe-global/safe-react-components/dist/fonts.css);
+@import url(/fonts/fonts.css);
 
 html,
 body {

@@ -1,7 +1,7 @@
-import reactComponents from '@safe-global/safe-react-components'
+import lightPalette from '../src/components/theme/lightPalette'
+import darkPalette from '../src/components/theme/darkPalette'
 import spacings from '../src/styles/spacings.js'
 
-const { lightPalette, darkPalette } = reactComponents
 const cssVars: string[] = []
 Object.entries(lightPalette).forEach(([key, value]) => {
   Object.entries(value).forEach(([subKey, color]) => {

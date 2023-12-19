@@ -16,7 +16,7 @@ import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS, trackEvent } from '@/services/analyt
 import { getRedirect } from '@/components/new-safe/create/logic'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { AppRoutes } from '@/config/routes'
-import { lightPalette } from '@safe-global/safe-react-components'
+import lightPalette from '@/components/theme/lightPalette'
 import { useCurrentChain } from '@/hooks/useChains'
 import { usePendingSafe } from './usePendingSafe'
 import useSyncSafeCreationStep from '../../useSyncSafeCreationStep'
