@@ -117,9 +117,6 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
       sx={{
         '& .MuiSelect-select': {
           py: 0,
-          span: {
-            fontSize: '14px',
-          },
         },
       }}
     >
