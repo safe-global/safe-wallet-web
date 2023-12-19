@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useMemo, type FC } from 'react'
 import { type PaletteMode, type Theme, ThemeProvider } from '@mui/material'
 import createSafeTheme from './safeTheme'
 
@@ -12,8 +12,8 @@ type SafeThemeProviderProps = {
   mode: PaletteMode
 }
 
-const SafeThemeProvider: React.FC<SafeThemeProviderProps> = ({ children, mode }) => {
-  const theme = React.useMemo(() => createSafeTheme(mode), [mode])
+const SafeThemeProvider: FC<SafeThemeProviderProps> = ({ children, mode }) => {
+  const theme = useMemo(() => createSafeTheme(mode), [mode])
 
   return <ThemeProvider theme={theme}>{children(theme)}</ThemeProvider>
 }
