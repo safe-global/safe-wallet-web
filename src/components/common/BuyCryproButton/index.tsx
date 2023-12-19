@@ -1,4 +1,4 @@
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import Link, { type LinkProps } from 'next/link'
 import { Button } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
@@ -30,11 +30,11 @@ const buttonStyles = {
   minHeight: '40px',
 }
 
-const _BuyCryptoButton = ({ href }: { href?: LinkProps['href'] }) => {
+const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePath: string }) => {
   if (!href) return null
 
   return (
-    <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON}>
+    <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON} label={pagePath}>
       <Link href={href} passHref>
         <Button variant="contained" size="small" sx={buttonStyles} fullWidth startIcon={<AddIcon />}>
           Buy crypto
@@ -46,6 +46,7 @@ const _BuyCryptoButton = ({ href }: { href?: LinkProps['href'] }) => {
 
 const BuyCryproButton = madProps(_BuyCryptoButton, {
   href: useBuyCryptoHref,
+  pagePath: usePathname,
 })
 
 export default BuyCryproButton
