@@ -37,7 +37,7 @@ const SafeAppActionButtons = ({
   }
 
   return (
-    <Box display="flex" gap={1}>
+    <Box display="flex" gap={1.5} alignItems="center">
       {/* Open the preview drawer */}
       {openPreviewDrawer && (
         <IconButton
@@ -93,7 +93,7 @@ const SafeAppActionButtons = ({
               removeCustomApp(safeApp)
             }}
           >
-            <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
+            <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" color="border" />
           </IconButton>
         </Tooltip>
       )}
