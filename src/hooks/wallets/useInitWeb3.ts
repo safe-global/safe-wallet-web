@@ -6,7 +6,7 @@ import { createWeb3, createWeb3ReadOnly, setWeb3, setWeb3ReadOnly } from '@/hook
 import { useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
 
-const READONLY_WAIT = 1000
+const READONLY_WAIT = 3000
 
 export const useInitWeb3 = () => {
   const chain = useCurrentChain()
