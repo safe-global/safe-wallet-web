@@ -10,6 +10,7 @@ import WalletInfo from '@/components/common/WalletInfo'
 
 export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const { balance } = wallet
 
   const openWalletInfo = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -32,7 +33,7 @@ export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         data-testid="open-account-center"
       >
         <Box className={css.buttonContainer}>
-          <WalletOverview wallet={wallet} />
+          <WalletOverview wallet={wallet} balance={balance} showBalance />
 
           <Box display="flex" alignItems="center" justifyContent="flex-end" marginLeft="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
@@ -61,7 +62,7 @@ export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         transitionDuration={0}
       >
         <Paper className={css.popoverContainer}>
-          <WalletInfo wallet={wallet} handleClose={closeWalletInfo} />
+          <WalletInfo wallet={wallet} handleClose={closeWalletInfo} balance={balance} />
         </Paper>
       </Popover>
     </>
