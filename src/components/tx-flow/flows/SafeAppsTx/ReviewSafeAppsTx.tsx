@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo } from 'react'
 import type { ReactElement } from 'react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
+import SendToBlock from '@/components/tx/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { useCurrentChain } from '@/hooks/useChains'
 import type { SafeAppsTxParams } from '.'

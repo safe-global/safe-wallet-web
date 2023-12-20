@@ -24,7 +24,7 @@ import TxCard from '../../common/TxCard'
 import CheckWallet from '@/components/common/CheckWallet'
 import type { ExecuteBatchFlowProps } from '.'
 import { asError } from '@/services/exceptions/utils'
-import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
+import SendToBlock from '@/components/tx/SendToBlock'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxModalContext } from '@/components/tx-flow'
@@ -135,7 +135,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           over the execute button.
         </Typography>
 
-        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with:" />}
+        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with" />}
 
         {multiSendTxData && (
           <div>

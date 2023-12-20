@@ -11,7 +11,7 @@ import { Box, Button, CardActions, Divider, FormControl, Grid, SvgIcon, Typograp
 import TokenIcon from '@/components/common/TokenIcon'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import SpendingLimitRow from '@/components/tx/SpendingLimitRow'
+import SpendingLimitRow from '@/components/tx-flow/flows/TokenTransfer/SpendingLimitRow'
 import { TokenTransferFields, type TokenTransferParams, TokenTransferType } from '.'
 import TxCard from '../../common/TxCard'
 import { formatVisualAmount } from '@/utils/formatters'
