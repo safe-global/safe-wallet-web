@@ -135,7 +135,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           over the execute button.
         </Typography>
 
-        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with:" />}
+        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with" />}
 
         {multiSendTxData && (
           <div>
