@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 import RecoveryLogo from '@/public/images/common/recovery.svg'
 import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Chip } from '@/components/common/Chip'
-import { useRecovery } from '@/components/recovery/RecoveryContext'
+import { useRecovery } from '@/features/recovery/components/RecoveryContext'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 

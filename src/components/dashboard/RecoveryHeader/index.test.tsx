@@ -3,11 +3,11 @@ import { BigNumber } from 'ethers'
 
 import { _RecoveryHeader, _useIsProposalInProgress } from '.'
 import { render, renderHook, waitFor } from '@/tests/test-utils'
-import { RecoveryContext } from '@/components/recovery/RecoveryContext'
-import { RecoveryEvent, recoveryDispatch, RecoveryTxType } from '@/services/recovery/recoveryEvents'
-import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
+import { RecoveryContext } from '@/features/recovery/components/RecoveryContext'
+import { RecoveryEvent, recoveryDispatch, RecoveryTxType } from '@/features/recovery/services/recoveryEvents'
+import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
 
-jest.mock('@/hooks/useRecoveryQueue')
+jest.mock('@/features/recovery/hooks/useRecoveryQueue')
 
 const mockUseRecoveryQueue = useRecoveryQueue as jest.MockedFunction<typeof useRecoveryQueue>
 

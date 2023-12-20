@@ -12,7 +12,7 @@ import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
 import { RecoveryHeader } from './RecoveryHeader'
-import { useRecovery } from '../recovery/RecoveryContext'
+import { useRecovery } from '@/features/recovery/components/RecoveryContext'
 
 function _useShouldShowRecovery(): boolean {
   const supportsRecovery = useHasFeature(FEATURES.RECOVERY)

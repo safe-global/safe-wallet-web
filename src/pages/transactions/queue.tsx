@@ -7,7 +7,7 @@ import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
 import { Box } from '@mui/material'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { usePendingTxsQueue, useShowUnsignedQueue } from '@/hooks/usePendingTxs'
-import { RecoveryList } from '@/components/recovery/RecoveryList'
+import { RecoveryList } from '@/features/recovery/components/RecoveryList'
 
 const Queue: NextPage = () => {
   const showPending = useShowUnsignedQueue()

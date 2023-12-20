@@ -41,9 +41,9 @@ import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
 import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
-import { RecoveryProvider } from '@/components/recovery/RecoveryContext'
-import { RecoveryModal } from '@/components/recovery/RecoveryModal'
-import { useRecoveryTxNotifications } from '@/hooks/useRecoveryTxNotification'
+import { RecoveryProvider } from '@/features/recovery/components/RecoveryContext'
+import { RecoveryModal } from '@/features/recovery/components/RecoveryModal'
+import { useRecoveryTxNotifications } from '@/features/recovery/hooks/useRecoveryTxNotification'
 import WalletProvider from '@/components/common/WalletProvider'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING

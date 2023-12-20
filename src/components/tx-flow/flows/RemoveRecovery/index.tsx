@@ -6,7 +6,7 @@ import RecoveryPlus from '@/public/images/common/recovery-plus.svg'
 import useTxStepper from '../../useTxStepper'
 import { RemoveRecoveryFlowOverview } from './RemoveRecoveryFlowOverview'
 import { RemoveRecoveryFlowReview } from './RemoveRecoveryFlowReview'
-import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
+import type { RecoveryStateItem } from '@/features/recovery/services/recovery-state'
 
 export type RecoveryFlowProps = {
   delayModifier: RecoveryStateItem

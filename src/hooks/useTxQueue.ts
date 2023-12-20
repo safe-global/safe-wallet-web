@@ -4,7 +4,7 @@ import useAsync from './useAsync'
 import { selectTxQueue, selectQueuedTransactionsByNonce } from '@/store/txQueueSlice'
 import useSafeInfo from './useSafeInfo'
 import { isTransactionListItem } from '@/utils/transaction-guards'
-import { useRecoveryQueue } from './useRecoveryQueue'
+import { useRecoveryQueue } from '../features/recovery/hooks/useRecoveryQueue'
 
 const useTxQueue = (
   pageUrl?: string,
