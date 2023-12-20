@@ -185,7 +185,7 @@ class WalletConnectWallet {
 
     await this.web3Wallet.rejectSession({
       id: proposal.id,
-      reason: getSdkError('UNSUPPORTED_CHAINS'),
+      reason: getSdkError('USER_REJECTED'),
     })
 
     // Workaround: WalletConnect doesn't have a session_reject event
