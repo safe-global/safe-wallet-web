@@ -14,9 +14,9 @@ import {
   useIsValidRecoverySkipExpired,
 } from '../useIsValidRecoveryExecution'
 import { useRecoveryTxState } from '../useRecoveryTxState'
-import useSafeInfo from '../../../../hooks/useSafeInfo'
-import useWallet from '../../../../hooks/wallets/useWallet'
-import { useWeb3ReadOnly } from '../../../../hooks/wallets/web3'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 jest.mock('@gnosis.pm/zodiac')
 
@@ -26,7 +26,7 @@ jest.mock('@/hooks/wallets/useWallet')
 jest.mock('@/hooks/useSafeInfo')
 jest.mock('@/hooks/wallets/web3')
 jest.mock('@/features/recovery/hooks/useIsRecoverer')
-jest.mock('@/hooks/useRecoveryTxState')
+jest.mock('@/features/recovery/hooks/useRecoveryTxState')
 jest.mock('@/hooks/useIsValidExecution')
 
 const mockUseWallet = useWallet as jest.MockedFunction<typeof useWallet>
