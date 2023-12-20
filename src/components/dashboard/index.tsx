@@ -9,11 +9,11 @@ import GovernanceSection from '@/components/dashboard/GovernanceSection/Governan
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
+
 import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
-
-const RecoveryHeader = dynamic(() => import('./RecoveryHeader'))
-const RecoveryWidget = dynamic(() => import('./RecoveryWidget'))
+const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
+const RecoveryWidget = dynamic(() => import('@/features/recovery/components/RecoveryWidget'))
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()

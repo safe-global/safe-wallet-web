@@ -7,7 +7,7 @@ import { useIsRecoverer } from '@/features/recovery/hooks/useIsRecoverer'
 import madProps from '@/utils/mad-props'
 import { RecoveryProposalCard } from '@/features/recovery/components/RecoveryCards/RecoveryProposalCard'
 import { RecoveryInProgressCard } from '@/features/recovery/components/RecoveryCards/RecoveryInProgressCard'
-import { WidgetContainer, WidgetBody } from '../styled'
+import { WidgetContainer, WidgetBody } from '@/components/dashboard/styled'
 import { RecoveryEvent, RecoveryTxType, recoverySubscribe } from '@/features/recovery/services/recoveryEvents'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
