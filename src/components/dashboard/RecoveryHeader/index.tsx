@@ -2,16 +2,16 @@ import { Grid } from '@mui/material'
 import { useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 
-import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
-import { useIsRecoverer } from '@/hooks/useIsRecoverer'
+import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
+import { useIsRecoverer } from '@/features/recovery/hooks/useIsRecoverer'
 import madProps from '@/utils/mad-props'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
-import { RecoveryProposalCard } from '@/components/recovery/RecoveryCards/RecoveryProposalCard'
-import { RecoveryInProgressCard } from '@/components/recovery/RecoveryCards/RecoveryInProgressCard'
+import { RecoveryProposalCard } from '@/features/recovery/components/RecoveryCards/RecoveryProposalCard'
+import { RecoveryInProgressCard } from '@/features/recovery/components/RecoveryCards/RecoveryInProgressCard'
 import { WidgetContainer, WidgetBody } from '../styled'
-import { RecoveryEvent, RecoveryTxType, recoverySubscribe } from '@/services/recovery/recoveryEvents'
-import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
+import { RecoveryEvent, RecoveryTxType, recoverySubscribe } from '@/features/recovery/services/recoveryEvents'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 export function _RecoveryHeader({
   isProposalInProgress,

@@ -13,7 +13,7 @@ import { isTransactionListItem } from '@/utils/transaction-guards'
 import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { useRecoveryQueue } from '@/hooks/useRecoveryQueue'
+import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
 
 const NoQueuedTxns = () => {
   return <PagePlaceholder img={<NoTransactionsIcon />} text="Queued transactions will appear here" />
