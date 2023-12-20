@@ -1,11 +1,10 @@
 import { renderHook } from '@/tests/test-utils'
 import { hexZeroPad, Interface } from 'ethers/lib/utils'
-import { useApprovalInfos } from '@/components/tx/ApprovalEditor/hooks/useApprovalInfos'
+import { type ApprovalInfo, useApprovalInfos } from '@/components/tx/ApprovalEditor/hooks/useApprovalInfos'
 import { waitFor } from '@testing-library/react'
 import { createMockSafeTransaction } from '@/tests/transactions'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { ERC20__factory } from '@/types/contracts'
-import { type ApprovalInfo } from '@/components/tx/ApprovalEditor/utils/approvals'
 import * as balances from '@/hooks/useBalances'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -52,7 +51,7 @@ describe('useApprovalInfos', () => {
     const mockSafeTx = createMockSafeTransaction({
       to: hexZeroPad('0x123', 20),
       data: testInterface.encodeFunctionData('approve', [hexZeroPad('0x2', 20), '123']),
-      operation: OperationType.DelegateCall,
+      operation: OperationType.Call,
     })
 
     const { result } = renderHook(() => useApprovalInfos(mockSafeTx))
@@ -63,6 +62,32 @@ describe('useApprovalInfos', () => {
       spender: '0x0000000000000000000000000000000000000002',
       tokenAddress: '0x0000000000000000000000000000000000000123',
       tokenInfo: undefined,
+      method: 'approve',
+    }
+
+    await waitFor(() => {
+      expect(result.current).toEqual([[mockApproval], undefined, false])
+    })
+  })
+
+  it('returns an ApprovalInfo if the transaction contains an increaseAllowance call', async () => {
+    const testInterface = new Interface(['function increaseAllowance(address, uint256)'])
+
+    const mockSafeTx = createMockSafeTransaction({
+      to: hexZeroPad('0x123', 20),
+      data: testInterface.encodeFunctionData('increaseAllowance', [hexZeroPad('0x2', 20), '123']),
+      operation: OperationType.Call,
+    })
+
+    const { result } = renderHook(() => useApprovalInfos(mockSafeTx))
+
+    const mockApproval: ApprovalInfo = {
+      amount: BigNumber.from('123'),
+      amountFormatted: '0.000000000000000123',
+      spender: '0x0000000000000000000000000000000000000002',
+      tokenAddress: '0x0000000000000000000000000000000000000123',
+      tokenInfo: undefined,
+      method: 'increaseAllowance',
     }
 
     await waitFor(() => {
@@ -104,6 +129,7 @@ describe('useApprovalInfos', () => {
       spender: '0x0000000000000000000000000000000000000002',
       tokenAddress: '0x0000000000000000000000000000000000000123',
       tokenInfo: mockBalanceItem.tokenInfo,
+      method: 'approve',
     }
 
     await waitFor(() => {
@@ -137,6 +163,7 @@ describe('useApprovalInfos', () => {
       spender: '0x0000000000000000000000000000000000000002',
       tokenAddress: '0x0000000000000000000000000000000000000123',
       tokenInfo: mockTokenInfo,
+      method: 'approve',
     }
 
     await waitFor(() => {

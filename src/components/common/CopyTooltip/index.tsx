@@ -3,7 +3,7 @@ import React, { type ReactElement, type SyntheticEvent, useCallback, useState } 
 import { Tooltip } from '@mui/material'
 import ConfirmCopyModal from './ConfirmCopyModal'
 
-const spanStyle = { cursor: 'pointer', display: 'inline-block', lineHeight: 0 }
+const spanStyle = { cursor: 'pointer' }
 
 const CopyTooltip = ({
   text,
