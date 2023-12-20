@@ -8,6 +8,7 @@ import { MODALS_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 import { useMemo } from 'react'
 import ApprovalItem from '@/components/tx/ApprovalEditor/ApprovalItem'
+import { BigNumber } from 'ethers'
 
 export type ApprovalEditorFormData = {
   approvals: string[]
@@ -45,8 +46,13 @@ export const ApprovalEditorForm = ({
     <FormProvider {...formMethods}>
       <List className={css.approvalsList}>
         {approvalInfos.map((tx, idx) => (
-          <ListItem key={tx.tokenAddress + tx.spender} disablePadding data-testid="approval-item">
-            <ApprovalItem spender={tx.spender}>
+          <ListItem
+            key={tx.tokenAddress + tx.spender}
+            className={BigNumber.from(0).eq(tx.amount) ? css.zeroValueApproval : undefined}
+            disablePadding
+            data-testid="approval-item"
+          >
+            <ApprovalItem spender={tx.spender} method={tx.method}>
               <>
                 <ApprovalValueField name={`approvals.${idx}`} tx={tx} />
                 <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
