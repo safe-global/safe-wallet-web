@@ -1,4 +1,4 @@
-import { SetupRecoveryButton } from '@/components/settings/Recovery'
+import { SetupRecoveryButton } from '@/features/recovery/components/RecoverySettings'
 import { Box, Card, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
