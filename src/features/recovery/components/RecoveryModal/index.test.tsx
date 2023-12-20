@@ -8,10 +8,16 @@ import { safeInfoBuilder } from '@/tests/builders/safe'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import * as safeInfo from '@/hooks/useSafeInfo'
 import { _useDidDismissProposal } from './index'
-import { RecoveryContext } from '@/features/recovery/components/RecoveryContext'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import store from '@/features/recovery/components/RecoveryContext'
 
 describe('RecoveryModal', () => {
+  beforeEach(() => {
+    store.setStore({
+      state: [],
+    } as any)
+  })
+
   describe('component', () => {
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     let _RecoveryModal: typeof import('./index')._RecoveryModal
@@ -27,10 +33,12 @@ describe('RecoveryModal', () => {
       const wallet = connectedWalletBuilder().build()
       const queue = [] as Array<RecoveryQueueItem>
 
+      store.setStore({
+        state: [[{ queue }]],
+      } as any)
+
       const { container, queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />
-        </RecoveryContext.Provider>,
+        <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />,
       )
 
       expect(container.innerHTML).toBe(
@@ -54,10 +62,12 @@ describe('RecoveryModal', () => {
       const wallet = connectedWalletBuilder().build()
       const queue = [{ validFrom: BigNumber.from(0), transactionHash: faker.string.hexadecimal() } as RecoveryQueueItem]
 
+      store.setStore({
+        state: [[{ queue }]],
+      } as any)
+
       const { container, queryByText } = render(
-        <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-          <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />
-        </RecoveryContext.Provider>,
+        <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />,
       )
 
       expect(container).not.toBeEmptyDOMElement()
@@ -76,10 +86,12 @@ describe('RecoveryModal', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
+        store.setStore({
+          state: [[{ queue }]],
+        } as any)
+
         const { container, queryByText } = render(
-          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} />
-          </RecoveryContext.Provider>,
+          <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} />,
         )
 
         expect(container).not.toBeEmptyDOMElement()
@@ -90,10 +102,12 @@ describe('RecoveryModal', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
+        store.setStore({
+          state: [[{ queue }]],
+        } as any)
+
         const { container, queryByText } = render(
-          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />
-          </RecoveryContext.Provider>,
+          <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />,
         )
 
         expect(container).not.toBeEmptyDOMElement()
@@ -104,10 +118,12 @@ describe('RecoveryModal', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
+        store.setStore({
+          state: [[{ queue }]],
+        } as any)
+
         const { container, queryByText } = render(
-          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer={false} queue={queue} />
-          </RecoveryContext.Provider>,
+          <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer={false} queue={queue} />,
         )
 
         expect(container).not.toBeEmptyDOMElement()
@@ -118,10 +134,12 @@ describe('RecoveryModal', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
 
+        store.setStore({
+          state: [[{ queue }]],
+        } as any)
+
         const { container, queryByText } = render(
-          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} isSidebarRoute={false} />
-          </RecoveryContext.Provider>,
+          <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} isSidebarRoute={false} />,
         )
 
         expect(container).not.toBeEmptyDOMElement()
@@ -134,10 +152,12 @@ describe('RecoveryModal', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [] as Array<RecoveryQueueItem>
 
+        store.setStore({
+          state: [[{ queue }]],
+        } as any)
+
         const { container, queryByText } = render(
-          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} />
-          </RecoveryContext.Provider>,
+          <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} />,
         )
 
         expect(container).not.toBeEmptyDOMElement()
@@ -148,10 +168,12 @@ describe('RecoveryModal', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [] as Array<RecoveryQueueItem>
 
+        store.setStore({
+          state: [[{ queue }]],
+        } as any)
+
         const { container, queryByText } = render(
-          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />
-          </RecoveryContext.Provider>,
+          <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />,
         )
 
         expect(container.innerHTML).toBe(
@@ -164,10 +186,12 @@ describe('RecoveryModal', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [] as Array<RecoveryQueueItem>
 
+        store.setStore({
+          state: [[{ queue }]],
+        } as any)
+
         const { container, queryByText } = render(
-          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} isSidebarRoute={false} />
-          </RecoveryContext.Provider>,
+          <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} isSidebarRoute={false} />,
         )
 
         expect(container.innerHTML).toBe(
@@ -180,10 +204,12 @@ describe('RecoveryModal', () => {
         const wallet = connectedWalletBuilder().build()
         const queue = [] as Array<RecoveryQueueItem>
 
+        store.setStore({
+          state: [[{ queue }]],
+        } as any)
+
         const { container, queryByText } = render(
-          <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-            <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer={false} queue={queue} />
-          </RecoveryContext.Provider>,
+          <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer={false} queue={queue} />,
         )
 
         expect(container.innerHTML).toBe(
