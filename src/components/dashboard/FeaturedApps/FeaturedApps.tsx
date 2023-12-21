@@ -1,5 +1,4 @@
-import type { ReactElement } from 'react'
-import { useContext } from 'react'
+import type { ReactElement, SyntheticEvent } from 'react'
 import { Box, Grid, Typography, Link } from '@mui/material'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
@@ -9,8 +8,10 @@ import { AppRoutes } from '@/config/routes'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
-import { isWalletConnectSafeApp } from '@/services/walletconnect/utils'
+import { isWalletConnectSafeApp } from '@/utils/gateway'
+import { openWalletConnect } from '@/components/walletconnect'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const FeaturedAppCard = ({ app }: { app: SafeAppData }) => (
   <Card>
@@ -32,16 +33,17 @@ const FeaturedAppCard = ({ app }: { app: SafeAppData }) => (
   </Card>
 )
 
+const onWcWidgetClick = (e: SyntheticEvent) => {
+  e.preventDefault()
+  openWalletConnect()
+}
+
 export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): ReactElement | null => {
   const router = useRouter()
   const [featuredApps, _, remoteSafeAppsLoading] = useRemoteSafeApps(SafeAppsTag.DASHBOARD_FEATURED)
-  const { setOpen } = useContext(WalletConnectContext)
+  const enableWc = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
 
   if (!featuredApps?.length && !remoteSafeAppsLoading) return null
-
-  const onWcWidgetClick = () => {
-    setOpen(true)
-  }
 
   return (
     <Grid item xs={12} md style={{ height: '100%' }}>
@@ -58,18 +60,13 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
           >
             {featuredApps?.map((app) => (
               <Grid item xs md key={app.id}>
-                {isWalletConnectSafeApp(app.url) ? (
-                  <a onClick={onWcWidgetClick} style={{ cursor: 'pointer' }}>
-                    <FeaturedAppCard app={app} />
-                  </a>
-                ) : (
-                  <NextLink
-                    passHref
-                    href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}
-                  >
-                    <FeaturedAppCard app={app} />
-                  </NextLink>
-                )}
+                <NextLink
+                  passHref
+                  href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}
+                  onClick={enableWc && isWalletConnectSafeApp(app.url) ? onWcWidgetClick : undefined}
+                >
+                  <FeaturedAppCard app={app} />
+                </NextLink>
               </Grid>
             ))}
           </Grid>

@@ -11,6 +11,7 @@ import { IS_PRODUCTION } from '@/config/constants'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { trackRequest } from './tracking'
+import { wcPopupStore } from '@/components/walletconnect'
 
 enum Errors {
   WRONG_CHAIN = '%%dappName%% made a request on a different chain than the one you are connected to',
@@ -48,7 +49,8 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     safeAddress,
   } = useSafeInfo()
   const [walletConnect, setWalletConnect] = useState<WalletConnectWallet | null>(null)
-  const [open, setOpen] = useState(false)
+  const open = wcPopupStore.useStore() ?? false
+  const setOpen = wcPopupStore.setStore
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
   const wcApp = useWalletConnectApp()

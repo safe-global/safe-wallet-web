@@ -26,3 +26,8 @@ export const getExplorerLink = (
 
   return { href, title }
 }
+
+export const isWalletConnectSafeApp = (url: string): boolean => {
+  const WALLET_CONNECT = /wallet-connect/
+  return WALLET_CONNECT.test(url)
+}
