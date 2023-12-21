@@ -7,7 +7,6 @@ import type {
   ChainInfo as WebCoreChainInfo,
   TransactionDetails,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import type { Permission, PermissionRequest } from '@safe-global/safe-apps-sdk/dist/src/types/permissions'
 import type {
   AddressBookItem,
   BaseTransaction,
@@ -26,7 +25,8 @@ import type {
   SafeBalances,
 } from '@safe-global/safe-apps-sdk'
 import { Methods } from '@safe-global/safe-apps-sdk'
-import { RPC_CALLS } from '@safe-global/safe-apps-sdk/dist/src/eth/constants'
+import type { Permission, PermissionRequest } from '@safe-global/safe-apps-sdk/dist/types/types/permissions'
+import type { RPC_CALLS } from '@safe-global/safe-apps-sdk/dist/types/eth/constants'
 import type { SafeSettings } from '@safe-global/safe-apps-sdk'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'
@@ -35,6 +35,22 @@ import type { SafePermissionsRequest } from '@/hooks/safe-apps/permissions'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
+
+const SDK_RPC_CALLS: typeof RPC_CALLS = {
+  eth_call: 'eth_call',
+  eth_gasPrice: 'eth_gasPrice',
+  eth_getLogs: 'eth_getLogs',
+  eth_getBalance: 'eth_getBalance',
+  eth_getCode: 'eth_getCode',
+  eth_getBlockByHash: 'eth_getBlockByHash',
+  eth_getBlockByNumber: 'eth_getBlockByNumber',
+  eth_getStorageAt: 'eth_getStorageAt',
+  eth_getTransactionByHash: 'eth_getTransactionByHash',
+  eth_getTransactionReceipt: 'eth_getTransactionReceipt',
+  eth_getTransactionCount: 'eth_getTransactionCount',
+  eth_estimateGas: 'eth_estimateGas',
+  safe_setSettings: 'safe_setSettings',
+}
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -149,7 +165,7 @@ const useAppCommunicator = (
     communicator?.on(Methods.rpcCall, async (msg) => {
       const params = msg.data.params as RPCPayload
 
-      if (params.call === RPC_CALLS.safe_setSettings) {
+      if (params.call === SDK_RPC_CALLS.safe_setSettings) {
         const settings = params.params[0] as SafeSettings
         return handlers.onSetSafeSettings(settings)
       }
