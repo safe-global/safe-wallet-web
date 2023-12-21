@@ -39,7 +39,6 @@ import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifica
 import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
-import { WalletConnectProvider } from '@/services/walletconnect/WalletConnectContext'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import { RecoveryProvider } from '@/features/recovery/components/RecoveryContext'
 import { RecoveryModal } from '@/features/recovery/components/RecoveryModal'
@@ -86,9 +85,7 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
             <WalletProvider>
               <RecoveryProvider>
-                <TxModalProvider>
-                  <WalletConnectProvider>{children}</WalletConnectProvider>
-                </TxModalProvider>
+                <TxModalProvider>{children}</TxModalProvider>
               </RecoveryProvider>
             </WalletProvider>
           </Sentry.ErrorBoundary>
