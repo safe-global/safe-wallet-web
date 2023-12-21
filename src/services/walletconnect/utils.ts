@@ -1,4 +1,4 @@
-import type { ChainInfo } from '@safe-global/safe-apps-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ProposalTypes, SessionTypes } from '@walletconnect/types'
 import { EIP155, BlockedBridges, WarnedBridges, WarnedBridgeNames } from '@/services/walletconnect/constants'
 
