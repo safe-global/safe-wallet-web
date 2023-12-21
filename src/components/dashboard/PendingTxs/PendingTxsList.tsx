@@ -9,13 +9,14 @@ import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
 import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 import css from './styles.module.css'
-import { isSignableBy, isExecutable, isRecoveryQueueItem } from '@/utils/transaction-guards'
+import { isSignableBy, isExecutable } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
-import { PendingRecoveryListItem } from './PendingRecoveryListItem'
 import type { SafeInfo, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
-import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import dynamic from 'next/dynamic'
+
+const PendingRecoveryListItem = dynamic(() => import('./PendingRecoveryListItem'))
 
 const MAX_TXS = 4
 
@@ -51,26 +52,14 @@ function getActionableTransactions(txs: Transaction[], safe: SafeInfo, walletAdd
   })
 }
 
-export function _getTransactionsToDisplay({
-  recoveryQueue,
-  queue,
-  walletAddress,
-  safe,
-}: {
-  recoveryQueue: RecoveryQueueItem[]
-  queue: Transaction[]
-  walletAddress?: string
-  safe: SafeInfo
-}): (Transaction | RecoveryQueueItem)[] {
-  if (recoveryQueue.length >= MAX_TXS) {
-    return recoveryQueue.slice(0, MAX_TXS)
-  }
-
+export function _getTransactionsToDisplay(
+  queue: Transaction[],
+  walletAddress: string | undefined,
+  safe: SafeInfo,
+  maxTxs: number,
+): Transaction[] {
   const actionableQueue = getActionableTransactions(queue, safe, walletAddress)
-  const _queue = actionableQueue.length > 0 ? actionableQueue : queue
-  const queueToDisplay = _queue.slice(0, MAX_TXS - recoveryQueue.length)
-
-  return [...recoveryQueue, ...queueToDisplay]
+  return (actionableQueue.length > 0 ? actionableQueue : queue).slice(0, maxTxs)
 }
 
 const PendingTxsList = (): ReactElement | null => {
@@ -80,15 +69,12 @@ const PendingTxsList = (): ReactElement | null => {
   const wallet = useWallet()
   const queuedTxns = useMemo(() => getLatestTransactions(page?.results), [page?.results])
   const recoveryQueue = useRecoveryQueue()
+  const recoveryTxsToDisplay = useMemo(() => recoveryQueue.slice(0, MAX_TXS), [recoveryQueue])
+  const maxRest = MAX_TXS - recoveryTxsToDisplay.length
 
   const txsToDisplay = useMemo(() => {
-    return _getTransactionsToDisplay({
-      recoveryQueue,
-      queue: queuedTxns,
-      walletAddress: wallet?.address,
-      safe,
-    })
-  }, [recoveryQueue, queuedTxns, wallet?.address, safe])
+    return _getTransactionsToDisplay(queuedTxns, wallet?.address, safe, maxRest)
+  }, [queuedTxns, wallet?.address, safe, maxRest])
 
   const queueUrl = useMemo(
     () => ({
@@ -98,6 +84,8 @@ const PendingTxsList = (): ReactElement | null => {
     [router.query.safe],
   )
 
+  const totalItems = recoveryTxsToDisplay.length + txsToDisplay.length
+
   return (
     <WidgetContainer>
       <div className={css.title}>
@@ -105,20 +93,21 @@ const PendingTxsList = (): ReactElement | null => {
           Pending transactions
         </Typography>
 
-        {queuedTxns.length > 0 && <ViewAllLink url={queueUrl} />}
+        {totalItems > 0 && <ViewAllLink url={queueUrl} />}
       </div>
 
       <WidgetBody>
         {loading ? (
           <LoadingState />
-        ) : txsToDisplay.length > 0 ? (
+        ) : totalItems > 0 ? (
           <div className={css.list}>
-            {txsToDisplay.map((tx) => {
-              if (isRecoveryQueueItem(tx)) {
-                return <PendingRecoveryListItem transaction={tx} key={tx.transactionHash} />
-              }
-              return <PendingTxListItem transaction={tx.transaction} key={tx.transaction.id} />
-            })}
+            {recoveryTxsToDisplay.map((tx) => (
+              <PendingRecoveryListItem transaction={tx} key={tx.transactionHash} />
+            ))}
+
+            {txsToDisplay.map((tx) => (
+              <PendingTxListItem transaction={tx.transaction} key={tx.transaction.id} />
+            ))}
           </div>
         ) : (
           <EmptyState />

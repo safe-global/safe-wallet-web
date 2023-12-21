@@ -5,6 +5,5 @@ import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-st
 export function useRecoveryQueue(): Array<RecoveryQueueItem> {
   const [recovery] = useRecovery()
   const queue = recovery && selectRecoveryQueues(recovery)
-
   return queue ?? []
 }
