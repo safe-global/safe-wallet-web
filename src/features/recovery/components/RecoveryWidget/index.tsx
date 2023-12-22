@@ -1,19 +1,16 @@
-import { SetupRecoveryButton } from '@/components/settings/Recovery'
+import { SetupRecoveryButton } from '@/features/recovery/components/RecoverySettings'
 import { Box, Card, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import RecoveryLogo from '@/public/images/common/recovery.svg'
 import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Chip } from '@/components/common/Chip'
-import { useRecovery } from '@/features/recovery/components/RecoveryContext'
-import { useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
 
 import css from './styles.module.css'
 
-export function Recovery(): ReactElement {
+function RecoveryWidget(): ReactElement {
   const [recovery] = useRecovery()
-  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
 
   return (
     <WidgetContainer>
@@ -27,6 +24,7 @@ export function Recovery(): ReactElement {
             <Grid item>
               <RecoveryLogo alt="A circular arrow above a lifebuoy" />
             </Grid>
+
             <Grid item xs>
               <Box className={css.wrapper}>
                 <Typography variant="h4" className={css.title}>
@@ -34,12 +32,12 @@ export function Recovery(): ReactElement {
                 </Typography>
                 <Chip label="New" />
               </Box>
+
               <Typography mt={1} mb={3}>
                 Ensure you never lose access to your funds by choosing a recovery option to recover your Safe Account.
               </Typography>
-              {supportsRecovery && (!recovery || recovery.length === 0) && (
-                <SetupRecoveryButton eventLabel="dashboard" />
-              )}
+
+              {(!recovery || recovery.length === 0) && <SetupRecoveryButton eventLabel="dashboard" />}
             </Grid>
           </Grid>
         </Card>
@@ -47,3 +45,5 @@ export function Recovery(): ReactElement {
     </WidgetContainer>
   )
 }
+
+export default RecoveryWidget

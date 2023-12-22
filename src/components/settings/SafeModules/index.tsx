@@ -10,7 +10,7 @@ import { useContext } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
 import { selectDelayModifierByAddress } from '@/features/recovery/services/selectors'
 import { RemoveRecoveryFlow } from '@/components/tx-flow/flows/RemoveRecovery'
-import { useRecovery } from '@/features/recovery/components/RecoveryContext'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
 
 import css from '../TransactionGuards/styles.module.css'
 

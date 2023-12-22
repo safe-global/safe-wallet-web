@@ -12,8 +12,8 @@ import useTxHistory from '@/hooks/useTxHistory'
 import { getRecoveryDelayModifiers } from '@/features/recovery/services/delay-modifier'
 import { useAppDispatch } from '@/store'
 import { txHistorySlice } from '@/store/txHistorySlice'
-import { RecoveryProvider } from '..'
 import { recoveryDispatch, RecoveryEvent, RecoveryTxType } from '@/features/recovery/services/recoveryEvents'
+import RecoveryContextHooks from '../RecoveryContextHooks'
 
 jest.mock('@/features/recovery/services/delay-modifier')
 jest.mock('@/features/recovery/services/recovery-state')
@@ -208,9 +208,10 @@ describe('useRecoveryState', () => {
     }
 
     const { queryByText } = render(
-      <RecoveryProvider>
+      <>
         <Test />
-      </RecoveryProvider>,
+        <RecoveryContextHooks />
+      </>,
     )
 
     await waitFor(() => {
@@ -242,11 +243,7 @@ describe('useRecoveryState', () => {
     const delayModifierAddress = faker.finance.ethereumAddress()
     mockGetRecoveryDelayModifiers.mockResolvedValue([{ address: delayModifierAddress } as any])
 
-    render(
-      <RecoveryProvider>
-        <></>
-      </RecoveryProvider>,
-    )
+    render(<RecoveryContextHooks />)
 
     await waitFor(() => {
       expect(mockGetRecoveryDelayModifiers).toHaveBeenCalledTimes(1)

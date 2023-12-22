@@ -3,11 +3,16 @@ import { faker } from '@faker-js/faker'
 
 import { useRecoveryTxState } from '../useRecoveryTxState'
 import { renderHook } from '@/tests/test-utils'
-import { RecoveryContext } from '@/features/recovery/components/RecoveryContext'
+import store from '@/features/recovery/components/RecoveryContext'
 
 describe('useRecoveryTxState', () => {
   beforeEach(() => {
     jest.useFakeTimers()
+
+    store.setStore({
+      state: [undefined, undefined, false],
+      pending: {},
+    })
   })
 
   describe('Next', () => {
@@ -44,11 +49,11 @@ describe('useRecoveryTxState', () => {
         },
       ]
 
-      const { result } = renderHook(() => useRecoveryTxState(data[1].queue[0] as any), {
-        wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
-        ),
-      })
+      store.setStore({
+        state: [data],
+      } as any)
+
+      const { result } = renderHook(() => useRecoveryTxState(data[1].queue[0] as any))
 
       expect(result.current).toStrictEqual({
         isExecutable: false,
@@ -84,11 +89,11 @@ describe('useRecoveryTxState', () => {
         },
       ]
 
-      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any), {
-        wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
-        ),
-      })
+      store.setStore({
+        state: [data],
+      } as any)
+
+      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any))
 
       expect(result.current).toStrictEqual({
         isExecutable: false,
@@ -124,11 +129,11 @@ describe('useRecoveryTxState', () => {
         },
       ]
 
-      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any), {
-        wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
-        ),
-      })
+      store.setStore({
+        state: [data],
+      } as any)
+
+      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any))
 
       expect(result.current).toStrictEqual({
         isExecutable: true,
@@ -164,11 +169,11 @@ describe('useRecoveryTxState', () => {
         },
       ]
 
-      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any), {
-        wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
-        ),
-      })
+      store.setStore({
+        state: [data],
+      } as any)
+
+      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any))
 
       expect(result.current).toStrictEqual({
         isExecutable: false,
@@ -206,13 +211,9 @@ describe('useRecoveryTxState', () => {
         },
       ]
 
-      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any), {
-        wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data], pending: { [nextRecoveryTxHash]: true } } as any}>
-            {children}
-          </RecoveryContext.Provider>
-        ),
-      })
+      store.setStore({ state: [data], pending: { [nextRecoveryTxHash]: true } } as any)
+
+      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[0] as any))
 
       expect(result.current).toStrictEqual({
         isExecutable: true,
@@ -275,11 +276,11 @@ describe('useRecoveryTxState', () => {
         },
       ]
 
-      const { result } = renderHook(() => useRecoveryTxState(data[1].queue[1] as any), {
-        wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
-        ),
-      })
+      store.setStore({
+        state: [data],
+      } as any)
+
+      const { result } = renderHook(() => useRecoveryTxState(data[1].queue[1] as any))
 
       expect(result.current).toStrictEqual({
         isExecutable: false,
@@ -321,11 +322,11 @@ describe('useRecoveryTxState', () => {
         },
       ]
 
-      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[1] as any), {
-        wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
-        ),
-      })
+      store.setStore({
+        state: [data],
+      } as any)
+
+      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[1] as any))
 
       expect(result.current).toStrictEqual({
         isExecutable: false,
@@ -367,11 +368,11 @@ describe('useRecoveryTxState', () => {
         },
       ]
 
-      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[1] as any), {
-        wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
-        ),
-      })
+      store.setStore({
+        state: [data],
+      } as any)
+
+      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[1] as any))
 
       expect(result.current).toStrictEqual({
         isExecutable: false,
@@ -413,11 +414,11 @@ describe('useRecoveryTxState', () => {
         },
       ] as const
 
-      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[1] as any), {
-        wrapper: ({ children }) => (
-          <RecoveryContext.Provider value={{ state: [data] } as any}> {children}</RecoveryContext.Provider>
-        ),
-      })
+      store.setStore({
+        state: [data],
+      } as any)
+
+      const { result } = renderHook(() => useRecoveryTxState(data[0].queue[1] as any))
 
       expect(result.current).toStrictEqual({
         isExecutable: false,

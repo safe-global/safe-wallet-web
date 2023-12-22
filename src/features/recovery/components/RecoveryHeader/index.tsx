@@ -5,30 +5,22 @@ import type { ReactElement } from 'react'
 import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
 import { useIsRecoverer } from '@/features/recovery/hooks/useIsRecoverer'
 import madProps from '@/utils/mad-props'
-import { FEATURES } from '@/utils/chains'
-import { useHasFeature } from '@/hooks/useChains'
 import { RecoveryProposalCard } from '@/features/recovery/components/RecoveryCards/RecoveryProposalCard'
 import { RecoveryInProgressCard } from '@/features/recovery/components/RecoveryCards/RecoveryInProgressCard'
-import { WidgetContainer, WidgetBody } from '../styled'
+import { WidgetContainer, WidgetBody } from '@/components/dashboard/styled'
 import { RecoveryEvent, RecoveryTxType, recoverySubscribe } from '@/features/recovery/services/recoveryEvents'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 export function _RecoveryHeader({
   isProposalInProgress,
   isRecoverer,
-  supportsRecovery,
   queue,
 }: {
   isProposalInProgress: boolean
   isRecoverer: boolean
-  supportsRecovery: boolean
   queue: Array<RecoveryQueueItem>
 }): ReactElement | null {
   const next = queue[0]
-
-  if (!supportsRecovery) {
-    return null
-  }
 
   const modal = next ? (
     <RecoveryInProgressCard orientation="horizontal" recovery={next} />
@@ -71,12 +63,10 @@ export function _useIsProposalInProgress(): boolean {
   return isProposalSubmitting
 }
 
-// Appease TypeScript
-const _useSupportedRecovery = () => useHasFeature(FEATURES.RECOVERY)
-
-export const RecoveryHeader = madProps(_RecoveryHeader, {
+const RecoveryHeader = madProps(_RecoveryHeader, {
   isProposalInProgress: _useIsProposalInProgress,
   isRecoverer: useIsRecoverer,
-  supportsRecovery: _useSupportedRecovery,
   queue: useRecoveryQueue,
 })
+
+export default RecoveryHeader

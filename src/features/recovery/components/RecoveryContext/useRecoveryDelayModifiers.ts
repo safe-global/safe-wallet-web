@@ -2,20 +2,19 @@ import type { Delay } from '@gnosis.pm/zodiac'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { getRecoveryDelayModifiers } from '@/features/recovery/services/delay-modifier'
-import { FEATURES } from '@/utils/chains'
 import useAsync from '@/hooks/useAsync'
-import { useHasFeature } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import type { AsyncResult } from '@/hooks/useAsync'
+import { useIsRecoverySupported } from '../../hooks/useIsRecoverySupported'
 
 function isOnlySpendingLimitEnabled(chainId: string, modules: SafeInfo['modules']) {
   return modules?.length === 1 && modules[0].value === getSpendingLimitModuleAddress(chainId)
 }
 
 export function useRecoveryDelayModifiers(): AsyncResult<Delay[]> {
-  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
+  const supportsRecovery = useIsRecoverySupported()
   const web3ReadOnly = useWeb3ReadOnly()
   const { safe, safeAddress } = useSafeInfo()
 
