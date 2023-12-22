@@ -27,7 +27,7 @@ import { TxModalContext } from '../..'
 import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
 import { getPeriod } from '@/utils/date'
-import { useRecovery } from '@/features/recovery/components/RecoveryContext'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsValidRecoveryExecTransactionFromModule } from '@/features/recovery/hooks/useIsValidRecoveryExecution'
 import type { RecoverAccountFlowProps } from '.'
 

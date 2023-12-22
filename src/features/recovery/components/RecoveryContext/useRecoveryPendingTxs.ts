@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { RecoveryEvent, recoverySubscribe } from '@/features/recovery/services/recoveryEvents'
 import type { RecoveryTxType } from '@/features/recovery/services/recoveryEvents'
 
-type PendingRecoveryTransactions = {
+export type PendingRecoveryTransactions = {
   [recoveryTxHash: string]: {
     status: RecoveryEvent
     txType: RecoveryTxType

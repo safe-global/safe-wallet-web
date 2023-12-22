@@ -1,4 +1,4 @@
-import { useRecovery } from '@/features/recovery/components/RecoveryContext'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
 
 export function useIsRecoveryEnabled(): boolean {
   const [recovery] = useRecovery()

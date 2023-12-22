@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import dynamic from 'next/dynamic'
 import { Grid } from '@mui/material'
 import PendingTxsList from '@/components/dashboard/PendingTxs/PendingTxsList'
 import Overview from '@/components/dashboard/Overview/Overview'
@@ -7,28 +8,25 @@ import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSe
 import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
-import { Recovery } from './Recovery'
-import { FEATURES } from '@/utils/chains'
-import { useHasFeature } from '@/hooks/useChains'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
-import { RecoveryHeader } from './RecoveryHeader'
-import { useRecovery } from '@/features/recovery/components/RecoveryContext'
 
-function _useShouldShowRecovery(): boolean {
-  const supportsRecovery = useHasFeature(FEATURES.RECOVERY)
-  const [recovery] = useRecovery()
-  return supportsRecovery && !recovery
-}
+import useRecovery from '@/features/recovery/hooks/useRecovery'
+import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
+const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
+const RecoveryWidget = dynamic(() => import('@/features/recovery/components/RecoveryWidget'))
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
-  const showRecoveryWidget = _useShouldShowRecovery()
   const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
+
+  const supportsRecovery = useIsRecoverySupported()
+  const [recovery] = useRecovery()
+  const showRecoveryWidget = supportsRecovery && !recovery
 
   return (
     <>
       <Grid container spacing={3}>
-        <RecoveryHeader />
+        {supportsRecovery && <RecoveryHeader />}
 
         <Grid item xs={12} lg={6}>
           <Overview />
@@ -44,7 +42,7 @@ const Dashboard = (): ReactElement => {
 
         {showRecoveryWidget ? (
           <Grid item xs={12} lg={6}>
-            <Recovery />
+            <RecoveryWidget />
           </Grid>
         ) : null}
 

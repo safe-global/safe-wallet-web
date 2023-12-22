@@ -13,7 +13,7 @@ import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-st
 
 import css from './styles.module.css'
 
-export function PendingRecoveryListItem({ transaction }: { transaction: RecoveryQueueItem }): ReactElement {
+function PendingRecoveryListItem({ transaction }: { transaction: RecoveryQueueItem }): ReactElement {
   const router = useRouter()
   const { isMalicious } = transaction
 
@@ -41,3 +41,5 @@ export function PendingRecoveryListItem({ transaction }: { transaction: Recovery
     </Link>
   )
 }
+
+export default PendingRecoveryListItem

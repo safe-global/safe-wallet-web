@@ -1,5 +1,5 @@
 import Track from '@/components/common/Track'
-import { ChooseRecoveryMethodModal } from '@/components/settings/Recovery/ChooseRecoveryMethodModal'
+import { ChooseRecoveryMethodModal } from './ChooseRecoveryMethodModal'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { type ReactElement, useMemo, useState } from 'react'
@@ -7,7 +7,7 @@ import { type ReactElement, useMemo, useState } from 'react'
 import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
 import { DelayModifierRow } from './DelayModifierRow'
-import { useRecovery } from '@/features/recovery/components/RecoveryContext'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -68,7 +68,7 @@ const headCells = [
   { id: HeadCells.Actions, label: '', sticky: true },
 ]
 
-export function Recovery(): ReactElement {
+function RecoverySettings(): ReactElement {
   const [recovery] = useRecovery()
 
   const isRecoveryEnabled = recovery && recovery.length > 0
@@ -165,3 +165,5 @@ export const SetupRecoveryButton = ({ eventLabel }: { eventLabel: string }) => {
     </>
   )
 }
+
+export default RecoverySettings

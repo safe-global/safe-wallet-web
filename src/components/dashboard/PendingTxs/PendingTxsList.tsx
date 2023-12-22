@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
+import dynamic from 'next/dynamic'
 import { getLatestTransactions } from '@/utils/tx-list'
 import { Box, Skeleton, Typography } from '@mui/material'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer } from '../styled'
@@ -9,13 +10,14 @@ import useTxQueue from '@/hooks/useTxQueue'
 import { AppRoutes } from '@/config/routes'
 import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 import css from './styles.module.css'
-import { isSignableBy, isExecutable, isRecoveryQueueItem } from '@/utils/transaction-guards'
+import { isSignableBy, isExecutable } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
-import { PendingRecoveryListItem } from './PendingRecoveryListItem'
 import type { SafeInfo, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+
+const PendingRecoveryListItem = dynamic(() => import('./PendingRecoveryListItem'))
 
 const MAX_TXS = 4
 
@@ -61,16 +63,16 @@ export function _getTransactionsToDisplay({
   queue: Transaction[]
   walletAddress?: string
   safe: SafeInfo
-}): (Transaction | RecoveryQueueItem)[] {
+}): [RecoveryQueueItem[], Transaction[]] {
   if (recoveryQueue.length >= MAX_TXS) {
-    return recoveryQueue.slice(0, MAX_TXS)
+    return [recoveryQueue.slice(0, MAX_TXS), []]
   }
 
   const actionableQueue = getActionableTransactions(queue, safe, walletAddress)
   const _queue = actionableQueue.length > 0 ? actionableQueue : queue
   const queueToDisplay = _queue.slice(0, MAX_TXS - recoveryQueue.length)
 
-  return [...recoveryQueue, ...queueToDisplay]
+  return [recoveryQueue, queueToDisplay]
 }
 
 const PendingTxsList = (): ReactElement | null => {
@@ -81,7 +83,7 @@ const PendingTxsList = (): ReactElement | null => {
   const queuedTxns = useMemo(() => getLatestTransactions(page?.results), [page?.results])
   const recoveryQueue = useRecoveryQueue()
 
-  const txsToDisplay = useMemo(() => {
+  const [recoveryTxs, queuedTxs] = useMemo(() => {
     return _getTransactionsToDisplay({
       recoveryQueue,
       queue: queuedTxns,
@@ -89,6 +91,8 @@ const PendingTxsList = (): ReactElement | null => {
       safe,
     })
   }, [recoveryQueue, queuedTxns, wallet?.address, safe])
+
+  const totalTxs = recoveryTxs.length + queuedTxs.length
 
   const queueUrl = useMemo(
     () => ({
@@ -105,20 +109,21 @@ const PendingTxsList = (): ReactElement | null => {
           Pending transactions
         </Typography>
 
-        {queuedTxns.length > 0 && <ViewAllLink url={queueUrl} />}
+        {totalTxs > 0 && <ViewAllLink url={queueUrl} />}
       </div>
 
       <WidgetBody>
         {loading ? (
           <LoadingState />
-        ) : txsToDisplay.length > 0 ? (
+        ) : totalTxs > 0 ? (
           <div className={css.list}>
-            {txsToDisplay.map((tx) => {
-              if (isRecoveryQueueItem(tx)) {
-                return <PendingRecoveryListItem transaction={tx} key={tx.transactionHash} />
-              }
-              return <PendingTxListItem transaction={tx.transaction} key={tx.transaction.id} />
-            })}
+            {recoveryTxs.map((tx) => (
+              <PendingRecoveryListItem transaction={tx} key={tx.transactionHash} />
+            ))}
+
+            {queuedTxs.map((tx) => (
+              <PendingTxListItem transaction={tx.transaction} key={tx.transaction.id} />
+            ))}
           </div>
         ) : (
           <EmptyState />

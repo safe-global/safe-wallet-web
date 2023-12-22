@@ -40,9 +40,7 @@ import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendin
 import useChangedValue from '@/hooks/useChangedValue'
 import { TxModalProvider } from '@/components/tx-flow'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
-import { RecoveryProvider } from '@/features/recovery/components/RecoveryContext'
-import { RecoveryModal } from '@/features/recovery/components/RecoveryModal'
-import { useRecoveryTxNotifications } from '@/features/recovery/hooks/useRecoveryTxNotification'
+import Recovery from '@/features/recovery/components/Recovery'
 import WalletProvider from '@/components/common/WalletProvider'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
@@ -59,7 +57,6 @@ const InitApp = (): null => {
   useInitSafeCoreSDK()
   useTxNotifications()
   useSafeMessageNotifications()
-  useRecoveryTxNotifications()
   useSafeNotifications()
   useTxPendingStatuses()
   useSafeMessagePendingStatuses()
@@ -84,9 +81,7 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
         <ThemeProvider theme={safeTheme}>
           <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
             <WalletProvider>
-              <RecoveryProvider>
-                <TxModalProvider>{children}</TxModalProvider>
-              </RecoveryProvider>
+              <TxModalProvider>{children}</TxModalProvider>
             </WalletProvider>
           </Sentry.ErrorBoundary>
         </ThemeProvider>
@@ -130,7 +125,7 @@ const WebCoreApp = ({
 
           <PasswordRecoveryModal />
 
-          <RecoveryModal />
+          <Recovery />
         </AppProviders>
       </CacheProvider>
     </StoreHydrator>

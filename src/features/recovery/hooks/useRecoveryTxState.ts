@@ -1,8 +1,6 @@
-import { useContext } from 'react'
-
 import { useClock } from '../../../hooks/useClock'
 import { selectDelayModifierByTxHash } from '@/features/recovery/services/selectors'
-import { RecoveryContext } from '@/features/recovery/components/RecoveryContext'
+import recoveryStore from '@/features/recovery/components/RecoveryContext'
 import { sameAddress } from '@/utils/addresses'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
@@ -13,10 +11,8 @@ export function useRecoveryTxState({ validFrom, expiresAt, transactionHash, args
   isPending: boolean
   remainingSeconds: number
 } {
-  const {
-    state: [recovery],
-    pending,
-  } = useContext(RecoveryContext)
+  const { state, pending } = recoveryStore.useStore() || {}
+  const recovery = state?.[0]
   const delayModifier = recovery && selectDelayModifierByTxHash(recovery, transactionHash)
 
   // We don't display seconds in the interface, so we can use a 60s interval

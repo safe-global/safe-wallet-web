@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers'
 
 import { _RecoveryHeader, _useIsProposalInProgress } from '.'
 import { render, renderHook, waitFor } from '@/tests/test-utils'
-import { RecoveryContext } from '@/features/recovery/components/RecoveryContext'
+import store from '@/features/recovery/components/RecoveryContext'
 import { RecoveryEvent, recoveryDispatch, RecoveryTxType } from '@/features/recovery/services/recoveryEvents'
 import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
 
@@ -12,50 +12,33 @@ jest.mock('@/features/recovery/hooks/useRecoveryQueue')
 const mockUseRecoveryQueue = useRecoveryQueue as jest.MockedFunction<typeof useRecoveryQueue>
 
 describe('RecoveryHeader', () => {
-  it('should not render a widget if the chain does not support recovery', () => {
-    const queue = [{ validFrom: BigNumber.from(0) }] as any
-
-    const { container } = render(
-      <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-        <_RecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} supportsRecovery={false} />
-      </RecoveryContext.Provider>,
-    )
-
-    expect(container).toBeEmptyDOMElement()
+  beforeEach(() => {
+    store.setStore({ state: [] } as any)
   })
 
   it('should render the in-progress widget if there is a queue for recoverers', () => {
     const queue = [{ validFrom: BigNumber.from(0) }] as any
+    store.setStore({ state: [[{ queue }]] } as any)
 
-    const { queryByText } = render(
-      <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-        <_RecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} supportsRecovery />
-      </RecoveryContext.Provider>,
-    )
+    const { queryByText } = render(<_RecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} />)
 
     expect(queryByText('Account recovery in progress')).toBeTruthy()
   })
 
   it('should render the proposal widget when there is no queue for recoverers', () => {
     const queue = [] as any
+    store.setStore({ state: [[{ queue }]] } as any)
 
-    const { queryByText } = render(
-      <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-        <_RecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} supportsRecovery />
-      </RecoveryContext.Provider>,
-    )
+    const { queryByText } = render(<_RecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} />)
 
     expect(queryByText('Recover this Account')).toBeTruthy()
   })
 
   it('should not render the proposal widget when there is no queue for recoverers and proposal is in progress', () => {
     const queue = [] as any
+    store.setStore({ state: [[{ queue }]] } as any)
 
-    const { container } = render(
-      <RecoveryContext.Provider value={{ state: [[{ queue }]] } as any}>
-        <_RecoveryHeader isProposalInProgress isRecoverer queue={queue} supportsRecovery />
-      </RecoveryContext.Provider>,
-    )
+    const { container } = render(<_RecoveryHeader isProposalInProgress isRecoverer queue={queue} />)
 
     expect(container).toBeEmptyDOMElement()
   })

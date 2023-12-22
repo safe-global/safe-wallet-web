@@ -1,11 +1,10 @@
 import { CircularProgress, SvgIcon, Typography } from '@mui/material'
-import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
 import ClockIcon from '@/public/images/common/clock.svg'
 import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
 import { RecoveryEvent } from '@/features/recovery/services/recoveryEvents'
-import { RecoveryContext } from '../RecoveryContext'
+import store from '../RecoveryContext'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 const STATUS_LABELS: Partial<Record<RecoveryEvent, string>> = {
@@ -15,7 +14,7 @@ const STATUS_LABELS: Partial<Record<RecoveryEvent, string>> = {
 
 export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): ReactElement => {
   const { isExecutable, isExpired } = useRecoveryTxState(recovery)
-  const { pending } = useContext(RecoveryContext)
+  const pending = store.useStore()?.pending
 
   const pendingTxStatus = pending?.[recovery.args.txHash]?.status
 
