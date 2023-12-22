@@ -7,7 +7,7 @@ import type { ComponentType, ReactElement } from 'react'
 import CloseIcon from '@/public/images/common/close.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckIcon from '@/public/images/common/check.svg'
-import { getPeerName } from '@/services/walletconnect/utils'
+import { getPeerName } from '@/features/walletconnect/services/utils'
 import css from './styles.module.css'
 
 const Validation: {

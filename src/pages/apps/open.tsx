@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useCallback, useContext } from 'react'
+import { useCallback } from 'react'
 import { Box, CircularProgress } from '@mui/material'
 
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
@@ -15,9 +15,9 @@ import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import useChainId from '@/hooks/useChainId'
 import { AppRoutes } from '@/config/routes'
 import { getOrigin } from '@/components/safe-apps/utils'
-import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { openWalletConnect } from '@/features/walletconnect/components'
 
 // TODO: Remove this once we properly deprecate the WC app
 const WC_SAFE_APP = /wallet-connect/
@@ -28,6 +28,7 @@ const SafeApps: NextPage = () => {
   const appUrl = useSafeAppUrl()
   const { safeApp, isLoading } = useSafeAppFromManifest(appUrl || '', chainId)
   const isSafeAppsEnabled = useHasFeature(FEATURES.SAFE_APPS)
+  const isWalletConnectEnabled = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
 
   const { remoteSafeApps, remoteSafeAppsLoading } = useSafeApps()
 
@@ -49,8 +50,6 @@ const SafeApps: NextPage = () => {
     remoteSafeAppsLoading,
   })
 
-  const { setOpen } = useContext(WalletConnectContext)
-
   const goToList = useCallback(() => {
     router.push({
       pathname: AppRoutes.apps.index,
@@ -61,8 +60,8 @@ const SafeApps: NextPage = () => {
   // appUrl is required to be present
   if (!isSafeAppsEnabled || !appUrl || !router.isReady) return null
 
-  if (WC_SAFE_APP.test(appUrl)) {
-    setOpen(true)
+  if (isWalletConnectEnabled && WC_SAFE_APP.test(appUrl)) {
+    openWalletConnect()
     goToList()
     return null
   }

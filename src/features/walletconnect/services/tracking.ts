@@ -1,5 +1,5 @@
-import { trackEvent } from '../analytics'
-import { WALLETCONNECT_EVENTS } from '../analytics/events/walletconnect'
+import { trackEvent } from '../../../services/analytics'
+import { WALLETCONNECT_EVENTS } from '../../../services/analytics/events/walletconnect'
 
 const trackedRequests = [
   'personal_sign',

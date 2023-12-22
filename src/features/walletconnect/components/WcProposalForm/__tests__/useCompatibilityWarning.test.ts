@@ -2,7 +2,7 @@ import { renderHook } from '@/tests/test-utils'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { useCompatibilityWarning } from '../useCompatibilityWarning'
-import * as wcUtils from '@/services/walletconnect/utils'
+import * as wcUtils from '@/features/walletconnect/services/utils'
 
 describe('useCompatibilityWarning', () => {
   describe('should return an error for a dangerous bridge', () => {

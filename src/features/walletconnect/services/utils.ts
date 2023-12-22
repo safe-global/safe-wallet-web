@@ -1,6 +1,6 @@
-import type { ChainInfo } from '@safe-global/safe-apps-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ProposalTypes, SessionTypes } from '@walletconnect/types'
-import { EIP155, BlockedBridges, WarnedBridges, WarnedBridgeNames } from '@/services/walletconnect/constants'
+import { EIP155, BlockedBridges, WarnedBridges, WarnedBridgeNames } from '@/features/walletconnect/constants'
 
 export const isPairingUri = (uri: string): boolean => {
   return uri.startsWith('wc:')
@@ -61,9 +61,4 @@ export const getPeerName = (peer: SessionTypes.Struct['peer'] | ProposalTypes.St
 
 export const splitError = (message: string): string[] => {
   return message.split(/: (.+)/).slice(0, 2)
-}
-
-export const isWalletConnectSafeApp = (url: string): boolean => {
-  const WALLET_CONNECT = /wallet-connect/
-  return WALLET_CONNECT.test(url)
 }

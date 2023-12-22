@@ -1,41 +1,29 @@
+import { type ReactNode, useEffect, useState } from 'react'
 import { getSdkError } from '@walletconnect/utils'
 import { formatJsonRpcError } from '@walletconnect/jsonrpc-utils'
-import { type ReactNode, createContext, useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
-import WalletConnectWallet from './WalletConnectWallet'
-import { asError } from '../exceptions/utils'
-import { getPeerName, stripEip155Prefix } from './utils'
+import { asError } from '@/services/exceptions/utils'
 import { IS_PRODUCTION } from '@/config/constants'
 import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import { trackRequest } from './tracking'
+import { getPeerName, stripEip155Prefix } from '@/features/walletconnect/services/utils'
+import { trackRequest } from '@/features/walletconnect//services/tracking'
+import { wcPopupStore } from '@/features/walletconnect/components'
+import WalletConnectWallet from '@/features/walletconnect/services/WalletConnectWallet'
+import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
 
 enum Errors {
   WRONG_CHAIN = '%%dappName%% made a request on a different chain than the one you are connected to',
 }
 
+const walletConnectSingleton = new WalletConnectWallet()
+
 const getWrongChainError = (dappName: string): Error => {
   const message = Errors.WRONG_CHAIN.replace('%%dappName%%', dappName)
   return new Error(message)
 }
-
-const walletConnectSingleton = new WalletConnectWallet()
-
-export const WalletConnectContext = createContext<{
-  walletConnect: WalletConnectWallet | null
-  error: Error | null
-  setError: Dispatch<SetStateAction<Error | null>>
-  open: boolean
-  setOpen: (open: boolean) => void
-}>({
-  walletConnect: null,
-  error: null,
-  setError: () => {},
-  open: false,
-  setOpen: (_open: boolean) => {},
-})
 
 const useWalletConnectApp = () => {
   const [matchingApps] = useRemoteSafeApps(SafeAppsTag.WALLET_CONNECT)
@@ -48,7 +36,8 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
     safeAddress,
   } = useSafeInfo()
   const [walletConnect, setWalletConnect] = useState<WalletConnectWallet | null>(null)
-  const [open, setOpen] = useState(false)
+  const open = wcPopupStore.useStore() ?? false
+  const setOpen = wcPopupStore.setStore
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
   const wcApp = useWalletConnectApp()

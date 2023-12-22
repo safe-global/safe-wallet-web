@@ -4,7 +4,7 @@ import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { capitalize } from '@/utils/formatters'
-import { getPeerName, isBlockedBridge, isWarnedBridge } from '@/services/walletconnect/utils'
+import { getPeerName, isBlockedBridge, isWarnedBridge } from '@/features/walletconnect/services/utils'
 
 const NAME_FALLBACK = 'this dApp'
 const NAME_PLACEHOLDER = '%%name%%'

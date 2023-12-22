@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
+import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
 import { asError } from '@/services/exceptions/utils'
 import WcConnectionForm from '../WcConnectionForm'
 import WcErrorMessage from '../WcErrorMessage'
@@ -10,7 +10,7 @@ import WcProposalForm from '../WcProposalForm'
 import WcConnectionState from '../WcConnectionState'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
-import { splitError } from '@/services/walletconnect/utils'
+import { splitError } from '@/features/walletconnect/services/utils'
 
 type WcSessionManagerProps = {
   sessions: SessionTypes.Struct[]
