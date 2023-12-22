@@ -17,7 +17,7 @@ import { AppRoutes } from '@/config/routes'
 import { getOrigin } from '@/components/safe-apps/utils'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { openWalletConnect } from '@/components/walletconnect'
+import { openWalletConnect } from '@/features/walletconnect/components'
 
 // TODO: Remove this once we properly deprecate the WC app
 const WC_SAFE_APP = /wallet-connect/

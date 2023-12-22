@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
+import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
 import useWalletConnectSessions from '../useWalletConnectSessions'
-import type WalletConnectWallet from '../WalletConnectWallet'
+import type WalletConnectWallet from '../../services/WalletConnectWallet'
 
 describe('useWalletConnectSessions', () => {
   it('should return an array of active sessions', () => {

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useWalletConnectSearchParamUri } from '@/services/walletconnect/useWalletConnectSearchParamUri'
+import { useWalletConnectSearchParamUri } from '@/features/walletconnect/hooks/useWalletConnectSearchParamUri'
 
 const useWcUri = (): [string, () => void] => {
   const [searchParamWcUri, setSearchParamWcUri] = useWalletConnectSearchParamUri()

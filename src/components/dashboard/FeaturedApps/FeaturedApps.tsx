@@ -9,7 +9,7 @@ import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { isWalletConnectSafeApp } from '@/utils/gateway'
-import { openWalletConnect } from '@/components/walletconnect'
+import { openWalletConnect } from '@/features/walletconnect/components'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 

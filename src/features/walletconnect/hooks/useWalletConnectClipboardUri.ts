@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 
 import { getClipboard, isClipboardGranted } from '@/utils/clipboard'
-import { isPairingUri } from './utils'
+import { isPairingUri } from '../services/utils'
 
 // TODO: put this into session storage, otherwise it keeps pasting a stale pairing URI after refresh
 const stalePairingUris: Array<string> = []

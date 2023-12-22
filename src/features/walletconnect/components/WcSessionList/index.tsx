@@ -2,7 +2,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import { Button, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText } from '@mui/material'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { getPeerName } from '@/services/walletconnect/utils'
+import { getPeerName } from '@/features/walletconnect/services/utils'
 import WcNoSessions from './WcNoSessions'
 import css from './styles.module.css'
 

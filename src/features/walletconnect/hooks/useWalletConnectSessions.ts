@@ -1,6 +1,6 @@
 import { useContext, useEffect, useCallback, useState } from 'react'
 import type { SessionTypes } from '@walletconnect/types'
-import { WalletConnectContext } from '@/services/walletconnect/WalletConnectContext'
+import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
 
 function useWalletConnectSessions(): SessionTypes.Struct[] {
   const { walletConnect } = useContext(WalletConnectContext)

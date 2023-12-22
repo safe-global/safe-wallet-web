@@ -8,7 +8,12 @@ import css from './styles.module.css'
 import ProposalVerification from './ProposalVerification'
 import { CompatibilityWarning } from './CompatibilityWarning'
 import useChains from '@/hooks/useChains'
-import { getPeerName, getSupportedChainIds, isBlockedBridge, isWarnedBridge } from '@/services/walletconnect/utils'
+import {
+  getPeerName,
+  getSupportedChainIds,
+  isBlockedBridge,
+  isWarnedBridge,
+} from '@/features/walletconnect/services/utils'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 import useSafeInfo from '@/hooks/useSafeInfo'
