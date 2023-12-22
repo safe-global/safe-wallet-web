@@ -4,9 +4,9 @@ import { Button, Divider, Drawer, IconButton, SvgIcon, Typography } from '@mui/m
 import CloseIcon from '@mui/icons-material/Close'
 import { useDraftBatch, useUpdateBatch } from '@/hooks/useDraftBatch'
 import css from './styles.module.css'
-import NewTxMenu from '@/components/tx-flow/flows/NewTx'
+import { NewTxFlow } from '@/components/tx-flow/flows'
 import { TxModalContext } from '@/components/tx-flow'
-import ConfirmBatchFlow from '@/components/tx-flow/flows/ConfirmBatch'
+import { ConfirmBatchFlow } from '@/components/tx-flow/flows'
 import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
 import { BatchReorder } from './BatchTxList'
@@ -40,7 +40,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
   const onAddClick = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault()
-      setTxFlow(<NewTxMenu />, undefined, false)
+      setTxFlow(<NewTxFlow />, undefined, false)
     },
     [setTxFlow],
   )

@@ -14,7 +14,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getTxButtonTooltip } from '@/components/transactions/utils'
 import { TxModalContext } from '@/components/tx-flow'
-import ConfirmTxFlow from '@/components/tx-flow/flows/ConfirmTx'
+import { ConfirmTxFlow } from '@/components/tx-flow/flows'
 
 const SignTxButton = ({
   txSummary,

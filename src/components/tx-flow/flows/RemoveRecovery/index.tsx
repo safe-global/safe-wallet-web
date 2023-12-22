@@ -12,7 +12,7 @@ export type RecoveryFlowProps = {
   delayModifier: RecoveryStateItem
 }
 
-export function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactElement {
+function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactElement {
   const { step, nextStep, prevStep } = useTxStepper<undefined>(undefined, REMOVE_RECOVERY_CATEGORY)
 
   const steps = [
@@ -32,3 +32,5 @@ export function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactE
     </TxLayout>
   )
 }
+
+export default RemoveRecoveryFlow

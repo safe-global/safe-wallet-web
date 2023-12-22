@@ -22,7 +22,7 @@ import {
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
+import { UpsertRecoveryFlow } from '@/components/tx-flow/flows'
 import ExternalLink from '@/components/common/ExternalLink'
 import RecoveryCustomIcon from '@/public/images/common/recovery_custom.svg'
 import RecoverySygnumIcon from '@/public/images/common/recovery_sygnum.svg'

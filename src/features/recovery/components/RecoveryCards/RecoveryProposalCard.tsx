@@ -7,7 +7,7 @@ import type { ReactElement } from 'react'
 
 import { useDarkMode } from '@/hooks/useDarkMode'
 import ExternalLink from '@/components/common/ExternalLink'
-import { RecoverAccountFlow } from '@/components/tx-flow/flows/RecoverAccount'
+import { RecoverAccountFlow } from '@/components/tx-flow/flows'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import madProps from '@/utils/mad-props'
 import { TxModalContext } from '@/components/tx-flow'

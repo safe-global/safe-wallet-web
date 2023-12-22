@@ -11,7 +11,7 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useContext } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
-import RemoveGuardFlow from '@/components/tx-flow/flows/RemoveGuard'
+import { RemoveGuardFlow } from '@/components/tx-flow/flows'
 
 const NoTransactionGuard = () => {
   return (

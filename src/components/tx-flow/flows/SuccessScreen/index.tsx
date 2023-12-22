@@ -13,7 +13,7 @@ import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { TxModalContext } from '../..'
 
-export const SuccessScreen = ({ txId }: { txId: string }) => {
+const SuccessScreen = ({ txId }: { txId: string }) => {
   const [localTxHash, setLocalTxHash] = useState<string>()
   const [error, setError] = useState<Error>()
   const { setTxFlow } = useContext(TxModalContext)
@@ -84,3 +84,5 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
     </Container>
   )
 }
+
+export default SuccessScreen

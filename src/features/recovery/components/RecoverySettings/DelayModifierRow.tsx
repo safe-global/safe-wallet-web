@@ -9,8 +9,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import EditIcon from '@/public/images/common/edit.svg'
 import CheckWallet from '@/components/common/CheckWallet'
-import { RemoveRecoveryFlow } from '@/components/tx-flow/flows/RemoveRecovery'
-import { UpsertRecoveryFlow } from '@/components/tx-flow/flows/UpsertRecovery'
+import { RemoveRecoveryFlow, UpsertRecoveryFlow } from '@/components/tx-flow/flows'
 import type { RecoveryStateItem } from '@/features/recovery/services/recovery-state'
 
 export function DelayModifierRow({ delayModifier }: { delayModifier: RecoveryStateItem }): ReactElement | null {
