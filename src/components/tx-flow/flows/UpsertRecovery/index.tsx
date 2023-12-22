@@ -24,7 +24,7 @@ export type UpsertRecoveryFlowProps = {
   [UpsertRecoveryFlowFields.expiry]: string
 }
 
-export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
+function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
   const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>(
     {
       [UpsertRecoveryFlowFields.recoverer]: delayModifier?.recoverers?.[0] ?? '',
@@ -64,3 +64,5 @@ export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: Recovery
     </TxLayout>
   )
 }
+
+export default UpsertRecoveryFlow

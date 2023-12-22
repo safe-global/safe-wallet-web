@@ -19,7 +19,7 @@ import { useHideAssets } from './useHideAssets'
 import CheckWallet from '@/components/common/CheckWallet'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
-import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
+import { TokenTransferFlow } from '@/components/tx-flow/flows'
 import NoAssets from './NoAssets'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {

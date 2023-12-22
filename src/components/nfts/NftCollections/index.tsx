@@ -11,7 +11,7 @@ import NftGrid from '../NftGrid'
 import NftSendForm from '../NftSendForm'
 import NftPreviewModal from '../NftPreviewModal'
 import { TxModalContext } from '@/components/tx-flow'
-import NftTransferFlow from '@/components/tx-flow/flows/NftTransfer'
+import { NftTransferFlow } from '@/components/tx-flow/flows'
 
 const NftCollections = (): ReactElement => {
   // Track the current NFT page url

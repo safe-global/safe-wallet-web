@@ -1,6 +1,6 @@
 import QrCodeButton from '@/components/sidebar/QrCodeButton'
 import { TxModalContext } from '@/components/tx-flow'
-import NewTxMenu from '@/components/tx-flow/flows/NewTx'
+import { NewTxFlow } from '@/components/tx-flow/flows'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
@@ -103,7 +103,7 @@ const Overview = (): ReactElement => {
   const isLoading = safeLoading || balancesLoading || nftsLoading || isInitialState
 
   const handleOnSend = () => {
-    setTxFlow(<NewTxMenu />, undefined, false)
+    setTxFlow(<NewTxFlow />, undefined, false)
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 

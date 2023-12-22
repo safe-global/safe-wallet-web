@@ -24,7 +24,7 @@ import NoEntriesIcon from '@/public/images/address-book/no-entries.svg'
 import { useCurrentChain } from '@/hooks/useChains'
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 import { TxModalContext, type TxModalContextType } from '@/components/tx-flow'
-import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
+import { TokenTransferFlow } from '@/components/tx-flow/flows'
 import CheckWallet from '@/components/common/CheckWallet'
 import madProps from '@/utils/mad-props'
 

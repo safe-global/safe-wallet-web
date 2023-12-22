@@ -1,7 +1,7 @@
 import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import TxModalDialog from '@/components/common/TxModalDialog'
-import { SuccessScreen } from './flows/SuccessScreen'
+import { SuccessScreenFlow } from './flows'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
 
@@ -50,7 +50,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
         if (prev === newTxFlow) return prev
 
         // If a new flow is triggered, close the current one
-        if (prev && newTxFlow && newTxFlow.type !== SuccessScreen) {
+        if (prev && newTxFlow && newTxFlow.type !== SuccessScreenFlow) {
           if (shouldWarn.current && !confirmClose()) {
             return prev
           }

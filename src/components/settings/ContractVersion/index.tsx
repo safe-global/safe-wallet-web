@@ -9,7 +9,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { TxModalContext } from '@/components/tx-flow'
-import UpdateSafeFlow from '@/components/tx-flow/flows/UpdateSafe'
+import { UpdateSafeFlow } from '@/components/tx-flow/flows'
 import ExternalLink from '@/components/common/ExternalLink'
 import CheckWallet from '@/components/common/CheckWallet'
 

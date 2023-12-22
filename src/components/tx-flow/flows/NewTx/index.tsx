@@ -11,7 +11,7 @@ import NewTxIcon from '@/public/images/transactions/new-tx.svg'
 
 import css from './styles.module.css'
 
-const NewTxMenu = () => {
+const NewTxFlow = () => {
   const txBuilder = useTxBuilderApp()
   const { setTxFlow } = useContext(TxModalContext)
 
@@ -70,4 +70,4 @@ const NewTxMenu = () => {
   )
 }
 
-export default NewTxMenu
+export default NewTxFlow

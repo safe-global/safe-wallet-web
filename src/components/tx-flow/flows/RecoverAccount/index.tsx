@@ -19,7 +19,7 @@ export type RecoverAccountFlowProps = {
   [RecoverAccountFlowFields.threshold]: string
 }
 
-export function RecoverAccountFlow(): ReactElement {
+function RecoverAccountFlow(): ReactElement {
   const { data, step, nextStep, prevStep } = useTxStepper<RecoverAccountFlowProps>(
     {
       [RecoverAccountFlowFields.owners]: [{ value: '' }],
@@ -46,3 +46,5 @@ export function RecoverAccountFlow(): ReactElement {
     </TxLayout>
   )
 }
+
+export default RecoverAccountFlow

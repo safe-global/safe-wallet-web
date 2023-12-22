@@ -18,7 +18,7 @@ import { hasRemainingRelays } from '@/utils/relaying'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
-import { SuccessScreen } from '@/components/tx-flow/flows/SuccessScreen'
+import { SuccessScreenFlow } from '@/components/tx-flow/flows'
 import useGasLimit from '@/hooks/useGasLimit'
 import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
@@ -104,7 +104,7 @@ export const ExecuteForm = ({
 
     // On success
     onSubmit?.(executedTxId, true)
-    setTxFlow(<SuccessScreen txId={executedTxId} />, undefined, false)
+    setTxFlow(<SuccessScreenFlow txId={executedTxId} />, undefined, false)
   }
 
   const walletCanPay = useWalletCanPay({
