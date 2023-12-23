@@ -1,5 +1,6 @@
 import { type SyntheticEvent, useEffect } from 'react'
 import { useCallback, useContext } from 'react'
+import dynamic from 'next/dynamic'
 import { Button, Divider, Drawer, IconButton, SvgIcon, Typography } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { useDraftBatch, useUpdateBatch } from '@/hooks/useDraftBatch'
@@ -9,11 +10,11 @@ import { TxModalContext } from '@/components/tx-flow'
 import { ConfirmBatchFlow } from '@/components/tx-flow/flows'
 import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
-import { BatchReorder } from './BatchTxList'
 import CheckWallet from '@/components/common/CheckWallet'
-
 import PlusIcon from '@/public/images/common/plus.svg'
 import EmptyBatch from './EmptyBatch'
+
+const BatchReorder = dynamic(() => import('./BatchReorder'))
 
 const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: boolean) => void }) => {
   const { txFlow, setTxFlow } = useContext(TxModalContext)

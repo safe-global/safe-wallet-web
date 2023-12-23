@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import { motion, AnimatePresence } from 'framer-motion'
 
 import SafeAppCard from '@/components/safe-apps/SafeAppCard'
 import AddCustomSafeAppCard from '@/components/safe-apps/AddCustomSafeAppCard'
@@ -70,27 +69,19 @@ const SafeAppList = ({
             </li>
           ))}
 
-        <AnimatePresence>
-          {/* Flat list filtered by search query */}
-          {safeAppsList.map((safeApp) => (
-            <motion.li
-              key={safeApp.id}
-              layout
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <SafeAppCard
-                safeApp={safeApp}
-                isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
-                onBookmarkSafeApp={onBookmarkSafeApp}
-                removeCustomApp={removeCustomApp}
-                onClickSafeApp={handleSafeAppClick(safeApp)}
-                openPreviewDrawer={openPreviewDrawer}
-              />
-            </motion.li>
-          ))}
-        </AnimatePresence>
+        {/* Flat list filtered by search query */}
+        {safeAppsList.map((safeApp) => (
+          <li key={safeApp.id}>
+            <SafeAppCard
+              safeApp={safeApp}
+              isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
+              onBookmarkSafeApp={onBookmarkSafeApp}
+              removeCustomApp={removeCustomApp}
+              onClickSafeApp={handleSafeAppClick(safeApp)}
+              openPreviewDrawer={openPreviewDrawer}
+            />
+          </li>
+        ))}
       </ul>
 
       {/* Zero results placeholder */}
