@@ -1,6 +1,6 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { validateAddress } from '@/utils/validation'
-import { pickBy } from 'lodash'
+import pickBy from 'lodash/pickBy'
 import type { RootState } from '.'
 
 export type AddressBook = { [address: string]: string }

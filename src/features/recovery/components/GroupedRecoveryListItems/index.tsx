@@ -1,7 +1,7 @@
 import Track from '@/components/common/Track'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Paper, Typography } from '@mui/material'
-import { partition } from 'lodash'
+import partition from 'lodash/partition'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import type { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'

@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { BigNumber, ethers } from 'ethers'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import type { Delay, TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider'
 

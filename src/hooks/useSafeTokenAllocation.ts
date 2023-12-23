@@ -9,7 +9,7 @@ import { useMemo } from 'react'
 import useAsync, { type AsyncResult } from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { getWeb3ReadOnly } from './wallets/web3'
-import { memoize } from 'lodash'
+import memoize from 'lodash/memoize'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 export const VESTING_URL =
