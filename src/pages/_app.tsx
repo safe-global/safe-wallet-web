@@ -1,4 +1,4 @@
-import SentryErrorBoundary from '@/services/sentry' // needs to be imported first
+import { SentryErrorBoundary } from '@/services/sentry' // needs to be imported first
 import useRehydrateSocialWallet from '@/hooks/wallets/mpc/useRehydrateSocialWallet'
 import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
 import type { ReactNode } from 'react'

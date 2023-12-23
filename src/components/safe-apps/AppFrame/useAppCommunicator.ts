@@ -103,13 +103,8 @@ const useAppCommunicator = (
             },
           )
         },
-        onError: (error, data) => {
-          logError(Errors._901, error.message, {
-            contexts: {
-              safeApp: app || {},
-              request: data,
-            },
-          })
+        onError: (error) => {
+          logError(Errors._901, error.message)
         },
       })
 

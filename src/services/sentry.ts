@@ -1,4 +1,4 @@
-import { init, ErrorBoundary } from '@sentry/react'
+import { init, ErrorBoundary, captureException } from '@sentry/react'
 import { SENTRY_DSN } from '@/config/constants'
 import packageJson from '../../package.json'
 
@@ -24,4 +24,5 @@ init({
   },
 })
 
-export default ErrorBoundary
+export const SentryErrorBoundary = ErrorBoundary
+export const sentryCaptureException = captureException

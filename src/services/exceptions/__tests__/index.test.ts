@@ -58,31 +58,12 @@ describe('CodedException', () => {
     expect(err.content).toBe(Errors._100)
   })
 
-  it('creates an error with an extra message and a context', () => {
-    const context = {
-      tags: {
-        error_category: 'Safe Apps',
-      },
-      contexts: {
-        safeApp: {
-          name: 'Zorbed.Finance',
-          url: 'https://zorbed.finance',
-        },
-        message: {
-          method: 'getSafeBalance',
-          params: {
-            address: '0x000000',
-          },
-        },
-      },
-    }
-
-    const err = new CodedException(Errors._901, 'getSafeBalance: Server responded with 429 Too Many Requests', context)
+  it('creates an error with an extra message', () => {
+    const err = new CodedException(Errors._901, 'getSafeBalance: Server responded with 429 Too Many Requests')
     expect(err.message).toBe(
       'Code 901: Error processing Safe Apps SDK request (getSafeBalance: Server responded with 429 Too Many Requests)',
     )
     expect(err.code).toBe(901)
-    expect(err.context).toEqual(context)
   })
 
   describe('Logging', () => {
