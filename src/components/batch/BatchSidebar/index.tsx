@@ -9,7 +9,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { ConfirmBatchFlow } from '@/components/tx-flow/flows'
 import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
-import { BatchReorder } from './BatchTxList'
+import BatchReorder from './BatchReorder'
 import CheckWallet from '@/components/common/CheckWallet'
 
 import PlusIcon from '@/public/images/common/plus.svg'
