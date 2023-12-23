@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState, type ReactElement } from 'react'
 import classnames from 'classnames'
-import dynamic from 'next/dynamic'
 
 import Header from '@/components/common/Header'
 import css from './styles.module.css'
@@ -11,8 +10,7 @@ import { useIsSidebarRoute } from '@/hooks/useIsSidebarRoute'
 import useDebounce from '@/hooks/useDebounce'
 import { useRouter } from 'next/router'
 import { TxModalContext } from '@/components/tx-flow'
-
-const BatchSidebar = dynamic(() => import('@/components/batch/BatchSidebar'))
+import BatchSidebar from '@/components/batch/BatchSidebar'
 
 const PageLayout = ({ pathname, children }: { pathname: string; children: ReactElement }): ReactElement => {
   const router = useRouter()
