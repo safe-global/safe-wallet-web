@@ -1,6 +1,6 @@
+import { SentryErrorBoundary } from '@/services/sentry' // needs to be imported first
 import useRehydrateSocialWallet from '@/hooks/wallets/mpc/useRehydrateSocialWallet'
 import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
-import Sentry from '@/services/sentry' // needs to be imported first
 import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
@@ -79,11 +79,11 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
     <SafeThemeProvider mode={themeMode}>
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
-          <Sentry.ErrorBoundary showDialog fallback={ErrorBoundary}>
+          <SentryErrorBoundary showDialog fallback={ErrorBoundary}>
             <WalletProvider>
               <TxModalProvider>{children}</TxModalProvider>
             </WalletProvider>
-          </Sentry.ErrorBoundary>
+          </SentryErrorBoundary>
         </ThemeProvider>
       )}
     </SafeThemeProvider>

@@ -1,12 +1,10 @@
-import * as Sentry from '@sentry/react'
-import { Integrations } from '@sentry/tracing'
+import { init, ErrorBoundary, captureException } from '@sentry/react'
 import { SENTRY_DSN } from '@/config/constants'
 import packageJson from '../../package.json'
 
-Sentry.init({
+init({
   dsn: SENTRY_DSN,
   release: `safe-wallet-web@${packageJson.version}`,
-  integrations: [new Integrations.BrowserTracing()],
   sampleRate: 0.1,
   // ignore MetaMask errors we don't control
   ignoreErrors: ['Internal JSON-RPC error', 'JsonRpcEngine', 'Non-Error promise rejection captured with keys: code'],
@@ -26,4 +24,5 @@ Sentry.init({
   },
 })
 
-export default Sentry
+export const SentryErrorBoundary = ErrorBoundary
+export const sentryCaptureException = captureException

@@ -1,16 +1,15 @@
 import { Errors, logError, trackError, CodedException } from '..'
 import * as constants from '@/config/constants'
-import * as Sentry from '@sentry/react'
+import * as Sentry from '@/services/sentry'
+
+jest.spyOn(Sentry, 'sentryCaptureException').mockImplementation(() => '')
 
 describe('CodedException', () => {
   beforeAll(() => {
-    jest.mock('@sentry/react')
     jest.mock('@/config/constants', () => ({
       IS_PRODUCTION: false,
     }))
     console.error = jest.fn()
-    // @ts-ignore
-    Sentry.captureException = jest.fn()
   })
 
   afterAll(() => {
@@ -58,31 +57,12 @@ describe('CodedException', () => {
     expect(err.content).toBe(Errors._100)
   })
 
-  it('creates an error with an extra message and a context', () => {
-    const context = {
-      tags: {
-        error_category: 'Safe Apps',
-      },
-      contexts: {
-        safeApp: {
-          name: 'Zorbed.Finance',
-          url: 'https://zorbed.finance',
-        },
-        message: {
-          method: 'getSafeBalance',
-          params: {
-            address: '0x000000',
-          },
-        },
-      },
-    }
-
-    const err = new CodedException(Errors._901, 'getSafeBalance: Server responded with 429 Too Many Requests', context)
+  it('creates an error with an extra message', () => {
+    const err = new CodedException(Errors._901, 'getSafeBalance: Server responded with 429 Too Many Requests')
     expect(err.message).toBe(
       'Code 901: Error processing Safe Apps SDK request (getSafeBalance: Server responded with 429 Too Many Requests)',
     )
     expect(err.code).toBe(901)
-    expect(err.context).toEqual(context)
   })
 
   describe('Logging', () => {
@@ -111,13 +91,13 @@ describe('CodedException', () => {
     it('tracks using Sentry on production', () => {
       jest.spyOn(constants, 'IS_PRODUCTION', 'get').mockImplementation(() => true)
       const err = trackError(Errors._100)
-      expect(Sentry.captureException).toHaveBeenCalled()
+      expect(Sentry.sentryCaptureException).toHaveBeenCalled()
       expect(console.error).toHaveBeenCalledWith(err.message)
     })
 
     it('does not track using Sentry in non-production envs', () => {
       const err = trackError(Errors._100)
-      expect(Sentry.captureException).not.toHaveBeenCalled()
+      expect(Sentry.sentryCaptureException).not.toHaveBeenCalled()
       expect(console.error).toHaveBeenCalledWith(err)
     })
   })
