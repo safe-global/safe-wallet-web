@@ -32,7 +32,7 @@ const nextConfig = {
     dirs: ['src'],
   },
   experimental: {
-    optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lodash', 'date-fns', '@sentry/react'],
+    optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lodash', 'date-fns', '@sentry/react', '@gnosis.pm/zodiac'],
   },
   webpack(config) {
     config.module.rules.push({
