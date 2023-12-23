@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { isMultisigExecutionInfo, isTransactionListItem } from '@/utils/transaction-guards'
-import { uniqBy } from 'lodash'
+import uniqBy from 'lodash/uniqBy'
 import useTxQueue from '@/hooks/useTxQueue'
 import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 

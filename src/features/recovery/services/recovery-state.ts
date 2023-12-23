@@ -1,5 +1,5 @@
 import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { memoize } from 'lodash'
+import memoize from 'lodash/memoize'
 import { getMultiSendCallOnlyDeployment } from '@safe-global/safe-deployments'
 import { hexZeroPad } from 'ethers/lib/utils'
 import type { BigNumber } from 'ethers'
