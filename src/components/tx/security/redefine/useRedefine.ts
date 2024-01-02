@@ -18,6 +18,7 @@ import CloseIcon from '@/public/images/common/close.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckIcon from '@/public/images/common/check.svg'
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
+import { normalizeTypedData } from '@/utils/web3'
 
 export const REDEFINE_RETRY_TIMEOUT = 2_000
 const RedefineModuleInstance = new RedefineModule()
@@ -148,9 +149,11 @@ export const useRedefineMessage = (
         return
       }
 
+      const normalizedMsg = normalizeTypedData(message)
+
       return RedefineModuleInstance.scanMessage({
         chainId: Number(safe.chainId),
-        message,
+        message: normalizedMsg,
         safeAddress,
         walletAddress: wallet.address,
         threshold: safe.threshold,
