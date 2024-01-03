@@ -138,7 +138,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
       chainId,
       payload: {
         method: 'eth_signTypedData_v4',
-        params: [safeAddress, JSON.stringify(message)],
+        params: [safeAddress, message],
       },
     }
 
