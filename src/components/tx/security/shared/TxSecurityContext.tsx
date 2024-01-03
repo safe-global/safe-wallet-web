@@ -2,7 +2,7 @@ import { type RedefineModuleResponse } from '@/services/security/modules/Redefin
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { createContext, type Dispatch, type SetStateAction, useContext, useMemo, useState } from 'react'
-import { useRedefineTransaction } from '../redefine/useRedefine'
+import { useRedefineMessage, useRedefineTransaction } from '../redefine/useRedefine'
 
 export const defaultSecurityContextValues = {
   warnings: [],
@@ -33,10 +33,17 @@ export const TxSecurityContext = createContext<{
 }>(defaultSecurityContextValues)
 
 export const TxSecurityProvider = ({ children }: { children: JSX.Element }) => {
-  const { safeTx } = useContext(SafeTxContext)
-  const [redefineResponse, redefineError, redefineLoading] = useRedefineTransaction(safeTx)
+  const { safeTx, safeMessage } = useContext(SafeTxContext)
+  const [redefineTxResponse, redefineTxError, redefineTxLoading] = useRedefineTransaction(safeTx)
+  const [redefineMsgResponse, redefineMsgError, redefineMsgLoading] = useRedefineMessage(safeMessage)
   const [isRiskConfirmed, setIsRiskConfirmed] = useState(false)
   const [isRiskIgnored, setIsRiskIgnored] = useState(false)
+
+  const [redefineResponse, redefineError, redefineLoading] = [
+    redefineTxResponse || redefineMsgResponse,
+    redefineTxError || redefineMsgError,
+    redefineTxLoading || redefineMsgLoading,
+  ]
 
   const providedValue = useMemo(
     () => ({

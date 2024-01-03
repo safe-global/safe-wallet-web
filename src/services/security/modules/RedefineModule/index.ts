@@ -194,6 +194,10 @@ export class RedefineModule implements SecurityModule<RedefineModuleTransactionR
 
     const result = (await res.json()) as RedefineResponse
 
+    /**
+     * We do not return the `result.simulation` because the Redefine dashboard does not work for 712 messages.
+     * This way we do not render the link to the broken full report.
+     */
     return {
       severity: result.data ? redefineSeverityMap[result.data.insights.verdict.label] : SecuritySeverity.NONE,
       payload: {
@@ -202,7 +206,6 @@ export class RedefineModule implements SecurityModule<RedefineModuleTransactionR
           severity: redefineSeverityMap[issue.severity.label],
         })),
         balanceChange: result.data?.balanceChange,
-        simulation: result.data?.simulation,
         errors: result.errors,
       },
     }

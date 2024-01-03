@@ -4,10 +4,14 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { createTx } from '@/services/tx/tx-sender'
 import { useRecommendedNonce, useSafeTxGas } from '../tx/SignOrExecuteForm/hooks'
 import { Errors, logError } from '@/services/exceptions'
+import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const SafeTxContext = createContext<{
   safeTx?: SafeTransaction
   setSafeTx: Dispatch<SetStateAction<SafeTransaction | undefined>>
+
+  safeMessage?: EIP712TypedData
+  setSafeMessage: Dispatch<SetStateAction<EIP712TypedData | undefined>>
 
   safeTxError?: Error
   setSafeTxError: Dispatch<SetStateAction<Error | undefined>>
@@ -23,6 +27,7 @@ export const SafeTxContext = createContext<{
   recommendedNonce?: number
 }>({
   setSafeTx: () => {},
+  setSafeMessage: () => {},
   setSafeTxError: () => {},
   setNonce: () => {},
   setNonceNeeded: () => {},
@@ -31,6 +36,7 @@ export const SafeTxContext = createContext<{
 
 const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [safeTx, setSafeTx] = useState<SafeTransaction>()
+  const [safeMessage, setSafeMessage] = useState<EIP712TypedData>()
   const [safeTxError, setSafeTxError] = useState<Error>()
   const [nonce, setNonce] = useState<number>()
   const [nonceNeeded, setNonceNeeded] = useState<boolean>(true)
@@ -69,6 +75,8 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
         safeTxError,
         setSafeTx,
         setSafeTxError,
+        safeMessage,
+        setSafeMessage,
         nonce: finalNonce,
         setNonce,
         nonceNeeded,
