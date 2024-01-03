@@ -6,17 +6,6 @@ import * as createwallet from '../pages/create_wallet.pages'
 
 const testSafeName = 'Test safe name'
 const testOwnerName = 'Test Owner Name'
-// TODO
-const SAFE_ENS_NAME = 'test20.eth'
-const SAFE_ENS_NAME_TRANSLATED = constants.EOA
-
-const EOA_ADDRESS = constants.EOA
-
-const INVALID_ADDRESS_ERROR_MSG = 'Address given is not a valid Safe address'
-
-// TODO
-const OWNER_ENS_DEFAULT_NAME = 'test20.eth'
-const OWNER_ADDRESS = constants.EOA
 
 describe('[SMOKE] Load Safe tests', () => {
   beforeEach(() => {
