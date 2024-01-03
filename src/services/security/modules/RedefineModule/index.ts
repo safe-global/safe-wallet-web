@@ -1,4 +1,6 @@
 import { REDEFINE_API } from '@/config/constants'
+import { normalizeTypedData } from '@/utils/web3'
+import { isObjectEIP712TypedData } from '@safe-global/safe-apps-sdk'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
@@ -19,19 +21,11 @@ const redefineSeverityMap: Record<RedefineSeverity['label'], SecuritySeverity> =
   NO_ISSUES: SecuritySeverity.NONE,
 }
 
-export type RedefineModuleTransactionRequest = {
+export type RedefineModuleRequest = {
   chainId: number
   safeAddress: string
   walletAddress: string
-  safeTransaction: SafeTransaction
-  threshold: number
-}
-
-export type RedefineModuleMessageRequest = {
-  chainId: number
-  safeAddress: string
-  walletAddress: string
-  message: EIP712TypedData
+  data: SafeTransaction | EIP712TypedData
   threshold: number
 }
 
@@ -114,63 +108,31 @@ export type RedefineResponse = {
   }[]
 }
 
-export class RedefineModule implements SecurityModule<RedefineModuleTransactionRequest, RedefineModuleResponse> {
-  async scanTransaction(request: RedefineModuleTransactionRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
-    if (!REDEFINE_API) {
-      throw new Error('Redefine API URL is not set')
-    }
-
-    const { chainId, safeAddress } = request
-
-    const txTypedData = generateTypedData({
-      safeAddress,
-      safeVersion: '1.3.0', // TODO: pass to module, taking into account that lower Safe versions don't have chainId in payload
-      chainId,
-      safeTransactionData: request.safeTransaction.data,
-    })
-
-    const payload: RedefinePayload = {
-      chainId,
-      payload: {
-        method: 'eth_signTypedData_v4',
-        params: [safeAddress, JSON.stringify(txTypedData)],
-      },
-    }
-
-    const res = await fetch(REDEFINE_API, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/JSON',
-      },
-      body: JSON.stringify(payload),
-    })
-
-    if (!res.ok) {
-      throw new Error('Redefine scan failed', await res.json())
-    }
-
-    const result = (await res.json()) as RedefineResponse
-
-    return {
-      severity: result.data ? redefineSeverityMap[result.data.insights.verdict.label] : SecuritySeverity.NONE,
-      payload: {
-        issues: result.data?.insights.issues.map((issue) => ({
-          ...issue,
-          severity: redefineSeverityMap[issue.severity.label],
-        })),
-        balanceChange: result.data?.balanceChange,
-        simulation: result.data?.simulation,
-        errors: result.errors,
-      },
+export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefineModuleResponse> {
+  static prepareMessage(request: RedefineModuleRequest): string {
+    const { data, safeAddress, chainId } = request
+    if (isObjectEIP712TypedData(data)) {
+      const normalizedMsg = normalizeTypedData(data)
+      return JSON.stringify(normalizedMsg)
+    } else {
+      return JSON.stringify(
+        generateTypedData({
+          safeAddress,
+          safeVersion: '1.3.0', // TODO: pass to module, taking into account that lower Safe versions don't have chainId in payload
+          chainId,
+          safeTransactionData: (data as SafeTransaction).data,
+        }),
+      )
     }
   }
-
-  async scanMessage(request: RedefineModuleMessageRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
+  async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
     if (!REDEFINE_API) {
       throw new Error('Redefine API URL is not set')
     }
 
-    const { chainId, safeAddress, message } = request
+    const { chainId, safeAddress, data } = request
+
+    const message = RedefineModule.prepareMessage(request)
 
     const payload: RedefinePayload = {
       chainId,
@@ -194,10 +156,6 @@ export class RedefineModule implements SecurityModule<RedefineModuleTransactionR
 
     const result = (await res.json()) as RedefineResponse
 
-    /**
-     * We do not return the `result.simulation` because the Redefine dashboard does not work for 712 messages.
-     * This way we do not render the link to the broken full report.
-     */
     return {
       severity: result.data ? redefineSeverityMap[result.data.insights.verdict.label] : SecuritySeverity.NONE,
       payload: {
@@ -206,6 +164,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleTransactionR
           severity: redefineSeverityMap[issue.severity.label],
         })),
         balanceChange: result.data?.balanceChange,
+        simulation: isObjectEIP712TypedData(data) ? undefined : result.data?.simulation,
         errors: result.errors,
       },
     }
