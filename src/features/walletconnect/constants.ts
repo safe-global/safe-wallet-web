@@ -41,7 +41,6 @@ export const BlockedBridges = [
   'cbridge.celer.network',
   'www.orbiter.finance',
   'zksync-era.l2scan.co',
-  'app.optimism.io',
   'www.portalbridge.com',
   'wallet.polygon.technology',
   'app.rhino.fi',
