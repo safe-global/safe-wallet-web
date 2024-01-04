@@ -1,16 +1,15 @@
 import { _getRemainingTimeout } from '@/services/tx/txMonitor'
-import { JsonRpcProvider } from '@ethersproject/providers'
 import * as txEvents from '@/services/tx/txEvents'
 import * as txMonitor from '@/services/tx/txMonitor'
 
-import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
 import { act } from '@testing-library/react'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
+import { BrowserProvider, type JsonRpcProvider, type Eip1193Provider, type TransactionReceipt } from 'ethers'
 
 const { waitForTx, waitForRelayedTx, waitForCreateSafeTx } = txMonitor
 
-const provider = new JsonRpcProvider()
+const provider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider) as unknown as JsonRpcProvider
 
 const setupFetchStub = (data: any) => (_url: string) => {
   return Promise.resolve({
@@ -23,7 +22,7 @@ const setupFetchStub = (data: any) => (_url: string) => {
 describe('txMonitor', () => {
   let txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
   let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
-  const safeAddress = hexZeroPad('0x123', 20)
+  const safeAddress = toBeHex('0x123', 20)
 
   beforeEach(() => {
     jest.useFakeTimers()

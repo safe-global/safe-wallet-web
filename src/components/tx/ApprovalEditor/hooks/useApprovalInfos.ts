@@ -3,7 +3,7 @@ import useBalances from '@/hooks/useBalances'
 import { type Approval, ApprovalModule } from '@/services/security/modules/ApprovalModule'
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT, UNLIMITED_PERMIT2_AMOUNT } from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { ethers } from 'ethers'
+import { formatUnits } from 'ethers'
 import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 import { useMemo } from 'react'
 import { type EIP712TypedData, type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -52,9 +52,9 @@ export const useApprovalInfos = (payload: {
           }
 
           const amountFormatted =
-            UNLIMITED_APPROVAL_AMOUNT.eq(approval.amount) || UNLIMITED_PERMIT2_AMOUNT.eq(approval.amount)
+            UNLIMITED_APPROVAL_AMOUNT == approval.amount || UNLIMITED_PERMIT2_AMOUNT == approval.amount
               ? PSEUDO_APPROVAL_VALUES.UNLIMITED
-              : ethers.utils.formatUnits(approval.amount, tokenInfo?.decimals)
+              : formatUnits(approval.amount, tokenInfo?.decimals)
 
           return { ...approval, tokenInfo: tokenInfo, amountFormatted }
         }),

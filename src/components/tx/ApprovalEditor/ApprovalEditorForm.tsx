@@ -8,7 +8,6 @@ import { MODALS_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 import { useMemo } from 'react'
 import ApprovalItem from '@/components/tx/ApprovalEditor/ApprovalItem'
-import { BigNumber } from 'ethers'
 
 export type ApprovalEditorFormData = {
   approvals: string[]
@@ -48,7 +47,7 @@ export const ApprovalEditorForm = ({
         {approvalInfos.map((tx, idx) => (
           <ListItem
             key={tx.tokenAddress + tx.spender}
-            className={BigNumber.from(0).eq(tx.amount) ? css.zeroValueApproval : undefined}
+            className={0n === tx.amount ? css.zeroValueApproval : undefined}
             disablePadding
             data-testid="approval-item"
           >

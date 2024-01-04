@@ -3,7 +3,7 @@ import * as socialWalletOptions from '@/services/mpc/config'
 import { waitFor } from '@/tests/test-utils'
 import { _getMPCCoreKitInstance, initMPC, setMPCCoreKitInstance } from '../useMPC'
 import { type ChainInfo, RPC_AUTHENTICATION } from '@safe-global/safe-gateway-typescript-sdk'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { type Web3AuthMPCCoreKit, COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
@@ -136,7 +136,7 @@ describe('initMPC', () => {
   it('should copy event handlers and emit chainChanged if the current chain is updated', async () => {
     jest.spyOn(useOnboard, 'connectWallet').mockImplementation(() => Promise.resolve(undefined))
     jest.spyOn(useOnboard, 'getConnectedWallet').mockReturnValue({
-      address: hexZeroPad('0x1', 20),
+      address: toBeHex('0x1', 20),
       label: ONBOARD_MPC_MODULE_LABEL,
       chainId: '1',
       provider: {} as unknown as EIP1193Provider,

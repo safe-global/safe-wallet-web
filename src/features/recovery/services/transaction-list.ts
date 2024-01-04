@@ -8,7 +8,7 @@ import {
 } from '@/utils/transaction-calldata'
 import { decodeMultiSendTxs } from '@/utils/transactions'
 import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
-import { Interface } from 'ethers/lib/utils'
+import { Interface } from 'ethers'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -32,16 +32,16 @@ function decodeOwnerManagementTransaction(safe: SafeInfo, transaction: BaseTrans
     const [ownerToAdd, newThreshold] = safeInterface.decodeFunctionData('addOwnerWithThreshold', transaction.data)
 
     _owners = _owners.concat({ value: ownerToAdd })
-    _threshold = newThreshold.toNumber()
+    _threshold = Number(newThreshold)
   } else if (isRemoveOwnerCalldata(transaction.data)) {
     const [, ownerToRemove, newThreshold] = safeInterface.decodeFunctionData('removeOwner', transaction.data)
 
     _owners = safe.owners.filter((owner) => !sameAddress(owner.value, ownerToRemove))
-    _threshold = newThreshold.toNumber()
+    _threshold = Number(newThreshold)
   } else if (isChangeThresholdCalldata(transaction.data)) {
     const [newThreshold] = safeInterface.decodeFunctionData('changeThreshold', transaction.data)
 
-    _threshold = newThreshold.toNumber()
+    _threshold = Number(newThreshold)
   } else {
     throw new Error('Unexpected transaction')
   }

@@ -2,11 +2,11 @@ import { didRevert } from '@/utils/ethers-utils'
 
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
-import type { JsonRpcProvider } from '@ethersproject/providers'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { asError } from '../exceptions/utils'
+import { type JsonRpcProvider } from 'ethers'
 
 export function _getRemainingTimeout(defaultTimeout: number, submittedAt?: number) {
   const timeoutInMs = defaultTimeout * 60_000

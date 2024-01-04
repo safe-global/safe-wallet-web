@@ -1,11 +1,10 @@
 import { getModuleInstance, KnownContracts, deployAndSetUpModule } from '@gnosis.pm/zodiac'
 import { faker } from '@faker-js/faker'
-import { BigNumber } from 'ethers'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import type { Web3Provider } from '@ethersproject/providers'
+import { SENTINEL_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 import { _getEditRecoveryTransactions, _getRecoverySetupTransactions } from '@/features/recovery/services/setup'
+import type { JsonRpcProvider } from 'ethers'
 
 jest.mock('@gnosis.pm/zodiac', () => ({
   ...jest.requireActual('@gnosis.pm/zodiac'),
@@ -21,31 +20,31 @@ describe('getRecoverySetupTransactions', () => {
     jest.clearAllMocks()
   })
 
-  it('should return deploy Delay Modifier, enable Safe recoverer and add a Recoverer transactions', () => {
+  it('should return deploy Delay Modifier, enable Safe recoverer and add a Recoverer transactions', async () => {
     const delay = faker.string.numeric()
     const expiry = faker.string.numeric()
     const recoverers = [faker.finance.ethereumAddress()]
     const safeAddress = faker.finance.ethereumAddress()
     const chainId = faker.string.numeric()
-    const provider = {} as Web3Provider
+    const provider = {} as JsonRpcProvider
 
     const expectedModuleAddress = faker.finance.ethereumAddress()
     const deployDelayModifierTx = {
       to: faker.finance.ethereumAddress(),
       data: faker.string.hexadecimal(),
-      value: BigNumber.from(0),
+      value: BigInt(0),
     }
     mockGetModuleInstance.mockReturnValue({
       interface: {
         encodeFunctionData: jest.fn().mockReturnValue(deployDelayModifierTx.data),
       },
     } as any)
-    mockDeployAndSetUpModule.mockReturnValue({
+    mockDeployAndSetUpModule.mockResolvedValue({
       expectedModuleAddress,
       transaction: deployDelayModifierTx,
     })
 
-    const result = _getRecoverySetupTransactions({
+    const result = await _getRecoverySetupTransactions({
       delay,
       expiry,
       recoverers,
@@ -107,8 +106,8 @@ describe('getEditRecoveryTransactions', () => {
 
     const mockEncodeFunctionData = jest.fn()
     mockGetModuleInstance.mockReturnValue({
-      txCooldown: () => Promise.resolve(BigNumber.from(delay)),
-      txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
+      txCooldown: () => Promise.resolve(BigInt(delay)),
+      txExpiration: () => Promise.resolve(BigInt(expiry)),
       getModulesPaginated: () => Promise.resolve([recoverers]),
       interface: {
         encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -116,7 +115,7 @@ describe('getEditRecoveryTransactions', () => {
     } as any)
 
     const transactions = await _getEditRecoveryTransactions({
-      provider: {} as Web3Provider,
+      provider: {} as JsonRpcProvider,
       newDelay: delay,
       newExpiry,
       newRecoverers: recoverers,
@@ -147,8 +146,8 @@ describe('getEditRecoveryTransactions', () => {
 
     const mockEncodeFunctionData = jest.fn()
     mockGetModuleInstance.mockReturnValue({
-      txCooldown: () => Promise.resolve(BigNumber.from(delay)),
-      txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
+      txCooldown: () => Promise.resolve(BigInt(delay)),
+      txExpiration: () => Promise.resolve(BigInt(expiry)),
       getModulesPaginated: () => Promise.resolve([recoverers]),
       interface: {
         encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -156,7 +155,7 @@ describe('getEditRecoveryTransactions', () => {
     } as any)
 
     const transactions = await _getEditRecoveryTransactions({
-      provider: {} as Web3Provider,
+      provider: {} as JsonRpcProvider,
       newDelay,
       newExpiry: expiry,
       newRecoverers: recoverers,
@@ -187,8 +186,8 @@ describe('getEditRecoveryTransactions', () => {
 
     const mockEncodeFunctionData = jest.fn()
     mockGetModuleInstance.mockReturnValue({
-      txCooldown: () => Promise.resolve(BigNumber.from(delay)),
-      txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
+      txCooldown: () => Promise.resolve(BigInt(delay)),
+      txExpiration: () => Promise.resolve(BigInt(expiry)),
       getModulesPaginated: () => Promise.resolve([recoverers]),
       interface: {
         encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -196,7 +195,7 @@ describe('getEditRecoveryTransactions', () => {
     } as any)
 
     const transactions = await _getEditRecoveryTransactions({
-      provider: {} as Web3Provider,
+      provider: {} as JsonRpcProvider,
       newDelay: delay,
       newExpiry: expiry,
       newRecoverers,
@@ -233,8 +232,8 @@ describe('getEditRecoveryTransactions', () => {
 
     const mockEncodeFunctionData = jest.fn()
     mockGetModuleInstance.mockReturnValue({
-      txCooldown: () => Promise.resolve(BigNumber.from(delay)),
-      txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
+      txCooldown: () => Promise.resolve(BigInt(delay)),
+      txExpiration: () => Promise.resolve(BigInt(expiry)),
       getModulesPaginated: () => Promise.resolve([recoverers]),
       interface: {
         encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -242,7 +241,7 @@ describe('getEditRecoveryTransactions', () => {
     } as any)
 
     const transactions = await _getEditRecoveryTransactions({
-      provider: {} as Web3Provider,
+      provider: {} as JsonRpcProvider,
       newDelay: delay,
       newExpiry: expiry,
       newRecoverers: [],
@@ -277,8 +276,8 @@ describe('getEditRecoveryTransactions', () => {
 
       const mockEncodeFunctionData = jest.fn()
       mockGetModuleInstance.mockReturnValue({
-        txCooldown: () => Promise.resolve(BigNumber.from(delay)),
-        txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
+        txCooldown: () => Promise.resolve(BigInt(delay)),
+        txExpiration: () => Promise.resolve(BigInt(expiry)),
         getModulesPaginated: () => Promise.resolve([recoverers]),
         interface: {
           encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -286,7 +285,7 @@ describe('getEditRecoveryTransactions', () => {
       } as any)
 
       const transactions = await _getEditRecoveryTransactions({
-        provider: {} as Web3Provider,
+        provider: {} as JsonRpcProvider,
         newDelay,
         newExpiry,
         newRecoverers,
@@ -336,8 +335,8 @@ describe('getEditRecoveryTransactions', () => {
 
       const mockEncodeFunctionData = jest.fn()
       mockGetModuleInstance.mockReturnValue({
-        txCooldown: () => Promise.resolve(BigNumber.from(delay)),
-        txExpiration: () => Promise.resolve(BigNumber.from(expiry)),
+        txCooldown: () => Promise.resolve(BigInt(delay)),
+        txExpiration: () => Promise.resolve(BigInt(expiry)),
         getModulesPaginated: () => Promise.resolve([recoverers]),
         interface: {
           encodeFunctionData: mockEncodeFunctionData.mockReturnValue('0x'),
@@ -345,7 +344,7 @@ describe('getEditRecoveryTransactions', () => {
       } as any)
 
       const transactions = await _getEditRecoveryTransactions({
-        provider: {} as Web3Provider,
+        provider: {} as JsonRpcProvider,
         newDelay: delay,
         newExpiry: expiry,
         newRecoverers,

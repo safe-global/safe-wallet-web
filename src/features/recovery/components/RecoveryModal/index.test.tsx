@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { faker } from '@faker-js/faker'
 import { renderHook } from '@testing-library/react'
 import * as router from 'next/router'
@@ -60,7 +59,9 @@ describe('RecoveryModal', () => {
       jest.spyOn(router, 'useRouter').mockReturnValue(mockUseRouter as any)
 
       const wallet = connectedWalletBuilder().build()
-      const queue = [{ validFrom: BigNumber.from(0), transactionHash: faker.string.hexadecimal() } as RecoveryQueueItem]
+      const queue = [
+        { validFrom: BigInt(0), transactionHash: faker.string.hexadecimal() } as unknown as RecoveryQueueItem,
+      ]
 
       store.setStore({
         state: [[{ queue }]],
@@ -84,7 +85,7 @@ describe('RecoveryModal', () => {
     describe('in-progress', () => {
       it('should render the in-progress modal when there is a queue for recoverers', () => {
         const wallet = connectedWalletBuilder().build()
-        const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
+        const queue = [{ validFrom: BigInt(0) } as RecoveryQueueItem]
 
         store.setStore({
           state: [[{ queue }]],
@@ -100,7 +101,7 @@ describe('RecoveryModal', () => {
 
       it('should render the in-progress modal when there is a queue for owners', () => {
         const wallet = connectedWalletBuilder().build()
-        const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
+        const queue = [{ validFrom: BigInt(0) } as RecoveryQueueItem]
 
         store.setStore({
           state: [[{ queue }]],
@@ -116,7 +117,7 @@ describe('RecoveryModal', () => {
 
       it('should not render the in-progress modal when there is a queue but the user is not an owner or recoverer', () => {
         const wallet = connectedWalletBuilder().build()
-        const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
+        const queue = [{ validFrom: BigInt(0) } as RecoveryQueueItem]
 
         store.setStore({
           state: [[{ queue }]],
@@ -132,7 +133,7 @@ describe('RecoveryModal', () => {
 
       it('should not render the in-progress modal when there is a queue for recoverers on a non-sidebar route', () => {
         const wallet = connectedWalletBuilder().build()
-        const queue = [{ validFrom: BigNumber.from(0) } as RecoveryQueueItem]
+        const queue = [{ validFrom: BigInt(0) } as RecoveryQueueItem]
 
         store.setStore({
           state: [[{ queue }]],

@@ -1,6 +1,6 @@
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { getMultiSendCallOnlyDeployment } from '@safe-global/safe-deployments'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 
 import { DelegateCallModule } from '.'
 import { createMockSafeTransaction, getMockMultiSendCalldata } from '@/tests/transactions'
@@ -9,7 +9,7 @@ describe('DelegateCallModule', () => {
   const DelegateCallModuleInstance = new DelegateCallModule()
 
   it('should not warn about Call operation transactions', async () => {
-    const recipient = hexZeroPad('0x1', 20)
+    const recipient = toBeHex('0x1', 20)
 
     const safeTransaction = createMockSafeTransaction({
       to: recipient,
@@ -37,8 +37,8 @@ describe('DelegateCallModule', () => {
       version: SAFE_VERSION,
     })!.defaultAddress
 
-    const recipient1 = hexZeroPad('0x2', 20)
-    const recipient2 = hexZeroPad('0x3', 20)
+    const recipient1 = toBeHex('0x2', 20)
+    const recipient2 = toBeHex('0x3', 20)
 
     const data = getMockMultiSendCalldata([recipient1, recipient2])
 
@@ -60,7 +60,7 @@ describe('DelegateCallModule', () => {
   })
 
   it('should warn about non-MultiSendCallOnly DelegateCall operation transactions', async () => {
-    const recipient = hexZeroPad('0x1', 20)
+    const recipient = toBeHex('0x1', 20)
 
     const safeTransaction = createMockSafeTransaction({
       to: recipient,

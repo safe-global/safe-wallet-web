@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { act, renderHook } from '@/tests/test-utils'
 import useGasPrice from '@/hooks/useGasPrice'
 import { useCurrentChain } from '../useChains'
@@ -9,8 +8,8 @@ jest.mock('../wallets/web3', () => {
     getFeeData: jest.fn(() =>
       Promise.resolve({
         gasPrice: undefined,
-        maxFeePerGas: BigNumber.from('0x956e'), //38254
-        maxPriorityFeePerGas: BigNumber.from('0x136f'), //4975
+        maxFeePerGas: BigInt('0x956e'), //38254
+        maxPriorityFeePerGas: BigInt('0x136f'), //4975
       }),
     ),
   }
