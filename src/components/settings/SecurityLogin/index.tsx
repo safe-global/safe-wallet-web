@@ -3,19 +3,20 @@ import SocialSignerMFA from './SocialSignerMFA'
 import SocialSignerExport from './SocialSignerExport'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import { useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
-import { Recovery } from '../Recovery'
 import SpendingLimits from '../SpendingLimits'
+import dynamic from 'next/dynamic'
+import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
+
+const RecoverySettings = dynamic(() => import('@/features/recovery/components/RecoverySettings'))
 
 const SecurityLogin = () => {
-  const isRecoverySupported = useHasFeature(FEATURES.RECOVERY)
+  const isRecoverySupported = useIsRecoverySupported()
   const wallet = useWallet()
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
-      {isRecoverySupported && <Recovery />}
+      {isRecoverySupported && <RecoverySettings />}
 
       {isSocialLogin && (
         <>

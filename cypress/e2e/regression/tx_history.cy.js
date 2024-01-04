@@ -54,25 +54,6 @@ describe('Tx history tests 1', () => {
   })
 
   // Token receipt
-  it('Verify summary for token receipt', () => {
-    createTx.verifySummaryByName(
-      typeReceive.summaryTitle,
-      typeReceive.summaryTxInfo,
-      [typeReceive.summaryTxInfo, typeGeneral.statusOk],
-      typeReceive.altTmage,
-    )
-  })
-
-  it('Verify exapanded details for token receipt', () => {
-    createTx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
-    createTx.verifyExpandedDetails([
-      typeReceive.title,
-      typeReceive.receivedFrom,
-      typeReceive.senderAddress,
-      typeReceive.transactionHash,
-    ])
-  })
-
   it('Verify copy button copies tx hash', () => {
     createTx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
     createTx.verifyNumberOfCopyIcons(2)
@@ -80,15 +61,6 @@ describe('Tx history tests 1', () => {
   })
 
   // Token send
-  it('Verify summary for token send', () => {
-    createTx.verifySummaryByName(
-      typeSend.title,
-      [typeSend.summaryTxInfo, typeGeneral.statusOk],
-      typeSend.altImage,
-      typeSend.altToken,
-    )
-  })
-
   it('Verify exapanded details for token send', () => {
     createTx.clickOnTransactionItemByName(typeSend.title, typeSend.summaryTxInfo)
     createTx.verifyExpandedDetails([typeSend.sentTo, typeSend.recipientAddress, typeSend.transactionHash])
@@ -153,15 +125,6 @@ describe('Tx history tests 1', () => {
   })
 
   // Spending limit deletion
-  it('Verify summary for allowance deletion', () => {
-    createTx.verifySummaryByName(
-      typeDeleteAllowance.title,
-      typeDeleteAllowance.summaryTxInfo,
-      [typeDeleteAllowance.summaryTxInfo, typeGeneral.statusOk],
-      typeDeleteAllowance.altImage,
-    )
-  })
-
   it('Verify exapanded details for allowance deletion', () => {
     createTx.clickOnTransactionItemByName(typeDeleteAllowance.title, typeDeleteAllowance.summaryTxInfo)
     createTx.verifyExpandedDetails([

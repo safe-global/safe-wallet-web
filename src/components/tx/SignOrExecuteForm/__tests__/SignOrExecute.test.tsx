@@ -11,6 +11,7 @@ describe('SignOrExecute', () => {
         onSubmit={jest.fn()}
         safeTxError={new Error('Safe transaction error')}
         safeTx={safeTxBuilder().build()}
+        chainId="1"
       />,
     )
 
@@ -29,6 +30,7 @@ describe('SignOrExecute', () => {
           onSubmit={jest.fn()}
           safeTxError={undefined}
           isExecutable={true}
+          chainId="1"
         />,
       )
 
@@ -48,6 +50,7 @@ describe('SignOrExecute', () => {
           safeTxError={undefined}
           txId={undefined}
           isExecutable={true}
+          chainId="1"
         />,
       )
 
@@ -63,6 +66,7 @@ describe('SignOrExecute', () => {
         safeTxError={undefined}
         txId={undefined}
         onlyExecute={true}
+        chainId="1"
       />,
     )
 
@@ -79,6 +83,7 @@ describe('SignOrExecute', () => {
         safeTxError={undefined}
         txId={'someid'}
         isExecutable={true}
+        chainId="1"
       />,
     )
 

@@ -10,6 +10,7 @@ import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
 import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
+import { formatAmount } from '@/utils/formatNumber'
 import { localItem } from '@/services/local-storage/local'
 import { isWalletUnlocked } from '@/utils/wallets'
 
@@ -22,6 +23,7 @@ export type ConnectedWallet = {
   ens?: string
   provider: EIP1193Provider
   icon?: string
+  balance?: string
 }
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
@@ -47,6 +49,20 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
   const account = primaryWallet.accounts[0]
   if (!account) return null
 
+  let balance = ''
+  if (account.balance) {
+    const tokenBalance = Object.entries(account.balance)[0]
+    const token = tokenBalance?.[0] || ''
+    const balanceString = tokenBalance?.[1] || ''
+    const balanceNumber = parseFloat(balanceString)
+    if (Number.isNaN(balanceNumber)) {
+      balance = balanceString
+    } else {
+      const balanceFormatted = formatAmount(balanceNumber)
+      balance = `${balanceFormatted} ${token}`
+    }
+  }
+
   try {
     const address = getAddress(account.address)
     return {
@@ -56,6 +72,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
       chainId: Number(primaryWallet.chains[0].id).toString(10),
       provider: primaryWallet.provider,
       icon: primaryWallet.icon,
+      balance,
     }
   } catch (e) {
     logError(Errors._106, e)

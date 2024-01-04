@@ -48,9 +48,7 @@ import useGetSafeInfo from './useGetSafeInfo'
 import { hasFeature, FEATURES } from '@/utils/chains'
 import { selectTokenList, selectOnChainSigning, TOKEN_LISTS } from '@/store/settingsSlice'
 import { TxModalContext } from '@/components/tx-flow'
-import SafeAppsTxFlow from '@/components/tx-flow/flows/SafeAppsTx'
-import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
-import SignMessageOnChainFlow from '@/components/tx-flow/flows/SignMessageOnChain'
+import { SafeAppsTxFlow, SignMessageFlow, SignMessageOnChainFlow } from '@/components/tx-flow/flows'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 

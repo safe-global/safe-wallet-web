@@ -34,7 +34,7 @@ import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants
 import { TOOLTIP_TITLES } from '../../common/constants'
 import Track from '@/components/common/Track'
 import type { UpsertRecoveryFlowProps } from '.'
-import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
+import type { RecoveryStateItem } from '@/features/recovery/services/recovery-state'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'

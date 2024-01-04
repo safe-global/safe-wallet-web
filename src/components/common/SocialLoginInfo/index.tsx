@@ -1,6 +1,5 @@
 import WalletBalance from '@/components/common/WalletBalance'
 import { Badge, Box, Typography } from '@mui/material'
-import { type BigNumber } from 'ethers'
 import css from './styles.module.css'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -23,7 +22,7 @@ const SocialLoginInfo = ({
   chainInfo?: ChainInfo
   hideActions?: boolean
   size?: number
-  balance?: BigNumber | undefined
+  balance?: string
   showBalance?: boolean
 }) => {
   const socialWalletService = useSocialWallet()

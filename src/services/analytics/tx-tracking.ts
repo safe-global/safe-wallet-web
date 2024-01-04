@@ -1,6 +1,6 @@
 import { TX_TYPES } from '@/services/analytics/events/transactions'
 import { getTxDetails } from '@/services/tx/txDetails'
-import { isWalletConnectSafeApp } from '@/services/walletconnect/utils'
+import { isWalletConnectSafeApp } from '@/utils/gateway'
 import { SettingsInfoType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   isERC721Transfer,

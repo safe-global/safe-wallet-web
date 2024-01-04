@@ -5,15 +5,15 @@ import { ChevronRight } from '@mui/icons-material'
 import { Box } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import { RecoveryInfo } from '@/components/recovery/RecoveryInfo'
-import { RecoveryStatus } from '@/components/recovery/RecoveryStatus'
-import { RecoveryType } from '@/components/recovery/RecoveryType'
+import { RecoveryInfo } from '@/features/recovery/components/RecoveryInfo'
+import { RecoveryStatus } from '@/features/recovery/components/RecoveryStatus'
+import { RecoveryType } from '@/features/recovery/components/RecoveryType'
 import { AppRoutes } from '@/config/routes'
-import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 import css from './styles.module.css'
 
-export function PendingRecoveryListItem({ transaction }: { transaction: RecoveryQueueItem }): ReactElement {
+function PendingRecoveryListItem({ transaction }: { transaction: RecoveryQueueItem }): ReactElement {
   const router = useRouter()
   const { isMalicious } = transaction
 
@@ -41,3 +41,5 @@ export function PendingRecoveryListItem({ transaction }: { transaction: Recovery
     </Link>
   )
 }
+
+export default PendingRecoveryListItem

@@ -1,6 +1,6 @@
 import { type ReactElement, useEffect, useContext } from 'react'
 import { Grid, Typography } from '@mui/material'
-import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
+import SendToBlock from '@/components/tx/SendToBlock'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import type { NftTransferParams } from '.'
 import useSafeAddress from '@/hooks/useSafeAddress'

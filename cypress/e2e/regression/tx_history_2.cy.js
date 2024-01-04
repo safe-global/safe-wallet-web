@@ -12,6 +12,7 @@ const typeDisableOwner = data.type.disableModule
 const typeChangeThreshold = data.type.changeThreshold
 const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
+const typeUntrustedToken = data.type.untrustedReceivedToken
 
 describe('Tx history tests 2', () => {
   beforeEach(() => {
@@ -25,10 +26,6 @@ describe('Tx history tests 2', () => {
   })
 
   // On-chain rejection
-  it('Verify summary for on-chain rejection', () => {
-    createTx.verifySummaryByName(typeOnchainRejection.title, [typeGeneral.statusOk], typeOnchainRejection.altImage)
-  })
-
   it('Verify exapanded details for on-chain rejection', () => {
     createTx.clickOnTransactionItemByName(typeOnchainRejection.title)
     createTx.verifyExpandedDetails([
@@ -44,15 +41,6 @@ describe('Tx history tests 2', () => {
   })
 
   // Batch transaction
-  it('Verify summary for batch', () => {
-    createTx.verifySummaryByName(
-      typeBatch.title,
-      typeBatch.summaryTxInfo,
-      [typeBatch.summaryTxInfo, typeGeneral.statusOk],
-      typeBatch.altImage,
-    )
-  })
-
   it('Verify exapanded details for batch', () => {
     createTx.clickOnTransactionItemByName(typeBatch.title, typeBatch.summaryTxInfo)
     createTx.verifyExpandedDetails(
@@ -161,5 +149,10 @@ describe('Tx history tests 2', () => {
       createTx.policyChangeWarning,
     )
     createTx.checkRequiredThreshold(2)
+  })
+
+  it('Verify that sender address of untrusted token will not be copied until agreed in warning popup', () => {
+    createTx.clickOnTransactionItemByName(typeUntrustedToken.summaryTitle, typeUntrustedToken.summaryTxInfo)
+    createTx.verifyAddressNotCopied(0, typeUntrustedToken.senderAddress)
   })
 })

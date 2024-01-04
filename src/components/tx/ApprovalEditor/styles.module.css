@@ -19,6 +19,10 @@
   width: 100%;
 }
 
+.zeroValueApproval {
+  display: none;
+}
+
 .approvalAmount {
   text-align: right !important;
   padding-left: var(--space-1);

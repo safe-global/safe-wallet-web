@@ -26,6 +26,8 @@ const advancedDetails = '[data-testid="tx-advanced-details"]'
 const baseGas = '[data-testid="tx-bas-gas"]'
 const requiredConfirmation = '[data-testid="required-confirmations"]'
 const txDate = '[data-testid="tx-date"]'
+const spamTokenWarningIcon = '[data-testid="warning"]'
+const untrustedTokenWarningModal = '[data-testid="untrusted-token-warning"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -53,6 +55,30 @@ export function verifyNumberOfTransactions(count) {
 
 export function checkRequiredThreshold(count) {
   cy.get(requiredConfirmation).should('be.visible').and('include.text', count)
+}
+
+export function verifyAddressNotCopied(index, data) {
+  cy.get(copyIcon)
+    .parent()
+    .eq(index)
+    .trigger('click')
+    .wait(1000)
+    .then(() =>
+      cy.window().then((win) => {
+        win.navigator.clipboard.readText().then((text) => {
+          expect(text).not.to.contain(data)
+        })
+      }),
+    )
+  cy.get(untrustedTokenWarningModal).should('be.visible')
+}
+
+export function verifyWarningModalVisible() {
+  cy.get(untrustedTokenWarningModal).should('be.visible')
+}
+
+export function clickOnCopyBtn(index) {
+  cy.get(copyIcon).parent().eq(index).trigger('click')
 }
 
 export function verifyCopyIconWorks(index, data) {
@@ -143,6 +169,17 @@ export function collapseAllActions(data) {
 export function verifyActionListExists(data) {
   main.checkTextsExistWithinElement(transactionSideList, data)
   main.verifyElementsIsVisible([confirmationVisibilityBtn])
+}
+
+export function verifySpamIconIsDisplayed(name, token) {
+  cy.get(transactionItem)
+    .filter(':contains("' + name + '")')
+    .filter(':contains("' + token + '")')
+    .then(($elements) => {
+      cy.wrap($elements.first()).then(($element) => {
+        cy.wrap($element).find(spamTokenWarningIcon).should('be.visible')
+      })
+    })
 }
 
 export function verifySummaryByName(name, token, data, alt, altToken) {

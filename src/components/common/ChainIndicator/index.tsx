@@ -7,7 +7,7 @@ import { selectChainById, selectChains } from '@/store/chainsSlice'
 import css from './styles.module.css'
 import useChainId from '@/hooks/useChainId'
 import { Skeleton } from '@mui/material'
-import { isEmpty } from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 
 type ChainIndicatorProps = {
   chainId?: string

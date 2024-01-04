@@ -4,13 +4,13 @@ import css from './styles.module.css'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
-import NewTxMenu from '@/components/tx-flow/flows/NewTx'
+import { NewTxFlow } from '@/components/tx-flow/flows'
 
 const NewTxButton = (): ReactElement => {
   const { setTxFlow } = useContext(TxModalContext)
 
   const onClick = () => {
-    setTxFlow(<NewTxMenu />, undefined, false)
+    setTxFlow(<NewTxFlow />, undefined, false)
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 

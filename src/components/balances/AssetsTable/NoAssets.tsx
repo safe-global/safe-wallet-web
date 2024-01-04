@@ -1,28 +1,19 @@
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { Box, Button, FormControlLabel, Grid, Paper, Switch, Typography } from '@mui/material'
+import { Box, FormControlLabel, Grid, Paper, Switch, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import QRCode from '@/components/common/QRCode'
-import { AppRoutes } from '@/config/routes'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setQrShortName } from '@/store/settingsSlice'
-import AddIcon from '@mui/icons-material/Add'
+import BuyCryproButton from '@/components/common/BuyCryproButton'
 
 const NoAssets = () => {
-  const router = useRouter()
   const safeAddress = useSafeAddress()
   const chain = useCurrentChain()
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
   const qrPrefix = settings.shortName.qr ? `${chain?.shortName}:` : ''
   const qrCode = `${qrPrefix}${safeAddress}`
-  const [apps] = useRemoteSafeApps()
-
-  // @FIXME: use tags instead of name
-  const rampSafeApp = apps?.find((app) => app.name === 'Ramp Network')
 
   return (
     <Paper>
@@ -55,18 +46,9 @@ const NoAssets = () => {
             <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton hasExplorer avatarSize={24} />
           </Box>
 
-          {rampSafeApp && (
-            <Box alignSelf="flex-start">
-              <Link
-                href={{ pathname: AppRoutes.apps.index, query: { safe: router.query.safe, appUrl: rampSafeApp.url } }}
-                passHref
-              >
-                <Button variant="contained" size="small" startIcon={<AddIcon />}>
-                  Buy crypto
-                </Button>
-              </Link>
-            </Box>
-          )}
+          <Box alignSelf="flex-start">
+            <BuyCryproButton />
+          </Box>
         </Grid>
       </Grid>
     </Paper>

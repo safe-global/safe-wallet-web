@@ -3,7 +3,7 @@ import type { Transaction, TransactionListItem } from '@safe-global/safe-gateway
 
 import { isConflictHeaderListItem, isNoneConflictType, isTransactionListItem } from '@/utils/transaction-guards'
 import { sameAddress } from './addresses'
-import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 type GroupedTxs = Array<TransactionListItem | Transaction[]>
 

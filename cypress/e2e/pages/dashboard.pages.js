@@ -4,19 +4,14 @@ const connectAndTransactStr = 'Connect & transact'
 const transactionQueueStr = 'Pending transactions'
 const noTransactionStr = 'This Safe has no queued transactions'
 const overviewStr = 'Overview'
-const viewAssetsStr = 'View assets'
 const sendStr = 'Send'
 const receiveStr = 'Receive'
-const tokensStr = 'Tokens'
-const nftStr = 'NFTs'
 const viewAllStr = 'View all'
 const transactionBuilderStr = 'Use Transaction Builder'
-const walletConnectStr = 'Use WalletConnect'
 const safeAppStr = 'Safe Apps'
 const exploreSafeApps = 'Explore Safe Apps'
 
 const txBuilder = 'a[href*="tx-builder"]'
-const walletConnect = 'a[href*="wallet-connect"]'
 const safeSpecificLink = 'a[href*="&appUrl=http"]'
 
 export function verifyConnectTransactStrIsVisible() {
@@ -68,7 +63,7 @@ export function verifyFeaturedAppsSection() {
     cy.get(txBuilder).should('exist')
 
     // Featured apps have a Safe-specific link
-    cy.get(safeSpecificLink).should('have.length', 1)
+    cy.get(safeSpecificLink).should('have.length', 2)
   })
 }
 

@@ -6,13 +6,13 @@ import RecoveryPlus from '@/public/images/common/recovery-plus.svg'
 import useTxStepper from '../../useTxStepper'
 import { RemoveRecoveryFlowOverview } from './RemoveRecoveryFlowOverview'
 import { RemoveRecoveryFlowReview } from './RemoveRecoveryFlowReview'
-import type { RecoveryStateItem } from '@/services/recovery/recovery-state'
+import type { RecoveryStateItem } from '@/features/recovery/services/recovery-state'
 
 export type RecoveryFlowProps = {
   delayModifier: RecoveryStateItem
 }
 
-export function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactElement {
+function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactElement {
   const { step, nextStep, prevStep } = useTxStepper<undefined>(undefined, REMOVE_RECOVERY_CATEGORY)
 
   const steps = [
@@ -32,3 +32,5 @@ export function RemoveRecoveryFlow({ delayModifier }: RecoveryFlowProps): ReactE
     </TxLayout>
   )
 }
+
+export default RemoveRecoveryFlow

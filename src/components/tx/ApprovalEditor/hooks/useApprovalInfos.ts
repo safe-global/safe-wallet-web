@@ -1,6 +1,6 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
-import { ApprovalModule } from '@/services/security/modules/ApprovalModule'
+import { type Approval, ApprovalModule } from '@/services/security/modules/ApprovalModule'
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -14,6 +14,7 @@ export type ApprovalInfo = {
   spender: any
   amount: any
   amountFormatted: string
+  method: Approval['method']
 }
 
 const ApprovalModuleInstance = new ApprovalModule()
