@@ -24,7 +24,7 @@ import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
-import { isObjectEIP712TypedData } from '@/utils/safe-messages'
+import { isEIP712TypedData } from '@/utils/safe-messages'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -42,7 +42,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   useHighlightHiddenTab()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
-  const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
+  const isTypedMessage = method === Methods.signTypedMessage && isEIP712TypedData(message)
 
   const readOnlySignMessageLibContract = useMemo(
     () => getReadOnlySignMessageLibContract(chainId, safe.version),

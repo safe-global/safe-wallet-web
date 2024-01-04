@@ -1,5 +1,5 @@
 import { REDEFINE_API } from '@/config/constants'
-import { isObjectEIP712TypedData } from '@/utils/safe-messages'
+import { isEIP712TypedData } from '@/utils/safe-messages'
 import { normalizeTypedData } from '@/utils/web3'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
@@ -111,7 +111,7 @@ export type RedefineResponse = {
 export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefineModuleResponse> {
   static prepareMessage(request: RedefineModuleRequest): string {
     const { data, safeAddress, chainId } = request
-    if (isObjectEIP712TypedData(data)) {
+    if (isEIP712TypedData(data)) {
       const normalizedMsg = normalizeTypedData(data)
       return JSON.stringify(normalizedMsg)
     } else {
@@ -164,7 +164,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
           severity: redefineSeverityMap[issue.severity.label],
         })),
         balanceChange: result.data?.balanceChange,
-        simulation: isObjectEIP712TypedData(data) ? undefined : result.data?.simulation,
+        simulation: isEIP712TypedData(data) ? undefined : result.data?.simulation,
         errors: result.errors,
       },
     }
