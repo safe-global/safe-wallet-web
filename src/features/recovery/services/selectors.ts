@@ -16,7 +16,7 @@ export const selectDelayModifierByRecoverer = createSelector(
 )
 
 export const selectRecoveryQueues = createSelector([selectRecovery], (recovery) => {
-  return recovery?.flatMap(({ queue }) => queue).sort((a, b) => a.timestamp.sub(b.timestamp).toNumber())
+  return recovery?.flatMap(({ queue }) => queue).sort((a, b) => Number(a.timestamp - b.timestamp))
 })
 
 export const selectDelayModifierByTxHash = createSelector(

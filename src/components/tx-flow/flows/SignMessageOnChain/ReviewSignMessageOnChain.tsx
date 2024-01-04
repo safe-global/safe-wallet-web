@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
-import { useContext, useEffect, useMemo } from 'react'
-import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
+import { useContext, useEffect, useState } from 'react'
+import { useMemo } from 'react'
+import { hashMessage, TypedDataEncoder } from 'ethers'
 import { Box } from '@mui/system'
 import { Typography, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
@@ -25,6 +26,7 @@ import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
 import { isEIP712TypedData } from '@/utils/safe-messages'
+import useAsync from '@/hooks/useAsync'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -38,17 +40,22 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
-
   useHighlightHiddenTab()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isEIP712TypedData(message)
 
-  const readOnlySignMessageLibContract = useMemo(
-    () => getReadOnlySignMessageLibContract(chainId, safe.version),
+  const [readOnlySignMessageLibContract] = useAsync(
+    async () => getReadOnlySignMessageLibContract(chainId, safe.version),
     [chainId, safe.version],
   )
-  const signMessageAddress = readOnlySignMessageLibContract.getAddress()
+
+  const [signMessageAddress, setSignMessageAddress] = useState<string>('')
+
+  useEffect(() => {
+    if (!readOnlySignMessageLibContract) return
+    readOnlySignMessageLibContract.getAddress().then(setSignMessageAddress)
+  }, [readOnlySignMessageLibContract])
 
   const [decodedMessage, readableMessage] = useMemo(() => {
     if (isTextMessage) {
@@ -63,6 +70,8 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   useEffect(() => {
     let txData
 
+    if (!readOnlySignMessageLibContract) return
+
     if (isTextMessage) {
       txData = readOnlySignMessageLibContract.encode('signMessage', [hashMessage(getDecodedMessage(message))])
     } else if (isTypedMessage) {
@@ -75,7 +84,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       delete typesCopy.EIP712Domain
       txData = readOnlySignMessageLibContract.encode('signMessage', [
         // @ts-ignore
-        _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
+        TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
 

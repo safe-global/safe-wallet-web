@@ -1,6 +1,5 @@
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 import type { SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import useBalances from './useBalances'
 import useHiddenTokens from './useHiddenTokens'
@@ -29,10 +28,10 @@ const getVisibleFiatTotal = (balances: SafeBalanceResponse, hiddenAssets: string
     balances.items
       .reduce((acc, balanceItem) => {
         if (hiddenAssets.includes(balanceItem.tokenInfo.address)) {
-          return acc.sub(safeParseUnits(truncateNumber(balanceItem.fiatBalance), PRECISION) || 0)
+          return acc - BigInt(safeParseUnits(truncateNumber(balanceItem.fiatBalance), PRECISION) || 0)
         }
         return acc
-      }, BigNumber.from(balances.fiatTotal === '' ? 0 : safeParseUnits(truncateNumber(balances.fiatTotal), PRECISION)))
+      }, BigInt(balances.fiatTotal === '' ? 0 : safeParseUnits(truncateNumber(balances.fiatTotal), PRECISION) || 0))
       .toString(),
     PRECISION,
   )

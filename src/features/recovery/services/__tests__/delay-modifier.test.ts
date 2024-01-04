@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { KnownContracts } from '@gnosis.pm/zodiac'
 import type { Delay } from '@gnosis.pm/zodiac'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from 'ethers'
 
 import { _getZodiacContract, _isOfficialRecoveryDelayModifier } from '../delay-modifier'
 import * as proxies from '../proxies'

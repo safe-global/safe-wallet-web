@@ -1,6 +1,6 @@
 import Onboard, { type OnboardAPI } from '@web3-onboard/core'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { hexValue } from '@ethersproject/bytes'
+import { toBeHex } from 'ethers'
 import { getAllWallets, getRecommendedInjectedWallets } from '@/hooks/wallets/wallets'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
 import type { EnvState } from '@/store/settingsSlice'
@@ -17,7 +17,7 @@ export const createOnboard = (
   const wallets = getAllWallets(currentChain)
 
   const chains = chainConfigs.map((cfg) => ({
-    id: hexValue(parseInt(cfg.chainId)),
+    id: toBeHex(parseInt(cfg.chainId)),
     label: cfg.chainName,
     rpcUrl: rpcConfig?.[cfg.chainId] || getRpcServiceUrl(cfg.rpcUri),
     token: cfg.nativeCurrency.symbol,

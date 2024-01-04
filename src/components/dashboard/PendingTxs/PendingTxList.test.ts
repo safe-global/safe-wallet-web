@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { faker } from '@faker-js/faker'
 import { DetailedExecutionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { MultisigExecutionInfo, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
@@ -12,11 +11,11 @@ describe('_getTransactionsToDisplay', () => {
     const walletAddress = faker.finance.ethereumAddress()
     const safe = safeInfoBuilder().build()
     const recoveryQueue = [
-      { timestamp: BigNumber.from(1) },
-      { timestamp: BigNumber.from(2) },
-      { timestamp: BigNumber.from(3) },
-      { timestamp: BigNumber.from(4) },
-      { timestamp: BigNumber.from(5) },
+      { timestamp: BigInt(1) },
+      { timestamp: BigInt(2) },
+      { timestamp: BigInt(3) },
+      { timestamp: BigInt(4) },
+      { timestamp: BigInt(5) },
     ] as Array<RecoveryQueueItem>
     const queue = [] as Array<Transaction>
 
@@ -28,9 +27,9 @@ describe('_getTransactionsToDisplay', () => {
     const walletAddress = faker.finance.ethereumAddress()
     const safe = safeInfoBuilder().build()
     const recoveryQueue = [
-      { timestamp: BigNumber.from(1) },
-      { timestamp: BigNumber.from(2) },
-      { timestamp: BigNumber.from(3) },
+      { timestamp: BigInt(1) },
+      { timestamp: BigInt(2) },
+      { timestamp: BigInt(3) },
     ] as Array<RecoveryQueueItem>
     const actionableQueue = [
       {
@@ -58,9 +57,9 @@ describe('_getTransactionsToDisplay', () => {
     const walletAddress = faker.finance.ethereumAddress()
     const safe = safeInfoBuilder().build()
     const recoveryQueue = [
-      { timestamp: BigNumber.from(1) },
-      { timestamp: BigNumber.from(2) },
-      { timestamp: BigNumber.from(3) },
+      { timestamp: BigInt(1) },
+      { timestamp: BigInt(2) },
+      { timestamp: BigInt(3) },
     ] as Array<RecoveryQueueItem>
     const queue = [{ transaction: { id: '1' } }, { transaction: { id: '2' } }] as Array<Transaction>
 

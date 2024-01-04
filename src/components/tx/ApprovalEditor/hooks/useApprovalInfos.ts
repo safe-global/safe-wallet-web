@@ -4,7 +4,7 @@ import { type Approval, ApprovalModule } from '@/services/security/modules/Appro
 import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { ethers } from 'ethers'
+import { formatUnits } from 'ethers'
 import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 import { useMemo } from 'react'
 
@@ -45,9 +45,10 @@ export const useApprovalInfos = (
             tokenInfo = await getERC20TokenInfoOnChain(approval.tokenAddress)
           }
 
-          const amountFormatted = UNLIMITED_APPROVAL_AMOUNT.eq(approval.amount)
-            ? PSEUDO_APPROVAL_VALUES.UNLIMITED
-            : ethers.utils.formatUnits(approval.amount, tokenInfo?.decimals)
+          const amountFormatted =
+            UNLIMITED_APPROVAL_AMOUNT == approval.amount
+              ? PSEUDO_APPROVAL_VALUES.UNLIMITED
+              : formatUnits(approval.amount, tokenInfo?.decimals)
 
           return { ...approval, tokenInfo: tokenInfo, amountFormatted }
         }),

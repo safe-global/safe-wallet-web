@@ -1,10 +1,10 @@
 import { render, waitFor } from '@/tests/test-utils'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { ethers } from 'ethers'
+import { zeroPadValue } from 'ethers'
 import TransactionGuards from '..'
 
-const MOCK_GUARD = ethers.utils.hexZeroPad('0x1', 20)
+const MOCK_GUARD = zeroPadValue('0x01', 20)
 const EMPTY_LABEL = 'No transaction guard set'
 
 describe('TransactionGuards', () => {

@@ -2,7 +2,7 @@ import { getAllowanceModuleDeployment } from '@safe-global/safe-modules-deployme
 
 import type { AllowanceModule } from '@/types/contracts'
 import { AllowanceModule__factory } from '@/types/contracts'
-import type { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
+import type { JsonRpcProvider, JsonRpcSigner } from 'ethers'
 
 export const getSpendingLimitModuleAddress = (chainId: string): string | undefined => {
   const deployment = getAllowanceModuleDeployment({ network: chainId })

@@ -1,5 +1,5 @@
 import { renderHook } from '@/tests/test-utils'
-import { hexZeroPad, Interface } from 'ethers/lib/utils'
+import { zeroPadValue, Interface } from 'ethers'
 import { type ApprovalInfo, useApprovalInfos } from '@/components/tx/ApprovalEditor/hooks/useApprovalInfos'
 import { waitFor } from '@testing-library/react'
 import { createMockSafeTransaction } from '@/tests/transactions'
@@ -7,7 +7,6 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { ERC20__factory } from '@/types/contracts'
 import * as balances from '@/hooks/useBalances'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
-import { BigNumber } from '@ethersproject/bignumber'
 import * as getTokenInfo from '@/utils/tokens'
 
 const ERC20_INTERFACE = ERC20__factory.createInterface()
@@ -33,8 +32,8 @@ describe('useApprovalInfos', () => {
 
   it('returns an empty array if the transaction does not contain any approvals', async () => {
     const mockSafeTx = createMockSafeTransaction({
-      to: hexZeroPad('0x123', 20),
-      data: createNonApproveCallData(hexZeroPad('0x2', 20), '20'),
+      to: zeroPadValue('0x0123', 20),
+      data: createNonApproveCallData(zeroPadValue('0x02', 20), '20'),
       operation: OperationType.DelegateCall,
     })
 
@@ -49,15 +48,15 @@ describe('useApprovalInfos', () => {
     const testInterface = new Interface(['function approve(address, uint256)'])
 
     const mockSafeTx = createMockSafeTransaction({
-      to: hexZeroPad('0x123', 20),
-      data: testInterface.encodeFunctionData('approve', [hexZeroPad('0x2', 20), '123']),
+      to: zeroPadValue('0x0123', 20),
+      data: testInterface.encodeFunctionData('approve', [zeroPadValue('0x02', 20), '123']),
       operation: OperationType.Call,
     })
 
     const { result } = renderHook(() => useApprovalInfos(mockSafeTx))
 
     const mockApproval: ApprovalInfo = {
-      amount: BigNumber.from('123'),
+      amount: BigInt('123'),
       amountFormatted: '0.000000000000000123',
       spender: '0x0000000000000000000000000000000000000002',
       tokenAddress: '0x0000000000000000000000000000000000000123',
@@ -74,15 +73,15 @@ describe('useApprovalInfos', () => {
     const testInterface = new Interface(['function increaseAllowance(address, uint256)'])
 
     const mockSafeTx = createMockSafeTransaction({
-      to: hexZeroPad('0x123', 20),
-      data: testInterface.encodeFunctionData('increaseAllowance', [hexZeroPad('0x2', 20), '123']),
+      to: zeroPadValue('0x0123', 20),
+      data: testInterface.encodeFunctionData('increaseAllowance', [zeroPadValue('0x02', 20), '123']),
       operation: OperationType.Call,
     })
 
     const { result } = renderHook(() => useApprovalInfos(mockSafeTx))
 
     const mockApproval: ApprovalInfo = {
-      amount: BigNumber.from('123'),
+      amount: BigInt('123'),
       amountFormatted: '0.000000000000000123',
       spender: '0x0000000000000000000000000000000000000002',
       tokenAddress: '0x0000000000000000000000000000000000000123',
@@ -101,7 +100,7 @@ describe('useApprovalInfos', () => {
       fiatBalance: '40',
       fiatConversion: '1',
       tokenInfo: {
-        address: hexZeroPad('0x123', 20),
+        address: zeroPadValue('0x0123', 20),
         decimals: 18,
         logoUri: '',
         name: 'Hidden Token',
@@ -116,15 +115,15 @@ describe('useApprovalInfos', () => {
     const testInterface = new Interface(['function approve(address, uint256)'])
 
     const mockSafeTx = createMockSafeTransaction({
-      to: hexZeroPad('0x123', 20),
-      data: testInterface.encodeFunctionData('approve', [hexZeroPad('0x2', 20), '123']),
+      to: zeroPadValue('0x0123', 20),
+      data: testInterface.encodeFunctionData('approve', [zeroPadValue('0x02', 20), '123']),
       operation: OperationType.DelegateCall,
     })
 
     const { result } = renderHook(() => useApprovalInfos(mockSafeTx))
 
     const mockApproval: ApprovalInfo = {
-      amount: BigNumber.from('123'),
+      amount: BigInt('123'),
       amountFormatted: '0.000000000000000123',
       spender: '0x0000000000000000000000000000000000000002',
       tokenAddress: '0x0000000000000000000000000000000000000123',
@@ -150,15 +149,15 @@ describe('useApprovalInfos', () => {
     const testInterface = new Interface(['function approve(address, uint256)'])
 
     const mockSafeTx = createMockSafeTransaction({
-      to: hexZeroPad('0x123', 20),
-      data: testInterface.encodeFunctionData('approve', [hexZeroPad('0x2', 20), '123']),
+      to: zeroPadValue('0x0123', 20),
+      data: testInterface.encodeFunctionData('approve', [zeroPadValue('0x02', 20), '123']),
       operation: OperationType.DelegateCall,
     })
 
     const { result } = renderHook(() => useApprovalInfos(mockSafeTx))
 
     const mockApproval: ApprovalInfo = {
-      amount: BigNumber.from('123'),
+      amount: BigInt('123'),
       amountFormatted: '0.000000000000000123',
       spender: '0x0000000000000000000000000000000000000002',
       tokenAddress: '0x0000000000000000000000000000000000000123',

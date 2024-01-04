@@ -1,5 +1,5 @@
 import { COREKIT_STATUS, type UserInfo } from '@web3auth/mpc-core-kit'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { type ISocialWalletService } from '../interfaces'
 
 /**
@@ -67,7 +67,7 @@ class TestSocialWalletService implements ISocialWalletService {
   }
 
   exportSignerKey(password: string): Promise<string> {
-    return Promise.resolve(hexZeroPad('0x1', 20))
+    return Promise.resolve(toBeHex('0x1', 20))
   }
 }
 

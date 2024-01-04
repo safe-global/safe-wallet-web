@@ -5,7 +5,7 @@ import { type WalletModule } from '@web3-onboard/common'
 
 import * as web3 from '@/hooks/wallets/web3'
 import * as useMPC from '@/hooks/wallets/mpc/useMPC'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 
 const mockChain = chainBuilder()
   // @ts-expect-error - we are using a local FEATURES enum
@@ -69,7 +69,7 @@ describe('MPC Onboard module', () => {
       method: 'eth_estimateGas',
       params: [
         {
-          to: hexZeroPad('0x123', 20),
+          to: toBeHex('0x123', 20),
           value: '0',
           data: '0x',
         },
@@ -78,7 +78,7 @@ describe('MPC Onboard module', () => {
 
     expect(mockReadOnlySend).toHaveBeenCalledWith('eth_estimateGas', [
       {
-        to: hexZeroPad('0x123', 20),
+        to: toBeHex('0x123', 20),
         value: '0',
         data: '0x',
       },
@@ -87,7 +87,7 @@ describe('MPC Onboard module', () => {
 
   it('should call eth_accounts when eth_requestAccounts gets called', async () => {
     const mockReadOnlySend = jest.fn()
-    const mockMPCProviderRequest = jest.fn().mockImplementation(() => Promise.resolve(hexZeroPad('0x456', 20)))
+    const mockMPCProviderRequest = jest.fn().mockImplementation(() => Promise.resolve(toBeHex('0x456', 20)))
     jest.spyOn(web3, 'getWeb3ReadOnly').mockReturnValue({
       send: mockReadOnlySend,
     } as any)

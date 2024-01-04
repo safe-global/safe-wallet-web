@@ -1,13 +1,13 @@
-import { Interface } from 'ethers/lib/utils'
+import { Interface } from 'ethers'
 import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
-import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { SENTINEL_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { sameAddress } from '@/utils/addresses'
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import type { AddressEx, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import type { Provider } from 'ethers'
 
 export function getRecoveryProposalTransactions({
   safe,
@@ -100,16 +100,16 @@ export function getRecoveryProposalTransactions({
   }))
 }
 
-export function getRecoverySkipTransaction(
+export async function getRecoverySkipTransaction(
   recovery: RecoveryQueueItem,
-  provider: JsonRpcProvider,
-): MetaTransactionData {
+  provider: Provider,
+): Promise<MetaTransactionData> {
   const delayModifier = getModuleInstance(KnownContracts.DELAY, recovery.address, provider)
 
-  const newTxNonce = recovery.args.queueNonce.add(1)
+  const newTxNonce = recovery.args.queueNonce + 1n
 
   return {
-    to: delayModifier.address,
+    to: await delayModifier.getAddress(),
     value: '0',
     operation: OperationType.Call,
     data: delayModifier.interface.encodeFunctionData('setTxNonce', [newTxNonce]),

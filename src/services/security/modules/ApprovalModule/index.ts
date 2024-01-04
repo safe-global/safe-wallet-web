@@ -5,7 +5,7 @@ import {
 import { ERC20__factory } from '@/types/contracts'
 import { decodeMultiSendTxs } from '@/utils/transactions'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { id } from 'ethers/lib/utils'
+import { id } from 'ethers'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
 export type ApprovalModuleResponse = Approval[]
