@@ -53,7 +53,7 @@
     "@safe-global/safe-apps-sdk": "^9.0.0-next.1",
     "@safe-global/safe-core-sdk": "^3.3.5",
     "@safe-global/safe-core-sdk-utils": "^1.7.4",
-    "@safe-global/safe-deployments": "1.25.0",
+    "@safe-global/safe-deployments": "1.28.0",
     "@safe-global/safe-ethers-lib": "^1.9.4",
     "@safe-global/safe-gateway-typescript-sdk": "^3.13.3",
     "@safe-global/safe-modules-deployments": "^1.2.0",
