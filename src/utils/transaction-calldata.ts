@@ -1,5 +1,5 @@
-import { id } from 'ethers/lib/utils'
-import type { FunctionFragment } from 'ethers/lib/utils'
+import { id } from 'ethers'
+import type { FunctionFragment } from 'ethers'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 
 import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'

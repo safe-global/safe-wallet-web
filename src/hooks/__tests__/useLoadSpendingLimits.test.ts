@@ -1,6 +1,6 @@
 import * as spendingLimit from '@/services/contracts/spendingLimitContracts'
-import { JsonRpcProvider } from '@ethersproject/providers'
-import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { JsonRpcProvider } from 'ethers'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import type { AllowanceModule } from '@/types/contracts'
 import { ERC20__factory } from '@/types/contracts'
 import {
@@ -8,9 +8,8 @@ import {
   getTokenAllowanceForDelegate,
   getTokensForDelegate,
 } from '../loadables/useLoadSpendingLimits'
-import { BigNumber } from '@ethersproject/bignumber'
 import * as web3 from '../wallets/web3'
-import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
+import { keccak256, toUtf8Bytes } from 'ethers'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 
 const mockProvider = new JsonRpcProvider()
@@ -63,13 +62,7 @@ describe('getSpendingLimits', () => {
   it('should return a flat list of spending limits', async () => {
     const getDelegatesMock = jest.fn(() => ({ results: ['0x2', '0x3'] }))
     const getTokensMock = jest.fn(() => ['0x10', '0x11'])
-    const getTokenAllowanceMock = jest.fn(() => [
-      BigNumber.from(1),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-    ])
+    const getTokenAllowanceMock = jest.fn(() => [BigInt(1), BigInt(0), BigInt(0), BigInt(0), BigInt(0)])
 
     jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue('0x1')
     jest.spyOn(spendingLimit, 'getSpendingLimitContract').mockImplementation(
@@ -90,13 +83,7 @@ describe('getSpendingLimits', () => {
   it('should filter out empty allowances', async () => {
     const getDelegatesMock = jest.fn(() => ({ results: ['0x2', '0x3'] }))
     const getTokensMock = jest.fn(() => ['0x10', '0x11'])
-    const getTokenAllowanceMock = jest.fn(() => [
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-    ])
+    const getTokenAllowanceMock = jest.fn(() => [BigInt(0), BigInt(0), BigInt(0), BigInt(0), BigInt(0)])
 
     jest.spyOn(spendingLimit, 'getSpendingLimitModuleAddress').mockReturnValue('0x1')
     jest.spyOn(spendingLimit, 'getSpendingLimitContract').mockImplementation(
@@ -128,13 +115,7 @@ describe('getTokensForDelegate', () => {
 
 describe('getTokenAllowanceForDelegate', () => {
   it('should return contract values as strings', async () => {
-    const getTokenAllowanceMock = jest.fn(() => [
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-    ])
+    const getTokenAllowanceMock = jest.fn(() => [BigInt(0), BigInt(0), BigInt(0), BigInt(0), BigInt(0)])
     const mockContract = { getTokenAllowance: getTokenAllowanceMock } as unknown as AllowanceModule
 
     const result = await getTokenAllowanceForDelegate(mockContract, ZERO_ADDRESS, '0x1', '0x10', [])
@@ -148,13 +129,7 @@ describe('getTokenAllowanceForDelegate', () => {
   })
 
   it('should return tokenInfo from balance', async () => {
-    const getTokenAllowanceMock = jest.fn(() => [
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-    ])
+    const getTokenAllowanceMock = jest.fn(() => [BigInt(0), BigInt(0), BigInt(0), BigInt(0), BigInt(0)])
     const mockContract = { getTokenAllowance: getTokenAllowanceMock } as unknown as AllowanceModule
 
     const mockTokenInfoFromBalances = [
@@ -183,13 +158,7 @@ describe('getTokenAllowanceForDelegate', () => {
   })
 
   it('should return tokenInfo from on-chain if not in balance', async () => {
-    const getTokenAllowanceMock = jest.fn(() => [
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-      BigNumber.from(0),
-    ])
+    const getTokenAllowanceMock = jest.fn(() => [BigInt(0), BigInt(0), BigInt(0), BigInt(0), BigInt(0)])
 
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
       () =>

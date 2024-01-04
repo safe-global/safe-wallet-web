@@ -1,5 +1,5 @@
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
+import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 
 export const encodeSignatures = (safeTx: SafeTransaction, from?: string): string => {
   const owner = from?.toLowerCase()

@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import type { BigNumber } from 'ethers'
-import type Safe from '@safe-global/safe-core-sdk'
+import type Safe from '@safe-global/protocol-kit'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
@@ -14,12 +13,12 @@ import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useIsSafeOwner from './useIsSafeOwner'
 import { Errors, logError } from '@/services/exceptions'
 
-const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string): string => {
+const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string): string | undefined => {
   const EXEC_TX_METHOD = 'execTransaction'
 
   return safeSDK
     .getContractManager()
-    .safeContract.encode(EXEC_TX_METHOD, [
+    .safeContract?.encode(EXEC_TX_METHOD, [
       safeTx.data.to,
       safeTx.data.value,
       safeTx.data.data,
@@ -33,14 +32,14 @@ const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string)
     ])
 }
 
-const incrementByPercentage = (value: BigNumber, percentage: number): BigNumber => {
-  return value.mul(100 + percentage).div(100)
+const incrementByPercentage = (value: bigint, percentage: bigint) => {
+  return (value * (BigInt(100) + percentage)) / BigInt(100)
 }
 
 const useGasLimit = (
   safeTx?: SafeTransaction,
 ): {
-  gasLimit?: BigNumber
+  gasLimit?: bigint
   gasLimitError?: Error
   gasLimitLoading: boolean
 } => {
@@ -53,7 +52,7 @@ const useGasLimit = (
   const currentChainId = useChainId()
   const hasSafeTxGas = !!safeTx?.data?.safeTxGas
 
-  const encodedSafeTx = useMemo<string>(() => {
+  const encodedSafeTx = useMemo<string | undefined>(() => {
     if (!safeTx || !safeSDK || !walletAddress) {
       return ''
     }
@@ -65,7 +64,7 @@ const useGasLimit = (
     [safeTx?.data.operation],
   )
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>(() => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint>(() => {
     if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return
 
     return web3ReadOnly
@@ -79,7 +78,7 @@ const useGasLimit = (
         // Due to a bug in Nethermind estimation, we need to increment the gasLimit by 30%
         // when the safeTxGas is defined and not 0. Currently Nethermind is used only for Gnosis Chain.
         if (currentChainId === chains.gno && hasSafeTxGas) {
-          const incrementPercentage = 30 // value defined in %, ex. 30%
+          const incrementPercentage = BigInt(30) // value defined in %, ex. 30%
           return incrementByPercentage(gasLimit, incrementPercentage)
         }
 

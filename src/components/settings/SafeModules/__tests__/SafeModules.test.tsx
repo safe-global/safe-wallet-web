@@ -2,10 +2,10 @@ import { render, waitFor } from '@/tests/test-utils'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import SafeModules from '..'
 import type { AddressEx, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { ethers } from 'ethers'
+import { zeroPadValue } from 'ethers'
 
-const MOCK_MODULE_1 = ethers.utils.hexZeroPad('0x1', 20)
-const MOCK_MODULE_2 = ethers.utils.hexZeroPad('0x2', 20)
+const MOCK_MODULE_1 = zeroPadValue('0x01', 20)
+const MOCK_MODULE_2 = zeroPadValue('0x02', 20)
 
 describe('SafeModules', () => {
   it('should render placeholder label without any modules', async () => {

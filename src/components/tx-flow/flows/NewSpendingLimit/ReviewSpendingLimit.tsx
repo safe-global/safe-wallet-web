@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useContext } from 'react'
 import { useSelector } from 'react-redux'
-import { BigNumber } from 'ethers'
 import { Typography, Grid, Alert } from '@mui/material'
 
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
@@ -53,7 +52,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   }
 
   const existingAmount = existingSpendingLimit
-    ? formatVisualAmount(BigNumber.from(existingSpendingLimit?.amount), decimals)
+    ? formatVisualAmount(BigInt(existingSpendingLimit?.amount), decimals)
     : undefined
 
   const oldResetTime = existingSpendingLimit

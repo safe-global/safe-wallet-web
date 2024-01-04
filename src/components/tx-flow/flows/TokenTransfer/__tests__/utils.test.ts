@@ -1,6 +1,5 @@
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import { type SafeBalanceResponse, type TokenInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
-import { BigNumber } from 'ethers'
 import { useTokenAmount, useVisibleTokens } from '@/components/tx-flow/flows/TokenTransfer/utils'
 import { renderHook } from '@/tests/test-utils'
 import * as spendingLimit from '@/hooks/useSpendingLimit'
@@ -17,7 +16,7 @@ describe('TokenTransfer utils', () => {
     it('should return a totalAmount of 0 if there is no token', () => {
       const { result } = renderHook(() => useTokenAmount(undefined))
 
-      expect(result.current.totalAmount).toStrictEqual(BigNumber.from(0))
+      expect(result.current.totalAmount).toStrictEqual(BigInt(0))
     })
 
     it('should return the totalAmount if there is a token', () => {
@@ -29,7 +28,7 @@ describe('TokenTransfer utils', () => {
       }
       const { result } = renderHook(() => useTokenAmount(mockToken))
 
-      expect(result.current.totalAmount).toStrictEqual(BigNumber.from(mockToken.balance))
+      expect(result.current.totalAmount).toStrictEqual(BigInt(mockToken.balance))
     })
 
     it('should return a spendingLimitAmount of 0 if there is no spending limit token', () => {
@@ -37,7 +36,7 @@ describe('TokenTransfer utils', () => {
 
       const { result } = renderHook(() => useTokenAmount(undefined))
 
-      expect(result.current.spendingLimitAmount).toStrictEqual(BigNumber.from(0))
+      expect(result.current.spendingLimitAmount).toStrictEqual(BigInt(0))
     })
 
     it('should return the remaining spending limit amount for a token', () => {
@@ -55,7 +54,7 @@ describe('TokenTransfer utils', () => {
 
       const { result } = renderHook(() => useTokenAmount(undefined))
 
-      expect(result.current.spendingLimitAmount).toStrictEqual(BigNumber.from('70'))
+      expect(result.current.spendingLimitAmount).toStrictEqual(BigInt('70'))
     })
   })
 

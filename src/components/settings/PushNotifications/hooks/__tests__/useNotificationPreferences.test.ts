@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto'
 import { set, setMany } from 'idb-keyval'
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 
 import {
   createPushNotificationUuidIndexedDb,
@@ -61,8 +61,8 @@ describe('useNotificationPreferences', () => {
     describe('_getAllPreferenceEntries', () => {
       it('should get all preference entries', async () => {
         const chainId1 = '1'
-        const safeAddress1 = hexZeroPad('0x1', 20)
-        const safeAddress2 = hexZeroPad('0x1', 20)
+        const safeAddress1 = toBeHex('0x1', 20)
+        const safeAddress2 = toBeHex('0x1', 20)
 
         const chainId2 = '2'
 
@@ -98,8 +98,8 @@ describe('useNotificationPreferences', () => {
     describe('_deleteManyPreferenceKeys', () => {
       it('should delete many preference keys', async () => {
         const chainId1 = '1'
-        const safeAddress1 = hexZeroPad('0x1', 20)
-        const safeAddress2 = hexZeroPad('0x1', 20)
+        const safeAddress1 = toBeHex('0x1', 20)
+        const safeAddress2 = toBeHex('0x1', 20)
 
         const chainId2 = '2'
 
@@ -142,7 +142,7 @@ describe('useNotificationPreferences', () => {
     describe('getAllPreferences', () => {
       it('should return all existing preferences', async () => {
         const chainId = '1'
-        const safeAddress = hexZeroPad('0x1', 20)
+        const safeAddress = toBeHex('0x1', 20)
 
         const preferences = {
           [`${chainId}:${safeAddress}`]: {
@@ -165,7 +165,7 @@ describe('useNotificationPreferences', () => {
     describe('getPreferences', () => {
       it('should return existing Safe preferences', async () => {
         const chainId = '1'
-        const safeAddress = hexZeroPad('0x1', 20)
+        const safeAddress = toBeHex('0x1', 20)
 
         const preferences = {
           [`${chainId}:${safeAddress}`]: {
@@ -192,8 +192,8 @@ describe('useNotificationPreferences', () => {
         const { result } = renderHook(() => useNotificationPreferences())
 
         const chainId1 = '1'
-        const safeAddress1 = hexZeroPad('0x1', 20)
-        const safeAddress2 = hexZeroPad('0x1', 20)
+        const safeAddress1 = toBeHex('0x1', 20)
+        const safeAddress2 = toBeHex('0x1', 20)
 
         const chainId2 = '2'
 
@@ -245,8 +245,8 @@ describe('useNotificationPreferences', () => {
 
       it('should hydrate accross instances', async () => {
         const chainId1 = '1'
-        const safeAddress1 = hexZeroPad('0x1', 20)
-        const safeAddress2 = hexZeroPad('0x1', 20)
+        const safeAddress1 = toBeHex('0x1', 20)
+        const safeAddress2 = toBeHex('0x1', 20)
 
         const chainId2 = '2'
         const { result: instance1 } = renderHook(() => useNotificationPreferences())
@@ -285,7 +285,7 @@ describe('useNotificationPreferences', () => {
     describe('updatePreferences', () => {
       it('should update preferences, then hydrate the preferences state', async () => {
         const chainId = '1'
-        const safeAddress = hexZeroPad('0x1', 20)
+        const safeAddress = toBeHex('0x1', 20)
 
         const preferences = {
           [`${chainId}:${safeAddress}`]: {
@@ -322,8 +322,8 @@ describe('useNotificationPreferences', () => {
     describe('deletePreferences', () => {
       it('should delete preferences, then hydrate the preferences state', async () => {
         const chainId1 = '1'
-        const safeAddress1 = hexZeroPad('0x1', 20)
-        const safeAddress2 = hexZeroPad('0x1', 20)
+        const safeAddress1 = toBeHex('0x1', 20)
+        const safeAddress2 = toBeHex('0x1', 20)
 
         const chainId2 = '2'
 
@@ -366,8 +366,8 @@ describe('useNotificationPreferences', () => {
 
       it('should delete preferences, then hydrate the preferences state', async () => {
         const chainId1 = '1'
-        const safeAddress1 = hexZeroPad('0x1', 20)
-        const safeAddress2 = hexZeroPad('0x1', 20)
+        const safeAddress1 = toBeHex('0x1', 20)
+        const safeAddress2 = toBeHex('0x1', 20)
 
         const chainId2 = '2'
 
@@ -412,8 +412,8 @@ describe('useNotificationPreferences', () => {
     describe('deleteAllChainPreferences', () => {
       it('should delete per chain, then hydrate the preferences state', async () => {
         const chainId1 = '1'
-        const safeAddress1 = hexZeroPad('0x1', 20)
-        const safeAddress2 = hexZeroPad('0x1', 20)
+        const safeAddress1 = toBeHex('0x1', 20)
+        const safeAddress2 = toBeHex('0x1', 20)
 
         const chainId2 = '2'
 

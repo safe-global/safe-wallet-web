@@ -1,8 +1,6 @@
-import { hashMessage } from 'ethers/lib/utils'
+import { getBytes, hashMessage, type TypedDataDomain, type JsonRpcSigner } from 'ethers'
 import { gte } from 'semver'
-import { adjustVInSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
-import { ethers } from 'ethers'
-import type { providers, TypedDataDomain } from 'ethers'
+import { adjustVInSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 
 import { hashTypedData } from '@/utils/web3'
 import { isValidAddress } from './validation'
@@ -109,7 +107,7 @@ export const isOffchainEIP1271Supported = (
 }
 
 export const tryOffChainMsgSigning = async (
-  signer: providers.JsonRpcSigner,
+  signer: JsonRpcSigner,
   safe: SafeInfo,
   message: SafeMessage['message'],
 ): Promise<string> => {
@@ -119,7 +117,7 @@ export const tryOffChainMsgSigning = async (
     try {
       if (signingMethod === 'eth_signTypedData') {
         const typedData = generateSafeMessageTypedData(safe, message)
-        const signature = await signer._signTypedData(
+        const signature = await signer.signTypedData(
           typedData.domain as TypedDataDomain,
           typedData.types,
           typedData.message,
@@ -133,7 +131,7 @@ export const tryOffChainMsgSigning = async (
         const signerAddress = await signer.getAddress()
 
         const messageHash = generateSafeMessageHash(safe, message)
-        const signature = await signer.signMessage(ethers.utils.arrayify(messageHash))
+        const signature = await signer.signMessage(getBytes(messageHash))
 
         return adjustVInSignature(signingMethod, signature, messageHash, signerAddress)
       }

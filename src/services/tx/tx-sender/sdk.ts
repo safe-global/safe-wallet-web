@@ -1,18 +1,18 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import type Safe from '@safe-global/safe-core-sdk'
-import EthersAdapter from '@safe-global/safe-ethers-lib'
+import type Safe from '@safe-global/protocol-kit'
+import { EthersAdapter } from '@safe-global/protocol-kit'
 import { ethers } from 'ethers'
 import { isWalletRejection, isHardwareWallet } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
+import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '@/utils/safe-versions'
 import { createWeb3 } from '@/hooks/wallets/web3'
-import { hexValue } from 'ethers/lib/utils'
+import { toQuantity } from 'ethers'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import type { JsonRpcSigner } from '@ethersproject/providers'
+import type { JsonRpcSigner } from 'ethers'
 import { asError } from '@/services/exceptions/utils'
 
 export const getAndValidateSafeSDK = (): Safe => {
@@ -39,7 +39,7 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): P
     return wallets ? getConnectedWallet(wallets) : null
   }
 
-  const didSwitch = await onboard.setChain({ chainId: hexValue(parseInt(chainId)) })
+  const didSwitch = await onboard.setChain({ chainId: toQuantity(parseInt(chainId)) })
   if (!didSwitch) {
     return currentWallet
   }
@@ -98,12 +98,16 @@ export const getAssertedChainSigner = async (
  * dealing with smart-contract wallet owners
  */
 export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
+  // console.log('getUncheckedSafeSDK', onboard, chainId)
   const signer = await getAssertedChainSigner(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 
   const ethAdapter = new EthersAdapter({
     ethers,
-    signerOrProvider: signer.connectUnchecked(),
+    // TODO: in etherhs v6 this method is no longer existing
+    // we should find out if this is still necessary
+    // signerOrProvider: signer.getUncheckedSigner(),
+    signerOrProvider: signer,
   })
 
   return sdk.connect({ ethAdapter })

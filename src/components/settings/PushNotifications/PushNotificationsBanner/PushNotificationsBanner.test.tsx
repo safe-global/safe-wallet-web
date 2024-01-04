@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import * as tracking from '@/services/analytics'
 import { set } from 'idb-keyval'
 import * as navigation from 'next/navigation'
@@ -102,7 +102,7 @@ describe('PushNotificationsBanner', () => {
       window.localStorage.clear()
 
       jest.spyOn(navigation, 'useParams').mockReturnValue({
-        safe: `eth:${hexZeroPad('0x123', 20)}`,
+        safe: `eth:${toBeHex('0x123', 20)}`,
       })
     })
 
@@ -118,7 +118,7 @@ describe('PushNotificationsBanner', () => {
       const result = render(ui, {
         routerProps: {
           query: {
-            safe: `eth:${hexZeroPad('0x123', 20)}`,
+            safe: `eth:${toBeHex('0x123', 20)}`,
           },
         },
         initialReduxState: {
@@ -134,7 +134,7 @@ describe('PushNotificationsBanner', () => {
           },
           addedSafes: {
             '1': {
-              [hexZeroPad('0x123', 20)]: {},
+              [toBeHex('0x123', 20)]: {},
             } as unknown as AddedSafesOnChain,
           },
           safeInfo: {
@@ -143,7 +143,7 @@ describe('PushNotificationsBanner', () => {
             data: {
               chainId: '1',
               address: {
-                value: hexZeroPad('0x123', 20),
+                value: toBeHex('0x123', 20),
               },
             } as unknown as SafeInfo,
           },
@@ -165,7 +165,7 @@ describe('PushNotificationsBanner', () => {
         {
           routerProps: {
             query: {
-              safe: `eth:${hexZeroPad('0x123', 20)}`,
+              safe: `eth:${toBeHex('0x123', 20)}`,
             },
           },
           initialReduxState: {
@@ -181,7 +181,7 @@ describe('PushNotificationsBanner', () => {
             },
             addedSafes: {
               '1': {
-                [hexZeroPad('0x123', 20)]: {},
+                [toBeHex('0x123', 20)]: {},
               } as unknown as AddedSafesOnChain,
             },
             safeInfo: {
@@ -190,7 +190,7 @@ describe('PushNotificationsBanner', () => {
               data: {
                 chainId: '1',
                 address: {
-                  value: hexZeroPad('0x123', 20),
+                  value: toBeHex('0x123', 20),
                 },
               } as unknown as SafeInfo,
             },
@@ -211,7 +211,7 @@ describe('PushNotificationsBanner', () => {
         {
           routerProps: {
             query: {
-              safe: `eth:${hexZeroPad('0x123', 20)}`,
+              safe: `eth:${toBeHex('0x123', 20)}`,
             },
           },
           initialReduxState: {
@@ -227,7 +227,7 @@ describe('PushNotificationsBanner', () => {
             },
             addedSafes: {
               '1': {
-                [hexZeroPad('0x123', 20)]: {},
+                [toBeHex('0x123', 20)]: {},
               } as unknown as AddedSafesOnChain,
             },
             safeInfo: {
@@ -236,7 +236,7 @@ describe('PushNotificationsBanner', () => {
               data: {
                 chainId: '1',
                 address: {
-                  value: hexZeroPad('0x123', 20),
+                  value: toBeHex('0x123', 20),
                 },
               } as unknown as SafeInfo,
             },
@@ -250,7 +250,7 @@ describe('PushNotificationsBanner', () => {
     it('should not show the banner if the user has dismissed it', async () => {
       window.localStorage.setItem(
         'SAFE_v2__dismissPushNotifications',
-        JSON.stringify({ '1': { [hexZeroPad('0x123', 20)]: true } }),
+        JSON.stringify({ '1': { [toBeHex('0x123', 20)]: true } }),
       )
 
       const result = render(
@@ -271,7 +271,7 @@ describe('PushNotificationsBanner', () => {
             },
             addedSafes: {
               '1': {
-                [hexZeroPad('0x123', 20)]: {},
+                [toBeHex('0x123', 20)]: {},
               } as unknown as AddedSafesOnChain,
             },
             safeInfo: {
@@ -280,7 +280,7 @@ describe('PushNotificationsBanner', () => {
               data: {
                 chainId: '1',
                 address: {
-                  value: hexZeroPad('0x123', 20),
+                  value: toBeHex('0x123', 20),
                 },
               } as unknown as SafeInfo,
             },
@@ -320,7 +320,7 @@ describe('PushNotificationsBanner', () => {
               data: {
                 chainId: '1',
                 address: {
-                  value: hexZeroPad('0x123', 20),
+                  value: toBeHex('0x123', 20),
                 },
               } as unknown as SafeInfo,
             },
@@ -333,9 +333,9 @@ describe('PushNotificationsBanner', () => {
 
     it('should not show the banner if the user has already registered for notifications', () => {
       set(
-        `1:${hexZeroPad('0x123', 20)}`, // Registered
+        `1:${toBeHex('0x123', 20)}`, // Registered
         {
-          safeAddress: hexZeroPad('0x123', 20),
+          safeAddress: toBeHex('0x123', 20),
           chainId: '1',
           preferences: {},
         },
@@ -360,7 +360,7 @@ describe('PushNotificationsBanner', () => {
             },
             addedSafes: {
               '1': {
-                [hexZeroPad('0x123', 20)]: {},
+                [toBeHex('0x123', 20)]: {},
               } as unknown as AddedSafesOnChain,
             },
             safeInfo: {
@@ -369,7 +369,7 @@ describe('PushNotificationsBanner', () => {
               data: {
                 chainId: '1',
                 address: {
-                  value: hexZeroPad('0x123', 20),
+                  value: toBeHex('0x123', 20),
                 },
               } as unknown as SafeInfo,
             },

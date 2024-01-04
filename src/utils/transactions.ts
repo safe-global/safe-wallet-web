@@ -30,9 +30,9 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
 import { Multi_send__factory } from '@/types/contracts'
-import { ethers } from 'ethers'
+import { toBeHex, AbiCoder } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
-import { id } from 'ethers/lib/utils'
+import { id } from 'ethers'
 import { isEmptyHexData } from '@/utils/hex'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
@@ -100,13 +100,13 @@ const getSignatures = (confirmations: Record<string, string>) => {
     }, '0x')
 }
 
-export const getMultiSendTxs = (
+export const getMultiSendTxs = async (
   txs: TransactionDetails[],
   chain: ChainInfo,
   safeAddress: string,
   safeVersion: string,
-): MetaTransactionData[] => {
-  const readOnlySafeContract = getReadOnlyGnosisSafeContract(chain, safeVersion)
+): Promise<MetaTransactionData[]> => {
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
 
   return txs
     .map((tx) => {
@@ -256,9 +256,9 @@ export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransactio
     // Decode operation, to, value, dataLength
     let txTo, txValue, txDataBytesLength
     try {
-      ;[, txTo, txValue, txDataBytesLength] = ethers.utils.defaultAbiCoder.decode(
+      ;[, txTo, txValue, txDataBytesLength] = AbiCoder.defaultAbiCoder().decode(
         ['uint8', 'address', 'uint256', 'uint256'],
-        ethers.utils.hexZeroPad(txDataEncoded, 32 * 4),
+        toBeHex(txDataEncoded, 32 * 4),
       )
     } catch (e) {
       logError(Errors._809, e)

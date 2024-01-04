@@ -6,7 +6,6 @@ import { relativeTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useContext, useMemo } from 'react'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
-import { BigNumber } from '@ethersproject/bignumber'
 import { RemoveSpendingLimitFlow } from '@/components/tx-flow/flows'
 import { TxModalContext } from '@/components/tx-flow'
 import Track from '@/components/common/Track'
@@ -81,10 +80,10 @@ export const SpendingLimitsTable = ({
       isLoading
         ? SKELETON_ROWS
         : spendingLimits.map((spendingLimit) => {
-            const amount = BigNumber.from(spendingLimit.amount)
+            const amount = BigInt(spendingLimit.amount)
             const formattedAmount = safeFormatUnits(amount, spendingLimit.token.decimals)
 
-            const spent = BigNumber.from(spendingLimit.spent)
+            const spent = BigInt(spendingLimit.spent)
             const formattedSpent = safeFormatUnits(spent, spendingLimit.token.decimals)
 
             return {

@@ -1,7 +1,7 @@
 import * as store from '@/store'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { act, renderHook, waitFor } from '@/tests/test-utils'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import useLoadBalances from '../loadables/useLoadBalances'
 import * as SafeGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-apps-sdk'
@@ -9,7 +9,7 @@ import { FEATURES } from '@/utils/chains'
 import * as useChainId from '@/hooks/useChainId'
 import { TOKEN_LISTS } from '@/store/settingsSlice'
 
-const safeAddress = hexZeroPad('0x1234', 20)
+const safeAddress = toBeHex('0x1234', 20)
 
 const mockBalanceEUR = {
   fiatTotal: '1001',
@@ -19,7 +19,7 @@ const mockBalanceEUR = {
       fiatBalance: '1001',
       fiatConversion: '1',
       tokenInfo: {
-        address: hexZeroPad('0x3', 20),
+        address: toBeHex('0x3', 20),
         decimals: 18,
         logoUri: '',
         name: 'sEuro',
@@ -38,7 +38,7 @@ const mockBalanceUSD = {
       fiatBalance: '1001',
       fiatConversion: '1',
       tokenInfo: {
-        address: hexZeroPad('0x3', 20),
+        address: toBeHex('0x3', 20),
         decimals: 18,
         logoUri: '',
         name: 'DAI',
@@ -68,7 +68,7 @@ const mockBalanceAllTokens = {
       fiatBalance: '1000',
       fiatConversion: '1000',
       tokenInfo: {
-        address: hexZeroPad('0x1', 20),
+        address: toBeHex('0x1', 20),
         decimals: 18,
         logoUri: '',
         name: 'First token',
@@ -81,7 +81,7 @@ const mockBalanceAllTokens = {
       fiatBalance: '4',
       fiatConversion: '4',
       tokenInfo: {
-        address: hexZeroPad('0x2', 20),
+        address: toBeHex('0x2', 20),
         decimals: 18,
         logoUri: '',
         name: 'Second token',
@@ -141,7 +141,7 @@ describe('useLoadBalances', () => {
   })
 
   test('pass correct currency and reload on currency change', async () => {
-    const safeAddress = hexZeroPad('0x1234', 20)
+    const safeAddress = toBeHex('0x1234', 20)
     const mockGetBalances = jest
       .spyOn(SafeGatewaySDK, 'getBalances')
       .mockImplementation(async (chainId, address, currency, query) => {

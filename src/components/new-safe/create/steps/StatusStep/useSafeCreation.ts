@@ -24,7 +24,7 @@ import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
-import type { DeploySafeProps } from '@safe-global/safe-core-sdk'
+import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { usePendingSafe } from './usePendingSafe'
 
 export enum SafeCreationStatus {
@@ -94,7 +94,7 @@ export const useSafeCreation = (
           saltNonce,
         }
 
-        const safeDeployProps = getSafeDeployProps(
+        const safeDeployProps = await getSafeDeployProps(
           safeParams,
           (txHash) => createSafeCallback(txHash, tx),
           chain.chainId,
