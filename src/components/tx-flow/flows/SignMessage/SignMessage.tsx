@@ -238,7 +238,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
 
-          <Accordion sx={{ mb: 2, mt: 2, '&.Mui-expanded': { mt: 2 } }}>
+          <Accordion sx={{ my: 2, '&.Mui-expanded': { mt: 2 } }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>SafeMessage details</AccordionSummary>
             <AccordionDetails>
               <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
@@ -266,7 +266,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
               }
             >
               <MsgSigners
-                msg={safeMessage || createSkeletonMessage(safe.threshold)}
+                msg={safeMessage ?? createSkeletonMessage(safe.threshold)}
                 showOnlyConfirmations
                 showMissingSignatures
                 backgroundColor={palette.info.background}
