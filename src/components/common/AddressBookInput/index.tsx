@@ -45,20 +45,6 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
       }
     : undefined
 
-  if (addressBook[addressValue]) {
-    const fieldError = get(formState.errors, name)
-
-    return (
-      <Box data-testid="address-book-recipient" onClick={() => setValue(name, '')}>
-        <AddressInputReadOnly
-          address={addressValue}
-          label={fieldError?.message || (typeof props.label === 'string' ? props.label : 'Sending to')}
-          error={!!fieldError}
-        />
-      </Box>
-    )
-  }
-
   return (
     <>
       <Autocomplete
@@ -84,17 +70,35 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
             <EthHashInfo address={option.label} name={option.name} shortAddress={false} copyAddress={false} />
           </Typography>
         )}
-        renderInput={(params) => (
-          <AddressInput
-            {...params}
-            {...props}
-            focused={props.focused || !addressValue}
-            name={name}
-            onOpenListClick={hasVisibleOptions ? handleOpenAutocomplete : undefined}
-            isAutocompleteOpen={open}
-            onAddressBookClick={onAddressBookClick}
-          />
-        )}
+        renderInput={(params) => {
+          const fieldError = get(formState.errors, name)
+
+          return (
+            <>
+              {addressBook[addressValue] !== undefined && (
+                <Box data-testid="address-book-recipient" onClick={() => setValue(name, '')}>
+                  <AddressInputReadOnly
+                    address={addressValue}
+                    label={fieldError?.message || (typeof props.label === 'string' ? props.label : 'Sending to')}
+                    error={!!fieldError}
+                  />
+                </Box>
+              )}
+              {/** We always render the AddressInput as it handles the input validation */}
+              <Box sx={{ display: addressBook[addressValue] !== undefined ? 'none' : undefined }}>
+                <AddressInput
+                  {...params}
+                  {...props}
+                  focused={props.focused || !addressValue}
+                  name={name}
+                  onOpenListClick={hasVisibleOptions ? handleOpenAutocomplete : undefined}
+                  isAutocompleteOpen={open}
+                  onAddressBookClick={onAddressBookClick}
+                />
+              </Box>
+            </>
+          )
+        }}
       />
       {canAdd ? (
         <Typography variant="body2" className={css.unknownAddress}>
