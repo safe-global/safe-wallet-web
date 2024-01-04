@@ -34,10 +34,10 @@ export const MultisendActionsHeader = ({
     <div className={classnames(css.actionsHeader, { [css.compactHeader]: compact })}>
       {title}
       <Stack direction="row" divider={<Divider className={css.divider} />}>
-        <Button onClick={onClickAll(true)} variant="text">
+        <Button data-testid="expande-all-btn" onClick={onClickAll(true)} variant="text">
           Expand all
         </Button>
-        <Button onClick={onClickAll(false)} variant="text">
+        <Button data-testid="collapse-all-btn" onClick={onClickAll(false)} variant="text">
           Collapse all
         </Button>
       </Stack>

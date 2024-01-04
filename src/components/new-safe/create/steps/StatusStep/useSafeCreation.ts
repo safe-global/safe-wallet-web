@@ -15,6 +15,7 @@ import {
   SAFE_CREATION_ERROR_KEY,
   showSafeCreationError,
   relaySafeCreation,
+  estimateSafeCreationGas,
 } from '@/components/new-safe/create/logic'
 import { useAppDispatch } from '@/store'
 import { closeByGroupKey } from '@/store/notificationsSlice'
@@ -87,22 +88,30 @@ export const useSafeCreation = (
       } else {
         const tx = await getSafeCreationTxInfo(provider, owners, threshold, saltNonce, chain, wallet)
 
-        const safeParams = getSafeDeployProps(
-          {
-            threshold,
-            owners: owners.map((owner) => owner.address),
-            saltNonce,
-          },
+        const safeParams = {
+          threshold,
+          owners: owners.map((owner) => owner.address),
+          saltNonce,
+        }
+
+        const safeDeployProps = getSafeDeployProps(
+          safeParams,
           (txHash) => createSafeCallback(txHash, tx),
           chain.chainId,
         )
 
+        const gasLimit = await estimateSafeCreationGas(chain, provider, tx.from, safeParams)
+
         const options: DeploySafeProps['options'] = isEIP1559
-          ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
-          : { gasPrice: maxFeePerGas?.toString() }
+          ? {
+              maxFeePerGas: maxFeePerGas?.toString(),
+              maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
+              gasLimit: gasLimit.toString(),
+            }
+          : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit.toString() }
 
         await createNewSafe(provider, {
-          ...safeParams,
+          ...safeDeployProps,
           options,
         })
         setStatus(SafeCreationStatus.SUCCESS)

@@ -157,7 +157,13 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
             <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
               Back
             </Button>
-            <Button type="submit" variant="contained" size="stretched" disabled={!isValid}>
+            <Button
+              data-testid="load-safe-next-btn"
+              type="submit"
+              variant="contained"
+              size="stretched"
+              disabled={!isValid}
+            >
               Next
             </Button>
           </Box>

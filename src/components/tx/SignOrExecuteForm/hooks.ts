@@ -13,7 +13,7 @@ import {
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import type { ConnectedWallet } from '@/services/onboard'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { OnboardAPI } from '@web3-onboard/core'
 import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
@@ -78,7 +78,7 @@ export const useTxActions = (): TxActions => {
       assertOnboard(onboard)
 
       // Smart contracts cannot sign transactions off-chain
-      if (await isSmartContractWallet(wallet)) {
+      if (await isSmartContractWallet(wallet.chainId, wallet.address)) {
         throw new Error('Cannot relay an unsigned transaction from a smart contract wallet')
       }
       return await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
@@ -90,7 +90,7 @@ export const useTxActions = (): TxActions => {
       assertOnboard(onboard)
 
       // Smart contract wallets must sign via an on-chain tx
-      if (await isSmartContractWallet(wallet)) {
+      if (await isSmartContractWallet(wallet.chainId, wallet.address)) {
         // If the first signature is a smart contract wallet, we have to propose w/o signatures
         // Otherwise the backend won't pick up the tx
         // The signature will be added once the on-chain signature is indexed

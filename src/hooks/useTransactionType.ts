@@ -2,12 +2,11 @@ import { useMemo } from 'react'
 import {
   SettingsInfoType,
   TransactionInfoType,
-  TransferDirection,
   type AddressEx,
   type TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { isCancellationTxInfo, isModuleExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
+import { isCancellationTxInfo, isModuleExecutionInfo, isOutgoingTransfer, isTxQueued } from '@/utils/transaction-guards'
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
 
@@ -45,7 +44,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       }
     }
     case TransactionInfoType.TRANSFER: {
-      const isSendTx = tx.txInfo.direction === TransferDirection.OUTGOING
+      const isSendTx = isOutgoingTransfer(tx.txInfo)
 
       return {
         icon: isSendTx ? '/images/transactions/outgoing.svg' : '/images/transactions/incoming.svg',

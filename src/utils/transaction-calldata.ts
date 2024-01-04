@@ -6,8 +6,9 @@ import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/sa
 import { ERC20__factory } from '@/types/contracts/factories/@openzeppelin/contracts/build/contracts/ERC20__factory'
 import { ERC721__factory } from '@/types/contracts/factories/@openzeppelin/contracts/build/contracts/ERC721__factory'
 import { decodeMultiSendTxs } from '@/utils/transactions'
+import { Safe__factory } from '@/types/contracts'
 
-const isCalldata = (data: string, fragment: FunctionFragment): boolean => {
+export const isCalldata = (data: string, fragment: FunctionFragment): boolean => {
   const signature = fragment.format()
   const signatureId = id(signature).slice(0, 10)
   return data.startsWith(signatureId)
@@ -37,10 +38,33 @@ const isErc721SafeTransferFromWithBytesCalldata = (data: string): boolean => {
   return isCalldata(data, safeTransferFromWithBytesFragment)
 }
 
+// Safe
+const safeInterface = Safe__factory.createInterface()
+
+const addOwnerWithThresholdFragment = safeInterface.getFunction('addOwnerWithThreshold')
+export function isAddOwnerWithThresholdCalldata(data: string): boolean {
+  return isCalldata(data, addOwnerWithThresholdFragment)
+}
+
+const removeOwnerFragment = safeInterface.getFunction('removeOwner')
+export function isRemoveOwnerCalldata(data: string): boolean {
+  return isCalldata(data, removeOwnerFragment)
+}
+
+const swapOwnerFagment = safeInterface.getFunction('swapOwner')
+export function isSwapOwnerCalldata(data: string): boolean {
+  return isCalldata(data, swapOwnerFagment)
+}
+
+const changeThresholdFragment = safeInterface.getFunction('changeThreshold')
+export function isChangeThresholdCalldata(data: string): boolean {
+  return isCalldata(data, changeThresholdFragment)
+}
+
 // MultiSend
 const multiSendInterface = Multi_send__factory.createInterface()
 const multiSendFragment = multiSendInterface.getFunction('multiSend')
-const isMultiSendCalldata = (data: string): boolean => {
+export const isMultiSendCalldata = (data: string): boolean => {
   return isCalldata(data, multiSendFragment)
 }
 

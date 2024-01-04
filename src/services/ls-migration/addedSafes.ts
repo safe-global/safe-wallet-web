@@ -2,7 +2,7 @@ import { type AddedSafesState, type AddedSafesOnChain } from '@/store/addedSafes
 import type { LOCAL_STORAGE_DATA } from './common'
 import { parseLsValue } from './common'
 import { isChecksummedAddress } from '@/utils/addresses'
-import { isObject } from 'lodash'
+import isObject from 'lodash/isObject'
 import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 
 const IMMORTAL_PREFIX = '_immortal|v2_'

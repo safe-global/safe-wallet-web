@@ -124,12 +124,11 @@ export function clearWalletName() {
   cy.get(nameInput).clear()
 }
 
-export function selectNetwork(network, regex = false) {
+export function selectNetwork(network) {
   cy.wait(1000)
   cy.get(expandMoreIcon).eq(1).parents('div').eq(1).click()
   cy.wait(1000)
   cy.get('li').contains(network).click()
-  cy.get('body').click()
 }
 
 export function clickOnNextBtn() {

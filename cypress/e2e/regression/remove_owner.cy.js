@@ -5,7 +5,7 @@ import * as owner from '../pages/owners.pages'
 describe('Remove Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
-    main.waitForTrnsactionHistoryToComplete()
+    main.waitForHistoryCallToComplete()
     cy.clearLocalStorage()
     main.acceptCookies()
     owner.waitForConnectionStatus()
@@ -18,7 +18,7 @@ describe('Remove Owners tests', () => {
 
   it('Verify Tooltip displays correct message for Non-Owner', () => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_4)
-    main.waitForTrnsactionHistoryToComplete()
+    main.waitForHistoryCallToComplete()
     owner.waitForConnectionStatus()
     owner.verifyRemoveBtnIsDisabled()
   })

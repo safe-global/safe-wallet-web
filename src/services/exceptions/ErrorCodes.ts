@@ -60,6 +60,10 @@ enum ErrorCodes {
   _807 = '807: Failed to remove guard',
   _808 = '808: Failed to get transaction origin',
   _809 = '809: Failed decoding transaction',
+  _810 = '810: Error executing a recovery proposal transaction',
+  _811 = '811: Error decoding a recovery proposal transaction',
+  _812 = '812: Failed to recover',
+  _813 = '813: Failed to cancel recovery',
 
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',

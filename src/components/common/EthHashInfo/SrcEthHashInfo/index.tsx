@@ -20,10 +20,12 @@ export type EthHashInfoProps = {
   showPrefix?: boolean
   copyPrefix?: boolean
   shortAddress?: boolean
+  copyAddress?: boolean
   customAvatar?: string
   hasExplorer?: boolean
   avatarSize?: number
   children?: ReactNode
+  trusted?: boolean
   ExplorerButtonProps?: ExplorerButtonProps
 }
 
@@ -36,6 +38,7 @@ const SrcEthHashInfo = ({
   copyPrefix,
   showPrefix,
   shortAddress = true,
+  copyAddress = true,
   showAvatar = true,
   avatarSize,
   name,
@@ -43,12 +46,20 @@ const SrcEthHashInfo = ({
   hasExplorer,
   ExplorerButtonProps,
   children,
+  trusted = true,
 }: EthHashInfoProps): ReactElement => {
   const shouldPrefix = isAddress(address)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
   const identicon = <Identicon address={address} size={avatarSize} />
+  const shouldCopyPrefix = shouldPrefix && copyPrefix
+
+  const addressElement = (
+    <>
+      {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
+      <span>{shortAddress || isMobile ? shortenAddress(address) : address}</span>
+    </>
+  )
 
   return (
     <div className={css.container}>
@@ -74,12 +85,17 @@ const SrcEthHashInfo = ({
 
         <div className={css.addressContainer}>
           <Box fontWeight="inherit" fontSize="inherit">
-            {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
-            <span>{shortAddress || isMobile ? shortenAddress(address) : address}</span>
+            {copyAddress ? (
+              <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} trusted={trusted}>
+                {addressElement}
+              </CopyAddressButton>
+            ) : (
+              addressElement
+            )}
           </Box>
 
           {showCopyButton && (
-            <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldPrefix && copyPrefix} />
+            <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} trusted={trusted} />
           )}
 
           {hasExplorer && ExplorerButtonProps && (

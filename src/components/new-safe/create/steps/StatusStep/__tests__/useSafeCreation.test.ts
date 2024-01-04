@@ -52,6 +52,7 @@ describe('useSafeCreation', () => {
     jest.spyOn(chain, 'useCurrentChain').mockImplementation(() => mockChain)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
     jest.spyOn(logic, 'getSafeCreationTxInfo').mockReturnValue(Promise.resolve(mockSafeInfo))
+    jest.spyOn(logic, 'estimateSafeCreationGas').mockReturnValue(Promise.resolve(BigNumber.from(200000)))
     jest
       .spyOn(contracts, 'getReadOnlyFallbackHandlerContract')
       .mockReturnValue({ getAddress: () => hexZeroPad('0x123', 20) } as CompatibilityFallbackHandlerEthersContract)

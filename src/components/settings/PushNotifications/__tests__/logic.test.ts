@@ -7,7 +7,7 @@ import type { JsonRpcSigner } from '@ethersproject/providers'
 import * as logic from '../logic'
 import * as web3 from '@/hooks/wallets/web3'
 import packageJson from '../../../../../package.json'
-import type { ConnectedWallet } from '@/services/onboard'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 jest.mock('firebase/messaging')
 

@@ -1,0 +1,15 @@
+.group {
+  border: 1px solid var(--color-border-main);
+  border-radius: 4px;
+  display: flex;
+}
+
+.label {
+  margin: 0;
+  padding: 12px 3px;
+  flex: 1;
+}
+
+.spendingLimit {
+  border-left: 1px solid var(--color-border-main);
+}

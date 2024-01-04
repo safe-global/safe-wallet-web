@@ -1,4 +1,5 @@
-import { type ReactElement, type ReactNode, useState, useContext } from 'react'
+import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
+import madProps from '@/utils/mad-props'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import { WrongChainWarning } from '../WrongChainWarning'
@@ -19,10 +20,16 @@ import useDecodeTx from '@/hooks/useDecodeTx'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
 import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
+import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
+import { TX_EVENTS } from '@/services/analytics/events/transactions'
+import { trackEvent } from '@/services/analytics'
+import useChainId from '@/hooks/useChainId'
+
+export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
 export type SignOrExecuteProps = {
   txId?: string
-  onSubmit: (txId: string) => void
+  onSubmit?: SubmitCallback
   children?: ReactNode
   isExecutable?: boolean
   isRejection?: boolean
@@ -34,10 +41,30 @@ export type SignOrExecuteProps = {
   isCreation?: boolean
 }
 
-const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
+const trackTxEvents = async (chainId: string, txId: string, isCreation: boolean, isExecuted: boolean) => {
+  const event = isCreation ? TX_EVENTS.CREATE : isExecuted ? TX_EVENTS.EXECUTE : TX_EVENTS.CONFIRM
+  const txType = await getTransactionTrackingType(chainId, txId)
+  trackEvent({ ...event, label: txType })
+
+  // Immediate execution on creation
+  if (isCreation && isExecuted) {
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: txType })
+  }
+}
+
+export const SignOrExecuteForm = ({
+  chainId,
+  safeTx,
+  safeTxError,
+  onSubmit,
+  ...props
+}: SignOrExecuteProps & {
+  chainId: ReturnType<typeof useChainId>
+  safeTx: ReturnType<typeof useSafeTx>
+  safeTxError: ReturnType<typeof useSafeTxError>
+}): ReactElement => {
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
-  const { safeTx, safeTxError } = useContext(SafeTxContext)
   const isCreation = !props.txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
@@ -48,16 +75,24 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
   const willExecute = (props.onlyExecute || shouldExecute) && canExecute
 
+  const onFormSubmit = useCallback<SubmitCallback>(
+    async (txId, isExecuted = false) => {
+      onSubmit?.(txId, isExecuted)
+
+      // Track tx event
+      trackTxEvents(chainId, txId, isCreation, isExecuted)
+    },
+    [chainId, isCreation, onSubmit],
+  )
+
   return (
     <>
       <TxCard>
         {props.children}
 
-        {!isCreation && (
-          <ErrorBoundary fallback={<div>Error parsing data</div>}>
-            <ApprovalEditor safeTransaction={safeTx} />
-          </ErrorBoundary>
-        )}
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor safeTransaction={safeTx} />
+        </ErrorBoundary>
 
         <DecodedTx
           tx={safeTx}
@@ -96,13 +131,26 @@ const SignOrExecuteForm = (props: SignOrExecuteProps): ReactElement => {
         <RiskConfirmationError />
 
         {willExecute ? (
-          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} />
+          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
         ) : (
-          <SignForm {...props} safeTx={safeTx} isBatchable={isBatchable} isCreation={isCreation} />
+          <SignForm
+            {...props}
+            safeTx={safeTx}
+            isBatchable={isBatchable}
+            isCreation={isCreation}
+            onSubmit={onFormSubmit}
+          />
         )}
       </TxCard>
     </>
   )
 }
 
-export default SignOrExecuteForm
+const useSafeTx = () => useContext(SafeTxContext).safeTx
+const useSafeTxError = () => useContext(SafeTxContext).safeTxError
+
+export default madProps(SignOrExecuteForm, {
+  chainId: useChainId,
+  safeTx: useSafeTx,
+  safeTxError: useSafeTxError,
+})

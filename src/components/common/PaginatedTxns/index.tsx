@@ -13,6 +13,7 @@ import { isTransactionListItem } from '@/utils/transaction-guards'
 import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
 
 const NoQueuedTxns = () => {
   return <PagePlaceholder img={<NoTransactionsIcon />} text="Queued transactions will appear here" />
@@ -38,6 +39,7 @@ const TxPage = ({
   const { page, error, loading } = useTxns(pageUrl)
   const [filter] = useTxFilter()
   const isQueue = useTxns === useTxQueue
+  const recoveryQueue = useRecoveryQueue()
   const hasPending = useHasPendingTxs()
 
   return (
@@ -50,7 +52,7 @@ const TxPage = ({
 
       {page && page.results.length > 0 && <TxList items={page.results} />}
 
-      {isQueue && page?.results.length === 0 && !hasPending && <NoQueuedTxns />}
+      {isQueue && page?.results.length === 0 && recoveryQueue.length === 0 && !hasPending && <NoQueuedTxns />}
 
       {error && <ErrorMessage>Error loading transactions</ErrorMessage>}
 

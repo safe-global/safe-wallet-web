@@ -13,7 +13,7 @@ import WalletLogin from '@/components/welcome/WelcomeLogin/WalletLogin'
 const WalletDetails = ({ onConnect }: { onConnect: () => void }): ReactElement => {
   return (
     <>
-      <Box my={1}>
+      <Box my={1} display="flex" justifyContent="center">
         <SvgIcon inheritViewBox sx={{ width: 64, height: 64, display: 'block' }}>
           <LockIcon />
         </SvgIcon>

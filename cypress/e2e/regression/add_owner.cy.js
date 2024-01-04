@@ -41,7 +41,6 @@ describe('Add Owners tests', () => {
     owner.waitForConnectionStatus()
     owner.openAddOwnerWindow()
     owner.typeOwnerAddress(constants.addresBookContacts.user1.address)
-    owner.selectNewOwner(constants.addresBookContacts.user1.name)
     owner.verifyNewOwnerName(constants.addresBookContacts.user1.name)
   })
 

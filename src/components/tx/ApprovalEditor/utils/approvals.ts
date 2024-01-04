@@ -1,11 +1,13 @@
 import { ERC20__factory } from '@/types/contracts'
 import { UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
-import type { DecodedDataResponse, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { parseUnits, id } from 'ethers/lib/utils'
 import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { type ApprovalInfo } from '../hooks/useApprovalInfos'
 
 export const APPROVAL_SIGNATURE_HASH = id('approve(address,uint256)').slice(0, 10)
+export const INCREASE_ALLOWANCE_SIGNATURE_HASH = id('increaseAllowance(address,uint256)').slice(0, 10)
 
 const MULTISEND_METHOD = 'multiSend'
 
@@ -20,14 +22,6 @@ const ERC20_INTERFACE = ERC20__factory.createInterface()
 
 export enum PSEUDO_APPROVAL_VALUES {
   UNLIMITED = 'Unlimited (not recommended)',
-}
-
-export type ApprovalInfo = {
-  tokenInfo: (Omit<TokenInfo, 'logoUri' | 'name'> & { logoUri?: string }) | undefined
-  tokenAddress: string
-  spender: any
-  amount: any
-  amountFormatted: string
 }
 
 const parseApprovalAmount = (amount: string, decimals: number) => {

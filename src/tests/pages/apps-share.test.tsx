@@ -68,6 +68,14 @@ describe('Share Safe App Page', () => {
   })
 
   it('Should show the app name, description and URL', async () => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/share/safe-app',
+        search: '?appUrl=https://apps-portal.safe.global/tx-builder&chain=eth',
+      },
+    })
+
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
@@ -147,20 +155,28 @@ describe('Share Safe App Page', () => {
   })
 
   it('Should link to Safe Creation flow when the connected wallet has no owned Safes', async () => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/share/safe-app',
+        search: '?appUrl=https://apps-portal.safe.global/tx-builder&chain=gor',
+      },
+    })
+
     const address = `0x${crypto.randomBytes(20).toString('hex')}`
     jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({
       ens: 'craicis90.eth',
       address,
       provider: jest.fn() as unknown as EIP1193Provider,
       label: 'Metamask',
-      chainId: '4',
+      chainId: '5',
     }))
 
     render(<ShareSafeApp />, {
       routerProps: {
         query: {
           appUrl: TX_BUILDER,
-          chain: 'rin',
+          chain: 'gor',
         },
       },
       initialReduxState: {
@@ -173,14 +189,22 @@ describe('Share Safe App Page', () => {
     })
 
     await waitFor(() => {
-      expect(fetchSafeAppFromManifestSpy).toHaveBeenCalledWith(TX_BUILDER, '4')
-      expect(getSafeAppsSpy).toHaveBeenCalledWith('4', { url: TX_BUILDER })
+      expect(fetchSafeAppFromManifestSpy).toHaveBeenCalledWith(TX_BUILDER, '5')
+      expect(getSafeAppsSpy).toHaveBeenCalledWith('5', { url: TX_BUILDER })
 
       expect(screen.getByText('Create new Safe Account')).toBeInTheDocument()
     })
   })
 
   it('Should show a select input with owned safes when the connected wallet owns Safes', async () => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/share/safe-app',
+        search: '?appUrl=https://apps-portal.safe.global/tx-builder&chain=eth',
+      },
+    })
+
     const address = `0x${crypto.randomBytes(20).toString('hex')}`
     const safeAddress = `0x${crypto.randomBytes(20).toString('hex')}`
     jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({

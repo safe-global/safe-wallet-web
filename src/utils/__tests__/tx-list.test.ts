@@ -1,6 +1,8 @@
+import { faker } from '@faker-js/faker'
+import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { groupConflictingTxs } from '@/utils/tx-list'
+import { groupConflictingTxs, groupRecoveryTransactions, _getRecoveryCancellations } from '@/utils/tx-list'
 
 describe('tx-list', () => {
   describe('groupConflictingTxs', () => {
@@ -108,6 +110,132 @@ describe('tx-list', () => {
 
       const result = groupConflictingTxs(list as unknown as TransactionListItem[])
       expect(result).toEqual(list)
+    })
+  })
+
+  describe('getRecoveryCancellations', () => {
+    it('should return cancellation transactions', () => {
+      const moduleAddress = faker.finance.ethereumAddress()
+
+      const transactions = [
+        {
+          transaction: {
+            txInfo: {
+              type: TransactionInfoType.CUSTOM,
+              to: {
+                value: moduleAddress,
+              },
+              methodName: 'enableModule',
+            },
+          },
+        },
+        {
+          transaction: {
+            txInfo: {
+              type: TransactionInfoType.TRANSFER,
+            },
+          },
+        },
+        {
+          transaction: {
+            txInfo: {
+              type: TransactionInfoType.CUSTOM,
+              to: {
+                value: moduleAddress,
+              },
+              methodName: 'setTxNonce',
+            },
+          },
+        },
+      ]
+
+      expect(_getRecoveryCancellations(moduleAddress, transactions as any)).toEqual([
+        {
+          transaction: {
+            txInfo: {
+              type: TransactionInfoType.CUSTOM,
+              to: {
+                value: moduleAddress,
+              },
+              methodName: 'setTxNonce',
+            },
+          },
+        },
+      ])
+    })
+  })
+
+  describe('groupRecoveryTransactions', () => {
+    it('should group recovery transactions with their cancellations', () => {
+      const moduleAddress = faker.finance.ethereumAddress()
+      const moduleAddress2 = faker.finance.ethereumAddress()
+
+      const queue = [
+        {
+          type: 'TRANSACTION',
+          transaction: {
+            txInfo: {
+              type: TransactionInfoType.CUSTOM,
+              to: {
+                value: moduleAddress,
+              },
+              methodName: 'enableModule',
+            },
+          },
+        },
+        {
+          type: 'TRANSACTION',
+          transaction: {
+            txInfo: {
+              type: TransactionInfoType.TRANSFER,
+            },
+          },
+        },
+        {
+          type: 'TRANSACTION',
+          transaction: {
+            txInfo: {
+              type: TransactionInfoType.CUSTOM,
+              to: {
+                value: moduleAddress,
+              },
+              methodName: 'setTxNonce',
+            },
+          },
+        },
+      ]
+
+      const recoveryQueue = [
+        {
+          address: moduleAddress,
+        },
+        {
+          address: moduleAddress2,
+        },
+      ]
+
+      expect(groupRecoveryTransactions(queue as any, recoveryQueue as any)).toEqual([
+        [
+          {
+            address: moduleAddress,
+          },
+          {
+            type: 'TRANSACTION',
+            transaction: {
+              txInfo: {
+                type: TransactionInfoType.CUSTOM,
+                to: {
+                  value: moduleAddress,
+                },
+                methodName: 'setTxNonce',
+              },
+            },
+          },
+        ],
+        {
+          address: moduleAddress2,
+        },
+      ])
     })
   })
 })

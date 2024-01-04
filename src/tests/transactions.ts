@@ -64,6 +64,7 @@ export const getMockMultiSendCalldata = (recipients: Array<string>): string => {
   return multiSendInterface.encodeFunctionData('multiSend', [ethers.utils.concat(internalTransactions)])
 }
 
+// TODO: Replace with safeTxBuilder
 export const createMockSafeTransaction = ({
   to,
   data,

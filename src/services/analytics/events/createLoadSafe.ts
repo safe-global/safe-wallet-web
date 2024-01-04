@@ -60,10 +60,6 @@ export const CREATE_SAFE_EVENTS = {
     action: 'Load Safe',
     category: CREATE_SAFE_CATEGORY,
   },
-  GO_TO_SAFE: {
-    action: 'Open Safe',
-    category: CREATE_SAFE_CATEGORY,
-  },
   OPEN_HINT: {
     action: 'Open Hint',
     category: CREATE_SAFE_CATEGORY,
@@ -90,10 +86,6 @@ export const LOAD_SAFE_EVENTS = {
   THRESHOLD: {
     event: EventType.META,
     action: 'Threshold',
-    category: LOAD_SAFE_CATEGORY,
-  },
-  GO_TO_SAFE: {
-    action: 'Open Safe',
     category: LOAD_SAFE_CATEGORY,
   },
 }

@@ -1,7 +1,8 @@
+import WalletBalance from '@/components/common/WalletBalance'
 import { Badge, Box, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { type ConnectedWallet } from '@/services/onboard'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import CopyAddressButton from '@/components/common/CopyAddressButton'
 import ExplorerButton from '@/components/common/ExplorerButton'
 import { getBlockExplorerLink } from '@/utils/chains'
@@ -13,10 +14,16 @@ const SocialLoginInfo = ({
   wallet,
   chainInfo,
   hideActions = false,
+  size = 28,
+  balance,
+  showBalance,
 }: {
   wallet: ConnectedWallet
   chainInfo?: ChainInfo
   hideActions?: boolean
+  size?: number
+  balance?: string
+  showBalance?: boolean
 }) => {
   const socialWalletService = useSocialWallet()
   const userInfo = socialWalletService?.getUserInfo()
@@ -29,16 +36,29 @@ const SocialLoginInfo = ({
   return (
     <Box width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
       <Box position="relative">
-        <img src={userInfo.profileImage} className={css.profileImg} alt="Profile Image" referrerPolicy="no-referrer" />
+        <img
+          src={userInfo.profileImage}
+          className={css.profileImg}
+          alt="Profile Image"
+          referrerPolicy="no-referrer"
+          width={size}
+          height={size}
+        />
         {!socialWalletService?.isMFAEnabled() && <Badge variant="dot" color="warning" className={css.bubble} />}
       </Box>
       <div className={css.profileData}>
-        <Typography className={css.text} variant="body2" fontWeight={700}>
+        <Typography className={css.text} variant="body2">
           {userInfo.name}
         </Typography>
-        <Typography className={css.text} variant="body2">
-          {userInfo.email}
-        </Typography>
+        {showBalance ? (
+          <Typography variant="caption" component="div" fontWeight="bold" display={{ xs: 'none', sm: 'block' }}>
+            <WalletBalance balance={balance} />
+          </Typography>
+        ) : (
+          <Typography className={css.text} variant="body2">
+            {userInfo.email}
+          </Typography>
+        )}
       </div>
       {!hideActions && (
         <div className={css.actionButtons}>

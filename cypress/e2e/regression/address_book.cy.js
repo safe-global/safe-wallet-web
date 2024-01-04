@@ -4,6 +4,7 @@ import { format } from 'date-fns'
 import * as constants from '../../support/constants'
 import * as addressBook from '../../e2e/pages/address_book.page'
 import * as main from '../../e2e/pages/main.page'
+import * as ls from '../../support/localstorage_data.js'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
@@ -15,14 +16,20 @@ describe('Address book tests', () => {
     main.acceptCookies()
   })
 
-  //TODO: Use localstorage for setting up/deleting entries
   it('Verify entered entry in Name input can be saved', () => {
-    addressBook.clickOnCreateEntryBtn()
-    addressBook.addEntry(NAME, constants.RECIPIENT_ADDRESS)
-    addressBook.clickOnEditEntryBtn()
-    addressBook.typeInNameInput(EDITED_NAME)
-    addressBook.clickOnSaveButton()
-    addressBook.verifyNameWasChanged(NAME, EDITED_NAME)
+    main
+      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+      .then(() => {
+        main
+          .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+          .then(() => {
+            cy.reload()
+            addressBook.clickOnEditEntryBtn()
+            addressBook.typeInNameInput(EDITED_NAME)
+            addressBook.clickOnSaveButton()
+            addressBook.verifyNameWasChanged(NAME, EDITED_NAME)
+          })
+      })
   })
 
   //TODO: Rework to use Polygon. Replace Verify csv file can be imported (Goerli) with this test
@@ -44,22 +51,25 @@ describe('Address book tests', () => {
     cy.contains(constants.GNO_CSV_ENTRY.address).should('exist')
   })
 
-  // TODO: Rework with localstorage. Change title in Testrail. New title "...exported"
+  // TODO: Change title in Testrail. New title "...exported"
   it('Verify the address book file can be downloaded', () => {
-    addressBook.clickOnImportFileBtn()
-    addressBook.importFile()
-    // Download the export file
-    const date = format(new Date(), 'yyyy-MM-dd', { timeZone: 'UTC' })
-    const fileName = `safe-address-book-${date}.csv` //name that is given to the file automatically
+    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.dataSet).then(() => {
+      main
+        .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.dataSet)
+        .then(() => {
+          cy.reload()
+          cy.contains(ls.addressBookData.dataSet[11155111]['0xf405BC611F4a4c89CCB3E4d083099f9C36D966f8'])
 
-    addressBook.clickOnExportFileBtn()
-    //This is the submit button for the Export modal. It requires an actuall class or testId to differentiate
-    //from the Export button at the top of the AB table
-    addressBook.confirmExport()
+          const date = format(new Date(), 'yyyy-MM-dd', { timeZone: 'UTC' })
+          const fileName = `safe-address-book-${date}.csv`
 
-    const downloadsFolder = Cypress.config('downloadsFolder')
-    //File reading is failing in the CI. Can be tested locally
-    cy.readFile(path.join(downloadsFolder, fileName)).should('exist')
-    // TODO: Add verifications on address and chain from file, import and export files should be equal including all chains from origin
+          addressBook.clickOnExportFileBtn()
+          addressBook.confirmExport()
+
+          const downloadsFolder = Cypress.config('downloadsFolder')
+          //File reading is failing in the CI. Can be tested locally
+          cy.readFile(path.join(downloadsFolder, fileName)).should('exist')
+        })
+    })
   })
 })

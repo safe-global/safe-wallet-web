@@ -32,36 +32,64 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
 
   return (
     <>
-      <TxDataRow title="Transaction hash:">{generateDataRowValue(txHash, 'hash', true)}</TxDataRow>
-      <TxDataRow title="safeTxHash:">{generateDataRowValue(safeTxHash, 'hash')}</TxDataRow>
-      <TxDataRow title="Created:">{submittedAt ? dateString(submittedAt) : null}</TxDataRow>
-      {executedAt && <TxDataRow title="Executed:">{dateString(executedAt)}</TxDataRow>}
+      <TxDataRow datatestid="tx-hash" title="Transaction hash:">
+        {generateDataRowValue(txHash, 'hash', true)}{' '}
+      </TxDataRow>
+      <TxDataRow datatestid="tx-safe-hash" title="safeTxHash:">
+        {generateDataRowValue(safeTxHash, 'hash')}
+      </TxDataRow>
+      <TxDataRow datatestid="tx-created-at" title="Created:">
+        {submittedAt ? dateString(submittedAt) : null}
+      </TxDataRow>
+      {executedAt && (
+        <TxDataRow datatestid="tx-executed-at" title="Executed:">
+          {dateString(executedAt)}
+        </TxDataRow>
+      )}
 
       {/* Advanced TxData */}
       {txData && (
         <>
           {!defaultExpanded && (
-            <Link className={css.buttonExpand} onClick={toggleExpanded} component="button" variant="body1">
+            <Link
+              data-testid="tx-advanced-details"
+              className={css.buttonExpand}
+              onClick={toggleExpanded}
+              component="button"
+              variant="body1"
+            >
               Advanced details
             </Link>
           )}
 
           {expanded && (
             <div>
-              <TxDataRow title="Operation:">
+              <TxDataRow datatestid="tx-operation" title="Operation:">
                 {`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}
               </TxDataRow>
-              <TxDataRow title="safeTxGas:">{safeTxGas}</TxDataRow>
-              <TxDataRow title="baseGas:">{baseGas}</TxDataRow>
-              <TxDataRow title="gasPrice:">{gasPrice}</TxDataRow>
-              <TxDataRow title="gasToken:">{generateDataRowValue(gasToken, 'hash', true)}</TxDataRow>
-              <TxDataRow title="refundReceiver:">{generateDataRowValue(refundReceiver, 'hash', true)}</TxDataRow>
+              <TxDataRow datatestid="tx-safe-gas" title="safeTxGas:">
+                {safeTxGas}
+              </TxDataRow>
+              <TxDataRow datatestid="tx-bas-gas" title="baseGas:">
+                {baseGas}
+              </TxDataRow>
+              <TxDataRow datatestid="tx-gas-price" title="gasPrice:">
+                {gasPrice}
+              </TxDataRow>
+              <TxDataRow datatestid="tx-gas-token" title="gasToken:">
+                {generateDataRowValue(gasToken, 'hash', true)}
+              </TxDataRow>
+              <TxDataRow datatestid="tx-refund-receiver" title="refundReceiver:">
+                {generateDataRowValue(refundReceiver, 'hash', true)}
+              </TxDataRow>
               {confirmations?.map(({ signature }, index) => (
-                <TxDataRow title={`Signature ${index + 1}:`} key={`signature-${index}:`}>
+                <TxDataRow datatestid="tx-signature" title={`Signature ${index + 1}:`} key={`signature-${index}:`}>
                   {generateDataRowValue(signature, 'rawData')}
                 </TxDataRow>
               ))}
-              <TxDataRow title="Raw data:">{generateDataRowValue(txData.hexData, 'rawData')}</TxDataRow>
+              <TxDataRow datatestid="tx-raw-data" title="Raw data:">
+                {generateDataRowValue(txData.hexData, 'rawData')}
+              </TxDataRow>
             </div>
           )}
         </>
@@ -76,12 +104,18 @@ export const PartialSummary = ({ safeTx }: { safeTx: SafeTransaction }) => {
   const txData = safeTx.data
   return (
     <>
-      <TxDataRow title="safeTxGas:">
+      <TxDataRow datatestid="tx-executed-at" title="safeTxGas:">
         <SafeTxGasForm />
       </TxDataRow>
-      <TxDataRow title="baseGas:">{txData.baseGas}</TxDataRow>
-      <TxDataRow title="refundReceiver:">{generateDataRowValue(txData.refundReceiver, 'hash', true)}</TxDataRow>
-      <TxDataRow title="Raw data:">{generateDataRowValue(txData.data, 'rawData')}</TxDataRow>
+      <TxDataRow datatestid="tx-executed-at" title="baseGas:">
+        {txData.baseGas}
+      </TxDataRow>
+      <TxDataRow datatestid="tx-executed-at" title="refundReceiver:">
+        {generateDataRowValue(txData.refundReceiver, 'hash', true)}
+      </TxDataRow>
+      <TxDataRow datatestid="tx-executed-at" title="Raw data:">
+        {generateDataRowValue(txData.data, 'rawData')}
+      </TxDataRow>
     </>
   )
 }

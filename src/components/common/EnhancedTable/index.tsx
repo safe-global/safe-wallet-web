@@ -32,7 +32,7 @@ type EnhancedRow = {
 
 type EnhancedHeadCell = {
   id: string
-  label: string
+  label: ReactNode
   width?: string
   sticky?: boolean
 }

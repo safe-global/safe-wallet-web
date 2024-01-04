@@ -28,7 +28,7 @@ const Sidebar = (): ReactElement => {
   return (
     <div className={css.container}>
       <div className={css.scroll}>
-        <ChainIndicator />
+        <ChainIndicator showLogo={false} />
 
         {/* Open the safes list */}
         <IconButton className={css.drawerButton} onClick={onDrawerToggle}>

@@ -4,8 +4,9 @@ import { shortenAddress } from '@/utils/formatters'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
 import { Autocomplete, Box, type MenuItemProps, Typography, MenuItem } from '@mui/material'
 import { useController, useFormContext } from 'react-hook-form'
+import type { ApprovalInfo } from './hooks/useApprovalInfos'
 import css from './styles.module.css'
-import { PSEUDO_APPROVAL_VALUES, type ApprovalInfo } from './utils/approvals'
+import { PSEUDO_APPROVAL_VALUES } from './utils/approvals'
 
 const ApprovalOption = ({ menuItemProps, value }: { menuItemProps: MenuItemProps; value: string }) => {
   return (

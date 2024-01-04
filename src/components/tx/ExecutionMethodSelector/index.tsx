@@ -1,34 +1,41 @@
-import { Box, FormControl, FormControlLabel, SvgIcon, Radio, RadioGroup, Typography } from '@mui/material'
+import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
 import type { Dispatch, SetStateAction, ReactElement, ChangeEvent } from 'react'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import WalletIcon from '@/components/common/WalletIcon'
-import RelayerIcon from '@/public/images/common/relayer.svg'
 import SponsoredBy from '../SponsoredBy'
+import RemainingRelays from '../RemainingRelays'
 import type { RelayResponse } from '@/services/tx/relaying'
 
 import css from './styles.module.css'
+import BalanceInfo from '@/components/tx/BalanceInfo'
+import madProps from '@/utils/mad-props'
+import { useCurrentChain } from '@/hooks/useChains'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 export const enum ExecutionMethod {
   RELAY = 'RELAY',
   WALLET = 'WALLET',
 }
 
-export const ExecutionMethodSelector = ({
+const _ExecutionMethodSelector = ({
+  wallet,
+  chain,
   executionMethod,
   setExecutionMethod,
   relays,
   noLabel,
   tooltip,
 }: {
+  wallet: ConnectedWallet | null
+  chain?: ChainInfo
   executionMethod: ExecutionMethod
   setExecutionMethod: Dispatch<SetStateAction<ExecutionMethod>>
   relays?: RelayResponse
   noLabel?: boolean
   tooltip?: string
 }): ReactElement | null => {
-  const wallet = useWallet()
-
   const shouldRelay = executionMethod === ExecutionMethod.RELAY
 
   const onChooseExecutionMethod = (_: ChangeEvent<HTMLInputElement>, newExecutionMethod: string) => {
@@ -41,22 +48,25 @@ export const ExecutionMethodSelector = ({
         <FormControl sx={{ display: 'flex' }}>
           {!noLabel ? (
             <Typography variant="body2" className={css.label}>
-              Choose execution method:
+              Who will pay gas fees:
             </Typography>
           ) : null}
+
           <RadioGroup row value={executionMethod} onChange={onChooseExecutionMethod}>
             <FormControlLabel
               sx={{ flex: 1 }}
               value={ExecutionMethod.RELAY}
               label={
                 <Typography className={css.radioLabel}>
-                  <SvgIcon component={RelayerIcon} inheritViewBox fontSize="small" />
-                  Relayer
+                  Sponsored by
+                  <SponsoredBy chainId={chain?.chainId ?? ''} />
                 </Typography>
               }
               control={<Radio />}
             />
+
             <FormControlLabel
+              data-testid="connected-wallet-execution-method"
               sx={{ flex: 1 }}
               value={ExecutionMethod.WALLET}
               label={
@@ -71,7 +81,12 @@ export const ExecutionMethodSelector = ({
         </FormControl>
       </div>
 
-      {shouldRelay && relays ? <SponsoredBy relays={relays} tooltip={tooltip} /> : null}
+      {shouldRelay && relays ? <RemainingRelays relays={relays} tooltip={tooltip} /> : wallet ? <BalanceInfo /> : null}
     </Box>
   )
 }
+
+export const ExecutionMethodSelector = madProps(_ExecutionMethodSelector, {
+  wallet: useWallet,
+  chain: useCurrentChain,
+})

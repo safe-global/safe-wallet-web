@@ -1,7 +1,8 @@
 import { render } from '@/tests/test-utils'
-import GasParams from '@/components/tx/GasParams/index'
+import { _GasParams as GasParams } from '@/components/tx/GasParams/index'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import { BigNumber } from '@ethersproject/bignumber'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('GasParams', () => {
   it('Shows the estimated fee on execution', () => {
@@ -53,10 +54,19 @@ describe('GasParams', () => {
       maxPriorityFeePerGas: BigNumber.from('10000'),
     }
 
-    const { getByText } = render(<GasParams params={params} isExecution={true} isEIP1559={true} onEdit={jest.fn} />)
+    const chainInfo = {
+      nativeCurrency: {
+        symbol: 'SepoliaETH',
+        decimals: 9,
+      },
+    } as unknown as ChainInfo
+
+    const { getByText } = render(
+      <GasParams params={params} isExecution={true} isEIP1559={true} onEdit={jest.fn} chain={chainInfo} />,
+    )
 
     expect(getByText('Estimated fee')).toBeInTheDocument()
-    expect(getByText('0.21')).toBeInTheDocument()
+    expect(getByText('0.21 SepoliaETH')).toBeInTheDocument()
   })
 
   it("Doesn't show an estimated fee if there is no gasLimit", () => {

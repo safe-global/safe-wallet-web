@@ -3,7 +3,6 @@ import type { Web3Provider } from '@ethersproject/providers'
 
 import * as web3 from '@/hooks/wallets/web3'
 import { isSmartContractWallet } from '@/utils/wallets'
-import type { ConnectedWallet } from '@/services/onboard'
 
 describe('wallets', () => {
   describe('isSmartContractWallet', () => {
@@ -24,7 +23,7 @@ describe('wallets', () => {
 
     it('should should only call the provider once per address on a chain', async () => {
       for await (const _ of Array.from({ length: 10 })) {
-        await isSmartContractWallet({ chainId: '1', address: hexZeroPad('0x1', 20) } as ConnectedWallet)
+        await isSmartContractWallet('1', hexZeroPad('0x1', 20))
       }
 
       expect(getCodeMock).toHaveBeenCalledTimes(1)
@@ -33,15 +32,15 @@ describe('wallets', () => {
     it('should not memoize different addresses on the same chain', async () => {
       const chainId = '1'
 
-      await isSmartContractWallet({ chainId, address: hexZeroPad('0x1', 20) } as ConnectedWallet)
-      await isSmartContractWallet({ chainId, address: hexZeroPad('0x2', 20) } as ConnectedWallet)
+      await isSmartContractWallet(chainId, hexZeroPad('0x1', 20))
+      await isSmartContractWallet(chainId, hexZeroPad('0x2', 20))
 
       expect(getCodeMock).toHaveBeenCalledTimes(2)
     })
 
     it('should not memoize the same address on difference chains', async () => {
       for await (const i of Array.from({ length: 10 }, (_, i) => i + 1)) {
-        await isSmartContractWallet({ chainId: i.toString(), address: hexZeroPad('0x1', 20) } as ConnectedWallet)
+        await isSmartContractWallet(i.toString(), hexZeroPad('0x1', 20))
       }
 
       expect(getCodeMock).toHaveBeenCalledTimes(10)

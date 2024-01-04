@@ -1,3 +1,4 @@
+import { safeFormatUnits } from '@/utils/formatters'
 import { Button, Divider, FormControl, InputLabel, MenuItem, TextField } from '@mui/material'
 import { type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
@@ -17,13 +18,11 @@ export enum TokenAmountFields {
 const TokenAmountInput = ({
   balances,
   selectedToken,
-  onMaxAmountClick,
   maxAmount,
   validate,
 }: {
   balances: SafeBalanceResponse['items']
   selectedToken: SafeBalanceResponse['items'][number] | undefined
-  onMaxAmountClick?: () => void
   maxAmount?: BigNumber
   validate?: (value: string) => string | undefined
 }) => {
@@ -32,6 +31,7 @@ const TokenAmountInput = ({
     register,
     resetField,
     watch,
+    setValue,
   } = useFormContext<{ [TokenAmountFields.tokenAddress]: string; [TokenAmountFields.amount]: string }>()
 
   const tokenAddress = watch(TokenAmountFields.tokenAddress)
@@ -45,6 +45,14 @@ const TokenAmountInput = ({
     [maxAmount, selectedToken?.tokenInfo.decimals],
   )
 
+  const onMaxAmountClick = useCallback(() => {
+    if (!selectedToken || !maxAmount) return
+
+    setValue(TokenAmountFields.amount, safeFormatUnits(maxAmount.toString(), selectedToken.tokenInfo.decimals), {
+      shouldValidate: true,
+    })
+  }, [maxAmount, selectedToken, setValue])
+
   return (
     <FormControl className={classNames(css.outline, { [css.error]: isAmountError })} fullWidth>
       <InputLabel shrink required className={css.label}>
@@ -55,7 +63,7 @@ const TokenAmountInput = ({
           variant="standard"
           InputProps={{
             disableUnderline: true,
-            endAdornment: onMaxAmountClick && (
+            endAdornment: maxAmount && (
               <Button className={css.max} onClick={onMaxAmountClick}>
                 Max
               </Button>

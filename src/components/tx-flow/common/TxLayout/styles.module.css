@@ -130,7 +130,7 @@
 
   .titleWrapper {
     position: absolute;
-    top: 12px;
+    top: 16px;
     left: var(--space-2);
     margin-bottom: 0;
     width: calc(100% - 145px);
@@ -138,6 +138,7 @@
 
   .title {
     font-size: 16px;
+    line-height: 18px;
   }
 
   .container {

@@ -4,7 +4,7 @@ import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecute
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import useBatchedTxs from '@/hooks/useBatchedTxs'
-import ExecuteBatchFlow from '@/components/tx-flow/flows/ExecuteBatch'
+import { ExecuteBatchFlow } from '@/components/tx-flow/flows'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import useWallet from '@/hooks/wallets/useWallet'

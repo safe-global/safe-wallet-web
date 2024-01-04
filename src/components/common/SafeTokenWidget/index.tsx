@@ -18,7 +18,12 @@ import classnames from 'classnames'
 
 const TOKEN_DECIMALS = 18
 
-export const getSafeTokenAddress = (chainId: string): string => {
+export const useSafeTokenAddress = () => {
+  const chainId = useChainId()
+  return getSafeTokenAddress(chainId)
+}
+
+export const getSafeTokenAddress = (chainId: string): string | undefined => {
   return SAFE_TOKEN_ADDRESSES[chainId]
 }
 

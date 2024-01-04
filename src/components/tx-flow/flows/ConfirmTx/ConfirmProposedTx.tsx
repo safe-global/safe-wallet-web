@@ -39,7 +39,7 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 
   return (
-    <SignOrExecuteForm txId={txId} onSubmit={() => {}} isExecutable={canExecute} onlyExecute={!canSign}>
+    <SignOrExecuteForm txId={txId} isExecutable={canExecute} onlyExecute={!canSign}>
       <Typography mb={2}>{text}</Typography>
     </SignOrExecuteForm>
   )

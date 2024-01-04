@@ -8,6 +8,24 @@
 .imageContainer {
   display: flex;
   justify-content: center;
+  position: relative;
+}
+
+.walletIcon {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: -6px;
+  right: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--color-background-paper);
+  background-color: var(--color-background-main);
+  overflow: hidden;
+}
+
+.walletIcon img {
+  padding: 2px;
 }
 
 [data-theme='dark'] .imageContainer img[alt*='Ledger'] {
@@ -26,10 +44,6 @@
   .imageContainer img {
     width: 22px;
     height: auto;
-  }
-
-  .walletName {
-    display: none;
   }
 
   .socialLoginInfo > div > div:last-child {

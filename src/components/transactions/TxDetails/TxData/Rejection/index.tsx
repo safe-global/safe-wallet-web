@@ -22,7 +22,9 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
 
   return (
     <>
-      <Typography mr={2}>{message}</Typography>
+      <Typography data-testid="onchain-rejection" mr={2}>
+        {message}
+      </Typography>
       {!isTxExecuted && (
         <Box mt={2} sx={{ width: 'fit-content' }}>
           <ExternalLink href={HelpCenterArticle.CANCELLING_TRANSACTIONS} title={title}>

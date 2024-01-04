@@ -17,7 +17,6 @@ import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import type { NewSpendingLimitFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeTxContext } from '../../SafeTxProvider'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowProps }) => {
   const [existingSpendingLimit, setExistingSpendingLimit] = useState<SpendingLimitState>()
@@ -54,8 +53,6 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
       ...SETTINGS_EVENTS.SPENDING_LIMIT.RESET_PERIOD,
       label: resetTime,
     })
-
-    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.spending_limit_add })
   }
 
   const existingAmount = existingSpendingLimit

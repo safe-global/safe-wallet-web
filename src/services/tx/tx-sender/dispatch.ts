@@ -234,7 +234,10 @@ export const dispatchBatchExecution = async (
 
       if (didReprice(error)) {
         txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, { txId, safeAddress })
+          txDispatch(TxEvent.PROCESSED, {
+            txId,
+            safeAddress,
+          })
         })
       } else {
         txs.forEach(({ txId }) => {

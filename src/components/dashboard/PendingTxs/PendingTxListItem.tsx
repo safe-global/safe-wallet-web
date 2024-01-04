@@ -45,7 +45,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
         {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
 
         <Box flex={1}>
-          <TxType tx={transaction} short={true} />
+          <TxType tx={transaction} />
         </Box>
 
         <Box flex={1} className={css.txInfo}>

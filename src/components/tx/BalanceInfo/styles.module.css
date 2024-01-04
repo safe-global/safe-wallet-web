@@ -1,0 +1,8 @@
+.container {
+  padding: 8px 12px;
+  background-color: var(--color-background-main);
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+}

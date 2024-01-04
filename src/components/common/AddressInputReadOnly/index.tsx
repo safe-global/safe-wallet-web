@@ -19,7 +19,7 @@ const AddressInputReadOnly = ({ label, address }: { label: string; address: stri
           startAdornment={
             <InputAdornment position="start">
               <Typography variant="body2" component="div">
-                <EthHashInfo address={address} shortAddress={false} />
+                <EthHashInfo address={address} shortAddress={false} copyAddress={false} />
               </Typography>
             </InputAdornment>
           }

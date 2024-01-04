@@ -8,16 +8,18 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 
 const Warning = ({
+  datatestid,
   title,
   text,
   severity,
 }: {
+  datatestid?: String
   title: string | ReactElement
   text: string
   severity: AlertColor
 }): ReactElement => {
   return (
-    <Tooltip title={title} placement="top-start" arrow>
+    <Tooltip data-testid={datatestid} title={title} placement="top-start" arrow>
       <Alert
         className={css.alert}
         sx={{ borderLeft: ({ palette }) => `3px solid ${palette[severity].main} !important` }}
@@ -34,6 +36,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
   const severity = showWarning ? 'warning' : 'success'
   return (
     <Warning
+      datatestid="delegate-call-warning"
       title={
         <>
           This transaction calls a smart contract that will be able to modify your Safe Account.
@@ -57,6 +60,7 @@ export const ApprovalWarning = ({ approvalTxCount }: { approvalTxCount: number }
 
 export const ThresholdWarning = (): ReactElement => (
   <Warning
+    datatestid="threshold-warning"
     title="This transaction potentially alters the number of confirmations required to execute a transaction. Please verify before signing."
     severity="warning"
     text="Confirmation policy change"

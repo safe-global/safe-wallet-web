@@ -13,7 +13,7 @@ import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { TxModalContext } from '../..'
 
-export const SuccessScreen = ({ txId }: { txId: string }) => {
+const SuccessScreen = ({ txId }: { txId: string }) => {
   const [localTxHash, setLocalTxHash] = useState<string>()
   const [error, setError] = useState<Error>()
   const { setTxFlow } = useContext(TxModalContext)
@@ -39,7 +39,7 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
     return () => unsubFns.forEach((unsubscribe) => unsubscribe())
   }, [txId])
 
-  const onFinishClick = useCallback(() => {
+  const onClose = useCallback(() => {
     setTxFlow(undefined)
   }, [setTxFlow])
 
@@ -71,16 +71,18 @@ export const SuccessScreen = ({ txId }: { txId: string }) => {
       <div className={classnames(css.row, css.buttons)}>
         {txLink && (
           <Link {...txLink} passHref target="_blank" rel="noreferrer" legacyBehavior>
-            <Button data-testid="view-transaction-btn" variant="outlined" size="small">
+            <Button data-testid="view-transaction-btn" variant="outlined" size="small" onClick={onClose}>
               View transaction
             </Button>
           </Link>
         )}
 
-        <Button data-testid="finish-transaction-btn" variant="contained" size="small" onClick={onFinishClick}>
+        <Button data-testid="finish-transaction-btn" variant="contained" size="small" onClick={onClose}>
           Finish
         </Button>
       </div>
     </Container>
   )
 }
+
+export default SuccessScreen
