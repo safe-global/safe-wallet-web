@@ -1,4 +1,4 @@
-import { type ReactNode, useState, type ReactElement } from 'react'
+import { type ReactNode, useState, type ReactElement, useId } from 'react'
 import { IconButton, InputAdornment, InputLabel, OutlinedInput, SvgIcon, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
@@ -18,13 +18,16 @@ const AddressInputReadOnly = ({
   const addressBook = useAddressBook()
   const [open, setOpen] = useState(false)
 
+  const id = useId()
+
   return (
     <>
       <div className={css.wrapper}>
-        <InputLabel shrink error={error}>
+        <InputLabel shrink error={error} htmlFor={id}>
           {label}
         </InputLabel>
         <OutlinedInput
+          id={id}
           className={css.input}
           error={error}
           startAdornment={

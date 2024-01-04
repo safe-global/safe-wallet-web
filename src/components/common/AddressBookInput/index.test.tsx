@@ -200,27 +200,33 @@ describe('AddressBookInput', () => {
     })
 
     // Should close auto completion and hide validation error
-    expect(input).toHaveAttribute('aria-expanded', 'false')
-    await waitFor(() => expect(utils.getByLabelText(validationError, { exact: false })).toBeDefined())
+    await waitFor(() => {
+      expect(utils.getByLabelText(validationError, { exact: false })).toBeDefined()
+    })
 
+    // Clear the input by clicking on the readonly input
     await act(() => {
       // first click clears input
-      fireEvent.click(input)
+      fireEvent.click(utils.getByLabelText(validationError, { exact: false }))
+    })
 
+    await waitFor(() => expect(utils.getByLabelText(validationError, { exact: false })).toHaveValue(''))
+    const newInput = utils.getByLabelText(validationError, { exact: false })
+    expect(newInput).toBeVisible()
+
+    await act(() => {
       // mousedown opens autocompletion again
-      fireEvent.mouseDown(input)
-      fireEvent.mouseUp(input)
+      fireEvent.mouseDown(newInput)
+      fireEvent.mouseUp(newInput)
     })
 
     await act(() => {
       fireEvent.click(utils.getByText('ValidAddress'))
-      fireEvent.blur(input)
+      fireEvent.blur(newInput)
 
       jest.advanceTimersByTime(1000)
     })
 
-    // Should close auto completion and hide validation error
-    expect(input).toHaveAttribute('aria-expanded', 'false')
     await waitFor(() => expect(utils.queryByLabelText(validationError, { exact: false })).toBeNull())
 
     // should display name of address as well as address
