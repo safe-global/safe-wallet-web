@@ -1,7 +1,7 @@
 import { renderHook } from '@/tests/test-utils'
 import { usePendingSafe } from '../usePendingSafe'
 
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { useCurrentChain } from '@/hooks/useChains'
 
 // mock useCurrentChain
@@ -20,14 +20,14 @@ describe('usePendingSafe()', () => {
     threshold: 1,
     owners: [],
     saltNonce: 123,
-    address: hexZeroPad('0x10', 20),
+    address: toBeHex('0x10', 20),
   }
   const mockPendingSafe2 = {
     name: 'joyful-rinkeby-safe',
     threshold: 1,
     owners: [],
     saltNonce: 123,
-    address: hexZeroPad('0x10', 20),
+    address: toBeHex('0x10', 20),
   }
 
   beforeEach(() => {

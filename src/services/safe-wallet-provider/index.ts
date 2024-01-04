@@ -1,6 +1,6 @@
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
-import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
+import type { TransactionReceipt } from 'ethers'
 import { numberToHex } from '@/utils/hex'
 
 type SafeInfo = {

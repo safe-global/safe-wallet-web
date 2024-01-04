@@ -7,8 +7,7 @@ import { decodeMultiSendTxs } from '@/utils/transactions'
 import { normalizeTypedData } from '@/utils/web3'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
-import { BigNumber } from 'ethers'
-import { id } from 'ethers/lib/utils'
+import { id } from 'ethers'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
 export type ApprovalModuleResponse = Approval[]
@@ -63,7 +62,7 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
 
   private static getPermitDetails(details: PermitDetails): Pick<Approval, 'amount' | 'tokenAddress'> {
     return {
-      amount: BigNumber.from(details.amount),
+      amount: BigInt(details.amount),
       tokenAddress: details.token,
     }
   }

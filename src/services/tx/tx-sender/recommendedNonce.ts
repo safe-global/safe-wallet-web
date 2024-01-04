@@ -26,15 +26,15 @@ export const getSafeTxGas = async (
   safeAddress: string,
   safeVersion: string,
   safeTxData: SafeTransactionDataPartial,
-): Promise<number | undefined> => {
+): Promise<string | undefined> => {
   const isSafeTxGasRequired = isLegacyVersion(safeVersion)
 
   // For 1.3.0+ Safes safeTxGas is not required
-  if (!isSafeTxGasRequired) return 0
+  if (!isSafeTxGasRequired) return '0'
 
   try {
     const estimation = await fetchRecommendedParams(chainId, safeAddress, safeTxData)
-    return Number(estimation.safeTxGas)
+    return estimation.safeTxGas
   } catch (e) {
     logError(Errors._616, e)
   }
@@ -42,7 +42,7 @@ export const getSafeTxGas = async (
 
 export const getNonces = async (chainId: string, safeAddress: string) => {
   try {
-    return fetchNonces(chainId, safeAddress)
+    return await fetchNonces(chainId, safeAddress)
   } catch (e) {
     logError(Errors._616, e)
   }

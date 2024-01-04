@@ -20,7 +20,7 @@ export function useIsValidRecoveryExecTransactionFromModule(
   const web3ReadOnly = useWeb3ReadOnly()
   const isRecoverer = useIsRecoverer()
 
-  return useAsync(() => {
+  return useAsync(async () => {
     if (!isRecoverer || !safeTx || !wallet || !web3ReadOnly || !delayModifierAddress) {
       return
     }
@@ -28,10 +28,10 @@ export function useIsValidRecoveryExecTransactionFromModule(
     const provider = getPatchedSignerProvider(wallet, safe.chainId, web3ReadOnly)
     const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, provider)
 
-    const signer = provider.getSigner()
+    const signer = await provider.getSigner()
     const contract = delayModifier.connect(signer)
 
-    return contract.callStatic.execTransactionFromModule(
+    return contract.execTransactionFromModule.staticCall(
       safeTx.data.to,
       safeTx.data.value,
       safeTx.data.data,
@@ -54,12 +54,12 @@ export function useIsValidRecoveryExecuteNextTx(recovery: RecoveryQueueItem): As
     const provider = getPatchedSignerProvider(wallet, safe.chainId, web3ReadOnly)
     const delayModifier = getModuleInstance(KnownContracts.DELAY, recovery.address, provider)
 
-    const signer = provider.getSigner()
+    const signer = await provider.getSigner()
     const contract = delayModifier.connect(signer)
 
     const { to, value, data, operation } = recovery.args
 
-    await contract.callStatic.executeNextTx(to, value, data, operation)
+    await contract.executeNextTx.staticCall(to, value, data, operation)
 
     return true
   }, [isExecutable, recovery.address, recovery.args, safe.chainId, wallet, web3ReadOnly])
@@ -79,10 +79,10 @@ export function useIsValidRecoverySkipExpired(recovery: RecoveryQueueItem): Asyn
     const provider = getPatchedSignerProvider(wallet, safe.chainId, web3ReadOnly)
     const delayModifier = getModuleInstance(KnownContracts.DELAY, recovery.address, provider)
 
-    const signer = provider.getSigner()
+    const signer = await provider.getSigner()
     const contract = delayModifier.connect(signer)
 
-    await contract.callStatic.skipExpired()
+    await contract.skipExpired.staticCall()
 
     return true
   }, [isExpired, recovery.address, safe.chainId, wallet, web3ReadOnly])

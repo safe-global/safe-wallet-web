@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker'
-import { BigNumber, ethers } from 'ethers'
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { id, zeroPadValue } from 'ethers'
+import { JsonRpcProvider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import type { Delay, TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
-import type { TransactionReceipt } from '@ethersproject/abstract-provider'
+import type { TransactionReceipt } from 'ethers'
 
 import {
   _getRecoveryStateItem,
@@ -12,9 +12,9 @@ import {
   _isMaliciousRecovery,
 } from '../recovery-state'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
+import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
 import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@safe-global/safe-deployments'
-import { Interface } from 'ethers/lib/utils'
+import { Interface } from 'ethers'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 jest.mock('@/hooks/wallets/web3')
@@ -207,15 +207,15 @@ describe('recovery-state', () => {
   describe('getRecoveryQueueItemTimestamps', () => {
     it('should return a recovery queue item timestamps', async () => {
       const delayModifier = {
-        txCreatedAt: () => Promise.resolve(BigNumber.from(1)),
+        txCreatedAt: () => Promise.resolve(BigInt(1)),
       } as unknown as Delay
       const transactionAdded = {
         args: {
-          queueNonce: BigNumber.from(0),
+          queueNonce: 0n,
         },
-      } as TransactionAddedEvent
-      const delay = BigNumber.from(1)
-      const expiry = BigNumber.from(2)
+      } as TransactionAddedEvent.Log
+      const delay = 1n
+      const expiry = 2n
 
       const item = await _getRecoveryQueueItemTimestamps({
         delayModifier,
@@ -225,23 +225,23 @@ describe('recovery-state', () => {
       })
 
       expect(item).toStrictEqual({
-        timestamp: BigNumber.from(1_000),
-        validFrom: BigNumber.from(2_000),
-        expiresAt: BigNumber.from(4_000),
+        timestamp: 1_000n,
+        validFrom: 2_000n,
+        expiresAt: 4_000n,
       })
     })
 
     it('should return a recovery queue item timestamps with expiresAt null if expiry is zero', async () => {
       const delayModifier = {
-        txCreatedAt: () => Promise.resolve(BigNumber.from(1)),
+        txCreatedAt: () => Promise.resolve(BigInt(1)),
       } as unknown as Delay
       const transactionAdded = {
         args: {
-          queueNonce: BigNumber.from(0),
+          queueNonce: 0n,
         },
-      } as TransactionAddedEvent
-      const delay = BigNumber.from(1)
-      const expiry = BigNumber.from(0)
+      } as TransactionAddedEvent.Log
+      const delay = 1n
+      const expiry = 0n
 
       const item = await _getRecoveryQueueItemTimestamps({
         delayModifier,
@@ -251,8 +251,8 @@ describe('recovery-state', () => {
       })
 
       expect(item).toStrictEqual({
-        timestamp: BigNumber.from(1_000),
-        validFrom: BigNumber.from(2_000),
+        timestamp: 1_000n,
+        validFrom: 2_000n,
         expiresAt: null,
       })
     })
@@ -378,57 +378,57 @@ describe('recovery-state', () => {
       })
 
       const recoverers = [faker.finance.ethereumAddress()]
-      const expiry = BigNumber.from(0)
-      const delay = BigNumber.from(69420)
-      const txNonce = BigNumber.from(2)
-      const queueNonce = BigNumber.from(4)
+      const expiry = 0n
+      const delay = 69420n
+      const txNonce = 2n
+      const queueNonce = 4n
       const transactionsAdded = [
         {
           args: {
-            queueNonce: BigNumber.from(2),
+            queueNonce: 2n,
             to: safeAddress,
-            value: BigNumber.from(0),
+            value: 0n,
             data: '0x',
           },
-        } as unknown,
+        },
         {
           args: {
-            queueNonce: BigNumber.from(3),
+            queueNonce: 3n,
             to: faker.finance.ethereumAddress(), // Malicious
-            value: BigNumber.from(0),
+            value: 0n,
             data: '0x',
           },
-        } as unknown,
+        },
         {
           args: {
-            queueNonce: BigNumber.from(4),
+            queueNonce: 4n,
             to: safeAddress,
-            value: BigNumber.from(0),
+            value: 0n,
             data: '0x',
           },
           removed: true, // Reorg
         } as unknown,
-      ] as Array<TransactionAddedEvent>
+      ] as Array<TransactionAddedEvent.InputTuple>
 
+      const topics = [id('TransactionAdded(uint256,bytes32,address,uint256,bytes,uint8)')]
       const queryFilterMock = jest.fn()
       const defaultTransactionAddedFilter = {
-        address: faker.finance.ethereumAddress(),
-        topics: [ethers.utils.id('TransactionAdded(uint256,bytes32,address,uint256,bytes,uint8)')],
+        getTopicFilter: jest.fn().mockResolvedValue([...topics]),
       }
       const delayModifier = {
         filters: {
           TransactionAdded: () => cloneDeep(defaultTransactionAddedFilter),
         },
-        address: faker.finance.ethereumAddress(),
+        getAddress: jest.fn().mockResolvedValue(faker.finance.ethereumAddress()),
         getModulesPaginated: () => Promise.resolve([recoverers]),
         txExpiration: () => Promise.resolve(expiry),
         txCooldown: () => Promise.resolve(delay),
         txNonce: () => Promise.resolve(txNonce),
         txCreatedAt: jest
           .fn()
-          .mockResolvedValueOnce(BigNumber.from(420))
-          .mockResolvedValueOnce(BigNumber.from(69420))
-          .mockResolvedValueOnce(BigNumber.from(6942069)),
+          .mockResolvedValueOnce(420n)
+          .mockResolvedValueOnce(69420n)
+          .mockResolvedValueOnce(6942069n),
         queueNonce: () => Promise.resolve(queueNonce),
         queryFilter: queryFilterMock.mockImplementation(() => Promise.resolve(transactionsAdded)),
       }
@@ -443,7 +443,7 @@ describe('recovery-state', () => {
       })
 
       expect(recoveryState).toStrictEqual({
-        address: delayModifier.address,
+        address: await delayModifier.getAddress(),
         recoverers,
         expiry,
         delay,
@@ -452,16 +452,16 @@ describe('recovery-state', () => {
         queue: [
           {
             ...transactionsAdded[0],
-            timestamp: BigNumber.from(420).mul(1_000),
-            validFrom: BigNumber.from(420).add(delay).mul(1_000),
+            timestamp: 420n * 1_000n,
+            validFrom: (420n + delay) * 1_000n,
             expiresAt: null,
             isMalicious: false,
             executor: transactionAddedReceipt.from,
           },
           {
             ...transactionsAdded[1],
-            timestamp: BigNumber.from(69420).mul(1_000),
-            validFrom: BigNumber.from(69420).add(delay).mul(1_000),
+            timestamp: 69420n * 1_000n,
+            validFrom: (69420n + delay) * 1_000n,
             expiresAt: null,
             isMalicious: true,
             executor: transactionAddedReceipt.from,
@@ -469,13 +469,7 @@ describe('recovery-state', () => {
         ],
       })
       expect(queryFilterMock).toHaveBeenCalledWith(
-        {
-          ...defaultTransactionAddedFilter,
-          topics: [
-            ...defaultTransactionAddedFilter.topics,
-            [ethers.utils.hexZeroPad('0x2', 32), ethers.utils.hexZeroPad('0x3', 32)],
-          ],
-        },
+        [...topics, [zeroPadValue('0x02', 32), zeroPadValue('0x03', 32)]],
         safeCreationReceipt.blockNumber,
         'latest',
       )
@@ -489,21 +483,21 @@ describe('recovery-state', () => {
       const provider = {} as unknown as JsonRpcProvider
 
       const recoverers = [faker.finance.ethereumAddress()]
-      const expiry = BigNumber.from(0)
-      const delay = BigNumber.from(69420)
-      const txNonce = BigNumber.from(2)
-      const queueNonce = BigNumber.from(2)
+      const expiry = 0n
+      const delay = 69420n
+      const txNonce = 2n
+      const queueNonce = 2n
 
       const queryFilterMock = jest.fn()
       const defaultTransactionAddedFilter = {
         address: faker.finance.ethereumAddress(),
-        topics: [ethers.utils.id('TransactionAdded(uint256,bytes32,address,uint256,bytes,uint8)')],
+        topics: [id('TransactionAdded(uint256,bytes32,address,uint256,bytes,uint8)')],
       }
       const delayModifier = {
         filters: {
           TransactionAdded: () => cloneDeep(defaultTransactionAddedFilter),
         },
-        address: faker.finance.ethereumAddress(),
+        getAddress: jest.fn().mockResolvedValue(faker.finance.ethereumAddress()),
         getModulesPaginated: () => Promise.resolve([recoverers]),
         txExpiration: () => Promise.resolve(expiry),
         txCooldown: () => Promise.resolve(delay),
@@ -522,7 +516,7 @@ describe('recovery-state', () => {
       })
 
       expect(recoveryState).toStrictEqual({
-        address: delayModifier.address,
+        address: await delayModifier.getAddress(),
         recoverers,
         expiry,
         delay,

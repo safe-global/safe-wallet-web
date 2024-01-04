@@ -66,8 +66,8 @@ export function UpsertRecoveryFlowSettings({
   const isDirty = delayModifier
     ? // Updating settings
       !sameAddress(recoverer, delayModifier.recoverers[0]) ||
-      !delayModifier.delay.eq(delay) ||
-      !delayModifier.expiry.eq(expiry)
+      delayModifier.delay !== BigInt(delay) ||
+      delayModifier.expiry !== BigInt(expiry)
     : // Setting up recovery
       recoverer && delay && expiry
 

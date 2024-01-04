@@ -1,6 +1,5 @@
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
-import { Web3Provider } from '@ethersproject/providers'
 import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 
 import { renderHook } from '@/tests/test-utils'
@@ -11,6 +10,8 @@ import * as logic from '../../logic'
 import * as preferences from '../useNotificationPreferences'
 import * as notificationsSlice from '@/store/notificationsSlice'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import type { Eip1193Provider } from 'ethers'
+import { BrowserProvider } from 'ethers'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk')
 
@@ -29,7 +30,7 @@ describe('useNotificationRegistrations', () => {
 
   describe('registerNotifications', () => {
     beforeEach(() => {
-      const mockProvider = new Web3Provider(jest.fn())
+      const mockProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
       jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockProvider)
       jest.spyOn(wallet, 'default').mockImplementation(
         () =>
@@ -50,7 +51,7 @@ describe('useNotificationRegistrations', () => {
         const safeRegistration: logic.NotificationRegistration['safeRegistrations'][number] = {
           chainId,
           safes: safeAddresses,
-          signatures: [hexZeroPad('0x69420', 65)],
+          signatures: [toBeHex('0x69420', 65)],
         }
 
         acc.push(safeRegistration)
@@ -87,8 +88,8 @@ describe('useNotificationRegistrations', () => {
 
     it('does not create preferences/notify if registration does not succeed', async () => {
       const safesToRegister: logic.NotifiableSafes = {
-        '1': [hexZeroPad('0x1', 20)],
-        '2': [hexZeroPad('0x2', 20)],
+        '1': [toBeHex('0x1', 20)],
+        '2': [toBeHex('0x2', 20)],
       }
 
       const payload = getExampleRegisterDevicePayload(safesToRegister)
@@ -119,8 +120,8 @@ describe('useNotificationRegistrations', () => {
 
     it('does not create preferences/notify if registration throws', async () => {
       const safesToRegister: logic.NotifiableSafes = {
-        '1': [hexZeroPad('0x1', 20)],
-        '2': [hexZeroPad('0x2', 20)],
+        '1': [toBeHex('0x1', 20)],
+        '2': [toBeHex('0x2', 20)],
       }
 
       const payload = getExampleRegisterDevicePayload(safesToRegister)
@@ -151,8 +152,8 @@ describe('useNotificationRegistrations', () => {
 
     it('creates preferences/notifies if registration succeeded', async () => {
       const safesToRegister: logic.NotifiableSafes = {
-        '1': [hexZeroPad('0x1', 20)],
-        '2': [hexZeroPad('0x2', 20)],
+        '1': [toBeHex('0x1', 20)],
+        '2': [toBeHex('0x2', 20)],
       }
 
       const payload = getExampleRegisterDevicePayload(safesToRegister)
@@ -202,7 +203,7 @@ describe('useNotificationRegistrations', () => {
 
       const { result } = renderHook(() => useNotificationRegistrations())
 
-      await result.current.unregisterSafeNotifications('1', hexZeroPad('0x1', 20))
+      await result.current.unregisterSafeNotifications('1', toBeHex('0x1', 20))
 
       expect(unregisterSafeSpy).not.toHaveBeenCalled()
     })
@@ -225,7 +226,7 @@ describe('useNotificationRegistrations', () => {
       const { result } = renderHook(() => useNotificationRegistrations())
 
       const chainId = '1'
-      const safeAddress = hexZeroPad('0x1', 20)
+      const safeAddress = toBeHex('0x1', 20)
 
       await result.current.unregisterSafeNotifications(chainId, safeAddress)
 
@@ -251,7 +252,7 @@ describe('useNotificationRegistrations', () => {
       const { result } = renderHook(() => useNotificationRegistrations())
 
       const chainId = '1'
-      const safeAddress = hexZeroPad('0x1', 20)
+      const safeAddress = toBeHex('0x1', 20)
 
       await result.current.unregisterSafeNotifications(chainId, safeAddress)
 
@@ -277,7 +278,7 @@ describe('useNotificationRegistrations', () => {
       const { result } = renderHook(() => useNotificationRegistrations())
 
       const chainId = '1'
-      const safeAddress = hexZeroPad('0x1', 20)
+      const safeAddress = toBeHex('0x1', 20)
 
       await result.current.unregisterSafeNotifications(chainId, safeAddress)
 
