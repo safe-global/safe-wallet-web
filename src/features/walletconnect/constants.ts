@@ -23,7 +23,7 @@ export const SAFE_COMPATIBLE_METHODS = [
   'wallet_switchEthereumChain',
   'wallet_sendFunctionCallBundle',
   'wallet_getBundleStatus',
-  'wallet_wallet_showBundleStatus',
+  'wallet_showBundleStatus',
   'safe_setSettings',
 ]
 
