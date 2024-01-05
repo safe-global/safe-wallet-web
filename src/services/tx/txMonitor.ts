@@ -16,7 +16,7 @@ export function _getRemainingTimeout(defaultTimeout: number, submittedAt?: numbe
 }
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
-export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string, submittedAt?: number) => {
+export const waitForTx = async (provider: JsonRpcProvider, txIds: string[], txHash: string, submittedAt?: number) => {
   const TIMEOUT_MINUTES = 6.5
   const remainingTimeout = _getRemainingTimeout(TIMEOUT_MINUTES, submittedAt)
 
@@ -32,17 +32,21 @@ export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash:
     }
 
     if (didRevert(receipt)) {
-      txDispatch(TxEvent.REVERTED, {
-        txId,
-        error: new Error(`Transaction reverted by EVM.`),
+      txIds.forEach((txId) => {
+        txDispatch(TxEvent.REVERTED, {
+          txId,
+          error: new Error(`Transaction reverted by EVM.`),
+        })
       })
     }
 
     // Tx successfully mined/validated but we don't dispatch SUCCESS as this may be faster than our indexer
   } catch (error) {
-    txDispatch(TxEvent.FAILED, {
-      txId,
-      error: asError(error),
+    txIds.forEach((txId) => {
+      txDispatch(TxEvent.FAILED, {
+        txId,
+        error: asError(error),
+      })
     })
   }
 }
