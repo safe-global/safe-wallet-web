@@ -17,6 +17,7 @@ import { SecuritySeverity } from '@/services/security/modules/types'
 import CloseIcon from '@/public/images/common/close.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckIcon from '@/public/images/common/check.svg'
+import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const REDEFINE_RETRY_TIMEOUT = 2_000
 const RedefineModuleInstance = new RedefineModule()
@@ -72,7 +73,7 @@ export const mapRedefineSeverity: Record<SecuritySeverity, SecurityWarningProps>
 }
 
 export const useRedefine = (
-  safeTransaction: SafeTransaction | undefined,
+  data: SafeTransaction | EIP712TypedData | undefined,
 ): AsyncResult<SecurityResponse<RedefineModuleResponse>> => {
   const { safe, safeAddress } = useSafeInfo()
   const wallet = useWallet()
@@ -81,20 +82,20 @@ export const useRedefine = (
 
   const [redefinePayload, redefineErrors, redefineLoading] = useAsync<SecurityResponse<RedefineModuleResponse>>(
     () => {
-      if (!isFeatureEnabled || !safeTransaction || !wallet?.address) {
+      if (!isFeatureEnabled || !data || !wallet?.address) {
         return
       }
 
       return RedefineModuleInstance.scanTransaction({
         chainId: Number(safe.chainId),
-        safeTransaction,
+        data,
         safeAddress,
         walletAddress: wallet.address,
         threshold: safe.threshold,
       })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safe.chainId, safe.threshold, safeAddress, safeTransaction, wallet?.address, retryCounter, isFeatureEnabled],
+    [safe.chainId, safe.threshold, safeAddress, data, wallet?.address, retryCounter, isFeatureEnabled],
     false,
   )
 

@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { SafeMessageListItemType, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -40,6 +40,10 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { SafeTxContext } from '../../SafeTxProvider'
+import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
+import { Redefine } from '@/components/tx/security/redefine'
+import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -167,6 +171,8 @@ export type ConfirmProps = BaseProps & {
 const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmProps): ReactElement => {
   // Hooks & variables
   const { setTxFlow } = useContext(TxModalContext)
+  const { setSafeMessage: setContextSafeMessage } = useContext(SafeTxContext)
+  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = useContext(TxSecurityContext)
   const { palette } = useTheme()
   const { safe } = useSafeInfo()
   const isOwner = useIsSafeOwner()
@@ -191,6 +197,11 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   )
 
   const handleSign = async () => {
+    if (needsRiskConfirmation && !isRiskConfirmed) {
+      setIsRiskIgnored(true)
+      return
+    }
+
     const updatedMessage = await onSign()
 
     if (updatedMessage) {
@@ -209,6 +220,13 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
     await dispatchPreparedSignature(safeMessage, safeMessageHash, () => setTxFlow(undefined), requestId)
   }
 
+  // Set message for redefine scan
+  useEffect(() => {
+    if (typeof message !== 'string') {
+      setContextSafeMessage(message)
+    }
+  }, [message, setContextSafeMessage])
+
   return (
     <>
       <TxCard>
@@ -220,13 +238,15 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
 
-          <Accordion sx={{ mt: 2, '&.Mui-expanded': { mt: 2 } }}>
+          <Accordion sx={{ my: 2, '&.Mui-expanded': { mt: 2 } }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>SafeMessage details</AccordionSummary>
             <AccordionDetails>
               <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
               <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
             </AccordionDetails>
           </Accordion>
+
+          <Redefine />
         </CardContent>
       </TxCard>
 
@@ -246,7 +266,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
               }
             >
               <MsgSigners
-                msg={safeMessage || createSkeletonMessage(safe.threshold)}
+                msg={safeMessage ?? createSkeletonMessage(safe.threshold)}
                 showOnlyConfirmations
                 showMissingSignatures
                 backgroundColor={palette.info.background}
@@ -256,6 +276,8 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
             <WrongChainWarning />
 
             <MessageDialogError isOwner={isOwner} submitError={submitError} />
+
+            <RiskConfirmationError />
           </TxCard>
           <TxCard>
             <CardActions>
