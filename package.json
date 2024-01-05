@@ -8,6 +8,7 @@
     "dev": "next dev",
     "start": "next dev",
     "build": "next build",
+    "setup": "yarn install && yarn after-install",
     "lint": "tsc && next lint",
     "lint:fix": "next lint --fix",
     "prettier": "prettier -w \"{src,cypress,mocks,scripts}/**/*.{ts,tsx,css,js}\"",
@@ -19,8 +20,7 @@
     "routes": "node scripts/generate-routes.js > src/config/routes.ts && prettier -w src/config/routes.ts && cat src/config/routes.ts",
     "css-vars": "npx -y tsx ./scripts/css-vars.ts > ./src/styles/vars.css && prettier -w src/styles/vars.css",
     "generate-types": "typechain --target ethers-v5 --out-dir src/types/contracts ./node_modules/@safe-global/safe-deployments/dist/assets/**/*.json ./node_modules/@safe-global/safe-modules-deployments/dist/assets/**/*.json ./node_modules/@openzeppelin/contracts/build/contracts/ERC20.json ./node_modules/@openzeppelin/contracts/build/contracts/ERC721.json",
-    "after-install": "yarn generate-types",
-    "postinstall": "yarn after-install",
+    "after-install": "yarn allow-scripts && yarn generate-types",
     "analyze": "cross-env ANALYZE=true yarn build",
     "cypress:open": "cross-env TZ=UTC cypress open --e2e",
     "cypress:canary": "cross-env TZ=UTC cypress open --e2e -b chrome:canary",
@@ -98,6 +98,8 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",
+    "@lavamoat/allow-scripts": "^3.0.0",
+    "@lavamoat/preinstall-always-fail": "^2.0.0",
     "@next/bundle-analyzer": "^13.5.6",
     "@openzeppelin/contracts": "^4.9.2",
     "@safe-global/safe-core-sdk-types": "^1.9.1",
@@ -143,5 +145,30 @@
     "budgetPercentIncreaseRed": 20,
     "minimumChangeThreshold": 0,
     "showDetails": true
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "$root$": false,
+      "@lavamoat/preinstall-always-fail": false,
+      "@truffle/hdwallet-provider>@truffle/hdwallet>keccak": false,
+      "@truffle/hdwallet-provider>web3": false,
+      "@truffle/hdwallet-provider>web3>web3-bzz": false,
+      "@truffle/hdwallet-provider>web3>web3-shh": false,
+      "@web3-onboard/coinbase>@coinbase/wallet-sdk>@solana/web3.js>bigint-buffer": false,
+      "@web3-onboard/coinbase>@coinbase/wallet-sdk>keccak": true,
+      "@web3-onboard/core>svelte-i18n>cli-color>es5-ext": true,
+      "@web3-onboard/core>svelte-i18n>esbuild": true,
+      "@web3-onboard/trezor>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": true,
+      "@web3-onboard/trezor>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": true,
+      "@web3-onboard/trezor>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
+      "@web3-onboard/trezor>eth-crypto>eccrypto": true,
+      "@web3-onboard/trezor>eth-crypto>eccrypto>secp256k1": true,
+      "@web3-onboard/trezor>eth-crypto>secp256k1": true,
+      "@web3-onboard/trezor>hdkey>secp256k1": true,
+      "cypress": true,
+      "ethers>@ethersproject/providers>ws>bufferutil": true,
+      "ethers>@ethersproject/providers>ws>utf-8-validate": true,
+      "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
+    }
   }
 }
