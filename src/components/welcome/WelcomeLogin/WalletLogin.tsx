@@ -29,7 +29,9 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
                 <Typography variant="subtitle2" fontWeight={700}>
                   Continue with {wallet.label}
                 </Typography>
-                {wallet.address && <EthHashInfo address={wallet.address} shortAddress avatarSize={16} />}
+                {wallet.address && (
+                  <EthHashInfo address={wallet.address} shortAddress avatarSize={16} showName={false} />
+                )}
               </Box>
               {wallet.icon && (
                 <img
