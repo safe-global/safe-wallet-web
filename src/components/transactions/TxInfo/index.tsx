@@ -56,7 +56,10 @@ export const TransferTx = ({
     return (
       <TokenAmount
         {...transfer}
-        tokenSymbol={ellipsis(`${transfer.tokenSymbol} #${transfer.tokenId}`, withLogo ? 16 : 100)}
+        tokenSymbol={ellipsis(
+          `${transfer.tokenSymbol ? transfer.tokenSymbol : 'Unknown NFT'} #${transfer.tokenId}`,
+          withLogo ? 16 : 100,
+        )}
         value="1"
         direction={undefined}
         logoUri={withLogo ? transfer?.logoUri : undefined}
