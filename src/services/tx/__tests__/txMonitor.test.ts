@@ -1,3 +1,4 @@
+import { _getRemainingTimeout } from '@/services/tx/txMonitor'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import * as txEvents from '@/services/tx/txEvents'
 import * as txMonitor from '@/services/tx/txMonitor'
@@ -402,5 +403,28 @@ describe('txMonitor', () => {
       expect(mockFetch).toHaveBeenCalled()
       expect(setStatusSpy).toHaveBeenCalledWith(SafeCreationStatus.ERROR)
     })
+  })
+})
+
+describe('getRemainingTimeout', () => {
+  const DefaultTimeout = 6.5
+
+  it('returns 1 if submission is older than 6.5 minutes', () => {
+    const result = _getRemainingTimeout(DefaultTimeout, Date.now() - DefaultTimeout * 60_000)
+
+    expect(result).toBe(1)
+  })
+
+  it('returns default timeout in milliseconds if no submission time was passed', () => {
+    const result = _getRemainingTimeout(DefaultTimeout)
+
+    expect(result).toBe(DefaultTimeout * 60_000)
+  })
+
+  it('returns remaining timeout', () => {
+    const passedMinutes = 3
+    const result = _getRemainingTimeout(DefaultTimeout, Date.now() - passedMinutes * 60_000)
+
+    expect(result).toBe((DefaultTimeout - passedMinutes) * 60_000)
   })
 })

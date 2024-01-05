@@ -8,14 +8,22 @@ import { Errors, logError } from '@/services/exceptions'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { asError } from '../exceptions/utils'
 
+export function _getRemainingTimeout(defaultTimeout: number, submittedAt?: number) {
+  const timeoutInMs = defaultTimeout * 60_000
+  const timeSinceSubmission = submittedAt ? Date.now() - submittedAt : 0
+
+  return Math.max(timeoutInMs - timeSinceSubmission, 1)
+}
+
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
-export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string) => {
+export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string, submittedAt?: number) => {
   const TIMEOUT_MINUTES = 6.5
+  const remainingTimeout = _getRemainingTimeout(TIMEOUT_MINUTES, submittedAt)
 
   try {
     // Return receipt after 1 additional block was mined/validated or until timeout
     // https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/-%23-Provider-waitForTransaction
-    const receipt = await provider.waitForTransaction(txHash, 1, TIMEOUT_MINUTES * 60_000)
+    const receipt = await provider.waitForTransaction(txHash, 1, remainingTimeout)
 
     if (!receipt) {
       throw new Error(
