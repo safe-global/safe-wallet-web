@@ -1,6 +1,7 @@
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionReceipt } from '@ethersproject/abstract-provider/lib'
+import { numberToHex } from '@/utils/hex'
 
 type SafeInfo = {
   safeAddress: string
@@ -336,9 +337,9 @@ export class SafeWalletProvider {
       receipt: {
         success: boolean
         blockHash: string
-        blockNumber: number
-        blockTimestamp: number
-        gasUsed: number
+        blockNumber: string // hex string
+        blockTimestamp: string // hex string
+        gasUsed: string // hex string
         transactionHash: string
         logs: TransactionReceipt['logs']
       }
@@ -367,9 +368,9 @@ export class SafeWalletProvider {
       receipt: {
         success: txStatus === TransactionStatus.SUCCESS,
         blockHash: receipt?.blockHash ?? '',
-        blockNumber: receipt?.blockNumber ?? -1,
-        blockTimestamp: tx.executedAt || -1,
-        gasUsed: receipt?.gasUsed.toNumber() ?? 0,
+        blockNumber: receipt?.blockNumber.toString() ?? '0x0',
+        blockTimestamp: numberToHex(tx.executedAt || 0),
+        gasUsed: receipt?.gasUsed.toString() ?? '0x0',
         transactionHash: txHash ?? '',
         logs: receipt?.logs ?? [],
       },
