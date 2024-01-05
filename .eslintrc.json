@@ -13,8 +13,9 @@
       {
         "additionalHooks": "useAsync"
       }
-    ]
+    ],
+    "no-only-tests/no-only-tests": "error"
   },
   "ignorePatterns": ["node_modules/", ".next/", ".github/"],
-  "plugins": ["unused-imports", "@typescript-eslint"]
+  "plugins": ["unused-imports", "@typescript-eslint", "no-only-tests"]
 }
