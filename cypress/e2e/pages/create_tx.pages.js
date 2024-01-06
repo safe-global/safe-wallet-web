@@ -412,3 +412,9 @@ export function clickOnExpandAllBtn() {
 export function clickOnCollapseAllBtn() {
   cy.contains(collapseAllBtnStr).click()
 }
+
+export function verifyTxDestinationAddress(receivedAddress) {
+  cy.get(receivedAddress).then((address) => {
+    cy.contains(address).should('exist')
+  })
+}
