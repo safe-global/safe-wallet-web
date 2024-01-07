@@ -17,6 +17,8 @@ export const SEPOLIA_TEST_SAFE_8 = 'sep:0x5912f6616c84024cD1aff0D5b55bb36F5180fF
 // SAFE 9 & 10 are used for safe apps tests
 export const SEPOLIA_TEST_SAFE_9 = 'sep:0xD1571E8Cc4438aFef2836DD9a0E5D09fb63EDE9a'
 export const SEPOLIA_TEST_SAFE_10 = 'sep:0x4DD4cB2299E491E1B469245DB589ccB2B16d7bde'
+// SAFE 11 is a safe with native tokens but the automation user is not its owner
+export const SEPOLIA_TEST_SAFE_11 = 'sep:0xfC0A7ac73Fde7547ac0792Cca1D8A50CE0AFC4Df'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'

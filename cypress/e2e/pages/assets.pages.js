@@ -1,6 +1,5 @@
-import * as main from '../pages/main.page'
+import * as main from './main.page'
 
-let etherscanLink = 'a[aria-label="View on sepolia.etherscan.io"]'
 let etherscanLinkSepolia = 'a[aria-label="View on sepolia.etherscan.io"]'
 export const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 const currencyDropdown = '[id="currency"]'
@@ -207,14 +206,14 @@ export function verityTokenAltImageIsVisible(currency, alttext) {
     })
 }
 
-export function verifyAssetNameHasExplorerLink(currency, columnName, sepolia = false) {
-  if (sepolia) etherscanLink = etherscanLinkSepolia
+export function verifyAssetNameHasExplorerLink(currency, columnName) {
+  etherscanLinkSepolia
   cy.get(tokenListTable)
     .contains(currency)
     .parents('tr')
     .find('td')
     .eq(columnName)
-    .find(etherscanLink)
+    .find(etherscanLinkSepolia)
     .should('be.visible')
 }
 
@@ -225,7 +224,7 @@ export function verifyAssetExplorerLinkNotAvailable(currency, columnName) {
     .find('td')
     .eq(columnName)
     .within(() => {
-      cy.get(etherscanLink).should('not.exist')
+      cy.get(etherscanLinkSepolia).should('not.exist')
     })
 }
 

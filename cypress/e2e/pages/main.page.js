@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 
 const acceptSelection = 'Accept selection'
 const executeStr = 'Execute'
+const connectedOwnerBlock = '[data-testid="open-account-center"]'
 export const modalDialogCloseBtn = '[data-testid="modal-dialog-close-btn"]'
 
 export function clickOnExecuteBtn() {
@@ -43,6 +44,10 @@ export function acceptCookies(index = 0) {
 
 export function verifyGoerliWalletHeader() {
   cy.contains(constants.goerlyE2EWallet)
+}
+
+export function verifyOwnerConnected(prefix = 'sep:') {
+  cy.get(connectedOwnerBlock).should('contain', prefix)
 }
 
 export function verifyHomeSafeUrl(safe) {
