@@ -132,7 +132,7 @@ describe('validation', () => {
   })
 
   describe('URL validation', () => {
-    it.only('returns true for localhost URLs', () => {
+    it('returns true for localhost URLs', () => {
       const result1 = isValidURL('http://localhost:3000')
       expect(result1).toBe(true)
 
@@ -140,7 +140,7 @@ describe('validation', () => {
       expect(result2).toBe(true)
     })
 
-    it.only('returns false for non https domains ', () => {
+    it('returns false for non https domains ', () => {
       const result1 = isValidURL('https://example.com')
       expect(result1).toBe(true)
 
