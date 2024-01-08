@@ -21,7 +21,7 @@ jest.mock('@/components/common/CheckWallet', () => ({
   },
 }))
 
-describe.only('ExecuteForm', () => {
+describe('ExecuteForm', () => {
   const safeTransaction = createMockSafeTransaction({
     to: '0x1',
     data: '0x',
