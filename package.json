@@ -33,7 +33,6 @@
     "node": ">=16"
   },
   "resolutions": {
-    "@ethereumjs/common": "^3.2.0",
     "@walletconnect/core": "^2.10.6",
     "@walletconnect/ethereum-provider": "^2.10.6",
     "@walletconnect/utils": "^2.10.6",
