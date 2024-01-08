@@ -1,18 +1,20 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
+import { useCurrentChain } from '@/hooks/useChains'
 
 import NavTabs from '@/components/common/NavTabs'
 import { safeAppsNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import css from './styles.module.css'
 
 const SafeAppsHeader = (): ReactElement => {
+  const chain = useCurrentChain()
   return (
     <>
       <Box className={css.container}>
         {/* Safe Apps Title */}
         <Typography className={css.title} variant="h3">
-          Explore the Safe Apps ecosystem
+          Explore the Safe {chain?.chainName} ecosystem
         </Typography>
 
         {/* Safe Apps Subtitle */}
