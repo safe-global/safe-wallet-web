@@ -166,7 +166,7 @@ describe('Tokens tests', () => {
   })
 
   //Include in smoke.
-  it.only('Verify that when owner is disconnected, Send button is disabled', () => {
+  it('Verify that when owner is disconnected, Send button is disabled', () => {
     //waits for the user to look connected. Sends a default prefix "sep:" if it is called with no params
     main.verifyOwnerConnected()
     owner.clickOnWalletExpandMoreIcon()
