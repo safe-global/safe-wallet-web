@@ -212,7 +212,7 @@ export const checkSafeCreationTx = async (
   txHash: string,
   dispatch: AppDispatch,
 ): Promise<SafeCreationStatus> => {
-  const TIMEOUT_TIME = 6.5 * 60 * 1000 // 6.5 minutes
+  const TIMEOUT_TIME = 60 * 1000 // 1 minute
 
   try {
     const receipt = await provider._waitForTransaction(txHash, 1, TIMEOUT_TIME, pendingTx)

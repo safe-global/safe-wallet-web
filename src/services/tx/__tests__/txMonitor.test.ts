@@ -69,7 +69,7 @@ describe('txMonitor', () => {
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
         txId: '0x0',
-        error: new Error('Transaction not processed in 6.5 minutes. Be aware that it might still be processed.'),
+        error: new Error('Transaction not processed in 1 minute. Be aware that it might still be processed.'),
       })
     })
 
@@ -93,8 +93,8 @@ describe('txMonitor', () => {
 
       await waitForTx(provider, ['0x0'], '0x0')
 
-      // 6.5 minutes (timeout of txMonitor) + 1ms
-      jest.advanceTimersByTime(6.5 * 60_000 + 1)
+      // 1 minute (timeout of txMonitor) + 1ms
+      jest.advanceTimersByTime(60_000 + 1)
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
     })
@@ -407,9 +407,9 @@ describe('txMonitor', () => {
 })
 
 describe('getRemainingTimeout', () => {
-  const DefaultTimeout = 6.5
+  const DefaultTimeout = 1
 
-  it('returns 1 if submission is older than 6.5 minutes', () => {
+  it('returns 1 if submission is older than 1 minute', () => {
     const result = _getRemainingTimeout(DefaultTimeout, Date.now() - DefaultTimeout * 60_000)
 
     expect(result).toBe(1)

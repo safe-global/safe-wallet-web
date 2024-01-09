@@ -17,7 +17,7 @@ export function _getRemainingTimeout(defaultTimeout: number, submittedAt?: numbe
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
 export const waitForTx = async (provider: JsonRpcProvider, txIds: string[], txHash: string, submittedAt?: number) => {
-  const TIMEOUT_MINUTES = 6.5
+  const TIMEOUT_MINUTES = 1
   const remainingTimeout = _getRemainingTimeout(TIMEOUT_MINUTES, submittedAt)
 
   try {
@@ -27,7 +27,7 @@ export const waitForTx = async (provider: JsonRpcProvider, txIds: string[], txHa
 
     if (!receipt) {
       throw new Error(
-        `Transaction not processed in ${TIMEOUT_MINUTES} minutes. Be aware that it might still be processed.`,
+        `Transaction not processed in ${TIMEOUT_MINUTES} minute. Be aware that it might still be processed.`,
       )
     }
 
