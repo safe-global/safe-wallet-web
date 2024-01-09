@@ -7,15 +7,7 @@
  * This service should NOT be used directly by components. Use the `analytics` service instead.
  */
 
-import type { TagManagerArgs } from './TagManager'
 import TagManager from './TagManager'
-import {
-  IS_PRODUCTION,
-  GOOGLE_TAG_MANAGER_ID,
-  GOOGLE_TAG_MANAGER_AUTH_LIVE,
-  GOOGLE_TAG_MANAGER_AUTH_LATEST,
-  GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH,
-} from '@/config/constants'
 import type { AnalyticsEvent, EventLabel, SafeAppSDKEvent } from './types'
 import { EventType, DeviceType } from './types'
 import { SAFE_APPS_SDK_CATEGORY } from './events'
@@ -23,24 +15,6 @@ import { getAbTest } from '../tracking/abTesting'
 import type { AbTest } from '../tracking/abTesting'
 import { AppRoutes } from '@/config/routes'
 import packageJson from '../../../package.json'
-
-type GTMEnvironment = 'LIVE' | 'LATEST' | 'DEVELOPMENT'
-type GTMEnvironmentArgs = Required<Pick<TagManagerArgs, 'auth' | 'preview'>>
-
-const GTM_ENV_AUTH: Record<GTMEnvironment, GTMEnvironmentArgs> = {
-  LIVE: {
-    auth: GOOGLE_TAG_MANAGER_AUTH_LIVE,
-    preview: 'env-1',
-  },
-  LATEST: {
-    auth: GOOGLE_TAG_MANAGER_AUTH_LATEST,
-    preview: 'env-2',
-  },
-  DEVELOPMENT: {
-    auth: GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH,
-    preview: 'env-3',
-  },
-}
 
 const commonEventParams = {
   appVersion: packageJson.version,
@@ -62,17 +36,7 @@ export const gtmSetSafeAddress = (safeAddress: string): void => {
 }
 
 export const gtmInit = (): void => {
-  const GTM_ENVIRONMENT = IS_PRODUCTION ? GTM_ENV_AUTH.LIVE : GTM_ENV_AUTH.DEVELOPMENT
-
-  if (!GOOGLE_TAG_MANAGER_ID || !GTM_ENVIRONMENT.auth) {
-    console.warn('[GTM] - Unable to initialize Google Tag Manager. `id` or `gtm_auth` missing.')
-    return
-  }
-
-  TagManager.initialize({
-    gtmId: GOOGLE_TAG_MANAGER_ID,
-    ...GTM_ENVIRONMENT,
-  })
+  TagManager.initialize()
 }
 
 export const gtmEnableCookies = TagManager.enableCookies
