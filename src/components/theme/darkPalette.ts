@@ -13,7 +13,7 @@ const darkPalette = {
     dark: '#636669',
     main: '#FFFFFF',
     light: '#12FF80',
-    background: '#303033',
+    background: '#1B2A22',
   },
   border: {
     main: '#636669',
