@@ -28,6 +28,9 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
+import { type EthersError } from '@/utils/ethers-utils'
+import { ErrorCode } from '@ethersproject/logger'
+
 
 export const ExecuteForm = ({
   safeTx,
@@ -53,6 +56,7 @@ export const ExecuteForm = ({
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
 
   // Hooks
   const currentChain = useCurrentChain()
@@ -88,6 +92,7 @@ export const ExecuteForm = ({
 
     setIsSubmittable(false)
     setSubmitError(undefined)
+    setIsRejectedByUser(false)
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
@@ -95,10 +100,16 @@ export const ExecuteForm = ({
     try {
       executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
     } catch (_err) {
-      const err = asError(_err)
-      trackError(Errors._804, err)
-      setIsSubmittable(true)
-      setSubmitError(err)
+      const err = _err as EthersError
+      if (err.code === ErrorCode.ACTION_REJECTED) {
+        setIsSubmittable(true)
+        setIsRejectedByUser(true);
+      } else {
+        trackError(Errors._804, err)
+        setIsSubmittable(true)
+        setSubmitError(err)
+      }
+
       return
     }
 
@@ -167,6 +178,12 @@ export const ExecuteForm = ({
         {submitError && (
           <Box mt={1}>
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          </Box>
+        )}
+
+        {isRejectedByUser && (
+          <Box mt={1}>
+            <ErrorMessage>The transaction was rejected by the user.</ErrorMessage>
           </Box>
         )}
 
