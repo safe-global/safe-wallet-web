@@ -28,18 +28,18 @@ const TX_CATEGORY = 'transactions'
 
 export const TX_EVENTS = {
   CREATE: {
-    event: EventType.TX_CREATE,
+    event: EventType.TX_CREATED,
     action: 'Create transaction',
     category: TX_CATEGORY,
     // label: TX_TYPES,
   },
   CONFIRM: {
-    event: EventType.TX_CONFIRM,
+    event: EventType.TX_CONFIRMED,
     action: 'Confirm transaction',
     category: TX_CATEGORY,
   },
   EXECUTE: {
-    event: EventType.TX_EXECUTE,
+    event: EventType.TX_EXECUTED,
     action: 'Execute transaction',
     category: TX_CATEGORY,
   },
