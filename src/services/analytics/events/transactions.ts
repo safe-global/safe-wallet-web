@@ -1,3 +1,5 @@
+import { EventType } from '../types'
+
 export enum TX_TYPES {
   // Settings
   owner_add = 'owner_add',
@@ -26,18 +28,18 @@ const TX_CATEGORY = 'transactions'
 
 export const TX_EVENTS = {
   CREATE: {
-    event: 'tx_create',
+    event: EventType.TX_CREATE,
     action: 'Create transaction',
     category: TX_CATEGORY,
     // label: TX_TYPES,
   },
   CONFIRM: {
-    event: 'tx_confirm',
+    event: EventType.TX_CONFIRM,
     action: 'Confirm transaction',
     category: TX_CATEGORY,
   },
   EXECUTE: {
-    event: 'tx_execute',
+    event: EventType.TX_EXECUTE,
     action: 'Execute transaction',
     category: TX_CATEGORY,
   },

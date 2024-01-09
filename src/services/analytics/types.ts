@@ -6,12 +6,18 @@ export enum EventType {
   CLICK = 'customClick',
   META = 'metadata',
   SAFE_APP = 'safeApp',
+  SAFE_CREATED = 'safe_created',
+  SAFE_OPENED = 'safe_opened',
+  WALLET_CONNECTED = 'wallet_connected',
+  TX_CREATE = 'tx_create',
+  TX_CONFIRM = 'tx_confirm',
+  TX_EXECUTE = 'tx_execute',
 }
 
 export type EventLabel = string | number | boolean | null
 
 export type AnalyticsEvent = {
-  event?: string
+  event?: EventType
   category: string
   action: string
   label?: EventLabel

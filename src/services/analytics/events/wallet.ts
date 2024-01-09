@@ -4,7 +4,7 @@ const WALLET_CATEGORY = 'wallet'
 
 export const WALLET_EVENTS = {
   CONNECT: {
-    event: EventType.META,
+    event: EventType.WALLET_CONNECTED,
     action: 'Connect wallet',
     category: WALLET_CATEGORY,
   },

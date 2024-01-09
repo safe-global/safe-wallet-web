@@ -100,7 +100,7 @@ export const OVERVIEW_EVENTS = {
   },
   // Track actual Safe views
   SAFE_VIEWED: {
-    event: EventType.META,
+    event: EventType.SAFE_OPENED,
     action: 'Safe viewed',
     category: OVERVIEW_CATEGORY,
   },
