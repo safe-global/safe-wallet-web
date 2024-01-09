@@ -422,7 +422,7 @@ describe('getRemainingTimeout', () => {
   })
 
   it('returns remaining timeout', () => {
-    const passedMinutes = 3
+    const passedMinutes = DefaultTimeout - 0.4
     const result = _getRemainingTimeout(DefaultTimeout, Date.now() - passedMinutes * 60_000)
 
     expect(result).toBe((DefaultTimeout - passedMinutes) * 60_000)
