@@ -107,7 +107,7 @@ export const SignForm = ({
 
       {isRejectedByUser && (
         <Box mt={1}>
-          <ErrorMessage>You've rejected the transaction.</ErrorMessage>
+          <ErrorMessage>{`You've rejected the transaction.`}</ErrorMessage>
         </Box>
       )}
 

@@ -17,7 +17,6 @@ import { getExplorerLink } from '@/utils/gateway'
 import { getTxDetails } from '@/services/tx/txDetails'
 import { ErrorCode } from '@ethersproject/logger'
 
-
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
   [TxEvent.PROPOSED]: 'Successfully added to queue.',
@@ -91,7 +90,7 @@ const useTxNotifications = (): void => {
           try {
             const txDetails = await getTxDetails(chain.chainId, id)
             humanDescription = txDetails.txInfo.humanDescription || humanDescription
-          } catch { }
+          } catch {}
         }
 
         dispatch(
@@ -104,8 +103,8 @@ const useTxNotifications = (): void => {
             link: txId
               ? getTxLink(txId, chain, safeAddress)
               : txHash
-                ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
-                : undefined,
+              ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
+              : undefined,
           }),
         )
       }),

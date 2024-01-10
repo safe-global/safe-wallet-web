@@ -20,7 +20,6 @@ import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
-import { asError } from '@/services/exceptions/utils'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
 import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
@@ -137,9 +136,7 @@ const ReviewSpendingLimitTx = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
 
-        {isRejectedByUser && (
-          <ErrorMessage>You've rejected the transaction.</ErrorMessage>
-        )}
+        {isRejectedByUser && <ErrorMessage>{`You've rejected the transaction.`}</ErrorMessage>}
 
         <Typography variant="body2" color="primary.light" textAlign="center">
           You&apos;re about to create a transaction and will need to confirm it with your currently connected wallet.
