@@ -1,5 +1,6 @@
 import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
+import type { EthersError } from '@/utils/ethers-utils'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
 import type MultiSendCallOnlyEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
 import { type SpendingLimitTxParams } from '@/components/tx-flow/flows/TokenTransfer/ReviewSpendingLimitTx'
@@ -162,7 +163,9 @@ export const dispatchTxExecution = async (
       }
     })
     .catch((err) => {
-      if (didReprice(err)) {
+      const error = err as EthersError
+
+      if (didReprice(error)) {
         txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
       } else {
         txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
@@ -227,8 +230,9 @@ export const dispatchBatchExecution = async (
       }
     })
     .catch((err) => {
+      const error = err as EthersError
 
-      if (didReprice(err)) {
+      if (didReprice(error)) {
         txs.forEach(({ txId }) => {
           txDispatch(TxEvent.PROCESSED, {
             txId,

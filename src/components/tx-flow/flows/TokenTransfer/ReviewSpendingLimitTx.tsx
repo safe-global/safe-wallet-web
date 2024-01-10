@@ -25,6 +25,8 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
 import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { type EthersError } from '@/utils/ethers-utils'
+import { ErrorCode } from '@ethersproject/logger'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -46,6 +48,7 @@ const ReviewSpendingLimitTx = ({
 }): ReactElement => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
   const { setTxFlow } = useContext(TxModalContext)
   const currentChain = useCurrentChain()
   const onboard = useOnboard()
@@ -87,6 +90,7 @@ const ReviewSpendingLimitTx = ({
 
     setIsSubmittable(false)
     setSubmitError(undefined)
+    setIsRejectedByUser(false)
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
@@ -95,10 +99,15 @@ const ReviewSpendingLimitTx = ({
       onSubmit('', true)
       setTxFlow(undefined)
     } catch (_err) {
-      const err = asError(_err)
-      logError(Errors._801, err)
-      setIsSubmittable(true)
-      setSubmitError(err)
+      const err = _err as EthersError
+      if (err.code === ErrorCode.ACTION_REJECTED) {
+        setIsSubmittable(true)
+        setIsRejectedByUser(true)
+      } else {
+        logError(Errors._801, err)
+        setIsSubmittable(true)
+        setSubmitError(err)
+      }
     }
 
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.transfer_token })
@@ -126,6 +135,10 @@ const ReviewSpendingLimitTx = ({
 
         {submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        )}
+
+        {isRejectedByUser && (
+          <ErrorMessage>You've rejected the transaction.</ErrorMessage>
         )}
 
         <Typography variant="body2" color="primary.light" textAlign="center">
