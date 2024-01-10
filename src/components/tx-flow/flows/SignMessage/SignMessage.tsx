@@ -44,6 +44,7 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
 import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
+import { ErrorCode } from '@ethersproject/logger'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -99,10 +100,12 @@ const MessageDialogError = ({ isOwner, submitError }: { isOwner: boolean; submit
     !wallet || !onboard
       ? 'No wallet is connected.'
       : !isOwner
-      ? "You are currently not an owner of this Safe Account and won't be able to confirm this message."
-      : submitError
-      ? 'Error confirming the message. Please try again.'
-      : null
+        ? "You are currently not an owner of this Safe Account and won't be able to confirm this message."
+        : submitError && 'code' in submitError && submitError.code === ErrorCode.ACTION_REJECTED
+          ? "You've rejected the transaction."
+          : submitError
+            ? 'Error confirming the message. Please try again.'
+            : null
 
   if (errorMessage) {
     return <ErrorMessage>{errorMessage}</ErrorMessage>

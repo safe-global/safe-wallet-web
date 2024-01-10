@@ -41,11 +41,11 @@ enum Variant {
   ERROR = 'error',
 }
 
+const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
+
 const isUserRejection = (error: Error) => {
   return 'code' in error && error.code === ErrorCode.ACTION_REJECTED
 }
-
-const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
 
 export const getTxLink = (
   txId: string,
@@ -78,9 +78,7 @@ const useTxNotifications = (): void => {
     const unsubFns = entries.map(([event, baseMessage]) =>
       txSubscribe(event, async (detail) => {
         const isError = 'error' in detail
-        if (isError && isUserRejection(detail.error)) {
-          return
-        }
+        if (isError && isUserRejection(detail.error)) return
         const isSuccess = successEvents.includes(event)
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
         const txId = 'txId' in detail ? detail.txId : undefined
