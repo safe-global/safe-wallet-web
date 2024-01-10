@@ -30,7 +30,6 @@ import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 import { type EthersError } from '@/utils/ethers-utils'
 import { ErrorCode } from '@ethersproject/logger'
 
-
 export const ExecuteForm = ({
   safeTx,
   txId,
@@ -108,7 +107,6 @@ export const ExecuteForm = ({
         setIsSubmittable(true)
         setSubmitError(err)
       }
-
       return
     }
 
