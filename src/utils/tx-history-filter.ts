@@ -121,21 +121,24 @@ export const fetchFilteredTxHistory = async (
   pageUrl?: string,
 ): Promise<TransactionListPage> => {
   const fetchPage = () => {
+    const tzOffset = new Date().getTimezoneOffset() * 60 * 1000
+
+    const query = {
+      ...filterData.filter,
+      timezone_offset: tzOffset,
+      trusted: false, // load all transactions, mark untrusted in the UI
+      executed: filterData.type === TxFilterType.MULTISIG ? 'true' : undefined,
+    }
+
     switch (filterData.type) {
       case TxFilterType.INCOMING: {
-        return getIncomingTransfers(chainId, safeAddress, filterData.filter, pageUrl)
+        return getIncomingTransfers(chainId, safeAddress, query, pageUrl)
       }
       case TxFilterType.MULTISIG: {
-        const filter = {
-          ...filterData.filter,
-          // We only filter historical transactions
-          executed: 'true',
-        }
-
-        return getMultisigTransactions(chainId, safeAddress, filter, pageUrl)
+        return getMultisigTransactions(chainId, safeAddress, query, pageUrl)
       }
       case TxFilterType.MODULE: {
-        return getModuleTransactions(chainId, safeAddress, filterData.filter, pageUrl)
+        return getModuleTransactions(chainId, safeAddress, query, pageUrl)
       }
       default: {
         return { results: [] }

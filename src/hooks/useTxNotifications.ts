@@ -14,7 +14,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
-import { getTxDetails } from '@/services/tx/txDetails'
+import { getTxDetails } from '@/services/transactions'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
@@ -97,8 +97,8 @@ const useTxNotifications = (): void => {
             link: txId
               ? getTxLink(txId, chain, safeAddress)
               : txHash
-              ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
-              : undefined,
+                ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
+                : undefined,
           }),
         )
       }),

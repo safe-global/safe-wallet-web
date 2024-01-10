@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
-import { getTransactionHistory, type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync, { type AsyncResult } from '../useAsync'
 import { Errors, logError } from '@/services/exceptions'
 import useSafeInfo from '../useSafeInfo'
+import { getTxHistory } from '@/services/transactions'
 
 export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
@@ -12,7 +13,7 @@ export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
   const [data, error, loading] = useAsync<TransactionListPage>(
     () => {
       if (!safeLoaded) return
-      return getTransactionHistory(chainId, safeAddress, undefined, false)
+      return getTxHistory(chainId, safeAddress)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [safeLoaded, chainId, safeAddress, txHistoryTag],

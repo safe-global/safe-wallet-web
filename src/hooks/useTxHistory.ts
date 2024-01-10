@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
-import { getTransactionHistory, type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
 import { fetchFilteredTxHistory, useTxFilter } from '@/utils/tx-history-filter'
+import { getTxHistory } from '@/services/transactions'
 
 const useTxHistory = (
   pageUrl?: string,
@@ -29,7 +30,7 @@ const useTxHistory = (
 
       return filter
         ? fetchFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
-        : getTransactionHistory(chainId, safeAddress, pageUrl)
+        : getTxHistory(chainId, safeAddress, pageUrl)
     },
     [chainId, safeAddress, pageUrl, filter],
     false,
